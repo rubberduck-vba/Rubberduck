@@ -31,7 +31,7 @@ namespace Rubberduck.Parsing.Symbols
         public void Execute()
         {
             var stopwatch = Stopwatch.StartNew();
-            foreach (var declaration in _declarationFinder.FindClasses())
+            foreach (var declaration in _declarationFinder.Classes)
             {
                 AddImplementedInterface(declaration);
             }

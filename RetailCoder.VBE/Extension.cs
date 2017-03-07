@@ -1,5 +1,4 @@
-﻿using System.Text;
-using Extensibility;
+﻿using Extensibility;
 using Ninject;
 using Ninject.Extensions.Factory;
 using Rubberduck.Common.WinAPI;
@@ -19,6 +18,7 @@ using Ninject.Extensions.Interception;
 using NLog;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck
@@ -54,8 +54,9 @@ namespace Rubberduck
             {
                 if (Application is Microsoft.Vbe.Interop.VBE)
                 {
-                    var vbe = (Microsoft.Vbe.Interop.VBE) Application;
+                    var vbe = (Microsoft.Vbe.Interop.VBE) Application;                  
                     _ide = new VBEditor.SafeComWrappers.VBA.VBE(vbe);
+                    VBENativeServices.HookEvents(_ide);
                     
                     var addin = (Microsoft.Vbe.Interop.AddIn)AddInInst;
                     _addin = new VBEditor.SafeComWrappers.VBA.AddIn(addin) { Object = this };
@@ -88,7 +89,7 @@ namespace Rubberduck
 
         Assembly LoadFromSameFolder(object sender, ResolveEventArgs args)
         {
-            var folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
             var assemblyPath = Path.Combine(folderPath, new AssemblyName(args.Name).Name + ".dll");
             if (!File.Exists(assemblyPath))
             {
@@ -143,14 +144,15 @@ namespace Rubberduck
                 return;
             }
 
-            var config = new XmlPersistanceService<GeneralSettings>
+            var configLoader = new XmlPersistanceService<GeneralSettings>
             {
                 FilePath =
                     Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
                         "Rubberduck", "rubberduck.config")
             };
-
-            var settings = config.Load(null);
+            var configProvider = new GeneralConfigProvider(configLoader);
+            
+            var settings = configProvider.Create();
             if (settings != null)
             {
                 try
@@ -172,6 +174,7 @@ namespace Rubberduck
             {
                 splash = new Splash
                 {
+                    // note: IVersionCheck.CurrentVersion could return this string.
                     Version = string.Format("version {0}", Assembly.GetExecutingAssembly().GetName().Version)
                 };
                 splash.Show();
@@ -212,11 +215,17 @@ namespace Rubberduck
 
             _app = _kernel.Get<App>();
             _app.Startup();
+
             _isInitialized = true;
         }
 
         private void ShutdownAddIn()
         {
+            VBENativeServices.UnhookEvents();
+
+            var currentDomain = AppDomain.CurrentDomain;
+            currentDomain.AssemblyResolve -= LoadFromSameFolder;
+
             User32.EnumChildWindows(_ide.MainWindow.Handle(), EnumCallback, new IntPtr(0));
 
             if (_app != null)
@@ -239,6 +248,7 @@ namespace Rubberduck
             {
                 _logger.Error(e);
             }
+
             GC.WaitForPendingFinalizers();
             _isInitialized = false;
         }

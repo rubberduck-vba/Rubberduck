@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Rubberduck.VBEditor.SafeComWrappers
 {
@@ -13,7 +14,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers
         public ComWrapperEnumerator(IEnumerable source, Func<object, TWrapperItem> itemWrapper)
         {
             _itemWrapper = itemWrapper;
-            _internal = source.GetEnumerator();
+            _internal = source == null 
+                ? Enumerable.Empty<TWrapperItem>().GetEnumerator() 
+                : source.GetEnumerator();
         }
 
         public void Dispose()

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -371,8 +371,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Konnte das Rubberduck Add-In nicht laden</value>
   </data>
   <data name="Rubberduck_AboutBuild" xml:space="preserve">
-    <value>Build {0} ({1})</value>
-    <comment>0: Version; 1: Architektur</comment>
+    <value>Version {0}</value>
   </data>
   <data name="TodoMarkerBug" xml:space="preserve">
     <value>BUG</value>
@@ -667,13 +666,11 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Einstellungen auf Standardkonfiguration zurücksetzen?</value>
   </data>
   <data name="RenameDialog_ConflictingNames" xml:space="preserve">
-    <value>Das Umbenenen zu '{0}' wird einen Konflikt mit '{1}' auslösen. Wollen Sie fortfahren?</value>
+    <value>Das Umbenenen zu '{0}' wird einen Konflikt mit '{1}' auslösen.'
+Wollen Sie trotzdem fortfahren?</value>
   </data>
   <data name="Rename_DeclarationType" xml:space="preserve">
     <value>{0} Umbenennen</value>
-  </data>
-  <data name="Language_SV" xml:space="preserve">
-    <value>Schwedisch</value>
   </data>
   <data name="CodeExplorerDockablePresenter_Caption" xml:space="preserve">
     <value>Code Explorer</value>
@@ -872,9 +869,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="RubberduckMenu_Navigate" xml:space="preserve">
     <value>&amp;Navigieren</value>
   </data>
-  <data name="Language_JA" xml:space="preserve">
-    <value>Japanisch</value>
-  </data>
   <data name="RegexSearchReplaceScope_CurrentFile" xml:space="preserve">
     <value>Aktuelle Datei</value>
   </data>
@@ -1050,7 +1044,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Über Rubberduck</value>
   </data>
   <data name="AboutWindow_Copyright" xml:space="preserve">
-    <value>© Copyright 2014-2016 Mathieu Guindon &amp; Christopher McClellan</value>
+    <value>© Copyright 2014-2017 Mathieu Guindon &amp; Christopher McClellan</value>
   </data>
   <data name="AboutWindow_SpecialThanksLabel" xml:space="preserve">
     <value>Spezieller Dank</value>
@@ -1686,64 +1680,253 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   <data name="RubberduckFatalError" xml:space="preserve">
     <value>In Rubberduck ist ein Fehler aufgetreten. Bitte speichern Sie Ihre Arbeit und starten Sie das Hostprogramm neu. Laden Sie dann Ihre Logdatei zu unserer GitHub-Seite hoch.</value>
   </data>
-  <data name="ToolsMenu_SourceControl">
+  <data name="ToolsMenu_SourceControl" xml:space="preserve">
     <value>Version&amp;skontrolle</value>
   </data>
-  <data name="RegexAssistant_NoPatternError">
+  <data name="RegexAssistant_NoPatternError" xml:space="preserve">
     <value>(kein Ausdruck gegeben)</value>
   </data>
-  <data name="TestExplorerMenu_AddTestModule">
+  <data name="TestExplorerMenu_AddTestModule" xml:space="preserve">
     <value>Testm&amp;odul</value>
   </data>
-  <data name="RegexAssistant_GlobalFlag">
+  <data name="RegexAssistant_GlobalFlag" xml:space="preserve">
     <value>Global</value>
   </data>
-  <data name="RegexAssistant_Caption">
+  <data name="RegexAssistant_Caption" xml:space="preserve">
     <value>Rubberduck - Regexassistent</value>
   </data>
-  <data name="ToolsMenu">
+  <data name="ToolsMenu" xml:space="preserve">
     <value>T&amp;ools</value>
   </data>
-  <data name="ToolsMenu_RegexAssistant">
+  <data name="ToolsMenu_RegexAssistant" xml:space="preserve">
     <value>Regex&amp;assistent</value>
   </data>
-  <data name="RegexAssistant_Title">
+  <data name="RegexAssistant_Title" xml:space="preserve">
     <value>Assistent für Reguläre Ausdrücke</value>
   </data>
-  <data name="CodeInspectionSettings_WhitelistedIdentifiersLabel">
+  <data name="CodeInspectionSettings_WhitelistedIdentifiersLabel" xml:space="preserve">
     <value>Explizit erlaubte Namen</value>
   </data>
-  <data name="ToolsMenu_TodoItems">
+  <data name="ToolsMenu_TodoItems" xml:space="preserve">
     <value>To&amp;Do Liste</value>
   </data>
-  <data name="RegexAssistant_Instructions">
+  <data name="RegexAssistant_Instructions" xml:space="preserve">
     <value>Einen Regulären Ausdruck zur Analyse in die Box unten eingeben.</value>
   </data>
-  <data name="TestExplorerMenu_AddTestMethod">
+  <data name="TestExplorerMenu_AddTestMethod" xml:space="preserve">
     <value>Test&amp;methode</value>
   </data>
-  <data name="RegexAssistant_IgnoreCaseFlag">
+  <data name="RegexAssistant_IgnoreCaseFlag" xml:space="preserve">
     <value>Ignoriere Groß-/Kleinschreibung</value>
   </data>
-  <data name="HotkeyDescription_SourceControl">
+  <data name="HotkeyDescription_SourceControl" xml:space="preserve">
     <value>Versionskontrolle</value>
   </data>
-  <data name="TestExplorerMenu_AddExpectedErrorTestMethod">
+  <data name="TestExplorerMenu_AddExpectedErrorTestMethod" xml:space="preserve">
     <value>Testmethode (&amp;erwartet Fehler)</value>
   </data>
-  <data name="CodeInspectionSettings_WhitelistedIdentifiersDescription">
+  <data name="CodeInspectionSettings_WhitelistedIdentifiersDescription" xml:space="preserve">
     <value>Diese Namen werden von der Inspektion "Nutze aussagekräftige Namen" ignoriert.</value>
   </data>
-  <data name="CodeInspectionSettings_InspectionSeveritySettingsLabel">
+  <data name="CodeInspectionSettings_InspectionSeveritySettingsLabel" xml:space="preserve">
     <value>Inspektionsschwere</value>
   </data>
-  <data name="RegexAssistant_DescriptionResultsLabel">
+  <data name="RegexAssistant_DescriptionResultsLabel" xml:space="preserve">
     <value>Beschreibung</value>
   </data>
-  <data name="CodeExplorer_Indent">
+  <data name="CodeExplorer_Indent" xml:space="preserve">
     <value>Einrücken</value>
   </data>
-  <data name="RegexAssistant_RegexPatternLabel">
+  <data name="RegexAssistant_RegexPatternLabel" xml:space="preserve">
     <value>Ausdruck</value>
+  </data>
+  <data name="IndenterSettings_IndentEnumTypeAsProcedure" xml:space="preserve">
+    <value>Kommentare in Enums und Typen wie in Prozeduren einrücken</value>
+  </data>
+  <data name="CodeInspectionSettings_Misc_RunInspectionsOnSuccessfulParse" xml:space="preserve">
+    <value>Inspektionen nach erfolgreichem Parsen automatisch starten</value>
+  </data>
+  <data name="RubberduckReloadFailure_Title" xml:space="preserve">
+    <value>Rubberduck wird nicht neu geladen</value>
+  </data>
+  <data name="GeneralSettings_ShowSplash" xml:space="preserve">
+    <value>Ein Startlogo zu Beginn zeigen</value>
+  </data>
+  <data name="HotkeyDescription_RefactorEncapsulateField" xml:space="preserve">
+    <value>Refactor /  Feld kapseln</value>
+  </data>
+  <data name="CodeExplorer_CollapseSubnodesToolTip" xml:space="preserve">
+    <value>Knoten und alle Kindknoten einklappen</value>
+  </data>
+  <data name="CodeInspectionSettings_Misc" xml:space="preserve">
+    <value>Verschiedenes</value>
+  </data>
+  <data name="CodeExplorer_ExpandSubnodesToolTip" xml:space="preserve">
+    <value>Knoten und alle Kindknoten aufklappen</value>
+  </data>
+  <data name="RubberduckReloadFailure_Message" xml:space="preserve">
+    <value>Werkzeugfenster wurden nicht korrekt entfernt und/oder konnten nicht wieder hergestellt werden; Die VBE könnte instabil sein. Rubberduck wird beim nächsten Start der VBE normal laden.</value>
+  </data>
+  <data name="IndenterSettings_PreviewCode" xml:space="preserve">
+    <value>Public Enum BeispielEnum
+' Enum Kommentar.
+Foo
+Bar ' Member-Kommentar.
+End Enum
+
+' Beispielprozedur
+Sub BeispielProc()
+
+' SMART INDENTER
+' Der originale VB6-Code wurde Rubberduck gnädigerweise von Stephen Bullen &amp; Rob Bovey angeboten
+' © 2016 by Rubberduck VBA.
+
+Dim zaehler As Integer
+Static name As String
+
+If SieMoegenRubberduck Then
+' Einen Stern auf GitHub geben: http://github.com/rubberduck-vba/Rubberduck
+' Auf Twitter folgen @rubberduckvba
+' http://rubberduckvba.com für Neuigkeiten und Aktualisierungen
+
+Select Case X
+Case "A"
+' Falls sie Kommentare oder Vorschläge haben, _
+oder validen VBA code gefunden haben, der nicht korrekt eingerückt wird,
+
+#If VBA6 Then
+MsgBox "Kontaktieren Sie contact@rubberduck-vba.com"
+#End If
+
+Case "Fortgeführte Strings und Parameter können" _
+&amp; "zur Lesbarkeit aufgereiht werden. Optional können" _
+&amp; "beliebige Operatoren (&amp;+, usw.) am Zeilenbeginn ignoriert werden."
+
+Debug.Print "X&lt;&gt;1"
+End Select      'Case X
+End If      'Mehr Werkzeuge? Vorschläge an http://github.com/rubberduck-vba/Rubberduck/Issues/New
+
+End Sub</value>
+  </data>
+  <data name="ParserErrorToolTipText" xml:space="preserve">
+    <value>{0} Modul(e) konnten nicht geparsed werden; Klicken Sie für Details.</value>
+  </data>
+  <data name="ReparseToolTipText" xml:space="preserve">
+    <value>{0}. Klicken zum aktualisieren.</value>
+  </data>
+  <data name="ContextReferences" xml:space="preserve">
+    <value>Referenzen</value>
+  </data>
+  <data name="DialogCaption_SaveInspectionSettings" xml:space="preserve">
+    <value>Einstellungen für Inspektionen speichern</value>
+  </data>
+  <data name="DialogCaption_SaveToDoSettings" xml:space="preserve">
+    <value>Einstellungen für Todo-Liste speichern</value>
+  </data>
+  <data name="DialogMask_XmlFilesOnly" xml:space="preserve">
+    <value>XML Datei (.xml)|*.xml|Rubberduck config file|*.config</value>
+  </data>
+  <data name="DialogCaption_SaveGeneralSettings" xml:space="preserve">
+    <value>Allgemeine Einstellungen speichern</value>
+  </data>
+  <data name="DialogCaption_LoadToDoSettings" xml:space="preserve">
+    <value>Einstellungen für Todo-Liste Laden</value>
+  </data>
+  <data name="DialogCaption_SaveUnitTestSettings" xml:space="preserve">
+    <value>Einstellungen für Unit-Tests speichern</value>
+  </data>
+  <data name="DialogCaption_LoadUnitTestSettings" xml:space="preserve">
+    <value>Einstellungen für Unit-Tests laden</value>
+  </data>
+  <data name="DialogCaption_LoadInspectionSettings" xml:space="preserve">
+    <value>Einstellungen für Inspektionen laden</value>
+  </data>
+  <data name="SettingsCaption_ExportSettings" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="DialogCaption_SaveIndenterSettings" xml:space="preserve">
+    <value>Einstellungen für Einrückung speichern</value>
+  </data>
+  <data name="DialogCaption_LoadIndenterSettings" xml:space="preserve">
+    <value>Einstellungen für Einrückung laden</value>
+  </data>
+  <data name="DialogCaption_LoadGeneralSettings" xml:space="preserve">
+    <value>Allgemeine Einstellungen Laden</value>
+  </data>
+  <data name="SettingsCaption_ImportSettings" xml:space="preserve">
+    <value>Import</value>
+  </data>
+  <data name="SmartIndenter_LegacySettingPrompt">
+    <value>Einstellungen für Smart Indenter wurden in der Registry gefunden.
+Möchten sie die Einstellungen in Rubberduck importieren?</value>
+  </data>
+  <data name="GeneralSettings_CheckVersion">
+    <value>Beim Start prüfen, ob eine neuere Version verfügbar ist.</value>
+  </data>
+  <data name="AssignedByValParamQFixDialog_TitleText">
+    <value>Variablenname der Lokalen Kopie festlegen</value>
+  </data>
+  <data name="IndenterSettings_CodeSampleHeader">
+    <value>Eingerücktes Codebeispiel</value>
+  </data>
+  <data name="DialogCaption_LoadWindowSettings">
+    <value>Fenstereinstellungen laden</value>
+  </data>
+  <data name="SettingsInstructions_WindowSettings">
+    <value>Die Einstellungen für Fenstersichtbarkeit anpassen.</value>
+  </data>
+  <data name="AssignedByValParamQFixDialog_InstructionsLabelText">
+    <value>Bitte geben Sie einen Namen für die lokale Kopie von ByVal {0} '{1}'</value>
+  </data>
+  <data name="IndenterSettings_VerticalSpacing">
+    <value>Vertikalen Abstand aufrecht erhalten</value>
+  </data>
+  <data name="IndenterSettings_VerticalSpacingLabel">
+    <value>Vertikalen Abstand</value>
+  </data>
+  <data name="DialogCaption_SaveWindowSettings">
+    <value>Fenstereinstellungen speichern</value>
+  </data>
+  <data name="DeclarationType_BracketedExpression">
+    <value>Laufzeitausdruck</value>
+  </data>
+  <data name="AssignedByValParamQFixDialog_Caption">
+    <value>ByVal zugewiesener Parameter QuickFix - Lokale Kopie erstellen</value>
+  </data>
+  <data name="WindowSettings_StartupVisibilityHeader">
+    <value>Fenstersichtbarkeit beim Start</value>
+  </data>
+  <data name="VersionCheck_NewVersionAvailable">
+    <value>Rubberduck Version {0} ist jetzt verfügbar! Wollen sie jetzt die Release Notes prüfen?</value>
+  </data>
+  <data name="SettingsCaption_WindowSettings">
+    <value>Fenstereinstellungen</value>
+  </data>
+  <data name="AssignedByValDialog_NewNameAlreadyUsedFormat">
+    <value />
+  </data>
+  <data name="AssignedByValDialog_ReservedKeywordFormat">
+    <value />
+  </data>
+  <data name="RenameDialog_AmbiguousSelection">
+    <value />
+  </data>
+  <data name="ContextMultipleControlsSelection">
+    <value />
+  </data>
+  <data name="AssignedByValDialog_InvalidCharacters">
+    <value />
+  </data>
+  <data name="AssignedByValDialog_IsByValIdentifierFormat">
+    <value />
+  </data>
+  <data name="AssignedByValDialog_QuestionableEntryFormat">
+    <value />
+  </data>
+  <data name="ConfirmRemoveAssignmentWithUnusedDeclaration">
+    <value />
+  </data>
+  <data name="AssignedByValDialog_DoesNotStartWithLetter">
+    <value />
   </data>
 </root>

@@ -1,11 +1,11 @@
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ImplementInterface;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Application;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 
@@ -47,7 +47,7 @@ End Sub
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -100,7 +100,7 @@ End Sub";
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -149,7 +149,7 @@ End Sub
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -198,7 +198,7 @@ End Function
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -247,7 +247,7 @@ End Function
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -296,7 +296,7 @@ End Function
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -345,7 +345,7 @@ End Property
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -394,7 +394,7 @@ End Property
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -443,7 +443,7 @@ End Property
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -492,7 +492,7 @@ End Property
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -541,7 +541,7 @@ End Property
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -590,7 +590,7 @@ End Property
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -639,7 +639,7 @@ End Property
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -675,7 +675,7 @@ End Property";
             const string inputCode2 =
 @"Implements Class1";
 
-            var selection = new Selection(1, 1, 1, 1);
+            var selection = Selection.Home;
 
             //Expectation
             const string expectedCode =
@@ -709,7 +709,7 @@ End Property
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -726,10 +726,10 @@ End Property
         }
 
         [TestMethod]
-        public void ImplementInterface_AllTypes()
+        public void CreatesMethodStubForAllProcedureKinds()
         {
             //Input
-            const string inputCode1 =
+            const string interfaceCode =
 @"Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub
 
@@ -745,32 +745,30 @@ End Property
 Public Property Set Buzz(value)
 End Property";
 
-            const string inputCode2 =
-@"Implements Class1";
-
-            var selection = new Selection(1, 1, 1, 1);
+            const string inputCode =
+@"Implements IClassModule";
 
             //Expectation
             const string expectedCode =
-@"Implements Class1
+@"Implements IClassModule
 
-Private Sub Class1_Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+Private Sub IClassModule_Foo(ByVal arg1 As Integer, ByVal arg2 As String)
     Err.Raise 5 'TODO implement interface member
 End Sub
 
-Private Function Class1_Fizz(ByRef b As Variant) As Variant
+Private Function IClassModule_Fizz(ByRef b As Variant) As Variant
     Err.Raise 5 'TODO implement interface member
 End Function
 
-Private Property Get Class1_Buzz() As Variant
+Private Property Get IClassModule_Buzz() As Variant
     Err.Raise 5 'TODO implement interface member
 End Property
 
-Private Property Let Class1_Buzz(ByRef value As Variant)
+Private Property Let IClassModule_Buzz(ByRef value As Variant)
     Err.Raise 5 'TODO implement interface member
 End Property
 
-Private Property Set Class1_Buzz(ByRef value As Variant)
+Private Property Set IClassModule_Buzz(ByRef value As Variant)
     Err.Raise 5 'TODO implement interface member
 End Property
 ";
@@ -778,20 +776,20 @@ End Property
             //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                 .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
-                 .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
+                 .AddComponent("IClassModule", ComponentType.ClassModule, interfaceCode)
+                 .AddComponent("Class1", ComponentType.ClassModule, inputCode)
                  .Build();
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents[1];
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
             var module = project.Object.VBComponents[1].CodeModule;
 
             //Act
@@ -801,5 +799,82 @@ End Property
             //Assert
             Assert.AreEqual(expectedCode, module.Content());
         }
+
+        [TestMethod]
+        public void ImplementsInterfaceInDocumentModule()
+        {
+            const string interfaceCode = @"Option Explicit
+Public Sub DoSomething()
+End Sub
+";
+            const string initialCode = @"Implements IInterface";
+            const string expectedCode = @"Implements IInterface
+
+Private Sub IInterface_DoSomething()
+    Err.Raise 5 'TODO implement interface member
+End Sub
+";
+            var selection = Selection.Home;
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("IInterface", ComponentType.ClassModule, interfaceCode)
+                .AddComponent("Sheet1", ComponentType.Document, initialCode, selection)
+                .MockVbeBuilder()
+                .Build();
+
+            var project = vbe.Object.VBProjects[0];
+            var component = project.VBComponents["Sheet1"];
+
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
+            var module = component.CodeModule;
+
+            var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
+            refactoring.Refactor(qualifiedSelection);
+
+            Assert.AreEqual(expectedCode, module.Content());
+        }
+ 
+            [TestMethod]
+        public void ImplementsInterfaceInUserFormModule()
+        {
+            const string interfaceCode = @"Option Explicit
+Public Sub DoSomething()
+End Sub
+";
+            const string initialCode = @"Implements IInterface";
+            const string expectedCode = @"Implements IInterface
+
+Private Sub IInterface_DoSomething()
+    Err.Raise 5 'TODO implement interface member
+End Sub
+";
+            var selection = Selection.Home;
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("IInterface", ComponentType.ClassModule, interfaceCode)
+                .AddComponent("Form1", ComponentType.UserForm, initialCode, selection)
+                .MockVbeBuilder()
+                .Build();
+
+            var project = vbe.Object.VBProjects[0];
+            var component = project.VBComponents["Form1"];
+
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
+            var module = component.CodeModule;
+
+            var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
+            refactoring.Refactor(qualifiedSelection);
+
+            Assert.AreEqual(expectedCode, module.Content());
+        }
     }
 }
+

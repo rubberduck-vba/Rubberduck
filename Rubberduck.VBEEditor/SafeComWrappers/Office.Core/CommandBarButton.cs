@@ -15,16 +15,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
         {
         }
 
-        public void HandleEvents()
-        {
-            ((Microsoft.Office.Core.CommandBarButton)Target).Click += Target_Click;
-        }
-
-        public void StopEvents()
-        {
-            ((Microsoft.Office.Core.CommandBarButton)Target).Click -= Target_Click;
-        }
-
         private Microsoft.Office.Core.CommandBarButton Button
         {
             get { return (Microsoft.Office.Core.CommandBarButton)Target; }
@@ -35,51 +25,78 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
             return new CommandBarButton((Microsoft.Office.Core.CommandBarButton)control.Target);
         }
 
-        public event EventHandler<CommandBarButtonClickEventArgs> Click;
+        private EventHandler<CommandBarButtonClickEventArgs> _clickHandler; 
+        public event EventHandler<CommandBarButtonClickEventArgs> Click
+        {
+            add
+            {
+                ((Microsoft.Office.Core.CommandBarButton)Target).Click += Target_Click;
+                _clickHandler += value;
+                System.Diagnostics.Debug.WriteLine("Added handler for: {0} '{1}' (tag: {2}, hashcode:{3})", Parent.Name, Target.Caption, Tag, Target.GetHashCode());
+            }
+            remove
+            {
+                try
+                {
+                    ((Microsoft.Office.Core.CommandBarButton)Target).Click -= Target_Click;
+                }
+                catch
+                {
+                    // he's gone, dave.
+                }
+                _clickHandler -= value;
+                System.Diagnostics.Debug.WriteLine("Removed handler for: {0} '{1}' (tag: {2}, hashcode:{3})", Parent.GetType().Name, Target.Caption, Tag, Target.GetHashCode());
+            }
+        }
+
         private void Target_Click(Microsoft.Office.Core.CommandBarButton ctrl, ref bool cancelDefault)
         {
-            var handler = Click;
-            if (handler == null)
+            var handler = _clickHandler;
+            if (handler == null || IsWrappingNullReference)
             {
                 return;
             }
-            
-            //note: event is fired for every parent the command exists under. not sure why.
-            //System.Diagnostics.Debug.WriteLine("Target_Click: {0} '{1}' (tag: {2}, hashcode:{3})", Parent.Name, Target.Caption, Tag, Target.GetHashCode());
 
-            var args = new CommandBarButtonClickEventArgs(new CommandBarButton(ctrl));
+            System.Diagnostics.Debug.Assert(handler.GetInvocationList().Length == 1, "Multicast delegate is registered more than once.");
+
+            //note: event is fired for every parent the command exists under. not sure why.
+            System.Diagnostics.Debug.WriteLine("Executing handler for: {0} '{1}' (tag: {2}, hashcode:{3})", Parent.GetType().Name, Target.Caption, Tag, Target.GetHashCode());
+
+            var button = new CommandBarButton(ctrl);
+            var args = new CommandBarButtonClickEventArgs(button);
             handler.Invoke(this, args);
             cancelDefault = args.Cancel;
+            button.Release(final:true);
         }
 
         public bool IsBuiltInFace
         {
             get { return !IsWrappingNullReference && Button.BuiltInFace; }
-            set { Button.BuiltInFace = value; }
+            set { if (!IsWrappingNullReference) Button.BuiltInFace = value; }
         }
 
         public int FaceId 
         {
             get { return IsWrappingNullReference ? 0 : Button.FaceId; }
-            set { Button.FaceId = value; }
+            set { if (!IsWrappingNullReference) Button.FaceId = value; }
         }
 
         public string ShortcutText
         {
             get { return IsWrappingNullReference ? string.Empty : Button.ShortcutText; }
-            set { Button.ShortcutText = value; }
+            set { if (!IsWrappingNullReference) Button.ShortcutText = value; }
         }
 
         public ButtonState State
         {
             get { return IsWrappingNullReference ? 0 : (ButtonState)Button.State; }
-            set { Button.State = (Microsoft.Office.Core.MsoButtonState)value; }
+            set { if (!IsWrappingNullReference) Button.State = (Microsoft.Office.Core.MsoButtonState)value; }
         }
 
         public ButtonStyle Style
         {
             get { return IsWrappingNullReference ? 0 : (ButtonStyle)Button.Style; }
-            set { Button.Style = (Microsoft.Office.Core.MsoButtonStyle)value; }
+            set { if (!IsWrappingNullReference) Button.Style = (Microsoft.Office.Core.MsoButtonStyle)value; }
         }
 
         public Image Picture { get; set; }
@@ -87,6 +104,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 
         public void ApplyIcon()
         {
+            if (IsWrappingNullReference) return;
+            
             Button.FaceId = 0;
             if (Picture == null || Mask == null)
             {

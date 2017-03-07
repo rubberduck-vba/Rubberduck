@@ -3,7 +3,6 @@ using System.Diagnostics;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.VBEditor.Application
 {
@@ -20,15 +19,16 @@ namespace Rubberduck.VBEditor.Application
             _runButton = (ICommandBarButton)mainCommandBar.FindControl(RunMacroCommand);
         }
 
-        public void Run(QualifiedMemberName qualifiedMemberName)
+        public void Run(dynamic declaration)
         {
+            var qualifiedMemberName = declaration.QualifiedName;
             var component = qualifiedMemberName.QualifiedModuleName.Component;
             var module = component.CodeModule;
             {
                 var line = module.GetProcBodyStartLine(qualifiedMemberName.MemberName, ProcKind.Procedure);
                 var pane = module.CodePane;
                 {
-                    pane.SetSelection(line, 1, line, 1);
+                    pane.Selection = new Selection(line, 1, line, 1);
                 }
             }
 
@@ -36,11 +36,16 @@ namespace Rubberduck.VBEditor.Application
             // note: this can't work... because the .Execute() call isn't blocking, so method returns before test method actually runs.
         }
 
-        public TimeSpan TimedMethodCall(QualifiedMemberName qualifiedMemberName)
+        public object Run(string name, object[] args)
+        {
+            return null;
+        }
+
+        public TimeSpan TimedMethodCall(dynamic declaration)
         {
             var stopwatch = Stopwatch.StartNew();
 
-            Run(qualifiedMemberName);
+            Run(declaration);
 
             stopwatch.Stop();
             return stopwatch.Elapsed;

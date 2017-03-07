@@ -1,5 +1,6 @@
 ﻿using System;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.WindowsApi;
 using VB = Microsoft.VB6.Interop.VBIDE;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VB6
@@ -47,7 +48,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             get { return IsWrappingNullReference ? 0 : (CodePaneView)Target.CodePaneView; }
         }
 
-        public Selection GetSelection()
+        private Selection GetSelection()
         {
             int startLine;
             int startColumn;
@@ -62,6 +63,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             }
 
             return new Selection(startLine, startColumn, endLine, endColumn);
+        }
+
+        public Selection Selection
+        {
+            get { return GetSelection(); }
+            set { SetSelection(value.StartLine, value.StartColumn, value.EndLine, value.EndColumn); }
         }
 
         public QualifiedSelection? GetQualifiedSelection()
@@ -82,15 +89,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             return new QualifiedSelection(moduleName, selection);
         }
 
-        public void SetSelection(int startLine, int startColumn, int endLine, int endColumn)
+        private void SetSelection(int startLine, int startColumn, int endLine, int endColumn)
         {
             Target.SetSelection(startLine, startColumn, endLine, endColumn);
             ForceFocus();
-        }
-
-        public void SetSelection(Selection selection)
-        {
-            SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn);
         }
 
         private void ForceFocus()
@@ -99,8 +101,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
             var window = VBE.MainWindow;
             var mainWindowHandle = window.Handle();
-            var caption = window.Caption;
-            var childWindowFinder = new NativeMethods.ChildWindowFinder(caption);
+            var caption = Window.Caption;
+            var childWindowFinder = new ChildWindowFinder(caption);
 
             NativeMethods.EnumChildWindows(mainWindowHandle, childWindowFinder.EnumWindowsProcToChildWindowByCaption);
             var handle = childWindowFinder.ResultHandle;

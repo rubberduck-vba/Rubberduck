@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using VB = Microsoft.Vbe.Interop;
 
@@ -27,19 +28,19 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public string HelpFile
         {
             get { return IsWrappingNullReference ? string.Empty : Target.HelpFile; }
-            set { Target.HelpFile = value; }
+            set { if (!IsWrappingNullReference) Target.HelpFile = value; }
         }
 
         public string Description 
         {
             get { return IsWrappingNullReference ? string.Empty : Target.Description; }
-            set { Target.Description = value; } 
+            set { if (!IsWrappingNullReference) Target.Description = value; } 
         }
 
         public string Name
         {
             get { return IsWrappingNullReference ? string.Empty : Target.Name; }
-            set { Target.Name = value; }
+            set { if (!IsWrappingNullReference) Target.Name = value; }
         }
 
         public EnvironmentMode Mode
@@ -105,20 +106,23 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public void SaveAs(string fileName)
         {
-            Target.SaveAs(fileName);
+            if (!IsWrappingNullReference) Target.SaveAs(fileName);
         }
 
         public void MakeCompiledFile()
         {
-            Target.MakeCompiledFile();
+            if (!IsWrappingNullReference) Target.MakeCompiledFile();
         }
 
         public override void Release(bool final = false)
         {
             if (!IsWrappingNullReference)
             {
-                References.Release();
-                VBComponents.Release();
+                if (Protection == ProjectProtection.Unprotected)
+                {
+                    References.Release();
+                    VBComponents.Release();
+                }
                 base.Release(final);
             }
         }
@@ -177,5 +181,55 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             }
         }
 
+        private static readonly Regex CaptionProjectRegex = new Regex(@"^(?:[^-]+)(?:\s-\s)(?<project>.+)(?:\s-\s.*)?$");
+        private static readonly Regex OpenModuleRegex = new Regex(@"^(?<project>.+)(?<module>\s-\s\[.*\((Code|UserForm)\)\])$");
+        private string _displayName;
+        /// <summary>
+        /// WARNING: This property has side effects. It changes the ActiveVBProject, which causes a flicker in the VBE.
+        /// This should only be called if it is *absolutely* necessary.
+        /// </summary>
+        public string ProjectDisplayName
+        {
+            get
+            {
+                if (_displayName != null)
+                {
+                    return _displayName;
+                }
+
+                if (IsWrappingNullReference)
+                {
+                    _displayName = string.Empty;
+                    return _displayName;
+                }
+
+                var vbe = VBE;
+                var activeProject = vbe.ActiveVBProject;
+                var mainWindow = vbe.MainWindow;
+                {
+                    try
+                    {
+                        if (Target.HelpFile != activeProject.HelpFile)
+                        {
+                            vbe.ActiveVBProject = this;
+                        }
+
+                        var caption = mainWindow.Caption;
+                        if (CaptionProjectRegex.IsMatch(caption))
+                        {
+                            caption = CaptionProjectRegex.Matches(caption)[0].Groups["project"].Value;
+                            _displayName = OpenModuleRegex.IsMatch(caption)
+                                ? OpenModuleRegex.Matches(caption)[0].Groups["project"].Value
+                                : caption;
+                        }
+                    }
+                    catch
+                    {
+                        _displayName = string.Empty;
+                    }
+                    return _displayName;
+                }
+            }
+        }
     }
 }

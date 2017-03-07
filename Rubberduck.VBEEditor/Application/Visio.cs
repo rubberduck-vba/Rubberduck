@@ -7,12 +7,12 @@ namespace Rubberduck.VBEditor.Application
         public VisioApp() : base("Visio") { }
         public VisioApp(IVBE vbe) : base(vbe, "Visio") { }
 
-        public override void Run(QualifiedMemberName qualifiedMemberName)
+        public override void Run(dynamic declaration)
         {
             try
             {
-                Microsoft.Office.Interop.Visio.Document doc = Application.Documents[qualifiedMemberName.QualifiedModuleName.ProjectDisplayName];
-                var call = GenerateMethodCall(qualifiedMemberName);
+                Microsoft.Office.Interop.Visio.Document doc = Application.Documents[declaration.ProjectDisplayName];
+                var call = GenerateMethodCall(declaration.QualifiedName);
                 doc.ExecuteLine(call);
             }
             catch 
@@ -22,7 +22,7 @@ namespace Rubberduck.VBEditor.Application
         }
         protected virtual string GenerateMethodCall(QualifiedMemberName qualifiedMemberName)
         {
-            var moduleName = qualifiedMemberName.QualifiedModuleName.Component.Name;
+            var moduleName = qualifiedMemberName.QualifiedModuleName.ComponentName;
             return string.Concat(moduleName, ".", qualifiedMemberName.MemberName);
         }
     }

@@ -6,11 +6,9 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ImplementInterface;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.Extensions;
 using NLog;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.Refactorings.ExtractInterface
 {
@@ -45,9 +43,9 @@ namespace Rubberduck.Refactorings.ExtractInterface
                 return;
             }
 
-            QualifiedSelection? oldSelection = null;
             var pane = _vbe.ActiveCodePane;
             {
+                QualifiedSelection? oldSelection;
                 if (!pane.IsWrappingNullReference)
                 {
                     var module = pane.CodeModule;
@@ -64,11 +62,9 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
                 if (oldSelection.HasValue)
                 {
-                    pane.SetSelection(oldSelection.Value.Selection);
+                    pane.Selection = oldSelection.Value.Selection;
                 }
             }
-
-            _state.OnParseRequested(this);
         }
 
         public void Refactor(QualifiedSelection target)
@@ -79,7 +75,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
                 {
                     return;
                 }
-                pane.SetSelection(target.Selection);
+                pane.Selection = target.Selection;
             }
             Refactor();
         }
@@ -92,7 +88,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
                 {
                     return;
                 }
-                pane.SetSelection(target.QualifiedSelection.Selection);
+                pane.Selection = target.QualifiedSelection.Selection;
             }
             Refactor();
         }
@@ -105,7 +101,11 @@ namespace Rubberduck.Refactorings.ExtractInterface
             {
                 interfaceComponent.Name = _model.InterfaceName;
 
-                interfaceModule.InsertLines(1, Tokens.Option + ' ' + Tokens.Explicit + Environment.NewLine);
+                var optionPresent = interfaceModule.CountOfLines > 1;
+                if (!optionPresent)
+                {
+                    interfaceModule.InsertLines(1, Tokens.Option + ' ' + Tokens.Explicit + Environment.NewLine);
+                }
                 interfaceModule.InsertLines(3, GetInterfaceModuleBody());
 
                 var module = _model.TargetDeclaration.QualifiedSelection.QualifiedName.Component.CodeModule;
@@ -131,7 +131,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
             var qualifiedSelection = new QualifiedSelection(_model.TargetDeclaration.QualifiedSelection.QualifiedName, new Selection(_insertionLine, 1, _insertionLine, 1));
             var pane = _vbe.ActiveCodePane;
             {
-                pane.SetSelection(qualifiedSelection.Selection);
+                pane.Selection = qualifiedSelection.Selection;
             }
 
             var implementInterfaceRefactoring = new ImplementInterfaceRefactoring(_vbe, _state, _messageBox);

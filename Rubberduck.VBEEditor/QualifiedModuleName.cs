@@ -1,5 +1,6 @@
 using System;
-using System.Linq;
+using System.Globalization;
+using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor
@@ -18,7 +19,7 @@ namespace Rubberduck.VBEditor
 
             if (string.IsNullOrEmpty(project.HelpFile))
             {
-                project.HelpFile = project.GetHashCode().ToString();
+                project.HelpFile = project.GetHashCode().ToString(CultureInfo.InvariantCulture);
             }
 
             return project.HelpFile;
@@ -27,55 +28,39 @@ namespace Rubberduck.VBEditor
         public static string GetProjectId(IReference reference)
         {
             var projectName = reference.Name;
-            var path = reference.FullPath;
-            return new QualifiedModuleName(projectName, path, projectName).ProjectId;
+            return new QualifiedModuleName(projectName, reference.FullPath, projectName).ProjectId;
         }
 
         public QualifiedModuleName(IVBProject project)
         {
             _component = null;
             _componentName = null;
-            _project = project;
+            _componentType = ComponentType.Undefined;
             _projectName = project.Name;
             _projectPath = string.Empty;
-            _projectId = GetProjectId(project);
-            _projectDisplayName = string.Empty;
+            _projectId = GetProjectId(project);           
             _contentHashCode = 0;
         }
 
         public QualifiedModuleName(IVBComponent component)
         {
-            _project = null; // field is only assigned when the instance refers to a VBProject.
-
+            _componentType = component.Type;
             _component = component;
             _componentName = component.IsWrappingNullReference ? string.Empty : component.Name;
 
-            var components = component.Collection;
-            {
-                _project = components.Parent;
-                _projectName = _project == null ? string.Empty : _project.Name;
-                _projectPath = string.Empty;
-                _projectId = GetProjectId(_project);
-                _projectDisplayName = string.Empty;
-            }
-
-            _projectName = _project == null ? string.Empty : _project.Name;
-            _projectPath = string.Empty;
-            _projectId = GetProjectId(_project);
-            _projectDisplayName = string.Empty;
-
             _contentHashCode = 0;
-            if (component.IsWrappingNullReference)
+            if (!component.IsWrappingNullReference)
             {
-                return;
-            }
-
-            var module = component.CodeModule;
-            {
+                var module = _component.CodeModule;
                 _contentHashCode = module.CountOfLines > 0
                     ? module.GetLines(1, module.CountOfLines).GetHashCode()
                     : 0;
             }
+
+            var project = component.Collection.Parent;
+            _projectName = project == null ? string.Empty : project.Name;
+            _projectPath = string.Empty;
+            _projectId = GetProjectId(project);
         }
 
         /// <summary>
@@ -84,13 +69,12 @@ namespace Rubberduck.VBEditor
         /// </summary>
         public QualifiedModuleName(string projectName, string projectPath, string componentName)
         {
-            _project = null;
             _projectName = projectName;
-            _projectDisplayName = null;
             _projectPath = projectPath;
-            _projectId = (_projectName + ";" + _projectPath).GetHashCode().ToString();
+            _projectId = string.Format("{0};{1}", _projectName, _projectPath).GetHashCode().ToString(CultureInfo.InvariantCulture);
             _componentName = componentName;
             _component = null;
+            _componentType = ComponentType.ComComponent;
             _contentHashCode = 0;
         }
 
@@ -102,8 +86,8 @@ namespace Rubberduck.VBEditor
         private readonly IVBComponent _component;
         public IVBComponent Component { get { return _component; } }
 
-        private readonly IVBProject _project;
-        public IVBProject Project { get { return _project; } }
+        private readonly ComponentType _componentType;
+        public ComponentType ComponentType { get { return _componentType; } }
 
         private readonly int _contentHashCode;
         public int ContentHashCode { get { return _contentHashCode; } }
@@ -115,55 +99,16 @@ namespace Rubberduck.VBEditor
         public string ComponentName { get { return _componentName ?? string.Empty; } }
 
         public string Name { get { return ToString(); } }
-        
+
         private readonly string _projectName;
-        public string ProjectName { get { return _projectName; } }
+        public string ProjectName { get { return _projectName ?? string.Empty; } }
 
         private readonly string _projectPath;
         public string ProjectPath { get { return _projectPath; } }
 
-        // because this causes a flicker in the VBE, we only want to do it once.
-        // we also want to defer it as long as possible because it is only
-        // needed in a couple places, and QualifiedModuleName is used in many places.
-        private string _projectDisplayName;
-        public string ProjectDisplayName
-        {
-            get
-            {
-                if (_projectDisplayName != string.Empty)
-                {
-                    return _projectDisplayName;
-                }
-
-                var vbe = _project.VBE;
-                var activeProject = vbe.ActiveVBProject;
-                var mainWindow = vbe.MainWindow;
-                {
-                    try
-                    {
-                        if (_project.HelpFile != activeProject.HelpFile)
-                        {
-                            vbe.ActiveVBProject = _project;
-                        }
-
-                        var windowCaptionElements = mainWindow.Caption.Split(' ').ToList();
-                        // without an active code pane: {"Microsoft", "Visual", "Basic", "for", "Applications", "-", "Book2"}
-                        // with an active code pane: {"Microsoft", "Visual", "Basic", "for", "Applications", "-", "Book2", "-", "[Thisworkbook", "(Code)]"}
-                        // so we need to index of the first "-" element; the display name is the element next to that.
-                        _projectDisplayName = windowCaptionElements[windowCaptionElements.IndexOf("-") + 1];
-                        return _projectDisplayName;
-                    }
-                    catch
-                    {
-                        return string.Empty;
-                    }
-                }
-            }
-        }
-
         public override string ToString()
         {
-            return _component == null && string.IsNullOrEmpty(_projectName)
+            return string.IsNullOrEmpty(_componentName) && string.IsNullOrEmpty(_projectName)
                 ? string.Empty
                 : (string.IsNullOrEmpty(_projectPath) ? string.Empty : System.IO.Path.GetFileName(_projectPath) + ";")
                      + _projectName + "." + _componentName;

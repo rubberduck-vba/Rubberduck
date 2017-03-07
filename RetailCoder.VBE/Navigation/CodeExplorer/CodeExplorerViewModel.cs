@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using NLog;
 using Rubberduck.Navigation.Folders;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -31,8 +33,12 @@ namespace Rubberduck.Navigation.CodeExplorer
             _state.StateChanged += ParserState_StateChanged;
             _state.ModuleStateChanged += ParserState_ModuleStateChanged;
 
-            _refreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param => _state.OnParseRequested(this),
-                param => !IsBusy && _state.IsDirty());
+            var reparseCommand = commands.OfType<ReparseCommand>().SingleOrDefault();
+
+            _refreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), 
+                reparseCommand == null ? (Action<object>)(o => { }) :
+                o => reparseCommand.Execute(o),
+                o => !IsBusy && reparseCommand != null && reparseCommand.CanExecute(o));
             
             _navigateCommand = commands.OfType<UI.CodeExplorer.Commands.NavigateCommand>().SingleOrDefault();
 
@@ -189,7 +195,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 
                 var nameWithDeclarationType  = declaration.IdentifierName +
                            string.Format(" - ({0})", RubberduckUI.ResourceManager.GetString(
-                               "DeclarationType_" + declaration.DeclarationType, UI.Settings.Settings.Culture));
+                               "DeclarationType_" + declaration.DeclarationType, CultureInfo.CurrentUICulture));
 
                 if (string.IsNullOrEmpty(declaration.AsTypeName))
                 {
@@ -197,7 +203,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 }
 
                 var typeName = declaration.HasTypeHint
-                    ? Declaration.TypeHintToTypeName[declaration.TypeHint]
+                    ? SymbolList.TypeHintToTypeName[declaration.TypeHint]
                     : declaration.AsTypeName;
 
                 return nameWithDeclarationType + ": " + typeName;
@@ -506,7 +512,8 @@ namespace Rubberduck.Navigation.CodeExplorer
         private void ExecuteRemoveComand(object param)
         {
             var node = (CodeExplorerComponentViewModel)SelectedItem;
-            SelectedItem = Projects.First(p => ((CodeExplorerProjectViewModel)p).Declaration.Project.Equals(node.Declaration.Project));
+            SelectedItem = Projects.FirstOrDefault(p => p.QualifiedSelection.HasValue 
+                && p.QualifiedSelection.Value.QualifiedName.ProjectId == node.Declaration.ProjectId);
 
             _externalRemoveCommand.Execute(param);
         }

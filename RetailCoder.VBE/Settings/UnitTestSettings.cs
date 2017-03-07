@@ -1,4 +1,5 @@
-﻿using System.Xml.Serialization;
+﻿using System;
+using System.Xml.Serialization;
 
 namespace Rubberduck.Settings
 {
@@ -25,7 +26,7 @@ namespace Rubberduck.Settings
     }
 
     [XmlType(AnonymousType = true)]
-    public class UnitTestSettings : IUnitTestSettings
+    public class UnitTestSettings : IUnitTestSettings, IEquatable<UnitTestSettings>
     {
         public UnitTestSettings()
             : this(BindingMode.LateBinding, AssertMode.StrictAssert, true, true, false)
@@ -47,5 +48,15 @@ namespace Rubberduck.Settings
         public bool ModuleInit { get; set; }
         public bool MethodInit { get; set; }
         public bool DefaultTestStubInNewModule { get; set; }
+
+        public bool Equals(UnitTestSettings other)
+        {
+            return other != null &&
+                   BindingMode == other.BindingMode &&
+                   AssertMode == other.AssertMode &&
+                   ModuleInit == other.ModuleInit &&
+                   MethodInit == other.MethodInit &&
+                   DefaultTestStubInNewModule == other.DefaultTestStubInNewModule;
+        }
     }
 }

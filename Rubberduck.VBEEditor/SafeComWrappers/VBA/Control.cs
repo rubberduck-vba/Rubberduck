@@ -14,7 +14,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public string Name
         {
             get { return IsWrappingNullReference ? string.Empty : Target.Name; }
-            set { Target.Name = value; }
+            set { if (!IsWrappingNullReference) Target.Name = value; }
         }
 
         public override bool Equals(ISafeComWrapper<VB.Forms.Control> other)

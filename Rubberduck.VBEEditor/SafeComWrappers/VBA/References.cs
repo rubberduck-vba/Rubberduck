@@ -77,32 +77,37 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public IReference this[object index]
         {
-            get { return new Reference(Target.Item(index)); }
+            get { return new Reference(IsWrappingNullReference ? null : Target.Item(index)); }
         }
 
         public IReference AddFromGuid(string guid, int major, int minor)
         {
-            return new Reference(Target.AddFromGuid(guid, major, minor));
+            return new Reference(IsWrappingNullReference ? null : Target.AddFromGuid(guid, major, minor));
         }
 
         public IReference AddFromFile(string path)
         {
-            return new Reference(Target.AddFromFile(path));
+            return new Reference(IsWrappingNullReference ? null : Target.AddFromFile(path));
         }
 
         public void Remove(IReference reference)
         {
+            if (IsWrappingNullReference) return;
             Target.Remove(((ISafeComWrapper<VB.Reference>)reference).Target);
         }
 
         IEnumerator<IReference> IEnumerable<IReference>.GetEnumerator()
         {
-            return new ComWrapperEnumerator<IReference>(Target, o => new Reference((VB.Reference)o));
+            return IsWrappingNullReference
+                ? new ComWrapperEnumerator<IReference>(null, o => new Reference(null))
+                : new ComWrapperEnumerator<IReference>(Target, o => new Reference((VB.Reference) o));
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return ((IEnumerable<IReference>)this).GetEnumerator();
+            return IsWrappingNullReference
+                ? (IEnumerator) new List<IEnumerable>().GetEnumerator()
+                : ((IEnumerable<IReference>) this).GetEnumerator();
         }
 
         private bool _isReleased;

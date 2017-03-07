@@ -7,7 +7,6 @@ using NLog;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
@@ -39,7 +38,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             try
             {
                 var node = (CodeExplorerComponentViewModel)parameter;
-                var componentType = node.Declaration.QualifiedName.QualifiedModuleName.Component.Type;
+                var componentType = node.Declaration.QualifiedName.QualifiedModuleName.ComponentType;
                 return _exportableFileExtensions.Select(s => s.Key).Contains(componentType);
             }
             catch (COMException)

@@ -11,12 +11,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 
         public static ICommandBarPopup FromCommandBarControl(ICommandBarControl control)
         {
-            return new CommandBarPopup((Microsoft.Office.Core.CommandBarPopup)control.Target);
+            return new CommandBarPopup(control.Target as Microsoft.Office.Core.CommandBarPopup);
         }
 
         private Microsoft.Office.Core.CommandBarPopup Popup
         {
-            get { return (Microsoft.Office.Core.CommandBarPopup)Target; }
+            get { return Target as Microsoft.Office.Core.CommandBarPopup; }
         }
 
         public ICommandBar CommandBar

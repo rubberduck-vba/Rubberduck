@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Common;
+using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Resources;
+using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -30,7 +33,7 @@ namespace Rubberduck.Inspections
 
             var eventMembers = declarations.Where(item => !item.IsBuiltIn && item.DeclarationType == DeclarationType.Event).ToList();
             var formEventHandlerScopes = State.FindFormEventHandlers().Select(handler => handler.Scope);
-            var eventHandlerScopes = State.AllDeclarations.FindBuiltInEventHandlers().Concat(declarations.FindUserEventHandlers()).Select(e => e.Scope);
+            var eventHandlerScopes = State.DeclarationFinder.FindEventHandlers().Concat(declarations.FindUserEventHandlers()).Select(e => e.Scope);
             var eventScopes = eventMembers.Select(s => s.Scope)
                 .Concat(formEventHandlerScopes)
                 .Concat(eventHandlerScopes);
@@ -63,11 +66,12 @@ namespace Rubberduck.Inspections
             {
                 var declarationParameters =
                     declarations.Where(d => d.DeclarationType == DeclarationType.Parameter &&
-                                                      d.ParentDeclaration == declaration)
+                                                      Equals(d.ParentDeclaration, declaration))
                                 .OrderBy(o => o.Selection.StartLine)
                                 .ThenBy(t => t.Selection.StartColumn)
                                 .ToList();
 
+                if (!declarationParameters.Any()) { continue; }
                 var parametersAreByRef = declarationParameters.Select(s => true).ToList();
 
                 var members = declarationMembers.Any(a => a.DeclarationType == DeclarationType.Event)
@@ -78,16 +82,17 @@ namespace Rubberduck.Inspections
                 {
                     var parameters =
                         declarations.Where(d => d.DeclarationType == DeclarationType.Parameter &&
-                                                          d.ParentDeclaration == member)
+                                                          Equals(d.ParentDeclaration, member))
                                     .OrderBy(o => o.Selection.StartLine)
                                     .ThenBy(t => t.Selection.StartColumn)
                                     .ToList();
 
                     for (var i = 0; i < parameters.Count; i++)
                     {
-                        parametersAreByRef[i] = parametersAreByRef[i] && !IsUsedAsByRefParam(declarations, parameters[i]) &&
-                            ((VBAParser.ArgContext)parameters[i].Context).BYVAL() == null &&
-                            !parameters[i].References.Any(reference => reference.IsAssignment);
+                        parametersAreByRef[i] = parametersAreByRef[i] &&
+                                                !IsUsedAsByRefParam(declarations, parameters[i]) &&
+                                                ((VBAParser.ArgContext) parameters[i].Context).BYVAL() == null &&
+                                                !parameters[i].References.Any(reference => reference.IsAssignment);
                     }
                 }
 

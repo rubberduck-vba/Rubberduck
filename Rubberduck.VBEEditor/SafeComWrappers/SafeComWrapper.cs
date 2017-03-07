@@ -6,6 +6,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers
     public abstract class SafeComWrapper<T> : ISafeComWrapper<T>
         where T : class
     {
+        private readonly T _target;
+
         protected SafeComWrapper(T target)
         {
             _target = target;
@@ -14,25 +16,29 @@ namespace Rubberduck.VBEditor.SafeComWrappers
         private bool _isReleased;
         public virtual void Release(bool final = false)
         {
-            if (IsWrappingNullReference || _isReleased)
+            if (IsWrappingNullReference || _isReleased || !Marshal.IsComObject(Target))
             {
+                _isReleased = true;
                 return;
             }
 
-            if (final)
+            try
             {
-                Marshal.FinalReleaseComObject(Target);
+                if (final)
+                {
+                    Marshal.FinalReleaseComObject(Target);
+                }
+                else
+                {
+                    Marshal.ReleaseComObject(Target);
+                }
             }
-            else
+            finally
             {
-                Marshal.ReleaseComObject(Target);
+                _isReleased = true;
             }
-
-            _target = null;
-            _isReleased = true;
         }
 
-        private T _target;
         public bool IsWrappingNullReference { get { return _target == null; } }
         object INullObjectWrapper.Target { get { return _target; } }
         public T Target { get { return _target; } }
@@ -55,11 +61,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers
 
         public static bool operator ==(SafeComWrapper<T> a, SafeComWrapper<T> b)
         {
-            if (ReferenceEquals(a, null) && ReferenceEquals(b, null))
-            {
-                return true;
-            }
-            return !ReferenceEquals(a, null) && a.Equals(b);
+            return ReferenceEquals(a, null) ? ReferenceEquals(b, null) : a.Equals(b);
         }
 
         public static bool operator !=(SafeComWrapper<T> a, SafeComWrapper<T> b)

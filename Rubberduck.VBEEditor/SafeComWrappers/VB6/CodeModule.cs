@@ -87,7 +87,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         public void Clear()
         {
-            Target.DeleteLines(1, CountOfLines);
+            if (Target.CountOfLines > 0)
+            {
+                Target.DeleteLines(1, CountOfLines);
+            }
         }
 
         /// <summary>
@@ -125,7 +128,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                     }
                 }
 
-                continuing = code.EndsWith("_");
+                continuing = code.EndsWith(" _");
             }
         }
 

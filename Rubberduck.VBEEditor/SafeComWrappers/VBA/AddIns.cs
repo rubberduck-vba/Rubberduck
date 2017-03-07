@@ -66,12 +66,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return Target.GetEnumerator();
+            return IsWrappingNullReference ? new List<IEnumerable>().GetEnumerator() : Target.GetEnumerator();
         }
 
         IEnumerator<IAddIn> IEnumerable<IAddIn>.GetEnumerator()
         {
-            return new ComWrapperEnumerator<IAddIn>(Target, o => new AddIn((VB.AddIn)o));
+            return IsWrappingNullReference
+                ? new ComWrapperEnumerator<IAddIn>(null, o => new AddIn(null))
+                : new ComWrapperEnumerator<IAddIn>(Target, o => new AddIn((VB.AddIn) o));
         }
     }
 }

@@ -9,7 +9,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
+using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -34,7 +34,7 @@ namespace Rubberduck.Parsing.Symbols
             ComponentType type,
             IEnumerable<IAnnotation> annotations,
             IDictionary<Tuple<string, DeclarationType>, Attributes> attributes,
-            Declaration projectDeclaration)
+            Declaration projectDeclaration, string asTypeName = null)
         {
             _qualifiedName = qualifiedName;
             _annotations = annotations;
@@ -52,9 +52,9 @@ namespace Rubberduck.Parsing.Symbols
             if (declarationType == DeclarationType.ProceduralModule)
             {
                 _moduleDeclaration = new ProceduralModuleDeclaration(
-                    _qualifiedName.QualifyMemberName(_qualifiedName.Component.Name),
+                    _qualifiedName.QualifyMemberName(_qualifiedName.ComponentName),
                     projectDeclaration,
-                    _qualifiedName.Component.Name,
+                    _qualifiedName.ComponentName,
                     false,
                     FindAnnotations(),
                     moduleAttributes);
@@ -66,41 +66,49 @@ namespace Rubberduck.Parsing.Symbols
                 Declaration superType = null;
                 if (type == ComponentType.Document)
                 {
-                    foreach (var coclass in state.CoClasses)
+                    if (!string.IsNullOrEmpty(asTypeName))
                     {
-                        try
+                        superType = state.CoClasses.FirstOrDefault(cls => cls.Value.IdentifierName == asTypeName).Value;
+                    }
+                    else
+                    {
+                        foreach (var coclass in state.CoClasses)
                         {
-                            if (coclass.Key.Count != _qualifiedName.Component.Properties.Count)
+                            try
                             {
-                                continue;
-                            }
-
-                            var allNamesMatch = true;
-                            for (var i = 0; i < coclass.Key.Count; i++)
-                            {
-                                if (coclass.Key[i] != _qualifiedName.Component.Properties[i + 1].Name)
+                                if (_qualifiedName.Component == null ||
+                                    coclass.Key.Count != _qualifiedName.Component.Properties.Count)
                                 {
-                                    allNamesMatch = false;
+                                    continue;
+                                }
+
+                                var allNamesMatch = true;
+                                for (var i = 0; i < coclass.Key.Count; i++)
+                                {
+                                    if (coclass.Key[i] != _qualifiedName.Component.Properties[i + 1].Name)
+                                    {
+                                        allNamesMatch = false;
+                                        break;
+                                    }
+                                }
+
+                                if (allNamesMatch)
+                                {
+                                    superType = coclass.Value;
                                     break;
                                 }
                             }
-                            
-                            if (allNamesMatch)
+                            catch (COMException)
                             {
-                                superType = coclass.Value;
-                                break;
                             }
-                        }
-                        catch (COMException)
-                        {
                         }
                     }
                 }
 
                 _moduleDeclaration = new ClassModuleDeclaration(
-                    _qualifiedName.QualifyMemberName(_qualifiedName.Component.Name),
+                    _qualifiedName.QualifyMemberName(_qualifiedName.ComponentName),
                     projectDeclaration,
-                    _qualifiedName.Component.Name,
+                    _qualifiedName.ComponentName,
                     false,
                     FindAnnotations(),
                     moduleAttributes,
@@ -165,14 +173,17 @@ namespace Rubberduck.Parsing.Symbols
         /// </remarks>
         private void DeclareControlsAsMembers(IVBComponent form)
         {
+            if (form.Controls == null) { return; }
+
             foreach (var control in form.Controls)
             {
+                var typeName = control.TypeName();
                 // The as type declaration should be TextBox, CheckBox, etc. depending on the type.
                 var declaration = new Declaration(
                     _qualifiedName.QualifyMemberName(control.Name),
                     _parentDeclaration,
                     _currentScopeDeclaration,
-                    "Control",
+                    string.IsNullOrEmpty(typeName) ? "Control" : typeName,
                     null,
                     true,
                     true,
@@ -206,7 +217,7 @@ namespace Rubberduck.Parsing.Symbols
                 var argContext = (VBAParser.ArgContext)context;
                 var isOptional = argContext.OPTIONAL() != null;
 
-                var isByRef = argContext.BYREF() != null;
+                var isByRef = argContext.BYREF() != null || argContext.BYVAL() == null;
                 var isParamArray = argContext.PARAMARRAY() != null;
                 result = new ParameterDeclaration(
                     new QualifiedMemberName(_qualifiedName, identifierName),
@@ -469,7 +480,7 @@ namespace Rubberduck.Parsing.Symbols
                 ? Tokens.Variant
                 : asTypeClause.type().GetText();
             var typeHint = Identifier.GetTypeHintValue(identifier);
-            var isArray = asTypeClause != null && asTypeClause.type().LPAREN() != null;
+            var isArray = asTypeName.EndsWith("()");
             var declaration = CreateDeclaration(
                 name,
                 asTypeName,

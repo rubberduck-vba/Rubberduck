@@ -17,15 +17,17 @@ namespace Rubberduck.UI.Command
         private readonly IVBE _vbe;
         private readonly ITestEngine _engine;
         private readonly TestExplorerModel _model;
+        private readonly IDockablePresenter _presenter;
         private readonly RubberduckParserState _state;
-        
-        public RunAllTestsCommand(IVBE vbe, RubberduckParserState state, ITestEngine engine, TestExplorerModel model) 
+
+        public RunAllTestsCommand(IVBE vbe, RubberduckParserState state, ITestEngine engine, TestExplorerModel model, IDockablePresenter presenter) 
             : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
             _engine = engine;
             _model = model;
             _state = state;
+            _presenter = presenter;
         }
 
         private static readonly ParserState[] AllowedRunStates = { ParserState.ResolvedDeclarations, ParserState.ResolvingReferences, ParserState.Ready };
@@ -75,6 +77,11 @@ namespace Rubberduck.UI.Command
 
             _model.ClearLastRun();
             _model.IsBusy = true;
+
+            if (_presenter != null)
+            {
+                _presenter.Show();
+            }
 
             stopwatch.Start();
             _engine.Run(_model.Tests);

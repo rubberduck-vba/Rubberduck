@@ -11,6 +11,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         IVBComponents Collection { get; }
         IProperties Properties { get; }
         IControls Controls { get; }
+        IControls SelectedControls { get; }
         bool IsSaved { get; }
         bool HasDesigner { get; }
         bool HasOpenDesigner { get; }
@@ -19,6 +20,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         IWindow DesignerWindow();
         void Activate();
         void Export(string path);
-        string ExportAsSourceFile(string folder);
+        string ExportAsSourceFile(string folder, bool tempFile = false);
+
+        IVBProject ParentProject { get; }
     }
 }

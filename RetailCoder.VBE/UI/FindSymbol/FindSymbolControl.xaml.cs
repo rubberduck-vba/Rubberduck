@@ -1,6 +1,5 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Input;
-using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.FindSymbol
 {

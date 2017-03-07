@@ -19,7 +19,7 @@ namespace RubberduckTests.Settings
                 DefaultTestStubInNewModule = false
             };
 
-            var userSettings = new UserSettings(null, null, null, null, unitTestSettings, null);
+            var userSettings = new UserSettings(null, null, null, null, unitTestSettings, null, null);
             return new Configuration(userSettings);
         }
 
@@ -34,10 +34,11 @@ namespace RubberduckTests.Settings
                 DefaultTestStubInNewModule = true
             };
 
-            var userSettings = new UserSettings(null, null, null, null, unitTestSettings, null);
+            var userSettings = new UserSettings(null, null, null, null, unitTestSettings, null, null);
             return new Configuration(userSettings);
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void SaveConfigWorks()
         {
@@ -55,6 +56,7 @@ namespace RubberduckTests.Settings
                 () => Assert.AreEqual(config.UserSettings.UnitTestSettings.DefaultTestStubInNewModule, viewModel.DefaultTestStubInNewModule));
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void SetDefaultsWorks()
         {
@@ -71,6 +73,7 @@ namespace RubberduckTests.Settings
                 () => Assert.AreEqual(defaultConfig.UserSettings.UnitTestSettings.DefaultTestStubInNewModule, viewModel.DefaultTestStubInNewModule));
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void BindingModeIsSetInCtor()
         {
@@ -80,6 +83,7 @@ namespace RubberduckTests.Settings
             Assert.AreEqual(defaultConfig.UserSettings.UnitTestSettings.BindingMode, viewModel.BindingMode);
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void AssertModeIsSetInCtor()
         {
@@ -89,6 +93,7 @@ namespace RubberduckTests.Settings
             Assert.AreEqual(defaultConfig.UserSettings.UnitTestSettings.AssertMode, viewModel.AssertMode);
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void ModuleInitIsSetInCtor()
         {
@@ -98,6 +103,7 @@ namespace RubberduckTests.Settings
             Assert.AreEqual(defaultConfig.UserSettings.UnitTestSettings.ModuleInit, viewModel.ModuleInit);
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void MethodInitIsSetInCtor()
         {
@@ -107,6 +113,7 @@ namespace RubberduckTests.Settings
             Assert.AreEqual(defaultConfig.UserSettings.UnitTestSettings.MethodInit, viewModel.MethodInit);
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void DefaultTestStubInNewModuleIsSetInCtor()
         {

@@ -56,7 +56,7 @@
     <Compile Include="IndenterSettings.cs" />
     <Compile Include="LogicalCodeLine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Selection.cs" />
+    <Compile Include="StringLiteralAndBracketEscaper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Legacy\CBtnEvents.cls" />

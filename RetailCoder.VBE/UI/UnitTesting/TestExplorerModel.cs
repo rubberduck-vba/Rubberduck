@@ -10,7 +10,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.UnitTesting
 {
-    public class TestExplorerModel : ViewModelBase
+    public class TestExplorerModel : ViewModelBase, IDisposable
     {
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
@@ -166,6 +166,14 @@ namespace Rubberduck.UI.UnitTesting
             if (handler != null)
             {
                 handler.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        public void Dispose()
+        {
+            if (_state != null)
+            {
+                _state.StateChanged -= State_StateChanged;
             }
         }
     }

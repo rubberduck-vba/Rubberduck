@@ -363,6 +363,16 @@ namespace Rubberduck.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap circle_mask {
+            get {
+                object obj = ResourceManager.GetObject("circle_mask", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap CollapseUp {
             get {
                 object obj = ResourceManager.GetObject("CollapseUp", resourceCulture);
@@ -906,16 +916,6 @@ namespace Rubberduck.Properties {
         internal static System.Drawing.Bitmap RD_300x250_base {
             get {
                 object obj = ResourceManager.GetObject("RD-300x250-base", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap RD_AboutWindow {
-            get {
-                object obj = ResourceManager.GetObject("RD_AboutWindow", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

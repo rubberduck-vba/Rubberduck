@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Resources;
+using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
@@ -18,13 +21,13 @@ namespace Rubberduck.Inspections
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
-            var issues = UserDeclarations
-                            .Where(declaration => declaration.DeclarationType == DeclarationType.Project
-                                                && declaration.IdentifierName.StartsWith("VBAProject"))
-                            .Select(issue => new DefaultProjectNameInspectionResult(this, issue, State))
-                            .ToList();
+            var projects = State.DeclarationFinder.UserDeclarations(DeclarationType.Project)
+                .Where(item => item.IdentifierName.StartsWith("VBAProject"))
+                .ToList();
 
-            return issues;
+            return projects
+                .Select(issue => new DefaultProjectNameInspectionResult(this, issue, State))
+                .ToList();
         }
     }
 }

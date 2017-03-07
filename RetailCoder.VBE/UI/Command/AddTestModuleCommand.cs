@@ -29,10 +29,11 @@ namespace Rubberduck.UI.Command
             _configLoader = configLoader;
         }
 
+        private const string FolderAnnotation = "'@Folder(\"Tests\")\r\n";
         private const string ModuleLateBinding = "Private Assert As Object\r\n";
         private const string ModuleEarlyBinding = "Private Assert As New Rubberduck.{0}AssertClass\r\n";
 
-        private const string TestModuleEmptyTemplate = "'@TestModule\r\n{0}\r\n";
+        private const string TestModuleEmptyTemplate = "'@TestModule\r\n{0}\r\n{1}\r\n";
 
         private const string ModuleInitLateBinding = "Set Assert = CreateObject(\"Rubberduck.{0}AssertClass\")\r\n";
         private readonly string _moduleInit = string.Concat(
@@ -59,14 +60,14 @@ namespace Rubberduck.UI.Command
 
         private const string TestModuleBaseName = "TestModule";
 
-        private string GetTestModule(UnitTestSettings settings)
+        private string GetTestModule(IUnitTestSettings settings)
         {
             var assertClass = settings.AssertMode == AssertMode.StrictAssert ? string.Empty : "Permissive";
             var moduleBinding = settings.BindingMode == BindingMode.EarlyBinding
                 ? string.Format(ModuleEarlyBinding, assertClass)
                 : ModuleLateBinding;
 
-            var formattedModuleTemplate = string.Format(TestModuleEmptyTemplate, moduleBinding);
+            var formattedModuleTemplate = string.Format(TestModuleEmptyTemplate, FolderAnnotation, moduleBinding);
 
             if (settings.ModuleInit)
             {

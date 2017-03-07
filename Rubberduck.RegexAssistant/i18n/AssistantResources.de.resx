@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AtomDescription_CarriageReturn" xml:space="preserve">
+    <value>Erkennt das ASCII-Zeichen CR</value>
+  </data>
+  <data name="AtomDescription_CharacterClass" xml:space="preserve">
+    <value>Erkennt ein beliebiges der folgenden Zeichen: {0}</value>
+  </data>
+  <data name="AtomDescription_CharacterClass_Inverted" xml:space="preserve">
+    <value>Erkennt ein beliebigs Zeichen außer den Folgenden: {0}</value>
+  </data>
+  <data name="AtomDescription_Digit" xml:space="preserve">
+    <value>Erkennt eine beliebige Ziffer. Äquivalent zu "[0-9]"</value>
+  </data>
+  <data name="AtomDescription_Dot" xml:space="preserve">
+    <value>Erkennt ein beliebiges Zeichen</value>
+  </data>
+  <data name="AtomDescription_FormFeed" xml:space="preserve">
+    <value>Erkennt das "Form-Feed"-Zeichen</value>
+  </data>
+  <data name="AtomDescription_Group" xml:space="preserve">
+    <value>Erkennt die Gruppe '{0}'</value>
+  </data>
+  <data name="AtomDescription_HTab" xml:space="preserve">
+    <value>Erkennt das horizontale "Tab"-Zeichen</value>
+  </data>
+  <data name="AtomDescription_Literal_ActualLiteral" xml:space="preserve">
+    <value>Erkennt genau '{0}'</value>
+  </data>
+  <data name="AtomDescription_Literal_Backreference" xml:space="preserve">
+    <value>Erkennt genau das, was die Gruppe an Position {0} erkannt hat</value>
+  </data>
+  <data name="AtomDescription_Literal_EscapedLiteral" xml:space="preserve">
+    <value>Erkennt das Sonderliteral {0}</value>
+  </data>
+  <data name="AtomDescription_Literal_HexCodepoint" xml:space="preserve">
+    <value>Erkennt den hexadezimalen ASCII-Wert {0}</value>
+  </data>
+  <data name="AtomDescription_Literal_OctalCodepoint" xml:space="preserve">
+    <value>Erkennt den Oktalen ASCII-Wert {0}</value>
+  </data>
+  <data name="AtomDescription_Literal_UnicodePoint" xml:space="preserve">
+    <value>Erkennt den Unicode-Codepoint {0}</value>
+  </data>
+  <data name="AtomDescription_Newline" xml:space="preserve">
+    <value>Erkennt das ASCII-Zeichen LF, auch als "Neue Zeile" bekannt</value>
+  </data>
+  <data name="AtomDescription_NonDigit" xml:space="preserve">
+    <value>Erkennt Zeichen, die keine Ziffern sind. Äquivalent zu "[^\d]"</value>
+  </data>
+  <data name="AtomDescription_NonWhitespace" xml:space="preserve">
+    <value>Erkennt Zeichen, die nicht Leerzeichen sind. Äquivalent zu "[^\s]"</value>
+  </data>
+  <data name="AtomDescription_NonWordBoundary" xml:space="preserve">
+    <value>Stellt sicher, dass die aktuelle Position eine "Nicht-Wortgrenze" ist</value>
+  </data>
+  <data name="AtomDescription_NonWordCharacter" xml:space="preserve">
+    <value>Erkennt "nicht-wort Zeichen". Äquivalent zu "[^\w]"</value>
+  </data>
+  <data name="AtomDescription_VTab" xml:space="preserve">
+    <value>Erkennt das vertikale "Tab"-Zeichen</value>
+  </data>
+  <data name="AtomDescription_Whitespace" xml:space="preserve">
+    <value>Erkennt ein beliebiges "Leerzeichen". Äquivalent zu"[ \t\r\n\v\f]"</value>
+  </data>
+  <data name="AtomDescription_WordBoundary" xml:space="preserve">
+    <value>Stellt sicher, dass die aktuelle Position eine Wortgrenze ist</value>
+  </data>
+  <data name="AtomDescription_WordCharacter" xml:space="preserve">
+    <value>Erkennt ein beliebiges "Wort-Zeichen". Äquivalent zu "[a-zA-Z_0-9]"</value>
+  </data>
+  <data name="ExpressionDescription_AlternativesExpression" xml:space="preserve">
+    <value>Erkennt eine von {0} Alternativen</value>
+  </data>
+  <data name="ExpressionDescription_ConcatenatedExpression" xml:space="preserve">
+    <value>Erkennt die exakte Sequenz</value>
+  </data>
+  <data name="ExpressionDescription_ErrorExpression" xml:space="preserve">
+    <value>Konnte '{0}' nicht als Literal erkennen. Bitte überprüfen Sie die Eingabe</value>
+  </data>
+  <data name="PatternDescription_AnchorEnd" xml:space="preserve">
+    <value>$ stellt sicher, dass alle Zeichen im String verwendet wurden</value>
+  </data>
+  <data name="PatternDescription_AnchorEnd_GlobalEnabled" xml:space="preserve">
+    <value>$ stellt sicher, dass das Ende einer Zeile erreicht ist, oder alle Zeichen in der Eingabe verwendet wurden</value>
+  </data>
+  <data name="PatternDescription_AnchorStart" xml:space="preserve">
+    <value>^ stellt sicher, dass wir uns am Anfang der zu prüfenden Eingabe befinden</value>
+  </data>
+  <data name="PatternDescription_AnchorStart_GlobalEnabled" xml:space="preserve">
+    <value>^ stellt sicher, dass die Suche beim Beginn einer Zeile startet</value>
+  </data>
+  <data name="PatternDescription_IgnoreCase" xml:space="preserve">
+    <value>Alle Erkennungen ignorieren Groß-/Kleinschreibung von Zeichen</value>
+  </data>
+  <data name="Quantifer_Plus" xml:space="preserve">
+    <value>mindestens ein mal</value>
+  </data>
+  <data name="Quantifier_Asterisk" xml:space="preserve">
+    <value>beliebig oft</value>
+  </data>
+  <data name="Quantifier_ClosedRange" xml:space="preserve">
+    <value>zwischen {0} und {1} mal</value>
+  </data>
+  <data name="Quantifier_Exact" xml:space="preserve">
+    <value>genau {0} mal</value>
+  </data>
+  <data name="Quantifier_None" xml:space="preserve">
+    <value>genau ein mal</value>
+  </data>
+  <data name="Quantifier_OpenRange" xml:space="preserve">
+    <value>mindestens {0} mal</value>
+  </data>
+  <data name="Quantifier_Optional" xml:space="preserve">
+    <value>höchstens ein mal</value>
+  </data>
+</root>

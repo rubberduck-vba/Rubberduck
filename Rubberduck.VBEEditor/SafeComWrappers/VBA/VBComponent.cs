@@ -53,7 +53,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public string Name
         {
             get { return IsWrappingNullReference ? string.Empty : Target.Name; }
-            set { Target.Name = value; }
+            set { if (!IsWrappingNullReference) Target.Name = value; }
+        }
+
+        private string SafeName
+        {
+            get { return Path.GetInvalidFileNameChars().Aggregate(Name, (current, c) => current.Replace(c.ToString(), "_")); }
         }
 
         public IControls Controls
@@ -70,6 +75,20 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             }
         }
 
+        public IControls SelectedControls
+        {
+            get
+            {
+                var designer = IsWrappingNullReference
+                    ? null
+                    : Target.Designer as VB.Forms.UserForm;
+
+                return designer == null
+                    ? new Controls(null)
+                    : new Controls(designer.Selected);
+            }
+        }
+        
         public bool HasDesigner
         {
             get
@@ -105,9 +124,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         /// Exports the component to the folder. The file is name matches the component name and file extension is based on the component's type.
         /// </summary>
         /// <param name="folder">Destination folder for the resulting source file.</param>
-        public string ExportAsSourceFile(string folder)
+        /// <param name="tempFile">True if a unique temp file name should be generated. WARNING: filenames generated with this flag are not persisted.</param>
+        public string ExportAsSourceFile(string folder, bool tempFile = false)
         {
-            var fullPath = Path.Combine(folder, Name + Type.FileExtension());
+            var fullPath = tempFile
+                ? Path.Combine(folder, Path.GetRandomFileName())
+                : Path.Combine(folder, SafeName + Type.FileExtension());
             switch (Type)
             {
                 case ComponentType.UserForm:
@@ -122,6 +144,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             }
 
             return fullPath;
+        }
+
+        public IVBProject ParentProject
+        {
+            get { return Collection.Parent; }
         }
 
         private void ExportUserFormModule(string path)
@@ -165,7 +192,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         private string ExportToTempFile()
         {
-            var path = Path.Combine(Path.GetTempPath(), Name + Type.FileExtension());
+            var path = Path.Combine(Path.GetTempPath(), SafeName + Type.FileExtension());
             Export(path);
             return path;
         }

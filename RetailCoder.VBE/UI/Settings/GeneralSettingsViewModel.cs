@@ -3,6 +3,7 @@ using System.Linq;
 using Rubberduck.Settings;
 using Rubberduck.Common;
 using NLog;
+using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.Settings
@@ -13,9 +14,10 @@ namespace Rubberduck.UI.Settings
         Slash = 47
     }
 
-    public class GeneralSettingsViewModel : ViewModelBase, ISettingsViewModel
+    public class GeneralSettingsViewModel : SettingsViewModelBase, ISettingsViewModel
     {
         private readonly IOperatingSystem _operatingSystem;
+        private bool _indenterPrompted;
 
         public GeneralSettingsViewModel(Configuration config, IOperatingSystem operatingSystem)
         {
@@ -28,16 +30,12 @@ namespace Rubberduck.UI.Settings
                 new DisplayLanguageSetting("de-DE")
             });
 
-            SelectedLanguage = Languages.First(l => l.Code == config.UserSettings.GeneralSettings.Language.Code);
-            Hotkeys = new ObservableCollection<HotkeySetting>(config.UserSettings.HotkeySettings.Settings);
-            ShowSplashAtStartup = config.UserSettings.GeneralSettings.ShowSplash;
-            AutoSaveEnabled = config.UserSettings.GeneralSettings.AutoSaveEnabled;
-            AutoSavePeriod = config.UserSettings.GeneralSettings.AutoSavePeriod;
-            Delimiter = (DelimiterOptions)config.UserSettings.GeneralSettings.Delimiter;
             LogLevels = new ObservableCollection<MinimumLogLevel>(LogLevelHelper.LogLevels.Select(l => new MinimumLogLevel(l.Ordinal, l.Name)));
-            SelectedLogLevel = LogLevels.First(l => l.Ordinal == config.UserSettings.GeneralSettings.MinimumLogLevel);
+            TransferSettingsToView(config.UserSettings.GeneralSettings, config.UserSettings.HotkeySettings);
 
             _showLogFolderCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ShowLogFolder());
+            ExportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ExportSettings());
+            ImportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ImportSettings());
         }
 
         public ObservableCollection<DisplayLanguageSetting> Languages { get; set; } 
@@ -93,6 +91,20 @@ namespace Rubberduck.UI.Settings
                 if (_showSplashAtStartup != value)
                 {
                     _showSplashAtStartup = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private bool _checkVersionAtStartup;
+        public bool CheckVersionAtStartup
+        {
+            get { return _checkVersionAtStartup; }
+            set
+            {
+                if (_checkVersionAtStartup != value)
+                {
+                    _checkVersionAtStartup = value;
                     OnPropertyChanged();
                 }
             }
@@ -154,24 +166,78 @@ namespace Rubberduck.UI.Settings
 
         public void UpdateConfig(Configuration config)
         {
-            config.UserSettings.GeneralSettings.Language = SelectedLanguage;
+            config.UserSettings.GeneralSettings = GetCurrentGeneralSettings();
             config.UserSettings.HotkeySettings.Settings = Hotkeys.ToArray();
-            config.UserSettings.GeneralSettings.ShowSplash = ShowSplashAtStartup;
-            config.UserSettings.GeneralSettings.AutoSaveEnabled = AutoSaveEnabled;
-            config.UserSettings.GeneralSettings.AutoSavePeriod = AutoSavePeriod;
-            config.UserSettings.GeneralSettings.Delimiter = (char)Delimiter;
-            config.UserSettings.GeneralSettings.MinimumLogLevel = SelectedLogLevel.Ordinal;
         }
 
         public void SetToDefaults(Configuration config)
         {
-            SelectedLanguage = Languages.First(l => l.Code == config.UserSettings.GeneralSettings.Language.Code);
-            Hotkeys = new ObservableCollection<HotkeySetting>(config.UserSettings.HotkeySettings.Settings);
-            ShowSplashAtStartup = config.UserSettings.GeneralSettings.ShowSplash;
-            AutoSaveEnabled = config.UserSettings.GeneralSettings.AutoSaveEnabled;
-            AutoSavePeriod = config.UserSettings.GeneralSettings.AutoSavePeriod;
-            Delimiter = (DelimiterOptions)config.UserSettings.GeneralSettings.Delimiter;
-            SelectedLogLevel = LogLevels.First(l => l.Ordinal == config.UserSettings.GeneralSettings.MinimumLogLevel);
+            TransferSettingsToView(config.UserSettings.GeneralSettings, config.UserSettings.HotkeySettings);
+        }
+
+        private Rubberduck.Settings.GeneralSettings GetCurrentGeneralSettings()
+        {
+            return new Rubberduck.Settings.GeneralSettings
+            {
+                Language = SelectedLanguage,
+                ShowSplash = ShowSplashAtStartup,
+                CheckVersion = CheckVersionAtStartup,
+                SmartIndenterPrompted = _indenterPrompted,
+                AutoSaveEnabled = AutoSaveEnabled,
+                AutoSavePeriod = AutoSavePeriod,
+                //Delimiter = (char)Delimiter,
+                MinimumLogLevel = SelectedLogLevel.Ordinal
+            };
+        }
+
+        private void TransferSettingsToView(IGeneralSettings general, IHotkeySettings hottkey)
+        {
+            SelectedLanguage = Languages.First(l => l.Code == general.Language.Code);
+            Hotkeys = new ObservableCollection<HotkeySetting>(hottkey.Settings);
+            ShowSplashAtStartup = general.ShowSplash;
+            CheckVersionAtStartup = general.CheckVersion;
+            _indenterPrompted = general.SmartIndenterPrompted;
+            AutoSaveEnabled = general.AutoSaveEnabled;
+            AutoSavePeriod = general.AutoSavePeriod;
+            //Delimiter = (DelimiterOptions)general.Delimiter;
+            SelectedLogLevel = LogLevels.First(l => l.Ordinal == general.MinimumLogLevel);
+        }
+
+        private void ImportSettings()
+        {
+            using (var dialog = new OpenFileDialog
+            {
+                Filter = RubberduckUI.DialogMask_XmlFilesOnly,
+                Title = RubberduckUI.DialogCaption_LoadGeneralSettings
+            })
+            {
+                dialog.ShowDialog();
+                if (string.IsNullOrEmpty(dialog.FileName)) return;
+                var service = new XmlPersistanceService<Rubberduck.Settings.GeneralSettings> { FilePath = dialog.FileName };
+                var general = service.Load(new Rubberduck.Settings.GeneralSettings());
+                var hkService = new XmlPersistanceService<HotkeySettings> { FilePath = dialog.FileName };
+                var hotkey = hkService.Load(new HotkeySettings());
+                //Always assume Smart Indenter registry import has been prompted if importing.
+                general.SmartIndenterPrompted = true;
+                TransferSettingsToView(general, hotkey);
+            }
+        }
+
+        private void ExportSettings()
+        {
+            using (var dialog = new SaveFileDialog
+            {
+                Filter = RubberduckUI.DialogMask_XmlFilesOnly,
+                Title = RubberduckUI.DialogCaption_SaveGeneralSettings
+            })
+            {
+                dialog.ShowDialog();
+                if (string.IsNullOrEmpty(dialog.FileName)) return;
+                var service = new XmlPersistanceService<Rubberduck.Settings.GeneralSettings> { FilePath = dialog.FileName };
+                service.Save(GetCurrentGeneralSettings());
+                var hkService = new XmlPersistanceService<HotkeySettings> { FilePath = dialog.FileName };
+                hkService.Save(new HotkeySettings { Settings = Hotkeys.ToArray() });
+            }
         }
     }
 }

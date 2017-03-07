@@ -71,6 +71,21 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             }
         }
 
+        public IControls SelectedControls
+        {
+            get
+            {
+                throw new NotImplementedException();
+                //var designer = IsWrappingNullReference
+                //    ? null
+                //    : Target.Designer as VB.UserForm;
+
+                //return designer == null 
+                //    ? new Controls(null) 
+                //    : new Controls(designer.Selected);
+            }
+        }
+
         public bool HasDesigner
         {
             get
@@ -110,12 +125,15 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         }
 
         /// <summary>
-        /// Exports the component to the folder. The file is name matches the component name and file extension is based on the component's type.
+        /// Exports the component to the folder. The file name matches the component name and file extension is based on the component's type.
         /// </summary>
         /// <param name="folder">Destination folder for the resulting source file.</param>
-        public string ExportAsSourceFile(string folder)
+        /// <param name="tempFile">True if a unique temp file name should be generated. WARNING: filenames generated with this flag are not persisted.</param>
+        public string ExportAsSourceFile(string folder, bool tempFile = false)
         {
-            var fullPath = Path.Combine(folder, Name + Type.FileExtension());
+            var fullPath = tempFile
+                ? Path.Combine(folder, Path.GetRandomFileName())
+                : Path.Combine(folder, Name + Type.FileExtension());
             switch (Type)
             {
                 case ComponentType.UserForm:
@@ -131,6 +149,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
             return fullPath;
         }
+
+        public IVBProject ParentProject { get; private set; }
 
         private void ExportUserFormModule(string path)
         {

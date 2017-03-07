@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
+using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Resources;
+using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -28,9 +31,7 @@ namespace Rubberduck.Inspections
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
             var issues = from item in UserDeclarations
-                               where !IsInspectionDisabled(item, AnnotationName)
-                                && ProcedureTypes.Contains(item.DeclarationType)
-                                && !item.IsTypeSpecified
+                               where ProcedureTypes.Contains(item.DeclarationType) && !item.IsTypeSpecified
                                let issue = new {Declaration = item, QualifiedContext = new QualifiedContext<ParserRuleContext>(item.QualifiedName, item.Context)}
                                select new ImplicitVariantReturnTypeInspectionResult(this, issue.Declaration.IdentifierName, issue.QualifiedContext, item);
             return issues;

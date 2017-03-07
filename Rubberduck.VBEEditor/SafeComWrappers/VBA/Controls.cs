@@ -20,18 +20,22 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public IControl this[object index]
         {
-            get { return new Control((VB.Forms.Control) Target.Item(index)); }
+            get { return IsWrappingNullReference ? new Control(null) : new Control((VB.Forms.Control) Target.Item(index)); }
         }
 
         IEnumerator<IControl> IEnumerable<IControl>.GetEnumerator()
         {
             // soft-casting because ImageClass doesn't implement IControl
-            return new ComWrapperEnumerator<IControl>(Target, o => new Control(o as VB.Forms.Control));
+            return IsWrappingNullReference
+                ? new ComWrapperEnumerator<IControl>(null, o => new Control(null))
+                : new ComWrapperEnumerator<IControl>(Target, o => new Control(o as VB.Forms.Control));
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return ((IEnumerable<IControl>)this).GetEnumerator();
+            return IsWrappingNullReference
+                ? (IEnumerator) new List<IEnumerable>().GetEnumerator()
+                : ((IEnumerable<IControl>) this).GetEnumerator();
         }
 
         public override void Release(bool final = false)

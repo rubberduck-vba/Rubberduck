@@ -5,9 +5,7 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UnitTesting;
-using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.UI.Command
 {
@@ -69,13 +67,8 @@ namespace Rubberduck.UI.Command
                     var component = _vbe.SelectedVBComponent;
                     var selectedModule = component.CodeModule;
                     {
-                        return testModules.Any(a =>
-                        {
-                            var module = a.QualifiedName.QualifiedModuleName.Component.CodeModule;
-                            {
-                                return module.Equals(selectedModule);
-                            }
-                        });
+                        var result = testModules.Any( a => a.QualifiedName.QualifiedModuleName.Component.CodeModule.Equals(selectedModule));
+                        return result;
                     }
                 }
                 catch (COMException)

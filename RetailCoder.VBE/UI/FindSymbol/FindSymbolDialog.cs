@@ -29,5 +29,15 @@ namespace Rubberduck.UI.FindSymbol
 
             Text = string.Format("Rubberduck - {0}", RubberduckUI.FindSymbolDialog_Caption);
         }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Escape)
+            {
+                Close();
+                return true;
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
     }
 }

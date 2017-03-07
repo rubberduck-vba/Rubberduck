@@ -29,7 +29,7 @@ namespace Rubberduck.Parsing.Binding
 
         public IBoundExpression Resolve()
         {
-            string name = Identifier.GetName(_expression.identifier());
+            var name = Identifier.GetName(_expression.identifier());
             if (PreferProjectOverUdt)
             {
                 return ResolvePreferProject(name);
@@ -204,6 +204,11 @@ namespace Rubberduck.Parsing.Binding
             if (referencedProjectEnumType != null)
             {
                 return new SimpleNameExpression(referencedProjectEnumType, ExpressionClassification.Type, _expression);
+            }
+            var referencedProjectAliasType = _declarationFinder.FindMemberReferencedProject(_project, _module, _parent, name, DeclarationType.ComAlias);
+            if (referencedProjectAliasType != null)
+            {
+                return new SimpleNameExpression(referencedProjectAliasType, ExpressionClassification.Type, _expression);
             }
             return null;
         }

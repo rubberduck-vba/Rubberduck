@@ -12,10 +12,11 @@ namespace Rubberduck.VBEditor.Application
 
         //TODO:RunMacro can only execute methods in stand-alone projects (not document hosted projects)
         //TODO:Can only get a CorelDraw application if at least one document is open in CorelDraw.
-		
-        public override void Run(QualifiedMemberName qualifiedMemberName)
+
+        public override void Run(dynamic declaration)
         {
-            var projectName = qualifiedMemberName.QualifiedModuleName.ProjectId;
+            var qualifiedMemberName = declaration.QualifiedName;
+            var projectName = qualifiedMemberName.QualifiedModuleName.ProjectName;
             var memberName = qualifiedMemberName.QualifiedModuleName.ComponentName + "." + qualifiedMemberName.MemberName;
 
             if (Application != null)

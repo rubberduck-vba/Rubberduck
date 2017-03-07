@@ -7,10 +7,11 @@ namespace Rubberduck.VBEditor.Application
     {
         public SolidWorksApp() : base("SolidWorks") { }
         public SolidWorksApp(IVBE vbe) : base(vbe, "SolidWorks") { }
-		
-        public override void Run(QualifiedMemberName qualifiedMemberName)
+
+        public override void Run(dynamic declaration)
         {
-            var projectFileName = qualifiedMemberName.QualifiedModuleName.Project.FileName;
+            var qualifiedMemberName = declaration.QualifiedName;
+            var projectFileName = qualifiedMemberName.QualifiedModuleName.ProjectPath;
             if (Application == null || string.IsNullOrEmpty(projectFileName)) { return; }
 
             var moduleName = qualifiedMemberName.QualifiedModuleName.ComponentName;

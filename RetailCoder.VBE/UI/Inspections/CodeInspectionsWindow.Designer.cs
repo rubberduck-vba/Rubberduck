@@ -20,7 +20,6 @@ namespace Rubberduck.UI.Inspections
             {
                 components.Dispose();
             }
-            base.Dispose(disposing);
         }
 
         #region Component Designer generated code

@@ -2,7 +2,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Preprocessing;
-using Rubberduck.Parsing.Symbols;
 using System;
 using System.Diagnostics;
 using System.Globalization;
@@ -1268,7 +1267,8 @@ End Sub
             var lexer = new VBALexer(stream);
             var tokens = new CommonTokenStream(lexer);
             var parser = new VBAConditionalCompilationParser(tokens);
-            parser.AddErrorListener(new ExceptionErrorListener());
+            parser.ErrorHandler = new BailErrorStrategy();
+            //parser.AddErrorListener(new ExceptionErrorListener());
             var tree = parser.compilationUnit();
             var evaluator = new VBAPreprocessorVisitor(symbolTable, new VBAPredefinedCompilationConstants(7.01), tree.start.InputStream);
             var expr = evaluator.Visit(tree);

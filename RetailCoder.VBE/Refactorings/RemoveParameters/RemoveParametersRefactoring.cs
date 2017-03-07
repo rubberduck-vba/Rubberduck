@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Antlr4.Runtime.Misc;
 using Rubberduck.Common;
@@ -10,7 +11,6 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.Refactorings.RemoveParameters
 {
@@ -53,7 +53,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
                 if (oldSelection.HasValue)
                 {
-                    pane.SetSelection(oldSelection.Value.Selection);
+                    pane.Selection = oldSelection.Value.Selection;
                 }
 
                 _model.State.OnParseRequested(this);
@@ -68,7 +68,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 {
                     return;
                 }
-                pane.SetSelection(target.Selection);
+                pane.Selection = target.Selection;
                 Refactor();
             }
         }
@@ -86,7 +86,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 {
                     return;
                 }
-                pane.SetSelection(target.QualifiedSelection.Selection);
+                pane.Selection = target.QualifiedSelection.Selection;
                 Refactor();
             }
         }
@@ -94,10 +94,10 @@ namespace Rubberduck.Refactorings.RemoveParameters
         public void QuickFix(RubberduckParserState state, QualifiedSelection selection)
         {
             _model = new RemoveParametersModel(state, selection, new MessageBox());
-            var target = _model.Declarations.FindTarget(selection, new[] { DeclarationType.Parameter });
+            var target = _model.Parameters.SingleOrDefault(p => selection.Selection.Contains(p.Declaration.QualifiedSelection.Selection));
+            Debug.Assert(target != null, "Target was not found");
 
-            // ReSharper disable once PossibleUnintendedReferenceComparison
-            _model.Parameters.Find(param => param.Declaration == target).IsRemoved = true;
+            target.IsRemoved = true;
             RemoveParameters();
         }
 

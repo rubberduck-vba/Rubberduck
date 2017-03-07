@@ -4,12 +4,14 @@ using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Inspections;
-using Rubberduck.Parsing;
+using Rubberduck.Inspections.QuickFixes;
+using Rubberduck.Inspections.Resources;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Application;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 
@@ -32,13 +34,13 @@ End Sub";
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
-                .AddReference("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", true)
+                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 1, true)
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
 
@@ -70,7 +72,7 @@ End Sub";
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
 
@@ -99,13 +101,13 @@ End Sub";
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
-                .AddReference("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", true)
+                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 1, true)
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
 
@@ -138,14 +140,14 @@ End Sub";
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
-                .AddReference("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", true)
+                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 1, true)
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
             var module = project.Object.VBComponents[0].CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
 
@@ -181,14 +183,14 @@ End Sub";
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
-                .AddReference("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", true)
+                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 1, true)
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
             var module = project.Object.VBComponents[0].CodeModule;
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
 
@@ -224,12 +226,12 @@ End Sub";
         private List<Declaration> GetBuiltInDeclarations()
         {
             var vbaDeclaration = new ProjectDeclaration(
-                new QualifiedMemberName(new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "VBA"), "VBA"),
+                new QualifiedMemberName(new QualifiedModuleName("VBA", MockVbeBuilder.LibraryPathVBA, "VBA"), "VBA"),
                 "VBA",
-                true);
+                true, null);
 
             var conversionModule = new ProceduralModuleDeclaration(
-                new QualifiedMemberName(new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Conversion"), "Conversion"),
+                new QualifiedMemberName(new QualifiedModuleName("VBA", MockVbeBuilder.LibraryPathVBA, "Conversion"), "Conversion"),
                 vbaDeclaration,
                 "Conversion",
                 true,
@@ -237,7 +239,7 @@ End Sub";
                 new Attributes());
 
             var fileSystemModule = new ProceduralModuleDeclaration(
-                new QualifiedMemberName(new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "FileSystem"), "FileSystem"),
+                new QualifiedMemberName(new QualifiedModuleName("VBA", MockVbeBuilder.LibraryPathVBA, "FileSystem"), "FileSystem"),
                 vbaDeclaration,
                 "FileSystem",
                 true,
@@ -245,7 +247,7 @@ End Sub";
                 new Attributes());
 
             var interactionModule = new ProceduralModuleDeclaration(
-                new QualifiedMemberName(new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Interaction"), "Interaction"),
+                new QualifiedMemberName(new QualifiedModuleName("VBA", MockVbeBuilder.LibraryPathVBA, "Interaction"), "Interaction"),
                 vbaDeclaration,
                 "Interaction",
                 true,
@@ -253,7 +255,15 @@ End Sub";
                 new Attributes());
 
             var stringsModule = new ProceduralModuleDeclaration(
-                new QualifiedMemberName(new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "Strings"),
+                new QualifiedMemberName(new QualifiedModuleName("VBA", MockVbeBuilder.LibraryPathVBA, "Strings"), "Strings"),
+                vbaDeclaration,
+                "Strings",
+                true,
+                new List<IAnnotation>(),
+                new Attributes());
+
+            var dateTimeModule = new ProceduralModuleDeclaration(
+                new QualifiedMemberName(new QualifiedModuleName("VBA", MockVbeBuilder.LibraryPathVBA, "DateTime"), "DateTime"),
                 vbaDeclaration,
                 "Strings",
                 true,
@@ -261,7 +271,7 @@ End Sub";
                 new Attributes());
 
             var commandFunction = new FunctionDeclaration(
-                new QualifiedMemberName(new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Interaction"), "_B_var_Command"),
+                new QualifiedMemberName(interactionModule.QualifiedName.QualifiedModuleName, "_B_var_Command"),
                 interactionModule,
                 interactionModule,
                 "Variant",
@@ -276,7 +286,7 @@ End Sub";
                 new Attributes());
 
             var environFunction = new FunctionDeclaration(
-                new QualifiedMemberName(new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Interaction"), "_B_var_Environ"),
+                new QualifiedMemberName(interactionModule.QualifiedName.QualifiedModuleName, "_B_var_Environ"),
                 interactionModule,
                 interactionModule,
                 "Variant",
@@ -291,7 +301,7 @@ End Sub";
                 new Attributes());
 
             var rtrimFunction = new FunctionDeclaration(
-                new QualifiedMemberName(new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "_B_var_RTrim"),
+                new QualifiedMemberName(stringsModule.QualifiedName.QualifiedModuleName, "_B_var_RTrim"),
                 stringsModule,
                 stringsModule,
                 "Variant",
@@ -306,7 +316,7 @@ End Sub";
                 new Attributes());
 
             var chrFunction = new FunctionDeclaration(
-                new QualifiedMemberName(new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "_B_var_Chr"),
+                new QualifiedMemberName(stringsModule.QualifiedName.QualifiedModuleName, "_B_var_Chr"),
                 stringsModule,
                 stringsModule,
                 "Variant",
@@ -321,7 +331,7 @@ End Sub";
                 new Attributes());
 
             var formatFunction = new FunctionDeclaration(
-                new QualifiedMemberName(new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "_B_var_Format"),
+                new QualifiedMemberName(stringsModule.QualifiedName.QualifiedModuleName, "_B_var_Format"),
                 stringsModule,
                 stringsModule,
                 "Variant",
@@ -336,7 +346,7 @@ End Sub";
                 new Attributes());
 
             var firstFormatParam = new ParameterDeclaration(
-                new QualifiedMemberName(new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "Expression"),
+                new QualifiedMemberName(stringsModule.QualifiedName.QualifiedModuleName, "Expression"),
                 formatFunction,
                 "Variant",
                 null,
@@ -345,7 +355,7 @@ End Sub";
                 true);
 
             var secondFormatParam = new ParameterDeclaration(
-                new QualifiedMemberName(new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "Format"),
+                new QualifiedMemberName(stringsModule.QualifiedName.QualifiedModuleName, "Format"),
                 formatFunction,
                 "Variant",
                 null,
@@ -354,7 +364,7 @@ End Sub";
                 true);
 
             var thirdFormatParam = new ParameterDeclaration(
-                new QualifiedMemberName(new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "FirstDayOfWeek"),
+                new QualifiedMemberName(stringsModule.QualifiedName.QualifiedModuleName, "FirstDayOfWeek"),
                 formatFunction,
                 "VbDayOfWeek",
                 null,
@@ -367,7 +377,7 @@ End Sub";
             formatFunction.AddParameter(thirdFormatParam);
 
             var rightFunction = new FunctionDeclaration(
-                new QualifiedMemberName(new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "_B_var_Right"),
+                new QualifiedMemberName(stringsModule.QualifiedName.QualifiedModuleName, "_B_var_Right"),
                 stringsModule,
                 stringsModule,
                 "Variant",
@@ -382,7 +392,7 @@ End Sub";
                 new Attributes());
 
             var firstRightParam = new ParameterDeclaration(
-                new QualifiedMemberName(new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "String"),
+                new QualifiedMemberName(stringsModule.QualifiedName.QualifiedModuleName, "String"),
                 rightFunction,
                 "Variant",
                 null,
@@ -393,7 +403,7 @@ End Sub";
             rightFunction.AddParameter(firstRightParam);
 
             var lcaseFunction = new FunctionDeclaration(
-                new QualifiedMemberName(new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "_B_var_LCase"),
+                new QualifiedMemberName(stringsModule.QualifiedName.QualifiedModuleName, "_B_var_LCase"),
                 stringsModule,
                 stringsModule,
                 "Variant",
@@ -408,7 +418,7 @@ End Sub";
                 new Attributes());
 
             var leftbFunction = new FunctionDeclaration(
-                new QualifiedMemberName(new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "_B_var_LeftB"),
+                new QualifiedMemberName(stringsModule.QualifiedName.QualifiedModuleName, "_B_var_LeftB"),
                 stringsModule,
                 stringsModule,
                 "Variant",
@@ -423,7 +433,7 @@ End Sub";
                 new Attributes());
 
             var firstLeftBParam = new ParameterDeclaration(
-                new QualifiedMemberName(new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "String"),
+                new QualifiedMemberName(stringsModule.QualifiedName.QualifiedModuleName, "String"),
                 leftbFunction,
                 "Variant",
                 null,
@@ -434,7 +444,7 @@ End Sub";
             leftbFunction.AddParameter(firstLeftBParam);
 
             var chrwFunction = new FunctionDeclaration(
-                new QualifiedMemberName(new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "_B_var_ChrW"),
+                new QualifiedMemberName(stringsModule.QualifiedName.QualifiedModuleName, "_B_var_ChrW"),
                 stringsModule,
                 stringsModule,
                 "Variant",
@@ -449,7 +459,7 @@ End Sub";
                 new Attributes());
 
             var leftFunction = new FunctionDeclaration(
-                new QualifiedMemberName(new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "_B_var_Left"),
+                new QualifiedMemberName(stringsModule.QualifiedName.QualifiedModuleName, "_B_var_Left"),
                 stringsModule,
                 stringsModule,
                 "Variant",
@@ -464,7 +474,7 @@ End Sub";
                 new Attributes());
 
             var firstLeftParam = new ParameterDeclaration(
-                new QualifiedMemberName(new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "String"),
+                new QualifiedMemberName(stringsModule.QualifiedName.QualifiedModuleName, "String"),
                 leftFunction,
                 "Variant",
                 null,
@@ -475,7 +485,7 @@ End Sub";
             leftFunction.AddParameter(firstLeftParam);
 
             var rightbFunction = new FunctionDeclaration(
-                new QualifiedMemberName(new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "_B_var_RightB"),
+                new QualifiedMemberName(stringsModule.QualifiedName.QualifiedModuleName, "_B_var_RightB"),
                 stringsModule,
                 stringsModule,
                 "Variant",
@@ -490,7 +500,7 @@ End Sub";
                 new Attributes());
 
             var firstRightBParam = new ParameterDeclaration(
-                new QualifiedMemberName(new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "String"),
+                new QualifiedMemberName(stringsModule.QualifiedName.QualifiedModuleName, "String"),
                 rightbFunction,
                 "Variant",
                 null,
@@ -501,7 +511,7 @@ End Sub";
             rightbFunction.AddParameter(firstRightBParam);
 
             var midbFunction = new FunctionDeclaration(
-                new QualifiedMemberName(new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "_B_var_MidB"),
+                new QualifiedMemberName(stringsModule.QualifiedName.QualifiedModuleName, "_B_var_MidB"),
                 stringsModule,
                 stringsModule,
                 "Variant",
@@ -516,7 +526,7 @@ End Sub";
                 new Attributes());
 
             var firstMidBParam = new ParameterDeclaration(
-                new QualifiedMemberName(new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "String"),
+                new QualifiedMemberName(stringsModule.QualifiedName.QualifiedModuleName, "String"),
                 midbFunction,
                 "Variant",
                 null,
@@ -525,7 +535,7 @@ End Sub";
                 true);
 
             var secondMidBParam = new ParameterDeclaration(
-                new QualifiedMemberName(new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "Start"),
+                new QualifiedMemberName(stringsModule.QualifiedName.QualifiedModuleName, "Start"),
                 midbFunction,
                 "Long",
                 null,
@@ -537,7 +547,7 @@ End Sub";
             midbFunction.AddParameter(secondMidBParam);
 
             var ucaseFunction = new FunctionDeclaration(
-                new QualifiedMemberName(new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "_B_var_UCase"),
+                new QualifiedMemberName(stringsModule.QualifiedName.QualifiedModuleName, "_B_var_UCase"),
                 stringsModule,
                 stringsModule,
                 "Variant",
@@ -552,7 +562,7 @@ End Sub";
                 new Attributes());
 
             var trimFunction = new FunctionDeclaration(
-                new QualifiedMemberName(new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "_B_var_Trim"),
+                new QualifiedMemberName(stringsModule.QualifiedName.QualifiedModuleName, "_B_var_Trim"),
                 stringsModule,
                 stringsModule,
                 "Variant",
@@ -567,7 +577,7 @@ End Sub";
                 new Attributes());
 
             var ltrimFunction = new FunctionDeclaration(
-                new QualifiedMemberName(new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "_B_var_LTrim"),
+                new QualifiedMemberName(stringsModule.QualifiedName.QualifiedModuleName, "_B_var_LTrim"),
                 stringsModule,
                 stringsModule,
                 "Variant",
@@ -582,7 +592,7 @@ End Sub";
                 new Attributes());
 
             var midFunction = new FunctionDeclaration(
-                new QualifiedMemberName(new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "_B_var_Mid"),
+                new QualifiedMemberName(stringsModule.QualifiedName.QualifiedModuleName, "_B_var_Mid"),
                 stringsModule,
                 stringsModule,
                 "Variant",
@@ -597,7 +607,7 @@ End Sub";
                 new Attributes());
 
             var firstMidParam = new ParameterDeclaration(
-                new QualifiedMemberName(new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "String"),
+                new QualifiedMemberName(stringsModule.QualifiedName.QualifiedModuleName, "String"),
                 midbFunction,
                 "Variant",
                 null,
@@ -606,7 +616,7 @@ End Sub";
                 true);
 
             var secondMidParam = new ParameterDeclaration(
-                new QualifiedMemberName(new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "Start"),
+                new QualifiedMemberName(stringsModule.QualifiedName.QualifiedModuleName, "Start"),
                 midbFunction,
                 "Long",
                 null,
@@ -618,7 +628,7 @@ End Sub";
             midFunction.AddParameter(secondMidParam);
 
             var hexFunction = new FunctionDeclaration(
-                new QualifiedMemberName(new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "_B_var_Hex"),
+                new QualifiedMemberName(conversionModule.QualifiedName.QualifiedModuleName, "_B_var_Hex"),
                 conversionModule,
                 conversionModule,
                 "Variant",
@@ -633,7 +643,7 @@ End Sub";
                 new Attributes());
 
             var octFunction = new FunctionDeclaration(
-                new QualifiedMemberName(new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "_B_var_Oct"),
+                new QualifiedMemberName(conversionModule.QualifiedName.QualifiedModuleName, "_B_var_Oct"),
                 conversionModule,
                 conversionModule,
                 "Variant",
@@ -648,7 +658,7 @@ End Sub";
                 new Attributes());
 
             var errorFunction = new FunctionDeclaration(
-                new QualifiedMemberName(new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "_B_var_Error"),
+                new QualifiedMemberName(conversionModule.QualifiedName.QualifiedModuleName, "_B_var_Error"),
                 conversionModule,
                 conversionModule,
                 "Variant",
@@ -663,7 +673,7 @@ End Sub";
                 new Attributes());
 
             var strFunction = new FunctionDeclaration(
-                new QualifiedMemberName(new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "_B_var_Str"),
+                new QualifiedMemberName(conversionModule.QualifiedName.QualifiedModuleName, "_B_var_Str"),
                 conversionModule,
                 conversionModule,
                 "Variant",
@@ -678,7 +688,7 @@ End Sub";
                 new Attributes());
 
             var curDirFunction = new FunctionDeclaration(
-                new QualifiedMemberName(new QualifiedModuleName("VBA", "C:\\Program Files\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL", "Strings"), "_B_var_CurDir"),
+                new QualifiedMemberName(fileSystemModule.QualifiedName.QualifiedModuleName, "_B_var_CurDir"),
                 fileSystemModule,
                 fileSystemModule,
                 "Variant",
@@ -692,6 +702,37 @@ End Sub";
                 new List<IAnnotation>(),
                 new Attributes());
 
+            var datePropertyGet = new PropertyGetDeclaration(
+                new QualifiedMemberName(dateTimeModule.QualifiedName.QualifiedModuleName, "Date"),
+                dateTimeModule,
+                dateTimeModule,
+                "Variant",
+                null,
+                string.Empty,
+                Accessibility.Global,
+                null,
+                new Selection(),
+                false,
+                true,
+                new List<IAnnotation>(),
+                new Attributes());
+        
+
+            var timePropertyGet = new PropertyGetDeclaration(
+                new QualifiedMemberName(dateTimeModule.QualifiedName.QualifiedModuleName, "Time"),
+                dateTimeModule,
+                dateTimeModule,
+                "Variant",
+                null,
+                string.Empty,
+                Accessibility.Global,
+                null,
+                new Selection(),
+                false,
+                true,
+                new List<IAnnotation>(),
+                new Attributes());
+
             return new List<Declaration>
             {
                 vbaDeclaration,
@@ -699,6 +740,7 @@ End Sub";
                 fileSystemModule,
                 interactionModule,
                 stringsModule,
+                dateTimeModule,
                 commandFunction,
                 environFunction,
                 rtrimFunction,
@@ -730,7 +772,9 @@ End Sub";
                 octFunction,
                 errorFunction,
                 strFunction,
-                curDirFunction
+                curDirFunction,
+                datePropertyGet,
+                timePropertyGet
             };
         }
     }

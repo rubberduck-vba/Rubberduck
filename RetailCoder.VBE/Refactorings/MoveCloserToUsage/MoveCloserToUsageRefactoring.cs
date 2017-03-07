@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
@@ -114,7 +115,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
 
                 if (oldSelection.HasValue)
                 {
-                    pane.SetSelection(oldSelection.Value.Selection);
+                    pane.Selection = oldSelection.Value.Selection;
                 }
 
                 _state.StateChanged += _state_StateChanged;
@@ -150,7 +151,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
 
                 if (oldSelection.HasValue)
                 {
-                    pane.SetSelection(oldSelection.Value.Selection);
+                    pane.Selection = oldSelection.Value.Selection;
                 }
 
                 _state.StateChanged -= _state_StateChanged;
@@ -170,7 +171,8 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
 
                 var newLinesWithoutStringLiterals = newLines.StripStringLiterals();
 
-                var lastIndexOfColon = newLinesWithoutStringLiterals.LastIndexOf(':');
+                var lastIndexOfColon = GetIndexOfLastStatementSeparator(newLinesWithoutStringLiterals);
+                // ReSharper disable once StringLastIndexOfIsCultureSpecific.1
                 while (lastIndexOfColon != -1)
                 {
                     var numberOfCharsToRemove = lastIndexOfColon == newLines.Length - 1 || newLines[lastIndexOfColon + 1] != ' '
@@ -185,12 +187,19 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
                             .Remove(lastIndexOfColon, numberOfCharsToRemove)
                             .Insert(lastIndexOfColon, Environment.NewLine);
 
-                    lastIndexOfColon = newLinesWithoutStringLiterals.LastIndexOf(':');
+                    lastIndexOfColon = GetIndexOfLastStatementSeparator(newLinesWithoutStringLiterals);
                 }
 
                 module.DeleteLines(beginningOfInstructionSelection.StartLine, beginningOfInstructionSelection.LineCount);
                 module.InsertLines(beginningOfInstructionSelection.StartLine, newLines);
             }
+        }
+
+        private static readonly Regex StatementSeparatorRegex = new Regex(":[^=]", RegexOptions.RightToLeft);
+        private static int GetIndexOfLastStatementSeparator(string input)
+        {
+            var matches = StatementSeparatorRegex.Matches(input);
+            return matches.Count == 0 ? -1 : matches[0].Index;
         }
 
         private Selection GetBeginningOfInstructionSelection(IdentifierReference reference)
@@ -201,7 +210,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
                 var currentLine = referenceSelection.StartLine;
 
                 var codeLine = module.GetLines(currentLine, 1).StripStringLiterals();
-                while (codeLine.Remove(referenceSelection.StartColumn).LastIndexOf(':') == -1)
+                while (GetIndexOfLastStatementSeparator(codeLine.Remove(referenceSelection.StartColumn)) == -1)
                 {
                     codeLine = module.GetLines(--currentLine, 1).StripStringLiterals();
                     if (!codeLine.EndsWith(" _"))
@@ -210,7 +219,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
                     }
                 }
 
-                var index = codeLine.Remove(referenceSelection.StartColumn).LastIndexOf(':') + 1;
+                var index = GetIndexOfLastStatementSeparator(codeLine.Remove(referenceSelection.StartColumn)) + 1;
                 return new Selection(currentLine, index, currentLine, index);
             }
         }

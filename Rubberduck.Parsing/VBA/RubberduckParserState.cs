@@ -2,14 +2,18 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
+using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Annotations;
 using NLog;
+using Rubberduck.VBEditor.Application;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
@@ -59,7 +63,17 @@ namespace Rubberduck.Parsing.VBA
 
         public readonly ConcurrentDictionary<List<string>, Declaration> CoClasses = new ConcurrentDictionary<List<string>, Declaration>();
 
-        public RubberduckParserState(ISinks sinks)
+        public bool IsEnabled { get; internal set; }
+
+        public DeclarationFinder DeclarationFinder { get; private set; }
+
+        internal void RefreshFinder(IHostApplication host)
+        {
+            DeclarationFinder = new DeclarationFinder(AllDeclarations, AllAnnotations, AllUnresolvedMemberDeclarations, host);
+        }
+
+        private readonly IVBE _vbe;
+        public RubberduckParserState(IVBE vbe)
         {
             var values = Enum.GetValues(typeof(ParserState));
             foreach (var value in values)
@@ -67,46 +81,52 @@ namespace Rubberduck.Parsing.VBA
                 States.Add((ParserState)value);
             }
 
-            _sinks = sinks;
-            _sinks.ProjectAdded += Sinks_ProjectAdded;
-            _sinks.ProjectRemoved += Sinks_ProjectRemoved;
-            _sinks.ProjectRenamed += Sinks_ProjectRenamed;
-            _sinks.ComponentAdded += Sinks_ComponentAdded;
-            _sinks.ComponentRemoved += Sinks_ComponentRemoved;
-            _sinks.ComponentRenamed += Sinks_ComponentRenamed;
+            _vbe = vbe;
+            AddEventHandlers();
+            IsEnabled = true;
         }
 
-        private bool _started;
-        public void StartEventSinks()
+        #region Event Handling
+
+        private void AddEventHandlers()
         {
-            if (!_started)
-            {
-                _sinks.Start();
-                _started = true;
-            }
+            VBProjects.ProjectAdded += Sinks_ProjectAdded;
+            VBProjects.ProjectRemoved += Sinks_ProjectRemoved;
+            VBProjects.ProjectRenamed += Sinks_ProjectRenamed;
+            VBComponents.ComponentAdded += Sinks_ComponentAdded;
+            VBComponents.ComponentRemoved += Sinks_ComponentRemoved;
+            VBComponents.ComponentRenamed += Sinks_ComponentRenamed;           
         }
 
-        private void Sinks_ProjectAdded(object sender, IProjectEventArgs e)
+        private void RemoveEventHandlers()
+        {
+            VBProjects.ProjectAdded += Sinks_ProjectAdded;
+            VBProjects.ProjectRemoved += Sinks_ProjectRemoved;
+            VBProjects.ProjectRenamed += Sinks_ProjectRenamed;
+            VBComponents.ComponentAdded -= Sinks_ComponentAdded;
+            VBComponents.ComponentRemoved -= Sinks_ComponentRemoved;
+            VBComponents.ComponentRenamed -= Sinks_ComponentRenamed;
+        }
+
+        private void Sinks_ProjectAdded(object sender, ProjectEventArgs e)
         {
             if (!e.Project.VBE.IsInDesignMode) { return; }
 
             Logger.Debug("Project '{0}' was added.", e.ProjectId);
-
-            RefreshProjects(e.Project.VBE); // note side-effect: assigns ProjectId/HelpFile
+            RefreshProjects(_vbe); // note side-effect: assigns ProjectId/HelpFile
             OnParseRequested(sender);
         }
 
-        private void Sinks_ProjectRemoved(object sender, IProjectEventArgs e)
+        private void Sinks_ProjectRemoved(object sender, ProjectEventArgs e)
         {
             if (!e.Project.VBE.IsInDesignMode) { return; }
             
             Debug.Assert(e.ProjectId != null);
-
             RemoveProject(e.ProjectId, true);
             OnParseRequested(sender);
         }
 
-        private void Sinks_ProjectRenamed(object sender, IProjectRenamedEventArgs e)
+        private void Sinks_ProjectRenamed(object sender, ProjectRenamedEventArgs e)
         {
             if (!e.Project.VBE.IsInDesignMode) { return; }
 
@@ -123,7 +143,7 @@ namespace Rubberduck.Parsing.VBA
             OnParseRequested(sender);
         }
 
-        private void Sinks_ComponentAdded(object sender, IComponentEventArgs e)
+        private void Sinks_ComponentAdded(object sender, ComponentEventArgs e)
         {
             if (!e.Project.VBE.IsInDesignMode) { return; }
 
@@ -136,7 +156,7 @@ namespace Rubberduck.Parsing.VBA
             OnParseRequested(sender);
         }
 
-        private void Sinks_ComponentRemoved(object sender, IComponentEventArgs e)
+        private void Sinks_ComponentRemoved(object sender, ComponentEventArgs e)
         {
             if (!e.Project.VBE.IsInDesignMode) { return; }
 
@@ -149,7 +169,7 @@ namespace Rubberduck.Parsing.VBA
             OnParseRequested(sender);
         }
 
-        private void Sinks_ComponentRenamed(object sender, IComponentRenamedEventArgs e)
+        private void Sinks_ComponentRenamed(object sender, ComponentRenamedEventArgs e)
         {
             if (!e.Project.VBE.IsInDesignMode) { return; }
 
@@ -205,6 +225,8 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
+        #endregion
+
         /// <summary>
         /// Refreshes our list of cached projects.
         /// Be sure to reparse after calling this in case there
@@ -235,9 +257,12 @@ namespace Rubberduck.Parsing.VBA
 
         private void RemoveProject(string projectId, bool notifyStateChanged = false)
         {
-            if (_projects.ContainsKey(projectId))
+            lock (_projects)
             {
-                _projects.Remove(projectId);
+                if (_projects.ContainsKey(projectId))
+                {
+                    _projects.Remove(projectId);
+                }
             }
 
             ClearStateCache(projectId, notifyStateChanged);
@@ -247,7 +272,10 @@ namespace Rubberduck.Parsing.VBA
         {
             get
             {
-                return new List<IVBProject>(_projects.Values);
+                lock(_projects)
+                {
+                    return new List<IVBProject>(_projects.Values);
+                }
             }
         }
 
@@ -275,13 +303,15 @@ namespace Rubberduck.Parsing.VBA
         private void OnStateChanged(object requestor, ParserState state = ParserState.Pending)
         {
             var handler = StateChanged;
+            Logger.Debug("RubberduckParserState raised StateChanged ({0})", Status);
             if (handler != null)
-            {
+            {               
                 handler.Invoke(requestor, new ParserStateEventArgs(state));
             }
         }
         public event EventHandler<ParseProgressEventArgs> ModuleStateChanged;
 
+        //Never spawn new threads changing module states in the handler! This will cause deadlocks. 
         private void OnModuleStateChanged(IVBComponent component, ParserState state, ParserState oldState)
         {
             var handler = ModuleStateChanged;
@@ -292,18 +322,36 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public void SetModuleState(IVBComponent component, ParserState state, SyntaxErrorException parserError = null)
+
+        public void SetModuleState(IVBComponent component, ParserState state, CancellationToken token, SyntaxErrorException parserError = null, bool evaluateOverallState = true)
+        {
+            if (!token.IsCancellationRequested)
+            {
+                SetModuleState(component, state, parserError, evaluateOverallState);
+            }
+        }
+        
+        public void SetModuleState(IVBComponent component, ParserState state, SyntaxErrorException parserError = null, bool evaluateOverallState = true)
         {
             if (AllUserDeclarations.Count > 0)
             {
                 var projectId = component.Collection.Parent.HelpFile;
 
                 IVBProject project = null;
-                foreach (var item in _projects)
+                lock (_projects)
                 {
-                    if (item.Value.HelpFile == projectId)
+                    foreach (var item in _projects)
                     {
-                        project = project != null ? null : item.Value;
+                        if (item.Value.HelpFile == projectId)
+                        {
+                            if (project != null)
+                            {
+                                // ghost component detected, abort project iteration
+                                project = null;
+                                break;
+                            }
+                            project = item.Value;
+                        }
                     }
                 }
 
@@ -311,7 +359,7 @@ namespace Rubberduck.Parsing.VBA
                 {
                     // ghost component shouldn't even exist
                     ClearStateCache(component);
-                    Status = EvaluateParserState();
+                    EvaluateParserState();
                     return;
                 }
             }
@@ -323,10 +371,19 @@ namespace Rubberduck.Parsing.VBA
             _moduleStates.AddOrUpdate(key, new ModuleState(parserError), (c, e) => e.SetModuleException(parserError));
             Logger.Debug("Module '{0}' state is changing to '{1}' (thread {2})", key.ComponentName, state, Thread.CurrentThread.ManagedThreadId);
             OnModuleStateChanged(component, state, oldState);
-            Status = EvaluateParserState();
+            if (evaluateOverallState)
+            {
+                EvaluateParserState();
+            }
         }
 
-        private ParserState EvaluateParserState()
+
+        public void EvaluateParserState()
+        {
+            lock (_statusLockObject) Status = OverallParserStateFromModuleStates();
+        }
+
+        private ParserState OverallParserStateFromModuleStates()
         {
             if (_moduleStates.IsEmpty)
             {
@@ -336,7 +393,7 @@ namespace Rubberduck.Parsing.VBA
             var moduleStates = new List<ParserState>();
             foreach (var moduleState in _moduleStates)
             {
-                if (moduleState.Key.Component == null || moduleState.Key.ComponentName == string.Empty)
+                if (moduleState.Key.Component == null || string.IsNullOrEmpty(moduleState.Key.ComponentName))
                 {
                     continue;
                 }
@@ -445,7 +502,7 @@ namespace Rubberduck.Parsing.VBA
             return result;
         }
 
-        public ParserState GetOrCreateModuleState(VBComponent component)
+        public ParserState GetOrCreateModuleState(IVBComponent component)
         {
             var key = new QualifiedModuleName(component);
             var state = _moduleStates.GetOrAdd(key, new ModuleState(ParserState.Pending)).State;
@@ -469,6 +526,7 @@ namespace Rubberduck.Parsing.VBA
             return _moduleStates.GetOrAdd(new QualifiedModuleName(component), new ModuleState(ParserState.Pending)).State;
         }
 
+        private readonly object _statusLockObject = new object(); 
         private ParserState _status;
         public ParserState Status
         {
@@ -512,17 +570,6 @@ namespace Rubberduck.Parsing.VBA
 
                 return comments;
             }
-        }
-
-        public IEnumerable<CommentNode> GetModuleComments(IVBComponent component)
-        {
-            ModuleState state;
-            if (_moduleStates.TryGetValue(new QualifiedModuleName(component), out state))
-            {
-                return state.Comments;
-            }
-
-            return new List<CommentNode>();
         }
 
         public void SetModuleComments(IVBComponent component, IEnumerable<CommentNode> comments)
@@ -581,6 +628,31 @@ namespace Rubberduck.Parsing.VBA
                 return declarations;
             }
         }
+
+        /// <summary>
+        /// Gets a copy of the unresolved member declarations.
+        /// </summary>
+        public IReadOnlyList<UnboundMemberDeclaration> AllUnresolvedMemberDeclarations
+        {
+            get
+            {
+                var declarations = new List<UnboundMemberDeclaration>();
+                foreach (var state in _moduleStates.Values)
+                {
+                    if (state.UnresolvedMemberDeclarations == null)
+                    {
+                        continue;
+                    }
+
+                    declarations.AddRange(state.UnresolvedMemberDeclarations.Keys);
+                }
+
+                return declarations;
+            }
+        }
+
+        private readonly ConcurrentBag<SerializableProject> _builtInDeclarationTrees = new ConcurrentBag<SerializableProject>();
+        public IProducerConsumerCollection<SerializableProject> BuiltInDeclarationTrees { get { return _builtInDeclarationTrees; } }
 
         /// <summary>
         /// Gets a copy of the collected declarations, excluding the built-in ones.
@@ -644,6 +716,28 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
+        /// <summary>
+        /// Adds the specified <see cref="UnboundMemberDeclaration"/> to the collection (replaces existing).
+        /// </summary>
+        public void AddUnresolvedMemberDeclaration(UnboundMemberDeclaration declaration)
+        {
+            var key = declaration.QualifiedName.QualifiedModuleName;
+            var declarations = _moduleStates.GetOrAdd(key, new ModuleState(new ConcurrentDictionary<Declaration, byte>())).UnresolvedMemberDeclarations;
+
+            if (declarations.ContainsKey(declaration))
+            {
+                byte _;
+                while (!declarations.TryRemove(declaration, out _))
+                {
+                    Logger.Warn("Could not remove existing unresolved member declaration for '{0}' ({1}). Retrying.", declaration.IdentifierName, declaration.DeclarationType);
+                }
+            }
+            while (!declarations.TryAdd(declaration, 0) && !declarations.ContainsKey(declaration))
+            {
+                Logger.Warn("Could not add unresolved member declaration '{0}' ({1}). Retrying.", declaration.IdentifierName, declaration.DeclarationType);
+            }
+        }
+
         private void ClearStateCache(string projectId, bool notifyStateChanged = false)
         {
             try
@@ -689,12 +783,15 @@ namespace Rubberduck.Parsing.VBA
                 {
                     continue;
                 }
-                
-                foreach (var reference in declaration.References)
-                {
-                    declaration.ClearReferences();
-                    break;
-                }
+                declaration.ClearReferences();
+            }
+        }
+
+        public void ClearAllReferences()
+        {
+            foreach (var declaration in AllDeclarations)
+            {
+                declaration.ClearReferences();
             }
         }
 
@@ -851,7 +948,7 @@ namespace Rubberduck.Parsing.VBA
         public void OnParseRequested(object requestor, IVBComponent component = null)
         {
             var handler = ParseRequest;
-            if (handler != null)
+            if (handler != null && IsEnabled)
             {
                 var args = EventArgs.Empty;
                 handler.Invoke(requestor, args);
@@ -1038,8 +1135,73 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
+        public void AddModuleToModuleReference(QualifiedModuleName referencedModule, QualifiedModuleName referencingModule)
+        {
+            ModuleState referencedModuleState;
+            ModuleState referencingModuleState;
+            if (!_moduleStates.TryGetValue(referencedModule, out referencedModuleState) || !_moduleStates.TryGetValue(referencingModule, out referencingModuleState))
+            {
+                return;
+            }
+            if (referencedModuleState.IsReferencedByModule.Contains(referencingModule))
+            {
+                return;
+            }
+            referencedModuleState.IsReferencedByModule.Add(referencingModule);
+            referencingModuleState.HasReferenceToModule.AddOrUpdate(referencedModule, 1, (key, value) => value);
+        }
+
+        public void ClearModuleToModuleReferencesFromModule(QualifiedModuleName referencingModule)
+        {
+            ModuleState referencingModuleState;
+            if (!_moduleStates.TryGetValue(referencingModule, out referencingModuleState))
+            {
+                return;
+            }
+
+            ModuleState referencedModuleState;
+            foreach (var referencedModule in referencingModuleState.HasReferenceToModule.Keys)
+            {
+                if (!_moduleStates.TryGetValue(referencedModule,out referencedModuleState))
+                {
+                    continue;
+                }
+                referencedModuleState.IsReferencedByModule.Remove(referencingModule);
+            }
+            referencingModuleState.RefreshHasReferenceToModule();
+        }
+
+        public HashSet<QualifiedModuleName> ModulesReferencedBy(QualifiedModuleName referencingModule)
+        { 
+            ModuleState referencingModuleState;
+            if (!_moduleStates.TryGetValue(referencingModule, out referencingModuleState))
+            {
+                return new HashSet<QualifiedModuleName>();
+            }
+            return new HashSet<QualifiedModuleName>(referencingModuleState.HasReferenceToModule.Keys);
+        }
+
+        public HashSet<QualifiedModuleName> ModulesReferencedBy(IEnumerable<QualifiedModuleName> referencingModules)
+        {
+            var referencedModules = new HashSet<QualifiedModuleName>();
+            foreach (var referencingModule in referencedModules)
+            {
+                referencedModules.UnionWith(ModulesReferencedBy(referencingModule));
+            }
+            return referencedModules;
+        }
+
+        public HashSet<QualifiedModuleName> ModulesReferencing(QualifiedModuleName referencedModule)
+        {
+            ModuleState referencedModuleState;
+            if (!_moduleStates.TryGetValue(referencedModule, out referencedModuleState))
+            {
+                return new HashSet<QualifiedModuleName>();
+            }
+            return new HashSet<QualifiedModuleName>(referencedModuleState.IsReferencedByModule);
+        }
+
         private bool _isDisposed;
-        private readonly ISinks _sinks;
 
         public void Dispose()
         {
@@ -1058,18 +1220,11 @@ namespace Rubberduck.Parsing.VBA
                 CoClasses.Clear();
             }
 
-            if (_sinks != null)
-            {
-                _sinks.ComponentAdded -= Sinks_ComponentAdded;
-                _sinks.ComponentRemoved -= Sinks_ComponentRemoved;
-                _sinks.ComponentRenamed -= Sinks_ComponentRenamed;
-                _sinks.ProjectAdded -= Sinks_ProjectAdded;
-                _sinks.ProjectRemoved -= Sinks_ProjectRemoved;
-                _sinks.ProjectRenamed -= Sinks_ProjectRenamed;
-            }
+            RemoveEventHandlers();
 
             _moduleStates.Clear();
             _declarationSelections.Clear();
+            // no lock because nobody should try to update anything here
             _projects.Clear();
 
             _isDisposed = true;

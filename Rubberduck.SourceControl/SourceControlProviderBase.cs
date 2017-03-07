@@ -172,12 +172,8 @@ namespace Rubberduck.SourceControl
                     var module = pane.CodeModule;
                     var component = module.Parent;
                     {
-                        var selection = new QualifiedSelection(new QualifiedModuleName(component), pane.GetSelection());
-                        string name = null;
-                        if (selection.QualifiedName.Component != null)
-                        {
-                            name = selection.QualifiedName.Component.Name;
-                        }
+                        var selection = new QualifiedSelection(new QualifiedModuleName(component), pane.Selection);
+                        var name = string.IsNullOrEmpty(selection.QualifiedName.ComponentName) ? null : selection.QualifiedName.ComponentName;
 
                         components.RemoveSafely(item);
 
@@ -185,7 +181,7 @@ namespace Rubberduck.SourceControl
                         directory += directory.EndsWith("\\") ? string.Empty : "\\";
                         components.Import(directory + filePath);
 
-                        VBE.SetSelection(selection.QualifiedName.Project, selection.Selection, name);
+                        VBE.SetSelection(component.Collection.Parent, selection.Selection, name);
                     }
                 }
                 else
@@ -216,13 +212,8 @@ namespace Rubberduck.SourceControl
                     var module = pane.CodeModule;
                     var component = module.Parent;
                     {
-                        var selection = new QualifiedSelection(new QualifiedModuleName(component), pane.GetSelection());
-                        string name = null;
-                        if (selection.QualifiedName.Component != null)
-                        {
-                            name = selection.QualifiedName.Component.Name;
-                        }
-
+                        var selection = new QualifiedSelection(new QualifiedModuleName(component), pane.Selection);
+                        var name = string.IsNullOrEmpty(selection.QualifiedName.ComponentName) ? null : selection.QualifiedName.ComponentName;
                         try
                         {
                             Project.LoadAllComponents(CurrentRepository.LocalLocation);
@@ -233,7 +224,7 @@ namespace Rubberduck.SourceControl
                             throw new SourceControlException("Unknown exception.", ex);
                         }
 
-                        VBE.SetSelection(selection.QualifiedName.Project, selection.Selection, name);
+                        VBE.SetSelection(component.Collection.Parent, selection.Selection, name);
                     }
                 }
                 else

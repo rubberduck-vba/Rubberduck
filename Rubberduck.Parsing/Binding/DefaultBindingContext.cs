@@ -34,7 +34,6 @@ namespace Rubberduck.Parsing.Binding
         public IExpressionBinding BuildTree(Declaration module, Declaration parent, ParserRuleContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
         {
             dynamic dynamicExpression = expression;
-            var type = expression.GetType();
             return Visit(module, parent, dynamicExpression, withBlockVariable, statementContext);
         }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 using VB = Microsoft.VB6.Interop.VBIDE;
@@ -11,6 +12,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         public VBE(VB.VBE target)
             :base(target)
         {
+        }
+
+        public object HardReference
+        {
+            get { return Target; }
         }
 
         public string Version
@@ -98,23 +104,19 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             return IsWrappingNullReference ? 0 : Target.GetHashCode();
         }
 
+        public IHostApplication HostApplication()
+        {
+            return null;
+        }
+
+        public IWindow ActiveMDIChild()
+        {
+            throw new NotImplementedException();
+        }
+
         public bool IsInDesignMode
         {
             get { return VBProjects.All(project => project.Mode == EnvironmentMode.Design); }
-        }
-
-        public static void SetSelection(IVBProject vbProject, Selection selection, string name)
-        {
-            var components = vbProject.VBComponents;
-            var component = components.SingleOrDefault(c => c.Name == name);
-            if (component == null || component.IsWrappingNullReference)
-            {
-                return;
-            }
-
-            var module = component.CodeModule;
-            var pane = module.CodePane;
-            pane.SetSelection(selection);
         }
     }
 }

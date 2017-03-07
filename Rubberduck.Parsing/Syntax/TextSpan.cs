@@ -17,6 +17,11 @@ namespace Rubberduck.Parsing.Syntax
             _endColumn = endColumn;
         }
 
+        public static TextSpan Expand(TextSpan span, TextSpan child)
+        {
+            return new TextSpan(span.StartLine, span.StartColumn, child.EndLine, child.EndColumn);
+        }
+
         private readonly int _startLine;
         public int StartLine { get { return _startLine; } }
 

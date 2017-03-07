@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from C:\Users\hosch\Documents\Visual Studio 2015\Projects\Rubberduck\Rubberduck.Parsing\Grammar\VBAParser.g4 by ANTLR 4.3
+// Generated from C:\Dev\Rubberduck\Rubberduck.Parsing\Grammar\VBAParser.g4 by ANTLR 4.3
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -287,6 +287,13 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitEndOfStatement([NotNull] VBAParser.EndOfStatementContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.midStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitMidStatement([NotNull] VBAParser.MidStatementContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>optionCompareStmt</c>
@@ -1662,6 +1669,13 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitCharPosition([NotNull] VBAParser.CharPositionContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.modeSpecifier"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitModeSpecifier([NotNull] VBAParser.ModeSpecifierContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.moduleConfigElement"/>.

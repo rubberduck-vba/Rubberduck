@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Media.Imaging;
 using Rubberduck.Parsing;
@@ -12,7 +13,6 @@ using Rubberduck.Properties;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 // ReSharper disable LocalizableElement
 
@@ -24,7 +24,7 @@ namespace Rubberduck.Common
 
         public static string ToLocalizedString(this DeclarationType type)
         {
-            return RubberduckUI.ResourceManager.GetString("DeclarationType_" + type, UI.Settings.Settings.Culture);
+            return RubberduckUI.ResourceManager.GetString("DeclarationType_" + type, CultureInfo.CurrentUICulture);
         }
 
         public static BitmapImage BitmapImage(this Declaration declaration)
@@ -274,37 +274,9 @@ namespace Rubberduck.Common
             var handlers = new List<Declaration>();
             foreach (var @event in userEvents)
             {
-                handlers.AddRange(declarations.FindHandlersForEvent(@event).Select(s => s.Item2));
+                handlers.AddRange(declarationList.FindHandlersForEvent(@event).Select(s => s.Item2));
             }
             
-            return handlers;
-        }
-
-        public static IEnumerable<Declaration> FindBuiltInEventHandlers(this IEnumerable<Declaration> declarations)
-        {
-            var declarationList = declarations.ToList();
-
-            var handlerNames = declarationList.Where(declaration => declaration.IsBuiltIn && declaration.DeclarationType == DeclarationType.Event)
-                                           .SelectMany(e =>
-                                           {
-                                               var parentModuleSubtypes = ((ClassModuleDeclaration) e.ParentDeclaration).Subtypes;
-                                               return parentModuleSubtypes.Any()
-                                                   ? parentModuleSubtypes.Select(v => v.IdentifierName + "_" + e.IdentifierName)
-                                                   : new[] { e.ParentDeclaration.IdentifierName + "_" + e.IdentifierName };
-                                           });
-
-            // class module built-in events
-            var classModuleHandlers = declarationList.Where(item =>
-                        item.DeclarationType == DeclarationType.Procedure &&
-                        item.ParentDeclaration.DeclarationType == DeclarationType.ClassModule &&
-                        (item.IdentifierName.Equals("Class_Initialize", StringComparison.InvariantCultureIgnoreCase) || item.IdentifierName.Equals("Class_Terminate", StringComparison.InvariantCultureIgnoreCase)));
-
-            var handlers = declarationList.Where(declaration => !declaration.IsBuiltIn
-                                                     && declaration.DeclarationType == DeclarationType.Procedure
-                                                     && handlerNames.Contains(declaration.IdentifierName)).ToList();
-
-            handlers.AddRange(classModuleHandlers);
-
             return handlers;
         }
 
@@ -354,8 +326,7 @@ namespace Rubberduck.Common
             var items = state.AllDeclarations.ToList();
 
             var forms = items.Where(item => item.DeclarationType == DeclarationType.ClassModule
-                && item.QualifiedName.QualifiedModuleName.Component != null
-                && item.QualifiedName.QualifiedModuleName.Component.Type == ComponentType.UserForm)
+                && item.QualifiedName.QualifiedModuleName.ComponentType == ComponentType.UserForm)
                 .ToList();
 
             var result = new List<Declaration>();
@@ -373,11 +344,6 @@ namespace Rubberduck.Common
             var events = items.Where(item => item.IsBuiltIn
                                                      && item.ParentScope == "FM20.DLL;MSForms.FormEvents"
                                                      && item.DeclarationType == DeclarationType.Event).ToList();
-
-            var e = items.Where(item => item.DeclarationType == DeclarationType.Event).ToList();
-            var e1 = items.Where(item => item.DeclarationType == DeclarationType.Event && item.IdentifierName == "QueryClose").ToList();
-
-            var s = items.Where(item => item.IdentifierName.Contains("QueryClose") || item.IdentifierName.Contains("Initialize") || item.IdentifierName.Contains("Activate")).ToList();
 
             var handlerNames = events.Select(item => "UserForm_" + item.IdentifierName);
             var handlers = items.Where(item => item.ParentScope == userForm.Scope
@@ -421,9 +387,7 @@ namespace Rubberduck.Common
             }
 
             var items = declarations as IList<Declaration> ?? declarations.ToList();
-            var type = items.SingleOrDefault(item => item.DeclarationType == DeclarationType.ClassModule
-                                                             && item.Project != null
-                                                             && item.IdentifierName == withEventsDeclaration.AsTypeName.Split('.').Last());
+            var type = withEventsDeclaration.AsTypeDeclaration;
 
             if (type == null)
             {
@@ -444,7 +408,7 @@ namespace Rubberduck.Common
 
         private static IEnumerable<Declaration> GetTypeMembers(this IEnumerable<Declaration> declarations, Declaration type)
         {
-            return declarations.Where(item => item.Project != null && item.ProjectId == type.ProjectId && item.ParentScope == type.Scope);
+            return declarations.Where(item => Equals(item.ParentScopeDeclaration, type));
         }
 
         /// <summary>

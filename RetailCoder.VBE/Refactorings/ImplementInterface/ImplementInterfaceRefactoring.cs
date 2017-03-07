@@ -51,12 +51,19 @@ namespace Rubberduck.Refactorings.ImplementInterface
             Refactor(qualifiedSelection.Value);
         }
 
+        private static readonly IReadOnlyList<DeclarationType> ImplementingModuleTypes = new[]
+        {
+            DeclarationType.ClassModule,
+            DeclarationType.UserForm, 
+            DeclarationType.Document, 
+        };
+
         public void Refactor(QualifiedSelection selection)
         {
             _targetInterface = _declarations.FindInterface(selection);
 
             _targetClass = _declarations.SingleOrDefault(d =>
-                        !d.IsBuiltIn && d.DeclarationType == DeclarationType.ClassModule &&
+                        !d.IsBuiltIn && ImplementingModuleTypes.Contains(d.DeclarationType) &&
                         d.QualifiedSelection.QualifiedName.Equals(selection.QualifiedName));
 
             if (_targetClass == null || _targetInterface == null)
@@ -78,9 +85,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
             {
                 var module = oldSelection.Value.QualifiedName.Component.CodeModule;
                 var pane = module.CodePane;
-                {
-                    pane.SetSelection(oldSelection.Value.Selection);
-                }
+                pane.Selection = oldSelection.Value.Selection;
             }
 
             _state.OnParseRequested(this);
@@ -88,7 +93,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
 
         public void Refactor(Declaration target)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         private void ImplementMissingMembers()

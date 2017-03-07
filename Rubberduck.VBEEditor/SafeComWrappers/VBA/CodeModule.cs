@@ -44,12 +44,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public string Name
         {
             get { return IsWrappingNullReference ? string.Empty : Target.Name; }
-            set { Target.Name = value; }
+            set { if (!IsWrappingNullReference) Target.Name = value; }
         }
 
         public string GetLines(int startLine, int count)
         {
-            return Target.get_Lines(startLine, count);
+            return IsWrappingNullReference ? string.Empty : Target.get_Lines(startLine, count);
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         /// <returns></returns>
         public string GetLines(Selection selection)
         {
-            return GetLines(selection.StartLine, selection.LineCount);
+            return IsWrappingNullReference ? string.Empty : GetLines(selection.StartLine, selection.LineCount);
         }
 
         /// <summary>
@@ -68,6 +68,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         /// <param name="selection"></param>
         public void DeleteLines(Selection selection)
         {
+            if (IsWrappingNullReference) return; 
             DeleteLines(selection.StartLine, selection.LineCount);
         }
 
@@ -82,71 +83,16 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public string Content()
         {
-            return Target.CountOfLines == 0 ? string.Empty : GetLines(1, CountOfLines);
+            return IsWrappingNullReference || Target.CountOfLines == 0 ? string.Empty : GetLines(1, CountOfLines);
         }
 
         public void Clear()
         {
-            Target.DeleteLines(1, CountOfLines);
-        }
-
-        /// <summary>
-        /// Gets an array of strings where each element is a line of code in the Module,
-        /// with line numbers stripped and any other pre-processing that needs to be done.
-        /// </summary>
-        public string[] GetSanitizedCode()
-        {
-            var lines = CountOfLines;
-            if (lines == 0)
+            if (IsWrappingNullReference) return; 
+            if (Target.CountOfLines > 0)
             {
-                return new string[] { };
+                Target.DeleteLines(1, CountOfLines);
             }
-
-            var code = GetLines(1, lines).Replace("\r", string.Empty).Split('\n');
-
-            StripLineNumbers(code);
-            return code;
-        }
-
-        private void StripLineNumbers(string[] lines)
-        {
-            var continuing = false;
-            for (var line = 0; line < lines.Length; line++)
-            {
-                var code = lines[line];
-                int? lineNumber;
-                if (!continuing && HasNumberedLine(code, out lineNumber))
-                {
-                    var lineNumberLength = lineNumber.ToString().Length;
-                    if (lines[line].Length > lineNumberLength)
-                    {
-                        // replace line number with as many spaces as characters taken, to avoid shifting the tokens
-                        lines[line] = new string(' ', lineNumberLength) + code.Substring(lineNumber.ToString().Length + 1);
-                    }
-                }
-
-                continuing = code.EndsWith("_");
-            }
-        }
-
-        private bool HasNumberedLine(string codeLine, out int? lineNumber)
-        {
-            lineNumber = null;
-
-            if (string.IsNullOrWhiteSpace(codeLine.Trim()))
-            {
-                return false;
-            }
-
-            int line;
-            var firstToken = codeLine.TrimStart().Split(' ')[0];
-            if (int.TryParse(firstToken, out line))
-            {
-                lineNumber = line;
-                return true;
-            }
-
-            return false;
         }
 
         private string _previousContentHash;
@@ -163,31 +109,38 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public void AddFromString(string content)
         {
+            if (IsWrappingNullReference) return; 
             Target.AddFromString(content);
         }
 
         public void AddFromFile(string path)
         {
+            if (IsWrappingNullReference) return; 
             Target.AddFromFile(path);
         }
 
         public void InsertLines(int line, string content)
         {
+            if (IsWrappingNullReference) return; 
             Target.InsertLines(line, content);
         }
 
         public void DeleteLines(int startLine, int count = 1)
         {
+            if (IsWrappingNullReference) return; 
             Target.DeleteLines(startLine, count);
         }
 
         public void ReplaceLine(int line, string content)
         {
+            if (IsWrappingNullReference) return;           
             Target.ReplaceLine(line, content);
         }
 
         public Selection? Find(string target, bool wholeWord = false, bool matchCase = false, bool patternSearch = false)
         {
+            if (IsWrappingNullReference) return null;
+
             var startLine = 0;
             var startColumn = 0;
             var endLine = 0;
@@ -200,27 +153,29 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public int GetProcStartLine(string procName, ProcKind procKind)
         {
-            return Target.get_ProcStartLine(procName, (vbext_ProcKind)procKind);
+            return IsWrappingNullReference ? 0 : Target.get_ProcStartLine(procName, (vbext_ProcKind)procKind);
         }
 
         public int GetProcBodyStartLine(string procName, ProcKind procKind)
         {
-            return Target.get_ProcBodyLine(procName, (vbext_ProcKind)procKind);
+            return IsWrappingNullReference ? 0 : Target.get_ProcBodyLine(procName, (vbext_ProcKind)procKind);
         }
 
         public int GetProcCountLines(string procName, ProcKind procKind)
         {
-            return Target.get_ProcCountLines(procName, (vbext_ProcKind)procKind);
+            return IsWrappingNullReference ? 0 : Target.get_ProcCountLines(procName, (vbext_ProcKind)procKind);
         }
 
         public string GetProcOfLine(int line)
         {
+            if (IsWrappingNullReference) return string.Empty;
             vbext_ProcKind procKind;
             return Target.get_ProcOfLine(line, out procKind);
         }
 
         public ProcKind GetProcKindOfLine(int line)
         {
+            if (IsWrappingNullReference) return 0;
             vbext_ProcKind procKind;
             Target.get_ProcOfLine(line, out procKind);
             return (ProcKind)procKind;

@@ -1,5 +1,6 @@
 ﻿using Antlr4.Runtime;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
@@ -8,9 +9,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -20,34 +19,6 @@ namespace Rubberduck.Parsing.Symbols
     [DebuggerDisplay("({DeclarationType}) {Accessibility} {IdentifierName} As {AsTypeName} | {Selection}")]
     public class Declaration : IEquatable<Declaration>
     {
-        public static readonly string[] BaseTypes =
-        {
-                "BOOLEAN",
-                "BYTE",
-                "CURRENCY",
-                "DATE",
-                "DOUBLE",
-                "INTEGER",
-                "LONG",
-                "LONGLONG",
-                "LONGPTR",
-                "SINGLE",
-                "STRING",
-                "VARIANT",
-                "OBJECT",
-                "ANY"
-        };
-
-        public static readonly IDictionary<string, string> TypeHintToTypeName = new Dictionary<string, string>
-        {
-            { "%", Tokens.Integer },
-            { "&", Tokens.Long },
-            { "@", Tokens.Decimal },
-            { "!", Tokens.Single },
-            { "#", Tokens.Double },
-            { "$", Tokens.String }
-        };
-
         public Declaration(
             QualifiedMemberName qualifiedName,
             Declaration parentDeclaration,
@@ -120,8 +91,7 @@ namespace Rubberduck.Parsing.Symbols
                   isBuiltIn,
                   annotations,
                   attributes)
-        {
-        }
+        { }
 
         public Declaration(
             QualifiedMemberName qualifiedName,
@@ -141,7 +111,7 @@ namespace Rubberduck.Parsing.Symbols
             IEnumerable<IAnnotation> annotations = null,
             Attributes attributes = null)
         {
-            _qualifiedName = qualifiedName;
+            _qualifiedName = qualifiedName;            
             _parentDeclaration = parentDeclaration;
             _parentScopeDeclaration = _parentDeclaration;
             _parentScope = parentScope ?? string.Empty;
@@ -152,31 +122,115 @@ namespace Rubberduck.Parsing.Symbols
             _accessibility = accessibility;
             _declarationType = declarationType;
             _selection = selection;
-            _context = context;
+            Context = context;
             _isBuiltIn = isBuiltIn;
             _annotations = annotations;
             _attributes = attributes ?? new Attributes();
 
             _projectId = _qualifiedName.QualifiedModuleName.ProjectId;
+            var projectDeclaration = GetProjectParent(parentDeclaration);
+            if (projectDeclaration != null)
+            {
+                _projectName = projectDeclaration.IdentifierName;
+            }
+            else if (_declarationType == DeclarationType.Project)
+            {
+                _projectName = _identifierName;
+            }
 
-            var @namespace = Annotations.FirstOrDefault(annotation => annotation.AnnotationType == AnnotationType.Folder);
-            string result;
-            if (@namespace == null)
-            {
-                result = _qualifiedName.QualifiedModuleName.Project == null
-                    ? _projectId
-                    : _qualifiedName.QualifiedModuleName.Project.Name;
-            }
-            else
-            {
-                var value = ((FolderAnnotation)@namespace).FolderName;
-                result = value;
-            }
-            _customFolder = result;
+            _customFolder = FolderFromAnnotations();
             _isArray = isArray;
             _asTypeContext = asTypeContext;
             _typeHint = typeHint;
         }
+
+        public Declaration(ComEnumeration enumeration, Declaration parent, QualifiedModuleName module) : this(
+            module.QualifyMemberName(enumeration.Name),
+            parent,
+            parent,
+            "Long",
+            //Match the VBA default type declaration.  Technically these *can* be a LongLong on 64 bit systems, but would likely crash the VBE... 
+            null,
+            false,
+            false,
+            Accessibility.Global,
+            DeclarationType.Enumeration,
+            null,
+            Selection.Home,
+            false,
+            null,
+            true,
+            null,
+            new Attributes()) { }
+
+        public Declaration(ComStruct structure, Declaration parent, QualifiedModuleName module)
+            : this(
+                module.QualifyMemberName(structure.Name),
+                parent,
+                parent,
+                structure.Name,
+                null,
+                false,
+                false,
+                Accessibility.Global,
+                DeclarationType.UserDefinedType,
+                null,
+                Selection.Home,
+                false,
+                null,
+                true,
+                null,
+                new Attributes()) { }
+
+        public Declaration(ComEnumerationMember member, Declaration parent, QualifiedModuleName module) : this(
+                module.QualifyMemberName(member.Name),
+                parent,
+                parent,
+                parent.IdentifierName,
+                null,
+                false,
+                false,
+                Accessibility.Global,
+                DeclarationType.EnumerationMember,
+                null,
+                Selection.Home,
+                false,
+                null) { }
+
+        public Declaration(ComField field, Declaration parent, QualifiedModuleName module)
+            : this(
+                module.QualifyMemberName(field.Name),
+                parent,
+                parent,
+                field.ValueType,
+                null,
+                false,
+                false,
+                Accessibility.Global,
+                field.Type,
+                null,
+                Selection.Home,
+                false,
+                null) { }
+
+        private string FolderFromAnnotations()
+            {
+                var @namespace = Annotations.FirstOrDefault(annotation => annotation.AnnotationType == AnnotationType.Folder);
+                string result;
+                if (@namespace == null)
+                {
+                    result = string.IsNullOrEmpty(_qualifiedName.QualifiedModuleName.ProjectName)
+                        ? _projectId
+                        : _qualifiedName.QualifiedModuleName.ProjectName;
+                }
+                else
+                {
+                    var value = ((FolderAnnotation)@namespace).FolderName;
+                    result = value;
+                }
+                return result;
+            }
+
 
         public static Declaration GetModuleParent(Declaration declaration)
         {
@@ -229,42 +283,18 @@ namespace Rubberduck.Parsing.Symbols
         private readonly QualifiedMemberName _qualifiedName;
         public QualifiedMemberName QualifiedName { get { return _qualifiedName; } }
 
-        private ParserRuleContext _context;
-        public ParserRuleContext Context
-        {
-            get
-            {
-                return _context;
-            }
-            set
-            {
-                _context = value;
-            }
-        }
+        public ParserRuleContext Context { get; set; }
 
         private ConcurrentBag<IdentifierReference> _references = new ConcurrentBag<IdentifierReference>();
         public IEnumerable<IdentifierReference> References
         {
             get
             {
-                return _references.Union(_memberCalls);
+                return _references;
             }
             set
             {
                 _references = new ConcurrentBag<IdentifierReference>(value);
-            }
-        }
-
-        private ConcurrentBag<IdentifierReference> _memberCalls = new ConcurrentBag<IdentifierReference>();
-        public IEnumerable<IdentifierReference> MemberCalls
-        {
-            get
-            {
-                return _memberCalls.ToList();
-            }
-            set
-            {
-                _memberCalls = new ConcurrentBag<IdentifierReference>(value);
             }
         }
 
@@ -335,34 +365,6 @@ namespace Rubberduck.Parsing.Symbols
                     annotations));
         }
 
-        //public void AddReference(IdentifierReference reference)
-        //{
-        //    if (reference == null || reference.Declaration.Context == reference.Context)
-        //    {
-        //        return;
-        //    }
-        //    if (reference.Context.Parent != _context
-        //        && !_references.Select(r => r.Context).Contains(reference.Context.Parent)
-        //        && !_references.Any(r => r.QualifiedModuleName == reference.QualifiedModuleName
-        //            && r.Selection.StartLine == reference.Selection.StartLine
-        //            && r.Selection.EndLine == reference.Selection.EndLine
-        //            && r.Selection.StartColumn == reference.Selection.StartColumn
-        //            && r.Selection.EndColumn == reference.Selection.EndColumn))
-        //    {
-        //        _references.Add(reference);
-        //    }
-        //}
-
-        public void AddMemberCall(IdentifierReference reference)
-        {
-            if (reference == null || reference.Declaration == null || reference.Declaration.Context == reference.Context)
-            {
-                return;
-            }
-
-            _memberCalls.Add(reference);
-        }
-
         private readonly Selection _selection;
         /// <summary>
         /// Gets a <c>Selection</c> representing the position of the declaration in the code module.
@@ -380,7 +382,7 @@ namespace Rubberduck.Parsing.Symbols
         /// <remarks>
         /// This property is intended to differenciate identically-named VBProjects.
         /// </remarks>
-        public IVBProject Project { get { return _qualifiedName.QualifiedModuleName.Project; } }
+        public virtual IVBProject Project { get { return _parentDeclaration.Project; } }
 
         private readonly string _projectId;
         /// <summary>
@@ -388,22 +390,21 @@ namespace Rubberduck.Parsing.Symbols
         /// </summary>
         public string ProjectId { get { return _projectId; } }
 
+        private readonly string _projectName;
         public string ProjectName
         {
-            get
-            {
-                if (Project != null)
-                {
-                    return Project.Name;
-                }
-                // Referenced projects have their identifier name set as their project name.
-                return IdentifierName;
-            }
+            get { return _projectName; }
         }
+
+        /// <summary>
+        /// WARNING: This property has side effects. It changes the ActiveVBProject, which causes a flicker in the VBE.
+        /// This should only be called if it is *absolutely* necessary.
+        /// </summary>
+        public virtual string ProjectDisplayName { get { return _parentDeclaration.ProjectDisplayName; } }
 
         public object[] ToArray()
         {
-            return new object[] { this.ProjectName, this.CustomFolder, this.ComponentName, this.DeclarationType.ToString(), this.Scope, this.IdentifierName, this.AsTypeName };
+            return new object[] { ProjectName, CustomFolder, ComponentName, DeclarationType.ToString(), Scope, IdentifierName, AsTypeName };
         }
 
 
@@ -456,7 +457,7 @@ namespace Rubberduck.Parsing.Symbols
         {
             get
             {
-                return string.IsNullOrWhiteSpace(AsTypeName) || BaseTypes.Contains(_asTypeName.ToUpperInvariant());
+                return string.IsNullOrWhiteSpace(AsTypeName) || SymbolList.BaseTypes.Contains(_asTypeName.ToUpperInvariant());
             }
         }
 
@@ -492,7 +493,7 @@ namespace Rubberduck.Parsing.Symbols
             DeclarationType.PropertyLet,
             DeclarationType.PropertyLet,
             DeclarationType.UserDefinedType,
-            DeclarationType.Constant,
+            DeclarationType.Constant
         };
 
         public bool IsSelected(QualifiedSelection selection)
@@ -613,11 +614,14 @@ namespace Rubberduck.Parsing.Symbols
 
         public void ClearReferences()
         {
-            while (!_references.IsEmpty)
-            {
-                IdentifierReference reference;
-                _references.TryTake(out reference);
-            }
+            _references = new ConcurrentBag<IdentifierReference>();
+        }
+
+        public void RemoveReferencesFrom(ICollection<QualifiedModuleName> modulesByWhichToRemoveReferences)
+        {
+            //This gets replaced with a new ConcurrentBag because one cannot remove specific items from a ConcurrentBag.
+            //Moreover, changing to a ConcurrentDictionary<IdentifierReference,byte> breaks all sorts of tests, for some obscure reason. 
+            var newReferences = new ConcurrentBag<IdentifierReference>(_references.Where(reference => !modulesByWhichToRemoveReferences.Contains(reference.QualifiedModuleName)));
         }
     }
 }

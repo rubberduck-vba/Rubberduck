@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -385,8 +385,7 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
     <value>Rubberduck Add-In could not be loaded</value>
   </data>
   <data name="Rubberduck_AboutBuild" xml:space="preserve">
-    <value>Build {0} ({1})</value>
-    <comment>0: Version; 1: ProcessorArchitecture</comment>
+    <value>Version {0}</value>
   </data>
   <data name="TodoMarkerBug" xml:space="preserve">
     <value>BUG </value>
@@ -683,7 +682,7 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
     <value>Navigation</value>
   </data>
   <data name="TodoSettings_Caption" xml:space="preserve">
-    <value>To-Do Explorer</value>
+    <value>TODO Explorer</value>
   </data>
   <data name="CodeInspections_NumberOfIssuesFound_Plural" xml:space="preserve">
     <value>Rubberduck Code Inspections - {0}
@@ -710,6 +709,9 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
     <value>Renaming to '{0}' clashes with '{1}' in the same scope.
 Are you sure you want to proceed with this rename?</value>
   </data>
+  <data name="RenameDialog_AmbiguousSelection" xml:space="preserve">
+    <value>Please ensure that exactly 1 control is selected before renaming.</value>
+  </data>
   <data name="Rename_DeclarationType" xml:space="preserve">
     <value>Rename {0}</value>
   </data>
@@ -723,7 +725,7 @@ Are you sure you want to proceed with this rename?</value>
     <value>About Rubberduck</value>
   </data>
   <data name="AboutWindow_Copyright" xml:space="preserve">
-    <value>© Copyright 2014-2016 Mathieu Guindon &amp; Christopher McClellan</value>
+    <value>© Copyright 2014-2017 Mathieu Guindon &amp; Christopher McClellan</value>
   </data>
   <data name="AboutWindow_SpecialThanksLabel" xml:space="preserve">
     <value>Special Thanks</value>
@@ -1084,6 +1086,9 @@ Are you sure you want to proceed with this rename?</value>
   <data name="SettingsCaption_UnitTestSettings" xml:space="preserve">
     <value>Unit Test Settings</value>
   </data>
+  <data name="SettingsCaption_WindowSettings" xml:space="preserve">
+    <value>Window Settings</value>
+  </data>
   <data name="SeverityLabelText" xml:space="preserve">
     <value>Severity:</value>
   </data>
@@ -1095,6 +1100,9 @@ Are you sure you want to proceed with this rename?</value>
   </data>
   <data name="SettingsInstructions_UnitTestSettings" xml:space="preserve">
     <value>Configure the settings for new unit test modules and methods.</value>
+  </data>
+  <data name="SettingsInstructions_WindowSettings" xml:space="preserve">
+    <value>Configure the settings for window visibility.</value>
   </data>
   <data name="UnitTestSettings_AssertMode" xml:space="preserve">
     <value>Type safety:</value>
@@ -1125,6 +1133,9 @@ Are you sure you want to proceed with this rename?</value>
   </data>
   <data name="UnitTestSettings_TestModuleTemplateHeader" xml:space="preserve">
     <value>Test Module Template</value>
+  </data>
+  <data name="WindowSettings_StartupVisibilityHeader" xml:space="preserve">
+    <value>Window visibility at startup</value>
   </data>
   <data name="TestOutcome_Failed" xml:space="preserve">
     <value>Failed</value>
@@ -1261,7 +1272,10 @@ Are you sure you want to proceed with this rename?</value>
   <data name="AboutWindow_AttributionList" xml:space="preserve">
     <value>Parsing powered by ANTLR
 GitHub integration powered by LibGit2Sharp
-Fugue icons by Yusuke Kamiyamane</value>
+Syntax highlighting powered by AvalonEdit
+Fugue icons by Yusuke Kamiyamane
+IDE icons from SharpDevelop
+WPF localization support by Grant Frisken</value>
   </data>
   <data name="AboutWindow_GeneralThanks" xml:space="preserve">
     <value>All contributors to our GitHub repository
@@ -1557,7 +1571,7 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
     <value>By type</value>
   </data>
   <data name="SortStyle_ByCodeOrder" xml:space="preserve">
-    <value>By code order</value>
+    <value>As in module</value>
   </data>
   <data name="TestOutcome_Ignored" xml:space="preserve">
     <value>Ignored</value>
@@ -1602,13 +1616,13 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
     <value>No open repository to push to specified remote location.</value>
   </data>
   <data name="SourceControl_ExternalModifications" xml:space="preserve">
-    <value>A source file was modified out of the editor; should Rubberduck reload it?</value>
+    <value>A source file was modified out of the editor; reload it?</value>
   </data>
   <data name="SourceControl_OpenCommandPromptButtonToolTip" xml:space="preserve">
     <value>Open Command Prompt</value>
   </data>
   <data name="SourceControl_CommandPromptExeLabel" xml:space="preserve">
-    <value>Command Prompt Exe location</value>
+    <value>Command prompt executable location</value>
   </data>
   <data name="SourceControl_FilePickerCommandPromptHeader" xml:space="preserve">
     <value>Command Prompt Executable</value>
@@ -1623,16 +1637,16 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
     <value>Please open or activate a project and try again.</value>
   </data>
   <data name="SourceControl_NoActiveProject" xml:space="preserve">
-    <value>No active VBProject</value>
+    <value>No active project</value>
   </data>
   <data name="ParserState_ResolvingReferences" xml:space="preserve">
     <value>Resolving references...</value>
   </data>
   <data name="CodeExplorer_OpenProjectProperties" xml:space="preserve">
-    <value>Open project properties</value>
+    <value>Project properties</value>
   </data>
   <data name="SourceControl_UnknownErrorMessage" xml:space="preserve">
-    <value>Please set your log level to Fatal or lower and create an issue on our GitHub page with the contents of your log file in C:\Users\{username}\AppData\Roaming\Rubberduck\Logs.</value>
+    <value>If logging is enabled, you may create an issue on our GitHub page with the contents of your log file in '%AppData%\Roaming\Rubberduck\Logs' for support.</value>
   </data>
   <data name="SourceControl_UnknownErrorTitle" xml:space="preserve">
     <value>An unknown error occurred.</value>
@@ -1680,13 +1694,13 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
     <value>Untracked</value>
   </data>
   <data name="SourceControl_CloneRepositoryDescription" xml:space="preserve">
-    <value>Clones remote repository from provided URI. Requires an empty project to be open in the VBE.</value>
+    <value>Clones remote repository from provided URI. Have an (empty) project active in the editor.</value>
   </data>
   <data name="SourceControl_CloneRepositoryTitle" xml:space="preserve">
     <value>Clone Remote Repository</value>
   </data>
   <data name="SourceControl_InitializeRepositoryDescription" xml:space="preserve">
-    <value>Creates a new repository from the open project.</value>
+    <value>Creates a new repository from the active project.</value>
   </data>
   <data name="SourceControl_InitializeRepositoryTitle" xml:space="preserve">
     <value>Initialize New Repository</value>
@@ -1695,7 +1709,7 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
     <value>Manage</value>
   </data>
   <data name="SourceControl_OpenRepositoryDescription" xml:space="preserve">
-    <value>Open repository from disk. Requires an empty project to be open in the VBE.</value>
+    <value>Open repository from disk. The active project will host the source code.</value>
   </data>
   <data name="SourceControl_OpenRepositoryTitle" xml:space="preserve">
     <value>Open Existing Repository</value>
@@ -1704,13 +1718,13 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
     <value>Open Working Directory</value>
   </data>
   <data name="SourceControl_PublishRepositoryDescription" xml:space="preserve">
-    <value>Publishes an existing repository to a remote location. Requires the open project to be connected to a repository.</value>
+    <value>Publishes an existing repository to a remote location. The active project must be connected to a repository.</value>
   </data>
   <data name="SourceControl_PublishRepositoryTitle" xml:space="preserve">
     <value>Publish Existing Repository</value>
   </data>
   <data name="RubberduckFatalError" xml:space="preserve">
-    <value>Rubberduck encountered an error. Please save your work and restart the host program, then upload your log file located at "C:\Users\{username}\AppData\Roaming\Rubberduck\Logs\RubberduckLog.txt" to a GitHub issue at "https://github.com/rubberduck-vba/Rubberduck/issues/new".</value>
+    <value>Rubberduck encountered an error. Please save your work and restart the host program; if logging is enabled, you can upload your log file located at '%AppData%Roaming\Rubberduck\Logs\RubberduckLog.txt' to a GitHub issue at 'https://github.com/rubberduck-vba/Rubberduck/issues/new' and report the bug.</value>
   </data>
   <data name="TestExplorerMenu_AddExpectedErrorTestMethod" xml:space="preserve">
     <value>Test Method (&amp;Expected Error)</value>
@@ -1813,5 +1827,165 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   </data>
   <data name="RubberduckReloadFailure_Title" xml:space="preserve">
     <value>Rubberduck will not reload</value>
+  </data>
+  <data name="ParserErrorToolTipText" xml:space="preserve">
+    <value>{0} module(s) failed to parse; click for details.</value>
+  </data>
+  <data name="ReparseToolTipText" xml:space="preserve">
+    <value>{0}. Click to refresh.</value>
+  </data>
+  <data name="IndenterSettings_IndentEnumTypeAsProcedure" xml:space="preserve">
+    <value>Indent comments in Enum and Type blocks like in procedures</value>
+  </data>
+  <data name="IndenterSettings_PreviewCode" xml:space="preserve">
+    <value>Public Enum ExampleEnum
+' Enum comment.
+Foo
+Bar ' Member comment.
+End Enum
+
+' Example Procedure
+Sub ExampleProc()
+
+' SMART INDENTER
+' Original VB6 code graciously offered to Rubberduck by Stephen Bullen &amp; Rob Bovey
+' © 2016 by Rubberduck VBA.
+
+Dim count As Integer
+Static name As String
+
+If YouLikeRubberduck Then
+' Star us on GitHub http://github.com/rubberduck-vba/Rubberduck
+' Follow us on Twitter @rubberduckvba
+' Visit http://rubberduckvba.com for news and updates
+
+Select Case X
+Case "A"
+' If you have any comments or suggestions, _
+or find valid VBA code that isn't indented correctly,
+
+#If VBA6 Then
+MsgBox "Contact contact@rubberduck-vba.com"
+#End If
+
+Case "Continued strings and parameters can be" _
+&amp; "lined up for easier reading, optionally ignoring" _
+&amp; "any operators (&amp;+, etc) at the start of the line."
+
+Debug.Print "X&lt;&gt;1"
+End Select      'Case X
+End If      'More Tools? Suggestions http://github.com/rubberduck-vba/Rubberduck/Issues/New
+
+End Sub</value>
+  </data>
+  <data name="DialogCaption_LoadIndenterSettings" xml:space="preserve">
+    <value>Load Indenter Settings</value>
+  </data>
+  <data name="DialogCaption_SaveIndenterSettings" xml:space="preserve">
+    <value>Save Indenter Settings</value>
+  </data>
+  <data name="DialogMask_XmlFilesOnly" xml:space="preserve">
+    <value>XML file (.xml)|*.xml|Rubberduck config file|*.config</value>
+  </data>
+  <data name="SettingsCaption_ExportSettings" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="SettingsCaption_ImportSettings" xml:space="preserve">
+    <value>Import</value>
+  </data>
+  <data name="DialogCaption_LoadGeneralSettings" xml:space="preserve">
+    <value>Load General Settings</value>
+  </data>
+  <data name="DialogCaption_LoadInspectionSettings" xml:space="preserve">
+    <value>Load Inspection Settings</value>
+  </data>
+  <data name="DialogCaption_LoadToDoSettings" xml:space="preserve">
+    <value>Load Todo List Settings</value>
+  </data>
+  <data name="DialogCaption_LoadUnitTestSettings" xml:space="preserve">
+    <value>Load Unit Test Settings</value>
+  </data>
+  <data name="DialogCaption_LoadWindowSettings" xml:space="preserve">
+    <value>Load Window Settings</value>
+  </data>
+  <data name="DialogCaption_SaveGeneralSettings" xml:space="preserve">
+    <value>Save General Settings</value>
+  </data>
+  <data name="DialogCaption_SaveInspectionSettings" xml:space="preserve">
+    <value>Save Inspection Settings</value>
+  </data>
+  <data name="DialogCaption_SaveToDoSettings" xml:space="preserve">
+    <value>Save Todo List Settings</value>
+  </data>
+  <data name="DialogCaption_SaveUnitTestSettings" xml:space="preserve">
+    <value>Save Unit Test Settings</value>
+  </data>
+  <data name="DialogCaption_SaveWindowSettings" xml:space="preserve">
+    <value>Save Window Settings</value>
+  </data>
+  <data name="ContextReferences" xml:space="preserve">
+    <value>references</value>
+    <comment>Used to display number of references in commandbar's context selection</comment>
+  </data>
+  <data name="ContextMultipleControlsSelection" xml:space="preserve">
+    <value>multiple controls</value>
+    <comment>Used to display description of multiple control selection in commandbar's context selection</comment>
+  </data>
+  <data name="SmartIndenter_LegacySettingPrompt" xml:space="preserve">
+    <value>Smart Indenter settings were found in your registry.
+Would you like to import them to Rubberduck?</value>
+  </data>
+  <data name="IndenterSettings_VerticalSpacing" xml:space="preserve">
+    <value>Maintain vertical spacing</value>
+  </data>
+  <data name="IndenterSettings_VerticalSpacingLabel" xml:space="preserve">
+    <value>Vertical Spacing</value>
+  </data>
+  <data name="DeclarationType_BracketedExpression" xml:space="preserve">
+    <value>runtime expression</value>
+  </data>
+  <data name="AssignedByValParamQFixDialog_Caption" xml:space="preserve">
+    <value>Assigned ByVal parameter QuickFix - Make Local Copy</value>
+  </data>
+  <data name="AssignedByValParamQFixDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Please specify a name to use for the local copy of ByVal {0} '{1}'</value>
+    <comment>0: DeclarationType; 1: IdentifierName</comment>
+  </data>
+  <data name="AssignedByValParamQFixDialog_TitleText" xml:space="preserve">
+    <value>Specify Local Copy Variable Name</value>
+  </data>
+  <data name="IndenterSettings_CodeSampleHeader" xml:space="preserve">
+    <value>Indented Code Sample</value>
+  </data>
+  <data name="VersionCheck_NewVersionAvailable" xml:space="preserve">
+    <value>Rubberduck version {0} is now available! Would you like to review the release notes now?</value>
+  </data>
+  <data name="GeneralSettings_CheckVersion" xml:space="preserve">
+    <value>Check if a newer version is available at startup</value>
+  </data>
+  <data name="AssignedByValDialog_DoesNotStartWithLetter" xml:space="preserve">
+    <value>Variable names must begin with a letter.</value>
+  </data>
+  <data name="AssignedByValDialog_InvalidCharacters" xml:space="preserve">
+    <value>Variable names cannot contain special characters other than underscores.</value>
+  </data>
+  <data name="AssignedByValDialog_IsByValIdentifierFormat" xml:space="preserve">
+    <value>The local variable cannot be the same as the '{0}' parameter it replaces</value>
+    <comment>{0} = proposed variable name.</comment>
+  </data>
+  <data name="AssignedByValDialog_NewNameAlreadyUsedFormat" xml:space="preserve">
+    <value>'{0}' is already accessible to this scope.</value>
+    <comment>{0} = proposed variable name.</comment>
+  </data>
+  <data name="AssignedByValDialog_QuestionableEntryFormat" xml:space="preserve">
+    <value>The identifier '{0}' will trigger a "Use meaningful name" inspection result. Consider choosing a different name.</value>
+    <comment>{0} = proposed variable name.</comment>
+  </data>
+  <data name="AssignedByValDialog_ReservedKeywordFormat" xml:space="preserve">
+    <value>'{0}' is a reserved keyword.</value>
+    <comment>{0} = proposed variable name.</comment>
+  </data>
+  <data name="ConfirmRemoveAssignmentWithUnusedDeclaration" xml:space="preserve">
+    <value>Variable '{0}' is assigned. Remove assignment instruction(s)?</value>
   </data>
 </root>

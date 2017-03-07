@@ -3,7 +3,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.VBEditor.Application
 {
@@ -66,7 +65,12 @@ namespace Rubberduck.VBEditor.Application
             get { return _applicationName; }
         }
 
-        public abstract void Run(QualifiedMemberName qualifiedMemberName);
+        public abstract void Run(dynamic declaration);
+
+        public virtual object Run(string name, params object[] args)
+        {
+            return null;
+        }
 
         public void Dispose()
         {

@@ -6,7 +6,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.UI.Command
 {
@@ -58,10 +57,7 @@ namespace Rubberduck.UI.Command
                 return testModules.Any(a =>
                 {
                     var module = a.QualifiedName.QualifiedModuleName.Component.CodeModule;
-                    var selected = _vbe.SelectedVBComponent.CodeModule;
-                    {
-                        return module.Equals(selected);
-                    }
+                    return module.Equals(_vbe.ActiveCodePane.CodeModule);
                 });
             }
             catch (COMException)
@@ -73,31 +69,17 @@ namespace Rubberduck.UI.Command
         protected override void ExecuteImpl(object parameter)
         {
             var pane = _vbe.ActiveCodePane;
+            if (pane.IsWrappingNullReference) { return; }
+
             var module = pane.CodeModule;
+            var declaration = _state.GetTestModules()
+                .FirstOrDefault(f => f.QualifiedName.QualifiedModuleName.Component.CodeModule.Equals(module));
+
+            if (declaration != null)
             {
-                if (pane.IsWrappingNullReference)
-                {
-                    return;
-                }
-
-                var declaration = _state.GetTestModules().FirstOrDefault(f =>
-                {
-                    var codeModule = f.QualifiedName.QualifiedModuleName.Component.CodeModule;
-                    {
-                        return codeModule.Equals(module);
-                    }
-                });
-
-                if (declaration != null)
-                {
-                    var component = module.Parent;
-                    {
-                        var name = GetNextTestMethodName(component);
-                        var body = TestMethodTemplate.Replace(NamePlaceholder, name);
-                        module.InsertLines(module.CountOfLines, body);
-                    }
-                }
-
+                var name = GetNextTestMethodName(module.Parent);
+                var body = TestMethodTemplate.Replace(NamePlaceholder, name);
+                module.InsertLines(module.CountOfLines, body);
             }
 
             _state.OnParseRequested(this, _vbe.SelectedVBComponent);

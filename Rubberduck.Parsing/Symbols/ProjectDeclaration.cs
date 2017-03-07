@@ -1,6 +1,8 @@
-﻿using Rubberduck.VBEditor;
+﻿using Rubberduck.Parsing.ComReflection;
+using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -11,7 +13,8 @@ namespace Rubberduck.Parsing.Symbols
         public ProjectDeclaration(
             QualifiedMemberName qualifiedName,
             string name,
-            bool isBuiltIn)
+            bool isBuiltIn,
+            IVBProject project)
             : base(
                   qualifiedName,
                   null,
@@ -28,8 +31,19 @@ namespace Rubberduck.Parsing.Symbols
                   null,
                   isBuiltIn)
         {
+            _project = project;
             _projectReferences = new List<ProjectReference>();
         }
+
+        public ProjectDeclaration(ComProject project, QualifiedModuleName module)
+            : this(module.QualifyMemberName(project.Name), project.Name, true, null)
+        {
+            MajorVersion = project.MajorVersion;
+            MinorVersion = project.MinorVersion;
+        }
+
+        public long MajorVersion { get; set; }
+        public long MinorVersion { get; set; }
 
         public IReadOnlyList<ProjectReference> ProjectReferences
         {
@@ -39,6 +53,15 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
+        private readonly IVBProject _project;
+        /// <summary>
+        /// Gets a reference to the VBProject the declaration is made in.
+        /// </summary>
+        /// <remarks>
+        /// This property is intended to differenciate identically-named VBProjects.
+        /// </remarks>
+        public override IVBProject Project { get { return _project; } }
+
         public void AddProjectReference(string referencedProjectId, int priority)
         {
             if (_projectReferences.Any(p => p.ReferencedProjectId == referencedProjectId))
@@ -46,6 +69,24 @@ namespace Rubberduck.Parsing.Symbols
                 return;
             }
             _projectReferences.Add(new ProjectReference(referencedProjectId, priority));
+        }
+
+        private string _displayName;
+        /// <summary>
+        /// WARNING: This property has side effects. It changes the ActiveVBProject, which causes a flicker in the VBE.
+        /// This should only be called if it is *absolutely* necessary.
+        /// </summary>
+        public override string ProjectDisplayName
+        {
+            get
+            {
+                if (_displayName != null)
+                {
+                    return _displayName;
+                }
+                _displayName = _project != null ? _project.ProjectDisplayName : string.Empty;
+                return _displayName;
+            }
         }
     }
 }

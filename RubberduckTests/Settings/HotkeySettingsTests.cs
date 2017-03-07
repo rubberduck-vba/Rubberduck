@@ -7,6 +7,7 @@ namespace RubberduckTests.Settings
     [TestClass]
     public class HotkeySettingsTests
     {
+        [TestCategory("Settings")]
         [TestMethod]
         public void DefaultsSetInCtor()
         {
@@ -32,6 +33,7 @@ namespace RubberduckTests.Settings
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void InvalidSettingNameWontAdd()
         {
@@ -45,6 +47,7 @@ namespace RubberduckTests.Settings
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void InvalidSettingKeyWontAdd()
         {
@@ -58,6 +61,7 @@ namespace RubberduckTests.Settings
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void DuplicateKeysAreDeactivated()
         {
@@ -73,6 +77,7 @@ namespace RubberduckTests.Settings
             Assert.IsFalse(duplicate1.IsEnabled == duplicate2.IsEnabled);
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void DuplicateNamesAreIgnored()
         {

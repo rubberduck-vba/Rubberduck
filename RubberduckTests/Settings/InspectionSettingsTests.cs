@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck.Inspections;
+using Rubberduck.Inspections.Resources;
 using Rubberduck.Settings;
 using Rubberduck.UI.Settings;
 
@@ -25,7 +25,7 @@ namespace RubberduckTests.Settings
                 })
             };
 
-            var userSettings = new UserSettings(null, null, null, inspectionSettings, null, null);
+            var userSettings = new UserSettings(null, null, null, inspectionSettings, null, null, null);
             return new Configuration(userSettings);
         }
 
@@ -44,10 +44,11 @@ namespace RubberduckTests.Settings
                 })
             };
 
-            var userSettings = new UserSettings(null, null, null, inspectionSettings, null, null);
+            var userSettings = new UserSettings(null, null, null, inspectionSettings, null, null, null);
             return new Configuration(userSettings);
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void SaveConfigWorks()
         {
@@ -61,6 +62,7 @@ namespace RubberduckTests.Settings
                     viewModel.InspectionSettings.SourceCollection.OfType<CodeInspectionSetting>()));
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void SetDefaultsWorks()
         {
@@ -73,6 +75,7 @@ namespace RubberduckTests.Settings
                     viewModel.InspectionSettings.SourceCollection.OfType<CodeInspectionSetting>()));
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void InspectionsAreSetInCtor()
         {
@@ -83,6 +86,7 @@ namespace RubberduckTests.Settings
                     viewModel.InspectionSettings.SourceCollection.OfType<CodeInspectionSetting>()));
         }
 
+        [TestCategory("Settings")]
         [TestMethod]
         public void InspectionSeveritiesAreUpdated()
         {

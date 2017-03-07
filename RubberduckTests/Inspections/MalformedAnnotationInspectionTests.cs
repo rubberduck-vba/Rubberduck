@@ -6,9 +6,12 @@ using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
 using Rubberduck.Settings;
 using System.Threading;
-using Rubberduck.Inspections.Rubberduck.Inspections;
-using Rubberduck.Parsing;
+using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Concrete.Rubberduck.Inspections;
+using Rubberduck.Inspections.QuickFixes;
+using Rubberduck.Inspections.Resources;
 using Rubberduck.VBEditor.Application;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -34,12 +37,12 @@ namespace RubberduckTests.Inspections
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new MalformedAnnotationInspection(parser.State);
+            var inspection = new MissingAnnotationArgumentInspection(parser.State);
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
@@ -64,12 +67,12 @@ namespace RubberduckTests.Inspections
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new MalformedAnnotationInspection(parser.State);
+            var inspection = new MissingAnnotationArgumentInspection(parser.State);
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
@@ -94,12 +97,12 @@ namespace RubberduckTests.Inspections
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new MalformedAnnotationInspection(parser.State);
+            var inspection = new MissingAnnotationArgumentInspection(parser.State);
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
@@ -124,12 +127,12 @@ namespace RubberduckTests.Inspections
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new MalformedAnnotationInspection(parser.State);
+            var inspection = new MissingAnnotationArgumentInspection(parser.State);
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
@@ -155,12 +158,12 @@ namespace RubberduckTests.Inspections
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new MalformedAnnotationInspection(parser.State);
+            var inspection = new MissingAnnotationArgumentInspection(parser.State);
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
@@ -189,12 +192,12 @@ namespace RubberduckTests.Inspections
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(new Mock<ISinks>().Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new MalformedAnnotationInspection(parser.State);
+            var inspection = new MissingAnnotationArgumentInspection(parser.State);
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
@@ -206,7 +209,7 @@ namespace RubberduckTests.Inspections
         [TestCategory("Inspections")]
         public void InspectionType()
         {
-            var inspection = new MalformedAnnotationInspection(null);
+            var inspection = new MissingAnnotationArgumentInspection(null);
             Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
         }
 
@@ -214,8 +217,8 @@ namespace RubberduckTests.Inspections
         [TestCategory("Inspections")]
         public void InspectionName()
         {
-            const string inspectionName = "MalformedAnnotationInspection";
-            var inspection = new MalformedAnnotationInspection(null);
+            const string inspectionName = "MissingAnnotationArgumentInspection";
+            var inspection = new MissingAnnotationArgumentInspection(null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
         }
@@ -225,12 +228,12 @@ namespace RubberduckTests.Inspections
             var settings = new CodeInspectionSettings();
             settings.CodeInspections.Add(new CodeInspectionSetting
             {
-                Description = new MalformedAnnotationInspection(null).Description,
+                Description = new MissingAnnotationArgumentInspection(null).Description,
                 Severity = CodeInspectionSeverity.Error
             });
             return new Configuration
             {
-                UserSettings = new UserSettings(null, null, null, settings, null, null)
+                UserSettings = new UserSettings(null, null, null, settings, null, null, null)
             };
         }
     }

@@ -1,35 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Resources;
+using Rubberduck.Inspections.Results;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections
 {
-    public sealed class ObjectVariableNotSetInspectionResult : InspectionResultBase
-    {
-        private readonly IdentifierReference _reference;
-        private readonly IEnumerable<CodeInspectionQuickFix> _quickFixes;
-
-        public ObjectVariableNotSetInspectionResult(IInspection inspection, IdentifierReference reference)
-            : base(inspection, reference.QualifiedModuleName, reference.Context)
-        {
-            _reference = reference;
-            _quickFixes = new CodeInspectionQuickFix[]
-            {
-                new UseSetKeywordForObjectAssignmentQuickFix(_reference),
-                new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName),
-            };
-        }
-
-        public override IEnumerable<CodeInspectionQuickFix> QuickFixes { get { return _quickFixes; } }
-
-        public override string Description
-        {
-            get { return string.Format(InspectionsUI.ObjectVariableNotSetInspectionResultFormat, _reference.Declaration.IdentifierName); }
-        }
-    }
-
     public sealed class ObjectVariableNotSetInspection : InspectionBase
     {
         public ObjectVariableNotSetInspection(RubberduckParserState state)
@@ -38,24 +18,8 @@ namespace Rubberduck.Inspections
         }
 
         public override string Meta { get { return InspectionsUI.ObjectVariableNotSetInspectionMeta; } }
-        public override string Description { get { return InspectionsUI.ObjectVariableNotSetInspectionResultFormat; } }
+        public override string Description { get { return InspectionsUI.ObjectVariableNotSetInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
-
-        private static readonly IReadOnlyList<string> ValueTypes = new[]
-        {
-            Tokens.Boolean,
-            Tokens.Byte,
-            Tokens.Currency,
-            Tokens.Date,
-            Tokens.Decimal,
-            Tokens.Double,
-            Tokens.Integer,
-            Tokens.Long,
-            Tokens.LongLong,
-            Tokens.Single,
-            Tokens.String,
-            Tokens.Variant
-        };
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
@@ -63,8 +27,8 @@ namespace Rubberduck.Inspections
                 State.AllUserDeclarations.Where(item =>
                         !item.IsSelfAssigned &&
                         !item.IsArray &&
-                        !ValueTypes.Contains(item.AsTypeName) &&
-                        (item.AsTypeDeclaration == null || (
+                        !SymbolList.ValueTypes.Contains(item.AsTypeName) &&
+                        (item.AsTypeDeclaration == null || (!ClassModuleDeclaration.HasDefaultMember(item.AsTypeDeclaration) &&
                         item.AsTypeDeclaration.DeclarationType != DeclarationType.Enumeration &&
                         item.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType)) &&
                         (item.DeclarationType == DeclarationType.Variable ||
@@ -75,10 +39,11 @@ namespace Rubberduck.Inspections
                     (item.DeclarationType == DeclarationType.Function || item.DeclarationType == DeclarationType.PropertyGet)
                     && !item.IsArray
                     && item.IsTypeSpecified
-                    && !ValueTypes.Contains(item.AsTypeName)
-                    && (item.AsTypeDeclaration != null && (
-                        item.AsTypeDeclaration.DeclarationType != DeclarationType.Enumeration
-                        && item.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType)));
+                    && !SymbolList.ValueTypes.Contains(item.AsTypeName) 
+                    && (item.AsTypeDeclaration == null // null if unresolved (e.g. in unit tests)
+                        || (item.AsTypeDeclaration.DeclarationType != DeclarationType.Enumeration && item.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType 
+                            && item.AsTypeDeclaration != null 
+                            && !ClassModuleDeclaration.HasDefaultMember(item.AsTypeDeclaration))));
 
             var interestingReferences = interestingDeclarations
                     .Union(interestingMembers.SelectMany(item =>
@@ -87,8 +52,8 @@ namespace Rubberduck.Inspections
                     .SelectMany(declaration =>
                         declaration.References.Where(reference =>
                         {
-                            var setStmtContext = ParserRuleContextHelper.GetParent<VBAParser.LetStmtContext>(reference.Context);
-                            return reference.IsAssignment && setStmtContext != null && setStmtContext.LET() == null;
+                            var letStmtContext = ParserRuleContextHelper.GetParent<VBAParser.LetStmtContext>(reference.Context);
+                            return reference.IsAssignment && letStmtContext != null && letStmtContext.LET() == null;
                         })
                     );
 

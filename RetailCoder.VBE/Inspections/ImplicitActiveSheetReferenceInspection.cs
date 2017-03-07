@@ -1,24 +1,21 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Resources;
+using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor.Application;
-using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Inspections
 {
     public sealed class ImplicitActiveSheetReferenceInspection : InspectionBase
     {
-        private readonly IHostApplication _hostApp;
-
-        public ImplicitActiveSheetReferenceInspection(IVBE vbe, RubberduckParserState state)
+        public ImplicitActiveSheetReferenceInspection(RubberduckParserState state)
             : base(state)
         {
-            _hostApp = vbe.HostApplication();
         }
 
         public override string Meta { get { return InspectionsUI.ImplicitActiveSheetReferenceInspectionMeta; } }
-        public override string Description { get { return InspectionsUI.ImplicitActiveSheetReferenceInspectionResultFormat; } }
+        public override string Description { get { return InspectionsUI.ImplicitActiveSheetReferenceInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 
         private static readonly string[] Targets = 
@@ -28,22 +25,25 @@ namespace Rubberduck.Inspections
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
-            if (_hostApp == null || _hostApp.ApplicationName != "Excel")
+            var excel = State.DeclarationFinder.Projects.SingleOrDefault(item => item.IsBuiltIn && item.IdentifierName == "Excel");
+            if (excel == null) { return Enumerable.Empty<InspectionResultBase>(); }
+
+            var globalModules = new[]
             {
-                return Enumerable.Empty<InspectionResultBase>();
-                // if host isn't Excel, the ExcelObjectModel declarations shouldn't be loaded anyway.
-            }
+                State.DeclarationFinder.FindClassModule("Global", excel, true),
+                State.DeclarationFinder.FindClassModule("_Global", excel, true)
+            };
 
-            var matches = BuiltInDeclarations.Where(item =>
-                        Targets.Contains(item.IdentifierName) &&
-                        item.ParentScope == "EXCEL.EXE;Excel._Global" &&
-                        item.AsTypeName == "Range").ToList();
+            var members = Targets
+                .SelectMany(target => globalModules.SelectMany(global =>
+                    State.DeclarationFinder.FindMemberMatches(global, target))
+                .Where(member => member.AsTypeName == "Range" && member.References.Any()));
 
-            var issues = matches.Where(item => item.References.Any())
-                .SelectMany(declaration => declaration.References.Distinct());
-
-            return issues.Select(issue => 
-                new ImplicitActiveSheetReferenceInspectionResult(this, issue));
+            return members
+                .SelectMany(declaration => declaration.References)
+                .Where(issue => !issue.IsIgnoringInspectionResultFor(AnnotationName))
+                .Select(issue => new ImplicitActiveSheetReferenceInspectionResult(this, issue))
+                .ToList();
         }
     }
 }

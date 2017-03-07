@@ -8,7 +8,8 @@ namespace Rubberduck.UI.About
         {
             InitializeComponent();
 
-            ViewModel = new AboutControlViewModel();
+            // todo: inject these dependencies?
+            ViewModel = new AboutControlViewModel(new VersionCheck.VersionCheck());
         }
 
         private AboutControlViewModel _viewModel;
@@ -20,6 +21,16 @@ namespace Rubberduck.UI.About
                 _viewModel = value;
                 AboutControl.DataContext = _viewModel;
             }
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Escape)
+            {
+                this.Close();
+                return true;
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
         }
     }
 }

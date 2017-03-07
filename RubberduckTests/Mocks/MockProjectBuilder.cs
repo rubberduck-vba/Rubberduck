@@ -53,6 +53,9 @@ namespace RubberduckTests.Mocks
             _project = CreateProjectMock(name, filename, protection);
 
             _project.SetupProperty(m => m.HelpFile);
+            _project.SetupGet(m => m.ProjectId).Returns(() => _project.Object.HelpFile);
+            _project.Setup(m => m.AssignProjectId())
+                .Callback(() => _project.Object.HelpFile = Guid.NewGuid().ToString());
 
             _vbComponents = CreateComponentsMock();
             _project.SetupGet(m => m.VBComponents).Returns(_vbComponents.Object);
@@ -77,8 +80,6 @@ namespace RubberduckTests.Mocks
 
         /// <summary>
         /// Adds a new mock component to the project.
-        /// Use the <see cref="AddComponent(string,vbext_ComponentType,string,Selection)"/> overload to add module components.
-        /// Use this overload to add user forms created with a <see cref="RubberduckTests.Mocks.MockUserFormBuilder"/> instance.
         /// </summary>
         /// <param name="component">The component to add.</param>
         /// <returns>Returns the <see cref="MockProjectBuilder"/> instance.</returns>
@@ -96,9 +97,9 @@ namespace RubberduckTests.Mocks
         /// <param name="filePath">The path to the referenced library.</param>
         /// <param name="isBuiltIn">Indicates whether the reference is a built-in reference.</param>
         /// <returns>Returns the <see cref="MockProjectBuilder"/> instance.</returns>
-        public MockProjectBuilder AddReference(string name, string filePath, bool isBuiltIn = false)
+        public MockProjectBuilder AddReference(string name, string filePath, int major = 0, int minor = 0, bool isBuiltIn = false)
         {
-            var reference = CreateReferenceMock(name, filePath, isBuiltIn);
+            var reference = CreateReferenceMock(name, filePath, major, minor, isBuiltIn);
             _references.Add(reference.Object);
             return this;
         }
@@ -142,6 +143,7 @@ namespace RubberduckTests.Mocks
             result.SetupGet(m => m.FileName).Returns(() => filename);
             result.SetupGet(m => m.Protection).Returns(() => protection);
             result.SetupGet(m => m.VBE).Returns(_getVbe);
+            result.Setup(m => m.ComponentNames()).Returns(() => _vbComponents.Object.Select(component => component.Name).ToArray());
 
             return result;
         }
@@ -210,7 +212,7 @@ namespace RubberduckTests.Mocks
             return result;
         }
 
-        private Mock<IReference> CreateReferenceMock(string name, string filePath, bool isBuiltIn = true)
+        private Mock<IReference> CreateReferenceMock(string name, string filePath, int major, int minor, bool isBuiltIn = true)
         {
             var result = new Mock<IReference>();
 
@@ -219,6 +221,8 @@ namespace RubberduckTests.Mocks
 
             result.SetupGet(m => m.Name).Returns(() => name);
             result.SetupGet(m => m.FullPath).Returns(() => filePath);
+            result.SetupGet(m => m.Major).Returns(() => major);
+            result.SetupGet(m => m.Minor).Returns(() => minor);
 
             result.SetupGet(m => m.IsBuiltIn).Returns(isBuiltIn);
 
@@ -234,7 +238,7 @@ namespace RubberduckTests.Mocks
             result.SetupGet(m => m.Type).Returns(() => type);
             result.SetupProperty(m => m.Name, name);
 
-            var module = CreateCodeModuleMock(name, content, selection);
+            var module = CreateCodeModuleMock(name, content, selection, result);
             module.SetupGet(m => m.Parent).Returns(() => result.Object);
             result.SetupGet(m => m.CodeModule).Returns(() => module.Object);
 
@@ -243,15 +247,15 @@ namespace RubberduckTests.Mocks
             return result;
         }
 
-        private Mock<ICodeModule> CreateCodeModuleMock(string name, string content, Selection selection)
+        private Mock<ICodeModule> CreateCodeModuleMock(string name, string content, Selection selection, Mock<IVBComponent> component)
         {
-            var codePane = CreateCodePaneMock(name, selection);
+            var codePane = CreateCodePaneMock(name, selection, component);
             codePane.SetupGet(m => m.VBE).Returns(_getVbe);
 
-            var result = CreateCodeModuleMock(content);
+            var result = CreateCodeModuleMock(content, name);
             result.SetupGet(m => m.VBE).Returns(_getVbe);
+            result.SetupGet(m => m.Parent).Returns(() => component.Object);
             result.SetupGet(m => m.CodePane).Returns(() => codePane.Object);
-            result.SetupProperty(m => m.Name, name);
 
             codePane.SetupGet(m => m.CodeModule).Returns(() => result.Object);
 
@@ -261,24 +265,31 @@ namespace RubberduckTests.Mocks
 
         private static readonly string[] ModuleBodyTokens =
         {
-            Tokens.Sub, Tokens.Function, Tokens.Property
+            Tokens.Sub + ' ', Tokens.Function + ' ', Tokens.Property + ' '
         };
 
-        private Mock<ICodeModule> CreateCodeModuleMock(string content)
+        private Mock<ICodeModule> CreateCodeModuleMock(string content, string name)
         {
             var lines = content.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
 
             var codeModule = new Mock<ICodeModule>();
             codeModule.SetupGet(c => c.CountOfLines).Returns(() => lines.Count);
             codeModule.SetupGet(c => c.CountOfDeclarationLines).Returns(() =>
-                lines.TakeWhile(line => !ModuleBodyTokens.Any(line.Contains)).Count());
+                lines.TakeWhile(line => line.Contains(Tokens.Declare + ' ') || !ModuleBodyTokens.Any(line.Contains)).Count());
 
-            // ReSharper disable once UseIndexedProperty
+            codeModule.Setup(m => m.Content()).Returns(() => string.Join(Environment.NewLine, lines));
+            
+            codeModule.Setup(m => m.GetLines(It.IsAny<Selection>()))
+                .Returns((Selection selection) => string.Join(Environment.NewLine, lines.Skip(selection.StartLine - 1).Take(selection.LineCount)));
+            
             codeModule.Setup(m => m.GetLines(It.IsAny<int>(), It.IsAny<int>()))
                 .Returns<int, int>((start, count) => string.Join(Environment.NewLine, lines.Skip(start - 1).Take(count)));
 
             codeModule.Setup(m => m.ReplaceLine(It.IsAny<int>(), It.IsAny<string>()))
                 .Callback<int, string>((index, str) => lines[index - 1] = str);
+
+            codeModule.Setup(m => m.DeleteLines(It.IsAny<Selection>()))
+                .Callback<Selection>(selection => lines.RemoveRange(selection.StartLine - 1, selection.LineCount));
 
             codeModule.Setup(m => m.DeleteLines(It.IsAny<int>(), It.IsAny<int>()))
                 .Callback<int, int>((index, count) => lines.RemoveRange(index - 1, count));
@@ -302,12 +313,18 @@ namespace RubberduckTests.Mocks
                     lines.AddRange(newLine.Split(new[] { Environment.NewLine }, StringSplitOptions.None));
                 });
 
+            codeModule.SetupProperty(m => m.Name, name);
+
+            codeModule.Setup(m => m.Equals(It.IsAny<ICodeModule>()))
+                .Returns((ICodeModule other) => name.Equals(other.Name) && content.Equals(other.Content()));
+            codeModule.Setup(m => m.GetHashCode()).Returns(() => codeModule.Object.Target.GetHashCode());
+
             return codeModule;
         }
 
-        private Mock<ICodePane> CreateCodePaneMock(string name, Selection selection)
+        private Mock<ICodePane> CreateCodePaneMock(string name, Selection selection, Mock<IVBComponent> component)
         {
-            var windows = _getVbe().Windows as MockWindowsCollection;
+            var windows = _getVbe().Windows as Windows;
             if (windows == null)
             {
                 throw new InvalidOperationException("VBE.Windows collection must be a MockWindowsCollection object.");
@@ -317,11 +334,12 @@ namespace RubberduckTests.Mocks
             var window = windows.CreateWindow(name);
             windows.Add(window);
 
-            codePane.Setup(p => p.SetSelection(It.IsAny<Selection>()));
-            codePane.Setup(p => p.SetSelection(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()));
+            codePane.Setup(p => p.GetQualifiedSelection()).Returns(() => {
+                if (selection.IsEmpty()) { return null; }
+                return new QualifiedSelection(new QualifiedModuleName(component.Object), selection);
+            });
+            codePane.SetupProperty(p => p.Selection, selection);
             codePane.Setup(p => p.Show());
-
-            codePane.Setup(p => p.GetSelection()).Returns(selection);
 
             codePane.SetupGet(p => p.VBE).Returns(_getVbe);
             codePane.SetupGet(p => p.Window).Returns(() => window);

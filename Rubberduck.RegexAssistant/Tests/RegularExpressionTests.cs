@@ -7,6 +7,7 @@ namespace Rubberduck.RegexAssistant.Tests
     [TestClass]
     public class RegularExpressionTests
     {
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void ParseSingleLiteralGroupAsAtomWorks()
         {
@@ -17,6 +18,7 @@ namespace Rubberduck.RegexAssistant.Tests
             Assert.AreEqual(new Group("(g)", new Quantifier("{2,4}")), (expression as SingleAtomExpression).Atom);
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void ParseCharacterClassAsAtomWorks()
         {
@@ -27,6 +29,7 @@ namespace Rubberduck.RegexAssistant.Tests
             Assert.AreEqual(new CharacterClass("[abcd]", new Quantifier("*")), (expression as SingleAtomExpression).Atom);
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void ParseLiteralAsAtomWorks()
         {
@@ -37,6 +40,7 @@ namespace Rubberduck.RegexAssistant.Tests
             Assert.AreEqual(new Literal("a", Quantifier.None), (expression as SingleAtomExpression).Atom);
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void ParseUnicodeEscapeAsAtomWorks()
         {
@@ -47,6 +51,7 @@ namespace Rubberduck.RegexAssistant.Tests
             Assert.AreEqual(new Literal("\\u1234", new Quantifier("+")), (expression as SingleAtomExpression).Atom);
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void ParseHexEscapeSequenceAsAtomWorks()
         {
@@ -57,6 +62,7 @@ namespace Rubberduck.RegexAssistant.Tests
             Assert.AreEqual(new Literal("\\x12", new Quantifier("?")), (expression as SingleAtomExpression).Atom);
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void ParseOctalEscapeSequenceAsAtomWorks()
         {
@@ -67,6 +73,7 @@ namespace Rubberduck.RegexAssistant.Tests
             Assert.AreEqual(new Literal("\\712", new Quantifier("{2}")), (expression as SingleAtomExpression).Atom);
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void ParseEscapedLiteralAsAtomWorks()
         {
@@ -77,6 +84,7 @@ namespace Rubberduck.RegexAssistant.Tests
             Assert.AreEqual(new Literal("\\)", Quantifier.None), (expression as SingleAtomExpression).Atom);
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void ParseUnescapedSpecialCharAsAtomFails()
         {
@@ -89,6 +97,7 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void ParseSimpleLiteralConcatenationAsConcatenatedExpression()
         {
@@ -106,6 +115,7 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void ParseSimplisticGroupConcatenationAsConcatenatedExpression()
         {
@@ -124,6 +134,7 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void ParseSimplisticCharacterClassConcatenationAsConcatenatedExpression()
         {
@@ -142,6 +153,7 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void ParseSimplisticAlternativesExpression()
         {
@@ -159,6 +171,7 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void CharacterClassIsNotAnAlternativesExpression()
         {
@@ -167,6 +180,7 @@ namespace Rubberduck.RegexAssistant.Tests
             Assert.AreEqual(new CharacterClass("[a|b]", Quantifier.None), (expression as SingleAtomExpression).Atom);
         }
 
+        [TestCategory("RegexAssistant")]
         [TestMethod]
         public void GroupIsNotAnAlternativesExpression()
         {

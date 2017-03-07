@@ -14,6 +14,7 @@ namespace Rubberduck.UI.Refactorings
     {
         private readonly RubberduckParserState _state;
         private readonly IIndenter _indenter;
+        private PropertyGenerator _previewGenerator; 
 
         public string NewPropertyName
         {
@@ -29,76 +30,39 @@ namespace Rubberduck.UI.Refactorings
 
         public Declaration TargetDeclaration { get; set; }
 
-        public bool CanImplementLetSetterType
-        {
-            get { return LetSetterTypeCheckBox.Enabled; }
-            set
-            {
-                if (!value)
-                {
-                    LetSetterTypeCheckBox.Checked = false;
-                }
-                LetSetterTypeCheckBox.Enabled = value;
-            }
-        }
+        public bool CanImplementLetSetterType { get; set; }
 
-        public bool CanImplementSetSetterType
-        {
-            get { return SetSetterTypeCheckBox.Enabled; }
-            set
-            {
-                if (!value)
-                {
-                    SetSetterTypeCheckBox.Checked = false;
-                }
-                SetSetterTypeCheckBox.Enabled = value;
-            }
-        }
-        
+        public bool CanImplementSetSetterType { get; set; }
+
+        public bool LetSetterSelected { get { return LetSetterTypeCheckBox.Checked; } }
+
+        public bool SetSetterSelected { get { return SetSetterTypeCheckBox.Checked; } }
+
         public bool MustImplementLetSetterType
         {
-            get { return LetSetterTypeCheckBox.Checked; }
-            set
-            {
-                if (value)
-                {
-                    LetSetterTypeCheckBox.Checked = true;
-                }
-                LetSetterTypeCheckBox.Enabled = !value;
-            }
+            get { return CanImplementLetSetterType && !CanImplementSetSetterType; }
         }
 
         public bool MustImplementSetSetterType
         {
-            get { return SetSetterTypeCheckBox.Checked; }
-            set
-            {
-                if (value)
-                {
-                    SetSetterTypeCheckBox.Checked = true;
-                }
-                SetSetterTypeCheckBox.Enabled = !value;
-            }
+            get { return CanImplementSetSetterType && !CanImplementLetSetterType; }
         }
 
         public EncapsulateFieldDialog(RubberduckParserState state, IIndenter indenter)
         {
             _state = state;
             _indenter = indenter;
+
             InitializeComponent();
             LocalizeDialog();
-
-            PropertyNameTextBox.TextChanged += PropertyNameBox_TextChanged;
-            ParameterNameTextBox.TextChanged += VariableNameBox_TextChanged;
-
-            LetSetterTypeCheckBox.CheckedChanged += EncapsulateFieldDialog_SetterTypeChanged;
-            SetSetterTypeCheckBox.CheckedChanged += EncapsulateFieldDialog_SetterTypeChanged;
-
+            
             Shown += EncapsulateFieldDialog_Shown;
         }
 
         void EncapsulateFieldDialog_SetterTypeChanged(object sender, EventArgs e)
         {
+            _previewGenerator.GenerateSetter = SetSetterTypeCheckBox.Checked;
+            _previewGenerator.GenerateLetter = LetSetterTypeCheckBox.Checked;
             UpdatePreview();
         }
 
@@ -116,62 +80,67 @@ namespace Rubberduck.UI.Refactorings
 
         void EncapsulateFieldDialog_Shown(object sender, EventArgs e)
         {
+            if (MustImplementSetSetterType)
+            {
+                SetSetterTypeCheckBox.Checked = true;
+                LetSetterTypeCheckBox.Enabled = false;
+            }
+            else
+            {
+                LetSetterTypeCheckBox.Checked = true;
+                SetSetterTypeCheckBox.Enabled = !MustImplementLetSetterType;
+            }
+
             ValidatePropertyName();
             ValidateVariableName();
+
+            _previewGenerator = new PropertyGenerator
+            {
+                PropertyName = NewPropertyName,
+                AsTypeName = TargetDeclaration.AsTypeName,
+                BackingField = TargetDeclaration.IdentifierName,
+                ParameterName = ParameterName,
+                GenerateSetter = SetSetterTypeCheckBox.Checked,
+                GenerateLetter = LetSetterTypeCheckBox.Checked
+            };
+
+            LetSetterTypeCheckBox.CheckedChanged += EncapsulateFieldDialog_SetterTypeChanged;
+            SetSetterTypeCheckBox.CheckedChanged += EncapsulateFieldDialog_SetterTypeChanged;
+            PropertyNameTextBox.TextChanged += PropertyNameBox_TextChanged;
+            ParameterNameTextBox.TextChanged += VariableNameBox_TextChanged;
+
             UpdatePreview();
         }
 
         private void PropertyNameBox_TextChanged(object sender, EventArgs e)
         {
             ValidatePropertyName();
+            _previewGenerator.PropertyName = NewPropertyName;
             UpdatePreview();
         }
 
         private void VariableNameBox_TextChanged(object sender, EventArgs e)
         {
             ValidateVariableName();
+            _previewGenerator.ParameterName = ParameterName;
             UpdatePreview();
         }
 
         private void UpdatePreview()
         {
-            PreviewBox.Text = GetPropertyText();
-        }
-
-        private string GetPropertyText()
-        {
-            if (TargetDeclaration == null) { return string.Empty; }
-
-            var getterText = string.Join(Environment.NewLine,
-                string.Format("Public Property Get {0}() As {1}", NewPropertyName, TargetDeclaration.AsTypeName),
-                string.Format("    {0}{1} = {2}", MustImplementSetSetterType || !CanImplementLetSetterType ? "Set " : string.Empty, NewPropertyName, TargetDeclaration.IdentifierName),
-                "End Property");
-
-            var letterText = string.Join(Environment.NewLine,
-                string.Format(Environment.NewLine + Environment.NewLine + "Public Property Let {0}(ByVal {1} As {2})",
-                    NewPropertyName, ParameterName, TargetDeclaration.AsTypeName),
-                string.Format("    {0} = {1}", TargetDeclaration.IdentifierName, ParameterName),
-                "End Property");
-
-            var setterText = string.Join(Environment.NewLine,
-                string.Format(Environment.NewLine + Environment.NewLine + "Public Property Set {0}(ByVal {1} As {2})",
-                    NewPropertyName, ParameterName, TargetDeclaration.AsTypeName),
-                string.Format("    Set {0} = {1}", TargetDeclaration.IdentifierName, ParameterName),
-                "End Property");
-
-            var propertyText = getterText +
-                    (MustImplementLetSetterType ? letterText : string.Empty) +
-                    (MustImplementSetSetterType ? setterText : string.Empty);
-
-            var propertyTextLines = propertyText.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-            return string.Join(Environment.NewLine, _indenter.Indent(propertyTextLines, "test", false));
+            if (TargetDeclaration == null)
+            {
+                PreviewBox.Text = string.Empty;
+            }
+            var propertyTextLines = _previewGenerator.AllPropertyCode.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+            PreviewBox.Text = string.Join(Environment.NewLine, _indenter.Indent(propertyTextLines, true));
         }
 
         private void ValidatePropertyName()
         {
             InvalidPropertyNameIcon.Visible = ValidateName(NewPropertyName, ParameterName) ||
                                               _state.AllUserDeclarations.Where(a => a.ParentScope == TargetDeclaration.ParentScope)
-                                                                        .Any(a => a.IdentifierName == NewPropertyName);
+                                                                        .Any(a => a.IdentifierName.Equals(NewPropertyName, StringComparison.InvariantCultureIgnoreCase));
 
             SetOkButtonEnabledState();
         }
@@ -188,8 +157,8 @@ namespace Rubberduck.UI.Refactorings
             var tokenValues = typeof(Tokens).GetFields().Select(item => item.GetValue(null)).Cast<string>().Select(item => item);
 
             return TargetDeclaration == null
-                               || changedName == TargetDeclaration.IdentifierName
-                               || changedName == otherName
+                               || changedName.Equals(TargetDeclaration.IdentifierName, StringComparison.InvariantCultureIgnoreCase)
+                               || changedName.Equals(otherName, StringComparison.InvariantCultureIgnoreCase)
                                || !char.IsLetter(changedName.FirstOrDefault())
                                || tokenValues.Contains(ParameterName, StringComparer.InvariantCultureIgnoreCase)
                                || changedName.Any(c => !char.IsLetterOrDigit(c) && c != '_');

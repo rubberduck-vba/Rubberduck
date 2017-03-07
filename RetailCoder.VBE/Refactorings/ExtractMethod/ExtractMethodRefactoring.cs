@@ -1,9 +1,6 @@
 using System;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
-using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Refactorings.ExtractMethod
@@ -75,7 +72,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
         {
             var pane = _codeModule.CodePane;
             {
-                pane.SetSelection(target.Selection);
+                pane.Selection = target.Selection;
                 Refactor();
             }
         }

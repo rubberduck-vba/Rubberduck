@@ -48,7 +48,7 @@ namespace Rubberduck.UI.Command.Refactorings
                     return;
                 }
 
-                var selection = new QualifiedSelection(new QualifiedModuleName(module.Parent), pane.GetSelection());
+                var selection = new QualifiedSelection(new QualifiedModuleName(module.Parent), pane.Selection);
 
                 var refactoring = new MoveCloserToUsageRefactoring(Vbe, _state, _msgbox);
                 refactoring.Refactor(selection);

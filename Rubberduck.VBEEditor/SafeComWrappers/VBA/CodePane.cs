@@ -1,5 +1,6 @@
 ﻿using System;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.WindowsApi;
 using VB = Microsoft.Vbe.Interop;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
@@ -29,7 +30,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public int TopLine
         {
             get { return IsWrappingNullReference ? 0 : Target.TopLine; }
-            set { Target.TopLine = value; }
+            set { if (!IsWrappingNullReference) Target.TopLine = value; }
         }
 
         public int CountOfVisibleLines
@@ -47,8 +48,16 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             get { return IsWrappingNullReference ? 0 : (CodePaneView)Target.CodePaneView; }
         }
 
-        public Selection GetSelection()
+        public Selection Selection
         {
+            get { return GetSelection(); }
+            set { if (!IsWrappingNullReference) SetSelection(value.StartLine, value.StartColumn, value.EndLine, value.EndColumn); }
+        }
+
+        private Selection GetSelection()
+        {
+            if (IsWrappingNullReference) return new Selection(0, 0, 0, 0);
+
             int startLine;
             int startColumn;
             int endLine;
@@ -82,25 +91,22 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return new QualifiedSelection(moduleName, selection);
         }
 
-        public void SetSelection(int startLine, int startColumn, int endLine, int endColumn)
+        private void SetSelection(int startLine, int startColumn, int endLine, int endColumn)
         {
+            if (IsWrappingNullReference) return;
             Target.SetSelection(startLine, startColumn, endLine, endColumn);
             ForceFocus();
         }
 
-        public void SetSelection(Selection selection)
-        {
-            SetSelection(selection.StartLine, selection.StartColumn, selection.EndLine, selection.EndColumn);
-        }
-
         private void ForceFocus()
         {
+            if (IsWrappingNullReference) return;
             Show();
 
             var window = VBE.MainWindow;
             var mainWindowHandle = window.Handle();
-            var caption = window.Caption;
-            var childWindowFinder = new NativeMethods.ChildWindowFinder(caption);
+            var caption = Window.Caption;
+            var childWindowFinder = new ChildWindowFinder(caption);
 
             NativeMethods.EnumChildWindows(mainWindowHandle, childWindowFinder.EnumWindowsProcToChildWindowByCaption);
             var handle = childWindowFinder.ResultHandle;
@@ -109,10 +115,15 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             {
                 NativeMethods.ActivateWindow(handle, mainWindowHandle);
             }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine("CodePane.ForceFocus() failed to get a handle on the MainWindow.");
+            }
         }
 
         public void Show()
         {
+            if (IsWrappingNullReference) return;
             Target.Show();
         }
 

@@ -9,7 +9,7 @@ namespace Rubberduck.UI.IdentifierReferences
     public class ImplementationsListDockablePresenter : DockableToolwindowPresenter
     {
         public ImplementationsListDockablePresenter(IVBE vbe, IAddIn addin, IDockableUserControl control, IEnumerable<Declaration> implementations)
-            : base(vbe, addin, control)
+            : base(vbe, addin, control, null)
         {
             BindTarget(implementations);
         }
@@ -28,7 +28,7 @@ namespace Rubberduck.UI.IdentifierReferences
 
         public static void OnNavigateImplementation(Declaration implementation)
         {
-            implementation.QualifiedName.QualifiedModuleName.Component.CodeModule.CodePane.SetSelection(implementation.Selection);
+            implementation.QualifiedName.QualifiedModuleName.Component.CodeModule.CodePane.Selection = implementation.Selection;
         }
 
         private void ControlNavigate(object sender, ListItemActionEventArgs e)

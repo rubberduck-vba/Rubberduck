@@ -1,4 +1,5 @@
-﻿using System.Xml.Serialization;
+﻿using System.Globalization;
+using System.Xml.Serialization;
 using Rubberduck.UI;
 
 namespace Rubberduck.Settings
@@ -23,7 +24,7 @@ namespace Rubberduck.Settings
         [XmlIgnore]
         public string Prompt
         {
-            get { return RubberduckUI.ResourceManager.GetString("HotkeyDescription_" + Name, UI.Settings.Settings.Culture); } 
+            get { return RubberduckUI.ResourceManager.GetString("HotkeyDescription_" + Name, CultureInfo.CurrentUICulture); } 
         }
 
         public override string ToString()

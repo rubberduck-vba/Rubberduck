@@ -43,14 +43,12 @@ namespace Rubberduck.Common
 
     public static class ExportFormatter
     {
-        public static string Csv(object[][] data, string Title, ColumnInfo[] ColumnInfos)
+        public static string Csv(object[][] data, string title, ColumnInfo[] columnInfos)
         {
-            string s = "";
-
-            string[] headerRow = new string[ColumnInfos.Length];
-            for (var c = 0; c < ColumnInfos.Length; c++)
+            var headerRow = new string[columnInfos.Length];
+            for (var c = 0; c < columnInfos.Length; c++)
             {
-                headerRow[c] = CsvEncode(ColumnInfos[c].Title);
+                headerRow[c] = CsvEncode(columnInfos[c].Title);
             }
 
             string[] rows = new string[data.Length];
@@ -63,7 +61,7 @@ namespace Rubberduck.Common
                 }
                 rows[r] = string.Join(",", row);
             }
-            return CsvEncode(Title.Replace("\r\n"," ")) + Environment.NewLine + string.Join(",", headerRow) + Environment.NewLine + string.Join(Environment.NewLine, rows);
+            return CsvEncode(title.Replace("\r\n"," ")) + Environment.NewLine + string.Join(",", headerRow) + Environment.NewLine + string.Join(Environment.NewLine, rows);
         }
 
         private static string CsvEncode(object value)

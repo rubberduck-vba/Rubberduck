@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Common;
+using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Resources;
+using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
@@ -23,39 +25,27 @@ namespace Rubberduck.Inspections
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()
         {
-            var declarations = UserDeclarations.ToList();
+            var interfaceMembers = State.DeclarationFinder.FindAllInterfaceMembers();
+            var interfaceImplementationMembers = State.DeclarationFinder.FindAllInterfaceImplementingMembers();
 
-            var interfaceMemberScopes = declarations.FindInterfaceMembers().Select(m => m.Scope).ToList();
-            var interfaceImplementationMemberScopes = declarations.FindInterfaceImplementationMembers().Select(m => m.Scope).ToList();
+            var handlers = State.DeclarationFinder.FindEventHandlers();
 
-            var builtInHandlers = State.AllDeclarations.FindBuiltInEventHandlers();
+            var parameters = State.DeclarationFinder
+                .UserDeclarations(DeclarationType.Parameter)
+                .OfType<ParameterDeclaration>()
+                .Where(parameter => !parameter.References.Any() && !IsIgnoringInspectionResultFor(parameter, AnnotationName)
+                                    && parameter.ParentDeclaration.DeclarationType != DeclarationType.Event
+                                    && parameter.ParentDeclaration.DeclarationType != DeclarationType.LibraryFunction
+                                    && parameter.ParentDeclaration.DeclarationType != DeclarationType.LibraryProcedure
+                                    && !interfaceMembers.Contains(parameter.ParentDeclaration)
+                                    && !handlers.Contains(parameter.ParentDeclaration))
+                .ToList();
 
-            var parameters = declarations.Where(parameter => parameter.DeclarationType == DeclarationType.Parameter
-                && parameter.ParentDeclaration.DeclarationType != DeclarationType.Event
-                && parameter.ParentDeclaration.DeclarationType != DeclarationType.LibraryFunction
-                && parameter.ParentDeclaration.DeclarationType != DeclarationType.LibraryProcedure);
-
-            var unused = parameters.Where(parameter => !parameter.References.Any()).ToList();
-
-            var issues = from issue in unused.Where(parameter =>
-                !IsInterfaceMemberParameter(parameter, interfaceMemberScopes)
-                && !builtInHandlers.Contains(parameter.ParentDeclaration))
-                let isInterfaceImplementationMember = IsInterfaceMemberImplementationParameter(issue, interfaceImplementationMemberScopes)
-                select new ParameterNotUsedInspectionResult(this, issue,
-                        ((dynamic) issue.Context).unrestrictedIdentifier(), issue.QualifiedName,
-                        isInterfaceImplementationMember, issue.Project.VBE, State, _messageBox);
+            var issues = from issue in parameters
+                let isInterfaceImplementationMember = interfaceImplementationMembers.Contains(issue.ParentDeclaration)
+                select new ParameterNotUsedInspectionResult(this, issue, isInterfaceImplementationMember, issue.Project.VBE, State, _messageBox);
 
             return issues.ToList();
-        }
-
-        private bool IsInterfaceMemberParameter(Declaration parameter, IEnumerable<string> interfaceMemberScopes)
-        {
-            return interfaceMemberScopes.Contains(parameter.ParentScope);
-        }
-
-        private bool IsInterfaceMemberImplementationParameter(Declaration parameter, IEnumerable<string> interfaceMemberImplementationScopes)
-        {
-            return interfaceMemberImplementationScopes.Contains(parameter.ParentScope);
         }
     }
 }
