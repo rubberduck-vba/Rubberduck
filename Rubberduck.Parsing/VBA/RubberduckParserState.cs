@@ -1183,9 +1183,9 @@ namespace Rubberduck.Parsing.VBA
                 return;
             }
 
-            ModuleState referencedModuleState;
             foreach (var referencedModule in referencingModuleState.HasReferenceToModule.Keys)
             {
+                ModuleState referencedModuleState;
                 if (!_moduleStates.TryGetValue(referencedModule,out referencedModuleState))
                 {
                     continue;
@@ -1208,7 +1208,7 @@ namespace Rubberduck.Parsing.VBA
         public HashSet<QualifiedModuleName> ModulesReferencedBy(IEnumerable<QualifiedModuleName> referencingModules)
         {
             var referencedModules = new HashSet<QualifiedModuleName>();
-            foreach (var referencingModule in referencedModules)
+            foreach (var referencingModule in referencingModules)
             {
                 referencedModules.UnionWith(ModulesReferencedBy(referencingModule));
             }
