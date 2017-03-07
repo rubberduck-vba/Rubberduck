@@ -124,9 +124,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         /// Exports the component to the folder. The file is name matches the component name and file extension is based on the component's type.
         /// </summary>
         /// <param name="folder">Destination folder for the resulting source file.</param>
-        public string ExportAsSourceFile(string folder)
+        /// <param name="tempFile">True if a unique temp file name should be generated. WARNING: filenames generated with this flag are not persisted.</param>
+        public string ExportAsSourceFile(string folder, bool tempFile = false)
         {
-            var fullPath = Path.Combine(folder, SafeName + Type.FileExtension());
+            var fullPath = tempFile
+                ? Path.Combine(folder, Path.GetRandomFileName())
+                : Path.Combine(folder, SafeName + Type.FileExtension());
             switch (Type)
             {
                 case ComponentType.UserForm:
