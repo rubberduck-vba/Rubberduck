@@ -31,6 +31,7 @@ using Ninject.Extensions.Interception.Infrastructure.Language;
 using Ninject.Extensions.NamedScope;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.UI.CodeExplorer.Commands;
+using Rubberduck.UI.ReferenceBrowser;
 using Rubberduck.UI.Command.MenuItems.CommandBars;
 using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -70,7 +71,7 @@ namespace Rubberduck.Root
             //Bind<GitProvider>().ToSelf().InSingletonScope();
             Bind<TestExplorerModel>().ToSelf().InSingletonScope();
             Bind<IOperatingSystem>().To<WindowsOperatingSystem>().InSingletonScope();
-            
+            Bind<RegisteredLibraryModelService>().To<RegisteredLibraryModelService>().InSingletonScope();
             Bind<CommandBase>().To<VersionCheckCommand>().WhenInjectedExactlyInto<App>();
 
             BindCodeInspectionTypes();
@@ -440,6 +441,7 @@ namespace Rubberduck.Root
                 KernelInstance.Get<AboutCommandMenuItem>(),
                 KernelInstance.Get<SettingsCommandMenuItem>(),
                 KernelInstance.Get<InspectionResultsCommandMenuItem>(),
+                KernelInstance.Get<ReferenceBrowserCommandMenuItem>(),
                 GetUnitTestingParentMenu(),
                 GetSmartIndenterParentMenu(),
                 GetToolsParentMenu(),
