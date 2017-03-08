@@ -28,7 +28,6 @@ namespace Rubberduck.Inspections.QuickFixes
             _dialogFactory = dialogFactory;
             _parserState = parserState;
             _forbiddenNames = parserState.DeclarationFinder.GetDeclarationsAccessibleToScope(target, parserState.AllUserDeclarations).Select(n => n.IdentifierName);
-            //_forbiddenNames = GetIdentifierNamesAccessibleToProcedureContext();
             _localCopyVariableName = ComputeSuggestedName();
         }
 
