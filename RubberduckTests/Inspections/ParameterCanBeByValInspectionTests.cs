@@ -7,7 +7,6 @@ using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.Application;
-using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
@@ -17,6 +16,126 @@ namespace RubberduckTests.Inspections
     [TestClass]
     public class ParameterCanBeByValInspectionTests
     {
+            [TestMethod]
+            [TestCategory("Inspections")]
+            public void ParameterCanBeByVal_NoResultForByValObjectInInterfaceImplementationProperty()
+            {
+                const string modelCode = @"
+Option Explicit
+Public Foo As Long
+Public Bar As String
+";
+
+                const string interfaceCode = @"
+Option Explicit
+
+Public Property Get Model() As MyModel
+End Property
+
+Public Property Set Model(ByVal value As MyModel)
+End Property
+
+Public Property Get IsCancelled() As Boolean
+End Property
+
+Public Sub Show()
+End Sub
+";
+
+                const string implementationCode = @"
+Option Explicit
+Private Type TView
+    Model As MyModel
+    IsCancelled As Boolean
+End Type
+Private this As TView
+Implements IView
+
+Private Property Get IView_IsCancelled() As Boolean
+    IView_IsCancelled = this.IsCancelled
+End Property
+
+Private Property Set IView_Model(ByVal value As MyModel)
+    Set this.Model = value
+End Property
+
+Private Property Get IView_Model() As MyModel
+    Set IView_Model = this.Model
+End Property
+
+Private Sub IView_Show()
+    Me.Show vbModal
+End Sub
+";
+
+                //Arrange
+                var builder = new MockVbeBuilder();
+                var vbe = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                    .AddComponent("IView", ComponentType.ClassModule, interfaceCode)
+                    .AddComponent("MyModel", ComponentType.ClassModule, modelCode)
+                    .AddComponent("MyForm", ComponentType.UserForm, implementationCode)
+                    .MockVbeBuilder().Build();
+
+                var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+                parser.Parse(new CancellationTokenSource());
+                if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+                var inspection = new ParameterCanBeByValInspection(parser.State);
+                var inspectionResults = inspection.GetInspectionResults();
+
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ParameterCanBeByVal_NoResultForByValObjectInProperty()
+        {
+            const string inputCode =
+@"Public Property Set Foo(ByVal value As Object)
+End Property";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            IVBComponent component;
+            var vbe = builder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ParameterCanBeByValInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ParameterCanBeByVal_NoResultForByValObject()
+        {
+            const string inputCode =
+@"Sub Foo(ByVal arg1 As Collection)
+End Sub";
+
+            //Arrange
+            var builder = new MockVbeBuilder();
+            IVBComponent component;
+            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var mockHost = new Mock<IHostApplication>();
+            mockHost.SetupAllProperties();
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new ParameterCanBeByValInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
+
         [TestMethod]
         [TestCategory("Inspections")]
         public void ParameterCanBeByVal_ReturnsResult_PassedByNotSpecified()
