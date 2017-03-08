@@ -1383,12 +1383,11 @@ End Sub";
 
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupAllProperties();
-            var parser = CreateParser(vbe.Object);
-/*            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-*/
+
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             var msgbox = new Mock<IMessageBox>();
@@ -1411,13 +1410,6 @@ End Sub";
         }
 
         #region setup
-        private static ParseCoordinator CreateParser(IVBE vbe)
-        {
-            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-            return parser;
-        }
         private static Mock<IRefactoringPresenterFactory<IRenamePresenter>> SetupFactory(RenameModel model)
         {
             var presenter = new Mock<IRenamePresenter>();
