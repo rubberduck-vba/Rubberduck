@@ -82,5 +82,14 @@ namespace Rubberduck.VBEditor.WindowsApi
 
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
         internal static extern IntPtr FindWindowEx(IntPtr parentHandle, IntPtr childAfter, string lclassName, string windowTitle);
+
+        /// <summary>
+        /// Validates a window handle.
+        /// </summary>
+        /// <param name="hWnd">The handle to validate.</param>
+        /// <returns></returns>
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool IsWindow(IntPtr hWnd);
     }
 }
