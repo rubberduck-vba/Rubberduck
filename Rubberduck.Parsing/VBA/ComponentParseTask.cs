@@ -92,7 +92,7 @@ namespace Rubberduck.Parsing.VBA
             }
             catch (SyntaxErrorException exception)
             {
-                //System.Diagnostics.Debug.Assert(false, "A RecognitionException should be notified of, not thrown as a SyntaxErrorException. This lets the parser recover from parse errors.");
+                Logger.Warn("Syntax error; offending token '{0}' at line {1}, column {2} in module {3}.", exception.OffendingSymbol.Text, exception.LineNumber, exception.Position, _qualifiedName);
                 Logger.Error(exception, "Exception thrown in thread {0}, ParseTaskID {1}.", Thread.CurrentThread.ManagedThreadId, _taskId);
                 var failedHandler = ParseFailure;
                 if (failedHandler != null)

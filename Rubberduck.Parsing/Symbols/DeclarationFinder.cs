@@ -242,7 +242,10 @@ namespace Rubberduck.Parsing.Symbols
 
         public Declaration FindParameter(Declaration procedure, string parameterName)
         {
-            return _parametersByParent[procedure].SingleOrDefault(parameter => parameter.IdentifierName == parameterName);
+            ConcurrentBag<Declaration> parameters;
+            return _parametersByParent.TryGetValue(procedure, out parameters) 
+                ? parameters.SingleOrDefault(parameter => parameter.IdentifierName == parameterName) 
+                : null;
         }
 
         public IEnumerable<Declaration> FindMemberMatches(Declaration parent, string memberName)

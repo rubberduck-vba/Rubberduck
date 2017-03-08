@@ -1069,7 +1069,31 @@ namespace Rubberduck.Parsing.VBA
                                          item.DeclarationType == DeclarationType.ProceduralModule) &&
                                         item.QualifiedName.QualifiedModuleName.Equals(selection.Value.QualifiedName))
                                     {
+                            //            var line = selection.Value.Selection.StartLine;
+                            //            var procType = activeCodePane.CodeModule.GetProcKindOfLine(line);
+                            //            var procName = activeCodePane.CodeModule.GetProcOfLine(line);
+                            //            if (!string.IsNullOrEmpty(procName))
+                            //            {
+                            //                switch (procType)
+                            //                {
+                            //                    case ProcKind.PropertyGet:
+                            //                        match = DeclarationFinder.Members(item).SingleOrDefault(m => m.IdentifierName == procName && m.DeclarationType == DeclarationType.PropertyGet);
+                            //                        break;
+                            //                    case ProcKind.PropertyLet:
+                            //                        match = DeclarationFinder.Members(item).SingleOrDefault(m => m.IdentifierName == procName && m.DeclarationType == DeclarationType.PropertyLet);
+                            //                        break;
+                            //                    case ProcKind.PropertySet:
+                            //                        match = DeclarationFinder.Members(item).SingleOrDefault(m => m.IdentifierName == procName && m.DeclarationType == DeclarationType.PropertySet);
+                            //                        break;
+                            //                    default:
+                            //                        match = DeclarationFinder.Members(item).SingleOrDefault(m => m.IdentifierName == procName);
+                            //                        break;
+                            //                }
+                            //            }
+                            //            else
+                            //            {
                                         match = match != null ? null : item;
+                            //            }
                                     }
                                 }
                             }
@@ -1159,9 +1183,9 @@ namespace Rubberduck.Parsing.VBA
                 return;
             }
 
-            ModuleState referencedModuleState;
             foreach (var referencedModule in referencingModuleState.HasReferenceToModule.Keys)
             {
+                ModuleState referencedModuleState;
                 if (!_moduleStates.TryGetValue(referencedModule,out referencedModuleState))
                 {
                     continue;
@@ -1184,6 +1208,7 @@ namespace Rubberduck.Parsing.VBA
         public HashSet<QualifiedModuleName> ModulesReferencedBy(IEnumerable<QualifiedModuleName> referencingModules)
         {
             var toModules = new HashSet<QualifiedModuleName>();
+
             foreach (var referencingModule in referencingModules)
             {
                 toModules.UnionWith(ModulesReferencedBy(referencingModule));
