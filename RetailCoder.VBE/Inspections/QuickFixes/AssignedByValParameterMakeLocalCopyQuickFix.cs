@@ -27,8 +27,9 @@ namespace Rubberduck.Inspections.QuickFixes
             _target = target;
             _dialogFactory = dialogFactory;
             _parserState = parserState;
-            _forbiddenNames = GetIdentifierNamesAccessibleToProcedureContext();
-           _localCopyVariableName = ComputeSuggestedName();
+            _forbiddenNames = parserState.DeclarationFinder.GetDeclarationsAccessibleToScope(target, parserState.AllUserDeclarations).Select(n => n.IdentifierName);
+            //_forbiddenNames = GetIdentifierNamesAccessibleToProcedureContext();
+            _localCopyVariableName = ComputeSuggestedName();
         }
 
         public override bool CanFixInModule { get { return false; } }
@@ -112,62 +113,6 @@ namespace Rubberduck.Inspections.QuickFixes
         {
             return (_target.AsTypeDeclaration is ClassModuleDeclaration ? Tokens.Set + " " : string.Empty) 
                 + _localCopyVariableName + " = " + _target.IdentifierName;
-        }
-
-        private IEnumerable<string> GetIdentifierNamesAccessibleToProcedureContext()
-        {
-            return _parserState.AllUserDeclarations
-                .Where(candidateDeclaration => 
-                (
-                        IsDeclarationInTheSameProcedure(candidateDeclaration, _target)
-                    ||  IsDeclarationInTheSameModule(candidateDeclaration, _target)
-                    ||  IsProjectGlobalDeclaration(candidateDeclaration, _target))
-                 ).Select(declaration => declaration.IdentifierName).Distinct();
-        }
-
-        private bool IsDeclarationInTheSameProcedure(Declaration candidateDeclaration, Declaration scopingDeclaration)
-        {
-            return candidateDeclaration.ParentScope == scopingDeclaration.ParentScope;
-        }
-
-        private bool IsDeclarationInTheSameModule(Declaration candidateDeclaration, Declaration scopingDeclaration)
-        {
-            return candidateDeclaration.ComponentName == scopingDeclaration.ComponentName
-                    && !IsDeclaredInMethodOrProperty(candidateDeclaration.ParentDeclaration.Context);
-        }
-
-        private bool IsProjectGlobalDeclaration(Declaration candidateDeclaration, Declaration scopingDeclaration)
-        {
-            return candidateDeclaration.ProjectName == scopingDeclaration.ProjectName
-                && !(candidateDeclaration.ParentScopeDeclaration is ClassModuleDeclaration)
-                && (candidateDeclaration.Accessibility == Accessibility.Public
-                    || ((candidateDeclaration.Accessibility == Accessibility.Implicit)
-                        && (candidateDeclaration.ParentScopeDeclaration is ProceduralModuleDeclaration)));
-        }
-
-        private bool IsDeclaredInMethodOrProperty(RuleContext procedureContext)
-        {
-            if (procedureContext is VBAParser.SubStmtContext)
-            {
-                return true;
-            }
-            else if (procedureContext is VBAParser.FunctionStmtContext)
-            {
-                return true;
-            }
-            else if (procedureContext is VBAParser.PropertyLetStmtContext)
-            {
-                return true;
-            }
-            else if (procedureContext is VBAParser.PropertyGetStmtContext)
-            {
-                return true;
-            }
-            else if (procedureContext is VBAParser.PropertySetStmtContext)
-            {
-                return true;
-            }
-            return false;
         }
     }
 }

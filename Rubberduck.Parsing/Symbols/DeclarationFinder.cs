@@ -751,11 +751,10 @@ namespace Rubberduck.Parsing.Symbols
         public IEnumerable<Declaration> GetDeclarationsAccessibleToScope(Declaration target, IEnumerable<Declaration> declarations)
         {
             if (target == null) { return Enumerable.Empty<Declaration>(); }
-
             return declarations
                 .Where(candidateDeclaration =>
                 (
-                        IsDeclarationInTheSameProcedure(candidateDeclaration, target)
+                       IsDeclarationInTheSameProcedure(candidateDeclaration, target)
                     || IsDeclarationChildOfTheScope(candidateDeclaration, target)
                     || IsModuleLevelDeclarationOfTheScope(candidateDeclaration, target)
                     || IsProjectGlobalDeclaration(candidateDeclaration, target)
@@ -786,9 +785,22 @@ namespace Rubberduck.Parsing.Symbols
         {
             return candidateDeclaration.ProjectName == scopingDeclaration.ProjectName
                 && !(candidateDeclaration.ParentScopeDeclaration is ClassModuleDeclaration)
-                && (candidateDeclaration.Accessibility == Accessibility.Public
-                    || ((candidateDeclaration.Accessibility == Accessibility.Implicit)
-                        && (candidateDeclaration.ParentScopeDeclaration is ProceduralModuleDeclaration)));
+                && (IsExplicitPublicInOtherModule(candidateDeclaration, scopingDeclaration)
+                || IsImplicitPublicInOtherModule(candidateDeclaration, scopingDeclaration));
+        }
+
+        private bool IsExplicitPublicInOtherModule(Declaration candidateDeclaration, Declaration scopingDeclaration)
+        {
+            return candidateDeclaration.ComponentName != scopingDeclaration.ComponentName
+                    && candidateDeclaration.Accessibility == Accessibility.Public;
+        }
+
+        private bool IsImplicitPublicInOtherModule(Declaration candidateDeclaration, Declaration scopingDeclaration)
+        {
+            return candidateDeclaration.ComponentName != scopingDeclaration.ComponentName
+                        && candidateDeclaration.Accessibility == Accessibility.Implicit
+                        && (candidateDeclaration.ParentScopeDeclaration is ProceduralModuleDeclaration)
+                        && !candidateDeclaration.IdentifierName.StartsWith("Option ");
         }
 
         private bool IsDeclaredWithinMethodOrProperty(RuleContext procedureContextCandidate)
