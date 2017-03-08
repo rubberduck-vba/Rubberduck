@@ -786,7 +786,7 @@ namespace Rubberduck.Parsing.Symbols
                         && (candidateDeclaration.Accessibility == Accessibility.Public
                             || (candidateDeclaration.Accessibility == Accessibility.Implicit)
                                 && (candidateDeclaration.ParentScopeDeclaration is ProceduralModuleDeclaration)
-                                && !candidateDeclaration.IdentifierName.StartsWith("Option "));
+                                && !(candidateDeclaration.DeclarationType == DeclarationType.ModuleOption));
         }
 
         private bool IsDeclaredWithinMethodOrProperty(RuleContext procedureContextCandidate)

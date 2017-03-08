@@ -141,7 +141,7 @@ namespace RubberduckTests.Symbols
 
             string[] accessibleWithinParentProcedure = { "arg1", "FooBar1", "targetAccessibilityTests", "theSecondArg" };
             string[] accessibleModuleScope = { "memberString", "memberLong", "myEggo", "Foo", "FooBar1", "GoMyEggo", "FooFight" };
-            string[] accessibleGlobalScope = { "CantTouchThis", "BigNumber", "DoSomething", "SetFilename", "ShortStory","THE_FILENAME" };
+            string[] accessibleGlobalScope = { "CantTouchThis", "BigNumber", "DoSomething", "SetFilename", "ShortStory","THE_FILENAME"};
 
             _accessibilityTests_ProcedureScopeNames = accessibleWithinParentProcedure.ToList();
             _accessibilityTests_ModuleScopeNames = accessibleModuleScope.ToList();
