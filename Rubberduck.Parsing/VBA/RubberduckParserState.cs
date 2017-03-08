@@ -1207,12 +1207,13 @@ namespace Rubberduck.Parsing.VBA
 
         public HashSet<QualifiedModuleName> ModulesReferencedBy(IEnumerable<QualifiedModuleName> referencingModules)
         {
-            var referencedModules = new HashSet<QualifiedModuleName>();
+            var toModules = new HashSet<QualifiedModuleName>();
+
             foreach (var referencingModule in referencingModules)
             {
-                referencedModules.UnionWith(ModulesReferencedBy(referencingModule));
+                toModules.UnionWith(ModulesReferencedBy(referencingModule));
             }
-            return referencedModules;
+            return toModules;
         }
 
         public HashSet<QualifiedModuleName> ModulesReferencing(QualifiedModuleName referencedModule)
