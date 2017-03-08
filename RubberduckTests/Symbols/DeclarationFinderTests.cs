@@ -1,19 +1,16 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
 using Antlr4.Runtime;
+using Rubberduck.Inspections;
 
 namespace RubberduckTests.Symbols
 {
@@ -29,67 +26,76 @@ namespace RubberduckTests.Symbols
         private List<string> _accessibilityTests_GlobalScopeNames;
 
         [TestMethod]
-        [TestCategory("Inspections")]
+        [TestCategory("Resolver")]
         public void DeclarationFinder_FindsAccessibleDeclarations_InProcedure()
         {
             SetupSUT("TestProject");
-            RespectsDeclarationAccessibilityRules(_accessibilityTests_ProcedureScopeNames, "ProcedureScope", true, false);
+            TestAccessibleDeclarations(_accessibilityTests_ProcedureScopeNames, "ProcedureScope", true, false);
             
         }
 
         [TestMethod]
-        [TestCategory("Inspections")]
+        [TestCategory("Resolver")]
         public void DeclarationFinder_FindsAccessibleDeclarations_ModuleScope()
         {
             SetupSUT("TestProject");
-            RespectsDeclarationAccessibilityRules(_accessibilityTests_ModuleScopeNames, "ModuleScope", true, false);
+            TestAccessibleDeclarations(_accessibilityTests_ModuleScopeNames, "ModuleScope", true, false);
         }
 
         [TestMethod]
-        [TestCategory("Inspections")]
+        [TestCategory("Resolver")]
         public void DeclarationFinder_FindsAccessibleDeclarations_GlobalScope()
         {
             SetupSUT("TestProject");
-            RespectsDeclarationAccessibilityRules(_accessibilityTests_GlobalScopeNames, "GlobalScope", true, true);
+            TestAccessibleDeclarations(_accessibilityTests_GlobalScopeNames, "GlobalScope", true, true);
         }
 
         [TestMethod]
 
-        [TestCategory("Inspections")]
+        [TestCategory("Resolver")]
         public void DeclarationFinder_FindsAccessibleDeclarations_Inaccessible()
         {
             SetupSUT("TestProject");
             string[] inaccessible = {"result", "mySecondEggo","localVar" , "FooFighters" , "filename", "implicitVar"};
             
-            RespectsDeclarationAccessibilityRules(inaccessible.ToList(), "GlobalScope", false, false);
+            TestAccessibleDeclarations(inaccessible.ToList(), "GlobalScope", false, false);
         }
 
         [TestMethod]
-        [TestCategory("Inspections")]
+        [TestCategory("Resolver")]
         public void DeclarationFinder_FindsAccessibleDeclarations_All()
         {
-
+            //Tests that the DeclarationFinder does not return any unexpected declarations 
+            //excluding Reserved Identifiers
             SetupSUT("TestProject");
-            var allNames = _accessibilityTests_ProcedureScopeNames;
-            allNames.AddRange(_accessibilityTests_ModuleScopeNames);
-            allNames.AddRange(_accessibilityTests_GlobalScopeNames);
-            allNames.AddRange(_accessibilityTests_Components.Select(n => n.Name));
+            var allNamesUsedInTests = _accessibilityTests_ProcedureScopeNames;
+            allNamesUsedInTests.AddRange(_accessibilityTests_ModuleScopeNames);
+            allNamesUsedInTests.AddRange(_accessibilityTests_GlobalScopeNames);
+            allNamesUsedInTests.AddRange(_accessibilityTests_Components.Select(n => n.Name));
 
             var target = GetTargetForAccessibilityTests();
+
             var declarationFinderResults =
                 _accessibilityTests_parser.State.DeclarationFinder.GetDeclarationsAccessibleToScope(target, _accessibilityTests_declarations);
             var accessibleNames = declarationFinderResults.Select(d => d.IdentifierName);
 
-            var namesOutsideOfChecks = accessibleNames.Except(allNames).ToList();
+            var unexpectedDeclarations = accessibleNames.Except(allNamesUsedInTests).ToList().Where(n => !VariableNameValidator.IsReservedIdentifier(n));
 
-            var messagePreface = "Test failed for All Names identifier: ";
-            foreach (var identifier in allNames)
+            string failureMessage = string.Empty;
+            if( unexpectedDeclarations.Count() > 0)
             {
-                Assert.IsTrue(accessibleNames.Contains(identifier), messagePreface + identifier + " Left out of accessibility tests.");
+                failureMessage = unexpectedDeclarations.Count().ToString() + " unexpected declaration(s) found:";
+                foreach(string identifier in unexpectedDeclarations)
+                {
+                    failureMessage = failureMessage + " '" + identifier + "', ";
+                }
+                failureMessage = failureMessage.Substring(0, failureMessage.Length - 2);
             }
+
+            Assert.AreEqual(0, unexpectedDeclarations.Count(), failureMessage);
         }
 
-        private void RespectsDeclarationAccessibilityRules(IEnumerable<string> namesToTest, string scope, bool containsTestNames, bool includeModuleNames)
+        private void TestAccessibleDeclarations(IEnumerable<string> namesToTest, string scope, bool containsIdentifiers, bool includeModuleNames)
         {
 
             var allIdentifiersToCheck = namesToTest.ToList();
@@ -99,14 +105,16 @@ namespace RubberduckTests.Symbols
             }
 
             var target = GetTargetForAccessibilityTests();
+
             var declarationFinderResults = 
                 _accessibilityTests_parser.State.DeclarationFinder.GetDeclarationsAccessibleToScope( target, _accessibilityTests_declarations);
+
             var accessibleNames = declarationFinderResults.Select(d => d.IdentifierName);
 
             var messagePreface = "Test failed for  " + scope + " identifier: ";
             foreach (var identifier in allIdentifiersToCheck)
             {
-                if (containsTestNames)
+                if (containsIdentifiers)
                 {
                     Assert.IsTrue(accessibleNames.Contains(identifier), messagePreface + identifier);
                 }
@@ -122,7 +130,7 @@ namespace RubberduckTests.Symbols
             var targets = _accessibilityTests_declarations.Where(dec => dec.IdentifierName == targetIdentifier);
             if (targets.Count() > 1)
             {
-                Assert.Inconclusive("Multiple targets found with identifier: " + targetIdentifier + ".  Test requires a globally a unique identifierName");
+                Assert.Inconclusive("Multiple targets found with identifier: " + targetIdentifier + ".  Test requires a unique identifierName");
             }
             return targets.FirstOrDefault();
         }
@@ -187,6 +195,7 @@ namespace RubberduckTests.Symbols
             public string Content { get { return _content; } }
             public ComponentType ModuleType { get { return _componentType; } }
         }
+
 #region AccessibilityTestsModuleContent
         private string GetRespectsDeclarationsAccessibilityRules_FirstClassBody()
         {
@@ -194,7 +203,7 @@ namespace RubberduckTests.Symbols
 @"
 Private memberString As String
 Private memberLong As Long
-Private myEggo as String
+Private myEggo As String
 
 Public Sub Foo(ByVal arg1 As String)
     Dim localVar as Long
@@ -231,7 +240,7 @@ End Sub
 @"
 Private memberString As String
 Private memberLong As Long
-Public mySecondEggo as String
+Public mySecondEggo As String
 
 
 Public Sub Foo2( arg1 As String, theSecondArg As Long)
@@ -301,7 +310,8 @@ Public Sub DoSomething(filename As String)
 End Sub
 ";
         }
-#endregion
+        #endregion
+
         [TestCategory("Resolver")]
         [TestMethod]
         public void DeclarationFinderCanCopeWithMultipleModulesImplementingTheSameInterface()
