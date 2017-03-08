@@ -132,7 +132,7 @@ namespace Rubberduck.UI
             {
                 // cleanup unmanaged resource wrappers
                 _window.Close();
-                _window.Release(true);
+                //_window.Release(true);
             }
             if (!disposing)
             {

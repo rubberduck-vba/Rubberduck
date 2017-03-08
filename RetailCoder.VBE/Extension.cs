@@ -240,14 +240,14 @@ namespace Rubberduck
                 _kernel = null;
             }
 
-            try
-            {
-                _ide.Release();
-            }
-            catch (Exception e)
-            {
-                _logger.Error(e);
-            }
+            //try
+            //{
+            //    _ide.Release();
+            //}
+            //catch (Exception e)
+            //{
+            //    _logger.Error(e);
+            //}
 
             GC.WaitForPendingFinalizers();
             _isInitialized = false;

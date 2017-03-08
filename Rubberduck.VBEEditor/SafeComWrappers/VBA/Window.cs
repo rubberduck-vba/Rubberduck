@@ -113,14 +113,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             if (!IsWrappingNullReference) Target.Attach(lWindowHandle);
         }
         
-        public override void Release(bool final = false)
-        {
-            if (!IsWrappingNullReference)
-            {
-                LinkedWindowFrame.Release();
-                base.Release(final);
-            } 
-        }
+        //public override void Release(bool final = false)
+        //{
+        //    if (!IsWrappingNullReference)
+        //    {
+        //        LinkedWindowFrame.Release();
+        //        base.Release(final);
+        //    } 
+        //}
 
         public override bool Equals(ISafeComWrapper<VB.Window> other)
         {
