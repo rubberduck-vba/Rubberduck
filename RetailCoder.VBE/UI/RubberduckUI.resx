@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -1950,7 +1950,7 @@ Would you like to import them to Rubberduck?</value>
     <comment>{0} = proposed variable name.</comment>
   </data>
   <data name="AssignedByValDialog_NewNameAlreadyUsedFormat" xml:space="preserve">
-    <value>'{0}' is already used in this scope.</value>
+    <value>'{0}' is already accessible to this scope.</value>
     <comment>{0} = proposed variable name.</comment>
   </data>
   <data name="AssignedByValDialog_QuestionableEntryFormat" xml:space="preserve">
@@ -1960,5 +1960,8 @@ Would you like to import them to Rubberduck?</value>
   <data name="AssignedByValDialog_ReservedKeywordFormat" xml:space="preserve">
     <value>'{0}' is a reserved keyword.</value>
     <comment>{0} = proposed variable name.</comment>
+  </data>
+  <data name="ConfirmRemoveAssignmentWithUnusedDeclaration" xml:space="preserve">
+    <value>Variable '{0}' is assigned. Remove assignment instruction(s)?</value>
   </data>
 </root>

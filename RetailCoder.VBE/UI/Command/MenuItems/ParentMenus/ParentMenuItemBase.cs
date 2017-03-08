@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Rubberduck.Parsing.VBA;
 using NLog;
@@ -36,7 +37,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             {
                 return () => string.IsNullOrEmpty(ToolTipKey)
                     ? string.Empty
-                    : RubberduckUI.ResourceManager.GetString(ToolTipKey, UI.Settings.Settings.Culture);
+                    : RubberduckUI.ResourceManager.GetString(ToolTipKey, CultureInfo.CurrentUICulture);
             }
         }
 

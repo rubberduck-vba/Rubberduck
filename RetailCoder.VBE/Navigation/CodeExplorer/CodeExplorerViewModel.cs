@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using NLog;
 using Rubberduck.Navigation.Folders;
@@ -194,7 +195,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 
                 var nameWithDeclarationType  = declaration.IdentifierName +
                            string.Format(" - ({0})", RubberduckUI.ResourceManager.GetString(
-                               "DeclarationType_" + declaration.DeclarationType, UI.Settings.Settings.Culture));
+                               "DeclarationType_" + declaration.DeclarationType, CultureInfo.CurrentUICulture));
 
                 if (string.IsNullOrEmpty(declaration.AsTypeName))
                 {

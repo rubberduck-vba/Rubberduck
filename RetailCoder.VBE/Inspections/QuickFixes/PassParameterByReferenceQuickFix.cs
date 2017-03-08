@@ -1,4 +1,3 @@
-using Antlr4.Runtime;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Resources;
@@ -6,7 +5,6 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using System.Linq;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
@@ -15,22 +13,19 @@ namespace Rubberduck.Inspections.QuickFixes
     /// </summary>
     public class PassParameterByReferenceQuickFix : QuickFixBase
     {
-        private Declaration _target;
+        private readonly ICodeModule _codeModule;
+        private readonly VBAParser.ArgContext _argContext;
 
         public PassParameterByReferenceQuickFix(Declaration target, QualifiedSelection selection)
             : base(target.Context, selection, InspectionsUI.PassParameterByReferenceQuickFix)
         {
-            _target = target;
+            _argContext = target.Context as VBAParser.ArgContext;
+            _codeModule = Selection.QualifiedName.Component.CodeModule;
         }
 
         public override void Fix()
         {
-            var module = Selection.QualifiedName.Component.CodeModule;
-            var argContext = QuickFixHelper.GetArgContextsForContext(Context.Parent.Parent)
-                .SingleOrDefault(parameter => Identifier.GetName(parameter.unrestrictedIdentifier())
-                    .Equals(_target.IdentifierName));
-
-            module.ReplaceToken(argContext.BYVAL().Symbol,Tokens.ByRef);
+            _codeModule.ReplaceToken(_argContext.BYVAL().Symbol, Tokens.ByRef);
         }
     }
 }

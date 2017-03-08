@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Globalization;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers.MSForms;
 
@@ -22,8 +23,8 @@ namespace Rubberduck.UI.Command.MenuItems
             get
             {
                 return () => string.IsNullOrEmpty(Key)
-                    ? string.Empty 
-                    : RubberduckUI.ResourceManager.GetString(Key, UI.Settings.Settings.Culture);
+                    ? string.Empty
+                    : RubberduckUI.ResourceManager.GetString(Key, CultureInfo.CurrentUICulture);
             }
         }
 
@@ -34,7 +35,7 @@ namespace Rubberduck.UI.Command.MenuItems
             {
                 return () => string.IsNullOrEmpty(ToolTipKey)
                     ? string.Empty
-                    : RubberduckUI.ResourceManager.GetString(ToolTipKey, UI.Settings.Settings.Culture);
+                    : RubberduckUI.ResourceManager.GetString(ToolTipKey, CultureInfo.CurrentUICulture);
             }
         }
 

@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
@@ -297,15 +299,6 @@ Private Assert As Object
         [TestMethod]
         public void AddsTestModule()
         {
-            var expected = @"
-Option Explicit
-Option Private Module
-
-'@TestModule
-Private Assert As New Rubberduck.AssertClass
-
-";
-
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule("", out component);
@@ -327,8 +320,9 @@ Private Assert As New Rubberduck.AssertClass
             addTestModuleCommand.Execute(null);
 
             // mock suite auto-assigns "TestModule1" to the first component when we create the mock
-            var module = vbe.Object.VBProjects[0].VBComponents["TestModule2"].CodeModule;
-            Assert.AreEqual(expected, module.Content());
+            var project = parser.State.DeclarationFinder.FindProject("TestProject1");
+            var module = parser.State.DeclarationFinder.FindStdModule("TestModule2", project);
+            Assert.IsTrue(module.Annotations.Any(a => a.AnnotationType == AnnotationType.TestModule));
         }
 
         private Configuration GetUnitTestConfig()

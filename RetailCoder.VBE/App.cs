@@ -9,8 +9,8 @@ using Rubberduck.UI.Command.MenuItems;
 using System;
 using System.Globalization;
 using System.Windows.Forms;
+using Rubberduck.Inspections.Resources;
 using Rubberduck.UI.Command;
-using Rubberduck.UI.Command.MenuItems.CommandBars;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VersionCheck;
 using Application = System.Windows.Forms.Application;
@@ -23,7 +23,6 @@ namespace Rubberduck
         private readonly AutoSave.AutoSave _autoSave;
         private readonly IGeneralConfigService _configService;
         private readonly IAppMenu _appMenus;
-        private readonly RubberduckCommandBar _stateBar;
         private readonly IRubberduckHooks _hooks;
         private readonly IVersionCheck _version;
         private readonly CommandBase _checkVersionCommand;
@@ -36,7 +35,6 @@ namespace Rubberduck
             IMessageBox messageBox,
             IGeneralConfigService configService,
             IAppMenu appMenus,
-            RubberduckCommandBar stateBar,
             IRubberduckHooks hooks,
             IVersionCheck version,
             CommandBase checkVersionCommand)
@@ -45,7 +43,6 @@ namespace Rubberduck
             _configService = configService;
             _autoSave = new AutoSave.AutoSave(vbe, _configService);
             _appMenus = appMenus;
-            _stateBar = stateBar;
             _hooks = hooks;
             _version = version;
             _checkVersionCommand = checkVersionCommand;
@@ -61,7 +58,6 @@ namespace Rubberduck
             _hooks.HookHotkeys();
             // also updates the ShortcutKey text
             _appMenus.Localize();
-            _stateBar.Localize();
             UpdateLoggingLevel();
 
             if (e.LanguageChanged)
@@ -85,6 +81,26 @@ namespace Rubberduck
             }
         }
 
+        private static void EnsureTempPathExists()
+        {
+            // This is required by the parser - allow this to throw. 
+            if (!Directory.Exists(ApplicationConstants.RUBBERDUCK_TEMP_PATH))
+            {
+                Directory.CreateDirectory(ApplicationConstants.RUBBERDUCK_TEMP_PATH);
+            }
+            // The parser swallows the error if deletions fail - clean up any temp files on startup
+            foreach (var file in new DirectoryInfo(ApplicationConstants.RUBBERDUCK_TEMP_PATH).GetFiles())
+            {            try
+                {
+                        file.Delete();
+                }
+                catch
+                {
+                    // Yeah, don't care here either.
+                }
+            }
+        }
+
         private void UpdateLoggingLevel()
         {
             LogLevelHelper.SetMinimumLogLevel(LogLevel.FromOrdinal(_config.UserSettings.GeneralSettings.MinimumLogLevel));
@@ -93,11 +109,11 @@ namespace Rubberduck
         public void Startup()
         {
             EnsureLogFolderPathExists();
+            EnsureTempPathExists();
             LogRubberduckSart();
             LoadConfig();
             CheckForLegacyIndenterSettings();
             _appMenus.Initialize();
-            _stateBar.Initialize();
             _hooks.HookHotkeys(); // need to hook hotkeys before we localize menus, to correctly display ShortcutTexts
             _appMenus.Localize();
 
@@ -130,8 +146,9 @@ namespace Rubberduck
             try
             {
                 CultureManager.UICulture = CultureInfo.GetCultureInfo(_config.UserSettings.GeneralSettings.Language.Code);
+                RubberduckUI.Culture = CultureInfo.CurrentUICulture;
+                InspectionsUI.Culture = CultureInfo.CurrentUICulture;
                 _appMenus.Localize();
-                _stateBar.Localize();
             }
             catch (CultureNotFoundException exception)
             {

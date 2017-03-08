@@ -17,7 +17,6 @@ using NLog;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.Application;
-using Rubberduck.VBEditor.Extensions;
 
 // ReSharper disable LoopCanBeConvertedToQuery
 
@@ -75,8 +74,8 @@ namespace Rubberduck.Parsing.VBA
         // but the cancelees need to use their own token.
         private readonly List<CancellationTokenSource> _cancellationTokens = new List<CancellationTokenSource> { new CancellationTokenSource() };
 
-        private readonly Object _cancellationSyncObject = new Object();
-        private readonly Object _parsingRunSyncObject = new Object();
+        private readonly object _cancellationSyncObject = new object();
+        private readonly object _parsingRunSyncObject = new object();
 
         private void ReparseRequested(object sender, EventArgs e)
         {
@@ -89,7 +88,7 @@ namespace Rubberduck.Parsing.VBA
 
             if (!_isTestScope)
             {
-                Task.Run(() => ParseAll(sender, token));
+                Task.Run(() => ParseAll(sender, token), token);
             }
             else
             {
@@ -197,7 +196,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private void ExecuteCommonParseActivities(List<IVBComponent> toParse, CancellationToken token)
+        private void ExecuteCommonParseActivities(ICollection<IVBComponent> toParse, CancellationToken token)
         {
                 token.ThrowIfCancellationRequested();
             
@@ -256,7 +255,7 @@ namespace Rubberduck.Parsing.VBA
             State.RefreshFinder(_hostApp);
         }
 
-        private void SetModuleStates(List<IVBComponent> components, ParserState parserState, CancellationToken token)
+        private void SetModuleStates(ICollection<IVBComponent> components, ParserState parserState, CancellationToken token)
         {
             var options = new ParallelOptions();
             options.CancellationToken = token;
@@ -295,7 +294,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        //This doesn not live on the RubberduckParserState to keep concurrency haanlding out of it.
+        //This does not live on the RubberduckParserState to keep concurrency haanlding out of it.
         public void RemoveAllReferencesBy(ICollection<QualifiedModuleName> referencesFromToRemove, ICollection<QualifiedModuleName> modulesNotNeedingReferenceRemoval, DeclarationFinder finder, CancellationToken token)
         {
             var referencedModulesNeedingReferenceRemoval = State.ModulesReferencedBy(referencesFromToRemove).Where(qmn => !modulesNotNeedingReferenceRemoval.Contains(qmn));
@@ -315,7 +314,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private void ParseComponents(List<IVBComponent> components, CancellationToken token)
+        private void ParseComponents(ICollection<IVBComponent> components, CancellationToken token)
         {
                 token.ThrowIfCancellationRequested();
             
@@ -343,7 +342,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 if (exception.Flatten().InnerExceptions.All(ex => ex is OperationCanceledException))
                 {
-                    throw exception.InnerException; //This eliminates the stack trace, but for the cancellation, this is irrelevant.
+                    throw exception.InnerException ?? exception; //This eliminates the stack trace, but for the cancellation, this is irrelevant.
                 }
                 State.SetStatusAndFireStateChanged(this, ParserState.Error);
                 throw;
@@ -410,7 +409,7 @@ namespace Rubberduck.Parsing.VBA
         }
 
 
-        private void ResolveAllDeclarations(List<IVBComponent> components, CancellationToken token)
+        private void ResolveAllDeclarations(ICollection<IVBComponent> components, CancellationToken token)
         {
                 token.ThrowIfCancellationRequested();
             
@@ -438,7 +437,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 if (exception.Flatten().InnerExceptions.All(ex => ex is OperationCanceledException))
                 {
-                    throw exception.InnerException; //This eliminates the stack trace, but for the cancellation, this is irrelevant.
+                    throw exception.InnerException ?? exception; //This eliminates the stack trace, but for the cancellation, this is irrelevant.
                 }
                 State.SetStatusAndFireStateChanged(this, ParserState.ResolverError);
                 throw;
@@ -537,7 +536,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 if (exception.Flatten().InnerExceptions.All(ex => ex is OperationCanceledException))
                 {
-                    throw exception.InnerException; //This eliminates the stack trace, but for the cancellation, this is irrelevant.
+                    throw exception.InnerException ?? exception; //This eliminates the stack trace, but for the cancellation, this is irrelevant.
                 }
                 State.SetStatusAndFireStateChanged(this, ParserState.ResolverError);
                 throw;
@@ -611,9 +610,12 @@ namespace Rubberduck.Parsing.VBA
 
         private void AddModuleToModuleReferences(DeclarationFinder finder, CancellationToken token)
         {
-            var options = new ParallelOptions();
-            options.CancellationToken = token;
-            options.MaxDegreeOfParallelism = _maxDegreeOfReferenceResolverParallelism;
+            var options = new ParallelOptions
+            {
+                CancellationToken = token,
+                MaxDegreeOfParallelism = _maxDegreeOfReferenceResolverParallelism
+            };
+
             try
             {
                 Parallel.For(0, State.ParseTrees.Count, options,
@@ -624,7 +626,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 if (exception.Flatten().InnerExceptions.All(ex => ex is OperationCanceledException))
                 {
-                    throw exception.InnerException; //This eliminates the stack trace, but for the cancellation, this is irrelevant.
+                    throw exception.InnerException ?? exception; //This eliminates the stack trace, but for the cancellation, this is irrelevant.
                 }
                 State.SetStatusAndFireStateChanged(this, ParserState.ResolverError);
                 throw;
@@ -719,7 +721,11 @@ namespace Rubberduck.Parsing.VBA
 
                 token.ThrowIfCancellationRequested();
 
-            var toParse = components.Where(component => State.IsNewOrModified(component)).ToList();
+            var toParse = components.Where(component => State.IsNewOrModified(component)).ToHashSet();
+
+                token.ThrowIfCancellationRequested();
+
+            toParse.UnionWith(components.Where(component => State.GetModuleState(component) != ParserState.Ready));
 
                 token.ThrowIfCancellationRequested();
 
@@ -745,9 +751,9 @@ namespace Rubberduck.Parsing.VBA
         /// </summary>
         private bool CleanUpRemovedComponents(ICollection<IVBComponent> components, CancellationToken token)
         {
-            var removedModuledecalrations = RemovedModuleDeclarations(components);
-            var componentRemoved = removedModuledecalrations.Any();
-            var removedModules = removedModuledecalrations.Select(declaration => declaration.QualifiedName.QualifiedModuleName).ToHashSet();
+            var removedModuleDeclarations = RemovedModuleDeclarations(components).ToArray();
+            var componentRemoved = removedModuleDeclarations.Any();
+            var removedModules = removedModuleDeclarations.Select(declaration => declaration.QualifiedName.QualifiedModuleName).ToHashSet();
             if (removedModules.Any())
             {
                 RemoveAllReferencesBy(removedModules, removedModules, State.DeclarationFinder, token);
@@ -861,7 +867,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 if (exception.Flatten().InnerExceptions.All(ex => ex is OperationCanceledException))
                 {
-                    throw exception.InnerException; //This eliminates the stack trace, but for the cancellation, this is irrelevant.
+                    throw exception.InnerException ?? exception; //This eliminates the stack trace, but for the cancellation, this is irrelevant.
                 }
                 State.SetStatusAndFireStateChanged(this, ParserState.Error);
                 throw;
@@ -948,7 +954,7 @@ namespace Rubberduck.Parsing.VBA
                 }
                 else
                 {
-                    LoadReferenceByCOMReflection(localReference, comReflector);
+                    LoadReferenceFromTypeLibrary(localReference, comReflector);
                 }
             }
             catch (Exception exception)
@@ -969,7 +975,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private void LoadReferenceByCOMReflection(IReference localReference, ReferencedDeclarationsCollector comReflector)
+        private void LoadReferenceFromTypeLibrary(IReference localReference, ReferencedDeclarationsCollector comReflector)
         {
             Logger.Trace(string.Format("COM reflecting reference '{0}'.", localReference.Name));
             var declarations = comReflector.LoadDeclarationsFromLibrary();

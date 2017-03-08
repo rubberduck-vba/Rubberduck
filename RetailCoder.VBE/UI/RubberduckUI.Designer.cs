@@ -221,7 +221,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; is already used in this scope..
+        ///   Looks up a localized string similar to &apos;{0}&apos; is already accessible to this scope..
         /// </summary>
         public static string AssignedByValDialog_NewNameAlreadyUsedFormat {
             get {
@@ -912,6 +912,15 @@ namespace Rubberduck.UI {
         public static string Component {
             get {
                 return ResourceManager.GetString("Component", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Variable &apos;{0}&apos; is assigned. Remove assignment instruction(s)?.
+        /// </summary>
+        public static string ConfirmRemoveAssignmentWithUnusedDeclaration {
+            get {
+                return ResourceManager.GetString("ConfirmRemoveAssignmentWithUnusedDeclaration", resourceCulture);
             }
         }
         
