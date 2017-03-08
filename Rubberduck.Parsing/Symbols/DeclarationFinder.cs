@@ -777,22 +777,16 @@ namespace Rubberduck.Parsing.Symbols
         {
             return candidateDeclaration.ProjectName == scopingDeclaration.ProjectName
                 && !(candidateDeclaration.ParentScopeDeclaration is ClassModuleDeclaration)
-                && (IsExplicitPublicInOtherModule(candidateDeclaration, scopingDeclaration)
-                || IsImplicitPublicInOtherModule(candidateDeclaration, scopingDeclaration));
+                && (IsPublicInOtherModule(candidateDeclaration, scopingDeclaration));
         }
 
-        private bool IsExplicitPublicInOtherModule(Declaration candidateDeclaration, Declaration scopingDeclaration)
+        private bool IsPublicInOtherModule(Declaration candidateDeclaration, Declaration scopingDeclaration)
         {
             return candidateDeclaration.ComponentName != scopingDeclaration.ComponentName
-                    && candidateDeclaration.Accessibility == Accessibility.Public;
-        }
-
-        private bool IsImplicitPublicInOtherModule(Declaration candidateDeclaration, Declaration scopingDeclaration)
-        {
-            return candidateDeclaration.ComponentName != scopingDeclaration.ComponentName
-                        && candidateDeclaration.Accessibility == Accessibility.Implicit
-                        && (candidateDeclaration.ParentScopeDeclaration is ProceduralModuleDeclaration)
-                        && !candidateDeclaration.IdentifierName.StartsWith("Option ");
+                        && (candidateDeclaration.Accessibility == Accessibility.Public
+                            || (candidateDeclaration.Accessibility == Accessibility.Implicit)
+                                && (candidateDeclaration.ParentScopeDeclaration is ProceduralModuleDeclaration)
+                                && !candidateDeclaration.IdentifierName.StartsWith("Option "));
         }
 
         private bool IsDeclaredWithinMethodOrProperty(RuleContext procedureContextCandidate)
