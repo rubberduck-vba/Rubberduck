@@ -42,10 +42,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
             if (!IsWrappingNullReference)
             {
-                for (var i = 1; i <= Count; i++)
-                {
-                    this[i].Release();
-                }
+                //for (var i = 1; i <= Count; i++)
+                //{
+                //    this[i].Release();
+                //}
                 base.Release(final);
             } 
         }
