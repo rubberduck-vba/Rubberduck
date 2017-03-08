@@ -118,7 +118,7 @@ namespace Rubberduck.Parsing.Symbols
             }
             else
             {
-                return context.typedIdentifier().identifierValue();
+                return context.typedIdentifier().untypedIdentifier().identifierValue();
             }
         }
 

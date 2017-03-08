@@ -5,6 +5,7 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.UI.Command.MenuItems;
+using Rubberduck.UI.Command.MenuItems.CommandBars;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
 
 namespace Rubberduck
@@ -14,12 +15,14 @@ namespace Rubberduck
         private readonly IReadOnlyList<IParentMenuItem> _menus;
         private readonly IParseCoordinator _parser;
         private readonly ISelectionChangeService _selectionService;
+        private readonly RubberduckCommandBar _stateBar;
 
-        public AppMenu(IEnumerable<IParentMenuItem> menus, IParseCoordinator parser, ISelectionChangeService selectionService)
+        public AppMenu(IEnumerable<IParentMenuItem> menus, IParseCoordinator parser, ISelectionChangeService selectionService, RubberduckCommandBar stateBar)
         {
             _menus = menus.ToList();
             _parser = parser;
             _selectionService = selectionService;
+            _stateBar = stateBar;
 
             _parser.State.StateChanged += OnParserStateChanged;
             _selectionService.SelectedDeclarationChanged += OnSelectedDeclarationChange;
@@ -27,6 +30,7 @@ namespace Rubberduck
 
         public void Initialize()
         {
+            _stateBar.Initialize();
             foreach (var menu in _menus)
             {
                 menu.Initialize();
@@ -53,6 +57,8 @@ namespace Rubberduck
 
         public void Localize()
         {
+            _stateBar.Localize();
+            _stateBar.SetStatusLabelCaption(_parser.State.Status);
             foreach (var menu in _menus)
             {
                 menu.Localize();

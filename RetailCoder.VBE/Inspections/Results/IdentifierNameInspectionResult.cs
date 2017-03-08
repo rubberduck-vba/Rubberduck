@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.QuickFixes;
@@ -42,7 +43,7 @@ namespace Rubberduck.Inspections.Results
 
         public override string Description
         {
-            get { return string.Format(InspectionsUI.IdentifierNameInspectionResultFormat, RubberduckUI.ResourceManager.GetString("DeclarationType_" + Target.DeclarationType, UI.Settings.Settings.Culture), Target.IdentifierName).Captialize(); }
+            get { return string.Format(InspectionsUI.IdentifierNameInspectionResultFormat, RubberduckUI.ResourceManager.GetString("DeclarationType_" + Target.DeclarationType, CultureInfo.CurrentUICulture), Target.IdentifierName).Captialize(); }
         }
 
         public override NavigateCodeEventArgs GetNavigationArgs()

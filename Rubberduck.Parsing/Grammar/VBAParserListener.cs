@@ -438,6 +438,17 @@ public interface IVBAParserListener : IParseTreeListener {
 	void ExitEndOfStatement([NotNull] VBAParser.EndOfStatementContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.midStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterMidStatement([NotNull] VBAParser.MidStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.midStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitMidStatement([NotNull] VBAParser.MidStatementContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by the <c>optionCompareStmt</c>
 	/// labeled alternative in <see cref="VBAParser.moduleOption"/>.
 	/// </summary>
@@ -2610,6 +2621,17 @@ public interface IVBAParserListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitCharPosition([NotNull] VBAParser.CharPositionContext context);
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.modeSpecifier"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterModeSpecifier([NotNull] VBAParser.ModeSpecifierContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.modeSpecifier"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitModeSpecifier([NotNull] VBAParser.ModeSpecifierContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.moduleConfigElement"/>.

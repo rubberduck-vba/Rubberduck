@@ -11,7 +11,7 @@ namespace Rubberduck.UI.Settings.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var modes = (IEnumerable<Rubberduck.Settings.BindingMode>)value;
-            return modes.Select(s => RubberduckUI.ResourceManager.GetString("UnitTestSettings_" + s, UI.Settings.Settings.Culture)).ToArray();
+            return modes.Select(s => RubberduckUI.ResourceManager.GetString("UnitTestSettings_" + s, CultureInfo.CurrentUICulture)).ToArray();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
