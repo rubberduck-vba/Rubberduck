@@ -1,11 +1,9 @@
 using System;
 using System.Linq;
-using System.Threading;
 using System.Windows.Forms;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.RemoveParameters;
 using Rubberduck.UI;
@@ -36,15 +34,12 @@ End Sub";
             //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters.ForEach(arg => arg.IsRemoved = true);
 
             //SetupFactory
@@ -75,15 +70,12 @@ End Sub";
             //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters.ForEach(arg => arg.IsRemoved = true);
 
             //SetupFactory
@@ -114,15 +106,12 @@ End Sub";
             //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[0].IsRemoved = true;
 
             //SetupFactory
@@ -153,15 +142,12 @@ End Sub";
             //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[1].IsRemoved = true;
 
             //SetupFactory
@@ -202,15 +188,12 @@ End Sub
             //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[2].IsRemoved = true;
 
             //SetupFactory
@@ -251,15 +234,12 @@ End Sub";
             //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[2].IsRemoved = true;
 
             //SetupFactory
@@ -290,15 +270,12 @@ End Function";
             //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[1].IsRemoved = true;
 
             //SetupFactory
@@ -329,15 +306,12 @@ End Function";
             //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters.ForEach(p => p.IsRemoved = true);
 
             //SetupFactory
@@ -378,15 +352,12 @@ End Sub
             //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters.ForEach(p => p.IsRemoved = true);
 
             //SetupFactory
@@ -425,15 +396,12 @@ End Sub";
             //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters.ElementAt(2).IsRemoved = true;
             model.Parameters.ElementAt(3).IsRemoved = true;
             model.Parameters.ElementAt(5).IsRemoved = true;
@@ -466,15 +434,12 @@ End Property";
             //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters.ForEach(p => p.IsRemoved = true);
 
             //SetupFactory
@@ -504,26 +469,23 @@ End Property";
             //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var parameter = parser.State.AllUserDeclarations.SingleOrDefault(p => 
+            var parameter = state.AllUserDeclarations.SingleOrDefault(p => 
                 p.DeclarationType == DeclarationType.Parameter && p.IdentifierName == "arg1");
             if (parameter == null) { Assert.Inconclusive("Can't find 'arg1' parameter/target."); }
 
             var qualifiedSelection = parameter.QualifiedSelection;
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
 
             //SetupFactory
             var factory = SetupFactory(model);
 
             //Act
             var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
-            refactoring.QuickFix(parser.State, qualifiedSelection);
+            refactoring.QuickFix(state, qualifiedSelection);
 
             //Assert
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -546,15 +508,12 @@ End Property";
             //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[0].IsRemoved = true;
 
             //SetupFactory
@@ -595,15 +554,12 @@ End Sub
             //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[0].IsRemoved = true;
 
             //SetupFactory
@@ -652,15 +608,12 @@ End Function";
             //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[0].IsRemoved = true;
 
             //SetupFactory
@@ -701,15 +654,12 @@ End Sub
             //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[1].IsRemoved = true;
 
             //SetupFactory
@@ -762,15 +712,12 @@ End Sub
             //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[1].IsRemoved = true;
 
             //SetupFactory
@@ -796,14 +743,11 @@ End Property";
             //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
 
             // Assert
             Assert.AreEqual(1, model.Parameters.Count); // doesn't allow removing last param from setter
@@ -821,14 +765,11 @@ End Property";
             //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
 
             // Assert
             Assert.AreEqual(1, model.Parameters.Count); // doesn't allow removing last param from letter
@@ -857,15 +798,12 @@ End Property";
             //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[0].IsRemoved = true;
 
             //SetupFactory
@@ -902,15 +840,12 @@ End Property";
             //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[0].IsRemoved = true;
 
             //SetupFactory
@@ -949,15 +884,12 @@ End Sub";
             //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[0].IsRemoved = true;
 
             //SetupFactory
@@ -998,15 +930,12 @@ End Sub";
             //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[1].IsRemoved = true;
 
             //SetupFactory
@@ -1039,15 +968,12 @@ End Sub";   // note: VBE removes excess spaces
             //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[0].IsRemoved = true;
 
             //SetupFactory
@@ -1080,15 +1006,12 @@ End Sub";   // note: VBE removes excess spaces
             //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[1].IsRemoved = true;
 
             //SetupFactory
@@ -1121,15 +1044,12 @@ End Sub";   // note: VBE removes excess spaces
             //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[2].IsRemoved = true;
 
             //SetupFactory
@@ -1162,15 +1082,12 @@ End Sub";   // note: VBE removes excess spaces
             //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[0].IsRemoved = true;
 
             //SetupFactory
@@ -1217,15 +1134,12 @@ End Sub
             //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[0].IsRemoved = true;
 
             //SetupFactory
@@ -1271,20 +1185,15 @@ End Sub";   // note: IDE removes excess spaces
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents[0];
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(project.Object.VBComponents[0]), selection);
 
             var module1 = project.Object.VBComponents[0].CodeModule;
             var module2 = project.Object.VBComponents[1].CodeModule;
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[1].IsRemoved = true;
 
             //SetupFactory
@@ -1331,20 +1240,15 @@ End Sub";   // note: IDE removes excess spaces
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents[0];
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(project.Object.VBComponents[0]), selection);
 
             var module1 = project.Object.VBComponents[0].CodeModule;
             var module2 = project.Object.VBComponents[1].CodeModule;
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[1].IsRemoved = true;
 
             //SetupFactory
@@ -1402,21 +1306,16 @@ End Sub";   // note: IDE removes excess spaces
                 .AddComponent("Class2", ComponentType.ClassModule, inputCode3)
                 .Build();
             var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents[0];
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(project.Object.VBComponents[0]), selection);
 
             var module1 = project.Object.VBComponents[0].CodeModule;
             var module2 = project.Object.VBComponents[1].CodeModule;
             var module3 = project.Object.VBComponents[2].CodeModule;
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[1].IsRemoved = true;
 
             //SetupFactory
@@ -1464,20 +1363,15 @@ End Sub";   // note: IDE removes excess spaces
                 .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents[0];
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(project.Object.VBComponents[0]), selection);
 
             var module1 = project.Object.VBComponents[0].CodeModule;
             var module2 = project.Object.VBComponents[1].CodeModule;
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[1].IsRemoved = true;
 
             //SetupFactory
@@ -1524,19 +1418,15 @@ End Sub";   // note: IDE removes excess spaces
                 .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents[0];
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var state = MockParser.CreateAndParse(vbe.Object);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(project.Object.VBComponents[0]), selection);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
             var module1 = project.Object.VBComponents[0].CodeModule;
             var module2 = project.Object.VBComponents[1].CodeModule;
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters.Last().IsRemoved = true;
 
             //SetupFactory
@@ -1583,20 +1473,15 @@ End Sub";   // note: IDE removes excess spaces
                 .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents[0];
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(project.Object.VBComponents[0]), selection);
 
             var module1 = project.Object.VBComponents[0].CodeModule;
             var module2 = project.Object.VBComponents[1].CodeModule;
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[1].IsRemoved = true;
 
             //SetupFactory
@@ -1654,21 +1539,16 @@ End Sub";   // note: IDE removes excess spaces
                 .AddComponent("Class3", ComponentType.ClassModule, inputCode3)
                 .Build();
             var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents[0];
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(project.Object.VBComponents[0]), selection);
 
             var module1 = project.Object.VBComponents[0].CodeModule;
             var module2 = project.Object.VBComponents[1].CodeModule;
             var module3 = project.Object.VBComponents[2].CodeModule;
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[1].IsRemoved = true;
 
             //SetupFactory
@@ -1717,14 +1597,9 @@ End Sub";
                 .AddComponent("IClass1", ComponentType.ClassModule, inputCode2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents[0];
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(project.Object.VBComponents[0]), selection);
 
             var module1 = project.Object.VBComponents[0].CodeModule;
             var module2 = project.Object.VBComponents[1].CodeModule;
@@ -1734,7 +1609,7 @@ End Sub";
                       .Returns(DialogResult.Yes);
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, messageBox.Object);
+            var model = new RemoveParametersModel(state, qualifiedSelection, messageBox.Object);
             model.Parameters[1].IsRemoved = true;
 
             //SetupFactory
@@ -1771,21 +1646,16 @@ End Sub";
                 .AddComponent("IClass1", ComponentType.ClassModule, inputCode2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents[0];
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(project.Object.VBComponents[0]), selection);
 
             var messageBox = new Mock<IMessageBox>();
             messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
                       .Returns(DialogResult.No);
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, messageBox.Object);
+            var model = new RemoveParametersModel(state, qualifiedSelection, messageBox.Object);
             Assert.IsNull(model.TargetDeclaration);
         }
 
@@ -1802,14 +1672,11 @@ End Sub";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
+            var state = MockParser.CreateAndParse(vbe.Object);
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //set up model
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
 
             var factory = SetupFactory(model);
 
@@ -1844,15 +1711,11 @@ End Sub";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var vbeWrapper = vbe.Object;
-            var factory = new RemoveParametersPresenterFactory(vbeWrapper, null, parser.State, null);
+            var state = MockParser.CreateAndParse(vbe.Object);
+            var factory = new RemoveParametersPresenterFactory(vbe.Object, null, state, null);
 
             //act
-            var refactoring = new RemoveParametersRefactoring(vbeWrapper, factory);
+            var refactoring = new RemoveParametersRefactoring(vbe.Object, factory);
             refactoring.Refactor();
 
             Assert.AreEqual(inputCode, component.CodeModule.Content());
@@ -1871,14 +1734,11 @@ End Sub";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
+            var state = MockParser.CreateAndParse(vbe.Object);
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -1904,20 +1764,17 @@ End Sub";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
+            var state = MockParser.CreateAndParse(vbe.Object);
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, new Mock<IMessageBox>().Object);
+            var model = new RemoveParametersModel(state, qualifiedSelection, new Mock<IMessageBox>().Object);
             model.Parameters[1].IsRemoved = true;
 
             var view = new Mock<IRemoveParametersDialog>();
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
             view.Setup(v => v.Parameters).Returns(model.Parameters);
 
-            var factory = new RemoveParametersPresenterFactory(vbe.Object, view.Object, parser.State, null);
+            var factory = new RemoveParametersPresenterFactory(vbe.Object, view.Object, state, null);
 
             var presenter = factory.Create();
 
@@ -1937,20 +1794,17 @@ End Sub";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
+            var state = MockParser.CreateAndParse(vbe.Object);
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, new Mock<IMessageBox>().Object);
+            var model = new RemoveParametersModel(state, qualifiedSelection, new Mock<IMessageBox>().Object);
             model.Parameters[1].IsRemoved = true;
 
             var view = new Mock<IRemoveParametersDialog>();
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.Cancel);
             view.Setup(v => v.Parameters).Returns(model.Parameters);
 
-            var factory = new RemoveParametersPresenterFactory(vbe.Object, view.Object, parser.State, null);
+            var factory = new RemoveParametersPresenterFactory(vbe.Object, view.Object, state, null);
 
             var presenter = factory.Create();
 
@@ -1970,16 +1824,13 @@ End Sub";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
+            var state = MockParser.CreateAndParse(vbe.Object);
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, new Mock<IMessageBox>().Object);
+            var model = new RemoveParametersModel(state, qualifiedSelection, new Mock<IMessageBox>().Object);
             model.Parameters[0].IsRemoved = true;
 
-            var factory = new RemoveParametersPresenterFactory(vbe.Object, null, parser.State, null);
+            var factory = new RemoveParametersPresenterFactory(vbe.Object, null, state, null);
 
             var presenter = factory.Create();
 
@@ -2003,15 +1854,12 @@ End Sub";
             builder.AddProject(project);
             var vbe = builder.Build();
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var messageBox = new Mock<IMessageBox>();
             messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>())).Returns(DialogResult.OK);
 
-            var factory = new RemoveParametersPresenterFactory(vbe.Object, null, parser.State, messageBox.Object);
+            var factory = new RemoveParametersPresenterFactory(vbe.Object, null, state, messageBox.Object);
             var presenter = factory.Create();
 
             Assert.AreEqual(null, presenter.Show());
@@ -2035,12 +1883,8 @@ End Sub";
 
             vbe.Setup(v => v.ActiveCodePane).Returns((ICodePane) null);
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var factory = new RemoveParametersPresenterFactory(vbe.Object, null, parser.State, null);
+            var state = MockParser.CreateAndParse(vbe.Object);
+            var factory = new RemoveParametersPresenterFactory(vbe.Object, null, state, null);
 
             Assert.IsNull(factory.Create());
         }

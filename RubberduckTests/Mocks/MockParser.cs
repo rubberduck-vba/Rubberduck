@@ -19,7 +19,7 @@ namespace RubberduckTests.Mocks
 {
     public static class MockParser
     {
-        public static void ParseString(string inputCode, out QualifiedModuleName qualifiedModuleName, out RubberduckParserState state)
+        public static RubberduckParserState ParseString(string inputCode, out QualifiedModuleName qualifiedModuleName)
         {
 
             //Arrange
@@ -30,7 +30,7 @@ namespace RubberduckTests.Mocks
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-            state = parser.State;
+            return parser.State;
 
         }
 
@@ -56,6 +56,15 @@ namespace RubberduckTests.Mocks
                     new FormEventDeclarations(state), 
                     new AliasDeclarations(state),
                 }, true, path);
+        }
+
+        public static RubberduckParserState CreateAndParse(IVBE vbe, string serializedDeclarationsPath = null)
+        {
+            var parser = Create(vbe, new RubberduckParserState(vbe));
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            return parser.State;
         }
 
         private static readonly HashSet<DeclarationType> ProceduralTypes =
