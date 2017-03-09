@@ -231,86 +231,8 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
 
         private void RemoveField(Declaration target)
         {
-            Selection selection;
-            var declarationText = target.Context.GetText().Replace(" _" + Environment.NewLine, string.Empty);
-            var multipleDeclarations = target.HasMultipleDeclarationsInStatement();
-
-            var variableStmtContext = target.GetVariableStmtContext();
-
-            if (!multipleDeclarations)
-            {
-                declarationText = variableStmtContext.GetText().Replace(" _" + Environment.NewLine, string.Empty);
-                selection = target.GetVariableStmtContextSelection();
-            }
-            else
-            {
-                selection = new Selection(target.Context.Start.Line, target.Context.Start.Column,
-                    target.Context.Stop.Line, target.Context.Stop.Column);
-            }
-
             var module = target.QualifiedName.QualifiedModuleName.Component.CodeModule;
-            {
-                var oldLines = module.GetLines(selection.StartLine, selection.LineCount);
-                var newLines = oldLines.Replace(" _" + Environment.NewLine, string.Empty)
-                                       .Remove(selection.StartColumn, declarationText.Length);
-
-                if (multipleDeclarations)
-                {
-                    selection = target.GetVariableStmtContextSelection();
-                    newLines = RemoveExtraComma(module.GetLines(selection.StartLine, selection.LineCount).Replace(oldLines, newLines),
-                        target.CountOfDeclarationsInStatement(), target.IndexOfVariableDeclarationInStatement());
-                }
-
-                var adjustedLines =
-                    newLines.Split(new[] { Environment.NewLine }, StringSplitOptions.None)
-                        .Select(s => s.EndsWith(" _") ? s.Remove(s.Length - 2) : s)
-                        .Where(s => s.Trim() != string.Empty)
-                        .ToList();
-
-                module.DeleteLines(selection.StartLine, selection.LineCount);
-
-                if (adjustedLines.Any())
-                {
-                    module.InsertLines(selection.StartLine, string.Join(string.Empty, adjustedLines));
-                }
-            }
-        }
-
-        private string RemoveExtraComma(string str, int numParams, int indexRemoved)
-        {
-            /* Example use cases for this method (fields and variables):
-             * Dim fizz as Boolean, dizz as Double
-             * Private fizz as Boolean, dizz as Double
-             * Public fizz as Boolean, _
-             *        dizz as Double
-             * Private fizz as Boolean _
-             *         , dizz as Double _
-             *         , iizz as Integer
-
-             * Before this method is called, the parameter to be removed has 
-             * already been removed.  This means 'str' will look like:
-             * Dim fizz as Boolean, 
-             * Private , dizz as Double
-             * Public fizz as Boolean, _
-             *        
-             * Private  _
-             *         , dizz as Double _
-             *         , iizz as Integer
-
-             * This method is responsible for removing the redundant comma
-             * and returning a string similar to:
-             * Dim fizz as Boolean
-             * Private dizz as Double
-             * Public fizz as Boolean _
-             *        
-             * Private  _
-             *          dizz as Double _
-             *         , iizz as Integer
-             */
-
-            var commaToRemove = numParams == indexRemoved ? indexRemoved - 1 : indexRemoved;
-
-            return str.Remove(str.NthIndexOf(',', commaToRemove), 1);
+            module.Remove(target);
         }
 
         private void UpdateCallsToOtherModule(List<IdentifierReference> references)
