@@ -58,6 +58,16 @@ namespace Rubberduck.Parsing.Symbols
         
         private static readonly object ThreadLock = new object();
 
+        private static QualifiedSelection GetGroupingKey(Declaration declaration)
+        {
+            // we want the procedures' whole body, not just their identifier:
+            return declaration.DeclarationType.HasFlag(DeclarationType.Member)
+                ? new QualifiedSelection(
+                    declaration.QualifiedName.QualifiedModuleName,
+                    declaration.Context.GetSelection())
+                : declaration.QualifiedSelection;
+        }
+
         public DeclarationFinder(IReadOnlyList<Declaration> declarations, IEnumerable<IAnnotation> annotations, IReadOnlyList<UnboundMemberDeclaration> unresolvedMemberDeclarations, IHostApplication hostApp = null)
         {
             _hostApp = hostApp;
@@ -65,7 +75,7 @@ namespace Rubberduck.Parsing.Symbols
             _declarations = declarations.GroupBy(item => item.QualifiedName.QualifiedModuleName).ToConcurrentDictionary();
             _declarationsByName = declarations.GroupBy(declaration => declaration.IdentifierName.ToLowerInvariant()).ToConcurrentDictionary();
             _declarationsBySelection = declarations.Where(declaration => !declaration.IsBuiltIn)
-                .GroupBy(declaration => declaration.QualifiedSelection)
+                .GroupBy(GetGroupingKey)
                 .ToDictionary(group => group.Key, group => group.AsEnumerable());
             _referencesBySelection = declarations
                 .SelectMany(declaration => declaration.References)
