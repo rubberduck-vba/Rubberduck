@@ -23,9 +23,8 @@ namespace RubberduckTests.Mocks
         {
 
             //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             qualifiedModuleName = new QualifiedModuleName(component);
             var parser = Create(vbe.Object, new RubberduckParserState(vbe.Object));
 

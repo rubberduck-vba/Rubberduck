@@ -106,27 +106,12 @@ namespace RubberduckTests.Mocks
         /// <param name="module">The created <see cref="CodeModule"/></param>
         /// <param name="selection"></param>
         /// <returns></returns>
-        public static Mock<IVBE> BuildFromSingleStandardModule(string content, out IVBComponent component, out ICodeModule module, Selection selection = default(Selection), bool referenceStdLibs = false)
-        {
-            return BuildFromSingleModule(content, ComponentType.StandardModule, out component, out module, selection, referenceStdLibs);
-        }
-
         public static Mock<IVBE> BuildFromSingleStandardModule(string content, out IVBComponent component, Selection selection = default(Selection), bool referenceStdLibs = false)
         {
             return BuildFromSingleModule(content, ComponentType.StandardModule, out component, selection, referenceStdLibs);
         }
 
-        public static Mock<IVBE> BuildFromSingleStandardModule(string content, out ICodeModule module, Selection selection = default(Selection), bool referenceStdLibs = false)
-        {
-            return BuildFromSingleModule(content, ComponentType.StandardModule, out module, selection, referenceStdLibs);
-        }
-
-        public static Mock<IVBE> BuildFromSingleStandardModule(string content, Selection selection = default(Selection), bool referenceStdLibs = false)
-        {
-            return BuildFromSingleModule(content, ComponentType.StandardModule, selection, referenceStdLibs);
-        }
-
-        public static Mock<IVBE> BuildFromSingleModule(string content, ComponentType type, out IVBComponent component, out ICodeModule module, Selection selection = default(Selection), bool referenceStdLibs = false)
+        public static Mock<IVBE> BuildFromSingleModule(string content, ComponentType type, out IVBComponent component, Selection selection = default(Selection), bool referenceStdLibs = false)
         {
             var vbeBuilder = new MockVbeBuilder();
 
@@ -142,31 +127,11 @@ namespace RubberduckTests.Mocks
             var vbe = vbeBuilder.AddProject(project).Build();
 
             component = project.Object.VBComponents[0];
-            module = project.Object.VBComponents[0].CodeModule;
 
             vbe.Object.ActiveVBProject = project.Object;
             vbe.Object.ActiveCodePane = component.CodeModule.CodePane;
 
             return vbe;
-        }
-
-        public static Mock<IVBE> BuildFromSingleModule(string content, ComponentType type, out IVBComponent component, Selection selection = default(Selection), bool referenceStdLibs = false)
-        {
-            ICodeModule module;
-            return BuildFromSingleModule(content, type, out component, out module, selection, referenceStdLibs);
-        }
-
-        public static Mock<IVBE> BuildFromSingleModule(string content, ComponentType type, out ICodeModule module, Selection selection = default(Selection), bool referenceStdLibs = false)
-        {
-            IVBComponent component;
-            return BuildFromSingleModule(content, type, out component, out module, selection, referenceStdLibs);
-        }
-        
-        public static Mock<IVBE> BuildFromSingleModule(string content, ComponentType type, Selection selection = default(Selection), bool referenceStdLibs = false)
-        {
-            IVBComponent component;
-            ICodeModule module;
-            return BuildFromSingleModule(content, type, out component, out module, selection, referenceStdLibs);
         }
 
         private Mock<IVBE> CreateVbeMock()
