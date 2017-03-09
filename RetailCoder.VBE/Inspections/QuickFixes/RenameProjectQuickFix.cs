@@ -8,7 +8,6 @@ using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.VBEditor;
-using MessageBox = Rubberduck.UI.MessageBox;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
@@ -19,12 +18,14 @@ namespace Rubberduck.Inspections.QuickFixes
     {
         private readonly Declaration _target;
         private readonly RubberduckParserState _state;
+        private readonly IMessageBox _messageBox;
 
-        public RenameProjectQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration target, RubberduckParserState state)
+        public RenameProjectQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration target, RubberduckParserState state, IMessageBox messageBox)
             : base(context, selection, string.Format(RubberduckUI.Rename_DeclarationType, RubberduckUI.ResourceManager.GetString("DeclarationType_" + DeclarationType.Project, CultureInfo.CurrentUICulture)))
         {
             _target = target;
             _state = state;
+            _messageBox = messageBox;
         }
 
         public override void Fix()
@@ -33,8 +34,8 @@ namespace Rubberduck.Inspections.QuickFixes
 
             using (var view = new RenameDialog())
             {
-                var factory = new RenamePresenterFactory(vbe, view, _state, new MessageBox());
-                var refactoring = new RenameRefactoring(vbe, factory, new MessageBox(), _state);
+                var factory = new RenamePresenterFactory(vbe, view, _state, _messageBox);
+                var refactoring = new RenameRefactoring(vbe, factory, _messageBox, _state);
                 refactoring.Refactor(_target);
                 IsCancelled = view.DialogResult == DialogResult.Cancel;
             }

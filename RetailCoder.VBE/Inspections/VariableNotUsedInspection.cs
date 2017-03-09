@@ -1,27 +1,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Resources;
 using Rubberduck.Inspections.Results;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
     public sealed class VariableNotUsedInspection : InspectionBase
     {
-        private readonly IMessageBox _messageBox;
-
-        public VariableNotUsedInspection(RubberduckParserState state, IMessageBox messageBox)
-            : base(state)
-        {
-            _messageBox = messageBox;
-        }
+        public VariableNotUsedInspection(RubberduckParserState state) : base(state) { }
 
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
-        public override IEnumerable<InspectionResultBase> GetInspectionResults()
+        public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
             var declarations = UserDeclarations.Where(declaration =>
                 !declaration.IsWithEvents

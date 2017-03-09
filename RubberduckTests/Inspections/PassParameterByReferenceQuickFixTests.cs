@@ -2,13 +2,13 @@
 using Moq;
 using Rubberduck.Inspections;
 using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Rubberduck.Parsing.Inspections.Abstract;
 
 namespace RubberduckTests.Inspections
 {
@@ -180,7 +180,7 @@ End Sub
             return module.Content();
         }
 
-        private IEnumerable<Rubberduck.Inspections.Abstract.InspectionResultBase> GetAssignedByValParameterInspectionResults(IVBE vbe)
+        private IEnumerable<IInspectionResult> GetAssignedByValParameterInspectionResults(IVBE vbe)
         {
             var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
             parser.Parse(new CancellationTokenSource());

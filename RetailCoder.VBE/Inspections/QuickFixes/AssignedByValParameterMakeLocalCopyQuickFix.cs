@@ -1,7 +1,6 @@
 ﻿using Rubberduck.Inspections.Abstract;
 using System.Linq;
 using Rubberduck.VBEditor;
-using Rubberduck.Inspections.Resources;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using System.Windows.Forms;
@@ -9,6 +8,7 @@ using Rubberduck.UI.Refactorings;
 using Rubberduck.Common;
 using Antlr4.Runtime;
 using System.Collections.Generic;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes

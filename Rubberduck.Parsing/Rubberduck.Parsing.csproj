@@ -131,6 +131,27 @@
     <Compile Include="Grammar\VBAParserBaseVisitor.cs" />
     <Compile Include="Grammar\VBAParserListener.cs" />
     <Compile Include="Grammar\VBAParserVisitor.cs" />
+    <Compile Include="Inspections\Abstract\IInspection.cs" />
+    <Compile Include="Inspections\Abstract\IInspectionModel.cs" />
+    <Compile Include="Inspections\Abstract\IInspectionResult.cs" />
+    <Compile Include="Inspections\Abstract\IQuickFix.cs" />
+    <Compile Include="Inspections\Resources\CodeInspectionSeverity.cs" />
+    <Compile Include="Inspections\Resources\CodeInspectionType.cs" />
+    <Compile Include="Inspections\Resources\InspectionsUI.de.Designer.cs">
+      <DependentUpon>InspectionsUI.de.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Inspections\Resources\InspectionsUI.Designer.cs">
+      <DependentUpon>InspectionsUI.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Inspections\Resources\InspectionsUI.fr.Designer.cs">
+      <DependentUpon>InspectionsUI.fr.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Preprocessing\IVBAPreprocessor.cs" />
     <Compile Include="Preprocessing\VBAConditionalCompilationParser.cs" />
     <Compile Include="Preprocessing\VBAConditionalCompilationParserBaseListener.cs" />
@@ -342,6 +363,21 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Inspections\Resources\InspectionsUI.de.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>InspectionsUI.de.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Inspections\Resources\InspectionsUI.fr.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>InspectionsUI.fr.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Inspections\Resources\InspectionsUI.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>InspectionsUI.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="ParsingText.de.resx" />
     <EmbeddedResource Include="ParsingText.fr.resx" />
     <EmbeddedResource Include="ParsingText.resx">
@@ -349,9 +385,7 @@
       <LastGenOutput>ParsingText.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Inspections\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

@@ -2,8 +2,9 @@
 using System.IO;
 using System.Linq;
 using Antlr4.Runtime;
-using Rubberduck.Inspections.Resources;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
 using Rubberduck.UI.Controls;
@@ -11,7 +12,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Abstract
 {
-    public abstract class InspectionResultBase : IInspectionResult, INavigateSource
+    public abstract class InspectionResultBase : IInspectionResult, INavigateSource, IExportable
     {
         protected InspectionResultBase(IInspection inspection, Declaration target)
             : this(inspection, target.QualifiedName.QualifiedModuleName, target.Context)
@@ -77,11 +78,11 @@ namespace Rubberduck.Inspections.Abstract
         /// <summary>
         /// Gets all available "quick fixes" for a code inspection result.
         /// </summary>
-        public virtual IEnumerable<QuickFixBase> QuickFixes { get { return Enumerable.Empty<QuickFixBase>(); } }
+        public virtual IEnumerable<IQuickFix> QuickFixes { get { return Enumerable.Empty<IQuickFix>(); } }
 
         public bool HasQuickFixes { get { return QuickFixes.Any(); } }
 
-        public virtual QuickFixBase DefaultQuickFix { get { return QuickFixes.FirstOrDefault(); } }
+        public virtual IQuickFix DefaultQuickFix { get { return QuickFixes.FirstOrDefault(); } }
 
         public virtual int CompareTo(IInspectionResult other)
         {

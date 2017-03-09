@@ -2,7 +2,8 @@ using System.Collections.Generic;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Inspections.Resources;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.Parsing.VBA;
@@ -11,7 +12,7 @@ namespace Rubberduck.Inspections.Results
 {
     public class AssignedByValParameterInspectionResult : InspectionResultBase
     {
-        private IEnumerable<QuickFixBase> _quickFixes;
+        private IEnumerable<IQuickFix> _quickFixes;
         private readonly RubberduckParserState _parserState;
         private readonly IAssignedByValParameterQuickFixDialogFactory _dialogFactory;
 
@@ -30,11 +31,11 @@ namespace Rubberduck.Inspections.Results
             }
         }
 
-        public override IEnumerable<QuickFixBase> QuickFixes
+        public override IEnumerable<IQuickFix> QuickFixes
         {
             get
             {
-                return _quickFixes ?? (_quickFixes = new QuickFixBase[]
+                return _quickFixes ?? (_quickFixes = new IQuickFix[]
                 {
                     new AssignedByValParameterMakeLocalCopyQuickFix(Target, QualifiedSelection, _parserState, _dialogFactory),
                     new PassParameterByReferenceQuickFix(Target, QualifiedSelection),

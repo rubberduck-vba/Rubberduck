@@ -2,17 +2,18 @@ using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Resources;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 
 namespace Rubberduck.Inspections
 {
-    public sealed class ObsoleteLetStatementInspection : InspectionBase, IParseTreeInspection<VBAParser.LetStmtContext>
+    public sealed class ObsoleteLetStatementInspection : InspectionBase, IParseTreeInspection
     {
-        private IEnumerable<QualifiedContext> _results;
+        private IEnumerable<QualifiedContext> _parseTreeResults;
 
         public ObsoleteLetStatementInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Suggestion)
@@ -20,20 +21,19 @@ namespace Rubberduck.Inspections
         }
 
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
-        public IEnumerable<QualifiedContext<VBAParser.LetStmtContext>> ParseTreeResults { get { return _results.OfType<QualifiedContext<VBAParser.LetStmtContext>>(); } }
 
         public void SetResults(IEnumerable<QualifiedContext> results)
         {
-            _results = results;
+            _parseTreeResults = results;
         }
 
-        public override IEnumerable<InspectionResultBase> GetInspectionResults()
+        public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
-            if (ParseTreeResults == null)
+            if (_parseTreeResults == null)
             {
-                return new InspectionResultBase[] { };
+                return Enumerable.Empty<IInspectionResult>();
             }
-            return ParseTreeResults.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName.Component, context.Context.Start.Line))
+            return _parseTreeResults.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName.Component, context.Context.Start.Line))
                 .Select(context => new ObsoleteLetStatementUsageInspectionResult(this, new QualifiedContext<ParserRuleContext>(context.ModuleName, context.Context)));
         }
 

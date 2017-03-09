@@ -10,6 +10,7 @@ using RubberduckTests.Mocks;
 using System.Threading;
 using Rubberduck.UI.Refactorings;
 using System.Windows.Forms;
+using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace RubberduckTests.Inspections
@@ -265,7 +266,7 @@ End Function
             return builder.BuildFromSingleStandardModule(inputCode, out component);
         }
 
-        private IEnumerable<Rubberduck.Inspections.Abstract.InspectionResultBase> GetInspectionResults(IVBE vbe, IAssignedByValParameterQuickFixDialogFactory mockDialogFactory)
+        private IEnumerable<IInspectionResult> GetInspectionResults(IVBE vbe, IAssignedByValParameterQuickFixDialogFactory mockDialogFactory)
         {
             var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
             parser.Parse(new CancellationTokenSource());

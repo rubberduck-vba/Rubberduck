@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Resources;
+using Rubberduck.Inspections.QuickFixes;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 
-namespace Rubberduck.Inspections.QuickFixes
+namespace Rubberduck.Inspections.Results
 {
     public class SelfAssignedDeclarationInspectionResult : InspectionResultBase
     {
@@ -13,11 +15,11 @@ namespace Rubberduck.Inspections.QuickFixes
         {
         }
 
-        public override IEnumerable<QuickFixBase> QuickFixes
+        public override IEnumerable<IQuickFix> QuickFixes
         {
             get
             {
-                return new QuickFixBase[]
+                return new IQuickFix[]
                 {
                     new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName)
                 };

@@ -4,10 +4,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Inspections;
 using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Inspections.Resources;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
 using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -37,7 +36,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ProcedureNotUsedInspection(parser.State, new Mock<IMessageBox>().Object);
+            var inspection = new ProcedureNotUsedInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
@@ -65,7 +64,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ProcedureNotUsedInspection(parser.State, new Mock<IMessageBox>().Object);
+            var inspection = new ProcedureNotUsedInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(2, inspectionResults.Count());
@@ -95,7 +94,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ProcedureNotUsedInspection(parser.State, new Mock<IMessageBox>().Object);
+            var inspection = new ProcedureNotUsedInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(0, inspectionResults.Count());
@@ -124,7 +123,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ProcedureNotUsedInspection(parser.State, new Mock<IMessageBox>().Object);
+            var inspection = new ProcedureNotUsedInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
@@ -159,7 +158,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ProcedureNotUsedInspection(parser.State, new Mock<IMessageBox>().Object);
+            var inspection = new ProcedureNotUsedInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(0, inspectionResults.Count());
@@ -192,7 +191,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ProcedureNotUsedInspection(parser.State, new Mock<IMessageBox>().Object);
+            var inspection = new ProcedureNotUsedInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(0, inspectionResults.Count(result => result.Target.DeclarationType == DeclarationType.Procedure));
@@ -220,7 +219,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ProcedureNotUsedInspection(parser.State, new Mock<IMessageBox>().Object);
+            var inspection = new ProcedureNotUsedInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(0, inspectionResults.Count());
@@ -248,7 +247,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ProcedureNotUsedInspection(parser.State, new Mock<IMessageBox>().Object);
+            var inspection = new ProcedureNotUsedInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(0, inspectionResults.Count());
@@ -276,7 +275,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ProcedureNotUsedInspection(parser.State, new Mock<IMessageBox>().Object);
+            var inspection = new ProcedureNotUsedInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(0, inspectionResults.Count());
@@ -304,7 +303,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ProcedureNotUsedInspection(parser.State, new Mock<IMessageBox>().Object);
+            var inspection = new ProcedureNotUsedInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(0, inspectionResults.Count());
@@ -331,7 +330,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ProcedureNotUsedInspection(parser.State, new Mock<IMessageBox>().Object);
+            var inspection = new ProcedureNotUsedInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.IsFalse(inspectionResults.Any());
@@ -360,7 +359,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ProcedureNotUsedInspection(parser.State, new Mock<IMessageBox>().Object);
+            var inspection = new ProcedureNotUsedInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
             inspectionResults.First().QuickFixes.First().Fix();
@@ -394,7 +393,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new ProcedureNotUsedInspection(parser.State, new Mock<IMessageBox>().Object);
+            var inspection = new ProcedureNotUsedInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
             inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
@@ -406,7 +405,7 @@ End Sub";
         [TestCategory("Inspections")]
         public void InspectionType()
         {
-            var inspection = new ProcedureNotUsedInspection(null, new Mock<IMessageBox>().Object);
+            var inspection = new ProcedureNotUsedInspection(null);
             Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
         }
 
@@ -415,7 +414,7 @@ End Sub";
         public void InspectionName()
         {
             const string inspectionName = "ProcedureNotUsedInspection";
-            var inspection = new ProcedureNotUsedInspection(null, new Mock<IMessageBox>().Object);
+            var inspection = new ProcedureNotUsedInspection(null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
         }

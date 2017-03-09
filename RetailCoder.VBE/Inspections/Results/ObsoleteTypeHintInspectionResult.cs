@@ -3,6 +3,7 @@ using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections.Results
@@ -11,7 +12,7 @@ namespace Rubberduck.Inspections.Results
     {
         private readonly string _result;
         private readonly Declaration _declaration;
-        private IEnumerable<QuickFixBase> _quickFixes;
+        private IEnumerable<IQuickFix> _quickFixes;
 
         public ObsoleteTypeHintInspectionResult(IInspection inspection, string result, QualifiedContext qualifiedContext, Declaration declaration)
             : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context)
@@ -20,11 +21,11 @@ namespace Rubberduck.Inspections.Results
             _declaration = declaration;
         }
 
-        public override IEnumerable<QuickFixBase> QuickFixes
+        public override IEnumerable<IQuickFix> QuickFixes
         {
             get
             {
-                return _quickFixes ?? (_quickFixes = new QuickFixBase[]
+                return _quickFixes ?? (_quickFixes = new IQuickFix[]
                 {
                     new RemoveTypeHintsQuickFix(Context, QualifiedSelection, _declaration), 
                     new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName)

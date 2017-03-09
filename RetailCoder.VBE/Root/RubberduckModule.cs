@@ -38,6 +38,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 using ReparseCommandMenuItem = Rubberduck.UI.Command.MenuItems.CommandBars.ReparseCommandMenuItem;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.Inspections;
+using Rubberduck.Parsing.Inspections.Abstract;
 
 namespace Rubberduck.Root
 {
@@ -243,21 +244,21 @@ namespace Rubberduck.Root
             // multibinding for IEnumerable<IInspection> dependency
             foreach (var inspection in inspections)
             {
-                if (typeof(IParseTreeInspection).IsAssignableFrom(inspection))
-                {
-                    var binding = Bind<IParseTreeInspection>()
-                        .To(inspection)
-                        .InCallScope()
-                        .Named(inspection.FullName);
+                //if (typeof(IParseTreeInspection).IsAssignableFrom(inspection))
+                //{
+                //    var binding = Bind<IParseTreeInspection>()
+                //        .To(inspection)
+                //        .InCallScope()
+                //        .Named(inspection.FullName);
 
-                    binding.Intercept().With<TimedCallLoggerInterceptor>();
-                    binding.Intercept().With<EnumerableCounterInterceptor<InspectionResultBase>>();
+                //    binding.Intercept().With<TimedCallLoggerInterceptor>();
+                //    binding.Intercept().With<EnumerableCounterInterceptor<InspectionResultBase>>();
 
-                    var localInspection = inspection;
-                    Bind<IInspection>().ToMethod(
-                        c => c.Kernel.Get<IParseTreeInspection>(localInspection.FullName));
-                }
-                else
+                //    var localInspection = inspection;
+                //    Bind<IInspection>().ToMethod(
+                //        c => c.Kernel.Get<IParseTreeInspection>(localInspection.FullName));
+                //}
+                //else
                 {
                     var binding = Bind<IInspection>().To(inspection).InCallScope();
                     binding.Intercept().With<TimedCallLoggerInterceptor>();

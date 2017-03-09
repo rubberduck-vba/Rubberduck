@@ -16,6 +16,7 @@ namespace Rubberduck.Inspections.QuickFixes
         public override void Fix()
         {
             var procedure = Context.GetText();
+            // todo: verify that this isn't a bug / test with a procedure that contains parentheses in the body.
             var indexOfLastClosingParen = procedure.LastIndexOf(')');
 
             var result = indexOfLastClosingParen == procedure.Length
@@ -27,51 +28,6 @@ namespace Rubberduck.Inspections.QuickFixes
 
             module.DeleteLines(selection.StartLine, selection.LineCount);
             module.InsertLines(selection.StartLine, result);
-        }
-
-        private string GetSignature(VBAParser.FunctionStmtContext context)
-        {
-            if (context == null)
-            {
-                return null;
-            }
-
-            var @static = context.STATIC() == null ? string.Empty : context.STATIC().GetText() + ' ';
-            var keyword = context.FUNCTION().GetText() + ' ';
-            var args = context.argList() == null ? "()" : context.argList().GetText() + ' ';
-            var asTypeClause = context.asTypeClause() == null ? string.Empty : context.asTypeClause().GetText();
-            var visibility = context.visibility() == null ? string.Empty : context.visibility().GetText() + ' ';
-
-            return visibility + @static + keyword + context.functionName().identifier().GetText() + args + asTypeClause;
-        }
-
-        private string GetSignature(VBAParser.PropertyGetStmtContext context)
-        {
-            if (context == null)
-            {
-                return null;
-            }
-
-            var @static = context.STATIC() == null ? string.Empty : context.STATIC().GetText() + ' ';
-            var keyword = context.PROPERTY_GET().GetText() + ' ';
-            var args = context.argList() == null ? "()" : context.argList().GetText() + ' ';
-            var asTypeClause = context.asTypeClause() == null ? string.Empty : context.asTypeClause().GetText();
-            var visibility = context.visibility() == null ? string.Empty : context.visibility().GetText() + ' ';
-
-            return visibility + @static + keyword + context.functionName().identifier().GetText() + args + asTypeClause;
-        }
-
-        private string GetSignature(VBAParser.DeclareStmtContext context)
-        {
-            if (context == null)
-            {
-                return null;
-            }
-
-            var args = context.argList() == null ? "()" : context.argList().GetText() + ' ';
-            var asTypeClause = context.asTypeClause() == null ? string.Empty : context.asTypeClause().GetText();
-
-            return args + asTypeClause;
         }
     }
 }

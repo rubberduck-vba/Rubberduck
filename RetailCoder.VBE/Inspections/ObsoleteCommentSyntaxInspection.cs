@@ -2,39 +2,37 @@
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Resources;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections
 {
-    public sealed class ObsoleteCommentSyntaxInspection : InspectionBase, IParseTreeInspection<VBAParser.RemCommentContext>
+    public sealed class ObsoleteCommentSyntaxInspection : InspectionBase, IParseTreeInspection
     {
-        private IEnumerable<QualifiedContext> _results;
+        private IEnumerable<QualifiedContext> _parseTreeResults;
 
         public ObsoleteCommentSyntaxInspection(RubberduckParserState state) : base(state, CodeInspectionSeverity.Suggestion) { }
 
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
 
-        public override IEnumerable<InspectionResultBase> GetInspectionResults()
+        public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
-            if (ParseTreeResults == null)
+            if (_parseTreeResults == null)
             {
-                return new InspectionResultBase[] { };
+                return Enumerable.Empty<IInspectionResult>();
             }
-            return ParseTreeResults.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName.Component, context.Context.Start.Line))
+            return _parseTreeResults.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName.Component, context.Context.Start.Line))
                 .Select(context => new ObsoleteCommentSyntaxInspectionResult(this, new QualifiedContext<ParserRuleContext>(context.ModuleName, context.Context)));
         }
 
         public void SetResults(IEnumerable<QualifiedContext> results)
         {
-            _results = results;
+            _parseTreeResults = results;
         }
-
-        public IEnumerable<QualifiedContext<VBAParser.RemCommentContext>> ParseTreeResults { get { return _results.OfType<QualifiedContext<VBAParser.RemCommentContext>>(); } }
-
 
         public class ObsoleteCommentSyntaxListener : VBAParserBaseListener
         {

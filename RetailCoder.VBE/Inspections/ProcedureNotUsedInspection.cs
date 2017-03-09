@@ -2,24 +2,18 @@ using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Resources;
 using Rubberduck.Inspections.Results;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
 using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Inspections
 {
     public sealed class ProcedureNotUsedInspection : InspectionBase
     {
-        private readonly IMessageBox _messageBox;
-
-        public ProcedureNotUsedInspection(RubberduckParserState state, IMessageBox messageBox)
-            : base(state)
-        {
-            _messageBox = messageBox;
-        }
+        public ProcedureNotUsedInspection(RubberduckParserState state) : base(state) { }
 
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
@@ -33,7 +27,7 @@ namespace Rubberduck.Inspections
             "Session_"
         };
 
-        public override IEnumerable<InspectionResultBase> GetInspectionResults()
+        public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
             var declarations = UserDeclarations.ToList();
 

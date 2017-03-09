@@ -341,6 +341,7 @@
     <Compile Include="Common\WinAPI\WindowLongFlags.cs" />
     <Compile Include="Common\WindowsOperatingSystem.cs" />
     <Compile Include="Common\UndocumentedAttribute.cs" />
+    <Compile Include="Inspections\Abstract\IExportable.cs" />
     <Compile Include="Inspections\ApplicationWorksheetFunctionInspection.cs" />
     <Compile Include="Inspections\HostSpecificExpressionInspection.cs" />
     <Compile Include="Inspections\HungarianNotationInspection.cs" />
@@ -349,13 +350,9 @@
     <Compile Include="Inspections\QuickFixes\AddIdentifierToWhiteListQuickFix.cs" />
     <Compile Include="Inspections\QuickFixes\ApplicationWorksheetFunctionQuickFix.cs" />
     <Compile Include="Inspections\QuickFixes\AssignedByValParameterMakeLocalCopyQuickFix.cs" />
-    <Compile Include="Inspections\Resources\InspectionsUI.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>InspectionsUI.resx</DependentUpon>
-    </Compile>
     <Compile Include="Inspections\Results\AggregateInspectionResult.cs" />
     <Compile Include="Inspections\Results\ApplicationWorksheetFunctionInspectionResult.cs" />
+    <Compile Include="Inspections\QuickFixes\ChangeProcedureToFunctionQuickFix.cs" />
     <Compile Include="Inspections\Results\HostSpecificExpressionInspectionResult.cs" />
     <Compile Include="Inspections\Results\ImplicitDefaultMemberAssignmentInspectionResult.cs" />
     <Compile Include="Inspections\QuickFixes\IntroduceLocalVariableQuickFix.cs" />
@@ -375,16 +372,6 @@
     <Compile Include="Inspections\QuickFixes\DeclareAsExplicitVariantQuickFix.cs" />
     <Compile Include="Inspections\Results\ImplicitActiveSheetReferenceInspectionResult.cs" />
     <Compile Include="Inspections\QuickFixes\ChangeParameterByRefByValQuickFix.cs" />
-    <Compile Include="Inspections\Resources\InspectionsUI.de.Designer.cs">
-      <DependentUpon>InspectionsUI.de.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Inspections\Resources\InspectionsUI.fr.Designer.cs">
-      <DependentUpon>InspectionsUI.fr.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <Compile Include="Inspections\Abstract\IParseTreeInspection.cs" />
     <Compile Include="Inspections\QuickFixes\MakeSingleLineParameterQuickFix.cs" />
     <Compile Include="Inspections\MissingAnnotationArgumentInspection.cs" />
@@ -521,10 +508,8 @@
     <Compile Include="Inspections\QuickFixes\ConvertToProcedureQuickFix.cs" />
     <Compile Include="Inspections\FunctionReturnValueNotUsedInspection.cs" />
     <Compile Include="Inspections\Results\FunctionReturnValueNotUsedInspectionResult.cs" />
-    <Compile Include="Inspections\Abstract\IInspection.cs" />
-    <Compile Include="Inspections\Abstract\IInspectionModel.cs" />
     <Compile Include="Inspections\SelfAssignedDeclarationInspection.cs" />
-    <Compile Include="Inspections\QuickFixes\SelfAssignedDeclarationInspectionResult.cs" />
+    <Compile Include="Inspections\Results\SelfAssignedDeclarationInspectionResult.cs" />
     <Compile Include="Inspections\MoveFieldCloserToUsageInspection.cs" />
     <Compile Include="Inspections\EncapsulatePublicFieldInspection.cs" />
     <Compile Include="Inspections\Results\MoveFieldCloserToUsageInspectionResult.cs" />
@@ -591,7 +576,6 @@
     <Compile Include="Inspections\ConstantNotUsedInspection.cs" />
     <Compile Include="Inspections\DefaultProjectNameInspection.cs" />
     <Compile Include="Inspections\Results\DefaultProjectNameInspectionResult.cs" />
-    <Compile Include="Inspections\Abstract\IInspectionResult.cs" />
     <Compile Include="Inspections\Abstract\IInspector.cs" />
     <Compile Include="Inspections\ImplicitPublicMemberInspection.cs" />
     <Compile Include="Inspections\Results\ImplicitPublicMemberInspectionResult.cs" />
@@ -949,8 +933,6 @@
     <Compile Include="Settings\UserSettings.cs" />
     <Compile Include="Settings\CodeInspectionSettings.cs" />
     <Compile Include="Inspections\Abstract\InspectionResultBase.cs" />
-    <Compile Include="Inspections\Resources\CodeInspectionSeverity.cs" />
-    <Compile Include="Inspections\Resources\CodeInspectionType.cs" />
     <Compile Include="Inspections\ImplicitByRefParameterInspection.cs" />
     <Compile Include="Inspections\Results\ImplicitByRefParameterInspectionResult.cs" />
     <Compile Include="Inspections\ImplicitVariantReturnTypeInspection.cs" />
@@ -1041,21 +1023,6 @@
     <Compile Include="UI\Command\Refactorings\RefactorRemoveParametersCommand.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Inspections\Resources\InspectionsUI.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <SubType>Designer</SubType>
-      <LastGenOutput>InspectionsUI.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Inspections\Resources\InspectionsUI.de.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>InspectionsUI.de.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Inspections\Resources\InspectionsUI.fr.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>InspectionsUI.fr.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="UI\About\AboutDialog.resx">
       <DependentUpon>AboutDialog.cs</DependentUpon>
     </EmbeddedResource>

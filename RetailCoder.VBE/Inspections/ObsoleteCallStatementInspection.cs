@@ -1,15 +1,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Resources;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections
 {
-    public sealed class ObsoleteCallStatementInspection : InspectionBase, IParseTreeInspection<VBAParser.CallStmtContext>
+    public sealed class ObsoleteCallStatementInspection : InspectionBase, IParseTreeInspection
     {
         private IEnumerable<QualifiedContext> _parseTreeResults;
 
@@ -20,19 +21,21 @@ namespace Rubberduck.Inspections
 
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
 
-        public IEnumerable<QualifiedContext<VBAParser.CallStmtContext>> ParseTreeResults { get { return _parseTreeResults.OfType<QualifiedContext<VBAParser.CallStmtContext>>(); } }
-        public void SetResults(IEnumerable<QualifiedContext> results) { _parseTreeResults = results; } 
-
-        public override IEnumerable<InspectionResultBase> GetInspectionResults()
+        public void SetResults(IEnumerable<QualifiedContext> results)
         {
-            if (ParseTreeResults == null)
+            _parseTreeResults = results;
+        }
+
+        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        {
+            if (_parseTreeResults == null)
             {
                 return new InspectionResultBase[] { };
             }
 
             var results = new List<ObsoleteCallStatementUsageInspectionResult>();
 
-            foreach (var context in ParseTreeResults.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName.Component, context.Context.Start.Line)))
+            foreach (var context in _parseTreeResults.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName.Component, context.Context.Start.Line)))
             {
                 var module = context.ModuleName.Component.CodeModule;
                 {
@@ -49,7 +52,7 @@ namespace Rubberduck.Inspections
                     if (!stringStrippedLines.Contains(":"))
                     {
                         results.Add(new ObsoleteCallStatementUsageInspectionResult(this,
-                                new QualifiedContext<VBAParser.CallStmtContext>(context.ModuleName, context.Context)));
+                                new QualifiedContext<VBAParser.CallStmtContext>(context.ModuleName, (VBAParser.CallStmtContext)context.Context)));
                     }
                 }
             }

@@ -11,8 +11,9 @@ using System.Windows;
 using NLog;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Resources;
 using Rubberduck.Inspections.Results;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
@@ -94,7 +95,7 @@ namespace Rubberduck.UI.Inspections
             }
         }
 
-        private QuickFixBase _defaultFix;
+        private IQuickFix _defaultFix;
 
         private INavigateSource _selectedItem;
         public INavigateSource SelectedItem
@@ -292,7 +293,7 @@ namespace Rubberduck.UI.Inspections
             LogManager.GetCurrentClassLogger().Trace("Inspections loaded in {0}ms", stopwatch.ElapsedMilliseconds);
         }
 
-        private void ExecuteQuickFixes(IEnumerable<QuickFixBase> quickFixes)
+        private void ExecuteQuickFixes(IEnumerable<IQuickFix> quickFixes)
         {
             var fixes = quickFixes.ToList();
             var completed = 0;
@@ -420,9 +421,9 @@ namespace Rubberduck.UI.Inspections
             {
                 return;
             }
-            ColumnInfo[] ColumnInfos = { new ColumnInfo("Type"), new ColumnInfo("Project"), new ColumnInfo("Component"), new ColumnInfo("Issue"), new ColumnInfo("Line", hAlignment.Right), new ColumnInfo("Column", hAlignment.Right) };
+            ColumnInfo[] columnInfos = { new ColumnInfo("Type"), new ColumnInfo("Project"), new ColumnInfo("Component"), new ColumnInfo("Issue"), new ColumnInfo("Line", hAlignment.Right), new ColumnInfo("Column", hAlignment.Right) };
 
-            var aResults = _results.Select(result => result.ToArray()).ToArray();
+            var resultArray = _results.OfType<IExportable>().Select(result => result.ToArray()).ToArray();
 
             var resource = _results.Count == 1
                 ? RubberduckUI.CodeInspections_NumberOfIssuesFound_Singular
@@ -430,12 +431,12 @@ namespace Rubberduck.UI.Inspections
 
             var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InvariantCulture), _results.Count);
 
-            var textResults = title + Environment.NewLine + string.Join("", _results.Select(result => result.ToClipboardString() + Environment.NewLine).ToArray());
-            var csvResults = ExportFormatter.Csv(aResults, title,ColumnInfos);
-            var htmlResults = ExportFormatter.HtmlClipboardFragment(aResults, title,ColumnInfos);
-            var rtfResults = ExportFormatter.RTF(aResults, title);
+            var textResults = title + Environment.NewLine + string.Join("", _results.OfType<IExportable>().Select(result => result.ToClipboardString() + Environment.NewLine).ToArray());
+            var csvResults = ExportFormatter.Csv(resultArray, title,columnInfos);
+            var htmlResults = ExportFormatter.HtmlClipboardFragment(resultArray, title,columnInfos);
+            var rtfResults = ExportFormatter.RTF(resultArray, title);
 
-            MemoryStream strm1 = ExportFormatter.XmlSpreadsheetNew(aResults, title, ColumnInfos);
+            MemoryStream strm1 = ExportFormatter.XmlSpreadsheetNew(resultArray, title, columnInfos);
             //Add the formats from richest formatting to least formatting
             _clipboard.AppendStream(DataFormats.GetDataFormat(XML_SPREADSHEET_DATA_FORMAT).Name, strm1);
             _clipboard.AppendString(DataFormats.Rtf, rtfResults);

@@ -1,15 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Resources;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 
 namespace Rubberduck.Inspections
 {
-    public sealed class EmptyStringLiteralInspection : InspectionBase, IParseTreeInspection<VBAParser.LiteralExpressionContext>
+    public sealed class EmptyStringLiteralInspection : InspectionBase, IParseTreeInspection
     {
         private IEnumerable<QualifiedContext> _parseTreeResults;
 
@@ -20,20 +21,23 @@ namespace Rubberduck.Inspections
 
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
 
-        public IEnumerable<QualifiedContext<VBAParser.LiteralExpressionContext>> ParseTreeResults { get { return _parseTreeResults.OfType<QualifiedContext<VBAParser.LiteralExpressionContext>>(); } }
+        public void SetResults(IEnumerable<QualifiedContext<VBAParser.LiteralExpressionContext>> results)
+        {
+            _parseTreeResults = results;
+        }
 
         public void SetResults(IEnumerable<QualifiedContext> results)
         {
             _parseTreeResults = results;
         }
 
-        public override IEnumerable<InspectionResultBase> GetInspectionResults()
+        public override IEnumerable<IInspectionResult> GetInspectionResults()
         {   
-            if (ParseTreeResults == null)
+            if (_parseTreeResults == null)
             {
-                return new InspectionResultBase[] { };
+                return Enumerable.Empty<IInspectionResult>();
             }
-            return ParseTreeResults
+            return _parseTreeResults
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName.Component, result.Context.Start.Line))
                 .Select(result => new EmptyStringLiteralInspectionResult(this, result));
         }

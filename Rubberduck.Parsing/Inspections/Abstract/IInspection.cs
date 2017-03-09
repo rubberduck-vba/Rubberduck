@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Rubberduck.Root;
 
-namespace Rubberduck.Inspections.Abstract
+namespace Rubberduck.Parsing.Inspections.Abstract
 {
     /// <summary>
     /// An interface that abstracts a runnable code inspection.
@@ -13,8 +12,6 @@ namespace Rubberduck.Inspections.Abstract
         /// Runs code inspection and returns inspection results.
         /// </summary>
         /// <returns>Returns inspection results, if any.</returns>
-        [TimedCallIntercept]
-        [EnumerableCounterIntercept]
-        IEnumerable<InspectionResultBase> GetInspectionResults();
+        IEnumerable<IInspectionResult> GetInspectionResults();
     }
 }
