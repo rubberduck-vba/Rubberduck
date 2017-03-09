@@ -32,7 +32,7 @@ End Sub";
             //Expectation
             const string expectedCode =
 @"Private bar As Boolean
-Private Sub Foo()    
+Private Sub Foo()
 End Sub";
 
             //Arrange
@@ -72,7 +72,7 @@ End Function";
             //Expectation
             const string expectedCode =
 @"Private bar As Boolean
-Private Function Foo() As Boolean    
+Private Function Foo() As Boolean
     Foo = True
 End Function";
 
@@ -114,7 +114,7 @@ End Sub";
             const string expectedCode =
 @"Public fizz As Integer
 Private bar As Boolean
-Private Sub Foo(ByVal buz As Integer)  
+Private Sub Foo(ByVal buz As Integer)
 End Sub";
 
             //Arrange
@@ -158,7 +158,7 @@ End Sub";
             const string expectedCode =
 @"Public fizz As Integer
 Private bar As Boolean
-Private Sub Foo(ByVal buz As Integer)  
+Private Sub Foo(ByVal buz As Integer)
 End Sub";
 
             //Arrange
