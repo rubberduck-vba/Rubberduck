@@ -14,8 +14,6 @@ namespace Rubberduck.Inspections
         {
         }
 
-        public override string Meta { get { return InspectionsUI.ImplicitActiveWorkbookReferenceInspectionMeta; } }
-        public override string Description { get { return InspectionsUI.ImplicitActiveWorkbookReferenceInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 
         private static readonly string[] Targets =

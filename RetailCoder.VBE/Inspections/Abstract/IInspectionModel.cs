@@ -12,6 +12,9 @@ namespace Rubberduck.Inspections.Abstract
         /// </summary>
         string Name { get; }
 
+        /// <summary>
+        /// Gets a string referring to this inspection in VBA @annotations.
+        /// </summary>
         string AnnotationName { get; }
 
         /// <summary>
@@ -33,5 +36,11 @@ namespace Rubberduck.Inspections.Abstract
         /// Gets a value indicating the severity level of the code inspection.
         /// </summary>
         CodeInspectionSeverity Severity { get; set; }
+
+        /// <summary>
+        /// Gets a string that contains additional/meta information about an inspection.
+        /// </summary>
+        // ReSharper disable once UnusedMember.Global; property is used in XAML bindings.
+        string Meta { get; }
     }
 }

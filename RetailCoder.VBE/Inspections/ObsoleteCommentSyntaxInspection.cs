@@ -16,8 +16,6 @@ namespace Rubberduck.Inspections
 
         public ObsoleteCommentSyntaxInspection(RubberduckParserState state) : base(state, CodeInspectionSeverity.Suggestion) { }
 
-        public override string Meta { get { return InspectionsUI.ObsoleteCommentSyntaxInspectionMeta; } }
-        public override string Description { get { return InspectionsUI.ObsoleteCommentSyntaxInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()

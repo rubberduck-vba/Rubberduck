@@ -20,8 +20,6 @@ namespace Rubberduck.Inspections
             _indenter = indenter;
         }
 
-        public override string Meta { get { return InspectionsUI.EncapsulatePublicFieldInspectionMeta; } }
-        public override string Description { get { return InspectionsUI.EncapsulatePublicFieldInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()

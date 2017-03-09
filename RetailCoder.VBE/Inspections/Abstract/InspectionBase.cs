@@ -32,7 +32,7 @@ namespace Rubberduck.Inspections.Abstract
         /// <summary>
         /// Gets a localized string representing a short name/description for the inspection.
         /// </summary>
-        public abstract string Description { get; }
+        public virtual string Description { get { return InspectionsUI.ResourceManager.GetString(Name + "Name", CultureInfo.CurrentUICulture); } }
 
         /// <summary>
         /// Gets the type of inspection; used for regrouping inspections.

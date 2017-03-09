@@ -21,8 +21,6 @@ namespace Rubberduck.Inspections
             _messageBox = messageBox;
         }
 
-        public override string Meta { get { return InspectionsUI.ProcedureNotUsedInspectionMeta; } }
-        public override string Description { get { return InspectionsUI.ProcedureNotUsedInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
         private static readonly string[] DocumentEventHandlerPrefixes =

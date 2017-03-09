@@ -15,8 +15,6 @@ namespace Rubberduck.Inspections
         {
         }
 
-        public override string Meta { get { return InspectionsUI.DefaultProjectNameInspectionMeta; } }
-        public override string Description { get { return InspectionsUI.DefaultProjectNameInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()

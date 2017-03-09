@@ -16,10 +16,5 @@ namespace Rubberduck.Inspections.Abstract
         [TimedCallIntercept]
         [EnumerableCounterIntercept]
         IEnumerable<InspectionResultBase> GetInspectionResults();
-
-        /// <summary>
-        /// Gets a string that contains additional/meta information about an inspection.
-        /// </summary>
-        string Meta { get; }
     }
 }

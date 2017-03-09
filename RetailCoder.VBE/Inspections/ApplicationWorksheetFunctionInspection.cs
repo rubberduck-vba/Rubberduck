@@ -15,8 +15,6 @@ namespace Rubberduck.Inspections
             : base(state, CodeInspectionSeverity.Suggestion)
         { }
 
-        public override string Meta { get { return InspectionsUI.ApplicationWorksheetFunctionInspectionMeta; } }
-        public override string Description { get { return InspectionsUI.ApplicationWorksheetFunctionInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()

@@ -10,7 +10,7 @@ using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Inspections
 {
-    public sealed class MissingAnnotationArgumentInspection : InspectionBase, IParseTreeInspection
+    public sealed class MissingAnnotationArgumentInspection : InspectionBase, IParseTreeInspection<VBAParser.AnnotationContext>
     {
         private IEnumerable<QualifiedContext> _parseTreeResults;
  
@@ -19,8 +19,6 @@ namespace Rubberduck.Inspections
         {
         }
 
-        public override string Meta { get { return InspectionsUI.MissingAnnotationArgumentInspectionMeta; } }
-        public override string Description { get { return InspectionsUI.MissingAnnotationArgumentInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
         public IEnumerable<QualifiedContext<VBAParser.AnnotationContext>> ParseTreeResults { get { return _parseTreeResults.OfType<QualifiedContext<VBAParser.AnnotationContext>>(); } }
 

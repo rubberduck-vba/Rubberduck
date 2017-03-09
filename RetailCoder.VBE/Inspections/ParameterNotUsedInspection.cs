@@ -19,8 +19,6 @@ namespace Rubberduck.Inspections
             _messageBox = messageBox;
         }
 
-        public override string Meta { get { return InspectionsUI.ParameterNotUsedInspectionName; }}
-        public override string Description { get { return InspectionsUI.ParameterNotUsedInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()

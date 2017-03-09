@@ -19,8 +19,6 @@ namespace Rubberduck.Inspections
         {
         }
 
-        public override string Meta { get { return InspectionsUI.NonReturningFunctionInspectionMeta; }}
-        public override string Description { get { return InspectionsUI.NonReturningFunctionInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
         private static readonly DeclarationType[] ReturningMemberTypes =

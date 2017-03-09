@@ -16,8 +16,6 @@ namespace Rubberduck.Inspections
         {
         }
 
-        public override string Meta { get { return InspectionsUI.ImplicitByRefParameterInspectionMeta; } }
-        public override string Description { get { return InspectionsUI.ImplicitByRefParameterInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()

@@ -17,8 +17,6 @@ namespace Rubberduck.Inspections
         {
         }
 
-        public override string Meta { get { return InspectionsUI.ImplicitPublicMemberInspectionMeta; } }
-        public override string Description { get { return InspectionsUI.ImplicitPublicMemberInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 
         private static readonly DeclarationType[] ProcedureTypes = 

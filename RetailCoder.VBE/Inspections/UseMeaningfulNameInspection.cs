@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Linq;
-using Castle.Core.Internal;
-using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Resources;
 using Rubberduck.Inspections.Results;
@@ -27,7 +23,6 @@ namespace Rubberduck.Inspections
             _settings = settings;
         }
 
-        public override string Description { get { return InspectionsUI.UseMeaningfulNameInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 
         private static readonly DeclarationType[] IgnoreDeclarationTypes = 

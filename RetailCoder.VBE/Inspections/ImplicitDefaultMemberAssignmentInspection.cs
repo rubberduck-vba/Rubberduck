@@ -34,8 +34,6 @@ namespace Rubberduck.Inspections
             return interestingReferences.Select(reference => new ImplicitDefaultMemberAssignmentInspectionResult(this, reference));
         }
 
-        public override string Meta { get { return InspectionsUI.ImplicitDefaultMemberAssignmentInspectionMeta; } }
-        public override string Description { get { return InspectionsUI.ImplicitDefaultMemberAssignmentInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
     }
 }

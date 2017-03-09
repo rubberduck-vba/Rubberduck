@@ -17,8 +17,6 @@ namespace Rubberduck.Inspections
         {
         }
 
-        public override string Meta { get { return InspectionsUI.ImplicitVariantReturnTypeInspectionMeta; } }
-        public override string Description { get { return InspectionsUI.ImplicitVariantReturnTypeInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
         private static readonly DeclarationType[] ProcedureTypes = 

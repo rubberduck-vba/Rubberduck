@@ -16,8 +16,6 @@ namespace Rubberduck.Inspections
         {
         }
 
-        public override string Meta { get { return InspectionsUI.MultipleFolderAnnotationsInspectionMeta; } }
-        public override string Description { get { return InspectionsUI.MultipleFolderAnnotationsInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 
         public override IEnumerable<InspectionResultBase> GetInspectionResults()

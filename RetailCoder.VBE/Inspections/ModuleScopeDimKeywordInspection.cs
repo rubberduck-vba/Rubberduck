@@ -16,8 +16,6 @@ namespace Rubberduck.Inspections
         {
         }
 
-        public override string Meta { get { return InspectionsUI.ModuleScopeDimKeywordInspectionMeta; } }
-        public override string Description { get { return InspectionsUI.ModuleScopeDimKeywordInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 
         private static readonly IReadOnlyList<DeclarationType> ModuleTypes = new[]

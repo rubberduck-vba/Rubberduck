@@ -108,11 +108,6 @@ namespace Rubberduck.Inspections
             _settings = settings;
         }
 
-        public override string Description
-        {
-            get { return InspectionsUI.HungarianNotationInspectionName; }
-        }
-
         public override CodeInspectionType InspectionType
         {
             get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; }
