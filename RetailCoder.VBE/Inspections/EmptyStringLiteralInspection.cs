@@ -21,11 +21,6 @@ namespace Rubberduck.Inspections
 
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
 
-        public void SetResults(IEnumerable<QualifiedContext<VBAParser.LiteralExpressionContext>> results)
-        {
-            _parseTreeResults = results;
-        }
-
         public void SetResults(IEnumerable<QualifiedContext> results)
         {
             _parseTreeResults = results;
@@ -38,7 +33,8 @@ namespace Rubberduck.Inspections
                 return Enumerable.Empty<IInspectionResult>();
             }
             return _parseTreeResults
-                .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName.Component, result.Context.Start.Line))
+                .Where(result => result.Context is VBAParser.LiteralExpressionContext 
+                    && !IsIgnoringInspectionResultFor(result.ModuleName.Component, result.Context.Start.Line))
                 .Select(result => new EmptyStringLiteralInspectionResult(this, result));
         }
 

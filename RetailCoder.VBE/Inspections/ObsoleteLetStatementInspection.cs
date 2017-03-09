@@ -33,7 +33,8 @@ namespace Rubberduck.Inspections
             {
                 return Enumerable.Empty<IInspectionResult>();
             }
-            return _parseTreeResults.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName.Component, context.Context.Start.Line))
+            return _parseTreeResults.Where(context => context.Context is VBAParser.LetStmtContext 
+                && !IsIgnoringInspectionResultFor(context.ModuleName.Component, context.Context.Start.Line))
                 .Select(context => new ObsoleteLetStatementUsageInspectionResult(this, new QualifiedContext<ParserRuleContext>(context.ModuleName, context.Context)));
         }
 
