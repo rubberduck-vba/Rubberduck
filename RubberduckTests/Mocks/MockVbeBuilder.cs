@@ -108,15 +108,25 @@ namespace RubberduckTests.Mocks
         /// <returns></returns>
         public static Mock<IVBE> BuildFromSingleStandardModule(string content, out IVBComponent component, Selection selection = default(Selection), bool referenceStdLibs = false)
         {
-            return BuildFromSingleModule(content, ComponentType.StandardModule, out component, selection, referenceStdLibs);
+            return BuildFromSingleModule(content, TestModuleName, ComponentType.StandardModule, out component, selection, referenceStdLibs);
+        }
+
+        public static Mock<IVBE> BuildFromSingleStandardModule(string content, string name, out IVBComponent component, Selection selection = default(Selection), bool referenceStdLibs = false)
+        {
+            return BuildFromSingleModule(content, name, ComponentType.StandardModule, out component, selection, referenceStdLibs);
         }
 
         public static Mock<IVBE> BuildFromSingleModule(string content, ComponentType type, out IVBComponent component, Selection selection = default(Selection), bool referenceStdLibs = false)
         {
+            return BuildFromSingleModule(content, TestModuleName, type, out component, selection, referenceStdLibs);
+        }
+
+        public static Mock<IVBE> BuildFromSingleModule(string content, string name, ComponentType type, out IVBComponent component, Selection selection = default(Selection), bool referenceStdLibs = false)
+        {
             var vbeBuilder = new MockVbeBuilder();
 
             var builder = vbeBuilder.ProjectBuilder(TestProjectName, ProjectProtection.Unprotected);
-            builder.AddComponent(TestModuleName, type, content, selection);
+            builder.AddComponent(name, type, content, selection);
 
             if (referenceStdLibs)
             {
