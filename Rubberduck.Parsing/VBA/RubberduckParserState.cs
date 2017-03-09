@@ -1005,7 +1005,7 @@ namespace Rubberduck.Parsing.VBA
 
         public Declaration FindSelectedDeclaration(ICodePane activeCodePane, bool procedureLevelOnly = false)
         {
-            return DeclarationFinder.FindSelectedDeclaration(activeCodePane);
+            return DeclarationFinder == null ? null : DeclarationFinder.FindSelectedDeclaration(activeCodePane);
         }
 
         public void RemoveBuiltInDeclarations(IReference reference)
