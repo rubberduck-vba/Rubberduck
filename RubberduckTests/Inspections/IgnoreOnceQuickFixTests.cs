@@ -1,19 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net.Configuration;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 using Rubberduck.Inspections;
 using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor.Application;
-using Rubberduck.VBEditor.Events;
-using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
@@ -47,8 +37,6 @@ End Function
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
             var project = vbe.Object.VBProjects[0];
             var module = project.VBComponents[0].CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());

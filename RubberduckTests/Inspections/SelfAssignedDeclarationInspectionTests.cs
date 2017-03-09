@@ -1,13 +1,10 @@
 using System.Linq;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 using Rubberduck.Inspections;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor.Application;
-using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 
@@ -32,8 +29,6 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -61,8 +56,6 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -91,8 +84,6 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -127,8 +118,6 @@ End Sub";
             var module = project.Object.VBComponents[0].CodeModule;
             var vbe = builder.AddProject(project).Build();
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());

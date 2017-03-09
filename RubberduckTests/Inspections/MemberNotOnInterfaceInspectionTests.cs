@@ -1,11 +1,8 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor.Application;
-using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 using ParserState = Rubberduck.Parsing.VBA.ParserState;
@@ -29,8 +26,6 @@ namespace RubberduckTests.Inspections
 
             var vbe = builder.AddProject(project).Build();
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.State.AddTestLibrary(library.Equals("Scripting") ? "Scripting.1.0.xml" : "Excel.1.8.xml");

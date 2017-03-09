@@ -1,12 +1,10 @@
-﻿using System.Threading;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.UI.Command.Refactorings;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.Application;
-using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
@@ -24,8 +22,6 @@ namespace RubberduckTests.Commands
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule("", out component);
             vbe.Setup(v => v.ActiveCodePane).Returns((ICodePane)null);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -45,8 +41,6 @@ namespace RubberduckTests.Commands
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule("", out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -72,8 +66,6 @@ End Sub";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(2, 9, 2, 9));
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -98,8 +90,6 @@ End Sub";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(2, 7, 2, 7));
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -124,8 +114,6 @@ End Sub";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 5, 1, 5));
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -146,8 +134,6 @@ End Sub";
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule("", out component);
             vbe.Setup(v => v.ActiveCodePane).Returns((ICodePane)null);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -167,8 +153,6 @@ End Sub";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleModule("", ComponentType.ClassModule, out component, new Selection());
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -189,8 +173,6 @@ End Sub";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleModule("Option Explicit", ComponentType.ClassModule, out component, new Selection());
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -214,8 +196,6 @@ End Sub";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(input, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -235,8 +215,6 @@ End Sub";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleModule("Dim d As Boolean", ComponentType.ClassModule, out component, Selection.Home);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -276,8 +254,6 @@ End Sub
                 Assert.Inconclusive("The active code pane should be the one with the method stub.");
             }
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -308,8 +284,6 @@ End Sub";
 
             vbe.Setup(s => s.ActiveCodePane).Returns(proj1.Object.VBComponents[0].CodeModule.CodePane);
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -333,8 +307,6 @@ End Sub";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleModule(input, ComponentType.ClassModule, out component, Selection.Home);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -359,8 +331,6 @@ End Function";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleModule(input, ComponentType.ClassModule, out component, Selection.Home);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -384,8 +354,6 @@ End Property";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleModule(input, ComponentType.ClassModule, out component, Selection.Home);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -409,8 +377,6 @@ End Property";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleModule(input, ComponentType.ClassModule, out component, Selection.Home);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -434,8 +400,6 @@ End Property";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleModule(input, ComponentType.ClassModule, out component, Selection.Home);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -456,8 +420,6 @@ End Property";
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule("", out component);
             vbe.Setup(v => v.ActiveCodePane).Returns((ICodePane)null);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -477,8 +439,6 @@ End Property";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule("", out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -499,8 +459,6 @@ End Property";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleModule("", ComponentType.ClassModule, out component, new Selection());
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -524,8 +482,6 @@ End Property";
                 .Build();
 
             var vbe = builder.AddProject(project).Build();
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -546,8 +502,6 @@ End Property";
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule("", out component);
             vbe.Setup(v => v.ActiveCodePane).Returns((ICodePane)null);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -568,8 +522,6 @@ End Property";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule("", out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -591,8 +543,6 @@ End Property";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule("Dim d As Boolean", out component, Selection.Home);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -618,8 +568,6 @@ End Property";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(2, 10, 2, 10));
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -641,8 +589,6 @@ End Property";
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule("", out component);
             vbe.Setup(v => v.ActiveCodePane).Returns((ICodePane)null);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -663,8 +609,6 @@ End Property";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule("", out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -686,8 +630,6 @@ End Property";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule("Dim d As Boolean", out component, Selection.Home);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -713,8 +655,6 @@ End Property";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(2, 10, 2, 10));
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -736,8 +676,6 @@ End Property";
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule("", out component);
             vbe.Setup(v => v.ActiveCodePane).Returns((ICodePane)null);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -757,8 +695,6 @@ End Property";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule("", out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -779,8 +715,6 @@ End Property";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule("Dim d As Boolean", out component, Selection.Home);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -805,8 +739,6 @@ End Property";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(2, 10, 2, 10));
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -826,8 +758,6 @@ End Property";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule("Private Const const_abc = 0", out component, Selection.Home);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -853,8 +783,6 @@ End Sub";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 5, 1, 5));
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -880,8 +808,6 @@ End Property";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(2, 10, 2, 10));
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -908,8 +834,6 @@ End Sub";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 17, 1, 17));
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -930,8 +854,6 @@ End Sub";
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule("", out component);
             vbe.Setup(v => v.ActiveCodePane).Returns((ICodePane)null);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -951,8 +873,6 @@ End Sub";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule("", out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -976,8 +896,6 @@ End Sub";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -1001,8 +919,6 @@ End Sub";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 6, 1, 6));
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -1026,8 +942,6 @@ End Function";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 11, 1, 11));
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -1051,8 +965,6 @@ End Property";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -1076,8 +988,6 @@ End Property";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -1101,8 +1011,6 @@ End Property";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -1125,8 +1033,6 @@ End Property";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -1150,8 +1056,6 @@ End Sub";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 6, 1, 6));
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -1175,8 +1079,6 @@ End Function";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 11, 1, 11));
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -1200,8 +1102,6 @@ End Property";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -1225,8 +1125,6 @@ End Property";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -1250,8 +1148,6 @@ End Property";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -1272,8 +1168,6 @@ End Property";
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule("", out component);
             vbe.Setup(v => v.ActiveCodePane).Returns((ICodePane)null);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -1293,8 +1187,6 @@ End Property";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule("", out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -1318,8 +1210,6 @@ End Property";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -1343,8 +1233,6 @@ End Sub";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 6, 1, 6));
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -1368,8 +1256,6 @@ End Function";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 11, 1, 11));
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -1393,8 +1279,6 @@ End Property";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -1418,8 +1302,6 @@ End Property";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -1443,8 +1325,6 @@ End Property";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -1467,8 +1347,6 @@ End Property";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -1492,8 +1370,6 @@ End Sub";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 6, 1, 6));
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -1517,8 +1393,6 @@ End Function";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 11, 1, 11));
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -1542,8 +1416,6 @@ End Property";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -1567,8 +1439,6 @@ End Property";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -1592,8 +1462,6 @@ End Property";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());

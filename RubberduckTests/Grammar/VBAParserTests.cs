@@ -1,4 +1,4 @@
-﻿using Antlr4.Runtime;
+using Antlr4.Runtime;
 using Antlr4.Runtime.Atn;
 using Antlr4.Runtime.Tree;
 using Antlr4.Runtime.Tree.Xpath;

@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Settings;
 using Rubberduck.UI.Settings;
 using UnitTestSettings = Rubberduck.Settings.UnitTestSettings;

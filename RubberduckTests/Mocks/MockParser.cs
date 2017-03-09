@@ -13,7 +13,6 @@ using Rubberduck.Parsing.Preprocessing;
 using System.Globalization;
 using System.Reflection;
 using System.Threading;
-using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Mocks

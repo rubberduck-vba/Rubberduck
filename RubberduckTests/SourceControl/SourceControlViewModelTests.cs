@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Security;
@@ -10,7 +10,6 @@ using Rubberduck.SettingsProvider;
 using Rubberduck.SourceControl;
 using Rubberduck.UI;
 using Rubberduck.UI.SourceControl;
-using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
@@ -51,8 +50,6 @@ namespace RubberduckTests.SourceControl
                 .Build();
             
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
 
             _configService = new Mock<IConfigProvider<SourceControlSettings>>();
             _configService.Setup(c => c.Create()).Returns(GetDummyConfig());
