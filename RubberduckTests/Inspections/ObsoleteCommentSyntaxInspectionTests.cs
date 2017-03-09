@@ -3,6 +3,7 @@ using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Inspections;
+using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete.Rubberduck.Inspections;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -10,6 +11,7 @@ using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.VBEditor.Application;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
@@ -40,7 +42,9 @@ namespace RubberduckTests.Inspections
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteCommentSyntaxInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
             Assert.AreEqual(1, inspectionResults.Count());
         }
@@ -67,7 +71,9 @@ namespace RubberduckTests.Inspections
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteCommentSyntaxInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
             Assert.AreEqual(0, inspectionResults.Count());
         }
@@ -98,7 +104,9 @@ End Sub";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteCommentSyntaxInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
             Assert.AreEqual(0, inspectionResults.Count());
         }
@@ -127,7 +135,9 @@ Rem test2";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteCommentSyntaxInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
             Assert.AreEqual(2, inspectionResults.Count());
         }
@@ -156,7 +166,9 @@ Rem test2";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteCommentSyntaxInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
             Assert.AreEqual(1, inspectionResults.Count());
         }
@@ -185,7 +197,9 @@ Rem test";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteCommentSyntaxInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
             Assert.IsFalse(inspectionResults.Any());
         }
@@ -218,7 +232,9 @@ Rem test";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteCommentSyntaxInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
             inspectionResults.First().QuickFixes.Single(s => s is ReplaceObsoleteCommentMarkerQuickFix).Fix();
 
@@ -256,7 +272,9 @@ a comment";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteCommentSyntaxInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
             inspectionResults.First().QuickFixes.Single(s => s is ReplaceObsoleteCommentMarkerQuickFix).Fix();
 
@@ -292,7 +310,9 @@ a comment";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteCommentSyntaxInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
             inspectionResults.First().QuickFixes.Single(s => s is RemoveCommentQuickFix).Fix();
 
@@ -328,7 +348,9 @@ continued";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteCommentSyntaxInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
             inspectionResults.First().QuickFixes.Single(s => s is RemoveCommentQuickFix).Fix();
 
@@ -363,7 +385,9 @@ continued";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteCommentSyntaxInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
             inspectionResults.First().QuickFixes.Single(s => s is ReplaceObsoleteCommentMarkerQuickFix).Fix();
 
@@ -401,7 +425,9 @@ a comment";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteCommentSyntaxInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
             inspectionResults.First().QuickFixes.Single(s => s is ReplaceObsoleteCommentMarkerQuickFix).Fix();
 
@@ -437,7 +463,9 @@ a comment";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteCommentSyntaxInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
             inspectionResults.First().QuickFixes.Single(s => s is RemoveCommentQuickFix).Fix();
 
@@ -473,7 +501,9 @@ a comment";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteCommentSyntaxInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
             inspectionResults.First().QuickFixes.Single(s => s is RemoveCommentQuickFix).Fix();
 
@@ -509,7 +539,9 @@ Rem test1";
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             var inspection = new ObsoleteCommentSyntaxInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
             inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
             
