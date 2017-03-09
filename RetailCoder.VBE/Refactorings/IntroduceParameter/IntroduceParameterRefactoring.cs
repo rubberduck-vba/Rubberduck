@@ -106,8 +106,8 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                     oldSelection = module.GetQualifiedSelection();
                 }
 
-                RemoveVariable(target);
                 UpdateSignature(target);
+                RemoveVariable(target);
 
                 if (oldSelection.HasValue)
                 {
@@ -198,7 +198,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
             if (lastParam == null)
             {
-                // Increase index by one because VBA is dumb enough to use 1-based indexing
+                // offset 1-based index:
                 newContent = newContent.Insert(newContent.IndexOf('(') + 1, GetParameterDefinition(targetVariable));
             }
             else if (targetMethod.DeclarationType != DeclarationType.PropertyLet &&
@@ -213,8 +213,9 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                     GetParameterDefinition(targetVariable) + ", " + argList.Last().GetText());
             }
 
-            module.ReplaceLine(paramList.Start.Line, newContent);
-            module.DeleteLines(paramList.Start.Line + 1, paramList.GetSelection().LineCount - 1);
+            var selection = paramList.GetSelection();
+            module.InsertLines(selection.StartLine, newContent);
+            module.DeleteLines(selection.StartLine + 1, selection.LineCount);
         }
 
         private void UpdateProperties(Declaration knownProperty, Declaration targetVariable)
