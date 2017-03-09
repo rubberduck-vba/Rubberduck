@@ -34,13 +34,11 @@ End Sub";
 End Sub";
 
             //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var project = vbe.Object.VBProjects[0];
-            var module = project.VBComponents[0].CodeModule;
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            ICodeModule module;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, out module, selection);
 
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
