@@ -704,6 +704,10 @@ namespace Rubberduck.Parsing.VBA
         {
                 token.ThrowIfCancellationRequested();
 
+            Thread.Sleep(50); //Simplistic hack to give the VBE time to do its work in case the parsing run is requested from an event handler. 
+
+                token.ThrowIfCancellationRequested();
+
             State.RefreshProjects(_vbe);
 
                 token.ThrowIfCancellationRequested();
