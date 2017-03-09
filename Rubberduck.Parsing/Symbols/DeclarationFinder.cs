@@ -157,7 +157,6 @@ namespace Rubberduck.Parsing.Symbols
                 implementableMembers.ToDictionary(item => item.Context, item => item.Members)), true);
         }
 
-        private QualifiedSelection _lastSelection;
         public Declaration FindSelectedDeclaration(ICodePane activeCodePane)
         {
             if (activeCodePane == null || activeCodePane.IsWrappingNullReference)
@@ -171,7 +170,6 @@ namespace Rubberduck.Parsing.Symbols
                 return null;
             }
 
-            _lastSelection = qualifiedSelection.Value;
             var selection = qualifiedSelection.Value.Selection;
 
             // statistically we'll be on an IdentifierReference more often than on a Declaration:

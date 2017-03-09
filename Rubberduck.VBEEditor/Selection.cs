@@ -4,6 +4,8 @@ namespace Rubberduck.VBEditor
 {
     public struct Selection : IEquatable<Selection>, IComparable<Selection>
     {
+        public Selection(int line, int column) : this(line, column, line, column) { }
+
         public Selection(int startLine, int startColumn, int endLine, int endColumn)
         {
             _startLine = startLine;
