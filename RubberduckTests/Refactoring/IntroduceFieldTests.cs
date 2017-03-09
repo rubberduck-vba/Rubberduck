@@ -11,7 +11,6 @@ using Rubberduck.Refactorings.IntroduceField;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Application;
-using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
@@ -33,8 +32,7 @@ End Sub";
             //Expectation
             const string expectedCode =
 @"Private bar As Boolean
-Private Sub Foo()
-    
+Private Sub Foo()    
 End Sub";
 
             //Arrange
@@ -74,8 +72,7 @@ End Function";
             //Expectation
             const string expectedCode =
 @"Private bar As Boolean
-Private Function Foo() As Boolean
-    
+Private Function Foo() As Boolean    
     Foo = True
 End Function";
 
@@ -117,8 +114,7 @@ End Sub";
             const string expectedCode =
 @"Public fizz As Integer
 Private bar As Boolean
-Private Sub Foo(ByVal buz As Integer)
-    
+Private Sub Foo(ByVal buz As Integer)  
 End Sub";
 
             //Arrange
@@ -162,8 +158,7 @@ End Sub";
             const string expectedCode =
 @"Public fizz As Integer
 Private bar As Boolean
-Private Sub Foo(ByVal buz As Integer)
-    
+Private Sub Foo(ByVal buz As Integer)  
 End Sub";
 
             //Arrange
@@ -209,7 +204,6 @@ Public buzz As Integer
 Private bar As Boolean
 Private Sub Foo(ByVal buz As Integer, _
                   ByRef baz As Date)
-    
 End Sub";
 
             //Arrange
@@ -511,7 +505,6 @@ End Sub";
             const string expectedCode =
 @"Private bar As Boolean
 Private Sub Foo()
-    
 End Sub";
 
             //Arrange
