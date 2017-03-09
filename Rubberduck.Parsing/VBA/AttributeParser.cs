@@ -32,14 +32,22 @@ namespace Rubberduck.Parsing.VBA
         public IDictionary<Tuple<string, DeclarationType>, Attributes> Parse(IVBComponent component, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
-            var path = _exporter.Export(component);
+            var path = _exporter.Export(component, true);
             if (!File.Exists(path))
             {
                 // a document component without any code wouldn't be exported (file would be empty anyway).
                 return new Dictionary<Tuple<string, DeclarationType>, Attributes>();
             }
             var code = File.ReadAllText(path);
-            File.Delete(path);
+            try
+            {
+                File.Delete(path);
+            }
+            catch
+            {
+                // Meh.
+            }
+           
             token.ThrowIfCancellationRequested();
 
             var type = component.Type == ComponentType.StandardModule
