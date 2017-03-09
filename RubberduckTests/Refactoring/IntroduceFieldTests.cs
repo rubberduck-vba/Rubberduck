@@ -1,560 +1,480 @@
-//using System;
-//using System.Linq;
-//using System.Threading;
-//using System.Windows.Forms;
-//using Microsoft.VisualStudio.TestTools.UnitTesting;
-//using Moq;
-//using Rubberduck.Common;
-//using Rubberduck.Parsing.Symbols;
-//using Rubberduck.Parsing.VBA;
-//using Rubberduck.Refactorings.IntroduceField;
-//using Rubberduck.UI;
-//using Rubberduck.VBEditor;
-//using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-//using RubberduckTests.Mocks;
+using System;
+using System.Linq;
+using System.Windows.Forms;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
+using Rubberduck.Common;
+using Rubberduck.Parsing.Symbols;
+using Rubberduck.Refactorings.IntroduceField;
+using Rubberduck.UI;
+using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using RubberduckTests.Mocks;
 
-//namespace RubberduckTests.Refactoring
-//{
-//    [TestClass]
-//    public class IntroduceFieldTests
-//    {
-//        [TestMethod]
-//        public void IntroduceFieldRefactoring_NoFieldsInClass_Sub()
-//        {
-//            //Input
-//            const string inputCode =
-//@"Private Sub Foo()
-//    Dim bar As Boolean
-//End Sub";
-//            var selection = new Selection(2, 10, 2, 13);
+namespace RubberduckTests.Refactoring
+{
+    [TestClass]
+    public class IntroduceFieldTests
+    {
+        [TestMethod]
+        public void IntroduceFieldRefactoring_NoFieldsInClass_Sub()
+        {
+            //Input
+            const string inputCode =
+@"Private Sub Foo()
+    Dim bar As Boolean
+End Sub";
+            var selection = new Selection(2, 10, 2, 13);
 
-//            //Expectation
-//            const string expectedCode =
-//@"Private bar As Boolean
-//Private Sub Foo()
+            //Expectation
+            const string expectedCode =
+@"Private bar As Boolean
+Private Sub Foo()
     
-//End Sub";
+End Sub";
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            IVBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-//            var project = vbe.Object.VBProjects[0];
-//            var module = project.VBComponents[0].CodeModule;
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            //Arrange
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-//            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            //Act
+            var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, null);
+            refactoring.Refactor(qualifiedSelection);
 
-//            //Act
-//            var refactoring = new IntroduceFieldRefactoring(vbe.Object, parser.State, null);
-//            refactoring.Refactor(qualifiedSelection);
+            //Assert
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+        }
 
-//            //Assert
-//            Assert.AreEqual(expectedCode, module.Content());
-//        }
+        [TestMethod]
+        public void IntroduceFieldRefactoring_NoFieldsInList_Function()
+        {
+            //Input
+            const string inputCode =
+@"Private Function Foo() As Boolean
+    Dim bar As Boolean
+    Foo = True
+End Function";
+            var selection = new Selection(2, 10, 2, 13);
 
-//        [TestMethod]
-//        public void IntroduceFieldRefactoring_NoFieldsInList_Function()
-//        {
-//            //Input
-//            const string inputCode =
-//@"Private Function Foo() As Boolean
-//    Dim bar As Boolean
-//    Foo = True
-//End Function";
-//            var selection = new Selection(2, 10, 2, 13);
-
-//            //Expectation
-//            const string expectedCode =
-//@"Private bar As Boolean
-//Private Function Foo() As Boolean
+            //Expectation
+            const string expectedCode =
+@"Private bar As Boolean
+Private Function Foo() As Boolean
     
-//    Foo = True
-//End Function";
+    Foo = True
+End Function";
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            IVBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-//            var project = vbe.Object.VBProjects[0];
-//            var module = project.VBComponents[0].CodeModule;
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            //Arrange
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-//            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            //Act
+            var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, null);
+            refactoring.Refactor(qualifiedSelection);
 
-//            //Act
-//            var refactoring = new IntroduceFieldRefactoring(vbe.Object, parser.State, null);
-//            refactoring.Refactor(qualifiedSelection);
+            //Assert
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+        }
 
-//            //Assert
-//            Assert.AreEqual(expectedCode, module.Content());
-//        }
+        [TestMethod]
+        public void IntroduceFieldRefactoring_OneFieldInList()
+        {
+            //Input
+            const string inputCode =
+@"Public fizz As Integer
+Private Sub Foo(ByVal buz As Integer)
+    Dim bar As Boolean
+End Sub";
+            var selection = new Selection(3, 10, 3, 13);
 
-//        [TestMethod]
-//        public void IntroduceFieldRefactoring_OneFieldInList()
-//        {
-//            //Input
-//            const string inputCode =
-//@"Public fizz As Integer
-//Private Sub Foo(ByVal buz As Integer)
-//    Dim bar As Boolean
-//End Sub";
-//            var selection = new Selection(3, 10, 3, 13);
-
-//            //Expectation
-//            const string expectedCode =
-//@"Public fizz As Integer
-//Private bar As Boolean
-//Private Sub Foo(ByVal buz As Integer)
+            //Expectation
+            const string expectedCode =
+@"Public fizz As Integer
+Private bar As Boolean
+Private Sub Foo(ByVal buz As Integer)
     
-//End Sub";
+End Sub";
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            IVBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-//            var project = vbe.Object.VBProjects[0];
-//            var module = project.VBComponents[0].CodeModule;
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            //Arrange
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-//            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            //Act
+            var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, null);
+            refactoring.Refactor(qualifiedSelection);
 
-//            //Act
-//            var refactoring = new IntroduceFieldRefactoring(vbe.Object, parser.State, null);
-//            refactoring.Refactor(qualifiedSelection);
+            //Assert
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+        }
 
-//            //Assert
-//            Assert.AreEqual(expectedCode, module.Content());
-//        }
+        [TestMethod]
+        public void IntroduceFieldRefactoring_OneFieldInList_MultipleLines()
+        {
+            //Input
+            const string inputCode =
+@"Public fizz As Integer
+Private Sub Foo(ByVal buz As Integer)
+    Dim _
+    bar _
+    As _
+    Boolean
+End Sub";
+            var selection = new Selection(3, 10, 3, 13);
 
-//        [TestMethod]
-//        public void IntroduceFieldRefactoring_OneFieldInList_MultipleLines()
-//        {
-//            //Input
-//            const string inputCode =
-//@"Public fizz As Integer
-//Private Sub Foo(ByVal buz As Integer)
-//    Dim _
-//    bar _
-//    As _
-//    Boolean
-//End Sub";
-//            var selection = new Selection(3, 10, 3, 13);
-
-//            //Expectation
-//            const string expectedCode =
-//@"Public fizz As Integer
-//Private bar As Boolean
-//Private Sub Foo(ByVal buz As Integer)
+            //Expectation
+            const string expectedCode =
+@"Public fizz As Integer
+Private bar As Boolean
+Private Sub Foo(ByVal buz As Integer)
     
-//End Sub";
+End Sub";
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            IVBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-//            var project = vbe.Object.VBProjects[0];
-//            var module = project.VBComponents[0].CodeModule;
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            //Arrange
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-//            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            //Act
+            var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, null);
+            refactoring.Refactor(qualifiedSelection);
 
-//            //Act
-//            var refactoring = new IntroduceFieldRefactoring(vbe.Object, parser.State, null);
-//            refactoring.Refactor(qualifiedSelection);
+            //Assert
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+        }
 
-//            //Assert
-//            Assert.AreEqual(expectedCode, module.Content());
-//        }
+        [TestMethod]
+        public void IntroduceFieldRefactoring_MultipleFieldsOnMultipleLines()
+        {
+            //Input
+            const string inputCode =
+@"Public fizz As Integer
+Public buzz As Integer
+Private Sub Foo(ByVal buz As Integer, _
+                  ByRef baz As Date)
+    Dim bar As Boolean
+End Sub";
+            var selection = new Selection(5, 8, 5, 20);
 
-//        [TestMethod]
-//        public void IntroduceFieldRefactoring_MultipleFieldsOnMultipleLines()
-//        {
-//            //Input
-//            const string inputCode =
-//@"Public fizz As Integer
-//Public buzz As Integer
-//Private Sub Foo(ByVal buz As Integer, _
-//                  ByRef baz As Date)
-//    Dim bar As Boolean
-//End Sub";
-//            var selection = new Selection(5, 8, 5, 20);
-
-//            //Expectation
-//            const string expectedCode =
-//@"Public fizz As Integer
-//Public buzz As Integer
-//Private bar As Boolean
-//Private Sub Foo(ByVal buz As Integer, _
-//                  ByRef baz As Date)
+            //Expectation
+            const string expectedCode =
+@"Public fizz As Integer
+Public buzz As Integer
+Private bar As Boolean
+Private Sub Foo(ByVal buz As Integer, _
+                  ByRef baz As Date)
     
-//End Sub";
+End Sub";
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            IVBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-//            var project = vbe.Object.VBProjects[0];
-//            var module = project.VBComponents[0].CodeModule;
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            //Arrange
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-//            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            //Act
+            var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, null);
+            refactoring.Refactor(qualifiedSelection);
 
-//            //Act
-//            var refactoring = new IntroduceFieldRefactoring(vbe.Object, parser.State, null);
-//            refactoring.Refactor(qualifiedSelection);
+            //Assert
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+        }
 
-//            //Assert
-//            Assert.AreEqual(expectedCode, module.Content());
-//        }
+        [TestMethod]
+        public void IntroduceFieldRefactoring_MultipleVariablesInStatement_MoveFirst()
+        {
+            //Input
+            const string inputCode =
+@"Private Sub Foo(ByVal buz As Integer, _
+                  ByRef baz As Date)
+    Dim bar As Boolean, _
+        bat As Date, _
+        bap As Integer
+End Sub";
+            var selection = new Selection(3, 10, 3, 13);
 
-//        [TestMethod]
-//        public void IntroduceFieldRefactoring_MultipleVariablesInStatement_MoveFirst()
-//        {
-//            //Input
-//            const string inputCode =
-//@"Private Sub Foo(ByVal buz As Integer, _
-//                  ByRef baz As Date)
-//    Dim bar As Boolean, _
-//        bat As Date, _
-//        bap As Integer
-//End Sub";
-//            var selection = new Selection(3, 10, 3, 13);
+            //Expectation
+            const string expectedCode =
+@"Private bar As Boolean
+Private Sub Foo(ByVal buz As Integer, _
+                  ByRef baz As Date)
+    Dim _
+        bat As Date, _
+        bap As Integer
+End Sub";
 
-//            //Expectation
-//            const string expectedCode =
-//@"Private bar As Boolean
-//Private Sub Foo(ByVal buz As Integer, _
-//                  ByRef baz As Date)
-//    Dim _
-//        bat As Date, _
-//        bap As Integer
-//End Sub";
+            //Arrange
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            IVBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-//            var project = vbe.Object.VBProjects[0];
-//            var module = project.VBComponents[0].CodeModule;
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            //Act
+            var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, null);
+            refactoring.Refactor(qualifiedSelection);
 
-//            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            //Assert
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+        }
 
-//            //Act
-//            var refactoring = new IntroduceFieldRefactoring(vbe.Object, parser.State, null);
-//            refactoring.Refactor(qualifiedSelection);
+        [TestMethod]
+        public void IntroduceFieldRefactoring_MultipleVariablesInStatement_MoveSecond()
+        {
+            //Input
+            const string inputCode =
+@"Private Sub Foo(ByVal buz As Integer, _
+                  ByRef baz As Date)
+    Dim bar As Boolean, _
+        bat As Date, _
+        bap As Integer
+End Sub";
+            var selection = new Selection(4, 10, 4, 13);
 
-//            //Assert
-//            Assert.AreEqual(expectedCode, module.Content());
-//        }
+            //Expectation
+            const string expectedCode =
+@"Private bat As Date
+Private Sub Foo(ByVal buz As Integer, _
+                  ByRef baz As Date)
+    Dim bar As Boolean, _
+         _
+        bap As Integer
+End Sub";
 
-//        [TestMethod]
-//        public void IntroduceFieldRefactoring_MultipleVariablesInStatement_MoveSecond()
-//        {
-//            //Input
-//            const string inputCode =
-//@"Private Sub Foo(ByVal buz As Integer, _
-//                  ByRef baz As Date)
-//    Dim bar As Boolean, _
-//        bat As Date, _
-//        bap As Integer
-//End Sub";
-//            var selection = new Selection(4, 10, 4, 13);
+            //Arrange
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//            //Expectation
-//            const string expectedCode =
-//@"Private bat As Date
-//Private Sub Foo(ByVal buz As Integer, _
-//                  ByRef baz As Date)
-//    Dim bar As Boolean, _
-//         _
-//        bap As Integer
-//End Sub";
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            IVBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-//            var project = vbe.Object.VBProjects[0];
-//            var module = project.VBComponents[0].CodeModule;
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            //Act
+            var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, null);
+            refactoring.Refactor(qualifiedSelection);
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            //Assert
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+        }
 
-//            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+        [TestMethod]
+        public void IntroduceFieldRefactoring_MultipleVariablesInStatement_MoveLast()
+        {
+            //Input
+            const string inputCode =
+@"Private Sub Foo(ByVal buz As Integer, _
+                  ByRef baz As Date)
+    Dim bar As Boolean, _
+        bat As Date, _
+        bap As Integer
+End Sub";
+            var selection = new Selection(5, 10, 5, 13);
 
-//            //Act
-//            var refactoring = new IntroduceFieldRefactoring(vbe.Object, parser.State, null);
-//            refactoring.Refactor(qualifiedSelection);
-
-//            //Assert
-//            Assert.AreEqual(expectedCode, module.Content());
-//        }
-
-//        [TestMethod]
-//        public void IntroduceFieldRefactoring_MultipleVariablesInStatement_MoveLast()
-//        {
-//            //Input
-//            const string inputCode =
-//@"Private Sub Foo(ByVal buz As Integer, _
-//                  ByRef baz As Date)
-//    Dim bar As Boolean, _
-//        bat As Date, _
-//        bap As Integer
-//End Sub";
-//            var selection = new Selection(5, 10, 5, 13);
-
-//            //Expectation
-//            const string expectedCode =
-//@"Private bap As Integer
-//Private Sub Foo(ByVal buz As Integer, _
-//                  ByRef baz As Date)
-//    Dim bar As Boolean, _
-//        bat As Date
+            //Expectation
+            const string expectedCode =
+@"Private bap As Integer
+Private Sub Foo(ByVal buz As Integer, _
+                  ByRef baz As Date)
+    Dim bar As Boolean, _
+        bat As Date
         
-//End Sub";
+End Sub";
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            IVBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-//            var project = vbe.Object.VBProjects[0];
-//            var module = project.VBComponents[0].CodeModule;
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            //Arrange
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-//            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            //Act
+            var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, null);
+            refactoring.Refactor(qualifiedSelection);
 
-//            //Act
-//            var refactoring = new IntroduceFieldRefactoring(vbe.Object, parser.State, null);
-//            refactoring.Refactor(qualifiedSelection);
+            //Assert
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+        }
 
-//            //Assert
-//            Assert.AreEqual(expectedCode, module.Content());
-//        }
+        [TestMethod]
+        public void IntroduceFieldRefactoring_MultipleVariablesInStatement_OnOneLine_MoveFirst()
+        {
+            //Input
+            const string inputCode =
+@"Private Sub Foo(ByVal buz As Integer, _
+                  ByRef baz As Date)
+    Dim bar As Boolean, bat As Date, bap As Integer
+End Sub";
+            var selection = new Selection(3, 10, 3, 13);
 
-//        [TestMethod]
-//        public void IntroduceFieldRefactoring_MultipleVariablesInStatement_OnOneLine_MoveFirst()
-//        {
-//            //Input
-//            const string inputCode =
-//@"Private Sub Foo(ByVal buz As Integer, _
-//                  ByRef baz As Date)
-//    Dim bar As Boolean, bat As Date, bap As Integer
-//End Sub";
-//            var selection = new Selection(3, 10, 3, 13);
+            //Expectation
+            const string expectedCode =
+@"Private bar As Boolean
+Private Sub Foo(ByVal buz As Integer, _
+                  ByRef baz As Date)
+    Dim bat As Date, bap As Integer
+End Sub";
 
-//            //Expectation
-//            const string expectedCode =
-//@"Private bar As Boolean
-//Private Sub Foo(ByVal buz As Integer, _
-//                  ByRef baz As Date)
-//    Dim bat As Date, bap As Integer
-//End Sub";
+            //Arrange
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            IVBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-//            var project = vbe.Object.VBProjects[0];
-//            var module = project.VBComponents[0].CodeModule;
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            //Act
+            var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, null);
+            refactoring.Refactor(qualifiedSelection);
 
-//            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            //Assert
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+        }
 
-//            //Act
-//            var refactoring = new IntroduceFieldRefactoring(vbe.Object, parser.State, null);
-//            refactoring.Refactor(qualifiedSelection);
+        [TestMethod]
+        public void IntroduceFieldRefactoring_DisplaysInvalidSelectionAndDoesNothingForField()
+        {
+            //Input
+            const string inputCode =
+@"Private fizz As Boolean
 
-//            //Assert
-//            Assert.AreEqual(expectedCode, module.Content());
-//        }
+Private Sub Foo()
+End Sub";
+            var selection = new Selection(1, 14, 1, 14);
 
-//        [TestMethod]
-//        public void IntroduceFieldRefactoring_DisplaysInvalidSelectionAndDoesNothingForField()
-//        {
-//            //Input
-//            const string inputCode =
-//@"Private fizz As Boolean
+            //Arrange
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//Private Sub Foo()
-//End Sub";
-//            var selection = new Selection(1, 14, 1, 14);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            IVBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-//            var project = vbe.Object.VBProjects[0];
-//            var module = project.VBComponents[0].CodeModule;
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var messageBox = new Mock<IMessageBox>();
+            messageBox.Setup(m =>
+                    m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
+                        It.IsAny<MessageBoxIcon>())).Returns(DialogResult.OK);
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            //Act
+            var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, messageBox.Object);
+            refactoring.Refactor(qualifiedSelection);
 
-//            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            //Assert
+            messageBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
+                It.IsAny<MessageBoxIcon>()), Times.Once);
+            Assert.AreEqual(inputCode, component.CodeModule.Content());
+        }
 
-//            var messageBox = new Mock<IMessageBox>();
-//            messageBox.Setup(m =>
-//                    m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
-//                        It.IsAny<MessageBoxIcon>())).Returns(DialogResult.OK);
+        [TestMethod]
+        public void IntroduceFieldRefactoring_DisplaysInvalidSelectionAndDoesNothingForInvalidSelection()
+        {
+            //Input
+            const string inputCode =
+@"Private fizz As Boolean
 
-//            //Act
-//            var refactoring = new IntroduceFieldRefactoring(vbe.Object, parser.State, messageBox.Object);
-//            refactoring.Refactor(qualifiedSelection);
+Private Sub Foo()
+End Sub";
+            var selection = new Selection(3, 16, 3, 16);
 
-//            //Assert
-//            messageBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
-//                It.IsAny<MessageBoxIcon>()), Times.Once);
-//            Assert.AreEqual(inputCode, module.Content());
-//        }
+            //Arrange
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//        [TestMethod]
-//        public void IntroduceFieldRefactoring_DisplaysInvalidSelectionAndDoesNothingForInvalidSelection()
-//        {
-//            //Input
-//            const string inputCode =
-//@"Private fizz As Boolean
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-//Private Sub Foo()
-//End Sub";
-//            var selection = new Selection(3, 16, 3, 16);
+            var messageBox = new Mock<IMessageBox>();
+            messageBox.Setup(m =>
+                    m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
+                        It.IsAny<MessageBoxIcon>())).Returns(DialogResult.OK);
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            IVBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-//            var project = vbe.Object.VBProjects[0];
-//            var module = project.VBComponents[0].CodeModule;
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            //Act
+            var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, messageBox.Object);
+            refactoring.Refactor(qualifiedSelection);
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            //Assert
+            messageBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
+                It.IsAny<MessageBoxIcon>()), Times.Once);
+            Assert.AreEqual(inputCode, component.CodeModule.Content());
+        }
 
-//            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+        [TestMethod]
+        public void IntroduceFieldRefactoring_PassInTarget()
+        {
+            //Input
+            const string inputCode =
+@"Private Sub Foo()
+    Dim bar As Boolean
+End Sub";
+            var selection = new Selection(2, 10, 2, 13);
 
-//            var messageBox = new Mock<IMessageBox>();
-//            messageBox.Setup(m =>
-//                    m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
-//                        It.IsAny<MessageBoxIcon>())).Returns(DialogResult.OK);
-
-//            //Act
-//            var refactoring = new IntroduceFieldRefactoring(vbe.Object, parser.State, messageBox.Object);
-//            refactoring.Refactor(qualifiedSelection);
-
-//            //Assert
-//            messageBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
-//                It.IsAny<MessageBoxIcon>()), Times.Once);
-//            Assert.AreEqual(inputCode, module.Content());
-//        }
-
-//        [TestMethod]
-//        public void IntroduceFieldRefactoring_PassInTarget()
-//        {
-//            //Input
-//            const string inputCode =
-//@"Private Sub Foo()
-//    Dim bar As Boolean
-//End Sub";
-//            var selection = new Selection(2, 10, 2, 13);
-
-//            //Expectation
-//            const string expectedCode =
-//@"Private bar As Boolean
-//Private Sub Foo()
+            //Expectation
+            const string expectedCode =
+@"Private bar As Boolean
+Private Sub Foo()
     
-//End Sub";
+End Sub";
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            IVBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-//            var project = vbe.Object.VBProjects[0];
-//            var module = project.VBComponents[0].CodeModule;
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            //Arrange
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-//            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            //Act
+            var refactoring = new IntroduceFieldRefactoring((vbe.Object), state, null);
+            refactoring.Refactor(state.AllUserDeclarations.FindVariable(qualifiedSelection));
 
-//            //Act
-//            var refactoring = new IntroduceFieldRefactoring((vbe.Object), parser.State, null);
-//            refactoring.Refactor(parser.State.AllUserDeclarations.FindVariable(qualifiedSelection));
+            //Assert
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+        }
 
-//            //Assert
-//            Assert.AreEqual(expectedCode, module.Content());
-//        }
+        [TestMethod]
+        public void IntroduceFieldRefactoring_PassInTarget_Nonvariable()
+        {
+            //Input
+            const string inputCode =
+@"Private Sub Foo()
+    Dim bar As Boolean
+End Sub";
 
-//        [TestMethod]
-//        public void IntroduceFieldRefactoring_PassInTarget_Nonvariable()
-//        {
-//            //Input
-//            const string inputCode =
-//@"Private Sub Foo()
-//    Dim bar As Boolean
-//End Sub";
+            //Arrange
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            IVBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-//            var project = vbe.Object.VBProjects[0];
-//            var module = project.VBComponents[0].CodeModule;
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var messageBox = new Mock<IMessageBox>();
+            messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
+                      .Returns(DialogResult.OK);
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            //Act
+            var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, messageBox.Object);
 
-//            var messageBox = new Mock<IMessageBox>();
-//            messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
-//                      .Returns(DialogResult.OK);
+            //Assert
+            try
+            {
+                refactoring.Refactor(state.AllUserDeclarations.First(d => d.DeclarationType != DeclarationType.Variable));
+            }
+            catch (ArgumentException e)
+            {
+                messageBox.Verify(m =>
+                    m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
+                    It.IsAny<MessageBoxIcon>()), Times.Once);
 
-//            //Act
-//            var refactoring = new IntroduceFieldRefactoring(vbe.Object, parser.State, messageBox.Object);
+                Assert.AreEqual("target", e.ParamName);
+                Assert.AreEqual(inputCode, component.CodeModule.Content());
+                return;
+            }
 
-//            //Assert
-//            try
-//            {
-//                refactoring.Refactor(parser.State.AllUserDeclarations.First(d => d.DeclarationType != DeclarationType.Variable));
-//            }
-//            catch (ArgumentException e)
-//            {
-//                messageBox.Verify(m =>
-//                    m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
-//                    It.IsAny<MessageBoxIcon>()), Times.Once);
-
-//                Assert.AreEqual("target", e.ParamName);
-//                Assert.AreEqual(inputCode, module.Content());
-//                return;
-//            }
-
-//            Assert.Fail();
-//        }
-//    }
-//}
+            Assert.Fail();
+        }
+    }
+}
