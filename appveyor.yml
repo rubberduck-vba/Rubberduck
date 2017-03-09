@@ -2,6 +2,10 @@ version: 2.0.{build}-{branch}
 build:
   verbosity: normal
 
+os: Visual Studio 2015
+install:
+- set PATH=C:\Program Files (x86)\MSBuild\14.0\Bin;%PATH%
+
 configuration: Release
 
 init:
@@ -15,7 +19,3 @@ notifications:
   on_build_success: true
   on_build_failure: true
   on_build_status_changed: true
-
-os: Visual Studio 2015
-install:
-- set PATH=C:\Program Files (x86)\MSBuild\14.0\Bin;%PATH%
