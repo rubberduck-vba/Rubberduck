@@ -15,7 +15,7 @@ using RubberduckTests.Mocks;
 namespace RubberduckTests.Refactoring
 {
     [TestClass]
-    public class RemoveParametersTests : VbeTestBase
+    public class RemoveParametersTests
     {
         [TestMethod]
         public void RemoveParametersRefactoring_RemoveBothParams()
