@@ -1078,6 +1078,33 @@ namespace Rubberduck.Inspections.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &apos;Option Base 0&apos; is the default base.
+        /// </summary>
+        public static string OptionBaseZeroInspectionMeta {
+            get {
+                return ResourceManager.GetString("OptionBaseZeroInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;Option Base 0&apos; used.
+        /// </summary>
+        public static string OptionBaseZeroInspectionName {
+            get {
+                return ResourceManager.GetString("OptionBaseZeroInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Component &apos;{0} uses &apos;Option Base 0&apos;.
+        /// </summary>
+        public static string OptionBaseZeroInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("OptionBaseZeroInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to VBA will happily compile a typo: use &apos;Option Explicit&apos; to prevent successfully compiling an erroneous program..
         /// </summary>
         public static string OptionExplicitInspectionMeta {
@@ -1299,6 +1326,15 @@ namespace Rubberduck.Inspections.Resources {
         public static string RemoveObsoleteStatementQuickFix {
             get {
                 return ResourceManager.GetString("RemoveObsoleteStatementQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove &apos;Option Base&apos; statement.
+        /// </summary>
+        public static string RemoveOptionBaseStatementQuickFix {
+            get {
+                return ResourceManager.GetString("RemoveOptionBaseStatementQuickFix", resourceCulture);
             }
         }
         
