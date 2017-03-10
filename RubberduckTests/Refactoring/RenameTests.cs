@@ -16,52 +16,6 @@ namespace RubberduckTests.Refactoring
     [TestClass]
     public class RenameTests
     {
-/*<<<<<<< HEAD
-=======
-        [TestMethod]
-        public void RenameRefactoring_RenameSub_Issue2727()
-        {
-            //Input
-            string inputCode = GetIssue2727ExampleCode();
-
-            Selection selection = Select2727Variable();
-
-            //New name provided by the user - no conflicts
-            var userEnteredName = "Value";
-
-            //Expectation
-            //Expecation is that the messageBox.Show() is not invoked
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-
-            var msgbox = new Mock<IMessageBox>();
-            msgbox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.YesNo, It.IsAny<MessageBoxIcon>()))
-                  .Returns(DialogResult.Yes);
-
-            var vbeWrapper = vbe.Object;
-            var model = new RenameModel(vbeWrapper, state, qualifiedSelection, msgbox.Object) { NewName = userEnteredName };
-
-            //SetupFactory
-            var factory = SetupFactory(model);
-
-            var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, msgbox.Object, state);
-            refactoring.Refactor(qualifiedSelection);
-
-            //#2727 bug describes a scenario where a declaration collision is detected where none exists.
-            //The result of detecting one or more collisions is that the messagebox is presented to the user
-            //To see if he wants to continue with the Renaming process.
-            //To pass this test, FindDeclarationForIdentifier() should find zero collisions and therefore
-            //skips the logic that presents the message box to the user. 
-            string failMsg = "RenameRefactoring found a conflicting declaration where none exists.";
-            msgbox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.YesNo, It.IsAny<MessageBoxIcon>()), Times.Never, failMsg);
-        }
-
->>>>>>> rubberduck-vba/next */
-
         [TestMethod]
         public void RenameRefactoring_RenameSub()
         {

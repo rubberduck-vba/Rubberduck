@@ -1,37 +1,23 @@
-/*<<<<<<< HEAD
-=======*/
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using Antlr4.Runtime;
-//>>>>>>> rubberduck-vba/next
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-//<<<<<<< HEAD
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
 using Antlr4.Runtime;
 using Rubberduck.Inspections;
-/*=======
-using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers;
-using RubberduckTests.Mocks;
->>>>>>> rubberduck-vba/next */
 
 namespace RubberduckTests.Symbols
 {
     [TestClass]
     public class DeclarationFinderTests
     {
-//<<<<<<< HEAD
         private AccessibilityTestsDataObject _tdo;
 
         [TestMethod]
@@ -359,7 +345,7 @@ End Sub
 ";
         }
         #endregion
-//=======
+
         [TestMethod]
         [Ignore] // ref. https://github.com/rubberduck-vba/Rubberduck/issues/2330
         public void FiendishlyAmbiguousNameSelectsSmallestScopedDeclaration()
@@ -415,7 +401,6 @@ End Sub
 
             Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected.DeclarationType, actual.DeclarationType);
         }
-//>>>>>>> rubberduck-vba/next
 
         [TestCategory("Resolver")]
         [TestMethod]
