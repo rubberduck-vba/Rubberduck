@@ -14,11 +14,13 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Windows.Threading;
+using Microsoft.Vbe.Interop;
 using Ninject.Extensions.Interception;
 using NLog;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor.Events;
+using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck
@@ -52,13 +54,13 @@ namespace Rubberduck
         {
             try
             {
-                if (Application is Microsoft.Vbe.Interop.VBE)
+                if (Application is VBE)
                 {
-                    var vbe = (Microsoft.Vbe.Interop.VBE) Application;                  
+                    var vbe = (VBE) Application;                  
                     _ide = new VBEditor.SafeComWrappers.VBA.VBE(vbe);
                     VBENativeServices.HookEvents(_ide);
                     
-                    var addin = (Microsoft.Vbe.Interop.AddIn)AddInInst;
+                    var addin = (AddIn)AddInInst;
                     _addin = new VBEditor.SafeComWrappers.VBA.AddIn(addin) { Object = this };
                 }
                 else if (Application is Microsoft.VB6.Interop.VBIDE.VBE)
@@ -221,35 +223,31 @@ namespace Rubberduck
 
         private void ShutdownAddIn()
         {
+            Debug.WriteLine("Extension unhooking VBENativeServices events.");
             VBENativeServices.UnhookEvents();
 
             var currentDomain = AppDomain.CurrentDomain;
             currentDomain.AssemblyResolve -= LoadFromSameFolder;
-
+            Debug.WriteLine("Extension broadcasting shutdown.");
             User32.EnumChildWindows(_ide.MainWindow.Handle(), EnumCallback, new IntPtr(0));
+
+            Debug.WriteLine("Extension calling ReleaseDockableHosts.");
+            VBEditor.SafeComWrappers.VBA.Windows.ReleaseDockableHosts();
 
             if (_app != null)
             {
+                Debug.WriteLine("Extension calling App.Shutdown.");
                 _app.Shutdown();
                 _app = null;
             }
 
             if (_kernel != null)
             {
+                Debug.WriteLine("Extension calling Kernel.Dispose.");
                 _kernel.Dispose();
                 _kernel = null;
             }
 
-            //try
-            //{
-            //    _ide.Release();
-            //}
-            //catch (Exception e)
-            //{
-            //    _logger.Error(e);
-            //}
-
-            GC.WaitForPendingFinalizers();
             _isInitialized = false;
         }
 
