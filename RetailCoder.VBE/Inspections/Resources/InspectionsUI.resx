@@ -271,7 +271,7 @@
     <value>Arrays are typically zero-based. This option changes the default lower boundary for implicitly-sized arrays, which can introduce off-by-one errors if one isn't cautious.</value>
   </data>
   <data name="OptionBaseInspectionName" xml:space="preserve">
-    <value>'Option Base 1' is specified</value>
+    <value>Option Base 0 is redundant</value>
   </data>
   <data name="OptionExplicitInspectionMeta" xml:space="preserve">
     <value>VBA will happily compile a typo: use 'Option Explicit' to prevent successfully compiling an erroneous program.</value>
@@ -651,7 +651,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>Create and use a local copy of the parameter</value>
   </data>
   <data name="OptionBaseZeroInspectionMeta" xml:space="preserve">
-    <value>'Option Base 0' is the default base</value>
+    <value>Option Base 0 is the default setting and does not need to be specified</value>
   </data>
   <data name="OptionBaseZeroInspectionName" xml:space="preserve">
     <value>'Option Base 0' used</value>
