@@ -7,26 +7,20 @@ using Rubberduck.Settings;
 using System.Threading;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete.Rubberduck.Inspections;
-using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Inspections.Resources;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Inspections
 {
     [TestClass]
-    public class ObsoleteLetStatementInspectionTests
+    public class OptionBaseZeroInspectionTests
     {
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ObsoleteLetStatement_ReturnsResult()
+        public void OptionBaseZeroStatement_ReturnsResult()
         {
             const string inputCode =
-@"Public Sub Foo()
-    Dim var1 As Integer
-    Dim var2 As Integer
-    
-    Let var2 = var1
-End Sub";
+@"Option Base 0";
 
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
@@ -36,7 +30,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new ObsoleteLetStatementInspection(state);
+            var inspection = new OptionBaseZeroInspection(state);
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
@@ -45,16 +39,9 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ObsoleteLetStatement_ReturnsResult_MultipleLets()
+        public void OptionBaseOneStatement_NoResult()
         {
-            const string inputCode =
-@"Public Sub Foo()
-    Dim var1 As Integer
-    Dim var2 As Integer
-    
-    Let var2 = var1
-    Let var1 = var2
-End Sub";
+            string inputCode = "Option Base 1";
 
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
@@ -64,90 +51,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new ObsoleteLetStatementInspection(state);
-            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
-
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            Assert.AreEqual(2, inspectionResults.Count());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void ObsoleteLetStatement_DoesNotReturnResult()
-        {
-            const string inputCode =
-@"Public Sub Foo()
-    Dim var1 As Integer
-    Dim var2 As Integer
-    
-    var2 = var1
-End Sub";
-
-            var settings = new Mock<IGeneralConfigService>();
-            var config = GetTestConfig();
-            settings.Setup(x => x.LoadConfiguration()).Returns(config);
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new ObsoleteLetStatementInspection(state);
-            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
-
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            Assert.AreEqual(0, inspectionResults.Count());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void ObsoleteLetStatement_ReturnsResult_SomeConstantsUsed()
-        {
-            const string inputCode =
-@"Public Sub Foo()
-    Dim var1 As Integer
-    Dim var2 As Integer
-    
-    Let var2 = var1
-    var1 = var2
-End Sub";
-
-            var settings = new Mock<IGeneralConfigService>();
-            var config = GetTestConfig();
-            settings.Setup(x => x.LoadConfiguration()).Returns(config);
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new ObsoleteLetStatementInspection(state);
-            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
-
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            Assert.AreEqual(1, inspectionResults.Count());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void ObsoleteLetStatement_Ignored_DoesNotReturnResult()
-        {
-            const string inputCode =
-@"Public Sub Foo()
-    Dim var1 As Integer
-    Dim var2 As Integer
-    
-    '@Ignore ObsoleteLetStatement
-    Let var2 = var1
-End Sub";
-
-            var settings = new Mock<IGeneralConfigService>();
-            var config = GetTestConfig();
-            settings.Setup(x => x.LoadConfiguration()).Returns(config);
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new ObsoleteLetStatementInspection(state);
+            var inspection = new OptionBaseZeroInspection(state);
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
@@ -156,23 +60,11 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ObsoleteLetStatement_QuickFixWorks()
+        public void OptionBaseZeroStatement_Ignored_DoesNotReturnResult()
         {
-            const string inputCode =
-@"Public Sub Foo()
-    Dim var1 As Integer
-    Dim var2 As Integer
-    
-    Let var2 = var1
-End Sub";
-
-            const string expectedCode =
-@"Public Sub Foo()
-    Dim var1 As Integer
-    Dim var2 As Integer
-    
-    var2 = var1
-End Sub";
+            string inputCode =
+@"'@Ignore OptionBaseZero
+Option Base 0";
 
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
@@ -182,35 +74,47 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new ObsoleteLetStatementInspection(state);
+            var inspection = new ObsoleteCallStatementInspection(state);
+            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+            Assert.IsFalse(inspectionResults.Any());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void OptionBaseZeroStatement_QuickFixWorks_RemoveStatement()
+        {
+            string inputCode = "Option Base 0";
+            string expectedCode = string.Empty;
+
+            var settings = new Mock<IGeneralConfigService>();
+            var config = GetTestConfig();
+            settings.Setup(x => x.LoadConfiguration()).Returns(config);
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new OptionBaseZeroInspection(state);
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
             inspectionResults.First().QuickFixes.First().Fix();
-
+            
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ObsoleteLetStatement_IgnoreQuickFixWorks()
+        public void OptionBaseZeroStatement_QuickFixWorks_RemoveStatement_MultipleLines()
         {
-            const string inputCode =
-@"Public Sub Foo()
-    Dim var1 As Integer
-    Dim var2 As Integer
-    
-    Let var2 = var1
-End Sub";
+            string inputCode =
+@"Option _
+Base _
+0";
 
-            const string expectedCode =
-@"Public Sub Foo()
-    Dim var1 As Integer
-    Dim var2 As Integer
-    
-'@Ignore ObsoleteLetStatement
-    Let var2 = var1
-End Sub";
+            string expectedCode = string.Empty;
 
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
@@ -220,12 +124,65 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new ObsoleteLetStatementInspection(state);
+            var inspection = new OptionBaseZeroInspection(state);
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
+            inspectionResults.First().QuickFixes.First().Fix();
+            
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+        }
 
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void OptionBaseZeroStatement_QuickFixWorks_RemoveStatement_InstructionSeparator()
+        {
+            string inputCode = "Option Explicit: Option Base 0: Option Base 1";
+
+            string expectedCode = "Option Explicit: : Option Base 1";
+
+            var settings = new Mock<IGeneralConfigService>();
+            var config = GetTestConfig();
+            settings.Setup(x => x.LoadConfiguration()).Returns(config);
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new OptionBaseZeroInspection(state);
+            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+            inspectionResults.First().QuickFixes.First().Fix();
+            
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void OptionBaseZeroStatement_QuickFixWorks_RemoveStatement_InstructionSeparatorAndMultipleLines()
+        {
+            string inputCode =
+@"Option Explicit: Option _
+Base _
+0: Option Base 1";
+
+            string expectedCode = "Option Explicit: : Option Base 1";
+
+            var settings = new Mock<IGeneralConfigService>();
+            var config = GetTestConfig();
+            settings.Setup(x => x.LoadConfiguration()).Returns(config);
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new OptionBaseZeroInspection(state);
+            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+            inspectionResults.First().QuickFixes.First().Fix();
+            
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
@@ -233,16 +190,16 @@ End Sub";
         [TestCategory("Inspections")]
         public void InspectionType()
         {
-            var inspection = new ObsoleteLetStatementInspection(null);
-            Assert.AreEqual(CodeInspectionType.LanguageOpportunities, inspection.InspectionType);
+            var inspection = new OptionBaseZeroInspection(null);
+            Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
         }
 
         [TestMethod]
         [TestCategory("Inspections")]
         public void InspectionName()
         {
-            const string inspectionName = "ObsoleteLetStatementInspection";
-            var inspection = new ObsoleteLetStatementInspection(null);
+            const string inspectionName = "OptionBaseZeroInspection";
+            var inspection = new OptionBaseZeroInspection(null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
         }
@@ -252,8 +209,8 @@ End Sub";
             var settings = new CodeInspectionSettings();
             settings.CodeInspections.Add(new CodeInspectionSetting
             {
-                Description = new ObsoleteLetStatementInspection(null).Description,
-                Severity = CodeInspectionSeverity.Suggestion
+                Description = new OptionBaseInspection(null).Description,
+                Severity = CodeInspectionSeverity.Hint
             });
             return new Configuration
             {
