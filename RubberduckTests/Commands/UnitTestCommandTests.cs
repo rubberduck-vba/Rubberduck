@@ -1,14 +1,11 @@
-﻿using System;
+using System;
 using System.Linq;
-using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
-using Rubberduck.VBEditor.Application;
-using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
@@ -28,21 +25,12 @@ Option Private Module
 '@TestModule
 Private Assert As Object
 {0}";
-
-            var builder = new MockVbeBuilder();
+            
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(string.Format(input, string.Empty), out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Format(input, string.Empty), out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error)
-            {
-                Assert.Inconclusive("Parser Error");
-            }
-
-            var addTestMethodCommand = new AddTestMethodCommand(vbe.Object, parser.State);
+            var addTestMethodCommand = new AddTestMethodCommand(vbe.Object, state);
 
             addTestMethodCommand.Execute(null);
             var module = component.CodeModule;
@@ -64,22 +52,14 @@ Option Private Module
 '@TestModule
 Private Assert As Object
 ";
-
-            var builder = new MockVbeBuilder();
+            
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(input, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component);
             vbe.Setup(s => s.ActiveCodePane).Returns((ICodePane)null);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error)
-            {
-                Assert.Inconclusive("Parser Error");
-            }
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            var addTestMethodCommand = new AddTestMethodCommand(vbe.Object, parser.State);
+            var addTestMethodCommand = new AddTestMethodCommand(vbe.Object, state);
 
             addTestMethodCommand.Execute(null);
             var module = component.CodeModule;
@@ -91,21 +71,13 @@ Private Assert As Object
         [TestMethod]
         public void AddTest_CanExecute_NonReadyState()
         {
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule("", out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error)
-            {
-                Assert.Inconclusive("Parser Error");
-            }
-            parser.State.SetStatusAndFireStateChanged(this, ParserState.ResolvingReferences);
+            state.SetStatusAndFireStateChanged(this, ParserState.ResolvingReferences);
 
-            var addTestMethodCommand = new AddTestMethodCommand(vbe.Object, parser.State);
+            var addTestMethodCommand = new AddTestMethodCommand(vbe.Object, state);
             Assert.IsFalse(addTestMethodCommand.CanExecute(null));
         }
 
@@ -113,20 +85,11 @@ Private Assert As Object
         [TestMethod]
         public void AddTest_CanExecute_NoTestModule()
         {
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule("", out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error)
-            {
-                Assert.Inconclusive("Parser Error");
-            }
-
-            var addTestMethodCommand = new AddTestMethodCommand(vbe.Object, parser.State);
+            var addTestMethodCommand = new AddTestMethodCommand(vbe.Object, state);
             Assert.IsFalse(addTestMethodCommand.CanExecute(null));
         }
 
@@ -141,22 +104,12 @@ Option Private Module
 '@TestModule
 Private Assert As Object
 ";
-
-            var builder = new MockVbeBuilder();
+            
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(input, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error)
-            {
-                Assert.Inconclusive("Parser Error");
-            }
-
-            var addTestMethodCommand = new AddTestMethodCommand(vbe.Object, parser.State);
-
+            var addTestMethodCommand = new AddTestMethodCommand(vbe.Object, state);
             Assert.IsTrue(addTestMethodCommand.CanExecute(null));
         }
 
@@ -171,18 +124,12 @@ Option Private Module
 '@TestModule
 Private Assert As Object
 {0}";
-
-            var builder = new MockVbeBuilder();
+            
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(string.Format(input, string.Empty), out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Format(input, string.Empty), out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(vbe.Object, parser.State);
+            var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(vbe.Object, state);
 
             addTestMethodCommand.Execute(null);
             var module = component.CodeModule;
@@ -197,21 +144,13 @@ Private Assert As Object
         [TestMethod]
         public void AddExpectedErrorTest_CanExecute_NonReadyState()
         {
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule("", out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out component);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error)
-            {
-                Assert.Inconclusive("Parser Error");
-            }
-            parser.State.SetStatusAndFireStateChanged(this, ParserState.ResolvingReferences);
+            var state = MockParser.CreateAndParse(vbe.Object);
+            state.SetStatusAndFireStateChanged(this, ParserState.ResolvingReferences);
 
-            var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(vbe.Object, parser.State);
+            var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(vbe.Object, state);
             Assert.IsFalse(addTestMethodCommand.CanExecute(null));
         }
 
@@ -219,20 +158,11 @@ Private Assert As Object
         [TestMethod]
         public void AddExpectedErrorTest_CanExecute_NoTestModule()
         {
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule("", out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error)
-            {
-                Assert.Inconclusive("Parser Error");
-            }
-
-            var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(vbe.Object, parser.State);
+            var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(vbe.Object, state);
             Assert.IsFalse(addTestMethodCommand.CanExecute(null));
         }
 
@@ -247,21 +177,12 @@ Option Private Module
 '@TestModule
 Private Assert As Object
 ";
-
-            var builder = new MockVbeBuilder();
+            
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(input, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error)
-            {
-                Assert.Inconclusive("Parser Error");
-            }
-
-            var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(vbe.Object, parser.State);
+            var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(vbe.Object, state);
             Assert.IsTrue(addTestMethodCommand.CanExecute(null));
         }
 
@@ -276,52 +197,37 @@ Option Private Module
 '@TestModule
 Private Assert As Object
 ";
-
-            var builder = new MockVbeBuilder();
+            
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(input, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component);
             vbe.Setup(s => s.ActiveCodePane).Returns((ICodePane)null);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(vbe.Object, parser.State);
+            var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(vbe.Object, state);
             addTestMethodCommand.Execute(null);
-
-            var module = component.CodeModule;
-            Assert.AreEqual(input, module.Content());
+            
+            Assert.AreEqual(input, component.CodeModule.Content());
         }
 
         [TestCategory("Commands")]
         [TestMethod]
         public void AddsTestModule()
         {
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule("", out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error)
-            {
-                Assert.Inconclusive("Parser Error");
-            }
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var settings = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
             var config = GetUnitTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
 
-            var addTestModuleCommand = new AddTestModuleCommand(vbe.Object, parser.State, settings.Object);
+            var addTestModuleCommand = new AddTestModuleCommand(vbe.Object, state, settings.Object);
             addTestModuleCommand.Execute(null);
 
             // mock suite auto-assigns "TestModule1" to the first component when we create the mock
-            var project = parser.State.DeclarationFinder.FindProject("TestProject1");
-            var module = parser.State.DeclarationFinder.FindStdModule("TestModule2", project);
+            var project = state.DeclarationFinder.FindProject("TestProject1");
+            var module = state.DeclarationFinder.FindStdModule("TestModule2", project);
             Assert.IsTrue(module.Annotations.Any(a => a.AnnotationType == AnnotationType.TestModule));
         }
 

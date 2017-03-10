@@ -170,12 +170,27 @@ namespace Rubberduck.VBEditor.Events
 
         private static ICodePane GetCodePaneFromHwnd(IntPtr hwnd)
         {
-            var caption = hwnd.GetWindowText();
-            return _vbe.CodePanes.FirstOrDefault(x => x.Window.Caption.Equals(caption));
+            try
+            {
+                var caption = hwnd.GetWindowText();
+                return _vbe.CodePanes.FirstOrDefault(x => x.Window.Caption.Equals(caption));
+            }
+            catch
+            {
+                // This *should* only happen when a code pane window is removed and RD responds faster than
+                // the VBE removes it from the windows collection. TODO: Find a better method to match code panes
+                // to windows than testing the captions.
+                return null;
+            }
         }
 
         private static IWindow GetWindowFromHwnd(IntPtr hwnd)
         {
+            if (!User32.IsWindow(hwnd))
+            {
+                return null;
+            }
+
             var caption = hwnd.GetWindowText();
             return _vbe.Windows.FirstOrDefault(x => x.Caption.Equals(caption));
         }

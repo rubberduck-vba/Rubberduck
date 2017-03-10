@@ -1,6 +1,15 @@
+/*<<<<<<< HEAD
+=======*/
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using Antlr4.Runtime;
+//>>>>>>> rubberduck-vba/next
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+//<<<<<<< HEAD
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
@@ -11,12 +20,18 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
 using Antlr4.Runtime;
 using Rubberduck.Inspections;
+/*=======
+using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.SafeComWrappers;
+using RubberduckTests.Mocks;
+>>>>>>> rubberduck-vba/next */
 
 namespace RubberduckTests.Symbols
 {
     [TestClass]
     public class DeclarationFinderTests
     {
+//<<<<<<< HEAD
         private AccessibilityTestsDataObject _tdo;
 
         [TestMethod]
@@ -344,6 +359,63 @@ End Sub
 ";
         }
         #endregion
+//=======
+        [TestMethod]
+        [Ignore] // ref. https://github.com/rubberduck-vba/Rubberduck/issues/2330
+        public void FiendishlyAmbiguousNameSelectsSmallestScopedDeclaration()
+        {
+            var code = @"
+Option Explicit
+
+Public Sub foo()
+    Dim foo As Long
+    foo = 42
+    Debug.Print foo
+End Sub
+";
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("foo", ProjectProtection.Unprotected)
+                .AddComponent("foo", ComponentType.StandardModule, code, new Selection(6, 6))
+                .MockVbeBuilder()
+                .Build();
+
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            parser.Parse(new CancellationTokenSource());
+
+            var expected = parser.State.AllDeclarations.Single(item => item.DeclarationType == DeclarationType.Variable);
+            var actual = parser.State.DeclarationFinder.FindSelectedDeclaration(vbe.Object.ActiveCodePane);
+
+            Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected.DeclarationType, actual.DeclarationType);
+        }
+
+        [TestMethod]
+        [Ignore] // bug: this test should pass... it's not all that evil
+        public void AmbiguousNameSelectsSmallestScopedDeclaration()
+        {
+            var code = @"
+Option Explicit
+
+Public Sub foo()
+    Dim foo As Long
+    foo = 42
+    Debug.Print foo
+End Sub
+";
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("TestModule", ComponentType.StandardModule, code, new Selection(6, 6))
+                .MockVbeBuilder()
+                .Build();
+
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            parser.Parse(new CancellationTokenSource());
+
+            var expected = parser.State.AllDeclarations.Single(item => item.DeclarationType == DeclarationType.Variable);
+            var actual = parser.State.DeclarationFinder.FindSelectedDeclaration(vbe.Object.ActiveCodePane);
+
+            Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected.DeclarationType, actual.DeclarationType);
+        }
+//>>>>>>> rubberduck-vba/next
 
         [TestCategory("Resolver")]
         [TestMethod]
@@ -358,7 +430,7 @@ End Sub
             var implementsContext2 = new VBAParser.ImplementsStmtContext(null, 0);
             AddReference(interf, implementingClass1, implementsContext1);
             AddReference(interf, implementingClass1, implementsContext2);
-            var declarations = new List<Declaration> {interf, member, implementingClass1, implementingClass2};
+            var declarations = new List<Declaration> { interf, member, implementingClass1, implementingClass2 };
 
             DeclarationFinder finder = new DeclarationFinder(declarations, new List<Rubberduck.Parsing.Annotations.IAnnotation>(), new List<UnboundMemberDeclaration>());
             var interfaceDeclarations = finder.FindAllInterfaceMembers().ToList();

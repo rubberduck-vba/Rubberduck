@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -38,8 +38,7 @@ End Sub
             public void shouldUseEachRuleInRulesCollectionToCheckEachReference()
             {
                 QualifiedModuleName qualifiedModuleName;
-                RubberduckParserState state;
-                MockParser.ParseString(codeSnippet, out qualifiedModuleName, out state);
+                var state = MockParser.ParseString(codeSnippet, out qualifiedModuleName);
                 var declaration = state.AllUserDeclarations.Where(decl => decl.IdentifierName == "x").First();
                 var selection = new Selection(5, 1, 7, 20);
                 var qSelection = new QualifiedSelection(qualifiedModuleName, selection);
@@ -70,8 +69,7 @@ End Sub
             {
 
                 QualifiedModuleName qualifiedModuleName;
-                RubberduckParserState state;
-                MockParser.ParseString(codeSnippet, out qualifiedModuleName, out state);
+                var state = MockParser.ParseString(codeSnippet, out qualifiedModuleName);
                 var declaration = state.AllUserDeclarations.Where(decl => decl.IdentifierName == "x").First();
 
                 // Above setup is headache from lack of ability to extract declarations simply.
@@ -98,8 +96,7 @@ End Sub
             {
 
                 QualifiedModuleName qualifiedModuleName;
-                RubberduckParserState state;
-                MockParser.ParseString(codeSnippet, out qualifiedModuleName, out state);
+                var state = MockParser.ParseString(codeSnippet, out qualifiedModuleName);
                 var declaration = state.AllUserDeclarations.Where(decl => decl.IdentifierName == "x").First();
                 var selection = new Selection(5, 1, 7, 20);
                 var qSelection = new QualifiedSelection(qualifiedModuleName, selection);

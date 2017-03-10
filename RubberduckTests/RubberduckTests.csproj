@@ -97,6 +97,7 @@
     <Compile Include="Inspections\IgnoreOnceQuickFixTests.cs" />
     <Compile Include="Inspections\ImplicitActiveWorkbookReferenceInspectionTests.cs" />
     <Compile Include="Inspections\MemberNotOnInterfaceInspectionTests.cs" />
+    <Compile Include="Inspections\OptionBaseZeroInspectionTests.cs" />
     <Compile Include="Inspections\PassParameterByReferenceQuickFixTests.cs" />
     <Compile Include="Inspections\UndeclaredVariableInspectionTests.cs" />
     <Compile Include="SmartIndenter\VerticalSpacingTests.cs" />
@@ -209,7 +210,6 @@
     <Compile Include="UnitTesting\EngineTests.cs" />
     <Compile Include="UnitTesting\DiscoveryTests.cs" />
     <Compile Include="UnitTesting\ViewModelTests.cs" />
-    <Compile Include="VbeTestBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="NLog.dll.nlog">

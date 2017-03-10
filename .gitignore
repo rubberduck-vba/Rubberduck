@@ -115,6 +115,10 @@ csx
 # Windows Store app package directory
 AppPackages/
 
+# IDE Configuration
+.vs/
+.vscode/
+
 # Others
 sql/
 *.Cache
