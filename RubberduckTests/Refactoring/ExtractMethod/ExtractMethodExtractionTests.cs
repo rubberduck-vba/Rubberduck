@@ -1,4 +1,4 @@
-﻿//namespace RubberduckTests.Refactoring.ExtractMethod
+//namespace RubberduckTests.Refactoring.ExtractMethod
 //{
 //    [TestClass]
 //    public class ExtractMethodExtractionTests

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -649,5 +649,17 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   </data>
   <data name="AssignedByValParameterMakeLocalCopyQuickFix" xml:space="preserve">
     <value>Create and use a local copy of the parameter</value>
+  </data>
+  <data name="OptionBaseZeroInspectionMeta" xml:space="preserve">
+    <value>This is the default setting, it does not need to be specified.</value>
+  </data>
+  <data name="OptionBaseZeroInspectionName" xml:space="preserve">
+    <value>'Option Base 0' is redundant</value>
+  </data>
+  <data name="OptionBaseZeroInspectionResultFormat" xml:space="preserve">
+    <value>Component '{0} uses 'Option Base 0'</value>
+  </data>
+  <data name="RemoveOptionBaseStatementQuickFix" xml:space="preserve">
+    <value>Remove 'Option Base' statement</value>
   </data>
 </root>
