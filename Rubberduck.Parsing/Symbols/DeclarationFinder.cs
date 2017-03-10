@@ -836,6 +836,8 @@ namespace Rubberduck.Parsing.Symbols
 
             var accessibleDeclarations = GetAccessibleDeclarations(target);
 
+            //todo: handle case where target is in a consuming module rather than the exposing module
+
             //Filter accessible declarations to those that would result in name collisions or hiding
             var possibleConflictDeclarations = accessibleDeclarations.Where(dec =>
                                         IsInProceduralModule(dec)
