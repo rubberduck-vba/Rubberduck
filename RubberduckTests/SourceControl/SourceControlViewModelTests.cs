@@ -386,7 +386,7 @@ namespace RubberduckTests.SourceControl
 
             SetupVM();
             _vm.Provider = _provider.Object;
--act
+
             Assert.IsFalse(_vm.DisplayErrorMessageGrid);
             _branchesVM.PublishBranchToolbarButtonCommand.Execute("");
 
@@ -416,7 +416,7 @@ namespace RubberduckTests.SourceControl
             {
                 new FileStatusEntry("path", FileStatus.Added)
             };
--act
+
             Assert.IsFalse(_vm.DisplayErrorMessageGrid);
             _changesVM.CommitCommand.Execute(null);
 
@@ -441,7 +441,7 @@ namespace RubberduckTests.SourceControl
 
             SetupVM();
             _vm.Provider = _provider.Object;
--act
+
             Assert.IsFalse(_vm.DisplayErrorMessageGrid);
             _unsyncedVM.PullCommitsCommand.Execute(null);
 
@@ -468,7 +468,7 @@ namespace RubberduckTests.SourceControl
 
             SetupValidVbProject();
             SetupVM();
--act
+
             Assert.IsFalse(_vm.DisplayErrorMessageGrid);
             _vm.OpenRepoCommand.Execute(null);
 
@@ -495,7 +495,7 @@ namespace RubberduckTests.SourceControl
 
             _branchesVM.SourceBranch = sourceBranch;
             _branchesVM.DestinationBranch = destinationBranch;
--act
+
             Assert.IsFalse(_vm.DisplayErrorMessageGrid);
             _branchesVM.MergeBranchesOkButtonCommand.Execute(null);
 
@@ -854,7 +854,7 @@ namespace RubberduckTests.SourceControl
 
             SetupValidVbProject();
             SetupVM();
--act
+
             Assert.IsFalse(_vm.DisplayErrorMessageGrid);
             _vm.RefreshCommand.Execute(null);
 

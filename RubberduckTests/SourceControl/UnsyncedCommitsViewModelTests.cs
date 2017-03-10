@@ -76,7 +76,7 @@ namespace RubberduckTests.SourceControl
             {
                 Provider = _provider.Object
             };
- - Simulate Fetch click
+
             vm.FetchCommitsCommand.Execute(null);
 
             _provider.Verify(git => git.Fetch(It.IsAny<string>()));
@@ -93,7 +93,7 @@ namespace RubberduckTests.SourceControl
 
             _provider.SetupGet(git => git.UnsyncedRemoteCommits)
                 .Returns(new List<ICommit> { new Commit("1111111", "Hosch250", "Fixed the foobarred bazzer.") });
- - Simulate Fetch click
+
             vm.FetchCommitsCommand.Execute(null);
 
             CollectionAssert.AreEquivalent(_provider.Object.UnsyncedRemoteCommits.ToList(), vm.IncomingCommits.ToList());

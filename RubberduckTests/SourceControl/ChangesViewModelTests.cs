@@ -363,10 +363,10 @@ namespace RubberduckTests.SourceControl
                 Provider = _provider.Object,
                 CommitAction = CommitAction.CommitAndSync
             };
--assert
+
             vm.ExcludeChangesToolbarButtonCommand.Execute(fileStatusEntries.First());
             Assert.AreEqual(1, vm.ExcludedChanges.Count);
--assert
+
             vm.IncludeChangesToolbarButtonCommand.Execute(fileStatusEntries.First());
             Assert.AreEqual(3, vm.IncludedChanges.Count);
             Assert.AreEqual(0, vm.ExcludedChanges.Count);

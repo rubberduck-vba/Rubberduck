@@ -1630,7 +1630,7 @@ End Type
         [TestCategory("Parser")]
         [TestMethod]
         public void TestNestedParensForLiteralExpression()
-        {.Inconclusive("See issue #2206");
+        {
             const string code = @"
 Sub Test()
     Dim foo As Integer
@@ -1644,7 +1644,7 @@ End Sub
         [TestCategory("Parser")]
         [TestMethod]
         public void TestParensForByValSingleArg()
-        {.Inconclusive("See issue #2206");
+        {
             const string code = @"
 Sub Test()
     DoSomething (foo)
@@ -1657,7 +1657,7 @@ End Sub
         [TestCategory("Parser")]
         [TestMethod]
         public void TestParensForByValFirstArg()
-        {.Inconclusive("See issue #2206");
+        {
             const string code = @"
 Sub Test()
     DoSomething (foo), bar
