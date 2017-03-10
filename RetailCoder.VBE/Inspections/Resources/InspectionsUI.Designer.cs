@@ -1060,7 +1060,7 @@ namespace Rubberduck.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Option Base 0 is redundant.
+        ///   Looks up a localized string similar to &apos;Option Base 1&apos; is specified.
         /// </summary>
         public static string OptionBaseInspectionName {
             get {
@@ -1078,7 +1078,7 @@ namespace Rubberduck.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Option Base 0 is the default setting and does not need to be specified.
+        ///   Looks up a localized string similar to This is the default setting, it does not need to be specified..
         /// </summary>
         public static string OptionBaseZeroInspectionMeta {
             get {
@@ -1087,7 +1087,7 @@ namespace Rubberduck.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;Option Base 0&apos; used.
+        ///   Looks up a localized string similar to &apos;Option Base 0&apos; is redundant.
         /// </summary>
         public static string OptionBaseZeroInspectionName {
             get {
