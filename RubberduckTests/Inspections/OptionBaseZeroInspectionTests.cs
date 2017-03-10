@@ -2,14 +2,12 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Inspections;
-using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
 using Rubberduck.Settings;
 using System.Threading;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete.Rubberduck.Inspections;
 using Rubberduck.Inspections.Resources;
-using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Inspections
@@ -24,26 +22,18 @@ namespace RubberduckTests.Inspections
             const string inputCode =
 @"Option Base 0";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
 
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new OptionBaseZeroInspection(parser.State);
+            var inspection = new OptionBaseZeroInspection(state);
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
-            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
-
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
@@ -53,26 +43,18 @@ namespace RubberduckTests.Inspections
         {
             string inputCode = "Option Base 1";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
 
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new OptionBaseZeroInspection(parser.State);
+            var inspection = new OptionBaseZeroInspection(state);
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
-            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
-
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
             Assert.IsFalse(inspectionResults.Any());
         }
 
@@ -84,26 +66,18 @@ namespace RubberduckTests.Inspections
 @"'@Ignore OptionBaseZero
 Option Base 0";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
 
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ObsoleteCallStatementInspection(parser.State);
+            var inspection = new ObsoleteCallStatementInspection(state);
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
-            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
-
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
             Assert.IsFalse(inspectionResults.Any());
         }
 
@@ -114,35 +88,21 @@ Option Base 0";
             string inputCode = "Option Base 0";
             string expectedCode = string.Empty;
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
 
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var project = vbe.Object.VBProjects[0];
-            var module = project.VBComponents[0].CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new OptionBaseZeroInspection(parser.State);
+            var inspection = new OptionBaseZeroInspection(state);
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
-            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
-
-            foreach (var inspectionResult in inspectionResults)
-            {
-                inspectionResult.QuickFixes.First().Fix();
-            }
-
-            var actual = module.Content();
-            Assert.AreEqual(expectedCode, actual);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+            inspectionResults.First().QuickFixes.First().Fix();
+            
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
@@ -156,35 +116,21 @@ Base _
 
             string expectedCode = string.Empty;
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
 
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var project = vbe.Object.VBProjects[0];
-            var module = project.VBComponents[0].CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new OptionBaseZeroInspection(parser.State);
+            var inspection = new OptionBaseZeroInspection(state);
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
-            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
-
-            foreach (var inspectionResult in inspectionResults)
-            {
-                inspectionResult.QuickFixes.First().Fix();
-            }
-
-            var actual = module.Content();
-            Assert.AreEqual(expectedCode, actual);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+            inspectionResults.First().QuickFixes.First().Fix();
+            
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
@@ -195,35 +141,21 @@ Base _
 
             string expectedCode = "Option Explicit: : Option Base 1";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
 
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var project = vbe.Object.VBProjects[0];
-            var module = project.VBComponents[0].CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new OptionBaseZeroInspection(parser.State);
+            var inspection = new OptionBaseZeroInspection(state);
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
-            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
-
-            foreach (var inspectionResult in inspectionResults)
-            {
-                inspectionResult.QuickFixes.First().Fix();
-            }
-
-            var actual = module.Content();
-            Assert.AreEqual(expectedCode, actual);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+            inspectionResults.First().QuickFixes.First().Fix();
+            
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
@@ -237,35 +169,21 @@ Base _
 
             string expectedCode = "Option Explicit: : Option Base 1";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
 
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var project = vbe.Object.VBProjects[0];
-            var module = project.VBComponents[0].CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new OptionBaseZeroInspection(parser.State);
+            var inspection = new OptionBaseZeroInspection(state);
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
-            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
-
-            foreach (var inspectionResult in inspectionResults)
-            {
-                inspectionResult.QuickFixes.First().Fix();
-            }
-
-            var actual = module.Content();
-            Assert.AreEqual(expectedCode, actual);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+            inspectionResults.First().QuickFixes.First().Fix();
+            
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]

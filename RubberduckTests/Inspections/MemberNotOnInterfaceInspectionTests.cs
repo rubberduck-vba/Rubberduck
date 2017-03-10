@@ -1,11 +1,8 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 using Rubberduck.Inspections;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor.Application;
-using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 using ParserState = Rubberduck.Parsing.VBA.ParserState;
@@ -29,8 +26,6 @@ namespace RubberduckTests.Inspections
 
             var vbe = builder.AddProject(project).Build();
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.State.AddTestLibrary(library.Equals("Scripting") ? "Scripting.1.0.xml" : "Excel.1.8.xml");
@@ -49,7 +44,6 @@ namespace RubberduckTests.Inspections
     dict.NonMember
 End Sub";
 
-            //Arrange
             var parser = ArrangeParser(inputCode);
 
             parser.Parse(new CancellationTokenSource());
@@ -73,7 +67,6 @@ End Sub";
     dict.NonMember
 End Sub";
 
-            //Arrange
             var parser = ArrangeParser(inputCode);
 
             parser.Parse(new CancellationTokenSource());
@@ -95,7 +88,6 @@ End Sub";
     Application.NonMember
 End Sub";
 
-            //Arrange
             var parser = ArrangeParser(inputCode, "Excel");
 
             parser.Parse(new CancellationTokenSource());
@@ -117,7 +109,6 @@ End Sub";
     dict.NonMember
 End Sub";
 
-            //Arrange
             var parser = ArrangeParser(inputCode);
 
             parser.Parse(new CancellationTokenSource());
@@ -141,7 +132,6 @@ End Sub";
     Debug.Print dict.Count
 End Sub";
 
-            //Arrange
             var parser = ArrangeParser(inputCode);
 
             parser.Parse(new CancellationTokenSource());
@@ -164,7 +154,6 @@ End Sub";
     Debug.Print x.NonMember
 End Sub";
 
-            //Arrange
             var parser = ArrangeParser(inputCode);
 
             parser.Parse(new CancellationTokenSource());
@@ -189,7 +178,6 @@ End Sub";
     End With
 End Sub";
 
-            //Arrange
             var parser = ArrangeParser(inputCode);
 
             parser.Parse(new CancellationTokenSource());
@@ -213,7 +201,6 @@ End Sub";
     dict!SomeIdentifier = 42
 End Sub";
 
-            //Arrange
             var parser = ArrangeParser(inputCode);
 
             parser.Parse(new CancellationTokenSource());
@@ -238,7 +225,6 @@ End Sub";
     End With
 End Sub";
 
-            //Arrange
             var parser = ArrangeParser(inputCode);
 
             parser.Parse(new CancellationTokenSource());
@@ -260,7 +246,6 @@ End Sub";
     Dim dict As Scripting.Dictionary
 End Sub";
 
-            //Arrange
             var parser = ArrangeParser(inputCode);
 
             parser.Parse(new CancellationTokenSource());
@@ -285,7 +270,6 @@ End Sub";
     dict.NonMember
 End Sub";
 
-            //Arrange
             var parser = ArrangeParser(inputCode);
 
             parser.Parse(new CancellationTokenSource());

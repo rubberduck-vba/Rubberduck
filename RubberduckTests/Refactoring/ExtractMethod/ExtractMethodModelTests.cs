@@ -1,11 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.VBEditor;
 using RubberduckTests.Mocks;
@@ -66,8 +65,7 @@ End Sub";
         public void shouldClassifyDeclarations()
         {
             QualifiedModuleName qualifiedModuleName;
-            RubberduckParserState state;
-            MockParser.ParseString(internalVariable, out qualifiedModuleName, out state);
+            var state = MockParser.ParseString(internalVariable, out qualifiedModuleName);
             var declarations = state.AllDeclarations;
 
             var selection = new Selection(8, 1, 12, 24);
@@ -134,9 +132,8 @@ End Sub";
                 [ExpectedException(typeof(InvalidOperationException))]
                 public void shouldThrowAnException()
                 {
-                    RubberduckParserState state;
                     QualifiedModuleName qualifiedModuleName;
-                    MockParser.ParseString(inputCode, out qualifiedModuleName, out state);
+                    var state = MockParser.ParseString(inputCode, out qualifiedModuleName);
                     var declarations = state.AllDeclarations;
 
                     var selection = new Selection(21, 1, 22, 17);
@@ -161,8 +158,7 @@ End Sub";
             public void shouldProvideAListOfDimsNoLongerNeededInTheContainingMethod()
             {
                 QualifiedModuleName qualifiedModuleName;
-                RubberduckParserState state;
-                MockParser.ParseString(inputCode, out qualifiedModuleName, out state);
+                var state = MockParser.ParseString(inputCode, out qualifiedModuleName);
                 var declarations = state.AllDeclarations;
 
                 var selection = new Selection(10, 1, 12, 17);
@@ -186,8 +182,7 @@ End Sub";
             public void shouldProvideTheSelectionOfLinesOfToRemove()
             {
                 QualifiedModuleName qualifiedModuleName;
-                RubberduckParserState state;
-                MockParser.ParseString(inputCode, out qualifiedModuleName, out state);
+                var state = MockParser.ParseString(inputCode, out qualifiedModuleName);
                 var declarations = state.AllDeclarations;
 
                 var selection = new Selection(10, 2, 12, 17);
@@ -206,7 +201,7 @@ End Sub";
                 //Assert
                 var actual = extractedMethodModel.RowsToRemove;
                 var yDimSelection = new Selection(5, 9, 5, 10);
-                var expected = new []{ selection, yDimSelection }
+                var expected = new[] { selection, yDimSelection }
                     .Select(x => new Selection(x.StartLine, 1, x.EndLine, 1));
                 var missing = expected.Except(actual);
                 var extra = actual.Except(expected);
@@ -223,8 +218,7 @@ End Sub";
             public void shouldProvideTheExtractMethodCaller()
             {
                 QualifiedModuleName qualifiedModuleName;
-                RubberduckParserState state;
-                MockParser.ParseString(inputCode, out qualifiedModuleName, out state);
+                var state = MockParser.ParseString(inputCode, out qualifiedModuleName);
                 var declarations = state.AllDeclarations;
 
                 var selection = new Selection(10, 1, 12, 17);
@@ -248,8 +242,7 @@ End Sub";
             public void shouldProvideThePositionForTheMethodCall()
             {
                 QualifiedModuleName qualifiedModuleName;
-                RubberduckParserState state;
-                MockParser.ParseString(inputCode, out qualifiedModuleName, out state);
+                var state = MockParser.ParseString(inputCode, out qualifiedModuleName);
                 var declarations = state.AllDeclarations;
 
                 var selection = new Selection(10, 1, 12, 17);
@@ -272,8 +265,7 @@ End Sub";
             public void shouldProvideThePositionForTheNewMethod()
             {
                 QualifiedModuleName qualifiedModuleName;
-                RubberduckParserState state;
-                MockParser.ParseString(inputCode, out qualifiedModuleName, out state);
+                var state = MockParser.ParseString(inputCode, out qualifiedModuleName);
                 var declarations = state.AllDeclarations;
 
                 var selection = new Selection(10, 1, 12, 17);
@@ -296,7 +288,6 @@ End Sub";
             }
 
         }
-
 
         [TestClass]
         public class WhenLocalVariableConstantIsInternal
@@ -338,8 +329,7 @@ Debug.Print y";
                 #endregion
 
                 QualifiedModuleName qualifiedModuleName;
-                RubberduckParserState state;
-                MockParser.ParseString(inputCode, out qualifiedModuleName, out state);
+                var state = MockParser.ParseString(inputCode, out qualifiedModuleName);
                 var declarations = state.AllDeclarations;
 
                 var selection = new Selection(10, 1, 12, 17);
@@ -417,8 +407,7 @@ end sub
                 #endregion
 
                 QualifiedModuleName qualifiedModuleName;
-                RubberduckParserState state;
-                MockParser.ParseString(inputCode, out qualifiedModuleName, out state);
+                var state = MockParser.ParseString(inputCode, out qualifiedModuleName);
                 var declarations = state.AllDeclarations;
                 var selection = new Selection(8, 1, 12, 50);
                 QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
@@ -13,8 +13,6 @@ using Rubberduck.SmartIndenter;
 using Rubberduck.UI;
 using Rubberduck.UI.CodeExplorer.Commands;
 using Rubberduck.UI.Command;
-using Rubberduck.VBEditor.Application;
-using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
@@ -35,8 +33,6 @@ namespace RubberduckTests.CodeExplorer
             var components = project.MockVBComponents;
 
             var vbe = builder.AddProject(project.Build()).Build();
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
 
             var commands = new List<CommandBase> { new AddStdModuleCommand(vbe.Object) };
 
@@ -64,8 +60,6 @@ namespace RubberduckTests.CodeExplorer
             var components = project.MockVBComponents;
 
             var vbe = builder.AddProject(project.Build()).Build();
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
 
             var commands = new List<CommandBase> { new AddClassModuleCommand(vbe.Object) };
 
@@ -93,8 +87,6 @@ namespace RubberduckTests.CodeExplorer
             var components = project.MockVBComponents;
 
             var vbe = builder.AddProject(project.Build()).Build();
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
 
             var commands = new List<CommandBase> { new AddUserFormCommand(vbe.Object) };
 
@@ -122,8 +114,6 @@ namespace RubberduckTests.CodeExplorer
             var components = project.MockVBComponents;
 
             var vbe = builder.AddProject(project.Build()).Build();
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
 
             var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
             configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
@@ -159,8 +149,6 @@ namespace RubberduckTests.CodeExplorer
             var components = project.MockVBComponents;
 
             var vbe = builder.AddProject(project.Build()).Build();
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
 
             var openFileDialog = new Mock<IOpenFileDialog>();
             openFileDialog.Setup(o => o.AddExtension);
@@ -202,8 +190,6 @@ namespace RubberduckTests.CodeExplorer
             var components = project.MockVBComponents;
 
             var vbe = builder.AddProject(project.Build()).Build();
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
 
             var openFileDialog = new Mock<IOpenFileDialog>();
             openFileDialog.Setup(o => o.AddExtension);
@@ -246,8 +232,6 @@ namespace RubberduckTests.CodeExplorer
             var components = project.MockVBComponents;
 
             var vbe = builder.AddProject(project.Build()).Build();
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
 
             var openFileDialog = new Mock<IOpenFileDialog>();
             openFileDialog.Setup(o => o.AddExtension);
@@ -394,8 +378,6 @@ namespace RubberduckTests.CodeExplorer
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents[0];
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
 
             var saveFileDialog = new Mock<ISaveFileDialog>();
             saveFileDialog.Setup(o => o.OverwritePrompt);
@@ -439,8 +421,6 @@ namespace RubberduckTests.CodeExplorer
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents[0];
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
 
             var saveFileDialog = new Mock<ISaveFileDialog>();
             saveFileDialog.Setup(o => o.ShowDialog()).Returns(DialogResult.Cancel);
@@ -483,8 +463,6 @@ namespace RubberduckTests.CodeExplorer
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents[0];
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
 
             var saveFileDialog = new Mock<ISaveFileDialog>();
             saveFileDialog.Setup(o => o.ShowDialog()).Returns(DialogResult.OK);
@@ -527,8 +505,6 @@ namespace RubberduckTests.CodeExplorer
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents[0];
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
 
             var saveFileDialog = new Mock<ISaveFileDialog>();
             saveFileDialog.Setup(o => o.OverwritePrompt);
@@ -572,14 +548,9 @@ End Sub";
     d = True
 End Sub
 ";
-
-            var builder = new MockVbeBuilder();
+            
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var project = vbe.Object.VBProjects[0];
-            var module = project.VBComponents[0].CodeModule;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
             var state = new RubberduckParserState(vbe.Object);
             var commands = new List<CommandBase>
@@ -596,7 +567,7 @@ End Sub
             vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
             vm.IndenterCommand.Execute(vm.SelectedItem);
 
-            Assert.AreEqual(expectedCode, module.Content());
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestCategory("Code Explorer")]
@@ -610,12 +581,9 @@ Sub Foo()
 Dim d As Boolean
 d = True
 End Sub";
-
-            var builder = new MockVbeBuilder();
+            
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
             var state = new RubberduckParserState(vbe.Object);
             var commands = new List<CommandBase>
@@ -949,14 +917,9 @@ End Sub
 Sub Bar()
     Fizz
 End Sub";
-
-            var builder = new MockVbeBuilder();
+            
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var project = vbe.Object.VBProjects[0];
-            var module = project.VBComponents[0].CodeModule;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
             var view = new Mock<IRenameDialog>();
             view.Setup(r => r.ShowDialog()).Returns(DialogResult.OK);
@@ -982,7 +945,7 @@ End Sub";
             vm.SelectedItem = vm.Projects.First().Items.First().Items.First().Items.OfType<CodeExplorerMemberViewModel>().Single(item => item.Declaration.IdentifierName == "Foo");
             vm.RenameCommand.Execute(vm.SelectedItem);
 
-            Assert.AreEqual(expectedCode, module.Content());
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestCategory("Code Explorer")]
@@ -992,12 +955,9 @@ End Sub";
             var inputCode =
 @"Sub Foo()
 End Sub";
-
-            var builder = new MockVbeBuilder();
+            
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
             var state = new RubberduckParserState(vbe.Object);
             var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>());
@@ -1025,8 +985,6 @@ End Sub";
                 .AddComponent("Comp2", ComponentType.ClassModule, @"'@Folder ""Bar""")
                 .Build();
             var vbe = builder.AddProject(project).Build();
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
 
             var state = new RubberduckParserState(vbe.Object);
             var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>());
@@ -1051,12 +1009,9 @@ End Sub";
             var inputCode =
 @"Sub Foo()
 End Sub";
-
-            var builder = new MockVbeBuilder();
+            
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
             var state = new RubberduckParserState(vbe.Object);
             var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>());
@@ -1084,8 +1039,6 @@ End Sub";
                 .AddComponent("Comp2", ComponentType.ClassModule, @"'@Folder ""Bar""")
                 .Build();
             var vbe = builder.AddProject(project).Build();
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
 
             var state = new RubberduckParserState(vbe.Object);
             var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>());
@@ -1148,17 +1101,12 @@ End Sub";
             var inputCode =
 @"Public Event Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 Public Const Bar = 0";
-
-            var builder = new MockVbeBuilder();
+            
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
             var state = new RubberduckParserState(vbe.Object);
-            var commands = new List<CommandBase>();
-
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>());
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -1176,17 +1124,12 @@ Public Const Bar = 0";
             var inputCode =
 @"Public Const Foo = 0
 Public Bar As Boolean";
-
-            var builder = new MockVbeBuilder();
+            
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
             var state = new RubberduckParserState(vbe.Object);
-            var commands = new List<CommandBase>();
-
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>());
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -1207,17 +1150,12 @@ Public Bar As Boolean";
 Public Property Get Foo() As Variant
 End Property
 ";
-
-            var builder = new MockVbeBuilder();
+            
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
             var state = new RubberduckParserState(vbe.Object);
-            var commands = new List<CommandBase>();
-
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>());
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -1239,17 +1177,12 @@ End Property
 Public Property Let Foo(ByVal Value As Variant)
 End Property
 ";
-
-            var builder = new MockVbeBuilder();
+            
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
             var state = new RubberduckParserState(vbe.Object);
-            var commands = new List<CommandBase>();
-
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>());
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -1271,17 +1204,12 @@ End Property
 Public Property Set Foo(ByVal Value As Variant)
 End Property
 ";
-
-            var builder = new MockVbeBuilder();
+            
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
             var state = new RubberduckParserState(vbe.Object);
-            var commands = new List<CommandBase>();
-
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>());
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -1303,17 +1231,12 @@ End Property
 Public Function Bar() As Boolean
 End Function
 ";
-
-            var builder = new MockVbeBuilder();
+            
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
             var state = new RubberduckParserState(vbe.Object);
-            var commands = new List<CommandBase>();
-
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>());
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -1335,17 +1258,12 @@ End Function
 Public Sub Bar()
 End Sub
 ";
-
-            var builder = new MockVbeBuilder();
+            
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
             var state = new RubberduckParserState(vbe.Object);
-            var commands = new List<CommandBase>();
-
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>());
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -1368,13 +1286,9 @@ End Sub
             var project = projectMock.Build();
             var vbe = builder.AddProject(project).Build();
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
 
             var state = new RubberduckParserState(vbe.Object);
-            var commands = new List<CommandBase>();
-
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>());
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -1400,17 +1314,12 @@ End Sub
 Sub Bar()
     Foo
 End Sub";
-
-            var builder = new MockVbeBuilder();
+            
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
             var state = new RubberduckParserState(vbe.Object);
-            var commands = new List<CommandBase>();
-
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>());
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -1432,17 +1341,12 @@ End Sub
 Sub Bar()
     Foo
 End Sub";
-
-            var builder = new MockVbeBuilder();
+            
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
             var state = new RubberduckParserState(vbe.Object);
-            var commands = new List<CommandBase>();
-
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>());
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -1464,17 +1368,12 @@ End Sub
 Sub Bar()
     Foo
 End Sub";
-
-            var builder = new MockVbeBuilder();
+            
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
             var state = new RubberduckParserState(vbe.Object);
-            var commands = new List<CommandBase>();
-
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>());
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
