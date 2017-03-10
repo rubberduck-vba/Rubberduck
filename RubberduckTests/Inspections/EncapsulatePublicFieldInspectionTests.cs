@@ -1,178 +1,150 @@
-//using System.Linq;
-//using System.Threading;
-//using Microsoft.VisualStudio.TestTools.UnitTesting;
-//using Rubberduck.Inspections;
-//using Rubberduck.Inspections.QuickFixes;
-//using Rubberduck.Inspections.Resources;
-//using Rubberduck.Parsing.VBA;
-//using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-//using RubberduckTests.Mocks;
+using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Rubberduck.Inspections;
+using Rubberduck.Inspections.QuickFixes;
+using Rubberduck.Inspections.Resources;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using RubberduckTests.Mocks;
 
-//namespace RubberduckTests.Inspections
-//{
-//    [TestClass]
-//    public class EncapsulatePublicFieldInspectionTests
-//    {
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void PublicField_ReturnsResult()
-//        {
-//            const string inputCode =
-//@"Public fizz As Boolean";
+namespace RubberduckTests.Inspections
+{
+    [TestClass]
+    public class EncapsulatePublicFieldInspectionTests
+    {
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void PublicField_ReturnsResult()
+        {
+            const string inputCode =
+@"Public fizz As Boolean";
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            IVBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            //Arrange
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var inspection = new EncapsulatePublicFieldInspection(state, null);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            var inspection = new EncapsulatePublicFieldInspection(parser.State, null);
-//            var inspectionResults = inspection.GetInspectionResults();
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
 
-//            Assert.AreEqual(1, inspectionResults.Count());
-//        }
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void MultiplePublicFields_ReturnMultipleResult()
+        {
+            const string inputCode =
+@"Public fizz As Boolean
+Public buzz As Integer, _
+       bazz As Integer";
 
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void MultiplePublicFields_ReturnMultipleResult()
-//        {
-//            const string inputCode =
-//@"Public fizz As Boolean
-//Public buzz As Integer, _
-//       bazz As Integer";
+            //Arrange
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            IVBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var inspection = new EncapsulatePublicFieldInspection(state, null);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            Assert.AreEqual(3, inspectionResults.Count());
+        }
 
-//            var inspection = new EncapsulatePublicFieldInspection(parser.State, null);
-//            var inspectionResults = inspection.GetInspectionResults();
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void PrivateField_DoesNotReturnResult()
+        {
+            const string inputCode =
+@"Private fizz As Boolean";
 
-//            Assert.AreEqual(3, inspectionResults.Count());
-//        }
+            //Arrange
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void PrivateField_DoesNotReturnResult()
-//        {
-//            const string inputCode =
-//@"Private fizz As Boolean";
+            var inspection = new EncapsulatePublicFieldInspection(state, null);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            IVBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void PublicNonField_DoesNotReturnResult()
+        {
+            const string inputCode =
+@"Public Sub Foo(ByRef arg1 As String)
+End Sub";
 
-//            var inspection = new EncapsulatePublicFieldInspection(parser.State, null);
-//            var inspectionResults = inspection.GetInspectionResults();
+            //Arrange
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//            Assert.AreEqual(0, inspectionResults.Count());
-//        }
+            var inspection = new EncapsulatePublicFieldInspection(state, null);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void PublicNonField_DoesNotReturnResult()
-//        {
-//            const string inputCode =
-//@"Public Sub Foo(ByRef arg1 As String)
-//End Sub";
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            IVBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void PublicField_Ignored_DoesNotReturnResult()
+        {
+            const string inputCode =
+@"'@Ignore EncapsulatePublicField
+Public fizz As Boolean";
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            //Arrange
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//            var inspection = new EncapsulatePublicFieldInspection(parser.State, null);
-//            var inspectionResults = inspection.GetInspectionResults();
+            var inspection = new EncapsulatePublicFieldInspection(state, null);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            Assert.AreEqual(0, inspectionResults.Count());
-//        }
+            Assert.IsFalse(inspectionResults.Any());
+        }
 
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void PublicField_Ignored_DoesNotReturnResult()
-//        {
-//            const string inputCode =
-//@"'@Ignore EncapsulatePublicField
-//Public fizz As Boolean";
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void EncapsulatePublicField_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+@"Public fizz As Boolean";
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            IVBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            const string expectedCode =
+@"'@Ignore EncapsulatePublicField
+Public fizz As Boolean";
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            //Arrange
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//            var inspection = new EncapsulatePublicFieldInspection(parser.State, null);
-//            var inspectionResults = inspection.GetInspectionResults();
+            var inspection = new EncapsulatePublicFieldInspection(state, null);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            Assert.IsFalse(inspectionResults.Any());
-//        }
+            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
 
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void EncapsulatePublicField_IgnoreQuickFixWorks()
-//        {
-//            const string inputCode =
-//@"Public fizz As Boolean";
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+        }
 
-//            const string expectedCode =
-//@"'@Ignore EncapsulatePublicField
-//Public fizz As Boolean";
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void InspectionType()
+        {
+            var inspection = new EncapsulatePublicFieldInspection(null, null);
+            Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
+        }
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            IVBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-//            var project = vbe.Object.VBProjects[0];
-//            var module = project.VBComponents[0].CodeModule;
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void InspectionName()
+        {
+            const string inspectionName = "EncapsulatePublicFieldInspection";
+            var inspection = new EncapsulatePublicFieldInspection(null, null);
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-//            var inspection = new EncapsulatePublicFieldInspection(parser.State, null);
-//            var inspectionResults = inspection.GetInspectionResults();
-
-//            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
-
-//            Assert.AreEqual(expectedCode, module.Content());
-//        }
-
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void InspectionType()
-//        {
-//            var inspection = new EncapsulatePublicFieldInspection(null, null);
-//            Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
-//        }
-
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void InspectionName()
-//        {
-//            const string inspectionName = "EncapsulatePublicFieldInspection";
-//            var inspection = new EncapsulatePublicFieldInspection(null, null);
-
-//            Assert.AreEqual(inspectionName, inspection.Name);
-//        }
-//    }
-//}
+            Assert.AreEqual(inspectionName, inspection.Name);
+        }
+    }
+}

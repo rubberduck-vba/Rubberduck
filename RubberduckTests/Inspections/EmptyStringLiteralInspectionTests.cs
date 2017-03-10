@@ -1,255 +1,226 @@
-//using System.Linq;
-//using Microsoft.VisualStudio.TestTools.UnitTesting;
-//using Moq;
-//using Rubberduck.Inspections;
-//using Rubberduck.Parsing.VBA;
-//using RubberduckTests.Mocks;
-//using Rubberduck.Settings;
-//using System.Threading;
-//using Rubberduck.Inspections.Abstract;
-//using Rubberduck.Inspections.Concrete.Rubberduck.Inspections;
-//using Rubberduck.Inspections.QuickFixes;
-//using Rubberduck.Inspections.Resources;
-//using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
+using Rubberduck.Inspections;
+using RubberduckTests.Mocks;
+using Rubberduck.Settings;
+using System.Threading;
+using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Concrete.Rubberduck.Inspections;
+using Rubberduck.Inspections.QuickFixes;
+using Rubberduck.Inspections.Resources;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
-//namespace RubberduckTests.Inspections
-//{
-//    [TestClass]
-//    public class EmptyStringLiteralInspectionTests
-//    {
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void EmptyStringLiteral_ReturnsResult_PassToProcedure()
-//        {
-//            const string inputCode =
-//@"Public Sub Bar()
-//    Foo """"
-//End Sub
+namespace RubberduckTests.Inspections
+{
+    [TestClass]
+    public class EmptyStringLiteralInspectionTests
+    {
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void EmptyStringLiteral_ReturnsResult_PassToProcedure()
+        {
+            const string inputCode =
+@"Public Sub Bar()
+    Foo """"
+End Sub
 
-//Public Sub Foo(ByRef arg1 As String)
-//End Sub";
+Public Sub Foo(ByRef arg1 As String)
+End Sub";
 
-//            //Arrange
-//            var settings = new Mock<IGeneralConfigService>();
-//            var config = GetTestConfig();
-//            settings.Setup(x => x.LoadConfiguration()).Returns(config);
+            //Arrange
+            var settings = new Mock<IGeneralConfigService>();
+            var config = GetTestConfig();
+            settings.Setup(x => x.LoadConfiguration()).Returns(config);
 
-//            var builder = new MockVbeBuilder();
-//            IVBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var inspection = new EmptyStringLiteralInspection(state);
+            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
-//            var inspection = new EmptyStringLiteralInspection(parser.State);
-//            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-//            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
 
-//            Assert.AreEqual(1, inspectionResults.Count());
-//        }
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void EmptyStringLiteral_ReturnsResult_Assignment()
+        {
+            const string inputCode =
+@"Public Sub Foo(ByRef arg1 As String)
+    arg1 = """"
+End Sub";
 
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void EmptyStringLiteral_ReturnsResult_Assignment()
-//        {
-//            const string inputCode =
-//@"Public Sub Foo(ByRef arg1 As String)
-//    arg1 = """"
-//End Sub";
+            //Arrange
+            var settings = new Mock<IGeneralConfigService>();
+            var config = GetTestConfig();
+            settings.Setup(x => x.LoadConfiguration()).Returns(config);
 
-//            //Arrange
-//            var settings = new Mock<IGeneralConfigService>();
-//            var config = GetTestConfig();
-//            settings.Setup(x => x.LoadConfiguration()).Returns(config);
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//            var builder = new MockVbeBuilder();
-//            IVBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var inspection = new EmptyStringLiteralInspection(state);
+            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-//            var inspection = new EmptyStringLiteralInspection(parser.State);
-//            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
 
-//            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void NotEmptyStringLiteral_DoesNotReturnResult()
+        {
+            const string inputCode =
+@"Public Sub Foo(ByRef arg1 As String)
+    arg1 = ""test""
+End Sub";
 
-//            Assert.AreEqual(1, inspectionResults.Count());
-//        }
+            //Arrange
+            var settings = new Mock<IGeneralConfigService>();
+            var config = GetTestConfig();
+            settings.Setup(x => x.LoadConfiguration()).Returns(config);
 
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void NotEmptyStringLiteral_DoesNotReturnResult()
-//        {
-//            const string inputCode =
-//@"Public Sub Foo(ByRef arg1 As String)
-//    arg1 = ""test""
-//End Sub";
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//            //Arrange
-//            var settings = new Mock<IGeneralConfigService>();
-//            var config = GetTestConfig();
-//            settings.Setup(x => x.LoadConfiguration()).Returns(config);
+            var inspection = new EmptyStringLiteralInspection(state);
+            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
-//            var builder = new MockVbeBuilder();
-//            IVBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
 
-//            var inspection = new EmptyStringLiteralInspection(parser.State);
-//            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void EmptyStringLiteral_Ignored_DoesNotReturnResult()
+        {
+            const string inputCode =
+@"Public Sub Foo(ByRef arg1 As String)
+    '@Ignore EmptyStringLiteral
+    arg1 = """"
+End Sub";
 
-//            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
+            //Arrange
+            var settings = new Mock<IGeneralConfigService>();
+            var config = GetTestConfig();
+            settings.Setup(x => x.LoadConfiguration()).Returns(config);
 
-//            Assert.AreEqual(0, inspectionResults.Count());
-//        }
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void EmptyStringLiteral_Ignored_DoesNotReturnResult()
-//        {
-//            const string inputCode =
-//@"Public Sub Foo(ByRef arg1 As String)
-//    '@Ignore EmptyStringLiteral
-//    arg1 = """"
-//End Sub";
+            var inspection = new EmptyStringLiteralInspection(state);
+            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
-//            //Arrange
-//            var settings = new Mock<IGeneralConfigService>();
-//            var config = GetTestConfig();
-//            settings.Setup(x => x.LoadConfiguration()).Returns(config);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-//            var builder = new MockVbeBuilder();
-//            IVBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void EmptyStringLiteral_QuickFixWorks()
+        {
+            const string inputCode =
+@"Public Sub Foo(ByRef arg1 As String)
+    arg1 = """"
+End Sub";
 
-//            var inspection = new EmptyStringLiteralInspection(parser.State);
-//            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+            const string expectedCode =
+@"Public Sub Foo(ByRef arg1 As String)
+    arg1 = vbNullString
+End Sub";
 
-//            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
+            //Arrange
+            var settings = new Mock<IGeneralConfigService>();
+            var config = GetTestConfig();
+            settings.Setup(x => x.LoadConfiguration()).Returns(config);
 
-//            Assert.AreEqual(0, inspectionResults.Count());
-//        }
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void EmptyStringLiteral_QuickFixWorks()
-//        {
-//            const string inputCode =
-//@"Public Sub Foo(ByRef arg1 As String)
-//    arg1 = """"
-//End Sub";
+            var inspection = new EmptyStringLiteralInspection(state);
+            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
-//            const string expectedCode =
-//@"Public Sub Foo(ByRef arg1 As String)
-//    arg1 = vbNullString
-//End Sub";
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-//            //Arrange
-//            var settings = new Mock<IGeneralConfigService>();
-//            var config = GetTestConfig();
-//            settings.Setup(x => x.LoadConfiguration()).Returns(config);
+            inspectionResults.First().QuickFixes.First().Fix();
 
-//            var builder = new MockVbeBuilder();
-//            IVBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-//            var project = vbe.Object.VBProjects[0];
-//            var module = project.VBComponents[0].CodeModule;
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+        }
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void EmptyStringLiteral_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+@"Public Sub Foo(ByRef arg1 As String)
+    arg1 = """"
+End Sub";
 
-//            var inspection = new EmptyStringLiteralInspection(parser.State);
-//            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+            const string expectedCode =
+@"Public Sub Foo(ByRef arg1 As String)
+'@Ignore EmptyStringLiteral
+    arg1 = """"
+End Sub";
 
-//            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
+            //Arrange
+            var settings = new Mock<IGeneralConfigService>();
+            var config = GetTestConfig();
+            settings.Setup(x => x.LoadConfiguration()).Returns(config);
 
-//            inspectionResults.First().QuickFixes.First().Fix();
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//            Assert.AreEqual(expectedCode, module.Content());
-//        }
+            var inspection = new EmptyStringLiteralInspection(state);
+            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void EmptyStringLiteral_IgnoreQuickFixWorks()
-//        {
-//            const string inputCode =
-//@"Public Sub Foo(ByRef arg1 As String)
-//    arg1 = """"
-//End Sub";
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-//            const string expectedCode =
-//@"Public Sub Foo(ByRef arg1 As String)
-//'@Ignore EmptyStringLiteral
-//    arg1 = """"
-//End Sub";
+            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
 
-//            //Arrange
-//            var settings = new Mock<IGeneralConfigService>();
-//            var config = GetTestConfig();
-//            settings.Setup(x => x.LoadConfiguration()).Returns(config);
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+        }
 
-//            var builder = new MockVbeBuilder();
-//            IVBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-//            var project = vbe.Object.VBProjects[0];
-//            var module = project.VBComponents[0].CodeModule;
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void InspectionType()
+        {
+            var inspection = new EmptyStringLiteralInspection(null);
+            Assert.AreEqual(CodeInspectionType.LanguageOpportunities, inspection.InspectionType);
+        }
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void InspectionName()
+        {
+            const string inspectionName = "EmptyStringLiteralInspection";
+            var inspection = new EmptyStringLiteralInspection(null);
 
-//            var inspection = new EmptyStringLiteralInspection(parser.State);
-//            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+            Assert.AreEqual(inspectionName, inspection.Name);
+        }
 
-//            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
-
-//            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
-
-//            Assert.AreEqual(expectedCode, module.Content());
-//        }
-
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void InspectionType()
-//        {
-//            var inspection = new EmptyStringLiteralInspection(null);
-//            Assert.AreEqual(CodeInspectionType.LanguageOpportunities, inspection.InspectionType);
-//        }
-
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void InspectionName()
-//        {
-//            const string inspectionName = "EmptyStringLiteralInspection";
-//            var inspection = new EmptyStringLiteralInspection(null);
-
-//            Assert.AreEqual(inspectionName, inspection.Name);
-//        }
-
-//        private Configuration GetTestConfig()
-//        {
-//            var settings = new CodeInspectionSettings();
-//            settings.CodeInspections.Add(new CodeInspectionSetting
-//            {
-//                Description = new EmptyStringLiteralInspection(null).Description,
-//                Severity = CodeInspectionSeverity.Suggestion
-//            });
-//            return new Configuration
-//            {
-//                UserSettings = new UserSettings(null, null, null, settings, null, null, null)
-//            };
-//        }
-//    }
-//}
+        private Configuration GetTestConfig()
+        {
+            var settings = new CodeInspectionSettings();
+            settings.CodeInspections.Add(new CodeInspectionSetting
+            {
+                Description = new EmptyStringLiteralInspection(null).Description,
+                Severity = CodeInspectionSeverity.Suggestion
+            });
+            return new Configuration
+            {
+                UserSettings = new UserSettings(null, null, null, settings, null, null, null)
+            };
+        }
+    }
+}
