@@ -13,31 +13,31 @@ namespace Rubberduck.VBEditor.SafeComWrappers
             _target = target;
         }
 
-        private bool _isReleased;
-        public virtual void Release(bool final = false)
-        {
-            if (IsWrappingNullReference || _isReleased || !Marshal.IsComObject(Target))
-            {
-                _isReleased = true;
-                return;
-            }
+        //private bool _isReleased;
+        //public virtual void Release(bool final = false)
+        //{
+        //    if (IsWrappingNullReference || _isReleased || !Marshal.IsComObject(Target))
+        //    {
+        //        _isReleased = true;
+        //        return;
+        //    }
 
-            try
-            {
-                if (final)
-                {
-                    Marshal.FinalReleaseComObject(Target);
-                }
-                else
-                {
-                    Marshal.ReleaseComObject(Target);
-                }
-            }
-            finally
-            {
-                _isReleased = true;
-            }
-        }
+        //    try
+        //    {
+        //        if (final)
+        //        {
+        //            Marshal.FinalReleaseComObject(Target);
+        //        }
+        //        else
+        //        {
+        //            Marshal.ReleaseComObject(Target);
+        //        }
+        //    }
+        //    finally
+        //    {
+        //        _isReleased = true;
+        //    }
+        //}
 
         public bool IsWrappingNullReference { get { return _target == null; } }
         object INullObjectWrapper.Target { get { return _target; } }

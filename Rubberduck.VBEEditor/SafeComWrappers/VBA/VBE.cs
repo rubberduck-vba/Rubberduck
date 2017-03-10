@@ -95,18 +95,18 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public Guid EventsInterfaceId { get { throw new NotImplementedException(); } }
 
-        public override void Release(bool final = false)
-        {
-            if (!IsWrappingNullReference)
-            {
-                VBProjects.Release();
-                CodePanes.Release();
-                //CommandBars.Release();
-                Windows.Release();
-                AddIns.Release();
-                base.Release(final);
-            }
-        }
+        //public override void Release(bool final = false)
+        //{
+        //    if (!IsWrappingNullReference)
+        //    {
+        //        VBProjects.Release();
+        //        CodePanes.Release();
+        //        //CommandBars.Release();
+        //        Windows.Release();
+        //        AddIns.Release();
+        //        base.Release(final);
+        //    }
+        //}
 
         public override bool Equals(ISafeComWrapper<VB.VBE> other)
         {

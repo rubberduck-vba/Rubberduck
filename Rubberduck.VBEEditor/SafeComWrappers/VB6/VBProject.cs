@@ -103,15 +103,15 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             Target.MakeCompiledFile();
         }
 
-        public override void Release(bool final = false)
-        {
-            if (!IsWrappingNullReference)
-            {
-                References.Release();
-                VBComponents.Release();
-                base.Release(final);
-            }
-        }
+        //public override void Release(bool final = false)
+        //{
+        //    if (!IsWrappingNullReference)
+        //    {
+        //        References.Release();
+        //        VBComponents.Release();
+        //        base.Release(final);
+        //    }
+        //}
 
         public override bool Equals(ISafeComWrapper<VB.VBProject> other)
         {

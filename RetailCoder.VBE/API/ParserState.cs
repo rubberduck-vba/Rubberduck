@@ -161,7 +161,7 @@ namespace Rubberduck.API
             }
 
 
-            _vbe.Release();            
+            //_vbe.Release();            
             _disposed = true;
         }
     }
