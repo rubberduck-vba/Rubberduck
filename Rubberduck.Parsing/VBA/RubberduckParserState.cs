@@ -924,6 +924,16 @@ namespace Rubberduck.Parsing.VBA
             return new TokenStreamRewriter(_moduleStates[new QualifiedModuleName(component)].TokenStream);
         }
 
+        public TokenStreamRewriter GetRewriter(QualifiedModuleName module)
+        {
+            return new TokenStreamRewriter(_moduleStates[module].TokenStream);
+        }
+
+        public TokenStreamRewriter GetRewriter(Declaration declaration)
+        {
+            return new TokenStreamRewriter(_moduleStates[declaration.QualifiedSelection.QualifiedName].TokenStream);
+        }
+
         /// <summary>
         /// Removes the specified <see cref="declaration"/> from the collection.
         /// </summary>

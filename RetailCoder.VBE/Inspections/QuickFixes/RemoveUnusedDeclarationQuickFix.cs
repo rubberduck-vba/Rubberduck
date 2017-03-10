@@ -13,11 +13,13 @@ namespace Rubberduck.Inspections.QuickFixes
     public class RemoveUnusedDeclarationQuickFix : QuickFixBase
     {
         private readonly Declaration _target;
+        private readonly TokenStreamRewriter _rewriter;
 
-        public RemoveUnusedDeclarationQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration target)
+        public RemoveUnusedDeclarationQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration target, TokenStreamRewriter rewriter)
             : base(context, selection, InspectionsUI.RemoveUnusedDeclarationQuickFix)
         {
             _target = target;
+            _rewriter = rewriter;
         }
 
         public override void Fix()
@@ -28,7 +30,7 @@ namespace Rubberduck.Inspections.QuickFixes
                 .Component
                 .CodeModule;
 
-            module.Remove(_target);
+            module.Remove(_rewriter, _target);
         }
     }
 }

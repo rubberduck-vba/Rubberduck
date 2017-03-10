@@ -27,7 +27,7 @@ namespace Rubberduck.Inspections
                 .ToList();
 
             return results.Select(issue => 
-                new IdentifierNotUsedInspectionResult(this, issue, ((dynamic)issue.Context).identifier(), issue.QualifiedName.QualifiedModuleName));
+                new IdentifierNotUsedInspectionResult(this, issue, ((dynamic)issue.Context).identifier(), issue.QualifiedName.QualifiedModuleName, State.GetRewriter(issue)));
         }
     }
 }

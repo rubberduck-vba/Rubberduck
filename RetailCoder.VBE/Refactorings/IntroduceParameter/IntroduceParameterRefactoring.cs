@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
@@ -97,25 +98,25 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                 return;
             }
 
+            var rewriter = _state.GetRewriter(target);
+
             QualifiedSelection? oldSelection = null;
             var pane = _vbe.ActiveCodePane;
             var module = pane.CodeModule;
+            if (_vbe.ActiveCodePane != null)
             {
-                if (_vbe.ActiveCodePane != null)
-                {
-                    oldSelection = module.GetQualifiedSelection();
-                }
-
-                UpdateSignature(target);
-                RemoveVariable(target);
-
-                if (oldSelection.HasValue)
-                {
-                    pane.Selection = oldSelection.Value.Selection;
-                }
-
-                _state.OnParseRequested(this);
+                oldSelection = module.GetQualifiedSelection();
             }
+
+            UpdateSignature(rewriter, target);
+            RemoveVariable(rewriter, target);
+
+            if (oldSelection.HasValue)
+            {
+                pane.Selection = oldSelection.Value.Selection;
+            }
+
+            _state.OnParseRequested(this);
         }
 
         private bool PromptIfMethodImplementsInterface(Declaration targetVariable)
@@ -137,7 +138,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             return introduceParamToInterface != DialogResult.No;
         }
 
-        private void UpdateSignature(Declaration targetVariable)
+        private void UpdateSignature(TokenStreamRewriter rewriter, Declaration targetVariable)
         {
             var functionDeclaration = _declarations.FindTarget(targetVariable.QualifiedSelection, ValidDeclarationTypes);
 
@@ -151,7 +152,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                     functionDeclaration.DeclarationType != DeclarationType.PropertyLet &&
                     functionDeclaration.DeclarationType != DeclarationType.PropertySet)
                 {
-                    AddParameter(functionDeclaration, targetVariable, paramList, module);
+                    AddParameter(rewriter, functionDeclaration, targetVariable, paramList, module);
 
                     if (interfaceImplementation == null) { return; }
                 }
@@ -160,12 +161,12 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                     functionDeclaration.DeclarationType == DeclarationType.PropertyLet ||
                     functionDeclaration.DeclarationType == DeclarationType.PropertySet)
                 {
-                    UpdateProperties(functionDeclaration, targetVariable);
+                    UpdateProperties(rewriter, functionDeclaration, targetVariable);
                 }
 
                 if (interfaceImplementation == null) { return; }
 
-                UpdateSignature(interfaceImplementation, targetVariable);
+                UpdateSignature(rewriter, interfaceImplementation, targetVariable);
 
                 var interfaceImplementations = _declarations.FindInterfaceImplementationMembers()
                                                         .Where(item => item.ProjectId == interfaceImplementation.ProjectId
@@ -174,23 +175,25 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
                 foreach (var implementation in interfaceImplementations)
                 {
-                    UpdateSignature(implementation, targetVariable);
+                    UpdateSignature(rewriter, implementation, targetVariable);
                 }
             }
         }
 
-        private void UpdateSignature(Declaration targetMethod, Declaration targetVariable)
+        private void UpdateSignature(TokenStreamRewriter rewriter, Declaration targetMethod, Declaration targetVariable)
         {
             var proc = (dynamic)targetMethod.Context;
             var paramList = (VBAParser.ArgListContext)proc.argList();
             var module = targetMethod.QualifiedName.QualifiedModuleName.Component.CodeModule;
             {
-                AddParameter(targetMethod, targetVariable, paramList, module);
+                AddParameter(rewriter, targetMethod, targetVariable, paramList, module);
             }
         }
 
-        private void AddParameter(Declaration targetMethod, Declaration targetVariable, VBAParser.ArgListContext paramList, ICodeModule module)
+        private void AddParameter(TokenStreamRewriter rewriter, Declaration targetMethod, Declaration targetVariable, VBAParser.ArgListContext paramList, ICodeModule module)
         {
+            // todo: use rewriter
+
             var argList = paramList.arg();
             var lastParam = argList.LastOrDefault();
 
@@ -218,7 +221,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             module.DeleteLines(selection.StartLine + 1, selection.LineCount);
         }
 
-        private void UpdateProperties(Declaration knownProperty, Declaration targetVariable)
+        private void UpdateProperties(TokenStreamRewriter rewriter, Declaration knownProperty, Declaration targetVariable)
         {
             var propertyGet = _declarations.FirstOrDefault(d =>
                     d.DeclarationType == DeclarationType.PropertyGet &&
@@ -256,14 +259,14 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                     properties.OrderByDescending(o => o.Selection.StartLine)
                         .ThenByDescending(t => t.Selection.StartColumn))
             {
-                UpdateSignature(property, targetVariable);
+                UpdateSignature(rewriter, property, targetVariable);
             }
         }
 
-        private void RemoveVariable(Declaration target)
+        private void RemoveVariable(TokenStreamRewriter rewriter, Declaration target)
         {
             var module = target.QualifiedName.QualifiedModuleName.Component.CodeModule;
-            module.Remove(target);
+            module.Remove(rewriter, target);
         }
 
         private string GetOldSignature(Declaration target)

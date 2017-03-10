@@ -15,12 +15,14 @@ namespace Rubberduck.Inspections.Results
     {
         private IEnumerable<IQuickFix> _quickFixes;
         private readonly ParserRuleContext _context;
+        private readonly TokenStreamRewriter _rewriter;
 
         public IdentifierNotUsedInspectionResult(IInspection inspection, Declaration target,
-            ParserRuleContext context, QualifiedModuleName qualifiedName)
+            ParserRuleContext context, QualifiedModuleName qualifiedName, TokenStreamRewriter rewriter)
             : base(inspection, qualifiedName, context, target)
         {
             _context = context;
+            _rewriter = rewriter;
         }
 
         public override IEnumerable<IQuickFix> QuickFixes
@@ -29,7 +31,7 @@ namespace Rubberduck.Inspections.Results
             {
                 return _quickFixes ?? (_quickFixes = new IQuickFix[]
                 {
-                    new RemoveUnusedDeclarationQuickFix(_context, QualifiedSelection, Target), 
+                    new RemoveUnusedDeclarationQuickFix(_context, QualifiedSelection, Target, _rewriter), 
                     new IgnoreOnceQuickFix(_context, QualifiedSelection, Inspection.AnnotationName)
                 });
             }

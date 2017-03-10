@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Linq;
+using Antlr4.Runtime;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Selection = Rubberduck.VBEditor.Selection;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
@@ -25,30 +26,15 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public void Refactor()
         {
             var presenter = _factory.Create();
-            if (presenter == null)
-            {
-                return;
-            }
+            if (presenter == null) { return; }
 
             _model = presenter.Show();
             if (_model == null) { return; }
 
-            QualifiedSelection? oldSelection = null;
-            if (_vbe.ActiveCodePane != null)
-            {
-                oldSelection = _vbe.ActiveCodePane.CodeModule.GetQualifiedSelection();
-            }
-
-            AddProperty();
-
-            if (oldSelection.HasValue)
-            {
-                var module = oldSelection.Value.QualifiedName.Component.CodeModule;
-                var pane = module.CodePane;
-                {
-                    pane.Selection = oldSelection.Value.Selection;
-                }
-            }
+            var target = _model.TargetDeclaration;
+            var rewriter = _model.State.GetRewriter(target);
+            AddProperty(rewriter);
+            target.QualifiedName.QualifiedModuleName.Component.CodeModule.Rewrite(rewriter);
 
             _model.State.OnParseRequested(this);
         }
@@ -56,77 +42,66 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public void Refactor(QualifiedSelection target)
         {
             var pane = _vbe.ActiveCodePane;
-            {
-                pane.Selection = target.Selection;
-            }
+            pane.Selection = target.Selection;
             Refactor();
         }
 
         public void Refactor(Declaration target)
         {
             var pane = _vbe.ActiveCodePane;
-            {
-                pane.Selection = target.QualifiedSelection.Selection;
-            }
+            pane.Selection = target.QualifiedSelection.Selection;
             Refactor();
         }
 
-        private void AddProperty()
+        private void AddProperty(TokenStreamRewriter rewriter)
         {
-            UpdateReferences();
+            UpdateReferences(); // bug: because this isn't using rewriter, same-module references will be overwritten
 
             var module = _model.TargetDeclaration.QualifiedName.QualifiedModuleName.Component.CodeModule;
-            SetFieldToPrivate(module);
+            SetFieldToPrivate(module, rewriter);
 
-            module.InsertLines(module.CountOfDeclarationLines + 1, Environment.NewLine + GetPropertyText());
+            var lastMember = _model.State.DeclarationFinder
+                .Members(_model.TargetDeclaration.QualifiedName.QualifiedModuleName)
+                .OrderBy(declaration => declaration.QualifiedSelection)
+                .LastOrDefault();
+
+            var property = Environment.NewLine + Environment.NewLine + GetPropertyText() + Environment.NewLine;
+            if (lastMember == null)
+            {
+                rewriter.InsertBefore(0, property);
+            }
+            else
+            {
+                rewriter.InsertAfter(lastMember.Context.Stop.TokenIndex, property);
+            }
         }
 
         private void UpdateReferences()
         {
+            // todo: refactor to use per-module rewriters cached in parser state
             foreach (var reference in _model.TargetDeclaration.References)
             {
                 var module = reference.QualifiedModuleName.Component.CodeModule;
-                {
-                    var oldLine = module.GetLines(reference.Selection.StartLine, 1);
-                    oldLine = oldLine.Remove(reference.Selection.StartColumn - 1, reference.Selection.EndColumn - reference.Selection.StartColumn);
-                    var newLine = oldLine.Insert(reference.Selection.StartColumn - 1, _model.PropertyName);
+                var oldLine = module.GetLines(reference.Selection.StartLine, 1);
+                oldLine = oldLine.Remove(reference.Selection.StartColumn - 1, reference.Selection.EndColumn - reference.Selection.StartColumn);
+                var newLine = oldLine.Insert(reference.Selection.StartColumn - 1, _model.PropertyName);
 
-                    module.ReplaceLine(reference.Selection.StartLine, newLine);
-                }
+                module.ReplaceLine(reference.Selection.StartLine, newLine);
             }
         }
 
-        private void SetFieldToPrivate(ICodeModule module)
+        private void SetFieldToPrivate(ICodeModule module, TokenStreamRewriter rewriter)
         {
-            if (_model.TargetDeclaration.Accessibility == Accessibility.Private)
+            var target = _model.TargetDeclaration;
+            if (target.Accessibility == Accessibility.Private)
             {
                 return;
             }
 
-            RemoveField(_model.TargetDeclaration);
+            var newField = "Private " + _model.TargetDeclaration.IdentifierName + " As " + _model.TargetDeclaration.AsTypeName + Environment.NewLine;
 
-            var newField = "Private " + _model.TargetDeclaration.IdentifierName + " As " +
-                           _model.TargetDeclaration.AsTypeName;
-
-            module.InsertLines(module.CountOfDeclarationLines + 1, newField);
-            var pane = module.CodePane;
-            {
-                pane.Selection = _model.TargetDeclaration.QualifiedSelection.Selection;
-            }
-
-            for (var index = 1; index <= module.CountOfDeclarationLines; index++)
-            {
-                if (module.GetLines(index, 1).Trim() == string.Empty)
-                {
-                    module.DeleteLines(new Selection(index, 0, index, 0));
-                }
-            }
-        }
-
-        private void RemoveField(Declaration target)
-        {
-            var module = target.QualifiedName.QualifiedModuleName.Component.CodeModule;
-            module.Remove(target);
+            module.Remove(rewriter, target);
+            rewriter.InsertBefore(target.Context.Start, newField);
         }
 
         private string GetPropertyText()

@@ -61,7 +61,7 @@ namespace Rubberduck.Inspections
 
             var items = declarations
                 .Where(item => !IsIgnoredDeclaration(item, interfaceMembers, implementingMembers, handlers, classes, modules)).ToList();
-            var issues = items.Select(issue => new IdentifierNotUsedInspectionResult(this, issue, issue.Context, issue.QualifiedName.QualifiedModuleName));
+            var issues = items.Select(issue => new IdentifierNotUsedInspectionResult(this, issue, issue.Context, issue.QualifiedName.QualifiedModuleName, State.GetRewriter(issue)));
 
             issues = DocumentEventHandlerPrefixes
                 .Aggregate(issues, (current, item) => current.Where(issue => !issue.Description.Contains("'" + item)));

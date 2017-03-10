@@ -456,7 +456,9 @@ End Property
 
             //Expectation
             const string expectedCode =
-@"Public          buzz As Boolean,         bazz As Date
+@"Public _
+         buzz As Boolean, _
+         bazz As Date
 Private fizz As Variant
 
 Public Property Get Name() As Variant

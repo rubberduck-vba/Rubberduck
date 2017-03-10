@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using Antlr4.Runtime;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -53,7 +54,8 @@ namespace Rubberduck.Refactorings.IntroduceField
                 return;
             }
 
-            PromoteVariable(target);
+            var rewriter = _state.GetRewriter(target);
+            PromoteVariable(rewriter, target);
         }
 
         public void Refactor(Declaration target)
@@ -67,10 +69,11 @@ namespace Rubberduck.Refactorings.IntroduceField
                 throw new ArgumentException("Invalid declaration type", "target");
             }
 
-            PromoteVariable(target);
+            var rewriter = _state.GetRewriter(target);
+            PromoteVariable(rewriter, target);
         }
 
-        private void PromoteVariable(Declaration target)
+        private void PromoteVariable(TokenStreamRewriter rewriter, Declaration target)
         {
             if (new[] { DeclarationType.ClassModule, DeclarationType.ProceduralModule }.Contains(target.ParentDeclaration.DeclarationType))
             {
@@ -85,8 +88,8 @@ namespace Rubberduck.Refactorings.IntroduceField
                 oldSelection = _vbe.ActiveCodePane.CodeModule.GetQualifiedSelection();
             }
 
-            RemoveVariable(target);
-            AddField(target);
+            RemoveVariable(rewriter, target);
+            AddField(rewriter, target);
 
             if (oldSelection.HasValue)
             {
@@ -100,18 +103,21 @@ namespace Rubberduck.Refactorings.IntroduceField
             _state.OnParseRequested(this);
         }
 
-        private void AddField(Declaration target)
+        private void AddField(TokenStreamRewriter rewriter, Declaration target)
         {
+            var insertionIndex = 0; // todo: find the last declaration in the module's declarations section
+            rewriter.InsertAfter(insertionIndex, GetFieldDefinition(target) + "\r\n");
+            return;
             var module = target.QualifiedName.QualifiedModuleName.Component.CodeModule;
             {
                 module.InsertLines(module.CountOfDeclarationLines + 1, GetFieldDefinition(target));
             }
         }
 
-        private void RemoveVariable(Declaration target)
+        private void RemoveVariable(TokenStreamRewriter rewriter, Declaration target)
         {
             var module = target.QualifiedName.QualifiedModuleName.Component.CodeModule;
-            module.Remove(target);
+            module.Remove(rewriter, target);
         }
 
         private string GetFieldDefinition(Declaration target)

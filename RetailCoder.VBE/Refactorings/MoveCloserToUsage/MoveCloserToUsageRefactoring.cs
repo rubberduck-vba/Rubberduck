@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using Antlr4.Runtime;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
@@ -130,33 +131,33 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             QualifiedSelection? oldSelection = null;
             var pane = _vbe.ActiveCodePane;
             var module = pane.CodeModule;
+            if (!module.IsWrappingNullReference)
             {
-                if (!module.IsWrappingNullReference)
-                {
-                    oldSelection = module.GetQualifiedSelection();
-                }
-
-                var newTarget = _state.AllUserDeclarations.FirstOrDefault(
-                    item => item.ComponentName == _target.ComponentName &&
-                            item.IdentifierName == _target.IdentifierName &&
-                            item.ParentScope == _target.ParentScope &&
-                            item.ProjectId == _target.ProjectId &&
-                            Equals(item.Selection, _target.Selection));
-
-                if (newTarget != null)
-                {
-                    UpdateCallsToOtherModule(newTarget.References.ToList());
-                    RemoveField(newTarget);
-                }
-
-                if (oldSelection.HasValue)
-                {
-                    pane.Selection = oldSelection.Value.Selection;
-                }
-
-                _state.StateChanged -= _state_StateChanged;
-                _state.OnParseRequested(this);
+                oldSelection = module.GetQualifiedSelection();
             }
+
+            var rewriter = _state.GetRewriter(module.Parent); // todo: determine if we still need to reparse or if we can just pass the rewriter around
+
+            var newTarget = _state.AllUserDeclarations.FirstOrDefault(
+                item => item.ComponentName == _target.ComponentName &&
+                        item.IdentifierName == _target.IdentifierName &&
+                        item.ParentScope == _target.ParentScope &&
+                        item.ProjectId == _target.ProjectId &&
+                        Equals(item.Selection, _target.Selection));
+
+            if (newTarget != null)
+            {
+                UpdateCallsToOtherModule(newTarget.References.ToList());
+                RemoveField(rewriter, newTarget);
+            }
+
+            if (oldSelection.HasValue)
+            {
+                pane.Selection = oldSelection.Value.Selection;
+            }
+
+            _state.StateChanged -= _state_StateChanged;
+            _state.OnParseRequested(this);
         }
 
         private void InsertDeclaration()
@@ -229,10 +230,10 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             return Environment.NewLine + "    Dim " + _target.IdentifierName + " As " + _target.AsTypeName + Environment.NewLine;
         }
 
-        private void RemoveField(Declaration target)
+        private void RemoveField(TokenStreamRewriter rewriter, Declaration target)
         {
             var module = target.QualifiedName.QualifiedModuleName.Component.CodeModule;
-            module.Remove(target);
+            module.Remove(rewriter, target);
         }
 
         private void UpdateCallsToOtherModule(List<IdentifierReference> references)

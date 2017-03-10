@@ -14,12 +14,19 @@ namespace Rubberduck.Common
 {
     public static class CodeModuleExtensions
     {
+        public static void Rewrite(this ICodeModule module, TokenStreamRewriter rewriter)
+        {
+            module.Clear();
+            module.InsertLines(1, rewriter.GetText());
+        }
+
         /// <summary>
         /// Removes a <see cref="Declaration"/> and its <see cref="Declaration.References"/>.
         /// </summary>
         /// <param name="module">The <see cref="ICodeModule"/> to modify.</param>
+        /// <param name="rewriter">The <see cref="TokenStreamRewriter"/> holding the state to alter.</param>
         /// <param name="target"></param>
-        public static void Remove(this ICodeModule module, Declaration target)
+        public static void Remove(this ICodeModule module, TokenStreamRewriter rewriter, Declaration target)
         {
             // note: commented-out because it makes tests fail.. need a way to fix that
             //if (!module.Equals(target.QualifiedName.QualifiedModuleName.Component.CodeModule))
@@ -37,93 +44,148 @@ namespace Rubberduck.Common
             {
                 if (tuple.Item1 is Declaration)
                 {
-                    RemoveDeclarationOnly(module, target);
+                    RemoveDeclaration(target, rewriter);
                 }
                 else
                 {
                     var reference = (IdentifierReference) tuple.Item1;
-                    Remove(reference.QualifiedModuleName.Component.CodeModule, reference);
+                    Remove(reference.QualifiedModuleName.Component.CodeModule, reference, rewriter);
                 }
             }
         }
 
-        private static void RemoveDeclarationOnly(this ICodeModule module, Declaration target)
+        private static void RemoveDeclaration(Declaration target, TokenStreamRewriter rewriter)
         {
-            var multipleDeclarations = target.DeclarationType == DeclarationType.Variable && target.HasMultipleDeclarationsInStatement();
-            var context = GetStmtContext(target);
-            var declarationText = context.GetText().Replace(" _" + Environment.NewLine, Environment.NewLine);
-            var selection = GetStmtContextSelection(target);
-            Debug.Assert(selection.StartColumn > 0);
+            TargetListPosition position;
+            var context = GetStmtContext(target, out position);
+            
+            var from = context.Start.TokenIndex;
+            var to = context.Stop.TokenIndex;
+            from -= position == TargetListPosition.LastItem ? 1 : 0;
+            to += position == TargetListPosition.FirstItem ? 1 : 0;
 
-            var oldLines = module.GetLines(selection);
-            var indent = oldLines.IndexOf(oldLines.FirstOrDefault(c => c != ' ')) + 1;
-
-            var newLines = oldLines
-                .Replace(" _" + Environment.NewLine, Environment.NewLine)
-                .Remove(selection.StartColumn - 1, declarationText.Length - selection.StartColumn + indent);
-
-            if (multipleDeclarations)
-            {
-                selection = GetStmtContextSelection(target);
-                newLines = RemoveExtraComma(module.GetLines(selection).Replace(oldLines, newLines),
-                    target.CountOfDeclarationsInStatement(), target.IndexOfVariableDeclarationInStatement());
-            }
-
-            var newLinesWithoutExcessSpaces = newLines.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-            for (var i = 0; i < newLinesWithoutExcessSpaces.Length; i++)
-            {
-                newLinesWithoutExcessSpaces[i] = newLinesWithoutExcessSpaces[i].RemoveExtraSpacesLeavingIndentation();
-            }
-
-            for (var i = newLinesWithoutExcessSpaces.Length - 1; i >= 0; i--)
-            {
-                if (newLinesWithoutExcessSpaces[i].Trim() == string.Empty)
-                {
-                    continue;
-                }
-
-                if (newLinesWithoutExcessSpaces[i].EndsWith(" _"))
-                {
-                    newLinesWithoutExcessSpaces[i] =
-                        newLinesWithoutExcessSpaces[i].Remove(newLinesWithoutExcessSpaces[i].Length - 2);
-                }
-                break;
-            }
-
-            // remove all lines with only whitespace
-            newLinesWithoutExcessSpaces = newLinesWithoutExcessSpaces.Where(str => str.Any(c => !char.IsWhiteSpace(c))).ToArray();
-
-            module.DeleteLines(selection);
-            if (newLinesWithoutExcessSpaces.Any())
-            {
-                module.InsertLines(selection.StartLine, string.Join(Environment.NewLine, newLinesWithoutExcessSpaces));
-            }
+            rewriter.Delete(from, to);
         }
 
-        private static Selection GetStmtContextSelection(Declaration target)
+        private enum TargetListPosition
         {
+            /// <summary>
+            /// Target was the only item in a list, or there was no list; no leading or trailing comma needs to be handled.
+            /// </summary>
+            SingleItem,
+            /// <summary>
+            /// Target was the first item in a list of two or more: a leading comma needs to be handled.
+            /// </summary>
+            FirstItem,
+            /// <summary>
+            /// Target was the last item in a list of two or more: a trailing comma needs to be handled.
+            /// </summary>
+            LastItem,
+        }
+
+        private static ParserRuleContext GetStmtContext(Declaration target, out TargetListPosition position)
+        {
+            ParserRuleContext result;
+            position = TargetListPosition.SingleItem;
             switch (target.DeclarationType)
             {
                 case DeclarationType.Variable:
-                    return target.GetVariableStmtContextSelection();
-                case DeclarationType.Constant:
-                    return target.GetConstStmtContextSelection();
-                default:
-                    return target.Context.GetSelection();
-            }
-        }
 
-        private static ParserRuleContext GetStmtContext(Declaration target)
-        {
-            switch (target.DeclarationType)
-            {
-                case DeclarationType.Variable:
-                    return target.GetVariableStmtContext();
+                    var variableStmt = target.GetVariableStmtContext();
+                    var variables = variableStmt.variableListStmt().variableSubStmt();
+                    result = variableStmt;
+
+                    if (variables.Count > 1)
+                    {
+                        for (var i = 0; i < variables.Count; i++)
+                        {
+                            var variable = variables[i];
+                            if (Identifier.GetName(variable.identifier()) == target.IdentifierName)
+                            {
+                                result = variable;
+                                if (i == 0)
+                                {
+                                    position = TargetListPosition.FirstItem;
+                                }
+                                else if (i == variables.Count - 1)
+                                {
+                                    position = TargetListPosition.LastItem;
+                                }
+                                else
+                                {
+                                    position = TargetListPosition.SingleItem;
+                                }
+                            }
+                        }
+                    }
+                    break;
+
                 case DeclarationType.Constant:
-                    return target.GetConstStmtContext();
+
+                    var constStmt = target.GetConstStmtContext();
+                    var consts = constStmt.constSubStmt();
+                    result = constStmt;
+
+                    if (consts.Count > 1)
+                    {
+                        for (var i = 0; i < consts.Count; i++)
+                        {
+                            var constant = consts[i];
+                            if (Identifier.GetName(constant.identifier()) == target.IdentifierName)
+                            {
+                                result = constant;
+                                if (i == 0)
+                                {
+                                    position = TargetListPosition.FirstItem;
+                                }
+                                else if (i == consts.Count - 1)
+                                {
+                                    position = TargetListPosition.LastItem;
+                                }
+                                else
+                                {
+                                    position = TargetListPosition.SingleItem;
+                                }
+                            }
+                        }
+                    }
+                    break;
+
+                case DeclarationType.Parameter:
+                    var argList = (VBAParser.ArgListContext)target.Context.Parent;
+                    var args = argList.arg();
+                    result = argList;
+
+                    if (args.Count > 1)
+                    {
+                        for (var i = 0; i < args.Count; i++)
+                        {
+                            var arg = args[i];
+                            if (Identifier.GetName(arg.unrestrictedIdentifier()) == target.IdentifierName)
+                            {
+                                result = arg;
+                                if (i == 0)
+                                {
+                                    position = TargetListPosition.FirstItem;
+                                }
+                                else if (i == args.Count - 1)
+                                {
+                                    position = TargetListPosition.LastItem;
+                                }
+                                else
+                                {
+                                    position = TargetListPosition.SingleItem;
+                                }
+                            }
+                        }
+                    }
+                    break;
+
                 default:
-                    return target.Context;
+                    result = target.Context;
+                    break;
             }
+            return result;
         }
 
         private static string RemoveExtraComma(string str, int numParams, int indexRemoved)
@@ -162,7 +224,7 @@ namespace Rubberduck.Common
             return str.Remove(str.NthIndexOf(',', commaToRemove), 1);
         }
 
-        public static void Remove(this ICodeModule module, IdentifierReference target)
+        public static void Remove(this ICodeModule module, IdentifierReference target, TokenStreamRewriter rewriter)
         {
             var parent = (ParserRuleContext)target.Context.Parent;
             if (target.IsAssignment)
@@ -232,11 +294,11 @@ namespace Rubberduck.Common
             return context == null ? null : "(" + context.GetText() + ")";
         }
 
-        public static void Remove(this ICodeModule module, IEnumerable<IdentifierReference> targets)
+        public static void Remove(this ICodeModule module, IEnumerable<IdentifierReference> targets, TokenStreamRewriter rewriter)
         {
-            foreach (var target in targets.OrderByDescending(e => e.Selection))
+            foreach (var target in targets/*.OrderByDescending(e => e.Selection)*/)
             {
-                module.Remove(target);
+                module.Remove(target, rewriter);
             }
         }
 
