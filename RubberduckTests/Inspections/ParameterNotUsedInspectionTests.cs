@@ -1,254 +1,214 @@
-//using System.Linq;
-//using System.Threading;
-//using Microsoft.VisualStudio.TestTools.UnitTesting;
-//using Rubberduck.Inspections;
-//using Rubberduck.Inspections.QuickFixes;
-//using Rubberduck.Inspections.Resources;
-//using Rubberduck.Parsing.VBA;
-//using Rubberduck.VBEditor;
-//using Rubberduck.VBEditor.SafeComWrappers;
-//using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-//using RubberduckTests.Mocks;
+using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Rubberduck.Inspections;
+using Rubberduck.Inspections.QuickFixes;
+using Rubberduck.Inspections.Resources;
+using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using RubberduckTests.Mocks;
 
-//namespace RubberduckTests.Inspections
-//{
-//    [TestClass]
-//    public class ParameterNotUsedInspectionTests
-//    {
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void ParameterNotUsed_ReturnsResult()
-//        {
-//            const string inputCode =
-//@"Private Sub Foo(ByVal arg1 as Integer)
-//End Sub";
+namespace RubberduckTests.Inspections
+{
+    [TestClass]
+    public class ParameterNotUsedInspectionTests
+    {
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ParameterNotUsed_ReturnsResult()
+        {
+            const string inputCode =
+@"Private Sub Foo(ByVal arg1 as Integer)
+End Sub";
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            IVBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            //Arrange
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var inspection = new ParameterNotUsedInspection(state, null);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            var inspection = new ParameterNotUsedInspection(parser.State, null);
-//            var inspectionResults = inspection.GetInspectionResults();
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
 
-//            Assert.AreEqual(1, inspectionResults.Count());
-//        }
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ParameterNotUsed_ReturnsResult_MultipleSubs()
+        {
+            const string inputCode =
+@"Private Sub Foo(ByVal arg1 as Integer)
+End Sub
 
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void ParameterNotUsed_ReturnsResult_MultipleSubs()
-//        {
-//            const string inputCode =
-//@"Private Sub Foo(ByVal arg1 as Integer)
-//End Sub
+Private Sub Goo(ByVal arg1 as Integer)
+End Sub";
 
-//Private Sub Goo(ByVal arg1 as Integer)
-//End Sub";
+            //Arrange
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            IVBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var inspection = new ParameterNotUsedInspection(state, null);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            Assert.AreEqual(2, inspectionResults.Count());
+        }
 
-//            var inspection = new ParameterNotUsedInspection(parser.State, null);
-//            var inspectionResults = inspection.GetInspectionResults();
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ParameterUsed_DoesNotReturnResult()
+        {
+            const string inputCode =
+@"Private Sub Foo(ByVal arg1 as Integer)
+    arg1 = 9
+End Sub";
 
-//            Assert.AreEqual(2, inspectionResults.Count());
-//        }
+            //Arrange
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void ParameterUsed_DoesNotReturnResult()
-//        {
-//            const string inputCode =
-//@"Private Sub Foo(ByVal arg1 as Integer)
-//    arg1 = 9
-//End Sub";
+            var inspection = new ParameterNotUsedInspection(state, null);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            IVBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ParameterNotUsed_ReturnsResult_SomeParamsUsed()
+        {
+            const string inputCode =
+@"Private Sub Foo(ByVal arg1 as Integer, ByVal arg2 as String)
+    arg1 = 9
+End Sub";
 
-//            var inspection = new ParameterNotUsedInspection(parser.State, null);
-//            var inspectionResults = inspection.GetInspectionResults();
+            //Arrange
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//            Assert.AreEqual(0, inspectionResults.Count());
-//        }
+            var inspection = new ParameterNotUsedInspection(state, null);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void ParameterNotUsed_ReturnsResult_SomeParamsUsed()
-//        {
-//            const string inputCode =
-//@"Private Sub Foo(ByVal arg1 as Integer, ByVal arg2 as String)
-//    arg1 = 9
-//End Sub";
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            IVBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ParameterNotUsed_ReturnsResult_InterfaceImplementation()
+        {
+            //Input
+            const string inputCode1 =
+@"Public Sub DoSomething(ByVal a As Integer)
+End Sub";
+            const string inputCode2 =
+@"Implements IClass1
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+Private Sub IClass1_DoSomething(ByVal a As Integer)
+End Sub";
 
-//            var inspection = new ParameterNotUsedInspection(parser.State, null);
-//            var inspectionResults = inspection.GetInspectionResults();
-
-//            Assert.AreEqual(1, inspectionResults.Count());
-//        }
-
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void ParameterNotUsed_ReturnsResult_InterfaceImplementation()
-//        {
-//            //Input
-//            const string inputCode1 =
-//@"Public Sub DoSomething(ByVal a As Integer)
-//End Sub";
-//            const string inputCode2 =
-//@"Implements IClass1
-
-//Private Sub IClass1_DoSomething(ByVal a As Integer)
-//End Sub";
-
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-//                .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
-//                .AddComponent("Class1", ComponentType.ClassModule, inputCode2)
-//                .Build();
-//            var vbe = builder.AddProject(project).Build();
-
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-//            var inspection = new ParameterNotUsedInspection(parser.State, null);
-//            var inspectionResults = inspection.GetInspectionResults().ToList();
-
-//            Assert.AreEqual(1, inspectionResults.Count);
+            //Arrange
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
+                .AddComponent("Class1", ComponentType.ClassModule, inputCode2)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
             
-//        }
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void ParameterNotUsed_Ignored_DoesNotReturnResult()
-//        {
-//            const string inputCode =
-//@"'@Ignore ParameterNotUsed
-//Private Sub Foo(ByVal arg1 as Integer)
-//End Sub";
+            var inspection = new ParameterNotUsedInspection(state, null);
+            var inspectionResults = inspection.GetInspectionResults().ToList();
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            IVBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            Assert.AreEqual(1, inspectionResults.Count);
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+        }
 
-//            var inspection = new ParameterNotUsedInspection(parser.State, null);
-//            var inspectionResults = inspection.GetInspectionResults();
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ParameterNotUsed_Ignored_DoesNotReturnResult()
+        {
+            const string inputCode =
+@"'@Ignore ParameterNotUsed
+Private Sub Foo(ByVal arg1 as Integer)
+End Sub";
 
-//            Assert.IsFalse(inspectionResults.Any());
-//        }
+            //Arrange
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void GivenPrivateSub_DefaultQuickFixRemovesParameter()
-//        {
-//            const string inputCode =@"
-//Private Sub Foo(ByVal arg1 as Integer)
-//End Sub";
+            var inspection = new ParameterNotUsedInspection(state, null);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            const string expectedCode = @"
-//Private Sub Foo()
-//End Sub";
+            Assert.IsFalse(inspectionResults.Any());
+        }
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            IVBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, new Selection(2, 25, 2, 25));
-//            var project = vbe.Object.VBProjects[0];
-//            var module = project.VBComponents[0].CodeModule;
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void GivenPrivateSub_DefaultQuickFixRemovesParameter()
+        {
+            const string inputCode = @"
+Private Sub Foo(ByVal arg1 as Integer)
+End Sub";
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            const string expectedCode = @"
+Private Sub Foo()
+End Sub";
 
-//            var inspection = new ParameterNotUsedInspection(parser.State, null);
-//            var inspectionResults = inspection.GetInspectionResults();
+            //Arrange
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//            inspectionResults.First().QuickFixes.First().Fix();
+            var inspection = new ParameterNotUsedInspection(state, null);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            Assert.AreEqual(expectedCode, module.Content());
-//        }
+            inspectionResults.First().QuickFixes.First().Fix();
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+        }
 
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void GivenPrivateSub_IgnoreQuickFixWorks()
-//        {
-//            const string inputCode =
-//@"Private Sub Foo(ByVal arg1 as Integer)
-//End Sub";
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void GivenPrivateSub_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+@"Private Sub Foo(ByVal arg1 as Integer)
+End Sub";
 
-//            const string expectedCode =
-//@"'@Ignore ParameterNotUsed
-//Private Sub Foo(ByVal arg1 as Integer)
-//End Sub";
+            const string expectedCode =
+@"'@Ignore ParameterNotUsed
+Private Sub Foo(ByVal arg1 as Integer)
+End Sub";
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            IVBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-//            var project = vbe.Object.VBProjects[0];
-//            var module = project.VBComponents[0].CodeModule;
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            //Arrange
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var inspection = new ParameterNotUsedInspection(state, null);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            var inspection = new ParameterNotUsedInspection(parser.State, null);
-//            var inspectionResults = inspection.GetInspectionResults();
+            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+        }
 
-//            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void InspectionType()
+        {
+            var inspection = new ParameterNotUsedInspection(null, null);
+            Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
+        }
 
-//            Assert.AreEqual(expectedCode, module.Content());
-//        }
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void InspectionName()
+        {
+            const string inspectionName = "ParameterNotUsedInspection";
+            var inspection = new ParameterNotUsedInspection(null, null);
 
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void InspectionType()
-//        {
-//            var inspection = new ParameterNotUsedInspection(null, null);
-//            Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
-//        }
-
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void InspectionName()
-//        {
-//            const string inspectionName = "ParameterNotUsedInspection";
-//            var inspection = new ParameterNotUsedInspection(null, null);
-
-//            Assert.AreEqual(inspectionName, inspection.Name);
-//        }
-//    }
-//}
+            Assert.AreEqual(inspectionName, inspection.Name);
+        }
+    }
+}
