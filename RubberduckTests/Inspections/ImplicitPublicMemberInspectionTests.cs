@@ -1,253 +1,213 @@
-//using System.Linq;
-//using System.Threading;
-//using Microsoft.VisualStudio.TestTools.UnitTesting;
-//using Rubberduck.Inspections;
-//using Rubberduck.Inspections.QuickFixes;
-//using Rubberduck.Inspections.Resources;
-//using Rubberduck.Parsing.VBA;
-//using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-//using RubberduckTests.Mocks;
+using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Rubberduck.Inspections;
+using Rubberduck.Inspections.QuickFixes;
+using Rubberduck.Inspections.Resources;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using RubberduckTests.Mocks;
 
-//namespace RubberduckTests.Inspections
-//{
-//    [TestClass]
-//    public class ImplicitPublicMemberInspectionTests
-//    {
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void ImplicitPublicMember_ReturnsResult_Sub()
-//        {
-//            const string inputCode = @"
-//Sub Foo()
-//End Sub
-//";
+namespace RubberduckTests.Inspections
+{
+    [TestClass]
+    public class ImplicitPublicMemberInspectionTests
+    {
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ImplicitPublicMember_ReturnsResult_Sub()
+        {
+            const string inputCode = @"
+Sub Foo()
+End Sub
+";
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            IVBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            //Arrange
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var inspection = new ImplicitPublicMemberInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            var inspection = new ImplicitPublicMemberInspection(parser.State);
-//            var inspectionResults = inspection.GetInspectionResults();
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
 
-//            Assert.AreEqual(1, inspectionResults.Count());
-//        }
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ImplicitPublicMember_ReturnsResult_Function()
+        {
+            const string inputCode =
+@"Function Foo() As Boolean
+    Foo = True
+End Function";
 
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void ImplicitPublicMember_ReturnsResult_Function()
-//        {
-//            const string inputCode =
-//@"Function Foo() As Boolean
-//    Foo = True
-//End Function";
+            //Arrange
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            IVBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var inspection = new ImplicitPublicMemberInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
 
-//            var inspection = new ImplicitPublicMemberInspection(parser.State);
-//            var inspectionResults = inspection.GetInspectionResults();
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ImplicitPublicMember_ReturnsResult_MultipleSubs()
+        {
+            const string inputCode =
+@"Sub Foo()
+End Sub
 
-//            Assert.AreEqual(1, inspectionResults.Count());
-//        }
+Sub Goo()
+End Sub";
 
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void ImplicitPublicMember_ReturnsResult_MultipleSubs()
-//        {
-//            const string inputCode =
-//@"Sub Foo()
-//End Sub
+            //Arrange
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//Sub Goo()
-//End Sub";
+            var inspection = new ImplicitPublicMemberInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            IVBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            Assert.AreEqual(2, inspectionResults.Count());
+        }
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ImplicitPublicMember_DoesNotReturnResult()
+        {
+            const string inputCode =
+@"Private Sub Foo()
+End Sub";
 
-//            var inspection = new ImplicitPublicMemberInspection(parser.State);
-//            var inspectionResults = inspection.GetInspectionResults();
+            //Arrange
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//            Assert.AreEqual(2, inspectionResults.Count());
-//        }
+            var inspection = new ImplicitPublicMemberInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void ImplicitPublicMember_DoesNotReturnResult()
-//        {
-//            const string inputCode =
-//@"Private Sub Foo()
-//End Sub";
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            IVBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ImplicitPublicMember_Ignored_DoesNotReturnResult_Sub()
+        {
+            const string inputCode = @"
+'@Ignore ImplicitPublicMember
+Sub Foo()
+End Sub
+";
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            //Arrange
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//            var inspection = new ImplicitPublicMemberInspection(parser.State);
-//            var inspectionResults = inspection.GetInspectionResults();
+            var inspection = new ImplicitPublicMemberInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            Assert.AreEqual(0, inspectionResults.Count());
-//        }
+            Assert.IsFalse(inspectionResults.Any());
+        }
 
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void ImplicitPublicMember_Ignored_DoesNotReturnResult_Sub()
-//        {
-//            const string inputCode = @"
-//'@Ignore ImplicitPublicMember
-//Sub Foo()
-//End Sub
-//";
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ImplicitPublicMember_ReturnsResult_SomeImplicitlyPublicSubs()
+        {
+            const string inputCode =
+@"Private Sub Foo()
+End Sub
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            IVBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+Sub Goo()
+End Sub";
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            //Arrange
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//            var inspection = new ImplicitPublicMemberInspection(parser.State);
-//            var inspectionResults = inspection.GetInspectionResults();
+            var inspection = new ImplicitPublicMemberInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            Assert.IsFalse(inspectionResults.Any());
-//        }
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
 
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void ImplicitPublicMember_ReturnsResult_SomeImplicitlyPublicSubs()
-//        {
-//            const string inputCode =
-//@"Private Sub Foo()
-//End Sub
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ImplicitPublicMember_QuickFixWorks()
+        {
+            const string inputCode =
+@"Sub Foo(ByVal arg1 as Integer)
+'Just an inoffensive little comment
 
-//Sub Goo()
-//End Sub";
+End Sub";
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            IVBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            const string expectedCode =
+@"Public Sub Foo(ByVal arg1 as Integer)
+'Just an inoffensive little comment
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+End Sub";
 
-//            var inspection = new ImplicitPublicMemberInspection(parser.State);
-//            var inspectionResults = inspection.GetInspectionResults();
+            //Arrange
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//            Assert.AreEqual(1, inspectionResults.Count());
-//        }
+            var inspection = new ImplicitPublicMemberInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void ImplicitPublicMember_QuickFixWorks()
-//        {
-//            const string inputCode =
-//@"Sub Foo(ByVal arg1 as Integer)
-//'Just an inoffensive little comment
+            inspectionResults.First().QuickFixes.First().Fix();
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+        }
 
-//End Sub";
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ImplicitPublicMember_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+@"Sub Foo(ByVal arg1 as Integer)
+'Just an inoffensive little comment
 
-//            const string expectedCode =
-//@"Public Sub Foo(ByVal arg1 as Integer)
-//'Just an inoffensive little comment
+End Sub";
 
-//End Sub";
+            const string expectedCode =
+@"'@Ignore ImplicitPublicMember
+Sub Foo(ByVal arg1 as Integer)
+'Just an inoffensive little comment
 
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            IVBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-//            var project = vbe.Object.VBProjects[0];
-//            var module = project.VBComponents[0].CodeModule;
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+End Sub";
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            //Arrange
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//            var inspection = new ImplicitPublicMemberInspection(parser.State);
-//            var inspectionResults = inspection.GetInspectionResults();
+            var inspection = new ImplicitPublicMemberInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
 
-//            inspectionResults.First().QuickFixes.First().Fix();
+            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+        }
 
-//            Assert.AreEqual(expectedCode, module.Content());
-//        }
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void InspectionType()
+        {
+            var inspection = new ImplicitPublicMemberInspection(null);
+            Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
+        }
 
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void ImplicitPublicMember_IgnoreQuickFixWorks()
-//        {
-//            const string inputCode =
-//@"Sub Foo(ByVal arg1 as Integer)
-//'Just an inoffensive little comment
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void InspectionName()
+        {
+            const string inspectionName = "ImplicitPublicMemberInspection";
+            var inspection = new ImplicitPublicMemberInspection(null);
 
-//End Sub";
-
-//            const string expectedCode =
-//@"'@Ignore ImplicitPublicMember
-//Sub Foo(ByVal arg1 as Integer)
-//'Just an inoffensive little comment
-
-//End Sub";
-
-//            //Arrange
-//            var builder = new MockVbeBuilder();
-//            IVBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-//            var project = vbe.Object.VBProjects[0];
-//            var module = project.VBComponents[0].CodeModule;
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-//            var inspection = new ImplicitPublicMemberInspection(parser.State);
-//            var inspectionResults = inspection.GetInspectionResults();
-
-//            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
-
-//            Assert.AreEqual(expectedCode, module.Content());
-//        }
-
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void InspectionType()
-//        {
-//            var inspection = new ImplicitPublicMemberInspection(null);
-//            Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
-//        }
-
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void InspectionName()
-//        {
-//            const string inspectionName = "ImplicitPublicMemberInspection";
-//            var inspection = new ImplicitPublicMemberInspection(null);
-
-//            Assert.AreEqual(inspectionName, inspection.Name);
-//        }
-//    }
-//}
+            Assert.AreEqual(inspectionName, inspection.Name);
+        }
+    }
+}

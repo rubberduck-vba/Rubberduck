@@ -1,226 +1,191 @@
-//using System.Linq;
-//using Microsoft.VisualStudio.TestTools.UnitTesting;
-//using Moq;
-//using Rubberduck.Inspections;
-//using Rubberduck.Parsing.VBA;
-//using RubberduckTests.Mocks;
-//using Rubberduck.Settings;
-//using System.Threading;
-//using Rubberduck.Inspections.Abstract;
-//using Rubberduck.Inspections.Concrete.Rubberduck.Inspections;
-//using Rubberduck.Inspections.QuickFixes;
-//using Rubberduck.Inspections.Resources;
-//using Rubberduck.VBEditor.SafeComWrappers;
-//using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
+using Rubberduck.Inspections;
+using RubberduckTests.Mocks;
+using Rubberduck.Settings;
+using System.Threading;
+using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Concrete.Rubberduck.Inspections;
+using Rubberduck.Inspections.QuickFixes;
+using Rubberduck.Inspections.Resources;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
-//namespace RubberduckTests.Inspections
-//{
-//    [TestClass]
-//    public class MalformedAnnotationInspectionTests
-//    {
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void MalformedAnnotation_ReturnsResult_Folder()
-//        {
-//            const string inputCode =
-//@"'@Folder";
+namespace RubberduckTests.Inspections
+{
+    [TestClass]
+    public class MalformedAnnotationInspectionTests
+    {
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void MalformedAnnotation_ReturnsResult_Folder()
+        {
+            const string inputCode =
+@"'@Folder";
 
-//            //Arrange
-//            var settings = new Mock<IGeneralConfigService>();
-//            var config = GetTestConfig();
-//            settings.Setup(x => x.LoadConfiguration()).Returns(config);
+            //Arrange
+            var settings = new Mock<IGeneralConfigService>();
+            var config = GetTestConfig();
+            settings.Setup(x => x.LoadConfiguration()).Returns(config);
 
-//            var builder = new MockVbeBuilder();
-//            IVBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var inspection = new MissingAnnotationArgumentInspection(state);
+            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
-//            var inspection = new MissingAnnotationArgumentInspection(parser.State);
-//            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
 
-//            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void MalformedAnnotation_DoesNotReturnResult_Folder()
+        {
+            const string inputCode =
+@"'@Folder ""Foo""";
 
-//            Assert.AreEqual(1, inspectionResults.Count());
-//        }
+            //Arrange
+            var settings = new Mock<IGeneralConfigService>();
+            var config = GetTestConfig();
+            settings.Setup(x => x.LoadConfiguration()).Returns(config);
 
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void MalformedAnnotation_DoesNotReturnResult_Folder()
-//        {
-//            const string inputCode =
-//@"'@Folder ""Foo""";
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//            //Arrange
-//            var settings = new Mock<IGeneralConfigService>();
-//            var config = GetTestConfig();
-//            settings.Setup(x => x.LoadConfiguration()).Returns(config);
+            var inspection = new MissingAnnotationArgumentInspection(state);
+            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
-//            var builder = new MockVbeBuilder();
-//            IVBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void MalformedAnnotation_ReturnsResult_Ignore()
+        {
+            const string inputCode =
+@"'@Ignore";
 
-//            var inspection = new MissingAnnotationArgumentInspection(parser.State);
-//            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+            //Arrange
+            var settings = new Mock<IGeneralConfigService>();
+            var config = GetTestConfig();
+            settings.Setup(x => x.LoadConfiguration()).Returns(config);
 
-//            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//            Assert.AreEqual(0, inspectionResults.Count());
-//        }
+            var inspection = new MissingAnnotationArgumentInspection(state);
+            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void MalformedAnnotation_ReturnsResult_Ignore()
-//        {
-//            const string inputCode =
-//@"'@Ignore";
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
 
-//            //Arrange
-//            var settings = new Mock<IGeneralConfigService>();
-//            var config = GetTestConfig();
-//            settings.Setup(x => x.LoadConfiguration()).Returns(config);
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void MalformedAnnotation_DoesNotReturnResult_Ignore()
+        {
+            const string inputCode =
+@"'@Ignore ProcedureNotUsedInspection";
 
-//            var builder = new MockVbeBuilder();
-//            IVBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            //Arrange
+            var settings = new Mock<IGeneralConfigService>();
+            var config = GetTestConfig();
+            settings.Setup(x => x.LoadConfiguration()).Returns(config);
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//            var inspection = new MissingAnnotationArgumentInspection(parser.State);
-//            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+            var inspection = new MissingAnnotationArgumentInspection(state);
+            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
-//            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
 
-//            Assert.AreEqual(1, inspectionResults.Count());
-//        }
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void MalformedAnnotation_ReturnsMultipleResults()
+        {
+            const string inputCode =
+@"'@Folder
+'@Ignore";
 
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void MalformedAnnotation_DoesNotReturnResult_Ignore()
-//        {
-//            const string inputCode =
-//@"'@Ignore ProcedureNotUsedInspection";
+            //Arrange
+            var settings = new Mock<IGeneralConfigService>();
+            var config = GetTestConfig();
+            settings.Setup(x => x.LoadConfiguration()).Returns(config);
 
-//            //Arrange
-//            var settings = new Mock<IGeneralConfigService>();
-//            var config = GetTestConfig();
-//            settings.Setup(x => x.LoadConfiguration()).Returns(config);
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//            var builder = new MockVbeBuilder();
-//            IVBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var inspection = new MissingAnnotationArgumentInspection(state);
+            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+            Assert.AreEqual(2, inspectionResults.Count());
+        }
 
-//            var inspection = new MissingAnnotationArgumentInspection(parser.State);
-//            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void MalformedAnnotation_NoIgnoreQuickFix()
+        {
+            const string inputCode =
+@"'@Folder
+'@Ignore";
 
-//            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
+            //Arrange
+            var settings = new Mock<IGeneralConfigService>();
+            var config = GetTestConfig();
+            settings.Setup(x => x.LoadConfiguration()).Returns(config);
 
-//            Assert.AreEqual(0, inspectionResults.Count());
-//        }
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void MalformedAnnotation_ReturnsMultipleResults()
-//        {
-//            const string inputCode =
-//@"'@Folder
-//'@Ignore";
+            var inspection = new MissingAnnotationArgumentInspection(state);
+            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
-//            //Arrange
-//            var settings = new Mock<IGeneralConfigService>();
-//            var config = GetTestConfig();
-//            settings.Setup(x => x.LoadConfiguration()).Returns(config);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+            Assert.IsFalse(inspectionResults.ElementAt(0).QuickFixes.Any(q => q is IgnoreOnceQuickFix));
+        }
 
-//            var builder = new MockVbeBuilder();
-//            IVBComponent component;
-//            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void InspectionType()
+        {
+            var inspection = new MissingAnnotationArgumentInspection(null);
+            Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
+        }
 
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void InspectionName()
+        {
+            const string inspectionName = "MissingAnnotationArgumentInspection";
+            var inspection = new MissingAnnotationArgumentInspection(null);
 
-//            var inspection = new MissingAnnotationArgumentInspection(parser.State);
-//            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+            Assert.AreEqual(inspectionName, inspection.Name);
+        }
 
-//            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
-
-//            Assert.AreEqual(2, inspectionResults.Count());
-//        }
-
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void MalformedAnnotation_NoIgnoreQuickFix()
-//        {
-//            const string inputCode =
-//@"'@Folder
-//'@Ignore";
-
-//            //Arrange
-//            var settings = new Mock<IGeneralConfigService>();
-//            var config = GetTestConfig();
-//            settings.Setup(x => x.LoadConfiguration()).Returns(config);
-
-//            var builder = new MockVbeBuilder();
-//            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
-//                .AddComponent("Class1", ComponentType.ClassModule, inputCode)
-//                .Build();
-//            var vbe = builder.AddProject(project).Build();
-
-//            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-//            parser.Parse(new CancellationTokenSource());
-//            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-//            var inspection = new MissingAnnotationArgumentInspection(parser.State);
-//            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
-
-//            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
-
-//            Assert.IsFalse(inspectionResults.ElementAt(0).QuickFixes.Any(q => q is IgnoreOnceQuickFix));
-//        }
-
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void InspectionType()
-//        {
-//            var inspection = new MissingAnnotationArgumentInspection(null);
-//            Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
-//        }
-
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void InspectionName()
-//        {
-//            const string inspectionName = "MissingAnnotationArgumentInspection";
-//            var inspection = new MissingAnnotationArgumentInspection(null);
-
-//            Assert.AreEqual(inspectionName, inspection.Name);
-//        }
-
-//        private Configuration GetTestConfig()
-//        {
-//            var settings = new CodeInspectionSettings();
-//            settings.CodeInspections.Add(new CodeInspectionSetting
-//            {
-//                Description = new MissingAnnotationArgumentInspection(null).Description,
-//                Severity = CodeInspectionSeverity.Error
-//            });
-//            return new Configuration
-//            {
-//                UserSettings = new UserSettings(null, null, null, settings, null, null, null)
-//            };
-//        }
-//    }
-//}
+        private Configuration GetTestConfig()
+        {
+            var settings = new CodeInspectionSettings();
+            settings.CodeInspections.Add(new CodeInspectionSetting
+            {
+                Description = new MissingAnnotationArgumentInspection(null).Description,
+                Severity = CodeInspectionSeverity.Error
+            });
+            return new Configuration
+            {
+                UserSettings = new UserSettings(null, null, null, settings, null, null, null)
+            };
+        }
+    }
+}
