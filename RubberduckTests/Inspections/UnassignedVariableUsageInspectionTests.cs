@@ -23,7 +23,6 @@ namespace RubberduckTests.Inspections
     bb = b
 End Sub";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -56,7 +55,6 @@ Sub DoSomething(ByVal foo As Variant)
 End Sub
 ";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -79,7 +77,6 @@ End Sub
     bb = b
 End Sub";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -103,7 +100,6 @@ End Sub";
     bb = b
 End Sub";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -122,7 +118,6 @@ End Sub";
     Dim foo
 End Sub";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -153,7 +148,6 @@ End Sub";
     TODOTODO = TODO
 End Sub";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -184,7 +178,6 @@ End Sub";
     bb = b
 End Sub";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);

@@ -21,7 +21,6 @@ namespace RubberduckTests.Inspections
     Debug.Print a
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
@@ -50,7 +49,6 @@ End Sub";
     Debug.Print a
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
@@ -80,7 +78,6 @@ Sub Test()
     Debug.Print a
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
@@ -110,7 +107,6 @@ End Sub";
     Debug.Print a
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("MyClass", ComponentType.ClassModule, inputCode)

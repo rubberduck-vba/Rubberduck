@@ -23,7 +23,6 @@ namespace RubberduckTests.Inspections
     Const const1 As Integer = 9
 End Sub";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -44,7 +43,6 @@ Public Sub Foo()
     Const const1 As Integer = 9
 End Sub";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -66,7 +64,6 @@ Public Sub Foo()
     Const const1 As Integer = 9
 End Sub";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -88,7 +85,6 @@ Public Sub Foo()
     Const const1 As Integer = 9
 End Sub";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component);
             var state = MockParser.CreateAndParse(vbe.Object);

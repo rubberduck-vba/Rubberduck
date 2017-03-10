@@ -25,7 +25,6 @@ namespace RubberduckTests.Inspections
 @"Private Sub Foo(ByRef foo As Boolean)
 End Sub";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -53,7 +52,6 @@ End Sub
 Private Sub Goo(ByRef foo As Integer)
 End Sub";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -79,7 +77,6 @@ End Sub";
     Foo = bar
 End Function";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -104,7 +101,6 @@ End Function";
 @"Private Sub Foo(ByVal foo As Integer)
 End Sub";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -129,7 +125,6 @@ End Sub";
 @"Private Sub Foo(ByVal foo As Integer, ByVal goo As Integer)
 End Sub";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -154,7 +149,6 @@ End Sub";
 @"Private Sub Foo(ByRef foo As Integer, ByRef goo As Integer)
 End Sub";
 
-            //Arrange
             var settings = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -185,7 +179,6 @@ End Sub";
 Private Sub IClass1_DoSomething(ByRef a As Integer)
 End Sub";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -220,7 +213,6 @@ End Sub";
 Private Sub abc_Foo(ByRef arg1 As Integer)
 End Sub";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -251,7 +243,6 @@ End Sub";
 Private Sub Foo(ByRef foo As Boolean)
 End Sub";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -281,7 +272,6 @@ End Sub";
     Foo = arg1
 End Function";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -312,7 +302,6 @@ End Sub";
     Foo = arg1
 End Function";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -353,7 +342,6 @@ End Function
 Sub Goo(ByVal a As Integer)
 End Sub";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -391,7 +379,6 @@ End Sub";
 Sub Goo(ByVal a As Integer)
 End Sub";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -429,7 +416,6 @@ End Sub";
 Sub Goo(ByVal a As String)
 End Sub";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -470,7 +456,6 @@ Private Function Foo(ByVal arg1 As Integer) As Integer
     Foo = arg1
 End Function";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -511,7 +496,6 @@ Sub Goo(ByVal a As Integer)
     fizz = Foo(fizz)
 End Sub";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -542,7 +526,6 @@ End Sub";
 Private Sub Foo(ByRef arg1 As Integer)
 End Sub";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);

@@ -31,7 +31,6 @@ End Sub";
 @"Public Sub Foo()
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, inputClass)
@@ -67,7 +66,6 @@ End Sub";
 @"Public Sub Foo()
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, inputClass)
@@ -107,7 +105,6 @@ End Sub";
 @"Public Sub Foo()
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, inputClass, new Selection(7, 5, 7, 5))
@@ -139,7 +136,6 @@ End Sub";
 @"Public Sub Foo()
 End Sub";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component, default(Selection));
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -172,7 +168,6 @@ End Sub";
 @"Public Sub Foo()
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, inputClass)
@@ -199,7 +194,6 @@ End Sub";
         [TestMethod]
         public void FindAllImplementations_NullTarget_Aborts()
         {
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out component);
             vbe.Setup(s => s.ActiveCodePane).Returns(value: null);
@@ -228,7 +222,6 @@ Private Sub Bar()
     Foo
 End Sub";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             vbe.Setup(s => s.ActiveCodePane).Returns(value: null);
@@ -249,7 +242,6 @@ End Sub";
         [TestMethod]
         public void FindAllImplementations_CanExecute_NullTarget()
         {
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out component);
             vbe.Setup(s => s.ActiveCodePane).Returns(value: null);
@@ -276,7 +268,6 @@ Private Sub Bar()
     Foo
 End Sub";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             vbe.Setup(s => s.ActiveCodePane).Returns(value: null);
@@ -295,7 +286,6 @@ End Sub";
         [TestMethod]
         public void FindAllImplementations_CanExecute_NullActiveCodePane()
         {
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out component);
             vbe.Setup(s => s.ActiveCodePane).Returns(value: null);

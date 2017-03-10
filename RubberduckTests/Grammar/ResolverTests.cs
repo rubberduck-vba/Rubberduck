@@ -89,16 +89,13 @@ namespace RubberduckTests.Grammar
         [TestMethod]
         public void FunctionReturnValueAssignment_IsReferenceToFunctionDeclaration()
         {
-            // arrange
             var code = @"
 Public Function Foo() As String
     Foo = 42
 End Function
 ";
-            // act
             var state = Resolve(code);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Function && item.IdentifierName == "Foo");
 
@@ -108,7 +105,6 @@ End Function
         [TestMethod]
         public void TypeOfIsExpression_BooleanExpressionIsReferenceToLocalVariable()
         {
-            // arrange
             var code_class1 = @"
 Public Function Foo() As String
     Dim a As Object
@@ -118,10 +114,8 @@ End Function
             // We only use the second class as as target of the type expression, its contents don't matter.
             var code_class2 = string.Empty;
 
-            // act
             var state = Resolve(code_class1, code_class2);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "a");
 
@@ -131,7 +125,6 @@ End Function
         [TestMethod]
         public void TypeOfIsExpression_TypeExpressionIsReferenceToClass()
         {
-            // arrange
             var code_class1 = @"
 Public Function Foo() As String
     Dim a As Object
@@ -141,10 +134,8 @@ End Function
             // We only use the second class as as target of the type expression, its contents don't matter.
             var code_class2 = string.Empty;
 
-            // act
             var state = Resolve(code_class1, code_class2);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.ClassModule && item.IdentifierName == "Class2");
 
@@ -154,7 +145,6 @@ End Function
         [TestMethod]
         public void FunctionCall_IsReferenceToFunctionDeclaration()
         {
-            // arrange
             var code = @"
 Public Sub DoSomething()
     Foo
@@ -164,10 +154,8 @@ Private Function Foo() As String
     Foo = 42
 End Function
 ";
-            // act
             var state = Resolve(code);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Function && item.IdentifierName == "Foo");
 
@@ -179,17 +167,14 @@ End Function
         [TestMethod]
         public void LocalVariableCall_IsReferenceToVariableDeclaration()
         {
-            // arrange
             var code = @"
 Public Sub DoSomething()
     Dim foo As Integer
     a = foo
 End Sub
 ";
-            // act
             var state = Resolve(code);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo");
 
@@ -201,17 +186,14 @@ End Sub
         [TestMethod]
         public void LocalVariableForeignNameCall_IsReferenceToVariableDeclaration()
         {
-            // arrange
             var code = @"
 Public Sub DoSomething()
     Dim foo As Integer
     a = [foo]
 End Sub
 ";
-            // act
             var state = Resolve(code, true);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo");
 
@@ -223,17 +205,14 @@ End Sub
         [TestMethod]
         public void LocalVariableAssignment_IsReferenceToVariableDeclaration()
         {
-            // arrange
             var code = @"
 Public Sub DoSomething()
     Dim foo As Integer
     foo = 42
 End Sub
 ";
-            // act
             var state = Resolve(code);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo");
 
@@ -245,17 +224,14 @@ End Sub
         [TestMethod]
         public void SingleLineIfStatementLabel_IsReferenceToLabel_NumberLabelHasColon()
         {
-            // arrange
             var code = @"
 Public Sub DoSomething()
     If True Then 5
 5:
 End Sub
 ";
-            // act
             var state = Resolve(code);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.LineLabel && item.IdentifierName == "5");
 
@@ -267,7 +243,6 @@ End Sub
         [TestMethod]
         public void SingleLineIfStatementLabel_IsReferenceToLabel_NumberLabelNoColon()
         {
-            // arrange
             var code = @"
 Public Sub DoSomething()
     Dim fizz As Integer
@@ -278,10 +253,8 @@ Public Sub DoSomething()
 5
 End Sub
 ";
-            // act
             var state = Resolve(code);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.LineLabel && item.IdentifierName == "5");
 
@@ -293,17 +266,14 @@ End Sub
         [TestMethod]
         public void SingleLineIfStatementLabel_IsReferenceToLabel_IdentifierLabel()
         {
-            // arrange
             var code = @"
 Public Sub DoSomething()
     If True Then GoTo foo
 foo:
 End Sub
 ";
-            // act
             var state = Resolve(code);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.LineLabel && item.IdentifierName == "foo");
 
@@ -315,7 +285,6 @@ End Sub
         [TestMethod]
         public void ProjectUdtSameNameFirstProjectThenUdt_FirstReferenceIsToProject()
         {
-            // arrange
             var code = string.Format(@"
 Private Type {0}
     anything As String
@@ -325,10 +294,8 @@ Public Sub DoSomething()
     Dim a As {0}.{1}.{0}
 End Sub
 ", MockVbeBuilder.TestProjectName, MockVbeBuilder.TestModuleName);
-            // act
             var state = Resolve(code);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Project && item.IdentifierName == MockVbeBuilder.TestProjectName);
 
@@ -340,7 +307,6 @@ End Sub
         [TestMethod]
         public void ProjectUdtSameNameUdtOnly_IsReferenceToUdt()
         {
-            // arrange
             var code = string.Format(@"
 Private Type {0}
     anything As String
@@ -350,10 +316,8 @@ Public Sub DoSomething()
     Dim a As {1}.{0}
 End Sub
 ", MockVbeBuilder.TestProjectName, MockVbeBuilder.TestModuleName);
-            // act
             var state = Resolve(code);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.UserDefinedType && item.IdentifierName == MockVbeBuilder.TestProjectName);
 
@@ -365,7 +329,6 @@ End Sub
         [TestMethod]
         public void EncapsulatedVariableAssignment_DoesNotResolve()
         {
-            // arrange
             var code_class1 = @"
 Public Sub DoSomething()
     foo = 42
@@ -378,10 +341,8 @@ Public foo As Integer
             var class1 = Tuple.Create(code_class1, ComponentType.ClassModule);
             var class2 = Tuple.Create(code_class2, ComponentType.ClassModule);
 
-            // act
             var state = Resolve(class1, class2);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item => item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo" && !item.IsUndeclared);
 
             var reference = declaration.References.SingleOrDefault(item => item.IsAssignment);
@@ -391,7 +352,6 @@ Public foo As Integer
         [TestMethod]
         public void PublicVariableCall_IsReferenceToVariableDeclaration()
         {
-            // arrange
             var code_class1 = @"
 Public Sub DoSomething()
     a = foo
@@ -401,12 +361,10 @@ End Sub
 Option Explicit
 Public foo As Integer
 ";
-            // act
             var state = Resolve(
                 Tuple.Create(code_class1, ComponentType.ClassModule),
                 Tuple.Create(code_class2, ComponentType.StandardModule));
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo");
 
@@ -418,7 +376,6 @@ Public foo As Integer
         [TestMethod]
         public void PublicVariableAssignment_IsReferenceToVariableDeclaration()
         {
-            // arrange
             var code_class1 = @"
 Public Sub DoSomething()
     foo = 42
@@ -431,10 +388,8 @@ Public foo As Integer
             var class1 = Tuple.Create(code_class1, ComponentType.ClassModule);
             var module1 = Tuple.Create(code_module1, ComponentType.StandardModule);
 
-            // act
             var state = Resolve(class1, module1);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo");
 
@@ -446,17 +401,14 @@ Public foo As Integer
         [TestMethod]
         public void UserDefinedTypeVariableAsTypeClause_IsReferenceToUserDefinedTypeDeclaration()
         {
-            // arrange
             var code = @"
 Private Type TFoo
     Bar As Integer
 End Type
 Private this As TFoo
 ";
-            // act
             var state = Resolve(code, false, ComponentType.ClassModule);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.UserDefinedType && item.IdentifierName == "TFoo");
 
@@ -466,7 +418,6 @@ Private this As TFoo
         [TestMethod]
         public void ObjectVariableAsTypeClause_IsReferenceToClassModuleDeclaration()
         {
-            // arrange
             var code_class1 = @"
 Public Sub DoSomething()
     Dim foo As Class2
@@ -476,10 +427,8 @@ End Sub
 Option Explicit
 ";
 
-            // act
             var state = Resolve(code_class1, code_class2);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.ClassModule && item.IdentifierName == "Class2");
 
@@ -489,16 +438,13 @@ Option Explicit
         [TestMethod]
         public void ParameterCall_IsReferenceToParameterDeclaration()
         {
-            // arrange
             var code = @"
 Public Sub DoSomething(ByVal foo As Integer)
     a = foo
 End Sub
 ";
-            // act
             var state = Resolve(code);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Parameter && item.IdentifierName == "foo");
 
@@ -508,16 +454,13 @@ End Sub
         [TestMethod]
         public void ParameterAssignment_IsAssignmentReferenceToParameterDeclaration()
         {
-            // arrange
             var code = @"
 Public Sub DoSomething(ByRef foo As Integer)
     foo = 42
 End Sub
 ";
-            // act
             var state = Resolve(code);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Parameter && item.IdentifierName == "foo");
 
@@ -527,7 +470,6 @@ End Sub
         [TestMethod]
         public void NamedParameterCall_IsReferenceToParameterDeclaration()
         {
-            // arrange
             var code = @"
 Public Sub DoSomething()
     DoSomethingElse foo:=42
@@ -536,10 +478,8 @@ End Sub
 Private Sub DoSomethingElse(ByVal foo As Integer)
 End Sub
 ";
-            // act
             var state = Resolve(code);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Parameter && item.IdentifierName == "foo");
 
@@ -550,7 +490,6 @@ End Sub
         [TestMethod]
         public void UserDefinedTypeMemberCall_IsReferenceToUserDefinedTypeMemberDeclaration()
         {
-            // arrange
             var code = @"
 Private Type TFoo
     Bar As Integer
@@ -561,10 +500,8 @@ Public Property Get Bar() As Integer
     Bar = this.Bar
 End Property
 ";
-            // act
             var state = Resolve(code, false, ComponentType.ClassModule);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.UserDefinedTypeMember && item.IdentifierName == "Bar");
 
@@ -576,7 +513,6 @@ End Property
         [TestMethod]
         public void UserDefinedTypeVariableCall_IsReferenceToVariableDeclaration()
         {
-            // arrange
             var code = @"
 Private Type TFoo
     Bar As Integer
@@ -587,10 +523,8 @@ Public Property Get Bar() As Integer
     Bar = this.Bar
 End Property
 ";
-            // act
             var state = Resolve(code, false, ComponentType.ClassModule);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "this");
 
@@ -602,7 +536,6 @@ End Property
         [TestMethod]
         public void WithVariableMemberCall_IsReferenceToMemberDeclaration()
         {
-            // arrange
             var code_class1 = @"
 Public Property Get Foo() As Integer
     Foo = 42
@@ -615,10 +548,8 @@ Public Sub DoSomething()
     End With
 End Sub
 ";
-            // act
             var state = Resolve(code_class1, code_class2);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.PropertyGet && item.IdentifierName == "Foo");
 
@@ -630,7 +561,6 @@ End Sub
         [TestMethod]
         public void NestedWithVariableMemberCall_IsReferenceToMemberDeclaration()
         {
-            // arrange
             var code_class1 = @"
 Public Property Get Foo() As Class2
     Foo = New Class2
@@ -651,10 +581,8 @@ Public Sub DoSomething()
 End Sub
 ";
 
-            // act
             var state = Resolve(code_class1, code_class2, code_class3);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.PropertyGet && item.IdentifierName == "Bar");
 
@@ -674,10 +602,8 @@ Private Sub DoSomething()
     foo = 42
 End Sub
 ";
-            // act
             var state = Resolve(code);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Variable
                 && item.ParentScopeDeclaration.IdentifierName == "DoSomething"
@@ -706,10 +632,8 @@ Implements Class1
 Private Sub Class1_DoSomething()
 End Sub
 ";
-            // act
             var state = Resolve(code_class1, code_class2);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.ClassModule && item.IdentifierName == "Class1");
 
@@ -720,7 +644,6 @@ End Sub
         [TestMethod]
         public void NestedMemberCall_IsReferenceToMember()
         {
-            // arrange
             var code_class1 = @"
 Public Property Get Foo() As Class2
     Foo = New Class2
@@ -736,10 +659,8 @@ Public Sub DoSomething(ByVal a As Class1)
     a = a.Foo.Bar
 End Sub
 ";
-            // act
             var state = Resolve(code_class1, code_class2, code_class3);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.PropertyGet && item.IdentifierName == "Bar");
 
@@ -751,7 +672,6 @@ End Sub
         [TestMethod]
         public void MemberCallParent_IsReferenceToParent()
         {
-            // arrange
             var code_class1 = @"
 Public Property Get Foo() As Integer
     Foo = 42
@@ -762,10 +682,8 @@ Public Sub DoSomething(ByVal a As Class1)
     b = a.Foo
 End Sub
 ";
-            // act
             var state = Resolve(code_class1, code_class2);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Parameter && item.IdentifierName == "a");
 
@@ -777,7 +695,6 @@ End Sub
         [TestMethod]
         public void ForLoop_IsAssignmentReferenceToIteratorDeclaration()
         {
-            // arrange
             var code = @"
 Public Sub DoSomething()
     Dim i As Integer
@@ -785,10 +702,8 @@ Public Sub DoSomething()
     Next
 End Sub
 ";
-            // act
             var state = Resolve(code);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "i");
 
@@ -801,7 +716,6 @@ End Sub
         [TestMethod]
         public void ForLoop_AddsReferenceEvenIfAssignmentResolutionFailure()
         {
-            // arrange
             var code = @"
 Public Sub DoSomething()
     Dim i As Integer
@@ -809,10 +723,8 @@ Public Sub DoSomething()
     Next
 End Sub
 ";
-            // act
             var state = Resolve(code);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "i");
 
@@ -832,10 +744,8 @@ Public Sub DoSomething(ByVal c As Collection)
     Next
 End Sub
 ";
-            // act
             var state = Resolve(code);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "i");
 
@@ -855,10 +765,8 @@ Public Sub DoSomething(ByVal c As Collection)
     Next
 End Sub
 ";
-            // act
             var state = Resolve(code);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Parameter && item.IdentifierName == "c");
 
@@ -879,10 +787,8 @@ Public Sub DoSomething(ParamArray values())
     Next
 End Sub
 ";
-            // act
             var state = Resolve(code);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Parameter
                 && item.IdentifierName == "values"
@@ -904,10 +810,8 @@ Public Sub DoSomething()
     foo(""key"") = 42
 End Sub
 ";
-            // act
             var state = Resolve(code);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Variable
                 && item.IdentifierName == "foo");
@@ -929,10 +833,8 @@ Public Sub DoSomething(ParamArray values())
     Next
 End Sub
 ";
-            // act
             var state = Resolve(code);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Parameter
                 && item.IdentifierName == "values"
@@ -1754,17 +1656,14 @@ End Sub
         [TestMethod]
         public void RedimStmt_RedimVariableDeclarationIsReferenceToLocalVariable()
         {
-            // arrange
             var code = @"
 Public Sub Test()
     Dim referenced() As Variant
     ReDim referenced(referenced TO referenced, referenced), referenced(referenced)
 End Sub
 ";
-            // act
             var state = Resolve(code);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
 
@@ -1774,17 +1673,14 @@ End Sub
         [TestMethod]
         public void OpenStmt_IsReferenceToLocalVariable()
         {
-            // arrange
             var code = @"
 Public Sub Test()
     Dim referenced As Integer
     Open referenced For Binary Access Read Lock Read As #referenced Len = referenced
 End Sub
 ";
-            // act
             var state = Resolve(code);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
 
@@ -1794,17 +1690,14 @@ End Sub
         [TestMethod]
         public void CloseStmt_IsReferenceToLocalVariable()
         {
-            // arrange
             var code = @"
 Public Sub Test()
     Dim referenced As Integer
     Close referenced, referenced
 End Sub
 ";
-            // act
             var state = Resolve(code);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
 
@@ -1814,17 +1707,14 @@ End Sub
         [TestMethod]
         public void SeekStmt_IsReferenceToLocalVariable()
         {
-            // arrange
             var code = @"
 Public Sub Test()
     Dim referenced As Integer
     Seek #referenced, referenced
 End Sub
 ";
-            // act
             var state = Resolve(code);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
 
@@ -1834,17 +1724,14 @@ End Sub
         [TestMethod]
         public void LockStmt_IsReferenceToLocalVariable()
         {
-            // arrange
             var code = @"
 Public Sub Test()
     Dim referenced As Integer
     Lock referenced, referenced To referenced
 End Sub
 ";
-            // act
             var state = Resolve(code);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
 
@@ -1854,17 +1741,14 @@ End Sub
         [TestMethod]
         public void UnlockStmt_IsReferenceToLocalVariable()
         {
-            // arrange
             var code = @"
 Public Sub Test()
     Dim referenced As Integer
     Unlock referenced, referenced To referenced
 End Sub
 ";
-            // act
             var state = Resolve(code);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
 
@@ -1874,17 +1758,14 @@ End Sub
         [TestMethod]
         public void LineInputStmt_IsReferenceToLocalVariable()
         {
-            // arrange
             var code = @"
 Public Sub Test()
     Dim referenced As Integer
     Line Input #referenced, referenced
 End Sub
 ";
-            // act
             var state = Resolve(code);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
 
@@ -1894,17 +1775,14 @@ End Sub
         [TestMethod]
         public void LineInputStmt_ReferenceIsAssignment()
         {
-            // arrange
             var code = @"
 Public Sub Test()
     Dim file As Integer, content
     Line Input #file, content
 End Sub
 ";
-            // act
             var state = Resolve(code);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "content");
 
@@ -1914,17 +1792,14 @@ End Sub
         [TestMethod]
         public void WidthStmt_IsReferenceToLocalVariable()
         {
-            // arrange
             var code = @"
 Public Sub Test()
     Dim referenced As Integer
     Width #referenced, referenced
 End Sub
 ";
-            // act
             var state = Resolve(code);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
 
@@ -1934,17 +1809,14 @@ End Sub
         [TestMethod]
         public void PrintStmt_IsReferenceToLocalVariable()
         {
-            // arrange
             var code = @"
 Public Sub Test()
     Dim referenced As Integer
     Print #referenced,,referenced; SPC(referenced), TAB(referenced)
 End Sub
 ";
-            // act
             var state = Resolve(code);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
 
@@ -1954,17 +1826,14 @@ End Sub
         [TestMethod]
         public void WriteStmt_IsReferenceToLocalVariable()
         {
-            // arrange
             var code = @"
 Public Sub Test()
     Dim referenced As Integer
     Write #referenced,,referenced; SPC(referenced), TAB(referenced)
 End Sub
 ";
-            // act
             var state = Resolve(code);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
 
@@ -1974,17 +1843,14 @@ End Sub
         [TestMethod]
         public void InputStmt_IsReferenceToLocalVariable()
         {
-            // arrange
             var code = @"
 Public Sub Test()
     Dim referenced As Integer
     Input #referenced,referenced
 End Sub
 ";
-            // act
             var state = Resolve(code);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
 
@@ -1994,7 +1860,6 @@ End Sub
         [TestMethod]
         public void InputStmt_ReferenceIsAssignment()
         {
-            // arrange
             var code = @"
 Public Sub Test()
     Dim str As String
@@ -2002,10 +1867,8 @@ Public Sub Test()
     Input #1, str, xCoord, yCoord, zCoord
 End Sub
 ";
-            // act
             var state = Resolve(code);
 
-            // assert
             var strDeclaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "str");
 
@@ -2027,17 +1890,14 @@ End Sub
         [TestMethod]
         public void PutStmt_IsReferenceToLocalVariable()
         {
-            // arrange
             var code = @"
 Public Sub Test()
     Dim referenced As Integer
     Put referenced,referenced,referenced
 End Sub
 ";
-            // act
             var state = Resolve(code);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
 
@@ -2047,17 +1907,14 @@ End Sub
         [TestMethod]
         public void GetStmt_IsReferenceToLocalVariable()
         {
-            // arrange
             var code = @"
 Public Sub Test()
     Dim referenced As Integer
     Get #referenced,referenced,referenced
 End Sub
 ";
-            // act
             var state = Resolve(code);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
 
@@ -2067,17 +1924,14 @@ End Sub
         [TestMethod]
         public void GetStmt_ReferenceIsAssignment()
         {
-            // arrange
             var code = @"
 Public Sub Test()
     Dim fileNumber As Integer, recordNumber, variable
     Get #fileNumber, recordNumber, variable
 End Sub
 ";
-            // act
             var state = Resolve(code);
 
-            // assert
             var variableDeclaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "variable");
 
@@ -2087,17 +1941,14 @@ End Sub
         [TestMethod]
         public void LineSpecialForm_IsReferenceToLocalVariable()
         {
-            // arrange
             var code = @"
 Public Sub Test()
     Dim referenced As Integer
     Me.Line (referenced, referenced)-(referenced, referenced)
 End Sub
 ";
-            // act
             var state = Resolve(code);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
 
@@ -2107,17 +1958,14 @@ End Sub
         [TestMethod]
         public void CircleSpecialForm_IsReferenceToLocalVariable()
         {
-            // arrange
             var code = @"
 Public Sub Test()
     Dim referenced As Integer
     Me.Circle Step(referenced, referenced), referenced, referenced, referenced, referenced, referenced
 End Sub
 ";
-            // act
             var state = Resolve(code);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
 
@@ -2127,17 +1975,14 @@ End Sub
         [TestMethod]
         public void ScaleSpecialForm_IsReferenceToLocalVariable()
         {
-            // arrange
             var code = @"
 Public Sub Test()
     Dim referenced As Integer
     Scale (referenced, referenced)-(referenced, referenced)
 End Sub
 ";
-            // act
             var state = Resolve(code);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
 
@@ -2147,17 +1992,14 @@ End Sub
         [TestMethod]
         public void FieldLengthStmt_IsReferenceToLocalVariable()
         {
-            // arrange
             var code = @"
 Public Sub Test()
     Const Len As Integer = 4
     Dim a As String * Len
 End Sub
 ";
-            // act
             var state = Resolve(code);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Constant && item.IdentifierName == "Len");
 
@@ -2299,7 +2141,6 @@ End Property
         [TestMethod]
         public void QualifiedSetStatement_FirstSectionDoesNotHaveAssignmentFlag()
         {
-            // arrange
             var variableDeclarationClass = @"
 Public foo As Boolean
 ";
@@ -2314,10 +2155,8 @@ Public Sub bar()
     Set myClassN.myClass.foo = True
 End Sub
 ";
-            // act
             var state = Resolve(variableDeclarationClass, classVariableDeclarationClass, variableCallClass);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "myClassN");
 
@@ -2327,7 +2166,6 @@ End Sub
         [TestMethod]
         public void QualifiedSetStatement_MiddleSectionDoesNotHaveAssignmentFlag()
         {
-            // arrange
             var variableDeclarationClass = @"
 Public foo As Boolean
 ";
@@ -2342,10 +2180,8 @@ Public Sub bar()
     Set myClassN.myClass.foo = True
 End Sub
 ";
-            // act
             var state = Resolve(variableDeclarationClass, classVariableDeclarationClass, variableCallClass);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "myClass");
 
@@ -2355,7 +2191,6 @@ End Sub
         [TestMethod]
         public void QualifiedSetStatement_LastSectionHasAssignmentFlag()
         {
-            // arrange
             var variableDeclarationClass = @"
 Public foo As Boolean
 ";
@@ -2370,10 +2205,8 @@ Public Sub bar()
     Set myClassN.myClass.foo = True
 End Sub
 ";
-            // act
             var state = Resolve(variableDeclarationClass, classVariableDeclarationClass, variableCallClass);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo");
 
@@ -2383,7 +2216,6 @@ End Sub
         [TestMethod]
         public void SetStatement_HasAssignmentFlag()
         {
-            // arrange
             var variableDeclarationClass = @"
 Public foo As Variant
 
@@ -2391,10 +2223,8 @@ Public Sub bar()
     Set foo = New Class2
 End Sub
 ";
-            // act
             var state = Resolve(variableDeclarationClass, string.Empty);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo");
 
@@ -2404,7 +2234,6 @@ End Sub
         [TestMethod]
         public void ImplicitLetStatement_HasAssignmentFlag()
         {
-            // arrange
             var variableDeclarationClass = @"
 Public foo As Boolean
 
@@ -2412,10 +2241,8 @@ Public Sub bar()
     foo = True
 End Sub
 ";
-            // act
             var state = Resolve(variableDeclarationClass);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo");
 
@@ -2425,7 +2252,6 @@ End Sub
         [TestMethod]
         public void ExplicitLetStatement_HasAssignmentFlag()
         {
-            // arrange
             var variableDeclarationClass = @"
 Public foo As Boolean
 
@@ -2433,10 +2259,8 @@ Public Sub bar()
     Let foo = True
 End Sub
 ";
-            // act
             var state = Resolve(variableDeclarationClass);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item =>
                 item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo");
 
@@ -2447,17 +2271,14 @@ End Sub
         [TestMethod]
         public void VariableNamedBfResolvesAsAVariable()
         {
-            // arrange
             var code = @"
 Public Sub Test()
     Dim bf As Integer
     Debug.Print bf
 End Sub
 ";
-            // act
             var state = Resolve(code);
 
-            // assert
             var declaration = state.AllUserDeclarations.SingleOrDefault(item =>
                 item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "bf");
 
@@ -2468,16 +2289,13 @@ End Sub
         [TestMethod]
         public void ProcedureNamedBfResolvesAsAProcedure()
         {
-            // arrange
             var code = @"
 Public Sub Bf()
     Debug.Print ""I'm cool with that""
 End Sub
 ";
-            // act
             var state = Resolve(code);
 
-            // assert
             var declaration = state.AllUserDeclarations.SingleOrDefault(item =>
                 item.DeclarationType == DeclarationType.Procedure && item.IdentifierName == "Bf");
 
@@ -2488,17 +2306,14 @@ End Sub
         [TestMethod]
         public void TypeNamedBfResolvesAsAType()
         {
-            // arrange
             var code = @"
 Private Type Bf
     b As Long
     f As Long
 End Type
 ";
-            // act
             var state = Resolve(code);
 
-            // assert
             var declaration = state.AllUserDeclarations.SingleOrDefault(item =>
                 item.DeclarationType == DeclarationType.UserDefinedType && item.IdentifierName == "Bf");
 
@@ -2509,7 +2324,6 @@ End Type
         [TestMethod]
         public void AnnotationFollowedByCommentAnnotatesDeclaration()
         {
-            // arrange
             var code = @"
 Public Sub DoSomething()
     '@Ignore VariableNotAssigned: that's actually a Rubberduck bug, see #2522
@@ -2518,10 +2332,8 @@ End Sub
 ";
             var results = new[] { "VariableNotAssigned" };
 
-            // act
             var state = Resolve(code);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item => item.IdentifierName == "orgs");
 
             var annotation = declaration.Annotations.SingleOrDefault(item => item.AnnotationType == AnnotationType.Ignore);
@@ -2533,7 +2345,6 @@ End Sub
         [TestMethod]
         public void AnnotationListFollowedByCommentAnnotatesDeclaration()
         {
-            // arrange
             var code = @"
 Public Sub DoSomething()
     '@Ignore VariableNotAssigned, UndeclaredVariable, VariableNotUsed: Ignore ALL the inspections!
@@ -2543,10 +2354,8 @@ End Sub
 
             var results = new[] { "VariableNotAssigned", "UndeclaredVariable", "VariableNotUsed" };
 
-            // act
             var state = Resolve(code);
 
-            // assert
             var declaration = state.AllUserDeclarations.Single(item => item.IdentifierName == "orgs");
 
             var annotation = declaration.Annotations.SingleOrDefault(item => item.AnnotationType == AnnotationType.Ignore);

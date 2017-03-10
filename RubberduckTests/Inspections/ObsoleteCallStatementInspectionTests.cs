@@ -25,7 +25,6 @@ namespace RubberduckTests.Inspections
     Call Foo
 End Sub";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -51,7 +50,6 @@ End Sub";
     Foo
 End Sub";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -77,7 +75,6 @@ End Sub";
     Call Foo: Foo
 End Sub";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -103,7 +100,6 @@ End Sub";
     Call Foo ' I''ve got a colon: see?
 End Sub";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -129,7 +125,6 @@ End Sub";
     Call Foo("":"")
 End Sub";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -159,7 +154,6 @@ Sub Goo(arg1 As Integer, arg1 As String)
     Call Foo
 End Sub";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -189,7 +183,6 @@ Sub Goo(arg1 As Integer, arg1 As String)
     Foo
 End Sub";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -216,7 +209,6 @@ End Sub";
     Call Foo
 End Sub";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -255,7 +247,6 @@ Sub Goo(arg1 As Integer, arg1 As String)
     Foo
 End Sub";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -301,7 +292,6 @@ Sub Goo(arg1 As Integer, arg1 As String)
     Call Foo
 End Sub";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);

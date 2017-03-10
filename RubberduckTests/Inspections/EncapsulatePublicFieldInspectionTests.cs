@@ -18,7 +18,6 @@ namespace RubberduckTests.Inspections
             const string inputCode =
 @"Public fizz As Boolean";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -38,7 +37,6 @@ namespace RubberduckTests.Inspections
 Public buzz As Integer, _
        bazz As Integer";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -56,7 +54,6 @@ Public buzz As Integer, _
             const string inputCode =
 @"Private fizz As Boolean";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -75,7 +72,6 @@ Public buzz As Integer, _
 @"Public Sub Foo(ByRef arg1 As String)
 End Sub";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -94,7 +90,6 @@ End Sub";
 @"'@Ignore EncapsulatePublicField
 Public fizz As Boolean";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -116,7 +111,6 @@ Public fizz As Boolean";
 @"'@Ignore EncapsulatePublicField
 Public fizz As Boolean";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);

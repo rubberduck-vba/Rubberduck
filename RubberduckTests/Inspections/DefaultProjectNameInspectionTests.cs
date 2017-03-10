@@ -17,7 +17,6 @@ namespace RubberduckTests.Inspections
         [TestCategory("Inspections")]
         public void DefaultProjectName_ReturnsResult()
         {
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, string.Empty)
@@ -39,7 +38,6 @@ namespace RubberduckTests.Inspections
         [TestCategory("Inspections")]
         public void DefaultProjectName_DoesNotReturnResult()
         {
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, string.Empty)
@@ -61,7 +59,6 @@ namespace RubberduckTests.Inspections
         [TestCategory("Inspections")]
         public void DefaultProjectName_NoIgnoreQuickFix()
         {
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, string.Empty)

@@ -23,7 +23,6 @@ namespace RubberduckTests.Inspections
             const string inputCode =
 @"'@Folder";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -46,7 +45,6 @@ namespace RubberduckTests.Inspections
             const string inputCode =
 @"'@Folder ""Foo""";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -69,7 +67,6 @@ namespace RubberduckTests.Inspections
             const string inputCode =
 @"'@Ignore";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -92,7 +89,6 @@ namespace RubberduckTests.Inspections
             const string inputCode =
 @"'@Ignore ProcedureNotUsedInspection";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -116,7 +112,6 @@ namespace RubberduckTests.Inspections
 @"'@Folder
 '@Ignore";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -140,7 +135,6 @@ namespace RubberduckTests.Inspections
 @"'@Folder
 '@Ignore";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);

@@ -25,7 +25,6 @@ Sub foo()
     Set sheet = Worksheets(""Sheet1"")
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", "TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode)
@@ -60,7 +59,6 @@ Sub foo()
     Set sheet = Worksheets(""Sheet1"")
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", "TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode)
@@ -100,7 +98,6 @@ Sub foo()
     Set sheet = Worksheets(""Sheet1"")
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", "TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode)

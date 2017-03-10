@@ -33,7 +33,6 @@ Private Sub Class1_Foo()
 End Sub
 ";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                  .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
@@ -50,11 +49,9 @@ End Sub
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
             var module = project.Object.VBComponents[1].CodeModule;
 
-            //Act
             var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode, module.Content());
         }
 
@@ -84,7 +81,6 @@ End Sub
 Public Sub Bar()
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                  .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
@@ -101,11 +97,9 @@ End Sub";
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
             var module = project.Object.VBComponents[1].CodeModule;
 
-            //Act
             var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode, module.Content());
         }
 
@@ -131,7 +125,6 @@ Private Sub Class1_Foo(ByVal a As Integer, ByRef b As Variant, ByRef c As Varian
 End Sub
 ";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                  .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
@@ -148,11 +141,9 @@ End Sub
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
             var module = project.Object.VBComponents[1].CodeModule;
 
-            //Act
             var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode, module.Content());
         }
 
@@ -178,7 +169,6 @@ Private Function Class1_Foo() As Integer
 End Function
 ";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                  .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
@@ -195,11 +185,9 @@ End Function
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
             var module = project.Object.VBComponents[1].CodeModule;
 
-            //Act
             var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode, module.Content());
         }
 
@@ -225,7 +213,6 @@ Private Function Class1_Foo() As Variant
 End Function
 ";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                  .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
@@ -242,11 +229,9 @@ End Function
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
             var module = project.Object.VBComponents[1].CodeModule;
 
-            //Act
             var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode, module.Content());
         }
 
@@ -272,7 +257,6 @@ Private Function Class1_Foo(ByRef a As Variant) As Variant
 End Function
 ";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                  .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
@@ -289,11 +273,9 @@ End Function
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
             var module = project.Object.VBComponents[1].CodeModule;
 
-            //Act
             var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode, module.Content());
         }
 
@@ -319,7 +301,6 @@ Private Property Get Class1_Foo() As Integer
 End Property
 ";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                  .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
@@ -336,11 +317,9 @@ End Property
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
             var module = project.Object.VBComponents[1].CodeModule;
 
-            //Act
             var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode, module.Content());
         }
 
@@ -366,7 +345,6 @@ Private Property Get Class1_Foo() As Variant
 End Property
 ";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                  .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
@@ -383,11 +361,9 @@ End Property
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
             var module = project.Object.VBComponents[1].CodeModule;
 
-            //Act
             var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode, module.Content());
         }
 
@@ -413,7 +389,6 @@ Private Property Get Class1_Foo(ByRef a As Variant) As Variant
 End Property
 ";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                  .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
@@ -430,11 +405,9 @@ End Property
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
             var module = project.Object.VBComponents[1].CodeModule;
 
-            //Act
             var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode, module.Content());
         }
 
@@ -460,7 +433,6 @@ Private Property Let Class1_Foo(ByRef value As Long)
 End Property
 ";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                  .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
@@ -477,11 +449,9 @@ End Property
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
             var module = project.Object.VBComponents[1].CodeModule;
 
-            //Act
             var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode, module.Content());
         }
 
@@ -507,7 +477,6 @@ Private Property Let Class1_Foo(ByRef a As Variant)
 End Property
 ";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                  .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
@@ -524,11 +493,9 @@ End Property
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
             var module = project.Object.VBComponents[1].CodeModule;
 
-            //Act
             var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode, module.Content());
         }
 
@@ -554,7 +521,6 @@ Private Property Set Class1_Foo(ByRef value As Variant)
 End Property
 ";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                  .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
@@ -571,11 +537,9 @@ End Property
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
             var module = project.Object.VBComponents[1].CodeModule;
 
-            //Act
             var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode, module.Content());
         }
 
@@ -601,7 +565,6 @@ Private Property Set Class1_Foo(ByRef a As Variant)
 End Property
 ";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                  .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
@@ -618,11 +581,9 @@ End Property
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
             var module = project.Object.VBComponents[1].CodeModule;
 
-            //Act
             var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode, module.Content());
         }
 
@@ -669,7 +630,6 @@ Private Property Let Class1_Buz(ByVal a As Boolean, ByRef value As Integer)
 End Property
 ";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                  .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
@@ -686,11 +646,9 @@ End Property
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
             var module = project.Object.VBComponents[1].CodeModule;
 
-            //Act
             var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode, module.Content());
         }
 
@@ -742,7 +700,6 @@ Private Property Set IClassModule_Buzz(ByRef value As Variant)
 End Property
 ";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                  .AddComponent("IClassModule", ComponentType.ClassModule, interfaceCode)
@@ -759,11 +716,9 @@ End Property
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
             var module = project.Object.VBComponents[1].CodeModule;
 
-            //Act
             var refactoring = new ImplementInterfaceRefactoring(vbe.Object, parser.State, null);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode, module.Content());
         }
 

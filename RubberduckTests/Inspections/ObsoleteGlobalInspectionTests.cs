@@ -18,7 +18,6 @@ namespace RubberduckTests.Inspections
             const string inputCode =
 @"Global var1 As Integer";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -37,7 +36,6 @@ namespace RubberduckTests.Inspections
 @"Global var1 As Integer
 Global var2 As String";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -55,7 +53,6 @@ Global var2 As String";
             const string inputCode =
 @"Public var1 As Integer";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -74,7 +71,6 @@ Global var2 As String";
 @"Public var1 As Integer
 Global var2 As Date";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -93,7 +89,6 @@ Global var2 As Date";
 @"'@Ignore ObsoleteGlobal
 Global var1 As Integer";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -114,7 +109,6 @@ Global var1 As Integer";
             const string expectedCode =
 @"Public var1 As Integer";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -137,7 +131,6 @@ Global var1 As Integer";
 @"'@Ignore ObsoleteGlobal
 Global var1 As Integer";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);

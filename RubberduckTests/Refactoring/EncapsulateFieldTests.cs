@@ -38,7 +38,6 @@ Public Property Let Name(ByVal value As Integer)
 End Property
 ";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -57,11 +56,9 @@ End Property
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
@@ -89,7 +86,6 @@ Public Property Let Name(ByVal value As Integer)
 End Property
 ";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -108,11 +104,9 @@ End Property
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
@@ -137,7 +131,6 @@ Public Property Set Name(ByVal value As Variant)
 End Property
 ";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -156,11 +149,9 @@ End Property
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
@@ -181,7 +172,6 @@ Public Property Get Name() As Variant
 End Property
 ";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -200,11 +190,9 @@ End Property
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
@@ -242,7 +230,6 @@ Function Bar() As Integer
     Bar = 0
 End Function";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -261,11 +248,9 @@ End Function";
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
@@ -309,7 +294,6 @@ End Property
 Property Set Foo(ByVal vall As Variant)
 End Property";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -328,11 +312,9 @@ End Property";
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
@@ -359,7 +341,6 @@ Public Property Let Name(ByVal value As Integer)
 End Property
 ";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -378,11 +359,9 @@ End Property
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
@@ -418,7 +397,6 @@ Public Property Set Name(ByVal value As Variant)
 End Property
 ";   // note: VBE removes excess spaces
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -437,12 +415,10 @@ End Property
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
             var actual = component.CodeModule.Content();
 
-            //Assert
             Assert.AreEqual(expectedCode, actual);
         }
 
@@ -470,7 +446,6 @@ Public Property Let Name(ByVal value As Boolean)
 End Property
 ";   // note: VBE removes excess spaces
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -489,11 +464,9 @@ End Property
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
@@ -521,7 +494,6 @@ Public Property Let Name(ByVal value As Date)
 End Property
 ";   // note: VBE removes excess spaces
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -540,11 +512,9 @@ End Property
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
@@ -569,7 +539,6 @@ Public Property Let Name(ByVal value As Integer)
 End Property
 ";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -588,12 +557,10 @@ End Property
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
             var actual = component.CodeModule.Content();
 
-            //Assert
             Assert.AreEqual(expectedCode, actual);
         }
 
@@ -633,7 +600,6 @@ End Sub
 Sub Bar(ByVal name As Integer)
 End Sub";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -652,11 +618,9 @@ End Sub";
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
@@ -708,7 +672,6 @@ End Sub
 Sub Bar(ByVal v As Integer)
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, codeClass1)
@@ -736,14 +699,12 @@ End Sub";
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             var actualCode1 = module1.Content();
             var actualCode2 = module2.Content();
 
-            //Assert
             Assert.AreEqual(expectedCode1, actualCode1);
             Assert.AreEqual(expectedCode2, actualCode2);
         }
@@ -769,7 +730,6 @@ Public Property Let Name(ByVal value As Integer)
 End Property
 ";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -788,11 +748,9 @@ End Property
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(state.AllUserDeclarations.FindVariable(qualifiedSelection));
 
-            //Assert
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
@@ -803,7 +761,6 @@ End Property
             const string inputCode =
 @"Private fizz As Variant";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -811,7 +768,6 @@ End Property
             var vbeWrapper = vbe.Object;
             var factory = new EncapsulateFieldPresenterFactory(vbeWrapper, state, null);
 
-            //act
             var refactoring = new EncapsulateFieldRefactoring(vbeWrapper, CreateIndenter(vbe.Object), factory);
             refactoring.Refactor();
 
@@ -826,7 +782,6 @@ End Property
 @"Private fizz As Variant";
             var selection = new Selection(1, 1, 1, 1);
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -836,11 +791,9 @@ End Property
             //SetupFactory
             var factory = SetupFactory(null);
 
-            //Act
             var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(inputCode, component.CodeModule.Content());
         }
 
@@ -851,7 +804,6 @@ End Property
             const string inputCode =
 @"Private fizz As Integer";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -872,7 +824,6 @@ End Property
 End Sub";
             var selection = new Selection(1, 15, 1, 15);
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -893,7 +844,6 @@ Private Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub";
             var selection = Selection.Home;
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -916,7 +866,6 @@ End Sub";
 @"Private fizz As Variant";
             var selection = new Selection(1, 15, 1, 15);
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -941,7 +890,6 @@ End Sub";
 End Sub";
             var selection = new Selection(1, 15, 1, 15);
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -964,7 +912,6 @@ End Sub";
 @"Private fizz As Variant";
             var selection = new Selection(1, 15, 1, 15);
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -988,7 +935,6 @@ End Sub";
 @"Private fizz As Variant";
             var selection = new Selection(1, 15, 1, 15);
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -1017,7 +963,6 @@ End Sub";
 @"Private fizz As Variant";
             var selection = new Selection(1, 15, 1, 15);
 
-            //Arrange
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
@@ -1045,7 +990,6 @@ End Sub";
 @"Private fizz As Variant";
             var selection = new Selection(1, 15, 1, 15);
 
-            //Arrange
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
@@ -1073,7 +1017,6 @@ End Sub";
 @"Private fizz As Boolean";
             var selection = new Selection(1, 15, 1, 15);
 
-            //Arrange
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
@@ -1099,7 +1042,6 @@ End Sub";
 @"Private fizz As Boolean";
             var selection = new Selection(1, 15, 1, 15);
 
-            //Arrange
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
@@ -1125,7 +1067,6 @@ End Sub";
 @"Private fizz As Icon";
             var selection = new Selection(1, 15, 1, 15);
 
-            //Arrange
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
@@ -1151,7 +1092,6 @@ End Sub";
 @"Private fizz As Icon";
             var selection = new Selection(1, 15, 1, 15);
 
-            //Arrange
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
@@ -1177,7 +1117,6 @@ End Sub";
 @"Private fizz As Variant";
             var selection = new Selection(1, 15, 1, 15);
 
-            //Arrange
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
@@ -1203,7 +1142,6 @@ End Sub";
 @"Private fizz As Variant";
             var selection = new Selection(1, 15, 1, 15);
 
-            //Arrange
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
@@ -1232,7 +1170,6 @@ Sub foo()
 End Sub";
             var selection = new Selection(1, 15, 1, 15);
 
-            //Arrange
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
@@ -1261,7 +1198,6 @@ Sub foo()
 End Sub";
             var selection = new Selection(1, 15, 1, 15);
 
-            //Arrange
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
@@ -1290,7 +1226,6 @@ Sub Foo()
 End Sub";
             var selection = new Selection(1, 15, 1, 15);
 
-            //Arrange
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
@@ -1319,7 +1254,6 @@ Sub foo()
 End Sub";
             var selection = new Selection(1, 15, 1, 15);
 
-            //Arrange
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
@@ -1346,7 +1280,6 @@ End Sub";
 @"Private fizz As Date";
             var selection = new Selection(1, 15, 1, 15);
 
-            //Arrange
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
@@ -1373,7 +1306,6 @@ End Sub";
 @"Private fizz As Icon";
             var selection = new Selection(1, 15, 1, 15);
 
-            //Arrange
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
@@ -1400,7 +1332,6 @@ End Sub";
 @"Private fizz As Variant";
             var selection = new Selection(1, 15, 1, 15);
 
-            //Arrange
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);

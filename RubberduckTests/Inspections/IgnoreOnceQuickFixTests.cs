@@ -13,7 +13,6 @@ namespace RubberduckTests.Inspections
         [TestMethod]
         public void AnnotationListFollowedByCommentAddsAnnotationCorrectly()
         {
-            // Arrange
             const string inputCode = @"
 Public Function GetSomething() As Long
     '@Ignore VariableNotAssigned: Is followed by a comment.

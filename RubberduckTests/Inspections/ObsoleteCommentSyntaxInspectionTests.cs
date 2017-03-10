@@ -22,7 +22,6 @@ namespace RubberduckTests.Inspections
         {
             const string inputCode = @"Rem test";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -44,7 +43,6 @@ namespace RubberduckTests.Inspections
         {
             const string inputCode = @"' test";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -70,7 +68,6 @@ namespace RubberduckTests.Inspections
     bar = ""iejo rem oernp"" ' test
 End Sub";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -94,7 +91,6 @@ End Sub";
 @"Rem test1
 Rem test2";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -118,7 +114,6 @@ Rem test2";
 @"Rem test1
 ' test2";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -142,7 +137,6 @@ Rem test2";
 '@Ignore ObsoleteCommentSyntax
 Rem test";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -168,7 +162,6 @@ Rem test";
             const string expectedCode =
 @"' test1";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -198,7 +191,6 @@ a comment";
 @"' this is _
 a comment";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -226,7 +218,6 @@ a comment";
             const string expectedCode =
 @"";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -255,7 +246,6 @@ continued";
             const string expectedCode =
 @"";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -283,7 +273,6 @@ continued";
             const string expectedCode =
 @"Dim Foo As Integer: ' This is a comment";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -313,7 +302,6 @@ a comment";
 @"Dim Foo As Integer: ' This is _
 a comment";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -341,7 +329,6 @@ a comment";
             const string expectedCode =
 @"Dim Foo As Integer:";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -370,7 +357,6 @@ a comment";
             const string expectedCode =
 @"Dim Foo As Integer:";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -399,7 +385,6 @@ a comment";
 @"'@Ignore ObsoleteCommentSyntax
 Rem test1";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);

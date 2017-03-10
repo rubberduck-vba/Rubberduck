@@ -33,7 +33,6 @@ namespace RubberduckTests.Grammar
  _
  Function";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 

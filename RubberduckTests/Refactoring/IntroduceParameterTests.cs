@@ -33,18 +33,15 @@ End Sub";
     
 End Sub";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            //Act
             var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, null);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
@@ -66,18 +63,15 @@ End Function";
     Foo = True
 End Function";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            //Act
             var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, null);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
@@ -97,18 +91,15 @@ End Sub";
     
 End Sub";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            //Act
             var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, null);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
@@ -131,18 +122,15 @@ End Sub";
     
 End Sub";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            //Act
             var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, null);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
@@ -164,18 +152,15 @@ End Sub";
     
 End Sub";   // note: the VBE removes extra spaces
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            //Act
             var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, null);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
@@ -201,18 +186,15 @@ End Sub";
         bap As Integer
 End Sub";   // note: the VBE removes extra spaces
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            //Act
             var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, null);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
@@ -238,18 +220,15 @@ End Sub";
         bap As Integer
 End Sub";   // note: the VBE removes extra spaces
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            //Act
             var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, null);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
@@ -275,18 +254,15 @@ End Sub";
         
 End Sub";   // note: the VBE removes extra spaces
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            //Act
             var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, null);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
@@ -308,18 +284,15 @@ End Sub";
     Dim bat As Date, bap As Integer
 End Sub";   // note: the VBE removes extra spaces
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            //Act
             var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, null);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
@@ -334,7 +307,6 @@ Private Sub Foo()
 End Sub";
             var selection = new Selection(1, 14, 1, 14);
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -346,11 +318,9 @@ End Sub";
                     m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
                         It.IsAny<MessageBoxIcon>())).Returns(DialogResult.OK);
 
-            //Act
             var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, messageBox.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             messageBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
                 It.IsAny<MessageBoxIcon>()), Times.Once);
             Assert.AreEqual(inputCode, component.CodeModule.Content());
@@ -367,7 +337,6 @@ Private Sub Foo()
 End Sub";
             var selection = new Selection(3, 16, 3, 16);
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -379,11 +348,9 @@ End Sub";
                     m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
                         It.IsAny<MessageBoxIcon>())).Returns(DialogResult.OK);
 
-            //Act
             var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, messageBox.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             messageBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
                 It.IsAny<MessageBoxIcon>()), Times.Once);
             Assert.AreEqual(inputCode, component.CodeModule.Content());
@@ -413,18 +380,15 @@ End Property
 Property Let Foo(ByVal fizz As Boolean, ByVal bar As Integer, ByVal buzz As Boolean)
 End Property";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            //Act
             var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, null);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
@@ -452,18 +416,15 @@ End Property
 Property Set Foo(ByVal fizz As Boolean, ByVal bar As Integer, ByVal buzz As Variant)
 End Property";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            //Act
             var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, null);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
@@ -495,7 +456,6 @@ Sub IClass1_fizz(ByVal boo As Boolean, ByVal fizz As Date)
     
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
@@ -516,11 +476,9 @@ End Sub";
             messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
                       .Returns(DialogResult.OK);
 
-            //Act
             var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, messageBox.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode1, module1.Content());
             Assert.AreEqual(expectedCode2, module2.Content());
         }
@@ -565,7 +523,6 @@ End Sub";
 Sub IClass1_fizz(ByVal boo As Boolean, ByVal fizz As Date)
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
@@ -588,11 +545,9 @@ End Sub";
             messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
                       .Returns(DialogResult.OK);
 
-            //Act
             var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, messageBox.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode1, module1.Content());
             Assert.AreEqual(expectedCode2, module2.Content());
             Assert.AreEqual(expectedCode3, module3.Content());
@@ -614,7 +569,6 @@ Sub IClass1_fizz(ByVal boo As Boolean)
 End Sub";
             var selection = new Selection(4, 10, 4, 14);
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
@@ -635,11 +589,9 @@ End Sub";
             messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
                       .Returns(DialogResult.No);
 
-            //Act
             var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, messageBox.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(inputCode1, module1.Content());
             Assert.AreEqual(inputCode2, module2.Content());
         }
@@ -660,18 +612,15 @@ End Sub";
     
 End Sub";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            //Act
             var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, null);
             refactoring.Refactor(state.AllUserDeclarations.FindVariable(qualifiedSelection));
 
-            //Assert
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
@@ -684,7 +633,6 @@ End Sub";
     Dim bar As Boolean
 End Sub";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -693,10 +641,8 @@ End Sub";
             messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
                       .Returns(DialogResult.OK);
 
-            //Act
             var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, messageBox.Object);
 
-            //Assert
             try
             {
                 refactoring.Refactor(state.AllUserDeclarations.First(d => d.DeclarationType != DeclarationType.Variable));

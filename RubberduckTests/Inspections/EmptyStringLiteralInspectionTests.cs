@@ -28,7 +28,6 @@ End Sub
 Public Sub Foo(ByRef arg1 As String)
 End Sub";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -54,7 +53,6 @@ End Sub";
     arg1 = """"
 End Sub";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -80,7 +78,6 @@ End Sub";
     arg1 = ""test""
 End Sub";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -107,7 +104,6 @@ End Sub";
     arg1 = """"
 End Sub";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -138,7 +134,6 @@ End Sub";
     arg1 = vbNullString
 End Sub";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -172,7 +167,6 @@ End Sub";
     arg1 = """"
 End Sub";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);

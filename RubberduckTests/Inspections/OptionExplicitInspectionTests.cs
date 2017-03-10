@@ -18,7 +18,6 @@ namespace RubberduckTests.Inspections
         {
             const string inputCode = @"";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -35,7 +34,6 @@ namespace RubberduckTests.Inspections
         {
             const string inputCode = @"Option Explicit";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -52,7 +50,6 @@ namespace RubberduckTests.Inspections
         {
             const string inputCode = @"";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode)
@@ -75,7 +72,6 @@ namespace RubberduckTests.Inspections
             const string inputCode1 = @"";
             const string inputCode2 = @"Option Explicit";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
@@ -101,7 +97,6 @@ namespace RubberduckTests.Inspections
 
 ";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -117,7 +112,6 @@ namespace RubberduckTests.Inspections
         [TestCategory("Inspections")]
         public void OptionExplicit_NoIgnoreQuickFix()
         {
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleModule(string.Empty, ComponentType.ClassModule, out component);
             var state = MockParser.CreateAndParse(vbe.Object);

@@ -22,7 +22,6 @@ namespace RubberduckTests.Inspections
             const string inputCode =
 @"Option Base 0";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -44,7 +43,6 @@ namespace RubberduckTests.Inspections
         {
             string inputCode = "Option Base 1";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -68,7 +66,6 @@ namespace RubberduckTests.Inspections
 @"'@Ignore OptionBaseZero
 Option Base 0";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -91,7 +88,6 @@ Option Base 0";
             string inputCode = "Option Base 0";
             string expectedCode = string.Empty;
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -120,7 +116,6 @@ Base _
 
             string expectedCode = string.Empty;
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -146,7 +141,6 @@ Base _
 
             string expectedCode = "Option Explicit: : Option Base 1";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -175,7 +169,6 @@ Base _
 
             string expectedCode = "Option Explicit: : Option Base 1";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);

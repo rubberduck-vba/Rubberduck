@@ -18,7 +18,6 @@ namespace RubberduckTests.Inspections
         {
             const string inputCode = @"Option Base 1";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -35,7 +34,6 @@ namespace RubberduckTests.Inspections
         {
             const string inputCode = @"";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -52,7 +50,6 @@ namespace RubberduckTests.Inspections
         {
             const string inputCode = @"Option Base 0";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -69,7 +66,6 @@ namespace RubberduckTests.Inspections
         {
             const string inputCode = @"Option Base 1";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode)
@@ -92,7 +88,6 @@ namespace RubberduckTests.Inspections
             const string inputCode1 = @"";
             const string inputCode2 = @"Option Base 1";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
@@ -116,7 +111,6 @@ namespace RubberduckTests.Inspections
 @"'@Ignore OptionBase
 Option Base 1";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -138,7 +132,6 @@ Option Base 1";
 @"'@Ignore OptionBase
 Option Base 1";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);

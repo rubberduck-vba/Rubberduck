@@ -40,7 +40,6 @@ namespace RubberduckTests.Inspections
 End Sub
 ";
 
-            //Arrange
             var parser = ArrangeParser(inputCode);
 
             parser.Parse(new CancellationTokenSource());
@@ -66,7 +65,6 @@ End Sub
 End Sub
 ";
 
-            //Arrange
             var parser = ArrangeParser(inputCode);
 
             parser.Parse(new CancellationTokenSource());
@@ -92,7 +90,6 @@ End Sub
 End Sub
 ";
 
-            //Arrange
             var parser = ArrangeParser(inputCode);
 
             parser.Parse(new CancellationTokenSource());
@@ -120,7 +117,6 @@ End Sub
 End Sub
 ";
 
-            //Arrange
             var parser = ArrangeParser(inputCode);
 
             parser.Parse(new CancellationTokenSource());
@@ -144,7 +140,6 @@ End Sub
 End Sub
 ";
 
-            //Arrange
             var parser = ArrangeParser(inputCode);
 
             parser.Parse(new CancellationTokenSource());
@@ -170,7 +165,6 @@ End Sub
 End Sub
 ";
 
-            //Arrange
             var parser = ArrangeParser(inputCode);
 
             parser.Parse(new CancellationTokenSource());
@@ -192,7 +186,6 @@ End Sub
     foo = Application.Pi
 End Sub
 ";
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("Module1", ComponentType.StandardModule, inputCode)
@@ -224,7 +217,6 @@ End Sub
 End Sub
 ";
 
-            //Arrange
             var parser = ArrangeParser(inputCode);
 
             parser.Parse(new CancellationTokenSource());
@@ -256,7 +248,6 @@ End Sub
 End Sub
 ";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("Module1", ComponentType.StandardModule, inputCode)
@@ -301,7 +292,6 @@ End Sub
 End Sub
 ";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("Module1", ComponentType.StandardModule, inputCode)
@@ -350,7 +340,6 @@ End Sub
 End Sub
 ";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("Module1", ComponentType.StandardModule, inputCode)
@@ -395,7 +384,6 @@ End Sub
 End Sub
 ";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("Module1", ComponentType.StandardModule, inputCode)

@@ -64,7 +64,6 @@ Private Sub IView_Show()
 End Sub
 ";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var vbe = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("IView", ComponentType.ClassModule, interfaceCode)
@@ -88,7 +87,6 @@ End Sub
 @"Public Property Set Foo(ByVal value As Object)
 End Property";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -107,7 +105,6 @@ End Property";
 @"Sub Foo(ByVal arg1 As Collection)
 End Sub";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -126,7 +123,6 @@ End Sub";
 @"Sub Foo(arg1 As String)
 End Sub";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -145,7 +141,6 @@ End Sub";
 @"Sub Foo(ByRef arg1 As String)
 End Sub";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -164,7 +159,6 @@ End Sub";
 @"Sub Foo(arg1 As String, arg2 As Date)
 End Sub";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -183,7 +177,6 @@ End Sub";
 @"Sub Foo(ByVal arg1 As String)
 End Sub";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -203,7 +196,6 @@ End Sub";
     arg1 = ""test""
 End Sub";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -223,7 +215,6 @@ End Sub";
     arg1 = ""test""
 End Sub";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -242,7 +233,6 @@ End Sub";
 @"Sub Foo(arg1 As String, ByVal arg2 As Integer)
 End Sub";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -261,7 +251,6 @@ End Sub";
 @"Sub Foo(ByRef arg1() As Variant)
 End Sub";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -284,7 +273,6 @@ End Sub
 Sub DoSomethingElse(ByVal bar As Integer)
 End Sub";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -308,7 +296,6 @@ Sub DoSomethingElse(ByRef bar As Integer)
     bar = 42
 End Sub";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -332,7 +319,6 @@ Sub DoSomethingElse(ByVal bar As Integer)
     bar = 42
 End Sub";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -352,7 +338,6 @@ End Sub";
 Sub Foo(arg1 As String)
 End Sub";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -377,7 +362,6 @@ End Sub";
 Private Sub IClass1_DoSomething(ByRef a As Integer)
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
@@ -408,7 +392,6 @@ End Sub";
 Private Sub IClass1_DoSomething(ByVal a As Integer)
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
@@ -440,7 +423,6 @@ Private Sub IClass1_DoSomething(ByRef a As Integer)
     a = 42
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
@@ -477,7 +459,6 @@ End Sub";
 Private Sub IClass1_DoSomething(ByRef a As Integer, ByRef b As Integer)
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
@@ -508,7 +489,6 @@ End Sub";
 Private Sub abc_Foo(ByRef arg1 As Integer)
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
@@ -539,7 +519,6 @@ End Sub";
 Private Sub abc_Foo(ByVal arg1 As Integer)
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
@@ -571,7 +550,6 @@ Private Sub abc_Foo(ByRef arg1 As Integer)
     arg1 = 42
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
@@ -603,7 +581,6 @@ Private Sub abc_Foo(ByRef arg1 As Integer, ByRef arg2 As Integer)
     arg1 = 42
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
@@ -632,7 +609,6 @@ End Sub";
 @"Sub foo(ByVal f)
 End Sub";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -655,7 +631,6 @@ End Sub";
 @"Sub Foo(ByVal arg1 As String)
 End Sub";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -678,7 +653,6 @@ End Sub";
 @"Sub Foo(ByVal arg1 As String)
 End Sub";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -703,7 +677,6 @@ End Sub";
 ByVal arg1 As String)
 End Sub";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -728,7 +701,6 @@ End Sub";
 arg1 As String)
 End Sub";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -775,7 +747,6 @@ End Sub";
 Private Sub IClass1_DoSomething(ByVal a As Integer, ByRef b As Integer)
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
@@ -834,7 +805,6 @@ End Sub";
 Private Sub abc_Foo(ByRef a As Integer, ByVal b As Integer)
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
@@ -874,7 +844,6 @@ Sub Foo(ByRef _
 arg1 As String)
 End Sub";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -900,7 +869,6 @@ End Sub";
     Debug.Print foo
 End Sub";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -926,7 +894,6 @@ End Sub";
     Debug.Print foo
 End Sub";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -962,7 +929,6 @@ End Sub";
   Debug.Print foo
 End Sub";
 
-            //Arrange
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);

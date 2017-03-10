@@ -28,7 +28,6 @@ namespace RubberduckTests.Inspections
     Let var2 = var1
 End Sub";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -57,7 +56,6 @@ End Sub";
     Let var1 = var2
 End Sub";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -85,7 +83,6 @@ End Sub";
     var2 = var1
 End Sub";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -114,7 +111,6 @@ End Sub";
     var1 = var2
 End Sub";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -143,7 +139,6 @@ End Sub";
     Let var2 = var1
 End Sub";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -179,7 +174,6 @@ End Sub";
     var2 = var1
 End Sub";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -218,7 +212,6 @@ End Sub";
     Let var2 = var1
 End Sub";
 
-            //Arrange
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
             settings.Setup(x => x.LoadConfiguration()).Returns(config);

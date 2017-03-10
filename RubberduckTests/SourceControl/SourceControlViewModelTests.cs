@@ -126,16 +126,13 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void StatusIsOfflineWhenNoRepoIsFoundInConfig()
         {
-            //arrange
             _configService.Setup(c => c.Create()).Returns(new SourceControlSettings());
 
             SetupValidVbProject();
             SetupVM();
 
-            //act
             _vm.RefreshCommand.Execute(null);
 
-            //assert
             VerifyOffline();
         }
 
@@ -143,16 +140,13 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void StatusIsOfflineWhenRepoListIsEmpty()
         {
-            //arrange
             _configService.Setup(c => c.Create()).Returns(new SourceControlSettings());
 
             SetupValidVbProject();
             SetupVM();
 
-            //act
             _vm.RefreshCommand.Execute(null);
 
-            //assert
             VerifyOffline();
         }
 
@@ -160,7 +154,6 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void StatusIsOfflineIfNoMatchingRepoExists()
         {
-            //arrange
             _configService.Setup(c => c.Create()).Returns(new SourceControlSettings());
 
             var project = new Mock<IVBProject>().SetupProperty(p => p.Name, "FooBar");
@@ -168,10 +161,8 @@ namespace RubberduckTests.SourceControl
 
             SetupVM();
 
-            //act
             _vm.RefreshCommand.Execute(null);
 
-            //assert
             VerifyOffline();
         }
 
@@ -179,7 +170,6 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void StatusIsOfflineWhenMultipleReposAreFound()
         {
-            //arrange
             var config = GetDummyConfig();
             config.Repositories.Add(new Repository { Id = DummyRepoId });
 
@@ -188,10 +178,8 @@ namespace RubberduckTests.SourceControl
             SetupValidVbProject();
             SetupVM();
 
-            //act
             _vm.RefreshCommand.Execute(null);
 
-            //assert
             VerifyOffline();
 
         }
@@ -199,34 +187,28 @@ namespace RubberduckTests.SourceControl
         [TestCategory("SourceControl")]
         [TestMethod]
         public void StatusIsOnlineWhenRepoIsFound()
-        {
-            //arrange 
+        { 
             _configService.Setup(c => c.Create()).Returns(GetDummyConfig());
 
             SetupValidVbProject();
             SetupVM();
 
-            //act
             _vm.RefreshCommand.Execute(null);
 
-            //assert
             Assert.AreEqual("Online", _vm.Status);
         }
 
         [TestCategory("SourceControl")]
         [TestMethod]
         public void ChildPresentersHaveValidProviderIfRepoIsFoundInConfig()
-        {
-            //arrange 
+        { 
             _configService.Setup(c => c.Create()).Returns(GetDummyConfig());
 
             SetupValidVbProject();
             SetupVM();
 
-            //act
             _vm.RefreshCommand.Execute(null);
 
-            //assert
             VerifyChildPresentersHaveProviders();
         }
 
@@ -234,14 +216,11 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void InitRepository_WhenUserCancels_RepoIsNotAddedToConfig()
         {
-            //arrange
             _folderBrowser.Setup(b => b.ShowDialog()).Returns(DialogResult.Cancel);
             SetupVM();
 
-            //act
             _vm.InitRepoCommand.Execute(null);
 
-            //assert
             _configService.Verify(c => c.Save(It.IsAny<SourceControlSettings>()), Times.Never);
         }
 
@@ -249,14 +228,11 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void InitRepository_WhenUserCancels_RepoIsNotCreated()
         {
-            //arrange
             _folderBrowser.Setup(b => b.ShowDialog()).Returns(DialogResult.Cancel);
             SetupVM();
 
-            //act
             _vm.InitRepoCommand.Execute(null);
 
-            //assert
             _provider.Verify(git => git.InitVBAProject(It.IsAny<string>()), Times.Never);
         }
 
@@ -264,7 +240,6 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void InitRepository_WhenUserConfirms_RepoIsAddedToConfig()
         {
-            //arrange
             _configService.Setup(c => c.Create()).Returns(GetDummyConfig());
 
             _folderBrowser.Setup(b => b.ShowDialog()).Returns(DialogResult.OK);
@@ -272,10 +247,8 @@ namespace RubberduckTests.SourceControl
 
             SetupVM();
 
-            //act
             _vm.InitRepoCommand.Execute(null);
 
-            //assert
             _configService.Verify(c => c.Save(It.IsAny<SourceControlSettings>()), Times.Once);
         }
 
@@ -283,7 +256,6 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void InitRepository_WhenUserConfirms_RepoIsInitalized()
         {
-            //arrange
             _configService.Setup(c => c.Create()).Returns(GetDummyConfig());
 
             _folderBrowser.Setup(b => b.ShowDialog()).Returns(DialogResult.OK);
@@ -291,10 +263,8 @@ namespace RubberduckTests.SourceControl
 
             SetupVM();
 
-            //act
             _vm.InitRepoCommand.Execute(null);
 
-            //assert
             _provider.Verify(git => git.InitVBAProject(It.IsAny<string>()), Times.Once);
         }
 
@@ -302,15 +272,12 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void OpenWorkingDir_WhenUserCancels_RepoIsNotAddedToConfig()
         {
-            //arrange
             _folderBrowser.Setup(b => b.ShowDialog()).Returns(DialogResult.Cancel);
 
             SetupVM();
 
-            //act
             _vm.OpenRepoCommand.Execute(null);
 
-            //assert
             _configService.Verify(c => c.Save(It.IsAny<SourceControlSettings>()), Times.Never);
         }
 
@@ -318,7 +285,6 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void OpenWorkingDir_WhenUserConfirms_RepoIsAddedToConfig()
         {
-            //arrange
             _configService.Setup(c => c.Create()).Returns(GetDummyConfig());
 
             SetupValidVbProject();
@@ -328,10 +294,8 @@ namespace RubberduckTests.SourceControl
 
             SetupVM();
 
-            //act
             _vm.OpenRepoCommand.Execute(null);
 
-            //assert
             _configService.Verify(c => c.Save(It.IsAny<SourceControlSettings>()), Times.Once);
         }
 
@@ -339,7 +303,6 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void InitRepository_WhenUserConfirms_StatusIsOnline()
         {
-            //arrange
             _configService.Setup(c => c.Create()).Returns(GetDummyConfig());
 
             SetupValidVbProject();
@@ -349,10 +312,8 @@ namespace RubberduckTests.SourceControl
 
             SetupVM();
 
-            //act
             _vm.InitRepoCommand.Execute(null);
 
-            //assert
             Assert.AreEqual("Online", _vm.Status);
         }
 
@@ -360,7 +321,6 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void OpenWorkingDir_WhenUserConfirms_StatusIsOnline()
         {
-            //arrange
             _configService.Setup(c => c.Create()).Returns(GetDummyConfig());
 
             SetupValidVbProject();
@@ -370,10 +330,8 @@ namespace RubberduckTests.SourceControl
 
             SetupVM();
 
-            //act
             _vm.OpenRepoCommand.Execute(null);
 
-            //assert
             Assert.AreEqual("Online", _vm.Status);
         }
 
@@ -381,7 +339,6 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void InitRepository_WhenUserConfirms_ChildPresenterSourceControlProvidersAreSet()
         {
-            //arrange
             _configService.Setup(c => c.Create()).Returns(GetDummyConfig());
 
             SetupValidVbProject();
@@ -391,10 +348,8 @@ namespace RubberduckTests.SourceControl
 
             SetupVM();
 
-            //act
             _vm.InitRepoCommand.Execute(null);
 
-            //assert
             VerifyChildPresentersHaveProviders();
         }
 
@@ -402,7 +357,6 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void OpenWorkingDir_WhenUserConfirms_ChildPresenterSourceControlProvidersAreSet()
         {
-            //arrange
             _configService.Setup(c => c.Create()).Returns(GetDummyConfig());
 
             SetupValidVbProject();
@@ -412,10 +366,8 @@ namespace RubberduckTests.SourceControl
 
             SetupVM();
 
-            //act
             _vm.OpenRepoCommand.Execute(null);
 
-            //assert
             VerifyChildPresentersHaveProviders();
         }
 
@@ -423,7 +375,6 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void BranchesPresenter_WhenActionFailedEventIsRaised_MessageIsShown()
         {
-            //arrange
             const string expectedTitle = "Some Action Failed";
             const string expectedMessage = "Details about failure.";
 
@@ -435,12 +386,10 @@ namespace RubberduckTests.SourceControl
 
             SetupVM();
             _vm.Provider = _provider.Object;
-
-            //assert-act
+-act
             Assert.IsFalse(_vm.DisplayErrorMessageGrid);
             _branchesVM.PublishBranchToolbarButtonCommand.Execute("");
 
-            //assert
             Assert.IsTrue(_vm.DisplayErrorMessageGrid);
 
             Assert.AreEqual(expectedTitle, _vm.ErrorTitle);
@@ -451,7 +400,6 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void ChangesPresenter_WhenActionFailedEventIsRaised_MessageIsShown()
         {
-            //arrange
             const string expectedTitle = "Some Action Failed";
             const string expectedMessage = "Details about failure.";
 
@@ -468,12 +416,10 @@ namespace RubberduckTests.SourceControl
             {
                 new FileStatusEntry("path", FileStatus.Added)
             };
-
-            //assert-act
+-act
             Assert.IsFalse(_vm.DisplayErrorMessageGrid);
             _changesVM.CommitCommand.Execute(null);
 
-            //assert
             Assert.IsTrue(_vm.DisplayErrorMessageGrid);
             
             Assert.AreEqual(expectedTitle, _vm.ErrorTitle);
@@ -484,7 +430,6 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void UnsyncedPresenter_WhenActionFailedEventIsRaised_MessageIsShown()
         {
-            //arrange
             const string expectedTitle = "Some Action Failed.";
             const string expectedMessage = "Details about failure.";
 
@@ -496,12 +441,10 @@ namespace RubberduckTests.SourceControl
 
             SetupVM();
             _vm.Provider = _provider.Object;
-
-            //assert-act
+-act
             Assert.IsFalse(_vm.DisplayErrorMessageGrid);
             _unsyncedVM.PullCommitsCommand.Execute(null);
 
-            //assert
             Assert.IsTrue(_vm.DisplayErrorMessageGrid);
 
             Assert.AreEqual(expectedTitle, _vm.ErrorTitle);
@@ -512,7 +455,6 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void OpenWorkingDir_WhenProviderCreationFails_MessageIsShown()
         {
-            //arrange
             const string expectedTitle = "Some Action Failed.";
             const string expectedMessage = "Details about failure.";
 
@@ -526,12 +468,10 @@ namespace RubberduckTests.SourceControl
 
             SetupValidVbProject();
             SetupVM();
-
-            //assert-act
+-act
             Assert.IsFalse(_vm.DisplayErrorMessageGrid);
             _vm.OpenRepoCommand.Execute(null);
 
-            //assert
             Assert.IsTrue(_vm.DisplayErrorMessageGrid);
 
             Assert.AreEqual(expectedTitle, _vm.ErrorTitle);
@@ -542,7 +482,6 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void MergeStatusSuccess_MessageIsShown()
         {
-            //arrange
             const string sourceBranch = "dev";
             const string destinationBranch = "master";
 
@@ -556,12 +495,10 @@ namespace RubberduckTests.SourceControl
 
             _branchesVM.SourceBranch = sourceBranch;
             _branchesVM.DestinationBranch = destinationBranch;
-
-            //assert-act
+-act
             Assert.IsFalse(_vm.DisplayErrorMessageGrid);
             _branchesVM.MergeBranchesOkButtonCommand.Execute(null);
 
-            //assert
             Assert.IsTrue(_vm.DisplayErrorMessageGrid);
 
             Assert.AreEqual(expectedTitle, _vm.ErrorTitle);
@@ -572,14 +509,11 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void ActionFailed_DismissingHidesMessage()
         {
-            //arrange
             SetupVM();
             _vm.DisplayErrorMessageGrid = true;
 
-            //act
             _vm.DismissErrorMessageCommand.Execute(null);
 
-            //assert
             Assert.IsFalse(_vm.DisplayErrorMessageGrid);
         }
 
@@ -587,7 +521,6 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void UnsyncedPresenter_WhenNotAuthorized_LoginIsShown()
         {
-            //arrange
             SetupVM();
 
             const string expectedTitle = "Push Failed.";
@@ -602,10 +535,8 @@ namespace RubberduckTests.SourceControl
             SetupVM();
             _vm.Provider = _provider.Object;
 
-            //act
             _unsyncedVM.PullCommitsCommand.Execute(null);
 
-            //assert
             Assert.IsTrue(_vm.DisplayLoginGrid);
         }
 
@@ -613,7 +544,6 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void UnsyncedPresenter_AfterLogin_NewPresenterIsCreatedWithCredentials()
         {
-            //arrange
             const string username = "username";
             var password = new SecureString();
             foreach (var c in "password")
@@ -628,10 +558,8 @@ namespace RubberduckTests.SourceControl
 
             _vm.Provider = _provider.Object;
 
-            //act
             _vm.CreateProviderWithCredentials(new SecureCredentials(username, password));
 
-            //assert
             _providerFactory.Verify(f => f.CreateProvider(It.IsAny<IVBProject>(), It.IsAny<IRepository>(), It.IsAny<SecureCredentials>()));
         }
 
@@ -639,13 +567,10 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void Login_HideGridOnCancel()
         {
-            //arrange
             SetupVM();
 
-            //act
             _vm.LoginGridCancelCommand.Execute(null);
 
-            //Assert
             Assert.IsFalse(_vm.DisplayLoginGrid);
         }
 
@@ -653,14 +578,11 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void CloneRepo_DisplaysGrid()
         {
-            //arrange
             SetupVM();
             _vm.Provider = _provider.Object;
 
-            //act
             _vm.CloneRepoCommand.Execute(null);
 
-            //Assert
             Assert.IsTrue(_vm.DisplayCloneRepoGrid);
         }
 
@@ -668,7 +590,6 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void CloneRepo_ClonesRepo()
         {
-            //arrange
             var remotePath = @"https://github.com/Hosch250/RemoveParamsTestProj.git";
             var localDirectory = "C:\\users\\me\\desktop\\git";
 
@@ -679,10 +600,8 @@ namespace RubberduckTests.SourceControl
             _vm.CloneRemotePath = remotePath;
             _vm.LocalDirectory = localDirectory;
 
-            //act
             _vm.CloneRepoOkButtonCommand.Execute(null);
 
-            //Assert
             _provider.Verify(git => git.Clone(remotePath, localDirectory, null));
         }
 
@@ -690,7 +609,6 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void CloneRepo_HideGridOnClone()
         {
-            //arrange
             var remotePath = @"https://github.com/Hosch250/RemoveParamsTestProj.git";
             var localDirectory = "C:\\users\\me\\desktop\\git";
 
@@ -701,10 +619,8 @@ namespace RubberduckTests.SourceControl
             _vm.CloneRemotePath = remotePath;
             _vm.LocalDirectory = localDirectory;
 
-            //act
             _vm.CloneRepoOkButtonCommand.Execute(null);
 
-            //Assert
             Assert.IsFalse(_vm.DisplayCloneRepoGrid);
         }
 
@@ -712,7 +628,6 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void CloneRepo_HideGridOnCancel()
         {
-            //arrange
             var remotePath = @"https://github.com/Hosch250/RemoveParamsTestProj.git";
             var localDirectory = "C:\\users\\me\\desktop\\git";
 
@@ -723,10 +638,8 @@ namespace RubberduckTests.SourceControl
             _vm.CloneRemotePath = remotePath;
             _vm.LocalDirectory = localDirectory;
 
-            //act
             _vm.CloneRepoCancelButtonCommand.Execute(null);
 
-            //Assert
             Assert.IsFalse(_vm.DisplayCloneRepoGrid);
         }
 
@@ -734,7 +647,6 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void CloneRepo_ClearsRemoteOnClone()
         {
-            //arrange
             var remotePath = @"https://github.com/Hosch250/RemoveParamsTestProj.git";
             var localDirectory = "C:\\users\\me\\desktop\\git";
 
@@ -745,10 +657,8 @@ namespace RubberduckTests.SourceControl
             _vm.CloneRemotePath = remotePath;
             _vm.LocalDirectory = localDirectory;
 
-            //act
             _vm.CloneRepoOkButtonCommand.Execute(null);
 
-            //Assert
             Assert.AreEqual(string.Empty, _vm.CloneRemotePath);
         }
 
@@ -756,7 +666,6 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void CloneRepo_ClearsRemoteOnClose()
         {
-            //arrange
             var remotePath = @"https://github.com/Hosch250/RemoveParamsTestProj.git";
             var localDirectory = "C:\\users\\me\\desktop\\git";
 
@@ -767,10 +676,8 @@ namespace RubberduckTests.SourceControl
             _vm.CloneRemotePath = remotePath;
             _vm.LocalDirectory = localDirectory;
 
-            //act
             _vm.CloneRepoCancelButtonCommand.Execute(null);
 
-            //Assert
             Assert.AreEqual(string.Empty, _vm.CloneRemotePath);
         }
 
@@ -778,7 +685,6 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void CloneRepo_ActionFailedEventIsRaised()
         {
-            //arrange
             SetupValidVbProject();
             SetupVM();
 
@@ -788,10 +694,8 @@ namespace RubberduckTests.SourceControl
                         new LibGit2Sharp.LibGit2SharpException("With an inner libgit2sharp exception"))
                     );
 
-            //act
             _vm.CloneRepoOkButtonCommand.Execute(null);
 
-            //assert
             Assert.IsTrue(_vm.DisplayErrorMessageGrid, "ActionFailedEvent was not raised.");
         }
 
@@ -799,14 +703,11 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void Publish_DisplaysGrid()
         {
-            //arrange
             SetupVM();
             _vm.Provider = _provider.Object;
 
-            //act
             _vm.PublishRepoCommand.Execute(null);
 
-            //Assert
             Assert.IsTrue(_vm.DisplayPublishRepoGrid);
         }
 
@@ -814,7 +715,6 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void Publish_AddsOrigin()
         {
-            //arrange
             var remotePath = @"https://github.com/Hosch250/RemoveParamsTestProj.git";
             var branchName = "master";
 
@@ -824,10 +724,8 @@ namespace RubberduckTests.SourceControl
 
             _vm.PublishRemotePath = remotePath;
 
-            //act
             _vm.PublishRepoOkButtonCommand.Execute(null);
 
-            //Assert
             _provider.Verify(git => git.AddOrigin(remotePath, branchName));
         }
 
@@ -835,7 +733,6 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void Publish_HideGridOnClone()
         {
-            //arrange
             var remotePath = @"https://github.com/Hosch250/RemoveParamsTestProj.git";
 
             SetupValidVbProject();
@@ -844,10 +741,8 @@ namespace RubberduckTests.SourceControl
 
             _vm.PublishRemotePath = remotePath;
 
-            //act
             _vm.PublishRepoOkButtonCommand.Execute(null);
 
-            //Assert
             Assert.IsFalse(_vm.DisplayPublishRepoGrid);
         }
 
@@ -855,7 +750,6 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void Publish_HideGridOnCancel()
         {
-            //arrange
             var remotePath = @"https://github.com/Hosch250/RemoveParamsTestProj.git";
 
             SetupValidVbProject();
@@ -864,10 +758,8 @@ namespace RubberduckTests.SourceControl
 
             _vm.PublishRemotePath = remotePath;
 
-            //act
             _vm.PublishRepoCancelButtonCommand.Execute(null);
 
-            //Assert
             Assert.IsFalse(_vm.DisplayPublishRepoGrid);
         }
 
@@ -875,7 +767,6 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void Publish_ClearsRemoteOnCreate()
         {
-            //arrange
             var remotePath = @"https://github.com/Hosch250/RemoveParamsTestProj.git";
 
             SetupValidVbProject();
@@ -884,10 +775,8 @@ namespace RubberduckTests.SourceControl
 
             _vm.PublishRemotePath = remotePath;
 
-            //act
             _vm.PublishRepoOkButtonCommand.Execute(null);
 
-            //Assert
             Assert.AreEqual(string.Empty, _vm.PublishRemotePath);
         }
 
@@ -895,7 +784,6 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void Publish_ClearsRemoteOnClose()
         {
-            //arrange
             var remotePath = @"https://github.com/Hosch250/RemoveParamsTestProj.git";
 
             SetupValidVbProject();
@@ -904,10 +792,8 @@ namespace RubberduckTests.SourceControl
 
             _vm.PublishRemotePath = remotePath;
 
-            //act
             _vm.PublishRepoCancelButtonCommand.Execute(null);
 
-            //Assert
             Assert.AreEqual(string.Empty, _vm.PublishRemotePath);
         }
 
@@ -915,7 +801,6 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void Publish_NoOpenRepo_ErrorReported()
         {
-            //arrange
             _configService.Setup(c => c.Create()).Returns(new SourceControlSettings());
 
             SetupValidVbProject();
@@ -927,10 +812,8 @@ namespace RubberduckTests.SourceControl
                         new LibGit2Sharp.LibGit2SharpException("With an inner libgit2sharp exception"))
                     );
 
-            //act
             _vm.PublishRepoOkButtonCommand.Execute(null);
 
-            //assert
             Assert.IsTrue(_vm.DisplayErrorMessageGrid, "ActionFailedEvent was not raised.");
         }
 
@@ -938,7 +821,6 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void Publish_ActionFailedEventIsRaised()
         {
-            //arrange
             SetupValidVbProject();
             SetupVM();
 
@@ -950,10 +832,8 @@ namespace RubberduckTests.SourceControl
 
             _vm.Provider = _provider.Object;
 
-            //act
             _vm.PublishRepoOkButtonCommand.Execute(null);
 
-            //assert
             Assert.IsTrue(_vm.DisplayErrorMessageGrid, "ActionFailedEvent was not raised.");
         }
 
@@ -961,11 +841,9 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void OpenDirAssignedToRepo_WhenProviderCreationFails_MessageIsShown()
         {
-            //arrange
             const string expectedTitle = "Some Action Failed.";
             const string expectedMessage = "Details about failure.";
 
-            //arrange
             _folderBrowser.Setup(b => b.ShowDialog()).Returns(DialogResult.OK);
             _folderBrowser.SetupProperty(b => b.SelectedPath, @"C:\path\to\repo\");
 
@@ -976,12 +854,10 @@ namespace RubberduckTests.SourceControl
 
             SetupValidVbProject();
             SetupVM();
-
-            //assert-act
+-act
             Assert.IsFalse(_vm.DisplayErrorMessageGrid);
             _vm.RefreshCommand.Execute(null);
 
-            //assert
             Assert.IsTrue(_vm.DisplayErrorMessageGrid);
 
             Assert.AreEqual(expectedTitle, _vm.ErrorTitle);
@@ -992,17 +868,14 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void OnBrowseDefaultRepoLocation_WhenUserConfirms_LocalDirectoryDoesChanges()
         {
-            //arrange
             var newPath = "C:\\test\\test2\\git";
 
             SetupVM();
             _folderBrowser.SetupProperty(f => f.SelectedPath, newPath);
             _folderBrowser.Setup(f => f.ShowDialog()).Returns(DialogResult.OK);
 
-            //act
             _vm.ShowFilePickerCommand.Execute(null);
 
-            //assert
             Assert.AreEqual(newPath, _vm.LocalDirectory);
         }
 
@@ -1010,7 +883,6 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void OnBrowseDefaultRepoLocation_WhenUserCancels_LocalDirectoryDoesNotChange()
         {
-            //arrange
             var newPath = "C:\\test\\test2\\git";
             var originalPath = "C:\\users\\me\\desktop\\git";
 
@@ -1020,10 +892,8 @@ namespace RubberduckTests.SourceControl
             _folderBrowser.SetupProperty(f => f.SelectedPath, newPath);
             _folderBrowser.Setup(f => f.ShowDialog()).Returns(DialogResult.Cancel);
 
-            //act
             _vm.ShowFilePickerCommand.Execute(null);
 
-            //assert
             Assert.AreEqual(originalPath, _vm.LocalDirectory);
         }
 
@@ -1031,16 +901,13 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void NullProject_DisplaysError()
         {
-            //arrange
             SetupValidVbProject();
             SetupVM();
             _vbe.Setup(v => v.ActiveVBProject).Returns((IVBProject)null);
             _vbe.Setup(v => v.VBProjects).Returns(new Mock<IVBProjects>().Object);
 
-            //act
             _vm.RefreshCommand.Execute(null);
 
-            //assert
             Assert.IsTrue(_vm.DisplayErrorMessageGrid, "Null ActiveProject did not raise error.");
         }
 

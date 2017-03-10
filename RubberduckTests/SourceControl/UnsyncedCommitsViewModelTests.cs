@@ -36,13 +36,11 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void UnsyncedPresenter_AfterRefresh_ViewBranchIsCurrentBranch()
         {
-            //Arrange
             var vm = new UnsyncedCommitsViewViewModel
             {
                 Provider = _provider.Object
             };
 
-            //Assert
             Assert.AreEqual(_initialBranch.Name, vm.CurrentBranch);
         }
 
@@ -50,13 +48,11 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void UnsyncedPresenter_AfterRefresh_IncomingCommitsAreDisplayed()
         {
-            //Arrange
             var vm = new UnsyncedCommitsViewViewModel
             {
                 Provider = _provider.Object
             };
 
-            //Assert
             CollectionAssert.AreEquivalent(_provider.Object.UnsyncedRemoteCommits.ToList(), vm.IncomingCommits.ToList());
         }
 
@@ -64,13 +60,11 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void UnsyncedPresenter_AfterRefresh_OutgoingCommitsAreDisplayed()
         {
-            //Arrange
             var vm = new UnsyncedCommitsViewViewModel
             {
                 Provider = _provider.Object
             };
 
-            //Assert
             CollectionAssert.AreEquivalent(_provider.Object.UnsyncedLocalCommits.ToList(), vm.OutgoingCommits.ToList());
         }
 
@@ -78,16 +72,13 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void UnsyncedPresenter_OnFetch_ProviderFetches()
         {
-            //Arrange
             var vm = new UnsyncedCommitsViewViewModel
             {
                 Provider = _provider.Object
             };
-
-            //Act - Simulate Fetch click
+ - Simulate Fetch click
             vm.FetchCommitsCommand.Execute(null);
 
-            //Assert
             _provider.Verify(git => git.Fetch(It.IsAny<string>()));
         }
 
@@ -95,7 +86,6 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void UnsyncedPresenter_AfterFetch_IncomingCommitsRefreshes()
         {
-            //Arrange
             var vm = new UnsyncedCommitsViewViewModel
             {
                 Provider = _provider.Object
@@ -103,11 +93,9 @@ namespace RubberduckTests.SourceControl
 
             _provider.SetupGet(git => git.UnsyncedRemoteCommits)
                 .Returns(new List<ICommit> { new Commit("1111111", "Hosch250", "Fixed the foobarred bazzer.") });
-
-            //Act - Simulate Fetch click
+ - Simulate Fetch click
             vm.FetchCommitsCommand.Execute(null);
 
-            //Assert
             CollectionAssert.AreEquivalent(_provider.Object.UnsyncedRemoteCommits.ToList(), vm.IncomingCommits.ToList());
         }
 
@@ -115,16 +103,13 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void UnsyncedPresenter_OnPull_ProviderPulls()
         {
-            //Arrange
             var vm = new UnsyncedCommitsViewViewModel
             {
                 Provider = _provider.Object
             };
 
-            //Act
             vm.PullCommitsCommand.Execute(null);
 
-            //Assert
             _provider.Verify(git => git.Pull());
         }
 
@@ -132,16 +117,13 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void UnsyncedPresenter_OnPush_ProviderPushes()
         {
-            //Arrange
             var vm = new UnsyncedCommitsViewViewModel
             {
                 Provider = _provider.Object
             };
 
-            //Act
             vm.PushCommitsCommand.Execute(null);
 
-            //Assert
             _provider.Verify(git => git.Push());
         }
 
@@ -149,16 +131,13 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void UnsyncedPresenter_OnSync_ProviderPullsThenPushes()
         {
-            //Arrange
             var vm = new UnsyncedCommitsViewViewModel
             {
                 Provider = _provider.Object
             };
 
-            //Act
             vm.SyncCommitsCommand.Execute(null);
 
-            //Assert
             _provider.Verify(git => git.Pull());
             _provider.Verify(git => git.Push());
         }
@@ -167,7 +146,6 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void UnsyncedPresenter_WhenFetchFails_ActionFailedEventIsRaised()
         {
-            //arrange
             var wasRaised = false;
             var vm = new UnsyncedCommitsViewViewModel
             {
@@ -182,10 +160,8 @@ namespace RubberduckTests.SourceControl
 
             vm.ErrorThrown += (sender, error) => wasRaised = true;
 
-            //act
             vm.FetchCommitsCommand.Execute(null);
 
-            //assert
             Assert.IsTrue(wasRaised, "ActionFailedEvent was not raised.");
         }
 
@@ -193,7 +169,6 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void UnsyncedPresenter_WhenPushFails_ActionFailedEventIsRaised()
         {
-            //arrange
             var wasRaised = false;
             var vm = new UnsyncedCommitsViewViewModel
             {
@@ -208,10 +183,8 @@ namespace RubberduckTests.SourceControl
 
             vm.ErrorThrown += (sender, error) => wasRaised = true;
 
-            //act
             vm.PushCommitsCommand.Execute(null);
 
-            //assert
             Assert.IsTrue(wasRaised, "ActionFailedEvent was not raised.");
         }
 
@@ -219,7 +192,6 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void UnsyncedPresenter_WhenPullFails_ActionFailedEventIsRaised()
         {
-            //arrange
             var wasRaised = false;
             var vm = new UnsyncedCommitsViewViewModel
             {
@@ -234,10 +206,8 @@ namespace RubberduckTests.SourceControl
 
             vm.ErrorThrown += (sender, error) => wasRaised = true;
 
-            //act
             vm.PullCommitsCommand.Execute(null);
 
-            //assert
             Assert.IsTrue(wasRaised, "ActionFailedEvent was not raised.");
         }
 
@@ -245,7 +215,6 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void UnsyncedPresenter_WhenSyncFails_ActionFailedEventIsRaised()
         {
-            //arrange
             var wasRaised = false;
             var vm = new UnsyncedCommitsViewViewModel
             {
@@ -260,10 +229,8 @@ namespace RubberduckTests.SourceControl
 
             vm.ErrorThrown += (sender, error) => wasRaised = true;
 
-            //act
             vm.SyncCommitsCommand.Execute(null);
 
-            //assert
             Assert.IsTrue(wasRaised, "ActionFailedEvent was not raised.");
         }
     }

@@ -20,7 +20,6 @@ namespace RubberduckTests.Inspections
     Dim strFoo As String
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
@@ -47,7 +46,6 @@ End Sub";
     Dim oFoo As Object
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
@@ -74,7 +72,6 @@ End Sub";
     Debug.Print ""Ez egy objektum""
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("clsMagyar", ComponentType.ClassModule, inputCode)
@@ -101,7 +98,6 @@ End Sub";
     Dim strong As Variant
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
@@ -126,7 +122,6 @@ End Sub";
             const string inputCode =
 @"Option Explicit";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("Stripper", ComponentType.ClassModule, inputCode)
@@ -152,7 +147,6 @@ End Sub";
 @"Sub InExcelSomewhere()
     Dim col As Long
 End Sub";
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
@@ -179,7 +173,6 @@ End Sub";
     '@Ignore HungarianNotation
     Dim strFoo As Variant
 End Sub";
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
@@ -205,7 +198,6 @@ End Sub";
 @"Sub Feherlista()
     Dim oRange As Object
 End Sub";
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("MyClass", ComponentType.ClassModule, inputCode)

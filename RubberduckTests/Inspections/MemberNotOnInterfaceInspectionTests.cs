@@ -44,7 +44,6 @@ namespace RubberduckTests.Inspections
     dict.NonMember
 End Sub";
 
-            //Arrange
             var parser = ArrangeParser(inputCode);
 
             parser.Parse(new CancellationTokenSource());
@@ -68,7 +67,6 @@ End Sub";
     dict.NonMember
 End Sub";
 
-            //Arrange
             var parser = ArrangeParser(inputCode);
 
             parser.Parse(new CancellationTokenSource());
@@ -90,7 +88,6 @@ End Sub";
     Application.NonMember
 End Sub";
 
-            //Arrange
             var parser = ArrangeParser(inputCode, "Excel");
 
             parser.Parse(new CancellationTokenSource());
@@ -112,7 +109,6 @@ End Sub";
     dict.NonMember
 End Sub";
 
-            //Arrange
             var parser = ArrangeParser(inputCode);
 
             parser.Parse(new CancellationTokenSource());
@@ -136,7 +132,6 @@ End Sub";
     Debug.Print dict.Count
 End Sub";
 
-            //Arrange
             var parser = ArrangeParser(inputCode);
 
             parser.Parse(new CancellationTokenSource());
@@ -159,7 +154,6 @@ End Sub";
     Debug.Print x.NonMember
 End Sub";
 
-            //Arrange
             var parser = ArrangeParser(inputCode);
 
             parser.Parse(new CancellationTokenSource());
@@ -184,7 +178,6 @@ End Sub";
     End With
 End Sub";
 
-            //Arrange
             var parser = ArrangeParser(inputCode);
 
             parser.Parse(new CancellationTokenSource());
@@ -208,7 +201,6 @@ End Sub";
     dict!SomeIdentifier = 42
 End Sub";
 
-            //Arrange
             var parser = ArrangeParser(inputCode);
 
             parser.Parse(new CancellationTokenSource());
@@ -233,7 +225,6 @@ End Sub";
     End With
 End Sub";
 
-            //Arrange
             var parser = ArrangeParser(inputCode);
 
             parser.Parse(new CancellationTokenSource());
@@ -255,7 +246,6 @@ End Sub";
     Dim dict As Scripting.Dictionary
 End Sub";
 
-            //Arrange
             var parser = ArrangeParser(inputCode);
 
             parser.Parse(new CancellationTokenSource());
@@ -280,7 +270,6 @@ End Sub";
     dict.NonMember
 End Sub";
 
-            //Arrange
             var parser = ArrangeParser(inputCode);
 
             parser.Parse(new CancellationTokenSource());
