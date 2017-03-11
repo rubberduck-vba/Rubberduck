@@ -8,8 +8,6 @@ using Rubberduck.UI;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Controls;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.Application;
-using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
@@ -33,17 +31,14 @@ End Sub";
 @"Public Sub Foo()
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, inputClass)
                 .AddComponent("Class2", ComponentType.ClassModule, inputClass)
                 .AddComponent("IClass1", ComponentType.ClassModule, inputInterface)
                 .Build();
-            
+
             var vbe = builder.AddProject(project).Build();
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -71,7 +66,6 @@ End Sub";
 @"Public Sub Foo()
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, inputClass)
@@ -80,8 +74,6 @@ End Sub";
                 .Build();
 
             var vbe = builder.AddProject(project).Build();
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -113,7 +105,6 @@ End Sub";
 @"Public Sub Foo()
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, inputClass, new Selection(7, 5, 7, 5))
@@ -124,8 +115,6 @@ End Sub";
             var vbe = builder.AddProject(project).Build();
             vbe.Setup(v => v.ActiveCodePane).Returns(project.Object.VBComponents["Class1"].CodeModule.CodePane);
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -147,16 +136,9 @@ End Sub";
 @"Public Sub Foo()
 End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component, default(Selection));
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component, default(Selection));
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var messageBox = new Mock<IMessageBox>();
             messageBox.Setup(m =>
@@ -164,9 +146,9 @@ End Sub";
                         It.IsAny<MessageBoxIcon>())).Returns(DialogResult.OK);
 
             var vm = new SearchResultsWindowViewModel();
-            var command = new FindAllImplementationsCommand(null, messageBox.Object, parser.State, vbe.Object, vm, null);
+            var command = new FindAllImplementationsCommand(null, messageBox.Object, state, vbe.Object, vm, null);
 
-            command.Execute(parser.State.AllUserDeclarations.Single(s => s.IdentifierName == "Foo"));
+            command.Execute(state.AllUserDeclarations.Single(s => s.IdentifierName == "Foo"));
 
             messageBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
                 It.IsAny<MessageBoxIcon>()), Times.Once);
@@ -186,7 +168,6 @@ End Sub";
 @"Public Sub Foo()
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, inputClass)
@@ -194,8 +175,6 @@ End Sub";
                 .Build();
 
             var vbe = builder.AddProject(project).Build();
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -215,20 +194,14 @@ End Sub";
         [TestMethod]
         public void FindAllImplementations_NullTarget_Aborts()
         {
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(string.Empty, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out component);
             vbe.Setup(s => s.ActiveCodePane).Returns(value: null);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var vm = new SearchResultsWindowViewModel();
-            var command = new FindAllImplementationsCommand(null, null, parser.State, vbe.Object, vm, null);
+            var command = new FindAllImplementationsCommand(null, null, state, vbe.Object, vm, null);
 
             command.Execute(null);
 
@@ -249,24 +222,18 @@ Private Sub Bar()
     Foo
 End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             vbe.Setup(s => s.ActiveCodePane).Returns(value: null);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
+            state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
 
             var vm = new SearchResultsWindowViewModel();
-            var command = new FindAllImplementationsCommand(null, null, parser.State, vbe.Object, vm, null);
+            var command = new FindAllImplementationsCommand(null, null, state, vbe.Object, vm, null);
 
-            command.Execute(parser.State.AllUserDeclarations.Single(s => s.IdentifierName == "Foo"));
+            command.Execute(state.AllUserDeclarations.Single(s => s.IdentifierName == "Foo"));
 
             Assert.IsFalse(vm.Tabs.Any());
         }
@@ -275,20 +242,14 @@ End Sub";
         [TestMethod]
         public void FindAllImplementations_CanExecute_NullTarget()
         {
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(string.Empty, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out component);
             vbe.Setup(s => s.ActiveCodePane).Returns(value: null);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var vm = new SearchResultsWindowViewModel();
-            var command = new FindAllImplementationsCommand(null, null, parser.State, vbe.Object, vm, null);
+            var command = new FindAllImplementationsCommand(null, null, state, vbe.Object, vm, null);
 
             Assert.IsFalse(command.CanExecute(null));
         }
@@ -307,44 +268,32 @@ Private Sub Bar()
     Foo
 End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             vbe.Setup(s => s.ActiveCodePane).Returns(value: null);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
+            state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
 
             var vm = new SearchResultsWindowViewModel();
-            var command = new FindAllImplementationsCommand(null, null, parser.State, vbe.Object, vm, null);
+            var command = new FindAllImplementationsCommand(null, null, state, vbe.Object, vm, null);
 
-            Assert.IsFalse(command.CanExecute(parser.State.AllUserDeclarations.Single(s => s.IdentifierName == "Foo")));
+            Assert.IsFalse(command.CanExecute(state.AllUserDeclarations.Single(s => s.IdentifierName == "Foo")));
         }
 
         [TestCategory("Commands")]
         [TestMethod]
         public void FindAllImplementations_CanExecute_NullActiveCodePane()
         {
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(string.Empty, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out component);
             vbe.Setup(s => s.ActiveCodePane).Returns(value: null);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var vm = new SearchResultsWindowViewModel();
-            var command = new FindAllImplementationsCommand(null, null, parser.State, vbe.Object, vm, null);
+            var command = new FindAllImplementationsCommand(null, null, state, vbe.Object, vm, null);
 
             Assert.IsFalse(command.CanExecute(null));
         }

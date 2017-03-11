@@ -99,14 +99,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
             if (!IsWrappingNullReference) Target.Delete();
         }
 
-        public override void Release(bool final = false)
-        {
-            if (!IsWrappingNullReference)
-            {
-                Controls.Release();
-                base.Release(final);
-            }
-        }
+        //public override void Release(bool final = false)
+        //{
+        //    if (!IsWrappingNullReference)
+        //    {
+        //        Controls.Release();
+        //        base.Release(final);
+        //    }
+        //}
 
         public override bool Equals(ISafeComWrapper<Microsoft.Office.Core.CommandBar> other)
         {

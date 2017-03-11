@@ -1,11 +1,6 @@
-﻿using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.SmartIndenter;
 using Rubberduck.UI.Command;
-using Rubberduck.VBEditor.Application;
-using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
@@ -19,23 +14,14 @@ namespace RubberduckTests.Commands
         [TestMethod]
         public void AddNoIndentAnnotation()
         {
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule("", out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-            var module = component.CodeModule;
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error)
-            {
-                Assert.Inconclusive("Parser Error");
-            }
-            
-            var noIndentAnnotationCommand = new NoIndentAnnotationCommand(vbe.Object, parser.State);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule("", out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var noIndentAnnotationCommand = new NoIndentAnnotationCommand(vbe.Object, state);
             noIndentAnnotationCommand.Execute(null);
 
-            Assert.AreEqual("'@NoIndent\r\n", module.Content());
+            Assert.AreEqual("'@NoIndent\r\n", component.CodeModule.Content());
         }
 
         [TestCategory("Commands")]
@@ -56,46 +42,28 @@ Public Foo As Boolean
 
 Sub Foo()
 End Sub";
-
-            var builder = new MockVbeBuilder();
+            
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(input, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error)
-            {
-                Assert.Inconclusive("Parser Error");
-            }
-
-            var module = component.CodeModule;
-            var noIndentAnnotationCommand = new NoIndentAnnotationCommand(vbe.Object, parser.State);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+            
+            var noIndentAnnotationCommand = new NoIndentAnnotationCommand(vbe.Object, state);
             noIndentAnnotationCommand.Execute(null);
 
-            Assert.AreEqual(expected, module.Content());
+            Assert.AreEqual(expected, component.CodeModule.Content());
         }
 
         [TestCategory("Commands")]
         [TestMethod]
         public void AddNoIndentAnnotation_CanExecute_NullActiveCodePane()
         {
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule("", out component);
-            vbe.Setup(v => v.ActiveCodePane).Returns((ICodePane) null);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule("", out component);
+            vbe.Setup(v => v.ActiveCodePane).Returns((ICodePane)null);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error)
-            {
-                Assert.Inconclusive("Parser Error");
-            }
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            var noIndentAnnotationCommand = new NoIndentAnnotationCommand(vbe.Object, parser.State);
+            var noIndentAnnotationCommand = new NoIndentAnnotationCommand(vbe.Object, state);
             Assert.IsFalse(noIndentAnnotationCommand.CanExecute(null));
         }
 
@@ -103,21 +71,13 @@ End Sub";
         [TestMethod]
         public void AddNoIndentAnnotation_CanExecute_ModuleAlreadyHasAnnotation()
         {
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule("'@NoIndent\r\n", out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule("'@NoIndent\r\n", out component);
             vbe.Setup(v => v.ActiveCodePane).Returns((ICodePane)null);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error)
-            {
-                Assert.Inconclusive("Parser Error");
-            }
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            var noIndentAnnotationCommand = new NoIndentAnnotationCommand(vbe.Object, parser.State);
+            var noIndentAnnotationCommand = new NoIndentAnnotationCommand(vbe.Object, state);
             Assert.IsFalse(noIndentAnnotationCommand.CanExecute(null));
         }
 
@@ -164,17 +124,9 @@ End Sub
             var vbe = builder.AddProject(project).Build();
             vbe.Setup(s => s.ActiveCodePane).Returns(project.Object.VBComponents["Comp2"].CodeModule.CodePane);
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error)
-            {
-                Assert.Inconclusive("Parser Error");
-            }
-
-            var indentCommand = new IndentCurrentModuleCommand(vbe.Object, CreateIndenter(vbe.Object), parser.State);
+            var indentCommand = new IndentCurrentModuleCommand(vbe.Object, CreateIndenter(vbe.Object), state);
             indentCommand.Execute(null);
 
             var module1 = project.Object.VBComponents["Comp1"].CodeModule;
@@ -188,22 +140,13 @@ End Sub
         [TestMethod]
         public void IndentModule_CanExecute_NullActiveCodePane()
         {
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule("", out component);
-            vbe.Setup(v => v.ActiveCodePane).Returns((ICodePane) null);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule("", out component);
+            vbe.Setup(v => v.ActiveCodePane).Returns((ICodePane)null);
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error)
-            {
-                Assert.Inconclusive("Parser Error");
-            }
-
-            var indentCommand = new IndentCurrentModuleCommand(vbe.Object, CreateIndenter(vbe.Object), parser.State);
+            var indentCommand = new IndentCurrentModuleCommand(vbe.Object, CreateIndenter(vbe.Object), state);
             Assert.IsFalse(indentCommand.CanExecute(null));
         }
 
@@ -211,20 +154,11 @@ End Sub
         [TestMethod]
         public void IndentModule_CanExecute()
         {
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule("", out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule("", out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error)
-            {
-                Assert.Inconclusive("Parser Error");
-            }
-
-            var indentCommand = new IndentCurrentModuleCommand(vbe.Object, CreateIndenter(vbe.Object), parser.State);
+            var indentCommand = new IndentCurrentModuleCommand(vbe.Object, CreateIndenter(vbe.Object), state);
             Assert.IsTrue(indentCommand.CanExecute(null));
         }
 

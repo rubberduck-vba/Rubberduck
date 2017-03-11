@@ -110,20 +110,20 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 : ((IEnumerable<IReference>) this).GetEnumerator();
         }
 
-        private bool _isReleased;
-        public override void Release(bool final = false)
-        {
-            if (!IsWrappingNullReference && !_isReleased)
-            {
-                for (var i = 1; i <= Count; i++)
-                {
-                    this[i].Release();
-                }
+        //private bool _isReleased;
+        //public override void Release(bool final = false)
+        //{
+        //    if (!IsWrappingNullReference && !_isReleased)
+        //    {
+        //        for (var i = 1; i <= Count; i++)
+        //        {
+        //            this[i].Release();
+        //        }
 
-                base.Release(final);
-                _isReleased = true;
-            }
-        }
+        //        base.Release(final);
+        //        _isReleased = true;
+        //    }
+        //}
 
         public override bool Equals(ISafeComWrapper<VB.References> other)
         {

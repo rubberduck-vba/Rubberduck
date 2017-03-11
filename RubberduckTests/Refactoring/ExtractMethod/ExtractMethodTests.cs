@@ -44,9 +44,6 @@ namespace RubberduckTests.Refactoring.ExtractMethod
             [TestCategory("ExtractMethodModelTests")]
             public void shouldReturnNewMethod()
             {
-
-                QualifiedModuleName qualifiedModuleName;
-                RubberduckParserState state;
                 var inputCode = @"
 Option Explicit
 Private Sub Foo()
@@ -54,7 +51,8 @@ Private Sub Foo()
     x = 1 + 2
 End Sub";
 
-                MockParser.ParseString(inputCode, out qualifiedModuleName, out state);
+                QualifiedModuleName qualifiedModuleName;
+                var state = MockParser.ParseString(inputCode, out qualifiedModuleName);
                 var declarations = state.AllDeclarations;
 
                 var SUT = new ExtractedMethod();
@@ -78,10 +76,6 @@ End Sub";
             [TestCategory("ExtractMethodModelTests")]
             public void shouldReturnAnIncrementedMethodName()
             {
-
-                QualifiedModuleName qualifiedModuleName;
-                RubberduckParserState state;
-
                 #region inputCode
                 var inputCode = @"
 Option Explicit
@@ -95,7 +89,8 @@ Private Sub NewMethod
 End Sub";
                 #endregion inputCode
 
-                MockParser.ParseString(inputCode, out qualifiedModuleName, out state);
+                QualifiedModuleName qualifiedModuleName;
+                var state = MockParser.ParseString(inputCode, out qualifiedModuleName);
                 var declarations = state.AllDeclarations;
 
                 var SUT = new ExtractedMethod();
@@ -118,9 +113,6 @@ End Sub";
             [TestCategory("ExtractMethodModelTests")]
             public void shouldReturnAnLeastNextMethod()
             {
-
-                QualifiedModuleName qualifiedModuleName;
-                RubberduckParserState state;
                 #region inputCode
                 var inputCode = @"
 Option Explicit
@@ -142,7 +134,8 @@ Private Sub NewMethod4
 End Sub";
                 #endregion inputCode
 
-                MockParser.ParseString(inputCode, out qualifiedModuleName, out state);
+                QualifiedModuleName qualifiedModuleName;
+                var state = MockParser.ParseString(inputCode, out qualifiedModuleName);
                 var declarations = state.AllDeclarations;
 
                 var SUT = new ExtractedMethod();

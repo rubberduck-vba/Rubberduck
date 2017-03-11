@@ -296,7 +296,7 @@
                     </StackPanel>
                 </Expander>
                 <Expander Grid.Row="4"
-                         IsExpanded="False"
+                         IsExpanded="True"
                          Background="#FFFFFFFF"
                          BorderBrush="#FFA9A9A9"
                          Margin="0,0,0,3">

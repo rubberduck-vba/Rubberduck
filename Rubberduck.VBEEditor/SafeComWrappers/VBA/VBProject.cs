@@ -114,18 +114,18 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             if (!IsWrappingNullReference) Target.MakeCompiledFile();
         }
 
-        public override void Release(bool final = false)
-        {
-            if (!IsWrappingNullReference)
-            {
-                if (Protection == ProjectProtection.Unprotected)
-                {
-                    References.Release();
-                    VBComponents.Release();
-                }
-                base.Release(final);
-            }
-        }
+        //public override void Release(bool final = false)
+        //{
+        //    if (!IsWrappingNullReference)
+        //    {
+        //        if (Protection == ProjectProtection.Unprotected)
+        //        {
+        //            References.Release();
+        //            VBComponents.Release();
+        //        }
+        //        base.Release(final);
+        //    }
+        //}
 
         public override bool Equals(ISafeComWrapper<VB.VBProject> other)
         {

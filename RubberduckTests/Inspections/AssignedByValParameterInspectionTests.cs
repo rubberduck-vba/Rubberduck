@@ -1,11 +1,9 @@
 using System.Linq;
-using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Inspections;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Inspections.Resources;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 using System.Collections.Generic;
@@ -138,14 +136,14 @@ Public Sub Foo(ByVal arg1 As String)
 End Sub";
 
             var quickFixResult = ApplyIgnoreOnceQuickFixToCodeFragment(inputCode);
-            Assert.AreEqual(expectedCode, quickFixResult); 
+            Assert.AreEqual(expectedCode, quickFixResult);
         }
 
         [TestMethod]
         [TestCategory("Inspections")]
         public void InspectionType()
         {
-            var inspection = new AssignedByValParameterInspection(null,null);
+            var inspection = new AssignedByValParameterInspection(null, null);
             Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
         }
 
@@ -154,7 +152,7 @@ End Sub";
         public void InspectionName()
         {
             const string inspectionName = "AssignedByValParameterInspection";
-            var inspection = new AssignedByValParameterInspection(null,null);
+            var inspection = new AssignedByValParameterInspection(null, null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
         }
@@ -167,7 +165,7 @@ End Sub";
 
         private string ApplyIgnoreOnceQuickFixToCodeFragment(string inputCode)
         {
-            var vbe = BuildMockVBEStandardModuleForVBAFragment(inputCode);
+            var vbe = BuildMockVBE(inputCode);
             var inspectionResults = GetInspectionResults(vbe.Object);
 
             inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
@@ -184,26 +182,21 @@ End Sub";
 
         private IEnumerable<Rubberduck.Inspections.Abstract.InspectionResultBase> GetInspectionResults(string inputCode)
         {
-            var vbe = BuildMockVBEStandardModuleForVBAFragment(inputCode);
+            var vbe = BuildMockVBE(inputCode);
             return GetInspectionResults(vbe.Object);
         }
 
         private IEnumerable<Rubberduck.Inspections.Abstract.InspectionResultBase> GetInspectionResults(IVBE vbe)
         {
-            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new AssignedByValParameterInspection(parser.State,null);
+            var state = MockParser.CreateAndParse(vbe);
+            var inspection = new AssignedByValParameterInspection(state, null);
             return inspection.GetInspectionResults();
         }
 
-        private Mock<IVBE> BuildMockVBEStandardModuleForVBAFragment(string inputCode)
+        private Mock<IVBE> BuildMockVBE(string inputCode)
         {
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            return builder.BuildFromSingleStandardModule(inputCode, out component);
-
+            return MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
         }
     }
 }

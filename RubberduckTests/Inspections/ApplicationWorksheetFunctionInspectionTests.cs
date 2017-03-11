@@ -1,12 +1,9 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 using Rubberduck.Inspections;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor.Application;
-using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 
@@ -25,8 +22,6 @@ namespace RubberduckTests.Inspections
 
             var vbe = builder.AddProject(project).Build();
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.State.AddTestLibrary("Excel.1.8.xml");
@@ -45,7 +40,6 @@ namespace RubberduckTests.Inspections
 End Sub
 ";
 
-            //Arrange
             var parser = ArrangeParser(inputCode);
 
             parser.Parse(new CancellationTokenSource());
@@ -71,7 +65,6 @@ End Sub
 End Sub
 ";
 
-            //Arrange
             var parser = ArrangeParser(inputCode);
 
             parser.Parse(new CancellationTokenSource());
@@ -97,7 +90,6 @@ End Sub
 End Sub
 ";
 
-            //Arrange
             var parser = ArrangeParser(inputCode);
 
             parser.Parse(new CancellationTokenSource());
@@ -125,7 +117,6 @@ End Sub
 End Sub
 ";
 
-            //Arrange
             var parser = ArrangeParser(inputCode);
 
             parser.Parse(new CancellationTokenSource());
@@ -149,7 +140,6 @@ End Sub
 End Sub
 ";
 
-            //Arrange
             var parser = ArrangeParser(inputCode);
 
             parser.Parse(new CancellationTokenSource());
@@ -175,7 +165,6 @@ End Sub
 End Sub
 ";
 
-            //Arrange
             var parser = ArrangeParser(inputCode);
 
             parser.Parse(new CancellationTokenSource());
@@ -197,7 +186,6 @@ End Sub
     foo = Application.Pi
 End Sub
 ";
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("Module1", ComponentType.StandardModule, inputCode)
@@ -205,8 +193,6 @@ End Sub
 
             var vbe = builder.AddProject(project).Build();
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
@@ -231,7 +217,6 @@ End Sub
 End Sub
 ";
 
-            //Arrange
             var parser = ArrangeParser(inputCode);
 
             parser.Parse(new CancellationTokenSource());
@@ -263,7 +248,6 @@ End Sub
 End Sub
 ";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("Module1", ComponentType.StandardModule, inputCode)
@@ -272,8 +256,6 @@ End Sub
 
             var vbe = builder.AddProject(project).Build();
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.State.AddTestLibrary("Excel.1.8.xml");
@@ -310,7 +292,6 @@ End Sub
 End Sub
 ";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("Module1", ComponentType.StandardModule, inputCode)
@@ -319,8 +300,6 @@ End Sub
 
             var vbe = builder.AddProject(project).Build();
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.State.AddTestLibrary("Excel.1.8.xml");
@@ -361,7 +340,6 @@ End Sub
 End Sub
 ";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("Module1", ComponentType.StandardModule, inputCode)
@@ -370,8 +348,6 @@ End Sub
 
             var vbe = builder.AddProject(project).Build();
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.State.AddTestLibrary("Excel.1.8.xml");
@@ -408,7 +384,6 @@ End Sub
 End Sub
 ";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("Module1", ComponentType.StandardModule, inputCode)
@@ -417,8 +392,6 @@ End Sub
 
             var vbe = builder.AddProject(project).Build();
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.State.AddTestLibrary("Excel.1.8.xml");
