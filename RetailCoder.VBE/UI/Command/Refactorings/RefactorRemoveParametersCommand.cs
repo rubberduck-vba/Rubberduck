@@ -65,7 +65,7 @@ namespace Rubberduck.UI.Command.Refactorings
             }
 
             var selection = pane.GetQualifiedSelection();*/
-            var parameters = _state.AllUserDeclarations.Where(s => s.DeclarationType == DeclarationType.Parameter).Select((s, i) => new Parameter(s, i)).ToList();
+            var parameters = _state.AllUserDeclarations.Where(s => s.DeclarationType == DeclarationType.Parameter).Select((s, i) => new Parameter(s, i, true)).ToList();
             using (var view = new RemoveParametersDialog(new RemoveParametersViewModel(parameters)))
             {
                 //var factory = new RemoveParametersPresenterFactory(Vbe, view, _state, _msgbox);

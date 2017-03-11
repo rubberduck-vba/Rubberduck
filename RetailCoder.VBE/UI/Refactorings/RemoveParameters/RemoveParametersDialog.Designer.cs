@@ -32,7 +32,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RemoveParametersDialog));
             this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-            this.RemoveParametersViewElement = new Rubberduck.UI.Refactorings.RemoveParametersView();
+            this.RemoveParametersViewElement = new RemoveParametersView();
             this.SuspendLayout();
             // 
             // elementHost1
@@ -63,6 +63,6 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
         #endregion
 
         private System.Windows.Forms.Integration.ElementHost elementHost1;
-        private Rubberduck.UI.Refactorings.RemoveParametersView RemoveParametersViewElement;
+        private RemoveParametersView RemoveParametersViewElement;
     }
 }
