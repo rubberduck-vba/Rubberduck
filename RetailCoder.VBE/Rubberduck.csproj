@@ -346,6 +346,7 @@
     <Compile Include="Inspections\HungarianNotationInspection.cs" />
     <Compile Include="Inspections\ImplicitDefaultMemberAssignmentInspection.cs" />
     <Compile Include="Inspections\MemberNotOnInterfaceInspection.cs" />
+    <Compile Include="Inspections\OptionBaseZeroInspection.cs" />
     <Compile Include="Inspections\QuickFixes\AddIdentifierToWhiteListQuickFix.cs" />
     <Compile Include="Inspections\QuickFixes\ApplicationWorksheetFunctionQuickFix.cs" />
     <Compile Include="Inspections\QuickFixes\AssignedByValParameterMakeLocalCopyQuickFix.cs" />
@@ -404,6 +405,8 @@
     <Compile Include="Inspections\QuickFixes\SplitMultipleDeclarationsQuickFix.cs" />
     <Compile Include="Inspections\QuickFixes\RemoveUnusedDeclarationQuickFix.cs" />
     <Compile Include="Inspections\QuickFixes\PassParameterByReferenceQuickFix.cs" />
+    <Compile Include="Inspections\Results\OptionBaseZeroInspectionResult.cs" />
+    <Compile Include="Inspections\QuickFixes\RemoveOptionBaseStatementQuickFix.cs" />
     <Compile Include="Inspections\UndeclaredVariableInspection.cs" />
     <Compile Include="Inspections\Results\UndeclaredVariableInspectionResult.cs" />
     <Compile Include="Inspections\QuickFixes\UntypedFunctionUsageQuickFix.cs" />

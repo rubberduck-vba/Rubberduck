@@ -1,13 +1,11 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections;
 using Rubberduck.Inspections.QuickFixes;
 using Moq;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
-using System.Threading;
 using Rubberduck.UI.Refactorings;
 using System.Windows.Forms;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -242,7 +240,7 @@ End Function
 
         private string ApplyLocalVariableQuickFixToCodeFragment(string inputCode, string userEnteredName = "")
         {
-            var vbe = BuildMockVBEStandardModuleForCodeFragment(inputCode);
+            var vbe = BuildMockVBE(inputCode);
 
             var mockDialogFactory = BuildMockDialogFactory(userEnteredName);
 
@@ -258,20 +256,17 @@ End Function
             return GetModuleContent(vbe.Object);
         }
 
-        private Mock<IVBE> BuildMockVBEStandardModuleForCodeFragment(string inputCode)
+        private Mock<IVBE> BuildMockVBE(string inputCode)
         {
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            return builder.BuildFromSingleStandardModule(inputCode, out component);
+            return MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
         }
 
         private IEnumerable<Rubberduck.Inspections.Abstract.InspectionResultBase> GetInspectionResults(IVBE vbe, IAssignedByValParameterQuickFixDialogFactory mockDialogFactory)
         {
-            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var state = MockParser.CreateAndParse(vbe);
 
-            var inspection = new AssignedByValParameterInspection(parser.State, mockDialogFactory);
+            var inspection = new AssignedByValParameterInspection(state, mockDialogFactory);
             return inspection.GetInspectionResults();
         }
 
@@ -321,12 +316,10 @@ End Function
         private string GetQuickFixResult(string userEnteredNames, TestComponentSpecification resultsComponent, TestComponentSpecification[] testComponents)
         {
             var vbe = BuildProject("TestProject", testComponents.ToList());
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var mockDialogFactory = BuildMockDialogFactory(userEnteredNames);
-            var inspection = new AssignedByValParameterInspection(parser.State, mockDialogFactory.Object);
+            var inspection = new AssignedByValParameterInspection(state, mockDialogFactory.Object);
             var inspectionResults = inspection.GetInspectionResults();
 
             inspectionResults.First().QuickFixes.Single(s => s is AssignedByValParameterMakeLocalCopyQuickFix).Fix();
@@ -370,7 +363,7 @@ End Sub
         }
         private string GetRespectsDeclarationsAccessibilityRules_FirstClassBody()
         {
-            return 
+            return
 @"
 Private memberString As String
 Private memberLong As Long

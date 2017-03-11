@@ -16,9 +16,9 @@ namespace Rubberduck.Parsing.Symbols
         [DebuggerDisplay("ClassModule")]
         ClassModule = 1 << 3 | Module,
         [DebuggerDisplay("UserForm")]
-        UserForm = 1 << 4,
+        UserForm = 1 << 4 | ClassModule,
         [DebuggerDisplay("Document")]
-        Document = 1 << 5,
+        Document = 1 << 5 | ClassModule,
         [DebuggerDisplay("ModuleOption")]
         ModuleOption = 1 << 6,
         [DebuggerDisplay("Member")]

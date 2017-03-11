@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.MSForms;
@@ -31,7 +32,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
         {
             try
             {
-                var existing = Target[name];
+                var existing = Target.Cast<Microsoft.Office.Core.CommandBar>().FirstOrDefault(bar => bar.Name == name);
                 if (existing != null)
                 {
                     existing.Delete();

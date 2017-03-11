@@ -10,6 +10,7 @@ using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor.Application;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -48,6 +49,8 @@ namespace Rubberduck.Parsing.Symbols
         private readonly ConcurrentDictionary<QualifiedModuleName, ConcurrentBag<IAnnotation>> _annotations;
         private readonly ConcurrentDictionary<Declaration, ConcurrentBag<Declaration>> _parametersByParent;
         private readonly ConcurrentDictionary<DeclarationType, ConcurrentBag<Declaration>> _userDeclarationsByType;
+        private readonly IDictionary<QualifiedSelection, IEnumerable<Declaration>> _declarationsBySelection;
+        private readonly IDictionary<QualifiedSelection, IEnumerable<IdentifierReference>> _referencesBySelection;
 
         private readonly Lazy<ConcurrentDictionary<Declaration, Declaration[]>> _handlersByWithEventsField;
         private readonly Lazy<ConcurrentDictionary<VBAParser.ImplementsStmtContext, Declaration[]>> _membersByImplementsContext;
@@ -58,12 +61,29 @@ namespace Rubberduck.Parsing.Symbols
         
         private readonly object threadLock = new object();
 
+        private static QualifiedSelection GetGroupingKey(Declaration declaration)
+        {
+            // we want the procedures' whole body, not just their identifier:
+            return declaration.DeclarationType.HasFlag(DeclarationType.Member)
+                ? new QualifiedSelection(
+                    declaration.QualifiedName.QualifiedModuleName,
+                    declaration.Context.GetSelection())
+                : declaration.QualifiedSelection;
+        }
+
         public DeclarationFinder(IReadOnlyList<Declaration> declarations, IEnumerable<IAnnotation> annotations, IReadOnlyList<UnboundMemberDeclaration> unresolvedMemberDeclarations, IHostApplication hostApp = null)
         {
             _hostApp = hostApp;
             _annotations = annotations.GroupBy(node => node.QualifiedSelection.QualifiedName).ToConcurrentDictionary();
             _declarations = declarations.GroupBy(item => item.QualifiedName.QualifiedModuleName).ToConcurrentDictionary();
             _declarationsByName = declarations.GroupBy(declaration => declaration.IdentifierName.ToLowerInvariant()).ToConcurrentDictionary();
+            _declarationsBySelection = declarations.Where(declaration => !declaration.IsBuiltIn)
+                .GroupBy(GetGroupingKey)
+                .ToDictionary(group => group.Key, group => group.AsEnumerable());
+            _referencesBySelection = declarations
+                .SelectMany(declaration => declaration.References)
+                .GroupBy(reference => new QualifiedSelection(reference.QualifiedModuleName, reference.Selection))
+                .ToDictionary(group => group.Key, group => group.AsEnumerable());
             _parametersByParent = declarations.Where(declaration => declaration.DeclarationType == DeclarationType.Parameter)
                 .GroupBy(declaration => declaration.ParentDeclaration).ToConcurrentDictionary();
             _userDeclarationsByType = declarations.Where(declaration => !declaration.IsBuiltIn).GroupBy(declaration => declaration.DeclarationType).ToConcurrentDictionary();
@@ -146,6 +166,62 @@ namespace Rubberduck.Parsing.Symbols
                             && d.DeclarationType != DeclarationType.Project
                             && d.DeclarationType != DeclarationType.ProceduralModule).ToList()
                             ,true);
+        }
+
+        public Declaration FindSelectedDeclaration(ICodePane activeCodePane)
+        {
+            if (activeCodePane == null || activeCodePane.IsWrappingNullReference)
+            {
+                return null;
+            }
+            
+            var qualifiedSelection = activeCodePane.GetQualifiedSelection();
+            if (!qualifiedSelection.HasValue || qualifiedSelection.Value.Equals(default(QualifiedSelection)))
+            {
+                return null;
+            }
+
+            var selection = qualifiedSelection.Value.Selection;
+
+            // statistically we'll be on an IdentifierReference more often than on a Declaration:
+            var matches = _referencesBySelection
+                .Where(kvp => kvp.Key.QualifiedName.Equals(qualifiedSelection.Value.QualifiedName)
+                    && kvp.Key.Selection.ContainsFirstCharacter(qualifiedSelection.Value.Selection))
+                .SelectMany(kvp => kvp.Value)
+                .OrderByDescending(reference => reference.Declaration.DeclarationType)
+                .Select(reference => reference.Declaration)
+                .Distinct()
+                .ToArray();
+
+            if (!matches.Any())
+            {
+                matches = _declarationsBySelection
+                    .Where(kvp => kvp.Key.QualifiedName.Equals(qualifiedSelection.Value.QualifiedName)
+                        && kvp.Key.Selection.ContainsFirstCharacter(selection))
+                    .SelectMany(kvp => kvp.Value)
+                    .OrderByDescending(declaration => declaration.DeclarationType)
+                    .Distinct()
+                    .ToArray();
+            }
+
+            switch (matches.Length)
+            {
+                case 0:
+                    ConcurrentBag<Declaration> modules;
+                    return _declarations.TryGetValue(qualifiedSelection.Value.QualifiedName, out modules)
+                        ? modules.SingleOrDefault(declaration => declaration.DeclarationType.HasFlag(DeclarationType.Module))
+                        : null;
+
+                case 1:
+                    var match = matches.Single();
+                    return match.DeclarationType == DeclarationType.ModuleOption
+                        ? match.ParentScopeDeclaration
+                        : match;
+
+                default:
+                    // they're sorted by type, so a local comes before the procedure it's in
+                    return matches.FirstOrDefault();
+            }
         }
 
         public IEnumerable<Declaration> FreshUndeclared

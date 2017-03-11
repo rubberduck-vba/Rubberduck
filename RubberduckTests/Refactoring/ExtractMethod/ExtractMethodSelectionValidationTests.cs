@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.VBEditor;
@@ -20,8 +20,6 @@ namespace RubberduckTests.Refactoring.ExtractMethod
                 [TestCategory("ExtractMethodSelectionValidationTests")]
                 public void shouldReturnFalse()
                 {
-                    QualifiedModuleName qualifiedModuleName;
-                    RubberduckParserState state;
                     var inputCode = @"
 Option Explicit
 Private Sub Foo()
@@ -42,7 +40,8 @@ Private Sub NewMethod4
     Debug.Print a
 End Sub";
 
-                    MockParser.ParseString(inputCode, out qualifiedModuleName, out state);
+                    QualifiedModuleName qualifiedModuleName;
+                    var state = MockParser.ParseString(inputCode, out qualifiedModuleName);
                     var declarations = state.AllDeclarations;
                     var selection = new Selection(4, 4, 10, 14);
                     QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
@@ -62,9 +61,6 @@ End Sub";
                 [TestCategory("ExtractMethodSelectionValidationTests")]
                 public void shouldReturnTrue()
                 {
-
-                    QualifiedModuleName qualifiedModuleName;
-                    RubberduckParserState state;
                     var inputCode = @"
 Option Explicit
 Private Sub Foo()
@@ -85,7 +81,8 @@ Private Sub NewMethod4
     Debug.Print a
 End Sub";
 
-                    MockParser.ParseString(inputCode, out qualifiedModuleName, out state);
+                    QualifiedModuleName qualifiedModuleName;
+                    var state = MockParser.ParseString(inputCode, out qualifiedModuleName);
                     var declarations = state.AllDeclarations;
                     var selection = new Selection(4, 4, 5, 14);
                     QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
@@ -103,9 +100,6 @@ End Sub";
                 [TestCategory("ExtractMethodSelectionValidationTests")]
                 public void shouldReturnFalse()
                 {
-
-                    QualifiedModuleName qualifiedModuleName;
-                    RubberduckParserState state;
                     var inputCode = @"
 Option Explicit
 Private Sub Foo(byval a as long, _
@@ -120,7 +114,8 @@ Private Sub NewMethod
 End Sub";
 
 
-                    MockParser.ParseString(inputCode, out qualifiedModuleName, out state);
+                    QualifiedModuleName qualifiedModuleName;
+                    var state = MockParser.ParseString(inputCode, out qualifiedModuleName);
                     var declarations = state.AllDeclarations;
                     var selection = new Selection(4, 4, 7, 14);
                     QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);

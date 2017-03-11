@@ -1,14 +1,11 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Inspections;
 using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Inspections.Resources;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 
 namespace RubberduckTests.Inspections
 {
@@ -182,20 +179,16 @@ End Sub
 
         private IEnumerable<Rubberduck.Inspections.Abstract.InspectionResultBase> GetAssignedByValParameterInspectionResults(IVBE vbe)
         {
-            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var state = MockParser.CreateAndParse(vbe);
 
-            var inspection = new AssignedByValParameterInspection(parser.State,null);
+            var inspection = new AssignedByValParameterInspection(state, null);
             return inspection.GetInspectionResults();
         }
 
         private Mock<IVBE> BuildMockVBEStandardModuleForVBAFragment(string inputCode)
         {
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            return builder.BuildFromSingleStandardModule(inputCode, out component);
-
+            return MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
         }
     }
 }
