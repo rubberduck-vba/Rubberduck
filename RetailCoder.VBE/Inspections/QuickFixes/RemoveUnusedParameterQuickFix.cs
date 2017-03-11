@@ -27,7 +27,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override void Fix()
         {
-            using (var dialog = new RemoveParametersDialog(new RemoveParametersViewModel()))
+            using (var dialog = new RemoveParametersDialog(new RemoveParametersViewModel(_state)))
             {
                 var refactoring = new RemoveParametersRefactoring(_vbe,
                     new RemoveParametersPresenterFactory(_vbe, dialog, _state, _messageBox));

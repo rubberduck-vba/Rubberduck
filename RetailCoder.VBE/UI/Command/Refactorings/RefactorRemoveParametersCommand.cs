@@ -62,7 +62,7 @@ namespace Rubberduck.UI.Command.Refactorings
             }
 
             var selection = pane.GetQualifiedSelection();
-            using (var view = new RemoveParametersDialog(new RemoveParametersViewModel()))
+            using (var view = new RemoveParametersDialog(new RemoveParametersViewModel(_state)))
             {
                 var factory = new RemoveParametersPresenterFactory(Vbe, view, _state, _msgbox);
                 var refactoring = new RemoveParametersRefactoring(Vbe, factory);

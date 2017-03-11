@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:removeParameters="clr-namespace:Rubberduck.UI.Refactorings.RemoveParameters"
              xmlns:converters="clr-namespace:Rubberduck.UI.Converters"
+             xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
@@ -23,6 +24,10 @@
                        Margin="5,0" />
         </StackPanel>
         <Grid Grid.Row="1" Grid.IsSharedSizeScope="True">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="auto" />
@@ -86,6 +91,26 @@
                     </StackPanel>
                 </Button>
             </Grid>
+
+            <Expander Grid.Row="1"
+                      Grid.ColumnSpan="2"
+                      IsExpanded="True"
+                      Background="#FFFFFFFF"
+                      BorderBrush="#FFA9A9A9"
+                      Margin="5,0,5,5">
+                <Expander.Header>
+                    <Label FontWeight="SemiBold">
+                        <Resx ResxName="Rubberduck.UI.RubberduckUI" Key="Preview"/>
+                    </Label>
+                </Expander.Header>
+                <controls:BindableTextEditor Margin="10,10,10,10"
+                                             FontFamily="Courier New "
+                                             ShowLineNumbers="False"
+                                             HorizontalScrollBarVisibility="Auto"
+                                             VerticalScrollBarVisibility="Disabled"
+                                             IsReadOnly="True"
+                                             Text="{Binding SignaturePreview,Mode=OneWay}"/>
+            </Expander>
         </Grid>
         <Grid Grid.Row="2" Background="{x:Static SystemColors.ControlDarkBrush}" Grid.IsSharedSizeScope="True">
             <Grid HorizontalAlignment="Right"
