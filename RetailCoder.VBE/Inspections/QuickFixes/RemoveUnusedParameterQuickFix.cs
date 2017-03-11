@@ -27,13 +27,13 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override void Fix()
         {
-            using (var dialog = new RemoveParametersDialog())
-            {
-                var refactoring = new RemoveParametersRefactoring(_vbe,
-                    new RemoveParametersPresenterFactory(_vbe, dialog, _state, _messageBox));
+            //using (var dialog = new RemoveParametersDialog())
+            //{
+            //    var refactoring = new RemoveParametersRefactoring(_vbe,
+            //        new RemoveParametersPresenterFactory(_vbe, dialog, _state, _messageBox));
 
-                refactoring.QuickFix(_state, Selection);
-            }
+            //    refactoring.QuickFix(_state, Selection);
+            //}
         }
     }
 }
