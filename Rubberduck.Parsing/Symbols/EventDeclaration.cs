@@ -9,11 +9,11 @@ using System.Linq;
 
 namespace Rubberduck.Parsing.Symbols
 {
-    public sealed class FunctionDeclaration : Declaration, IParameterizedDeclaration, ICanBeDefaultMember
+    public sealed class EventDeclaration : Declaration, IParameterizedDeclaration
     {
         private readonly List<Declaration> _parameters;
 
-        public FunctionDeclaration(
+        public EventDeclaration(
             QualifiedMemberName name,
             Declaration parent,
             Declaration parentScope,
@@ -36,7 +36,7 @@ namespace Rubberduck.Parsing.Symbols
                   false,
                   false,
                   accessibility,
-                  DeclarationType.Function,
+                  DeclarationType.Event,
                   context,
                   selection,
                   isArray,
@@ -48,7 +48,7 @@ namespace Rubberduck.Parsing.Symbols
             _parameters = new List<Declaration>();
         }
 
-        public FunctionDeclaration(ComMember member, Declaration parent, QualifiedModuleName module,
+        public EventDeclaration(ComMember member, Declaration parent, QualifiedModuleName module,
             Attributes attributes) : this(
                 module.QualifyMemberName(member.Name),
                 parent,
@@ -70,36 +70,11 @@ namespace Rubberduck.Parsing.Symbols
                     .ToList();
         }
 
-        public IEnumerable<Declaration> Parameters
-        {
-            get
-            {
-                return _parameters.ToList();
-            }
-        }
+        public IEnumerable<Declaration> Parameters => _parameters.ToList();
 
         public void AddParameter(Declaration parameter)
         {
             _parameters.Add(parameter);
-        }
-
-        /// <summary>
-        /// Gets an attribute value indicating whether a member is a class' default member.
-        /// If this value is true, any reference to an instance of the class it's the default member of,
-        /// should count as a member call to this member.
-        /// </summary>
-        public bool IsDefaultMember
-        {
-            get
-            {
-                IEnumerable<string> value;
-                if (Attributes.TryGetValue(IdentifierName + ".VB_UserMemId", out value))
-                {
-                    return value.Single() == "0";
-                }
-
-                return false;
-            }
         }
     }
 }

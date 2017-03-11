@@ -7,7 +7,7 @@ using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.Symbols
 {
-    public sealed class ExternalProcedureDeclaration : Declaration, IDeclarationWithParameter
+    public sealed class ExternalProcedureDeclaration : Declaration, IParameterizedDeclaration
     {
         private readonly List<Declaration> _parameters;
 

@@ -46,7 +46,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
             
             GetMethodType();
 
-            var memberWithParams = member as IDeclarationWithParameter;
+            var memberWithParams = member as IParameterizedDeclaration;
             if (memberWithParams != null)
             {
                 MemberParams = memberWithParams.Parameters

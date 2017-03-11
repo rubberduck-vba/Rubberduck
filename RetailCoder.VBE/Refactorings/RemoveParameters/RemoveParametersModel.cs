@@ -52,17 +52,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         private IEnumerable<Declaration> GetParameters()
         {
-            var targetSelection = new Selection(TargetDeclaration.Context.Start.Line,
-                TargetDeclaration.Context.Start.Column,
-                TargetDeclaration.Context.Stop.Line,
-                TargetDeclaration.Context.Stop.Column);
-
-            return Declarations.Where(d => d.DeclarationType == DeclarationType.Parameter
-                                       && d.ComponentName == TargetDeclaration.ComponentName
-                                       && d.ProjectId == TargetDeclaration.ProjectId
-                                       && targetSelection.Contains(d.Selection))
-                              .OrderBy(item => item.Selection.StartLine)
-                              .ThenBy(item => item.Selection.StartColumn);
+            return ((IParameterizedDeclaration) TargetDeclaration).Parameters;
         }
 
         public static readonly DeclarationType[] ValidDeclarationTypes =
