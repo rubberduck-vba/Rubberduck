@@ -63,34 +63,32 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
             {
                 Debug.Assert(parentModule != null);
 
-                var arrayFunction = ArrayFunction(parentModule);
                 var lboundFunction = LBoundFunction(parentModule);
                 var uboundFunction = UBoundFunction(parentModule);
 
                 return new List<Declaration> { 
-                    arrayFunction,
                     lboundFunction,
                     uboundFunction
                 };
             }
 
-                private static FunctionDeclaration ArrayFunction(Declaration parentModule)
-                {
-                    return new FunctionDeclaration(
-                        new QualifiedMemberName(parentModule.QualifiedName.QualifiedModuleName, "Array"),
-                        parentModule,
-                        parentModule,
-                        "Variant",
-                        null,
-                        null,
-                        Accessibility.Public,
-                        null,
-                        Selection.Home,
-                        false,
-                        true,
-                        null,
-                        new Attributes());
-                }
+                //private static FunctionDeclaration ArrayFunction(Declaration parentModule)
+                //{
+                //    return new FunctionDeclaration(
+                //        new QualifiedMemberName(parentModule.QualifiedName.QualifiedModuleName, "Array"),
+                //        parentModule,
+                //        parentModule,
+                //        "Variant",
+                //        null,
+                //        null,
+                //        Accessibility.Public,
+                //        null,
+                //        Selection.Home,
+                //        false,
+                //        true,
+                //        null,
+                //        new Attributes());
+                //}
 
                 //private static SubroutineDeclaration InputFunction(Declaration parentModule)
                 //{
