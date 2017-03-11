@@ -599,7 +599,7 @@ End Sub";
 
             var firstMidParam = new ParameterDeclaration(
                 new QualifiedMemberName(stringsModule.QualifiedName.QualifiedModuleName, "String"),
-                midbFunction,
+                midFunction,
                 "Variant",
                 null,
                 null,
@@ -608,7 +608,7 @@ End Sub";
 
             var secondMidParam = new ParameterDeclaration(
                 new QualifiedMemberName(stringsModule.QualifiedName.QualifiedModuleName, "Start"),
-                midbFunction,
+                midFunction,
                 "Long",
                 null,
                 null,
