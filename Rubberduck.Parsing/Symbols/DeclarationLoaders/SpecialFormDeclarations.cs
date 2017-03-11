@@ -64,15 +64,11 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 Debug.Assert(parentModule != null);
 
                 var arrayFunction = ArrayFunction(parentModule);
-                var inputFunction = InputFunction(parentModule);
-                var inputBFunction = InputBFunction(parentModule);
                 var lboundFunction = LBoundFunction(parentModule);
                 var uboundFunction = UBoundFunction(parentModule);
 
                 return new List<Declaration> { 
                     arrayFunction,
-                    inputFunction,
-                    inputBFunction,
                     lboundFunction,
                     uboundFunction
                 };
@@ -96,76 +92,76 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                         new Attributes());
                 }
 
-                private static SubroutineDeclaration InputFunction(Declaration parentModule)
-                {
-                    var inputFunction = InputFunctionWithoutParameters(parentModule);
-                    inputFunction.AddParameter(NumberParameter(parentModule, inputFunction));
-                    inputFunction.AddParameter(FileNumberParameter(parentModule, inputFunction));
-                    return inputFunction;
-                }
+                //private static SubroutineDeclaration InputFunction(Declaration parentModule)
+                //{
+                //    var inputFunction = InputFunctionWithoutParameters(parentModule);
+                //    inputFunction.AddParameter(NumberParameter(parentModule, inputFunction));
+                //    inputFunction.AddParameter(FileNumberParameter(parentModule, inputFunction));
+                //    return inputFunction;
+                //}
 
-                    private static SubroutineDeclaration InputFunctionWithoutParameters(Declaration parentModule)
-                    {
-                        return new SubroutineDeclaration(
-                            new QualifiedMemberName(parentModule.QualifiedName.QualifiedModuleName, "Input"),
-                            parentModule,
-                            parentModule,
-                            "Variant",
-                            Accessibility.Public,
-                            null,
-                            Selection.Home,
-                            true,
-                            null,
-                            new Attributes());
-                    }
+                //    private static SubroutineDeclaration InputFunctionWithoutParameters(Declaration parentModule)
+                //    {
+                //        return new SubroutineDeclaration(
+                //            new QualifiedMemberName(parentModule.QualifiedName.QualifiedModuleName, "Input"),
+                //            parentModule,
+                //            parentModule,
+                //            "Variant",
+                //            Accessibility.Public,
+                //            null,
+                //            Selection.Home,
+                //            true,
+                //            null,
+                //            new Attributes());
+                //    }
 
-                    private static ParameterDeclaration NumberParameter(Declaration parentModule, SubroutineDeclaration ParentSubroutine)
-                    {
-                        return new ParameterDeclaration(
-                            new QualifiedMemberName(parentModule.QualifiedName.QualifiedModuleName, "Number"),
-                            ParentSubroutine,
-                            "Integer",
-                            null,
-                            null,
-                            false,
-                            false);
-                    }
+                //    private static ParameterDeclaration NumberParameter(Declaration parentModule, SubroutineDeclaration ParentSubroutine)
+                //    {
+                //        return new ParameterDeclaration(
+                //            new QualifiedMemberName(parentModule.QualifiedName.QualifiedModuleName, "Number"),
+                //            ParentSubroutine,
+                //            "Integer",
+                //            null,
+                //            null,
+                //            false,
+                //            false);
+                //    }
 
-                    private static ParameterDeclaration FileNumberParameter(Declaration parentModule, SubroutineDeclaration ParentSubroutine)
-                    {
-                        return new ParameterDeclaration(
-                            new QualifiedMemberName(parentModule.QualifiedName.QualifiedModuleName, "Filenumber"),
-                            ParentSubroutine,
-                            "Integer",
-                            null,
-                            null,
-                            false,
-                            false);
-                    }
+                //    private static ParameterDeclaration FileNumberParameter(Declaration parentModule, SubroutineDeclaration ParentSubroutine)
+                //    {
+                //        return new ParameterDeclaration(
+                //            new QualifiedMemberName(parentModule.QualifiedName.QualifiedModuleName, "Filenumber"),
+                //            ParentSubroutine,
+                //            "Integer",
+                //            null,
+                //            null,
+                //            false,
+                //            false);
+                //    }
 
 
-                private static SubroutineDeclaration InputBFunction(Declaration parentModule)
-                {
-                    var inputBFunction = InputBFunctionWithoutParameters(parentModule);
-                    inputBFunction.AddParameter(NumberParameter(parentModule, inputBFunction));
-                    inputBFunction.AddParameter(FileNumberParameter(parentModule, inputBFunction));
-                    return inputBFunction;
-                }
+                //private static SubroutineDeclaration InputBFunction(Declaration parentModule)
+                //{
+                //    var inputBFunction = InputBFunctionWithoutParameters(parentModule);
+                //    inputBFunction.AddParameter(NumberParameter(parentModule, inputBFunction));
+                //    inputBFunction.AddParameter(FileNumberParameter(parentModule, inputBFunction));
+                //    return inputBFunction;
+                //}
 
-                    private static SubroutineDeclaration InputBFunctionWithoutParameters(Declaration parentModule)
-                    {
-                        return new SubroutineDeclaration(
-                            new QualifiedMemberName(parentModule.QualifiedName.QualifiedModuleName, "InputB"),
-                            parentModule,
-                            parentModule,
-                            "Variant",
-                            Accessibility.Public,
-                            null,
-                            Selection.Home,
-                            true,
-                            null,
-                            new Attributes());
-                    }
+                //    private static SubroutineDeclaration InputBFunctionWithoutParameters(Declaration parentModule)
+                //    {
+                //        return new SubroutineDeclaration(
+                //            new QualifiedMemberName(parentModule.QualifiedName.QualifiedModuleName, "InputB"),
+                //            parentModule,
+                //            parentModule,
+                //            "Variant",
+                //            Accessibility.Public,
+                //            null,
+                //            Selection.Home,
+                //            true,
+                //            null,
+                //            new Attributes());
+                //    }
 
 
                 private static FunctionDeclaration LBoundFunction(Declaration parentModule)
