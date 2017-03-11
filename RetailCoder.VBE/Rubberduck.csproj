@@ -577,7 +577,6 @@
     <Compile Include="Refactorings\IntroduceField\IntroduceFieldRefactoring.cs" />
     <Compile Include="Refactorings\IntroduceParameter\IntroduceParameterRefactoring.cs" />
     <Compile Include="Refactorings\MoveCloserToUsage\MoveCloserToUsageRefactoring.cs" />
-    <Compile Include="Refactorings\RemoveParameters\IRemoveParametersDialog.cs" />
     <Compile Include="Refactorings\RemoveParameters\Parameter.cs" />
     <Compile Include="Refactorings\RemoveParameters\RemoveParametersModel.cs" />
     <Compile Include="Refactorings\RemoveParameters\RemoveParametersPresenter.cs" />
