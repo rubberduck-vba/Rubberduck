@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using System.Windows.Controls;
+using System.Windows.Input;
 using Rubberduck.Refactorings.RemoveParameters;
 
 namespace Rubberduck.UI.Refactorings.RemoveParameters
@@ -12,11 +13,11 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
 
         private RemoveParametersViewModel ViewModel => (RemoveParametersViewModel) DataContext;
 
-        private void TextBlock_MouseDown(object sender, MouseButtonEventArgs e)
+        private void ListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (e.ClickCount != 2) { return; }
+            var item = (ListViewItem)sender;
+            var target = (Parameter)item.Content;
 
-            var target = (Parameter)ParameterGrid.SelectedItem;
             if (target.IsRemoved)
             {
                 ViewModel.RestoreParameterCommand.Execute(target);

@@ -31,10 +31,14 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding Name}"
-                                   TextDecorations="{Binding IsRemoved, Converter={StaticResource ParameterTextDecoration}}"
-                                   MouseDown="TextBlock_MouseDown" />
+                                   TextDecorations="{Binding IsRemoved, Converter={StaticResource ParameterTextDecoration}}" />
                     </DataTemplate>
                 </ListView.ItemTemplate>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick" />
+                    </Style>
+                </ListView.ItemContainerStyle>
             </ListView>
 
             <Grid HorizontalAlignment="Right"
