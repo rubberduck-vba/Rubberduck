@@ -79,6 +79,7 @@ namespace Rubberduck.Common
                 throw new ArgumentException("Target DeclarationType is not Variable.", "target");
             }
 
+            Debug.Assert(target.Context is VBAParser.VariableSubStmtContext);
             var statement = target.Context.Parent.Parent as VBAParser.VariableStmtContext;
             if (statement == null && !target.IsUndeclared)
             {

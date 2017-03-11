@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Antlr4.Runtime;
+using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
@@ -17,7 +18,8 @@ namespace Rubberduck.Common
         public static void Rewrite(this ICodeModule module, TokenStreamRewriter rewriter)
         {
             module.Clear();
-            module.InsertLines(1, rewriter.GetText());
+            var content = rewriter.GetText();
+            module.InsertLines(1, content);
         }
 
         /// <summary>
@@ -34,13 +36,14 @@ namespace Rubberduck.Common
             //    throw new ArgumentException("Target is not declared in specified module.");
             //}
 
-            var sortedItems = target.References
+            var items = target.References
                 .Where(reference => module.Equals(reference.QualifiedModuleName.Component.CodeModule))
                 .Select(reference => Tuple.Create((object) reference, reference.Selection))
                 .Concat(new[] {Tuple.Create((object) target, target.Selection)})
-                .OrderByDescending(t => t.Item2);
+                //.OrderByDescending(t => t.Item2)
+                ;
 
-            foreach (var tuple in sortedItems)
+            foreach (var tuple in items)
             {
                 if (tuple.Item1 is Declaration)
                 {
@@ -56,15 +59,59 @@ namespace Rubberduck.Common
 
         private static void RemoveDeclaration(Declaration target, TokenStreamRewriter rewriter)
         {
-            TargetListPosition position;
-            var context = GetStmtContext(target, out position);
-            
-            var from = context.Start.TokenIndex;
-            var to = context.Stop.TokenIndex;
-            from -= position == TargetListPosition.LastItem ? 1 : 0;
-            to += position == TargetListPosition.FirstItem ? 1 : 0;
-
+            var tokens = GetRemovedTokenIndex(target);
+            var from = tokens.Item1;
+            var to = tokens.Item2;
             rewriter.Delete(from, to);
+        }
+
+        private static Tuple<int, int> GetRemovedTokenIndex(Declaration target)
+        {
+            var variables = target.Context.Parent as VBAParser.VariableListStmtContext;
+            if (variables != null)
+            {
+                var items = variables.variableSubStmt();
+                return GetRemovedTokenIndex(target, items, item => Identifier.GetName(item.identifier()));
+            }
+
+            return null;
+        }
+
+        private static Tuple<int, int> GetRemovedTokenIndex<TContext>(Declaration target, IReadOnlyList<TContext> items, Func<TContext, string> getIdentifierName)
+            where TContext : ParserRuleContext
+        {
+            if (items.Count == 1 && target.DeclarationType != DeclarationType.Parameter)
+            {
+                var item = items[0];
+                var start = ((ParserRuleContext) item.Parent.Parent).Start.TokenIndex;
+                var stop = ((ParserRuleContext) item.Parent.Parent).Stop.TokenIndex;
+                return Tuple.Create(start == 0 ? 0 : start - 1, stop + 2);
+            }
+
+            for (var i = 0; i < items.Count; i++)
+            {
+                var item = items[i];
+                if (getIdentifierName(item) == target.IdentifierName)
+                {
+                    if (items.Count > 1)
+                    {
+                        ITerminalNode comma;
+                        if (i == 0)
+                        {
+                            comma = (ITerminalNode)((dynamic)item.Parent).COMMA()[i];
+                        }
+                        else
+                        {
+                            comma = (ITerminalNode)((dynamic)item.Parent).COMMA()[i - 1];
+                        }
+                        return Tuple.Create(item.Start.TokenIndex, comma.Symbol.TokenIndex);
+                    }
+                    return Tuple.Create(item.Start.TokenIndex, item.Stop.TokenIndex);
+                }
+            }
+
+            Debug.Assert(false, "Could not locate target token range.");
+            return null;
         }
 
         private enum TargetListPosition
@@ -87,98 +134,20 @@ namespace Rubberduck.Common
         {
             ParserRuleContext result;
             position = TargetListPosition.SingleItem;
+            // for instructions that may contain more than a single declaration, we need to isolate the target's context.
             switch (target.DeclarationType)
             {
                 case DeclarationType.Variable:
+                    result = GetVariableContext(target, ref position);
+                    break;
 
-                    var variableStmt = target.GetVariableStmtContext();
-                    var variables = variableStmt.variableListStmt().variableSubStmt();
-                    result = variableStmt;
-
-                    if (variables.Count > 1)
-                    {
-                        for (var i = 0; i < variables.Count; i++)
-                        {
-                            var variable = variables[i];
-                            if (Identifier.GetName(variable.identifier()) == target.IdentifierName)
-                            {
-                                result = variable;
-                                if (i == 0)
-                                {
-                                    position = TargetListPosition.FirstItem;
-                                }
-                                else if (i == variables.Count - 1)
-                                {
-                                    position = TargetListPosition.LastItem;
-                                }
-                                else
-                                {
-                                    position = TargetListPosition.SingleItem;
-                                }
-                            }
-                        }
-                    }
+                case DeclarationType.Parameter:
+                    result = GetParameterContext(target, ref position);
                     break;
 
                 case DeclarationType.Constant:
 
-                    var constStmt = target.GetConstStmtContext();
-                    var consts = constStmt.constSubStmt();
-                    result = constStmt;
-
-                    if (consts.Count > 1)
-                    {
-                        for (var i = 0; i < consts.Count; i++)
-                        {
-                            var constant = consts[i];
-                            if (Identifier.GetName(constant.identifier()) == target.IdentifierName)
-                            {
-                                result = constant;
-                                if (i == 0)
-                                {
-                                    position = TargetListPosition.FirstItem;
-                                }
-                                else if (i == consts.Count - 1)
-                                {
-                                    position = TargetListPosition.LastItem;
-                                }
-                                else
-                                {
-                                    position = TargetListPosition.SingleItem;
-                                }
-                            }
-                        }
-                    }
-                    break;
-
-                case DeclarationType.Parameter:
-                    var argList = (VBAParser.ArgListContext)target.Context.Parent;
-                    var args = argList.arg();
-                    result = argList;
-
-                    if (args.Count > 1)
-                    {
-                        for (var i = 0; i < args.Count; i++)
-                        {
-                            var arg = args[i];
-                            if (Identifier.GetName(arg.unrestrictedIdentifier()) == target.IdentifierName)
-                            {
-                                result = arg;
-                                if (i == 0)
-                                {
-                                    position = TargetListPosition.FirstItem;
-                                }
-                                else if (i == args.Count - 1)
-                                {
-                                    position = TargetListPosition.LastItem;
-                                }
-                                else
-                                {
-                                    position = TargetListPosition.SingleItem;
-                                }
-                            }
-                        }
-                    }
+                    result = GetConstantContext(target, ref position);
                     break;
 
                 default:
@@ -186,6 +155,90 @@ namespace Rubberduck.Common
                     break;
             }
             return result;
+        }
+
+        private static ParserRuleContext GetParameterContext(Declaration target, ref TargetListPosition position)
+        {
+            var argList = (VBAParser.ArgListContext) target.Context.Parent;
+            var args = argList.arg();
+            var count = args.Count;
+            ParserRuleContext result = argList;
+
+            for (var i = 0; i < count; i++)
+            {
+                // foreach is less practical to track index
+                var arg = args[i];
+                if (Identifier.GetName(arg.unrestrictedIdentifier()) != target.IdentifierName)
+                {
+                    continue;
+                }
+
+                result = arg;
+                position = GetTargetListPosition(i, count);
+            }
+
+            return result;
+        }
+
+        private static ParserRuleContext GetConstantContext(Declaration target, ref TargetListPosition position)
+        {
+            var constStmt = target.GetConstStmtContext();
+            var consts = constStmt.constSubStmt();
+            var count = consts.Count;
+            ParserRuleContext result = constStmt;
+
+            for (var i = 0; i < count; i++)
+            {
+                var constant = consts[i];
+                if (Identifier.GetName(constant.identifier()) != target.IdentifierName)
+                {
+                    continue;
+                }
+
+                result = constant;
+                position = GetTargetListPosition(i, count);
+            }
+            return result;
+        }
+
+        private static ParserRuleContext GetVariableContext(Declaration target, ref TargetListPosition position)
+        {
+            var variableStmt = target.GetVariableStmtContext();
+            ParserRuleContext result = variableStmt;
+
+            var variables = variableStmt.variableListStmt().variableSubStmt();
+            var count = variables.Count;
+
+            for (var i = 0; i < count; i++)
+            {
+                var variable = variables[i];
+                if (Identifier.GetName(variable.identifier()) != target.IdentifierName)
+                {
+                    continue;
+                }
+
+                result = variable;
+                position = GetTargetListPosition(i, count);
+            }
+            return result;
+        }
+
+        private static TargetListPosition GetTargetListPosition(int i, int count)
+        {
+            TargetListPosition position;
+            if (i == 0)
+            {
+                position = TargetListPosition.FirstItem;
+            }
+            else if (i == count - 1)
+            {
+                position = TargetListPosition.LastItem;
+            }
+            else
+            {
+                position = TargetListPosition.SingleItem;
+            }
+            return position;
         }
 
         private static string RemoveExtraComma(string str, int numParams, int indexRemoved)

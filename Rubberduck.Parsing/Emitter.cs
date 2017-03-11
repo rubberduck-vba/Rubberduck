@@ -7,6 +7,9 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Parsing
 {
+    /// <summary>
+    /// A hack up our sleeves to get the type name of document modules. <see cref="ExecuteWithResult{TResult}"/>.
+    /// </summary>
     public class Emitter
     {
         private readonly RubberduckParserState _state;
@@ -22,6 +25,12 @@ Public Function GetTypeName() As String
 End Function
 ";
 
+        /// <summary>
+        /// Gets a VBA function that returns the name of the type of an expression specified as an argument.
+        /// </summary>
+        /// <param name="arg">The literal contents of the 'TypeName' argument list, in VBA runtime context.</param>
+        /// <remarks>The argument list excludes the surrounding parentheses that delimit it.</remarks>
+        /// <returns></returns>
         public string GetTypeNameFunctionBody(string arg)
         {
             return string.Format(GetTypeNameFunctionTemplate, arg);
