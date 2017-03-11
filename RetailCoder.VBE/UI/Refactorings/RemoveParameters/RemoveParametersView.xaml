@@ -4,9 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:removeParameters="clr-namespace:Rubberduck.UI.Refactorings.RemoveParameters"
+             xmlns:converters="clr-namespace:Rubberduck.UI.Converters"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
+        <converters:InvertBoolValueConverter x:Key="InvertedBool" />
         <removeParameters:ParameterTextDecorationConverter x:Key="ParameterTextDecoration" />
     </UserControl.Resources>
     <Grid>
@@ -52,6 +54,7 @@
                         Margin="5,5,5,0"
                         Padding="5,0"
                         HorizontalContentAlignment="Left"
+                        IsEnabled="{Binding ElementName=ParameterGrid, Path=SelectedItem.IsRemoved, Converter={StaticResource InvertedBool}}"
                         Command="{Binding RemoveParameterCommand}"
                         CommandParameter="{Binding ElementName=ParameterGrid, Path=SelectedItem}">
                     <StackPanel Orientation="Horizontal">
@@ -64,6 +67,7 @@
                         Margin="5,5,5,0"
                         Padding="5,0"
                         HorizontalContentAlignment="Left"
+                        IsEnabled="{Binding ElementName=ParameterGrid, Path=SelectedItem.IsRemoved}"
                         Command="{Binding RestoreParameterCommand}"
                         CommandParameter="{Binding ElementName=ParameterGrid, Path=SelectedItem}">
                     <StackPanel Orientation="Horizontal">
