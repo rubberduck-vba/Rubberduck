@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.Common;
@@ -5,6 +6,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.RemoveParameters;
 using Rubberduck.UI.Refactorings;
+using Rubberduck.UI.Refactorings.RemoveParameters;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command.Refactorings
@@ -63,7 +65,8 @@ namespace Rubberduck.UI.Command.Refactorings
             }
 
             var selection = pane.GetQualifiedSelection();*/
-            using (var view = new RemoveParametersDialog())
+            var parameters = _state.AllUserDeclarations.Where(s => s.DeclarationType == DeclarationType.Parameter).Select((s, i) => new Parameter(s, i)).ToList();
+            using (var view = new RemoveParametersDialog(new RemoveParametersViewModel(parameters)))
             {
                 //var factory = new RemoveParametersPresenterFactory(Vbe, view, _state, _msgbox);
                 //var refactoring = new RemoveParametersRefactoring(Vbe, factory);

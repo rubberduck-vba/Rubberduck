@@ -7,7 +7,7 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="70" />
+            <RowDefinition Height="50" />
             <RowDefinition Height="*" />
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
@@ -16,61 +16,66 @@
             <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=RemoveParamsDialog_InstructionsLabelText}"
                        Margin="5,0" />
         </StackPanel>
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="1" Grid.IsSharedSizeScope="True">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="85" />
+                <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
-            <ListView Margin="5,5,0,5" ItemsSource="{Binding Parameters}" />
+            <ListView Margin="5,5,0,5"
+                      ItemsSource="{Binding Parameters}"
+                      DisplayMemberPath="FullDeclaration" />
 
             <Grid HorizontalAlignment="Right"
-                  Grid.Column="1"
-                  Margin="5">
+                  Grid.Column="1">
                 <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
                 </Grid.RowDefinitions>
-                <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Remove}"
-                        VerticalAlignment="Top"
-                        Grid.Row="0"
-                        Height="75"
-                        Width="75"
-                        Command="{Binding RemoveParameterCommand}" />
-                <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Restore}"
-                        VerticalAlignment="Bottom"
-                        Grid.Row="1"
-                        Height="75"
-                        Width="75"
+                <Button Grid.Row="0"
+                        Height="20"
+                        Margin="5,5,5,0"
+                        Padding="5,0"
+                        HorizontalContentAlignment="Left"
+                        Command="{Binding RemoveParameterCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Height="10" Source="../../../Resources/cross-script.png" Margin="0,0,5,0" />
+                        <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Remove}" />
+                    </StackPanel>
+                </Button>
+                <Button Grid.Row="1"
+                        Height="20"
+                        Margin="5,5,5,0"
+                        Padding="5,0"
+                        HorizontalContentAlignment="Left"
                         Command="{Binding RestoreParameterCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Height="10" Source="../../../Resources/arrow-return-180-left.png" Margin="0,0,5,0" />
+                        <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Restore}" />
+                    </StackPanel>
                 </Button>
             </Grid>
         </Grid>
-        <Grid Grid.Row="2" Background="{x:Static SystemColors.ControlDarkBrush}">
-            <DockPanel VerticalAlignment="Center"
-                       Height="40"
-                       Background="{x:Static SystemColors.ControlDarkBrush}"
-                       Grid.IsSharedSizeScope="True">
-                <Grid HorizontalAlignment="Right"
+        <Grid Grid.Row="2" Background="{x:Static SystemColors.ControlDarkBrush}" Grid.IsSharedSizeScope="True">
+            <Grid HorizontalAlignment="Right"
                       Margin="5,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition SharedSizeGroup="SettingsButtons" />
-                        <ColumnDefinition SharedSizeGroup="SettingsButtons" />
-                    </Grid.ColumnDefinitions>
-                    <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=OK}"
-                            Grid.Column="0"
-                            Height="20"
-                            Margin="5,0"
-                            Padding="10,0"
-                            Command="{Binding OKButtonCommand}" />
-                    <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CancelButtonText}"
-                            Grid.Column="1"
-                            Height="20"
-                            Margin="5,0"
-                            Padding="10,0"
-                            Command="{Binding CancelButtonCommand}">
-                    </Button>
-                </Grid>
-            </DockPanel>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition SharedSizeGroup="SettingsButtons" />
+                    <ColumnDefinition SharedSizeGroup="SettingsButtons" />
+                </Grid.ColumnDefinitions>
+                <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=OK}"
+                        Grid.Column="0"
+                        Height="20"
+                        Margin="5,0"
+                        Padding="10,0"
+                        Command="{Binding OKButtonCommand}" />
+                <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CancelButtonText}"
+                        Grid.Column="1"
+                        Height="20"
+                        Margin="5,0"
+                        Padding="10,0"
+                        Command="{Binding CancelButtonCommand}">
+                </Button>
+            </Grid>
         </Grid>
     </Grid>
 </UserControl>

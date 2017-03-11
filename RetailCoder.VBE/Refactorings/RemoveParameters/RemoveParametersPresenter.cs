@@ -41,9 +41,6 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 return _model;
             }
 
-            _view.Parameters = _model.Parameters;
-            _view.InitializeParameterGrid();
-
             if (_view.ShowDialog() != DialogResult.OK)
             {
                 return null;
