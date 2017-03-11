@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 namespace Rubberduck.UI.Refactorings.RemoveParameters
 {
@@ -20,8 +19,9 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
             vm.OnWindowClosed += ViewModel_OnWindowClosed;
         }
 
-        void ViewModel_OnWindowClosed(object sender, EventArgs e)
+        void ViewModel_OnWindowClosed(object sender, DialogResult result)
         {
+            DialogResult = result;
             Close();
         }
     }

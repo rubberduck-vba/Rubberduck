@@ -3,19 +3,27 @@ using Rubberduck.Refactorings.RemoveParameters;
 using Rubberduck.UI.Command;
 using System;
 using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace Rubberduck.UI.Refactorings.RemoveParameters
 {
     public class RemoveParametersViewModel : ViewModelBase
     {
-        public List<Parameter> Parameters { get; }
-
-        public RemoveParametersViewModel(List<Parameter> parameters)
+        private List<Parameter> _parameters;
+        public List<Parameter> Parameters
         {
-            Parameters = parameters;
+            get { return _parameters; }
+            set
+            {
+                _parameters = value;
+                OnPropertyChanged();
+            }
+        }
 
-            OkButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => SaveAndCloseWindow());
-            CancelButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => CloseWindow());
+        public RemoveParametersViewModel()
+        {
+            OkButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => DialogOk());
+            CancelButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => DialogCancel());
             RemoveParameterCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param => RemoveParameter((Parameter)param));
             RestoreParameterCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param => RestoreParameter((Parameter)param));
         }
@@ -36,10 +44,9 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
             }
         }
 
-        public event EventHandler OnWindowClosed;
-        private void CloseWindow() => OnWindowClosed?.Invoke(this, EventArgs.Empty);
-
-        private void SaveAndCloseWindow() => CloseWindow();
+        public event EventHandler<DialogResult> OnWindowClosed;
+        private void DialogCancel() => OnWindowClosed?.Invoke(this, DialogResult.Cancel);
+        private void DialogOk() => OnWindowClosed?.Invoke(this, DialogResult.OK);
         
         public CommandBase OkButtonCommand { get; }
         public CommandBase CancelButtonCommand { get; }
