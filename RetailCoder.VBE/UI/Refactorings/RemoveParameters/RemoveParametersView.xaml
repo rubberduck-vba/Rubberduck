@@ -29,7 +29,9 @@
             </Grid.ColumnDefinitions>
             <ListView Margin="5,5,0,5"
                       ItemsSource="{Binding Parameters, UpdateSourceTrigger=PropertyChanged}"
-                      Name="ParameterGrid">
+                      SelectedIndex="0"
+                      Name="ParameterGrid"
+                      AlternationCount="2">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding Name}"
@@ -38,6 +40,14 @@
                 </ListView.ItemTemplate>
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
+                        <Style.Triggers>
+                            <Trigger Property="ItemsControl.AlternationIndex"  Value="0">
+                                <Setter Property="Background" Value="White" />
+                            </Trigger>
+                            <Trigger Property="ItemsControl.AlternationIndex"  Value="1">
+                                <Setter Property="Background" Value="Lavender" />
+                            </Trigger>
+                        </Style.Triggers>
                         <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick" />
                     </Style>
                 </ListView.ItemContainerStyle>
