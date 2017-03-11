@@ -641,7 +641,7 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
         private FunctionDeclaration InputBFunction()
         {
             return new FunctionDeclaration(
-                new QualifiedMemberName(_hiddenModule.QualifiedName.QualifiedModuleName, "Input"),
+                new QualifiedMemberName(_hiddenModule.QualifiedName.QualifiedModuleName, "InputB"),
                 _hiddenModule,
                 _hiddenModule,
                 "Variant",

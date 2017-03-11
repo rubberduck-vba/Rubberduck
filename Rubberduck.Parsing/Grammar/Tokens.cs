@@ -193,6 +193,7 @@
         public static readonly string WeekDay = "WeekDay";
         public static readonly string Wend = "Wend";
         public static readonly string While = "While";
+        public static readonly string Width = "Width";
         public static readonly string With = "With";
         public static readonly string Write = "Write";
         public static readonly string XOr = "Xor";
