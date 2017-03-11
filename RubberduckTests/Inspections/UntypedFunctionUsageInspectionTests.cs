@@ -724,8 +724,6 @@ End Sub";
                 new List<IAnnotation>(),
                 new Attributes());
 
-            //*******************************************************************
-
             var inputbFunction = new FunctionDeclaration(
                 new QualifiedMemberName(hiddenModule.QualifiedName.QualifiedModuleName, "_B_var_InputB"),
                 hiddenModule,
