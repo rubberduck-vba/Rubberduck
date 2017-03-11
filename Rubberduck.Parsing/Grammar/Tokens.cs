@@ -86,6 +86,7 @@
         public static readonly string Implements = "Implements";
         public static readonly string In = "In";
         public static readonly string Input = "Input";
+        public static readonly string InputB = "InputB";
         public static readonly string InputBox = "InputBox";
         public static readonly string InStr = "InStr";
         public static readonly string Int = "Int";
