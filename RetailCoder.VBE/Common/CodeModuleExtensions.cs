@@ -91,91 +91,113 @@ namespace Rubberduck.Common
             var variables = target.Context.Parent as VBAParser.VariableListStmtContext;
             if (variables != null)
             {
-                var items = variables.variableSubStmt();
-                var itemIndex = items.ToList().IndexOf((VBAParser.VariableSubStmtContext)target.Context);
-                var count = items.Count;
+                return RewriterInfoForVariableRemoval(target, variables);
+            }
 
-                var element = variables.Parent.Parent as VBAParser.ModuleDeclarationsElementContext;
-                if (element != null)
-                {
-                    // module level variable declaration
-                    var startIndex = element.Start.TokenIndex;
-                    var stopIndex = element.Stop.TokenIndex;
-                    var parent = (VBAParser.ModuleDeclarationsContext)element.Parent;
-                    var elements = parent.moduleDeclarationsElement();
-
-                    if (count == 1)
-                    {
-                        // single variable - return the bounds of entire statement
-                        for (var i = 0; i < elements.Count; i++)
-                        {
-                            if (elements[i] != element)
-                            {
-                                continue;
-                            }
-
-                            stopIndex = parent.endOfStatement(i).Stop.TokenIndex;
-                            break;
-                        }
-
-                        return new RewriterInfo(startIndex, stopIndex);
-                    }
-                    else
-                    {
-                        startIndex = itemIndex < count - 1
-                            ? target.Context.Start.TokenIndex
-                            : items[itemIndex - 1].Stop.TokenIndex + 1;
-
-                        stopIndex = itemIndex < count - 1
-                            ? items[itemIndex + 1].Start.TokenIndex - 1
-                            : items[itemIndex].Stop.TokenIndex;
-
-                        return new RewriterInfo(startIndex, stopIndex);
-                    }
-                }
-                else if(variables.Parent is VBAParser.VariableStmtContext)
-                {
-                    // procedure level variable declaration
-                    var blockStmt = (VBAParser.BlockStmtContext)variables.Parent.Parent;
-                    var startIndex = blockStmt.Start.TokenIndex;
-                    var stopIndex = blockStmt.Stop.TokenIndex;
-                    var parent = (VBAParser.BlockContext)blockStmt.Parent;
-                    var statements = parent.blockStmt();
-
-                    if (count == 1)
-                    {
-                        // single variable - return the bounds of entire statement
-                        for (var i = 0; i < statements.Count; i++)
-                        {
-                            if (statements[i] != blockStmt)
-                            {
-                                continue;
-                            }
-
-                            stopIndex = parent.endOfStatement(i).Stop.TokenIndex;
-                            break;
-                        }
-
-                        return new RewriterInfo(startIndex, stopIndex);
-                    }
-                    else
-                    {
-                        startIndex = itemIndex < count - 1
-                            ? target.Context.Start.TokenIndex
-                            : items[itemIndex - 1].Stop.TokenIndex + 1;
-
-                        stopIndex = itemIndex < count - 1
-                            ? items[itemIndex + 1].Start.TokenIndex - 1
-                            : items[itemIndex].Stop.TokenIndex;
-
-                        return new RewriterInfo(startIndex, stopIndex);
-                    }
-                }
+            var constants = target.Context.Parent as VBAParser.ConstStmtContext;
+            if (constants != null)
+            {
+                // todo
             }
 
             return RewriterInfo.None;
         }
 
+        private static RewriterInfo RewriterInfoForVariableRemoval(Declaration target, VBAParser.VariableListStmtContext variables)
+        {
+            var items = variables.variableSubStmt();
+            var itemIndex = items.ToList().IndexOf((VBAParser.VariableSubStmtContext) target.Context);
+            var count = items.Count;
+
+            var element = variables.Parent.Parent as VBAParser.ModuleDeclarationsElementContext;
+            if (element != null)
+            {
+                return GetRewriterInfoForModuleVariableRemoval(target, element, count, itemIndex, items);
+            }
+
+            if (variables.Parent is VBAParser.VariableStmtContext)
+            {
+                return GetRewriterInfoForLocalVariableRemoval(target, variables, count, itemIndex, items);
+            }
+
+            return RewriterInfo.None;
+        }
+
+        private static RewriterInfo GetRewriterInfoForLocalVariableRemoval(Declaration target, VBAParser.VariableListStmtContext variables,
+            int count, int itemIndex, IReadOnlyList<VBAParser.VariableSubStmtContext> items)
+        {
+            var blockStmt = (VBAParser.BlockStmtContext) variables.Parent.Parent;
+            var startIndex = blockStmt.Start.TokenIndex;
+            var parent = (VBAParser.BlockContext) blockStmt.Parent;
+            var statements = parent.blockStmt();
+
+            if (count == 1)
+            {
+                var stopIndex = FindStopTokenIndex(statements, blockStmt, parent);
+                return new RewriterInfo(startIndex, stopIndex);
+            }
+            return GetRewriterInfoForTargetRemovedFromListStmt(target.Context.Start, itemIndex, items);
+        }
+
+        private static RewriterInfo GetRewriterInfoForModuleVariableRemoval(Declaration target,
+            VBAParser.ModuleDeclarationsElementContext element, int count, int itemIndex, IReadOnlyList<VBAParser.VariableSubStmtContext> items)
+        {
+            var startIndex = element.Start.TokenIndex;
+            var parent = (VBAParser.ModuleDeclarationsContext) element.Parent;
+            var elements = parent.moduleDeclarationsElement();
+
+            if (count == 1)
+            {
+                var stopIndex = FindStopTokenIndex(elements, element, parent);
+                return new RewriterInfo(startIndex, stopIndex);
+            }
+            return GetRewriterInfoForTargetRemovedFromListStmt(target.Context.Start, itemIndex, items);
+        }
+
+        private static int FindStopTokenIndex<TParent>(IReadOnlyList<ParserRuleContext> items, ParserRuleContext item, TParent parent)
+        {
+            for (var i = 0; i < items.Count; i++)
+            {
+                if (items[i] != item)
+                {
+                    continue;
+                }
+                return FindStopTokenIndex((dynamic)parent, i);
+            }
+
+            return item.Stop.TokenIndex;
+        }
+
+        private static int FindStopTokenIndex(VBAParser.BlockContext context, int index)
+        {
+            return context.endOfStatement(index).Stop.TokenIndex;
+        }
+
+        private static int FindStopTokenIndex(VBAParser.ModuleDeclarationsContext context, int index)
+        {
+            return context.endOfStatement(index).Stop.TokenIndex;
+        }
+
+        /// <summary>
+        /// Gets a <see cref="RewriterInfo"/> that can be used to remove an item from a list, e.g. a variableSubStmt inside a variableListStmt.
+        /// </summary>
+        /// <param name="targetStartToken">The first token of the target statement.</param>
+        /// <param name="itemIndex">The ordinal position of the target in the containing list.</param>
+        /// <param name="items">The list of items to remove the target from.</param>
+        /// <returns></returns>
+        private static RewriterInfo GetRewriterInfoForTargetRemovedFromListStmt(IToken targetStartToken, int itemIndex, IReadOnlyList<ParserRuleContext> items)
+        {
+            var count = items.Count;
+            var startIndex = itemIndex < count - 1
+                ? targetStartToken.TokenIndex
+                : items[itemIndex - 1].Stop.TokenIndex + 1;
+
+            var stopIndex = itemIndex < count - 1
+                ? items[itemIndex + 1].Start.TokenIndex - 1
+                : items[itemIndex].Stop.TokenIndex;
+
+            return new RewriterInfo(startIndex, stopIndex);
+        }
 
 
         //private static RewriterInfo GetRemovedTokenIndex<TContext>(Declaration target, IReadOnlyList<TContext> items, Func<TContext, string> getIdentifierName)
