@@ -484,6 +484,10 @@
       <DependentUpon>RemoveParametersView.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Refactorings\RemoveParameters\RemoveParametersViewModel.cs" />
+    <Compile Include="UI\Refactorings\Rename\RenameViewModel.cs" />
+    <Compile Include="UI\Refactorings\Rename\RenameView.xaml.cs">
+      <DependentUpon>RenameView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Refactorings\ReorderParameters\DragAdorner.cs" />
     <Compile Include="UI\Refactorings\ReorderParameters\IndexIsNotLastConverter.cs" />
     <Compile Include="UI\Refactorings\ReorderParameters\IndexIsNotZeroConverter.cs" />
@@ -918,11 +922,10 @@
     <Compile Include="UI\FileBrowserDialogFactory.cs" />
     <Compile Include="UI\SourceControl\IControlView.cs" />
     <Compile Include="UI\SourceControl\IControlViewModel.cs" />
-    <Compile Include="Refactorings\Rename\IRenameDialog.cs" />
-    <Compile Include="UI\Refactorings\RenameDialog.cs">
+    <Compile Include="UI\Refactorings\Rename\RenameDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\Refactorings\RenameDialog.Designer.cs">
+    <Compile Include="UI\Refactorings\Rename\RenameDialog.Designer.cs">
       <DependentUpon>RenameDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Refactorings\Rename\RenamePresenter.cs" />
@@ -1125,7 +1128,7 @@
     <EmbeddedResource Include="UI\Refactorings\RemoveParameters\RemoveParametersDialog.resx">
       <DependentUpon>RemoveParametersDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Refactorings\RenameDialog.resx">
+    <EmbeddedResource Include="UI\Refactorings\Rename\RenameDialog.resx">
       <DependentUpon>RenameDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Refactorings\ReorderParameters\ReorderParametersDialog.resx">
@@ -1488,6 +1491,10 @@
     <Page Include="UI\Refactorings\RemoveParameters\RemoveParametersView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Refactorings\Rename\RenameView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Refactorings\ReorderParameters\ReorderParametersView.xaml">
       <SubType>Designer</SubType>

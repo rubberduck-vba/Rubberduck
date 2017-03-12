@@ -6,6 +6,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI;
+using Rubberduck.UI.Refactorings.Rename;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -944,40 +945,6 @@ End Sub";
 
             var presenter = factory.Create();
             Assert.AreEqual(null, presenter.Show());
-        }
-
-        [TestMethod]
-        public void Factory_SelectionIsNotNull_Accept()
-        {
-            const string newName = "Goo";
-
-            //Input
-            const string inputCode =
-@"Private Sub Foo(ByVal arg1 As String)
-End Sub";
-            var selection = new Selection(1, 25, 1, 25);
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-
-            var vbeWrapper = vbe.Object;
-            var model = new RenameModel(vbeWrapper, state, qualifiedSelection, null) { NewName = newName };
-
-            var view = new Mock<IRenameDialog>();
-            view.Setup(v => v.NewName).Returns(newName);
-            view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
-
-            var msgbox = new Mock<IMessageBox>();
-            msgbox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.YesNo, It.IsAny<MessageBoxIcon>()))
-                  .Returns(DialogResult.Yes);
-
-            var factory = new RenamePresenterFactory(vbeWrapper, view.Object, state, msgbox.Object);
-
-            var presenter = factory.Create();
-            Assert.AreEqual(model.NewName, presenter.Show().NewName);
         }
 
         [TestMethod]
