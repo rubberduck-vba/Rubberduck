@@ -35,6 +35,11 @@
                       ItemsSource="{Binding Parameters, UpdateSourceTrigger=PropertyChanged}"
                       SelectedIndex="0"
                       Name="ParameterGrid"
+                      AllowDrop="True"
+                      Drop="ParameterGrid_Drop"
+                      DragEnter="ParameterGrid_DragEnter"
+                      PreviewMouseMove="ParameterGrid_PreviewMouseMove"
+                      PreviewMouseLeftButtonDown="ParameterGrid_PreviewMouseLeftButtonDown"
                       AlternationCount="2">
                 <ListView.ItemTemplate>
                     <DataTemplate>
