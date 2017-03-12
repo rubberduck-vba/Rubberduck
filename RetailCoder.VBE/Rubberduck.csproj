@@ -920,7 +920,6 @@
     <Compile Include="UI\FileBrowserDialogFactory.cs" />
     <Compile Include="UI\SourceControl\IControlView.cs" />
     <Compile Include="UI\SourceControl\IControlViewModel.cs" />
-    <Compile Include="Refactorings\Rename\IRenameDialog.cs" />
     <Compile Include="UI\Refactorings\Rename\RenameDialog.cs">
       <SubType>Form</SubType>
     </Compile>
