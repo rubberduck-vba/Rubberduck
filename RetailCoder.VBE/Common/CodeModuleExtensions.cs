@@ -15,6 +15,29 @@ namespace Rubberduck.Common
 {
     public static class CodeModuleExtensions
     {
+        private struct RewriterInfo
+        {
+            private readonly string _replacement;
+            private readonly int _startTokenIndex;
+            private readonly int _stopTokenIndex;
+
+            public RewriterInfo(int startTokenIndex, int stopTokenIndex)
+                : this(string.Empty, startTokenIndex, stopTokenIndex) { }
+
+            public RewriterInfo(string replacement, int startTokenIndex, int stopTokenIndex)
+            {
+                _replacement = replacement;
+                _startTokenIndex = startTokenIndex;
+                _stopTokenIndex = stopTokenIndex;
+            }
+
+            public string Replacement { get { return _replacement; } }
+            public int StartTokenIndex { get { return _startTokenIndex; } }
+            public int StopTokenIndex { get { return _stopTokenIndex; } }
+
+            public static RewriterInfo None { get { return default(RewriterInfo); } }
+        }
+
         public static void Rewrite(this ICodeModule module, TokenStreamRewriter rewriter)
         {
             module.Clear();
@@ -59,60 +82,138 @@ namespace Rubberduck.Common
 
         private static void RemoveDeclaration(Declaration target, TokenStreamRewriter rewriter)
         {
-            var tokens = GetRemovedTokenIndex(target);
-            var from = tokens.Item1;
-            var to = tokens.Item2;
-            rewriter.Delete(from, to);
+            var info = GetRewriterInfoForRemovedTarget(target);
+            rewriter.Delete(info.StartTokenIndex, info.StopTokenIndex);
         }
 
-        private static Tuple<int, int> GetRemovedTokenIndex(Declaration target)
+        private static RewriterInfo GetRewriterInfoForRemovedTarget(Declaration target)
         {
             var variables = target.Context.Parent as VBAParser.VariableListStmtContext;
             if (variables != null)
             {
                 var items = variables.variableSubStmt();
-                return GetRemovedTokenIndex(target, items, item => Identifier.GetName(item.identifier()));
-            }
+                var itemIndex = items.ToList().IndexOf((VBAParser.VariableSubStmtContext)target.Context);
+                var count = items.Count;
 
-            return null;
-        }
-
-        private static Tuple<int, int> GetRemovedTokenIndex<TContext>(Declaration target, IReadOnlyList<TContext> items, Func<TContext, string> getIdentifierName)
-            where TContext : ParserRuleContext
-        {
-            if (items.Count == 1 && target.DeclarationType != DeclarationType.Parameter)
-            {
-                var item = items[0];
-                var start = ((ParserRuleContext) item.Parent.Parent).Start.TokenIndex;
-                var stop = ((ParserRuleContext) item.Parent.Parent).Stop.TokenIndex;
-                return Tuple.Create(start == 0 ? 0 : start - 1, stop + 2);
-            }
-
-            for (var i = 0; i < items.Count; i++)
-            {
-                var item = items[i];
-                if (getIdentifierName(item) == target.IdentifierName)
+                var element = variables.Parent.Parent as VBAParser.ModuleDeclarationsElementContext;
+                if (element != null)
                 {
-                    if (items.Count > 1)
+                    // module level variable declaration
+                    var startIndex = element.Start.TokenIndex;
+                    var stopIndex = element.Stop.TokenIndex;
+                    var parent = (VBAParser.ModuleDeclarationsContext)element.Parent;
+                    var elements = parent.moduleDeclarationsElement();
+
+                    if (count == 1)
                     {
-                        ITerminalNode comma;
-                        if (i == 0)
+                        // single variable - return the bounds of entire statement
+                        for (var i = 0; i < elements.Count; i++)
                         {
-                            comma = (ITerminalNode)((dynamic)item.Parent).COMMA()[i];
+                            if (elements[i] != element)
+                            {
+                                continue;
+                            }
+
+                            stopIndex = parent.endOfStatement(i).Stop.TokenIndex;
+                            break;
                         }
-                        else
-                        {
-                            comma = (ITerminalNode)((dynamic)item.Parent).COMMA()[i - 1];
-                        }
-                        return Tuple.Create(item.Start.TokenIndex, comma.Symbol.TokenIndex);
+
+                        return new RewriterInfo(startIndex, stopIndex);
                     }
-                    return Tuple.Create(item.Start.TokenIndex, item.Stop.TokenIndex);
+                    else
+                    {
+                        startIndex = itemIndex < count - 1
+                            ? target.Context.Start.TokenIndex
+                            : items[itemIndex - 1].Stop.TokenIndex + 1;
+
+                        stopIndex = itemIndex < count - 1
+                            ? items[itemIndex + 1].Start.TokenIndex - 1
+                            : items[itemIndex].Stop.TokenIndex;
+
+                        return new RewriterInfo(startIndex, stopIndex);
+                    }
+                }
+                else if(variables.Parent is VBAParser.VariableStmtContext)
+                {
+                    // procedure level variable declaration
+                    var blockStmt = (VBAParser.BlockStmtContext)variables.Parent.Parent;
+                    var startIndex = blockStmt.Start.TokenIndex;
+                    var stopIndex = blockStmt.Stop.TokenIndex;
+                    var parent = (VBAParser.BlockContext)blockStmt.Parent;
+                    var statements = parent.blockStmt();
+
+                    if (count == 1)
+                    {
+                        // single variable - return the bounds of entire statement
+                        for (var i = 0; i < statements.Count; i++)
+                        {
+                            if (statements[i] != blockStmt)
+                            {
+                                continue;
+                            }
+
+                            stopIndex = parent.endOfStatement(i).Stop.TokenIndex;
+                            break;
+                        }
+
+                        return new RewriterInfo(startIndex, stopIndex);
+                    }
+                    else
+                    {
+                        startIndex = itemIndex < count - 1
+                            ? target.Context.Start.TokenIndex
+                            : items[itemIndex - 1].Stop.TokenIndex + 1;
+
+                        stopIndex = itemIndex < count - 1
+                            ? items[itemIndex + 1].Start.TokenIndex - 1
+                            : items[itemIndex].Stop.TokenIndex;
+
+                        return new RewriterInfo(startIndex, stopIndex);
+                    }
                 }
             }
 
-            Debug.Assert(false, "Could not locate target token range.");
-            return null;
+            return RewriterInfo.None;
         }
+
+
+
+        //private static RewriterInfo GetRemovedTokenIndex<TContext>(Declaration target, IReadOnlyList<TContext> items, Func<TContext, string> getIdentifierName)
+        //    where TContext : ParserRuleContext
+        //{
+        //    if (items.Count == 1 && target.DeclarationType != DeclarationType.Parameter)
+        //    {
+        //        var item = items[0];
+        //        var start = ((ParserRuleContext) item.Parent.Parent).Start.TokenIndex;
+        //        var stop = ((ParserRuleContext) item.Parent.Parent).Stop.TokenIndex;
+        //        return Tuple.Create(start == 0 ? 0 : start - 1, stop + 2);
+        //    }
+
+        //    for (var i = 0; i < items.Count; i++)
+        //    {
+        //        var item = items[i];
+        //        if (getIdentifierName(item) == target.IdentifierName)
+        //        {
+        //            if (items.Count > 1)
+        //            {
+        //                ITerminalNode comma;
+        //                if (i == 0)
+        //                {
+        //                    comma = (ITerminalNode)((dynamic)item.Parent).COMMA()[i];
+        //                }
+        //                else
+        //                {
+        //                    comma = (ITerminalNode)((dynamic)item.Parent).COMMA()[i - 1];
+        //                }
+        //                return Tuple.Create(item.Start.TokenIndex, comma.Symbol.TokenIndex);
+        //            }
+        //            return Tuple.Create(item.Start.TokenIndex, item.Stop.TokenIndex);
+        //        }
+        //    }
+
+        //    Debug.Assert(false, "Could not locate target token range.");
+        //    return null;
+        //}
 
         private enum TargetListPosition
         {
