@@ -6,7 +6,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI;
-using Rubberduck.UI.Refactorings;
 using Rubberduck.UI.Refactorings.Rename;
 using Rubberduck.VBEditor;
 
@@ -33,12 +32,12 @@ namespace Rubberduck.Inspections.QuickFixes
         {
             var vbe = _target.Project.VBE;
 
-            using (var view = new RenameDialog(new RenameViewModel(_state, null)))
+            using (var view = new RenameDialog(new RenameViewModel(_state)))
             {
-                /*var factory = new RenamePresenterFactory(vbe, view, _state, _messageBox);
+                var factory = new RenamePresenterFactory(vbe, view, _state, _messageBox);
                 var refactoring = new RenameRefactoring(vbe, factory, _messageBox, _state);
                 refactoring.Refactor(_target);
-                IsCancelled = view.DialogResult == DialogResult.Cancel;*/
+                IsCancelled = view.DialogResult == DialogResult.Cancel;
             }
         }
 

@@ -3,7 +3,6 @@ using System.Runtime.InteropServices;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
-using Rubberduck.UI.Refactorings;
 using Rubberduck.UI.Refactorings.Rename;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -29,7 +28,7 @@ namespace Rubberduck.UI.Command.Refactorings
 
         protected override void ExecuteImpl(object parameter)
         {
-            /*using (var view = new RenameDialog())
+            using (var view = new RenameDialog(new RenameViewModel(_state)))
             {
                 var factory = new RenamePresenterFactory(Vbe, view, _state, _msgBox);
                 var refactoring = new RenameRefactoring(Vbe, factory, _msgBox, _state);
@@ -40,7 +39,7 @@ namespace Rubberduck.UI.Command.Refactorings
                 {
                     refactoring.Refactor(target);
                 }
-            }*/
+            }
         }
 
         private Declaration GetTarget()

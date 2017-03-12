@@ -17,11 +17,11 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private readonly RenameDialog _view;
         private readonly IMessageBox _msgBox;
 
-        public RenameCommand(IVBE vbe, RubberduckParserState state, IMessageBox msgBox) : base(LogManager.GetCurrentClassLogger())
+        public RenameCommand(IVBE vbe, RenameDialog view, RubberduckParserState state, IMessageBox msgBox) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
             _state = state;
-            //_view = view;
+            _view = view;
             _msgBox = msgBox;
         }
 
@@ -32,10 +32,10 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         protected override void ExecuteImpl(object parameter)
         {
-            /*var factory = new RenamePresenterFactory(_vbe, _view, _state, _msgBox);
+            var factory = new RenamePresenterFactory(_vbe, _view, _state, _msgBox);
             var refactoring = new RenameRefactoring(_vbe, factory, _msgBox, _state);
 
-            refactoring.Refactor(((ICodeExplorerDeclarationViewModel)parameter).Declaration);*/
+            refactoring.Refactor(((ICodeExplorerDeclarationViewModel)parameter).Declaration);
         }
 
         public void Dispose()

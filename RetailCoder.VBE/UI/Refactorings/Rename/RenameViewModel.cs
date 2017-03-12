@@ -13,23 +13,37 @@ namespace Rubberduck.UI.Refactorings.Rename
     public class RenameViewModel : ViewModelBase
     {
         public RubberduckParserState State { get; }
-        public Declaration Target { get; }
 
-        public RenameViewModel(RubberduckParserState state, Declaration target)
+        public RenameViewModel(RubberduckParserState state)
         {
             State = state;
-            Target = target;
-
-            NewName = Target.IdentifierName;
 
             OkButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => DialogOk());
             CancelButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => DialogCancel());
         }
-        
+
+        private Declaration _target;
+        public Declaration Target
+        {
+            get { return _target; }
+            set
+            {
+                _target = value;
+                NewName = _target.IdentifierName;
+
+                OnPropertyChanged(nameof(Instructions));
+            }
+        }
+
         public string Instructions
         {
             get
             {
+                if (Target == null)
+                {
+                    return string.Empty;
+                }
+
                 var declarationType = RubberduckUI.ResourceManager.GetString("DeclarationType_" + Target.DeclarationType, CultureInfo.CurrentUICulture);
                 return string.Format(RubberduckUI.RenameDialog_InstructionsLabelText, declarationType, Target.IdentifierName);
             }
@@ -51,6 +65,8 @@ namespace Rubberduck.UI.Refactorings.Rename
         {
             get
             {
+                if (Target == null) { return false; }
+
                 var tokenValues = typeof(Tokens).GetFields().Select(item => item.GetValue(null)).Cast<string>().Select(item => item);
 
                 return NewName != Target.IdentifierName &&

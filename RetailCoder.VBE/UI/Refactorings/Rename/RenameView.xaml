@@ -17,7 +17,7 @@
         </Grid.RowDefinitions>
         <StackPanel Background="White">
             <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=RenameDialog_TitleText}" FontWeight="Bold" />
-            <TextBlock Text="{Binding Instructions, Mode=OneTime}"
+            <TextBlock Text="{Binding Instructions}"
                        Margin="5,0" />
         </StackPanel>
         <Grid Grid.Row="1" Margin="5,10,10,5">
