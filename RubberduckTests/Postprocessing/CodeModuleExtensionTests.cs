@@ -55,7 +55,7 @@ namespace RubberduckTests.Postprocessing
 
         [TestMethod]
         [TestCategory("TokenStreamRewriter")]
-        public void RemovesSimpleVariableDeclaration()
+        public void RemovesModuleVariableDeclarationStatement()
         {
             const string expected = @"
 ";
@@ -88,7 +88,40 @@ Private foo As String
 
         [TestMethod]
         [TestCategory("TokenStreamRewriter")]
-        public void RemovesSimpleVariableStatement()
+        public void RemovesModuleConstantDeclarationStatement()
+        {
+            const string expected = @"
+";
+            const string content = @"
+Private Const foo As String = ""Something""
+";
+            IVBComponent component;
+            var vbe = new MockVbeBuilder().BuildFromSingleStandardModule(content, out component).Object;
+            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status != ParserState.Ready)
+            {
+                Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+            }
+
+            var declarations = parser.State.AllUserDeclarations;
+            var target = declarations.SingleOrDefault(d => d.DeclarationType == DeclarationType.Constant);
+            if (target == null)
+            {
+                Assert.Inconclusive("No constant was found in test code.");
+            }
+
+            var module = component.CodeModule;
+            var rewriter = parser.State.GetRewriter(target);
+
+            CodeModuleExtensions.Remove(module, rewriter, target);
+            Assert.AreEqual(expected, rewriter.GetText());
+        }
+
+        [TestMethod]
+        [TestCategory("TokenStreamRewriter")]
+        public void RemovesLocalVariableDeclarationStatement()
         {
             const string expected = @"
 Sub DoSomething()
@@ -114,6 +147,43 @@ End Sub
             if (target == null)
             {
                 Assert.Inconclusive("No variable was found in test code.");
+            }
+
+            var module = component.CodeModule;
+            var rewriter = parser.State.GetRewriter(target);
+
+            CodeModuleExtensions.Remove(module, rewriter, target);
+            Assert.AreEqual(expected, rewriter.GetText());
+        }
+
+        [TestMethod]
+        [TestCategory("TokenStreamRewriter")]
+        public void RemovesLocalConstantDeclarationStatement()
+        {
+            const string expected = @"
+Sub DoSomething()
+End Sub
+";
+            const string content = @"
+Sub DoSomething()
+Const foo As String = ""Something""
+End Sub
+";
+            IVBComponent component;
+            var vbe = new MockVbeBuilder().BuildFromSingleStandardModule(content, out component).Object;
+            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status != ParserState.Ready)
+            {
+                Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+            }
+
+            var declarations = parser.State.AllUserDeclarations;
+            var target = declarations.SingleOrDefault(d => d.DeclarationType == DeclarationType.Constant);
+            if (target == null)
+            {
+                Assert.Inconclusive("No constant was found in test code.");
             }
 
             var module = component.CodeModule;
@@ -151,7 +221,45 @@ End Sub
             var target = declarations.SingleOrDefault(d => d.IdentifierName == "foo" && d.DeclarationType == DeclarationType.Variable);
             if (target == null)
             {
-                Assert.Inconclusive("No variable was found in test code.");
+                Assert.Inconclusive("No 'foo' variable was found in test code.");
+            }
+
+            var module = component.CodeModule;
+            var rewriter = parser.State.GetRewriter(target);
+
+            CodeModuleExtensions.Remove(module, rewriter, target);
+            Assert.AreEqual(expected, rewriter.GetText());
+        }
+
+        [TestMethod]
+        [TestCategory("TokenStreamRewriter")]
+        public void RemovesFirstConstantInStatement()
+        {
+            const string expected = @"
+Sub DoSomething()
+Const bar As Integer = 42
+End Sub
+";
+            const string content = @"
+Sub DoSomething()
+Const foo As String = ""Something"", bar As Integer = 42
+End Sub
+";
+            IVBComponent component;
+            var vbe = new MockVbeBuilder().BuildFromSingleStandardModule(content, out component).Object;
+            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status != ParserState.Ready)
+            {
+                Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+            }
+
+            var declarations = parser.State.AllUserDeclarations;
+            var target = declarations.SingleOrDefault(d => d.IdentifierName == "foo" && d.DeclarationType == DeclarationType.Constant);
+            if (target == null)
+            {
+                Assert.Inconclusive("No 'foo' constant was found in test code.");
             }
 
             var module = component.CodeModule;
@@ -201,7 +309,45 @@ End Sub
 
         [TestMethod]
         [TestCategory("TokenStreamRewriter")]
-        public void RemovesSingleVariableDeclarationWithLineContinuations()
+        public void RemovesLastConstantInStatement()
+        {
+            const string expected = @"
+Sub DoSomething()
+Const foo As String = ""Something""
+End Sub
+";
+            const string content = @"
+Sub DoSomething()
+Const foo As String = ""Something"", bar As Integer = 42
+End Sub
+";
+            IVBComponent component;
+            var vbe = new MockVbeBuilder().BuildFromSingleStandardModule(content, out component).Object;
+            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status != ParserState.Ready)
+            {
+                Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+            }
+
+            var declarations = parser.State.AllUserDeclarations;
+            var target = declarations.SingleOrDefault(d => d.IdentifierName == "bar" && d.DeclarationType == DeclarationType.Constant);
+            if (target == null)
+            {
+                Assert.Inconclusive("No 'bar' constant was found in test code.");
+            }
+
+            var module = component.CodeModule;
+            var rewriter = parser.State.GetRewriter(target);
+
+            CodeModuleExtensions.Remove(module, rewriter, target);
+            Assert.AreEqual(expected, rewriter.GetText());
+        }
+
+        [TestMethod]
+        [TestCategory("TokenStreamRewriter")]
+        public void RemovesModuleVariableDeclarationWithLineContinuations()
         {
             const string expected = @"
 ";
@@ -236,6 +382,41 @@ Private foo _
 
         [TestMethod]
         [TestCategory("TokenStreamRewriter")]
+        public void RemovesModuleConstantDeclarationWithLineContinuations()
+        {
+            const string expected = @"
+";
+            const string content = @"
+Private Const foo _
+  As String = _
+  ""Something""
+";
+            IVBComponent component;
+            var vbe = new MockVbeBuilder().BuildFromSingleStandardModule(content, out component).Object;
+            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status != ParserState.Ready)
+            {
+                Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+            }
+
+            var declarations = parser.State.AllUserDeclarations;
+            var target = declarations.SingleOrDefault(d => d.DeclarationType == DeclarationType.Constant);
+            if (target == null)
+            {
+                Assert.Inconclusive("No constant was found in test code.");
+            }
+
+            var module = component.CodeModule;
+            var rewriter = parser.State.GetRewriter(target);
+
+            CodeModuleExtensions.Remove(module, rewriter, target);
+            Assert.AreEqual(expected, rewriter.GetText());
+        }
+
+        [TestMethod]
+        [TestCategory("TokenStreamRewriter")]
         public void RemovesFirstVariableInDeclarationList()
         {
             const string content = @"
@@ -258,7 +439,41 @@ Private bar As Long
             var target = declarations.SingleOrDefault(d => d.IdentifierName == "foo" && d.DeclarationType == DeclarationType.Variable);
             if (target == null)
             {
-                Assert.Inconclusive("Target variable was found in test code.");
+                Assert.Inconclusive("Target variable was not found in test code.");
+            }
+
+            var module = component.CodeModule;
+            var rewriter = parser.State.GetRewriter(target);
+
+            CodeModuleExtensions.Remove(module, rewriter, target);
+            Assert.AreEqual(expected, rewriter.GetText());
+        }
+
+        [TestMethod]
+        [TestCategory("TokenStreamRewriter")]
+        public void RemovesFirstConstantInDeclarationList()
+        {
+            const string content = @"
+Private Const foo As String = ""Something"", bar As Long = 42
+";
+            const string expected = @"
+Private Const bar As Long = 42
+";
+            IVBComponent component;
+            var vbe = new MockVbeBuilder().BuildFromSingleStandardModule(content, out component).Object;
+            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status != ParserState.Ready)
+            {
+                Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+            }
+
+            var declarations = parser.State.AllUserDeclarations;
+            var target = declarations.SingleOrDefault(d => d.IdentifierName == "foo" && d.DeclarationType == DeclarationType.Constant);
+            if (target == null)
+            {
+                Assert.Inconclusive("Target constant was not found in test code.");
             }
 
             var module = component.CodeModule;
@@ -292,7 +507,41 @@ Private foo As String
             var target = declarations.SingleOrDefault(d => d.IdentifierName == "bar" && d.DeclarationType == DeclarationType.Variable);
             if (target == null)
             {
-                Assert.Inconclusive("Target variable was found in test code.");
+                Assert.Inconclusive("Target variable was not found in test code.");
+            }
+
+            var module = component.CodeModule;
+            var rewriter = parser.State.GetRewriter(target);
+
+            CodeModuleExtensions.Remove(module, rewriter, target);
+            Assert.AreEqual(expected, rewriter.GetText());
+        }
+
+        [TestMethod]
+        [TestCategory("TokenStreamRewriter")]
+        public void RemovesLastConstantInDeclarationList()
+        {
+            const string content = @"
+Private Const foo As String = ""Something"", bar As Long = 42
+";
+            const string expected = @"
+Private Const foo As String = ""Something""
+";
+            IVBComponent component;
+            var vbe = new MockVbeBuilder().BuildFromSingleStandardModule(content, out component).Object;
+            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status != ParserState.Ready)
+            {
+                Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+            }
+
+            var declarations = parser.State.AllUserDeclarations;
+            var target = declarations.SingleOrDefault(d => d.IdentifierName == "bar" && d.DeclarationType == DeclarationType.Constant);
+            if (target == null)
+            {
+                Assert.Inconclusive("Target constant was not found in test code.");
             }
 
             var module = component.CodeModule;
@@ -326,7 +575,41 @@ Private foo As String, buzz As Integer
             var target = declarations.SingleOrDefault(d => d.IdentifierName == "bar" && d.DeclarationType == DeclarationType.Variable);
             if (target == null)
             {
-                Assert.Inconclusive("Target variable was found in test code.");
+                Assert.Inconclusive("Target variable was not found in test code.");
+            }
+
+            var module = component.CodeModule;
+            var rewriter = parser.State.GetRewriter(target);
+
+            CodeModuleExtensions.Remove(module, rewriter, target);
+            Assert.AreEqual(expected, rewriter.GetText());
+        }
+
+        [TestMethod]
+        [TestCategory("TokenStreamRewriter")]
+        public void RemovesMiddleConstantInDeclarationList()
+        {
+            const string content = @"
+Private Const foo As String = ""Something"", bar As Long = 42, buzz As Integer = 12
+";
+            const string expected = @"
+Private Const foo As String = ""Something"", buzz As Integer = 12
+";
+            IVBComponent component;
+            var vbe = new MockVbeBuilder().BuildFromSingleStandardModule(content, out component).Object;
+            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status != ParserState.Ready)
+            {
+                Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+            }
+
+            var declarations = parser.State.AllUserDeclarations;
+            var target = declarations.SingleOrDefault(d => d.IdentifierName == "bar" && d.DeclarationType == DeclarationType.Constant);
+            if (target == null)
+            {
+                Assert.Inconclusive("Target constant was not found in test code.");
             }
 
             var module = component.CodeModule;
@@ -364,6 +647,46 @@ Private foo As String, _
             if (target == null)
             {
                 Assert.Inconclusive("Target variable was found in test code.");
+            }
+
+            var module = component.CodeModule;
+            var rewriter = parser.State.GetRewriter(target);
+
+            CodeModuleExtensions.Remove(module, rewriter, target);
+            Assert.AreEqual(expected, rewriter.GetText());
+        }
+
+        [TestMethod]
+        [TestCategory("TokenStreamRewriter")]
+        public void RemovesMiddleConstantInDeclarationListWithLineContinuations()
+        {
+            const string content = @"
+Private Const foo _
+          As String = ""Something"", _
+        bar As Long _
+          = 42, _
+        buzz As Integer = 12
+";
+            const string expected = @"
+Private Const foo _
+          As String = ""Something"", _
+        buzz As Integer = 12
+";
+            IVBComponent component;
+            var vbe = new MockVbeBuilder().BuildFromSingleStandardModule(content, out component).Object;
+            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status != ParserState.Ready)
+            {
+                Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+            }
+
+            var declarations = parser.State.AllUserDeclarations;
+            var target = declarations.SingleOrDefault(d => d.IdentifierName == "bar" && d.DeclarationType == DeclarationType.Constant);
+            if (target == null)
+            {
+                Assert.Inconclusive("Target constant was found in test code.");
             }
 
             var module = component.CodeModule;

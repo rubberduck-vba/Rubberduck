@@ -15,7 +15,7 @@ namespace Rubberduck.Common
 {
     public static class CodeModuleExtensions
     {
-        private struct RewriterInfo
+        private struct RewriterInfo : IEquatable<RewriterInfo>
         {
             private readonly string _replacement;
             private readonly int _startTokenIndex;
@@ -36,6 +36,27 @@ namespace Rubberduck.Common
             public int StopTokenIndex { get { return _stopTokenIndex; } }
 
             public static RewriterInfo None { get { return default(RewriterInfo); } }
+
+            public bool Equals(RewriterInfo other)
+            {
+                return other.Replacement == Replacement
+                       && other.StartTokenIndex == StartTokenIndex
+                       && other.StopTokenIndex == StopTokenIndex;
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (obj == null)
+                {
+                    return false;
+                }
+                return Equals((RewriterInfo) obj);
+            }
+
+            public override int GetHashCode()
+            {
+                return HashCode.Compute(Replacement, StartTokenIndex, StopTokenIndex);
+            }
         }
 
         public static void Rewrite(this ICodeModule module, TokenStreamRewriter rewriter)
@@ -50,7 +71,7 @@ namespace Rubberduck.Common
         /// </summary>
         /// <param name="module">The <see cref="ICodeModule"/> to modify.</param>
         /// <param name="rewriter">The <see cref="TokenStreamRewriter"/> holding the state to alter.</param>
-        /// <param name="target"></param>
+        /// <param name="target">The <see cref="Declaration"/> to remove.</param>
         public static void Remove(this ICodeModule module, TokenStreamRewriter rewriter, Declaration target)
         {
             // note: commented-out because it makes tests fail.. need a way to fix that
@@ -83,7 +104,10 @@ namespace Rubberduck.Common
         private static void RemoveDeclaration(Declaration target, TokenStreamRewriter rewriter)
         {
             var info = GetRewriterInfoForRemovedTarget(target);
-            rewriter.Delete(info.StartTokenIndex, info.StopTokenIndex);
+            if (!info.Equals(RewriterInfo.None))
+            {
+                rewriter.Delete(info.StartTokenIndex, info.StopTokenIndex);
+            }
         }
 
         private static RewriterInfo GetRewriterInfoForRemovedTarget(Declaration target)
@@ -97,30 +121,47 @@ namespace Rubberduck.Common
             var constants = target.Context.Parent as VBAParser.ConstStmtContext;
             if (constants != null)
             {
-                // todo
+                return RewriterInfoForConstantRemoval(target, constants);
             }
 
             return RewriterInfo.None;
         }
 
-        private static RewriterInfo RewriterInfoForVariableRemoval(Declaration target, VBAParser.VariableListStmtContext variables)
+        private static RewriterInfo RewriterInfoForVariableRemoval(
+            Declaration target, VBAParser.VariableListStmtContext variableListStmtContext)
         {
-            var items = variables.variableSubStmt();
+            var items = variableListStmtContext.variableSubStmt();
             var itemIndex = items.ToList().IndexOf((VBAParser.VariableSubStmtContext) target.Context);
             var count = items.Count;
 
-            var element = variables.Parent.Parent as VBAParser.ModuleDeclarationsElementContext;
+            var element = variableListStmtContext.Parent.Parent as VBAParser.ModuleDeclarationsElementContext;
             if (element != null)
             {
                 return GetRewriterInfoForModuleVariableRemoval(target, element, count, itemIndex, items);
             }
 
-            if (variables.Parent is VBAParser.VariableStmtContext)
+            if (variableListStmtContext.Parent is VBAParser.VariableStmtContext)
             {
-                return GetRewriterInfoForLocalVariableRemoval(target, variables, count, itemIndex, items);
+                return GetRewriterInfoForLocalVariableRemoval(target, variableListStmtContext, count, itemIndex, items);
             }
 
             return RewriterInfo.None;
+        }
+
+        private static RewriterInfo RewriterInfoForConstantRemoval(
+            Declaration target, VBAParser.ConstStmtContext constStmtContext)
+        {
+            var items = constStmtContext.constSubStmt();
+            var itemIndex = items.ToList().IndexOf((VBAParser.ConstSubStmtContext) target.Context);
+            var count = items.Count;
+
+            var element = constStmtContext.Parent as VBAParser.ModuleDeclarationsElementContext;
+            if (element != null)
+            {
+                return GetRewriterInfoForModuleConstantRemoval(target, element, count, itemIndex, items);
+            }
+
+            return GetRewriterInfoForLocalConstantRemoval(target, constStmtContext, count, itemIndex, items);
         }
 
         private static RewriterInfo GetRewriterInfoForLocalVariableRemoval(Declaration target, VBAParser.VariableListStmtContext variables,
@@ -139,8 +180,42 @@ namespace Rubberduck.Common
             return GetRewriterInfoForTargetRemovedFromListStmt(target.Context.Start, itemIndex, items);
         }
 
+        private static RewriterInfo GetRewriterInfoForLocalConstantRemoval(Declaration target,
+            VBAParser.ConstStmtContext constants,
+            int count, int itemIndex, IReadOnlyList<VBAParser.ConstSubStmtContext> items)
+        {
+            var blockStmt = (VBAParser.BlockStmtContext) constants.Parent;
+            var startIndex = blockStmt.Start.TokenIndex;
+            var parent = (VBAParser.BlockContext) blockStmt.Parent;
+            var statements = parent.blockStmt();
+
+            if (count == 1)
+            {
+                var stopIndex = FindStopTokenIndex(statements, blockStmt, parent);
+                return new RewriterInfo(startIndex, stopIndex);
+            }
+            return GetRewriterInfoForTargetRemovedFromListStmt(target.Context.Start, itemIndex, items);
+        }
+
         private static RewriterInfo GetRewriterInfoForModuleVariableRemoval(Declaration target,
-            VBAParser.ModuleDeclarationsElementContext element, int count, int itemIndex, IReadOnlyList<VBAParser.VariableSubStmtContext> items)
+            VBAParser.ModuleDeclarationsElementContext element, 
+            int count, int itemIndex, IReadOnlyList<VBAParser.VariableSubStmtContext> items)
+        {
+            var startIndex = element.Start.TokenIndex;
+            var parent = (VBAParser.ModuleDeclarationsContext) element.Parent;
+            var elements = parent.moduleDeclarationsElement();
+
+            if (count == 1)
+            {
+                var stopIndex = FindStopTokenIndex(elements, element, parent);
+                return new RewriterInfo(startIndex, stopIndex);
+            }
+            return GetRewriterInfoForTargetRemovedFromListStmt(target.Context.Start, itemIndex, items);
+        }
+
+        private static RewriterInfo GetRewriterInfoForModuleConstantRemoval(
+            Declaration target, VBAParser.ModuleDeclarationsElementContext element, 
+            int count, int itemIndex, IReadOnlyList<VBAParser.ConstSubStmtContext> items)
         {
             var startIndex = element.Start.TokenIndex;
             var parent = (VBAParser.ModuleDeclarationsContext) element.Parent;
