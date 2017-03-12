@@ -98,11 +98,13 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                     if (index >= 0)
                     {
                         ViewModel.Parameters.Move(ViewModel.Parameters.IndexOf(parameter), index);
+                        ViewModel.UpdatePreview();
                     }
                 }
                 else
                 {
                     ViewModel.Parameters.Move(ViewModel.Parameters.IndexOf(parameter), ViewModel.Parameters.Count - 1);
+                    ViewModel.UpdatePreview();
                 }
             }
         }
