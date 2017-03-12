@@ -86,6 +86,7 @@
         public static readonly string Implements = "Implements";
         public static readonly string In = "In";
         public static readonly string Input = "Input";
+        public static readonly string InputB = "InputB";
         public static readonly string InputBox = "InputBox";
         public static readonly string InStr = "InStr";
         public static readonly string Int = "Int";
@@ -192,6 +193,7 @@
         public static readonly string WeekDay = "WeekDay";
         public static readonly string Wend = "Wend";
         public static readonly string While = "While";
+        public static readonly string Width = "Width";
         public static readonly string With = "With";
         public static readonly string Write = "Write";
         public static readonly string XOr = "Xor";
