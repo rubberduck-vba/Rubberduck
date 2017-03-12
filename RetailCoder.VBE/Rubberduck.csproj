@@ -479,6 +479,11 @@
     <Compile Include="UI\Refactorings\AssignedByValParameterQuickFixDialogFactory.cs" />
     <Compile Include="UI\Refactorings\IAssignedByValParameterQuickFixDialog.cs" />
     <Compile Include="UI\Refactorings\IAssignedByValParameterQuickFixDialogFactory.cs" />
+    <Compile Include="UI\Refactorings\RemoveParameters\ParameterTextDecorationConverter.cs" />
+    <Compile Include="UI\Refactorings\RemoveParameters\RemoveParametersView.xaml.cs">
+      <DependentUpon>RemoveParametersView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Refactorings\RemoveParameters\RemoveParametersViewModel.cs" />
     <Compile Include="UI\SelectionChangeService.cs" />
     <Compile Include="VersionCheck\IVersionCheck.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\AppCommandBarBase.cs" />
@@ -574,7 +579,6 @@
     <Compile Include="Refactorings\IntroduceField\IntroduceFieldRefactoring.cs" />
     <Compile Include="Refactorings\IntroduceParameter\IntroduceParameterRefactoring.cs" />
     <Compile Include="Refactorings\MoveCloserToUsage\MoveCloserToUsageRefactoring.cs" />
-    <Compile Include="Refactorings\RemoveParameters\IRemoveParametersDialog.cs" />
     <Compile Include="Refactorings\RemoveParameters\Parameter.cs" />
     <Compile Include="Refactorings\RemoveParameters\RemoveParametersModel.cs" />
     <Compile Include="Refactorings\RemoveParameters\RemoveParametersPresenter.cs" />
@@ -866,10 +870,10 @@
       <DependentUpon>SimpleListControl.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\IdentifierReferences\IdentifierReferencesListDockablePresenter.cs" />
-    <Compile Include="UI\Refactorings\RemoveParametersDialog.cs">
+    <Compile Include="UI\Refactorings\RemoveParameters\RemoveParametersDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\Refactorings\RemoveParametersDialog.Designer.cs">
+    <Compile Include="UI\Refactorings\RemoveParameters\RemoveParametersDialog.Designer.cs">
       <DependentUpon>RemoveParametersDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Refactorings\ExtractMethod\ExtractMethodPresenter.cs" />
@@ -1112,7 +1116,7 @@
     <EmbeddedResource Include="UI\Refactorings\ExtractMethodDialog.resx">
       <DependentUpon>ExtractMethodDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Refactorings\RemoveParametersDialog.resx">
+    <EmbeddedResource Include="UI\Refactorings\RemoveParameters\RemoveParametersDialog.resx">
       <DependentUpon>RemoveParametersDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Refactorings\RenameDialog.resx">
@@ -1474,6 +1478,10 @@
     <Page Include="UI\FindSymbol\FindSymbolControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Refactorings\RemoveParameters\RemoveParametersView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\RegexAssistant\RegexAssistant.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -1578,7 +1578,7 @@ End Sub";
             {
                 refactoring.Refactor(
                     model.Declarations.FirstOrDefault(
-                        i => i.DeclarationType == Rubberduck.Parsing.Symbols.DeclarationType.ProceduralModule));
+                        i => i.DeclarationType == DeclarationType.ProceduralModule));
             }
             catch (ArgumentException e)
             {
@@ -1634,64 +1634,6 @@ End Sub";
             refactoring.Refactor(qualifiedSelection);
 
             Assert.AreEqual(inputCode, component.CodeModule.Content());
-        }
-
-        [TestMethod]
-        public void Presenter_Accept_ReturnsModelWithParametersChanged()
-        {
-            //Input
-            const string inputCode =
-@"Private Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
-End Sub";
-            var selection = new Selection(1, 15, 1, 15);
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-
-            var model = new RemoveParametersModel(state, qualifiedSelection, new Mock<IMessageBox>().Object);
-            model.Parameters[1].IsRemoved = true;
-
-            var view = new Mock<IRemoveParametersDialog>();
-            view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
-            view.Setup(v => v.Parameters).Returns(model.Parameters);
-
-            var factory = new RemoveParametersPresenterFactory(vbe.Object, view.Object, state, null);
-
-            var presenter = factory.Create();
-
-            Assert.AreEqual(model.Parameters, presenter.Show().Parameters);
-        }
-
-        [TestMethod]
-        public void Presenter_Reject_ReturnsNull()
-        {
-            //Input
-            const string inputCode =
-@"Private Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
-End Sub";
-            var selection = new Selection(1, 15, 1, 15);
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-
-            var model = new RemoveParametersModel(state, qualifiedSelection, new Mock<IMessageBox>().Object);
-            model.Parameters[1].IsRemoved = true;
-
-            var view = new Mock<IRemoveParametersDialog>();
-            view.Setup(v => v.ShowDialog()).Returns(DialogResult.Cancel);
-            view.Setup(v => v.Parameters).Returns(model.Parameters);
-
-            var factory = new RemoveParametersPresenterFactory(vbe.Object, view.Object, state, null);
-
-            var presenter = factory.Create();
-
-            Assert.AreEqual(null, presenter.Show());
         }
 
         [TestMethod]
