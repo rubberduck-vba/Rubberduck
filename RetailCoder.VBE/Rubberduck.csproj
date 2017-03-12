@@ -590,7 +590,6 @@
     <Compile Include="Refactorings\RemoveParameters\RemoveParametersPresenterFactory.cs" />
     <Compile Include="Refactorings\RemoveParameters\RemoveParametersRefactoring.cs" />
     <Compile Include="Refactorings\Rename\RenameModel.cs" />
-    <Compile Include="Refactorings\ReorderParameters\IReorderParametersDialog.cs" />
     <Compile Include="Refactorings\ReorderParameters\ReorderParametersModel.cs" />
     <Compile Include="Refactorings\ReorderParameters\ReorderParametersPresenter.cs" />
     <Compile Include="Refactorings\ReorderParameters\ReorderParametersPresenterFactory.cs" />

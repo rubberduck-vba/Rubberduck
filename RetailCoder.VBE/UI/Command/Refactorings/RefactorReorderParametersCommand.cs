@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
+﻿using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
@@ -73,13 +71,9 @@ namespace Rubberduck.UI.Command.Refactorings
 
                 using (var view = new ReorderParametersDialog(new ReorderParametersViewModel(_state)))
                 {
-                    /*var factory = new ReorderParametersPresenterFactory(Vbe, view, _state, _msgbox);
+                    var factory = new ReorderParametersPresenterFactory(Vbe, view, _state, _msgbox);
                     var refactoring = new ReorderParametersRefactoring(Vbe, factory, _msgbox);
-                    refactoring.Refactor(selection);*/
-                    view.ViewModel.Parameters =
-                        new ObservableCollection<Parameter>(_state.AllUserDeclarations.Where(s => s.DeclarationType == DeclarationType.Parameter)
-                                .Select((s, i) => new Parameter((ParameterDeclaration)s, i)).ToList());
-                    view.ShowDialog();
+                    refactoring.Refactor(selection);
                 }
             }
         }
