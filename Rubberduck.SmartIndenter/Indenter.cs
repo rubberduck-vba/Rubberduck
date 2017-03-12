@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.SmartIndenter
@@ -58,7 +59,23 @@ namespace Rubberduck.SmartIndenter
             }
             Indent(pane.CodeModule.Parent);
         }
-        
+
+        /// <summary>
+        /// Indents every module in the active project.
+        /// </summary>
+        public void IndentCurrentProject()
+        {
+            var project = _vbe.ActiveVBProject;
+            if (project.Protection == ProjectProtection.Locked)
+            {
+                return;
+            }
+            foreach (var component in project.VBComponents)
+            {
+                Indent(component);
+            }
+        }
+
         private static Selection GetSelection(ICodePane codePane)
         {
             return codePane.Selection;

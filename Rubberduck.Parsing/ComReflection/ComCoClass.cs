@@ -71,7 +71,7 @@ namespace Rubberduck.Parsing.ComReflection
         {
             Type = DeclarationType.ClassModule;
             GetImplementedInterfaces(info, attrib);
-            IsControl = attrib.wTypeFlags.HasFlag(TYPEFLAGS.TYPEFLAG_FAPPOBJECT);
+            IsControl = attrib.wTypeFlags.HasFlag(TYPEFLAGS.TYPEFLAG_FCONTROL);
             Debug.Assert(attrib.cFuncs == 0);
         }
 
