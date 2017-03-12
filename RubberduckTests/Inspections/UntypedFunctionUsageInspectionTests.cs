@@ -252,6 +252,15 @@ End Sub";
                 new List<IAnnotation>(),
                 new Attributes());
 
+            var hiddenModule = new ProceduralModuleDeclaration(
+                new QualifiedMemberName(new QualifiedModuleName("VBA", MockVbeBuilder.LibraryPathVBA, "_HiddenModule"), "_HiddenModule"),
+                vbaDeclaration,
+                "_HiddenModule",
+                true,
+                new List<IAnnotation>(),
+                new Attributes());
+
+
             var commandFunction = new FunctionDeclaration(
                 new QualifiedMemberName(interactionModule.QualifiedName.QualifiedModuleName, "_B_var_Command"),
                 interactionModule,
@@ -590,7 +599,7 @@ End Sub";
 
             var firstMidParam = new ParameterDeclaration(
                 new QualifiedMemberName(stringsModule.QualifiedName.QualifiedModuleName, "String"),
-                midbFunction,
+                midFunction,
                 "Variant",
                 null,
                 null,
@@ -599,7 +608,7 @@ End Sub";
 
             var secondMidParam = new ParameterDeclaration(
                 new QualifiedMemberName(stringsModule.QualifiedName.QualifiedModuleName, "Start"),
-                midbFunction,
+                midFunction,
                 "Long",
                 null,
                 null,
@@ -715,6 +724,78 @@ End Sub";
                 new List<IAnnotation>(),
                 new Attributes());
 
+            var inputbFunction = new FunctionDeclaration(
+                new QualifiedMemberName(hiddenModule.QualifiedName.QualifiedModuleName, "_B_var_InputB"),
+                hiddenModule,
+                hiddenModule,
+                "Variant",
+                null,
+                null,
+                Accessibility.Global,
+                null,
+                Selection.Home,
+                false,
+                true,
+                new List<IAnnotation>(),
+                new Attributes());
+
+            var firstInputBParam = new ParameterDeclaration(
+                new QualifiedMemberName(hiddenModule.QualifiedName.QualifiedModuleName, "Number"),
+                inputbFunction,
+                "Long",
+                null,
+                null,
+                false,
+                true);
+
+            var secondInputBParam = new ParameterDeclaration(
+                new QualifiedMemberName(hiddenModule.QualifiedName.QualifiedModuleName, "FileNumber"),
+                inputbFunction,
+                "Integer",
+                null,
+                null,
+                false,
+                true);
+
+            inputbFunction.AddParameter(firstInputBParam);
+            inputbFunction.AddParameter(secondInputBParam);
+
+            var inputFunction = new FunctionDeclaration(
+                new QualifiedMemberName(hiddenModule.QualifiedName.QualifiedModuleName, "_B_var_Input"),
+                hiddenModule,
+                hiddenModule,
+                "Variant",
+                null,
+                null,
+                Accessibility.Global,
+                null,
+                Selection.Home,
+                false,
+                true,
+                new List<IAnnotation>(),
+                new Attributes());
+
+            var firstInputParam = new ParameterDeclaration(
+                new QualifiedMemberName(hiddenModule.QualifiedName.QualifiedModuleName, "Number"),
+                inputFunction,
+                "Long",
+                null,
+                null,
+                false,
+                true);
+
+            var secondInputParam = new ParameterDeclaration(
+                new QualifiedMemberName(hiddenModule.QualifiedName.QualifiedModuleName, "FileNumber"),
+                inputFunction,
+                "Integer",
+                null,
+                null,
+                false,
+                true);
+
+            inputFunction.AddParameter(firstInputParam);
+            inputFunction.AddParameter(secondInputParam);
+
             return new List<Declaration>
             {
                 vbaDeclaration,
@@ -723,6 +804,7 @@ End Sub";
                 interactionModule,
                 stringsModule,
                 dateTimeModule,
+                hiddenModule,
                 commandFunction,
                 environFunction,
                 rtrimFunction,
@@ -756,7 +838,13 @@ End Sub";
                 strFunction,
                 curDirFunction,
                 datePropertyGet,
-                timePropertyGet
+                timePropertyGet,
+                inputbFunction,
+                firstInputBParam,
+                secondInputBParam,
+                inputFunction,
+                firstInputParam,
+                secondInputParam
             };
         }
     }
