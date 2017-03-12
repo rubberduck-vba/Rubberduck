@@ -1,10 +1,11 @@
-﻿using System.Linq;
+﻿using System.Collections.ObjectModel;
+using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ReorderParameters;
-using Rubberduck.UI.Refactorings;
+using Rubberduck.UI.Refactorings.ReorderParameters;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -69,11 +70,16 @@ namespace Rubberduck.UI.Command.Refactorings
                 }
                 var selection = new QualifiedSelection(new QualifiedModuleName(module.Parent), pane.Selection);
 
-                using (var view = new ReorderParametersDialog())
+                using (var view = new ReorderParametersDialog(new ReorderParametersViewModel(_state)))
                 {
-                    var factory = new ReorderParametersPresenterFactory(Vbe, view, _state, _msgbox);
+                    /*var factory = new ReorderParametersPresenterFactory(Vbe, view, _state, _msgbox);
                     var refactoring = new ReorderParametersRefactoring(Vbe, factory, _msgbox);
-                    refactoring.Refactor(selection);
+                    refactoring.Refactor(selection);*/
+                    view.ViewModel.Parameters =
+                        new ObservableCollection<Rubberduck.Refactorings.ReorderParameters.Parameter>(
+                            _state.AllUserDeclarations.Where(s => s.DeclarationType == DeclarationType.Parameter)
+                                .Select((s, i) => new Parameter((ParameterDeclaration)s, i)));
+                    view.ShowDialog();
                 }
             }
         }
