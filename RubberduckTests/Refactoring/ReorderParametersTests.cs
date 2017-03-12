@@ -1539,64 +1539,6 @@ End Sub";   // note: IDE removes excess spaces
         }
 
         [TestMethod]
-        public void Presenter_AcceptDialog_ReordersProcedureWithTwoParameters()
-        {
-            //Input
-            const string inputCode =
-@"Private Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
-End Sub";
-            var selection = new Selection(1, 15, 1, 15);
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-
-            var model = new ReorderParametersModel(state, qualifiedSelection, new Mock<IMessageBox>().Object);
-            model.Parameters.Reverse();
-
-            var view = new Mock<IReorderParametersDialog>();
-            view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
-            view.Setup(v => v.Parameters).Returns(model.Parameters);
-
-            var factory = new ReorderParametersPresenterFactory(vbe.Object, view.Object, state, null);
-
-            var presenter = factory.Create();
-
-            Assert.AreEqual(model.Parameters, presenter.Show().Parameters);
-        }
-
-        [TestMethod]
-        public void Presenter_CancelDialogCreatesNullModel()
-        {
-            //Input
-            const string inputCode =
-@"Private Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
-End Sub";
-            var selection = new Selection(1, 15, 1, 15);
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-
-            var model = new ReorderParametersModel(state, qualifiedSelection, new Mock<IMessageBox>().Object);
-
-            var view = new Mock<IReorderParametersDialog>();
-            view.Setup(v => v.ShowDialog()).Returns(DialogResult.Cancel);
-            view.Setup(v => v.Parameters).Returns(model.Parameters);
-
-            var factory = new ReorderParametersPresenterFactory(vbe.Object, view.Object, state, null);
-            var presenter = factory.Create();
-
-            var result = presenter.Show();
-
-            Assert.IsNull(result);
-        }
-
-        [TestMethod]
         public void Presenter_ParameterlessMemberCreatesNullModel()
         {
             //Input
