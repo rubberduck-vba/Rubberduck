@@ -482,6 +482,8 @@
       <DependentUpon>RemoveParametersView.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Refactorings\RemoveParameters\RemoveParametersViewModel.cs" />
+    <Compile Include="UI\Refactorings\ReorderParameters\IndexIsNotLastConverter.cs" />
+    <Compile Include="UI\Refactorings\ReorderParameters\IndexIsNotZeroConverter.cs" />
     <Compile Include="UI\Refactorings\ReorderParameters\ReorderParametersView.xaml.cs">
       <DependentUpon>ReorderParametersView.xaml</DependentUpon>
     </Compile>

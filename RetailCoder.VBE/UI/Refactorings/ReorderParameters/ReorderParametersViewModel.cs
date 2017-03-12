@@ -52,6 +52,8 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             {
                 var currentIndex = Parameters.IndexOf(parameter);
                 Parameters.Move(currentIndex, currentIndex - 1);
+
+                OnPropertyChanged(nameof(Parameters));
                 OnPropertyChanged(nameof(SignaturePreview));
             }
         }
@@ -62,6 +64,8 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             {
                 var currentIndex = Parameters.IndexOf(parameter);
                 Parameters.Move(currentIndex, currentIndex + 1);
+
+                OnPropertyChanged(nameof(Parameters));
                 OnPropertyChanged(nameof(SignaturePreview));
             }
         }

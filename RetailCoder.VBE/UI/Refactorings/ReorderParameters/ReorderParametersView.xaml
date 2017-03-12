@@ -3,13 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:removeParameters="clr-namespace:Rubberduck.UI.Refactorings.RemoveParameters"
-             xmlns:converters="clr-namespace:Rubberduck.UI.Converters"
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
+             xmlns:reorderParameters="clr-namespace:Rubberduck.UI.Refactorings.ReorderParameters"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
-        <converters:InvertBoolValueConverter x:Key="InvertedBool" />
+        <reorderParameters:IndexIsNotZeroConverter x:Key="IndexIsNotZero" />
+        <reorderParameters:IndexIsNotLastConverter x:Key="IndexIsNotLast" />
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -66,6 +66,7 @@
                         Margin="5,5,5,0"
                         Padding="5,0"
                         HorizontalContentAlignment="Left"
+                        IsEnabled="{Binding ElementName=ParameterGrid, Path=SelectedIndex, Converter={StaticResource IndexIsNotZero}}"
                         Command="{Binding MoveParameterUpCommand}"
                         CommandParameter="{Binding ElementName=ParameterGrid, Path=SelectedItem}">
                     <StackPanel Orientation="Horizontal">
@@ -78,8 +79,20 @@
                         Margin="5,5,5,0"
                         Padding="5,0"
                         HorizontalContentAlignment="Left"
-                        Command="{Binding MoveParameterDown}"
+                        Command="{Binding MoveParameterDownCommand}"
                         CommandParameter="{Binding ElementName=ParameterGrid, Path=SelectedItem}">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="IsEnabled">
+                                <Setter.Value>
+                                    <MultiBinding Converter="{StaticResource IndexIsNotLast}">
+                                        <Binding ElementName="ParameterGrid" Path="SelectedIndex" />
+                                        <Binding Path="Parameters.Count" />
+                                    </MultiBinding>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
                     <StackPanel Orientation="Horizontal">
                         <Image Height="10" Source="../../../Resources/arrow-return-180-left.png" Margin="0,0,5,0" />
                         <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ReorderParamsDialog_MoveDownButtonText}" />
