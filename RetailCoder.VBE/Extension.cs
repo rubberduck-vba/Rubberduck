@@ -172,7 +172,7 @@ namespace Rubberduck
             }
 
             Splash splash = null;
-            if (settings.ShowSplash)
+            if (settings == null || settings.ShowSplash)
             {
                 splash = new Splash
                 {
