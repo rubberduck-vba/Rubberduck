@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -951,7 +951,7 @@ Wollen Sie trotzdem fortfahren?</value>
     <value>Aktuelle Pro&amp;zedur</value>
   </data>
   <data name="IndentCurrentProject" xml:space="preserve">
-    <value>Ganzes Projekt</value>
+    <value>Current Project</value>
   </data>
   <data name="SmartIndenterMenu" xml:space="preserve">
     <value>Ein&amp;rücken</value>
@@ -1856,77 +1856,77 @@ End Sub</value>
   <data name="SettingsCaption_ImportSettings" xml:space="preserve">
     <value>Import</value>
   </data>
-  <data name="SmartIndenter_LegacySettingPrompt">
+  <data name="SmartIndenter_LegacySettingPrompt" xml:space="preserve">
     <value>Einstellungen für Smart Indenter wurden in der Registry gefunden.
 Möchten sie die Einstellungen in Rubberduck importieren?</value>
   </data>
-  <data name="GeneralSettings_CheckVersion">
+  <data name="GeneralSettings_CheckVersion" xml:space="preserve">
     <value>Beim Start prüfen, ob eine neuere Version verfügbar ist.</value>
   </data>
-  <data name="AssignedByValParamQFixDialog_TitleText">
+  <data name="AssignedByValParamQFixDialog_TitleText" xml:space="preserve">
     <value>Variablenname der Lokalen Kopie festlegen</value>
   </data>
-  <data name="IndenterSettings_CodeSampleHeader">
+  <data name="IndenterSettings_CodeSampleHeader" xml:space="preserve">
     <value>Eingerücktes Codebeispiel</value>
   </data>
-  <data name="DialogCaption_LoadWindowSettings">
+  <data name="DialogCaption_LoadWindowSettings" xml:space="preserve">
     <value>Fenstereinstellungen laden</value>
   </data>
-  <data name="SettingsInstructions_WindowSettings">
+  <data name="SettingsInstructions_WindowSettings" xml:space="preserve">
     <value>Die Einstellungen für Fenstersichtbarkeit anpassen.</value>
   </data>
-  <data name="AssignedByValParamQFixDialog_InstructionsLabelText">
+  <data name="AssignedByValParamQFixDialog_InstructionsLabelText" xml:space="preserve">
     <value>Bitte geben Sie einen Namen für die lokale Kopie von ByVal {0} '{1}'</value>
   </data>
-  <data name="IndenterSettings_VerticalSpacing">
+  <data name="IndenterSettings_VerticalSpacing" xml:space="preserve">
     <value>Vertikalen Abstand aufrecht erhalten</value>
   </data>
-  <data name="IndenterSettings_VerticalSpacingLabel">
+  <data name="IndenterSettings_VerticalSpacingLabel" xml:space="preserve">
     <value>Vertikalen Abstand</value>
   </data>
-  <data name="DialogCaption_SaveWindowSettings">
+  <data name="DialogCaption_SaveWindowSettings" xml:space="preserve">
     <value>Fenstereinstellungen speichern</value>
   </data>
-  <data name="DeclarationType_BracketedExpression">
+  <data name="DeclarationType_BracketedExpression" xml:space="preserve">
     <value>Laufzeitausdruck</value>
   </data>
-  <data name="AssignedByValParamQFixDialog_Caption">
+  <data name="AssignedByValParamQFixDialog_Caption" xml:space="preserve">
     <value>ByVal zugewiesener Parameter QuickFix - Lokale Kopie erstellen</value>
   </data>
-  <data name="WindowSettings_StartupVisibilityHeader">
+  <data name="WindowSettings_StartupVisibilityHeader" xml:space="preserve">
     <value>Fenstersichtbarkeit beim Start</value>
   </data>
-  <data name="VersionCheck_NewVersionAvailable">
+  <data name="VersionCheck_NewVersionAvailable" xml:space="preserve">
     <value>Rubberduck Version {0} ist jetzt verfügbar! Wollen sie jetzt die Release Notes prüfen?</value>
   </data>
-  <data name="SettingsCaption_WindowSettings">
+  <data name="SettingsCaption_WindowSettings" xml:space="preserve">
     <value>Fenstereinstellungen</value>
   </data>
-  <data name="AssignedByValDialog_NewNameAlreadyUsedFormat">
+  <data name="AssignedByValDialog_NewNameAlreadyUsedFormat" xml:space="preserve">
     <value />
   </data>
-  <data name="AssignedByValDialog_ReservedKeywordFormat">
+  <data name="AssignedByValDialog_ReservedKeywordFormat" xml:space="preserve">
     <value />
   </data>
-  <data name="RenameDialog_AmbiguousSelection">
+  <data name="RenameDialog_AmbiguousSelection" xml:space="preserve">
     <value />
   </data>
-  <data name="ContextMultipleControlsSelection">
+  <data name="ContextMultipleControlsSelection" xml:space="preserve">
     <value />
   </data>
-  <data name="AssignedByValDialog_InvalidCharacters">
+  <data name="AssignedByValDialog_InvalidCharacters" xml:space="preserve">
     <value />
   </data>
-  <data name="AssignedByValDialog_IsByValIdentifierFormat">
+  <data name="AssignedByValDialog_IsByValIdentifierFormat" xml:space="preserve">
     <value />
   </data>
-  <data name="AssignedByValDialog_QuestionableEntryFormat">
+  <data name="AssignedByValDialog_QuestionableEntryFormat" xml:space="preserve">
     <value />
   </data>
-  <data name="ConfirmRemoveAssignmentWithUnusedDeclaration">
+  <data name="ConfirmRemoveAssignmentWithUnusedDeclaration" xml:space="preserve">
     <value />
   </data>
-  <data name="AssignedByValDialog_DoesNotStartWithLetter">
+  <data name="AssignedByValDialog_DoesNotStartWithLetter" xml:space="preserve">
     <value />
   </data>
 </root>
