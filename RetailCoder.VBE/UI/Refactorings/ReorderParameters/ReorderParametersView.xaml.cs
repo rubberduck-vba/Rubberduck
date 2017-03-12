@@ -43,15 +43,15 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
         private void BeginDrag(MouseEventArgs e)
         {
-            var listViewItem = FindAncestor<ListViewItem>((DependencyObject)e.OriginalSource);
+            var listBoxItem = FindAncestor<ListBoxItem>((DependencyObject)e.OriginalSource);
 
-            if (listViewItem == null) { return; }
+            if (listBoxItem == null) { return; }
 
-            // get the data for the ListViewItem
-            var parameter = (Parameter)ParameterGrid.ItemContainerGenerator.ItemFromContainer(listViewItem);
+            // get the data for the ListBoxItem
+            var parameter = (Parameter)ParameterGrid.ItemContainerGenerator.ItemFromContainer(listBoxItem);
 
             //setup the drag adorner.
-            InitialiseAdorner(listViewItem);
+            InitialiseAdorner(listBoxItem);
 
             //add handles to update the adorner.
             ParameterGrid.PreviewDragOver += ParameterGrid_DragOver;
@@ -85,34 +85,35 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
         private void ParameterGrid_Drop(object sender, DragEventArgs e)
         {
-            if (e.Data.GetDataPresent(typeof(Parameter)))
+            if (!e.Data.GetDataPresent(typeof(Parameter))) { return; }
+
+            var parameter = e.Data.GetData(typeof(Parameter)) as Parameter;
+            var parameterIndex = ViewModel.Parameters.IndexOf(parameter);
+
+            var listBoxItem = FindAncestor<ListBoxItem>((DependencyObject)e.OriginalSource);
+
+            if (listBoxItem != null)
             {
-                var parameter = e.Data.GetData(typeof(Parameter)) as Parameter;
-                var listViewItem = FindAncestor<ListViewItem>((DependencyObject)e.OriginalSource);
+                var parameterToReplace = (Parameter)ParameterGrid.ItemContainerGenerator.ItemFromContainer(listBoxItem);
+                var index = ParameterGrid.Items.IndexOf(parameterToReplace);
 
-                if (listViewItem != null)
+                if (index >= 0 && parameterIndex != index)
                 {
-                    var parameterToReplace = (Parameter)ParameterGrid.ItemContainerGenerator.ItemFromContainer(listViewItem);
-                    var index = ParameterGrid.Items.IndexOf(parameterToReplace);
-
-                    if (index >= 0)
-                    {
-                        ViewModel.Parameters.Move(ViewModel.Parameters.IndexOf(parameter), index);
-                        ViewModel.UpdatePreview();
-                    }
-                }
-                else
-                {
-                    ViewModel.Parameters.Move(ViewModel.Parameters.IndexOf(parameter), ViewModel.Parameters.Count - 1);
+                    ViewModel.Parameters.Move(parameterIndex, index);
                     ViewModel.UpdatePreview();
                 }
             }
+            else if (parameterIndex != ViewModel.Parameters.Count - 1)
+            {
+                ViewModel.Parameters.Move(parameterIndex, ViewModel.Parameters.Count - 1);
+                ViewModel.UpdatePreview();
+            }
         }
 
-        private void InitialiseAdorner(ListViewItem listViewItem)
+        private void InitialiseAdorner(ListBoxItem listBoxItem)
         {
-            var brush = new VisualBrush(listViewItem);
-            _adorner = new DragAdorner(listViewItem, listViewItem.RenderSize, brush) {Opacity = 0.5};
+            var brush = new VisualBrush(listBoxItem);
+            _adorner = new DragAdorner(listBoxItem, listBoxItem.RenderSize, brush) {Opacity = 0.5};
             _layer = AdornerLayer.GetAdornerLayer(ParameterGrid);
             _layer.Add(_adorner);
         }
