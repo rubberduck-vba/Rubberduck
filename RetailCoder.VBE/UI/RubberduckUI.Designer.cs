@@ -1987,7 +1987,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Entire project.
+        ///   Looks up a localized string similar to Current Project.
         /// </summary>
         public static string IndentCurrentProject {
             get {
