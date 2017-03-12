@@ -4,6 +4,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.Settings;
 using Rubberduck.UI.Refactorings;
+using Rubberduck.UI.Refactorings.Rename;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command.Refactorings
@@ -56,12 +57,13 @@ namespace Rubberduck.UI.Command.Refactorings
                 return;
             }
 
-            using (var view = new RenameDialog())
+            using (var view = new RenameDialog(new RenameViewModel(_state, target)))
             {
-                var factory = new RenamePresenterFactory(Vbe, view, _state, _messageBox);
+                /*var factory = new RenamePresenterFactory(Vbe, view, _state, _messageBox);
                 var refactoring = new RenameRefactoring(Vbe, factory, _messageBox, _state);
 
-                refactoring.Refactor(target);
+                refactoring.Refactor(target);*/
+                view.ShowDialog();
             }
         }
     }
