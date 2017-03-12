@@ -1,5 +1,6 @@
 ﻿using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
+using Rubberduck.UI.Refactorings.RemoveParameters;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Refactorings.RemoveParameters
@@ -7,11 +8,11 @@ namespace Rubberduck.Refactorings.RemoveParameters
     public class RemoveParametersPresenterFactory : IRefactoringPresenterFactory<RemoveParametersPresenter>
     {
         private readonly IVBE _vbe;
-        private readonly IRemoveParametersDialog _view;
+        private readonly RemoveParametersDialog _view;
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
 
-        public RemoveParametersPresenterFactory(IVBE vbe, IRemoveParametersDialog view,
+        public RemoveParametersPresenterFactory(IVBE vbe, RemoveParametersDialog view,
             RubberduckParserState state, IMessageBox messageBox)
         {
             _vbe = vbe;

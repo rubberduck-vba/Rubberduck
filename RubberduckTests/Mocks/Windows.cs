@@ -84,9 +84,9 @@ namespace RubberduckTests.Mocks
             return _windows.GetEnumerator();
         }
 
-        public override void Release(bool final = false)
-        {
-        }
+        //public override void Release(bool final = false)
+        //{
+        //}
 
         public override bool Equals(ISafeComWrapper<object> other)
         {

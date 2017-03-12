@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 using Rubberduck.Inspections;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Inspections.Resources;
@@ -10,8 +9,6 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.Application;
-using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 
@@ -30,7 +27,6 @@ namespace RubberduckTests.Inspections
     str = Left(""test"", 1)
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
@@ -38,8 +34,6 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
@@ -63,15 +57,12 @@ End Sub";
     str = Left$(""test"", 1)
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
@@ -97,7 +88,6 @@ End Sub";
     str = Left(""test"", 1)
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
@@ -105,8 +95,6 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
@@ -136,7 +124,6 @@ End Sub";
     str = Left$(""test"", 1)
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
@@ -145,8 +132,6 @@ End Sub";
             var vbe = builder.AddProject(project).Build();
 
             var module = project.Object.VBComponents[0].CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
@@ -179,7 +164,6 @@ End Sub";
     str = Left(""test"", 1)
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
@@ -188,8 +172,6 @@ End Sub";
             var vbe = builder.AddProject(project).Build();
 
             var module = project.Object.VBComponents[0].CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
@@ -269,6 +251,15 @@ End Sub";
                 true,
                 new List<IAnnotation>(),
                 new Attributes());
+
+            var hiddenModule = new ProceduralModuleDeclaration(
+                new QualifiedMemberName(new QualifiedModuleName("VBA", MockVbeBuilder.LibraryPathVBA, "_HiddenModule"), "_HiddenModule"),
+                vbaDeclaration,
+                "_HiddenModule",
+                true,
+                new List<IAnnotation>(),
+                new Attributes());
+
 
             var commandFunction = new FunctionDeclaration(
                 new QualifiedMemberName(interactionModule.QualifiedName.QualifiedModuleName, "_B_var_Command"),
@@ -608,7 +599,7 @@ End Sub";
 
             var firstMidParam = new ParameterDeclaration(
                 new QualifiedMemberName(stringsModule.QualifiedName.QualifiedModuleName, "String"),
-                midbFunction,
+                midFunction,
                 "Variant",
                 null,
                 null,
@@ -617,7 +608,7 @@ End Sub";
 
             var secondMidParam = new ParameterDeclaration(
                 new QualifiedMemberName(stringsModule.QualifiedName.QualifiedModuleName, "Start"),
-                midbFunction,
+                midFunction,
                 "Long",
                 null,
                 null,
@@ -733,6 +724,78 @@ End Sub";
                 new List<IAnnotation>(),
                 new Attributes());
 
+            var inputbFunction = new FunctionDeclaration(
+                new QualifiedMemberName(hiddenModule.QualifiedName.QualifiedModuleName, "_B_var_InputB"),
+                hiddenModule,
+                hiddenModule,
+                "Variant",
+                null,
+                null,
+                Accessibility.Global,
+                null,
+                Selection.Home,
+                false,
+                true,
+                new List<IAnnotation>(),
+                new Attributes());
+
+            var firstInputBParam = new ParameterDeclaration(
+                new QualifiedMemberName(hiddenModule.QualifiedName.QualifiedModuleName, "Number"),
+                inputbFunction,
+                "Long",
+                null,
+                null,
+                false,
+                true);
+
+            var secondInputBParam = new ParameterDeclaration(
+                new QualifiedMemberName(hiddenModule.QualifiedName.QualifiedModuleName, "FileNumber"),
+                inputbFunction,
+                "Integer",
+                null,
+                null,
+                false,
+                true);
+
+            inputbFunction.AddParameter(firstInputBParam);
+            inputbFunction.AddParameter(secondInputBParam);
+
+            var inputFunction = new FunctionDeclaration(
+                new QualifiedMemberName(hiddenModule.QualifiedName.QualifiedModuleName, "_B_var_Input"),
+                hiddenModule,
+                hiddenModule,
+                "Variant",
+                null,
+                null,
+                Accessibility.Global,
+                null,
+                Selection.Home,
+                false,
+                true,
+                new List<IAnnotation>(),
+                new Attributes());
+
+            var firstInputParam = new ParameterDeclaration(
+                new QualifiedMemberName(hiddenModule.QualifiedName.QualifiedModuleName, "Number"),
+                inputFunction,
+                "Long",
+                null,
+                null,
+                false,
+                true);
+
+            var secondInputParam = new ParameterDeclaration(
+                new QualifiedMemberName(hiddenModule.QualifiedName.QualifiedModuleName, "FileNumber"),
+                inputFunction,
+                "Integer",
+                null,
+                null,
+                false,
+                true);
+
+            inputFunction.AddParameter(firstInputParam);
+            inputFunction.AddParameter(secondInputParam);
+
             return new List<Declaration>
             {
                 vbaDeclaration,
@@ -741,6 +804,7 @@ End Sub";
                 interactionModule,
                 stringsModule,
                 dateTimeModule,
+                hiddenModule,
                 commandFunction,
                 environFunction,
                 rtrimFunction,
@@ -774,7 +838,13 @@ End Sub";
                 strFunction,
                 curDirFunction,
                 datePropertyGet,
-                timePropertyGet
+                timePropertyGet,
+                inputbFunction,
+                firstInputBParam,
+                secondInputBParam,
+                inputFunction,
+                firstInputParam,
+                secondInputParam
             };
         }
     }

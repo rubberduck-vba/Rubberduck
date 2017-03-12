@@ -7,6 +7,7 @@ using Rubberduck.Settings;
 using Rubberduck.UI;
 using Rubberduck.UI.Command.MenuItems;
 using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.Windows.Forms;
 using Rubberduck.Inspections.Resources;
@@ -81,6 +82,26 @@ namespace Rubberduck
             }
         }
 
+        private static void EnsureTempPathExists()
+        {
+            // This is required by the parser - allow this to throw. 
+            if (!Directory.Exists(ApplicationConstants.RUBBERDUCK_TEMP_PATH))
+            {
+                Directory.CreateDirectory(ApplicationConstants.RUBBERDUCK_TEMP_PATH);
+            }
+            // The parser swallows the error if deletions fail - clean up any temp files on startup
+            foreach (var file in new DirectoryInfo(ApplicationConstants.RUBBERDUCK_TEMP_PATH).GetFiles())
+            {            try
+                {
+                        file.Delete();
+                }
+                catch
+                {
+                    // Yeah, don't care here either.
+                }
+            }
+        }
+
         private void UpdateLoggingLevel()
         {
             LogLevelHelper.SetMinimumLogLevel(LogLevel.FromOrdinal(_config.UserSettings.GeneralSettings.MinimumLogLevel));
@@ -89,6 +110,7 @@ namespace Rubberduck
         public void Startup()
         {
             EnsureLogFolderPathExists();
+            EnsureTempPathExists();
             LogRubberduckSart();
             LoadConfig();
             CheckForLegacyIndenterSettings();
@@ -108,6 +130,7 @@ namespace Rubberduck
         {
             try
             {
+                Debug.WriteLine("App calling Hooks.Detach.");
                 _hooks.Detach();
             }
             catch

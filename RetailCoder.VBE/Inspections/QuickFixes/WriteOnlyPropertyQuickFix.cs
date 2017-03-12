@@ -20,7 +20,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override void Fix()
         {
-            var parameters = ((IDeclarationWithParameter) _target).Parameters.Cast<ParameterDeclaration>().ToList();
+            var parameters = ((IParameterizedDeclaration) _target).Parameters.Cast<ParameterDeclaration>().ToList();
 
             var signatureParams = parameters.Except(new[] {parameters.Last()}).Select(GetParamText);
             var propertyGet = "Public Property Get " + _target.IdentifierName + "(" + string.Join(", ", signatureParams) +

@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Rubberduck.Parsing.Symbols
 {
-    public sealed class PropertyLetDeclaration : Declaration, IDeclarationWithParameter, ICanBeDefaultMember
+    public sealed class PropertyLetDeclaration : Declaration, IParameterizedDeclaration, ICanBeDefaultMember
     {
         private readonly List<Declaration> _parameters;
 

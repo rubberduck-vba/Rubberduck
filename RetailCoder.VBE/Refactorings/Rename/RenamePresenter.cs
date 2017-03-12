@@ -1,5 +1,6 @@
 ﻿using System.Windows.Forms;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.UI.Refactorings.Rename;
 
 namespace Rubberduck.Refactorings.Rename
 {
@@ -11,10 +12,10 @@ namespace Rubberduck.Refactorings.Rename
 
     public class RenamePresenter : IRenamePresenter
     {
-        private readonly IRenameDialog _view;
+        private readonly RenameDialog _view;
         private readonly RenameModel _model;
 
-        public RenamePresenter(IRenameDialog view, RenameModel model)
+        public RenamePresenter(RenameDialog view, RenameModel model)
         {
             _view = view;
 
@@ -25,14 +26,15 @@ namespace Rubberduck.Refactorings.Rename
         {
             if (_model.Target == null) { return null; }
 
-            _view.Target = _model.Target;
+            _view.ViewModel.Target = _model.Target;
 
-            if (_view.ShowDialog() != DialogResult.OK)
+            _view.ShowDialog();
+            if (_view.DialogResult != DialogResult.OK)
             {
                 return null;
             }
 
-            _model.NewName = _view.NewName;
+            _model.NewName = _view.ViewModel.NewName;
             return _model;
         }
 
@@ -40,14 +42,15 @@ namespace Rubberduck.Refactorings.Rename
         {
             _model.PromptIfTargetImplementsInterface(ref target);
             _model.Target = target;
-            _view.Target = target;
+            _view.ViewModel.Target = target;
 
-            if (_view.ShowDialog() != DialogResult.OK)
+            _view.ShowDialog();
+            if (_view.DialogResult != DialogResult.OK)
             {
                 return null;
             }
 
-            _model.NewName = _view.NewName;
+            _model.NewName = _view.ViewModel.NewName;
             return _model;
         }
     }

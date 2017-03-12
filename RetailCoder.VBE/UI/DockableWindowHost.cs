@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -85,8 +86,8 @@ namespace Rubberduck.UI
             }
             else
             {
+                Debug.WriteLine("DockableWindowHost removed event handler.");
                 _subClassingWindow.CallBackEvent -= OnCallBackEvent;
-                _subClassingWindow.Dispose();
             }
         }
 
@@ -146,9 +147,24 @@ namespace Rubberduck.UI
             //See the comment in the ctor for why we have to listen for this.
             if (m.Msg == (int) WM.DESTROY)
             {
+                Debug.WriteLine("DockableWindowHost received WM.DESTROY.");
                 _thisHandle.Free();
             }
             base.DefWndProc(ref m);
+        }
+
+        //override 
+
+        public void Release()
+        {
+            Debug.WriteLine("DockableWindowHost release called.");
+            _subClassingWindow.Dispose();
+        }
+
+        protected override void DestroyHandle()
+        {
+            Debug.WriteLine("DockableWindowHost DestroyHandle called.");
+            base.DestroyHandle();
         }
 
         [ComVisible(false)]

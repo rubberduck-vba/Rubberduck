@@ -1,13 +1,8 @@
 using System.Linq;
-using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 using Rubberduck.Inspections;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Inspections.Resources;
-using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor.Application;
-using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
@@ -19,24 +14,120 @@ namespace RubberduckTests.Inspections
     {
         [TestMethod]
         [TestCategory("Inspections")]
+        public void ParameterCanBeByVal_NoResultForByValObjectInInterfaceImplementationProperty()
+        {
+            const string modelCode = @"
+Option Explicit
+Public Foo As Long
+Public Bar As String
+";
+
+            const string interfaceCode = @"
+Option Explicit
+
+Public Property Get Model() As MyModel
+End Property
+
+Public Property Set Model(ByVal value As MyModel)
+End Property
+
+Public Property Get IsCancelled() As Boolean
+End Property
+
+Public Sub Show()
+End Sub
+";
+
+            const string implementationCode = @"
+Option Explicit
+Private Type TView
+    Model As MyModel
+    IsCancelled As Boolean
+End Type
+Private this As TView
+Implements IView
+
+Private Property Get IView_IsCancelled() As Boolean
+    IView_IsCancelled = this.IsCancelled
+End Property
+
+Private Property Set IView_Model(ByVal value As MyModel)
+    Set this.Model = value
+End Property
+
+Private Property Get IView_Model() As MyModel
+    Set IView_Model = this.Model
+End Property
+
+Private Sub IView_Show()
+    Me.Show vbModal
+End Sub
+";
+
+            var builder = new MockVbeBuilder();
+            var vbe = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("IView", ComponentType.ClassModule, interfaceCode)
+                .AddComponent("MyModel", ComponentType.ClassModule, modelCode)
+                .AddComponent("MyForm", ComponentType.UserForm, implementationCode)
+                .MockVbeBuilder().Build();
+            
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new ParameterCanBeByValInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ParameterCanBeByVal_NoResultForByValObjectInProperty()
+        {
+            const string inputCode =
+@"Public Property Set Foo(ByVal value As Object)
+End Property";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new ParameterCanBeByValInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ParameterCanBeByVal_NoResultForByValObject()
+        {
+            const string inputCode =
+@"Sub Foo(ByVal arg1 As Collection)
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new ParameterCanBeByValInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void ParameterCanBeByVal_ReturnsResult_PassedByNotSpecified()
         {
             const string inputCode =
 @"Sub Foo(arg1 As String)
 End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ParameterCanBeByValInspection(parser.State);
+            var inspection = new ParameterCanBeByValInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
@@ -50,18 +141,11 @@ End Sub";
 @"Sub Foo(ByRef arg1 As String)
 End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ParameterCanBeByValInspection(parser.State);
+            var inspection = new ParameterCanBeByValInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
@@ -75,18 +159,11 @@ End Sub";
 @"Sub Foo(arg1 As String, arg2 As Date)
 End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ParameterCanBeByValInspection(parser.State);
+            var inspection = new ParameterCanBeByValInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(2, inspectionResults.Count());
@@ -100,18 +177,11 @@ End Sub";
 @"Sub Foo(ByVal arg1 As String)
 End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ParameterCanBeByValInspection(parser.State);
+            var inspection = new ParameterCanBeByValInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(0, inspectionResults.Count());
@@ -126,18 +196,11 @@ End Sub";
     arg1 = ""test""
 End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ParameterCanBeByValInspection(parser.State);
+            var inspection = new ParameterCanBeByValInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(0, inspectionResults.Count());
@@ -152,18 +215,11 @@ End Sub";
     arg1 = ""test""
 End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ParameterCanBeByValInspection(parser.State);
+            var inspection = new ParameterCanBeByValInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(0, inspectionResults.Count());
@@ -177,18 +233,11 @@ End Sub";
 @"Sub Foo(arg1 As String, ByVal arg2 As Integer)
 End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ParameterCanBeByValInspection(parser.State);
+            var inspection = new ParameterCanBeByValInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
@@ -202,19 +251,11 @@ End Sub";
 @"Sub Foo(ByRef arg1() As Variant)
 End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ParameterCanBeByValInspection(parser.State);
-
+            var inspection = new ParameterCanBeByValInspection(state);
             var results = inspection.GetInspectionResults().ToList();
 
             Assert.AreEqual(0, results.Count);
@@ -232,18 +273,11 @@ End Sub
 Sub DoSomethingElse(ByVal bar As Integer)
 End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ParameterCanBeByValInspection(parser.State);
+            var inspection = new ParameterCanBeByValInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
@@ -262,18 +296,11 @@ Sub DoSomethingElse(ByRef bar As Integer)
     bar = 42
 End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ParameterCanBeByValInspection(parser.State);
+            var inspection = new ParameterCanBeByValInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.IsFalse(inspectionResults.Any());
@@ -292,18 +319,11 @@ Sub DoSomethingElse(ByVal bar As Integer)
     bar = 42
 End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ParameterCanBeByValInspection(parser.State);
+            var inspection = new ParameterCanBeByValInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
@@ -318,18 +338,11 @@ End Sub";
 Sub Foo(arg1 As String)
 End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ParameterCanBeByValInspection(parser.State);
+            var inspection = new ParameterCanBeByValInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.IsFalse(inspectionResults.Any());
@@ -349,7 +362,6 @@ End Sub";
 Private Sub IClass1_DoSomething(ByRef a As Integer)
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
@@ -357,15 +369,10 @@ End Sub";
                 .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
+            
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ParameterCanBeByValInspection(parser.State);
+            var inspection = new ParameterCanBeByValInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
@@ -385,7 +392,6 @@ End Sub";
 Private Sub IClass1_DoSomething(ByVal a As Integer)
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
@@ -393,15 +399,10 @@ End Sub";
                 .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
+            
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ParameterCanBeByValInspection(parser.State);
+            var inspection = new ParameterCanBeByValInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.IsFalse(inspectionResults.Any());
@@ -422,7 +423,6 @@ Private Sub IClass1_DoSomething(ByRef a As Integer)
     a = 42
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
@@ -430,15 +430,10 @@ End Sub";
                 .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
+            
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ParameterCanBeByValInspection(parser.State);
+            var inspection = new ParameterCanBeByValInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.IsFalse(inspectionResults.Any());
@@ -464,7 +459,6 @@ End Sub";
 Private Sub IClass1_DoSomething(ByRef a As Integer, ByRef b As Integer)
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
@@ -472,17 +466,12 @@ End Sub";
                 .AddComponent("Class2", ComponentType.ClassModule, inputCode3)
                 .Build();
             var vbe = builder.AddProject(project).Build();
-
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ParameterCanBeByValInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
             
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new ParameterCanBeByValInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
             Assert.AreEqual("a", inspectionResults.Single().Target.IdentifierName);
         }
 
@@ -500,7 +489,6 @@ End Sub";
 Private Sub abc_Foo(ByRef arg1 As Integer)
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
@@ -508,15 +496,10 @@ End Sub";
                 .AddComponent("Class3", ComponentType.ClassModule, inputCode2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
+            
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ParameterCanBeByValInspection(parser.State);
+            var inspection = new ParameterCanBeByValInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
@@ -536,7 +519,6 @@ End Sub";
 Private Sub abc_Foo(ByVal arg1 As Integer)
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
@@ -544,15 +526,10 @@ End Sub";
                 .AddComponent("Class3", ComponentType.ClassModule, inputCode2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
+            
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ParameterCanBeByValInspection(parser.State);
+            var inspection = new ParameterCanBeByValInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.IsFalse(inspectionResults.Any());
@@ -573,7 +550,6 @@ Private Sub abc_Foo(ByRef arg1 As Integer)
     arg1 = 42
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
@@ -581,15 +557,10 @@ End Sub";
                 .AddComponent("Class3", ComponentType.ClassModule, inputCode2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
+            
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ParameterCanBeByValInspection(parser.State);
+            var inspection = new ParameterCanBeByValInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.IsFalse(inspectionResults.Any());
@@ -610,7 +581,6 @@ Private Sub abc_Foo(ByRef arg1 As Integer, ByRef arg2 As Integer)
     arg1 = 42
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
@@ -618,15 +588,10 @@ End Sub";
                 .AddComponent("Class3", ComponentType.ClassModule, inputCode2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
+            
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ParameterCanBeByValInspection(parser.State);
+            var inspection = new ParameterCanBeByValInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual("arg2", inspectionResults.Single().Target.IdentifierName);
@@ -644,23 +609,14 @@ End Sub";
 @"Sub foo(ByVal f)
 End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var project = vbe.Object.VBProjects[0];
-            var module = project.VBComponents[0].CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ParameterCanBeByValInspection(parser.State);
+            var inspection = new ParameterCanBeByValInspection(state);
             inspection.GetInspectionResults().First().QuickFixes.First().Fix();
 
-            Assert.AreEqual(expectedCode, module.Content());
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
@@ -675,23 +631,14 @@ End Sub";
 @"Sub Foo(ByVal arg1 As String)
 End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var project = vbe.Object.VBProjects[0];
-            var module = project.VBComponents[0].CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ParameterCanBeByValInspection(parser.State);
+            var inspection = new ParameterCanBeByValInspection(state);
             inspection.GetInspectionResults().First().QuickFixes.First().Fix();
 
-            Assert.AreEqual(expectedCode, module.Content());
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
@@ -706,23 +653,14 @@ End Sub";
 @"Sub Foo(ByVal arg1 As String)
 End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var project = vbe.Object.VBProjects[0];
-            var module = project.VBComponents[0].CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ParameterCanBeByValInspection(parser.State);
+            var inspection = new ParameterCanBeByValInspection(state);
             inspection.GetInspectionResults().First().QuickFixes.First().Fix();
 
-            Assert.AreEqual(expectedCode, module.Content());
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
@@ -739,23 +677,14 @@ End Sub";
 ByVal arg1 As String)
 End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var project = vbe.Object.VBProjects[0];
-            var module = project.VBComponents[0].CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ParameterCanBeByValInspection(parser.State);
+            var inspection = new ParameterCanBeByValInspection(state);
             inspection.GetInspectionResults().First().QuickFixes.First().Fix();
 
-            Assert.AreEqual(expectedCode, module.Content());
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
@@ -772,23 +701,14 @@ End Sub";
 arg1 As String)
 End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var project = vbe.Object.VBProjects[0];
-            var module = project.VBComponents[0].CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ParameterCanBeByValInspection(parser.State);
+            var inspection = new ParameterCanBeByValInspection(state);
             inspection.GetInspectionResults().First().QuickFixes.First().Fix();
 
-            Assert.AreEqual(expectedCode, module.Content());
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
@@ -827,7 +747,6 @@ End Sub";
 Private Sub IClass1_DoSomething(ByVal a As Integer, ByRef b As Integer)
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
@@ -839,15 +758,10 @@ End Sub";
             var module2 = project.Object.VBComponents["Class1"].CodeModule;
             var module3 = project.Object.VBComponents["Class2"].CodeModule;
             var vbe = builder.AddProject(project).Build();
+            
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ParameterCanBeByValInspection(parser.State);
+            var inspection = new ParameterCanBeByValInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             inspectionResults.Single().QuickFixes.Single(s => s is PassParameterByValueQuickFix).Fix();
@@ -891,7 +805,6 @@ End Sub";
 Private Sub abc_Foo(ByRef a As Integer, ByVal b As Integer)
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
@@ -903,15 +816,10 @@ End Sub";
             var module2 = project.Object.VBComponents["Class2"].CodeModule;
             var module3 = project.Object.VBComponents["Class3"].CodeModule;
             var vbe = builder.AddProject(project).Build();
+            
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ParameterCanBeByValInspection(parser.State);
+            var inspection = new ParameterCanBeByValInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             inspectionResults.Single().QuickFixes.Single(s => s is PassParameterByValueQuickFix).Fix();
@@ -936,23 +844,14 @@ Sub Foo(ByRef _
 arg1 As String)
 End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var project = vbe.Object.VBProjects[0];
-            var module = project.VBComponents[0].CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ParameterCanBeByValInspection(parser.State);
+            var inspection = new ParameterCanBeByValInspection(state);
             inspection.GetInspectionResults().First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
 
-            Assert.AreEqual(expectedCode, module.Content());
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         //https://github.com/rubberduck-vba/Rubberduck/issues/2408
@@ -970,23 +869,14 @@ End Sub";
     Debug.Print foo
 End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var project = vbe.Object.VBProjects[0];
-            var module = project.VBComponents[0].CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ParameterCanBeByValInspection(parser.State);
+            var inspection = new ParameterCanBeByValInspection(state);
             inspection.GetInspectionResults().First().QuickFixes.Single(s => s is PassParameterByValueQuickFix).Fix();
 
-            Assert.AreEqual(expectedCode, module.Content());
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         //https://github.com/rubberduck-vba/Rubberduck/issues/2408
@@ -1004,23 +894,14 @@ End Sub";
     Debug.Print foo
 End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var project = vbe.Object.VBProjects[0];
-            var module = project.VBComponents[0].CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ParameterCanBeByValInspection(parser.State);
+            var inspection = new ParameterCanBeByValInspection(state);
             inspection.GetInspectionResults().First().QuickFixes.Single(s => s is PassParameterByValueQuickFix).Fix();
 
-            Assert.AreEqual(expectedCode, module.Content());
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         //https://github.com/rubberduck-vba/Rubberduck/issues/2408
@@ -1048,23 +929,14 @@ End Sub";
   Debug.Print foo
 End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var project = vbe.Object.VBProjects[0];
-            var module = project.VBComponents[0].CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ParameterCanBeByValInspection(parser.State);
+            var inspection = new ParameterCanBeByValInspection(state);
             inspection.GetInspectionResults().First().QuickFixes.Single(s => s is PassParameterByValueQuickFix).Fix();
 
-            Assert.AreEqual(expectedCode, module.Content());
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]

@@ -231,9 +231,9 @@ namespace Rubberduck.Parsing.Symbols
                     isByRef,
                     isArray,
                     isParamArray);
-                if (_parentDeclaration is IDeclarationWithParameter)
+                if (_parentDeclaration is IParameterizedDeclaration)
                 {
-                    ((IDeclarationWithParameter)_parentDeclaration).AddParameter(result);
+                    ((IParameterizedDeclaration)_parentDeclaration).AddParameter(result);
                 }
             }
             else
@@ -253,6 +253,23 @@ namespace Rubberduck.Parsing.Symbols
                 else if (declarationType == DeclarationType.Function)
                 {
                     result = new FunctionDeclaration(
+                        new QualifiedMemberName(_qualifiedName, identifierName),
+                        _parentDeclaration,
+                        _currentScopeDeclaration,
+                        asTypeName,
+                        asTypeContext,
+                        typeHint,
+                        accessibility,
+                        context,
+                        selection,
+                        isArray,
+                        false,
+                        annotations,
+                        attributes);
+                }
+                else if (declarationType == DeclarationType.Event)
+                {
+                    result = new EventDeclaration(
                         new QualifiedMemberName(_qualifiedName, identifierName),
                         _parentDeclaration,
                         _currentScopeDeclaration,

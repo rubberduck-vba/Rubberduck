@@ -32,12 +32,26 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             get { return new Window(IsWrappingNullReference ? null : Target.Item(index)); }
         }
 
+
+        private static readonly Dictionary<VB.Window, object> _dockableHosts = new Dictionary<VB.Window, object>();
+
         public ToolWindowInfo CreateToolWindow(IAddIn addInInst, string progId, string caption, string guidPosition)
         {
             if (IsWrappingNullReference) return new ToolWindowInfo(null, null);
             object control = null;
-            var window = new Window(Target.CreateToolWindow((VB.AddIn)addInInst.Target, progId, caption, guidPosition, ref control));
-            return new ToolWindowInfo(window, control);
+            var window = Target.CreateToolWindow((VB.AddIn)addInInst.Target, progId, caption, guidPosition, ref control);
+            _dockableHosts.Add(window, control);
+            return new ToolWindowInfo(new Window(window), control);
+        }
+
+        public static void ReleaseDockableHosts()
+        {
+            foreach (var item in _dockableHosts)
+            {
+                item.Key.Close();
+                dynamic host = item.Value;
+                host.Release();
+            }
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -50,18 +64,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return IsWrappingNullReference
                 ? new ComWrapperEnumerator<IWindow>(null, o => new Window(null))
                 : new ComWrapperEnumerator<IWindow>(Target, o => new Window((VB.Window) o));
-        }
-
-        public override void Release(bool final = false)
-        {
-            if (!IsWrappingNullReference)
-            {
-                for (var i = 1; i <= Count; i++)
-                {
-                    this[i].Release();
-                }
-                base.Release(final);
-            }
         }
 
         public override bool Equals(ISafeComWrapper<VB.Windows> other)

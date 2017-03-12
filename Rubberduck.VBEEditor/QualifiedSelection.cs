@@ -2,7 +2,7 @@
 
 namespace Rubberduck.VBEditor
 {
-    public struct QualifiedSelection : IComparable<QualifiedSelection>
+    public struct QualifiedSelection : IComparable<QualifiedSelection>, IEquatable<QualifiedSelection>
     {
         public QualifiedSelection(QualifiedModuleName qualifiedName, Selection selection)
         {
@@ -24,6 +24,11 @@ namespace Rubberduck.VBEditor
             }
 
             return Selection.CompareTo(other.Selection);
+        }
+
+        public bool Equals(QualifiedSelection other)
+        {
+            return other.Selection.Equals(_selection) && other.QualifiedName.Equals(_qualifiedName);
         }
 
         public override string ToString()
@@ -48,11 +53,11 @@ namespace Rubberduck.VBEditor
 
         public override bool Equals(object obj)
         {
-            if (obj == null) { return false; }
-
-            var other = (QualifiedSelection)obj;
-            return other.QualifiedName.Equals(_qualifiedName)
-                   && other.Selection.Equals(_selection);
+            if (obj is QualifiedSelection)
+            {
+                return Equals((QualifiedSelection) obj);
+            }
+            return false;
         }
     }
 }

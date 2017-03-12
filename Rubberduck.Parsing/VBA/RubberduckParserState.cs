@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.ComReflection;
@@ -1004,119 +1005,7 @@ namespace Rubberduck.Parsing.VBA
 
         public Declaration FindSelectedDeclaration(ICodePane activeCodePane, bool procedureLevelOnly = false)
         {
-            if (activeCodePane.IsWrappingNullReference)
-            {
-                return null;
-            }
-
-            var selection = activeCodePane.GetQualifiedSelection();
-            if (selection.Equals(_lastSelection))
-            {
-                return _selectedDeclaration;
-            }
-
-            if (selection == null)
-            {
-                return _selectedDeclaration;
-            }
-
-            _lastSelection = selection.Value;
-            _selectedDeclaration = null;
-
-            if (!selection.Equals(default(QualifiedSelection)))
-            {
-                var matches = new List<Tuple<Declaration, Selection, QualifiedModuleName>>();
-                lock (_declarationSelections)
-                {
-                    foreach (var item in _declarationSelections)
-                    {
-                        if (item.Item3.Equals(selection.Value.QualifiedName) &&
-                            item.Item2.ContainsFirstCharacter(selection.Value.Selection) &&
-                            item.Item1.DeclarationType != DeclarationType.ModuleOption)
-                        {
-                            matches.Add(item);
-                        }
-                    }
-                }
-                try
-                {
-                    if (matches.Count == 1)
-                    {
-                        _selectedDeclaration = matches[0].Item1;
-                    }
-                    else
-                    {
-                        Declaration match = null;
-                        if (procedureLevelOnly)
-                        {
-                            foreach (var item in matches)
-                            {
-                                if (item.Item1.DeclarationType.HasFlag(DeclarationType.Member))
-                                {
-                                    match = match != null ? null : item.Item1;
-                                }
-                            }
-                        }
-
-                        // No match
-                        if (matches.Count == 0)
-                        {
-                            if (match == null)
-                            {
-                                foreach (var item in AllUserDeclarations)
-                                {
-                                    if ((item.DeclarationType == DeclarationType.ClassModule ||
-                                         item.DeclarationType == DeclarationType.ProceduralModule) &&
-                                        item.QualifiedName.QualifiedModuleName.Equals(selection.Value.QualifiedName))
-                                    {
-                                        match = match != null ? null : item;
-                                    }
-                                }
-                            }
-                        }
-                        else
-                        {
-                            // Idiotic approach to find the best declaration out of a set of overlapping declarations.
-                            // The one closest to the start of the user selection with the smallest width wins.
-                            var userSelection = selection.Value.Selection;
-
-                            var currentSelection = matches[0].Item2;
-                            match = matches[0].Item1;
-
-                            foreach (var item in matches)
-                            {
-                                var itemDifferenceInStart = Math.Abs(userSelection.StartLine - item.Item2.StartLine);
-                                var currentSelectionDifferenceInStart = Math.Abs(userSelection.StartLine - currentSelection.StartLine);
-
-                                if (itemDifferenceInStart < currentSelectionDifferenceInStart)
-                                {
-                                    currentSelection = item.Item2;
-                                    match = item.Item1;
-                                }
-
-                                if (itemDifferenceInStart == currentSelectionDifferenceInStart)
-                                {
-                                    if (Math.Abs(userSelection.StartColumn - item.Item2.StartColumn) <
-                                        Math.Abs(userSelection.StartColumn - currentSelection.StartColumn))
-                                    {
-                                        currentSelection = item.Item2;
-                                        match = item.Item1;
-                                    }
-                                }
-
-                            }
-                        }
-
-                        _selectedDeclaration = match;
-                    }
-                }
-                catch (InvalidOperationException exception)
-                {
-                    Logger.Error(exception);
-                }
-            }
-            
-            return _selectedDeclaration;
+            return DeclarationFinder?.FindSelectedDeclaration(activeCodePane);
         }
 
         public void RemoveBuiltInDeclarations(IReference reference)
@@ -1159,9 +1048,9 @@ namespace Rubberduck.Parsing.VBA
                 return;
             }
 
-            ModuleState referencedModuleState;
             foreach (var referencedModule in referencingModuleState.HasReferenceToModule.Keys)
             {
+                ModuleState referencedModuleState;
                 if (!_moduleStates.TryGetValue(referencedModule,out referencedModuleState))
                 {
                     continue;
@@ -1183,12 +1072,13 @@ namespace Rubberduck.Parsing.VBA
 
         public HashSet<QualifiedModuleName> ModulesReferencedBy(IEnumerable<QualifiedModuleName> referencingModules)
         {
-            var referencedModules = new HashSet<QualifiedModuleName>();
-            foreach (var referencingModule in referencedModules)
+            var toModules = new HashSet<QualifiedModuleName>();
+
+            foreach (var referencingModule in referencingModules)
             {
-                referencedModules.UnionWith(ModulesReferencedBy(referencingModule));
+                toModules.UnionWith(ModulesReferencedBy(referencingModule));
             }
-            return referencedModules;
+            return toModules;
         }
 
         public HashSet<QualifiedModuleName> ModulesReferencing(QualifiedModuleName referencedModule)

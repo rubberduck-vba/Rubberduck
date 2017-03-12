@@ -2,7 +2,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
 {
     public interface ISafeComWrapper : INullObjectWrapper
     {
-        void Release(bool final = false);
+        //void Release(bool final = false);
     }
 
     public interface ISafeComWrapper<out T> : ISafeComWrapper

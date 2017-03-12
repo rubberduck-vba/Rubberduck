@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -104,26 +103,40 @@ namespace RubberduckTests.Mocks
         /// </summary>
         /// <param name="content">The VBA code associated to the component.</param>
         /// <param name="component">The created <see cref="VBComponent"/></param>
+        /// <param name="module">The created <see cref="CodeModule"/></param>
         /// <param name="selection"></param>
         /// <returns></returns>
-        public Mock<IVBE> BuildFromSingleStandardModule(string content, out IVBComponent component, Selection selection = default(Selection), bool referenceStdLibs = false)
+        public static Mock<IVBE> BuildFromSingleStandardModule(string content, out IVBComponent component, Selection selection = default(Selection), bool referenceStdLibs = false)
         {
-            return BuildFromSingleModule(content, ComponentType.StandardModule, out component, selection, referenceStdLibs);
+            return BuildFromSingleModule(content, TestModuleName, ComponentType.StandardModule, out component, selection, referenceStdLibs);
         }
 
-        public Mock<IVBE> BuildFromSingleModule(string content, ComponentType type, out IVBComponent component, Selection selection = default(Selection), bool referenceStdLib = false)
+        public static Mock<IVBE> BuildFromSingleStandardModule(string content, string name, out IVBComponent component, Selection selection = default(Selection), bool referenceStdLibs = false)
         {
-            var builder = ProjectBuilder(TestProjectName, ProjectProtection.Unprotected);
-            builder.AddComponent(TestModuleName, type, content, selection);
+            return BuildFromSingleModule(content, name, ComponentType.StandardModule, out component, selection, referenceStdLibs);
+        }
 
-            if (referenceStdLib)
+        public static Mock<IVBE> BuildFromSingleModule(string content, ComponentType type, out IVBComponent component, Selection selection = default(Selection), bool referenceStdLibs = false)
+        {
+            return BuildFromSingleModule(content, TestModuleName, type, out component, selection, referenceStdLibs);
+        }
+
+        public static Mock<IVBE> BuildFromSingleModule(string content, string name, ComponentType type, out IVBComponent component, Selection selection = default(Selection), bool referenceStdLibs = false)
+        {
+            var vbeBuilder = new MockVbeBuilder();
+
+            var builder = vbeBuilder.ProjectBuilder(TestProjectName, ProjectProtection.Unprotected);
+            builder.AddComponent(name, type, content, selection);
+
+            if (referenceStdLibs)
             {
                 builder.AddReference("VBA", LibraryPathVBA, 4, 1, true);
             }
 
             var project = builder.Build();
+            var vbe = vbeBuilder.AddProject(project).Build();
+
             component = project.Object.VBComponents[0];
-            var vbe = AddProject(project).Build();
 
             vbe.Object.ActiveVBProject = project.Object;
             vbe.Object.ActiveCodePane = component.CodeModule.CodePane;
