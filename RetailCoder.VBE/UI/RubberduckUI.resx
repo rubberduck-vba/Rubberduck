@@ -984,7 +984,7 @@ Are you sure you want to proceed with this rename?</value>
     <value>Current &amp;Procedure</value>
   </data>
   <data name="IndentCurrentProject" xml:space="preserve">
-    <value>Entire project</value>
+    <value>Current Project</value>
   </data>
   <data name="SmartIndenterMenu" xml:space="preserve">
     <value>In&amp;dent</value>
