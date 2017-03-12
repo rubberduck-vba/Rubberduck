@@ -70,7 +70,7 @@
                         Command="{Binding MoveParameterUpCommand}"
                         CommandParameter="{Binding ElementName=ParameterGrid, Path=SelectedItem}">
                     <StackPanel Orientation="Horizontal">
-                        <Image Height="10" Source="../../../Resources/cross-script.png" Margin="0,0,5,0" />
+                        <Image Height="10" Source="../../../Resources/arrow-090.png" Margin="0,0,5,0" />
                         <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ReorderParamsDialog_MoveUpButtonText}" />
                     </StackPanel>
                 </Button>
@@ -94,7 +94,7 @@
                         </Style>
                     </Button.Style>
                     <StackPanel Orientation="Horizontal">
-                        <Image Height="10" Source="../../../Resources/arrow-return-180-left.png" Margin="0,0,5,0" />
+                        <Image Height="10" Source="../../../Resources/arrow-270.png" Margin="0,0,5,0" />
                         <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ReorderParamsDialog_MoveDownButtonText}" />
                     </StackPanel>
                 </Button>
