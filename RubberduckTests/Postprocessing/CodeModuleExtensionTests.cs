@@ -195,6 +195,110 @@ End Sub
 
         [TestMethod]
         [TestCategory("TokenStreamRewriter")]
+        public void RemovesSingleParameterDeclaration()
+        {
+            const string expected = @"
+Sub DoSomething()
+End Sub
+";
+            const string content = @"
+Sub DoSomething(ByVal foo As Long)
+End Sub
+";
+            IVBComponent component;
+            var vbe = new MockVbeBuilder().BuildFromSingleStandardModule(content, out component).Object;
+            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status != ParserState.Ready)
+            {
+                Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+            }
+
+            var declarations = parser.State.AllUserDeclarations;
+            var target = declarations.SingleOrDefault(d => d.DeclarationType == DeclarationType.Parameter);
+            if (target == null)
+            {
+                Assert.Inconclusive("No parameter was found in test code.");
+            }
+
+            var module = component.CodeModule;
+            var rewriter = parser.State.GetRewriter(target);
+
+            CodeModuleExtensions.Remove(module, rewriter, target);
+            Assert.AreEqual(expected, rewriter.GetText());
+        }
+
+        [TestMethod]
+        [TestCategory("TokenStreamRewriter")]
+        public void RemovesEventParameterDeclaration()
+        {
+            const string expected = @"
+Public Event SomeEvent()
+";
+            const string content = @"
+Public Event SomeEvent(ByVal foo As Long)
+";
+            IVBComponent component;
+            var vbe = new MockVbeBuilder().BuildFromSingleStandardModule(content, out component).Object;
+            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status != ParserState.Ready)
+            {
+                Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+            }
+
+            var declarations = parser.State.AllUserDeclarations;
+            var target = declarations.SingleOrDefault(d => d.DeclarationType == DeclarationType.Parameter);
+            if (target == null)
+            {
+                Assert.Inconclusive("No parameter was found in test code.");
+            }
+
+            var module = component.CodeModule;
+            var rewriter = parser.State.GetRewriter(target);
+
+            CodeModuleExtensions.Remove(module, rewriter, target);
+            Assert.AreEqual(expected, rewriter.GetText());
+        }
+
+        [TestMethod]
+        [TestCategory("TokenStreamRewriter")]
+        public void RemovesDeclareFunctionParameterDeclaration()
+        {
+            const string expected = @"
+Declare PtrSafe Function Foo Lib ""Z"" Alias ""Y"" () As Long
+";
+            const string content = @"
+Declare PtrSafe Function Foo Lib ""Z"" Alias ""Y"" (ByVal bar As Long) As Long
+";
+            IVBComponent component;
+            var vbe = new MockVbeBuilder().BuildFromSingleStandardModule(content, out component).Object;
+            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status != ParserState.Ready)
+            {
+                Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+            }
+
+            var declarations = parser.State.AllUserDeclarations;
+            var target = declarations.SingleOrDefault(d => d.DeclarationType == DeclarationType.Parameter);
+            if (target == null)
+            {
+                Assert.Inconclusive("No parameter was found in test code.");
+            }
+
+            var module = component.CodeModule;
+            var rewriter = parser.State.GetRewriter(target);
+
+            CodeModuleExtensions.Remove(module, rewriter, target);
+            Assert.AreEqual(expected, rewriter.GetText());
+        }
+
+        [TestMethod]
+        [TestCategory("TokenStreamRewriter")]
         public void RemovesFirstVariableInStatement()
         {
             const string expected = @"
@@ -271,6 +375,42 @@ End Sub
 
         [TestMethod]
         [TestCategory("TokenStreamRewriter")]
+        public void RemovesFirstParameterInSignature()
+        {
+            const string expected = @"
+Sub DoSomething(ByVal bar As Long)
+End Sub
+";
+            const string content = @"
+Sub DoSomething(ByVal foo As Long, ByVal bar As Long)
+End Sub
+";
+            IVBComponent component;
+            var vbe = new MockVbeBuilder().BuildFromSingleStandardModule(content, out component).Object;
+            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status != ParserState.Ready)
+            {
+                Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+            }
+
+            var declarations = parser.State.AllUserDeclarations;
+            var target = declarations.SingleOrDefault(d => d.IdentifierName == "foo" && d.DeclarationType == DeclarationType.Parameter);
+            if (target == null)
+            {
+                Assert.Inconclusive("No 'foo' parameter was found in test code.");
+            }
+
+            var module = component.CodeModule;
+            var rewriter = parser.State.GetRewriter(target);
+
+            CodeModuleExtensions.Remove(module, rewriter, target);
+            Assert.AreEqual(expected, rewriter.GetText());
+        }
+
+        [TestMethod]
+        [TestCategory("TokenStreamRewriter")]
         public void RemovesLastVariableInStatement()
         {
             const string expected = @"
@@ -298,6 +438,42 @@ End Sub
             if (target == null)
             {
                 Assert.Inconclusive("No variable was found in test code.");
+            }
+
+            var module = component.CodeModule;
+            var rewriter = parser.State.GetRewriter(target);
+
+            CodeModuleExtensions.Remove(module, rewriter, target);
+            Assert.AreEqual(expected, rewriter.GetText());
+        }
+
+        [TestMethod]
+        [TestCategory("TokenStreamRewriter")]
+        public void RemovesLastParameterInSignature()
+        {
+            const string expected = @"
+Sub DoSomething(ByVal foo As Long)
+End Sub
+";
+            const string content = @"
+Sub DoSomething(ByVal foo As Long, ByVal bar As Long)
+End Sub
+";
+            IVBComponent component;
+            var vbe = new MockVbeBuilder().BuildFromSingleStandardModule(content, out component).Object;
+            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status != ParserState.Ready)
+            {
+                Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+            }
+
+            var declarations = parser.State.AllUserDeclarations;
+            var target = declarations.SingleOrDefault(d => d.IdentifierName == "bar" && d.DeclarationType == DeclarationType.Parameter);
+            if (target == null)
+            {
+                Assert.Inconclusive("No parameter was found in test code.");
             }
 
             var module = component.CodeModule;

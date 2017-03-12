@@ -7,7 +7,6 @@ using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -124,6 +123,12 @@ namespace Rubberduck.Common
                 return RewriterInfoForConstantRemoval(target, constants);
             }
 
+            var argList = target.Context.Parent as VBAParser.ArgListContext;
+            if (argList != null)
+            {
+                return RewriterInfoForParameterRemoval(target, argList);
+            }
+
             return RewriterInfo.None;
         }
 
@@ -162,6 +167,20 @@ namespace Rubberduck.Common
             }
 
             return GetRewriterInfoForLocalConstantRemoval(target, constStmtContext, count, itemIndex, items);
+        }
+
+        private static RewriterInfo RewriterInfoForParameterRemoval(
+            Declaration target, VBAParser.ArgListContext argListContext)
+        {
+            var items = argListContext.arg();
+            var itemIndex = items.ToList().IndexOf((VBAParser.ArgContext) target.Context);
+            var count = items.Count;
+
+            if (count == 1)
+            {
+                return new RewriterInfo(argListContext.LPAREN().Symbol.TokenIndex + 1, argListContext.RPAREN().Symbol.TokenIndex - 1);
+            }
+            return GetRewriterInfoForTargetRemovedFromListStmt(target.Context.Start, itemIndex, argListContext);
         }
 
         private static RewriterInfo GetRewriterInfoForLocalVariableRemoval(Declaration target, VBAParser.VariableListStmtContext variables,
@@ -274,205 +293,20 @@ namespace Rubberduck.Common
             return new RewriterInfo(startIndex, stopIndex);
         }
 
-
-        //private static RewriterInfo GetRemovedTokenIndex<TContext>(Declaration target, IReadOnlyList<TContext> items, Func<TContext, string> getIdentifierName)
-        //    where TContext : ParserRuleContext
-        //{
-        //    if (items.Count == 1 && target.DeclarationType != DeclarationType.Parameter)
-        //    {
-        //        var item = items[0];
-        //        var start = ((ParserRuleContext) item.Parent.Parent).Start.TokenIndex;
-        //        var stop = ((ParserRuleContext) item.Parent.Parent).Stop.TokenIndex;
-        //        return Tuple.Create(start == 0 ? 0 : start - 1, stop + 2);
-        //    }
-
-        //    for (var i = 0; i < items.Count; i++)
-        //    {
-        //        var item = items[i];
-        //        if (getIdentifierName(item) == target.IdentifierName)
-        //        {
-        //            if (items.Count > 1)
-        //            {
-        //                ITerminalNode comma;
-        //                if (i == 0)
-        //                {
-        //                    comma = (ITerminalNode)((dynamic)item.Parent).COMMA()[i];
-        //                }
-        //                else
-        //                {
-        //                    comma = (ITerminalNode)((dynamic)item.Parent).COMMA()[i - 1];
-        //                }
-        //                return Tuple.Create(item.Start.TokenIndex, comma.Symbol.TokenIndex);
-        //            }
-        //            return Tuple.Create(item.Start.TokenIndex, item.Stop.TokenIndex);
-        //        }
-        //    }
-
-        //    Debug.Assert(false, "Could not locate target token range.");
-        //    return null;
-        //}
-
-        private enum TargetListPosition
+        private static RewriterInfo GetRewriterInfoForTargetRemovedFromListStmt(IToken targetStartToken, int itemIndex, VBAParser.ArgListContext argListContext)
         {
-            /// <summary>
-            /// Target was the only item in a list, or there was no list; no leading or trailing comma needs to be handled.
-            /// </summary>
-            SingleItem,
-            /// <summary>
-            /// Target was the first item in a list of two or more: a leading comma needs to be handled.
-            /// </summary>
-            FirstItem,
-            /// <summary>
-            /// Target was the last item in a list of two or more: a trailing comma needs to be handled.
-            /// </summary>
-            LastItem,
-        }
+            var items = argListContext.arg();
 
-        private static ParserRuleContext GetStmtContext(Declaration target, out TargetListPosition position)
-        {
-            ParserRuleContext result;
-            position = TargetListPosition.SingleItem;
-            // for instructions that may contain more than a single declaration, we need to isolate the target's context.
-            switch (target.DeclarationType)
-            {
-                case DeclarationType.Variable:
-                    result = GetVariableContext(target, ref position);
-                    break;
+            var count = items.Count;
+            var startIndex = itemIndex < count - 1
+                ? targetStartToken.TokenIndex
+                : items[itemIndex - 1].Stop.TokenIndex + 1;
 
-                case DeclarationType.Parameter:
-                    result = GetParameterContext(target, ref position);
-                    break;
+            var stopIndex = itemIndex < count - 1
+                ? items[itemIndex + 1].Start.TokenIndex - 1
+                : items[itemIndex].Stop.TokenIndex;
 
-                case DeclarationType.Constant:
-
-                    result = GetConstantContext(target, ref position);
-                    break;
-
-                default:
-                    result = target.Context;
-                    break;
-            }
-            return result;
-        }
-
-        private static ParserRuleContext GetParameterContext(Declaration target, ref TargetListPosition position)
-        {
-            var argList = (VBAParser.ArgListContext) target.Context.Parent;
-            var args = argList.arg();
-            var count = args.Count;
-            ParserRuleContext result = argList;
-
-            for (var i = 0; i < count; i++)
-            {
-                // foreach is less practical to track index
-                var arg = args[i];
-                if (Identifier.GetName(arg.unrestrictedIdentifier()) != target.IdentifierName)
-                {
-                    continue;
-                }
-
-                result = arg;
-                position = GetTargetListPosition(i, count);
-            }
-
-            return result;
-        }
-
-        private static ParserRuleContext GetConstantContext(Declaration target, ref TargetListPosition position)
-        {
-            var constStmt = target.GetConstStmtContext();
-            var consts = constStmt.constSubStmt();
-            var count = consts.Count;
-            ParserRuleContext result = constStmt;
-
-            for (var i = 0; i < count; i++)
-            {
-                var constant = consts[i];
-                if (Identifier.GetName(constant.identifier()) != target.IdentifierName)
-                {
-                    continue;
-                }
-
-                result = constant;
-                position = GetTargetListPosition(i, count);
-            }
-            return result;
-        }
-
-        private static ParserRuleContext GetVariableContext(Declaration target, ref TargetListPosition position)
-        {
-            var variableStmt = target.GetVariableStmtContext();
-            ParserRuleContext result = variableStmt;
-
-            var variables = variableStmt.variableListStmt().variableSubStmt();
-            var count = variables.Count;
-
-            for (var i = 0; i < count; i++)
-            {
-                var variable = variables[i];
-                if (Identifier.GetName(variable.identifier()) != target.IdentifierName)
-                {
-                    continue;
-                }
-
-                result = variable;
-                position = GetTargetListPosition(i, count);
-            }
-            return result;
-        }
-
-        private static TargetListPosition GetTargetListPosition(int i, int count)
-        {
-            TargetListPosition position;
-            if (i == 0)
-            {
-                position = TargetListPosition.FirstItem;
-            }
-            else if (i == count - 1)
-            {
-                position = TargetListPosition.LastItem;
-            }
-            else
-            {
-                position = TargetListPosition.SingleItem;
-            }
-            return position;
-        }
-
-        private static string RemoveExtraComma(string str, int numParams, int indexRemoved)
-        {
-            #region usage example
-            // Example use cases for this method (fields and variables):
-            // Dim fizz as Boolean, dizz as Double
-            // Private fizz as Boolean, dizz as Double
-            // Public fizz as Boolean, _
-            //        dizz as Double
-            // Private fizz as Boolean _
-            //         , dizz as Double _
-            //         , iizz as Integer
-
-            // Before this method is called, the parameter to be removed has 
-            // already been removed.  This means 'str' will look like:
-            // Dim fizz as Boolean, 
-            // Private , dizz as Double
-            // Public fizz as Boolean, _
-            //        
-            // Private  _
-            //         , dizz as Double _
-            //         , iizz as Integer
-
-            // This method is responsible for removing the redundant comma
-            // and returning a string similar to:
-            // Dim fizz as Boolean
-            // Private dizz as Double
-            // Public fizz as Boolean _
-            //        
-            // Private  _
-            //          dizz as Double _
-            //         , iizz as Integer
-            #endregion
-            var commaToRemove = numParams == indexRemoved ? indexRemoved - 1 : indexRemoved;
-            return str.Remove(str.NthIndexOf(',', commaToRemove), 1);
+            return new RewriterInfo(startIndex, stopIndex);
         }
 
         public static void Remove(this ICodeModule module, IdentifierReference target, TokenStreamRewriter rewriter)
