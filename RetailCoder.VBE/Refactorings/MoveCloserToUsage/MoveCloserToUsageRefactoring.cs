@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using Antlr4.Runtime;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
@@ -78,7 +77,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
         {
             var firstReference = target.References.FirstOrDefault();
 
-            return firstReference != null && target.References.Any(r => r.ParentScoping != firstReference.ParentScoping);
+            return firstReference != null && target.References.Any(r => !Equals(r.ParentScoping, firstReference.ParentScoping));
         }
 
         private void MoveCloserToUsage()
@@ -148,7 +147,8 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             if (newTarget != null)
             {
                 UpdateCallsToOtherModule(newTarget.References.ToList());
-                RemoveField(rewriter, newTarget);
+                rewriter.Remove(newTarget);
+                rewriter.Rewrite();
             }
 
             if (oldSelection.HasValue)
@@ -162,38 +162,39 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
 
         private void InsertDeclaration()
         {
+            _state.GetRewriter(_target);
             var module = _target.References.First().QualifiedModuleName.Component.CodeModule;
+            var firstReference = _target.References.OrderBy(r => r.Selection.StartLine).First();
+            var beginningOfInstructionSelection = GetBeginningOfInstructionSelection(firstReference);
+
+            var oldLines = module.GetLines(beginningOfInstructionSelection.StartLine,
+                beginningOfInstructionSelection.LineCount);
+            var newLines = oldLines.Insert(beginningOfInstructionSelection.StartColumn - 1, GetDeclarationString());
+
+            var newLinesWithoutStringLiterals = newLines.StripStringLiterals();
+
+            var lastIndexOfColon = GetIndexOfLastStatementSeparator(newLinesWithoutStringLiterals);
+            // ReSharper disable once StringLastIndexOfIsCultureSpecific.1
+            while (lastIndexOfColon != -1)
             {
-                var firstReference = _target.References.OrderBy(r => r.Selection.StartLine).First();
-                var beginningOfInstructionSelection = GetBeginningOfInstructionSelection(firstReference);
+                var numberOfCharsToRemove = lastIndexOfColon == newLines.Length - 1 ||
+                                            newLines[lastIndexOfColon + 1] != ' '
+                    ? 1
+                    : 2;
 
-                var oldLines = module.GetLines(beginningOfInstructionSelection.StartLine, beginningOfInstructionSelection.LineCount);
-                var newLines = oldLines.Insert(beginningOfInstructionSelection.StartColumn - 1, GetDeclarationString());
+                newLinesWithoutStringLiterals = newLinesWithoutStringLiterals
+                    .Remove(lastIndexOfColon, numberOfCharsToRemove)
+                    .Insert(lastIndexOfColon, Environment.NewLine);
 
-                var newLinesWithoutStringLiterals = newLines.StripStringLiterals();
+                newLines = newLines
+                    .Remove(lastIndexOfColon, numberOfCharsToRemove)
+                    .Insert(lastIndexOfColon, Environment.NewLine);
 
-                var lastIndexOfColon = GetIndexOfLastStatementSeparator(newLinesWithoutStringLiterals);
-                // ReSharper disable once StringLastIndexOfIsCultureSpecific.1
-                while (lastIndexOfColon != -1)
-                {
-                    var numberOfCharsToRemove = lastIndexOfColon == newLines.Length - 1 || newLines[lastIndexOfColon + 1] != ' '
-                        ? 1
-                        : 2;
-
-                    newLinesWithoutStringLiterals = newLinesWithoutStringLiterals
-                            .Remove(lastIndexOfColon, numberOfCharsToRemove)
-                            .Insert(lastIndexOfColon, Environment.NewLine);
-
-                    newLines = newLines
-                            .Remove(lastIndexOfColon, numberOfCharsToRemove)
-                            .Insert(lastIndexOfColon, Environment.NewLine);
-
-                    lastIndexOfColon = GetIndexOfLastStatementSeparator(newLinesWithoutStringLiterals);
-                }
-
-                module.DeleteLines(beginningOfInstructionSelection.StartLine, beginningOfInstructionSelection.LineCount);
-                module.InsertLines(beginningOfInstructionSelection.StartLine, newLines);
+                lastIndexOfColon = GetIndexOfLastStatementSeparator(newLinesWithoutStringLiterals);
             }
+
+            module.DeleteLines(beginningOfInstructionSelection.StartLine, beginningOfInstructionSelection.LineCount);
+            module.InsertLines(beginningOfInstructionSelection.StartLine, newLines);
         }
 
         private static readonly Regex StatementSeparatorRegex = new Regex(":[^=]", RegexOptions.RightToLeft);
@@ -228,12 +229,6 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
         private string GetDeclarationString()
         {
             return Environment.NewLine + "    Dim " + _target.IdentifierName + " As " + _target.AsTypeName + Environment.NewLine;
-        }
-
-        private void RemoveField(TokenStreamRewriter rewriter, Declaration target)
-        {
-            var module = target.QualifiedName.QualifiedModuleName.Component.CodeModule;
-            module.Remove(rewriter, target);
         }
 
         private void UpdateCallsToOtherModule(List<IdentifierReference> references)

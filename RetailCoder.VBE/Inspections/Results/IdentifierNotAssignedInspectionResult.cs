@@ -5,6 +5,7 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Parsing.PostProcessing;
 using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections.Results
@@ -13,9 +14,9 @@ namespace Rubberduck.Inspections.Results
     {
         private IEnumerable<IQuickFix> _quickFixes;
         private readonly ParserRuleContext _context;
-        private readonly TokenStreamRewriter _rewriter;
+        private readonly IModuleRewriter _rewriter;
 
-        public IdentifierNotAssignedInspectionResult(IInspection inspection, Declaration target, ParserRuleContext context, TokenStreamRewriter rewriter)
+        public IdentifierNotAssignedInspectionResult(IInspection inspection, Declaration target, ParserRuleContext context, IModuleRewriter rewriter)
             : base(inspection, target)
         {
             _context = context;

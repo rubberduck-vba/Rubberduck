@@ -2,10 +2,8 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.Threading.Tasks;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.ComReflection;
@@ -13,6 +11,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Annotations;
 using NLog;
+using Rubberduck.Parsing.PostProcessing;
 using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -919,19 +918,24 @@ namespace Rubberduck.Parsing.VBA
             return false;
         }
 
-        public TokenStreamRewriter GetRewriter(IVBComponent component)
+
+
+        public IModuleRewriter GetRewriter(IVBComponent component)
         {
-            return new TokenStreamRewriter(_moduleStates[new QualifiedModuleName(component)].TokenStream);
+            var qualifiedModuleName = new QualifiedModuleName(component);
+            return GetRewriter(qualifiedModuleName);
         }
 
-        public TokenStreamRewriter GetRewriter(QualifiedModuleName module)
+        public IModuleRewriter GetRewriter(QualifiedModuleName qualifiedModuleName)
         {
-            return new TokenStreamRewriter(_moduleStates[module].TokenStream);
+            var rewriter = _moduleStates[qualifiedModuleName].Rewriter;
+            return new ModuleRewriter(qualifiedModuleName.Component.CodeModule, rewriter);
         }
 
-        public TokenStreamRewriter GetRewriter(Declaration declaration)
+        public IModuleRewriter GetRewriter(Declaration declaration)
         {
-            return new TokenStreamRewriter(_moduleStates[declaration.QualifiedSelection.QualifiedName].TokenStream);
+            var qualifiedModuleName = declaration.QualifiedSelection.QualifiedName;
+            return GetRewriter(qualifiedModuleName);
         }
 
         /// <summary>
@@ -983,34 +987,6 @@ namespace Rubberduck.Parsing.VBA
 
             // new
             return true;
-        }
-
-        private QualifiedSelection _lastSelection;
-        private Declaration _selectedDeclaration;
-        private readonly List<Tuple<Declaration, Selection, QualifiedModuleName>> _declarationSelections = new List<Tuple<Declaration, Selection, QualifiedModuleName>>();
-
-        public void RebuildSelectionCache()
-        {
-            var selections = new List<Tuple<Declaration, Selection, QualifiedModuleName>>();
-            foreach (var declaration in AllUserDeclarations)
-            {
-                selections.Add(Tuple.Create(declaration, declaration.Selection,
-                    declaration.QualifiedSelection.QualifiedName));
-            }
-
-            foreach (var declaration in AllDeclarations)
-            {
-                foreach (var reference in declaration.References)
-                {
-                    selections.Add(Tuple.Create(declaration, reference.Selection, reference.QualifiedModuleName));
-                }
-            }
-
-            lock (_declarationSelections)
-            {
-                _declarationSelections.Clear();
-                _declarationSelections.AddRange(selections);
-            }
         }
 
         public Declaration FindSelectedDeclaration(ICodePane activeCodePane)
@@ -1123,7 +1099,6 @@ namespace Rubberduck.Parsing.VBA
             RemoveEventHandlers();
 
             _moduleStates.Clear();
-            _declarationSelections.Clear();
             // no lock because nobody should try to update anything here
             _projects.Clear();
 

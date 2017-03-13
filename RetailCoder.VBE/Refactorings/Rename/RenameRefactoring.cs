@@ -3,7 +3,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Antlr4.Runtime;
-using Antlr4.Runtime.Misc;
 using Microsoft.CSharp.RuntimeBinder;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
@@ -453,9 +452,8 @@ namespace Rubberduck.Refactorings.Rename
 
             if (target.DeclarationType == DeclarationType.Parameter)
             {
-                var argContext = (VBAParser.ArgContext)target.Context;
                 var rewriter = _model.State.GetRewriter(target.QualifiedName.QualifiedModuleName.Component);
-                rewriter.Replace(argContext.unrestrictedIdentifier().Start.TokenIndex, _model.NewName);
+                rewriter.Rename(target, _model.NewName);
 
                 // Target.Context is an ArgContext, its parent is an ArgsListContext;
                 // the ArgsListContext's parent is the procedure context and it includes the body.
@@ -517,7 +515,7 @@ namespace Rubberduck.Refactorings.Rename
                     lastTokenIndex = eventStmtContext.argList().RPAREN().Symbol.TokenIndex;
                 }
 
-                return rewriter.GetText(new Interval(firstTokenIndex, lastTokenIndex));
+                return rewriter.GetText(firstTokenIndex, lastTokenIndex);
             }
             return GetReplacementLine(content, newName, target.Selection);
         }

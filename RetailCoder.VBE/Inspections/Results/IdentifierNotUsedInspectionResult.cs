@@ -5,6 +5,7 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Parsing.PostProcessing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
@@ -15,10 +16,10 @@ namespace Rubberduck.Inspections.Results
     {
         private IEnumerable<IQuickFix> _quickFixes;
         private readonly ParserRuleContext _context;
-        private readonly TokenStreamRewriter _rewriter;
+        private readonly IModuleRewriter _rewriter;
 
         public IdentifierNotUsedInspectionResult(IInspection inspection, Declaration target,
-            ParserRuleContext context, QualifiedModuleName qualifiedName, TokenStreamRewriter rewriter)
+            ParserRuleContext context, QualifiedModuleName qualifiedName, IModuleRewriter rewriter)
             : base(inspection, qualifiedName, context, target)
         {
             _context = context;

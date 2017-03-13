@@ -1,19 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Antlr4.Runtime;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Common;
+using Rubberduck.Parsing.PostProcessing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
 // ReSharper disable InvokeAsExtensionMethod
-namespace RubberduckTests.Postprocessing
+namespace RubberduckTests.PostProcessing
 {
     [TestClass]
     public class CodeModuleExtensionTests
@@ -26,8 +25,9 @@ namespace RubberduckTests.Postprocessing
             module.Setup(m => m.Clear());
 
             var rewriter = new TokenStreamRewriter(new CommonTokenStream(new ListTokenSource(new List<IToken>())));
+            var sut = new ModuleRewriter(module.Object, rewriter);
 
-            CodeModuleExtensions.Rewrite(module.Object, rewriter);
+            sut.Rewrite();
             module.Verify(m => m.Clear());
         }
 
@@ -38,7 +38,6 @@ namespace RubberduckTests.Postprocessing
             const string content = @"Option Explicit";
             IVBComponent component;
             var vbe = new MockVbeBuilder().BuildFromSingleStandardModule(content, out component).Object;
-            var module = component.CodeModule;
 
             var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
             parser.Parse(new CancellationTokenSource());
@@ -48,8 +47,8 @@ namespace RubberduckTests.Postprocessing
             }
 
             var rewriter = parser.State.GetRewriter(component);
+            rewriter.Rewrite();
 
-            CodeModuleExtensions.Rewrite(module, rewriter);
             Assert.AreEqual(content, rewriter.GetText());
         }
 
@@ -79,10 +78,9 @@ Private foo As String
                 Assert.Inconclusive("No variable was found in test code.");
             }
 
-            var module = component.CodeModule;
-            var rewriter = parser.State.GetRewriter(target);
-            
-            CodeModuleExtensions.Remove(module, rewriter, target);
+            var rewriter = parser.State.GetRewriter(target);            
+            rewriter.Remove(target);
+
             Assert.AreEqual(expected, rewriter.GetText());
         }
 
@@ -112,10 +110,9 @@ Private Const foo As String = ""Something""
                 Assert.Inconclusive("No constant was found in test code.");
             }
 
-            var module = component.CodeModule;
             var rewriter = parser.State.GetRewriter(target);
+            rewriter.Remove(target);
 
-            CodeModuleExtensions.Remove(module, rewriter, target);
             Assert.AreEqual(expected, rewriter.GetText());
         }
 
@@ -149,10 +146,9 @@ End Sub
                 Assert.Inconclusive("No variable was found in test code.");
             }
 
-            var module = component.CodeModule;
             var rewriter = parser.State.GetRewriter(target);
+            rewriter.Remove(target);
 
-            CodeModuleExtensions.Remove(module, rewriter, target);
             Assert.AreEqual(expected, rewriter.GetText());
         }
 
@@ -186,10 +182,9 @@ End Sub
                 Assert.Inconclusive("No constant was found in test code.");
             }
 
-            var module = component.CodeModule;
             var rewriter = parser.State.GetRewriter(target);
+            rewriter.Remove(target);
 
-            CodeModuleExtensions.Remove(module, rewriter, target);
             Assert.AreEqual(expected, rewriter.GetText());
         }
 
@@ -222,10 +217,9 @@ End Sub
                 Assert.Inconclusive("No parameter was found in test code.");
             }
 
-            var module = component.CodeModule;
             var rewriter = parser.State.GetRewriter(target);
+            rewriter.Remove(target);
 
-            CodeModuleExtensions.Remove(module, rewriter, target);
             Assert.AreEqual(expected, rewriter.GetText());
         }
 
@@ -256,10 +250,9 @@ Public Event SomeEvent(ByVal foo As Long)
                 Assert.Inconclusive("No parameter was found in test code.");
             }
 
-            var module = component.CodeModule;
             var rewriter = parser.State.GetRewriter(target);
+            rewriter.Remove(target);
 
-            CodeModuleExtensions.Remove(module, rewriter, target);
             Assert.AreEqual(expected, rewriter.GetText());
         }
 
@@ -290,10 +283,9 @@ Declare PtrSafe Function Foo Lib ""Z"" Alias ""Y"" (ByVal bar As Long) As Long
                 Assert.Inconclusive("No parameter was found in test code.");
             }
 
-            var module = component.CodeModule;
             var rewriter = parser.State.GetRewriter(target);
+            rewriter.Remove(target);
 
-            CodeModuleExtensions.Remove(module, rewriter, target);
             Assert.AreEqual(expected, rewriter.GetText());
         }
 
@@ -328,10 +320,9 @@ End Sub
                 Assert.Inconclusive("No 'foo' variable was found in test code.");
             }
 
-            var module = component.CodeModule;
             var rewriter = parser.State.GetRewriter(target);
+            rewriter.Remove(target);
 
-            CodeModuleExtensions.Remove(module, rewriter, target);
             Assert.AreEqual(expected, rewriter.GetText());
         }
 
@@ -366,10 +357,9 @@ End Sub
                 Assert.Inconclusive("No 'foo' constant was found in test code.");
             }
 
-            var module = component.CodeModule;
             var rewriter = parser.State.GetRewriter(target);
+            rewriter.Remove(target);
 
-            CodeModuleExtensions.Remove(module, rewriter, target);
             Assert.AreEqual(expected, rewriter.GetText());
         }
 
@@ -402,10 +392,9 @@ End Sub
                 Assert.Inconclusive("No 'foo' parameter was found in test code.");
             }
 
-            var module = component.CodeModule;
             var rewriter = parser.State.GetRewriter(target);
+            rewriter.Remove(target);
 
-            CodeModuleExtensions.Remove(module, rewriter, target);
             Assert.AreEqual(expected, rewriter.GetText());
         }
 
@@ -440,10 +429,9 @@ End Sub
                 Assert.Inconclusive("No variable was found in test code.");
             }
 
-            var module = component.CodeModule;
             var rewriter = parser.State.GetRewriter(target);
+            rewriter.Remove(target);
 
-            CodeModuleExtensions.Remove(module, rewriter, target);
             Assert.AreEqual(expected, rewriter.GetText());
         }
 
@@ -476,10 +464,9 @@ End Sub
                 Assert.Inconclusive("No parameter was found in test code.");
             }
 
-            var module = component.CodeModule;
             var rewriter = parser.State.GetRewriter(target);
+            rewriter.Remove(target);
 
-            CodeModuleExtensions.Remove(module, rewriter, target);
             Assert.AreEqual(expected, rewriter.GetText());
         }
 
@@ -514,10 +501,9 @@ End Sub
                 Assert.Inconclusive("No 'bar' constant was found in test code.");
             }
 
-            var module = component.CodeModule;
             var rewriter = parser.State.GetRewriter(target);
+            rewriter.Remove(target);
 
-            CodeModuleExtensions.Remove(module, rewriter, target);
             Assert.AreEqual(expected, rewriter.GetText());
         }
 
@@ -549,10 +535,9 @@ Private foo _
                 Assert.Inconclusive("No variable was found in test code.");
             }
 
-            var module = component.CodeModule;
             var rewriter = parser.State.GetRewriter(target);
+            rewriter.Remove(target);
 
-            CodeModuleExtensions.Remove(module, rewriter, target);
             Assert.AreEqual(expected, rewriter.GetText());
         }
 
@@ -584,10 +569,9 @@ Private Const foo _
                 Assert.Inconclusive("No constant was found in test code.");
             }
 
-            var module = component.CodeModule;
             var rewriter = parser.State.GetRewriter(target);
+            rewriter.Remove(target);
 
-            CodeModuleExtensions.Remove(module, rewriter, target);
             Assert.AreEqual(expected, rewriter.GetText());
         }
 
@@ -618,10 +602,9 @@ Private bar As Long
                 Assert.Inconclusive("Target variable was not found in test code.");
             }
 
-            var module = component.CodeModule;
             var rewriter = parser.State.GetRewriter(target);
+            rewriter.Remove(target);
 
-            CodeModuleExtensions.Remove(module, rewriter, target);
             Assert.AreEqual(expected, rewriter.GetText());
         }
 
@@ -652,10 +635,9 @@ Private Const bar As Long = 42
                 Assert.Inconclusive("Target constant was not found in test code.");
             }
 
-            var module = component.CodeModule;
             var rewriter = parser.State.GetRewriter(target);
+            rewriter.Remove(target);
 
-            CodeModuleExtensions.Remove(module, rewriter, target);
             Assert.AreEqual(expected, rewriter.GetText());
         }
 
@@ -686,10 +668,9 @@ Private foo As String
                 Assert.Inconclusive("Target variable was not found in test code.");
             }
 
-            var module = component.CodeModule;
             var rewriter = parser.State.GetRewriter(target);
+            rewriter.Remove(target);
 
-            CodeModuleExtensions.Remove(module, rewriter, target);
             Assert.AreEqual(expected, rewriter.GetText());
         }
 
@@ -720,10 +701,9 @@ Private Const foo As String = ""Something""
                 Assert.Inconclusive("Target constant was not found in test code.");
             }
 
-            var module = component.CodeModule;
             var rewriter = parser.State.GetRewriter(target);
+            rewriter.Remove(target);
 
-            CodeModuleExtensions.Remove(module, rewriter, target);
             Assert.AreEqual(expected, rewriter.GetText());
         }
 
@@ -754,10 +734,9 @@ Private foo As String, buzz As Integer
                 Assert.Inconclusive("Target variable was not found in test code.");
             }
 
-            var module = component.CodeModule;
             var rewriter = parser.State.GetRewriter(target);
+            rewriter.Remove(target);
 
-            CodeModuleExtensions.Remove(module, rewriter, target);
             Assert.AreEqual(expected, rewriter.GetText());
         }
 
@@ -788,10 +767,9 @@ Private Const foo As String = ""Something"", buzz As Integer = 12
                 Assert.Inconclusive("Target constant was not found in test code.");
             }
 
-            var module = component.CodeModule;
             var rewriter = parser.State.GetRewriter(target);
+            rewriter.Remove(target);
 
-            CodeModuleExtensions.Remove(module, rewriter, target);
             Assert.AreEqual(expected, rewriter.GetText());
         }
 
@@ -825,10 +803,9 @@ Private foo As String, _
                 Assert.Inconclusive("Target variable was found in test code.");
             }
 
-            var module = component.CodeModule;
             var rewriter = parser.State.GetRewriter(target);
+            rewriter.Remove(target);
 
-            CodeModuleExtensions.Remove(module, rewriter, target);
             Assert.AreEqual(expected, rewriter.GetText());
         }
 
@@ -865,10 +842,9 @@ Private Const foo _
                 Assert.Inconclusive("Target constant was found in test code.");
             }
 
-            var module = component.CodeModule;
             var rewriter = parser.State.GetRewriter(target);
+            rewriter.Remove(target);
 
-            CodeModuleExtensions.Remove(module, rewriter, target);
             Assert.AreEqual(expected, rewriter.GetText());
         }
     }

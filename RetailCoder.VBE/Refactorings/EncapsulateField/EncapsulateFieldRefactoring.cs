@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
-using Antlr4.Runtime;
-using Rubberduck.Common;
+using Rubberduck.Parsing.PostProcessing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.SmartIndenter;
@@ -34,9 +33,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
             var target = _model.TargetDeclaration;
             var rewriter = _model.State.GetRewriter(target);
             AddProperty(rewriter);
-            target.QualifiedName.QualifiedModuleName.Component.CodeModule.Rewrite(rewriter);
 
-            _model.State.OnParseRequested(this);
+            rewriter.Rewrite();
         }
 
         public void Refactor(QualifiedSelection target)
@@ -53,12 +51,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
             Refactor();
         }
 
-        private void AddProperty(TokenStreamRewriter rewriter)
+        private void AddProperty(IModuleRewriter rewriter)
         {
-            UpdateReferences(); // bug: because this isn't using rewriter, same-module references will be overwritten
-
-            var module = _model.TargetDeclaration.QualifiedName.QualifiedModuleName.Component.CodeModule;
-            SetFieldToPrivate(module, rewriter);
+            UpdateReferences();
+            SetFieldToPrivate(rewriter);
 
             var lastMember = _model.State.DeclarationFinder
                 .Members(_model.TargetDeclaration.QualifiedName.QualifiedModuleName)
@@ -68,17 +64,16 @@ namespace Rubberduck.Refactorings.EncapsulateField
             var property = Environment.NewLine + Environment.NewLine + GetPropertyText() + Environment.NewLine;
             if (lastMember == null)
             {
-                rewriter.InsertBefore(0, property);
+                rewriter.Insert(property);
             }
             else
             {
-                rewriter.InsertAfter(lastMember.Context.Stop.TokenIndex, property);
+                rewriter.Insert(property, lastMember.Context.Stop.TokenIndex);
             }
         }
 
         private void UpdateReferences()
         {
-            // todo: refactor to use per-module rewriters cached in parser state
             foreach (var reference in _model.TargetDeclaration.References)
             {
                 var module = reference.QualifiedModuleName.Component.CodeModule;
@@ -90,7 +85,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
-        private void SetFieldToPrivate(ICodeModule module, TokenStreamRewriter rewriter)
+        private void SetFieldToPrivate(IModuleRewriter rewriter)
         {
             var target = _model.TargetDeclaration;
             if (target.Accessibility == Accessibility.Private)
@@ -100,8 +95,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             var newField = "Private " + _model.TargetDeclaration.IdentifierName + " As " + _model.TargetDeclaration.AsTypeName + Environment.NewLine;
 
-            module.Remove(rewriter, target);
-            rewriter.InsertBefore(target.Context.Start, newField);
+            rewriter.Replace(target, newField);
         }
 
         private string GetPropertyText()

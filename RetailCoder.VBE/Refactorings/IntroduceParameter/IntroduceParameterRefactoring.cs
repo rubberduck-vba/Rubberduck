@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using Antlr4.Runtime;
-using Antlr4.Runtime.Misc;
 using Rubberduck.Common;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.PostProcessing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
@@ -77,8 +75,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                 _messageBox.Show(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceParameter_Caption,
                     MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 
-                // ReSharper disable once LocalizableElement
-                throw new ArgumentException("Invalid declaration type", "target");
+                throw new ArgumentException(@"Invalid declaration type", "target");
             }
 
             PromoteVariable(target);
@@ -109,7 +106,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             }
 
             UpdateSignature(rewriter, target);
-            RemoveVariable(rewriter, target);
+            rewriter.Remove(target);
 
             if (oldSelection.HasValue)
             {
@@ -138,90 +135,88 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             return introduceParamToInterface != DialogResult.No;
         }
 
-        private void UpdateSignature(TokenStreamRewriter rewriter, Declaration targetVariable)
+        private void UpdateSignature(IModuleRewriter rewriter, Declaration targetVariable)
         {
             var functionDeclaration = _declarations.FindTarget(targetVariable.QualifiedSelection, ValidDeclarationTypes);
 
-            var proc = (dynamic)functionDeclaration.Context;
-            var paramList = (VBAParser.ArgListContext)proc.argList();
-            var module = functionDeclaration.QualifiedName.QualifiedModuleName.Component.CodeModule;
+            var proc = (dynamic) functionDeclaration.Context;
+            var paramList = (VBAParser.ArgListContext) proc.argList();
+            var interfaceImplementation = GetInterfaceImplementation(functionDeclaration);
+
+            if (functionDeclaration.DeclarationType != DeclarationType.PropertyGet &&
+                functionDeclaration.DeclarationType != DeclarationType.PropertyLet &&
+                functionDeclaration.DeclarationType != DeclarationType.PropertySet)
             {
-                var interfaceImplementation = GetInterfaceImplementation(functionDeclaration);
+                AddParameter(rewriter, functionDeclaration, targetVariable, paramList);
 
-                if (functionDeclaration.DeclarationType != DeclarationType.PropertyGet &&
-                    functionDeclaration.DeclarationType != DeclarationType.PropertyLet &&
-                    functionDeclaration.DeclarationType != DeclarationType.PropertySet)
+                if (interfaceImplementation == null)
                 {
-                    AddParameter(rewriter, functionDeclaration, targetVariable, paramList, module);
-
-                    if (interfaceImplementation == null) { return; }
+                    return;
                 }
+            }
 
-                if (functionDeclaration.DeclarationType == DeclarationType.PropertyGet ||
-                    functionDeclaration.DeclarationType == DeclarationType.PropertyLet ||
-                    functionDeclaration.DeclarationType == DeclarationType.PropertySet)
-                {
-                    UpdateProperties(rewriter, functionDeclaration, targetVariable);
-                }
+            if (functionDeclaration.DeclarationType == DeclarationType.PropertyGet ||
+                functionDeclaration.DeclarationType == DeclarationType.PropertyLet ||
+                functionDeclaration.DeclarationType == DeclarationType.PropertySet)
+            {
+                UpdateProperties(rewriter, functionDeclaration, targetVariable);
+            }
 
-                if (interfaceImplementation == null) { return; }
+            if (interfaceImplementation == null)
+            {
+                return;
+            }
 
-                UpdateSignature(rewriter, interfaceImplementation, targetVariable);
+            UpdateSignature(rewriter, interfaceImplementation, targetVariable);
 
-                var interfaceImplementations = _declarations.FindInterfaceImplementationMembers()
-                                                        .Where(item => item.ProjectId == interfaceImplementation.ProjectId
-                                                               && item.IdentifierName == interfaceImplementation.ComponentName + "_" + interfaceImplementation.IdentifierName
-                                                               && !item.Equals(functionDeclaration));
+            var interfaceImplementations = _declarations.FindInterfaceImplementationMembers()
+                .Where(item => item.ProjectId == interfaceImplementation.ProjectId
+                               &&
+                               item.IdentifierName ==
+                               interfaceImplementation.ComponentName + "_" + interfaceImplementation.IdentifierName
+                               && !item.Equals(functionDeclaration));
 
-                foreach (var implementation in interfaceImplementations)
-                {
-                    UpdateSignature(rewriter, implementation, targetVariable);
-                }
+            foreach (var implementation in interfaceImplementations)
+            {
+                UpdateSignature(rewriter, implementation, targetVariable);
             }
         }
 
-        private void UpdateSignature(TokenStreamRewriter rewriter, Declaration targetMethod, Declaration targetVariable)
+        private void UpdateSignature(IModuleRewriter rewriter, Declaration targetMethod, Declaration targetVariable)
         {
-            var proc = (dynamic)targetMethod.Context;
-            var paramList = (VBAParser.ArgListContext)proc.argList();
-            var module = targetMethod.QualifiedName.QualifiedModuleName.Component.CodeModule;
-            {
-                AddParameter(rewriter, targetMethod, targetVariable, paramList, module);
-            }
+            var proc = (dynamic) targetMethod.Context;
+            var paramList = (VBAParser.ArgListContext) proc.argList();
+            AddParameter(rewriter, targetMethod, targetVariable, paramList);
         }
 
-        private void AddParameter(TokenStreamRewriter rewriter, Declaration targetMethod, Declaration targetVariable, VBAParser.ArgListContext paramList, ICodeModule module)
+        private void AddParameter(IModuleRewriter rewriter, Declaration targetMethod, Declaration targetVariable, VBAParser.ArgListContext paramList)
         {
-            // todo: use rewriter
-
             var argList = paramList.arg();
             var lastParam = argList.LastOrDefault();
-
-            var newContent = GetOldSignature(targetMethod);
+            var newParameter = Tokens.ByVal + " " + targetVariable.IdentifierName + " "+ Tokens.As + " " + targetVariable.AsTypeName;
+            var newContent = GetOldSignature(rewriter, targetMethod);
 
             if (lastParam == null)
             {
                 // offset 1-based index:
-                newContent = newContent.Insert(newContent.IndexOf('(') + 1, GetParameterDefinition(targetVariable));
+                newContent = newContent.Insert(newContent.IndexOf('(') + 1, newParameter);
             }
             else if (targetMethod.DeclarationType != DeclarationType.PropertyLet &&
                      targetMethod.DeclarationType != DeclarationType.PropertySet)
             {
                 newContent = newContent.Replace(argList.Last().GetText(),
-                    argList.Last().GetText() + ", " + GetParameterDefinition(targetVariable));
+                    argList.Last().GetText() + ", " + newParameter);
             }
             else
             {
                 newContent = newContent.Replace(argList.Last().GetText(),
-                    GetParameterDefinition(targetVariable) + ", " + argList.Last().GetText());
+                    newParameter + ", " + argList.Last().GetText());
             }
 
-            var selection = paramList.GetSelection();
-            module.InsertLines(selection.StartLine, newContent);
-            module.DeleteLines(selection.StartLine + 1, selection.LineCount);
+            rewriter.Replace(paramList, newContent);
         }
 
-        private void UpdateProperties(TokenStreamRewriter rewriter, Declaration knownProperty, Declaration targetVariable)
+        private void UpdateProperties(IModuleRewriter rewriter, Declaration knownProperty, Declaration targetVariable)
         {
             var propertyGet = _declarations.FirstOrDefault(d =>
                     d.DeclarationType == DeclarationType.PropertyGet &&
@@ -263,16 +258,8 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             }
         }
 
-        private void RemoveVariable(TokenStreamRewriter rewriter, Declaration target)
+        private string GetOldSignature(IModuleRewriter rewriter, Declaration target)
         {
-            var module = target.QualifiedName.QualifiedModuleName.Component.CodeModule;
-            module.Remove(rewriter, target);
-        }
-
-        private string GetOldSignature(Declaration target)
-        {
-            var rewriter = _state.GetRewriter(target.QualifiedName.QualifiedModuleName.Component);
-
             var context = target.Context;
             var firstTokenIndex = context.Start.TokenIndex;
             var lastTokenIndex = -1; // will blow up if this code runs for any context other than below
@@ -311,7 +298,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                 lastTokenIndex = propertySetStmtContext.argList().RPAREN().Symbol.TokenIndex;
             }
 
-            return rewriter.GetText(new Interval(firstTokenIndex, lastTokenIndex));
+            return rewriter.GetText(firstTokenIndex, lastTokenIndex);
         }
 
         private Declaration GetInterfaceImplementation(Declaration target)
@@ -322,11 +309,6 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
             var interfaceMember = _declarations.FindInterfaceMember(interfaceImplementation);
             return interfaceMember;
-        }
-
-        private string GetParameterDefinition(Declaration target)
-        {
-            return "ByVal " + target.IdentifierName + " As " + target.AsTypeName;
         }
     }
 }

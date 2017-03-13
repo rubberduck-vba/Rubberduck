@@ -35,10 +35,11 @@ namespace Rubberduck.Inspections.Results
         {
             get
             {
+                var rewriter = _parserState.GetRewriter(Target);
                 return _quickFixes ?? (_quickFixes = new IQuickFix[]
                 {
                     new AssignedByValParameterMakeLocalCopyQuickFix(Target, QualifiedSelection, _parserState, _dialogFactory),
-                    new PassParameterByReferenceQuickFix(Target, QualifiedSelection),
+                    new PassParameterByReferenceQuickFix(Target, QualifiedSelection, rewriter),
                     new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName)
                 });
             }

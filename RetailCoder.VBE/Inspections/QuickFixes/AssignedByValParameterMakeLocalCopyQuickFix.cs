@@ -1,4 +1,5 @@
-﻿using Rubberduck.Inspections.Abstract;
+﻿using System;
+using Rubberduck.Inspections.Abstract;
 using System.Linq;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Grammar;
@@ -9,6 +10,7 @@ using Rubberduck.Common;
 using Antlr4.Runtime;
 using System.Collections.Generic;
 using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Parsing.PostProcessing;
 using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
@@ -19,7 +21,6 @@ namespace Rubberduck.Inspections.QuickFixes
         private readonly IAssignedByValParameterQuickFixDialogFactory _dialogFactory;
         private readonly RubberduckParserState _parserState;
         private readonly IEnumerable<string> _forbiddenNames;
-        private string _localCopyVariableName;
 
         public AssignedByValParameterMakeLocalCopyQuickFix(Declaration target, QualifiedSelection selection, RubberduckParserState parserState, IAssignedByValParameterQuickFixDialogFactory dialogFactory)
             : base(target.Context, selection, InspectionsUI.AssignedByValParameterMakeLocalCopyQuickFix)
@@ -28,7 +29,6 @@ namespace Rubberduck.Inspections.QuickFixes
             _dialogFactory = dialogFactory;
             _parserState = parserState;
             _forbiddenNames = GetIdentifierNamesAccessibleToProcedureContext();
-           _localCopyVariableName = ComputeSuggestedName();
         }
 
         public override bool CanFixInModule { get { return false; } }
@@ -36,36 +36,38 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override void Fix()
         {
-            RequestLocalCopyVariableName();
-
-            if (!VariableNameIsValid(_localCopyVariableName) || IsCancelled)
+            var localIdentifier = PromptForLocalVariableName();
+            if (string.IsNullOrEmpty(localIdentifier))
             {
                 return;
             }
 
-            ReplaceAssignedByValParameterReferences();
-
-            InsertLocalVariableDeclarationAndAssignment();
+            var rewriter = _parserState.GetRewriter(_target);
+            ReplaceAssignedByValParameterReferences(rewriter, localIdentifier);
+            InsertLocalVariableDeclarationAndAssignment(rewriter, localIdentifier);
         }
 
-        private void RequestLocalCopyVariableName()
+        private string PromptForLocalVariableName()
         {
             using( var view = _dialogFactory.Create(_target.IdentifierName, _target.DeclarationType.ToString(), _forbiddenNames))
             {
-                view.NewName = _localCopyVariableName;
+                view.NewName = GetDefaultLocalIdentifier();
                 view.ShowDialog();
+
                 IsCancelled = view.DialogResult == DialogResult.Cancel;
-                if (!IsCancelled)
+                if (IsCancelled || !IsValidVariableName(view.NewName))
                 {
-                    _localCopyVariableName = view.NewName;
+                    return string.Empty;
                 }
+
+                return view.NewName;
             }
         }
 
-        private string ComputeSuggestedName()
+        private string GetDefaultLocalIdentifier()
         {
             var newName = "local" + _target.IdentifierName.CapitalizeFirstLetter();
-            if (VariableNameIsValid(newName))
+            if (IsValidVariableName(newName))
             {
                 return newName;
             }
@@ -73,7 +75,7 @@ namespace Rubberduck.Inspections.QuickFixes
             for ( var attempt = 2; attempt < 10; attempt++)
             {
                 var result = newName + attempt;
-                if (VariableNameIsValid(result))
+                if (IsValidVariableName(result))
                 {
                     return result;
                 }
@@ -81,37 +83,26 @@ namespace Rubberduck.Inspections.QuickFixes
             return newName;
         }
 
-        private bool VariableNameIsValid(string variableName)
+        private bool IsValidVariableName(string variableName)
         {
             return VariableNameValidator.IsValidName(variableName)
-                && !_forbiddenNames.Any(name => name.Equals(variableName, System.StringComparison.InvariantCultureIgnoreCase));
+                && !_forbiddenNames.Any(name => name.Equals(variableName, StringComparison.InvariantCultureIgnoreCase));
         }
 
-        private void ReplaceAssignedByValParameterReferences()
+        private void ReplaceAssignedByValParameterReferences(IModuleRewriter rewriter, string localIdentifier)
         {
-            var module = Selection.QualifiedName.Component.CodeModule;
             foreach (var identifierReference in _target.References)
             {
-                module.ReplaceIdentifierReferenceName(identifierReference, _localCopyVariableName);
+                rewriter.Replace(identifierReference, localIdentifier);
             }
         }
 
-        private void InsertLocalVariableDeclarationAndAssignment()
+        private void InsertLocalVariableDeclarationAndAssignment(IModuleRewriter rewriter, string localIdentifier)
         { 
-            string[] lines = { BuildLocalCopyDeclaration(), BuildLocalCopyAssignment() };
-            var module = Selection.QualifiedName.Component.CodeModule;
-            module.InsertLines(((VBAParser.ArgListContext)_target.Context.Parent).Stop.Line + 1, lines);
-        }
-
-        private string BuildLocalCopyDeclaration()
-        {
-            return Tokens.Dim + " " + _localCopyVariableName + " " + Tokens.As + " " + _target.AsTypeName;
-        }
-
-        private string BuildLocalCopyAssignment()
-        {
-            return (_target.AsTypeDeclaration is ClassModuleDeclaration ? Tokens.Set + " " : string.Empty) 
-                + _localCopyVariableName + " = " + _target.IdentifierName;
+            var content = Tokens.Dim + " " + localIdentifier + " " + Tokens.As + " " + _target.AsTypeName + Environment.NewLine
+                + (_target.AsTypeDeclaration is ClassModuleDeclaration ? Tokens.Set + " " : string.Empty)
+                + localIdentifier + " = " + _target.IdentifierName;
+            rewriter.Insert(content, ((VBAParser.ArgListContext)_target.Context.Parent).Stop.Line + 1);
         }
 
         private IEnumerable<string> GetIdentifierNamesAccessibleToProcedureContext()
