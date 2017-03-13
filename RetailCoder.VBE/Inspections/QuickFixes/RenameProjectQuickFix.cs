@@ -6,7 +6,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI;
-using Rubberduck.UI.Refactorings;
+using Rubberduck.UI.Refactorings.Rename;
 using Rubberduck.VBEditor;
 using MessageBox = Rubberduck.UI.MessageBox;
 
@@ -31,7 +31,7 @@ namespace Rubberduck.Inspections.QuickFixes
         {
             var vbe = _target.Project.VBE;
 
-            using (var view = new RenameDialog())
+            using (var view = new RenameDialog(new RenameViewModel(_state)))
             {
                 var factory = new RenamePresenterFactory(vbe, view, _state, new MessageBox());
                 var refactoring = new RenameRefactoring(vbe, factory, new MessageBox(), _state);
