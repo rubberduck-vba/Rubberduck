@@ -100,12 +100,12 @@ namespace Rubberduck.Refactorings.Rename
 
         private void Rename()
         {
-            var declaration = _state.DeclarationFinder.GetDeclarationsAccessibleToScope(_model.Target, _model.Declarations)
+            var declaration = _state.DeclarationFinder.GetDeclarationsWithIdentifiersToAvoid(_model.Target)
                 .Where(d => d.IdentifierName.Equals(_model.NewName, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
             if (declaration != null)
             {
                 var message = string.Format(RubberduckUI.RenameDialog_ConflictingNames, _model.NewName,
-                    declaration.IdentifierName);
+                    declaration);
                 var rename = _messageBox.Show(message, RubberduckUI.RenameDialog_Caption, MessageBoxButtons.YesNo,
                     MessageBoxIcon.Exclamation);
 

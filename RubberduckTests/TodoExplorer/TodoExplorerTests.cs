@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Linq;
 using System.Threading;
@@ -7,8 +7,6 @@ using Rubberduck.Settings;
 using Rubberduck.UI.ToDoItems;
 using RubberduckTests.Mocks;
 using Rubberduck.Common;
-using Rubberduck.VBEditor.Application;
-using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace RubberduckTests.TodoExplorer
@@ -30,8 +28,6 @@ namespace RubberduckTests.TodoExplorer
                 .AddComponent("Module1", ComponentType.StandardModule, content);
 
             var vbe = builder.AddProject(project.Build()).Build();
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             var vm = new ToDoExplorerViewModel(parser.State, GetConfigService(), GetOperatingSystemMock().Object);
@@ -59,8 +55,6 @@ namespace RubberduckTests.TodoExplorer
                 .AddComponent("Module1", ComponentType.StandardModule, content);
 
             var vbe = builder.AddProject(project.Build()).Build();
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             var vm = new ToDoExplorerViewModel(parser.State, GetConfigService(), GetOperatingSystemMock().Object);
@@ -88,8 +82,6 @@ namespace RubberduckTests.TodoExplorer
                 .Build();
 
             var vbe = builder.AddProject(project).Build();
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             var vm = new ToDoExplorerViewModel(parser.State, GetConfigService(), GetOperatingSystemMock().Object);

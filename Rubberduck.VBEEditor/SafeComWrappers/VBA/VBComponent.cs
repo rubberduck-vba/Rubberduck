@@ -196,17 +196,17 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             Export(path);
             return path;
         }
-        public override void Release(bool final = false)
-        {
-            if (!IsWrappingNullReference)
-            {
-                DesignerWindow().Release();
-                Controls.Release();
-                Properties.Release();
-                CodeModule.Release();
-                base.Release(final);
-            }
-        }
+        //public override void Release(bool final = false)
+        //{
+        //    if (!IsWrappingNullReference)
+        //    {
+        //        DesignerWindow().Release();
+        //        Controls.Release();
+        //        Properties.Release();
+        //        CodeModule.Release();
+        //        base.Release(final);
+        //    }
+        //}
 
         public override bool Equals(ISafeComWrapper<VB.VBComponent> other)
         {

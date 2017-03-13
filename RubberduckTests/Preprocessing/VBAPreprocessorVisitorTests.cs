@@ -1,4 +1,4 @@
-﻿using Antlr4.Runtime;
+using Antlr4.Runtime;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Preprocessing;

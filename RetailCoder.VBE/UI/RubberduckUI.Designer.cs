@@ -1987,7 +1987,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Entire project.
+        ///   Looks up a localized string similar to Current Project.
         /// </summary>
         public static string IndentCurrentProject {
             get {
@@ -2653,6 +2653,15 @@ namespace Rubberduck.UI {
         public static string Passed {
             get {
                 return ResourceManager.GetString("Passed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preview.
+        /// </summary>
+        public static string Preview {
+            get {
+                return ResourceManager.GetString("Preview", resourceCulture);
             }
         }
         

@@ -95,18 +95,18 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                 : ((IEnumerable<IVBComponent>)this).GetEnumerator();
         }
 
-        public override void Release(bool final = false)
-        {
-            if (!IsWrappingNullReference)
-            {
-                DetatchEvents();
-                for (var i = 1; i <= Count; i++)
-                {
-                    this[i].Release();
-                }
-                base.Release(final);
-            }
-        }
+        //public override void Release(bool final = false)
+        //{
+        //    if (!IsWrappingNullReference)
+        //    {
+        //        DetatchEvents();
+        //        for (var i = 1; i <= Count; i++)
+        //        {
+        //            this[i].Release();
+        //        }
+        //        base.Release(final);
+        //    }
+        //}
 
         public override bool Equals(ISafeComWrapper<VB.VBComponents> other)
         {

@@ -94,71 +94,15 @@ namespace Rubberduck.Inspections.QuickFixes
             foreach (var identifierReference in _target.References)
             {
                 rewriter.Replace(identifierReference, localIdentifier);
-            }
+        }
         }
 
         private void InsertLocalVariableDeclarationAndAssignment(IModuleRewriter rewriter, string localIdentifier)
-        { 
+        {
             var content = Tokens.Dim + " " + localIdentifier + " " + Tokens.As + " " + _target.AsTypeName + Environment.NewLine
                 + (_target.AsTypeDeclaration is ClassModuleDeclaration ? Tokens.Set + " " : string.Empty)
                 + localIdentifier + " = " + _target.IdentifierName;
             rewriter.Insert(content, ((VBAParser.ArgListContext)_target.Context.Parent).Stop.Line + 1);
-        }
-
-        private IEnumerable<string> GetIdentifierNamesAccessibleToProcedureContext()
-        {
-            return _parserState.AllUserDeclarations
-                .Where(candidateDeclaration => 
-                (
-                        IsDeclarationInTheSameProcedure(candidateDeclaration, _target)
-                    ||  IsDeclarationInTheSameModule(candidateDeclaration, _target)
-                    ||  IsProjectGlobalDeclaration(candidateDeclaration, _target))
-                 ).Select(declaration => declaration.IdentifierName).Distinct();
-        }
-
-        private bool IsDeclarationInTheSameProcedure(Declaration candidateDeclaration, Declaration scopingDeclaration)
-        {
-            return candidateDeclaration.ParentScope == scopingDeclaration.ParentScope;
-        }
-
-        private bool IsDeclarationInTheSameModule(Declaration candidateDeclaration, Declaration scopingDeclaration)
-        {
-            return candidateDeclaration.ComponentName == scopingDeclaration.ComponentName
-                    && !IsDeclaredInMethodOrProperty(candidateDeclaration.ParentDeclaration.Context);
-        }
-
-        private bool IsProjectGlobalDeclaration(Declaration candidateDeclaration, Declaration scopingDeclaration)
-        {
-            return candidateDeclaration.ProjectName == scopingDeclaration.ProjectName
-                && !(candidateDeclaration.ParentScopeDeclaration is ClassModuleDeclaration)
-                && (candidateDeclaration.Accessibility == Accessibility.Public
-                    || ((candidateDeclaration.Accessibility == Accessibility.Implicit)
-                        && (candidateDeclaration.ParentScopeDeclaration is ProceduralModuleDeclaration)));
-        }
-
-        private bool IsDeclaredInMethodOrProperty(RuleContext procedureContext)
-        {
-            if (procedureContext is VBAParser.SubStmtContext)
-            {
-                return true;
-            }
-            else if (procedureContext is VBAParser.FunctionStmtContext)
-            {
-                return true;
-            }
-            else if (procedureContext is VBAParser.PropertyLetStmtContext)
-            {
-                return true;
-            }
-            else if (procedureContext is VBAParser.PropertyGetStmtContext)
-            {
-                return true;
-            }
-            else if (procedureContext is VBAParser.PropertySetStmtContext)
-            {
-                return true;
-            }
-            return false;
         }
     }
 }

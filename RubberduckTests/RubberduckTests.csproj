@@ -97,12 +97,14 @@
     <Compile Include="Inspections\IgnoreOnceQuickFixTests.cs" />
     <Compile Include="Inspections\ImplicitActiveWorkbookReferenceInspectionTests.cs" />
     <Compile Include="Inspections\MemberNotOnInterfaceInspectionTests.cs" />
+    <Compile Include="Inspections\OptionBaseZeroInspectionTests.cs" />
     <Compile Include="Inspections\PassParameterByReferenceQuickFixTests.cs" />
     <Compile Include="Inspections\UndeclaredVariableInspectionTests.cs" />
     <Compile Include="PostProcessing\ModuleRewriterTests.cs" />
     <Compile Include="SmartIndenter\VerticalSpacingTests.cs" />
     <Compile Include="Symbols\AccessibilityCheckTests.cs" />
     <Compile Include="Symbols\ClassModuleDeclarationTests.cs" />
+    <Compile Include="Symbols\DeclarationFinderTests.cs" />
     <Compile Include="Symbols\ProjectDeclarationTests.cs" />
     <Compile Include="Symbols\ConstantDeclarationTests.cs" />
     <Compile Include="Symbols\ProceduralModuleDeclarationTests.cs" />
@@ -204,13 +206,11 @@
     <Compile Include="SourceControl\UnsyncedCommitsViewModelTests.cs" />
     <Compile Include="StringExtensionsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Symbols\DeclarationFinderTests.cs" />
     <Compile Include="TodoExplorer\TodoExplorerTests.cs" />
     <Compile Include="UnitTesting\AssertTests.cs" />
     <Compile Include="UnitTesting\EngineTests.cs" />
     <Compile Include="UnitTesting\DiscoveryTests.cs" />
     <Compile Include="UnitTesting\ViewModelTests.cs" />
-    <Compile Include="VbeTestBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="NLog.dll.nlog">

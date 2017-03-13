@@ -7,8 +7,11 @@ namespace Rubberduck.SmartIndenter
     [XmlType(AnonymousType = true)]
     public class IndenterSettings : IIndenterSettings, IEquatable<IndenterSettings>
     {
-        public const int MinimumVerticalSpacing = 0;
-        public const int MaximumVerticalSpacing = 2;
+        // These have to be int to allow the settings UI to bind them.
+        public const int MaximumAlignDimColumn = 100;
+        public const int MaximumEndOfLineCommentColumnSpaceAlignment = 100;
+        public const int MaximumIndentSpaces = 32;
+        public const int MaximumVerticalSpacing = 2;     
 
         public virtual bool IndentEntireProcedureBody { get; set; }
         public virtual bool IndentFirstCommentBlock { get; set; }
@@ -22,31 +25,45 @@ namespace Rubberduck.SmartIndenter
         public virtual bool ForceCompilerDirectivesInColumn1 { get; set; }
         public virtual bool IndentCompilerDirectives { get; set; }
         public virtual bool AlignDims { get; set; }
-        public virtual int AlignDimColumn { get; set; }
+
+        private int _dimAlignment;
+        public virtual int AlignDimColumn
+        {
+            get { return _dimAlignment; }
+            set
+            {
+                _dimAlignment = value > MaximumAlignDimColumn ? MaximumAlignDimColumn : Math.Max(value, 0);
+            }
+        }
+
         public virtual EndOfLineCommentStyle EndOfLineCommentStyle { get; set; }
-        public virtual int EndOfLineCommentColumnSpaceAlignment { get; set; }
-        public virtual int IndentSpaces { get; set; }
+
+        private int _commentAlignment;
+        public virtual int EndOfLineCommentColumnSpaceAlignment
+        {
+            get { return _commentAlignment; }
+            set
+            {
+                _commentAlignment = value > MaximumEndOfLineCommentColumnSpaceAlignment
+                    ? MaximumEndOfLineCommentColumnSpaceAlignment
+                    : value;
+            }
+        }
+
+        private int _indentSpaces;
+        public virtual int IndentSpaces
+        {
+            get { return _indentSpaces; }
+            set { _indentSpaces = value > MaximumIndentSpaces ? MaximumIndentSpaces : Math.Max(value, 0); }
+        }
+
         public virtual bool VerticallySpaceProcedures { get; set; }
 
         private int _procedureSpacing;
         public virtual int LinesBetweenProcedures
         {
             get { return _procedureSpacing; }
-            set
-            {
-                if (value < MinimumVerticalSpacing)
-                {
-                    _procedureSpacing = MinimumVerticalSpacing;
-                }
-                else if (value > MaximumVerticalSpacing)
-                {
-                    _procedureSpacing = MaximumVerticalSpacing;
-                }
-                else
-                {
-                    _procedureSpacing = value;
-                }
-            }
+            set { _procedureSpacing = value > MaximumVerticalSpacing ? MaximumVerticalSpacing : Math.Max(value, 0); }
         }
 
         public IndenterSettings()
@@ -120,8 +137,7 @@ namespace Rubberduck.SmartIndenter
             catch 
             {
                 return false;
-            }
-            
+            }           
         }
 
         public void LoadLegacyFromRegistry()
@@ -135,15 +151,13 @@ namespace Rubberduck.SmartIndenter
                 IndentFirstDeclarationBlock = GetSmartIndenterBoolean(reg, "IndentDim", IndentFirstDeclarationBlock);
                 AlignCommentsWithCode = GetSmartIndenterBoolean(reg, "IndentCmt", AlignCommentsWithCode);
                 AlignContinuations = GetSmartIndenterBoolean(reg, "AlignContinued", AlignContinuations);
-                IgnoreOperatorsInContinuations = GetSmartIndenterBoolean(reg, "AlignIgnoreOps",
-                    IgnoreOperatorsInContinuations);
+                IgnoreOperatorsInContinuations = GetSmartIndenterBoolean(reg, "AlignIgnoreOps", IgnoreOperatorsInContinuations);
                 IndentCase = GetSmartIndenterBoolean(reg, "IndentCase", IndentCase);
                 ForceDebugStatementsInColumn1 = GetSmartIndenterBoolean(reg, "DebugCol1", ForceDebugStatementsInColumn1);
-                ForceCompilerDirectivesInColumn1 = GetSmartIndenterBoolean(reg, "CompilerCol1",
-                    ForceCompilerDirectivesInColumn1);
+                ForceCompilerDirectivesInColumn1 = GetSmartIndenterBoolean(reg, "CompilerCol1", ForceCompilerDirectivesInColumn1);
                 IndentCompilerDirectives = GetSmartIndenterBoolean(reg, "IndentCompiler", IndentCompilerDirectives);
                 AlignDims = GetSmartIndenterBoolean(reg, "AlignDim", AlignDims);
-                AlignDimColumn = Convert.ToInt32(reg.GetValue("AlignDimCol") ?? AlignDimColumn);
+                AlignDimColumn = GetSmartIndenterNumeric(reg, "AlignDimCol", AlignDimColumn, MaximumAlignDimColumn);
 
                 var eolSytle = reg.GetValue("EOLComments") as string;
                 if (!string.IsNullOrEmpty(eolSytle))
@@ -164,8 +178,8 @@ namespace Rubberduck.SmartIndenter
                             break;
                     }
                 }
-                EndOfLineCommentColumnSpaceAlignment =
-                    Convert.ToInt32(reg.GetValue("EOLAlignCol") ?? EndOfLineCommentColumnSpaceAlignment);
+                EndOfLineCommentColumnSpaceAlignment = GetSmartIndenterNumeric(reg, "EOLAlignCol",
+                    EndOfLineCommentColumnSpaceAlignment, MaximumEndOfLineCommentColumnSpaceAlignment);
             }
             // ReSharper disable once EmptyGeneralCatchClause
             catch { }
@@ -175,6 +189,18 @@ namespace Rubberduck.SmartIndenter
         {
             var value = key.GetValue(name) as string;
             return string.IsNullOrEmpty(value) ? current : value.Trim().Equals("Y");
+        }
+
+        private static int GetSmartIndenterNumeric(RegistryKey key, string name, int current, int max)
+        {
+            try
+            {
+                var value = (int)key.GetValue(name);
+                return value < 0 ? current : Math.Min(value, max);
+            }
+            // ReSharper disable once EmptyGeneralCatchClause
+            catch { }
+            return current;
         }
     }
 }

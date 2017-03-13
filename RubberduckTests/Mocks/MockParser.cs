@@ -13,26 +13,23 @@ using Rubberduck.Parsing.Preprocessing;
 using System.Globalization;
 using System.Reflection;
 using System.Threading;
-using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Mocks
 {
     public static class MockParser
     {
-        public static void ParseString(string inputCode, out QualifiedModuleName qualifiedModuleName, out RubberduckParserState state)
+        public static RubberduckParserState ParseString(string inputCode, out QualifiedModuleName qualifiedModuleName)
         {
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             qualifiedModuleName = new QualifiedModuleName(component);
             var parser = Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-            state = parser.State;
+            return parser.State;
 
         }
 
@@ -58,6 +55,15 @@ namespace RubberduckTests.Mocks
                     new FormEventDeclarations(state), 
                     new AliasDeclarations(state),
                 }, true, path);
+        }
+
+        public static RubberduckParserState CreateAndParse(IVBE vbe, string serializedDeclarationsPath = null)
+        {
+            var parser = Create(vbe, new RubberduckParserState(vbe));
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            return parser.State;
         }
 
         private static readonly HashSet<DeclarationType> ProceduralTypes =
