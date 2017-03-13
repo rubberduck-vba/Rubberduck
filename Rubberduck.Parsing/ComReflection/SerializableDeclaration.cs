@@ -233,6 +233,8 @@ namespace Rubberduck.Parsing.ComReflection
                     return new SubroutineDeclaration(QualifiedMemberName, parent, parent, AsTypeName, Accessibility, null, Selection.Empty, true, annotations, attributes);
                 case DeclarationType.Function:
                     return new FunctionDeclaration(QualifiedMemberName, parent, parent, AsTypeName, null, TypeHint, Accessibility, null, Selection.Empty, IsArray, true, annotations, attributes);
+                case DeclarationType.Event:
+                    return new EventDeclaration(QualifiedMemberName, parent, parent, AsTypeName, null, TypeHint, Accessibility, null, Selection.Empty, IsArray, true, annotations, attributes);
                 case DeclarationType.PropertyGet:
                     return new PropertyGetDeclaration(QualifiedMemberName, parent, parent, AsTypeName, null, TypeHint, Accessibility, null, Selection.Empty, IsArray, true, annotations, attributes);
                 case DeclarationType.PropertyLet:

@@ -1,0 +1,217 @@
+﻿<UserControl x:Class="Rubberduck.UI.Refactorings.ReorderParameters.ReorderParametersView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
+             xmlns:reorderParameters="clr-namespace:Rubberduck.UI.Refactorings.ReorderParameters"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <reorderParameters:IndexIsNotZeroConverter x:Key="IndexIsNotZero" />
+        <reorderParameters:IndexIsNotLastConverter x:Key="IndexIsNotLast" />
+
+        <Style x:Key="FocusVisual">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Margin="2" SnapsToDevicePixels="true" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <SolidColorBrush x:Key="Item.MouseOver.Background" Color="#1F26A0DA"/>
+        <SolidColorBrush x:Key="Item.MouseOver.Border" Color="#a826A0Da"/>
+        <LinearGradientBrush x:Key="Item.SelectedInactive.Background" EndPoint="0,1" StartPoint="0,0">
+            <GradientStop Color="#FFEEEDED" Offset="0"/>
+            <GradientStop Color="#FFDDDDDD" Offset="1"/>
+        </LinearGradientBrush>
+        <SolidColorBrush x:Key="Item.SelectedInactive.Border" Color="LightGray"/>
+        <LinearGradientBrush x:Key="Item.SelectedActive.Background" EndPoint="0,1" StartPoint="0,0">
+            <GradientStop Color="#FFD9F4FF" Offset="0"/>
+            <GradientStop Color="#FF9BDDFB" Offset="1"/>
+        </LinearGradientBrush>
+        <SolidColorBrush x:Key="Item.SelectedActive.Border" Color="#ADC6E5"/>
+        <Style x:Key="PrettyListBoxItem" TargetType="{x:Type ListBoxItem}">
+            <Style.Resources>
+                <Style TargetType="{x:Type Border}">
+                    <Setter Property="CornerRadius" Value="2"/>
+                </Style>
+            </Style.Resources>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="Padding" Value="4,1"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Black"/>
+            <Setter Property="BorderThickness" Value="0,.5,0,0"/>
+            <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
+            <Setter Property="Height" Value="26" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                        <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsMouseOver" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.MouseOver.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.MouseOver.Border}"/>
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="Selector.IsSelectionActive" Value="False"/>
+                                    <Condition Property="IsSelected" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="BorderThickness" Value="1.5" />
+                                <Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Border}"/>
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="Selector.IsSelectionActive" Value="True"/>
+                                    <Condition Property="IsSelected" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="BorderThickness" Value="1.5" />
+                                <Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Border}"/>
+                            </MultiTrigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="TextElement.Foreground" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="40" />
+        </Grid.RowDefinitions>
+        <StackPanel Background="White">
+            <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ReorderParamsDialog_TitleText}" FontWeight="Bold" />
+            <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ReorderParamsDialog_InstructionsLabelText}"
+                       Margin="5,0" />
+        </StackPanel>
+        <Grid Grid.Row="1" Grid.IsSharedSizeScope="True">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            <ListBox Margin="5,5,0,5"
+                     ItemsSource="{Binding Parameters, UpdateSourceTrigger=PropertyChanged}"
+                     SelectedIndex="0"
+                     Name="ParameterGrid"
+                     AllowDrop="True"
+                     ItemContainerStyle="{StaticResource PrettyListBoxItem}"
+                     Drop="ParameterGrid_Drop"
+                     DragEnter="ParameterGrid_DragEnter"
+                     PreviewMouseMove="ParameterGrid_PreviewMouseMove"
+                     PreviewMouseLeftButtonDown="ParameterGrid_PreviewMouseLeftButtonDown"
+                     AlternationCount="2">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name}" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <Grid HorizontalAlignment="Right"
+                  Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                <Button Grid.Row="0"
+                        Height="20"
+                        Margin="5,5,5,0"
+                        Padding="5,0"
+                        HorizontalContentAlignment="Left"
+                        IsEnabled="{Binding ElementName=ParameterGrid, Path=SelectedIndex, Converter={StaticResource IndexIsNotZero}}"
+                        Command="{Binding MoveParameterUpCommand}"
+                        CommandParameter="{Binding ElementName=ParameterGrid, Path=SelectedItem}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Height="10" Source="../../../Resources/arrow-090.png" Margin="0,0,5,0" />
+                        <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ReorderParamsDialog_MoveUpButtonText}" />
+                    </StackPanel>
+                </Button>
+                <Button Grid.Row="1"
+                        Height="20"
+                        Margin="5,5,5,0"
+                        Padding="5,0"
+                        HorizontalContentAlignment="Left"
+                        Command="{Binding MoveParameterDownCommand}"
+                        CommandParameter="{Binding ElementName=ParameterGrid, Path=SelectedItem}">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="IsEnabled">
+                                <Setter.Value>
+                                    <MultiBinding Converter="{StaticResource IndexIsNotLast}">
+                                        <Binding ElementName="ParameterGrid" Path="SelectedIndex" />
+                                        <Binding Path="Parameters.Count" />
+                                    </MultiBinding>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Height="10" Source="../../../Resources/arrow-270.png" Margin="0,0,5,0" />
+                        <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ReorderParamsDialog_MoveDownButtonText}" />
+                    </StackPanel>
+                </Button>
+            </Grid>
+
+            <Expander Grid.Row="1"
+                      Grid.ColumnSpan="2"
+                      IsExpanded="True"
+                      Background="#FFFFFFFF"
+                      BorderBrush="#FFA9A9A9"
+                      Margin="5,0,5,5">
+                <Expander.Header>
+                    <Label FontWeight="SemiBold">
+                        <Resx ResxName="Rubberduck.UI.RubberduckUI" Key="Preview"/>
+                    </Label>
+                </Expander.Header>
+                <controls:BindableTextEditor Margin="10,10,10,10"
+                                             FontFamily="Courier New "
+                                             ShowLineNumbers="False"
+                                             HorizontalScrollBarVisibility="Auto"
+                                             VerticalScrollBarVisibility="Disabled"
+                                             IsReadOnly="True"
+                                             Text="{Binding SignaturePreview,Mode=OneWay}"/>
+            </Expander>
+        </Grid>
+        <Grid Grid.Row="2" Background="{x:Static SystemColors.ControlDarkBrush}" Grid.IsSharedSizeScope="True">
+            <Grid HorizontalAlignment="Right"
+                      Margin="5,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition SharedSizeGroup="SettingsButtons" />
+                    <ColumnDefinition SharedSizeGroup="SettingsButtons" />
+                </Grid.ColumnDefinitions>
+                <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=OK}"
+                        Grid.Column="0"
+                        Height="20"
+                        Margin="5,0"
+                        Padding="10,0"
+                        Command="{Binding OkButtonCommand}" />
+                <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CancelButtonText}"
+                        Grid.Column="1"
+                        Height="20"
+                        Margin="5,0"
+                        Padding="10,0"
+                        Command="{Binding CancelButtonCommand}">
+                </Button>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

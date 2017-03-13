@@ -7,7 +7,6 @@ using Moq;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Navigation.Folders;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Refactorings.Rename;
 using Rubberduck.Settings;
 using Rubberduck.SmartIndenter;
 using Rubberduck.UI;
@@ -896,56 +895,6 @@ End Sub";
 
             vm.SelectedItem = vm.Projects.First().Items.First();
             Assert.IsFalse(vm.IndenterCommand.CanExecute(vm.SelectedItem));
-        }
-
-        [TestCategory("Code Explorer")]
-        [TestMethod]
-        public void RenameProcedure()
-        {
-            var inputCode =
-@"Sub Foo()
-End Sub
-
-Sub Bar()
-    Foo
-End Sub";
-
-            var expectedCode =
-@"Sub Fizz()
-End Sub
-
-Sub Bar()
-    Fizz
-End Sub";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-
-            var view = new Mock<IRenameDialog>();
-            view.Setup(r => r.ShowDialog()).Returns(DialogResult.OK);
-            view.Setup(r => r.Target);
-            view.SetupGet(r => r.NewName).Returns("Fizz");
-
-            var msgbox = new Mock<IMessageBox>();
-            msgbox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.YesNo, It.IsAny<MessageBoxIcon>()))
-                  .Returns(DialogResult.Yes);
-
-            var state = new RubberduckParserState(vbe.Object);
-            var commands = new List<CommandBase>
-            {
-                new RenameCommand(vbe.Object, state, view.Object, msgbox.Object)
-            };
-
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands);
-
-            var parser = MockParser.Create(vbe.Object, state);
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            vm.SelectedItem = vm.Projects.First().Items.First().Items.First().Items.OfType<CodeExplorerMemberViewModel>().Single(item => item.Declaration.IdentifierName == "Foo");
-            vm.RenameCommand.Execute(vm.SelectedItem);
-
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestCategory("Code Explorer")]

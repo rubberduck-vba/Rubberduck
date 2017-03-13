@@ -4,7 +4,7 @@ using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ReorderParameters;
-using Rubberduck.UI.Refactorings;
+using Rubberduck.UI.Refactorings.ReorderParameters;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -69,7 +69,7 @@ namespace Rubberduck.UI.Command.Refactorings
                 }
                 var selection = new QualifiedSelection(new QualifiedModuleName(module.Parent), pane.Selection);
 
-                using (var view = new ReorderParametersDialog())
+                using (var view = new ReorderParametersDialog(new ReorderParametersViewModel(_state)))
                 {
                     var factory = new ReorderParametersPresenterFactory(Vbe, view, _state, _msgbox);
                     var refactoring = new ReorderParametersRefactoring(Vbe, factory, _msgbox);
