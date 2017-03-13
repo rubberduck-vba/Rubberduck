@@ -194,6 +194,123 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to expected has {0} dimensions; actual has {1} dimensions. {2}.
+        /// </summary>
+        public static string Assert_DimensionMismatchFormat {
+            get {
+                return ResourceManager.GetString("Assert_DimensionMismatchFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} assertion failed. {1}.
+        /// </summary>
+        public static string Assert_FailedMessageFormat {
+            get {
+                return ResourceManager.GetString("Assert_FailedMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dimension {0}: expected has an LBound of {1}; actual has an LBound of {2}. {3}.
+        /// </summary>
+        public static string Assert_LBoundMismatchFormat {
+            get {
+                return ResourceManager.GetString("Assert_LBoundMismatchFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [expected] and [actual] values are not the same type..
+        /// </summary>
+        public static string Assert_MismatchedTypes {
+            get {
+                return ResourceManager.GetString("Assert_MismatchedTypes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;Neither [expected] and [actual] is an array.&quot;.
+        /// </summary>
+        public static string Assert_NeitherParameterIsArray {
+            get {
+                return ResourceManager.GetString("Assert_NeitherParameterIsArray", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} is not an array..
+        /// </summary>
+        public static string Assert_ParameterIsNotArrayFormat {
+            get {
+                return ResourceManager.GetString("Assert_ParameterIsNotArrayFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [expected] is a reference type and [actual] is a value type..
+        /// </summary>
+        public static string Assert_ReferenceValueMismatch {
+            get {
+                return ResourceManager.GetString("Assert_ReferenceValueMismatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dimension {0}: expected has a UBound of {1}; actual has a UBound of {2}. {3}.
+        /// </summary>
+        public static string Assert_UBoundMismatchFormat {
+            get {
+                return ResourceManager.GetString("Assert_UBoundMismatchFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [expected] and [actual] are arrays. Consider using {0}..
+        /// </summary>
+        public static string Assert_UnexpectedArrayFormat {
+            get {
+                return ResourceManager.GetString("Assert_UnexpectedArrayFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [expected] and [actual] are Nothing. Consider using {0}..
+        /// </summary>
+        public static string Assert_UnexpectedNullArraysFormat {
+            get {
+                return ResourceManager.GetString("Assert_UnexpectedNullArraysFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [expected] and [actual] are reference types. Consider using {0}..
+        /// </summary>
+        public static string Assert_UnexpectedReferenceComparisonFormat {
+            get {
+                return ResourceManager.GetString("Assert_UnexpectedReferenceComparisonFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [expected] and [actual] are value types. Consider using {0}..
+        /// </summary>
+        public static string Assert_UnexpectedValueComparisonFormat {
+            get {
+                return ResourceManager.GetString("Assert_UnexpectedValueComparisonFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [expected] is a value type and [actual] is a reference type..
+        /// </summary>
+        public static string Assert_ValueReferenceMismatch {
+            get {
+                return ResourceManager.GetString("Assert_ValueReferenceMismatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Variable names must begin with a letter..
         /// </summary>
         public static string AssignedByValDialog_DoesNotStartWithLetter {

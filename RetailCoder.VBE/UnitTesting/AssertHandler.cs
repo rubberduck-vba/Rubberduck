@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
+using Rubberduck.UI;
 
 namespace Rubberduck.UnitTesting
 {
@@ -15,13 +17,15 @@ namespace Rubberduck.UnitTesting
             }
         }
 
-        public static void OnAssertFailed(string methodName, string message)
+        public static void OnAssertFailed(string message, [CallerMemberName] string methodName = "")
         {
             var handler = OnAssertCompleted;
             if (handler != null)
             {
-                handler(null, new AssertCompletedEventArgs(TestOutcome.Failed,
-                                methodName + " assertion failed." + (string.IsNullOrEmpty(message) ? string.Empty : " " + message)));
+                handler(null,
+                    new AssertCompletedEventArgs(TestOutcome.Failed,
+                        string.Format(RubberduckUI.Assert_FailedMessageFormat, methodName, message).Trim()));
+                                
             }
         }
 
