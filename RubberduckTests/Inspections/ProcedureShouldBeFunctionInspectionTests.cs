@@ -5,14 +5,10 @@ using Rubberduck.Inspections;
 using RubberduckTests.Mocks;
 using Rubberduck.Settings;
 using System.Threading;
-using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete.Rubberduck.Inspections;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.VBEditor.Application;
-using Rubberduck.VBEditor.Events;
-using Rubberduck.Inspections.Resources;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 

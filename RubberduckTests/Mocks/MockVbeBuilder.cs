@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Vbe.Interop;
 using Moq;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;

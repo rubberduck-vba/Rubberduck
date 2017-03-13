@@ -7,7 +7,6 @@ using Rubberduck.Parsing.Symbols;
 using System.Windows.Forms;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.Common;
-using Antlr4.Runtime;
 using System.Collections.Generic;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.PostProcessing;
@@ -28,7 +27,7 @@ namespace Rubberduck.Inspections.QuickFixes
             _target = target;
             _dialogFactory = dialogFactory;
             _parserState = parserState;
-            _forbiddenNames = GetIdentifierNamesAccessibleToProcedureContext();
+            _forbiddenNames = parserState.DeclarationFinder.GetDeclarationsWithIdentifiersToAvoid(target).Select(n => n.IdentifierName);
         }
 
         public override bool CanFixInModule { get { return false; } }

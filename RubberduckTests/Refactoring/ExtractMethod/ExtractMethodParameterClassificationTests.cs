@@ -3,7 +3,6 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.VBEditor;
 using RubberduckTests.Mocks;

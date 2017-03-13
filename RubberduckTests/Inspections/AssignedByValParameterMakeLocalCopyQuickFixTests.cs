@@ -9,7 +9,6 @@ using RubberduckTests.Mocks;
 using Rubberduck.UI.Refactorings;
 using System.Windows.Forms;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace RubberduckTests.Inspections
 {

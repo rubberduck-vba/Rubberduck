@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Vbe.Interop;
 using Moq;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
