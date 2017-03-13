@@ -1,4 +1,3 @@
-﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;

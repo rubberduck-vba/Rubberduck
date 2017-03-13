@@ -29,6 +29,8 @@ namespace Rubberduck.Inspections
             Tokens.Chr,
             Tokens.ChrW,
             Tokens.Format,
+            Tokens.Input,
+            Tokens.InputB,
             Tokens.LCase,
             Tokens.Left,
             Tokens.LeftB,

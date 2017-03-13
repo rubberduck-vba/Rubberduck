@@ -1,4 +1,4 @@
-﻿using Antlr4.Runtime;
+using Antlr4.Runtime;
 using Antlr4.Runtime.Atn;
 using Antlr4.Runtime.Tree;
 using Antlr4.Runtime.Tree.Xpath;
@@ -1631,7 +1631,6 @@ End Type
         [TestMethod]
         public void TestNestedParensForLiteralExpression()
         {
-            //Assert.Inconclusive("See issue #2206");
             const string code = @"
 Sub Test()
     Dim foo As Integer
@@ -1646,7 +1645,6 @@ End Sub
         [TestMethod]
         public void TestParensForByValSingleArg()
         {
-            //Assert.Inconclusive("See issue #2206");
             const string code = @"
 Sub Test()
     DoSomething (foo)
@@ -1660,7 +1658,6 @@ End Sub
         [TestMethod]
         public void TestParensForByValFirstArg()
         {
-            //Assert.Inconclusive("See issue #2206");
             const string code = @"
 Sub Test()
     DoSomething (foo), bar

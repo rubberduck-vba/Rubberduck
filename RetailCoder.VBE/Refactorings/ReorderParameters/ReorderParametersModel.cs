@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.Common;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
@@ -12,11 +11,8 @@ namespace Rubberduck.Refactorings.ReorderParameters
 {
     public class ReorderParametersModel
     {
-        private readonly RubberduckParserState _state;
-        public RubberduckParserState State { get { return _state; } }
-
-        private readonly IEnumerable<Declaration> _declarations;
-        public IEnumerable<Declaration> Declarations { get { return _declarations; } }
+        public RubberduckParserState State { get; }
+        public IEnumerable<Declaration> Declarations { get; }
 
         public Declaration TargetDeclaration { get; private set; }
         public List<Parameter> Parameters { get; set; }
@@ -25,8 +21,8 @@ namespace Rubberduck.Refactorings.ReorderParameters
             
         public ReorderParametersModel(RubberduckParserState state, QualifiedSelection selection, IMessageBox messageBox)
         {
-            _state = state;
-            _declarations = state.AllUserDeclarations;
+            State = state;
+            Declarations = state.AllUserDeclarations;
             _messageBox = messageBox;
 
             AcquireTarget(selection);
@@ -47,14 +43,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
         {
             if (TargetDeclaration == null) { return; }
 
-            Parameters.Clear();
-
-            var procedure = (dynamic)TargetDeclaration.Context;
-            var argList = (VBAParser.ArgListContext)procedure.argList();
-            var args = argList.arg();
-
-            var index = 0;
-            Parameters = args.Select(arg => new Parameter(arg.GetText().RemoveExtraSpacesLeavingIndentation(), index++)).ToList();
+            Parameters = ((IParameterizedDeclaration) TargetDeclaration).Parameters.Select((s, i) => new Parameter((ParameterDeclaration)s, i)).ToList();
 
             if (TargetDeclaration.DeclarationType == DeclarationType.PropertyLet ||
                 TargetDeclaration.DeclarationType == DeclarationType.PropertySet)
@@ -114,7 +103,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
                 return TargetDeclaration;
             }
 
-            var getter = _declarations.FirstOrDefault(item => item.Scope == TargetDeclaration.Scope &&
+            var getter = Declarations.FirstOrDefault(item => item.Scope == TargetDeclaration.Scope &&
                                           item.IdentifierName == TargetDeclaration.IdentifierName &&
                                           item.DeclarationType == DeclarationType.PropertyGet);
 

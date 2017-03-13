@@ -125,8 +125,8 @@ namespace Rubberduck.Parsing.Binding
                     empty, and one of the following is true (see below):
              */
             bool isVariable = lExpression.Classification == ExpressionClassification.Variable;
-            bool propertyWithParameters = lExpression.Classification == ExpressionClassification.Property && !((IDeclarationWithParameter)lExpression.ReferencedDeclaration).Parameters.Any();
-            bool functionWithParameters = lExpression.Classification == ExpressionClassification.Function && !((IDeclarationWithParameter)lExpression.ReferencedDeclaration).Parameters.Any();
+            bool propertyWithParameters = lExpression.Classification == ExpressionClassification.Property && !((IParameterizedDeclaration)lExpression.ReferencedDeclaration).Parameters.Any();
+            bool functionWithParameters = lExpression.Classification == ExpressionClassification.Function && !((IParameterizedDeclaration)lExpression.ReferencedDeclaration).Parameters.Any();
             if (isVariable || ((propertyWithParameters || functionWithParameters) && _argumentList.HasArguments))
             {
                 IBoundExpression boundExpression = null;
@@ -195,7 +195,7 @@ namespace Rubberduck.Parsing.Binding
 
                         TODO: Primitive argument compatibility checking for now.
                      */
-                    if (((IDeclarationWithParameter)defaultMember).Parameters.Count() == _argumentList.Arguments.Count)
+                    if (((IParameterizedDeclaration)defaultMember).Parameters.Count() == _argumentList.Arguments.Count)
                     {
                         return new IndexExpression(defaultMember, lExpression.Classification, _expression, lExpression, _argumentList);
                     }
@@ -205,7 +205,7 @@ namespace Rubberduck.Parsing.Binding
                         recursively, as if this default member was specified instead for <l-expression> with the 
                         same <argument-list>.
                     */
-                    if (((IDeclarationWithParameter)defaultMember).Parameters.Count() == 0)
+                    if (((IParameterizedDeclaration)defaultMember).Parameters.Count() == 0)
                     {
                         // Recursion limit reached, abort.
                         if (DEFAULT_MEMBER_RECURSION_LIMIT == _defaultMemberRecursionLimitCounter)

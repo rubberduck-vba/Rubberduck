@@ -501,6 +501,7 @@ namespace Rubberduck.Root
             {
                 KernelInstance.Get<IndentCurrentProcedureCommandMenuItem>(),
                 KernelInstance.Get<IndentCurrentModuleCommandMenuItem>(),
+                KernelInstance.Get<IndentCurrentProjectCommandMenuItem>(),
                 KernelInstance.Get<NoIndentAnnotationCommandMenuItem>()
             };
 

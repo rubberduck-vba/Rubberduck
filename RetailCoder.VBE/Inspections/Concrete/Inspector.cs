@@ -127,6 +127,7 @@ namespace Rubberduck.Inspections.Concrete
                     var emptyStringLiteralListener = IsDisabled<EmptyStringLiteralInspection>(settings) ? null : new EmptyStringLiteralInspection.EmptyStringLiteralListener();
                     var argListWithOneByRefParamListener = IsDisabled<ProcedureCanBeWrittenAsFunctionInspection>(settings) ? null : new ProcedureCanBeWrittenAsFunctionInspection.SingleByRefParamArgListListener();
                     var invalidAnnotationListener = IsDisabled<MissingAnnotationArgumentInspection>(settings) ? null : new MissingAnnotationArgumentInspection.InvalidAnnotationStatementListener();
+                    var optionBaseZeroListener = IsDisabled<OptionBaseZeroInspection>(settings) ? null : new OptionBaseZeroInspection.OptionBaseStatementListener();
 
                     var combinedListener = new CombinedParseTreeListener(new IParseTreeListener[]{
                         obsoleteCallStatementListener,
@@ -134,7 +135,8 @@ namespace Rubberduck.Inspections.Concrete
                         obsoleteCommentSyntaxListener,
                         emptyStringLiteralListener,
                         argListWithOneByRefParamListener,
-                        invalidAnnotationListener
+                        invalidAnnotationListener,
+                        optionBaseZeroListener
                     });
 
                     ParseTreeWalker.Default.Walk(combinedListener, componentTreePair.Value);
@@ -162,6 +164,10 @@ namespace Rubberduck.Inspections.Concrete
                     if (invalidAnnotationListener != null)
                     {
                         result.AddRange(invalidAnnotationListener.Contexts.Select(context => new QualifiedContext<VBAParser.AnnotationContext>(componentTreePair.Key, context)));
+                    }
+                    if (optionBaseZeroListener != null)
+                    {
+                        result.AddRange(optionBaseZeroListener.Contexts.Select(context => new QualifiedContext<VBAParser.OptionBaseStmtContext>(componentTreePair.Key, context)));
                     }
                 }
                 return result;

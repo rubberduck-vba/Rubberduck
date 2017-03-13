@@ -1,17 +1,13 @@
 using System;
 using System.Linq;
-using System.Threading;
 using System.Windows.Forms;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.RemoveParameters;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.Application;
-using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
@@ -19,7 +15,7 @@ using RubberduckTests.Mocks;
 namespace RubberduckTests.Refactoring
 {
     [TestClass]
-    public class RemoveParametersTests : VbeTestBase
+    public class RemoveParametersTests
     {
         [TestMethod]
         public void RemoveParametersRefactoring_RemoveBothParams()
@@ -35,34 +31,23 @@ End Sub";
 @"Private Sub Foo()
 End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var project = vbe.Object.VBProjects[0];
-            var module = project.VBComponents[0].CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters.ForEach(arg => arg.IsRemoved = true);
 
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
-            Assert.AreEqual(expectedCode, module.Content());
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
@@ -79,33 +64,23 @@ End Sub";
 @"Private Sub Foo()
 End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var module = component.CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters.ForEach(arg => arg.IsRemoved = true);
 
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
-            Assert.AreEqual(expectedCode, module.Content());
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
@@ -122,33 +97,23 @@ End Sub";
 @"Private Sub Foo(ByVal arg2 As String)
 End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var module = component.CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[0].IsRemoved = true;
 
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
-            Assert.AreEqual(expectedCode, module.Content());
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
@@ -165,33 +130,23 @@ End Sub";
 @"Private Sub Foo(ByVal arg1 As Integer)
 End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var module = component.CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[1].IsRemoved = true;
 
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
-            Assert.AreEqual(expectedCode, module.Content());
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
@@ -218,33 +173,23 @@ Public Sub Goo()
 End Sub
 ";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var module = component.CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[2].IsRemoved = true;
 
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
-            Assert.AreEqual(expectedCode, module.Content());
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
@@ -271,33 +216,23 @@ Sub goo()
     foo asd, sdf
 End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var module = component.CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[2].IsRemoved = true;
 
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
-            Assert.AreEqual(expectedCode, module.Content());
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
@@ -314,33 +249,23 @@ End Function";
 @"Private Function Foo(ByVal arg1 As Integer) As Boolean
 End Function";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var module = component.CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[1].IsRemoved = true;
 
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
-            Assert.AreEqual(expectedCode, module.Content());
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
@@ -357,33 +282,23 @@ End Function";
 @"Private Function Foo() As Boolean
 End Function";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var module = component.CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters.ForEach(p => p.IsRemoved = true);
 
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
-            Assert.AreEqual(expectedCode, module.Content());
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
@@ -410,33 +325,23 @@ Private Sub Goo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub
 ";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var module = component.CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters.ForEach(p => p.IsRemoved = true);
 
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
-            Assert.AreEqual(expectedCode, module.Content());
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
@@ -461,23 +366,14 @@ Private Sub goo()
     foo 1, 2, 5, 7
 End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var project = vbe.Object.VBProjects[0];
-            var module = project.VBComponents[0].CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters.ElementAt(2).IsRemoved = true;
             model.Parameters.ElementAt(3).IsRemoved = true;
             model.Parameters.ElementAt(5).IsRemoved = true;
@@ -485,12 +381,10 @@ End Sub";
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
-            Assert.AreEqual(expectedCode, module.Content());
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
@@ -507,33 +401,23 @@ End Property";
 @"Private Property Get Foo() As Boolean
 End Property";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var module = component.CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters.ForEach(p => p.IsRemoved = true);
 
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
-            Assert.AreEqual(expectedCode, module.Content());
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
@@ -549,36 +433,26 @@ End Property";
 Private Property Set Foo(ByVal arg2 As String)
 End Property";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var module = component.CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var parameter = parser.State.AllUserDeclarations.SingleOrDefault(p => 
+            var parameter = state.AllUserDeclarations.SingleOrDefault(p => 
                 p.DeclarationType == DeclarationType.Parameter && p.IdentifierName == "arg1");
             if (parameter == null) { Assert.Inconclusive("Can't find 'arg1' parameter/target."); }
 
             var qualifiedSelection = parameter.QualifiedSelection;
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
 
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
-            refactoring.QuickFix(parser.State, qualifiedSelection);
+            refactoring.QuickFix(state, qualifiedSelection);
 
-            //Assert
-            Assert.AreEqual(expectedCode, module.Content());
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
@@ -595,33 +469,23 @@ End Property";
 @"Private Property Set Foo(ByVal arg2 As String)
 End Property";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var module = component.CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[0].IsRemoved = true;
 
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
-            Assert.AreEqual(expectedCode, module.Content());
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
@@ -648,33 +512,23 @@ Private Sub Bar()
 End Sub
 ";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var module = component.CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[0].IsRemoved = true;
 
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
-            Assert.AreEqual(expectedCode, module.Content());
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
@@ -709,33 +563,23 @@ Private Function foo(ByVal b As Integer) As Integer
     foo = a + b
 End Function";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var module = component.CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[0].IsRemoved = true;
 
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
-            Assert.AreEqual(expectedCode, module.Content());
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
@@ -762,33 +606,23 @@ Private Sub Bar()
 End Sub
 ";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var module = component.CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[1].IsRemoved = true;
 
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
-            Assert.AreEqual(expectedCode, module.Content());
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
@@ -827,33 +661,23 @@ Public Sub Goo(ByVal arg1 As Integer, _
 End Sub
 ";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var module = component.CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[1].IsRemoved = true;
 
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
-            Assert.AreEqual(expectedCode, module.Content());
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
@@ -865,22 +689,14 @@ End Sub
 End Property";
             var selection = new Selection(1, 23, 1, 27);
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
 
-            // Assert
             Assert.AreEqual(1, model.Parameters.Count); // doesn't allow removing last param from setter
         }
 
@@ -893,22 +709,14 @@ End Property";
 End Property";
             var selection = new Selection(1, 23, 1, 27);
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
 
-            // Assert
             Assert.AreEqual(1, model.Parameters.Count); // doesn't allow removing last param from letter
         }
 
@@ -932,33 +740,23 @@ End Property
 Private Property Set Foo(ByVal arg2 As String)
 End Property";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var module = component.CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[0].IsRemoved = true;
 
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
-            Assert.AreEqual(expectedCode, module.Content());
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
@@ -981,33 +779,23 @@ End Property
 Private Property Let Foo(ByVal arg2 As String)
 End Property";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var module = component.CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[0].IsRemoved = true;
 
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
-            Assert.AreEqual(expectedCode, module.Content());
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
@@ -1032,33 +820,23 @@ Private Sub Goo(ByVal arg1 As Integer)
     Foo 
 End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var module = component.CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[0].IsRemoved = true;
 
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
-            Assert.AreEqual(expectedCode, module.Content());
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
@@ -1085,33 +863,23 @@ Private Sub Goo(ByVal arg1 As Integer)
     Foo 1
 End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var module = component.CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[1].IsRemoved = true;
 
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
-            Assert.AreEqual(expectedCode, module.Content());
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
@@ -1130,33 +898,23 @@ End Sub";
 @"Private Sub Foo(ByVal arg2 As String, ByVal arg3 As Date)
 End Sub";   // note: VBE removes excess spaces
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var module = component.CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[0].IsRemoved = true;
 
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
-            Assert.AreEqual(expectedCode, module.Content());
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
@@ -1175,33 +933,23 @@ End Sub";
 @"Private Sub Foo(ByVal arg1 As Integer, ByVal arg3 As Date)
 End Sub";   // note: VBE removes excess spaces
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var module = component.CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[1].IsRemoved = true;
 
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
-            Assert.AreEqual(expectedCode, module.Content());
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
@@ -1220,33 +968,23 @@ End Sub";
 @"Private Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub";   // note: VBE removes excess spaces
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var module = component.CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[2].IsRemoved = true;
 
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
-            Assert.AreEqual(expectedCode, module.Content());
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
@@ -1265,33 +1003,23 @@ End Sub";
 @"Private Sub Foo(ByVal arg2 As String, ByVal arg3 As Date)
 End Sub";   // note: VBE removes excess spaces
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var module = component.CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[0].IsRemoved = true;
 
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(model.TargetDeclaration);
 
-            //Assert
-            Assert.AreEqual(expectedCode, module.Content());
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
@@ -1324,33 +1052,23 @@ Private Sub Goo(ByVal arg1 as Integer, ByVal arg2 As String, ByVal arg3 As Date)
 End Sub
 ";   // note: IDE removes excess spaces
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var module = component.CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[0].IsRemoved = true;
 
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
-            Assert.AreEqual(expectedCode, module.Content());
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
@@ -1378,39 +1096,29 @@ End Sub";
 Private Sub IClass1_DoSomething(ByVal a As Integer)
 End Sub";   // note: IDE removes excess spaces
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents[0];
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(project.Object.VBComponents[0]), selection);
 
             var module1 = project.Object.VBComponents[0].CodeModule;
             var module2 = project.Object.VBComponents[1].CodeModule;
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[1].IsRemoved = true;
 
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode1, module1.Content());
             Assert.AreEqual(expectedCode2, module2.Content());
         }
@@ -1440,39 +1148,29 @@ End Sub";
 Private Sub IClass1_DoSomething(ByVal v1 As Integer)
 End Sub";   // note: IDE removes excess spaces
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents[0];
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(project.Object.VBComponents[0]), selection);
 
             var module1 = project.Object.VBComponents[0].CodeModule;
             var module2 = project.Object.VBComponents[1].CodeModule;
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[1].IsRemoved = true;
 
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode1, module1.Content());
             Assert.AreEqual(expectedCode2, module2.Content());
         }
@@ -1512,7 +1210,6 @@ End Sub";   // note: IDE removes excess spaces
 Private Sub IClass1_DoSomething(ByVal i As Integer)
 End Sub";   // note: IDE removes excess spaces
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
@@ -1520,33 +1217,24 @@ End Sub";   // note: IDE removes excess spaces
                 .AddComponent("Class2", ComponentType.ClassModule, inputCode3)
                 .Build();
             var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents[0];
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(project.Object.VBComponents[0]), selection);
 
             var module1 = project.Object.VBComponents[0].CodeModule;
             var module2 = project.Object.VBComponents[1].CodeModule;
             var module3 = project.Object.VBComponents[2].CodeModule;
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[1].IsRemoved = true;
 
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode1, module1.Content());
             Assert.AreEqual(expectedCode2, module2.Content());
             Assert.AreEqual(expectedCode3, module3.Content());
@@ -1577,39 +1265,29 @@ End Sub";
 Private Sub abc_Foo(ByVal arg1 As Integer)
 End Sub";   // note: IDE removes excess spaces
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
                 .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents[0];
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(project.Object.VBComponents[0]), selection);
 
             var module1 = project.Object.VBComponents[0].CodeModule;
             var module2 = project.Object.VBComponents[1].CodeModule;
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[1].IsRemoved = true;
 
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode1, module1.Content());
             Assert.AreEqual(expectedCode2, module2.Content());
         }
@@ -1639,38 +1317,29 @@ End Sub";   // note: IDE removes excess spaces
             const string expectedCode2 =
 @"Public Event Foo(ByVal arg1 As Integer)";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
                 .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents[0];
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var state = MockParser.CreateAndParse(vbe.Object);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(project.Object.VBComponents[0]), selection);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
             var module1 = project.Object.VBComponents[0].CodeModule;
             var module2 = project.Object.VBComponents[1].CodeModule;
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters.Last().IsRemoved = true;
 
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode1, module1.Content());
             Assert.AreEqual(expectedCode2, module2.Content());
         }
@@ -1700,39 +1369,29 @@ End Sub";
 Private Sub abc_Foo(ByVal i As Integer)
 End Sub";   // note: IDE removes excess spaces
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
                 .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents[0];
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(project.Object.VBComponents[0]), selection);
 
             var module1 = project.Object.VBComponents[0].CodeModule;
             var module2 = project.Object.VBComponents[1].CodeModule;
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[1].IsRemoved = true;
 
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode1, module1.Content());
             Assert.AreEqual(expectedCode2, module2.Content());
         }
@@ -1772,7 +1431,6 @@ End Sub";   // note: IDE removes excess spaces
 Private Sub abc_Foo(ByVal v1 As Integer)
 End Sub";   // note: IDE removes excess spaces
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
@@ -1780,33 +1438,24 @@ End Sub";   // note: IDE removes excess spaces
                 .AddComponent("Class3", ComponentType.ClassModule, inputCode3)
                 .Build();
             var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents[0];
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(project.Object.VBComponents[0]), selection);
 
             var module1 = project.Object.VBComponents[0].CodeModule;
             var module2 = project.Object.VBComponents[1].CodeModule;
             var module3 = project.Object.VBComponents[2].CodeModule;
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
             model.Parameters[1].IsRemoved = true;
 
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode1, module1.Content());
             Assert.AreEqual(expectedCode2, module2.Content());
             Assert.AreEqual(expectedCode3, module3.Content());
@@ -1838,23 +1487,15 @@ End Sub";   // note: IDE removes excess spaces
 @"Public Sub DoSomething(ByVal a As Integer)
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
                 .AddComponent("IClass1", ComponentType.ClassModule, inputCode2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents[0];
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(project.Object.VBComponents[0]), selection);
 
             var module1 = project.Object.VBComponents[0].CodeModule;
             var module2 = project.Object.VBComponents[1].CodeModule;
@@ -1864,17 +1505,15 @@ End Sub";
                       .Returns(DialogResult.Yes);
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, messageBox.Object);
+            var model = new RemoveParametersModel(state, qualifiedSelection, messageBox.Object);
             model.Parameters[1].IsRemoved = true;
 
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
             Assert.AreEqual(expectedCode1, module1.Content());
             Assert.AreEqual(expectedCode2, module2.Content());
         }
@@ -1894,30 +1533,22 @@ End Sub";
 
             var selection = new Selection(3, 23, 3, 23);
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
                 .AddComponent("IClass1", ComponentType.ClassModule, inputCode2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents[0];
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(project.Object.VBComponents[0]), selection);
 
             var messageBox = new Mock<IMessageBox>();
             messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
                       .Returns(DialogResult.No);
 
             //Specify Params to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, messageBox.Object);
+            var model = new RemoveParametersModel(state, qualifiedSelection, messageBox.Object);
             Assert.IsNull(model.TargetDeclaration);
         }
 
@@ -1930,33 +1561,24 @@ End Sub";
 End Sub";
             var selection = new Selection(1, 23, 1, 27);
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
+            var state = MockParser.CreateAndParse(vbe.Object);
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //set up model
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
 
             var factory = SetupFactory(model);
 
-            //act
             var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
 
-            //assert
             try
             {
                 refactoring.Refactor(
                     model.Declarations.FirstOrDefault(
-                        i => i.DeclarationType == Rubberduck.Parsing.Symbols.DeclarationType.ProceduralModule));
+                        i => i.DeclarationType == DeclarationType.ProceduralModule));
             }
             catch (ArgumentException e)
             {
@@ -1975,25 +1597,16 @@ End Sub";
 @"Private Sub Foo()
 End Sub";
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component);
-            var module = component.CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-            var vbeWrapper = vbe.Object;
-            var factory = new RemoveParametersPresenterFactory(vbeWrapper, null, parser.State, null);
+            var state = MockParser.CreateAndParse(vbe.Object);
+            var factory = new RemoveParametersPresenterFactory(vbe.Object, null, state, null);
 
-            //act
-            var refactoring = new RemoveParametersRefactoring(vbeWrapper, factory);
+            var refactoring = new RemoveParametersRefactoring(vbe.Object, factory);
             refactoring.Refactor();
 
-            Assert.AreEqual(inputCode, module.Content());
+            Assert.AreEqual(inputCode, component.CodeModule.Content());
         }
 
         [TestMethod]
@@ -2005,104 +1618,22 @@ End Sub";
 End Sub";
             var selection = new Selection(1, 23, 1, 27);
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var module = component.CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
+            var state = MockParser.CreateAndParse(vbe.Object);
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             //Specify Param(s) to remove
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, null);
+            var model = new RemoveParametersModel(state, qualifiedSelection, null);
 
             //SetupFactory
             var factory = SetupFactory(model);
 
-            //Act
             var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            //Assert
-            Assert.AreEqual(inputCode, module.Content());
-        }
-
-        [TestMethod]
-        public void Presenter_Accept_ReturnsModelWithParametersChanged()
-        {
-            //Input
-            const string inputCode =
-@"Private Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
-End Sub";
-            var selection = new Selection(1, 15, 1, 15);
-
-            //Arrange
-            var builder = new MockVbeBuilder();
-            IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, new Mock<IMessageBox>().Object);
-            model.Parameters[1].IsRemoved = true;
-
-            var view = new Mock<IRemoveParametersDialog>();
-            view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
-            view.Setup(v => v.Parameters).Returns(model.Parameters);
-
-            var factory = new RemoveParametersPresenterFactory(vbe.Object, view.Object, parser.State, null);
-
-            var presenter = factory.Create();
-
-            Assert.AreEqual(model.Parameters, presenter.Show().Parameters);
-        }
-
-        [TestMethod]
-        public void Presenter_Reject_ReturnsNull()
-        {
-            //Input
-            const string inputCode =
-@"Private Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
-End Sub";
-            var selection = new Selection(1, 15, 1, 15);
-
-            //Arrange
-            var builder = new MockVbeBuilder();
-            IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, new Mock<IMessageBox>().Object);
-            model.Parameters[1].IsRemoved = true;
-
-            var view = new Mock<IRemoveParametersDialog>();
-            view.Setup(v => v.ShowDialog()).Returns(DialogResult.Cancel);
-            view.Setup(v => v.Parameters).Returns(model.Parameters);
-
-            var factory = new RemoveParametersPresenterFactory(vbe.Object, view.Object, parser.State, null);
-
-            var presenter = factory.Create();
-
-            Assert.AreEqual(null, presenter.Show());
+            Assert.AreEqual(inputCode, component.CodeModule.Content());
         }
 
         [TestMethod]
@@ -2114,23 +1645,16 @@ End Sub";
 End Sub";
             var selection = new Selection(1, 15, 1, 15);
 
-            //Arrange
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
+            var state = MockParser.CreateAndParse(vbe.Object);
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var model = new RemoveParametersModel(parser.State, qualifiedSelection, new Mock<IMessageBox>().Object);
+            var model = new RemoveParametersModel(state, qualifiedSelection, new Mock<IMessageBox>().Object);
             model.Parameters[0].IsRemoved = true;
 
-            var factory = new RemoveParametersPresenterFactory(vbe.Object, null, parser.State, null);
+            var factory = new RemoveParametersPresenterFactory(vbe.Object, null, state, null);
 
             var presenter = factory.Create();
 
@@ -2146,7 +1670,6 @@ End Sub";
 End Sub";
             var selection = new Selection(1, 15, 1, 15);
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var projectBuilder = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("Module1", ComponentType.StandardModule, inputCode, selection);
@@ -2154,17 +1677,12 @@ End Sub";
             builder.AddProject(project);
             var vbe = builder.Build();
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            var state = MockParser.CreateAndParse(vbe.Object);
 
             var messageBox = new Mock<IMessageBox>();
             messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>())).Returns(DialogResult.OK);
 
-            var factory = new RemoveParametersPresenterFactory(vbe.Object, null, parser.State, messageBox.Object);
+            var factory = new RemoveParametersPresenterFactory(vbe.Object, null, state, messageBox.Object);
             var presenter = factory.Create();
 
             Assert.AreEqual(null, presenter.Show());
@@ -2178,7 +1696,6 @@ End Sub";
 @"Private Sub Foo()
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var projectBuilder = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("Module1", ComponentType.StandardModule, inputCode);
@@ -2188,14 +1705,8 @@ End Sub";
 
             vbe.Setup(v => v.ActiveCodePane).Returns((ICodePane) null);
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var factory = new RemoveParametersPresenterFactory(vbe.Object, null, parser.State, null);
+            var state = MockParser.CreateAndParse(vbe.Object);
+            var factory = new RemoveParametersPresenterFactory(vbe.Object, null, state, null);
 
             Assert.IsNull(factory.Create());
         }

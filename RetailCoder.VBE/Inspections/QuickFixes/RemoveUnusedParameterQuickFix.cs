@@ -4,7 +4,7 @@ using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.RemoveParameters;
 using Rubberduck.UI;
-using Rubberduck.UI.Refactorings;
+using Rubberduck.UI.Refactorings.RemoveParameters;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -27,7 +27,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override void Fix()
         {
-            using (var dialog = new RemoveParametersDialog())
+            using (var dialog = new RemoveParametersDialog(new RemoveParametersViewModel(_state)))
             {
                 var refactoring = new RemoveParametersRefactoring(_vbe,
                     new RemoveParametersPresenterFactory(_vbe, dialog, _state, _messageBox));
