@@ -10,7 +10,6 @@ using Rubberduck.Refactorings.MoveCloserToUsage;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Application;
-using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
@@ -34,7 +33,6 @@ End Sub";
             //Expectation
             const string expectedCode =
 @"Private Sub Foo()
-
     Dim bar As Boolean
     bar = True
 End Sub";

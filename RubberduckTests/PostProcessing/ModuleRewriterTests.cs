@@ -15,7 +15,7 @@ using RubberduckTests.Mocks;
 namespace RubberduckTests.PostProcessing
 {
     [TestClass]
-    public class CodeModuleExtensionTests
+    public class ModuleRewriterTests
     {
         [TestMethod]
         [TestCategory("TokenStreamRewriter")]

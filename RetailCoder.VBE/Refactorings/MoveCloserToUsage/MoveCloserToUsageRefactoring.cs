@@ -56,6 +56,8 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             }
 
             MoveCloserToUsage();
+            //var rewriter = _state.GetRewriter(_target);
+            //rewriter.Rewrite();
         }
 
         public void Refactor(Declaration target)
@@ -71,6 +73,8 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
 
             _target = target;
             MoveCloserToUsage();
+            var rewriter = _state.GetRewriter(_target);
+            rewriter.Rewrite();
         }
 
         private bool TargetIsReferencedFromMultipleMethods(Declaration target)
@@ -148,6 +152,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             {
                 UpdateCallsToOtherModule(newTarget.References.ToList());
                 rewriter.Remove(newTarget);
+                var content = rewriter.GetText();
                 rewriter.Rewrite();
             }
 
