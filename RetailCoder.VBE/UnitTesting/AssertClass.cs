@@ -1,4 +1,6 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace Rubberduck.UnitTesting
 {
@@ -16,7 +18,7 @@ namespace Rubberduck.UnitTesting
         /// </summary>
         /// <param name="condition">Any Boolean value or expression.</param>
         /// <param name="message">An optional message to display if the assertion fails.</param>
-        public void IsTrue(bool condition, string message = null)
+        public void IsTrue(bool condition, string message = "")
         {
             if (condition)
             {
@@ -33,7 +35,7 @@ namespace Rubberduck.UnitTesting
         /// </summary>
         /// <param name="condition">Any Boolean value or expression.</param>
         /// <param name="message">An optional message to display if the assertion fails.</param>
-        public void IsFalse(bool condition, string message = null)
+        public void IsFalse(bool condition, string message = "")
         {
             if (!condition)
             {
@@ -49,7 +51,7 @@ namespace Rubberduck.UnitTesting
         /// Indicates that the assertion cannot be verified.
         /// </summary>
         /// <param name="message">An optional message to display.</param>
-        public void Inconclusive(string message = null)
+        public void Inconclusive(string message = "")
         {
             AssertHandler.OnAssertInconclusive(message);
         }
@@ -58,7 +60,7 @@ namespace Rubberduck.UnitTesting
         /// Fails the assertion without checking any conditions.
         /// </summary>
         /// <param name="message">An optional message to display.</param>
-        public void Fail(string message = null)
+        public void Fail(string message = "")
         {
             AssertHandler.OnAssertFailed("Fail", message);
         }
@@ -68,7 +70,7 @@ namespace Rubberduck.UnitTesting
         /// </summary>
         /// <param name="value">The object to verify.</param>
         /// <param name="message">An optional message to display if the assertion fails.</param>
-        public void IsNothing(object value, string message = null)
+        public void IsNothing(object value, string message = "")
         {
             if (value == null)
             {
@@ -85,7 +87,7 @@ namespace Rubberduck.UnitTesting
         /// </summary>
         /// <param name="value">The object to verify.</param>
         /// <param name="message">An optional message to display if the assertion fails.</param>
-        public void IsNotNothing(object value, string message = null)
+        public void IsNotNothing(object value, string message = "")
         {
             if (value != null)
             {
@@ -106,16 +108,15 @@ namespace Rubberduck.UnitTesting
         /// <remarks>
         /// <paramref name="expected"/> and <paramref name="actual"/> must be the same type.
         /// </remarks>
-        public virtual void AreEqual(object expected, object actual, string message = null)
+        public virtual void AreEqual(object expected, object actual, string message = "")
         {
             // vbNullString is marshaled as a null. assume value semantics:
             expected = expected ?? string.Empty;
             actual = actual ?? string.Empty;
 
-            if (expected.GetType() != actual.GetType())
+            if (!ValueEquityAssertTypesMatch(expected, actual, true))
             {
-                AssertHandler.OnAssertInconclusive("[expected] and [actual] values are not the same type.");
-                return;
+                return;               
             }
 
             if (expected.Equals(actual))
@@ -137,15 +138,14 @@ namespace Rubberduck.UnitTesting
         /// <remarks>
         /// <paramref name="expected"/> and <paramref name="actual"/> must be the same type.
         /// </remarks>
-        public virtual void AreNotEqual(object expected, object actual, string message = null)
+        public virtual void AreNotEqual(object expected, object actual, string message = "")
         {
             // vbNullString is marshaled as a null. assume value semantics:
             expected = expected ?? string.Empty;
             actual = actual ?? string.Empty;
 
-            if (expected.GetType() != actual.GetType())
+            if (!ValueEquityAssertTypesMatch(expected, actual, false))
             {
-                AssertHandler.OnAssertInconclusive("[expected] and [actual] values are not the same type.");
                 return;
             }
 
@@ -165,8 +165,13 @@ namespace Rubberduck.UnitTesting
         /// <param name="expected">The expected reference.</param>
         /// <param name="actual">The actual reference.</param>
         /// <param name="message">An optional message to display if the assertion fails.</param>
-        public void AreSame(object expected, object actual, string message = null)
+        public void AreSame(object expected, object actual, string message = "")
         {
+            if (!ReferenceEquityAssertTypesMatch(expected, actual, true))
+            {
+                return;
+            }
+
             if (expected == null && actual != null)
             {
                 AssertHandler.OnAssertFailed("AreSame", string.Concat("expected: Nothing; actual: ", actual.GetHashCode(), ". ", message));
@@ -194,8 +199,13 @@ namespace Rubberduck.UnitTesting
         /// <param name="expected">The expected reference.</param>
         /// <param name="actual">The actual reference.</param>
         /// <param name="message">An optional message to display if the assertion fails.</param>
-        public void AreNotSame(object expected, object actual, string message = null)
+        public void AreNotSame(object expected, object actual, string message = "")
         {
+            if (!ReferenceEquityAssertTypesMatch(expected, actual, false))
+            {
+                return;
+            }
+
             if (expected == null && actual == null)
             {
                 AssertHandler.OnAssertFailed("AreNotSame", string.Concat("expected: Nothing; actual: Nothing. ", message));
@@ -214,6 +224,202 @@ namespace Rubberduck.UnitTesting
             }
 
             AssertHandler.OnAssertFailed("AreNotSame", string.Concat("expected: ", expected.GetHashCode(), "; actual: ", actual.GetHashCode(), ". ", message));
+        }
+
+        public void SequenceEquals(object expected, object actual, string message = "")
+        {
+            if (!SequenceEquityParametersAreArrays(expected, actual, true))
+            {
+                return;
+            }
+            TestArraySequenceEquity((Array)expected, (Array)actual, message, true);
+        }
+
+        public void NotSequenceEquals(object expected, object actual, string message = "")
+        {
+            if (!SequenceEquityParametersAreArrays(expected, actual, false))
+            {
+                return;
+            }
+            TestArraySequenceEquity((Array)expected, (Array)actual, message, false);
+        }
+
+        private void TestArraySequenceEquity(Array expected, Array actual, string message, bool equals)
+        {
+            if (expected.Rank != actual.Rank)
+            {
+                if (equals)
+                {
+                    AssertHandler.OnAssertFailed("SequenceEquals",
+                        string.Format("expected has {0} dimensions; actual has {1} dimensions. {2} ", expected.Rank,
+                            actual.Rank, message).Trim());
+                    return;
+                }
+                AssertHandler.OnAssertSucceeded();
+            }
+
+            for (var rank = 0; rank < expected.Rank; rank++)
+            {
+                var expectedBound = expected.GetLowerBound(rank);
+                var actualBound = actual.GetLowerBound(rank);
+                if (expectedBound != actualBound)
+                {
+                    if (equals)
+                    {
+                        AssertHandler.OnAssertFailed("SequenceEquals",
+                            string.Format("Dimension {0}: expected has an LBound of {1}; actual has an LBound of {2}. {3} ", rank + 1, expectedBound,
+                                actualBound, message).Trim());
+                        return;
+                    }
+                    AssertHandler.OnAssertSucceeded();
+                }
+
+                expectedBound = expected.GetUpperBound(rank);
+                actualBound = actual.GetUpperBound(rank);
+                if (expectedBound != actualBound)
+                {
+                    if (equals)
+                    {
+                        AssertHandler.OnAssertFailed("SequenceEquals",
+                            string.Format("Dimension {0}: expected has a UBound of {1}; actual has a UBound of {2}. {3} ", rank + 1, expectedBound,
+                                actualBound, message).Trim());
+                        return;
+                    }
+                    AssertHandler.OnAssertSucceeded();
+                }
+            }
+
+            var flattenedExpected = expected.Cast<object>().ToList();
+            var flattenedActual = actual.Cast<object>().ToList();
+            if (!flattenedActual.SequenceEqual(flattenedExpected))
+            {
+                if (equals)
+                {
+                    AssertHandler.OnAssertFailed("SequenceEquals", message);
+                }
+                AssertHandler.OnAssertSucceeded();
+            }
+
+            if (!equals)
+            {
+                AssertHandler.OnAssertFailed("NotSequenceEquals", message);
+            }
+            AssertHandler.OnAssertSucceeded();
+        }
+
+        private bool ValueEquityAssertTypesMatch(object expected, object actual, bool equals)
+        {
+            var expectedType = expected.GetType();
+            var actualType = actual.GetType();
+
+            if (expectedType.IsArray && actualType.IsArray)
+            {
+                AssertHandler.OnAssertInconclusive(
+                    string.Format("[expected] and [actual] are arrays. Consider using {0}.",
+                        equals ? "Assert.SequenceEquals" : "Assert.NotSequenceEquals"));
+                return false;
+            }
+
+            if (!ReferenceOrValueTypesMatch(expectedType, actualType))
+            {
+                return false;
+            }
+
+            if (expectedType.IsCOMObject && actualType.IsCOMObject)
+            {
+                AssertHandler.OnAssertInconclusive(
+                    string.Format("[expected] and [actual] are reference types. Consider using {0}.",
+                        equals ? "Assert.AreSame" : "Assert.AreNotSame"));
+                return false;
+            }
+
+            if (expectedType != actualType)
+            {
+                AssertHandler.OnAssertInconclusive("[expected] and [actual] values are not the same type.");
+                return false;
+            }
+            return true;
+        }
+
+        private bool ReferenceEquityAssertTypesMatch(object expected, object actual, bool same)
+        {
+            var expectedType = expected?.GetType();
+            var actualType = actual?.GetType();
+
+            if ((expectedType == null && actualType == null) || 
+                ((expectedType == null || expectedType.IsCOMObject) && (actualType == null || actualType.IsCOMObject)))
+            {
+                return true;
+            }
+
+            if (!ReferenceOrValueTypesMatch(expectedType, actualType))
+            {
+                return false;
+            }
+
+            if (expectedType != null && !expectedType.IsCOMObject && actualType != null && !actualType.IsCOMObject)
+            {
+                AssertHandler.OnAssertInconclusive(
+                    string.Format("[expected] and [actual] are value types. Consider using {0}.",
+                        same ? "Assert.AreEqual" : "Assert.AreNotEqual"));
+                return false;
+            }
+            return true;
+        }
+
+        private bool SequenceEquityParametersAreArrays(object expected, object actual, bool equals)
+        {
+            var expectedType = expected?.GetType();
+            var actualType = actual?.GetType();
+
+            if (expectedType == null && actualType == null)
+            {
+                AssertHandler.OnAssertInconclusive(
+                    string.Format("[expected] and [actual] are Nothing. Consider using {0}.",
+                        equals ? "Assert.AreSame" : "Assert.AreNotSame"));
+                return false;
+            }
+
+            if (!ReferenceOrValueTypesMatch(expectedType, actualType))
+            {
+                return false;
+            }
+
+            if (expectedType != null && !expectedType.IsArray && actualType != null && actualType.IsArray)
+            {
+                AssertHandler.OnAssertInconclusive("[expected] is a not an array.");
+                return false;
+            }
+
+            if (actualType != null && !actualType.IsArray && expectedType != null && expectedType.IsArray)
+            {
+                AssertHandler.OnAssertInconclusive("[actual] is a not an array.");
+                return false;
+            }
+
+            if (actualType != null && !actualType.IsArray && (expectedType == null || expectedType.IsArray))
+            {
+                AssertHandler.OnAssertInconclusive("Neither [expected] and [actual] is an array.");
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool ReferenceOrValueTypesMatch(Type expectedType, Type actualType)
+        {
+            if (expectedType != null && !expectedType.IsCOMObject && (actualType == null || actualType.IsCOMObject))
+            {
+                AssertHandler.OnAssertInconclusive("[expected] is a value type and [actual] is a reference type.");
+                return false;
+            }
+
+            if (actualType != null && !actualType.IsCOMObject && (expectedType == null || expectedType.IsCOMObject))
+            {
+                AssertHandler.OnAssertInconclusive("[expected] is a reference type and [actual] is a value type.");
+                return false;
+            }
+            return true;
         }
     }
 }
