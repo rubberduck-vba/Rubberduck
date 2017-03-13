@@ -821,13 +821,9 @@ namespace Rubberduck.Parsing.Symbols
         {
             if (target == null) { return Enumerable.Empty<Declaration>(); }
 
-            var declarations = GetAllDeclarations();
-
-            //declarations based on Accessibility
-            var projectDeclaration = RetrieveDeclarationType(target, DeclarationType.Project);
-            var moduleDeclaration = GetModuleDeclaration(target);
-            return declarations
-                .Where(callee => AccessibilityCheck.IsAccessible(projectDeclaration, moduleDeclaration, target.ParentDeclaration, callee)).ToList();
+            return GetAllDeclarations()
+                .Where(callee => AccessibilityCheck.IsAccessible(Declaration.GetProjectParent(target)
+                        , Declaration.GetModuleParent(target), target.ParentDeclaration, callee)).ToList();
         }
 
         public IEnumerable<Declaration> GetDeclarationsWithIdentifiersToAvoid(Declaration target)
@@ -874,7 +870,7 @@ namespace Rubberduck.Parsing.Symbols
 
         private bool IsInProceduralModule(Declaration candidateDeclaration)
         {
-            var candidateModuleDeclaration = GetModuleDeclaration(candidateDeclaration);
+            var candidateModuleDeclaration = Declaration.GetModuleParent(candidateDeclaration);
             if (null == candidateModuleDeclaration) { return false; }
 
             return (candidateModuleDeclaration.DeclarationType == DeclarationType.ProceduralModule);
@@ -915,39 +911,6 @@ namespace Rubberduck.Parsing.Symbols
             || (declaration.DeclarationType == DeclarationType.PropertyLet)
             || (declaration.DeclarationType == DeclarationType.Procedure)
             || (declaration.DeclarationType == DeclarationType.Function);
-        }
-
-        private Declaration GetModuleDeclaration(Declaration declaration)
-        {
-            var classDeclaration = RetrieveDeclarationType(declaration, DeclarationType.ClassModule);
-            if (null != classDeclaration)
-            {
-                return classDeclaration;
-            }
-            var moduleDeclaration = RetrieveDeclarationType(declaration, DeclarationType.ProceduralModule);
-            if (null != moduleDeclaration)
-            {
-                return moduleDeclaration;
-            }
-            return null;
-        }
-
-        private Declaration RetrieveDeclarationType(Declaration start, DeclarationType goalType)
-        {
-            if (start.DeclarationType == goalType) { return start; }
-
-            var next = start.ParentDeclaration;
-            for (var idx = 0; idx < 10; idx++)
-            {
-                if (next == null) { return null; }
-
-                if (next.DeclarationType == goalType)
-                {
-                    return next;
-                }
-                next = next.ParentDeclaration;
-            }
-            return null;
         }
     }
 }
