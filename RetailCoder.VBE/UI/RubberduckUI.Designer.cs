@@ -230,7 +230,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &quot;Neither [expected] and [actual] is an array.&quot;.
+        ///   Looks up a localized string similar to Neither [expected] or [actual] is an array..
         /// </summary>
         public static string Assert_NeitherParameterIsArray {
             get {
@@ -2770,15 +2770,6 @@ namespace Rubberduck.UI {
         public static string Passed {
             get {
                 return ResourceManager.GetString("Passed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Preview.
-        /// </summary>
-        public static string Preview {
-            get {
-                return ResourceManager.GetString("Preview", resourceCulture);
             }
         }
         

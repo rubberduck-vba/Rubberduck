@@ -1980,7 +1980,7 @@ Would you like to import them to Rubberduck?</value>
     <value>[expected] and [actual] values are not the same type.</value>
   </data>
   <data name="Assert_NeitherParameterIsArray" xml:space="preserve">
-    <value>"Neither [expected] and [actual] is an array."</value>
+    <value>Neither [expected] or [actual] is an array.</value>
   </data>
   <data name="Assert_ParameterIsNotArrayFormat" xml:space="preserve">
     <value>{0} is not an array.</value>
