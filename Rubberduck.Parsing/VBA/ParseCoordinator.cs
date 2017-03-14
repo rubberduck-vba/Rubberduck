@@ -839,22 +839,12 @@ namespace Rubberduck.Parsing.VBA
             var unmapped = new ConcurrentBag<IReference>();
 
             var referencesToLoad = GetReferencesToLoadAndSaveReferencePriority(projects);
-                            
+
             State.OnStatusMessageUpdate(ParserState.LoadingReference.ToString());
 
-            var referenceLoadingTaskScheduler = ThrottelingTaskScheduler(_maxReferenceLoadingConcurrency); 
-
-            //Parallel.ForEach is not used because loading the references can contain IO-bound operations.
-            var loadTasks = new List<Task>();
-            foreach(var reference in referencesToLoad)
+            if (referencesToLoad.Any())
             {
-                var localReference = reference;
-                loadTasks.Add(Task.Factory.StartNew(
-                                    () => LoadReference(localReference, unmapped), 
-                                    token, 
-                                    TaskCreationOptions.None, 
-                                    referenceLoadingTaskScheduler
-                                ));
+                LoadReferences(referencesToLoad, unmapped, token);
             }
 
             var notMappedReferences = NonMappedReferences(projects);
@@ -862,21 +852,6 @@ namespace Rubberduck.Parsing.VBA
             {
                 unmapped.Add(item);
             }
-
-            try
-            {
-                Task.WaitAll(loadTasks.ToArray(), token);
-            }
-            catch (AggregateException exception)
-            {
-                if (exception.Flatten().InnerExceptions.All(ex => ex is OperationCanceledException))
-                {
-                    throw exception.InnerException ?? exception; //This eliminates the stack trace, but for the cancellation, this is irrelevant.
-                }
-                State.SetStatusAndFireStateChanged(this, ParserState.Error);
-                throw;
-            }
-            token.ThrowIfCancellationRequested();
 
             foreach (var reference in unmapped)
             {
@@ -931,6 +906,39 @@ namespace Rubberduck.Parsing.VBA
                 }
             }
             return referencesToLoad;
+        }
+
+        private void LoadReferences(List<IReference> referencesToLoad, ConcurrentBag<IReference> unmapped, CancellationToken token)
+        {
+            var referenceLoadingTaskScheduler = ThrottelingTaskScheduler(_maxReferenceLoadingConcurrency);
+
+            //Parallel.ForEach is not used because loading the references can contain IO-bound operations.
+            var loadTasks = new List<Task>();
+            foreach (var reference in referencesToLoad)
+            {
+                var localReference = reference;
+                loadTasks.Add(Task.Factory.StartNew(
+                                    () => LoadReference(localReference, unmapped),
+                                    token,
+                                    TaskCreationOptions.None,
+                                    referenceLoadingTaskScheduler
+                                ));
+            }
+
+            try
+            {
+                Task.WaitAll(loadTasks.ToArray(), token);
+            }
+            catch (AggregateException exception)
+            {
+                if (exception.Flatten().InnerExceptions.All(ex => ex is OperationCanceledException))
+                {
+                    throw exception.InnerException ?? exception; //This eliminates the stack trace, but for the cancellation, this is irrelevant.
+                }
+                State.SetStatusAndFireStateChanged(this, ParserState.Error);
+                throw;
+            }
+            token.ThrowIfCancellationRequested();
         }
 
         private TaskScheduler ThrottelingTaskScheduler(int maxLevelOfConcurrency)
