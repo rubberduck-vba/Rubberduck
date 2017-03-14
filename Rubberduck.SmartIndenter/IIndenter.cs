@@ -8,6 +8,7 @@ namespace Rubberduck.SmartIndenter
     {
         void IndentCurrentProcedure();
         void IndentCurrentModule();
+        void IndentCurrentProject();
         void Indent(IVBComponent component);
         void Indent(IVBComponent component, Selection selection);
         IEnumerable<string> Indent(IEnumerable<string> lines);

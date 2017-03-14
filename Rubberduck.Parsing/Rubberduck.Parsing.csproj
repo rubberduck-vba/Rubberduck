@@ -156,6 +156,7 @@
     <Compile Include="Symbols\DeclarationLoaders\AliasDeclarations.cs" />
     <Compile Include="Symbols\DeclarationLoaders\FormEventDeclarations.cs" />
     <Compile Include="Symbols\DeclarationLoaders\ICustomDeclarationLoader.cs" />
+    <Compile Include="Symbols\EventDeclaration.cs" />
     <Compile Include="Symbols\Identifier.cs" />
     <Compile Include="Binding\IBindingContext.cs" />
     <Compile Include="Binding\IBoundExpression.cs" />
@@ -258,7 +259,7 @@
     <Compile Include="Symbols\DeclarationFinder.cs" />
     <Compile Include="Symbols\ExceptionErrorListener.cs" />
     <Compile Include="Symbols\ICanBeDefaultMember.cs" />
-    <Compile Include="Symbols\IDeclarationWithParameter.cs" />
+    <Compile Include="Symbols\IParameterizedDeclaration.cs" />
     <Compile Include="Symbols\PropertyLetDeclaration.cs" />
     <Compile Include="Symbols\PropertySetDeclaration.cs" />
     <Compile Include="Symbols\PropertyGetDeclaration.cs" />

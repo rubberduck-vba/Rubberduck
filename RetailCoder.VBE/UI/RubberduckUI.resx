@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -984,7 +984,7 @@ Are you sure you want to proceed with this rename?</value>
     <value>Current &amp;Procedure</value>
   </data>
   <data name="IndentCurrentProject" xml:space="preserve">
-    <value>Entire project</value>
+    <value>Current Project</value>
   </data>
   <data name="SmartIndenterMenu" xml:space="preserve">
     <value>In&amp;dent</value>
@@ -1963,5 +1963,53 @@ Would you like to import them to Rubberduck?</value>
   </data>
   <data name="ConfirmRemoveAssignmentWithUnusedDeclaration" xml:space="preserve">
     <value>Variable '{0}' is assigned. Remove assignment instruction(s)?</value>
+  </data>
+  <data name="Assert_DimensionMismatchFormat" xml:space="preserve">
+    <value>expected has {0} dimensions; actual has {1} dimensions. {2}</value>
+    <comment>{0} and {1} are dimension numbers (1, 2, etc.), {2} = message parameter.  This should always be at the end.</comment>
+  </data>
+  <data name="Assert_FailedMessageFormat" xml:space="preserve">
+    <value>{0} assertion failed. {1}</value>
+    <comment>{0} = method placeholder (i.e. AreEqual), {1} = message parameter.  This should always be at the end.</comment>
+  </data>
+  <data name="Assert_LBoundMismatchFormat" xml:space="preserve">
+    <value>Dimension {0}: expected has an LBound of {1}; actual has an LBound of {2}. {3}</value>
+    <comment>{0} = dimension number, {1} and {2} = LBound numbers, {3} = message parameter.  This should always be at the end.</comment>
+  </data>
+  <data name="Assert_MismatchedTypes" xml:space="preserve">
+    <value>[expected] and [actual] values are not the same type.</value>
+  </data>
+  <data name="Assert_NeitherParameterIsArray" xml:space="preserve">
+    <value>Neither [expected] or [actual] is an array.</value>
+  </data>
+  <data name="Assert_ParameterIsNotArrayFormat" xml:space="preserve">
+    <value>{0} is not an array.</value>
+    <comment>{0} is either [expected] or [actual]</comment>
+  </data>
+  <data name="Assert_ReferenceValueMismatch" xml:space="preserve">
+    <value>[expected] is a reference type and [actual] is a value type.</value>
+  </data>
+  <data name="Assert_UBoundMismatchFormat" xml:space="preserve">
+    <value>Dimension {0}: expected has a UBound of {1}; actual has a UBound of {2}. {3}</value>
+    <comment>{0} = dimension number, {1} and {2} = UBound numbers, {3} = message parameter.  This should always be at the end.</comment>
+  </data>
+  <data name="Assert_UnexpectedArrayFormat" xml:space="preserve">
+    <value>[expected] and [actual] are arrays. Consider using {0}.</value>
+    <comment>{0} is either Assert.SequenceEquals or Assert.NotSequenceEquals.</comment>
+  </data>
+  <data name="Assert_UnexpectedNullArraysFormat" xml:space="preserve">
+    <value>[expected] and [actual] are Nothing. Consider using {0}.</value>
+    <comment>{0} is either Assert.AreSame or Assert.AreNotSame.</comment>
+  </data>
+  <data name="Assert_UnexpectedReferenceComparisonFormat" xml:space="preserve">
+    <value>[expected] and [actual] are reference types. Consider using {0}.</value>
+    <comment>{0} is either Assert.AreSame or Assert.AreNotSame.</comment>
+  </data>
+  <data name="Assert_UnexpectedValueComparisonFormat" xml:space="preserve">
+    <value>[expected] and [actual] are value types. Consider using {0}.</value>
+    <comment>{0} is either Assert.AreEqual or Assert.AreNotEqual.</comment>
+  </data>
+  <data name="Assert_ValueReferenceMismatch" xml:space="preserve">
+    <value>[expected] is a value type and [actual] is a reference type.</value>
   </data>
 </root>

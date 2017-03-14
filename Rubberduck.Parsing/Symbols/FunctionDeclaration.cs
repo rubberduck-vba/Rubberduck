@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Rubberduck.Parsing.Symbols
 {
-    public sealed class FunctionDeclaration : Declaration, IDeclarationWithParameter, ICanBeDefaultMember
+    public sealed class FunctionDeclaration : Declaration, IParameterizedDeclaration, ICanBeDefaultMember
     {
         private readonly List<Declaration> _parameters;
 

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -898,7 +898,7 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
     <value>&amp;Déplacer la déclaration</value>
   </data>
   <data name="IndentCurrentProject" xml:space="preserve">
-    <value>Projet entier</value>
+    <value>Current Project</value>
   </data>
   <data name="MoveCloserToUsage_Caption" xml:space="preserve">
     <value>Rubberduck - Rapprocher la déclaration de son utilisation</value>
@@ -1869,70 +1869,70 @@ End Sub</value>
   <data name="VersionCheck_NewVersionAvailable" xml:space="preserve">
     <value>La version {0} de Rubberduck est maintenant disponible! Souhaitez-vous consulter les notes de mise à jour maintenant?</value>
   </data>
-  <data name="AssignedByValDialog_NewNameAlreadyUsedFormat">
+  <data name="AssignedByValDialog_NewNameAlreadyUsedFormat" xml:space="preserve">
     <value>'{0}' est déjà accessible à cette procédure.</value>
   </data>
-  <data name="SmartIndenter_LegacySettingPrompt">
+  <data name="SmartIndenter_LegacySettingPrompt" xml:space="preserve">
     <value>Des paramètres utilisés par Smart Indenter existent dans votre registre. Voulez-vous les importer dans Rubberduck?</value>
   </data>
-  <data name="AssignedByValParamQFixDialog_TitleText">
+  <data name="AssignedByValParamQFixDialog_TitleText" xml:space="preserve">
     <value>Nommer la variable locale</value>
   </data>
-  <data name="IndenterSettings_CodeSampleHeader">
+  <data name="IndenterSettings_CodeSampleHeader" xml:space="preserve">
     <value>Échantillon de code indenté</value>
   </data>
-  <data name="AssignedByValDialog_ReservedKeywordFormat">
+  <data name="AssignedByValDialog_ReservedKeywordFormat" xml:space="preserve">
     <value>'{0}' est un mot-clé réservé.</value>
   </data>
-  <data name="DialogCaption_LoadWindowSettings">
+  <data name="DialogCaption_LoadWindowSettings" xml:space="preserve">
     <value>Charger les paramètres des fenêtres</value>
   </data>
-  <data name="RenameDialog_AmbiguousSelection">
+  <data name="RenameDialog_AmbiguousSelection" xml:space="preserve">
     <value>Veuillez sélectionner 1 seul contrôle à renommer.</value>
   </data>
-  <data name="ContextMultipleControlsSelection">
+  <data name="ContextMultipleControlsSelection" xml:space="preserve">
     <value>contrôles multiples</value>
   </data>
-  <data name="SettingsInstructions_WindowSettings">
+  <data name="SettingsInstructions_WindowSettings" xml:space="preserve">
     <value>Configurer la visibilité des fenêtres</value>
   </data>
-  <data name="AssignedByValDialog_InvalidCharacters">
+  <data name="AssignedByValDialog_InvalidCharacters" xml:space="preserve">
     <value>Un nom de variable ne peut pas contenir de caractères spéciaux autre que la barre de soulignement ("underscore").</value>
   </data>
-  <data name="AssignedByValParamQFixDialog_InstructionsLabelText">
+  <data name="AssignedByValParamQFixDialog_InstructionsLabelText" xml:space="preserve">
     <value>Veuillez spécifier le nom à utiliser pour la copie locale du paramètre '{0}'.</value>
   </data>
-  <data name="IndenterSettings_VerticalSpacing">
+  <data name="IndenterSettings_VerticalSpacing" xml:space="preserve">
     <value>Maintenir l'espacement vertical</value>
   </data>
-  <data name="IndenterSettings_VerticalSpacingLabel">
+  <data name="IndenterSettings_VerticalSpacingLabel" xml:space="preserve">
     <value>Espacement vertical</value>
   </data>
-  <data name="AssignedByValDialog_IsByValIdentifierFormat">
+  <data name="AssignedByValDialog_IsByValIdentifierFormat" xml:space="preserve">
     <value>Le nom de la variable doit être différent de celui du paramètre '{0}'.</value>
   </data>
-  <data name="AssignedByValDialog_QuestionableEntryFormat">
+  <data name="AssignedByValDialog_QuestionableEntryFormat" xml:space="preserve">
     <value />
   </data>
-  <data name="DialogCaption_SaveWindowSettings">
+  <data name="DialogCaption_SaveWindowSettings" xml:space="preserve">
     <value>Enregistrer les paramètres des fenêtres</value>
   </data>
-  <data name="ConfirmRemoveAssignmentWithUnusedDeclaration">
+  <data name="ConfirmRemoveAssignmentWithUnusedDeclaration" xml:space="preserve">
     <value>La varaible '{0}' est assignée. Supprimer l'/les assignation(s)?</value>
   </data>
-  <data name="DeclarationType_BracketedExpression">
+  <data name="DeclarationType_BracketedExpression" xml:space="preserve">
     <value>expression résolue à l'exécution</value>
   </data>
-  <data name="AssignedByValParamQFixDialog_Caption">
+  <data name="AssignedByValParamQFixDialog_Caption" xml:space="preserve">
     <value>Introduire une variable locale</value>
   </data>
-  <data name="WindowSettings_StartupVisibilityHeader">
+  <data name="WindowSettings_StartupVisibilityHeader" xml:space="preserve">
     <value>Visibilité au démarrage</value>
   </data>
-  <data name="AssignedByValDialog_DoesNotStartWithLetter">
+  <data name="AssignedByValDialog_DoesNotStartWithLetter" xml:space="preserve">
     <value>Le nom d'une variable doit débuter par une lettre.</value>
   </data>
-  <data name="SettingsCaption_WindowSettings">
+  <data name="SettingsCaption_WindowSettings" xml:space="preserve">
     <value>Paramètres des fenêtres</value>
   </data>
 </root>
