@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -13,9 +14,10 @@ namespace Rubberduck.UnitTesting
     [ProgId(ProgId)]
     public class AssertClass : IAssert
     {
+        private static readonly IEqualityComparer<object> DefaultComparer = EqualityComparer<object>.Default;
+
         private const string ClassId = "69E194DA-43F0-3B33-B105-9B8188A6F040";
         private const string ProgId = "Rubberduck.AssertClass";
-
         private const string ParameterResultFormat = "expected: {0}; actual: {1}. {2}";
 
         /// <summary>
@@ -231,27 +233,27 @@ namespace Rubberduck.UnitTesting
             AssertHandler.OnAssertFailed(string.Format(ParameterResultFormat, expected.GetHashCode(), actual.GetHashCode(), message).Trim());
         }
 
-        public void SequenceEquals(object expected, object actual, string message = "")
+        public virtual void SequenceEquals(object expected, object actual, string message = "")
         {
             if (!SequenceEquityParametersAreArrays(expected, actual, true))
             {
                 return;
             }
-            TestArraySequenceEquity((Array)expected, (Array)actual, message, true);
+            TestArraySequenceEquity((Array)expected, (Array)actual, message, true, DefaultComparer);
         }
 
-        public void NotSequenceEquals(object expected, object actual, string message = "")
+        public virtual void NotSequenceEquals(object expected, object actual, string message = "")
         {
             if (!SequenceEquityParametersAreArrays(expected, actual, false))
             {
                 return;
             }
-            TestArraySequenceEquity((Array)expected, (Array)actual, message, false);
+            TestArraySequenceEquity((Array)expected, (Array)actual, message, false, DefaultComparer);
         }
 
 
         [SuppressMessage("ReSharper", "ExplicitCallerInfoArgument")]
-        private void TestArraySequenceEquity(Array expected, Array actual, string message, bool equals, [CallerMemberName] string methodName = "")
+        protected void TestArraySequenceEquity(Array expected, Array actual, string message, bool equals, IEqualityComparer<object> comparer, [CallerMemberName] string methodName = "")
         {
             if (expected.Rank != actual.Rank)
             {
@@ -295,7 +297,7 @@ namespace Rubberduck.UnitTesting
 
             var flattenedExpected = expected.Cast<object>().ToList();
             var flattenedActual = actual.Cast<object>().ToList();
-            if (!flattenedActual.SequenceEqual(flattenedExpected))
+            if (!flattenedActual.SequenceEqual(flattenedExpected, comparer))
             {
                 if (equals)
                 {
@@ -368,7 +370,7 @@ namespace Rubberduck.UnitTesting
             return true;
         }
 
-        private bool SequenceEquityParametersAreArrays(object expected, object actual, bool equals)
+        protected bool SequenceEquityParametersAreArrays(object expected, object actual, bool equals)
         {
             var expectedType = expected?.GetType();
             var actualType = actual?.GetType();
