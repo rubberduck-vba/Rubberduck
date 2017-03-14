@@ -56,19 +56,21 @@ namespace Rubberduck.Refactorings.EncapsulateField
             UpdateReferences();
             SetFieldToPrivate(rewriter);
 
-            var lastMember = _model.State.DeclarationFinder
+            var members = _model.State.DeclarationFinder
                 .Members(_model.TargetDeclaration.QualifiedName.QualifiedModuleName)
                 .OrderBy(declaration => declaration.QualifiedSelection)
-                .LastOrDefault();
+                .ToArray();
 
             var property = Environment.NewLine + Environment.NewLine + GetPropertyText() + Environment.NewLine;
+
+            var lastMember = members.LastOrDefault(m => m.DeclarationType.HasFlag(DeclarationType.Member));
             if (lastMember == null)
             {
-                rewriter.Insert(property);
+                rewriter.InsertAtIndex(property, 1);
             }
             else
             {
-                rewriter.Insert(property, lastMember.Context.Stop.TokenIndex);
+                rewriter.InsertAtIndex(property, lastMember.Context.Stop.TokenIndex);
             }
         }
 

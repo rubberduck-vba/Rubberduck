@@ -91,7 +91,7 @@ End Sub";
 @"Private Sub Foo()
     Module1.bar = True
 End Sub";
-            var selection = new Selection(1, 1, 1, 1);
+            var selection = new Selection(1, 1);
 
             //Expectation
             const string expectedCode1 =

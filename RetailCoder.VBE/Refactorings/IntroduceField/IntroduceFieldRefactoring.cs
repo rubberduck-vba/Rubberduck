@@ -101,7 +101,19 @@ namespace Rubberduck.Refactorings.IntroduceField
         private void AddField(IModuleRewriter rewriter, Declaration target)
         {
             var content = "Private " + target.IdentifierName + " As " + target.AsTypeName + Environment.NewLine;
-            rewriter.AppendToDeclarations(content);
+            var declarations = _state.DeclarationFinder.Members(target.QualifiedName.QualifiedModuleName)
+                .Where(item => item.DeclarationType.HasFlag(DeclarationType.Member))
+                .OrderByDescending(item => item.Selection);
+
+            var lastDeclaration = declarations.LastOrDefault();
+            if (lastDeclaration == null)
+            {
+                rewriter.InsertAtIndex(content, 1);
+            }
+            else
+            {
+                rewriter.InsertAtIndex(content, lastDeclaration.Context.Start.TokenIndex);
+            }
         }
     }
 }

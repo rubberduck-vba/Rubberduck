@@ -132,7 +132,7 @@ End Sub";
             var inspection = new VariableNotAssignedInspection(state);
             inspection.GetInspectionResults().First().QuickFixes.First().Fix();
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -157,7 +157,7 @@ End Sub";
             var inspection = new VariableNotAssignedInspection(state);
             inspection.GetInspectionResults().First().QuickFixes.First().Fix();
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -181,7 +181,7 @@ End Sub";
             var inspection = new VariableNotAssignedInspection(state);
             inspection.GetInspectionResults().Single(s => s.Target.IdentifierName == "var2").QuickFixes.First().Fix();
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -205,7 +205,7 @@ End Sub";
             var inspection = new VariableNotAssignedInspection(state);
             inspection.GetInspectionResults().Single(s => s.Target.IdentifierName == "var2").QuickFixes.First().Fix();
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]

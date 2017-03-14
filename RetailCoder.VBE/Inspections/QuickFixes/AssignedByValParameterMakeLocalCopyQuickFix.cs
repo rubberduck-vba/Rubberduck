@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.Common;
 using System.Collections.Generic;
+using Antlr4.Runtime;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.PostProcessing;
 using Rubberduck.Parsing.VBA;
@@ -93,7 +94,7 @@ namespace Rubberduck.Inspections.QuickFixes
             foreach (var identifierReference in _target.References)
             {
                 rewriter.Replace(identifierReference, localIdentifier);
-        }
+            }
         }
 
         private void InsertLocalVariableDeclarationAndAssignment(IModuleRewriter rewriter, string localIdentifier)
@@ -101,7 +102,8 @@ namespace Rubberduck.Inspections.QuickFixes
             var content = Tokens.Dim + " " + localIdentifier + " " + Tokens.As + " " + _target.AsTypeName + Environment.NewLine
                 + (_target.AsTypeDeclaration is ClassModuleDeclaration ? Tokens.Set + " " : string.Empty)
                 + localIdentifier + " = " + _target.IdentifierName;
-            rewriter.Insert(content, ((VBAParser.ArgListContext)_target.Context.Parent).Stop.Line + 1);
+
+            rewriter.InsertAtIndex(content, ((ParserRuleContext)_target.Context.Parent).Start.TokenIndex);
         }
     }
 }

@@ -64,43 +64,34 @@ namespace Rubberduck.Parsing.PostProcessing
 
         public void Replace(Declaration target, string content)
         {
-            throw new System.NotImplementedException();
+            _rewriter.Replace(target.Context.Start.TokenIndex, target.Context.Stop.TokenIndex, content);
         }
 
         public void Replace(IdentifierReference target, string content)
         {
-            throw new System.NotImplementedException();
+            _rewriter.Replace(target.Context.Start.TokenIndex, target.Context.Stop.TokenIndex, content);
         }
 
         public void Replace(ParserRuleContext target, string content)
         {
-            throw new System.NotImplementedException();
+            _rewriter.Replace(target.Start.TokenIndex, target.Stop.TokenIndex, content);
         }
 
         public void Replace(IToken token, string content)
         {
-            throw new System.NotImplementedException();
+            _rewriter.Replace(token, content);
         }
 
         public void Rename(Declaration target, string identifier)
         {
-            throw new System.NotImplementedException();
-        }
-
-        public void Insert(string content, int line = 1, int column = 1)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void AppendToDeclarations(string content)
-        {
-            var line = _module.CountOfDeclarationLines + 1;
-            Insert(content, line);
+            Interval interval;
+            Identifier.GetName((dynamic)target.Context, out interval);
+            _rewriter.Replace(interval.a, interval.b, identifier);
         }
 
         public void InsertAtIndex(string content, int tokenIndex)
         {
-            throw new System.NotImplementedException();
+            _rewriter.InsertBefore(tokenIndex, content);
         }
 
         public string GetText(int startTokenIndex, int stopTokenIndex)

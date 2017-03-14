@@ -64,25 +64,11 @@ namespace Rubberduck.Parsing.PostProcessing
         void Rename(Declaration target, string identifier);
 
         /// <summary>
-        /// Inserts specified content at the specified position in the module. Use <see cref="Rewrite"/> method to apply changes.
-        /// </summary>
-        /// <param name="content">The literal content to insert.</param>
-        /// <param name="line">The line to insert content at.</param>
-        /// <param name="column">The column to insert content at.</param>
-        void Insert(string content, int line = 1, int column = 1);
-
-        /// <summary>
         /// Inserts specified content at the specified token index in the module. Use <see cref="Rewrite"/> method to apply changes.
         /// </summary>
         /// <param name="content">The literal content to insert.</param>
         /// <param name="tokenIndex">The index of the insertion point in the module's lexer token stream.</param>
         void InsertAtIndex(string content, int tokenIndex);
-
-        /// <summary>
-        /// Adds specified content at the end of the module's declarations section. Use <see cref="Rewrite"/> method to apply changes.
-        /// </summary>
-        /// <param name="content">The literal content to insert.</param>
-        void AppendToDeclarations(string content);
 
         /// <summary>
         /// Gets the text between specified token positions (inclusive).

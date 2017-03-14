@@ -9,6 +9,7 @@ using RubberduckTests.Mocks;
 using Rubberduck.UI.Refactorings;
 using System.Windows.Forms;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.Inspections
 {
@@ -126,8 +127,6 @@ Public Sub Bar(ByVal arg2 As String)
 End Sub"
 ;
             string[] splitToken = { "'VerifyNoChangeBelowThisLine" };
-            var expectedCode = inputCode.Split(splitToken, System.StringSplitOptions.None)[1];
-
             var quickFixResult = ApplyLocalVariableQuickFixToCodeFragment(inputCode);
             var evaluatedFragment = quickFixResult.Split(splitToken, System.StringSplitOptions.None)[1];
             Assert.AreEqual(expectedFragment, evaluatedFragment);
@@ -176,7 +175,8 @@ End Function
 
             var mockDialogFactory = BuildMockDialogFactory(userEnteredName);
 
-            var inspectionResults = GetInspectionResults(vbe.Object, mockDialogFactory.Object);
+            RubberduckParserState state;
+            var inspectionResults = GetInspectionResults(vbe.Object, mockDialogFactory.Object, out state);
             var result = inspectionResults.FirstOrDefault();
             if (result == null)
             {
@@ -184,8 +184,7 @@ End Function
             }
 
             result.QuickFixes.Single(s => s is AssignedByValParameterMakeLocalCopyQuickFix).Fix();
-
-            return GetModuleContent(vbe.Object);
+            return state.GetRewriter(vbe.Object.ActiveVBProject.VBComponents[0]).GetText();
         }
 
         private Mock<IVBE> BuildMockVBE(string inputCode)
@@ -194,9 +193,9 @@ End Function
             return MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
         }
 
-        private IEnumerable<IInspectionResult> GetInspectionResults(IVBE vbe, IAssignedByValParameterQuickFixDialogFactory mockDialogFactory)
+        private IEnumerable<IInspectionResult> GetInspectionResults(IVBE vbe, IAssignedByValParameterQuickFixDialogFactory mockDialogFactory, out RubberduckParserState state)
         {
-            var state = MockParser.CreateAndParse(vbe);
+            state = MockParser.CreateAndParse(vbe);
 
             var inspection = new AssignedByValParameterInspection(state, mockDialogFactory);
             return inspection.GetInspectionResults();
