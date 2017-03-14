@@ -91,7 +91,8 @@ namespace Rubberduck
             }
             // The parser swallows the error if deletions fail - clean up any temp files on startup
             foreach (var file in new DirectoryInfo(ApplicationConstants.RUBBERDUCK_TEMP_PATH).GetFiles())
-            {            try
+            {
+                try
                 {
                         file.Delete();
                 }

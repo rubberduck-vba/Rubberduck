@@ -24,9 +24,15 @@ namespace Rubberduck.Inspections
             return UserDeclarations
                 .Where(declaration =>
                 {
-
                     if (declaration.DeclarationType != DeclarationType.Variable || declaration.IsWithEvents ||
                         !new[] {DeclarationType.ClassModule, DeclarationType.ProceduralModule}.Contains(declaration.ParentDeclaration.DeclarationType))
+                    {
+                        return false;
+                    }
+
+                    var asType = declaration.AsTypeDeclaration;
+                    if (asType != null && asType.ProjectName.Equals("Rubberduck") &&
+                        (asType.IdentifierName.Equals("PermissiveAssertClass") || asType.IdentifierName.Equals("AssertClass")))
                     {
                         return false;
                     }
