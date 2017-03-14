@@ -98,8 +98,6 @@ namespace Rubberduck.UnitTesting
                     {
                         Logger.Error("Unexpected COM exception while running tests.", ex);
                         test.UpdateResult(TestOutcome.Inconclusive, "Unexpected COM exception.");
-                        OnTestCompleted();
-                        continue;
                     }
 
                     stopwatch.Stop();
