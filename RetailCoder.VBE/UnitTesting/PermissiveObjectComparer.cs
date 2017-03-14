@@ -55,11 +55,11 @@ namespace Rubberduck.UnitTesting
         /// DO NOT USE THIS.  It is a hard-coded throw.
         /// </summary>
         /// <param name="obj"></param>
-        /// <returns>NotImplementedException</returns>
+        /// <returns>NotSupportedException</returns>
         public int GetHashCode(object obj)
         {
             //This is intentional to "discourage" any use of the comparer that relies on GetHashCode().
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
     }
 }
