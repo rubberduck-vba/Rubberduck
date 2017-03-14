@@ -8,6 +8,8 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using System.Runtime.InteropServices;
+using NLog;
 
 namespace Rubberduck.UnitTesting
 {
@@ -16,6 +18,8 @@ namespace Rubberduck.UnitTesting
         private readonly TestExplorerModel _model;
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
+
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         // can't be assigned from constructor because ActiveVBProject is null at startup:
         private IHostApplication _hostApplication; 
@@ -84,9 +88,19 @@ namespace Rubberduck.UnitTesting
                     var stopwatch = new Stopwatch();
                     stopwatch.Start();
 
-                    Run(testInitialize);
-                    test.Run();
-                    Run(testCleanup);
+                    try
+                    {
+                        Run(testInitialize);
+                        test.Run();
+                        Run(testCleanup);
+                    }
+                    catch (COMException ex)
+                    {
+                        Logger.Error("Unexpected COM exception while running tests.", ex);
+                        test.UpdateResult(TestOutcome.Inconclusive, "Unexpected COM exception.");
+                        OnTestCompleted();
+                        continue;
+                    }
 
                     stopwatch.Stop();
                     test.Result.SetDuration(stopwatch.ElapsedMilliseconds);
