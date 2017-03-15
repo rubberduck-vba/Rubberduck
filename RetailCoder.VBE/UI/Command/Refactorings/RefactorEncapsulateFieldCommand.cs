@@ -1,10 +1,9 @@
 ﻿using System.Runtime.InteropServices;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Refactorings.EncapsulateField;
-using Rubberduck.UI.Refactorings;
 using Rubberduck.SmartIndenter;
 using Rubberduck.Settings;
+using Rubberduck.UI.Refactorings.EncapsulateField;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command.Refactorings
@@ -46,17 +45,15 @@ namespace Rubberduck.UI.Command.Refactorings
                 return;
             }
 
-            using (var view = new EncapsulateFieldDialog(_state, _indenter))
+            using (var view = new EncapsulateFieldDialog(new EncapsulateFieldViewModel(_state, _indenter)))
             {
-                var factory = new EncapsulateFieldPresenterFactory(Vbe, _state, view);
+                /*var factory = new EncapsulateFieldPresenterFactory(Vbe, _state, view);
                 var refactoring = new EncapsulateFieldRefactoring(Vbe, _indenter, factory);
-                refactoring.Refactor();
+                refactoring.Refactor();*/
+                view.ShowDialog();
             }
         }
 
-        public override RubberduckHotkey Hotkey
-        {
-            get { return RubberduckHotkey.RefactorEncapsulateField; }
-        }
+        public override RubberduckHotkey Hotkey => RubberduckHotkey.RefactorEncapsulateField;
     }
 }

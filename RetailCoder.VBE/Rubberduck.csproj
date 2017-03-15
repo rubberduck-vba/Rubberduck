@@ -477,6 +477,10 @@
     <Compile Include="UI\EnvironmentProvider.cs" />
     <Compile Include="UI\ModernFolderBrowser.cs" />
     <Compile Include="UI\Refactorings\AssignedByValParameterQuickFixDialogFactory.cs" />
+    <Compile Include="UI\Refactorings\EncapsulateField\EncapsulateFieldView.xaml.cs">
+      <DependentUpon>EncapsulateFieldView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Refactorings\EncapsulateField\EncapsulateFieldViewModel.cs" />
     <Compile Include="UI\Refactorings\IAssignedByValParameterQuickFixDialog.cs" />
     <Compile Include="UI\Refactorings\IAssignedByValParameterQuickFixDialogFactory.cs" />
     <Compile Include="UI\Refactorings\RemoveParameters\ParameterTextDecorationConverter.cs" />
@@ -757,10 +761,10 @@
     <Compile Include="UI\Refactorings\AssignedByValParameterQuickFixDialog.Designer.cs">
       <DependentUpon>AssignedByValParameterQuickFixDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Refactorings\EncapsulateFieldDialog.cs">
+    <Compile Include="UI\Refactorings\EncapsulateField\EncapsulateFieldDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\Refactorings\EncapsulateFieldDialog.Designer.cs">
+    <Compile Include="UI\Refactorings\EncapsulateField\EncapsulateFieldDialog.Designer.cs">
       <DependentUpon>EncapsulateFieldDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Refactorings\ExtractInterfaceDialog.cs">
@@ -1103,7 +1107,7 @@
     <EmbeddedResource Include="UI\Refactorings\AssignedByValParameterQuickFixDialog.resx">
       <DependentUpon>AssignedByValParameterQuickFixDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Refactorings\EncapsulateFieldDialog.resx">
+    <EmbeddedResource Include="UI\Refactorings\EncapsulateField\EncapsulateFieldDialog.resx">
       <DependentUpon>EncapsulateFieldDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Refactorings\ExtractInterfaceDialog.resx">
@@ -1486,6 +1490,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\FindSymbol\FindSymbolControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Refactorings\EncapsulateField\EncapsulateFieldView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
