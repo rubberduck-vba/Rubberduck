@@ -335,20 +335,22 @@ namespace RubberduckTests.Symbols
             var splitToken = new string[] { "\r\n" };
 
             var lines = moduleContent.Split(splitToken, System.StringSplitOptions.None);
-            int lineNumber = 0;
-            for (int idx = 0; idx < lines.Count() && lineNumber < 1; idx++)
+            int lineOfInterestNumber = 0;
+            string lineOfInterestContent = string.Empty;
+            for (int idx = 0; idx < lines.Count() && lineOfInterestNumber < 1; idx++)
             {
                 if (lines[idx].Contains(tdo.SelectionLineIdentifier))
                 {
-                    lineNumber = idx + 1;
+                    lineOfInterestNumber = idx + 1;
+                    lineOfInterestContent = lines[idx];
                 }
             }
-            Assert.IsTrue(lineNumber > 0, "Unable to find target '" + tdo.SelectionTarget + "' in " + tdo.SelectionModuleName + " content.");
-            var column = lines[lineNumber - 1].IndexOf(tdo.SelectionLineIdentifier);
+            Assert.IsTrue(lineOfInterestNumber > 0, "Unable to find target '" + tdo.SelectionTarget + "' in " + tdo.SelectionModuleName + " content.");
+            var column = lineOfInterestContent.IndexOf(tdo.SelectionLineIdentifier);
             column = column + tdo.SelectionLineIdentifier.IndexOf(tdo.SelectionTarget) + 1;
 
             var moduleParent = component.CodeModule.Parent;
-            tdo.QualifiedSelection = new QualifiedSelection(new QualifiedModuleName(moduleParent), new Selection(lineNumber, column, lineNumber, column));
+            tdo.QualifiedSelection = new QualifiedSelection(new QualifiedModuleName(moduleParent), new Selection(lineOfInterestNumber, column, lineOfInterestNumber, column));
         }
 
         private void AddTestComponent(AccessibilityTestsDataObject tdo, string moduleIdentifier, string moduleContent, ComponentType componentType)
