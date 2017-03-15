@@ -32,7 +32,7 @@ namespace RubberduckTests.Symbols
                 "Foo"
             };
 
-            string moduleContent1 = GetInProcedure_MethodDeclaration_moduleContent1();
+            string moduleContent1 = InProcedure_MethodDeclaration_moduleContent1();
 
             var tdo = new AccessibilityTestsDataObject();
             AddTestSelectionCriteria(tdo, "CFirstClass", "Foo", "Function Foo() As Long");
@@ -53,7 +53,7 @@ namespace RubberduckTests.Symbols
                 "Foo"
             };
 
-            string moduleContent1 = GetInProcedure_LocalVariableReference_moduleContent1();
+            string moduleContent1 = InProcedure_LocalVariableReference_moduleContent1();
 
             var tdo = new AccessibilityTestsDataObject();
             AddTestSelectionCriteria(tdo, "modTest", "adder", "member1 + adder");
@@ -69,10 +69,12 @@ namespace RubberduckTests.Symbols
             var expectedResults = new string[]
             {
                 "Option Explicit",
+                "adder",
+                "member1",
                 "Foo"
             };
 
-            string moduleContent1 = GetInProcedure_MemberDeclaration_moduleContent1();
+            string moduleContent1 = InProcedure_MemberDeclaration_moduleContent1();
 
             var tdo = new AccessibilityTestsDataObject();
             AddTestSelectionCriteria(tdo, "CFirstClass", "member1", "member1 + adder");
@@ -88,16 +90,36 @@ namespace RubberduckTests.Symbols
             var expectedResults = new string[]
             {
                 "Option Explicit",
-                "Foo",
-                "member2",
-                "Foo2"
+                "adder",
+                "Foo"
             };
 
-            string moduleContent1 = GetModuleScope_moduleContent1();
-            string moduleContent2 = GetModuleScope_moduleContent2();
+            string moduleContent1 = ModuleScope_CFirstClassContent();
+            string moduleContent2 = ModuleScope_moduleContent2();
 
             var tdo = new AccessibilityTestsDataObject();
             AddTestSelectionCriteria(tdo, "CFirstClass", "member1", "member1 + adder");
+
+            AddTestComponent(tdo, tdo.SelectionModuleName, moduleContent1, ComponentType.ClassModule);
+            AddTestComponent(tdo, "modOne", moduleContent2, ComponentType.StandardModule);
+
+            TestAccessibleDeclarations(tdo, expectedResults);
+        }
+
+        [TestMethod]
+        [TestCategory("Resolver")]
+        public void DeclarationFinder_PublicClassAndPublicModuleSub_RenameClassSub()
+        {
+            var expectedResults = new string[]
+            {
+                "Foo"
+            };
+
+            string moduleContent1 = PublicClassAndPubicModuleSub_CFirstClass();
+            string moduleContent2 = PublicClassAndPubicModuleSub_moduleContent2();
+
+            var tdo = new AccessibilityTestsDataObject();
+            AddTestSelectionCriteria(tdo, "CFirstClass", "Foo", "Function Foo() As Long");
 
             AddTestComponent(tdo, tdo.SelectionModuleName, moduleContent1, ComponentType.ClassModule);
             AddTestComponent(tdo, "modOne", moduleContent2, ComponentType.StandardModule);
@@ -114,23 +136,22 @@ namespace RubberduckTests.Symbols
                 "Option Explicit",
                 "Foo2",
                 "Bar",
-                "member11",
-                "Foo"
+                "member11"
             };
 
-            string modOneContent1 = GetModule_To_ClassScope_moduleContent1();
-            string moduleContent2 = GetModule_To_ClassScope_moduleContent2();
+            string moduleContent1 = Module_To_ClassScope_moduleContent1();
+            string moduleContent2 = Module_To_ClassScope_CFirstClass();
 
             var tdo = new AccessibilityTestsDataObject();
             AddTestSelectionCriteria(tdo, "modOne", "member2", "member2 * 4");
 
-            AddTestComponent(tdo, tdo.SelectionModuleName, modOneContent1, ComponentType.ClassModule);
-            AddTestComponent(tdo, "CFirstClass", moduleContent2, ComponentType.StandardModule);
+            AddTestComponent(tdo, tdo.SelectionModuleName, moduleContent1, ComponentType.StandardModule);
+            AddTestComponent(tdo, "CFirstClass", moduleContent2, ComponentType.ClassModule);
 
             TestAccessibleDeclarations(tdo, expectedResults);
         }
 
-        [TestMethod, Ignore]
+        [TestMethod]
         [TestCategory("Resolver")]
         public void DeclarationFinder_PrivateSub_RespectPublicSubInOtherModule()
         {
@@ -142,8 +163,8 @@ namespace RubberduckTests.Symbols
                 "member1"
             };
 
-            string moduleContent1 = GetPrivateSub_RespectPublicSubInOtherModule_moduleContent1();
-            string moduleContent2 = GetPrivateSub_RespectPublicSubInOtherModule_moduleContent2();
+            string moduleContent1 = PrivateSub_RespectPublicSubInOtherModule_moduleContent1();
+            string moduleContent2 = PrivateSub_RespectPublicSubInOtherModule_moduleContent2();
 
             var tdo = new AccessibilityTestsDataObject();
             AddTestSelectionCriteria(tdo, "modOne", "SetFilename", "SetFilename filename");
@@ -154,27 +175,114 @@ namespace RubberduckTests.Symbols
             TestAccessibleDeclarations(tdo, expectedResults);
         }
 
+        [TestMethod]
+        [TestCategory("Resolver")]
+        public void DeclarationFinder_PrivateSub_MultipleReferences()
+        {
+            var expectedResults = new string[]
+            {
+                "Option Explicit",
+                "DoThis",
+                "filename",
+                "member1",
+                "StoreFilename",
+                "ExtractFilename",
+                "mFolderpath",
+                "filepath"
+            };
+
+            string moduleContent1 = PrivateSub_MultipleReferences_moduleContent1();
+            string moduleContent2 = PrivateSub_MultipleReferences_moduleContent2();
+            string moduleContent3 = PrivateSub_MultipleReferences_moduleContent3();
+
+            var tdo = new AccessibilityTestsDataObject();
+            AddTestSelectionCriteria(tdo, "modOne", "SetFilename", "SetFilename filename");
+
+            AddTestComponent(tdo, tdo.SelectionModuleName, moduleContent1, ComponentType.StandardModule);
+            AddTestComponent(tdo, "modTwo", moduleContent2, ComponentType.StandardModule);
+            AddTestComponent(tdo, "modThree", moduleContent3, ComponentType.StandardModule);
+
+            TestAccessibleDeclarations(tdo, expectedResults);
+        }
+
+        [TestMethod]
+        [TestCategory("Resolver")]
+        public void DeclarationFinder_PrivateSub_WithBlock()
+        {
+            var expectedResults = new string[]
+            {
+                "Option Explicit",
+                "mFolderpath",
+                "ExtractFilename",
+                "SetFilename",
+                "filename",
+                "input",
+                "Bar"
+            };
+
+            string moduleContent1 = PrivateSub_MultipleReferences_WithBlock_ModuleContent1();
+            string moduleContent2 = PrivateSub_MultipleReferences_WithBlock_CFileHelperContent();
+
+            var tdo = new AccessibilityTestsDataObject();
+            AddTestSelectionCriteria(tdo, "modOne", "StoreFilename", ".StoreFilename filepath");
+
+            AddTestComponent(tdo, tdo.SelectionModuleName, moduleContent1, ComponentType.StandardModule);
+            AddTestComponent(tdo, "CFileHelper", moduleContent2, ComponentType.ClassModule);
+
+            TestAccessibleDeclarations(tdo, expectedResults);
+        }
+
+        [TestMethod]
+        [TestCategory("Resolver")]
+        public void DeclarationFinder_Module_To_ModuleScopeResolution()
+        {
+            var expectedResults = new string[]
+            {
+                "Option Explicit",
+                "Foo1",
+                "Foo2",
+                "Foo3",
+                "Foo4",
+                "gConstant",
+                "member2"
+            };
+
+            string moduleContent1 = Module_To_ModuleScopeResolution__moduleContent1();
+            string moduleContent2 = Module_To_ModuleScopeResolution__moduleContent2();
+
+            var tdo = new AccessibilityTestsDataObject();
+            AddTestSelectionCriteria(tdo, "modOne", "Foo2", "Foo2 + modTwo.Foo3");
+
+            AddTestComponent(tdo, tdo.SelectionModuleName, moduleContent1, ComponentType.StandardModule);
+            AddTestComponent(tdo, "modTwo", moduleContent2, ComponentType.StandardModule);
+
+            TestAccessibleDeclarations(tdo, expectedResults);
+        }
+
         private void TestAccessibleDeclarations(AccessibilityTestsDataObject tdo, string[] testSpecificExpectedResults)
         {
 
+            PrepareScenarioTestData(tdo, testSpecificExpectedResults);
+
+            var target = tdo.Parser.AllUserDeclarations.FindTarget(tdo.QualifiedSelection);
+            if(null == target)  { Assert.Inconclusive("Unable to find target from QualifiedSelection"); }
+
+            var accessibleNames = tdo.Parser.DeclarationFinder.GetDeclarationsWithIdentifiersToAvoid(target)
+                    .Select(d => d.IdentifierName);
+
+            Assert.IsFalse(accessibleNames.Except(tdo.ExpectedResults).Any()
+                    || tdo.ExpectedResults.Except(accessibleNames).Any()
+                        , BuildIdentifierListToDisplay(accessibleNames.Except(tdo.ExpectedResults), tdo.ExpectedResults.Except(accessibleNames)));
+        }
+
+        private void PrepareScenarioTestData(AccessibilityTestsDataObject tdo, string[] testSpecificExpectedResults)
+        {
             SetExpectedResults(tdo, testSpecificExpectedResults);
 
-            PrepareScenarioData(tdo);
+            tdo.VBE = BuildProject(tdo.ProjectName, tdo.Components);
+            tdo.Parser = MockParser.CreateAndParse(tdo.VBE);
 
-            var declarationFinderResults =
-                tdo.Parser.DeclarationFinder.GetDeclarationsWithIdentifiersToAvoid(tdo.Target);
-
-            var accessibleNames = declarationFinderResults.Select(d => d.IdentifierName);
-
-            Assert.IsTrue(accessibleNames.Count() > 0, "No accessible names detected.  'Target' may be null");
-
-            //Found names not identified for the test
-            var additionalNamesFound = accessibleNames.Except(tdo.ExpectedResults).ToList();
-            Assert.IsFalse(additionalNamesFound.Any(), "Unexpected identifiers found: " + BuildIdentifierListToDisplay(additionalNamesFound));
-
-            //GetDeclarationsWithIdentifiersToAvoid(...) did not return all possible conflict identifiers
-            var missedNames = tdo.ExpectedResults.Except(accessibleNames);
-            Assert.IsFalse(missedNames.Any(), "Missed identifiers: " + BuildIdentifierListToDisplay(missedNames));
+            CreateQualifiedSelectionForTestCase(tdo);
         }
 
         private void SetExpectedResults(AccessibilityTestsDataObject tdo, string[] testSpecificExpectedResults)
@@ -188,18 +296,25 @@ namespace RubberduckTests.Symbols
             tdo.ExpectedResults.Add(tdo.ProjectName);
         }
 
-        private void PrepareScenarioData(AccessibilityTestsDataObject tdo)
+        private string BuildIdentifierListToDisplay(IEnumerable<string> extraIdentifiers, IEnumerable<string> missedIdentifiers)
         {
-            tdo.VBE = BuildProject(tdo.ProjectName, tdo.Components);
-            tdo.Parser = MockParser.CreateAndParse(tdo.VBE);
+            var extraNamesPreface = "Returned unexpected identifier(s): ";
+            var missedNamesPreface = "Did not return expected identifier(s): ";
+            string extraResults = string.Empty;
+            string missingResults = string.Empty;
+            if (extraIdentifiers.Any())
+            {
+                extraResults = extraNamesPreface + GetListOfNames(extraIdentifiers);
+            }
+            if (missedIdentifiers.Any())
+            {
+                missingResults = missedNamesPreface + GetListOfNames(missedIdentifiers);
+            }
 
-            CreateQualifiedSelectionForTestCase(tdo);
-
-            IList<Declaration> declarationFinderResults = tdo.Parser.AllUserDeclarations.ToList();
-            tdo.Target = declarationFinderResults.FindTarget(tdo.QualifiedSelection);
+            return "\r\n" + extraResults + "\r\n" + missingResults;
         }
 
-        private string BuildIdentifierListToDisplay(IEnumerable<string> identifiers)
+        private string GetListOfNames(IEnumerable<string> identifiers)
         {
             if (!identifiers.Any()) { return ""; }
 
@@ -302,7 +417,6 @@ namespace RubberduckTests.Symbols
             public string SelectionLineIdentifier { get; set; }
             public List<string> ExpectedResults { get; set; }
             public QualifiedSelection QualifiedSelection { get; set; }
-            public Declaration Target { get; set; }
         }
 
 
@@ -417,7 +531,23 @@ End Sub
         }
 
         #region AccessibilityTests_HardcodedModuleContent
-        private string GetInProcedure_MethodDeclaration_moduleContent1()
+        private string InProcedure_MethodDeclaration_moduleContent1()
+        {
+            return
+    @"
+Option Explicit
+
+Private member1 As Long
+
+Public Function Foo() As Long   'Selecting 'Foo' to rename
+    Dim adder as Long
+    adder = 10
+    member1 = member1 + adder
+    Foo = member1
+End Function
+";
+        }
+        private string InProcedure_LocalVariableReference_moduleContent1()
         {
             return
     @"
@@ -428,12 +558,12 @@ Private member1 As Long
 Public Function Foo() As Long
     Dim adder as Long
     adder = 10
-    member1 = member1 + adder
+    member1 = member1 + adder   'Selecting 'adder' to rename
     Foo = member1
 End Function
 ";
         }
-        private string GetInProcedure_LocalVariableReference_moduleContent1()
+        private string InProcedure_MemberDeclaration_moduleContent1()
         {
             return
     @"
@@ -444,12 +574,12 @@ Private member1 As Long
 Public Function Foo() As Long
     Dim adder as Long
     adder = 10
-    member1 = member1 + adder
+    member1 = member1 + adder       'Selecting member1 to rename
     Foo = member1
 End Function
 ";
         }
-        private string GetInProcedure_MemberDeclaration_moduleContent1()
+        private string ModuleScope_CFirstClassContent()
         {
             return
     @"
@@ -460,28 +590,12 @@ Private member1 As Long
 Public Function Foo() As Long
     Dim adder as Long
     adder = 10
-    member1 = member1 + adder
+    member1 = member1 + adder       'Selecting 'member1' to rename
     Foo = member1
 End Function
 ";
         }
-        private string GetModuleScope_moduleContent1()
-        {
-            return
-    @"
-Option Explicit
-
-Private member1 As Long
-
-Public Function Foo() As Long
-    Dim adder as Long
-    adder = 10
-    member1 = member1 + adder
-    Foo = member1
-End Function
-";
-        }
-        private string GetModuleScope_moduleContent2()
+        private string ModuleScope_moduleContent2()
         {
             return
     @"
@@ -502,7 +616,26 @@ Private Sub Bar()
 End Sub
 ";
         }
-        private string GetModule_To_ClassScope_moduleContent1()
+        private string PublicClassAndPubicModuleSub_CFirstClass()
+        {
+            return
+    @"
+Public Function Foo() As Long   'Selecting 'Foo' to rename
+    Foo = 5
+End Function
+";
+        }
+        private string PublicClassAndPubicModuleSub_moduleContent2()
+        {
+            return
+    @"
+Public Function Foo2() As Long
+    Foo2 = 2
+End Function
+";
+        }
+
+        private string Module_To_ClassScope_moduleContent1()
         {
             return
     @"
@@ -519,11 +652,11 @@ Public Function Foo2() As Long
 End Function
 
 Private Sub Bar()
-    member2 = member2 * 4   'Select either member2 reference from this line
+    member2 = member2 * 4   'Selecting member2 to rename
 End Sub
 ";
         }
-        private string GetModule_To_ClassScope_moduleContent2()
+        private string Module_To_ClassScope_CFirstClass()
         {
             return
     @"
@@ -539,7 +672,7 @@ Public Function Foo() As Long
 End Function
 ";
         }
-        private string GetPrivateSub_RespectPublicSubInOtherModule_moduleContent1()
+        private string PrivateSub_RespectPublicSubInOtherModule_moduleContent1()
         {
             return
 @"
@@ -547,11 +680,11 @@ Option Explicit
 
 
 Private Sub DoThis(filename As String)
-    SetFilename filename
+    SetFilename filename            'Selecting 'SetFilename' to rename
 End Sub
 ";
         }
-        private string GetPrivateSub_RespectPublicSubInOtherModule_moduleContent2()
+        private string PrivateSub_RespectPublicSubInOtherModule_moduleContent2()
         {
             return
     @"
@@ -561,6 +694,145 @@ Private member1 As String
 
 Public Sub SetFilename(filename As String)
     member1 = filename
+End Sub
+";
+        }
+
+        private string PrivateSub_MultipleReferences_moduleContent1()
+        {
+            return
+@"
+Option Explicit
+
+
+Private Sub DoThis(filename As String)
+    SetFilename filename       'Selecting 'SetFilename' to rename
+End Sub
+";
+        }
+        private string PrivateSub_MultipleReferences_moduleContent2()
+        {
+            return
+    @"
+Option Explicit
+
+Private member1 As String
+
+Public Sub SetFilename(filename As String)
+    member1 = filename
+End Sub
+";
+        }
+        private string PrivateSub_MultipleReferences_WithBlock_CFileHelperContent()
+        {
+            return
+    @"
+Option Explicit
+
+Private mFolderpath As String
+
+Public Sub StoreFilename(input As String)
+    Dim filename As String
+    filename = ExtractFilename(input)
+    SetFilename filename
+End Sub
+
+Private Function ExtractFilename(filepath As String) As String
+    ExtractFilename = filepath
+End Function
+
+Public Sub Bar()
+End Sub
+";
+        }
+
+        private string PrivateSub_MultipleReferences_WithBlock_ModuleContent1()
+        {
+            return
+    @"
+Option Explicit
+
+Private myData As String
+Private mDupData As String
+
+Public Sub Foo(filenm As String)
+    Dim filepath As String
+    filepath = ""C:\MyStuff\"" & filenm
+    Dim helper As CFileHelper
+    Set helper = new CFileHelper
+    With helper
+        .StoreFilename filepath     'Selecting 'StoreFilename' to rename
+        mDupData = filepath
+    End With
+End Sub
+
+Private Sub StoreFilename(filename As String)
+    myData = filename
+End Sub
+";
+        }
+
+        private string PrivateSub_MultipleReferences_moduleContent3()
+        {
+            return
+    @"
+Option Explicit
+
+Private mFolderpath As String
+
+Private Sub StoreFilename(filepath As String)
+    Dim filename As String
+    filename = ExtractFilename(filepath)
+    SetFilename filename
+End Sub
+
+Private Function ExtractFilename(filepath As String) As String
+    ExtractFilename = filepath
+End Function
+";
+        }
+
+        private string Module_To_ModuleScopeResolution__moduleContent1()
+        {
+            return
+    @"
+Option Explicit
+
+Private member11 As Long
+Public member2 As Long
+
+Private Function Bar1() As Long
+    Bar2
+    Bar1 = member2 + modTwo.Foo1 + modTwo.Foo2 + modTwo.Foo3   'Selecting Foo2 to rename
+End Function
+
+Private Sub Bar2()
+    member2 = member2 * 4 
+End Sub
+";
+        }
+        private string Module_To_ModuleScopeResolution__moduleContent2()
+        {
+            return
+    @"
+Option Explicit
+
+Public Const gConstant As Long = 10
+
+Public Function Foo1() As Long
+    Foo1 = 1
+End Function
+
+Public Function Foo2() As Long
+    Foo2 = 2
+End Function
+
+Public Function Foo3() As Long
+    Foo3 = 3
+End Function
+
+Private Sub Foo4()
+
 End Sub
 ";
         }
