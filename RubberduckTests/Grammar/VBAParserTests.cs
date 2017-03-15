@@ -1699,6 +1699,39 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//rangeClause", matches => matches.Count == 1);
         }
 
+        [TestCategory("Parser")]
+        [TestMethod]
+        public void TestRaiseEventByValParameter()
+        {
+            const string code = @"
+Public Event Foo(ByRef Bar As Boolean, ByVal Baz As String)
+
+Public Sub Test()
+    Dim arg As String
+    arg = ""Foo""
+    RaiseEvent Foo(True, ByVal 42)
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//raiseEventStmt", matches => matches.Count == 1);
+        }
+
+        [TestCategory("Parser")]
+        [TestMethod]
+        public void TestRaiseEvent()
+        {
+            const string code = @"
+Public Event Foo(ByRef Bar As Boolean, ByVal Baz As String)
+
+Public Sub Test()
+    Dim arg As Boolean
+    RaiseEvent Foo(arg, ""Foo"")
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//raiseEventStmt", matches => matches.Count == 1);
+        }
+
         private Tuple<VBAParser, ParserRuleContext> Parse(string code)
         {
             var stream = new AntlrInputStream(code);

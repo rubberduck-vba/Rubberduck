@@ -419,7 +419,7 @@ propertyLetStmt :
 // 5.4.2.20 RaiseEvent Statement
 raiseEventStmt : RAISEEVENT whiteSpace identifier (whiteSpace? LPAREN whiteSpace? eventArgumentList? whiteSpace? RPAREN)?;
 eventArgumentList : eventArgument (whiteSpace? COMMA whiteSpace? eventArgument)*;
-eventArgument : ((BYVAL | BYREF) whiteSpace)? expression;
+eventArgument : (BYVAL whiteSpace)? expression;
 
 // 5.4.3.3 ReDim Statement
 // To make the grammar non-ambiguous we treat redim statements as index expressions.

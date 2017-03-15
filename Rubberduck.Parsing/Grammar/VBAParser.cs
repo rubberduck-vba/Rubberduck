@@ -9454,7 +9454,6 @@ public partial class VBAParser : Parser {
 	}
 
 	public partial class EventArgumentContext : ParserRuleContext {
-		public ITerminalNode BYREF() { return GetToken(VBAParser.BYREF, 0); }
 		public WhiteSpaceContext whiteSpace() {
 			return GetRuleContext<WhiteSpaceContext>(0);
 		}
@@ -9486,7 +9485,6 @@ public partial class VBAParser : Parser {
 	public EventArgumentContext eventArgument() {
 		EventArgumentContext _localctx = new EventArgumentContext(_ctx, State);
 		EnterRule(_localctx, 236, RULE_eventArgument);
-		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
@@ -9494,12 +9492,7 @@ public partial class VBAParser : Parser {
 			switch ( Interpreter.AdaptivePredict(_input,205,_ctx) ) {
 			case 1:
 				{
-				State = 1704;
-				_la = _input.La(1);
-				if ( !(_la==BYVAL || _la==BYREF) ) {
-				_errHandler.RecoverInline(this);
-				}
-				Consume();
+				State = 1704; Match(BYVAL);
 				State = 1705; whiteSpace();
 				}
 				break;
@@ -20557,7 +20550,7 @@ public partial class VBAParser : Parser {
 		"\x3\x2\x2\x2\x6A2\x6A3\x3\x2\x2\x2\x6A3\x6A4\x3\x2\x2\x2\x6A4\x6A6\x5"+
 		"\xEEx\x2\x6A5\x69E\x3\x2\x2\x2\x6A6\x6A9\x3\x2\x2\x2\x6A7\x6A5\x3\x2\x2"+
 		"\x2\x6A7\x6A8\x3\x2\x2\x2\x6A8\xED\x3\x2\x2\x2\x6A9\x6A7\x3\x2\x2\x2\x6AA"+
-		"\x6AB\t\b\x2\x2\x6AB\x6AD\x5\x1BA\xDE\x2\x6AC\x6AA\x3\x2\x2\x2\x6AC\x6AD"+
+		"\x6AB\a=\x2\x2\x6AB\x6AD\x5\x1BA\xDE\x2\x6AC\x6AA\x3\x2\x2\x2\x6AC\x6AD"+
 		"\x3\x2\x2\x2\x6AD\x6AE\x3\x2\x2\x2\x6AE\x6AF\x5\x176\xBC\x2\x6AF\xEF\x3"+
 		"\x2\x2\x2\x6B0\x6B1\a\xAC\x2\x2\x6B1\x6B4\x5\x1BA\xDE\x2\x6B2\x6B3\a\x9F"+
 		"\x2\x2\x6B3\x6B5\x5\x1BA\xDE\x2\x6B4\x6B2\x3\x2\x2\x2\x6B4\x6B5\x3\x2"+
