@@ -220,8 +220,8 @@ namespace RubberduckTests.Symbols
                 "Bar"
             };
 
-            string moduleContent1 = PrivateSub_MultipleReferences_WithBlock_ModuleContent1();
-            string moduleContent2 = PrivateSub_MultipleReferences_WithBlock_CFileHelperContent();
+            string moduleContent1 = PrivateSub_WithBlock_ModuleContent1();
+            string moduleContent2 = PrivateSub_WithBlock_CFileHelperContent();
 
             var tdo = new AccessibilityTestsDataObject();
             AddTestSelectionCriteria(tdo, "modOne", "StoreFilename", ".StoreFilename filepath");
@@ -547,6 +547,7 @@ Public Function Foo() As Long   'Selecting 'Foo' to rename
 End Function
 ";
         }
+
         private string InProcedure_LocalVariableReference_moduleContent1()
         {
             return
@@ -563,6 +564,7 @@ Public Function Foo() As Long
 End Function
 ";
         }
+
         private string InProcedure_MemberDeclaration_moduleContent1()
         {
             return
@@ -579,6 +581,7 @@ Public Function Foo() As Long
 End Function
 ";
         }
+
         private string ModuleScope_CFirstClassContent()
         {
             return
@@ -595,6 +598,7 @@ Public Function Foo() As Long
 End Function
 ";
         }
+
         private string ModuleScope_moduleContent2()
         {
             return
@@ -616,6 +620,7 @@ Private Sub Bar()
 End Sub
 ";
         }
+
         private string PublicClassAndPubicModuleSub_CFirstClass()
         {
             return
@@ -625,6 +630,7 @@ Public Function Foo() As Long   'Selecting 'Foo' to rename
 End Function
 ";
         }
+
         private string PublicClassAndPubicModuleSub_moduleContent2()
         {
             return
@@ -656,6 +662,7 @@ Private Sub Bar()
 End Sub
 ";
         }
+
         private string Module_To_ClassScope_CFirstClass()
         {
             return
@@ -672,6 +679,7 @@ Public Function Foo() As Long
 End Function
 ";
         }
+
         private string PrivateSub_RespectPublicSubInOtherModule_moduleContent1()
         {
             return
@@ -684,6 +692,7 @@ Private Sub DoThis(filename As String)
 End Sub
 ";
         }
+
         private string PrivateSub_RespectPublicSubInOtherModule_moduleContent2()
         {
             return
@@ -710,6 +719,7 @@ Private Sub DoThis(filename As String)
 End Sub
 ";
         }
+
         private string PrivateSub_MultipleReferences_moduleContent2()
         {
             return
@@ -723,7 +733,28 @@ Public Sub SetFilename(filename As String)
 End Sub
 ";
         }
-        private string PrivateSub_MultipleReferences_WithBlock_CFileHelperContent()
+
+        private string PrivateSub_MultipleReferences_moduleContent3()
+        {
+            return
+    @"
+Option Explicit
+
+Private mFolderpath As String
+
+Private Sub StoreFilename(filepath As String)
+    Dim filename As String
+    filename = ExtractFilename(filepath)
+    SetFilename filename
+End Sub
+
+Private Function ExtractFilename(filepath As String) As String
+    ExtractFilename = filepath
+End Function
+";
+        }
+
+        private string PrivateSub_WithBlock_CFileHelperContent()
         {
             return
     @"
@@ -746,7 +777,7 @@ End Sub
 ";
         }
 
-        private string PrivateSub_MultipleReferences_WithBlock_ModuleContent1()
+        private string PrivateSub_WithBlock_ModuleContent1()
         {
             return
     @"
@@ -766,29 +797,9 @@ Public Sub Foo(filenm As String)
     End With
 End Sub
 
-Private Sub StoreFilename(filename As String)
+Public Sub StoreFilename(filename As String)
     myData = filename
 End Sub
-";
-        }
-
-        private string PrivateSub_MultipleReferences_moduleContent3()
-        {
-            return
-    @"
-Option Explicit
-
-Private mFolderpath As String
-
-Private Sub StoreFilename(filepath As String)
-    Dim filename As String
-    filename = ExtractFilename(filepath)
-    SetFilename filename
-End Sub
-
-Private Function ExtractFilename(filepath As String) As String
-    ExtractFilename = filepath
-End Function
 ";
         }
 
