@@ -6,6 +6,8 @@ namespace Rubberduck.VBEditor.Application
 {
     public class ExcelApp : HostApplicationBase<Microsoft.Office.Interop.Excel.Application>
     {
+        public const int MaxPossibleLengthOfProcedureName = 255;
+
         public ExcelApp() : base("Excel") { }
         public ExcelApp(IVBE vbe) : base(vbe, "Excel") { }
 
@@ -95,9 +97,13 @@ namespace Rubberduck.VBEditor.Application
                 ? declaration.ProjectDisplayName
                 : Path.GetFileName(module.ProjectPath);
 
-            return string.IsNullOrEmpty(documentName)
+            var candidateString = string.IsNullOrEmpty(documentName)
                 ? qualifiedMemberName.ToString()
                 : string.Format("'{0}'!{1}", documentName.Replace("'", "''"), qualifiedMemberName);
+
+            return candidateString.Length <= MaxPossibleLengthOfProcedureName
+                ? candidateString
+                : qualifiedMemberName.ToString();
         }
     }
 }
