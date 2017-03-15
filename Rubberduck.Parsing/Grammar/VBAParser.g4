@@ -419,7 +419,7 @@ propertyLetStmt :
 // 5.4.2.20 RaiseEvent Statement
 raiseEventStmt : RAISEEVENT whiteSpace identifier (whiteSpace? LPAREN whiteSpace? eventArgumentList? whiteSpace? RPAREN)?;
 eventArgumentList : eventArgument (whiteSpace? COMMA whiteSpace? eventArgument)*;
-eventArgument : expression;
+eventArgument : ((BYVAL | BYREF) whiteSpace)? expression;
 
 // 5.4.3.3 ReDim Statement
 // To make the grammar non-ambiguous we treat redim statements as index expressions.
@@ -705,15 +705,12 @@ keyword :
      | LENB
      | LIB
      | LIKE
-     | LOAD
      | LONG
      | LONGLONG
      | LONGPTR
      | ME
      | MID
      | MIDB
-//     | MIDBTYPESUFFIX
-//     | MIDTYPESUFFIX
      | MOD
      | NEW
      | NOT
@@ -745,7 +742,6 @@ keyword :
      | XOR
      | STEP
      | ON_ERROR
-     | RESUME_NEXT
      | ERROR
      | APPEND
      | BINARY
