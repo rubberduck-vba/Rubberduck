@@ -155,7 +155,9 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
                     GenerateLetter = IsLetSelected
                 };
 
-                var propertyText = previewGenerator.AllPropertyCode.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+                var field = $"{Tokens.Private} {TargetDeclaration.IdentifierName} {Tokens.As} {TargetDeclaration.AsTypeName}{Environment.NewLine}{Environment.NewLine}";
+
+                var propertyText = previewGenerator.AllPropertyCode.Insert(0, field).Split(new[] { Environment.NewLine }, StringSplitOptions.None);
                 return string.Join(Environment.NewLine, Indenter.Indent(propertyText, true));
             }
         }
