@@ -5,6 +5,7 @@ using NLog;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.SmartIndenter;
 using Rubberduck.UI.Command;
 
@@ -59,6 +60,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             {
                 _isLetSelected = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(PropertyPreview));
             }
         }
 
@@ -70,6 +72,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             {
                 _isSetSelected = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(PropertyPreview));
             }
         }
 
@@ -82,11 +85,12 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
                 _propertyName = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsValidPropertyName));
+                OnPropertyChanged(nameof(HasValidNames));
                 OnPropertyChanged(nameof(PropertyPreview));
             }
         }
 
-        private string _parameterName;
+        private string _parameterName = "value";
         public string ParameterName
         {
             get { return _parameterName; }
@@ -95,6 +99,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
                 _parameterName = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsValidParameterName));
+                OnPropertyChanged(nameof(HasValidNames));
                 OnPropertyChanged(nameof(PropertyPreview));
             }
         }
@@ -106,11 +111,11 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
                 var tokenValues = typeof(Tokens).GetFields().Select(item => item.GetValue(null)).Cast<string>().Select(item => item);
 
                 return TargetDeclaration != null
-                       && ParameterName.Equals(TargetDeclaration.IdentifierName, StringComparison.InvariantCultureIgnoreCase)
-                       && ParameterName.Equals(PropertyName, StringComparison.InvariantCultureIgnoreCase)
-                       && !char.IsLetter(ParameterName.FirstOrDefault())
-                       && tokenValues.Contains(ParameterName, StringComparer.InvariantCultureIgnoreCase)
-                       && ParameterName.Any(c => !char.IsLetterOrDigit(c) && c != '_');
+                       && !PropertyName.Equals(TargetDeclaration.IdentifierName, StringComparison.InvariantCultureIgnoreCase)
+                       && !PropertyName.Equals(ParameterName, StringComparison.InvariantCultureIgnoreCase)
+                       && char.IsLetter(PropertyName.FirstOrDefault())
+                       && !tokenValues.Contains(PropertyName, StringComparer.InvariantCultureIgnoreCase)
+                       && PropertyName.All(c => char.IsLetterOrDigit(c) || c == '_');
             }
         }
 
@@ -121,17 +126,39 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
                 var tokenValues = typeof(Tokens).GetFields().Select(item => item.GetValue(null)).Cast<string>().Select(item => item);
 
                 return TargetDeclaration != null
-                       && PropertyName.Equals(TargetDeclaration.IdentifierName, StringComparison.InvariantCultureIgnoreCase)
-                       && PropertyName.Equals(ParameterName, StringComparison.InvariantCultureIgnoreCase)
-                       && !char.IsLetter(PropertyName.FirstOrDefault())
-                       && tokenValues.Contains(PropertyName, StringComparer.InvariantCultureIgnoreCase)
-                       && PropertyName.Any(c => !char.IsLetterOrDigit(c) && c != '_');
+                       && !ParameterName.Equals(TargetDeclaration.IdentifierName, StringComparison.InvariantCultureIgnoreCase)
+                       && !ParameterName.Equals(PropertyName, StringComparison.InvariantCultureIgnoreCase)
+                       && char.IsLetter(ParameterName.FirstOrDefault())
+                       && !tokenValues.Contains(ParameterName, StringComparer.InvariantCultureIgnoreCase)
+                       && ParameterName.All(c => char.IsLetterOrDigit(c) || c == '_');
             }
         }
 
         public bool HasValidNames => IsValidPropertyName && IsValidParameterName;
 
-        public string PropertyPreview => string.Empty;
+        public string PropertyPreview
+        {
+            get
+            {
+                if (TargetDeclaration == null)
+                {
+                    return string.Empty;
+                }
+
+                var previewGenerator = new PropertyGenerator
+                {
+                    PropertyName = PropertyName,
+                    AsTypeName = TargetDeclaration.AsTypeName,
+                    BackingField = TargetDeclaration.IdentifierName,
+                    ParameterName = ParameterName,
+                    GenerateSetter = IsSetSelected,
+                    GenerateLetter = IsLetSelected
+                };
+
+                var propertyText = previewGenerator.AllPropertyCode.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+                return string.Join(Environment.NewLine, Indenter.Indent(propertyText, true));
+            }
+        }
 
         public event EventHandler<DialogResult> OnWindowClosed;
         private void DialogCancel() => OnWindowClosed?.Invoke(this, DialogResult.Cancel);

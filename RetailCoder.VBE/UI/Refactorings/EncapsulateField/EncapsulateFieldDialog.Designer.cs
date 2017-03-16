@@ -30,33 +30,32 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EncapsulateFieldDialog));
             this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-            this.EncapsulateFieldViewElement = new EncapsulateFieldView();
+            this.EncapsulateFieldViewElement = new Rubberduck.UI.Refactorings.EncapsulateField.EncapsulateFieldView();
             this.SuspendLayout();
             // 
             // elementHost1
             // 
             this.elementHost1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.elementHost1.Location = new System.Drawing.Point(0, 0);
-            this.elementHost1.Margin = new System.Windows.Forms.Padding(4);
+            this.elementHost1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.elementHost1.Name = "elementHost1";
-            this.elementHost1.Size = new System.Drawing.Size(494, 395);
+            this.elementHost1.Size = new System.Drawing.Size(667, 513);
             this.elementHost1.TabIndex = 1;
             this.elementHost1.Text = "elementHost1";
             this.elementHost1.Child = this.EncapsulateFieldViewElement;
             // 
             // EncapsulateFieldDialog
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(500, 405);
+            this.ClientSize = new System.Drawing.Size(667, 513);
             this.Controls.Add(this.elementHost1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "EncapsulateFieldDialog";
             this.ShowInTaskbar = false;
             this.Text = "Rubberduck - Encapsulate Field";
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 

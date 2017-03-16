@@ -1,6 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.SmartIndenter;
 using Rubberduck.Settings;
 using Rubberduck.UI.Refactorings.EncapsulateField;
@@ -47,10 +48,9 @@ namespace Rubberduck.UI.Command.Refactorings
 
             using (var view = new EncapsulateFieldDialog(new EncapsulateFieldViewModel(_state, _indenter)))
             {
-                /*var factory = new EncapsulateFieldPresenterFactory(Vbe, _state, view);
+                var factory = new EncapsulateFieldPresenterFactory(Vbe, _state, view);
                 var refactoring = new EncapsulateFieldRefactoring(Vbe, _indenter, factory);
-                refactoring.Refactor();*/
-                view.ShowDialog();
+                refactoring.Refactor();
             }
         }
 

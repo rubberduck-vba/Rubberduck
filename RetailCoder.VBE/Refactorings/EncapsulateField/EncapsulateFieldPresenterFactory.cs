@@ -1,4 +1,5 @@
 ﻿using Rubberduck.Parsing.VBA;
+using Rubberduck.UI.Refactorings.EncapsulateField;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Refactorings.EncapsulateField
@@ -6,10 +7,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
     public class EncapsulateFieldPresenterFactory : IRefactoringPresenterFactory<EncapsulateFieldPresenter>
     {
         private readonly IVBE _vbe;
-        private readonly IEncapsulateFieldDialog _view;
+        private readonly EncapsulateFieldDialog _view;
         private readonly RubberduckParserState _state;
 
-        public EncapsulateFieldPresenterFactory(IVBE vbe, RubberduckParserState state, IEncapsulateFieldDialog view)
+        public EncapsulateFieldPresenterFactory(IVBE vbe, RubberduckParserState state, EncapsulateFieldDialog view)
         {
             _vbe = vbe;
             _view = view;

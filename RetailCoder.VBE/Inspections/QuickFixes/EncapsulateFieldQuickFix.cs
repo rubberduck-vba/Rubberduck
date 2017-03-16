@@ -34,10 +34,10 @@ namespace Rubberduck.Inspections.QuickFixes
 
             using (var view = new EncapsulateFieldDialog(new EncapsulateFieldViewModel(_state, _indenter)))
             {
-                /*var factory = new EncapsulateFieldPresenterFactory(vbe, _state, view);
+                var factory = new EncapsulateFieldPresenterFactory(vbe, _state, view);
                 var refactoring = new EncapsulateFieldRefactoring(vbe, _indenter, factory);
                 refactoring.Refactor(_target);
-                IsCancelled = view.DialogResult != DialogResult.OK;*/
+                IsCancelled = view.DialogResult != DialogResult.OK;
             }
         }
 
