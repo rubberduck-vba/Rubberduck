@@ -481,6 +481,10 @@
       <DependentUpon>EncapsulateFieldView.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Refactorings\EncapsulateField\EncapsulateFieldViewModel.cs" />
+    <Compile Include="UI\Refactorings\ExtractInterface\ExtractInterfaceView.xaml.cs">
+      <DependentUpon>ExtractInterfaceView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Refactorings\ExtractInterface\ExtractInterfaceViewModel.cs" />
     <Compile Include="UI\Refactorings\IAssignedByValParameterQuickFixDialog.cs" />
     <Compile Include="UI\Refactorings\IAssignedByValParameterQuickFixDialogFactory.cs" />
     <Compile Include="UI\Refactorings\IRefactoringDialog.cs" />
@@ -589,7 +593,6 @@
     <Compile Include="Refactorings\ExtractInterface\ExtractInterfaceModel.cs" />
     <Compile Include="Refactorings\ExtractInterface\ExtractInterfacePresenter.cs" />
     <Compile Include="Refactorings\ExtractInterface\ExtractInterfacePresenterFactory.cs" />
-    <Compile Include="Refactorings\ExtractInterface\IExtractInterfaceDialog.cs" />
     <Compile Include="Refactorings\ExtractInterface\InterfaceMember.cs" />
     <Compile Include="Refactorings\ImplementInterface\ImplementInterfaceRefactoring.cs" />
     <Compile Include="Refactorings\ImplementInterface\Parameter.cs" />
@@ -768,10 +771,10 @@
     <Compile Include="UI\Refactorings\EncapsulateField\EncapsulateFieldDialog.Designer.cs">
       <DependentUpon>EncapsulateFieldDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Refactorings\ExtractInterfaceDialog.cs">
+    <Compile Include="UI\Refactorings\ExtractInterface\ExtractInterfaceDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\Refactorings\ExtractInterfaceDialog.Designer.cs">
+    <Compile Include="UI\Refactorings\ExtractInterface\ExtractInterfaceDialog.Designer.cs">
       <DependentUpon>ExtractInterfaceDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\RegexAssistant\RegexAssistant.xaml.cs">
@@ -1111,7 +1114,7 @@
     <EmbeddedResource Include="UI\Refactorings\EncapsulateField\EncapsulateFieldDialog.resx">
       <DependentUpon>EncapsulateFieldDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Refactorings\ExtractInterfaceDialog.resx">
+    <EmbeddedResource Include="UI\Refactorings\ExtractInterface\ExtractInterfaceDialog.resx">
       <DependentUpon>ExtractInterfaceDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\RegexAssistant\RegexAssistantDialog.resx">
@@ -1495,6 +1498,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Refactorings\EncapsulateField\EncapsulateFieldView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Refactorings\ExtractInterface\ExtractInterfaceView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
