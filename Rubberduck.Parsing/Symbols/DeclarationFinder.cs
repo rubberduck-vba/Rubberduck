@@ -843,11 +843,12 @@ namespace Rubberduck.Parsing.Symbols
 
             //Filter accessible declarations to those that would result in name collisions or hiding
             var declarationsToAvoid = GetAccessibleDeclarations(declaration).Where(candidate =>
-                                        IsAccessibleInOtherProcedureModule(candidate,declaration)
+                                        !candidate.IsBuiltIn
+                                        && (IsAccessibleInOtherProcedureModule(candidate,declaration)
                                         || candidate.DeclarationType == DeclarationType.Project
                                         || ModuleDeclarationTypes.Contains(candidate.DeclarationType)
                                         || IsDeclarationInSameProcedureScope(candidate, declaration)
-                                        ).ToList();
+                                        )).ToList();
 
             //Add local variables when the target is a method or property
             if(MethodDeclarationTypes.Contains(declaration.DeclarationType))
