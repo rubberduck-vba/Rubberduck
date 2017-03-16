@@ -26,7 +26,6 @@ namespace RubberduckTests.Symbols
         {
             var expectedResults = new string[]
             {
-                "Option Explicit",
                 "member1",
                 "adder",
                 "Foo"
@@ -48,7 +47,6 @@ namespace RubberduckTests.Symbols
         {
             var expectedResults = new string[]
             {
-                "Option Explicit",
                 "member1",
                 "Foo"
             };
@@ -68,7 +66,6 @@ namespace RubberduckTests.Symbols
         {
             var expectedResults = new string[]
             {
-                "Option Explicit",
                 "adder",
                 "member1",
                 "Foo"
@@ -89,7 +86,6 @@ namespace RubberduckTests.Symbols
         {
             var expectedResults = new string[]
             {
-                "Option Explicit",
                 "adder",
                 "Foo"
             };
@@ -133,7 +129,6 @@ namespace RubberduckTests.Symbols
         {
             var expectedResults = new string[]
             {
-                "Option Explicit",
                 "Foo2",
                 "Bar",
                 "member11"
@@ -157,7 +152,6 @@ namespace RubberduckTests.Symbols
         {
             var expectedResults = new string[]
             {
-                "Option Explicit",
                 "DoThis",
                 "filename",
                 "member1"
@@ -181,7 +175,6 @@ namespace RubberduckTests.Symbols
         {
             var expectedResults = new string[]
             {
-                "Option Explicit",
                 "DoThis",
                 "filename",
                 "member1",
@@ -211,7 +204,6 @@ namespace RubberduckTests.Symbols
         {
             var expectedResults = new string[]
             {
-                "Option Explicit",
                 "mFolderpath",
                 "ExtractFilename",
                 "SetFilename",
@@ -238,7 +230,6 @@ namespace RubberduckTests.Symbols
         {
             var expectedResults = new string[]
             {
-                "Option Explicit",
                 "Foo1",
                 "Foo2",
                 "Foo3",
@@ -537,7 +528,6 @@ End Sub
         {
             return
     @"
-Option Explicit
 
 Private member1 As Long
 
@@ -554,7 +544,6 @@ End Function
         {
             return
     @"
-Option Explicit
 
 Private member1 As Long
 
@@ -571,7 +560,6 @@ End Function
         {
             return
     @"
-Option Explicit
 
 Private member1 As Long
 
@@ -588,7 +576,6 @@ End Function
         {
             return
     @"
-Option Explicit
 
 Private member1 As Long
 
@@ -605,7 +592,6 @@ End Function
         {
             return
     @"
-Option Explicit
 
 Private member11 As Long
 Public member2 As Long
@@ -647,7 +633,6 @@ End Function
         {
             return
     @"
-Option Explicit
 
 Private member11 As Long
 Public member2 As Long
@@ -669,7 +654,6 @@ End Sub
         {
             return
     @"
-Option Explicit
 
 Private member1 As Long
 
@@ -686,7 +670,6 @@ End Function
         {
             return
 @"
-Option Explicit
 
 
 Private Sub DoThis(filename As String)
@@ -699,7 +682,6 @@ End Sub
         {
             return
     @"
-Option Explicit
 
 Private member1 As String
 
@@ -713,7 +695,6 @@ End Sub
         {
             return
 @"
-Option Explicit
 
 
 Private Sub DoThis(filename As String)
@@ -726,7 +707,6 @@ End Sub
         {
             return
     @"
-Option Explicit
 
 Private member1 As String
 
@@ -740,7 +720,6 @@ End Sub
         {
             return
     @"
-Option Explicit
 
 Private mFolderpath As String
 
@@ -760,7 +739,6 @@ End Function
         {
             return
     @"
-Option Explicit
 
 Private mFolderpath As String
 
@@ -783,7 +761,6 @@ End Sub
         {
             return
     @"
-Option Explicit
 
 Private myData As String
 Private mDupData As String
@@ -809,7 +786,6 @@ End Sub
         {
             return
     @"
-Option Explicit
 
 Private member11 As Long
 Public member2 As Long
@@ -828,7 +804,6 @@ End Sub
         {
             return
     @"
-Option Explicit
 
 Public Const gConstant As Long = 10
 
