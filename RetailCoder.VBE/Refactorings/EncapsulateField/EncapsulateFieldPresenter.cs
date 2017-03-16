@@ -30,7 +30,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
             if (_model.TargetDeclaration == null) { return null; }
 
             _view.ViewModel.TargetDeclaration = _model.TargetDeclaration;
-            _view.ViewModel.PropertyName = _model.TargetDeclaration.IdentifierName;
 
             var isVariant = _model.TargetDeclaration.AsTypeName.Equals(Tokens.Variant);
             var isValueType = !isVariant && (SymbolList.ValueTypes.Contains(_model.TargetDeclaration.AsTypeName) ||
