@@ -16,8 +16,6 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         public RubberduckParserState State { get; }
         public IIndenter Indenter { get; }
 
-        public Declaration TargetDeclaration { get; set; }
-
         public EncapsulateFieldViewModel(RubberduckParserState state, IIndenter indenter)
         {
             State = state;
@@ -28,6 +26,17 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
 
             IsLetSelected = true;
             CanHaveLet = true;
+        }
+
+        private Declaration _targetDeclaration;
+        public Declaration TargetDeclaration
+        {
+            get { return _targetDeclaration; }
+            set
+            {
+                _targetDeclaration = value;
+                PropertyName = value.IdentifierName;
+            }
         }
 
         private bool _expansionState = true;
