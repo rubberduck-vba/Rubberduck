@@ -2,7 +2,7 @@
 
 namespace Rubberduck.UI.Refactorings.EncapsulateField
 {
-    public partial class EncapsulateFieldDialog : Form
+    public partial class EncapsulateFieldDialog : Form, IRefactoringDialog<EncapsulateFieldViewModel>
     {
         public EncapsulateFieldViewModel ViewModel { get; }
 

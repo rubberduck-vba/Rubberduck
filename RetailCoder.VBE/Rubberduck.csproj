@@ -483,6 +483,7 @@
     <Compile Include="UI\Refactorings\EncapsulateField\EncapsulateFieldViewModel.cs" />
     <Compile Include="UI\Refactorings\IAssignedByValParameterQuickFixDialog.cs" />
     <Compile Include="UI\Refactorings\IAssignedByValParameterQuickFixDialogFactory.cs" />
+    <Compile Include="UI\Refactorings\IRefactoringDialog.cs" />
     <Compile Include="UI\Refactorings\RemoveParameters\ParameterTextDecorationConverter.cs" />
     <Compile Include="UI\Refactorings\RemoveParameters\RemoveParametersView.xaml.cs">
       <DependentUpon>RemoveParametersView.xaml</DependentUpon>

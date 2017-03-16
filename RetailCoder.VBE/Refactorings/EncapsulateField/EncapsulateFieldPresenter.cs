@@ -4,6 +4,7 @@ using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.UI.Refactorings;
 using Rubberduck.UI.Refactorings.EncapsulateField;
 
 namespace Rubberduck.Refactorings.EncapsulateField
@@ -15,10 +16,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
     public class EncapsulateFieldPresenter : IEncapsulateFieldPresenter
     {
-        private readonly EncapsulateFieldDialog _view;
+        private readonly IRefactoringDialog<EncapsulateFieldViewModel> _view;
         private readonly EncapsulateFieldModel _model;
 
-        public EncapsulateFieldPresenter(EncapsulateFieldDialog view, EncapsulateFieldModel model)
+        public EncapsulateFieldPresenter(IRefactoringDialog<EncapsulateFieldViewModel> view, EncapsulateFieldModel model)
         {
             _view = view;
             _model = model;
@@ -35,6 +36,25 @@ namespace Rubberduck.Refactorings.EncapsulateField
             var isValueType = !isVariant && (SymbolList.ValueTypes.Contains(_model.TargetDeclaration.AsTypeName) ||
                               _model.TargetDeclaration.DeclarationType == DeclarationType.Enumeration);
 
+            AssignSetterAndLetterAvailability(isVariant, isValueType);
+
+            _view.ShowDialog();
+            if (_view.DialogResult != DialogResult.OK)
+            {
+                return null;
+            }
+
+            _model.PropertyName = _view.ViewModel.PropertyName;
+            _model.ImplementLetSetterType = _view.ViewModel.CanHaveLet;
+            _model.ImplementSetSetterType = _view.ViewModel.CanHaveSet;
+            _model.CanImplementLet = _view.ViewModel.CanHaveSet && !_view.ViewModel.CanHaveSet;
+
+            _model.ParameterName = _view.ViewModel.ParameterName;
+            return _model;
+        }
+
+        private void AssignSetterAndLetterAvailability(bool isVariant, bool isValueType)
+        {
             if (_model.TargetDeclaration.References.Any(r => r.IsAssignment))
             {
                 if (isVariant)
@@ -52,7 +72,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                     else
                     {
                         _view.ViewModel.CanHaveSet = true;
-                    }                    
+                    }
                 }
                 else if (isValueType)
                 {
@@ -79,20 +99,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
                     _view.ViewModel.CanHaveSet = true;
                 }
             }
-
-            _view.ShowDialog();
-            if (_view.DialogResult != DialogResult.OK)
-            {
-                return null;
-            }
-
-            _model.PropertyName = _view.ViewModel.PropertyName;
-            _model.ImplementLetSetterType = _view.ViewModel.CanHaveLet;
-            _model.ImplementSetSetterType = _view.ViewModel.CanHaveSet;
-            _model.CanImplementLet = _view.ViewModel.CanHaveSet && !_view.ViewModel.CanHaveSet;
-
-            _model.ParameterName = _view.ViewModel.ParameterName;
-            return _model;
         }
     }
 }
