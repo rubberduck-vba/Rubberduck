@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Rubberduck.Parsing.PostProcessing.RewriterInfo;
@@ -42,19 +41,7 @@ namespace Rubberduck.Parsing.PostProcessing
                 : new DefaultRewriterInfoFinder().GetRewriterInfo(target.Context, target);            
 
             if (info.Equals(RewriterInfo.RewriterInfo.None)) { return; }
-
             _rewriter.Delete(info.StartTokenIndex, info.StopTokenIndex);
-
-            var references = target.References.Where(r => r.QualifiedModuleName.Component.CodeModule == _module);
-            foreach (var reference in references)
-            {
-                Remove(reference);
-            }
-        }
-
-        public void Remove(IdentifierReference target)
-        {
-            _rewriter.Delete(target.Context.Start.TokenIndex, target.Context.Stop.TokenIndex);
         }
 
         public void Remove(ParserRuleContext target)
@@ -62,12 +49,12 @@ namespace Rubberduck.Parsing.PostProcessing
             _rewriter.Delete(target.Start.TokenIndex, target.Stop.TokenIndex);
         }
 
-        public void Replace(Declaration target, string content)
+        public void Remove(IToken target)
         {
-            _rewriter.Replace(target.Context.Start.TokenIndex, target.Context.Stop.TokenIndex, content);
+            _rewriter.Delete(target);
         }
 
-        public void Replace(IdentifierReference target, string content)
+        public void Replace(Declaration target, string content)
         {
             _rewriter.Replace(target.Context.Start.TokenIndex, target.Context.Stop.TokenIndex, content);
         }
@@ -80,13 +67,6 @@ namespace Rubberduck.Parsing.PostProcessing
         public void Replace(IToken token, string content)
         {
             _rewriter.Replace(token, content);
-        }
-
-        public void Rename(Declaration target, string identifier)
-        {
-            Interval interval;
-            Identifier.GetName((dynamic)target.Context, out interval);
-            _rewriter.Replace(interval.a, interval.b, identifier);
         }
 
         public void InsertAtIndex(string content, int tokenIndex)

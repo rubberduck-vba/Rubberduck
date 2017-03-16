@@ -46,7 +46,7 @@ namespace Rubberduck.Refactorings.Rename
                 oldSelection = module.GetQualifiedSelection();
             }
 
-            if (_model != null && _model.Declarations != null)
+            if (_model?.Declarations != null)
             {
                 Rename();
             }
@@ -82,7 +82,7 @@ namespace Rubberduck.Refactorings.Rename
                 oldSelection = pane.Selection;
             }
 
-            if (_model != null && _model.Declarations != null)
+            if (_model?.Declarations != null)
             {
                 Rename();
             }
@@ -92,6 +92,7 @@ namespace Rubberduck.Refactorings.Rename
                 pane.Selection = oldSelection;
             }
         }
+
         private static readonly DeclarationType[] ModuleDeclarationTypes =
         {
             DeclarationType.ClassModule,
@@ -100,8 +101,9 @@ namespace Rubberduck.Refactorings.Rename
 
         private void Rename()
         {
-            var declaration = _state.DeclarationFinder.GetDeclarationsWithIdentifiersToAvoid(_model.Target)
-                .Where(d => d.IdentifierName.Equals(_model.NewName, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
+            var declaration = _state.DeclarationFinder
+                .GetDeclarationsWithIdentifiersToAvoid(_model.Target)
+                .FirstOrDefault(d => d.IdentifierName.Equals(_model.NewName, StringComparison.InvariantCultureIgnoreCase));
             if (declaration != null)
             {
                 var message = string.Format(RubberduckUI.RenameDialog_ConflictingNames, _model.NewName,
@@ -449,11 +451,13 @@ namespace Rubberduck.Refactorings.Rename
         private string GetReplacementLine(ICodeModule module, Declaration target, string newName)
         {
             var content = module.GetLines(target.Selection.StartLine, 1);
-
+            
             if (target.DeclarationType == DeclarationType.Parameter)
             {
                 var rewriter = _model.State.GetRewriter(target.QualifiedName.QualifiedModuleName.Component);
-                rewriter.Rename(target, _model.NewName);
+
+                var identifier = ((VBAParser.ArgContext)target.Context).unrestrictedIdentifier();
+                rewriter.Replace(identifier, _model.NewName);
 
                 // Target.Context is an ArgContext, its parent is an ArgsListContext;
                 // the ArgsListContext's parent is the procedure context and it includes the body.

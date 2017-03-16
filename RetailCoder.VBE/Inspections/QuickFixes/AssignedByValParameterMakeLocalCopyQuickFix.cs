@@ -31,8 +31,8 @@ namespace Rubberduck.Inspections.QuickFixes
             _forbiddenNames = parserState.DeclarationFinder.GetDeclarationsWithIdentifiersToAvoid(target).Select(n => n.IdentifierName);
         }
 
-        public override bool CanFixInModule { get { return false; } }
-        public override bool CanFixInProject { get { return false; } }
+        public override bool CanFixInModule => false;
+        public override bool CanFixInProject => false;
 
         public override void Fix()
         {
@@ -93,7 +93,7 @@ namespace Rubberduck.Inspections.QuickFixes
         {
             foreach (var identifierReference in _target.References)
             {
-                rewriter.Replace(identifierReference, localIdentifier);
+                rewriter.Replace(identifierReference.Context, localIdentifier);
             }
         }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.Common;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.PostProcessing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -55,8 +56,6 @@ namespace Rubberduck.Refactorings.IntroduceField
 
             var rewriter = _state.GetRewriter(target);
             PromoteVariable(rewriter, target);
-
-            _state.OnParseRequested(this);
         }
 
         public void Refactor(Declaration target)
@@ -64,7 +63,7 @@ namespace Rubberduck.Refactorings.IntroduceField
             if (target.DeclarationType != DeclarationType.Variable)
             {
                 _messageBox.Show(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceParameter_Caption, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                throw new ArgumentException(@"Invalid declaration type", "target");
+                throw new ArgumentException(@"Invalid declaration type", nameof(target));
             }
 
             var rewriter = _state.GetRewriter(target);
@@ -100,20 +99,13 @@ namespace Rubberduck.Refactorings.IntroduceField
 
         private void AddField(IModuleRewriter rewriter, Declaration target)
         {
-            var content = "Private " + target.IdentifierName + " As " + target.AsTypeName + Environment.NewLine;
-            var declarations = _state.DeclarationFinder.Members(target.QualifiedName.QualifiedModuleName)
+            var content = $"{Tokens.Private} {target.IdentifierName} {Tokens.As} {target.AsTypeName}\r\n";
+            var members = _state.DeclarationFinder.Members(target.QualifiedName.QualifiedModuleName)
                 .Where(item => item.DeclarationType.HasFlag(DeclarationType.Member))
                 .OrderByDescending(item => item.Selection);
 
-            var lastDeclaration = declarations.LastOrDefault();
-            if (lastDeclaration == null)
-            {
-                rewriter.InsertAtIndex(content, 1);
-            }
-            else
-            {
-                rewriter.InsertAtIndex(content, lastDeclaration.Context.Start.TokenIndex);
-            }
+            var firstMember = members.FirstOrDefault();
+            rewriter.InsertAtIndex(content, firstMember?.Context.Start.TokenIndex ?? 0);
         }
     }
 }

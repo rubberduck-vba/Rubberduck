@@ -17,17 +17,17 @@ namespace Rubberduck.Parsing.PostProcessing
         /// <remarks>Removes a line that would be left empty by the removal of the declaration.</remarks>
         void Remove(Declaration target);
         /// <summary>
-        /// Removes all tokens for specified <see cref="IdentifierReference"/>. Use <see cref="Rewrite"/> method to apply changes.
-        /// </summary>
-        /// <param name="target">The <see cref="IdentifierReference"/> to remove.</param>
-        /// <remarks>Removes a line that would be left empty by the removal of the identifier reference token.</remarks>
-        void Remove(IdentifierReference target);
-        /// <summary>
         /// Removes all tokens in specified context. Use <see cref="Rewrite"/> method to apply changes.
         /// </summary>
         /// <param name="target">The <see cref="ParserRuleContext"/> to remove.</param>
         /// <remarks>Removes a line that would be left empty by the removal of the identifier reference token.</remarks>
         void Remove(ParserRuleContext target);
+        /// <summary>
+        /// Removes all tokens for specified <see cref="IToken"/>. Use <see cref="Rewrite"/> method to apply changes.
+        /// </summary>
+        /// <param name="target">The <see cref="IToken"/> to remove.</param>
+        /// <remarks>Removes a line that would be left empty by the removal of the identifier reference token.</remarks>
+        void Remove(IToken target);
 
         /// <summary>
         /// Replaces all tokens for specified <see cref="Declaration"/> with specified content. Use <see cref="Rewrite"/> method to apply changes.
@@ -36,13 +36,6 @@ namespace Rubberduck.Parsing.PostProcessing
         /// <param name="content">The literal replacement for the declaration.</param>
         /// <remarks>Useful for adding/removing e.g. access modifiers.</remarks>
         void Replace(Declaration target, string content);
-        /// <summary>
-        /// Replaces all tokens for specified <see cref="IdentifierReference"/> with specified content. Use <see cref="Rewrite"/> method to apply changes.
-        /// </summary>
-        /// <param name="target">The <see cref="IdentifierReference"/> to replace.</param>
-        /// <param name="content">The literal replacement for the declaration.</param>
-        /// <remarks>Useful for adding/removing e.g. access modifiers.</remarks>
-        void Replace(IdentifierReference target, string content);
         /// <summary>
         /// Replaces all tokens for specified <see cref="ParserRuleContext"/> with specified content. Use <see cref="Rewrite"/> method to apply changes.
         /// </summary>
@@ -55,13 +48,6 @@ namespace Rubberduck.Parsing.PostProcessing
         /// <param name="token">The <see cref="IToken"/> to replace.</param>
         /// <param name="content">The literal replacement for the expression.</param>
         void Replace(IToken token, string content);
-
-        /// <summary>
-        /// Replaces the specified <see cref="Declaration"/>'s identifier with the specified <see cref="identifier"/>, and the associated <see cref="IdentifierReference"/> list. Use <see cref="Rewrite"/> method to apply changes.
-        /// </summary>
-        /// <param name="target">The <see cref="Declaration"/> to rename.</param>
-        /// <param name="identifier">The new identifier name.</param>
-        void Rename(Declaration target, string identifier);
 
         /// <summary>
         /// Inserts specified content at the specified token index in the module. Use <see cref="Rewrite"/> method to apply changes.
