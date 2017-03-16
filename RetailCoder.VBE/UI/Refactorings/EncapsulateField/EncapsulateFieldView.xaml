@@ -103,7 +103,7 @@
             </Grid>
             <Expander Grid.Row="1"
                       Grid.ColumnSpan="2"
-                      IsExpanded="True"
+                      IsExpanded="{Binding ExpansionState}"
                       Background="#FFFFFFFF"
                       BorderBrush="#FFA9A9A9"
                       Margin="5,0,5,5">

@@ -30,6 +30,18 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             CanHaveLet = true;
         }
 
+        private bool _expansionState = true;
+        public bool ExpansionState
+        {
+            get { return _expansionState; }
+            set
+            {
+                _expansionState = value;
+                OnPropertyChanged();
+                OnExpansionStateChanged(value);
+            }
+        }
+
         private bool _canHaveLet;
         public bool CanHaveLet
         {
@@ -165,6 +177,9 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         public event EventHandler<DialogResult> OnWindowClosed;
         private void DialogCancel() => OnWindowClosed?.Invoke(this, DialogResult.Cancel);
         private void DialogOk() => OnWindowClosed?.Invoke(this, DialogResult.OK);
+
+        public event EventHandler<bool> ExpansionStateChanged;
+        private void OnExpansionStateChanged(bool value) => ExpansionStateChanged?.Invoke(this, value);
 
         public CommandBase OkButtonCommand { get; }
         public CommandBase CancelButtonCommand { get; }
