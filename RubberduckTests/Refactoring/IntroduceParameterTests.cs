@@ -1,9 +1,7 @@
-using System;
 using System.Linq;
 using System.Windows.Forms;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.IntroduceParameter;
 using Rubberduck.UI;
@@ -454,8 +452,9 @@ End Sub";
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents[1];
-            vbe.Setup(v => v.ActiveCodePane).Returns(component.CodeModule.CodePane);
+            var component0 = project.Object.VBComponents[0];
+            var component1 = project.Object.VBComponents[1];
+            vbe.Setup(v => v.ActiveCodePane).Returns(component1.CodeModule.CodePane);
 
             var state = MockParser.CreateAndParse(vbe.Object);
 
@@ -468,10 +467,10 @@ End Sub";
             var target = state.AllUserDeclarations.SingleOrDefault(e => e.IdentifierName == "fizz" && e.DeclarationType == DeclarationType.Variable);
             refactoring.Refactor(target);
 
-            var rewriter1 = state.GetRewriter(component);
+            var rewriter1 = state.GetRewriter(component0);
             Assert.AreEqual(expectedCode1, rewriter1.GetText());
 
-            var rewriter2 = state.GetRewriter(component);
+            var rewriter2 = state.GetRewriter(component1);
             Assert.AreEqual(expectedCode2, rewriter2.GetText());
         }
 
@@ -634,7 +633,7 @@ End Sub";
                       .Returns(DialogResult.OK);
 
             var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, messageBox.Object);
-            refactoring.Refactor(state.AllUserDeclarations.First(d => d.DeclarationType == DeclarationType.Variable));
+            refactoring.Refactor(state.AllUserDeclarations.First(d => d.DeclarationType != DeclarationType.Variable));
 
             messageBox.Verify(m =>
                 m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),

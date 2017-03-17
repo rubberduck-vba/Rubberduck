@@ -69,7 +69,7 @@ namespace Rubberduck.Parsing.PostProcessing
             _rewriter.Replace(token, content);
         }
 
-        public void InsertAtIndex(string content, int tokenIndex)
+        public void Insert(int tokenIndex, string content)
         {
             _rewriter.InsertBefore(tokenIndex, content);
         }

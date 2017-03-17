@@ -66,11 +66,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
             var lastMember = members.LastOrDefault(m => m.DeclarationType.HasFlag(DeclarationType.Member));
             if (lastMember == null)
             {
-                rewriter.InsertAtIndex(property, 1);
+                rewriter.Insert(1, property);
             }
             else
             {
-                rewriter.InsertAtIndex(property, lastMember.Context.Stop.TokenIndex);
+                rewriter.Insert(lastMember.Context.Stop.TokenIndex, property);
             }
         }
 
