@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.PostProcessing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
@@ -17,6 +18,8 @@ namespace Rubberduck.Refactorings.IntroduceParameter
         private readonly RubberduckParserState _state;
         private readonly IList<Declaration> _declarations;
         private readonly IMessageBox _messageBox;
+
+        private readonly HashSet<IModuleRewriter> _rewriters = new HashSet<IModuleRewriter>();
 
         private static readonly DeclarationType[] ValidDeclarationTypes =
         {
@@ -94,6 +97,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             }
 
             var rewriter = _state.GetRewriter(target);
+            _rewriters.Add(rewriter);
 
             QualifiedSelection? oldSelection = null;
             var pane = _vbe.ActiveCodePane;
@@ -109,6 +113,11 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             if (oldSelection.HasValue)
             {
                 pane.Selection = oldSelection.Value.Selection;
+            }
+
+            foreach (var tokenRewriter in _rewriters)
+            {
+                tokenRewriter.Rewrite();
             }
         }
 
@@ -188,6 +197,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
         private void AddParameter(Declaration targetMethod, Declaration targetVariable, VBAParser.ArgListContext paramList)
         {
             var rewriter = _state.GetRewriter(targetMethod);
+            _rewriters.Add(rewriter);
 
             var argList = paramList.arg();
             var newParameter = Tokens.ByVal + " " + targetVariable.IdentifierName + " "+ Tokens.As + " " + targetVariable.AsTypeName;

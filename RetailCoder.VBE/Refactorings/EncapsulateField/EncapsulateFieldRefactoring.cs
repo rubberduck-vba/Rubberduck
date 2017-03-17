@@ -16,7 +16,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private readonly IRefactoringPresenterFactory<IEncapsulateFieldPresenter> _factory;
         private EncapsulateFieldModel _model;
 
-        private HashSet<IModuleRewriter> _referenceRewriters = new HashSet<IModuleRewriter>();
+        private readonly HashSet<IModuleRewriter> _referenceRewriters = new HashSet<IModuleRewriter>();
 
         public EncapsulateFieldRefactoring(IVBE vbe, IIndenter indenter, IRefactoringPresenterFactory<IEncapsulateFieldPresenter> factory)
         {

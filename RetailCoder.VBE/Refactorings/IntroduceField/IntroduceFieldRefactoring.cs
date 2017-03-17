@@ -95,6 +95,8 @@ namespace Rubberduck.Refactorings.IntroduceField
                     pane.Selection = oldSelection.Value.Selection;
                 }
             }
+
+            rewriter.Rewrite();
         }
 
         private void AddField(IModuleRewriter rewriter, Declaration target)
