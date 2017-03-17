@@ -6,8 +6,9 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Resources;
 using Rubberduck.Inspections.Results;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
@@ -19,11 +20,9 @@ namespace Rubberduck.Inspections
         {
         }
 
-        public override string Meta { get { return InspectionsUI.FunctionReturnValueNotUsedInspectionMeta; } }
-        public override string Description { get { return InspectionsUI.FunctionReturnValueNotUsedInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
-        public override IEnumerable<InspectionResultBase> GetInspectionResults()
+        public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
             // Note: This inspection does not find dictionary calls (e.g. foo!bar) since we do not know what the
             // default member is of a class.

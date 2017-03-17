@@ -198,21 +198,21 @@ namespace Rubberduck.Parsing.VBA
 
         private void ExecuteCommonParseActivities(ICollection<IVBComponent> toParse, CancellationToken token)
         {
-                token.ThrowIfCancellationRequested();
-            
+            token.ThrowIfCancellationRequested();
+
             SetModuleStates(toParse, ParserState.Pending, token);
 
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
             SyncComReferences(State.Projects, token);
             RefreshDeclarationFinder();
 
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
             AddBuiltInDeclarations();
             RefreshDeclarationFinder();
 
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
             var modulesToParse = toParse.Select(component => new QualifiedModuleName(component)).ToHashSet();
             var toResolveReferences = ModulesForWhichToResolveReferences(modulesToParse);
@@ -220,34 +220,32 @@ namespace Rubberduck.Parsing.VBA
 
             ParseComponents(toParse, token);
 
-                if (token.IsCancellationRequested || State.Status >= ParserState.Error)
-                {
-                    throw new OperationCanceledException(token);
-                }
+            if (token.IsCancellationRequested || State.Status >= ParserState.Error)
+            {
+                throw new OperationCanceledException(token);
+            }
 
             ResolveAllDeclarations(toParse, token);
             RefreshDeclarationFinder();
 
-                if (token.IsCancellationRequested || State.Status >= ParserState.Error)
-                {
-                    throw new OperationCanceledException(token);
-                }
+            if (token.IsCancellationRequested || State.Status >= ParserState.Error)
+            {
+                throw new OperationCanceledException(token);
+            }
 
             State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
 
-                if (token.IsCancellationRequested || State.Status >= ParserState.Error)
-                {
-                    throw new OperationCanceledException(token);
-                }
+            if (token.IsCancellationRequested || State.Status >= ParserState.Error)
+            {
+                throw new OperationCanceledException(token);
+            }
 
             ResolveAllReferences(toResolveReferences, token);
 
-                if (token.IsCancellationRequested || State.Status >= ParserState.Error)
-                {
-                    throw new OperationCanceledException(token);
-                }
-
-            State.RebuildSelectionCache();
+            if (token.IsCancellationRequested || State.Status >= ParserState.Error)
+            {
+                throw new OperationCanceledException(token);
+            }
         }
 
         private void RefreshDeclarationFinder()

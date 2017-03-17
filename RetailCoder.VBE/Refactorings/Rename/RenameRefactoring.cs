@@ -3,7 +3,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Antlr4.Runtime;
-using Antlr4.Runtime.Misc;
 using Microsoft.CSharp.RuntimeBinder;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
@@ -47,7 +46,7 @@ namespace Rubberduck.Refactorings.Rename
                 oldSelection = module.GetQualifiedSelection();
             }
 
-            if (_model != null && _model.Declarations != null)
+            if (_model?.Declarations != null)
             {
                 Rename();
             }
@@ -83,7 +82,7 @@ namespace Rubberduck.Refactorings.Rename
                 oldSelection = pane.Selection;
             }
 
-            if (_model != null && _model.Declarations != null)
+            if (_model?.Declarations != null)
             {
                 Rename();
             }
@@ -93,6 +92,7 @@ namespace Rubberduck.Refactorings.Rename
                 pane.Selection = oldSelection;
             }
         }
+
         private static readonly DeclarationType[] ModuleDeclarationTypes =
         {
             DeclarationType.ClassModule,
@@ -101,8 +101,9 @@ namespace Rubberduck.Refactorings.Rename
 
         private void Rename()
         {
-            var declaration = _state.DeclarationFinder.GetDeclarationsWithIdentifiersToAvoid(_model.Target)
-                .Where(d => d.IdentifierName.Equals(_model.NewName, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
+            var declaration = _state.DeclarationFinder
+                .GetDeclarationsWithIdentifiersToAvoid(_model.Target)
+                .FirstOrDefault(d => d.IdentifierName.Equals(_model.NewName, StringComparison.InvariantCultureIgnoreCase));
             if (declaration != null)
             {
                 var message = string.Format(RubberduckUI.RenameDialog_ConflictingNames, _model.NewName,
@@ -450,12 +451,13 @@ namespace Rubberduck.Refactorings.Rename
         private string GetReplacementLine(ICodeModule module, Declaration target, string newName)
         {
             var content = module.GetLines(target.Selection.StartLine, 1);
-
+            
             if (target.DeclarationType == DeclarationType.Parameter)
             {
-                var argContext = (VBAParser.ArgContext)target.Context;
                 var rewriter = _model.State.GetRewriter(target.QualifiedName.QualifiedModuleName.Component);
-                rewriter.Replace(argContext.unrestrictedIdentifier().Start.TokenIndex, _model.NewName);
+
+                var identifier = ((VBAParser.ArgContext)target.Context).unrestrictedIdentifier();
+                rewriter.Replace(identifier, _model.NewName);
 
                 // Target.Context is an ArgContext, its parent is an ArgsListContext;
                 // the ArgsListContext's parent is the procedure context and it includes the body.
@@ -517,7 +519,7 @@ namespace Rubberduck.Refactorings.Rename
                     lastTokenIndex = eventStmtContext.argList().RPAREN().Symbol.TokenIndex;
                 }
 
-                return rewriter.GetText(new Interval(firstTokenIndex, lastTokenIndex));
+                return rewriter.GetText(firstTokenIndex, lastTokenIndex);
             }
             return GetReplacementLine(content, newName, target.Selection);
         }

@@ -1,9 +1,10 @@
 ﻿using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Resources;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 
 namespace Rubberduck.Inspections.Results
 {
@@ -29,12 +30,12 @@ namespace Rubberduck.Inspections.Results
 
         public override QualifiedSelection QualifiedSelection { get { return _result.QualifiedSelection; } }
 
-        public override IEnumerable<QuickFixBase> QuickFixes
+        public override IEnumerable<IQuickFix> QuickFixes
         {
             get { return _result.QuickFixes == null ? base.QuickFixes : new[] { _result.QuickFixes.FirstOrDefault() }; }
         }
 
-        public override QuickFixBase DefaultQuickFix { get { return _result.QuickFixes == null ? null : _result.QuickFixes.FirstOrDefault(); } }
+        public override IQuickFix DefaultQuickFix { get { return _result.QuickFixes == null ? null : _result.QuickFixes.FirstOrDefault(); } }
 
         public override int CompareTo(IInspectionResult other)
         {

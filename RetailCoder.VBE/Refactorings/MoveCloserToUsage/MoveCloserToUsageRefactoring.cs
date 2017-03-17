@@ -56,6 +56,8 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             }
 
             MoveCloserToUsage();
+            //var rewriter = _state.GetRewriter(_target);
+            //rewriter.Rewrite();
         }
 
         public void Refactor(Declaration target)
@@ -71,13 +73,15 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
 
             _target = target;
             MoveCloserToUsage();
+            var rewriter = _state.GetRewriter(_target);
+            rewriter.Rewrite();
         }
 
         private bool TargetIsReferencedFromMultipleMethods(Declaration target)
         {
             var firstReference = target.References.FirstOrDefault();
 
-            return firstReference != null && target.References.Any(r => r.ParentScoping != firstReference.ParentScoping);
+            return firstReference != null && target.References.Any(r => !Equals(r.ParentScoping, firstReference.ParentScoping));
         }
 
         private void MoveCloserToUsage()
@@ -130,69 +134,72 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             QualifiedSelection? oldSelection = null;
             var pane = _vbe.ActiveCodePane;
             var module = pane.CodeModule;
+            if (!module.IsWrappingNullReference)
             {
-                if (!module.IsWrappingNullReference)
-                {
-                    oldSelection = module.GetQualifiedSelection();
-                }
-
-                var newTarget = _state.AllUserDeclarations.FirstOrDefault(
-                    item => item.ComponentName == _target.ComponentName &&
-                            item.IdentifierName == _target.IdentifierName &&
-                            item.ParentScope == _target.ParentScope &&
-                            item.ProjectId == _target.ProjectId &&
-                            Equals(item.Selection, _target.Selection));
-
-                if (newTarget != null)
-                {
-                    UpdateCallsToOtherModule(newTarget.References.ToList());
-                    RemoveField(newTarget);
-                }
-
-                if (oldSelection.HasValue)
-                {
-                    pane.Selection = oldSelection.Value.Selection;
-                }
-
-                _state.StateChanged -= _state_StateChanged;
-                _state.OnParseRequested(this);
+                oldSelection = module.GetQualifiedSelection();
             }
+
+            var rewriter = _state.GetRewriter(module.Parent); // todo: determine if we still need to reparse or if we can just pass the rewriter around
+
+            var newTarget = _state.AllUserDeclarations.FirstOrDefault(
+                item => item.ComponentName == _target.ComponentName &&
+                        item.IdentifierName == _target.IdentifierName &&
+                        item.ParentScope == _target.ParentScope &&
+                        item.ProjectId == _target.ProjectId &&
+                        Equals(item.Selection, _target.Selection));
+
+            if (newTarget != null)
+            {
+                UpdateCallsToOtherModule(newTarget.References.ToList());
+                rewriter.Remove(newTarget);
+                var content = rewriter.GetText();
+                rewriter.Rewrite();
+            }
+
+            if (oldSelection.HasValue)
+            {
+                pane.Selection = oldSelection.Value.Selection;
+            }
+
+            _state.StateChanged -= _state_StateChanged;
+            _state.OnParseRequested(this);
         }
 
         private void InsertDeclaration()
         {
+            _state.GetRewriter(_target);
             var module = _target.References.First().QualifiedModuleName.Component.CodeModule;
+            var firstReference = _target.References.OrderBy(r => r.Selection.StartLine).First();
+            var beginningOfInstructionSelection = GetBeginningOfInstructionSelection(firstReference);
+
+            var oldLines = module.GetLines(beginningOfInstructionSelection.StartLine,
+                beginningOfInstructionSelection.LineCount);
+            var newLines = oldLines.Insert(beginningOfInstructionSelection.StartColumn - 1, GetDeclarationString());
+
+            var newLinesWithoutStringLiterals = newLines.StripStringLiterals();
+
+            var lastIndexOfColon = GetIndexOfLastStatementSeparator(newLinesWithoutStringLiterals);
+            // ReSharper disable once StringLastIndexOfIsCultureSpecific.1
+            while (lastIndexOfColon != -1)
             {
-                var firstReference = _target.References.OrderBy(r => r.Selection.StartLine).First();
-                var beginningOfInstructionSelection = GetBeginningOfInstructionSelection(firstReference);
+                var numberOfCharsToRemove = lastIndexOfColon == newLines.Length - 1 ||
+                                            newLines[lastIndexOfColon + 1] != ' '
+                    ? 1
+                    : 2;
 
-                var oldLines = module.GetLines(beginningOfInstructionSelection.StartLine, beginningOfInstructionSelection.LineCount);
-                var newLines = oldLines.Insert(beginningOfInstructionSelection.StartColumn - 1, GetDeclarationString());
+                newLinesWithoutStringLiterals = newLinesWithoutStringLiterals
+                    .Remove(lastIndexOfColon, numberOfCharsToRemove)
+                    .Insert(lastIndexOfColon, Environment.NewLine);
 
-                var newLinesWithoutStringLiterals = newLines.StripStringLiterals();
+                newLines = newLines
+                    .Remove(lastIndexOfColon, numberOfCharsToRemove)
+                    .Insert(lastIndexOfColon, Environment.NewLine);
 
-                var lastIndexOfColon = GetIndexOfLastStatementSeparator(newLinesWithoutStringLiterals);
-                // ReSharper disable once StringLastIndexOfIsCultureSpecific.1
-                while (lastIndexOfColon != -1)
-                {
-                    var numberOfCharsToRemove = lastIndexOfColon == newLines.Length - 1 || newLines[lastIndexOfColon + 1] != ' '
-                        ? 1
-                        : 2;
-
-                    newLinesWithoutStringLiterals = newLinesWithoutStringLiterals
-                            .Remove(lastIndexOfColon, numberOfCharsToRemove)
-                            .Insert(lastIndexOfColon, Environment.NewLine);
-
-                    newLines = newLines
-                            .Remove(lastIndexOfColon, numberOfCharsToRemove)
-                            .Insert(lastIndexOfColon, Environment.NewLine);
-
-                    lastIndexOfColon = GetIndexOfLastStatementSeparator(newLinesWithoutStringLiterals);
-                }
-
-                module.DeleteLines(beginningOfInstructionSelection.StartLine, beginningOfInstructionSelection.LineCount);
-                module.InsertLines(beginningOfInstructionSelection.StartLine, newLines);
+                lastIndexOfColon = GetIndexOfLastStatementSeparator(newLinesWithoutStringLiterals);
             }
+
+            module.DeleteLines(beginningOfInstructionSelection.StartLine, beginningOfInstructionSelection.LineCount);
+            module.InsertLines(beginningOfInstructionSelection.StartLine, newLines);
         }
 
         private static readonly Regex StatementSeparatorRegex = new Regex(":[^=]", RegexOptions.RightToLeft);
@@ -227,90 +234,6 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
         private string GetDeclarationString()
         {
             return Environment.NewLine + "    Dim " + _target.IdentifierName + " As " + _target.AsTypeName + Environment.NewLine;
-        }
-
-        private void RemoveField(Declaration target)
-        {
-            Selection selection;
-            var declarationText = target.Context.GetText().Replace(" _" + Environment.NewLine, string.Empty);
-            var multipleDeclarations = target.HasMultipleDeclarationsInStatement();
-
-            var variableStmtContext = target.GetVariableStmtContext();
-
-            if (!multipleDeclarations)
-            {
-                declarationText = variableStmtContext.GetText().Replace(" _" + Environment.NewLine, string.Empty);
-                selection = target.GetVariableStmtContextSelection();
-            }
-            else
-            {
-                selection = new Selection(target.Context.Start.Line, target.Context.Start.Column,
-                    target.Context.Stop.Line, target.Context.Stop.Column);
-            }
-
-            var module = target.QualifiedName.QualifiedModuleName.Component.CodeModule;
-            {
-                var oldLines = module.GetLines(selection.StartLine, selection.LineCount);
-                var newLines = oldLines.Replace(" _" + Environment.NewLine, string.Empty)
-                                       .Remove(selection.StartColumn, declarationText.Length);
-
-                if (multipleDeclarations)
-                {
-                    selection = target.GetVariableStmtContextSelection();
-                    newLines = RemoveExtraComma(module.GetLines(selection.StartLine, selection.LineCount).Replace(oldLines, newLines),
-                        target.CountOfDeclarationsInStatement(), target.IndexOfVariableDeclarationInStatement());
-                }
-
-                var adjustedLines =
-                    newLines.Split(new[] { Environment.NewLine }, StringSplitOptions.None)
-                        .Select(s => s.EndsWith(" _") ? s.Remove(s.Length - 2) : s)
-                        .Where(s => s.Trim() != string.Empty)
-                        .ToList();
-
-                module.DeleteLines(selection.StartLine, selection.LineCount);
-
-                if (adjustedLines.Any())
-                {
-                    module.InsertLines(selection.StartLine, string.Join(string.Empty, adjustedLines));
-                }
-            }
-        }
-
-        private string RemoveExtraComma(string str, int numParams, int indexRemoved)
-        {
-            /* Example use cases for this method (fields and variables):
-             * Dim fizz as Boolean, dizz as Double
-             * Private fizz as Boolean, dizz as Double
-             * Public fizz as Boolean, _
-             *        dizz as Double
-             * Private fizz as Boolean _
-             *         , dizz as Double _
-             *         , iizz as Integer
-
-             * Before this method is called, the parameter to be removed has 
-             * already been removed.  This means 'str' will look like:
-             * Dim fizz as Boolean, 
-             * Private , dizz as Double
-             * Public fizz as Boolean, _
-             *        
-             * Private  _
-             *         , dizz as Double _
-             *         , iizz as Integer
-
-             * This method is responsible for removing the redundant comma
-             * and returning a string similar to:
-             * Dim fizz as Boolean
-             * Private dizz as Double
-             * Public fizz as Boolean _
-             *        
-             * Private  _
-             *          dizz as Double _
-             *         , iizz as Integer
-             */
-
-            var commaToRemove = numParams == indexRemoved ? indexRemoved - 1 : indexRemoved;
-
-            return str.Remove(str.NthIndexOf(',', commaToRemove), 1);
         }
 
         private void UpdateCallsToOtherModule(List<IdentifierReference> references)

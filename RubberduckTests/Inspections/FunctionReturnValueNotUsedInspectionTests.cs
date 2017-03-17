@@ -2,7 +2,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections;
 using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Inspections.Resources;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
@@ -340,7 +340,7 @@ End Sub";
                              .AddComponent("Bar", ComponentType.ClassModule, implementationCode)
                              .AddComponent("TestModule", ComponentType.StandardModule, callSiteCode)
                              .MockVbeBuilder().Build();
-            
+
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new FunctionReturnValueNotUsedInspection(state);
@@ -376,7 +376,7 @@ End Sub";
                                         .AddComponent("Bar", ComponentType.ClassModule, implementationCode)
                                         .AddComponent("TestModule", ComponentType.StandardModule, callSiteCode)
                                         .MockVbeBuilder().Build();
-            
+
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new FunctionReturnValueNotUsedInspection(state);

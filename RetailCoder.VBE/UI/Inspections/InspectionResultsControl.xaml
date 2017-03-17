@@ -10,6 +10,7 @@
              xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
              xmlns:converters="clr-namespace:Rubberduck.UI.Converters"
              xmlns:abstract="clr-namespace:Rubberduck.Inspections.Abstract"
+             xmlns:abstract1="clr-namespace:Rubberduck.Parsing.Inspections.Abstract;assembly=Rubberduck.Parsing"
              ResxExtension.DefaultResxName="Rubberduck.UI.RubberduckUI" 
              Language="{UICulture}"
              mc:Ignorable="d" 
@@ -547,7 +548,7 @@
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspectionResults_Type}" SortDirection="Descending">
                     <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate DataType="abstract:IInspectionResult">
+                        <DataTemplate DataType="abstract1:IInspectionResult">
                             <Image Source="{Binding Inspection, Converter={StaticResource InspectionIconConverter}}" Height="16" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
@@ -565,7 +566,7 @@
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspectionResults_Type}">
                     <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate DataType="abstract:IInspectionResult">
+                        <DataTemplate DataType="abstract1:IInspectionResult">
                             <Image Source="{Binding Inspection, Converter={StaticResource InspectionIconConverter}}" Height="16" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
-namespace RubberduckTests.Preprocessing
+namespace RubberduckTests.PreProcessing
 {
     [TestClass]
     public class VBAPreprocessorTests

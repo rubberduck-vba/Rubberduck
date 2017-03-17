@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Resources;
 using Rubberduck.Inspections.Results;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
@@ -108,17 +106,12 @@ namespace Rubberduck.Inspections
             _settings = settings;
         }
 
-        public override string Description
-        {
-            get { return InspectionsUI.HungarianNotationInspectionName; }
-        }
-
         public override CodeInspectionType InspectionType
         {
             get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; }
         }
 
-        public override IEnumerable<InspectionResultBase> GetInspectionResults()
+        public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
             var settings = _settings.Load(new CodeInspectionSettings()) ?? new CodeInspectionSettings();
             var whitelistedNames = settings.WhitelistedIdentifiers.Select(s => s.Identifier).ToList();

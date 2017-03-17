@@ -1,8 +1,10 @@
 using System.Collections.Generic;
+using System.Linq;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Inspections.Resources;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
@@ -12,7 +14,7 @@ namespace Rubberduck.Inspections.Results
 {
     public class ParameterNotUsedInspectionResult : InspectionResultBase
     {
-        private IEnumerable<QuickFixBase> _quickFixes;
+        private IEnumerable<IQuickFix> _quickFixes;
         private readonly bool _isInterfaceImplementation;
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
@@ -28,13 +30,13 @@ namespace Rubberduck.Inspections.Results
             _messageBox = messageBox;
         }
 
-        public override IEnumerable<QuickFixBase> QuickFixes
+        public override IEnumerable<IQuickFix> QuickFixes
         {
             get
             {
                 return _isInterfaceImplementation
-                    ? new QuickFixBase[] { }
-                    : (_quickFixes ?? (_quickFixes = new QuickFixBase[]
+                    ? Enumerable.Empty<IQuickFix>()
+                    : (_quickFixes ?? (_quickFixes = new IQuickFix[]
                     {
                         new RemoveUnusedParameterQuickFix(Context, QualifiedSelection, _vbe, _state, _messageBox),
                         new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName)
