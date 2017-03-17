@@ -54,7 +54,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
                                                   && MemberTypes.Contains(item.DeclarationType))
                                    .OrderBy(o => o.Selection.StartLine)
                                    .ThenBy(t => t.Selection.StartColumn)
-                                   .Select(d => new InterfaceMember(d, declarations))
+                                   .Select(d => new InterfaceMember(d))
                                    .ToList();
         }
     }
