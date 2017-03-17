@@ -194,17 +194,17 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
             if (!argList.Any())
             {
-                rewriter.InsertAtIndex(newParameter, paramList.RPAREN().Symbol.TokenIndex);
+                rewriter.Insert(paramList.RPAREN().Symbol.TokenIndex, newParameter);
             }
             else if (targetMethod.DeclarationType != DeclarationType.PropertyLet &&
                      targetMethod.DeclarationType != DeclarationType.PropertySet)
             {
-                rewriter.InsertAtIndex($", {newParameter}", paramList.RPAREN().Symbol.TokenIndex);
+                rewriter.Insert(paramList.RPAREN().Symbol.TokenIndex, $", {newParameter}");
             }
             else
             {
                 var lastParam = argList.Last();
-                rewriter.InsertAtIndex($"{newParameter}, ", lastParam.Start.TokenIndex);
+                rewriter.Insert(lastParam.Start.TokenIndex, $"{newParameter}, ");
             }
         }
 
