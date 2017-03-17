@@ -75,7 +75,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                 _messageBox.Show(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceParameter_Caption,
                     MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 
-                throw new ArgumentException(@"Invalid declaration type", "target");
+                return;
             }
 
             PromoteVariable(target);
@@ -112,8 +112,6 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             {
                 pane.Selection = oldSelection.Value.Selection;
             }
-
-            _state.OnParseRequested(this);
         }
 
         private bool PromptIfMethodImplementsInterface(Declaration targetVariable)
@@ -194,7 +192,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             var argList = paramList.arg();
             var lastParam = argList.LastOrDefault();
             var newParameter = Tokens.ByVal + " " + targetVariable.IdentifierName + " "+ Tokens.As + " " + targetVariable.AsTypeName;
-            var newContent = GetOldSignature(rewriter, targetMethod);
+            var newContent = paramList.GetText(); //GetOldSignature(rewriter, targetMethod);
 
             if (lastParam == null)
             {
