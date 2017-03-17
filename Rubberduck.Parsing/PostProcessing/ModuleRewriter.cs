@@ -12,6 +12,8 @@ namespace Rubberduck.Parsing.PostProcessing
         private readonly ICodeModule _module;
         private readonly TokenStreamRewriter _rewriter;
 
+        public ITokenStream TokenStream => _rewriter.TokenStream;
+
         public ModuleRewriter(ICodeModule module, TokenStreamRewriter rewriter)
         {
             _module = module;
@@ -69,9 +71,14 @@ namespace Rubberduck.Parsing.PostProcessing
             _rewriter.Replace(token, content);
         }
 
-        public void Insert(int tokenIndex, string content)
+        public void InsertBefore(int tokenIndex, string content)
         {
             _rewriter.InsertBefore(tokenIndex, content);
+        }
+
+        public void InsertAfter(int tokenIndex, string content)
+        {
+            _rewriter.InsertAfter(tokenIndex, content);
         }
 
         public string GetText(int startTokenIndex, int stopTokenIndex)
