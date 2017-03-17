@@ -12,6 +12,7 @@ using System.Threading;
 using Rubberduck.VBEditor;
 using Antlr4.Runtime;
 using Rubberduck.Common;
+using VbaCodeBlocks = RubberduckTests.Symbols.DeclarationFinderTests_VbaBlocks;
 
 namespace RubberduckTests.Symbols
 {
@@ -31,7 +32,7 @@ namespace RubberduckTests.Symbols
                 "Foo"
             };
 
-            string moduleContent1 = InProcedure_MethodDeclaration_moduleContent1();
+            var moduleContent1 = VbaCodeBlocks.InProcedure_MethodDeclaration_moduleContent1();
 
             var tdo = new AccessibilityTestsDataObject();
             AddTestSelectionCriteria(tdo, "CFirstClass", "Foo", "Function Foo() As Long");
@@ -51,7 +52,7 @@ namespace RubberduckTests.Symbols
                 "Foo"
             };
 
-            string moduleContent1 = InProcedure_LocalVariableReference_moduleContent1();
+            var moduleContent1 = VbaCodeBlocks.InProcedure_LocalVariableReference_moduleContent1();
 
             var tdo = new AccessibilityTestsDataObject();
             AddTestSelectionCriteria(tdo, "modTest", "adder", "member1 + adder");
@@ -71,7 +72,7 @@ namespace RubberduckTests.Symbols
                 "Foo"
             };
 
-            string moduleContent1 = InProcedure_MemberDeclaration_moduleContent1();
+            var moduleContent1 = VbaCodeBlocks.InProcedure_MemberDeclaration_moduleContent1();
 
             var tdo = new AccessibilityTestsDataObject();
             AddTestSelectionCriteria(tdo, "CFirstClass", "member1", "member1 + adder");
@@ -90,8 +91,8 @@ namespace RubberduckTests.Symbols
                 "Foo"
             };
 
-            string moduleContent1 = ModuleScope_CFirstClassContent();
-            string moduleContent2 = ModuleScope_moduleContent2();
+            var moduleContent1 = VbaCodeBlocks.ModuleScope_CFirstClassContent();
+            var moduleContent2 = VbaCodeBlocks.ModuleScope_moduleContent2();
 
             var tdo = new AccessibilityTestsDataObject();
             AddTestSelectionCriteria(tdo, "CFirstClass", "member1", "member1 + adder");
@@ -111,8 +112,8 @@ namespace RubberduckTests.Symbols
                 "Foo"
             };
 
-            string moduleContent1 = PublicClassAndPubicModuleSub_CFirstClass();
-            string moduleContent2 = PublicClassAndPubicModuleSub_moduleContent2();
+            var moduleContent1 = VbaCodeBlocks.PublicClassAndPubicModuleSub_CFirstClass();
+            var moduleContent2 = VbaCodeBlocks.PublicClassAndPubicModuleSub_moduleContent2();
 
             var tdo = new AccessibilityTestsDataObject();
             AddTestSelectionCriteria(tdo, "CFirstClass", "Foo", "Function Foo() As Long");
@@ -134,8 +135,8 @@ namespace RubberduckTests.Symbols
                 "member11"
             };
 
-            string moduleContent1 = Module_To_ClassScope_moduleContent1();
-            string moduleContent2 = Module_To_ClassScope_CFirstClass();
+            var moduleContent1 = VbaCodeBlocks.Module_To_ClassScope_moduleContent1();
+            var moduleContent2 = VbaCodeBlocks.Module_To_ClassScope_CFirstClass();
 
             var tdo = new AccessibilityTestsDataObject();
             AddTestSelectionCriteria(tdo, "modOne", "member2", "member2 * 4");
@@ -157,8 +158,8 @@ namespace RubberduckTests.Symbols
                 "member1"
             };
 
-            string moduleContent1 = PrivateSub_RespectPublicSubInOtherModule_moduleContent1();
-            string moduleContent2 = PrivateSub_RespectPublicSubInOtherModule_moduleContent2();
+            var moduleContent1 = VbaCodeBlocks.PrivateSub_RespectPublicSubInOtherModule_moduleContent1();
+            var moduleContent2 = VbaCodeBlocks.PrivateSub_RespectPublicSubInOtherModule_moduleContent2();
 
             var tdo = new AccessibilityTestsDataObject();
             AddTestSelectionCriteria(tdo, "modOne", "SetFilename", "SetFilename filename");
@@ -184,9 +185,9 @@ namespace RubberduckTests.Symbols
                 "filepath"
             };
 
-            string moduleContent1 = PrivateSub_MultipleReferences_moduleContent1();
-            string moduleContent2 = PrivateSub_MultipleReferences_moduleContent2();
-            string moduleContent3 = PrivateSub_MultipleReferences_moduleContent3();
+            var moduleContent1 = VbaCodeBlocks.PrivateSub_MultipleReferences_moduleContent1();
+            var moduleContent2 = VbaCodeBlocks.PrivateSub_MultipleReferences_moduleContent2();
+            var moduleContent3 = VbaCodeBlocks.PrivateSub_MultipleReferences_moduleContent3();
 
             var tdo = new AccessibilityTestsDataObject();
             AddTestSelectionCriteria(tdo, "modOne", "SetFilename", "SetFilename filename");
@@ -212,8 +213,8 @@ namespace RubberduckTests.Symbols
                 "Bar"
             };
 
-            string moduleContent1 = PrivateSub_WithBlock_ModuleContent1();
-            string moduleContent2 = PrivateSub_WithBlock_CFileHelperContent();
+            var moduleContent1 = VbaCodeBlocks.PrivateSub_WithBlock_ModuleContent1();
+            var moduleContent2 = VbaCodeBlocks.PrivateSub_WithBlock_CFileHelperContent();
 
             var tdo = new AccessibilityTestsDataObject();
             AddTestSelectionCriteria(tdo, "modOne", "StoreFilename", ".StoreFilename filepath");
@@ -238,8 +239,8 @@ namespace RubberduckTests.Symbols
                 "member2"
             };
 
-            string moduleContent1 = Module_To_ModuleScopeResolution__moduleContent1();
-            string moduleContent2 = Module_To_ModuleScopeResolution__moduleContent2();
+            var moduleContent1 = VbaCodeBlocks.Module_To_ModuleScopeResolution__moduleContent1();
+            var moduleContent2 = VbaCodeBlocks.Module_To_ModuleScopeResolution__moduleContent2();
 
             var tdo = new AccessibilityTestsDataObject();
             AddTestSelectionCriteria(tdo, "modOne", "Foo2", "Foo2 + modTwo.Foo3");
@@ -417,15 +418,8 @@ namespace RubberduckTests.Symbols
         [Ignore] // ref. https://github.com/rubberduck-vba/Rubberduck/issues/2330
         public void FiendishlyAmbiguousNameSelectsSmallestScopedDeclaration()
         {
-            var code = @"
-Option Explicit
+            var code = VbaCodeBlocks.FiendishlyAmbiguousNameSelectsSmallestScopedDeclaration();
 
-Public Sub foo()
-    Dim foo As Long
-    foo = 42
-    Debug.Print foo
-End Sub
-";
             var vbe = new MockVbeBuilder()
                 .ProjectBuilder("foo", ProjectProtection.Unprotected)
                 .AddComponent("foo", ComponentType.StandardModule, code, new Selection(6, 6))
@@ -445,15 +439,8 @@ End Sub
         [Ignore] // bug: this test should pass... it's not all that evil
         public void AmbiguousNameSelectsSmallestScopedDeclaration()
         {
-            var code = @"
-Option Explicit
+            var code = VbaCodeBlocks.AmbiguousNameSelectsSmallestScopedDeclaration();
 
-Public Sub foo()
-    Dim foo As Long
-    foo = 42
-    Debug.Print foo
-End Sub
-";
             var vbe = new MockVbeBuilder()
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("TestModule", ComponentType.StandardModule, code, new Selection(6, 6))
@@ -522,308 +509,5 @@ End Sub
         {
             toDeclaration.AddReference(toDeclaration.QualifiedName.QualifiedModuleName, fromModuleDeclaration, fromModuleDeclaration, context, toDeclaration.IdentifierName, toDeclaration, Selection.Home, new List<Rubberduck.Parsing.Annotations.IAnnotation>());
         }
-
-        #region AccessibilityTests_HardcodedModuleContent
-        private string InProcedure_MethodDeclaration_moduleContent1()
-        {
-            return
-    @"
-
-Private member1 As Long
-
-Public Function Foo() As Long   'Selecting 'Foo' to rename
-    Dim adder as Long
-    adder = 10
-    member1 = member1 + adder
-    Foo = member1
-End Function
-";
-        }
-
-        private string InProcedure_LocalVariableReference_moduleContent1()
-        {
-            return
-    @"
-
-Private member1 As Long
-
-Public Function Foo() As Long
-    Dim adder as Long
-    adder = 10
-    member1 = member1 + adder   'Selecting 'adder' to rename
-    Foo = member1
-End Function
-";
-        }
-
-        private string InProcedure_MemberDeclaration_moduleContent1()
-        {
-            return
-    @"
-
-Private member1 As Long
-
-Public Function Foo() As Long
-    Dim adder as Long
-    adder = 10
-    member1 = member1 + adder       'Selecting member1 to rename
-    Foo = member1
-End Function
-";
-        }
-
-        private string ModuleScope_CFirstClassContent()
-        {
-            return
-    @"
-
-Private member1 As Long
-
-Public Function Foo() As Long
-    Dim adder as Long
-    adder = 10
-    member1 = member1 + adder       'Selecting 'member1' to rename
-    Foo = member1
-End Function
-";
-        }
-
-        private string ModuleScope_moduleContent2()
-        {
-            return
-    @"
-
-Private member11 As Long
-Public member2 As Long
-
-Public Function Foo2() As Long
-    Dim adder as Long
-    adder = 10
-    member1 = member1 + adder
-    Foo2 = member1
-End Function
-
-Private Sub Bar()
-    member2 = member2 * 4
-End Sub
-";
-        }
-
-        private string PublicClassAndPubicModuleSub_CFirstClass()
-        {
-            return
-    @"
-Public Function Foo() As Long   'Selecting 'Foo' to rename
-    Foo = 5
-End Function
-";
-        }
-
-        private string PublicClassAndPubicModuleSub_moduleContent2()
-        {
-            return
-    @"
-Public Function Foo2() As Long
-    Foo2 = 2
-End Function
-";
-        }
-
-        private string Module_To_ClassScope_moduleContent1()
-        {
-            return
-    @"
-
-Private member11 As Long
-Public member2 As Long
-
-Public Function Foo2() As Long
-    Dim adder as Long
-    adder = 10
-    member1 = member1 + adder
-    Foo2 = member1
-End Function
-
-Private Sub Bar()
-    member2 = member2 * 4   'Selecting member2 to rename
-End Sub
-";
-        }
-
-        private string Module_To_ClassScope_CFirstClass()
-        {
-            return
-    @"
-
-Private member1 As Long
-
-Public Function Foo() As Long
-    Dim adder as Long
-    adder = 10
-    member1 = member1 + adder
-    Foo = member1
-End Function
-";
-        }
-
-        private string PrivateSub_RespectPublicSubInOtherModule_moduleContent1()
-        {
-            return
-@"
-
-
-Private Sub DoThis(filename As String)
-    SetFilename filename            'Selecting 'SetFilename' to rename
-End Sub
-";
-        }
-
-        private string PrivateSub_RespectPublicSubInOtherModule_moduleContent2()
-        {
-            return
-    @"
-
-Private member1 As String
-
-Public Sub SetFilename(filename As String)
-    member1 = filename
-End Sub
-";
-        }
-
-        private string PrivateSub_MultipleReferences_moduleContent1()
-        {
-            return
-@"
-
-
-Private Sub DoThis(filename As String)
-    SetFilename filename       'Selecting 'SetFilename' to rename
-End Sub
-";
-        }
-
-        private string PrivateSub_MultipleReferences_moduleContent2()
-        {
-            return
-    @"
-
-Private member1 As String
-
-Public Sub SetFilename(filename As String)
-    member1 = filename
-End Sub
-";
-        }
-
-        private string PrivateSub_MultipleReferences_moduleContent3()
-        {
-            return
-    @"
-
-Private mFolderpath As String
-
-Private Sub StoreFilename(filepath As String)
-    Dim filename As String
-    filename = ExtractFilename(filepath)
-    SetFilename filename
-End Sub
-
-Private Function ExtractFilename(filepath As String) As String
-    ExtractFilename = filepath
-End Function
-";
-        }
-
-        private string PrivateSub_WithBlock_CFileHelperContent()
-        {
-            return
-    @"
-
-Private mFolderpath As String
-
-Public Sub StoreFilename(input As String)
-    Dim filename As String
-    filename = ExtractFilename(input)
-    SetFilename filename
-End Sub
-
-Private Function ExtractFilename(filepath As String) As String
-    ExtractFilename = filepath
-End Function
-
-Public Sub Bar()
-End Sub
-";
-        }
-
-        private string PrivateSub_WithBlock_ModuleContent1()
-        {
-            return
-    @"
-
-Private myData As String
-Private mDupData As String
-
-Public Sub Foo(filenm As String)
-    Dim filepath As String
-    filepath = ""C:\MyStuff\"" & filenm
-    Dim helper As CFileHelper
-    Set helper = new CFileHelper
-    With helper
-        .StoreFilename filepath     'Selecting 'StoreFilename' to rename
-        mDupData = filepath
-    End With
-End Sub
-
-Public Sub StoreFilename(filename As String)
-    myData = filename
-End Sub
-";
-        }
-
-        private string Module_To_ModuleScopeResolution__moduleContent1()
-        {
-            return
-    @"
-
-Private member11 As Long
-Public member2 As Long
-
-Private Function Bar1() As Long
-    Bar2
-    Bar1 = member2 + modTwo.Foo1 + modTwo.Foo2 + modTwo.Foo3   'Selecting Foo2 to rename
-End Function
-
-Private Sub Bar2()
-    member2 = member2 * 4 
-End Sub
-";
-        }
-        private string Module_To_ModuleScopeResolution__moduleContent2()
-        {
-            return
-    @"
-
-Public Const gConstant As Long = 10
-
-Public Function Foo1() As Long
-    Foo1 = 1
-End Function
-
-Public Function Foo2() As Long
-    Foo2 = 2
-End Function
-
-Public Function Foo3() As Long
-    Foo3 = 3
-End Function
-
-Private Sub Foo4()
-
-End Sub
-";
-        }
-        #endregion
     }
 }
