@@ -12,7 +12,7 @@ using System.Threading;
 using Rubberduck.VBEditor;
 using Antlr4.Runtime;
 using Rubberduck.Common;
-using VbaCodeBlock = RubberduckTests.Symbols.DeclarationFinderTests_VbaBlocks;
+using VbaCodeBlocks = RubberduckTests.Symbols.DeclarationFinderTests_VbaBlocks;
 
 namespace RubberduckTests.Symbols
 {
@@ -32,7 +32,7 @@ namespace RubberduckTests.Symbols
                 "Foo"
             };
 
-            var moduleContent1 = VbaCodeBlock.InProcedure_MethodDeclaration_moduleContent1();
+            var moduleContent1 = VbaCodeBlocks.InProcedure_MethodDeclaration_moduleContent1();
 
             var tdo = new AccessibilityTestsDataObject();
             AddTestSelectionCriteria(tdo, "CFirstClass", "Foo", "Function Foo() As Long");
@@ -52,7 +52,7 @@ namespace RubberduckTests.Symbols
                 "Foo"
             };
 
-            var moduleContent1 = VbaCodeBlock.InProcedure_LocalVariableReference_moduleContent1();
+            var moduleContent1 = VbaCodeBlocks.InProcedure_LocalVariableReference_moduleContent1();
 
             var tdo = new AccessibilityTestsDataObject();
             AddTestSelectionCriteria(tdo, "modTest", "adder", "member1 + adder");
@@ -72,7 +72,7 @@ namespace RubberduckTests.Symbols
                 "Foo"
             };
 
-            var moduleContent1 = VbaCodeBlock.InProcedure_MemberDeclaration_moduleContent1();
+            var moduleContent1 = VbaCodeBlocks.InProcedure_MemberDeclaration_moduleContent1();
 
             var tdo = new AccessibilityTestsDataObject();
             AddTestSelectionCriteria(tdo, "CFirstClass", "member1", "member1 + adder");
@@ -91,8 +91,8 @@ namespace RubberduckTests.Symbols
                 "Foo"
             };
 
-            var moduleContent1 = VbaCodeBlock.ModuleScope_CFirstClassContent();
-            var moduleContent2 = VbaCodeBlock.ModuleScope_moduleContent2();
+            var moduleContent1 = VbaCodeBlocks.ModuleScope_CFirstClassContent();
+            var moduleContent2 = VbaCodeBlocks.ModuleScope_moduleContent2();
 
             var tdo = new AccessibilityTestsDataObject();
             AddTestSelectionCriteria(tdo, "CFirstClass", "member1", "member1 + adder");
@@ -112,8 +112,8 @@ namespace RubberduckTests.Symbols
                 "Foo"
             };
 
-            var moduleContent1 = VbaCodeBlock.PublicClassAndPubicModuleSub_CFirstClass();
-            var moduleContent2 = VbaCodeBlock.PublicClassAndPubicModuleSub_moduleContent2();
+            var moduleContent1 = VbaCodeBlocks.PublicClassAndPubicModuleSub_CFirstClass();
+            var moduleContent2 = VbaCodeBlocks.PublicClassAndPubicModuleSub_moduleContent2();
 
             var tdo = new AccessibilityTestsDataObject();
             AddTestSelectionCriteria(tdo, "CFirstClass", "Foo", "Function Foo() As Long");
@@ -135,8 +135,8 @@ namespace RubberduckTests.Symbols
                 "member11"
             };
 
-            var moduleContent1 = VbaCodeBlock.Module_To_ClassScope_moduleContent1();
-            var moduleContent2 = VbaCodeBlock.Module_To_ClassScope_CFirstClass();
+            var moduleContent1 = VbaCodeBlocks.Module_To_ClassScope_moduleContent1();
+            var moduleContent2 = VbaCodeBlocks.Module_To_ClassScope_CFirstClass();
 
             var tdo = new AccessibilityTestsDataObject();
             AddTestSelectionCriteria(tdo, "modOne", "member2", "member2 * 4");
@@ -158,8 +158,8 @@ namespace RubberduckTests.Symbols
                 "member1"
             };
 
-            var moduleContent1 = VbaCodeBlock.PrivateSub_RespectPublicSubInOtherModule_moduleContent1();
-            var moduleContent2 = VbaCodeBlock.PrivateSub_RespectPublicSubInOtherModule_moduleContent2();
+            var moduleContent1 = VbaCodeBlocks.PrivateSub_RespectPublicSubInOtherModule_moduleContent1();
+            var moduleContent2 = VbaCodeBlocks.PrivateSub_RespectPublicSubInOtherModule_moduleContent2();
 
             var tdo = new AccessibilityTestsDataObject();
             AddTestSelectionCriteria(tdo, "modOne", "SetFilename", "SetFilename filename");
@@ -185,9 +185,9 @@ namespace RubberduckTests.Symbols
                 "filepath"
             };
 
-            var moduleContent1 = VbaCodeBlock.PrivateSub_MultipleReferences_moduleContent1();
-            var moduleContent2 = VbaCodeBlock.PrivateSub_MultipleReferences_moduleContent2();
-            var moduleContent3 = VbaCodeBlock.PrivateSub_MultipleReferences_moduleContent3();
+            var moduleContent1 = VbaCodeBlocks.PrivateSub_MultipleReferences_moduleContent1();
+            var moduleContent2 = VbaCodeBlocks.PrivateSub_MultipleReferences_moduleContent2();
+            var moduleContent3 = VbaCodeBlocks.PrivateSub_MultipleReferences_moduleContent3();
 
             var tdo = new AccessibilityTestsDataObject();
             AddTestSelectionCriteria(tdo, "modOne", "SetFilename", "SetFilename filename");
@@ -213,8 +213,8 @@ namespace RubberduckTests.Symbols
                 "Bar"
             };
 
-            var moduleContent1 = VbaCodeBlock.PrivateSub_WithBlock_ModuleContent1();
-            var moduleContent2 = VbaCodeBlock.PrivateSub_WithBlock_CFileHelperContent();
+            var moduleContent1 = VbaCodeBlocks.PrivateSub_WithBlock_ModuleContent1();
+            var moduleContent2 = VbaCodeBlocks.PrivateSub_WithBlock_CFileHelperContent();
 
             var tdo = new AccessibilityTestsDataObject();
             AddTestSelectionCriteria(tdo, "modOne", "StoreFilename", ".StoreFilename filepath");
@@ -239,8 +239,8 @@ namespace RubberduckTests.Symbols
                 "member2"
             };
 
-            var moduleContent1 = VbaCodeBlock.Module_To_ModuleScopeResolution__moduleContent1();
-            var moduleContent2 = VbaCodeBlock.Module_To_ModuleScopeResolution__moduleContent2();
+            var moduleContent1 = VbaCodeBlocks.Module_To_ModuleScopeResolution__moduleContent1();
+            var moduleContent2 = VbaCodeBlocks.Module_To_ModuleScopeResolution__moduleContent2();
 
             var tdo = new AccessibilityTestsDataObject();
             AddTestSelectionCriteria(tdo, "modOne", "Foo2", "Foo2 + modTwo.Foo3");
@@ -418,7 +418,7 @@ namespace RubberduckTests.Symbols
         [Ignore] // ref. https://github.com/rubberduck-vba/Rubberduck/issues/2330
         public void FiendishlyAmbiguousNameSelectsSmallestScopedDeclaration()
         {
-            var code = VbaCodeBlock.FiendishlyAmbiguousNameSelectsSmallestScopedDeclaration();
+            var code = VbaCodeBlocks.FiendishlyAmbiguousNameSelectsSmallestScopedDeclaration();
 
             var vbe = new MockVbeBuilder()
                 .ProjectBuilder("foo", ProjectProtection.Unprotected)
@@ -439,7 +439,7 @@ namespace RubberduckTests.Symbols
         [Ignore] // bug: this test should pass... it's not all that evil
         public void AmbiguousNameSelectsSmallestScopedDeclaration()
         {
-            var code = VbaCodeBlock.AmbiguousNameSelectsSmallestScopedDeclaration();
+            var code = VbaCodeBlocks.AmbiguousNameSelectsSmallestScopedDeclaration();
 
             var vbe = new MockVbeBuilder()
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
