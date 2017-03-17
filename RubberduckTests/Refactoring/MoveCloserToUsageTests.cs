@@ -255,7 +255,8 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-@"Private           bat As Boolean,          bay As Date
+@"Private bat As Boolean, _
+          bay As Date
 
 Private Sub Foo()
 
@@ -292,7 +293,8 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-@"Private bar As Integer,          bay As Date
+@"Private bar As Integer, _
+          bay As Date
 
 Private Sub Foo()
 
@@ -329,7 +331,8 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-@"Private bar As Integer,          bat As Boolean
+@"Private bar As Integer, _
+          bat As Boolean
 
 Private Sub Foo()
 
@@ -368,7 +371,8 @@ End Sub";
             //Expectation
             const string expectedCode =
 @"Private Sub Foo()
-    Dim         bat As Boolean,        bay As Date
+    Dim bat As Boolean, _
+        bay As Date
 
     bat = True
 
@@ -407,7 +411,8 @@ End Sub";
             //Expectation
             const string expectedCode =
 @"Private Sub Foo()
-    Dim bar As Integer,        bay As Date
+    Dim bar As Integer, _
+        bay As Date
 
     bar = 1
 
@@ -446,13 +451,14 @@ End Sub";
             //Expectation
             const string expectedCode =
 @"Private Sub Foo()
-    Dim bar As Integer,        bat As Boolean
+    Dim bar As Integer, _
+        bat As Boolean
 
     bar = 4
 
     Dim bay As Date
     bay = #1/13/2004#
-End Sub";   // note: VBE will remove extra spaces
+End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
@@ -675,7 +681,8 @@ Private Sub Baz(ByVal bat As Boolean, ByVal bas As Boolean, ByVal bac As Boolean
         {
             //Input
             const string inputCode =
-@"Private foo As Long
+@"
+Private foo As Long
 
 Public Sub Test()
     SomeSub someParam:=foo
@@ -685,7 +692,7 @@ Public Sub SomeSub(ByVal someParam As Long)
     Debug.Print someParam
 End Sub";
 
-            var selection = new Selection(1, 1);
+            var selection = new Selection(2, 1);
             const string expectedCode =
 @"
 Public Sub Test()
@@ -716,7 +723,8 @@ End Sub";
         {
             //Input
             const string inputCode =
-@"Private foo As Long
+@"
+Private foo As Long
 
 Public Sub Test(): SomeSub someParam:=foo: End Sub
 
@@ -724,7 +732,7 @@ Public Sub SomeSub(ByVal someParam As Long)
     Debug.Print someParam
 End Sub";
 
-            var selection = new Selection(1, 1);
+            var selection = new Selection(2, 1);
             const string expectedCode =
 @"
 Public Sub Test()
