@@ -32,20 +32,20 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         protected override void ExecuteImpl(object parameter)
         {
+            var folderAnnotation = $"'@Folder(\"{GetFolder(parameter)}\")";
+
             if (parameter != null)
             {
                 var components = GetDeclaration(parameter).Project.VBComponents;
-                {
-                    components.Add(ComponentType.UserForm);
-                }
+                var newComponent = components.Add(ComponentType.UserForm);
+                newComponent.CodeModule.AddFromString(folderAnnotation);
             }
             else
             {
                 var project = _vbe.ActiveVBProject;
                 var components = project.VBComponents;
-                {
-                    components.Add(ComponentType.UserForm);
-                }
+                var newComponent = components.Add(ComponentType.UserForm);
+                newComponent.CodeModule.AddFromString(folderAnnotation);
             }
         }
 
@@ -57,7 +57,25 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 node = node.Parent;
             }
 
-            return node == null ? null : ((ICodeExplorerDeclarationViewModel)node).Declaration;
+            return ((ICodeExplorerDeclarationViewModel) node)?.Declaration;
+        }
+
+        private string GetFolder(object parameter)
+        {
+            if (parameter == null)
+            {
+                return "VBAProject";
+            }
+
+            var declarationNode = parameter as ICodeExplorerDeclarationViewModel;
+            if (declarationNode != null)
+            {
+                return string.IsNullOrEmpty(declarationNode.Declaration.CustomFolder)
+                    ? "VBAProject"
+                    : declarationNode.Declaration.CustomFolder.Replace("\"", string.Empty);
+            }
+
+            return ((CodeExplorerCustomFolderViewModel)parameter).FullPath;
         }
     }
 }
