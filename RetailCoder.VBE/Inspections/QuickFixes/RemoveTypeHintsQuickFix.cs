@@ -1,9 +1,9 @@
 using System.Text.RegularExpressions;
 using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Resources;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;

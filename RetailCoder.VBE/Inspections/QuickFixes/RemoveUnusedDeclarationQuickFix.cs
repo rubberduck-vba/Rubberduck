@@ -1,7 +1,7 @@
 using Antlr4.Runtime;
-using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Resources;
+using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Parsing.PostProcessing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 
@@ -13,22 +13,18 @@ namespace Rubberduck.Inspections.QuickFixes
     public class RemoveUnusedDeclarationQuickFix : QuickFixBase
     {
         private readonly Declaration _target;
+        private readonly IModuleRewriter _rewriter;
 
-        public RemoveUnusedDeclarationQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration target)
+        public RemoveUnusedDeclarationQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration target, IModuleRewriter rewriter)
             : base(context, selection, InspectionsUI.RemoveUnusedDeclarationQuickFix)
         {
             _target = target;
+            _rewriter = rewriter;
         }
 
         public override void Fix()
         {
-            var module = _target
-                .QualifiedName
-                .QualifiedModuleName
-                .Component
-                .CodeModule;
-
-            module.Remove(_target);
+            _rewriter.Remove(_target);
         }
     }
 }

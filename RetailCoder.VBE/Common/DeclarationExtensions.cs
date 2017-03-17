@@ -46,9 +46,7 @@ namespace Rubberduck.Common
             }
 
             var statement = GetVariableStmtContext(target) ?? target.Context; // undeclared variables don't have a VariableStmtContext
-
-            return new Selection(statement.Start.Line, statement.Start.Column,
-                    statement.Stop.Line, statement.Stop.Column);
+            return statement.GetSelection();
         }
 
         /// <summary>
@@ -65,9 +63,7 @@ namespace Rubberduck.Common
             }
 
             var statement = GetConstStmtContext(target);
-
-            return new Selection(statement.Start.Line, statement.Start.Column,
-                    statement.Stop.Line, statement.Stop.Column);
+            return statement.GetSelection();
         }
 
         /// <summary>
@@ -83,6 +79,7 @@ namespace Rubberduck.Common
                 throw new ArgumentException("Target DeclarationType is not Variable.", "target");
             }
 
+            Debug.Assert(target.Context is VBAParser.VariableSubStmtContext);
             var statement = target.Context.Parent.Parent as VBAParser.VariableStmtContext;
             if (statement == null && !target.IsUndeclared)
             {
@@ -128,7 +125,6 @@ namespace Rubberduck.Common
             }
 
             var statement = target.Context.Parent as VBAParser.VariableListStmtContext;
-
             return statement != null && statement.children.OfType<VBAParser.VariableSubStmtContext>().Count() > 1;
         }
 

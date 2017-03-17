@@ -30,7 +30,6 @@ End Sub";
             //Expectation
             const string expectedCode =
 @"Private Sub Foo()
-
     Dim bar As Boolean
     bar = True
 End Sub";
@@ -92,7 +91,7 @@ End Sub";
 @"Private Sub Foo()
     Module1.bar = True
 End Sub";
-            var selection = new Selection(1, 1, 1, 1);
+            var selection = new Selection(1, 1);
 
             //Expectation
             const string expectedCode1 =

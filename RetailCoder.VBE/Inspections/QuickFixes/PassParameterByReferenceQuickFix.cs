@@ -1,10 +1,10 @@
-using Rubberduck.Common;
+using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Resources;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Parsing.PostProcessing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
@@ -13,19 +13,19 @@ namespace Rubberduck.Inspections.QuickFixes
     /// </summary>
     public class PassParameterByReferenceQuickFix : QuickFixBase
     {
-        private readonly ICodeModule _codeModule;
-        private readonly VBAParser.ArgContext _argContext;
+        private readonly IModuleRewriter _rewriter;
+        private readonly IToken _token;
 
-        public PassParameterByReferenceQuickFix(Declaration target, QualifiedSelection selection)
+        public PassParameterByReferenceQuickFix(Declaration target, QualifiedSelection selection, IModuleRewriter rewriter)
             : base(target.Context, selection, InspectionsUI.PassParameterByReferenceQuickFix)
         {
-            _argContext = target.Context as VBAParser.ArgContext;
-            _codeModule = Selection.QualifiedName.Component.CodeModule;
+            _rewriter = rewriter;
+            _token = ((VBAParser.ArgContext)target.Context).BYVAL().Symbol;
         }
 
         public override void Fix()
         {
-            _codeModule.ReplaceToken(_argContext.BYVAL().Symbol, Tokens.ByRef);
+            _rewriter.Replace(_token, Tokens.ByRef);
         }
     }
 }

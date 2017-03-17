@@ -3,8 +3,9 @@ using Antlr4.Runtime;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Inspections.Resources;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
 
@@ -12,7 +13,7 @@ namespace Rubberduck.Inspections.Results
 {
     public sealed class NonReturningFunctionInspectionResult : InspectionResultBase
     {
-        private IEnumerable<QuickFixBase> _quickFixes;
+        private IEnumerable<IQuickFix> _quickFixes;
         private readonly bool _canConvertToProcedure;
 
         public NonReturningFunctionInspectionResult(IInspection inspection, QualifiedContext<ParserRuleContext> qualifiedContext, Declaration target, bool canConvertToProcedure)
@@ -21,21 +22,20 @@ namespace Rubberduck.Inspections.Results
             _canConvertToProcedure = canConvertToProcedure;            
         }
 
-        public override IEnumerable<QuickFixBase> QuickFixes
+        public override IEnumerable<IQuickFix> QuickFixes
         {
             get
             {
-                return _quickFixes ?? (_quickFixes = _canConvertToProcedure ? 
-                    new QuickFixBase[]
-                    {
-                        new ConvertToProcedureQuickFix(Context, QualifiedSelection, Target),
-                        new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName),
-                    }
-                    : 
-                    new QuickFixBase[]
-                    {
-                        new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName),
-                    });
+                return _quickFixes ?? (_quickFixes = _canConvertToProcedure
+                    ? new IQuickFix[]
+                        {
+                            new ConvertToProcedureQuickFix(Context, QualifiedSelection, Target),
+                            new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName),
+                        }
+                    : new QuickFixBase[]
+                        {
+                            new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName),
+                        });
             }
         }
 

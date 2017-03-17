@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Inspections.Resources;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections.Results
@@ -10,7 +10,7 @@ namespace Rubberduck.Inspections.Results
     public class MemberNotOnInterfaceInspectionResult : InspectionResultBase
     {
         private readonly Declaration _asTypeDeclaration;
-        private IEnumerable<QuickFixBase> _quickFixes;
+        private IEnumerable<IQuickFix> _quickFixes;
 
         public MemberNotOnInterfaceInspectionResult(IInspection inspection, Declaration target, Declaration asTypeDeclaration)
             : base(inspection, target)
@@ -18,11 +18,11 @@ namespace Rubberduck.Inspections.Results
             _asTypeDeclaration = asTypeDeclaration;
         }
 
-        public override IEnumerable<QuickFixBase> QuickFixes
+        public override IEnumerable<IQuickFix> QuickFixes
         {
             get
             {
-                return _quickFixes ?? (_quickFixes = new QuickFixBase[]
+                return _quickFixes ?? (_quickFixes = new IQuickFix[]
                 {
                     new IgnoreOnceQuickFix(Target.Context, QualifiedSelection, Inspection.AnnotationName)
                 });

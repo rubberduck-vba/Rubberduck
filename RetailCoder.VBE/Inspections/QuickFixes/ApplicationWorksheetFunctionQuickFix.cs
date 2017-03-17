@@ -1,5 +1,5 @@
 ﻿using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Resources;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.QuickFixes

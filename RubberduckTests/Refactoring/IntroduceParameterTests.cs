@@ -30,7 +30,6 @@ End Sub";
             //Expectation
             const string expectedCode =
 @"Private Sub Foo(ByVal bar As Boolean)
-    
 End Sub";
 
             IVBComponent component;
@@ -59,7 +58,6 @@ End Function";
             //Expectation
             const string expectedCode =
 @"Private Function Foo(ByVal bar As Boolean) As Boolean
-    
     Foo = True
 End Function";
 
@@ -88,7 +86,6 @@ End Sub";
             //Expectation
             const string expectedCode =
 @"Private Sub Foo(ByVal buz As Integer, ByVal bar As Boolean)
-    
 End Sub";
 
             IVBComponent component;
@@ -119,7 +116,6 @@ End Sub";
             //Expectation
             const string expectedCode =
 @"Private Sub Foo(ByVal buz As Integer, ByVal bar As Boolean)
-    
 End Sub";
 
             IVBComponent component;
@@ -149,7 +145,6 @@ End Sub";
             const string expectedCode =
 @"Private Sub Foo(ByVal buz As Integer, _
                   ByRef baz As Date, ByVal bar As Boolean)
-    
 End Sub";   // note: the VBE removes extra spaces
 
             IVBComponent component;
@@ -373,7 +368,6 @@ End Property";
             //Expectation
             const string expectedCode =
 @"Property Get Foo(ByVal fizz As Boolean, ByVal bar As Integer) As Boolean
-    
     Foo = fizz
 End Property
 
@@ -409,7 +403,6 @@ End Property";
             //Expectation
             const string expectedCode =
 @"Property Get Foo(ByVal fizz As Boolean, ByVal bar As Integer) As Variant
-    
     Foo = fizz
 End Property
 
@@ -453,7 +446,6 @@ End Sub";
 @"Implements IClass1
 
 Sub IClass1_fizz(ByVal boo As Boolean, ByVal fizz As Date)
-    
 End Sub";
 
             var builder = new MockVbeBuilder();
@@ -514,7 +506,6 @@ End Sub";
 @"Implements IClass1
 
 Sub IClass1_fizz(ByVal boo As Boolean, ByVal fizz As Date)
-    
 End Sub";
 
             const string expectedCode3 =
@@ -609,7 +600,6 @@ End Sub";
             //Expectation
             const string expectedCode =
 @"Private Sub Foo(ByVal bar As Boolean)
-    
 End Sub";
 
             IVBComponent component;

@@ -2,9 +2,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Resources;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
@@ -17,8 +18,6 @@ namespace Rubberduck.Inspections
         {
         }
 
-        public override string Meta { get { return InspectionsUI.ImplicitVariantReturnTypeInspectionMeta; } }
-        public override string Description { get { return InspectionsUI.ImplicitVariantReturnTypeInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
         private static readonly DeclarationType[] ProcedureTypes = 
@@ -28,7 +27,7 @@ namespace Rubberduck.Inspections
             DeclarationType.LibraryFunction
         };
 
-        public override IEnumerable<InspectionResultBase> GetInspectionResults()
+        public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
             var issues = from item in UserDeclarations
                                where ProcedureTypes.Contains(item.DeclarationType) && !item.IsTypeSpecified

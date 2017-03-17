@@ -5,7 +5,8 @@ using Antlr4.Runtime;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Inspections.Resources;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
@@ -14,7 +15,7 @@ namespace Rubberduck.Inspections.Results
 {
     public class FunctionReturnValueNotUsedInspectionResult : InspectionResultBase
     {
-        private IEnumerable<QuickFixBase> _quickFixes;
+        private IEnumerable<IQuickFix> _quickFixes;
         private readonly IEnumerable<Tuple<ParserRuleContext, QualifiedSelection, Declaration>> _children;
         private readonly bool _allowConvertToProcedure;
         private readonly ParserRuleContext _context;
@@ -34,7 +35,7 @@ namespace Rubberduck.Inspections.Results
             _context = context;
         }
 
-        public override IEnumerable<QuickFixBase> QuickFixes
+        public override IEnumerable<IQuickFix> QuickFixes
         {
             get
             {
@@ -46,7 +47,7 @@ namespace Rubberduck.Inspections.Results
                         var root = new ConvertToProcedureQuickFix(_context, QualifiedSelection, Target);
                         var compositeFix = new CompositeCodeInspectionFix(root);
                         _children.ToList().ForEach(child => compositeFix.AddChild(new ConvertToProcedureQuickFix(child.Item1, child.Item2, child.Item3)));
-                        _quickFixes = new QuickFixBase[]
+                        _quickFixes = new IQuickFix[]
                         {
                             compositeFix,
                             ignoreOnce

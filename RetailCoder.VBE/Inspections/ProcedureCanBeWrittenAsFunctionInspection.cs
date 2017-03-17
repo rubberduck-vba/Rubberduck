@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Security.Policy;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
@@ -8,35 +7,32 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using NLog;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Resources;
 using Rubberduck.Inspections.Results;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 
 namespace Rubberduck.Inspections
 {
     public sealed class ProcedureCanBeWrittenAsFunctionInspection : InspectionBase, IParseTreeInspection
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        private IEnumerable<QualifiedContext> _results;
+        private IEnumerable<QualifiedContext> _parseTreeResults;
 
         public ProcedureCanBeWrittenAsFunctionInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Suggestion)
         {
         }
 
-        public override string Meta { get { return InspectionsUI.ProcedureCanBeWrittenAsFunctionInspectionMeta; } }
-        public override string Description { get { return InspectionsUI.ProcedureCanBeWrittenAsFunctionInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
-
-        public IEnumerable<QualifiedContext<VBAParser.ArgListContext>> ParseTreeResults { get { return _results.OfType<QualifiedContext<VBAParser.ArgListContext>>(); } }
 
         public void SetResults(IEnumerable<QualifiedContext> results)
         {
-            _results = results;
+            _parseTreeResults = results;
         }
 
-        public override IEnumerable<InspectionResultBase> GetInspectionResults()
+        public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
-            if (ParseTreeResults == null)
+            if (_parseTreeResults == null)
             {
                 Logger.Debug("Aborting GetInspectionResults because ParseTree results were not passed");
                 return new InspectionResultBase[] { };
@@ -52,7 +48,7 @@ namespace Rubberduck.Inspections
                 .Concat(builtinHandlers)
                 .Concat(userDeclarations.Where(item => item.IsWithEvents)));
 
-            return ParseTreeResults.Where(context => context.Context.Parent is VBAParser.SubStmtContext)
+            return _parseTreeResults.Where(context => context.Context.Parent is VBAParser.SubStmtContext)
                                    .Select(context => contextLookup[(VBAParser.SubStmtContext)context.Context.Parent])
                                    .Where(decl => !IsIgnoringInspectionResultFor(decl, AnnotationName) &&
                                                   !ignored.Contains(decl) &&

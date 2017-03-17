@@ -39,6 +39,7 @@ using ReparseCommandMenuItem = Rubberduck.UI.Command.MenuItems.CommandBars.Repar
 using Rubberduck.UI.Refactorings;
 using Rubberduck.Inspections;
 using Rubberduck.UI.Refactorings.Rename;
+using Rubberduck.Parsing.Inspections.Abstract;
 
 namespace Rubberduck.Root
 {

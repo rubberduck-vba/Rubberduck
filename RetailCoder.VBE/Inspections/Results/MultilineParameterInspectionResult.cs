@@ -2,8 +2,9 @@
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Inspections.Resources;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
 
@@ -11,7 +12,7 @@ namespace Rubberduck.Inspections.Results
 {
     public class MultilineParameterInspectionResult : InspectionResultBase
     {
-        private IEnumerable<QuickFixBase> _quickFixes;
+        private IEnumerable<IQuickFix> _quickFixes;
 
         public MultilineParameterInspectionResult(IInspection inspection, Declaration target)
             : base(inspection, target)
@@ -28,11 +29,11 @@ namespace Rubberduck.Inspections.Results
             }
         }
 
-        public override IEnumerable<QuickFixBase> QuickFixes
+        public override IEnumerable<IQuickFix> QuickFixes
         {
             get
             {
-                return _quickFixes ?? (_quickFixes = new QuickFixBase[]
+                return _quickFixes ?? (_quickFixes = new IQuickFix[]
                 {
                     new MakeSingleLineParameterQuickFix(Context, QualifiedSelection),
                     new IgnoreOnceQuickFix(Target.ParentDeclaration.Context, Target.ParentDeclaration.QualifiedSelection, Inspection.AnnotationName) 

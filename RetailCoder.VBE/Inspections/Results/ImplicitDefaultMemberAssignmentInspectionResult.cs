@@ -1,5 +1,6 @@
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Resources;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections.Results

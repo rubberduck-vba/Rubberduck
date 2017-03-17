@@ -7,7 +7,7 @@ using System.Diagnostics;
 using System.Globalization;
 using Rubberduck.Parsing;
 
-namespace RubberduckTests.Preprocessing
+namespace RubberduckTests.PreProcessing
 {
     [TestClass]
     public class VBAPreprocessorVisitorTests

@@ -2,27 +2,19 @@ using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Resources;
 using Rubberduck.Inspections.Results;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
 using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Inspections
 {
     public sealed class ProcedureNotUsedInspection : InspectionBase
     {
-        private readonly IMessageBox _messageBox;
+        public ProcedureNotUsedInspection(RubberduckParserState state) : base(state) { }
 
-        public ProcedureNotUsedInspection(RubberduckParserState state, IMessageBox messageBox)
-            : base(state)
-        {
-            _messageBox = messageBox;
-        }
-
-        public override string Meta { get { return InspectionsUI.ProcedureNotUsedInspectionMeta; } }
-        public override string Description { get { return InspectionsUI.ProcedureNotUsedInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
         private static readonly string[] DocumentEventHandlerPrefixes =
@@ -35,7 +27,7 @@ namespace Rubberduck.Inspections
             "Session_"
         };
 
-        public override IEnumerable<InspectionResultBase> GetInspectionResults()
+        public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
             var declarations = UserDeclarations.ToList();
 
@@ -69,7 +61,7 @@ namespace Rubberduck.Inspections
 
             var items = declarations
                 .Where(item => !IsIgnoredDeclaration(item, interfaceMembers, implementingMembers, handlers, classes, modules)).ToList();
-            var issues = items.Select(issue => new IdentifierNotUsedInspectionResult(this, issue, issue.Context, issue.QualifiedName.QualifiedModuleName));
+            var issues = items.Select(issue => new IdentifierNotUsedInspectionResult(this, issue, issue.Context, issue.QualifiedName.QualifiedModuleName, State.GetRewriter(issue)));
 
             issues = DocumentEventHandlerPrefixes
                 .Aggregate(issues, (current, item) => current.Where(issue => !issue.Description.Contains("'" + item)));

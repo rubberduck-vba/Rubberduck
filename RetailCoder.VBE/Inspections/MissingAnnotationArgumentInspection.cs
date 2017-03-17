@@ -1,12 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Resources;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 
 namespace Rubberduck.Inspections
 {
@@ -19,24 +20,21 @@ namespace Rubberduck.Inspections
         {
         }
 
-        public override string Meta { get { return InspectionsUI.MissingAnnotationArgumentInspectionMeta; } }
-        public override string Description { get { return InspectionsUI.MissingAnnotationArgumentInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
-        public IEnumerable<QualifiedContext<VBAParser.AnnotationContext>> ParseTreeResults { get { return _parseTreeResults.OfType<QualifiedContext<VBAParser.AnnotationContext>>(); } }
 
         public void SetResults(IEnumerable<QualifiedContext> results)
         {
             _parseTreeResults = results;
         }
 
-        public override IEnumerable<InspectionResultBase> GetInspectionResults()
+        public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
-            if (ParseTreeResults == null)
+            if (_parseTreeResults == null)
             {
                 return new InspectionResultBase[] { };
             }
 
-            return (from result in ParseTreeResults
+            return (from result in _parseTreeResults.Cast<QualifiedContext<VBAParser.AnnotationContext>>()
                     let context = result.Context 
                     where context.annotationName().GetText() == AnnotationType.Ignore.ToString() 
                        || context.annotationName().GetText() == AnnotationType.Folder.ToString() 
