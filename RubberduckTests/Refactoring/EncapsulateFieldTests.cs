@@ -493,7 +493,7 @@ bazz As Date";
             //Expectation
             const string expectedCode =
 @"Public fizz, _
-    buzz As Boolean         
+buzz As Boolean
 Private bazz As Date
 
 Public Property Get Name() As Date
@@ -570,7 +570,6 @@ End Property
             var factory = SetupFactory(model);
 
             var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
-            refactoring.Refactor(qualifiedSelection);
             refactoring.Refactor(qualifiedSelection);
 
             var rewriter = state.GetRewriter(model.TargetDeclaration);
@@ -726,7 +725,7 @@ End Sub";
             Assert.AreEqual(expectedCode1, rewriter1.GetText());
 
             var rewriter2 = state.GetRewriter(module2.Parent);
-            Assert.AreEqual(expectedCode1, rewriter2.GetText());
+            Assert.AreEqual(expectedCode2, rewriter2.GetText());
         }
 
         [TestMethod]

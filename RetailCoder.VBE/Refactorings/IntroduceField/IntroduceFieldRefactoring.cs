@@ -105,7 +105,7 @@ namespace Rubberduck.Refactorings.IntroduceField
                 .OrderByDescending(item => item.Selection);
 
             var firstMember = members.FirstOrDefault();
-            rewriter.Insert(firstMember?.Context.Start.TokenIndex ?? 0, content);
+            rewriter.InsertBefore(firstMember?.Context.Start.TokenIndex ?? 0, content);
         }
     }
 }
