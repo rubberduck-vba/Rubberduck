@@ -187,7 +187,7 @@ End Sub";
         {
             const string inputCode =
 @"Public Sub Foo()
-    Const const1 As Integer = 9
+Const const1 As Integer = 9
 End Sub";
 
             const string expectedCode =
