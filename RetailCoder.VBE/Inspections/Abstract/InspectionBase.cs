@@ -104,7 +104,7 @@ namespace Rubberduck.Inspections.Abstract
             }
 
             // VBE 1-based indexing
-            for (var i = line - 1; i >= 1; i--)
+            for (var i = line; i >= 1; i--)
             {
                 var annotation = annotations.SingleOrDefault(a => a.QualifiedSelection.Selection.StartLine == i) as IgnoreAnnotation;
                 if (annotation != null && annotation.InspectionNames.Contains(AnnotationName))
