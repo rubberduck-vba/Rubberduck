@@ -5,6 +5,7 @@ using Rubberduck.Parsing.Preprocessing;
 using System;
 using System.Diagnostics;
 using System.Globalization;
+using Rubberduck.Parsing;
 
 namespace RubberduckTests.PreProcessing
 {

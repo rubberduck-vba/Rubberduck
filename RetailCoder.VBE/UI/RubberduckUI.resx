@@ -2012,4 +2012,7 @@ Would you like to import them to Rubberduck?</value>
   <data name="Assert_ValueReferenceMismatch" xml:space="preserve">
     <value>[expected] is a value type and [actual] is a reference type.</value>
   </data>
+  <data name="Preview" xml:space="preserve">
+    <value>Preview</value>
+  </data>
 </root>

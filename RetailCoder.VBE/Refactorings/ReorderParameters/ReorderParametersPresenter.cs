@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.UI;
+using Rubberduck.UI.Refactorings;
 using Rubberduck.UI.Refactorings.ReorderParameters;
 
 namespace Rubberduck.Refactorings.ReorderParameters
@@ -13,11 +14,11 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
     public class ReorderParametersPresenter : IReorderParametersPresenter
     {
-        private readonly ReorderParametersDialog _view;
+        private readonly IRefactoringDialog<ReorderParametersViewModel> _view;
         private readonly ReorderParametersModel _model;
         private readonly IMessageBox _messageBox;
 
-        public ReorderParametersPresenter(ReorderParametersDialog view, ReorderParametersModel model, IMessageBox messageBox)
+        public ReorderParametersPresenter(IRefactoringDialog<ReorderParametersViewModel> view, ReorderParametersModel model, IMessageBox messageBox)
         {
             _view = view;
             _model = model;

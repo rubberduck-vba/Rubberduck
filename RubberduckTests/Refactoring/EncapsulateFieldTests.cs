@@ -7,6 +7,8 @@ using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.VBEditor;
 using RubberduckTests.Mocks;
 using Rubberduck.SmartIndenter;
+using Rubberduck.UI.Refactorings;
+using Rubberduck.UI.Refactorings.EncapsulateField;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -784,7 +786,7 @@ End Property
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -870,9 +872,9 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var view = new Mock<IEncapsulateFieldDialog>();
-            view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
-            view.SetupProperty(v => v.ParameterName, "myVal");
+            var view = new Mock<IRefactoringDialog<EncapsulateFieldViewModel>>();
+            view.Setup(v => v.DialogResult).Returns(DialogResult.OK);
+            view.SetupGet(v => v.ViewModel).Returns(new EncapsulateFieldViewModel(state, null) {ParameterName = "myVal"});
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, state, view.Object);
 
@@ -894,60 +896,14 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var view = new Mock<IEncapsulateFieldDialog>();
-            view.Setup(v => v.ShowDialog()).Returns(DialogResult.Cancel);
+            var view = new Mock<IRefactoringDialog<EncapsulateFieldViewModel>>();
+            view.Setup(v => v.DialogResult).Returns(DialogResult.Cancel);
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, state, view.Object);
 
             var presenter = factory.Create();
 
             Assert.AreEqual(null, presenter.Show());
-        }
-
-        [TestMethod]
-        public void Presenter_Accept_ReturnsModelWithPropertyNameChanged()
-        {
-            //Input
-            const string inputCode =
-@"Private fizz As Variant";
-            var selection = new Selection(1, 15, 1, 15);
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var view = new Mock<IEncapsulateFieldDialog>();
-            view.Setup(v => v.NewPropertyName).Returns("MyProperty");
-            view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
-
-            var factory = new EncapsulateFieldPresenterFactory(vbe.Object, state, view.Object);
-
-            var presenter = factory.Create();
-
-            Assert.AreEqual("MyProperty", presenter.Show().PropertyName);
-        }
-
-        [TestMethod]
-        public void Presenter_Accept_ReturnsModelWithCanImplementLetChanged()
-        {
-            //Input
-            const string inputCode =
-@"Private fizz As Variant";
-            var selection = new Selection(1, 15, 1, 15);
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var view = new Mock<IEncapsulateFieldDialog>();
-            view.SetupProperty(v => v.CanImplementLetSetterType, true);
-            view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
-
-            var factory = new EncapsulateFieldPresenterFactory(vbe.Object, state, view.Object);
-
-            var presenter = factory.Create();
-
-            Assert.AreEqual(true, presenter.Show().CanImplementLet);
         }
 
         //NOTE: The tests below are commented out pending some sort of refactoring that enables them

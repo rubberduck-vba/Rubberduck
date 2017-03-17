@@ -6,7 +6,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.SmartIndenter;
-using Rubberduck.UI.Refactorings;
+using Rubberduck.UI.Refactorings.EncapsulateField;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.QuickFixes
@@ -32,7 +32,7 @@ namespace Rubberduck.Inspections.QuickFixes
         {
             var vbe = _target.Project.VBE;
 
-            using (var view = new EncapsulateFieldDialog(_state, _indenter))
+            using (var view = new EncapsulateFieldDialog(new EncapsulateFieldViewModel(_state, _indenter)))
             {
                 var factory = new EncapsulateFieldPresenterFactory(vbe, _state, view);
                 var refactoring = new EncapsulateFieldRefactoring(vbe, _indenter, factory);
