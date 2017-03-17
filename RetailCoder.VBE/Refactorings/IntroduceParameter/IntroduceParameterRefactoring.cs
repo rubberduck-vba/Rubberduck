@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.PostProcessing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
@@ -105,7 +103,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                 oldSelection = module.GetQualifiedSelection();
             }
 
-            UpdateSignature(rewriter, target);
+            UpdateSignature(target);
             rewriter.Remove(target);
 
             if (oldSelection.HasValue)
@@ -133,7 +131,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             return introduceParamToInterface != DialogResult.No;
         }
 
-        private void UpdateSignature(IModuleRewriter rewriter, Declaration targetVariable)
+        private void UpdateSignature(Declaration targetVariable)
         {
             var functionDeclaration = _declarations.FindTarget(targetVariable.QualifiedSelection, ValidDeclarationTypes);
 
@@ -157,7 +155,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                 functionDeclaration.DeclarationType == DeclarationType.PropertyLet ||
                 functionDeclaration.DeclarationType == DeclarationType.PropertySet)
             {
-                UpdateProperties(rewriter, functionDeclaration, targetVariable);
+                UpdateProperties(functionDeclaration, targetVariable);
             }
 
             if (interfaceImplementation == null)
@@ -165,7 +163,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                 return;
             }
 
-            UpdateSignature(rewriter, interfaceImplementation, targetVariable);
+            UpdateSignature(interfaceImplementation, targetVariable);
 
             var interfaceImplementations = _declarations.FindInterfaceImplementationMembers()
                 .Where(item => item.ProjectId == interfaceImplementation.ProjectId
@@ -176,11 +174,11 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
             foreach (var implementation in interfaceImplementations)
             {
-                UpdateSignature(rewriter, implementation, targetVariable);
+                UpdateSignature(implementation, targetVariable);
             }
         }
 
-        private void UpdateSignature(IModuleRewriter rewriter, Declaration targetMethod, Declaration targetVariable)
+        private void UpdateSignature(Declaration targetMethod, Declaration targetVariable)
         {
             var proc = (dynamic) targetMethod.Context;
             var paramList = (VBAParser.ArgListContext) proc.argList();
@@ -210,7 +208,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             }
         }
 
-        private void UpdateProperties(IModuleRewriter rewriter, Declaration knownProperty, Declaration targetVariable)
+        private void UpdateProperties(Declaration knownProperty, Declaration targetVariable)
         {
             var propertyGet = _declarations.FirstOrDefault(d =>
                     d.DeclarationType == DeclarationType.PropertyGet &&
@@ -248,51 +246,8 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                     properties.OrderByDescending(o => o.Selection.StartLine)
                         .ThenByDescending(t => t.Selection.StartColumn))
             {
-                UpdateSignature(rewriter, property, targetVariable);
+                UpdateSignature(property, targetVariable);
             }
-        }
-
-        private string GetOldSignature(IModuleRewriter rewriter, Declaration target)
-        {
-            var context = target.Context;
-            var firstTokenIndex = context.Start.TokenIndex;
-            var lastTokenIndex = -1; // will blow up if this code runs for any context other than below
-
-            var subStmtContext = context as VBAParser.SubStmtContext;
-            if (subStmtContext != null)
-            {
-                lastTokenIndex = subStmtContext.argList().RPAREN().Symbol.TokenIndex;
-            }
-
-            var functionStmtContext = context as VBAParser.FunctionStmtContext;
-            if (functionStmtContext != null)
-            {
-                lastTokenIndex = functionStmtContext.asTypeClause() != null
-                    ? functionStmtContext.asTypeClause().Stop.TokenIndex
-                    : functionStmtContext.argList().RPAREN().Symbol.TokenIndex;
-            }
-
-            var propertyGetStmtContext = context as VBAParser.PropertyGetStmtContext;
-            if (propertyGetStmtContext != null)
-            {
-                lastTokenIndex = propertyGetStmtContext.asTypeClause() != null
-                    ? propertyGetStmtContext.asTypeClause().Stop.TokenIndex
-                    : propertyGetStmtContext.argList().RPAREN().Symbol.TokenIndex;
-            }
-
-            var propertyLetStmtContext = context as VBAParser.PropertyLetStmtContext;
-            if (propertyLetStmtContext != null)
-            {
-                lastTokenIndex = propertyLetStmtContext.argList().RPAREN().Symbol.TokenIndex;
-            }
-
-            var propertySetStmtContext = context as VBAParser.PropertySetStmtContext;
-            if (propertySetStmtContext != null)
-            {
-                lastTokenIndex = propertySetStmtContext.argList().RPAREN().Symbol.TokenIndex;
-            }
-
-            return rewriter.GetText(firstTokenIndex, lastTokenIndex);
         }
 
         private Declaration GetInterfaceImplementation(Declaration target)
