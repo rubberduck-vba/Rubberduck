@@ -145,7 +145,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                 functionDeclaration.DeclarationType != DeclarationType.PropertyLet &&
                 functionDeclaration.DeclarationType != DeclarationType.PropertySet)
             {
-                AddParameter(rewriter, functionDeclaration, targetVariable, paramList);
+                AddParameter(functionDeclaration, targetVariable, paramList);
 
                 if (interfaceImplementation == null)
                 {
@@ -184,34 +184,30 @@ namespace Rubberduck.Refactorings.IntroduceParameter
         {
             var proc = (dynamic) targetMethod.Context;
             var paramList = (VBAParser.ArgListContext) proc.argList();
-            AddParameter(rewriter, targetMethod, targetVariable, paramList);
+            AddParameter(targetMethod, targetVariable, paramList);
         }
 
-        private void AddParameter(IModuleRewriter rewriter, Declaration targetMethod, Declaration targetVariable, VBAParser.ArgListContext paramList)
+        private void AddParameter(Declaration targetMethod, Declaration targetVariable, VBAParser.ArgListContext paramList)
         {
-            var argList = paramList.arg();
-            var lastParam = argList.LastOrDefault();
-            var newParameter = Tokens.ByVal + " " + targetVariable.IdentifierName + " "+ Tokens.As + " " + targetVariable.AsTypeName;
-            var newContent = paramList.GetText(); //GetOldSignature(rewriter, targetMethod);
+            var rewriter = _state.GetRewriter(targetMethod);
 
-            if (lastParam == null)
+            var argList = paramList.arg();
+            var newParameter = Tokens.ByVal + " " + targetVariable.IdentifierName + " "+ Tokens.As + " " + targetVariable.AsTypeName;
+
+            if (!argList.Any())
             {
-                // offset 1-based index:
-                newContent = newContent.Insert(newContent.IndexOf('(') + 1, newParameter);
+                rewriter.InsertAtIndex(newParameter, paramList.RPAREN().Symbol.TokenIndex);
             }
             else if (targetMethod.DeclarationType != DeclarationType.PropertyLet &&
                      targetMethod.DeclarationType != DeclarationType.PropertySet)
             {
-                newContent = newContent.Replace(argList.Last().GetText(),
-                    argList.Last().GetText() + ", " + newParameter);
+                rewriter.InsertAtIndex($", {newParameter}", paramList.RPAREN().Symbol.TokenIndex);
             }
             else
             {
-                newContent = newContent.Replace(argList.Last().GetText(),
-                    newParameter + ", " + argList.Last().GetText());
+                var lastParam = argList.Last();
+                rewriter.InsertAtIndex($"{newParameter}, ", lastParam.Start.TokenIndex);
             }
-
-            rewriter.Replace(paramList, newContent);
         }
 
         private void UpdateProperties(IModuleRewriter rewriter, Declaration knownProperty, Declaration targetVariable)
