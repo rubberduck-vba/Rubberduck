@@ -103,7 +103,7 @@ namespace Rubberduck.Inspections.QuickFixes
                 + (_target.AsTypeDeclaration is ClassModuleDeclaration ? Tokens.Set + " " : string.Empty)
                 + localIdentifier + " = " + _target.IdentifierName;
 
-            rewriter.InsertAtIndex(content, ((ParserRuleContext)_target.Context.Parent).Start.TokenIndex);
+            rewriter.InsertAtIndex("\r\n" + content, ((ParserRuleContext)_target.Context.Parent).Stop.TokenIndex + 1);
         }
     }
 }

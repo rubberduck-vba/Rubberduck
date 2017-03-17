@@ -98,8 +98,8 @@ End Sub";
         {
             const string inputCode =
 @"Sub Foo()
-    '@Ignore VariableNotAssigned
-    Dim var1 As String
+'@Ignore VariableNotAssigned
+Dim var1 As String
 End Sub";
 
             IVBComponent component;
@@ -118,7 +118,7 @@ End Sub";
         {
             const string inputCode =
 @"Sub Foo()
-    Dim var1 as Integer
+Dim var1 as Integer
 End Sub";
 
             const string expectedCode =
@@ -140,10 +140,10 @@ End Sub";
         {
             const string inputCode =
 @"Sub Foo()
-    Dim _
-    var1 _
-    as _
-    Integer
+Dim _
+var1 _
+as _
+Integer
 End Sub";
 
             const string expectedCode =
@@ -165,13 +165,13 @@ End Sub";
         {
             const string inputCode =
 @"Sub Foo()
-    Dim var1 As Integer, var2 As Boolean
+Dim var1 As Integer, var2 As Boolean
 End Sub";
 
             // note the extra space after "Integer"--the VBE will remove it
             const string expectedCode =
 @"Sub Foo()
-    Dim var1 As Integer 
+Dim var1 As Integer
 End Sub";
 
             IVBComponent component;
@@ -189,13 +189,13 @@ End Sub";
         {
             const string inputCode =
 @"Sub Foo()
-    Dim var1 As Integer, _
-        var2 As Boolean
+Dim var1 As Integer, _
+var2 As Boolean
 End Sub";
 
             const string expectedCode =
 @"Sub Foo()
-    Dim var1 As Integer
+Dim var1 As Integer
 End Sub";
 
             IVBComponent component;
@@ -214,13 +214,13 @@ End Sub";
         {
             const string inputCode =
 @"Sub Foo()
-    Dim var1 as Integer
+Dim var1 as Integer
 End Sub";
 
             const string expectedCode =
 @"Sub Foo()
 '@Ignore VariableNotAssigned
-    Dim var1 as Integer
+Dim var1 as Integer
 End Sub";
 
             IVBComponent component;

@@ -148,7 +148,7 @@ End Sub";
         {
             const string inputCode =
 @"Sub Foo()
-    Dim var1 As String
+Dim var1 As String
 End Sub";
 
             const string expectedCode =
@@ -162,7 +162,8 @@ End Sub";
             var inspection = new VariableNotUsedInspection(state);
             inspection.GetInspectionResults().First().QuickFixes.First().Fix();
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            var rewriter = state.GetRewriter(component);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
         }
 
         [TestMethod]
@@ -171,13 +172,13 @@ End Sub";
         {
             const string inputCode =
 @"Sub Foo()
-    Dim var1 As String
+Dim var1 As String
 End Sub";
 
             const string expectedCode =
 @"Sub Foo()
 '@Ignore VariableNotUsed
-    Dim var1 As String
+Dim var1 As String
 End Sub";
 
             IVBComponent component;

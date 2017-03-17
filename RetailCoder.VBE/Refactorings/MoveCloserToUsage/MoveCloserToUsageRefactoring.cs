@@ -66,9 +66,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             {
                 _messageBox.Show(RubberduckUI.MoveCloserToUsage_InvalidSelection, RubberduckUI.IntroduceParameter_Caption,
                     MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-
-                // ReSharper disable once LocalizableElement
-                throw new ArgumentException("Invalid Argument. DeclarationType must be 'Variable'", "target");
+                return;
             }
 
             _target = target;
