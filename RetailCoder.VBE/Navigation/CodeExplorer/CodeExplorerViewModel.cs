@@ -35,51 +35,51 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             var reparseCommand = commands.OfType<ReparseCommand>().SingleOrDefault();
 
-            _refreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), 
+            RefreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), 
                 reparseCommand == null ? (Action<object>)(o => { }) :
                 o => reparseCommand.Execute(o),
                 o => !IsBusy && reparseCommand != null && reparseCommand.CanExecute(o));
             
-            _navigateCommand = commands.OfType<UI.CodeExplorer.Commands.NavigateCommand>().SingleOrDefault();
+            NavigateCommand = commands.OfType<UI.CodeExplorer.Commands.NavigateCommand>().SingleOrDefault();
 
-            _addTestModuleCommand = commands.OfType<UI.CodeExplorer.Commands.AddTestModuleCommand>().SingleOrDefault();
-            _addStdModuleCommand = commands.OfType<AddStdModuleCommand>().SingleOrDefault();
-            _addClassModuleCommand = commands.OfType<AddClassModuleCommand>().SingleOrDefault();
-            _addUserFormCommand = commands.OfType<AddUserFormCommand>().SingleOrDefault();
+            AddTestModuleCommand = commands.OfType<UI.CodeExplorer.Commands.AddTestModuleCommand>().SingleOrDefault();
+            AddStdModuleCommand = commands.OfType<AddStdModuleCommand>().SingleOrDefault();
+            AddClassModuleCommand = commands.OfType<AddClassModuleCommand>().SingleOrDefault();
+            AddUserFormCommand = commands.OfType<AddUserFormCommand>().SingleOrDefault();
 
-            _openDesignerCommand = commands.OfType<OpenDesignerCommand>().SingleOrDefault();
-            _openProjectPropertiesCommand = commands.OfType<OpenProjectPropertiesCommand>().SingleOrDefault();
-            _renameCommand = commands.OfType<RenameCommand>().SingleOrDefault();
-            _indenterCommand = commands.OfType<IndentCommand>().SingleOrDefault();
+            OpenDesignerCommand = commands.OfType<OpenDesignerCommand>().SingleOrDefault();
+            OpenProjectPropertiesCommand = commands.OfType<OpenProjectPropertiesCommand>().SingleOrDefault();
+            RenameCommand = commands.OfType<RenameCommand>().SingleOrDefault();
+            IndenterCommand = commands.OfType<IndentCommand>().SingleOrDefault();
 
-            _findAllReferencesCommand = commands.OfType<UI.CodeExplorer.Commands.FindAllReferencesCommand>().SingleOrDefault();
-            _findAllImplementationsCommand = commands.OfType<UI.CodeExplorer.Commands.FindAllImplementationsCommand>().SingleOrDefault();
+            FindAllReferencesCommand = commands.OfType<UI.CodeExplorer.Commands.FindAllReferencesCommand>().SingleOrDefault();
+            FindAllImplementationsCommand = commands.OfType<UI.CodeExplorer.Commands.FindAllImplementationsCommand>().SingleOrDefault();
 
-            _collapseAllSubnodesCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCollapseNodes);
-            _expandAllSubnodesCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteExpandNodes);
+            CollapseAllSubnodesCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCollapseNodes);
+            ExpandAllSubnodesCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteExpandNodes);
 
-            _importCommand = commands.OfType<ImportCommand>().SingleOrDefault();
-            _exportCommand = commands.OfType<ExportCommand>().SingleOrDefault();
+            ImportCommand = commands.OfType<ImportCommand>().SingleOrDefault();
+            ExportCommand = commands.OfType<ExportCommand>().SingleOrDefault();
             _externalRemoveCommand = commands.OfType<RemoveCommand>().SingleOrDefault();
             if (_externalRemoveCommand != null)
             {
-                _removeCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRemoveComand, _externalRemoveCommand.CanExecute);
+                RemoveCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRemoveComand, _externalRemoveCommand.CanExecute);
             }
 
-            _printCommand = commands.OfType<PrintCommand>().SingleOrDefault();
+            PrintCommand = commands.OfType<PrintCommand>().SingleOrDefault();
 
-            _commitCommand = commands.OfType<CommitCommand>().SingleOrDefault();
-            _undoCommand = commands.OfType<UndoCommand>().SingleOrDefault();
+            CommitCommand = commands.OfType<CommitCommand>().SingleOrDefault();
+            UndoCommand = commands.OfType<UndoCommand>().SingleOrDefault();
 
-            _copyResultsCommand = commands.OfType<CopyResultsCommand>().SingleOrDefault();
+            CopyResultsCommand = commands.OfType<CopyResultsCommand>().SingleOrDefault();
 
-            _setNameSortCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
+            SetNameSortCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
             {
                 SortByName = (bool)param;
                 SortBySelection = !(bool)param;
             });
 
-            _setSelectionSortCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
+            SetSelectionSortCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
             {
                 SortBySelection = (bool)param;
                 SortByName = !(bool)param;
@@ -141,14 +141,11 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        private readonly CommandBase _copyResultsCommand;
-        public CommandBase CopyResultsCommand { get { return _copyResultsCommand; } }
+        public CommandBase CopyResultsCommand { get; }
 
-        private readonly CommandBase _setNameSortCommand;
-        public CommandBase SetNameSortCommand { get { return _setNameSortCommand; } }
+        public CommandBase SetNameSortCommand { get; }
 
-        private readonly CommandBase _setSelectionSortCommand;
-        public CommandBase SetSelectionSortCommand { get { return _setSelectionSortCommand; } }
+        public CommandBase SetSelectionSortCommand { get; }
 
         private bool _sortByType = true;
         public bool SortByType
@@ -193,9 +190,8 @@ namespace Rubberduck.Navigation.CodeExplorer
 
                 var declaration = SelectedItem.GetSelectedDeclaration();
                 
-                var nameWithDeclarationType  = declaration.IdentifierName +
-                           string.Format(" - ({0})", RubberduckUI.ResourceManager.GetString(
-                               "DeclarationType_" + declaration.DeclarationType, CultureInfo.CurrentUICulture));
+                var nameWithDeclarationType = declaration.IdentifierName +
+                                              $" - ({RubberduckUI.ResourceManager.GetString("DeclarationType_" + declaration.DeclarationType, CultureInfo.CurrentUICulture)})";
 
                 if (string.IsNullOrEmpty(declaration.AsTypeName))
                 {
@@ -228,9 +224,9 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        public bool CanExecuteIndenterCommand { get { return IndenterCommand.CanExecute(SelectedItem); } }
-        public bool CanExecuteRenameCommand { get { return RenameCommand.CanExecute(SelectedItem); } }
-        public bool CanExecuteFindAllReferencesCommand { get { return FindAllReferencesCommand.CanExecute(SelectedItem); } }
+        public bool CanExecuteIndenterCommand => IndenterCommand.CanExecute(SelectedItem);
+        public bool CanExecuteRenameCommand => RenameCommand.CanExecute(SelectedItem);
+        public bool CanExecuteFindAllReferencesCommand => FindAllReferencesCommand.CanExecute(SelectedItem);
 
         private ObservableCollection<CodeExplorerItemViewModel> _projects;
         public ObservableCollection<CodeExplorerItemViewModel> Projects
@@ -407,14 +403,11 @@ namespace Rubberduck.Navigation.CodeExplorer
                     return;
                 }
 
-                if (node is CodeExplorerComponentViewModel)
+                var componentNode = node as CodeExplorerComponentViewModel;
+                if (componentNode?.GetSelectedDeclaration().QualifiedName.QualifiedModuleName.Component.Equals(component) == true)
                 {
-                    var componentNode = (CodeExplorerComponentViewModel)node;
-                    if (componentNode.GetSelectedDeclaration().QualifiedName.QualifiedModuleName.Component.Equals(component))
-                    {
-                        componentNode.IsErrorState = true;
-                        _errorStateSet = true;
-                    }
+                    componentNode.IsErrorState = true;
+                    _errorStateSet = true;
                 }
             }
         }
@@ -446,65 +439,36 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        private readonly CommandBase _refreshCommand;
-        public CommandBase RefreshCommand { get { return _refreshCommand; } }
+        public CommandBase RefreshCommand { get; }
 
-        private readonly CommandBase _navigateCommand;
-        public CommandBase NavigateCommand { get { return _navigateCommand; } }
+        public CommandBase NavigateCommand { get; }
 
-        private readonly CommandBase _addTestModuleCommand;
-        public CommandBase AddTestModuleCommand { get { return _addTestModuleCommand; } }
+        public CommandBase AddTestModuleCommand { get; }
+        public CommandBase AddStdModuleCommand { get; }
+        public CommandBase AddClassModuleCommand { get; }
+        public CommandBase AddUserFormCommand { get; }
 
-        private readonly CommandBase _addStdModuleCommand;
-        public CommandBase AddStdModuleCommand { get { return _addStdModuleCommand; } }
+        public CommandBase OpenDesignerCommand { get; }
+        public CommandBase OpenProjectPropertiesCommand { get; }
 
-        private readonly CommandBase _addClassModuleCommand;
-        public CommandBase AddClassModuleCommand { get { return _addClassModuleCommand; } }
+        public CommandBase RenameCommand { get; }
 
-        private readonly CommandBase _addUserFormCommand;
-        public CommandBase AddUserFormCommand { get { return _addUserFormCommand; } }
+        public CommandBase IndenterCommand { get; }
 
-        private readonly CommandBase _openDesignerCommand;
-        public CommandBase OpenDesignerCommand { get { return _openDesignerCommand; } }
+        public CommandBase FindAllReferencesCommand { get; }
+        public CommandBase FindAllImplementationsCommand { get; }
 
-        private readonly CommandBase _openProjectPropertiesCommand;
-        public CommandBase OpenProjectPropertiesCommand { get { return _openProjectPropertiesCommand; } }
+        public CommandBase CollapseAllSubnodesCommand { get; }
+        public CommandBase ExpandAllSubnodesCommand { get; }
 
-        private readonly CommandBase _renameCommand;
-        public CommandBase RenameCommand { get { return _renameCommand; } }
+        public CommandBase ImportCommand { get; }
+        public CommandBase ExportCommand { get; }
+        public CommandBase RemoveCommand { get; }
 
-        private readonly CommandBase _indenterCommand;
-        public CommandBase IndenterCommand { get { return _indenterCommand; } }
+        public CommandBase PrintCommand { get; }
 
-        private readonly CommandBase _findAllReferencesCommand;
-        public CommandBase FindAllReferencesCommand { get { return _findAllReferencesCommand; } }
-
-        private readonly CommandBase _findAllImplementationsCommand;
-        public CommandBase FindAllImplementationsCommand { get { return _findAllImplementationsCommand; } }
-
-        private readonly CommandBase _collapseAllSubnodesCommand;
-        public CommandBase CollapseAllSubnodesCommand { get { return _collapseAllSubnodesCommand; } }
-
-        private readonly CommandBase _expandAllSubnodesCommand;
-        public CommandBase ExpandAllSubnodesCommand { get { return _expandAllSubnodesCommand; } }
-
-        private readonly CommandBase _importCommand;
-        public CommandBase ImportCommand { get { return _importCommand; } }
-
-        private readonly CommandBase _exportCommand;
-        public CommandBase ExportCommand { get { return _exportCommand; } }
-
-        private readonly CommandBase _removeCommand;
-        public CommandBase RemoveCommand { get { return _removeCommand; } }
-
-        private readonly CommandBase _printCommand;
-        public CommandBase PrintCommand { get { return _printCommand; } }
-
-        private readonly CommandBase _commitCommand;
-        public CommandBase CommitCommand { get { return _commitCommand; } }
-
-        private readonly CommandBase _undoCommand;
-        public CommandBase UndoCommand { get { return _undoCommand; } }
+        public CommandBase CommitCommand { get; }
+        public CommandBase UndoCommand { get; }
 
         private readonly CommandBase _externalRemoveCommand;
 
