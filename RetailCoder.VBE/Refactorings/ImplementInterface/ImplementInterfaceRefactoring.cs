@@ -105,13 +105,15 @@ namespace Rubberduck.Refactorings.ImplementInterface
             AddItems(nonImplementedMembers);
         }
 
-        private void AddItems(List<Declaration> members)
+        private void AddItems(List<Declaration> missingMembers)
         {
-            var module = _targetClass.QualifiedSelection.QualifiedName.Component.CodeModule;
-            {
-                var missingMembersText = members.Aggregate(string.Empty, (current, member) => current + Environment.NewLine + GetInterfaceMember(member));
-                module.InsertLines(module.CountOfDeclarationLines + 1, missingMembersText);
-            }
+            var missingMembersText = missingMembers.Aggregate(string.Empty,
+                (current, member) => current + Environment.NewLine + GetInterfaceMember(member));
+
+            var rewriter = _state.GetRewriter(_targetClass);
+            rewriter.InsertAfter(rewriter.TokenStream.Size, Environment.NewLine + missingMembersText);
+
+            rewriter.Rewrite();
         }
 
         private string GetInterfaceMember(Declaration member)
