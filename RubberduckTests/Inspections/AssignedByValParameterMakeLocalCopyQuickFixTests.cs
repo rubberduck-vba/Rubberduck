@@ -169,7 +169,7 @@ End Function
 
         }
 
-        //Addresses issue #2873 : AssignedByValParameter quick fix needs to use `Set` for reference types.
+        //Replicates issue #2873 : AssignedByValParameter quick fix needs to use `Set` for reference types.
         [TestMethod]
         [TestCategory("Inspections")]
         public void AssignedByValParameter_LocalVariableAssignment_UsesSet()
@@ -185,8 +185,68 @@ End Sub"
 @"
 Public Sub Foo(FirstArg As Long, ByVal arg1 As Range)
 Dim localArg1 As Range
-Set localArg1 = arg1
+If(IsObject(arg1)) Then
+    Set localArg1 = arg1
+Else
+    localArg1 = arg1
+End If
     localArg1 = Range(""A1: C4"")
+End Sub"
+;
+            var quickFixResult = ApplyLocalVariableQuickFixToCodeFragment(inputCode);
+            Assert.AreEqual(expectedCode, quickFixResult);
+
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void AssignedByValParameter_LocalVariableAssignment_NoAsTypeClause()
+        {
+            var inputCode =
+@"
+Public Sub Foo(FirstArg As Long, ByVal arg1)
+    arg1 = Range(""A1: C4"")
+End Sub"
+;
+
+            var expectedCode =
+@"
+Public Sub Foo(FirstArg As Long, ByVal arg1)
+Dim localArg1 As Variant
+If(IsObject(arg1)) Then
+    Set localArg1 = arg1
+Else
+    localArg1 = arg1
+End If
+    localArg1 = Range(""A1: C4"")
+End Sub"
+;
+            var quickFixResult = ApplyLocalVariableQuickFixToCodeFragment(inputCode);
+            Assert.AreEqual(expectedCode, quickFixResult);
+
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void AssignedByValParameter_LocalVariableAssignment_EnumType()
+        {
+            var inputCode =
+@"
+Public Sub Foo(FirstArg As Long, ByVal arg1 As VBA.vbMessageBoxResult)
+    arg1 = vbIgnore
+End Sub"
+;
+
+            var expectedCode =
+@"
+Public Sub Foo(FirstArg As Long, ByVal arg1 As VBA.vbMessageBoxResult)
+Dim localArg1 As VBA.vbMessageBoxResult
+If(IsObject(arg1)) Then
+    Set localArg1 = arg1
+Else
+    localArg1 = arg1
+End If
+    localArg1 = vbIgnore
 End Sub"
 ;
             var quickFixResult = ApplyLocalVariableQuickFixToCodeFragment(inputCode);

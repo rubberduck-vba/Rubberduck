@@ -97,21 +97,42 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
+
         private void InsertLocalVariableDeclarationAndAssignment(IModuleRewriter rewriter, string localIdentifier)
         {
-            var content = Tokens.Dim + " " + localIdentifier + " " + Tokens.As + " " + _target.AsTypeName + Environment.NewLine
-                + (IsCtLExprContext(_target) ? Tokens.Set + " " : string.Empty)
-                + localIdentifier + " = " + _target.IdentifierName;
+            var content = Tokens.Dim + " " + localIdentifier + " " + Tokens.As + " " + _target.AsTypeName + Environment.NewLine;
+            if (IsBaseTypeContext(_target))
+            {
+                content = content + localIdentifier + " = " + _target.IdentifierName;
+            }
+            else 
+            {
+                //All we can know is that it is not a Base type.  Let VBA determine
+                //the right way to assign the parameter.  The user can simplify it later.
+                string insertIsObjectCheck =
+@"If(IsObject({1})) Then
+    Set {0} = {1}
+Else
+    {0} = {1}
+End If";
+                content = content 
+                    + string.Format(insertIsObjectCheck, localIdentifier, _target.IdentifierName);
+            }
 
             rewriter.InsertBefore(((ParserRuleContext)_target.Context.Parent).Stop.TokenIndex + 1, "\r\n" + content);
         }
 
-        private bool IsCtLExprContext(Declaration target)
+        private bool IsBaseTypeContext(Declaration target)
         {
             var argContext = target.Context as VBAParser.ArgContext;
-            var typeCtxt = argContext.asTypeClause().type().complexType();
+            var asTypeClause = argContext.asTypeClause();
+            if (null == asTypeClause)
+            {
+                return false;
+            }
+            var typeCtxt = asTypeClause.type().baseType();
 
-            return (typeCtxt is VBAParser.CtLExprContext);
+            return (typeCtxt is VBAParser.BaseTypeContext);
         }
     }
 }
