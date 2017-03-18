@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.PostProcessing;
 using Rubberduck.Parsing.Symbols;
@@ -14,6 +15,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private readonly IIndenter _indenter;
         private readonly IRefactoringPresenterFactory<IEncapsulateFieldPresenter> _factory;
         private EncapsulateFieldModel _model;
+
+        private readonly HashSet<IModuleRewriter> _referenceRewriters = new HashSet<IModuleRewriter>();
 
         public EncapsulateFieldRefactoring(IVBE vbe, IIndenter indenter, IRefactoringPresenterFactory<IEncapsulateFieldPresenter> factory)
         {
@@ -35,6 +38,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
             AddProperty(rewriter);
 
             rewriter.Rewrite();
+            foreach (var referenceRewriter in _referenceRewriters)
+            {
+                referenceRewriter.Rewrite();
+            }
         }
 
         public void Refactor(QualifiedSelection target)
@@ -58,19 +65,34 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             var members = _model.State.DeclarationFinder
                 .Members(_model.TargetDeclaration.QualifiedName.QualifiedModuleName)
-                .OrderBy(declaration => declaration.QualifiedSelection)
-                .ToArray();
+                .OrderBy(declaration => declaration.QualifiedSelection);
 
-            var property = Environment.NewLine + Environment.NewLine + GetPropertyText() + Environment.NewLine;
+            var fields = members.Where(d => d.DeclarationType == DeclarationType.Variable && !d.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member)).ToList();
 
-            var lastMember = members.LastOrDefault(m => m.DeclarationType.HasFlag(DeclarationType.Member));
-            if (lastMember == null)
+            var property = Environment.NewLine + Environment.NewLine + GetPropertyText();
+            if (members.Any(m => m.DeclarationType.HasFlag(DeclarationType.Member)))
             {
-                rewriter.InsertAtIndex(property, 1);
+                property += Environment.NewLine;
+            }
+
+            if (_model.TargetDeclaration.Accessibility != Accessibility.Private)
+            {
+                var newField = "Private " + _model.TargetDeclaration.IdentifierName + " As " + _model.TargetDeclaration.AsTypeName;
+                if (fields.Count > 1)
+                {
+                    newField = Environment.NewLine + newField;
+                }
+
+                property = newField + property;
+            }
+
+            if (_model.TargetDeclaration.Accessibility == Accessibility.Private || fields.Count > 1)
+            {
+                rewriter.InsertAfter(fields.Last().Context.Stop.TokenIndex, property);
             }
             else
             {
-                rewriter.InsertAtIndex(property, lastMember.Context.Stop.TokenIndex);
+                rewriter.InsertBefore(0, property);
             }
         }
 
@@ -78,26 +100,19 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             foreach (var reference in _model.TargetDeclaration.References)
             {
-                var module = reference.QualifiedModuleName.Component.CodeModule;
-                var oldLine = module.GetLines(reference.Selection.StartLine, 1);
-                oldLine = oldLine.Remove(reference.Selection.StartColumn - 1, reference.Selection.EndColumn - reference.Selection.StartColumn);
-                var newLine = oldLine.Insert(reference.Selection.StartColumn - 1, _model.PropertyName);
+                var rewriter = _model.State.GetRewriter(reference.QualifiedModuleName);
+                rewriter.Replace(reference.Context, _model.PropertyName);
 
-                module.ReplaceLine(reference.Selection.StartLine, newLine);
+                _referenceRewriters.Add(rewriter);
             }
         }
 
         private void SetFieldToPrivate(IModuleRewriter rewriter)
         {
-            var target = _model.TargetDeclaration;
-            if (target.Accessibility == Accessibility.Private)
+            if (_model.TargetDeclaration.Accessibility != Accessibility.Private)
             {
-                return;
+                rewriter.Remove(_model.TargetDeclaration);
             }
-
-            var newField = "Private " + _model.TargetDeclaration.IdentifierName + " As " + _model.TargetDeclaration.AsTypeName + Environment.NewLine;
-
-            rewriter.Replace(target, newField);
         }
 
         private string GetPropertyText()

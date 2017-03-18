@@ -50,11 +50,18 @@ namespace Rubberduck.Parsing.PostProcessing
         void Replace(IToken token, string content);
 
         /// <summary>
-        /// Inserts specified content at the specified token index in the module. Use <see cref="Rewrite"/> method to apply changes.
+        /// Inserts specified content before the specified token index in the module. Use <see cref="Rewrite"/> method to apply changes.
         /// </summary>
-        /// <param name="content">The literal content to insert.</param>
         /// <param name="tokenIndex">The index of the insertion point in the module's lexer token stream.</param>
-        void InsertAtIndex(string content, int tokenIndex);
+        /// <param name="content">The literal content to insert.</param>
+        void InsertBefore(int tokenIndex, string content);
+
+        /// <summary>
+        /// Inserts specified content after the specified token index in the module. Use <see cref="Rewrite"/> method to apply changes.
+        /// </summary>
+        /// <param name="tokenIndex">The index of the insertion point in the module's lexer token stream.</param>
+        /// <param name="content">The literal content to insert.</param>
+        void InsertAfter(int tokenIndex, string content);
 
         /// <summary>
         /// Gets the text between specified token positions (inclusive).
@@ -67,5 +74,7 @@ namespace Rubberduck.Parsing.PostProcessing
         /// </summary>
         /// <returns></returns>
         string GetText();
+
+        ITokenStream TokenStream { get; }
     }
 }

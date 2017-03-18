@@ -95,6 +95,8 @@ namespace Rubberduck.Refactorings.IntroduceField
                     pane.Selection = oldSelection.Value.Selection;
                 }
             }
+
+            rewriter.Rewrite();
         }
 
         private void AddField(IModuleRewriter rewriter, Declaration target)
@@ -105,7 +107,7 @@ namespace Rubberduck.Refactorings.IntroduceField
                 .OrderByDescending(item => item.Selection);
 
             var firstMember = members.FirstOrDefault();
-            rewriter.InsertAtIndex(content, firstMember?.Context.Start.TokenIndex ?? 0);
+            rewriter.InsertBefore(firstMember?.Context.Start.TokenIndex ?? 0, content);
         }
     }
 }
