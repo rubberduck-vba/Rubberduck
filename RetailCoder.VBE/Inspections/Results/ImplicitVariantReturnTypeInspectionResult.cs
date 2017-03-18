@@ -2,8 +2,9 @@ using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Inspections.Resources;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
 
@@ -12,7 +13,7 @@ namespace Rubberduck.Inspections.Results
     public sealed class ImplicitVariantReturnTypeInspectionResult : InspectionResultBase
     {
         private readonly string _identifierName;
-        private IEnumerable<QuickFixBase> _quickFixes;
+        private IEnumerable<IQuickFix> _quickFixes;
 
         public ImplicitVariantReturnTypeInspectionResult(IInspection inspection, string identifierName, QualifiedContext<ParserRuleContext> qualifiedContext, Declaration target)
             : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context, target)
@@ -20,11 +21,11 @@ namespace Rubberduck.Inspections.Results
             _identifierName = identifierName;
         }
 
-        public override IEnumerable<QuickFixBase> QuickFixes
+        public override IEnumerable<IQuickFix> QuickFixes
         {
             get
             {
-                return _quickFixes ?? (_quickFixes = new QuickFixBase[]
+                return _quickFixes ?? (_quickFixes = new IQuickFix[]
                 {
                     new SetExplicitVariantReturnTypeQuickFix(Context, QualifiedSelection, InspectionsUI.SetExplicitVariantReturnTypeQuickFix), 
                     new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName)

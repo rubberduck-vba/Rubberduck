@@ -1,8 +1,8 @@
 using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Resources;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.QuickFixes

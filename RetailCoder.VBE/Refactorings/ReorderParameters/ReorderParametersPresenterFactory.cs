@@ -1,5 +1,6 @@
 ﻿using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
+using Rubberduck.UI.Refactorings;
 using Rubberduck.UI.Refactorings.ReorderParameters;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -8,11 +9,11 @@ namespace Rubberduck.Refactorings.ReorderParameters
     public class ReorderParametersPresenterFactory : IRefactoringPresenterFactory<IReorderParametersPresenter>
     {
         private readonly IVBE _vbe;
-        private readonly ReorderParametersDialog _view;
+        private readonly IRefactoringDialog<ReorderParametersViewModel> _view;
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
 
-        public ReorderParametersPresenterFactory(IVBE vbe, ReorderParametersDialog view,
+        public ReorderParametersPresenterFactory(IVBE vbe, IRefactoringDialog<ReorderParametersViewModel> view,
             RubberduckParserState state, IMessageBox messageBox)
         {
             _vbe = vbe;

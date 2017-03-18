@@ -33,7 +33,7 @@ namespace RubberduckTests.CodeExplorer
 
             var vbe = builder.AddProject(project.Build()).Build();
 
-            var commands = new List<CommandBase> { new AddStdModuleCommand(vbe.Object) };
+            var commands = new List<CommandBase> { new AddStdModuleCommand(new AddComponentCommand(vbe.Object)) };
 
             var state = new RubberduckParserState(vbe.Object);
             var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands);
@@ -60,7 +60,7 @@ namespace RubberduckTests.CodeExplorer
 
             var vbe = builder.AddProject(project.Build()).Build();
 
-            var commands = new List<CommandBase> { new AddClassModuleCommand(vbe.Object) };
+            var commands = new List<CommandBase> { new AddClassModuleCommand(new AddComponentCommand(vbe.Object)) };
 
             var state = new RubberduckParserState(vbe.Object);
             var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands);
@@ -87,7 +87,7 @@ namespace RubberduckTests.CodeExplorer
 
             var vbe = builder.AddProject(project.Build()).Build();
 
-            var commands = new List<CommandBase> { new AddUserFormCommand(vbe.Object) };
+            var commands = new List<CommandBase> { new AddUserFormCommand(new AddComponentCommand(vbe.Object)) };
 
             var state = new RubberduckParserState(vbe.Object);
             var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands);

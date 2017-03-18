@@ -1,29 +1,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Resources;
 using Rubberduck.Inspections.Results;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
 
 namespace Rubberduck.Inspections
 {
     public sealed class VariableNotUsedInspection : InspectionBase
     {
-        private readonly IMessageBox _messageBox;
+        public VariableNotUsedInspection(RubberduckParserState state) : base(state) { }
 
-        public VariableNotUsedInspection(RubberduckParserState state, IMessageBox messageBox)
-            : base(state)
-        {
-            _messageBox = messageBox;
-        }
-
-        public override string Meta { get { return InspectionsUI.VariableNotUsedInspectionMeta; } }
-        public override string Description { get { return InspectionsUI.VariableNotUsedInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
-        public override IEnumerable<InspectionResultBase> GetInspectionResults()
+        public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
             var declarations = UserDeclarations.Where(declaration =>
                 !declaration.IsWithEvents
@@ -31,7 +23,7 @@ namespace Rubberduck.Inspections
                 && declaration.References.All(reference => reference.IsAssignment));
 
             return declarations.Select(issue => 
-                new IdentifierNotUsedInspectionResult(this, issue, ((dynamic)issue.Context).identifier(), issue.QualifiedName.QualifiedModuleName));
+                new IdentifierNotUsedInspectionResult(this, issue, ((dynamic)issue.Context).identifier(), issue.QualifiedName.QualifiedModuleName, State.GetRewriter(issue.QualifiedSelection.QualifiedName)));
         }
     }
 }

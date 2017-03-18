@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Antlr4.Runtime.Misc;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
@@ -114,27 +113,29 @@ namespace Rubberduck.Refactorings.RemoveParameters
             foreach (var reference in references.Where(item => item.Context != method.Context))
             {
                 var module = reference.QualifiedModuleName.Component.CodeModule;
+                VBAParser.ArgumentListContext argumentList = null;
+                var callStmt = ParserRuleContextHelper.GetParent<VBAParser.CallStmtContext>(reference.Context);
+                if (callStmt != null)
                 {
-                    VBAParser.ArgumentListContext argumentList = null;
-                    var callStmt = ParserRuleContextHelper.GetParent<VBAParser.CallStmtContext>(reference.Context);
-                    if (callStmt != null)
-                    {
-                        argumentList = CallStatement.GetArgumentList(callStmt);
-                    }
-
-                    if (argumentList == null)
-                    {
-                        var indexExpression = ParserRuleContextHelper.GetParent<VBAParser.IndexExprContext>(reference.Context);
-                        if (indexExpression != null)
-                        {
-                            argumentList = ParserRuleContextHelper.GetChild<VBAParser.ArgumentListContext>(indexExpression);
-                        }
-                    }
-
-                    if (argumentList == null) { continue; }
-                    RemoveCallParameter(argumentList, module);
-                    
+                    argumentList = CallStatement.GetArgumentList(callStmt);
                 }
+
+                if (argumentList == null)
+                {
+                    var indexExpression =
+                        ParserRuleContextHelper.GetParent<VBAParser.IndexExprContext>(reference.Context);
+                    if (indexExpression != null)
+                    {
+                        argumentList = ParserRuleContextHelper.GetChild<VBAParser.ArgumentListContext>(indexExpression);
+                    }
+                }
+
+                if (argumentList == null)
+                {
+                    continue;
+                }
+
+                RemoveCallParameter(argumentList, module);
             }
         }
 
@@ -273,7 +274,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 lastTokenIndex = eventStmtContext.argList().RPAREN().Symbol.TokenIndex;
             }
 
-            return rewriter.GetText(new Interval(firstTokenIndex, lastTokenIndex));
+            return rewriter.GetText(firstTokenIndex, lastTokenIndex);
         }
 
         private void AdjustSignatures()

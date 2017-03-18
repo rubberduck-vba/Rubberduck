@@ -2052,5 +2052,7 @@ Would you like to import them to Rubberduck?</value>
   <data name="Assert_VerifyParameterNotPassed" xml:space="preserve">
     <value>Parameter {0} was not passed on invocation {1}. {2}</value>
     <comment>{0} = parameter name, {1} = invocation under test, {2} = optional user supplied message (always last)</comment>
+  <data name="Preview" xml:space="preserve">
+    <value>Preview</value>
   </data>
 </root>

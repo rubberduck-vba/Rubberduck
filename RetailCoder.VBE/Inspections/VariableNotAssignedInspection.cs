@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Resources;
 using Rubberduck.Inspections.Results;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
@@ -15,11 +16,9 @@ namespace Rubberduck.Inspections
         {
         }
 
-        public override string Meta { get { return InspectionsUI.VariableNotAssignedInspectionMeta; } }
-        public override string Description { get { return InspectionsUI.VariableNotAssignedInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
-        public override IEnumerable<InspectionResultBase> GetInspectionResults()
+        public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
             var items = UserDeclarations.ToList();
 
@@ -38,7 +37,7 @@ namespace Rubberduck.Inspections
                 && !declaration.References.Any(reference => reference.IsAssignment));
 
             return declarations.Select(issue => 
-                new IdentifierNotAssignedInspectionResult(this, issue, issue.Context));
+                new IdentifierNotAssignedInspectionResult(this, issue, issue.Context, State.GetRewriter(issue.QualifiedSelection.QualifiedName)));
         }
     }
 }

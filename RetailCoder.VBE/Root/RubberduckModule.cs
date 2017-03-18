@@ -38,7 +38,9 @@ using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 using ReparseCommandMenuItem = Rubberduck.UI.Command.MenuItems.CommandBars.ReparseCommandMenuItem;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.Inspections;
+using Rubberduck.UI.Refactorings.Rename;
 using Rubberduck.UnitTesting;
+using Rubberduck.Parsing.Inspections.Abstract;
 
 namespace Rubberduck.Root
 {
@@ -75,6 +77,7 @@ namespace Rubberduck.Root
             Bind<CommandBase>().To<VersionCheckCommand>().WhenInjectedExactlyInto<App>();
 
             BindCodeInspectionTypes();
+            BindRefactoringDialogs();
 
             var assemblies = new[]
             {
@@ -157,6 +160,11 @@ namespace Rubberduck.Root
             BindWindowsHooks();
 
 
+        }
+
+        private void BindRefactoringDialogs()
+        {
+            Bind<IRefactoringDialog<RenameViewModel>>().To<RenameDialog>();
         }
 
         private void BindDockableToolwindows()

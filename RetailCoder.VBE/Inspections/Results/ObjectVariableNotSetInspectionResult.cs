@@ -2,7 +2,8 @@
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Inspections.Resources;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections.Results
@@ -10,7 +11,7 @@ namespace Rubberduck.Inspections.Results
     public sealed class ObjectVariableNotSetInspectionResult : InspectionResultBase
     {
         private readonly IdentifierReference _reference;
-        private IEnumerable<QuickFixBase> _quickFixes;
+        private IEnumerable<IQuickFix> _quickFixes;
 
         public ObjectVariableNotSetInspectionResult(IInspection inspection, IdentifierReference reference)
             : base(inspection, reference.QualifiedModuleName, reference.Context)
@@ -18,11 +19,11 @@ namespace Rubberduck.Inspections.Results
             _reference = reference;
         }
 
-        public override IEnumerable<QuickFixBase> QuickFixes
+        public override IEnumerable<IQuickFix> QuickFixes
         {
             get
             {
-                return _quickFixes ?? (_quickFixes = new QuickFixBase[]
+                return _quickFixes ?? (_quickFixes = new IQuickFix[]
                 {
                     new UseSetKeywordForObjectAssignmentQuickFix(_reference),
                     new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName)

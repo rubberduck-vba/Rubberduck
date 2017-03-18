@@ -2,8 +2,9 @@ using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Inspections.Resources;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
 
@@ -11,7 +12,7 @@ namespace Rubberduck.Inspections.Results
 {
     public class ImplicitPublicMemberInspectionResult : InspectionResultBase
     {
-        private IEnumerable<QuickFixBase> _quickFixes;
+        private IEnumerable<IQuickFix> _quickFixes;
         private readonly QualifiedContext<ParserRuleContext> _qualifiedContext;
 
         public ImplicitPublicMemberInspectionResult(IInspection inspection, QualifiedContext<ParserRuleContext> qualifiedContext, Declaration item)
@@ -20,11 +21,11 @@ namespace Rubberduck.Inspections.Results
             _qualifiedContext = qualifiedContext;
         }
 
-        public override IEnumerable<QuickFixBase> QuickFixes
+        public override IEnumerable<IQuickFix> QuickFixes
         {
             get
             {
-                return _quickFixes ?? (_quickFixes = new QuickFixBase[]
+                return _quickFixes ?? (_quickFixes = new IQuickFix[]
                 {
                     new SpecifyExplicitPublicModifierQuickFix(_qualifiedContext.Context, QualifiedSelection), 
                     new IgnoreOnceQuickFix(_qualifiedContext.Context, QualifiedSelection, Inspection.AnnotationName)

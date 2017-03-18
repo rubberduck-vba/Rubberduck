@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Linq;
-using Castle.Core.Internal;
-using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Resources;
 using Rubberduck.Inspections.Results;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
@@ -27,7 +24,6 @@ namespace Rubberduck.Inspections
             _settings = settings;
         }
 
-        public override string Description { get { return InspectionsUI.UseMeaningfulNameInspectionName; } }
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
 
         private static readonly DeclarationType[] IgnoreDeclarationTypes = 
@@ -38,7 +34,7 @@ namespace Rubberduck.Inspections
             DeclarationType.LibraryProcedure, 
         };
 
-        public override IEnumerable<InspectionResultBase> GetInspectionResults()
+        public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
             var settings = _settings.Load(new CodeInspectionSettings()) ?? new CodeInspectionSettings();
             var whitelistedNames = settings.WhitelistedIdentifiers.Select(s => s.Identifier).ToArray();

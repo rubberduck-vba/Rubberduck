@@ -1,20 +1,44 @@
-﻿using Rubberduck.Parsing.Grammar;
+﻿using System.Diagnostics;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Preprocessing;
 using Rubberduck.VBEditor;
 using System.Linq;
+using Antlr4.Runtime;
+using Antlr4.Runtime.Misc;
 
 namespace Rubberduck.Parsing.Symbols
 {
     public static class Identifier
     {
+        public static string GetName(VBAParser.FunctionNameContext context, out Interval tokenInterval)
+        {
+            var ctx = context.identifier();
+            tokenInterval = Interval.Of(ctx.Start.TokenIndex, ctx.Stop.TokenIndex);
+            return GetName(context);
+        }
+
         public static string GetName(VBAParser.FunctionNameContext context)
         {
             return GetName(context.identifier());
         }
 
+        public static string GetName(VBAParser.SubroutineNameContext context, out Interval tokenInterval)
+        {
+            var ctx = context.identifier();
+            tokenInterval = Interval.Of(ctx.Start.TokenIndex, ctx.Stop.TokenIndex);
+            return GetName(context);
+        }
+
         public static string GetName(VBAParser.SubroutineNameContext context)
         {
             return GetName(context.identifier());
+        }
+
+        public static string GetName(VBAParser.UnrestrictedIdentifierContext context, out Interval tokenInterval)
+        {
+            var ctx = context.identifier();
+            tokenInterval = Interval.Of(ctx.Start.TokenIndex, ctx.Stop.TokenIndex);
+            return GetName(context);
         }
 
         public static string GetName(VBAParser.UnrestrictedIdentifierContext context)
@@ -29,9 +53,21 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
+        public static string GetName(VBAParser.IdentifierContext context, out Interval tokenInterval)
+        {
+            tokenInterval = Interval.Of(context.Start.TokenIndex, context.Stop.TokenIndex);
+            return GetName(context);
+        }
+
         public static string GetName(VBAParser.IdentifierContext context)
         {
             return GetName(GetIdentifierValueContext(context));
+        }
+
+        public static string GetName(VBAParser.UntypedIdentifierContext context, out Interval tokenInterval)
+        {
+            tokenInterval = Interval.Of(context.Start.TokenIndex, context.Stop.TokenIndex);
+            return GetName(context);
         }
 
         public static string GetName(VBAParser.UntypedIdentifierContext context)
@@ -130,35 +166,37 @@ namespace Rubberduck.Parsing.Symbols
         public static string GetTypeHintValue(VBAParser.IdentifierContext identifier)
         {
             var typeHintContext = GetTypeHintContext(identifier);
-            if (typeHintContext != null)
-            {
-                return typeHintContext.GetText();
-            }
-            return null;
+            return typeHintContext?.GetText();
+        }
+
+        public static string GetTypeHintValue(VBAParser.IdentifierContext identifier, out IToken token)
+        {
+            var typeHintContext = GetTypeHintContext(identifier);
+            token = typeHintContext.Start;
+            Debug.Assert(typeHintContext.Stop.TokenIndex == token.TokenIndex);
+            return typeHintContext.GetText();
         }
 
         public static string GetTypeHintValue(VBAParser.UnrestrictedIdentifierContext identifier)
         {
-            if (identifier.identifier() != null)
-            {
-                return GetTypeHintValue(identifier.identifier());
-            }
-            else
-            {
-                return null;
-            }
+            return identifier.identifier() != null 
+                ? GetTypeHintValue(identifier.identifier()) 
+                : null;
+        }
+
+        public static string GetTypeHintValue(VBAParser.UnrestrictedIdentifierContext identifier, out IToken token)
+        {
+            token = null;
+            return identifier.identifier() != null
+                ? GetTypeHintValue(identifier.identifier(), out token)
+                : null;
         }
 
         public static VBAParser.TypeHintContext GetTypeHintContext(VBAParser.IdentifierContext identifier)
         {
-            if (identifier.untypedIdentifier() != null)
-            {
-                return null;
-            }
-            else
-            {
-                return identifier.typedIdentifier().typeHint();
-            }
+            return identifier.untypedIdentifier() != null 
+                ? null 
+                : identifier.typedIdentifier().typeHint();
         }
     }
 }

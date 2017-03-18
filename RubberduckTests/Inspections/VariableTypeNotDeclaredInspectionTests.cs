@@ -2,7 +2,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections;
 using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Inspections.Resources;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
@@ -198,7 +198,7 @@ End Sub";
 
             var inspection = new VariableTypeNotDeclaredInspection(state);
             inspection.GetInspectionResults().First().QuickFixes.First().Fix();
-            
+
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
@@ -220,7 +220,7 @@ End Sub";
 
             var inspection = new VariableTypeNotDeclaredInspection(state);
             inspection.GetInspectionResults().First().QuickFixes.First().Fix();
-            
+
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 

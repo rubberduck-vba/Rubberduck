@@ -100,10 +100,12 @@
     <Compile Include="Inspections\OptionBaseZeroInspectionTests.cs" />
     <Compile Include="Inspections\PassParameterByReferenceQuickFixTests.cs" />
     <Compile Include="Inspections\UndeclaredVariableInspectionTests.cs" />
+    <Compile Include="PostProcessing\ModuleRewriterTests.cs" />
     <Compile Include="SmartIndenter\VerticalSpacingTests.cs" />
     <Compile Include="Symbols\AccessibilityCheckTests.cs" />
     <Compile Include="Symbols\ClassModuleDeclarationTests.cs" />
     <Compile Include="Symbols\DeclarationFinderTests.cs" />
+    <Compile Include="Symbols\DeclarationFinderTests_VbaBlocks.cs" />
     <Compile Include="Symbols\ProjectDeclarationTests.cs" />
     <Compile Include="Symbols\ConstantDeclarationTests.cs" />
     <Compile Include="Symbols\ProceduralModuleDeclarationTests.cs" />
@@ -164,8 +166,8 @@
     <Compile Include="Mocks\MockVbeBuilder.cs" />
     <Compile Include="Mocks\Windows.cs" />
     <Compile Include="MultiAssert.cs" />
-    <Compile Include="Preprocessing\VBAPreprocessorTests.cs" />
-    <Compile Include="Preprocessing\VBAPreprocessorVisitorTests.cs" />
+    <Compile Include="PreProcessing\VBAPreprocessorTests.cs" />
+    <Compile Include="PreProcessing\VBAPreprocessorVisitorTests.cs" />
     <Compile Include="Refactoring\EncapsulateFieldTests.cs" />
     <Compile Include="Refactoring\ExtractInterfaceTests.cs" />
     <Compile Include="Refactoring\ExtractMethod\ExtractedMethodRefactoringTests.cs" />

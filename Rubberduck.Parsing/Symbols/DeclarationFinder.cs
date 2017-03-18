@@ -821,60 +821,75 @@ namespace Rubberduck.Parsing.Symbols
         {
             if (target == null) { return Enumerable.Empty<Declaration>(); }
 
-            var declarations = GetAllDeclarations();
-
-            //declarations based on Accessibility
-            var projectDeclaration = RetrieveDeclarationType(target, DeclarationType.Project);
-            var moduleDeclaration = GetModuleDeclaration(target);
-            return declarations
-                .Where(callee => AccessibilityCheck.IsAccessible(projectDeclaration, moduleDeclaration, target.ParentDeclaration, callee)).ToList();
+            return _declarations.AllValues()
+                .Where(callee => AccessibilityCheck.IsAccessible(Declaration.GetProjectParent(target)
+                        , Declaration.GetModuleParent(target), target.ParentDeclaration, callee)).ToList();
         }
 
         public IEnumerable<Declaration> GetDeclarationsWithIdentifiersToAvoid(Declaration target)
         {
             if (target == null) { return Enumerable.Empty<Declaration>(); }
 
-            var accessibleDeclarations = GetAccessibleDeclarations(target);
+            List<Declaration> declarationsToAvoid = GetNameCollisionDeclarations(target).ToList();
 
-            //todo: handle case where target is in a consuming module rather than the exposing module
+            declarationsToAvoid.AddRange(GetNameCollisionDeclarations(target.References));
 
-            //Filter accessible declarations to those that would result in name collisions or hiding
-            var possibleConflictDeclarations = accessibleDeclarations.Where(dec =>
-                                        IsInProceduralModule(dec)
-                                        || IsDeclarationInSameModuleScope(dec, target)
-                                        || IsDeclarationInSameProcedureScope(dec, target)
-                                        || dec.DeclarationType == DeclarationType.Project
-                                        || dec.DeclarationType == DeclarationType.ClassModule
-                                        || dec.DeclarationType == DeclarationType.ProceduralModule
-                                        || dec.DeclarationType == DeclarationType.UserForm 
-                                        ).ToList();
-
-            //Add local variables when the target is a method or property
-            if (IsMethodOrProperty(target))
-            {
-                var declarations = GetAllDeclarations();
-                var localVariableDeclarations = declarations.Where(dec => target == dec.ParentDeclaration).ToList();
-                possibleConflictDeclarations.AddRange(localVariableDeclarations.ToList());
-            }
-
-            return possibleConflictDeclarations;
+            return declarationsToAvoid.Distinct();
         }
 
-        private IEnumerable<Declaration> GetAllDeclarations()
+        private IEnumerable<Declaration> GetNameCollisionDeclarations(Declaration declaration)
         {
-            List<Declaration> declarations = new List<Declaration>();
-            foreach (var Key in _declarationsByName.Keys)
+            if (declaration == null) { return Enumerable.Empty<Declaration>(); }
+
+            //Filter accessible declarations to those that would result in name collisions or hiding
+            var declarationsToAvoid = GetAccessibleDeclarations(declaration).Where(candidate =>
+                                        !candidate.IsBuiltIn
+                                        && (IsAccessibleInOtherProcedureModule(candidate,declaration)
+                                        || candidate.DeclarationType == DeclarationType.Project
+                                        || ModuleDeclarationTypes.Contains(candidate.DeclarationType)
+                                        || IsDeclarationInSameProcedureScope(candidate, declaration)
+                                        )).ToList();
+
+            //Add local variables when the target is a method or property
+            if(MethodDeclarationTypes.Contains(declaration.DeclarationType))
             {
-                ConcurrentBag<Declaration> theDeclarations;
-                _declarationsByName.TryGetValue(Key, out theDeclarations);
-                declarations.AddRange(theDeclarations);
+                var localVariableDeclarations = _declarations.AllValues()
+                    .Where(dec => declaration == dec.ParentDeclaration);
+                declarationsToAvoid.AddRange(localVariableDeclarations);
             }
-            return declarations;
+
+            return declarationsToAvoid;
+        }
+
+        private IEnumerable<Declaration> GetNameCollisionDeclarations(IEnumerable<IdentifierReference> references)
+        {
+            var declarationsToAvoid = new List<Declaration>();
+            foreach (var reference in references)
+            {
+                if (!UsesScopeResolution(reference.Context.Parent))
+                {
+                    declarationsToAvoid.AddRange(GetNameCollisionDeclarations(reference.ParentNonScoping));
+                }
+            }
+            return declarationsToAvoid;
+        }
+
+        private bool IsAccessibleInOtherProcedureModule(Declaration candidate, Declaration declaration)
+        {
+            return IsInProceduralModule(declaration)
+                       && IsInProceduralModule(candidate)
+                       && candidate.Accessibility != Accessibility.Private;
+        }
+
+        private bool UsesScopeResolution(RuleContext ruleContext)
+        {
+            return (ruleContext is VBAParser.WithMemberAccessExprContext)
+                || (ruleContext is VBAParser.MemberAccessExprContext);
         }
 
         private bool IsInProceduralModule(Declaration candidateDeclaration)
         {
-            var candidateModuleDeclaration = GetModuleDeclaration(candidateDeclaration);
+            var candidateModuleDeclaration = Declaration.GetModuleParent(candidateDeclaration);
             if (null == candidateModuleDeclaration) { return false; }
 
             return (candidateModuleDeclaration.DeclarationType == DeclarationType.ProceduralModule);
@@ -885,69 +900,20 @@ namespace Rubberduck.Parsing.Symbols
             return candidateDeclaration.ParentScope == scopingDeclaration.ParentScope;
         }
 
-        private bool IsChildOfScopeMethodOrProperty(Declaration candidateDeclaration, Declaration scopingDeclaration)
+        private static readonly DeclarationType[] MethodDeclarationTypes =
         {
-            if (IsMethodOrProperty(scopingDeclaration))
-            {
-                return scopingDeclaration == candidateDeclaration.ParentDeclaration;
-            }
-            return false;
-        }
+            DeclarationType.PropertyGet,
+            DeclarationType.PropertySet,
+            DeclarationType.PropertyLet,
+            DeclarationType.Procedure,
+            DeclarationType.Function
+        };
 
-        private bool IsDeclarationInSameModuleScope(Declaration candidateDeclaration, Declaration scopingDeclaration)
+        private static readonly DeclarationType[] ModuleDeclarationTypes =
         {
-            if (candidateDeclaration.ParentDeclaration != null)
-            {
-                return candidateDeclaration.ComponentName == scopingDeclaration.ComponentName
-                        && (candidateDeclaration.ParentDeclaration.DeclarationType == DeclarationType.ClassModule
-                        || candidateDeclaration.ParentDeclaration.DeclarationType == DeclarationType.ProceduralModule);
-            }
-            else
-                return false;
-        }
-
-        private bool IsMethodOrProperty(Declaration declaration)
-        {
-            if (declaration == null) { return false; }
-
-            return (declaration.DeclarationType == DeclarationType.PropertyGet)
-            || (declaration.DeclarationType == DeclarationType.PropertySet)
-            || (declaration.DeclarationType == DeclarationType.PropertyLet)
-            || (declaration.DeclarationType == DeclarationType.Procedure)
-            || (declaration.DeclarationType == DeclarationType.Function);
-        }
-
-        private Declaration GetModuleDeclaration(Declaration declaration)
-        {
-            var classDeclaration = RetrieveDeclarationType(declaration, DeclarationType.ClassModule);
-            if (null != classDeclaration)
-            {
-                return classDeclaration;
-            }
-            var moduleDeclaration = RetrieveDeclarationType(declaration, DeclarationType.ProceduralModule);
-            if (null != moduleDeclaration)
-            {
-                return moduleDeclaration;
-            }
-            return null;
-        }
-
-        private Declaration RetrieveDeclarationType(Declaration start, DeclarationType goalType)
-        {
-            if (start.DeclarationType == goalType) { return start; }
-
-            var next = start.ParentDeclaration;
-            for (var idx = 0; idx < 10; idx++)
-            {
-                if (next == null) { return null; }
-
-                if (next.DeclarationType == goalType)
-                {
-                    return next;
-                }
-                next = next.ParentDeclaration;
-            }
-            return null;
-        }
+            DeclarationType.ClassModule,
+            DeclarationType.ProceduralModule,
+            DeclarationType.UserForm
+        };
     }
 }

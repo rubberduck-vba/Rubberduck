@@ -2,7 +2,8 @@
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Inspections.Resources;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Results
@@ -11,7 +12,7 @@ namespace Rubberduck.Inspections.Results
     {
         private readonly QualifiedSelection _qualifiedSelection;
         private readonly string _memberName;
-        private IEnumerable<QuickFixBase> _quickFixes;
+        private IEnumerable<IQuickFix> _quickFixes;
 
         public ApplicationWorksheetFunctionInspectionResult(IInspection inspection, QualifiedSelection qualifiedSelection, string memberName)
             : base(inspection, qualifiedSelection.QualifiedName)
@@ -25,11 +26,11 @@ namespace Rubberduck.Inspections.Results
             get { return _qualifiedSelection; }
         }
 
-        public override IEnumerable<QuickFixBase> QuickFixes
+        public override IEnumerable<IQuickFix> QuickFixes
         {
             get
             {
-                return _quickFixes ?? (_quickFixes = new QuickFixBase[]
+                return _quickFixes ?? (_quickFixes = new IQuickFix[]
                 {
                     new IgnoreOnceQuickFix(null, _qualifiedSelection, Inspection.AnnotationName),
                     new ApplicationWorksheetFunctionQuickFix(_qualifiedSelection, _memberName)

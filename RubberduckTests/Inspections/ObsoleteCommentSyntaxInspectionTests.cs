@@ -3,10 +3,10 @@ using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Inspections;
-using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete.Rubberduck.Inspections;
 using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Inspections.Resources;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Settings;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
@@ -62,7 +62,7 @@ namespace RubberduckTests.Inspections
         [TestCategory("Inspections")]
         public void ObsoleteCommentSyntax_DoesNotReturnResult_RemInStringLiteral()
         {
-            const string inputCode =
+            const string inputCode = 
 @"Sub Foo()
     Dim bar As String
     bar = ""iejo rem oernp"" ' test
@@ -175,7 +175,7 @@ Rem test";
 
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
             inspectionResults.First().QuickFixes.Single(s => s is ReplaceObsoleteCommentMarkerQuickFix).Fix();
-            
+
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
@@ -204,7 +204,7 @@ a comment";
 
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
             inspectionResults.First().QuickFixes.Single(s => s is ReplaceObsoleteCommentMarkerQuickFix).Fix();
-            
+
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
@@ -286,7 +286,7 @@ continued";
 
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
             inspectionResults.First().QuickFixes.Single(s => s is ReplaceObsoleteCommentMarkerQuickFix).Fix();
-            
+
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
@@ -315,7 +315,7 @@ a comment";
 
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
             inspectionResults.First().QuickFixes.Single(s => s is ReplaceObsoleteCommentMarkerQuickFix).Fix();
-            
+
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 

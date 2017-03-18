@@ -2,7 +2,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections;
 using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Inspections.Resources;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
@@ -16,7 +16,7 @@ namespace RubberduckTests.Inspections
         [TestCategory("Inspections")]
         public void UnassignedVariableUsage_ReturnsResult()
         {
-            const string inputCode =
+            const string inputCode = 
 @"Sub Foo()
     Dim b As Boolean
     Dim bb As Boolean
@@ -154,7 +154,7 @@ End Sub";
 
             var inspection = new UnassignedVariableUsageInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
-
+            
             inspectionResults.First().QuickFixes.First().Fix();
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }

@@ -1,9 +1,9 @@
 ﻿using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Resources;
 using Rubberduck.VBEditor;
 using System;
 using System.Linq;
+using Rubberduck.Parsing.Inspections.Resources;
 
 namespace Rubberduck.Inspections.QuickFixes
 {

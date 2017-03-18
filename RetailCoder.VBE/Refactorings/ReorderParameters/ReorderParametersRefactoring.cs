@@ -1,5 +1,4 @@
-﻿using Antlr4.Runtime.Misc;
-using Rubberduck.Common;
+﻿using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
@@ -350,7 +349,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
                 lastTokenIndex = eventStmtContext.argList().RPAREN().Symbol.TokenIndex;
             }
 
-            return rewriter.GetText(new Interval(firstTokenIndex, lastTokenIndex));
+            return rewriter.GetText(firstTokenIndex, lastTokenIndex);
         }
     }
 }

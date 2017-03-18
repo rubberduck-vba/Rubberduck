@@ -1,15 +1,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Resources;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections
 {
-    public sealed class OptionBaseZeroInspection : InspectionBase, IParseTreeInspection<VBAParser.OptionBaseStmtContext>
+    public sealed class OptionBaseZeroInspection : InspectionBase, IParseTreeInspection
     {
         private IEnumerable<QualifiedContext> _parseTreeResults;
 
@@ -25,7 +26,7 @@ namespace Rubberduck.Inspections
         public IEnumerable<QualifiedContext<VBAParser.OptionBaseStmtContext>> ParseTreeResults { get { return _parseTreeResults.OfType<QualifiedContext<VBAParser.OptionBaseStmtContext>>(); } }
         public void SetResults(IEnumerable<QualifiedContext> results) { _parseTreeResults = results; } 
 
-        public override IEnumerable<InspectionResultBase> GetInspectionResults()
+        public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
             if (ParseTreeResults == null)
             {

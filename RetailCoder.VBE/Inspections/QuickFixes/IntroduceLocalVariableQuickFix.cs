@@ -1,6 +1,6 @@
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Resources;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections.QuickFixes

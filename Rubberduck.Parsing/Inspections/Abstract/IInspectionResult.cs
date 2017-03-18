@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.Inspections.Abstract
+namespace Rubberduck.Parsing.Inspections.Abstract
 {
     public interface IInspectionResult : IComparable<IInspectionResult>, IComparable
     {
-        IEnumerable<QuickFixBase> QuickFixes { get; }
+        IEnumerable<IQuickFix> QuickFixes { get; }
         string Description { get; }
         QualifiedSelection QualifiedSelection { get; }
         IInspection Inspection { get; }
-        object[] ToArray();
-        string ToClipboardString();
+        Declaration Target { get; }
     }
 }
