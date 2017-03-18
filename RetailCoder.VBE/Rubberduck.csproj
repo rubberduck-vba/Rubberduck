@@ -229,6 +229,10 @@
     <Reference Include="Castle.Core">
       <HintPath>..\packages\Castle.Core.3.2.0\lib\net45\Castle.Core.dll</HintPath>
     </Reference>
+    <Reference Include="EasyHook, Version=2.7.6270.0, Culture=neutral, PublicKeyToken=4b580fca19d0b0c5, processorArchitecture=MSIL">
+      <HintPath>..\packages\EasyHook.2.7.6270\lib\net40\EasyHook.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="extensibility, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
@@ -287,6 +291,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Printing" />
+    <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
@@ -433,6 +438,8 @@
     <Compile Include="Root\InterceptedException.cs" />
     <Compile Include="Root\InterceptorBase.cs" />
     <Compile Include="Root\TimedCallLoggerInterceptor.cs" />
+    <Compile Include="RubberduckGuid.cs" />
+    <Compile Include="RubberduckProgId.cs" />
     <Compile Include="Settings\CodeInspectionConfigProvider.cs" />
     <Compile Include="Settings\GeneralConfigProvider.cs" />
     <Compile Include="Settings\HotkeySettings.cs" />
@@ -496,6 +503,15 @@
     </Compile>
     <Compile Include="UI\Refactorings\ReorderParameters\ReorderParametersViewModel.cs" />
     <Compile Include="UI\SelectionChangeService.cs" />
+    <Compile Include="UnitTesting\Fakes\FakeBase.cs" />
+    <Compile Include="UnitTesting\Fakes\FakesProvider.cs" />
+    <Compile Include="UnitTesting\Fakes\FakesProviderFactory.cs" />
+    <Compile Include="UnitTesting\Fakes\IFake.cs" />
+    <Compile Include="UnitTesting\Fakes\IFakesProvider.cs" />
+    <Compile Include="UnitTesting\Fakes\IVerify.cs" />
+    <Compile Include="UnitTesting\Fakes\MsgBox.cs" />
+    <Compile Include="UnitTesting\Fakes\ReturnTypeConverter.cs" />
+    <Compile Include="UnitTesting\Fakes\Verifier.cs" />
     <Compile Include="UnitTesting\PermissiveObjectComparer.cs" />
     <Compile Include="VersionCheck\IVersionCheck.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\AppCommandBarBase.cs" />
@@ -1220,6 +1236,24 @@
     <Resource Include="Resources\disk.png" />
     <Resource Include="Resources\arrow-circle-left.png" />
     <Resource Include="Resources\terminal.png" />
+    <Content Include="EasyHook32.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="EasyHook32Svc.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="EasyHook64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="EasyHook64Svc.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="EasyLoad32.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="EasyLoad64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\arrow_circle_double_mask.bmp" />
     <Content Include="Resources\balloon_ellipsis.bmp" />
     <Content Include="Resources\balloon_mask.bmp" />

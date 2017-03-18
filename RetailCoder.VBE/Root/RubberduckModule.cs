@@ -38,6 +38,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 using ReparseCommandMenuItem = Rubberduck.UI.Command.MenuItems.CommandBars.ReparseCommandMenuItem;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.Inspections;
+using Rubberduck.UnitTesting;
 
 namespace Rubberduck.Root
 {
@@ -67,7 +68,7 @@ namespace Rubberduck.Root
             Bind<RubberduckParserState>().ToSelf().InSingletonScope();
             Bind<ISelectionChangeService>().To<SelectionChangeService>().InSingletonScope();
             Bind<ISourceControlProvider>().To<GitProvider>();
-            //Bind<GitProvider>().ToSelf().InSingletonScope();
+            //Bind<GitProvider>().ToSelf().InSingletonScope();        
             Bind<TestExplorerModel>().ToSelf().InSingletonScope();
             Bind<IOperatingSystem>().To<WindowsOperatingSystem>().InSingletonScope();
             
@@ -87,10 +88,11 @@ namespace Rubberduck.Root
             ApplyConfigurationConvention(assemblies);
             ApplyAbstractFactoryConvention(assemblies);
             Rebind<IFolderBrowserFactory>().To<DialogFactory>().InSingletonScope();
+            Rebind<IFakesProviderFactory>().To<FakesProviderFactory>().InSingletonScope();
 
             BindCommandsToMenuItems();
 
-            Rebind<IIndenter>().To<Indenter>().InSingletonScope();
+            Rebind<IIndenter>().To<Indenter>().InSingletonScope();            
             Rebind<IIndenterSettings>().To<IndenterSettings>();
             Bind<Func<IIndenterSettings>>().ToMethod(t => () => KernelInstance.Get<IGeneralConfigService>().LoadConfiguration().UserSettings.IndenterSettings);
 

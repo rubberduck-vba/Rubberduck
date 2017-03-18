@@ -10,6 +10,6 @@ namespace Rubberduck.API
         Public,
         Global,
         Friend,
-        Static,
+        Static
     }
 }

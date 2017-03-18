@@ -16,15 +16,18 @@ namespace Rubberduck.UnitTesting
         private readonly TestExplorerModel _model;
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
+        private readonly IFakesProviderFactory _fakesFactory;
 
         // can't be assigned from constructor because ActiveVBProject is null at startup:
         private IHostApplication _hostApplication; 
 
-        public TestEngine(TestExplorerModel model, IVBE vbe, RubberduckParserState state)
+        public TestEngine(TestExplorerModel model, IVBE vbe, RubberduckParserState state, IFakesProviderFactory fakesFactory)
         {
+            Debug.WriteLine("TestEngine created.");
             _model = model;
             _vbe = vbe;
             _state = state;
+            _fakesFactory = fakesFactory;
         }
 
         public TestExplorerModel Model { get { return _model; } }
@@ -52,7 +55,7 @@ namespace Rubberduck.UnitTesting
         }
 
         public void Run(IEnumerable<TestMethod> tests)
-        {
+        {         
             var testMethods = tests as IList<TestMethod> ?? tests.ToList();
             if (!testMethods.Any())
             {
@@ -69,7 +72,7 @@ namespace Rubberduck.UnitTesting
                 var moduleTestMethods = testMethods
                     .Where(test => test.Declaration.QualifiedName.QualifiedModuleName.ProjectId == capturedModule.Key.ProjectId
                                 && test.Declaration.QualifiedName.QualifiedModuleName.ComponentName == capturedModule.Key.ComponentName);
-
+                
                 Run(module.Key.FindModuleInitializeMethods(_state));
                 foreach (var test in moduleTestMethods)
                 {
@@ -83,18 +86,18 @@ namespace Rubberduck.UnitTesting
 
                     var stopwatch = new Stopwatch();
                     stopwatch.Start();
-
+                    
                     Run(testInitialize);
                     test.Run();
                     Run(testCleanup);
-
+                    
                     stopwatch.Stop();
                     test.Result.SetDuration(stopwatch.ElapsedMilliseconds);
 
                     OnTestCompleted();
                     _model.AddExecutedTest(test);
                 }
-                Run(module.Key.FindModuleCleanupMethods(_state));
+                Run(module.Key.FindModuleCleanupMethods(_state));                
             }
         }
 
@@ -105,9 +108,23 @@ namespace Rubberduck.UnitTesting
                 _hostApplication = _vbe.HostApplication();
             }
 
+            var fakes = _fakesFactory.GetFakesProvider();
             foreach (var member in members)
             {
-                _hostApplication.Run(member);
+                try
+                {
+                    fakes.StartTest();
+                    _hostApplication.Run(member);
+                }
+                catch
+                {
+                    //Can I do this from here?
+                    AssertHandler.OnAssertInconclusive("Internal Rubberduck error.");
+                }
+                finally
+                {
+                    fakes.StopTest();
+                }     
             }
         }
     }

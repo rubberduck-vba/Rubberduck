@@ -26,7 +26,7 @@ namespace Rubberduck.API
     }
 
     [ComVisible(true)]
-    [Guid("3D8EAA28-8983-44D5-83AF-2EEC4C363079")]
+    [Guid(RubberduckGuid.IParserStateEventsGuid)]
     [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
     public interface IParserStateEvents
     {
@@ -36,17 +36,14 @@ namespace Rubberduck.API
     }
 
     [ComVisible(true)]
-    [Guid(ClassId)]
-    [ProgId(ProgId)]
+    [Guid(RubberduckGuid.ParserStateClassGuid)]
+    [ProgId(RubberduckProgId.ParserStateProgId)]
     [ClassInterface(ClassInterfaceType.AutoDual)]
     [ComDefaultInterface(typeof(IParserState))]
     [ComSourceInterfaces(typeof(IParserStateEvents))]
     [EditorBrowsable(EditorBrowsableState.Always)]
     public sealed class ParserState : IParserState, IDisposable
     {
-        private const string ClassId = "28754D11-10CC-45FD-9F6A-525A65412B7A";
-        private const string ProgId = "Rubberduck.ParserState";
-
         private RubberduckParserState _state;
         private AttributeParser _attributeParser;
         private ParseCoordinator _parser;

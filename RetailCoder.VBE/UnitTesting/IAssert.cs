@@ -7,7 +7,7 @@
 namespace Rubberduck.UnitTesting
 {
     [ComVisible(true)]
-    [Guid("56EC4DBF-508F-46A5-8067-4F4354F4632C")]
+    [Guid(RubberduckGuid.IAssertGuid)]
     public interface IAssert
     {
         /// <summary>
@@ -35,6 +35,11 @@ namespace Rubberduck.UnitTesting
         /// </summary>
         /// <param name="Message">An optional message to display.</param>
         void Fail(string Message = "");
+
+        /// <summary>
+        /// Passes the assertion without checking any conditions.
+        /// </summary>
+        void Succeed();
 
         /// <summary>
         /// Verifies that the specified object is <c>Nothing</c>. The assertion fails if it is not <c>Nothing</c>.
