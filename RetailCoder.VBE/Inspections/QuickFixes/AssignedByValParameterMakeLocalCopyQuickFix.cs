@@ -100,10 +100,18 @@ namespace Rubberduck.Inspections.QuickFixes
         private void InsertLocalVariableDeclarationAndAssignment(IModuleRewriter rewriter, string localIdentifier)
         {
             var content = Tokens.Dim + " " + localIdentifier + " " + Tokens.As + " " + _target.AsTypeName + Environment.NewLine
-                + (_target.AsTypeDeclaration is ClassModuleDeclaration ? Tokens.Set + " " : string.Empty)
+                + (IsCtLExprContext(_target) ? Tokens.Set + " " : string.Empty)
                 + localIdentifier + " = " + _target.IdentifierName;
 
             rewriter.InsertBefore(((ParserRuleContext)_target.Context.Parent).Stop.TokenIndex + 1, "\r\n" + content);
+        }
+
+        private bool IsCtLExprContext(Declaration target)
+        {
+            var argContext = target.Context as VBAParser.ArgContext;
+            var typeCtxt = argContext.asTypeClause().type().complexType();
+
+            return (typeCtxt is VBAParser.CtLExprContext);
         }
     }
 }
