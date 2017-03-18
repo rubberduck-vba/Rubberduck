@@ -169,6 +169,31 @@ End Function
 
         }
 
+        //Addresses issue #2873 : AssignedByValParameter quick fix needs to use `Set` for reference types.
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void AssignedByValParameter_LocalVariableAssignment_UsesSet()
+        {
+            var inputCode =
+@"
+Public Sub Foo(FirstArg As Long, ByVal arg1 As Range)
+    arg1 = Range(""A1: C4"")
+End Sub"
+;
+
+            var expectedCode =
+@"
+Public Sub Foo(FirstArg As Long, ByVal arg1 As Range)
+Dim localArg1 As Range
+Set localArg1 = arg1
+    localArg1 = Range(""A1: C4"")
+End Sub"
+;
+            var quickFixResult = ApplyLocalVariableQuickFixToCodeFragment(inputCode);
+            Assert.AreEqual(expectedCode, quickFixResult);
+
+        }
+
         private string ApplyLocalVariableQuickFixToCodeFragment(string inputCode, string userEnteredName = "")
         {
             var vbe = BuildMockVBE(inputCode);
