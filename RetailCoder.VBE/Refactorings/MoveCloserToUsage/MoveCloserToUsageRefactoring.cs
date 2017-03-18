@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using Antlr4.Runtime;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.PostProcessing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
@@ -21,6 +23,8 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
         private Declaration _target;
+        
+        private readonly HashSet<IModuleRewriter> _rewriters = new HashSet<IModuleRewriter>();
 
         public MoveCloserToUsageRefactoring(IVBE vbe, RubberduckParserState state, IMessageBox messageBox)
         {
@@ -56,8 +60,6 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             }
 
             MoveCloserToUsage();
-            //var rewriter = _state.GetRewriter(_target);
-            //rewriter.Rewrite();
         }
 
         public void Refactor(Declaration target)
@@ -71,8 +73,6 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
 
             _target = target;
             MoveCloserToUsage();
-            var rewriter = _state.GetRewriter(_target);
-            rewriter.Rewrite();
         }
 
         private bool TargetIsReferencedFromMultipleMethods(Declaration target)
@@ -96,7 +96,8 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
 
             if (TargetIsReferencedFromMultipleMethods(_target))
             {
-                var message = string.Format(RubberduckUI.MoveCloserToUsage_TargetIsUsedInMultipleMethods, _target.IdentifierName);
+                var message = string.Format(RubberduckUI.MoveCloserToUsage_TargetIsUsedInMultipleMethods,
+                    _target.IdentifierName);
                 _messageBox.Show(message, RubberduckUI.MoveCloserToUsage_Caption, MessageBoxButtons.OK,
                     MessageBoxIcon.Exclamation);
 
@@ -106,29 +107,28 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             QualifiedSelection? oldSelection = null;
             var pane = _vbe.ActiveCodePane;
             var module = pane.CodeModule;
+            if (!module.IsWrappingNullReference)
             {
-                if (!module.IsWrappingNullReference)
-                {
-                    oldSelection = module.GetQualifiedSelection();
-                }
+                oldSelection = module.GetQualifiedSelection();
+            }
+            
+            InsertNewDeclaration();
+            RemoveOldDeclaration();
+            UpdateOtherModules();
 
-                // it doesn't make sense to do it backwards, but we need to work from the bottom up so our selections are accurate
-                InsertDeclaration();
+            if (oldSelection.HasValue)
+            {
+                pane.Selection = oldSelection.Value.Selection;
+            }
 
-                if (oldSelection.HasValue)
-                {
-                    pane.Selection = oldSelection.Value.Selection;
-                }
-
-                _state.StateChanged += _state_StateChanged;
-                _state.OnParseRequested(this);
+            foreach (var rewriter in _rewriters)
+            {
+                rewriter.Rewrite();
             }
         }
 
-        private void _state_StateChanged(object sender, ParserStateEventArgs e)
+        private void UpdateOtherModules()
         {
-            if (e.State != ParserState.Ready) { return; }
-
             QualifiedSelection? oldSelection = null;
             var pane = _vbe.ActiveCodePane;
             var module = pane.CodeModule;
@@ -136,8 +136,6 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             {
                 oldSelection = module.GetQualifiedSelection();
             }
-
-            var rewriter = _state.GetRewriter(module.Parent); // todo: determine if we still need to reparse or if we can just pass the rewriter around
 
             var newTarget = _state.AllUserDeclarations.FirstOrDefault(
                 item => item.ComponentName == _target.ComponentName &&
@@ -149,131 +147,61 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             if (newTarget != null)
             {
                 UpdateCallsToOtherModule(newTarget.References.ToList());
-                rewriter.Remove(newTarget);
-                var content = rewriter.GetText();
-                rewriter.Rewrite();
             }
 
             if (oldSelection.HasValue)
             {
                 pane.Selection = oldSelection.Value.Selection;
             }
-
-            _state.StateChanged -= _state_StateChanged;
-            _state.OnParseRequested(this);
         }
 
-        private void InsertDeclaration()
+        private void InsertNewDeclaration()
         {
-            _state.GetRewriter(_target);
-            var module = _target.References.First().QualifiedModuleName.Component.CodeModule;
+            var newVariable = $"Dim {_target.IdentifierName} As {_target.AsTypeName}{Environment.NewLine}";
+
             var firstReference = _target.References.OrderBy(r => r.Selection.StartLine).First();
-            var beginningOfInstructionSelection = GetBeginningOfInstructionSelection(firstReference);
 
-            var oldLines = module.GetLines(beginningOfInstructionSelection.StartLine,
-                beginningOfInstructionSelection.LineCount);
-            var newLines = oldLines.Insert(beginningOfInstructionSelection.StartColumn - 1, GetDeclarationString());
-
-            var newLinesWithoutStringLiterals = newLines.StripStringLiterals();
-
-            var lastIndexOfColon = GetIndexOfLastStatementSeparator(newLinesWithoutStringLiterals);
-            // ReSharper disable once StringLastIndexOfIsCultureSpecific.1
-            while (lastIndexOfColon != -1)
+            RuleContext expression = firstReference.Context;
+            while (!(expression is VBAParser.BlockStmtContext))
             {
-                var numberOfCharsToRemove = lastIndexOfColon == newLines.Length - 1 ||
-                                            newLines[lastIndexOfColon + 1] != ' '
-                    ? 1
-                    : 2;
-
-                newLinesWithoutStringLiterals = newLinesWithoutStringLiterals
-                    .Remove(lastIndexOfColon, numberOfCharsToRemove)
-                    .Insert(lastIndexOfColon, Environment.NewLine);
-
-                newLines = newLines
-                    .Remove(lastIndexOfColon, numberOfCharsToRemove)
-                    .Insert(lastIndexOfColon, Environment.NewLine);
-
-                lastIndexOfColon = GetIndexOfLastStatementSeparator(newLinesWithoutStringLiterals);
+                expression = expression.Parent;
             }
 
-            module.DeleteLines(beginningOfInstructionSelection.StartLine, beginningOfInstructionSelection.LineCount);
-            module.InsertLines(beginningOfInstructionSelection.StartLine, newLines);
+            var insertionIndex = (expression as ParserRuleContext).Start.TokenIndex;
+
+            var rewriter = _state.GetRewriter(firstReference.QualifiedModuleName);
+            rewriter.InsertBefore(insertionIndex, newVariable);
+
+            _rewriters.Add(rewriter);
         }
 
-        private static readonly Regex StatementSeparatorRegex = new Regex(":[^=]", RegexOptions.RightToLeft);
-        private static int GetIndexOfLastStatementSeparator(string input)
+        private void RemoveOldDeclaration()
         {
-            var matches = StatementSeparatorRegex.Matches(input);
-            return matches.Count == 0 ? -1 : matches[0].Index;
-        }
+            var rewriter = _state.GetRewriter(_target);
+            rewriter.Remove(_target);
 
-        private Selection GetBeginningOfInstructionSelection(IdentifierReference reference)
-        {
-            var referenceSelection = reference.Selection;
-            var module = reference.QualifiedModuleName.Component.CodeModule;
-            {
-                var currentLine = referenceSelection.StartLine;
-
-                var codeLine = module.GetLines(currentLine, 1).StripStringLiterals();
-                while (GetIndexOfLastStatementSeparator(codeLine.Remove(referenceSelection.StartColumn)) == -1)
-                {
-                    codeLine = module.GetLines(--currentLine, 1).StripStringLiterals();
-                    if (!codeLine.EndsWith(" _"))
-                    {
-                        return new Selection(currentLine + 1, 1, currentLine + 1, 1);
-                    }
-                }
-
-                var index = GetIndexOfLastStatementSeparator(codeLine.Remove(referenceSelection.StartColumn)) + 1;
-                return new Selection(currentLine, index, currentLine, index);
-            }
-        }
-
-        private string GetDeclarationString()
-        {
-            return Environment.NewLine + "    Dim " + _target.IdentifierName + " As " + _target.AsTypeName + Environment.NewLine;
+            _rewriters.Add(rewriter);
         }
 
         private void UpdateCallsToOtherModule(List<IdentifierReference> references)
         {
             foreach (var reference in references.OrderByDescending(o => o.Selection.StartLine).ThenByDescending(t => t.Selection.StartColumn))
             {
-                var module = reference.QualifiedModuleName.Component.CodeModule;
+                var parent = reference.Context.Parent;
+                while (!(parent is VBAParser.MemberAccessExprContext) && parent.Parent != null)
                 {
-                    var parent = reference.Context.Parent;
-                    while (!(parent is VBAParser.MemberAccessExprContext) && parent.Parent != null)
-                    {
-                        parent = parent.Parent;
-                    }
-
-                    if (!(parent is VBAParser.MemberAccessExprContext))
-                    {
-                        continue;
-                    }
-
-                    var parentSelection = ((VBAParser.MemberAccessExprContext)parent).GetSelection();
-
-                    var oldText = module.GetLines(parentSelection.StartLine, parentSelection.LineCount);
-                    string newText;
-
-                    if (parentSelection.LineCount == 1)
-                    {
-                        newText = oldText.Remove(parentSelection.StartColumn - 1,
-                            parentSelection.EndColumn - parentSelection.StartColumn);
-                    }
-                    else
-                    {
-                        var lines = oldText.Split(new[] { " _" + Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
-
-                        newText = lines.First().Remove(parentSelection.StartColumn - 1);
-                        newText += lines.Last().Remove(0, parentSelection.EndColumn - 1);
-                    }
-
-                    newText = newText.Insert(parentSelection.StartColumn - 1, reference.IdentifierName);
-
-                    module.DeleteLines(parentSelection.StartLine, parentSelection.LineCount);
-                    module.InsertLines(parentSelection.StartLine, newText);
+                    parent = parent.Parent;
                 }
+
+                if (!(parent is VBAParser.MemberAccessExprContext))
+                {
+                    continue;
+                }
+
+                var rewriter = _state.GetRewriter(reference.QualifiedModuleName);
+                rewriter.Replace(parent as ParserRuleContext, reference.IdentifierName);
+
+                _rewriters.Add(rewriter);
             }
         }
     }
