@@ -2012,6 +2012,9 @@ Would you like to import them to Rubberduck?</value>
   <data name="Assert_ValueReferenceMismatch" xml:space="preserve">
     <value>[expected] is a value type and [actual] is a reference type.</value>
   </data>
+  <data name="Assert_ComException" xml:space="preserve">
+    <value>Unexpected COM exception while running tests.</value>
+  </data>
   <data name="Assert_EasterEggAssertClassPassed" xml:space="preserve">
     <value>OK, Rubberduck asserted.  Now what?</value>
     <comment>Reported when an AssertClass is passed as a parameter to a faked function.</comment>
@@ -2023,6 +2026,9 @@ Would you like to import them to Rubberduck?</value>
   <data name="Assert_EasterEggIVerifyPassed" xml:space="preserve">
     <value>IVerify too.</value>
     <comment>Reported when an IVerify interface is passed as a parameter to a faked function.</comment>
+  </data>
+  <data name="Assert_GenericException" xml:space="preserve">
+    <value>Unexpected exception while running tests.</value>
   </data>
   <data name="Assert_NotImplemented" xml:space="preserve">
     <value>Not implemented.</value>

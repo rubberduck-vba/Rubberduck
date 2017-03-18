@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
+using NLog;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.UI;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -19,7 +22,8 @@ namespace Rubberduck.UnitTesting
         private readonly IFakesProviderFactory _fakesFactory;
 
         // can't be assigned from constructor because ActiveVBProject is null at startup:
-        private IHostApplication _hostApplication; 
+        private IHostApplication _hostApplication;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public TestEngine(TestExplorerModel model, IVBE vbe, RubberduckParserState state, IFakesProviderFactory fakesFactory)
         {
@@ -86,11 +90,19 @@ namespace Rubberduck.UnitTesting
 
                     var stopwatch = new Stopwatch();
                     stopwatch.Start();
-                    
-                    Run(testInitialize);
-                    test.Run();
-                    Run(testCleanup);
-                    
+
+                    try
+                    {
+                        Run(testInitialize);
+                        test.Run();
+                        Run(testCleanup);
+                    }
+                    catch (COMException ex)
+                    {
+                        Logger.Error("Unexpected COM exception while running tests.", ex);
+                        test.UpdateResult(TestOutcome.Inconclusive, RubberduckUI.Assert_ComException);
+                    }
+
                     stopwatch.Stop();
                     test.Result.SetDuration(stopwatch.ElapsedMilliseconds);
 
@@ -116,10 +128,9 @@ namespace Rubberduck.UnitTesting
                     fakes.StartTest();
                     _hostApplication.Run(member);
                 }
-                catch
+                catch (Exception ex)
                 {
-                    //Can I do this from here?
-                    AssertHandler.OnAssertInconclusive("Internal Rubberduck error.");
+                    Logger.Error(ex, "Unexpected COM exception while running tests.", member?.QualifiedName);
                 }
                 finally
                 {

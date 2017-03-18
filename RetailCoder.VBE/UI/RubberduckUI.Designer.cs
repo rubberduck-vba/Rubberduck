@@ -194,6 +194,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unexpected COM exception while running tests..
+        /// </summary>
+        public static string Assert_ComException {
+            get {
+                return ResourceManager.GetString("Assert_ComException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to expected has {0} dimensions; actual has {1} dimensions. {2}.
         /// </summary>
         public static string Assert_DimensionMismatchFormat {
@@ -235,6 +244,15 @@ namespace Rubberduck.UI {
         public static string Assert_FailedMessageFormat {
             get {
                 return ResourceManager.GetString("Assert_FailedMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unexpected exception while running tests..
+        /// </summary>
+        public static string Assert_GenericException {
+            get {
+                return ResourceManager.GetString("Assert_GenericException", resourceCulture);
             }
         }
         
