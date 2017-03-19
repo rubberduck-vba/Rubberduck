@@ -26,15 +26,12 @@ namespace Rubberduck.API
     }
 
     [ComVisible(true)]
-    [Guid(ClassId)]
-    [ProgId(ProgId)]
+    [Guid(RubberduckGuid.DeclarationClassGuid)]
+    [ProgId(RubberduckProgId.DeclarationProgId)]
     [ComDefaultInterface(typeof(IDeclaration))]
     [EditorBrowsable(EditorBrowsableState.Always)]
     public class Declaration : IDeclaration
     {
-        private const string ClassId = "67940D0B-081A-45BE-B0B9-CAEAFE034BC0";
-        private const string ProgId = "Rubberduck.Declaration";
-
         private readonly RubberduckDeclaration _declaration;
 
         internal Declaration(RubberduckDeclaration declaration)

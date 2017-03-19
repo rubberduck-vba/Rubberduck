@@ -6,12 +6,10 @@ namespace Rubberduck.UnitTesting
 {	
     [ComVisible(true)]
     [ComDefaultInterface(typeof(IAssert))]
-    [Guid(ClassId)]
-    [ProgId(ProgId)]
+    [Guid(RubberduckGuid.PermissiveAssertClassGuid)]
+    [ProgId(RubberduckProgId.PermissiveAssertClassProgId)]
     public class PermissiveAssertClass : AssertClass
-    {
-        private const string ClassId = "40F71F29-D63F-4481-8A7D-E04A4B054501";
-        private const string ProgId = "Rubberduck.PermissiveAssertClass";
+    {       
         private static readonly IEqualityComparer<object> PermissiveComparer = new PermissiveObjectComparer();
 
         /// <summary>
