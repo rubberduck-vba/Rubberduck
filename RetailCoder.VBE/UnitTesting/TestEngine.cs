@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
+using NLog;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.UI;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using System.Runtime.InteropServices;
-using NLog;
 
 namespace Rubberduck.UnitTesting
 {
@@ -18,17 +19,19 @@ namespace Rubberduck.UnitTesting
         private readonly TestExplorerModel _model;
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
-
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private readonly IFakesProviderFactory _fakesFactory;
 
         // can't be assigned from constructor because ActiveVBProject is null at startup:
-        private IHostApplication _hostApplication; 
+        private IHostApplication _hostApplication;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public TestEngine(TestExplorerModel model, IVBE vbe, RubberduckParserState state)
+        public TestEngine(TestExplorerModel model, IVBE vbe, RubberduckParserState state, IFakesProviderFactory fakesFactory)
         {
+            Debug.WriteLine("TestEngine created.");
             _model = model;
             _vbe = vbe;
             _state = state;
+            _fakesFactory = fakesFactory;
         }
 
         public TestExplorerModel Model { get { return _model; } }
@@ -97,7 +100,7 @@ namespace Rubberduck.UnitTesting
                     catch (COMException ex)
                     {
                         Logger.Error("Unexpected COM exception while running tests.", ex);
-                        test.UpdateResult(TestOutcome.Inconclusive, "Unexpected COM exception.");
+                        test.UpdateResult(TestOutcome.Inconclusive, RubberduckUI.Assert_ComException);
                     }
 
                     stopwatch.Stop();
@@ -117,9 +120,22 @@ namespace Rubberduck.UnitTesting
                 _hostApplication = _vbe.HostApplication();
             }
 
+            var fakes = _fakesFactory.GetFakesProvider();
             foreach (var member in members)
             {
-                _hostApplication.Run(member);
+                try
+                {
+                    fakes.StartTest();
+                    _hostApplication.Run(member);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error(ex, "Unexpected COM exception while running tests.", member?.QualifiedName);
+                }
+                finally
+                {
+                    fakes.StopTest();
+                }
             }
         }
     }

@@ -18,15 +18,12 @@ namespace Rubberduck.API
     }
 
     [ComVisible(true)]
-    [Guid(ClassId)]
-    [ProgId(ProgId)]
+    [Guid(RubberduckGuid.IdentifierReferenceClassGuid)]
+    [ProgId(RubberduckProgId.IdentifierReferenceProgId)]
     [ComDefaultInterface(typeof(IIdentifierReference))]
     [EditorBrowsable(EditorBrowsableState.Always)]
     public class IdentifierReference : IIdentifierReference
     {
-        private const string ClassId = "57F78E64-8ADF-4D81-A467-A0139B877D14";
-        private const string ProgId = "Rubberduck.IdentifierReference";
-
         private readonly Parsing.Symbols.IdentifierReference _reference;
 
         public IdentifierReference(Parsing.Symbols.IdentifierReference reference)
