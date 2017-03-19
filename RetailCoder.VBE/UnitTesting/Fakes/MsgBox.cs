@@ -25,7 +25,7 @@ namespace Rubberduck.UnitTesting
 
         public int MsgBoxCallback(IntPtr prompt, int buttons, IntPtr title, IntPtr helpfile, IntPtr context)
         {
-            InvocationCount++;
+            OnCallBack();
 
             TrackUsage("prompt", new ComVariant(prompt));
             TrackUsage("buttons", buttons);
@@ -33,11 +33,6 @@ namespace Rubberduck.UnitTesting
             TrackUsage("helpfile", new ComVariant(helpfile));
             TrackUsage("context", new ComVariant(context));
 
-            if (Throws)
-            {
-                AssertHandler.RaiseVbaError(ErrorNumber, ErrorDescription);
-                
-            }
             return (int)_converter.Value;
         }    
     }

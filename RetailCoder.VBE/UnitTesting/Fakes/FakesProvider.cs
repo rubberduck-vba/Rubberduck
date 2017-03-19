@@ -48,6 +48,7 @@ namespace Rubberduck.UnitTesting
         #region Function Overrides
 
         public IFake MsgBox => RetrieveOrCreateFake(typeof(MsgBox));
+        public IFake InputBox => RetrieveOrCreateFake(typeof(InputBox));
 
         #endregion
     }

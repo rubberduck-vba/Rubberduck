@@ -15,6 +15,7 @@ namespace Rubberduck.UnitTesting
         /// </summary>
         /// <param name="Condition">Any Boolean value or expression.</param>
         /// <param name="Message">An optional message to display if the assertion fails.</param>
+        [DispId(1)]
         void IsTrue(bool Condition, string Message = "");
 
         /// <summary>
@@ -22,23 +23,27 @@ namespace Rubberduck.UnitTesting
         /// </summary>
         /// <param name="Condition">Any Boolean value or expression.</param>
         /// <param name="Message">An optional message to display if the assertion fails.</param>
+        [DispId(2)]
         void IsFalse(bool Condition, string Message = "");
 
         /// <summary>
         /// Indicates that the assertion cannot be verified.
         /// </summary>
         /// <param name="Message">An optional message to display.</param>
+        [DispId(3)]
         void Inconclusive(string Message = "");
 
         /// <summary>
         /// Fails the assertion without checking any conditions.
         /// </summary>
         /// <param name="Message">An optional message to display.</param>
+        [DispId(4)]
         void Fail(string Message = "");
 
         /// <summary>
         /// Passes the assertion without checking any conditions.
         /// </summary>
+        [DispId(5)]
         void Succeed();
 
         /// <summary>
@@ -46,6 +51,7 @@ namespace Rubberduck.UnitTesting
         /// </summary>
         /// <param name="Value">The object to verify.</param>
         /// <param name="Message">An optional message to display if the assertion fails.</param>
+        [DispId(6)]
         void IsNothing(object Value, string Message = "");
 
         /// <summary>
@@ -53,6 +59,7 @@ namespace Rubberduck.UnitTesting
         /// </summary>
         /// <param name="Value">The object to verify.</param>
         /// <param name="Message">An optional message to display if the assertion fails.</param>
+        [DispId(7)]
         void IsNotNothing(object Value, string Message = "");
 
         /// <summary>
@@ -64,6 +71,7 @@ namespace Rubberduck.UnitTesting
         /// <remarks>
         /// <paramref name="Expected"/> and <paramref name="Actual"/> must be the same type.
         /// </remarks>
+        [DispId(8)]
         void AreEqual(object Expected, object Actual, string Message = "");
 
         /// <summary>
@@ -75,6 +83,7 @@ namespace Rubberduck.UnitTesting
         /// <remarks>
         /// <paramref name="Expected"/> and <paramref name="Actual"/> must be the same type.
         /// </remarks>
+        [DispId(9)]
         void AreNotEqual(object Expected, object Actual, string Message = "");
 
         /// <summary>
@@ -83,6 +92,7 @@ namespace Rubberduck.UnitTesting
         /// <param name="Expected">The expected reference.</param>
         /// <param name="Actual">The actual reference.</param>
         /// <param name="Message">An optional message to display if the assertion fails.</param>
+        [DispId(10)]
         void AreSame(object Expected, object Actual, string Message = "");
 
         /// <summary>
@@ -91,10 +101,29 @@ namespace Rubberduck.UnitTesting
         /// <param name="Expected">The expected reference.</param>
         /// <param name="Actual">The actual reference.</param>
         /// <param name="Message">An optional message to display if the assertion fails.</param>
+        [DispId(11)]
         void AreNotSame(object Expected, object Actual, string Message = "");
 
-
+        /// <summary>
+        /// Verifies that all of the items in 2 arrays are equal. The assertion fails if any items is different, if either the lower 
+        /// bounds or upper bounds are different, or if the ranks (number of dimensions) differ.  This can be used for arrays of arbitrary 
+        /// dimensions and arbitrary bounds.
+        /// </summary>
+        /// <param name="Expected">The expected sequence.</param>
+        /// <param name="Actual">The actual sequence.</param>
+        /// <param name="Message">An optional message to display if the assertion fails.</param>
+        [DispId(12)]
         void SequenceEquals(object Expected, object Actual, string Message = "");
+
+        /// <summary>
+        /// Verifies that at least one of the items in 2 arrays differs at any give index. The assertion fails if all of the items are the same, if 
+        /// the lower bounds and upper bounds are the same, and the ranks (number of dimensions) are the same.  This can be used for arrays of arbitrary 
+        /// dimensions and arbitrary bounds.
+        /// </summary>
+        /// <param name="Expected">The expected sequence.</param>
+        /// <param name="Actual">The actual sequence.</param>
+        /// <param name="Message">An optional message to display if the assertion fails.</param>
+        [DispId(13)]
         void NotSequenceEquals(object Expected, object Actual, string Message = "");
     }
 }

@@ -12,9 +12,13 @@ namespace Rubberduck.UnitTesting
     [EditorBrowsable(EditorBrowsableState.Always)]
     public interface IFake
     {
+        [DispId(1)]
         void Returns(object Value);
+        [DispId(2)]
         void AssignsByRef(string Parameter, object Value);
+        [DispId(3)]
         void RaisesError(int Number = 0, string Description = "");
+        [DispId(4)]
         IVerify Verify { get; }
     }
 }

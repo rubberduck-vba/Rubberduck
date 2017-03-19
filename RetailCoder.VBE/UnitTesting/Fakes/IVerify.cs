@@ -17,12 +17,14 @@ namespace Rubberduck.UnitTesting
         /// </summary>
         /// <param name="Invocations">Expected minimum invocations.</param>
         /// <param name="Message">An optional message to display if the verification fails.</param>
+        [DispId(1)]
         void AtLeast(int Invocations, string Message = "");
 
         /// <summary>
         /// Verifies that the faked procedure was called one or more times.
         /// </summary>
         /// <param name="Message">An optional message to display if the verification fails.</param>
+        [DispId(2)]
         void AtLeastOnce(string Message = "");
 
         /// <summary>
@@ -30,12 +32,14 @@ namespace Rubberduck.UnitTesting
         /// </summary>
         /// <param name="Invocations">Expected maximum invocations.</param>
         /// <param name="Message">An optional message to display if the verification fails.</param>
+        [DispId(3)]
         void AtMost(int Invocations, string Message = "");
 
         /// <summary>
         /// Verifies that the faked procedure was not called or was only called once.
         /// </summary>
         /// <param name="Message">An optional message to display if the verification fails.</param>
+        [DispId(4)]
         void AtMostOnce(string Message = "");
 
         /// <summary>
@@ -44,6 +48,7 @@ namespace Rubberduck.UnitTesting
         /// <param name="Minimum">Expected minimum invocations.</param>
         /// <param name="Maximum">Expected maximum invocations.</param>
         /// <param name="Message">An optional message to display if the verification fails.</param>
+        [DispId(5)]
         void Between(int Minimum, int Maximum, string Message = "");
 
         /// <summary>
@@ -51,18 +56,21 @@ namespace Rubberduck.UnitTesting
         /// </summary>
         /// <param name="Invocations">Expected invocations.</param>
         /// <param name="Message">An optional message to display if the verification fails.</param>
+        [DispId(6)]
         void Exactly(int Invocations, string Message = "");
 
         /// <summary>
         /// Verifies that the faked procedure is never called.
         /// </summary>
         /// <param name="Message">An optional message to display if the verification fails.</param>
+        [DispId(7)]
         void Never(string Message = "");
 
         /// <summary>
         /// Verifies that the faked procedure is called exactly one time.
         /// </summary>
         /// <param name="Message">An optional message to display if the verification fails.</param>
+        [DispId(8)]
         void Once(string Message = "");
 
         /// <summary>
@@ -72,6 +80,7 @@ namespace Rubberduck.UnitTesting
         /// <param name="Value">The expected value of the parameter.</param>
         /// <param name="Invocation">The invocation to test against. Optional - defaults to the first invocation.</param>
         /// <param name="Message">An optional message to display if the verification fails.</param>
+        [DispId(9)]
         void Parameter(string Parameter, object Value, int Invocation = 1, string Message = "");
 
         /// <summary>
@@ -82,6 +91,7 @@ namespace Rubberduck.UnitTesting
         /// <param name="Maximum">Expected maximum value.</param>
         /// <param name="Invocation">The invocation to test against. Optional - defaults to the first invocation.</param>
         /// <param name="Message">An optional message to display if the verification fails.</param>
+        [DispId(10)]
         void ParameterInRange(string Parameter, double Minimum, double Maximum, int Invocation = 1, string Message = "");
 
         /// <summary>
@@ -90,6 +100,7 @@ namespace Rubberduck.UnitTesting
         /// <param name="Parameter">The name of the parameter to verify. Case insensitive.</param>
         /// <param name="Invocation">The invocation to test against. Optional - defaults to the first invocation.</param>
         /// <param name="Message">An optional message to display if the verification fails.</param>
+        [DispId(11)]
         void ParameterIsPassed(string Parameter, int Invocation = 1, string Message = "");
 
         /// <summary>
@@ -99,6 +110,7 @@ namespace Rubberduck.UnitTesting
         /// <param name="TypeName">The expected type as it would be returned by VBA.TypeName. Case insensitive.</param>
         /// <param name="Invocation">The invocation to test against. Optional - defaults to the first invocation.</param>
         /// <param name="Message">An optional message to display if the verification fails.</param>
+        [DispId(12)]
         void ParameterIsType(string Parameter, string TypeName, int Invocation = 1, string Message = "");
     }
 }

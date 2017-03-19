@@ -8,6 +8,9 @@ namespace Rubberduck.UnitTesting
     [EditorBrowsable(EditorBrowsableState.Always)]
     public interface IFakesProvider
     {
+        [DispId(1)]
         IFake MsgBox { get; }
+        [DispId(2)]
+        IFake InputBox { get; }
     }
 }

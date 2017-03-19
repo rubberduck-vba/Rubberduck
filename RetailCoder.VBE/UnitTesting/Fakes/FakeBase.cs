@@ -33,6 +33,15 @@ namespace Rubberduck.UnitTesting
             _hook.Dispose();
         }
 
+        protected void OnCallBack()
+        {
+            InvocationCount++;
+            if (Throws)
+            {
+                AssertHandler.RaiseVbaError(ErrorNumber, ErrorDescription);
+            }
+        }
+
         protected void TrackUsage(string parameter, object value)
         {
             // TODO: Resolve TypeName.
