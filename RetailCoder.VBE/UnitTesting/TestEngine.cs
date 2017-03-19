@@ -59,7 +59,7 @@ namespace Rubberduck.UnitTesting
         }
 
         public void Run(IEnumerable<TestMethod> tests)
-        {         
+        {
             var testMethods = tests as IList<TestMethod> ?? tests.ToList();
             if (!testMethods.Any())
             {
@@ -76,7 +76,7 @@ namespace Rubberduck.UnitTesting
                 var moduleTestMethods = testMethods
                     .Where(test => test.Declaration.QualifiedName.QualifiedModuleName.ProjectId == capturedModule.Key.ProjectId
                                 && test.Declaration.QualifiedName.QualifiedModuleName.ComponentName == capturedModule.Key.ComponentName);
-                
+
                 Run(module.Key.FindModuleInitializeMethods(_state));
                 foreach (var test in moduleTestMethods)
                 {
@@ -109,7 +109,7 @@ namespace Rubberduck.UnitTesting
                     OnTestCompleted();
                     _model.AddExecutedTest(test);
                 }
-                Run(module.Key.FindModuleCleanupMethods(_state));                
+                Run(module.Key.FindModuleCleanupMethods(_state));
             }
         }
 
@@ -135,7 +135,7 @@ namespace Rubberduck.UnitTesting
                 finally
                 {
                     fakes.StopTest();
-                }     
+                }
             }
         }
     }
