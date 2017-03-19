@@ -30,13 +30,13 @@ End Sub";
             const string expectedCode =
 @"Implements ITestModule1
 
+Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub
 
 Private Sub ITestModule1_Foo(ByVal arg1 As Integer, ByVal arg2 As String)
     Err.Raise 5 'TODO implement interface member
 End Sub
-
-Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
-End Sub";
+";
 
             const string expectedInterfaceCode =
 @"Option Explicit
@@ -95,6 +95,20 @@ End Property";
             const string expectedCode = @"
 Implements ITestModule1
 
+Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub
+
+Public Function Fizz(b) As Variant
+End Function
+
+Public Property Get Buzz()
+End Property
+
+Public Property Let Buzz(value)
+End Property
+
+Public Property Set Buzz(value)
+End Property
 
 Private Sub ITestModule1_Foo(ByVal arg1 As Integer, ByVal arg2 As String)
     Err.Raise 5 'TODO implement interface member
@@ -115,21 +129,7 @@ End Property
 Private Property Set ITestModule1_Buzz(ByRef value As Variant)
     Err.Raise 5 'TODO implement interface member
 End Property
-
-Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
-End Sub
-
-Public Function Fizz(b) As Variant
-End Function
-
-Public Property Get Buzz()
-End Property
-
-Public Property Let Buzz(value)
-End Property
-
-Public Property Set Buzz(value)
-End Property";
+";
 
             const string expectedInterfaceCode =
 @"Option Explicit
@@ -200,15 +200,6 @@ End Property";
             const string expectedCode =
 @"Implements ITestModule1
 
-
-Private Sub ITestModule1_Foo(ByVal arg1 As Integer, ByVal arg2 As String)
-    Err.Raise 5 'TODO implement interface member
-End Sub
-
-Private Function ITestModule1_Fizz(ByRef b As Variant) As Variant
-    Err.Raise 5 'TODO implement interface member
-End Function
-
 Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub
 
@@ -222,7 +213,16 @@ Public Property Let Buzz(value)
 End Property
 
 Public Property Set Buzz(value)
-End Property";
+End Property
+
+Private Sub ITestModule1_Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+    Err.Raise 5 'TODO implement interface member
+End Sub
+
+Private Function ITestModule1_Fizz(ByRef b As Variant) As Variant
+    Err.Raise 5 'TODO implement interface member
+End Function
+";
 
             const string expectedInterfaceCode =
 @"Option Explicit
@@ -355,13 +355,13 @@ End Sub";
             const string expectedCode =
 @"Implements ITestModule1
 
+Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub
 
 Private Sub ITestModule1_Foo(ByVal arg1 As Integer, ByVal arg2 As String)
     Err.Raise 5 'TODO implement interface member
 End Sub
-
-Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
-End Sub";
+";
 
             const string expectedInterfaceCode =
 @"Option Explicit
