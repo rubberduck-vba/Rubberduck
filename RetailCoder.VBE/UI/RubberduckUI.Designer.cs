@@ -64,6 +64,7 @@ namespace Rubberduck.UI {
         ///   Looks up a localized string similar to Parsing powered by ANTLR
         ///GitHub integration powered by LibGit2Sharp
         ///Syntax highlighting powered by AvalonEdit
+        ///Native hooks powered by EasyHook
         ///Fugue icons by Yusuke Kamiyamane
         ///IDE icons from SharpDevelop
         ///WPF localization support by Grant Frisken.
@@ -253,6 +254,15 @@ namespace Rubberduck.UI {
         public static string Assert_GenericException {
             get {
                 return ResourceManager.GetString("Assert_GenericException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid setup of IFake {0}. PassThrough property must be False..
+        /// </summary>
+        public static string Assert_InvalidFakePassThrough {
+            get {
+                return ResourceManager.GetString("Assert_InvalidFakePassThrough", resourceCulture);
             }
         }
         

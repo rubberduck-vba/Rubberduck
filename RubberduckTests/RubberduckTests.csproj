@@ -247,6 +247,8 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <None Include="IntegrationTests\FakeTests.bas" />
+    <None Include="IntegrationTests\StubTests.bas" />
     <Content Include="Testfiles\Grammar\Reference_Module_1.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

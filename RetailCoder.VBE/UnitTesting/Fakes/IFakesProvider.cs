@@ -12,5 +12,7 @@ namespace Rubberduck.UnitTesting
         IFake MsgBox { get; }
         [DispId(2)]
         IFake InputBox { get; }
+        [DispId(3)]
+        IStub Beep { get; }
     }
 }

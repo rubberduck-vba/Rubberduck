@@ -7,10 +7,13 @@ using System.Runtime.InteropServices;
 
 namespace Rubberduck.UnitTesting
 {
+    // IMPORTANT - C# doesn't support interface inheritance in its exported type libraries, so any members on this interface
+    // should also be on the IFake interface with matching DispIds due to the inheritance of the concrete classes.
+
     [ComVisible(true)]
-    [Guid(RubberduckGuid.IFakeGuid)]
+    [Guid(RubberduckGuid.IStubGuid)]
     [EditorBrowsable(EditorBrowsableState.Always)]
-    public interface IFake
+    public interface IStub
     {
         [DispId(1)]
         IVerify Verify { get; }
@@ -20,9 +23,5 @@ namespace Rubberduck.UnitTesting
         void RaisesError(int Number = 0, string Description = "");
         [DispId(4)]
         bool PassThrough { get; set; }
-        [DispId(5)]
-        void Returns(object Value, int Invocation = FakesProvider.AllInvocations);
-        [DispId(6)]
-        void ReturnsWhen(string Parameter, object Argument, object Value, int Invocation = FakesProvider.AllInvocations);
     }
 }
