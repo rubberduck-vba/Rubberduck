@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using Rubberduck.Parsing.ComReflection;
+using Rubberduck.Parsing.Grammar;
+using Rubberduck.UI;
 
 namespace Rubberduck.UnitTesting
 {
@@ -13,11 +14,22 @@ namespace Rubberduck.UnitTesting
             InjectDelegate(new MessageBoxDelegate(MsgBoxCallback));
         }
 
+        public override bool PassThrough
+        {
+            get { return false; }
+            // ReSharper disable once ValueParameterNotUsed
+            set
+            {
+                Verifier.SuppressAsserts();
+                AssertHandler.OnAssertInconclusive(string.Format(RubberduckUI.Assert_InvalidFakePassThrough, "MsgBox"));
+            }
+        }
+
         private readonly ValueTypeConverter<int> _converter = new ValueTypeConverter<int>();
-        public override void Returns(object value)
+        public override void Returns(object value, int invocation = FakesProvider.AllInvocations)
         {
             _converter.Value = value;
-            base.Returns(value);
+            base.Returns((int)_converter.Value, invocation);
         }
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall, SetLastError = true)]
@@ -27,13 +39,13 @@ namespace Rubberduck.UnitTesting
         {
             OnCallBack();
 
-            TrackUsage("prompt", new ComVariant(prompt));
-            TrackUsage("buttons", buttons);
-            TrackUsage("title", new ComVariant(title));
-            TrackUsage("helpfile", new ComVariant(helpfile));
-            TrackUsage("context", new ComVariant(context));
+            TrackUsage("prompt", prompt);
+            TrackUsage("buttons", buttons, Tokens.Long);
+            TrackUsage("title", title);
+            TrackUsage("helpfile", helpfile);
+            TrackUsage("context", context);
 
-            return (int)_converter.Value;
+            return (int)(ReturnValue ?? 0);
         }    
     }
 }

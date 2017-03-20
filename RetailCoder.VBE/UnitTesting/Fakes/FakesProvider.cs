@@ -12,6 +12,10 @@ namespace Rubberduck.UnitTesting
     [EditorBrowsable(EditorBrowsableState.Always)]    
     public class FakesProvider : IFakesProvider
     {
+        internal const int AllInvocations = -1;
+        // ReSharper disable once InconsistentNaming
+        public const int rdAllInvocations = AllInvocations;     
+
         private static Dictionary<Type, FakeBase> ActiveFakes { get; } = new Dictionary<Type, FakeBase>();
 
         internal bool CodeIsUnderTest { get; set; }

@@ -1,76 +1,91 @@
 ﻿using System;
-using System.Runtime.InteropServices;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Rubberduck.UnitTesting
 {
-    internal abstract class FakeBase : IFake, IDisposable
+    internal abstract class FakeBase : StubBase, IFake
     {
-        internal const string TargetLibrary = "vbe7.dll";
-        private readonly IntPtr _procAddress;
-        private EasyHook.LocalHook _hook;
-
         #region Internal
 
-        internal FakeBase(IntPtr procAddress)
-        {
-            _procAddress = procAddress;
-        }
+        internal FakeBase(IntPtr procAddress) : base(procAddress) { }
 
-        internal uint InvocationCount { get; set; }
-        internal object ReturnValue { get; set; }
-        internal bool Throws { get; set; }
-        internal string ErrorDescription { get; set; }
-        internal int ErrorNumber { get; set; }
-
-        protected void InjectDelegate(Delegate callbackDelegate)
+        protected struct ReturnValueInfo
         {
-            _hook = EasyHook.LocalHook.Create(_procAddress, callbackDelegate, null);
-            _hook.ThreadACL.SetInclusiveACL(new[] { 0 });
-        }
+            public int Invocation { get; }
+            public string Parameter { get; }
+            public object Argument { get; }
+            public object ReturnValue { get; }
 
-        public virtual void Dispose()
-        {
-            _hook.Dispose();
-        }
-
-        protected void OnCallBack()
-        {
-            InvocationCount++;
-            if (Throws)
+            public ReturnValueInfo(int invocation, string parameter, object argument, object returns)
             {
-                AssertHandler.RaiseVbaError(ErrorNumber, ErrorDescription);
+                Invocation = invocation;
+                Parameter = parameter.ToLower();
+                Argument = argument;
+                ReturnValue = returns;
             }
         }
 
-        protected void TrackUsage(string parameter, object value)
+        internal object ReturnValue { get; set; }
+
+        protected override void TrackUsage(string parameter, object value, string typeName)
         {
-            // TODO: Resolve TypeName.
-            _verifier.AddUsage(parameter, value, string.Empty, InvocationCount);
+            base.TrackUsage(parameter, value, typeName);
+
+            if (TrySetReturnValue(parameter, value) ||          // specific value, parameter, invocation
+                TrySetReturnValue(parameter, value, true) ||    // specific value, parameter, any invocation
+                TrySetReturnValue() ||                          // specific invocation
+                TrySetReturnValue(true))                        // any invocation    
+            {
+                SuppressesCall = true;
+                return;
+            }
+            SuppressesCall = false;
+        }
+
+        private bool TrySetReturnValue(string parameter, object value, bool any = false)
+        {
+            var returnInfo =
+                ReturnValues.Where(r => r.Invocation == (any ? FakesProvider.AllInvocations : (int) InvocationCount) &&
+                                        r.Argument != null &&
+                                        r.Parameter.Equals(parameter.ToLower()) &&
+                                        r.Argument.Equals(value)).ToList();
+            if (returnInfo.Count <= 0)
+            {
+                return false;
+            }
+            ReturnValue = returnInfo.First().ReturnValue;
+            return true;
+        }
+
+        private bool TrySetReturnValue(bool any = false)
+        {
+            var returnInfo =
+                ReturnValues.Where(r => r.Invocation == (any ? FakesProvider.AllInvocations : (int) InvocationCount))
+                    .ToList();
+
+            if (returnInfo.Count <= 0)
+            {
+                return false;
+            }
+            ReturnValue = returnInfo.First().ReturnValue;
+            return true;
         }
 
         #endregion
 
         #region IFake
 
-        public virtual void AssignsByRef(string parameter, object value)            
+        private static readonly List<ReturnValueInfo> ReturnValues = new List<ReturnValueInfo>();
+        public virtual void Returns(object value, int invocation = FakesProvider.rdAllInvocations)
         {
-            throw new NotImplementedException();
+            ReturnValues.Add(new ReturnValueInfo(invocation, string.Empty, string.Empty, value));
         }
 
-        public void RaisesError(int number = 0, string description = "")
+        public virtual void ReturnsWhen(string parameter, object argument, object value, int invocation = FakesProvider.AllInvocations)
         {
-            Throws = number != 0;
-            ErrorNumber = number;
-            ErrorDescription = description;
+            ReturnValues.Add(new ReturnValueInfo(invocation, parameter, argument, value));
         }
-
-        public virtual void Returns(object value)
-        {
-            ReturnValue = value;
-        }
-
-        private readonly Verifier _verifier = new Verifier();
-        public IVerify Verify => _verifier;
 
         #endregion
     }
