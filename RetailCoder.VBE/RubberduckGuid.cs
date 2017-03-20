@@ -23,5 +23,6 @@ namespace Rubberduck
         public const string IFakesProviderGuid = "69E194DE" + UnitTestingGuidspace;                 // added for 2.0.14
         public const string IFakeGuid = "69E194DF" + UnitTestingGuidspace;                          // added for 2.0.14
         public const string IVerifyGuid = "69E194E0" + UnitTestingGuidspace;                        // added for 2.0.14
+        public const string IStubGuid = "69E194E1" + UnitTestingGuidspace;                          // added for 2.0.14
     }
 }

@@ -16,7 +16,7 @@ namespace Rubberduck.UnitTesting
         // ReSharper disable once InconsistentNaming
         public const int rdAllInvocations = AllInvocations;     
 
-        private static Dictionary<Type, FakeBase> ActiveFakes { get; } = new Dictionary<Type, FakeBase>();
+        private static Dictionary<Type, StubBase> ActiveFakes { get; } = new Dictionary<Type, StubBase>();
 
         internal bool CodeIsUnderTest { get; set; }
 
@@ -39,20 +39,21 @@ namespace Rubberduck.UnitTesting
             CodeIsUnderTest = false;
         }
 
-        private IFake RetrieveOrCreateFake(Type type)
+        private T RetrieveOrCreateFunction<T>(Type type) where T : class
         {
             CodeIsUnderTest = true;
             if (!ActiveFakes.ContainsKey(type))
             {
-                ActiveFakes.Add(type, (FakeBase)Activator.CreateInstance(type));
+                ActiveFakes.Add(type, (StubBase)Activator.CreateInstance(type));
             }
-            return ActiveFakes[type];
+            return ActiveFakes[type] as T;
         }
 
         #region Function Overrides
 
-        public IFake MsgBox => RetrieveOrCreateFake(typeof(MsgBox));
-        public IFake InputBox => RetrieveOrCreateFake(typeof(InputBox));
+        public IFake MsgBox => RetrieveOrCreateFunction<IFake>(typeof(MsgBox));
+        public IFake InputBox => RetrieveOrCreateFunction<IFake>(typeof(InputBox));
+        public IStub Beep => RetrieveOrCreateFunction<IStub>(typeof(Beep));
 
         #endregion
     }

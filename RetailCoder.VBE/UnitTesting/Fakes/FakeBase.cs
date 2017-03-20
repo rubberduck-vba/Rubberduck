@@ -27,6 +27,7 @@ namespace Rubberduck.UnitTesting
         }
 
         internal object ReturnValue { get; set; }
+        internal bool SuppressesCall { get; set; } = true;
 
         protected override void TrackUsage(string parameter, object value, string typeName)
         {

@@ -23,7 +23,6 @@ namespace Rubberduck.UnitTesting
         }
 
         protected Verifier Verifier { get; } = new Verifier();
-        internal bool SuppressesCall { get; set; }
         internal uint InvocationCount { get; set; }
         internal bool Throws { get; set; }
         internal string ErrorDescription { get; set; }
@@ -41,9 +40,15 @@ namespace Rubberduck.UnitTesting
             Verifier.AddUsage(parameter, value, typeName, InvocationCount);
         }
 
-        protected void OnCallBack()
+        protected void OnCallBack(bool trackNoParams = false)
         {
             InvocationCount++;
+
+            if (trackNoParams)
+            {
+                Verifier.AddUsage(string.Empty, null, string.Empty, InvocationCount);
+            }
+
             if (Throws)
             {
                 AssertHandler.RaiseVbaError(ErrorNumber, ErrorDescription);
