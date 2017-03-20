@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using Rubberduck.Parsing.ComReflection;
+using Rubberduck.UI;
 
 namespace Rubberduck.UnitTesting
 {
@@ -13,6 +13,17 @@ namespace Rubberduck.UnitTesting
             InjectDelegate(new InputBoxDelegate(InputBoxCallback));
         }
 
+        public override bool PassThrough
+        {
+            get { return false; }
+            // ReSharper disable once ValueParameterNotUsed
+            set
+            {
+                Verifier.SuppressAsserts();
+                AssertHandler.OnAssertInconclusive(string.Format(RubberduckUI.Assert_InvalidFakePassThrough, "InputBox"));
+            }
+        }
+
         [UnmanagedFunctionPointer(CallingConvention.StdCall, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.BStr)]
         private delegate string InputBoxDelegate(IntPtr prompt, IntPtr title, IntPtr Default, IntPtr xpos, IntPtr ypos, IntPtr helpfile, IntPtr context);
@@ -21,13 +32,13 @@ namespace Rubberduck.UnitTesting
         {
             OnCallBack();
 
-            TrackUsage("prompt", new ComVariant(prompt));
-            TrackUsage("title", new ComVariant(title));
-            TrackUsage("default", new ComVariant(Default));
-            TrackUsage("xpos", new ComVariant(xpos));
-            TrackUsage("ypos", new ComVariant(ypos));
-            TrackUsage("helpfile", new ComVariant(helpfile));
-            TrackUsage("context", new ComVariant(context));
+            TrackUsage("prompt", prompt);
+            TrackUsage("title", title);
+            TrackUsage("default", Default);
+            TrackUsage("xpos", xpos);
+            TrackUsage("ypos", ypos);
+            TrackUsage("helpfile", helpfile);
+            TrackUsage("context", context);
 
             return ReturnValue?.ToString() ?? string.Empty;
         }

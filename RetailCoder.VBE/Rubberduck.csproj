@@ -510,6 +510,9 @@
     <Compile Include="UnitTesting\Fakes\ReturnTypeConverter.cs" />
     <Compile Include="UnitTesting\Fakes\Verifier.cs" />
     <Compile Include="UnitTesting\PermissiveObjectComparer.cs" />
+    <Compile Include="UnitTesting\Stubs\Beep.cs" />
+    <Compile Include="UnitTesting\Stubs\IStub.cs" />
+    <Compile Include="UnitTesting\Stubs\StubBase.cs" />
     <Compile Include="VersionCheck\IVersionCheck.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\AppCommandBarBase.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\ContextSelectionLabelMenuItem.cs" />

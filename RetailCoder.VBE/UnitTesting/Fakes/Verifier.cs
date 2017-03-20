@@ -28,7 +28,7 @@ namespace Rubberduck.UnitTesting
         {            
             Parameter = parameter.ToLower();
             Value = value;
-            TypeName = typeName;
+            TypeName = typeName.ToLower();
             Invocation = invocation;
         }
     }
@@ -44,6 +44,11 @@ namespace Rubberduck.UnitTesting
         #region Internal
 
         protected bool Asserted { get; set; }
+
+        internal void SuppressAsserts()
+        {
+            Asserted = true;
+        }
 
         protected uint InvocationCount
         {
