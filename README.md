@@ -16,7 +16,7 @@ Branch     | Description | Build Status |
 
 ---
 
-##What is Rubberduck?
+## What is Rubberduck?
 
 It's an add-in for the VBA IDE, the glorious *Visual Basic Editor* (VBE) - which hasn't seen an update in this century, but that's still in use everywhere around the world. Rubberduck wants to give its users access to features you would find in the VBE if it had kept up with the features of Visual Studio and other IDE's in the past, oh, *decade* or so.
 
@@ -32,7 +32,7 @@ If you're a C# developer looking for a fun project to contribute to, see the [Co
 
 ---
 
-##License
+## License
 
 Rubberduck is a COM add-in for the VBA IDE (VBE).
 
@@ -53,11 +53,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 ---
 
-#Attributions
+# Attributions
 
-##Software & Libraries
+## Software & Libraries
 
-###[ANTLR](http://www.antlr.org/)
+### [ANTLR](http://www.antlr.org/)
 
 As of v1.2, Rubberduck is empowered by the awesomeness of ANTLR.
 
@@ -67,7 +67,7 @@ As of v1.2, Rubberduck is empowered by the awesomeness of ANTLR.
 
 We're not doing half of what we could be doing with this amazing tool. Try it, see for yourself!
 
-###[LibGit2Sharp](https://github.com/libgit2/libgit2sharp)
+### [LibGit2Sharp](https://github.com/libgit2/libgit2sharp)
 
 **What is LibGit2Sharp?**
 
@@ -81,7 +81,7 @@ LibGit2Sharp is the library that has allowed us to integrate Git right into the 
 
 Which basically means it's a reimplementation of Git in C. It also [happens to be the technology Microsoft uses for their own Git integration with Visual Studio](http://www.hanselman.com/blog/GitSupportForVisualStudioGitTFSAndVSPutIntoContext.aspx).
 
-###[AvalonEdit](http://avalonedit.net)
+### [AvalonEdit](http://avalonedit.net)
 
 Source code looks a lot better with syntax highlighting, and AvalonEdit excels at it. 
 
@@ -89,7 +89,7 @@ Source code looks a lot better with syntax highlighting, and AvalonEdit excels a
 
 We're currently only using a tiny bit of this code editor's functionality (more to come!).
 
-###[EasyHook](http://easyhook.github.io/index.html)
+### [EasyHook](http://easyhook.github.io/index.html)
 
 Without the EasyHook library, many of our more advanced Unit Testing features would simply not be possible.  This library really lives up to its name, and allows us to intercept and inspect traffic through VBE7.dll and other unmanged libraries.
  
@@ -97,17 +97,17 @@ Without the EasyHook library, many of our more advanced Unit Testing features wo
 
 EasyHook is released under the [MIT license](https://github.com/EasyHook/EasyHook#license).
 
-###[WPF Localization Using RESX Files](http://www.codeproject.com/Articles/35159/WPF-Localization-Using-RESX-Files)
+### [WPF Localization Using RESX Files](http://www.codeproject.com/Articles/35159/WPF-Localization-Using-RESX-Files)
 
 This library makes localizing WPF applications at runtime using resx files a breeze. Thank you [Grant Frisken](http://www.codeproject.com/script/Membership/View.aspx?mid=1079060)!
 
 > Licensed under [The Code Project Open License](http://www.codeproject.com/info/cpol10.aspx) with the [author's permission](http://www.codeproject.com/Messages/5272045/Re-License.aspx) to re-release under the GPLv3.
 
-##Icons
+## Icons
 
 We didn't come up with these icons ourselves! Here's who did what:
 
-###[Fugue Icons](http://p.yusukekamiyamane.com/)
+### [Fugue Icons](http://p.yusukekamiyamane.com/)
 
 This beautiful suite of professional-grade icons packs over 3,570 icons (16x16). You name it, there's an icon for that.
 
@@ -115,13 +115,13 @@ This beautiful suite of professional-grade icons packs over 3,570 icons (16x16).
 These icons are licensed under a [Creative Commons Attribution 3.0 License](http://creativecommons.org/licenses/by/3.0/).
 If you can't or don't want to provide attribution, please [purchase a royalty-free license](http://p.yusukekamiyamane.com/).
 
-###[SharpDevelop](https://github.com/icsharpcode/SharpDevelop.git)
+### [SharpDevelop](https://github.com/icsharpcode/SharpDevelop.git)
 
 Icons in the `./Resources/Custom/` directory were created by (or modified using elements from) the SharpDevelop icon set licensed under the [MIT license](https://opensource.org/licenses/MIT).
 
 ---
 
-##[JetBrains](https://www.jetbrains.com) | [ReSharper](https://www.jetbrains.com/resharper/)
+## [JetBrains](https://www.jetbrains.com) | [ReSharper](https://www.jetbrains.com/resharper/)
 
 [![JetBrains ReSharper logo](https://cloud.githubusercontent.com/assets/5751684/20271309/616bb740-aa58-11e6-91c9-65287b740985.png)](https://www.jetbrains.com/resharper/)
 
