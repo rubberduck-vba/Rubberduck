@@ -89,12 +89,6 @@ Source code looks a lot better with syntax highlighting, and AvalonEdit excels a
 
 We're currently only using a tiny bit of this code editor's functionality (more to come!).
 
-###[WPF Localization Using RESX Files](http://www.codeproject.com/Articles/35159/WPF-Localization-Using-RESX-Files)
-
-This library makes localizing WPF applications at runtime using resx files a breeze. Thank you [Grant Frisken](http://www.codeproject.com/script/Membership/View.aspx?mid=1079060)!
-
-> Licensed under [The Code Project Open License](http://www.codeproject.com/info/cpol10.aspx) with the [author's permission](http://www.codeproject.com/Messages/5272045/Re-License.aspx) to re-release under the GPLv3.
-
 ###[EasyHook](http://easyhook.github.io/index.html)
 
 Without the EasyHook library, many of our more advanced Unit Testing features would simply not be possible.  This library really lives up to its name, and allows us to intercept and inspect traffic through VBE7.dll and other unmanged libraries.
@@ -103,7 +97,13 @@ Without the EasyHook library, many of our more advanced Unit Testing features wo
 
 EasyHook is released under the [MIT license](https://github.com/EasyHook/EasyHook#license).
 
-###Icons
+###[WPF Localization Using RESX Files](http://www.codeproject.com/Articles/35159/WPF-Localization-Using-RESX-Files)
+
+This library makes localizing WPF applications at runtime using resx files a breeze. Thank you [Grant Frisken](http://www.codeproject.com/script/Membership/View.aspx?mid=1079060)!
+
+> Licensed under [The Code Project Open License](http://www.codeproject.com/info/cpol10.aspx) with the [author's permission](http://www.codeproject.com/Messages/5272045/Re-License.aspx) to re-release under the GPLv3.
+
+##Icons
 
 We didn't come up with these icons ourselves! Here's who did what:
 
@@ -206,3 +206,5 @@ End Sub
 ---
 
 There's *quite a lot* to Rubberduck, the above is barely even a "quick tour"; the project's [website](http://www.rubberduckvba.com/) lists all the features, and the [wiki](https://github.com/rubberduck-vba/Rubberduck/wiki) will eventually document everything there is to document. Feel free to poke around and break things and [request features / create new issues](https://github.com/rubberduck-vba/Rubberduck/issues/new) too!
+
+0
