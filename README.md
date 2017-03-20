@@ -95,6 +95,14 @@ This library makes localizing WPF applications at runtime using resx files a bre
 
 > Licensed under [The Code Project Open License](http://www.codeproject.com/info/cpol10.aspx) with the [author's permission](http://www.codeproject.com/Messages/5272045/Re-License.aspx) to re-release under the GPLv3.
 
+###[EasyHook](http://easyhook.github.io/index.html)
+
+Without the EasyHook library, many of our more advanced Unit Testing features would simply not be possible.  This library really lives up to its name, and allows us to intercept and inspect traffic through VBE7.dll and other unmanged libraries.
+ 
+> EasyHook makes it possible to extend (via hooking) unmanaged code APIs with pure managed functions, from within a fully managed environment on 32- or 64-bit Windows XP SP2, Windows Vista x64, Windows Server 2008 x64, Windows 7, Windows 8.1, and Windows 10. 
+
+EasyHook is released under the [MIT license](https://github.com/EasyHook/EasyHook#license).
+
 ##Icons
 
 We didn't come up with these icons ourselves! Here's who did what:
