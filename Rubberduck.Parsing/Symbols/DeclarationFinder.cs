@@ -236,7 +236,10 @@ namespace Rubberduck.Parsing.Symbols
 
         public IEnumerable<Declaration> Members(QualifiedModuleName module)
         {
-            return _declarations[module];
+            ConcurrentBag<Declaration> members;
+            return _declarations.TryGetValue(module,out members)
+                    ? members.ToList()
+                    : Enumerable.Empty<Declaration>();
         }
 
         public IEnumerable<Declaration> FindDeclarationsWithNonBaseAsType()
