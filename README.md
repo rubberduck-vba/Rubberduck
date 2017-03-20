@@ -103,7 +103,7 @@ Without the EasyHook library, many of our more advanced Unit Testing features wo
 
 EasyHook is released under the [MIT license](https://github.com/EasyHook/EasyHook#license).
 
-##Icons
+###Icons
 
 We didn't come up with these icons ourselves! Here's who did what:
 
