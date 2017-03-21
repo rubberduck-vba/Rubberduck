@@ -24,14 +24,7 @@ Private Sub DoSomething()
     target(""foo"") = 42
 End Sub
 ";
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new ObjectVariableNotSetInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(0, inspectionResults.Count());
+            AssertInputCodeYieldsExpectedInspectionResultCount(inputCode, 0);
         }
 
         [TestMethod]
@@ -48,38 +41,88 @@ Private Sub Workbook_Open()
 
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new ObjectVariableNotSetInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(0, inspectionResults.Count());
+            AssertInputCodeYieldsExpectedInspectionResultCount(inputCode, 0);
         }
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ObjectVariableNotSet_GivenVariantVariable_ReturnsNoResult()
+        public void ObjectVariableNotSet_GivenVariantVariableAssignedObject_ReturnsResult()
+        {
+
+            const string inputCode = @"
+Private Sub TestSub(ByRef testParam As Variant)
+'whoCares is a LExprContext and is a known interesting declaration
+    Dim target As Collection
+    Set target = new Collection
+    testParam = target             
+    testParam.Add 100
+End Sub";
+
+            AssertInputCodeYieldsExpectedInspectionResultCount(inputCode, 1);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ObjectVariableNotSet_GivenVariantVariableAssignedNewObject_ReturnsResult()
+        {
+            const string inputCode = @"
+Private Sub TestSub(ByRef testParam As Variant)
+'is a NewExprContext
+    testParam = new Collection     
+End Sub";
+
+            AssertInputCodeYieldsExpectedInspectionResultCount(inputCode, 1);
+        }
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ObjectVariableNotSet_GivenVariantVariableAssignedRangeLiteral_ReturnsResult()
+        {
+            const string inputCode = @"
+Private Sub TestSub(ByRef testParam As Variant)
+'Range(""A1:C1"") is a LExprContext but is not a known interesting declaration
+    testParam = Range(""A1:C1"")    
+End Sub";
+
+            AssertInputCodeYieldsExpectedInspectionResultCount(inputCode, 1);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ObjectVariableNotSet_GivenVariantVariableAssignedDeclaredRange_ReturnsResult()
+        {
+            const string inputCode = @"
+Private Sub TestSub(ByRef testParam As Variant, target As Range)
+'target is a LExprContext and is a known interesting declaration
+    testParam = target              
+End Sub";
+
+            AssertInputCodeYieldsExpectedInspectionResultCount(inputCode, 1);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ObjectVariableNotSet_GivenVariantVariableAssignedDeclaredVariant_ReturnsNoResult()
+        {
+            const string inputCode = @"
+Private Sub TestSub(ByRef testParam As Variant, target As Variant)
+'target is a LExprContext, is a known interesting declaration - but is a Variant
+    testParam = target           
+End Sub";
+
+            AssertInputCodeYieldsExpectedInspectionResultCount(inputCode, 0);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ObjectVariableNotSet_GivenVariantVariableAssignedBaseType_ReturnsNoResult()
         {
             const string inputCode = @"
 Private Sub Workbook_Open()
-    
     Dim target As Variant
-    target = Range(""A1"")
-    
-    target.Value = ""all good""
-
+    target = ""A1""     'is a LiteralExprContext
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new ObjectVariableNotSetInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(0, inspectionResults.Count());
+            AssertInputCodeYieldsExpectedInspectionResultCount(inputCode, 0);
         }
 
         [TestMethod]
@@ -96,14 +139,7 @@ Private Sub Workbook_Open()
 
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new ObjectVariableNotSetInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(1, inspectionResults.Count());
+            AssertInputCodeYieldsExpectedInspectionResultCount(inputCode, 1);
         }
 
         [TestMethod]
@@ -121,14 +157,7 @@ Private Sub Workbook_Open()
 
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new ObjectVariableNotSetInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(1, inspectionResults.Count());
+            AssertInputCodeYieldsExpectedInspectionResultCount(inputCode, 1);
         }
 
         [TestMethod]
@@ -145,14 +174,7 @@ Private Sub Workbook_Open()
 
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new ObjectVariableNotSetInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(0, inspectionResults.Count());
+            AssertInputCodeYieldsExpectedInspectionResultCount(inputCode, 0);
         }
 
         //https://github.com/rubberduck-vba/Rubberduck/issues/2266
@@ -304,6 +326,54 @@ Private Sub TestLongPtr()
     handle = 123456
 End Sub";
 
+            AssertInputCodeYieldsExpectedInspectionResultCount(inputCode, 0);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ObjectVariableNotSet_NoTypeSpecified_ReturnsResult()
+        {
+            const string inputCode = @"
+Private Sub TestNonTyped(ByRef arg1)
+    arg1 = new Collection
+End Sub";
+            AssertInputCodeYieldsExpectedInspectionResultCount(inputCode, 1);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ObjectVariableNotSet_SelfAssigned_ReturnsNoResult()
+        {
+            const string inputCode = @"
+Private Sub TestSelfAssigned()
+    Dim arg1 As new Collection
+    arg1.Add 7
+End Sub";
+            AssertInputCodeYieldsExpectedInspectionResultCount(inputCode, 0);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ObjectVariableNotSet_EnumVariable_ReturnsNoResult()
+        {
+
+            const string inputCode = @"
+Enum TestEnum
+    EnumOne
+    EnumTwo
+    EnumThree
+End Enum
+
+Private Sub TestEnum()
+    Dim enumVariable As TestEnum
+    enumVariable = EnumThree
+End Sub";
+
+            AssertInputCodeYieldsExpectedInspectionResultCount(inputCode, 0);
+        }
+
+        private void AssertInputCodeYieldsExpectedInspectionResultCount(string inputCode, int expected)
+        {
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -311,7 +381,7 @@ End Sub";
             var inspection = new ObjectVariableNotSetInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(0, inspectionResults.Count());
+            Assert.AreEqual(expected, inspectionResults.Count());
         }
     }
 }

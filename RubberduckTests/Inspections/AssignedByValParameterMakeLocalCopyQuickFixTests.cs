@@ -185,11 +185,7 @@ End Sub"
 @"
 Public Sub Foo(FirstArg As Long, ByVal arg1 As Range)
 Dim localArg1 As Range
-If(IsObject(arg1)) Then
-    Set localArg1 = arg1
-Else
-    localArg1 = arg1
-End If
+Set localArg1 = arg1
     localArg1 = Range(""A1: C4"")
 End Sub"
 ;
@@ -213,11 +209,7 @@ End Sub"
 @"
 Public Sub Foo(FirstArg As Long, ByVal arg1)
 Dim localArg1 As Variant
-If(IsObject(arg1)) Then
-    Set localArg1 = arg1
-Else
-    localArg1 = arg1
-End If
+localArg1 = arg1
     localArg1 = Range(""A1: C4"")
 End Sub"
 ;
@@ -232,21 +224,29 @@ End Sub"
         {
             var inputCode =
 @"
-Public Sub Foo(FirstArg As Long, ByVal arg1 As VBA.vbMessageBoxResult)
-    arg1 = vbIgnore
+Enum TestEnum
+    EnumOne
+    EnumTwo
+    EnumThree
+End Enum
+
+Public Sub Foo(FirstArg As Long, ByVal arg1 As TestEnum)
+    arg1 = EnumThree
 End Sub"
 ;
 
             var expectedCode =
 @"
-Public Sub Foo(FirstArg As Long, ByVal arg1 As VBA.vbMessageBoxResult)
-Dim localArg1 As VBA.vbMessageBoxResult
-If(IsObject(arg1)) Then
-    Set localArg1 = arg1
-Else
-    localArg1 = arg1
-End If
-    localArg1 = vbIgnore
+Enum TestEnum
+    EnumOne
+    EnumTwo
+    EnumThree
+End Enum
+
+Public Sub Foo(FirstArg As Long, ByVal arg1 As TestEnum)
+Dim localArg1 As TestEnum
+localArg1 = arg1
+    localArg1 = EnumThree
 End Sub"
 ;
             var quickFixResult = ApplyLocalVariableQuickFixToCodeFragment(inputCode);

@@ -12,6 +12,7 @@ using Antlr4.Runtime;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.PostProcessing;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
@@ -21,6 +22,7 @@ namespace Rubberduck.Inspections.QuickFixes
         private readonly IAssignedByValParameterQuickFixDialogFactory _dialogFactory;
         private readonly RubberduckParserState _parserState;
         private readonly IEnumerable<string> _forbiddenNames;
+        private readonly VariableRequiresSetAssignmentEvaluator _setRequirementEvaluator;
 
         public AssignedByValParameterMakeLocalCopyQuickFix(Declaration target, QualifiedSelection selection, RubberduckParserState parserState, IAssignedByValParameterQuickFixDialogFactory dialogFactory)
             : base(target.Context, selection, InspectionsUI.AssignedByValParameterMakeLocalCopyQuickFix)
@@ -29,6 +31,7 @@ namespace Rubberduck.Inspections.QuickFixes
             _dialogFactory = dialogFactory;
             _parserState = parserState;
             _forbiddenNames = parserState.DeclarationFinder.GetDeclarationsWithIdentifiersToAvoid(target).Select(n => n.IdentifierName);
+            _setRequirementEvaluator = new VariableRequiresSetAssignmentEvaluator(_parserState);
         }
 
         public override bool CanFixInModule => false;
@@ -97,42 +100,25 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
-
         private void InsertLocalVariableDeclarationAndAssignment(IModuleRewriter rewriter, string localIdentifier)
         {
             var content = Tokens.Dim + " " + localIdentifier + " " + Tokens.As + " " + _target.AsTypeName + Environment.NewLine;
-            if (IsBaseTypeContext(_target))
+            string assignmentFormat = "{0} = {1}";
+            if (RequiresSetAssignment(_target))
             {
-                content = content + localIdentifier + " = " + _target.IdentifierName;
-            }
-            else 
-            {
-                //All we can know is that it is not a Base type.  Let VBA determine
-                //the right way to assign the parameter.  The user can simplify it later.
-                string insertIsObjectCheck =
-@"If(IsObject({1})) Then
-    Set {0} = {1}
-Else
-    {0} = {1}
-End If";
-                content = content 
-                    + string.Format(insertIsObjectCheck, localIdentifier, _target.IdentifierName);
+                assignmentFormat = "Set {0} = {1}";
             }
 
+            content = content + string.Format(assignmentFormat, localIdentifier, _target.IdentifierName);
             rewriter.InsertBefore(((ParserRuleContext)_target.Context.Parent).Stop.TokenIndex + 1, "\r\n" + content);
         }
 
-        private bool IsBaseTypeContext(Declaration target)
+        private bool RequiresSetAssignment(Declaration declaration)
         {
-            var argContext = target.Context as VBAParser.ArgContext;
-            var asTypeClause = argContext.asTypeClause();
-            if (null == asTypeClause)
-            {
-                return false;
-            }
-            var typeCtxt = asTypeClause.type().baseType();
+            var requiresAssignmentUsingSet =
+                declaration.References.Where(refItem => _setRequirementEvaluator.RequiresSetAssignment(refItem)).Any();
 
-            return (typeCtxt is VBAParser.BaseTypeContext);
+            return requiresAssignmentUsingSet;
         }
     }
 }
