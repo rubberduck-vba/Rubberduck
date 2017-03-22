@@ -54,6 +54,11 @@ namespace Rubberduck.UnitTesting
         public IFake MsgBox => RetrieveOrCreateFunction<IFake>(typeof(MsgBox));
         public IFake InputBox => RetrieveOrCreateFunction<IFake>(typeof(InputBox));
         public IStub Beep => RetrieveOrCreateFunction<IStub>(typeof(Beep));
+        public IFake Environ => RetrieveOrCreateFunction<IFake>(typeof(Environ));
+        public IFake Timer => RetrieveOrCreateFunction<IFake>(typeof(Timer));
+        public IFake DoEvents => RetrieveOrCreateFunction<IFake>(typeof(DoEvents));
+        public IFake Shell => RetrieveOrCreateFunction<IFake>(typeof(Shell));
+        public IStub SendKeys => RetrieveOrCreateFunction<IStub>(typeof(SendKeys));
 
         #endregion
     }

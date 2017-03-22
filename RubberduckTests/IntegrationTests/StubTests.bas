@@ -1,5 +1,5 @@
 Attribute VB_Name = "StubTests"
-Option Explicit
+Option Explicit On
 
 Option OnPrivate Module
 
@@ -32,6 +32,21 @@ Public Sub BeepStubWorksWithPassthrough()
     With Fakes.Beep
         .PassThrough = True
         Beep
+        .Verify.Once
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub SendKeysStubWorks()
+    On Error GoTo TestFail
+
+    With Fakes.SendKeys
+        SendKeys "{Up}"
         .Verify.Once
     End With
 

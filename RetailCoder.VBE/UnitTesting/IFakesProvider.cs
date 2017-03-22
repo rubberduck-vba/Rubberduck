@@ -14,5 +14,15 @@ namespace Rubberduck.UnitTesting
         IFake InputBox { get; }
         [DispId(3)]
         IStub Beep { get; }
+        [DispId(4)]
+        IFake Environ { get; }
+        [DispId(5)]
+        IFake Timer { get; }
+        [DispId(6)]
+        IFake DoEvents { get; }
+        [DispId(7)]
+        IFake Shell { get; }
+        [DispId(8)]
+        IStub SendKeys { get; }        
     }
 }
