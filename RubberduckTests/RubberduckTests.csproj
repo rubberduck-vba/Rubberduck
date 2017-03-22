@@ -92,6 +92,7 @@
     <Compile Include="Grammar\ParserRuleContextExtensionTests.cs" />
     <Compile Include="Inspections\ApplicationWorksheetFunctionInspectionTests.cs" />
     <Compile Include="Inspections\AssignedByValParameterMakeLocalCopyQuickFixTests.cs" />
+    <Compile Include="Inspections\AssignedByValParameterMakeLocalCopyQuickFixTests_VBABlocks.cs" />
     <Compile Include="Inspections\HostSpecificExpressionInspectionTests.cs" />
     <Compile Include="Inspections\HungarianNotationInspectionTests.cs" />
     <Compile Include="Inspections\IgnoreOnceQuickFixTests.cs" />
