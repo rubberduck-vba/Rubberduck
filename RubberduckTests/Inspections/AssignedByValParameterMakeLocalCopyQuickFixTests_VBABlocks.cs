@@ -159,12 +159,13 @@ End Function
             return splitToken;
         }
 
+        //Replicates issue #2873 : AssignedByValParameter quick fix needs to use `Set` for reference types.
         public static string LocalVariableAssignment_UsesSet_Input()
         {
             return
 @"
-Public Sub Foo(FirstArg As Long, ByVal arg1 As Range)
-    arg1 = Range(""A1: C4"")
+Public Sub Foo(ByVal target As Range)
+    Set target = Selection
 End Sub"
 ;
 
@@ -174,10 +175,10 @@ End Sub"
         {
             return
 @"
-Public Sub Foo(FirstArg As Long, ByVal arg1 As Range)
-Dim localArg1 As Range
-Set localArg1 = arg1
-    localArg1 = Range(""A1: C4"")
+Public Sub Foo(ByVal target As Range)
+Dim localTarget As Range
+Set localTarget = target
+    Set localTarget = Selection
 End Sub"
 ;
 
