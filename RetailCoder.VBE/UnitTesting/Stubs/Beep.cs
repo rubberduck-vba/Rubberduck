@@ -7,9 +7,9 @@ namespace Rubberduck.UnitTesting
     {
         private static readonly IntPtr ProcessAddress = EasyHook.LocalHook.GetProcAddress(TargetLibrary, "rtcBeep");
 
-        public Beep() : base (ProcessAddress)
+        public Beep() 
         {
-            InjectDelegate(new BeepDelegate(BeepCallback));
+            InjectDelegate(new BeepDelegate(BeepCallback), ProcessAddress);
         }
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall, SetLastError = true)]

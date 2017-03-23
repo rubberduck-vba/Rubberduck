@@ -8,9 +8,9 @@ namespace Rubberduck.UnitTesting
     {
         private static readonly IntPtr ProcessAddress = EasyHook.LocalHook.GetProcAddress(TargetLibrary, "rtcInputBox");
 
-        public InputBox() : base (ProcessAddress)
+        public InputBox()
         {
-            InjectDelegate(new InputBoxDelegate(InputBoxCallback));
+            InjectDelegate(new InputBoxDelegate(InputBoxCallback), ProcessAddress);
         }
 
         public override bool PassThrough

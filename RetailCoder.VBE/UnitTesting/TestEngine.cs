@@ -89,12 +89,12 @@ namespace Rubberduck.UnitTesting
                     var stopwatch = new Stopwatch();
                     stopwatch.Start();
 
-                    Run(testInitialize);
-
                     try
                     {
                         fakes.StartTest();
+                        Run(testInitialize);                        
                         test.Run();
+                        Run(testCleanup);
                     }
                     catch (COMException ex)
                     {
@@ -105,8 +105,6 @@ namespace Rubberduck.UnitTesting
                     {
                         fakes.StopTest();
                     }
-
-                    Run(testCleanup);
 
                     stopwatch.Stop();
                     test.Result.SetDuration(stopwatch.ElapsedMilliseconds);
