@@ -59,6 +59,13 @@ namespace Rubberduck.UnitTesting
         public IFake DoEvents => RetrieveOrCreateFunction<IFake>(typeof(DoEvents));
         public IFake Shell => RetrieveOrCreateFunction<IFake>(typeof(Shell));
         public IStub SendKeys => RetrieveOrCreateFunction<IStub>(typeof(SendKeys));
+        public IStub Kill => RetrieveOrCreateFunction<IStub>(typeof(Kill));
+        public IStub MkDir => RetrieveOrCreateFunction<IStub>(typeof(MkDir));
+        public IStub RmDir => RetrieveOrCreateFunction<IStub>(typeof(RmDir));
+        public IStub ChDir => RetrieveOrCreateFunction<IStub>(typeof(ChDir));
+        public IStub ChDrive => RetrieveOrCreateFunction<IStub>(typeof(ChDrive));
+        //public IFake CurDir => RetrieveOrCreateFunction<IFake>(typeof(CurDir));
+
 
         #endregion
     }

@@ -143,4 +143,35 @@ TestFail:
     Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
 End Sub
 
+''@TestMethod
+'Public Sub CurDirFakeNoArgsWorks()
+'    On Error GoTo TestFail
 
+'    With Fakes.CurDir
+'        .Returns "C:\Foo"
+'        Debug.Print CurDir
+'        .Verify.Once
+'    End With
+
+'TestExit:
+'    Exit Sub
+'TestFail:
+'    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+'End Sub
+
+''@TestMethod
+'Public Sub CurDirFakeWorks()
+'    On Error GoTo TestFail
+
+'    With Fakes.CurDir
+'        .Returns "C:\Foo"
+'        Debug.Print CurDir("C")
+'        .Verify.Once
+'        .Verify.Parameter "Drive", "C"
+'    End With
+
+'TestExit:
+'    Exit Sub
+'TestFail:
+'    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+'End Sub

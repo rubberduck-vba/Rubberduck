@@ -499,6 +499,7 @@
     </Compile>
     <Compile Include="UI\Refactorings\ReorderParameters\ReorderParametersViewModel.cs" />
     <Compile Include="UI\SelectionChangeService.cs" />
+    <Compile Include="UnitTesting\Fakes\CurDir.cs" />
     <Compile Include="UnitTesting\Fakes\DoEvents.cs" />
     <Compile Include="UnitTesting\Fakes\Environ.cs" />
     <Compile Include="UnitTesting\FakeBase.cs" />
@@ -512,6 +513,11 @@
     <Compile Include="UnitTesting\Fakes\MsgBox.cs" />
     <Compile Include="UnitTesting\ReturnTypeConverter.cs" />
     <Compile Include="UnitTesting\Fakes\Timer.cs" />
+    <Compile Include="UnitTesting\Stubs\ChDir.cs" />
+    <Compile Include="UnitTesting\Stubs\ChDrive.cs" />
+    <Compile Include="UnitTesting\Stubs\Kill.cs" />
+    <Compile Include="UnitTesting\Stubs\MkDir.cs" />
+    <Compile Include="UnitTesting\Stubs\RmDir.cs" />
     <Compile Include="UnitTesting\Stubs\SendKeys.cs" />
     <Compile Include="UnitTesting\Verifier.cs" />
     <Compile Include="UnitTesting\PermissiveObjectComparer.cs" />

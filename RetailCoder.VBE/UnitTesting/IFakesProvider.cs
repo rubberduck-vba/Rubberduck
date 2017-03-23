@@ -23,6 +23,18 @@ namespace Rubberduck.UnitTesting
         [DispId(7)]
         IFake Shell { get; }
         [DispId(8)]
-        IStub SendKeys { get; }        
+        IStub SendKeys { get; }
+        [DispId(9)]
+        IStub Kill { get; }
+        [DispId(10)]
+        IStub MkDir { get; }
+        [DispId(11)]
+        IStub RmDir { get; }
+        [DispId(12)]
+        IStub ChDir { get; }
+        [DispId(13)]
+        IStub ChDrive { get; }
+        //[DispId(17)]
+        //IFake CurDir { get; }
     }
 }
