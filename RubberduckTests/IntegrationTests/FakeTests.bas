@@ -47,7 +47,131 @@ TestFail:
     Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
 End Sub
 
+'@TestMethod
+Public Sub TimerFakeWorks()
+    On Error GoTo TestFail
 
+    With Fakes.Timer
+        .Returns 1234
+        Debug.Print Timer
+        .Verify.Once
+    End With
 
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
 
+'@TestMethod
+Public Sub TimerFakePassThroughWorks()
+    On Error GoTo TestFail
 
+    With Fakes.Timer
+        .PassThrough = True
+        Debug.Print Timer
+        .Verify.Once
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub DoEventsFakeWorks()
+    On Error GoTo TestFail
+
+    With Fakes.DoEvents
+        DoEvents
+        .Verify.Once
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub DoEventsFakePassThroughWorks()
+    On Error GoTo TestFail
+
+    With Fakes.DoEvents
+        .PassThrough = True
+        DoEvents
+        .Verify.Once
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub ShellFakeWorks()
+    On Error GoTo TestFail
+
+    With Fakes.Shell
+        .Returns 666.666
+        Shell "C:\Windows\notepad.exe"
+        .Verify.Once
+        .Verify.Parameter "PathName", "C:\Windows\notepad.exe"
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub ShellFakePassThroughWorks()
+    On Error GoTo TestFail
+
+    With Fakes.Shell
+        .PassThrough = True
+        Shell "C:\Windows\notepad.exe"
+        .Verify.Once
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+''@TestMethod
+'Public Sub CurDirFakeNoArgsWorks()
+'    On Error GoTo TestFail
+
+'    With Fakes.CurDir
+'        .Returns "C:\Foo"
+'        Debug.Print CurDir
+'        .Verify.Once
+'    End With
+
+'TestExit:
+'    Exit Sub
+'TestFail:
+'    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+'End Sub
+
+''@TestMethod
+'Public Sub CurDirFakeWorks()
+'    On Error GoTo TestFail
+
+'    With Fakes.CurDir
+'        .Returns "C:\Foo"
+'        Debug.Print CurDir("C")
+'        .Verify.Once
+'        .Verify.Parameter "Drive", "C"
+'    End With
+
+'TestExit:
+'    Exit Sub
+'TestFail:
+'    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+'End Sub

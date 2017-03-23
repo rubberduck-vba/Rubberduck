@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using EasyHook;
 using Rubberduck.Parsing.ComReflection;
 
 namespace Rubberduck.UnitTesting
@@ -6,20 +8,15 @@ namespace Rubberduck.UnitTesting
     internal class StubBase : IStub, IDisposable
     {
         internal const string TargetLibrary = "vbe7.dll";
-        private readonly IntPtr _procAddress;
-        private EasyHook.LocalHook _hook;
+        private readonly List<LocalHook> _hooks = new List<LocalHook>();
 
         #region Internal
 
-        internal StubBase(IntPtr procAddress)
+        protected void InjectDelegate(Delegate callbackDelegate, IntPtr procAddress)
         {
-            _procAddress = procAddress;
-        }
-
-        protected void InjectDelegate(Delegate callbackDelegate)
-        {
-            _hook = EasyHook.LocalHook.Create(_procAddress, callbackDelegate, null);
-            _hook.ThreadACL.SetInclusiveACL(new[] { 0 });
+            var hook = LocalHook.Create(procAddress, callbackDelegate, null);
+            hook.ThreadACL.SetInclusiveACL(new[] { 0 });
+            _hooks.Add(hook);
         }
 
         protected Verifier Verifier { get; } = new Verifier();
@@ -57,7 +54,10 @@ namespace Rubberduck.UnitTesting
 
         public virtual void Dispose()
         {
-            _hook.Dispose();
+            foreach (var hook in _hooks)
+            {
+                hook.Dispose();
+            }
         }
 
         #endregion
