@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace Rubberduck.UnitTesting
@@ -7,8 +6,6 @@ namespace Rubberduck.UnitTesting
     internal abstract class FakeBase : StubBase, IFake
     {
         #region Internal
-
-        internal FakeBase(IntPtr procAddress) : base(procAddress) { }
 
         protected struct ReturnValueInfo
         {
@@ -78,7 +75,7 @@ namespace Rubberduck.UnitTesting
         #region IFake
 
         private static readonly List<ReturnValueInfo> ReturnValues = new List<ReturnValueInfo>();
-        public virtual void Returns(object value, int invocation = FakesProvider.rdAllInvocations)
+        public virtual void Returns(object value, int invocation = FakesProvider.AllInvocations)
         {
             ReturnValues.Add(new ReturnValueInfo(invocation, string.Empty, string.Empty, value));
         }
