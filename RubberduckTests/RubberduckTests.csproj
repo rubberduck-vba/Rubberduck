@@ -98,6 +98,7 @@
     <Compile Include="Inspections\IgnoreOnceQuickFixTests.cs" />
     <Compile Include="Inspections\ImplicitActiveWorkbookReferenceInspectionTests.cs" />
     <Compile Include="Inspections\MemberNotOnInterfaceInspectionTests.cs" />
+    <Compile Include="Inspections\ObjectVariableNotSetInspectionTests_VBABlocks.cs" />
     <Compile Include="Inspections\OptionBaseZeroInspectionTests.cs" />
     <Compile Include="Inspections\PassParameterByReferenceQuickFixTests.cs" />
     <Compile Include="Inspections\UndeclaredVariableInspectionTests.cs" />
@@ -129,7 +130,7 @@
     <Compile Include="Inspections\GeneralInspectionTests.cs" />
     <Compile Include="Inspections\ImplicitActiveSheetReferenceInspectionTests.cs" />
     <Compile Include="Inspections\MultipleFolderAnnotationsInspectionTests.cs" />
-    <Compile Include="Inspections\ObjectVariableNotSetInpsectionTests.cs" />
+    <Compile Include="Inspections\ObjectVariableNotSetInspectionTests.cs" />
     <Compile Include="Inspections\MalformedAnnotationInspectionTests.cs" />
     <Compile Include="Inspections\SelfAssignedDeclarationInspectionTests.cs" />
     <Compile Include="Inspections\UntypedFunctionUsageInspectionTests.cs" />

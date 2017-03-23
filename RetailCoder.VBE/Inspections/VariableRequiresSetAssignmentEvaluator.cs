@@ -1,110 +1,92 @@
 ﻿using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Rubberduck.Inspections
 {
-    class VariableRequiresSetAssignmentEvaluator
+    public static class VariableRequiresSetAssignmentEvaluator
     {
-        private readonly RubberduckParserState _parserState;
-        public VariableRequiresSetAssignmentEvaluator(RubberduckParserState parserState)
+        public static IEnumerable<Declaration> GetDeclarationsPotentiallyRequiringSetAssignment(IEnumerable<Declaration> declarations)
         {
-            _parserState = parserState;
+            return declarations.Where(item => MayRequireAssignmentUsingSet(item));
         }
 
-        public IEnumerable<Declaration> GetDeclarationsPotentiallyRequiringSetAssignment()
+        public static bool RequiresSetAssignment(IdentifierReference reference, IEnumerable<Declaration> declarations)
         {
-            var interestingDeclarations = _parserState.AllUserDeclarations.Where(item =>
-                    IsVariableOrParameter(item)
-                    && !item.IsSelfAssigned
-                    && TypeIsAnObjectOrVariant(item));
+            var mayRequireAssignmentUsingSet = MayRequireAssignmentUsingSet(reference.Declaration);
 
-            var interestingMembers = _parserState.AllUserDeclarations.Where(item =>
-                    IsMemberWithReturnType(item)
-                    && item.IsTypeSpecified
-                    && TypeIsAnObjectOrVariant(item));
+            if(!mayRequireAssignmentUsingSet) { return false; }
 
-            var allInterestingDeclarations = interestingDeclarations
-                    .Union(HasReturnAssignment(interestingMembers));
-
-            return allInterestingDeclarations;
-        }
-
-        public bool RequiresSetAssignment(IdentifierReference reference)
-        {
-            var declaration = reference.Declaration;
-            var MayRequireAssignmentUsingSet =
-                 (IsVariableOrParameter(declaration) || IsMemberWithReturnType(declaration) )
-                 && !declaration.IsSelfAssigned
-                 && TypeIsAnObjectOrVariant(declaration);
-
-            if(!MayRequireAssignmentUsingSet) { return false; }
-
-            var allInterestingDeclarations = GetDeclarationsPotentiallyRequiringSetAssignment();
+            var allInterestingDeclarations = GetDeclarationsPotentiallyRequiringSetAssignment(declarations);
 
             return ObjectOrVariantRequiresSetAssignment(reference, allInterestingDeclarations);
         }
 
-        private bool IsMemberWithReturnType(Declaration item)
+        private static bool MayRequireAssignmentUsingSet(Declaration declaration)
+        {
+            //The SymbolList includes Variant - which may require 'Set'
+            if(SymbolList.ValueTypes.Contains(declaration.AsTypeName))
+            {
+                return declaration.AsTypeName == Tokens.Variant;
+            }
+
+            return 
+                TypeIsLikelyAnObject(declaration)
+                 && ((IsVariableOrParameter(declaration)
+                        && !declaration.IsSelfAssigned)
+                || (IsMemberWithReturnType(declaration)
+                        && declaration.IsTypeSpecified));
+        }
+
+        private static bool IsMemberWithReturnType(Declaration item)
         {
             return (item.DeclarationType == DeclarationType.Function
                 || item.DeclarationType == DeclarationType.PropertyGet);
         }
 
-        private IEnumerable<Declaration> HasReturnAssignment(IEnumerable<Declaration> interestingMembers)
-        {
-            return interestingMembers.SelectMany(member =>
-                      member.References.Where(memberRef => memberRef.ParentScoping.Equals(member)
-                           && memberRef.IsAssignment)).Select(reference => reference.Declaration);
-        }
-
-        private bool IsVariableOrParameter(Declaration item)
+        private static bool IsVariableOrParameter(Declaration item)
         {
             return item.DeclarationType == DeclarationType.Variable
                     || item.DeclarationType == DeclarationType.Parameter;
         }
 
-        private bool TypeIsAnObjectOrVariant(Declaration item)
+        private static bool TypeIsLikelyAnObject(Declaration item)
         {
-            return !item.IsArray
-                    && !ValueOnlyTypes().Contains(item.AsTypeName)
-                    && (item.AsTypeDeclaration == null
-                        || TypeRequiresSetAssignment(item));
+            var result = !item.IsArray
+                         && TypeRequiresSetAssignment(item);
+            return result;
         }
 
-        private IEnumerable<string> ValueOnlyTypes()
+        private static bool TypeRequiresSetAssignment(Declaration item)
         {
-            var nonSetTypes = SymbolList.ValueTypes.ToList();
-            nonSetTypes.Remove(Tokens.Variant);
-            return nonSetTypes;
+            if(item.AsTypeDeclaration != null)
+            {
+                var result = !(ClassModuleDeclaration.HasDefaultMember(item.AsTypeDeclaration)
+                    || item.AsTypeDeclaration.DeclarationType == DeclarationType.Enumeration)
+                    || item.AsTypeDeclaration.DeclarationType == DeclarationType.UserDefinedType;
+                return result;
+            }
+            return true;    //unit tests: AsTypeDeclaration is often null
         }
 
-        private bool TypeRequiresSetAssignment(Declaration item)
+        private static bool ObjectOrVariantRequiresSetAssignment(IdentifierReference objectOrVariantRef, IEnumerable<Declaration> variantAndObjectDeclarations)
         {
-            return (!ClassModuleDeclaration.HasDefaultMember(item.AsTypeDeclaration))
-                && (item.AsTypeDeclaration.DeclarationType != DeclarationType.Enumeration
-                && item.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType
-                    && item.AsTypeDeclaration != null);
-        }
-
-        private bool ObjectOrVariantRequiresSetAssignment(IdentifierReference variantOrObjectRef, IEnumerable<Declaration> variantAndObjectDeclarations)
-        {
-            //Not an assignment...not interested
-            if (!variantOrObjectRef.IsAssignment)
+            //Not an assignment...nothing to evaluate
+            if (!objectOrVariantRef.IsAssignment)
             {
                 return false;
             }
 
-            //Already assigned using 'Set'
-            if (IsSetAssignment(variantOrObjectRef)) { return true; };
+            if (IsAlreadyAssignedUsingSet(objectOrVariantRef) 
+                    || objectOrVariantRef.Declaration.AsTypeName != Tokens.Variant)
+            {
+                return true;
+            }
 
-            if (variantOrObjectRef.Declaration.AsTypeName != Tokens.Variant) { return true; }
-            
             //Variants can be assigned with or without 'Set' depending...
-            var letStmtContext = ParserRuleContextHelper.GetParent<VBAParser.LetStmtContext>(variantOrObjectRef.Context);
+            var letStmtContext = ParserRuleContextHelper.GetParent<VBAParser.LetStmtContext>(objectOrVariantRef.Context);
 
             //definitely needs to use "Set".  e.g., 'Variant myVar = new Collection'
             if (RHSUsesNew(letStmtContext)) { return true; }
@@ -116,20 +98,19 @@ namespace Rubberduck.Inspections
                    .Where(dec => dec.IdentifierName == rhsIdentifier && dec.AsTypeName != Tokens.Variant).Any();
         }
 
-
-        private bool IsLetAssignment(IdentifierReference reference)
+        private static bool IsLetAssignment(IdentifierReference reference)
         {
             var letStmtContext = ParserRuleContextHelper.GetParent<VBAParser.LetStmtContext>(reference.Context);
             return (reference.IsAssignment && letStmtContext != null);
         }
 
-        private bool IsSetAssignment(IdentifierReference reference)
+        private static bool IsAlreadyAssignedUsingSet(IdentifierReference reference)
         {
             var setStmtContext = ParserRuleContextHelper.GetParent<VBAParser.SetStmtContext>(reference.Context);
             return (reference.IsAssignment && setStmtContext != null && setStmtContext.SET() != null);
         }
 
-        private string GetRHSIdentifier(VBAParser.LetStmtContext letStmtContext)
+        private static string GetRHSIdentifier(VBAParser.LetStmtContext letStmtContext)
         {
             for (var idx = 0; idx < letStmtContext.ChildCount; idx++)
             {
@@ -143,7 +124,7 @@ namespace Rubberduck.Inspections
             return string.Empty;
         }
 
-        private bool RHSUsesNew(VBAParser.LetStmtContext letStmtContext)
+        private static bool RHSUsesNew(VBAParser.LetStmtContext letStmtContext)
         {
             for (var idx = 0; idx < letStmtContext.ChildCount; idx++)
             {

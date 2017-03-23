@@ -12,26 +12,23 @@ namespace Rubberduck.Inspections
 {
     public sealed class ObjectVariableNotSetInspection : InspectionBase
     {
-        private readonly VariableRequiresSetAssignmentEvaluator _setRequirementEvaluator;
 
         public ObjectVariableNotSetInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Error)
-        {
-            _setRequirementEvaluator = new VariableRequiresSetAssignmentEvaluator(state);
-        }
+            : base(state, CodeInspectionSeverity.Error) {  }
 
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
             var allInterestingDeclarations =
-                _setRequirementEvaluator.GetDeclarationsPotentiallyRequiringSetAssignment();
+                VariableRequiresSetAssignmentEvaluator.GetDeclarationsPotentiallyRequiringSetAssignment(State.AllUserDeclarations);
 
             var candidateReferencesRequiringSetAssignment = 
-                allInterestingDeclarations.SelectMany(dec => dec.References);
+                allInterestingDeclarations.SelectMany(dec => dec.References)
+                    .Where(dec =>!IsIgnoringInspectionResultFor(dec, AnnotationName));
 
             var referencesRequiringSetAssignment = candidateReferencesRequiringSetAssignment                  
-                .Where(reference => _setRequirementEvaluator.RequiresSetAssignment(reference));
+                .Where(reference => VariableRequiresSetAssignmentEvaluator.RequiresSetAssignment(reference, State.AllUserDeclarations));
 
             var objectVariableNotSetReferences = referencesRequiringSetAssignment.Where(reference => FlagIfObjectVariableNotSet(reference));
 
@@ -41,7 +38,7 @@ namespace Rubberduck.Inspections
         private bool FlagIfObjectVariableNotSet(IdentifierReference reference)
         {
             var letStmtContext = ParserRuleContextHelper.GetParent<VBAParser.LetStmtContext>(reference.Context);
-            return (reference.IsAssignment && letStmtContext != null && letStmtContext.LET() == null);
+            return (reference.IsAssignment && letStmtContext != null);
         }
     }
 }

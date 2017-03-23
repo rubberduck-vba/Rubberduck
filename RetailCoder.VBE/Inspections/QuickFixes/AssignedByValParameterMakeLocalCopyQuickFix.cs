@@ -22,7 +22,6 @@ namespace Rubberduck.Inspections.QuickFixes
         private readonly IAssignedByValParameterQuickFixDialogFactory _dialogFactory;
         private readonly RubberduckParserState _parserState;
         private readonly IEnumerable<string> _forbiddenNames;
-        private readonly VariableRequiresSetAssignmentEvaluator _setRequirementEvaluator;
 
         public AssignedByValParameterMakeLocalCopyQuickFix(Declaration target, QualifiedSelection selection, RubberduckParserState parserState, IAssignedByValParameterQuickFixDialogFactory dialogFactory)
             : base(target.Context, selection, InspectionsUI.AssignedByValParameterMakeLocalCopyQuickFix)
@@ -31,7 +30,6 @@ namespace Rubberduck.Inspections.QuickFixes
             _dialogFactory = dialogFactory;
             _parserState = parserState;
             _forbiddenNames = parserState.DeclarationFinder.GetDeclarationsWithIdentifiersToAvoid(target).Select(n => n.IdentifierName);
-            _setRequirementEvaluator = new VariableRequiresSetAssignmentEvaluator(_parserState);
         }
 
         public override bool CanFixInModule => false;
@@ -102,23 +100,14 @@ namespace Rubberduck.Inspections.QuickFixes
 
         private void InsertLocalVariableDeclarationAndAssignment(IModuleRewriter rewriter, string localIdentifier)
         {
-            var content = Tokens.Dim + " " + localIdentifier + " " + Tokens.As + " " + _target.AsTypeName + Environment.NewLine;
-            string assignmentFormat = "{0} = {1}";
-            if (RequiresSetAssignment(_target))
-            {
-                assignmentFormat = "Set {0} = {1}";
-            }
+            var declaration = $"{Environment.NewLine}{Tokens.Dim} {localIdentifier} {Tokens.As} {_target.AsTypeName}{Environment.NewLine}";
 
-            content = content + string.Format(assignmentFormat, localIdentifier, _target.IdentifierName);
-            rewriter.InsertBefore(((ParserRuleContext)_target.Context.Parent).Stop.TokenIndex + 1, "\r\n" + content);
-        }
-
-        private bool RequiresSetAssignment(Declaration declaration)
-        {
             var requiresAssignmentUsingSet =
-                declaration.References.Where(refItem => _setRequirementEvaluator.RequiresSetAssignment(refItem)).Any();
+                _target.References.Where(refItem => VariableRequiresSetAssignmentEvaluator.RequiresSetAssignment(refItem, _parserState.AllUserDeclarations)).Any();
 
-            return requiresAssignmentUsingSet;
+            var assignment = requiresAssignmentUsingSet ? $"Set {localIdentifier} = {_target.IdentifierName}" : $"{localIdentifier} = {_target.IdentifierName}";
+
+            rewriter.InsertBefore(((ParserRuleContext)_target.Context.Parent).Stop.TokenIndex + 1, declaration + assignment);
         }
     }
 }
