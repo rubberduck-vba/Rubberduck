@@ -85,6 +85,11 @@ End Sub"
 ;
         }
 
+        public static string[] LocalVariable_NameInUseOtherSub_SplitToken()
+        {
+            string[] splitToken = { "'VerifyNoChangeBelowThisLine" };
+            return splitToken;
+        }
         public static string LocalVariableAssignment_NameInUseOtherSub_Input()
         {
             return
@@ -109,13 +114,9 @@ End Sub"
 
         public static string LocalVariableAssignment_NameInUseOtherSub_Expected()
         {
-            return
-@"
-Public Sub Bar(ByVal arg2 As String)
-    Dim arg1 As String
-    Let arg1 = ""Test2""
-End Sub"
-;
+            var inputCode = LocalVariableAssignment_NameInUseOtherSub_Input();
+            string[] splitToken = LocalVariable_NameInUseOtherSub_SplitToken();
+            return inputCode.Split(splitToken, System.StringSplitOptions.None)[1];
         }
 
         public static string LocalVariableAssignment_NameInUseOtherProperty_Input()

@@ -58,12 +58,13 @@ namespace RubberduckTests.Inspections
         {
             //Make sure the modified code stays within the specific method under repair
             var inputCode = VbaCodeBlocks.LocalVariableAssignment_NameInUseOtherSub_Input();
-            var expectedFragment = VbaCodeBlocks.LocalVariableAssignment_NameInUseOtherSub_Expected();
+            var expectedCode = VbaCodeBlocks.LocalVariableAssignment_NameInUseOtherSub_Expected();
 
-            string[] splitToken = { "'VerifyNoChangeBelowThisLine" };
             var quickFixResult = ApplyLocalVariableQuickFixToCodeFragment(inputCode);
-            var evaluatedFragment = quickFixResult.Split(splitToken, System.StringSplitOptions.None)[1];
-            Assert.AreEqual(expectedFragment, evaluatedFragment);
+            string[] splitToken = VbaCodeBlocks.LocalVariable_NameInUseOtherSub_SplitToken();
+            var evaluatedResult = quickFixResult.Split(splitToken, System.StringSplitOptions.None)[1];
+
+            Assert.AreEqual(expectedCode, evaluatedResult);
         }
 
         [TestMethod]
