@@ -57,7 +57,7 @@ namespace Rubberduck.Parsing.PostProcessing.RewriterInfo
             else
             {
                 var removalStart = -1;
-                for (var i = context.children.IndexOf(target.Context); i < context.children.Count; i++)
+                for (var i = context.children.IndexOf(target.Context); i >= 0; i--)
                 {
                     var node = context.children[i];
                     if (node.GetText() == ",")

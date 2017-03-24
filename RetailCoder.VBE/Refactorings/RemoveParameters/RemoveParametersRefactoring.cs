@@ -2,13 +2,17 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Antlr4.Runtime;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.PostProcessing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Antlr4.Runtime.Tree;
+using Rubberduck.Parsing.PostProcessing.RewriterInfo;
 
 namespace Rubberduck.Refactorings.RemoveParameters
 {
@@ -17,6 +21,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
         private readonly IVBE _vbe;
         private readonly IRefactoringPresenterFactory<IRemoveParametersPresenter> _factory;
         private RemoveParametersModel _model;
+        private readonly HashSet<IModuleRewriter> _rewriters = new HashSet<IModuleRewriter>();
 
         public RemoveParametersRefactoring(IVBE vbe, IRefactoringPresenterFactory<IRemoveParametersPresenter> factory)
         {
@@ -103,6 +108,11 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
             AdjustReferences(_model.TargetDeclaration.References, _model.TargetDeclaration);
             AdjustSignatures();
+
+            foreach (var rewriter in _rewriters)
+            {
+                rewriter.Rewrite();
+            }
         }
 
         private void AdjustReferences(IEnumerable<IdentifierReference> references, Declaration method)
@@ -132,87 +142,73 @@ namespace Rubberduck.Refactorings.RemoveParameters
                     continue;
                 }
 
-                RemoveCallParameter(argumentList, module);
+                RemoveCallArguments(argumentList, module);
             }
         }
 
-        private void RemoveCallParameter(VBAParser.ArgumentListContext argList, ICodeModule module)
+        private void RemoveCallArguments(VBAParser.ArgumentListContext argList, ICodeModule module)
         {
-            var rewriter = _model.State.GetRewriter(module.Parent);
-
-            var args = argList.children;
+            var args = argList.children.OfType<VBAParser.ArgumentContext>().ToList();
             for (var i = 0; i < args.Count; i++)
             {
                 if (_model.Parameters[i].IsRemoved)
                 {
-                    //rewriter.Remove(parameters[i]);
+                    RemoveCallArgument(argList, args[i], module);
                 }
             }
+        }
 
-            /*var paramNames = new List<string>();
-            if (paramList.positionalOrNamedArgumentList().positionalArgumentOrMissing() != null)
+        private void RemoveCallArgument(VBAParser.ArgumentListContext argList, VBAParser.ArgumentContext arg, ICodeModule module)
+        {
+            var rewriter = _model.State.GetRewriter(module.Parent);
+            rewriter.Remove(arg);
+
+            if (argList.argument().Count == 1)
             {
-                paramNames.AddRange(paramList.positionalOrNamedArgumentList().positionalArgumentOrMissing().Select(p =>
+                return;
+            }
+
+            var isLastParam = argList.children.OfType<VBAParser.ArgumentContext>().Last() == arg;
+            if (!isLastParam)
+            {
+                for (var i = argList.children.IndexOf(arg) + 1; i < argList.children.Count; i++)
                 {
-                    if (p is VBAParser.SpecifiedPositionalArgumentContext)
+                    var node = argList.children[i];
+                    if (node.GetText() == ",")
                     {
-                        return ((VBAParser.SpecifiedPositionalArgumentContext)p).positionalArgument().GetText();
+                        rewriter.Remove(node as TerminalNodeImpl);
                     }
-
-                    return string.Empty;
-                }).ToList());
-            }
-            if (paramList.positionalOrNamedArgumentList().namedArgumentList() != null)
-            {
-                paramNames.AddRange(paramList.positionalOrNamedArgumentList().namedArgumentList().namedArgument().Select(p => p.GetText()).ToList());
-            }
-            if (paramList.positionalOrNamedArgumentList().requiredPositionalArgument() != null)
-            {
-                paramNames.Add(paramList.positionalOrNamedArgumentList().requiredPositionalArgument().GetText());
-            }
-            var lineCount = paramList.Stop.Line - paramList.Start.Line + 1; // adjust for total line count
-
-            var newContent = module.GetLines(paramList.Start.Line, lineCount);
-            newContent = newContent.Remove(paramList.Start.Column, paramList.GetText().Length);
-
-            var savedParamNames = paramNames;
-            for (var index = _model.Parameters.Count - 1; index >= 0; index--)
-            {
-                var param = _model.Parameters[index];
-                if (!param.IsRemoved)
-                {
-                    continue;
-                }
-
-                if (param.Name.Contains("ParamArray"))
-                {
-                    // handle param arrays
-                    while (savedParamNames.Count > index)
+                    else if (node is VBAParser.WhiteSpaceContext)
                     {
-                        savedParamNames.RemoveAt(index);
-                    }
-                }
-                else
-                {
-                    if (index < savedParamNames.Count && !savedParamNames[index].StripStringLiterals().Contains(":="))
-                    {
-                        savedParamNames.RemoveAt(index);
+                        rewriter.Remove(node as VBAParser.WhiteSpaceContext);
                     }
                     else
                     {
-                        var paramIndex = savedParamNames.FindIndex(s => s.StartsWith(param.Declaration.IdentifierName + ":="));
-                        if (paramIndex != -1 && paramIndex < savedParamNames.Count)
-                        {
-                            savedParamNames.RemoveAt(paramIndex);
-                        }
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                for (var i = argList.children.IndexOf(arg) - 1; i >= 0; i--)
+                {
+                    var node = argList.children[i];
+                    if (node.GetText() == ",")
+                    {
+                        rewriter.Remove(node as TerminalNodeImpl);
+                    }
+                    else if (node is VBAParser.WhiteSpaceContext)
+                    {
+                        rewriter.Remove(node as VBAParser.WhiteSpaceContext);
+                    }
+                    else
+                    {
+                        break;
                     }
                 }
             }
 
-            newContent = newContent.Insert(paramList.Start.Column, string.Join(", ", savedParamNames));
-
-            module.ReplaceLine(paramList.Start.Line, newContent.Replace(" _" + Environment.NewLine, string.Empty));
-            module.DeleteLines(paramList.Start.Line + 1, lineCount - 1);*/
+            _rewriters.Add(rewriter);
         }
 
         private void AdjustSignatures()
@@ -280,6 +276,8 @@ namespace Rubberduck.Refactorings.RemoveParameters
                     rewriter.Remove(parameters[i]);
                 }
             }
+
+            _rewriters.Add(rewriter);
         }
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
+using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.PostProcessing.RewriterInfo;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -49,6 +50,11 @@ namespace Rubberduck.Parsing.PostProcessing
         public void Remove(ParserRuleContext target)
         {
             _rewriter.Delete(target.Start.TokenIndex, target.Stop.TokenIndex);
+        }
+
+        public void Remove(TerminalNodeImpl target)
+        {
+            _rewriter.Delete(target.Symbol.TokenIndex);
         }
 
         public void Remove(IToken target)
