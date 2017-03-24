@@ -10,15 +10,26 @@ namespace Rubberduck.Inspections
     {
         public static IEnumerable<Declaration> GetDeclarationsPotentiallyRequiringSetAssignment(IEnumerable<Declaration> declarations)
         {
-            return declarations.Where(item => MayRequireAssignmentUsingSet(item));
+            //Reduce most of the declaration list with the easy ones
+            var relevantDeclarations = declarations.Where(dec => dec.AsTypeName == Tokens.Variant
+                                 || !SymbolList.ValueTypes.Contains(dec.AsTypeName)
+                                 &&(MayRequireAssignmentUsingSet(dec) || RequiresAssignmentUsingSet(dec)));
+
+            return relevantDeclarations;
         }
 
         public static bool RequiresSetAssignment(IdentifierReference reference, IEnumerable<Declaration> declarations)
         {
-            var mayRequireAssignmentUsingSet = MayRequireAssignmentUsingSet(reference.Declaration);
+            //Not an assignment...definitely does not require a 'Set' assignment
+            if (!reference.IsAssignment) { return false; }
+            
+            //We know for sure it DOES NOT use 'Set'
+            if (!MayRequireAssignmentUsingSet(reference.Declaration)) { return false; }
 
-            if(!mayRequireAssignmentUsingSet) { return false; }
+            //We know for sure that it DOES use 'Set'
+            if (RequiresAssignmentUsingSet(reference.Declaration)) { return true; }
 
+            //We need to look everything to understand the RHS - the assigned reference is probably a Variant 
             var allInterestingDeclarations = GetDeclarationsPotentiallyRequiringSetAssignment(declarations);
 
             return ObjectOrVariantRequiresSetAssignment(reference, allInterestingDeclarations);
@@ -26,18 +37,35 @@ namespace Rubberduck.Inspections
 
         private static bool MayRequireAssignmentUsingSet(Declaration declaration)
         {
-            //The SymbolList includes Variant - which may require 'Set'
-            if(SymbolList.ValueTypes.Contains(declaration.AsTypeName))
+            if (declaration.AsTypeName == Tokens.Variant) { return true; }
+
+            if (declaration.IsArray) { return false; }
+
+            if (declaration.AsTypeDeclaration != null)
             {
-                return declaration.AsTypeName == Tokens.Variant;
+                if ((ClassModuleDeclaration.HasDefaultMember(declaration.AsTypeDeclaration)
+                    || declaration.AsTypeDeclaration.DeclarationType == DeclarationType.Enumeration))
+                {
+                    return false;
+                }
             }
 
-            return 
-                TypeIsLikelyAnObject(declaration)
-                 && ((IsVariableOrParameter(declaration)
-                        && !declaration.IsSelfAssigned)
-                || (IsMemberWithReturnType(declaration)
-                        && declaration.IsTypeSpecified));
+            if (SymbolList.ValueTypes.Contains(declaration.AsTypeName))
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private static bool RequiresAssignmentUsingSet(Declaration declaration)
+        {
+            if (declaration.AsTypeDeclaration != null)
+            {
+                return declaration.AsTypeDeclaration.DeclarationType == DeclarationType.UserDefinedType
+                    && (((IsVariableOrParameter(declaration) && !declaration.IsSelfAssigned)
+                        || (IsMemberWithReturnType(declaration)  && declaration.IsTypeSpecified)));
+            }
+            return false;
         }
 
         private static bool IsMemberWithReturnType(Declaration item)
@@ -52,25 +80,6 @@ namespace Rubberduck.Inspections
                     || item.DeclarationType == DeclarationType.Parameter;
         }
 
-        private static bool TypeIsLikelyAnObject(Declaration item)
-        {
-            var result = !item.IsArray
-                         && TypeRequiresSetAssignment(item);
-            return result;
-        }
-
-        private static bool TypeRequiresSetAssignment(Declaration item)
-        {
-            if(item.AsTypeDeclaration != null)
-            {
-                var result = !(ClassModuleDeclaration.HasDefaultMember(item.AsTypeDeclaration)
-                    || item.AsTypeDeclaration.DeclarationType == DeclarationType.Enumeration)
-                    || item.AsTypeDeclaration.DeclarationType == DeclarationType.UserDefinedType;
-                return result;
-            }
-            return true;    //unit tests: AsTypeDeclaration is often null
-        }
-
         private static bool ObjectOrVariantRequiresSetAssignment(IdentifierReference objectOrVariantRef, IEnumerable<Declaration> variantAndObjectDeclarations)
         {
             //Not an assignment...nothing to evaluate
@@ -79,7 +88,7 @@ namespace Rubberduck.Inspections
                 return false;
             }
 
-            if (IsAlreadyAssignedUsingSet(objectOrVariantRef) 
+            if (IsAlreadyAssignedUsingSet(objectOrVariantRef)
                     || objectOrVariantRef.Declaration.AsTypeName != Tokens.Variant)
             {
                 return true;

@@ -100,14 +100,14 @@ namespace Rubberduck.Inspections.QuickFixes
 
         private void InsertLocalVariableDeclarationAndAssignment(IModuleRewriter rewriter, string localIdentifier)
         {
-            var declaration = $"{Environment.NewLine}{Tokens.Dim} {localIdentifier} {Tokens.As} {_target.AsTypeName}{Environment.NewLine}";
-
+            var localVariableDeclaration = $"{Environment.NewLine}{Tokens.Dim} {localIdentifier} {Tokens.As} {_target.AsTypeName}{Environment.NewLine}";
+            
             var requiresAssignmentUsingSet =
                 _target.References.Any(refItem => VariableRequiresSetAssignmentEvaluator.RequiresSetAssignment(refItem, _parserState.AllUserDeclarations));
 
-            var assignment = requiresAssignmentUsingSet ? $"Set {localIdentifier} = {_target.IdentifierName}" : $"{localIdentifier} = {_target.IdentifierName}";
+            var localVariableAssignment = requiresAssignmentUsingSet ? $"Set {localIdentifier} = {_target.IdentifierName}" : $"{localIdentifier} = {_target.IdentifierName}";
 
-            rewriter.InsertBefore(((ParserRuleContext)_target.Context.Parent).Stop.TokenIndex + 1, declaration + assignment);
+            rewriter.InsertBefore(((ParserRuleContext)_target.Context.Parent).Stop.TokenIndex + 1, localVariableDeclaration + localVariableAssignment);
         }
     }
 }
