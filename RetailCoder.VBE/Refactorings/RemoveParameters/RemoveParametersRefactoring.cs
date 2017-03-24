@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Antlr4.Runtime;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.PostProcessing;
@@ -11,8 +10,6 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Antlr4.Runtime.Tree;
-using Rubberduck.Parsing.PostProcessing.RewriterInfo;
 
 namespace Rubberduck.Refactorings.RemoveParameters
 {
@@ -148,67 +145,42 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         private void RemoveCallArguments(VBAParser.ArgumentListContext argList, ICodeModule module)
         {
-            var args = argList.children.OfType<VBAParser.ArgumentContext>().ToList();
-            for (var i = 0; i < args.Count; i++)
-            {
-                if (_model.Parameters[i].IsRemoved)
-                {
-                    RemoveCallArgument(argList, args[i], module);
-                }
-            }
-        }
-
-        private void RemoveCallArgument(VBAParser.ArgumentListContext argList, VBAParser.ArgumentContext arg, ICodeModule module)
-        {
             var rewriter = _model.State.GetRewriter(module.Parent);
-            rewriter.Remove(arg);
 
-            if (argList.argument().Count == 1)
+            var args = argList.children.OfType<VBAParser.ArgumentContext>().ToList();
+            for (var i = 0; i < _model.Parameters.Count; i++)
             {
-                return;
-            }
-
-            var isLastParam = argList.children.OfType<VBAParser.ArgumentContext>().Last() == arg;
-            if (!isLastParam)
-            {
-                for (var i = argList.children.IndexOf(arg) + 1; i < argList.children.Count; i++)
+                if (!_model.Parameters[i].IsRemoved)
                 {
-                    var node = argList.children[i];
-                    if (node.GetText() == ",")
+                    continue;
+                }
+                
+                if (_model.Parameters[i].IsParamArray)
+                {
+                    for (var j = i; j < args.Count; j++)
                     {
-                        rewriter.Remove(node as TerminalNodeImpl);
+                        rewriter.Remove(args[j]);
                     }
-                    else if (node is VBAParser.WhiteSpaceContext)
+                    break;
+                }
+
+                if (args.Count > i && args[i].positionalArgument() != null)
+                {
+                    rewriter.Remove(args[i]);
+                }
+                else
+                {
+                    var arg = args.Where(a => a.namedArgument() != null)
+                                  .SingleOrDefault(a =>
+                                        a.namedArgument().unrestrictedIdentifier().GetText() ==
+                                        _model.Parameters[i].Declaration.IdentifierName);
+
+                    if (arg != null)
                     {
-                        rewriter.Remove(node as VBAParser.WhiteSpaceContext);
-                    }
-                    else
-                    {
-                        break;
+                        rewriter.Remove(arg);
                     }
                 }
             }
-            else
-            {
-                for (var i = argList.children.IndexOf(arg) - 1; i >= 0; i--)
-                {
-                    var node = argList.children[i];
-                    if (node.GetText() == ",")
-                    {
-                        rewriter.Remove(node as TerminalNodeImpl);
-                    }
-                    else if (node is VBAParser.WhiteSpaceContext)
-                    {
-                        rewriter.Remove(node as VBAParser.WhiteSpaceContext);
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
-
-            _rewriters.Add(rewriter);
         }
 
         private void AdjustSignatures()
@@ -269,7 +241,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
             var parameters = ((IParameterizedDeclaration) target).Parameters.OrderBy(o => o.Selection).ToList();
             
-            for (var i = 0; i < parameters.Count; i++)
+            for (var i = 0; i < _model.Parameters.Count; i++)
             {
                 if (_model.Parameters[i].IsRemoved)
                 {

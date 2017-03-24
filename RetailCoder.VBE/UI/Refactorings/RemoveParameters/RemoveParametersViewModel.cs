@@ -115,7 +115,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
             signature += " Property Let " + member.IdentifierName + "(";
 
             var selectedParams = Parameters.Where(p => !p.IsRemoved).Select(s => s.Name).ToList();
-            selectedParams.Add(new Parameter(member.Parameters.Last(), -1).Name);
+            selectedParams.Add(new Parameter(member.Parameters.Last()).Name);
             return signature + string.Join(", ", selectedParams) + ")";
         }
 
@@ -125,7 +125,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
             signature += " Property Set " + member.IdentifierName + "(";
 
             var selectedParams = Parameters.Where(p => !p.IsRemoved).Select(s => s.Name).ToList();
-            selectedParams.Add(new Parameter(member.Parameters.Last(), -1).Name);
+            selectedParams.Add(new Parameter(member.Parameters.Last()).Name);
             return signature + string.Join(", ", selectedParams) + ")";
         }
 

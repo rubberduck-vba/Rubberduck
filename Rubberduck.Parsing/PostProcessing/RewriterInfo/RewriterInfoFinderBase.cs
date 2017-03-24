@@ -1,13 +1,12 @@
 using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Parsing.PostProcessing.RewriterInfo
 {
     public abstract class RewriterInfoFinderBase : IRewriterInfoFinder
     {
-        public abstract RewriterInfo GetRewriterInfo(ParserRuleContext context, Declaration target);
+        public abstract RewriterInfo GetRewriterInfo(ParserRuleContext context);
         protected static RewriterInfo GetRewriterInfoForTargetRemovedFromListStmt(IToken targetStartToken, int itemIndex, IReadOnlyList<ParserRuleContext> items)
         {
             var count = items.Count;

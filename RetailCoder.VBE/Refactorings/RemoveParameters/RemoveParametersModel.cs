@@ -41,7 +41,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
         {
             if (TargetDeclaration == null) { return; }
             
-            Parameters = GetParameters().Select((arg, i) => new Parameter(arg, i)).ToList();
+            Parameters = GetParameters().Select(arg => new Parameter(arg)).ToList();
 
             if (TargetDeclaration.DeclarationType == DeclarationType.PropertyLet ||
                 TargetDeclaration.DeclarationType == DeclarationType.PropertySet)

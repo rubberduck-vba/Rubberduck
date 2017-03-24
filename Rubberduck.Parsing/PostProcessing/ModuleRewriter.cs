@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.PostProcessing.RewriterInfo;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -28,28 +30,29 @@ namespace Rubberduck.Parsing.PostProcessing
             _module.InsertLines(1, content);
         }
 
-        private static readonly IDictionary<DeclarationType, IRewriterInfoFinder> Finders =
-            new Dictionary<DeclarationType, IRewriterInfoFinder>
+        private static readonly IDictionary<Type, IRewriterInfoFinder> Finders =
+            new Dictionary<Type, IRewriterInfoFinder>
             {
-                {DeclarationType.Variable, new VariableRewriterInfoFinder()},
-                {DeclarationType.Constant, new ConstantRewriterInfoFinder()},
-                {DeclarationType.Parameter, new ParameterRewriterInfoFinder()},
+                /*{DeclarationType.Variable, new VariableRewriterInfoFinder()},
+                {DeclarationType.Constant, new ConstantRewriterInfoFinder()},*/
+                {typeof(VBAParser.ArgContext), new ParameterRewriterInfoFinder()},
+                {typeof(VBAParser.ArgumentContext), new ArgumentRewriterInfoFinder()},
             };
 
         public void Remove(Declaration target)
         {
-            IRewriterInfoFinder finder;
-            var info = Finders.TryGetValue(target.DeclarationType, out finder) 
-                ? finder.GetRewriterInfo(target.Context, target) 
-                : new DefaultRewriterInfoFinder().GetRewriterInfo(target.Context, target);            
-
-            if (info.Equals(RewriterInfo.RewriterInfo.None)) { return; }
-            _rewriter.Delete(info.StartTokenIndex, info.StopTokenIndex);
+            Remove(target.Context);
         }
 
         public void Remove(ParserRuleContext target)
         {
-            _rewriter.Delete(target.Start.TokenIndex, target.Stop.TokenIndex);
+            IRewriterInfoFinder finder;
+            var info = Finders.TryGetValue(target.GetType(), out finder)
+                ? finder.GetRewriterInfo(target)
+                : new DefaultRewriterInfoFinder().GetRewriterInfo(target);
+
+            if (info.Equals(RewriterInfo.RewriterInfo.None)) { return; }
+            _rewriter.Delete(info.StartTokenIndex, info.StopTokenIndex);
         }
 
         public void Remove(TerminalNodeImpl target)
