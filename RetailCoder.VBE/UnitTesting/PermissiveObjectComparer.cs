@@ -27,7 +27,7 @@ namespace Rubberduck.UnitTesting
                 // ReSharper disable once CompareOfFloatsByEqualityOperator - We're cool with that.
                 return (double)x == (double)y;
             }
-            // that shouldn't actually happen, since decimal is the only numeric ValueType in it's category
+            // that shouldn't actually happen, since decimal is the only numeric ValueType in its category
             // this means we should've gotten the same types earlier in the Assert method
             if (expected is decimal && actual is decimal)
             {

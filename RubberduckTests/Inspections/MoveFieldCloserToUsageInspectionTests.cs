@@ -220,9 +220,8 @@ End Sub";
 
             const string expectedCode =
 @"Public Sub Foo()
-
     Dim bar As String
-    bar = ""test""
+bar = ""test""
 End Sub";
 
             IVBComponent component;
