@@ -56,7 +56,7 @@ namespace RubberduckTests.Inspections
             AssertInputCodeYieldsExpectedInspectionResultCount(tp.Key, tp.Value);
         }
 
-        [TestMethod]//todo
+        [TestMethod,Ignore]
         [TestCategory("Inspections")]
         public void ObjectVariableNotSet_GivenVariantVariableAssignedRange_ReturnsResult()
         {

@@ -81,7 +81,7 @@ End Sub";
 
         public static KeyValuePair<string, int> GivenVariantVariableAssignedRange_ReturnsResult_TestParams()
         {
-            var expectResultCount = 1;
+            var expectResultCount = 0;
             var input =
 @"
 Private Sub TestSub(ByRef testParam As Variant)
