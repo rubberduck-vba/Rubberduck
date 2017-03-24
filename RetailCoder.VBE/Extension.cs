@@ -29,15 +29,12 @@ namespace Rubberduck
     /// Special thanks to Carlos Quintero (MZ-Tools) for providing the general structure here.
     /// </remarks>
     [ComVisible(true)]
-    [Guid(ClassId)]
-    [ProgId(ProgId)]
+    [Guid(RubberduckGuid.ExtensionGuid)]
+    [ProgId(RubberduckProgId.ExtensionProgId)]
     [EditorBrowsable(EditorBrowsableState.Never)]
     // ReSharper disable once InconsistentNaming // note: underscore prefix hides class from COM API
     public class _Extension : IDTExtensibility2
     {
-        private const string ClassId = "8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66";
-        private const string ProgId = "Rubberduck.Extension";
-
         private IVBE _ide;
         private IAddIn _addin;
         private bool _isInitialized;
