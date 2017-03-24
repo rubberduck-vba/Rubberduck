@@ -157,9 +157,10 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 
                 if (_model.Parameters[i].IsParamArray)
                 {
-                    for (var j = i; j < args.Count; j++)
+                    var index = i == 0 ? 0 : argList.children.IndexOf(args[i - 1]) + 1;
+                    for (var j = index; j < argList.children.Count; j++)
                     {
-                        rewriter.Remove(args[j]);
+                        rewriter.Remove((dynamic)argList.children[j]);
                     }
                     break;
                 }
