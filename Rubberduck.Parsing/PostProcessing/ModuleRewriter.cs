@@ -33,8 +33,8 @@ namespace Rubberduck.Parsing.PostProcessing
         private static readonly IDictionary<Type, IRewriterInfoFinder> Finders =
             new Dictionary<Type, IRewriterInfoFinder>
             {
-                /*{DeclarationType.Variable, new VariableRewriterInfoFinder()},
-                {DeclarationType.Constant, new ConstantRewriterInfoFinder()},*/
+                {typeof(VBAParser.VariableSubStmtContext), new VariableRewriterInfoFinder()},
+                {typeof(VBAParser.ConstSubStmtContext), new ConstantRewriterInfoFinder()},
                 {typeof(VBAParser.ArgContext), new ParameterRewriterInfoFinder()},
                 {typeof(VBAParser.ArgumentContext), new ArgumentRewriterInfoFinder()},
             };
