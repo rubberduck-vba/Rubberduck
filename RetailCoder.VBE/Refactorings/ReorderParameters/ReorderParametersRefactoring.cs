@@ -134,34 +134,30 @@ namespace Rubberduck.Refactorings.ReorderParameters
             }
         }
 
-        private void RewriteCall(VBAParser.ArgumentListContext paramList, ICodeModule module)
+        private void RewriteCall(VBAParser.ArgumentListContext argList, ICodeModule module)
         {
-            /*var argValues = new List<string>();
-            if (paramList.positionalOrNamedArgumentList().positionalArgumentOrMissing() != null)
+            var argValues = new List<string>();
+            if (argList.argument() != null)
             {
-                argValues.AddRange(paramList.positionalOrNamedArgumentList().positionalArgumentOrMissing().Select(p =>
+                argValues.AddRange(argList.argument().Select(p =>
                 {
-                    if (p is VBAParser.SpecifiedPositionalArgumentContext)
+                    if (p.positionalArgument() != null)
                     {
-                        return ((VBAParser.SpecifiedPositionalArgumentContext)p).positionalArgument().GetText();
+                        return p.positionalArgument().GetText();
+                    }
+                    if (p.namedArgument() != null)
+                    {
+                        return p.namedArgument().GetText();
                     }
 
                     return string.Empty;
                 }).ToList());
             }
-            if (paramList.positionalOrNamedArgumentList().namedArgumentList() != null)
-            {
-                argValues.AddRange(paramList.positionalOrNamedArgumentList().namedArgumentList().namedArgument().Select(p => p.GetText()).ToList());
-            }
-            if (paramList.positionalOrNamedArgumentList().requiredPositionalArgument() != null)
-            {
-                argValues.Add(paramList.positionalOrNamedArgumentList().requiredPositionalArgument().GetText());
-            }
 
-            var lineCount = paramList.Stop.Line - paramList.Start.Line + 1; // adjust for total line count
+            var lineCount = argList.Stop.Line - argList.Start.Line + 1; // adjust for total line count
 
-            var newContent = module.GetLines(paramList.Start.Line, lineCount);
-            newContent = newContent.Remove(paramList.Start.Column, paramList.GetText().Length);
+            var newContent = module.GetLines(argList.Start.Line, lineCount);
+            newContent = newContent.Remove(argList.Start.Column, argList.GetText().Length);
 
             var reorderedArgValues = new List<string>();
             foreach (var param in _model.Parameters)
@@ -179,10 +175,10 @@ namespace Rubberduck.Refactorings.ReorderParameters
                 reorderedArgValues.Add(argValues[index]);
             }
 
-            newContent = newContent.Insert(paramList.Start.Column, string.Join(", ", reorderedArgValues));
+            newContent = newContent.Insert(argList.Start.Column, string.Join(", ", reorderedArgValues));
 
-            module.ReplaceLine(paramList.Start.Line, newContent.Replace(" _" + Environment.NewLine, string.Empty));
-            module.DeleteLines(paramList.Start.Line + 1, lineCount - 1);*/
+            module.ReplaceLine(argList.Start.Line, newContent.Replace(" _" + Environment.NewLine, string.Empty));
+            module.DeleteLines(argList.Start.Line + 1, lineCount - 1);
         }
 
         private void AdjustSignatures()
