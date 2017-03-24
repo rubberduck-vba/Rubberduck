@@ -103,7 +103,7 @@ namespace Rubberduck.Inspections.QuickFixes
             var declaration = $"{Environment.NewLine}{Tokens.Dim} {localIdentifier} {Tokens.As} {_target.AsTypeName}{Environment.NewLine}";
 
             var requiresAssignmentUsingSet =
-                _target.References.Where(refItem => VariableRequiresSetAssignmentEvaluator.RequiresSetAssignment(refItem, _parserState.AllUserDeclarations)).Any();
+                _target.References.Any(refItem => VariableRequiresSetAssignmentEvaluator.RequiresSetAssignment(refItem, _parserState.AllUserDeclarations));
 
             var assignment = requiresAssignmentUsingSet ? $"Set {localIdentifier} = {_target.IdentifierName}" : $"{localIdentifier} = {_target.IdentifierName}";
 
