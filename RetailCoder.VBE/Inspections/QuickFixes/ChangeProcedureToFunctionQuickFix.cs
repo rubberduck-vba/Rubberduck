@@ -103,7 +103,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
         private void UpdateCalls()
         {
-            /*var procedureName = Identifier.GetName(_subStmtQualifiedContext.Context.subroutineName().identifier());
+            var procedureName = Identifier.GetName(_subStmtQualifiedContext.Context.subroutineName().identifier());
 
             var procedure =
                 _state.AllDeclarations.SingleOrDefault(d =>
@@ -146,33 +146,21 @@ namespace Rubberduck.Inspections.QuickFixes
                     {
                         argsCallOffset = argList.GetSelection().EndColumn - reference.Context.GetSelection().EndColumn;
                         argsCall = argList.GetText();
-                        if (argList.positionalOrNamedArgumentList().positionalArgumentOrMissing() != null)
+                        if (argList.argument() != null)
                         {
                             paramNames.AddRange(
-                                argList.positionalOrNamedArgumentList().positionalArgumentOrMissing().Select(p =>
+                                argList.argument().Select(p =>
                                 {
-                                    if (p is VBAParser.SpecifiedPositionalArgumentContext)
+                                    if (p.positionalArgument() != null)
                                     {
-                                        return
-                                            ((VBAParser.SpecifiedPositionalArgumentContext)p).positionalArgument()
-                                                .GetText();
+                                        return p.positionalArgument().GetText();
+                                    }
+                                    if (p.namedArgument() != null)
+                                    {
+                                        return p.namedArgument().GetText();
                                     }
                                     return string.Empty;
                                 }).ToList());
-                        }
-                        if (argList.positionalOrNamedArgumentList().namedArgumentList() != null)
-                        {
-                            paramNames.AddRange(
-                                argList.positionalOrNamedArgumentList()
-                                    .namedArgumentList()
-                                    .namedArgument()
-                                    .Select(p => p.GetText())
-                                    .ToList());
-                        }
-                        if (argList.positionalOrNamedArgumentList().requiredPositionalArgument() != null)
-                        {
-                            paramNames.Add(
-                                argList.positionalOrNamedArgumentList().requiredPositionalArgument().GetText());
                         }
                     }
                     var referenceText = reference.Context.GetText();
@@ -192,7 +180,7 @@ namespace Rubberduck.Inspections.QuickFixes
                     module.DeleteLines(startLine, reference.Selection.LineCount);
                     module.InsertLines(startLine, newText);
                 }
-            }*/
+            }
         }
     }
 }
