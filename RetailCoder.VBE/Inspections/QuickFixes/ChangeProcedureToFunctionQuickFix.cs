@@ -91,8 +91,8 @@ namespace Rubberduck.Inspections.QuickFixes
                     Environment.NewLine + "    " + _subStmtQualifiedContext.Context.subroutineName().GetText() +
                     " = " + _argQualifiedContext.Context.unrestrictedIdentifier().GetText());
 
-            _lineOffset = newfunctionWithReturn.Split(new[] {Environment.NewLine}, StringSplitOptions.None).Length -
-                          subStmtText.Split(new[] {Environment.NewLine}, StringSplitOptions.None).Length;
+            _lineOffset = newfunctionWithReturn.Split(new[] { Environment.NewLine }, StringSplitOptions.None).Length -
+                          subStmtText.Split(new[] { Environment.NewLine }, StringSplitOptions.None).Length;
 
             var module = _argListQualifiedContext.ModuleName.Component.CodeModule;
 
@@ -103,7 +103,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
         private void UpdateCalls()
         {
-            var procedureName = Identifier.GetName(_subStmtQualifiedContext.Context.subroutineName().identifier());
+            /*var procedureName = Identifier.GetName(_subStmtQualifiedContext.Context.subroutineName().identifier());
 
             var procedure =
                 _state.AllDeclarations.SingleOrDefault(d =>
@@ -154,7 +154,7 @@ namespace Rubberduck.Inspections.QuickFixes
                                     if (p is VBAParser.SpecifiedPositionalArgumentContext)
                                     {
                                         return
-                                            ((VBAParser.SpecifiedPositionalArgumentContext) p).positionalArgument()
+                                            ((VBAParser.SpecifiedPositionalArgumentContext)p).positionalArgument()
                                                 .GetText();
                                     }
                                     return string.Empty;
@@ -192,7 +192,7 @@ namespace Rubberduck.Inspections.QuickFixes
                     module.DeleteLines(startLine, reference.Selection.LineCount);
                     module.InsertLines(startLine, newText);
                 }
-            }
+            }*/
         }
     }
 }

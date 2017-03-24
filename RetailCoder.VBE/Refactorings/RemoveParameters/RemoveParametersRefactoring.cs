@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Rubberduck.Common;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -42,21 +41,19 @@ namespace Rubberduck.Refactorings.RemoveParameters
             QualifiedSelection? oldSelection = null;
             var pane = _vbe.ActiveCodePane;
             var module = pane.CodeModule;
+            if (!module.IsWrappingNullReference)
             {
-                if (!module.IsWrappingNullReference)
-                {
-                    oldSelection = module.GetQualifiedSelection();
-                }
-
-                RemoveParameters();
-
-                if (oldSelection.HasValue)
-                {
-                    pane.Selection = oldSelection.Value.Selection;
-                }
-
-                _model.State.OnParseRequested(this);
+                oldSelection = module.GetQualifiedSelection();
             }
+
+            RemoveParameters();
+
+            if (oldSelection.HasValue)
+            {
+                pane.Selection = oldSelection.Value.Selection;
+            }
+
+            _model.State.OnParseRequested(this);
         }
 
         public void Refactor(QualifiedSelection target)
@@ -139,9 +136,20 @@ namespace Rubberduck.Refactorings.RemoveParameters
             }
         }
 
-        private void RemoveCallParameter(VBAParser.ArgumentListContext paramList, ICodeModule module)
+        private void RemoveCallParameter(VBAParser.ArgumentListContext argList, ICodeModule module)
         {
-            var paramNames = new List<string>();
+            var rewriter = _model.State.GetRewriter(module.Parent);
+
+            var args = argList.children;
+            for (var i = 0; i < args.Count; i++)
+            {
+                if (_model.Parameters[i].IsRemoved)
+                {
+                    //rewriter.Remove(parameters[i]);
+                }
+            }
+
+            /*var paramNames = new List<string>();
             if (paramList.positionalOrNamedArgumentList().positionalArgumentOrMissing() != null)
             {
                 paramNames.AddRange(paramList.positionalOrNamedArgumentList().positionalArgumentOrMissing().Select(p =>
@@ -204,124 +212,51 @@ namespace Rubberduck.Refactorings.RemoveParameters
             newContent = newContent.Insert(paramList.Start.Column, string.Join(", ", savedParamNames));
 
             module.ReplaceLine(paramList.Start.Line, newContent.Replace(" _" + Environment.NewLine, string.Empty));
-            module.DeleteLines(paramList.Start.Line + 1, lineCount - 1);
-        }
-
-        private string GetOldSignature(Declaration target)
-        {
-            var component = target.QualifiedName.QualifiedModuleName.Component;
-            if (component == null)
-            {
-                throw new InvalidOperationException("Component is null for specified target.");
-            }
-            var rewriter = _model.State.GetRewriter(component);
-
-            var context = target.Context;
-            var firstTokenIndex = context.Start.TokenIndex;
-            var lastTokenIndex = -1; // will blow up if this code runs for any context other than below
-
-            var subStmtContext = context as VBAParser.SubStmtContext;
-            if (subStmtContext != null)
-            {
-                lastTokenIndex = subStmtContext.argList().RPAREN().Symbol.TokenIndex;
-            }
-
-            var functionStmtContext = context as VBAParser.FunctionStmtContext;
-            if (functionStmtContext != null)
-            {
-                lastTokenIndex = functionStmtContext.asTypeClause() != null
-                    ? functionStmtContext.asTypeClause().Stop.TokenIndex
-                    : functionStmtContext.argList().RPAREN().Symbol.TokenIndex;
-            }
-
-            var propertyGetStmtContext = context as VBAParser.PropertyGetStmtContext;
-            if (propertyGetStmtContext != null)
-            {
-                lastTokenIndex = propertyGetStmtContext.asTypeClause() != null
-                    ? propertyGetStmtContext.asTypeClause().Stop.TokenIndex
-                    : propertyGetStmtContext.argList().RPAREN().Symbol.TokenIndex;
-            }
-
-            var propertyLetStmtContext = context as VBAParser.PropertyLetStmtContext;
-            if (propertyLetStmtContext != null)
-            {
-                lastTokenIndex = propertyLetStmtContext.argList().RPAREN().Symbol.TokenIndex;
-            }
-
-            var propertySetStmtContext = context as VBAParser.PropertySetStmtContext;
-            if (propertySetStmtContext != null)
-            {
-                lastTokenIndex = propertySetStmtContext.argList().RPAREN().Symbol.TokenIndex;
-            }
-
-            var declareStmtContext = context as VBAParser.DeclareStmtContext;
-            if (declareStmtContext != null)
-            {
-                lastTokenIndex = declareStmtContext.STRINGLITERAL().Last().Symbol.TokenIndex;
-                if (declareStmtContext.argList() != null)
-                {
-                    lastTokenIndex = declareStmtContext.argList().RPAREN().Symbol.TokenIndex;
-                }
-                if (declareStmtContext.asTypeClause() != null)
-                {
-                    lastTokenIndex = declareStmtContext.asTypeClause().Stop.TokenIndex;
-                }
-            }
-
-            var eventStmtContext = context as VBAParser.EventStmtContext;
-            if (eventStmtContext != null)
-            {
-                lastTokenIndex = eventStmtContext.argList().RPAREN().Symbol.TokenIndex;
-            }
-
-            return rewriter.GetText(firstTokenIndex, lastTokenIndex);
+            module.DeleteLines(paramList.Start.Line + 1, lineCount - 1);*/
         }
 
         private void AdjustSignatures()
         {
-            var proc = (dynamic)_model.TargetDeclaration.Context;
-            var paramList = (VBAParser.ArgListContext)proc.argList();
-            var module = _model.TargetDeclaration.QualifiedName.QualifiedModuleName.Component.CodeModule;
+            // if we are adjusting a property getter, check if we need to adjust the letter/setter too
+            if (_model.TargetDeclaration.DeclarationType == DeclarationType.PropertyGet)
             {
-                // if we are adjusting a property getter, check if we need to adjust the letter/setter too
-                if (_model.TargetDeclaration.DeclarationType == DeclarationType.PropertyGet)
+                var setter = GetLetterOrSetter(_model.TargetDeclaration, DeclarationType.PropertySet);
+                if (setter != null)
                 {
-                    var setter = GetLetterOrSetter(_model.TargetDeclaration, DeclarationType.PropertySet);
-                    if (setter != null)
-                    {
-                        AdjustSignatures(setter);
-                        AdjustReferences(setter.References, setter);
-                    }
-
-                    var letter = GetLetterOrSetter(_model.TargetDeclaration, DeclarationType.PropertyLet);
-                    if (letter != null)
-                    {
-                        AdjustSignatures(letter);
-                        AdjustReferences(letter.References, letter);
-                    }
+                    RemoveSignatureParameters(setter);
+                    AdjustReferences(setter.References, setter);
                 }
 
-                RemoveSignatureParameters(_model.TargetDeclaration, paramList, module);
-
-                var eventImplementations = _model.Declarations
-                    .Where(item => item.IsWithEvents && item.AsTypeName == _model.TargetDeclaration.ComponentName)
-                    .SelectMany(withEvents => _model.Declarations.FindEventProcedures(withEvents));
-
-                foreach (var eventImplementation in eventImplementations)
+                var letter = GetLetterOrSetter(_model.TargetDeclaration, DeclarationType.PropertyLet);
+                if (letter != null)
                 {
-                    AdjustReferences(eventImplementation.References, eventImplementation);
-                    AdjustSignatures(eventImplementation);
+                    RemoveSignatureParameters(letter);
+                    AdjustReferences(letter.References, letter);
                 }
+            }
 
-                var interfaceImplementations = _model.Declarations.FindInterfaceImplementationMembers().Where(item => 
-                        item.ProjectId == _model.TargetDeclaration.ProjectId 
-                        && item.IdentifierName == _model.TargetDeclaration.ComponentName + "_" + _model.TargetDeclaration.IdentifierName);
+            RemoveSignatureParameters(_model.TargetDeclaration);
 
-                foreach (var interfaceImplentation in interfaceImplementations)
-                {
-                    AdjustReferences(interfaceImplentation.References, interfaceImplentation);
-                    AdjustSignatures(interfaceImplentation);
-                }               
+            var eventImplementations = _model.Declarations
+                .Where(item => item.IsWithEvents && item.AsTypeName == _model.TargetDeclaration.ComponentName)
+                .SelectMany(withEvents => _model.Declarations.FindEventProcedures(withEvents));
+
+            foreach (var eventImplementation in eventImplementations)
+            {
+                AdjustReferences(eventImplementation.References, eventImplementation);
+                RemoveSignatureParameters(eventImplementation);
+            }
+
+            var interfaceImplementations = _model.Declarations.FindInterfaceImplementationMembers().Where(item =>
+                item.ProjectId == _model.TargetDeclaration.ProjectId
+                &&
+                item.IdentifierName ==
+                _model.TargetDeclaration.ComponentName + "_" + _model.TargetDeclaration.IdentifierName);
+
+            foreach (var interfaceImplentation in interfaceImplementations)
+            {
+                AdjustReferences(interfaceImplentation.References, interfaceImplentation);
+                RemoveSignatureParameters(interfaceImplentation);
             }
         }
 
@@ -332,40 +267,19 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 && item.DeclarationType == declarationType);
         }
 
-        private void AdjustSignatures(Declaration declaration)
+        private void RemoveSignatureParameters(Declaration target)
         {
-            var proc = (dynamic)declaration.Context.Parent;
-            var module = declaration.QualifiedName.QualifiedModuleName.Component.CodeModule;
-            {
-                VBAParser.ArgListContext paramList;
+            var rewriter = _model.State.GetRewriter(target);
 
-                if (declaration.DeclarationType == DeclarationType.PropertySet
-                    || declaration.DeclarationType == DeclarationType.PropertyLet)
-                {
-                    paramList = (VBAParser.ArgListContext)proc.children[0].argList();
-                }
-                else
-                {
-                    paramList = (VBAParser.ArgListContext)proc.subStmt().argList();
-                }
-
-                RemoveSignatureParameters(declaration, paramList, module);
-            }
-        }
-
-        private void RemoveSignatureParameters(Declaration target, VBAParser.ArgListContext paramList, ICodeModule module)
-        {
-            // property set/let have one more parameter than is listed in the getter parameters
-            var nonRemovedParamNames = paramList.arg().Where((a, s) => s >= _model.Parameters.Count || !_model.Parameters[s].IsRemoved).Select(s => s.GetText());
-            var signature = GetOldSignature(target);
-            signature = signature.Remove(signature.IndexOf('('));
+            var parameters = ((IParameterizedDeclaration) target).Parameters.OrderBy(o => o.Selection).ToList();
             
-            var asTypeText = target.AsTypeContext == null ? string.Empty : " " + target.AsTypeContext.GetText();
-            signature += '(' + string.Join(", ", nonRemovedParamNames) + ")" + (asTypeText == " " ? string.Empty : asTypeText);
-
-            var lineCount = paramList.GetSelection().LineCount;
-            module.ReplaceLine(paramList.Start.Line, signature.Replace(" _" + Environment.NewLine, string.Empty));
-            module.DeleteLines(paramList.Start.Line + 1, lineCount - 1);
+            for (var i = 0; i < parameters.Count; i++)
+            {
+                if (_model.Parameters[i].IsRemoved)
+                {
+                    rewriter.Remove(parameters[i]);
+                }
+            }
         }
     }
 }

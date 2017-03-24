@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Antlr4.Runtime;
+using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 
@@ -28,7 +29,54 @@ namespace Rubberduck.Parsing.PostProcessing.RewriterInfo
             {
                 return new RewriterInfo(context.LPAREN().Symbol.TokenIndex + 1, context.RPAREN().Symbol.TokenIndex - 1);
             }
-            return GetRewriterInfoForTargetRemovedFromListStmt(target.Context.Start, itemIndex, context.arg());
+
+            var isLastParam = items.Last() == target.Context;
+            if (!isLastParam)
+            {
+                var removalStop = -1;
+                for (var i = context.children.IndexOf(target.Context); i < context.children.Count; i++)
+                {
+                    var node = context.children[i];
+                    if (node.GetText() == ",")
+                    {
+                        removalStop = (node as TerminalNodeImpl).Symbol.StopIndex;
+                    }
+                    else if (node is VBAParser.WhiteSpaceContext)
+                    {
+                        removalStop = (node as VBAParser.WhiteSpaceContext).Stop.StopIndex;
+                    }
+                    else
+                    {
+                        break; 
+                    }
+                }
+
+                var info = GetRewriterInfoForTargetRemovedFromListStmt(target.Context.Start, itemIndex, context.arg());
+                return new RewriterInfo(info.StartTokenIndex, removalStop == -1 ? info.StopTokenIndex : removalStop);
+            }
+            else
+            {
+                var removalStart = -1;
+                for (var i = context.children.IndexOf(target.Context); i < context.children.Count; i++)
+                {
+                    var node = context.children[i];
+                    if (node.GetText() == ",")
+                    {
+                        removalStart = (node as TerminalNodeImpl).Symbol.StartIndex;
+                    }
+                    else if (node is VBAParser.WhiteSpaceContext)
+                    {
+                        removalStart = (node as VBAParser.WhiteSpaceContext).Stop.StartIndex;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                var info = GetRewriterInfoForTargetRemovedFromListStmt(target.Context.Start, itemIndex, context.arg());
+                return new RewriterInfo(info.StartTokenIndex, removalStart == -1 ? info.StopTokenIndex : removalStart);
+            }
         }
     }
 }

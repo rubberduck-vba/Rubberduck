@@ -136,7 +136,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
         private void RewriteCall(VBAParser.ArgumentListContext paramList, ICodeModule module)
         {
-            var argValues = new List<string>();
+            /*var argValues = new List<string>();
             if (paramList.positionalOrNamedArgumentList().positionalArgumentOrMissing() != null)
             {
                 argValues.AddRange(paramList.positionalOrNamedArgumentList().positionalArgumentOrMissing().Select(p =>
@@ -182,7 +182,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
             newContent = newContent.Insert(paramList.Start.Column, string.Join(", ", reorderedArgValues));
 
             module.ReplaceLine(paramList.Start.Line, newContent.Replace(" _" + Environment.NewLine, string.Empty));
-            module.DeleteLines(paramList.Start.Line + 1, lineCount - 1);
+            module.DeleteLines(paramList.Start.Line + 1, lineCount - 1);*/
         }
 
         private void AdjustSignatures()
