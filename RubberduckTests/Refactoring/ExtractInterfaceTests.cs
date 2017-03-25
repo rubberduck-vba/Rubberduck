@@ -62,7 +62,7 @@ End Sub
             //SetupFactory
             var factory = SetupFactory(model);
 
-            var refactoring = new ExtractInterfaceRefactoring(vbe.Object, state, null, factory.Object);
+            var refactoring = new ExtractInterfaceRefactoring(vbe.Object, null, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             Assert.AreEqual(expectedInterfaceCode, component.Collection[1].CodeModule.Content());
@@ -167,7 +167,7 @@ End Property
             //SetupFactory
             var factory = SetupFactory(model);
 
-            var refactoring = new ExtractInterfaceRefactoring(vbe.Object, state, null, factory.Object);
+            var refactoring = new ExtractInterfaceRefactoring(vbe.Object, null, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             Assert.AreEqual(expectedInterfaceCode, component.Collection[1].CodeModule.Content());
@@ -254,7 +254,7 @@ End Function
             //SetupFactory
             var factory = SetupFactory(model);
 
-            var refactoring = new ExtractInterfaceRefactoring(vbe.Object, state, null, factory.Object);
+            var refactoring = new ExtractInterfaceRefactoring(vbe.Object, null, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             Assert.AreEqual(expectedInterfaceCode, component.Collection[1].CodeModule.Content());
@@ -303,7 +303,7 @@ End Sub";
             var factory = SetupFactory(model);
             factory.Setup(f => f.Create()).Returns(value: null);
 
-            var refactoring = new ExtractInterfaceRefactoring(vbe.Object, state, null, factory.Object);
+            var refactoring = new ExtractInterfaceRefactoring(vbe.Object, null, factory.Object);
             refactoring.Refactor();
 
             Assert.AreEqual(1, vbe.Object.ActiveVBProject.VBComponents.Count());
@@ -335,7 +335,7 @@ End Sub";
             var factory = SetupFactory(model);
             factory.Setup(f => f.Create()).Returns(presenter.Object);
 
-            var refactoring = new ExtractInterfaceRefactoring(vbe.Object, state, null, factory.Object);
+            var refactoring = new ExtractInterfaceRefactoring(vbe.Object, null, factory.Object);
             refactoring.Refactor();
 
             Assert.AreEqual(1, vbe.Object.ActiveVBProject.VBComponents.Count());
@@ -384,7 +384,7 @@ End Sub
             //SetupFactory
             var factory = SetupFactory(model);
 
-            var refactoring = new ExtractInterfaceRefactoring(vbe.Object, state, null, factory.Object);
+            var refactoring = new ExtractInterfaceRefactoring(vbe.Object, null, factory.Object);
             refactoring.Refactor(state.AllUserDeclarations.Single(s => s.DeclarationType == DeclarationType.ClassModule));
 
             Assert.AreEqual(expectedInterfaceCode, component.Collection[1].CodeModule.Content());
