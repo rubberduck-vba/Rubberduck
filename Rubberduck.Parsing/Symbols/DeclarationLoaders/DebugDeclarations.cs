@@ -43,7 +43,7 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
 
             private static bool ThereIsAGlobalBuiltInErrVariableDeclaration(DeclarationFinder finder) 
             {
-                return finder.MatchName(Grammar.Tokens.Err).Any(declaration => declaration.IsBuiltIn
+                return finder.MatchName(Grammar.Tokens.Err).Any(declaration => !declaration.IsUserDefined
                                                                         && declaration.DeclarationType == DeclarationType.Variable
                                                                         && declaration.Accessibility == Accessibility.Global);
             }
@@ -79,7 +79,7 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                     new QualifiedMemberName(DebugModuleName(parentProject), "DebugModule"),
                     parentProject,
                     "DebugModule",
-                    true,
+                    false,
                     new List<IAnnotation>(),
                     new Attributes());
 }
@@ -99,7 +99,7 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                     new QualifiedMemberName(DebugClassName(parentProject), "DebugClass"), 
                     parentProject, 
                     "DebugClass", 
-                    true, 
+                    false, 
                     new List<IAnnotation>(), 
                     new Attributes(), 
                     true);
@@ -140,7 +140,7 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                     Accessibility.Global, 
                     null, 
                     Selection.Home, 
-                    true, 
+                    false, 
                     null, 
                     new Attributes());
             }
@@ -154,7 +154,7 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                     null, 
                     Accessibility.Global, 
                     null, Selection.Home, 
-                    true, 
+                    false, 
                     null, 
                     new Attributes());
             }

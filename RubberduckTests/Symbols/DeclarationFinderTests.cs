@@ -700,13 +700,13 @@ End Sub
             {
                 classModuleAttributes.AddExposedClassAttribute();
             }
-            return new ClassModuleDeclaration(qualifiedClassModuleMemberName, projectDeclatation, name, false, null, classModuleAttributes);
+            return new ClassModuleDeclaration(qualifiedClassModuleMemberName, projectDeclatation, name, true, null, classModuleAttributes);
         }
 
         private static ProjectDeclaration GetTestProject(string name)
         {
             var qualifiedProjectName = new QualifiedMemberName(StubQualifiedModuleName("proj"), name);
-            return new ProjectDeclaration(qualifiedProjectName, name, false, null);
+            return new ProjectDeclaration(qualifiedProjectName, name, true, null);
         }
 
         private static QualifiedModuleName StubQualifiedModuleName(string name)
@@ -717,7 +717,7 @@ End Sub
         private static FunctionDeclaration GetTestFunction(Declaration moduleDeclatation, string name, Accessibility functionAccessibility)
         {
             var qualifiedFunctionMemberName = new QualifiedMemberName(moduleDeclatation.QualifiedName.QualifiedModuleName, name);
-            return new FunctionDeclaration(qualifiedFunctionMemberName, moduleDeclatation, moduleDeclatation, "test", null, "test", functionAccessibility, null, Selection.Home, false, false, null, null);
+            return new FunctionDeclaration(qualifiedFunctionMemberName, moduleDeclatation, moduleDeclatation, "test", null, "test", functionAccessibility, null, Selection.Home, false, true, null, null);
         }
 
         private static void AddReference(Declaration toDeclaration, Declaration fromModuleDeclaration, ParserRuleContext context = null)

@@ -24,7 +24,7 @@ namespace Rubberduck.Parsing.Symbols
             ParserRuleContext context,
             Selection selection,
             bool isArray,
-            bool isBuiltIn,
+            bool isUserDefined,
             IEnumerable<IAnnotation> annotations,
             Attributes attributes)
             : base(
@@ -41,7 +41,7 @@ namespace Rubberduck.Parsing.Symbols
                   selection,
                   isArray,
                   asTypeContext,
-                  isBuiltIn,
+                  isUserDefined,
                   annotations,
                   attributes)
         {
@@ -60,7 +60,7 @@ namespace Rubberduck.Parsing.Symbols
                 null,
                 Selection.Home,
                 member.ReturnType.IsArray,
-                true,
+                false,
                 null,
                 attributes)
         {

@@ -34,7 +34,7 @@ namespace Rubberduck.UI.Command
 
         protected override void ExecuteImpl(object parameter)
         {
-            var viewModel = new FindSymbolViewModel(_state.AllDeclarations.Where(item => !item.IsBuiltIn), _iconCache);
+            var viewModel = new FindSymbolViewModel(_state.AllUserDeclarations, _iconCache);
             var view = new FindSymbolDialog(viewModel);
             {
                 viewModel.Navigate += (sender, e) => { view.Hide(); };

@@ -990,7 +990,7 @@ End Sub";
 
             var vbeWrapper = vbe.Object;
             var model = new RenameModel(vbeWrapper, state, default(QualifiedSelection), msgbox.Object) { NewName = newName };
-            model.Target = model.Declarations.First(i => i.DeclarationType == DeclarationType.Project && !i.IsBuiltIn);
+            model.Target = model.Declarations.First(i => i.DeclarationType == DeclarationType.Project && i.IsUserDefined);
 
             //SetupFactory
             var factory = SetupFactory(model);

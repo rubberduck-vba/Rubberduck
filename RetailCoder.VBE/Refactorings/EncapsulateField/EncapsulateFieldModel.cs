@@ -9,8 +9,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 {
     public class EncapsulateFieldModel
     {
-        private readonly RubberduckParserState _state;
-        public RubberduckParserState State { get { return _state; } }
+        public RubberduckParserState State { get; }
 
         public Declaration TargetDeclaration { get; private set; }
 
@@ -22,9 +21,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public EncapsulateFieldModel(RubberduckParserState state, QualifiedSelection selection)
         {
-            _state = state;
-            IList<Declaration> declarations = state.AllDeclarations
-                                                        .Where(d => !d.IsBuiltIn && d.DeclarationType == DeclarationType.Variable)
+            State = state;
+            IList<Declaration> declarations = state.AllUserDeclarations
+                                                        .Where(d => d.DeclarationType == DeclarationType.Variable)
                                                         .ToList();
 
             TargetDeclaration = declarations.FindVariable(selection);

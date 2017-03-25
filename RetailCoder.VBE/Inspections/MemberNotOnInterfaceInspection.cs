@@ -23,7 +23,7 @@ namespace Rubberduck.Inspections
             var unresolved = State.DeclarationFinder.UnresolvedMemberDeclarations().Where(decl => !IsIgnoringInspectionResultFor(decl, AnnotationName)).ToList();
 
             var targets = Declarations.Where(decl => decl.AsTypeDeclaration != null &&
-                                                     decl.AsTypeDeclaration.IsBuiltIn &&
+                                                     !decl.AsTypeDeclaration.IsUserDefined &&
                                                      decl.AsTypeDeclaration.DeclarationType == DeclarationType.ClassModule &&
                                                      ((ClassModuleDeclaration)decl.AsTypeDeclaration).IsExtensible)
                                        .SelectMany(decl => decl.References).ToList();
