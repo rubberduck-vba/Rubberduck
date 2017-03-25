@@ -12,6 +12,7 @@ using Antlr4.Runtime;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.PostProcessing;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
@@ -99,11 +100,14 @@ namespace Rubberduck.Inspections.QuickFixes
 
         private void InsertLocalVariableDeclarationAndAssignment(IModuleRewriter rewriter, string localIdentifier)
         {
-            var content = Tokens.Dim + " " + localIdentifier + " " + Tokens.As + " " + _target.AsTypeName + Environment.NewLine
-                + (_target.AsTypeDeclaration is ClassModuleDeclaration ? Tokens.Set + " " : string.Empty)
-                + localIdentifier + " = " + _target.IdentifierName;
+            var localVariableDeclaration = $"{Environment.NewLine}{Tokens.Dim} {localIdentifier} {Tokens.As} {_target.AsTypeName}{Environment.NewLine}";
+            
+            var requiresAssignmentUsingSet =
+                _target.References.Any(refItem => VariableRequiresSetAssignmentEvaluator.RequiresSetAssignment(refItem, _parserState));
 
-            rewriter.InsertBefore(((ParserRuleContext)_target.Context.Parent).Stop.TokenIndex + 1, "\r\n" + content);
+            var localVariableAssignment = requiresAssignmentUsingSet ? $"Set {localIdentifier} = {_target.IdentifierName}" : $"{localIdentifier} = {_target.IdentifierName}";
+
+            rewriter.InsertBefore(((ParserRuleContext)_target.Context.Parent).Stop.TokenIndex + 1, localVariableDeclaration + localVariableAssignment);
         }
     }
 }

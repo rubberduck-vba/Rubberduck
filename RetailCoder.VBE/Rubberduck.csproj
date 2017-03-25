@@ -406,6 +406,7 @@
     <Compile Include="Inspections\QuickFixes\WriteOnlyPropertyQuickFix.cs" />
     <Compile Include="Inspections\Results\WriteOnlyPropertyInspectionResult.cs" />
     <Compile Include="Inspections\VariableNameValidator.cs" />
+    <Compile Include="Inspections\VariableRequiresSetAssignmentEvaluator.cs" />
     <Compile Include="Navigation\CodeExplorer\ICodeExplorerDeclarationViewModel.cs" />
     <Compile Include="Navigation\Folders\FolderHelper.cs" />
     <Compile Include="Refactorings\EncapsulateField\PropertyGenerator.cs" />
