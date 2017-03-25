@@ -4,7 +4,6 @@ using System.Runtime.InteropServices;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ExtractInterface;
-using Rubberduck.UI.Refactorings;
 using Rubberduck.UI.Refactorings.ExtractInterface;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -62,7 +61,7 @@ namespace Rubberduck.UI.Command.Refactorings
             using (var view = new ExtractInterfaceDialog(new ExtractInterfaceViewModel()))
             {
                 var factory = new ExtractInterfacePresenterFactory(Vbe, _state, view);
-                var refactoring = new ExtractInterfaceRefactoring(Vbe, _state, _messageBox, factory);
+                var refactoring = new ExtractInterfaceRefactoring(Vbe, _messageBox, factory);
                 refactoring.Refactor();
             }
         }

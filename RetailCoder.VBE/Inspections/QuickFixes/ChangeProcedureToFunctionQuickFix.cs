@@ -91,8 +91,8 @@ namespace Rubberduck.Inspections.QuickFixes
                     Environment.NewLine + "    " + _subStmtQualifiedContext.Context.subroutineName().GetText() +
                     " = " + _argQualifiedContext.Context.unrestrictedIdentifier().GetText());
 
-            _lineOffset = newfunctionWithReturn.Split(new[] {Environment.NewLine}, StringSplitOptions.None).Length -
-                          subStmtText.Split(new[] {Environment.NewLine}, StringSplitOptions.None).Length;
+            _lineOffset = newfunctionWithReturn.Split(new[] { Environment.NewLine }, StringSplitOptions.None).Length -
+                          subStmtText.Split(new[] { Environment.NewLine }, StringSplitOptions.None).Length;
 
             var module = _argListQualifiedContext.ModuleName.Component.CodeModule;
 
@@ -146,33 +146,21 @@ namespace Rubberduck.Inspections.QuickFixes
                     {
                         argsCallOffset = argList.GetSelection().EndColumn - reference.Context.GetSelection().EndColumn;
                         argsCall = argList.GetText();
-                        if (argList.positionalOrNamedArgumentList().positionalArgumentOrMissing() != null)
+                        if (argList.argument() != null)
                         {
                             paramNames.AddRange(
-                                argList.positionalOrNamedArgumentList().positionalArgumentOrMissing().Select(p =>
+                                argList.argument().Select(p =>
                                 {
-                                    if (p is VBAParser.SpecifiedPositionalArgumentContext)
+                                    if (p.positionalArgument() != null)
                                     {
-                                        return
-                                            ((VBAParser.SpecifiedPositionalArgumentContext) p).positionalArgument()
-                                                .GetText();
+                                        return p.positionalArgument().GetText();
+                                    }
+                                    if (p.namedArgument() != null)
+                                    {
+                                        return p.namedArgument().GetText();
                                     }
                                     return string.Empty;
                                 }).ToList());
-                        }
-                        if (argList.positionalOrNamedArgumentList().namedArgumentList() != null)
-                        {
-                            paramNames.AddRange(
-                                argList.positionalOrNamedArgumentList()
-                                    .namedArgumentList()
-                                    .namedArgument()
-                                    .Select(p => p.GetText())
-                                    .ToList());
-                        }
-                        if (argList.positionalOrNamedArgumentList().requiredPositionalArgument() != null)
-                        {
-                            paramNames.Add(
-                                argList.positionalOrNamedArgumentList().requiredPositionalArgument().GetText());
                         }
                     }
                     var referenceText = reference.Context.GetText();

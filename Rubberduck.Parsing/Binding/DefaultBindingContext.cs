@@ -146,37 +146,25 @@ namespace Rubberduck.Parsing.Binding
             {
                 return convertedList;
             }
-            var list = argumentList.positionalOrNamedArgumentList();
+            var list = argumentList;
             // TODO: positionalArgumentOrMissing is there as preparation for argument compatibility checking.
-            if (list.positionalArgumentOrMissing() != null)
+            if (list.argument() != null)
             {
-                foreach (var expr in list.positionalArgumentOrMissing())
+                foreach (var expr in list.argument())
                 {
-                    if (expr is VBAParser.SpecifiedPositionalArgumentContext)
+                    if (expr.positionalArgument() != null)
                     {
                         convertedList.AddArgument(new ArgumentListArgument(
-                            VisitArgumentBinding(module, parent, ((VBAParser.SpecifiedPositionalArgumentContext)expr).positionalArgument().argumentExpression(), withBlockVariable,
+                            VisitArgumentBinding(module, parent, expr.positionalArgument().argumentExpression(), withBlockVariable,
                             StatementResolutionContext.Undefined), ArgumentListArgumentType.Positional));
                     }
-                }
-            }
-            if (list.requiredPositionalArgument() != null)
-            {
-                convertedList.AddArgument(new ArgumentListArgument(
-                    VisitArgumentBinding(module, parent, list.requiredPositionalArgument().argumentExpression(),
-                    withBlockVariable, StatementResolutionContext.Undefined),
-                    ArgumentListArgumentType.Positional));
-            }
-            if (list.namedArgumentList() != null)
-            {
-                foreach (var expr in list.namedArgumentList().namedArgument())
-                {
-                    convertedList.AddArgument(new ArgumentListArgument(
-                        VisitArgumentBinding(module, parent, expr.argumentExpression(),
-                        withBlockVariable,
-                        StatementResolutionContext.Undefined),
-                        ArgumentListArgumentType.Named,
-                        CreateNamedArgumentExpressionCreator(expr.unrestrictedIdentifier().GetText(), expr.unrestrictedIdentifier())));
+                    else if (expr.namedArgument() != null)
+                    {
+                        convertedList.AddArgument(new ArgumentListArgument(
+                            VisitArgumentBinding(module, parent, expr.namedArgument().argumentExpression(), withBlockVariable,
+                            StatementResolutionContext.Undefined), ArgumentListArgumentType.Named,
+                            CreateNamedArgumentExpressionCreator(expr.namedArgument().unrestrictedIdentifier().GetText(), expr.namedArgument().unrestrictedIdentifier())));
+                    }
                 }
             }
             return convertedList;
