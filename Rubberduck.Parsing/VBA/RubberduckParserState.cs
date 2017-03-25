@@ -80,13 +80,14 @@ namespace Rubberduck.Parsing.VBA
             _vbe = vbe;
             AddEventHandlers();
             IsEnabled = true;
-
-            StateChanged += RubberduckParserState_StateChanged;
         }
 
-        private void RubberduckParserState_StateChanged(object sender, ParserStateEventArgs e)
+        private void HandleStateChanged(ParserState state)
         {
-            RefreshUserDeclarationsList();
+            if (state == ParserState.ResolvedDeclarations || state == ParserState.Ready)
+            {
+                RefreshUserDeclarationsList();
+            }
         }
 
         #region Event Handling
@@ -305,12 +306,10 @@ namespace Rubberduck.Parsing.VBA
 
         private void OnStateChanged(object requestor, ParserState state = ParserState.Pending)
         {
-            var handler = StateChanged;
             Logger.Debug("RubberduckParserState raised StateChanged ({0})", Status);
-            if (handler != null)
-            {               
-                handler.Invoke(requestor, new ParserStateEventArgs(state));
-            }
+
+            HandleStateChanged(state);
+            StateChanged?.Invoke(requestor, new ParserStateEventArgs(state));
         }
         public event EventHandler<ParseProgressEventArgs> ModuleStateChanged;
 
@@ -1089,8 +1088,6 @@ namespace Rubberduck.Parsing.VBA
             {
                 return;
             }
-
-            StateChanged -= RubberduckParserState_StateChanged;
 
             foreach (var item in _moduleStates)
             {
