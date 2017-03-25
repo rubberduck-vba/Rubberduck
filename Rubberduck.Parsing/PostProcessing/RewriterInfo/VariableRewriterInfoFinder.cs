@@ -3,43 +3,42 @@ using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Parsing.PostProcessing.RewriterInfo
 {
     public class VariableRewriterInfoFinder : RewriterInfoFinderBase
-    { 
-        public override RewriterInfo GetRewriterInfo(ParserRuleContext context, Declaration target)
+    {
+        public override RewriterInfo GetRewriterInfo(ParserRuleContext context)
         {
-            return GetRewriterInfo(target, context.Parent as VBAParser.VariableListStmtContext);
+            return GetRewriterInfo(context as VBAParser.VariableSubStmtContext, context.Parent as VBAParser.VariableListStmtContext);
         }
 
-        private static RewriterInfo GetRewriterInfo(Declaration target, VBAParser.VariableListStmtContext context)
+        private static RewriterInfo GetRewriterInfo(VBAParser.VariableSubStmtContext variable, VBAParser.VariableListStmtContext context)
         {
             if (context == null)
             {
-                throw new ArgumentNullException("context", @"Context is null. Expecting a VBAParser.VariableListStmtContext instance.");
+                throw new ArgumentNullException(nameof(context), @"Context is null. Expecting a VBAParser.VariableListStmtContext instance.");
             }
 
             var items = context.variableSubStmt();
-            var itemIndex = items.ToList().IndexOf((VBAParser.VariableSubStmtContext)target.Context);
+            var itemIndex = items.ToList().IndexOf(variable);
             var count = items.Count;
 
             var element = context.Parent.Parent as VBAParser.ModuleDeclarationsElementContext;
             if (element != null)
             {
-                return GetModuleVariableRemovalInfo(target, element, count, itemIndex, items);
+                return GetModuleVariableRemovalInfo(variable, element, count, itemIndex, items);
             }
 
             if (context.Parent is VBAParser.VariableStmtContext)
             {
-                return GetLocalVariableRemovalInfo(target, context, count, itemIndex, items);
+                return GetLocalVariableRemovalInfo(variable, context, count, itemIndex, items);
             }
 
             return RewriterInfo.None;
         }
 
-        private static RewriterInfo GetModuleVariableRemovalInfo(Declaration target,
+        private static RewriterInfo GetModuleVariableRemovalInfo(VBAParser.VariableSubStmtContext target,
             VBAParser.ModuleDeclarationsElementContext element,
             int count, int itemIndex, IReadOnlyList<VBAParser.VariableSubStmtContext> items)
         {
@@ -52,10 +51,10 @@ namespace Rubberduck.Parsing.PostProcessing.RewriterInfo
                 var stopIndex = FindStopTokenIndex(elements, element, parent);
                 return new RewriterInfo(startIndex, stopIndex);
             }
-            return GetRewriterInfoForTargetRemovedFromListStmt(target.Context.Start, itemIndex, items);
+            return GetRewriterInfoForTargetRemovedFromListStmt(target.Start, itemIndex, items);
         }
 
-        private static RewriterInfo GetLocalVariableRemovalInfo(Declaration target,
+        private static RewriterInfo GetLocalVariableRemovalInfo(VBAParser.VariableSubStmtContext target,
             VBAParser.VariableListStmtContext variables,
             int count, int itemIndex, IReadOnlyList<VBAParser.VariableSubStmtContext> items)
         {
@@ -69,7 +68,7 @@ namespace Rubberduck.Parsing.PostProcessing.RewriterInfo
                 var stopIndex = FindStopTokenIndex(statements, blockStmt, parent);
                 return new RewriterInfo(startIndex, stopIndex);
             }
-            return GetRewriterInfoForTargetRemovedFromListStmt(target.Context.Start, itemIndex, items);
+            return GetRewriterInfoForTargetRemovedFromListStmt(target.Start, itemIndex, items);
         }
     }
 }

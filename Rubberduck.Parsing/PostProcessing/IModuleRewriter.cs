@@ -1,4 +1,5 @@
 using Antlr4.Runtime;
+using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Parsing.PostProcessing
@@ -28,6 +29,12 @@ namespace Rubberduck.Parsing.PostProcessing
         /// <param name="target">The <see cref="IToken"/> to remove.</param>
         /// <remarks>Removes a line that would be left empty by the removal of the identifier reference token.</remarks>
         void Remove(IToken target);
+        /// <summary>
+        /// Removes all tokens for specified <see cref="TerminalNodeImpl"/>. Use <see cref="Rewrite"/> method to apply changes.
+        /// </summary>
+        /// <param name="target">The <see cref="TerminalNodeImpl"/> to remove.</param>
+        /// <remarks>Removes a line that would be left empty by the removal of the identifier reference token.</remarks>
+        void Remove(TerminalNodeImpl target);
 
         /// <summary>
         /// Replaces all tokens for specified <see cref="Declaration"/> with specified content. Use <see cref="Rewrite"/> method to apply changes.

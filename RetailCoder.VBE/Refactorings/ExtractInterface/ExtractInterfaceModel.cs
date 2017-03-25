@@ -8,13 +8,12 @@ namespace Rubberduck.Refactorings.ExtractInterface
 {
     public class ExtractInterfaceModel
     {
-        private readonly Declaration _targetDeclaration;
-        public Declaration TargetDeclaration { get { return _targetDeclaration; } }
+        public RubberduckParserState State { get; }
+        public Declaration TargetDeclaration { get; }
 
         public string InterfaceName { get; set; }
 
-        private IEnumerable<InterfaceMember> _members = new List<InterfaceMember>();
-        public IEnumerable<InterfaceMember> Members { get { return _members; } set { _members = value; } }
+        public IEnumerable<InterfaceMember> Members { get; set; } = new List<InterfaceMember>();
 
         private static readonly DeclarationType[] ModuleTypes =
         {
@@ -23,7 +22,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
             DeclarationType.UserForm
         };
 
-        private static readonly DeclarationType[] MemberTypes =
+        public static readonly DeclarationType[] MemberTypes =
         {
             DeclarationType.Procedure,
             DeclarationType.Function,
@@ -34,22 +33,23 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
         public ExtractInterfaceModel(RubberduckParserState state, QualifiedSelection selection)
         {
+            State = state;
             var declarations = state.AllDeclarations.ToList();
             var candidates = declarations.Where(item => !item.IsBuiltIn && ModuleTypes.Contains(item.DeclarationType)).ToList();
 
-            _targetDeclaration = candidates.SingleOrDefault(item => 
+            TargetDeclaration = candidates.SingleOrDefault(item => 
                         item.QualifiedSelection.QualifiedName.Equals(selection.QualifiedName));
 
-            if (_targetDeclaration == null)
+            if (TargetDeclaration == null)
             {
                 return;
             }
 
             InterfaceName = "I" + TargetDeclaration.IdentifierName;
 
-            _members = declarations.Where(item => !item.IsBuiltIn
-                                                  && item.ProjectId == _targetDeclaration.ProjectId
-                                                  && item.ComponentName == _targetDeclaration.ComponentName
+            Members = declarations.Where(item => !item.IsBuiltIn
+                                                  && item.ProjectId == TargetDeclaration.ProjectId
+                                                  && item.ComponentName == TargetDeclaration.ComponentName
                                                   && (item.Accessibility == Accessibility.Public || item.Accessibility == Accessibility.Implicit)
                                                   && MemberTypes.Contains(item.DeclarationType))
                                    .OrderBy(o => o.Selection.StartLine)

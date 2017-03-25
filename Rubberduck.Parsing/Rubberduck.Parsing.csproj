@@ -156,6 +156,7 @@
     <Compile Include="PostProcessing\RewriterInfo\DefaultRewriterInfoFinder.cs" />
     <Compile Include="PostProcessing\RewriterInfo\IRewriterInfoFinder.cs" />
     <Compile Include="PostProcessing\ModuleRewriter.cs" />
+    <Compile Include="PostProcessing\RewriterInfo\ArgumentRewriterInfoFinder.cs" />
     <Compile Include="PostProcessing\RewriterInfo\ParameterRewriterInfoFinder.cs" />
     <Compile Include="PostProcessing\RewriterInfo\RewriterInfo.cs" />
     <Compile Include="PostProcessing\RewriterInfo\RewriterInfoFinderBase.cs" />

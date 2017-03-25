@@ -628,19 +628,19 @@ builtInType :
 ;
 
 // 5.6.13.1 Argument Lists
-argumentList : positionalOrNamedArgumentList;
-positionalOrNamedArgumentList :
-    (positionalArgumentOrMissing whiteSpace?)* requiredPositionalArgument 
-    | (positionalArgumentOrMissing whiteSpace?)* namedArgumentList  
+argumentList :
+    (whiteSpace? argument? (whiteSpace? COMMA whiteSpace? argument)*)?
 ;
-positionalArgumentOrMissing :
-    positionalArgument whiteSpace? COMMA                                                            # specifiedPositionalArgument
-    | whiteSpace? COMMA                                                                             # missingPositionalArgument
+
+requiredArgument : argument;
+argument :
+    positionalArgument
+    | namedArgument
 ;
+
 positionalArgument : argumentExpression;
-requiredPositionalArgument : argumentExpression;  
-namedArgumentList : namedArgument (whiteSpace? COMMA whiteSpace? namedArgument)*;
 namedArgument : unrestrictedIdentifier whiteSpace? ASSIGN whiteSpace? argumentExpression;
+
 argumentExpression :
     (BYVAL whiteSpace)? expression
     | addressOfExpression
