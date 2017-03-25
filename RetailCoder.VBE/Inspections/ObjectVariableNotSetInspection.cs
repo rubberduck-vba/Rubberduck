@@ -28,7 +28,7 @@ namespace Rubberduck.Inspections
                     .Where(reference => reference.IsAssignment);
 
             var referencesRequiringSetAssignment = candidateReferencesRequiringSetAssignment                  
-                .Where(reference => VariableRequiresSetAssignmentEvaluator.RequiresSetAssignment(reference, State.AllUserDeclarations));
+                .Where(reference => VariableRequiresSetAssignmentEvaluator.RequiresSetAssignment(reference, State));
 
             var objectVariableNotSetReferences = referencesRequiringSetAssignment.Where(reference => FlagIfObjectVariableNotSet(reference));
 

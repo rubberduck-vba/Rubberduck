@@ -1,6 +1,7 @@
 ﻿using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -18,7 +19,7 @@ namespace Rubberduck.Inspections
             return relevantDeclarations;
         }
 
-        public static bool RequiresSetAssignment(IdentifierReference reference, IEnumerable<Declaration> declarations)
+        public static bool RequiresSetAssignment(IdentifierReference reference, RubberduckParserState state)
         {
             //Not an assignment...definitely does not require a 'Set' assignment
             if (!reference.IsAssignment) { return false; }
@@ -30,7 +31,7 @@ namespace Rubberduck.Inspections
             if (RequiresAssignmentUsingSet(reference.Declaration)) { return true; }
 
             //We need to look everything to understand the RHS - the assigned reference is probably a Variant 
-            var allInterestingDeclarations = GetDeclarationsPotentiallyRequiringSetAssignment(declarations);
+            var allInterestingDeclarations = GetDeclarationsPotentiallyRequiringSetAssignment(state.AllUserDeclarations);
 
             return ObjectOrVariantRequiresSetAssignment(reference, allInterestingDeclarations);
         }
