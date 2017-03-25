@@ -17,7 +17,7 @@ namespace Rubberduck.Parsing.Symbols
                   QualifiedMemberName qualifiedName,
                   Declaration projectDeclaration,
                   string name,
-                  bool isBuiltIn,
+                  bool isUserDefined,
                   IEnumerable<IAnnotation> annotations,
                   Attributes attributes,
                   bool hasDefaultInstanceVariable = false,
@@ -35,8 +35,8 @@ namespace Rubberduck.Parsing.Symbols
                   null,
                   Selection.Home,
                   false,
-                  null,                  
-                  isBuiltIn,
+                  null,
+                  isUserDefined,
                   annotations,
                   attributes)
         {
@@ -69,7 +69,7 @@ namespace Rubberduck.Parsing.Symbols
                 Selection.Home,
                 false,
                 null,
-                true,
+                false,
                 new List<IAnnotation>(),
                 attributes)
         {
@@ -82,13 +82,13 @@ namespace Rubberduck.Parsing.Symbols
             IsControl = coClass.IsControl;
         }
 
-        public ClassModuleDeclaration(ComInterface intrface, Declaration parent, QualifiedModuleName module,
+        public ClassModuleDeclaration(ComInterface @interface, Declaration parent, QualifiedModuleName module,
             Attributes attributes)
             : this(
-                module.QualifyMemberName(intrface.Name),
+                module.QualifyMemberName(@interface.Name),
                 parent,
-                intrface.Name,
-                true,
+                @interface.Name,
+                false,
                 new List<IAnnotation>(),
                 attributes)
         { }
@@ -106,17 +106,11 @@ namespace Rubberduck.Parsing.Symbols
         public static bool HasDefaultMember(Declaration type)
         {
             var classModule = type as ClassModuleDeclaration;
-            return classModule != null && classModule.DefaultMember != null;
+            return classModule?.DefaultMember != null;
         }
 
         private bool? _isExtensible;
-        public bool IsExtensible
-        {
-            get
-            {
-                return _isExtensible.HasValue ? _isExtensible.Value : (_isExtensible = HasAttribute("VB_Customizable")).Value;
-            }
-        }
+        public bool IsExtensible => _isExtensible ?? (_isExtensible = HasAttribute("VB_Customizable")).Value;
 
         private bool? _isExposed;
         /// <summary>
@@ -131,9 +125,9 @@ namespace Rubberduck.Parsing.Symbols
                 {
                     return _isExposed.Value;
                 }
-                if (IsBuiltIn)
+                if (!IsUserDefined)
                 {
-                    _isExposed = IsExposedForBuiltInModules();
+                    _isExposed = IsExposedForBuiltInModules;
                     return _isExposed.Value;
                 }
                 _isExposed = HasAttribute("VB_Exposed");
@@ -144,10 +138,7 @@ namespace Rubberduck.Parsing.Symbols
         // TODO: This should only be a boolean in VBA ('Private' (false) and 'PublicNotCreatable' (true)) . For VB6 it will also need to support
         // 'SingleUse', 'GlobalSingleUse', 'MultiUse', and 'GlobalMultiUse'. See https://msdn.microsoft.com/en-us/library/aa234184%28v=vs.60%29.aspx
         // All built-ins are public (by definition).
-        private static bool IsExposedForBuiltInModules()
-        {
-            return true;
-        }
+        private static bool IsExposedForBuiltInModules { get; } = true;
 
         public bool IsControl { get; private set; }
 
@@ -176,11 +167,10 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
-            private bool IsGlobalFromSubtypes()
-            {
-                return Subtypes.Any(subtype => (subtype is ClassModuleDeclaration && ((ClassModuleDeclaration)subtype).IsGlobalClassModule));
-            }
-
+        private bool IsGlobalFromSubtypes()
+        {
+            return Subtypes.Any(subtype => subtype is ClassModuleDeclaration && ((ClassModuleDeclaration)subtype).IsGlobalClassModule);
+        }
 
         private bool? _hasPredeclaredId;
         /// <summary>
@@ -200,40 +190,15 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
-
-        public bool HasDefaultInstanceVariable
-        {
-            get
-            {
-                return HasPredeclaredId || IsGlobalClassModule;
-            }
-        }
+        public bool HasDefaultInstanceVariable => HasPredeclaredId || IsGlobalClassModule;
 
         public Declaration DefaultMember { get; internal set; }
 
-        public IReadOnlyList<string> SupertypeNames
-        {
-            get
-            {
-                return _supertypeNames;
-            }
-        }
+        public IReadOnlyList<string> SupertypeNames => _supertypeNames;
 
-        public IReadOnlyList<Declaration> Supertypes
-        {
-            get
-            {
-                return _supertypes.ToList();
-            }
-        }
+        public IReadOnlyList<Declaration> Supertypes => _supertypes.ToList();
 
-        public IReadOnlyList<Declaration> Subtypes
-        {
-            get
-            {
-                return _subtypes.ToList();
-            }
-        }
+        public IReadOnlyList<Declaration> Subtypes => _subtypes.ToList();
 
         public void AddSupertype(string supertypeName)
         {

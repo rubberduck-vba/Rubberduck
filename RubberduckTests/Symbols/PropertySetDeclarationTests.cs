@@ -20,7 +20,7 @@ namespace RubberduckTests.Symbols
             private static PropertySetDeclaration GetTestPropertySet(string name, Attributes attributes)
             {
                 var qualifiedName = new QualifiedMemberName(StubQualifiedModuleName(), name);
-                return new PropertySetDeclaration(qualifiedName, null, null, "test", Accessibility.Implicit, null, Selection.Home, false, null, attributes);
+                return new PropertySetDeclaration(qualifiedName, null, null, "test", Accessibility.Implicit, null, Selection.Home, true, null, attributes);
             }
 
                 private static QualifiedModuleName StubQualifiedModuleName()

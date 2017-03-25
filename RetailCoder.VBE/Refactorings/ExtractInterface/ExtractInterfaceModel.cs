@@ -34,8 +34,8 @@ namespace Rubberduck.Refactorings.ExtractInterface
         public ExtractInterfaceModel(RubberduckParserState state, QualifiedSelection selection)
         {
             State = state;
-            var declarations = state.AllDeclarations.ToList();
-            var candidates = declarations.Where(item => !item.IsBuiltIn && ModuleTypes.Contains(item.DeclarationType)).ToList();
+            var declarations = state.AllUserDeclarations.ToList();
+            var candidates = declarations.Where(item => ModuleTypes.Contains(item.DeclarationType)).ToList();
 
             TargetDeclaration = candidates.SingleOrDefault(item => 
                         item.QualifiedSelection.QualifiedName.Equals(selection.QualifiedName));
@@ -47,11 +47,10 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
             InterfaceName = "I" + TargetDeclaration.IdentifierName;
 
-            Members = declarations.Where(item => !item.IsBuiltIn
-                                                  && item.ProjectId == TargetDeclaration.ProjectId
-                                                  && item.ComponentName == TargetDeclaration.ComponentName
-                                                  && (item.Accessibility == Accessibility.Public || item.Accessibility == Accessibility.Implicit)
-                                                  && MemberTypes.Contains(item.DeclarationType))
+            Members = declarations.Where(item => item.ProjectId == TargetDeclaration.ProjectId
+                                                 && item.ComponentName == TargetDeclaration.ComponentName
+                                                 && (item.Accessibility == Accessibility.Public || item.Accessibility == Accessibility.Implicit)
+                                                 && MemberTypes.Contains(item.DeclarationType))
                                    .OrderBy(o => o.Selection.StartLine)
                                    .ThenBy(t => t.Selection.StartColumn)
                                    .Select(d => new InterfaceMember(d))

@@ -79,7 +79,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             if (declaration.DeclarationType == DeclarationType.Enumeration
                 || declaration.DeclarationType == DeclarationType.UserDefinedType)
             {
-                formattedDeclaration = declaration.IsBuiltIn
+                formattedDeclaration = !declaration.IsUserDefined
                     // built-in enums & UDT's don't have a module
                     ? System.IO.Path.GetFileName(moduleName.ProjectPath) + ";" + moduleName.ProjectName + "." + declaration.IdentifierName
                     : moduleName.ToString();
@@ -88,7 +88,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
                 || declaration.DeclarationType == DeclarationType.UserDefinedTypeMember)
             {
                 formattedDeclaration = string.Format("{0}.{1}.{2} {3}",
-                    declaration.IsBuiltIn 
+                    !declaration.IsUserDefined
                         ? System.IO.Path.GetFileName(moduleName.ProjectPath) + ";" + moduleName.ProjectName 
                         : moduleName.ToString(), 
                     declaration.ParentDeclaration.IdentifierName, 

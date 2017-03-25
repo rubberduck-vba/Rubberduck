@@ -24,26 +24,22 @@ namespace Rubberduck.Parsing.VBA
 {
     public class ParserStateEventArgs : EventArgs
     {
-        private readonly ParserState _state;
-
         public ParserStateEventArgs(ParserState state)
         {
-            _state = state;
+            State = state;
         }
 
-        public ParserState State { get { return _state; } }
+        public ParserState State { get; }
     }
 
     public class RubberduckStatusMessageEventArgs : EventArgs
     {
-        private readonly string _message;
-
         public RubberduckStatusMessageEventArgs(string message)
         {
-            _message = message;
+            Message = message;
         }
 
-        public string Message { get { return _message; } }
+        public string Message { get; }
     }
 
     public sealed class RubberduckParserState : IDisposable
@@ -84,6 +80,13 @@ namespace Rubberduck.Parsing.VBA
             _vbe = vbe;
             AddEventHandlers();
             IsEnabled = true;
+
+            StateChanged += RubberduckParserState_StateChanged;
+        }
+
+        private void RubberduckParserState_StateChanged(object sender, ParserStateEventArgs e)
+        {
+            RefreshUserDeclarationsList();
         }
 
         #region Event Handling
@@ -654,39 +657,40 @@ namespace Rubberduck.Parsing.VBA
         private readonly ConcurrentBag<SerializableProject> _builtInDeclarationTrees = new ConcurrentBag<SerializableProject>();
         public IProducerConsumerCollection<SerializableProject> BuiltInDeclarationTrees { get { return _builtInDeclarationTrees; } }
 
+        private IReadOnlyList<Declaration> _allUserDeclarations = new List<Declaration>();
+
         /// <summary>
         /// Gets a copy of the collected declarations, excluding the built-in ones.
         /// </summary>
-        public IReadOnlyList<Declaration> AllUserDeclarations
+        public IReadOnlyList<Declaration> AllUserDeclarations => _allUserDeclarations;
+
+        private void RefreshUserDeclarationsList()
         {
-            get
+            var declarations = new List<Declaration>();
+            foreach (var state in _moduleStates.Values)
             {
-                var declarations = new List<Declaration>();
-                foreach (var state in _moduleStates.Values)
+                if (state.Declarations == null)
                 {
-                    if (state.Declarations == null)
-                    {
-                        continue;
-                    }
+                    continue;
+                }
 
-                    var hasBuiltInDeclaration = false;
-                    foreach (var declaration in state.Declarations.Keys)
+                var hasBuiltInDeclaration = false;
+                foreach (var declaration in state.Declarations.Keys)
+                {
+                    if (!declaration.IsUserDefined)
                     {
-                        if (declaration.IsBuiltIn)
-                        {
-                            hasBuiltInDeclaration = true;
-                            break;
-                        }
-                    }
-
-                    if (!hasBuiltInDeclaration)
-                    {
-                        declarations.AddRange(state.Declarations.Keys);
+                        hasBuiltInDeclaration = true;
+                        break;
                     }
                 }
 
-                return declarations;
+                if (!hasBuiltInDeclaration)
+                {
+                    declarations.AddRange(state.Declarations.Keys);
+                }
             }
+
+            _allUserDeclarations = declarations;
         }
 
         internal IDictionary<Tuple<string, DeclarationType>, Attributes> GetModuleAttributes(IVBComponent vbComponent)
@@ -779,7 +783,7 @@ namespace Rubberduck.Parsing.VBA
         {
             foreach (var declaration in AllDeclarations)
             {
-                if (!declaration.IsBuiltIn)
+                if (declaration.IsUserDefined)
                 {
                     continue;
                 }
@@ -1085,6 +1089,8 @@ namespace Rubberduck.Parsing.VBA
             {
                 return;
             }
+
+            StateChanged -= RubberduckParserState_StateChanged;
 
             foreach (var item in _moduleStates)
             {

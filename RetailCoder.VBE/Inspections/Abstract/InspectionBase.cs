@@ -91,7 +91,7 @@ namespace Rubberduck.Inspections.Abstract
 
         protected virtual IEnumerable<Declaration> BuiltInDeclarations
         {
-            get { return State.AllDeclarations.Where(declaration => declaration.IsBuiltIn); }
+            get { return State.AllDeclarations.Where(declaration => !declaration.IsUserDefined); }
         }
 
         protected bool IsIgnoringInspectionResultFor(IVBComponent component, int line)

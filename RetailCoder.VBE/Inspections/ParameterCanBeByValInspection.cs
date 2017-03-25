@@ -30,7 +30,7 @@ namespace Rubberduck.Inspections
 
             issues.AddRange(GetResults(declarations, interfaceDeclarationMembers));
 
-            var eventMembers = declarations.Where(item => !item.IsBuiltIn && item.DeclarationType == DeclarationType.Event).ToArray();
+            var eventMembers = declarations.Where(item => item.DeclarationType == DeclarationType.Event).ToArray();
             var formEventHandlerScopes = State.FindFormEventHandlers().Select(handler => handler.Scope).ToArray();
             var eventHandlerScopes = State.DeclarationFinder.FindEventHandlers().Concat(declarations.FindUserEventHandlers()).Select(e => e.Scope).ToArray();
             var eventScopes = eventMembers.Select(s => s.Scope)

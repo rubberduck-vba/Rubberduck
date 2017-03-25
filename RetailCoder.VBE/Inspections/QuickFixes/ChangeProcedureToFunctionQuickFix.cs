@@ -106,8 +106,7 @@ namespace Rubberduck.Inspections.QuickFixes
             var procedureName = Identifier.GetName(_subStmtQualifiedContext.Context.subroutineName().identifier());
 
             var procedure =
-                _state.AllDeclarations.SingleOrDefault(d =>
-                    !d.IsBuiltIn &&
+                _state.AllUserDeclarations.SingleOrDefault(d =>
                     d.IdentifierName == procedureName &&
                     d.Context is VBAParser.SubStmtContext &&
                     d.QualifiedName.QualifiedModuleName.Equals(_subStmtQualifiedContext.ModuleName));

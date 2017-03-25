@@ -53,7 +53,7 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
 
             private static bool ThereIsAGlobalBuiltInErrVariableDeclaration(DeclarationFinder finder)
             {
-                return finder.MatchName(Grammar.Tokens.Err).Any(declaration => declaration.IsBuiltIn
+                return finder.MatchName(Grammar.Tokens.Err).Any(declaration => !declaration.IsUserDefined
                                                                         && declaration.DeclarationType == DeclarationType.Variable
                                                                         && declaration.Accessibility == Accessibility.Global);
             }
@@ -93,7 +93,7 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                             null,
                             Selection.Home,
                             false,
-                            true,
+                            false,
                             null,
                             new Attributes());
                     }
@@ -132,7 +132,7 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                             null,
                             Selection.Home,
                             false,
-                            true,
+                            false,
                             null,
                             new Attributes());
                     }

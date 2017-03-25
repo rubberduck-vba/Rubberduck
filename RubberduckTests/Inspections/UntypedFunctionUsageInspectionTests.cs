@@ -210,13 +210,13 @@ End Sub";
             var vbaDeclaration = new ProjectDeclaration(
                 new QualifiedMemberName(new QualifiedModuleName("VBA", MockVbeBuilder.LibraryPathVBA, "VBA"), "VBA"),
                 "VBA",
-                true, null);
+                false, null);
 
             var conversionModule = new ProceduralModuleDeclaration(
                 new QualifiedMemberName(new QualifiedModuleName("VBA", MockVbeBuilder.LibraryPathVBA, "Conversion"), "Conversion"),
                 vbaDeclaration,
                 "Conversion",
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -224,7 +224,7 @@ End Sub";
                 new QualifiedMemberName(new QualifiedModuleName("VBA", MockVbeBuilder.LibraryPathVBA, "FileSystem"), "FileSystem"),
                 vbaDeclaration,
                 "FileSystem",
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -232,7 +232,7 @@ End Sub";
                 new QualifiedMemberName(new QualifiedModuleName("VBA", MockVbeBuilder.LibraryPathVBA, "Interaction"), "Interaction"),
                 vbaDeclaration,
                 "Interaction",
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -240,7 +240,7 @@ End Sub";
                 new QualifiedMemberName(new QualifiedModuleName("VBA", MockVbeBuilder.LibraryPathVBA, "Strings"), "Strings"),
                 vbaDeclaration,
                 "Strings",
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -248,7 +248,7 @@ End Sub";
                 new QualifiedMemberName(new QualifiedModuleName("VBA", MockVbeBuilder.LibraryPathVBA, "DateTime"), "DateTime"),
                 vbaDeclaration,
                 "Strings",
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -256,7 +256,7 @@ End Sub";
                 new QualifiedMemberName(new QualifiedModuleName("VBA", MockVbeBuilder.LibraryPathVBA, "_HiddenModule"), "_HiddenModule"),
                 vbaDeclaration,
                 "_HiddenModule",
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -272,7 +272,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -287,7 +287,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -302,7 +302,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -317,7 +317,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -332,7 +332,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -378,7 +378,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -404,7 +404,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -419,7 +419,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -445,7 +445,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -460,7 +460,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -486,7 +486,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -512,7 +512,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -548,7 +548,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -563,7 +563,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -578,7 +578,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -593,7 +593,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -629,7 +629,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -644,7 +644,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -659,7 +659,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -674,7 +674,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -689,7 +689,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -704,7 +704,7 @@ End Sub";
                 null,
                 new Selection(),
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
         
@@ -720,7 +720,7 @@ End Sub";
                 null,
                 new Selection(),
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -735,7 +735,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -771,7 +771,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
