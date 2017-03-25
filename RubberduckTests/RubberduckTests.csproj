@@ -105,7 +105,6 @@
     <Compile Include="Symbols\AccessibilityCheckTests.cs" />
     <Compile Include="Symbols\ClassModuleDeclarationTests.cs" />
     <Compile Include="Symbols\DeclarationFinderTests.cs" />
-    <Compile Include="Symbols\DeclarationFinderTests_VbaBlocks.cs" />
     <Compile Include="Symbols\ProjectDeclarationTests.cs" />
     <Compile Include="Symbols\ConstantDeclarationTests.cs" />
     <Compile Include="Symbols\ProceduralModuleDeclarationTests.cs" />

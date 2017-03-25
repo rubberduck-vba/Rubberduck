@@ -7,13 +7,11 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Parsing;
 
 namespace Rubberduck.Inspections
 {
     public sealed class ObjectVariableNotSetInspection : InspectionBase
     {
-
         public ObjectVariableNotSetInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Error) {  }
 
@@ -27,7 +25,7 @@ namespace Rubberduck.Inspections
             var candidateReferencesRequiringSetAssignment = 
                 allInterestingDeclarations.SelectMany(dec => dec.References)
                     .Where(dec => !IsIgnoringInspectionResultFor(dec, AnnotationName))
-                        .Where(reference => reference.IsAssignment);
+                    .Where(reference => reference.IsAssignment);
 
             var referencesRequiringSetAssignment = candidateReferencesRequiringSetAssignment                  
                 .Where(reference => VariableRequiresSetAssignmentEvaluator.RequiresSetAssignment(reference, State.AllUserDeclarations));
