@@ -625,6 +625,6 @@
                 </Grid>
             </ScrollViewer>
         </Border>
-        <controls:BusyIndicator Grid.Row="2" Width="36" Height="36" Visibility="{Binding Model.IsBusy, Converter={StaticResource BoolToVisibility}}" />
+        <controls:BusyIndicator Grid.Row="2" Width="120" Height="120" Visibility="{Binding Model.IsBusy, Converter={StaticResource BoolToVisibility}}" />
     </Grid>
 </UserControl>
