@@ -29,7 +29,6 @@ using System.Globalization;
 using System.IO;
 using Ninject.Extensions.Interception.Infrastructure.Language;
 using Ninject.Extensions.NamedScope;
-using NLog;
 using Rubberduck.UI.CodeExplorer.Commands;
 using Rubberduck.UI.Command.MenuItems.CommandBars;
 using Rubberduck.VBEditor.Application;
