@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-namespace Rubberduck.Parsing.Preprocessing
+namespace Rubberduck.Parsing.PreProcessing
 {
     public sealed class DecimalValue : IValue
     {

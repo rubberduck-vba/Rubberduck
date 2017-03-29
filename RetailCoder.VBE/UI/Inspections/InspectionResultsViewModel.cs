@@ -10,8 +10,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using NLog;
 using Rubberduck.Common;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
@@ -111,7 +109,7 @@ namespace Rubberduck.UI.Inspections
                 CanExecuteQuickFixInModule = false;
                 CanExecuteQuickFixInProject = false;
 
-                var inspectionResult = _selectedItem as InspectionResultBase;
+                var inspectionResult = _selectedItem as IInspectionResult;
                 if (inspectionResult != null)
                 {
                     SelectedInspection = inspectionResult.Inspection;
@@ -320,7 +318,7 @@ namespace Rubberduck.UI.Inspections
 
         private void ExecuteQuickFixCommand(object parameter)
         {
-            var quickFix = parameter as QuickFixBase;
+            var quickFix = parameter as IQuickFix;
             if (quickFix == null)
             {
                 return;
@@ -331,7 +329,7 @@ namespace Rubberduck.UI.Inspections
 
         private bool CanExecuteQuickFixCommand(object parameter)
         {
-            var quickFix = parameter as QuickFixBase;
+            var quickFix = parameter as IQuickFix;
             return !IsBusy && quickFix != null && _state.Status == ParserState.Ready;
         }
 
@@ -349,7 +347,7 @@ namespace Rubberduck.UI.Inspections
                 return;
             }
 
-            var selectedResult = SelectedItem as InspectionResultBase;
+            var selectedResult = SelectedItem as IInspectionResult;
             if (selectedResult == null)
             {
                 return;
@@ -361,9 +359,9 @@ namespace Rubberduck.UI.Inspections
                 .ToList();
 
             var items = filteredResults
-                .Where(result => !(result is AggregateInspectionResult))
+                .Where(result => result.GetType().Name != "AggregateInspectionResult")
                 .Select(item => item.QuickFixes.Single(fix => fix.GetType() == _defaultFix.GetType()))
-                .Union(filteredResults.OfType<AggregateInspectionResult>().Select(aggregate => aggregate.DefaultQuickFix))
+                .Union(filteredResults.Where(r => r.GetType().Name == "AggregateInspectionResult").Select(aggregate => aggregate.DefaultQuickFix))
                 .OrderByDescending(fix => fix.Selection);
             ExecuteQuickFixes(items);
         }

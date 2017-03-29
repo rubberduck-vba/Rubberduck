@@ -1,10 +1,10 @@
-﻿using Antlr4.Runtime;
+﻿using System;
+using System.Linq;
+using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Rubberduck.Parsing.Symbols;
-using System;
-using System.Linq;
 
-namespace Rubberduck.Parsing.Preprocessing
+namespace Rubberduck.Parsing.PreProcessing
 {
     public sealed class VBAPreprocessorVisitor : VBAConditionalCompilationParserBaseVisitor<IExpression>
     {

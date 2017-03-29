@@ -9,13 +9,13 @@ using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.Symbols.DeclarationLoaders;
 using Rubberduck.VBEditor;
-using Rubberduck.Parsing.Preprocessing;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using NLog;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using System.Runtime.InteropServices;
+using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.VBEditor.Application;
 
 // ReSharper disable LoopCanBeConvertedToQuery

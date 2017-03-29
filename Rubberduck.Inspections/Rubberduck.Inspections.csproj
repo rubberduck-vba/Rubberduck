@@ -1,0 +1,226 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{AC4F1D22-D74B-45FF-AB0C-CC2A104FE023}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Rubberduck.Inspections</RootNamespace>
+    <AssemblyName>Rubberduck.Inspections</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Antlr4.Runtime.net45, Version=4.3.0.0, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Antlr4.Runtime.4.3.0\lib\net45\Antlr4.Runtime.net45.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.0.1\lib\net45\NLog.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Abstract\InspectionBase.cs" />
+    <Compile Include="Abstract\InspectionResultBase.cs" />
+    <Compile Include="Abstract\QuickFixBase.cs" />
+    <Compile Include="Concrete\ApplicationWorksheetFunctionInspection.cs" />
+    <Compile Include="Concrete\AssignedByValParameterInspection.cs" />
+    <Compile Include="Concrete\ConstantNotUsedInspection.cs" />
+    <Compile Include="Concrete\DefaultProjectNameInspection.cs" />
+    <Compile Include="Concrete\EmptyStringLiteralInspection.cs" />
+    <Compile Include="Concrete\EncapsulatePublicFieldInspection.cs" />
+    <Compile Include="Concrete\FunctionReturnValueNotUsedInspection.cs" />
+    <Compile Include="Concrete\HostSpecificExpressionInspection.cs" />
+    <Compile Include="Concrete\HungarianNotationInspection.cs" />
+    <Compile Include="Concrete\ImplicitActiveSheetReferenceInspection.cs" />
+    <Compile Include="Concrete\ImplicitActiveWorkbookReferenceInspection.cs" />
+    <Compile Include="Concrete\ImplicitByRefParameterInspection.cs" />
+    <Compile Include="Concrete\ImplicitDefaultMemberAssignmentInspection.cs" />
+    <Compile Include="Concrete\ImplicitPublicMemberInspection.cs" />
+    <Compile Include="Concrete\ImplicitVariantReturnTypeInspection.cs" />
+    <Compile Include="Inspector.cs" />
+    <Compile Include="Concrete\MemberNotOnInterfaceInspection.cs" />
+    <Compile Include="Concrete\MissingAnnotationArgumentInspection.cs" />
+    <Compile Include="Concrete\ModuleScopeDimKeywordInspection.cs" />
+    <Compile Include="Concrete\MoveFieldCloserToUsageInspection.cs" />
+    <Compile Include="Concrete\MultilineParameterInspection.cs" />
+    <Compile Include="Concrete\MultipleDeclarationsInspection.cs" />
+    <Compile Include="Concrete\MultipleFolderAnnotationsInspection.cs" />
+    <Compile Include="Concrete\NonReturningFunctionInspection.cs" />
+    <Compile Include="Concrete\ObjectVariableNotSetInspection.cs" />
+    <Compile Include="Concrete\ObsoleteCallStatementInspection.cs" />
+    <Compile Include="Concrete\ObsoleteCommentSyntaxInspection.cs" />
+    <Compile Include="Concrete\ObsoleteGlobalInspection.cs" />
+    <Compile Include="Concrete\ObsoleteLetStatementInspection.cs" />
+    <Compile Include="Concrete\ObsoleteTypeHintInspection.cs" />
+    <Compile Include="Concrete\OptionBaseInspection.cs" />
+    <Compile Include="Concrete\OptionBaseZeroInspection.cs" />
+    <Compile Include="Concrete\OptionExplicitInspection.cs" />
+    <Compile Include="Concrete\ParameterCanBeByValInspection.cs" />
+    <Compile Include="Concrete\ParameterNotUsedInspection.cs" />
+    <Compile Include="Concrete\ProcedureCanBeWrittenAsFunctionInspection.cs" />
+    <Compile Include="Concrete\ProcedureNotUsedInspection.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QuickFixes\AddIdentifierToWhiteListQuickFix.cs" />
+    <Compile Include="QuickFixes\ApplicationWorksheetFunctionQuickFix.cs" />
+    <Compile Include="QuickFixes\AssignedByValParameterMakeLocalCopyQuickFix.cs" />
+    <Compile Include="QuickFixes\ChangeDimToPrivateQuickFix.cs" />
+    <Compile Include="QuickFixes\ChangeParameterByRefByValQuickFix.cs" />
+    <Compile Include="QuickFixes\ChangeProcedureToFunctionQuickFix.cs" />
+    <Compile Include="QuickFixes\CompositeCodeInspectionFix.cs" />
+    <Compile Include="QuickFixes\ConvertToProcedureQuickFix.cs" />
+    <Compile Include="QuickFixes\DeclareAsExplicitVariantQuickFix.cs" />
+    <Compile Include="QuickFixes\EncapsulateFieldQuickFix.cs" />
+    <Compile Include="QuickFixes\IgnoreOnceQuickFix.cs" />
+    <Compile Include="QuickFixes\IntroduceLocalVariableQuickFix.cs" />
+    <Compile Include="QuickFixes\MakeSingleLineParameterQuickFix.cs" />
+    <Compile Include="QuickFixes\MoveFieldCloserToUsageQuickFix.cs" />
+    <Compile Include="QuickFixes\OptionExplicitQuickFix.cs" />
+    <Compile Include="QuickFixes\PassParameterByReferenceQuickFix.cs" />
+    <Compile Include="QuickFixes\PassParameterByValueQuickFix.cs" />
+    <Compile Include="QuickFixes\RemoveCommentQuickFix.cs" />
+    <Compile Include="QuickFixes\RemoveExplicitCallStatmentQuickFix.cs" />
+    <Compile Include="QuickFixes\RemoveExplicitLetStatementQuickFix.cs" />
+    <Compile Include="QuickFixes\RemoveOptionBaseStatementQuickFix.cs" />
+    <Compile Include="QuickFixes\RemoveTypeHintsQuickFix.cs" />
+    <Compile Include="QuickFixes\RemoveUnassignedIdentifierQuickFix.cs" />
+    <Compile Include="QuickFixes\RemoveUnassignedVariableUsageQuickFix.cs" />
+    <Compile Include="QuickFixes\RemoveUnusedDeclarationQuickFix.cs" />
+    <Compile Include="QuickFixes\RemoveUnusedParameterQuickFix.cs" />
+    <Compile Include="QuickFixes\RenameDeclarationQuickFix.cs" />
+    <Compile Include="QuickFixes\RenameProjectQuickFix.cs" />
+    <Compile Include="QuickFixes\RepaceEmptyStringLiteralStatementQuickFix.cs" />
+    <Compile Include="QuickFixes\ReplaceGlobalModifierQuickFix.cs" />
+    <Compile Include="QuickFixes\ReplaceObsoleteCommentMarkerQuickFix.cs" />
+    <Compile Include="QuickFixes\SetExplicitVariantReturnTypeQuickFix.cs" />
+    <Compile Include="QuickFixes\SpecifyExplicitPublicModifierQuickFix.cs" />
+    <Compile Include="QuickFixes\SplitMultipleDeclarationsQuickFix.cs" />
+    <Compile Include="QuickFixes\UntypedFunctionUsageQuickFix.cs" />
+    <Compile Include="QuickFixes\UseSetKeywordForObjectAssignmentQuickFix.cs" />
+    <Compile Include="QuickFixes\WriteOnlyPropertyQuickFix.cs" />
+    <Compile Include="Results\ApplicationWorksheetFunctionInspectionResult.cs" />
+    <Compile Include="Results\AssignedByValParameterInspectionResult.cs" />
+    <Compile Include="Results\DefaultProjectNameInspectionResult.cs" />
+    <Compile Include="Results\EmptyStringLiteralInspectionResult.cs" />
+    <Compile Include="Results\EncapsulatePublicFieldInspectionResult.cs" />
+    <Compile Include="Results\FunctionReturnValueNotUsedInspectionResult.cs" />
+    <Compile Include="Results\HostSpecificExpressionInspectionResult.cs" />
+    <Compile Include="Results\IdentifierNameInspectionResult.cs" />
+    <Compile Include="Results\IdentifierNotAssignedInspectionResult.cs" />
+    <Compile Include="Results\IdentifierNotUsedInspectionResult.cs" />
+    <Compile Include="Results\ImplicitActiveSheetReferenceInspectionResult.cs" />
+    <Compile Include="Results\ImplicitActiveWorkbookReferenceInspectionResult.cs" />
+    <Compile Include="Results\ImplicitByRefParameterInspectionResult.cs" />
+    <Compile Include="Results\ImplicitDefaultMemberAssignmentInspectionResult.cs" />
+    <Compile Include="Results\ImplicitPublicMemberInspectionResult.cs" />
+    <Compile Include="Results\ImplicitVariantReturnTypeInspectionResult.cs" />
+    <Compile Include="Results\MemberNotOnInterfaceInspectionResult.cs" />
+    <Compile Include="Results\MissingAnnotationArgumentInspectionResult.cs" />
+    <Compile Include="Results\ModuleScopeDimKeywordInspectionResult.cs" />
+    <Compile Include="Results\MoveFieldCloserToUsageInspectionResult.cs" />
+    <Compile Include="Results\MultilineParameterInspectionResult.cs" />
+    <Compile Include="Results\MultipleDeclarationsInspectionResult.cs" />
+    <Compile Include="Results\MultipleFolderAnnotationsInspectionResult.cs" />
+    <Compile Include="Results\NonReturningFunctionInspectionResult.cs" />
+    <Compile Include="Results\ObjectVariableNotSetInspectionResult.cs" />
+    <Compile Include="Results\ObsoleteCallStatementUsageInspectionResult.cs" />
+    <Compile Include="Results\ObsoleteCommentSyntaxInspectionResult.cs" />
+    <Compile Include="Results\ObsoleteGlobalInspectionResult.cs" />
+    <Compile Include="Results\ObsoleteLetStatementUsageInspectionResult.cs" />
+    <Compile Include="Results\ObsoleteTypeHintInspectionResult.cs" />
+    <Compile Include="Results\OptionBaseInspectionResult.cs" />
+    <Compile Include="Results\OptionBaseZeroInspectionResult.cs" />
+    <Compile Include="Results\OptionExplicitInspectionResult.cs" />
+    <Compile Include="Results\ParameterCanBeByValInspectionResult.cs" />
+    <Compile Include="Results\ParameterNotUsedInspectionResult.cs" />
+    <Compile Include="Results\ProcedureCanBeWrittenAsFunctionInspectionResult.cs" />
+    <Compile Include="Results\SelfAssignedDeclarationInspectionResult.cs" />
+    <Compile Include="Results\UnassignedVariableUsageInspectionResult.cs" />
+    <Compile Include="Results\UndeclaredVariableInspectionResult.cs" />
+    <Compile Include="Results\UntypedFunctionUsageInspectionResult.cs" />
+    <Compile Include="Results\VariableTypeNotDeclaredInspectionResult.cs" />
+    <Compile Include="Results\WriteOnlyPropertyInspectionResult.cs" />
+    <Compile Include="Concrete\SelfAssignedDeclarationInspection.cs" />
+    <Compile Include="Concrete\UnassignedVariableUsageInspection.cs" />
+    <Compile Include="Concrete\UndeclaredVariableInspection.cs" />
+    <Compile Include="Concrete\UntypedFunctionUsageInspection.cs" />
+    <Compile Include="Concrete\UseMeaningfulNameInspection.cs" />
+    <Compile Include="Concrete\VariableNotAssignedInspection.cs" />
+    <Compile Include="Concrete\VariableNotUsedInspection.cs" />
+    <Compile Include="VariableRequiresSetAssignmentEvaluator.cs" />
+    <Compile Include="Concrete\VariableTypeNotDeclaredInspection.cs" />
+    <Compile Include="Concrete\WriteOnlyPropertyInspection.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RetailCoder.VBE\Rubberduck.csproj">
+      <Project>{20589de8-432e-4359-9232-69eb070b7185}</Project>
+      <Name>Rubberduck</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
+      <Project>{a4a618e1-cbca-435f-9c6c-5181e030adfc}</Project>
+      <Name>Rubberduck.Parsing</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj">
+      <Project>{e85e1253-86d6-45ee-968b-f37348d44132}</Project>
+      <Name>Rubberduck.SettingsProvider</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.SmartIndenter\Rubberduck.SmartIndenter.csproj">
+      <Project>{b9c0bf22-4d8a-4bf4-89f9-e789c0063deb}</Project>
+      <Name>Rubberduck.SmartIndenter</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj">
+      <Project>{8ce35eb3-8852-4ba1-84dd-df3f5d2967b0}</Project>
+      <Name>Rubberduck.VBEditor</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy $(TargetPath) $(SolutionDir)RetailCoder.VBE\bin\Debug</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

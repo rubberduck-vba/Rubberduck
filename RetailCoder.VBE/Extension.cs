@@ -1,7 +1,6 @@
 ﻿using Extensibility;
 using Ninject;
 using Ninject.Extensions.Factory;
-using Rubberduck.Common.WinAPI;
 using Rubberduck.Root;
 using Rubberduck.UI;
 using System;
@@ -22,6 +21,8 @@ using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.WindowsApi;
+using User32 = Rubberduck.Common.WinAPI.User32;
 
 namespace Rubberduck
 {
