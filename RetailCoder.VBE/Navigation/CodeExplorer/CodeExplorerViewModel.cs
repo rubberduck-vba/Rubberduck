@@ -370,11 +370,11 @@ namespace Rubberduck.Navigation.CodeExplorer
             {
                 return new ProceduralModuleDeclaration(
                         new QualifiedMemberName(new QualifiedModuleName(component), component.Name), projectDeclaration,
-                        component.Name, false, new List<IAnnotation>(), null);
+                        component.Name, true, new List<IAnnotation>(), null);
             }
 
             return new ClassModuleDeclaration(new QualifiedMemberName(new QualifiedModuleName(component), component.Name),
-                    projectDeclaration, component.Name, false, new List<IAnnotation>(), null);
+                    projectDeclaration, component.Name, true, new List<IAnnotation>(), null);
         }
 
         private void ReorderChildNodes(IEnumerable<CodeExplorerItemViewModel> nodes)

@@ -2,7 +2,6 @@
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -14,50 +13,32 @@ namespace Rubberduck.Inspections
     public sealed class ObjectVariableNotSetInspection : InspectionBase
     {
         public ObjectVariableNotSetInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Error)
-        {
-        }
+            : base(state, CodeInspectionSeverity.Error) {  }
 
         public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
-            var interestingDeclarations =
-                State.AllUserDeclarations.Where(item =>
-                        !item.IsSelfAssigned &&
-                        !item.IsArray &&
-                        !SymbolList.ValueTypes.Contains(item.AsTypeName) &&
-                        (item.AsTypeDeclaration == null || (!ClassModuleDeclaration.HasDefaultMember(item.AsTypeDeclaration) &&
-                        item.AsTypeDeclaration.DeclarationType != DeclarationType.Enumeration &&
-                        item.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType)) &&
-                        (item.DeclarationType == DeclarationType.Variable ||
-                         item.DeclarationType == DeclarationType.Parameter));
+            var allInterestingDeclarations =
+                VariableRequiresSetAssignmentEvaluator.GetDeclarationsPotentiallyRequiringSetAssignment(State.AllUserDeclarations);
 
-            var interestingMembers =
-                State.AllUserDeclarations.Where(item =>
-                    (item.DeclarationType == DeclarationType.Function || item.DeclarationType == DeclarationType.PropertyGet)
-                    && !item.IsArray
-                    && item.IsTypeSpecified
-                    && !SymbolList.ValueTypes.Contains(item.AsTypeName) 
-                    && (item.AsTypeDeclaration == null // null if unresolved (e.g. in unit tests)
-                        || (item.AsTypeDeclaration.DeclarationType != DeclarationType.Enumeration && item.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType 
-                            && item.AsTypeDeclaration != null 
-                            && !ClassModuleDeclaration.HasDefaultMember(item.AsTypeDeclaration))));
+            var candidateReferencesRequiringSetAssignment = 
+                allInterestingDeclarations.SelectMany(dec => dec.References)
+                    .Where(dec => !IsIgnoringInspectionResultFor(dec, AnnotationName))
+                    .Where(reference => reference.IsAssignment);
 
-            var interestingReferences = interestingDeclarations
-                    .Union(interestingMembers.SelectMany(item =>
-                        item.References.Where(reference => reference.ParentScoping.Equals(item) && reference.IsAssignment)
-                    .Select(reference => reference.Declaration)))
-                    .SelectMany(declaration =>
-                        declaration.References.Where(reference =>
-                        {
-                            var letStmtContext = ParserRuleContextHelper.GetParent<VBAParser.LetStmtContext>(reference.Context);
-                            return reference.IsAssignment && letStmtContext != null && letStmtContext.LET() == null;
-                        })
-                    );
+            var referencesRequiringSetAssignment = candidateReferencesRequiringSetAssignment                  
+                .Where(reference => VariableRequiresSetAssignmentEvaluator.RequiresSetAssignment(reference, State));
 
+            var objectVariableNotSetReferences = referencesRequiringSetAssignment.Where(reference => FlagIfObjectVariableNotSet(reference));
 
-            return interestingReferences.Select(reference => new ObjectVariableNotSetInspectionResult(this, reference));
+            return objectVariableNotSetReferences.Select(reference => new ObjectVariableNotSetInspectionResult(this, reference));
+        }
+
+        private bool FlagIfObjectVariableNotSet(IdentifierReference reference)
+        {
+            var letStmtContext = ParserRuleContextHelper.GetParent<VBAParser.LetStmtContext>(reference.Context);
+            return (reference.IsAssignment && letStmtContext != null);
         }
     }
 }

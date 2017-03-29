@@ -28,8 +28,7 @@ namespace Rubberduck.Inspections
                         item.Accessibility == Accessibility.Global)
                     && (item.DeclarationType == DeclarationType.PropertyLet ||
                         item.DeclarationType == DeclarationType.PropertySet)
-                    && !declarations.Where(declaration => declaration.IdentifierName == item.IdentifierName)
-                        .Any(accessor => !accessor.IsBuiltIn && accessor.DeclarationType == DeclarationType.PropertyGet))
+                    && declarations.Where(declaration => declaration.IdentifierName == item.IdentifierName).All(accessor => accessor.DeclarationType != DeclarationType.PropertyGet))
                 .GroupBy(item => new {item.QualifiedName, item.DeclarationType})
                 .Select(grouping => grouping.First()); // don't get both Let and Set accessors
 

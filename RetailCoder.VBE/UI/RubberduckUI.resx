@@ -1273,6 +1273,7 @@ Are you sure you want to proceed with this rename?</value>
     <value>Parsing powered by ANTLR
 GitHub integration powered by LibGit2Sharp
 Syntax highlighting powered by AvalonEdit
+Native hooks powered by EasyHook
 Fugue icons by Yusuke Kamiyamane
 IDE icons from SharpDevelop
 WPF localization support by Grant Frisken</value>
@@ -2012,7 +2013,52 @@ Would you like to import them to Rubberduck?</value>
   <data name="Assert_ValueReferenceMismatch" xml:space="preserve">
     <value>[expected] is a value type and [actual] is a reference type.</value>
   </data>
+  <data name="Assert_ComException" xml:space="preserve">
+    <value>Unexpected COM exception while running tests.</value>
+  </data>
+  <data name="Assert_EasterEggAssertClassPassed" xml:space="preserve">
+    <value>OK, Rubberduck asserted.  Now what?</value>
+    <comment>Reported when an AssertClass is passed as a parameter to a faked function.</comment>
+  </data>
+  <data name="Assert_EasterEggIFakePassed" xml:space="preserve">
+    <value>Expected: Stack overflow?; Actual: Guard clause.</value>
+    <comment>Reported when an IFake interface is passed as a parameter to a faked function.</comment>
+  </data>
+  <data name="Assert_EasterEggIVerifyPassed" xml:space="preserve">
+    <value>IVerify too.</value>
+    <comment>Reported when an IVerify interface is passed as a parameter to a faked function.</comment>
+  </data>
+  <data name="Assert_GenericException" xml:space="preserve">
+    <value>Unexpected exception while running tests.</value>
+  </data>
+  <data name="Assert_NotImplemented" xml:space="preserve">
+    <value>Not implemented.</value>
+    <comment>Placeholder text for planned functionality.</comment>
+  </data>
+  <data name="Assert_ParameterResultFormat" xml:space="preserve">
+    <value>Expected: {0}; Actual: {1}. {2}</value>
+    <comment>{0} = expected value, {1} = actual value, {2} = optional user supplied message (always last)</comment>
+  </data>
+  <data name="Assert_VerifyInternalErrorMessage" xml:space="preserve">
+    <value>Rubberduck could not process the invocation results.</value>
+  </data>
+  <data name="Assert_VerifyNoInvocationFormat" xml:space="preserve">
+    <value>No matching invocation for parameter {0}; Only {1} invocations. {2}</value>
+    <comment>{0} = parameter name, {1} = number of invokes, {2} = optional user supplied message (always last)</comment>
+  </data>
+  <data name="Assert_VerifyParameterNonNumeric" xml:space="preserve">
+    <value>Parameter {0} was not a numeric value on invocatoin {1}. {2}</value>
+    <comment>{0} = parameter name, {1} = invocation under test, {2} = optional user supplied message (always last)</comment>
+  </data>
+  <data name="Assert_VerifyParameterNotPassed" xml:space="preserve">
+    <value>Parameter {0} was not passed on invocation {1}. {2}</value>
+    <comment>{0} = parameter name, {1} = invocation under test, {2} = optional user supplied message (always last)</comment>
+  </data>
   <data name="Preview" xml:space="preserve">
     <value>Preview</value>
+  </data>
+  <data name="Assert_InvalidFakePassThrough" xml:space="preserve">
+    <value>Invalid setup of IFake {0}. PassThrough property must be False.</value>
+    <comment>{0} = name of the function being faked.</comment>
   </data>
 </root>

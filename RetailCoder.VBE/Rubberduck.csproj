@@ -229,6 +229,10 @@
     <Reference Include="Castle.Core">
       <HintPath>..\packages\Castle.Core.3.2.0\lib\net45\Castle.Core.dll</HintPath>
     </Reference>
+    <Reference Include="EasyHook, Version=2.7.6270.0, Culture=neutral, PublicKeyToken=4b580fca19d0b0c5, processorArchitecture=MSIL">
+      <HintPath>..\packages\EasyHook.2.7.6270\lib\net40\EasyHook.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="extensibility, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
@@ -287,6 +291,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Printing" />
+    <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
@@ -401,6 +406,7 @@
     <Compile Include="Inspections\QuickFixes\WriteOnlyPropertyQuickFix.cs" />
     <Compile Include="Inspections\Results\WriteOnlyPropertyInspectionResult.cs" />
     <Compile Include="Inspections\VariableNameValidator.cs" />
+    <Compile Include="Inspections\VariableRequiresSetAssignmentEvaluator.cs" />
     <Compile Include="Navigation\CodeExplorer\ICodeExplorerDeclarationViewModel.cs" />
     <Compile Include="Navigation\Folders\FolderHelper.cs" />
     <Compile Include="Refactorings\EncapsulateField\PropertyGenerator.cs" />
@@ -419,6 +425,8 @@
     <Compile Include="Root\InterceptedException.cs" />
     <Compile Include="Root\InterceptorBase.cs" />
     <Compile Include="Root\TimedCallLoggerInterceptor.cs" />
+    <Compile Include="RubberduckGuid.cs" />
+    <Compile Include="RubberduckProgId.cs" />
     <Compile Include="Settings\CodeInspectionConfigProvider.cs" />
     <Compile Include="Settings\GeneralConfigProvider.cs" />
     <Compile Include="Settings\HotkeySettings.cs" />
@@ -492,7 +500,31 @@
     </Compile>
     <Compile Include="UI\Refactorings\ReorderParameters\ReorderParametersViewModel.cs" />
     <Compile Include="UI\SelectionChangeService.cs" />
+    <Compile Include="UnitTesting\Fakes\CurDir.cs" />
+    <Compile Include="UnitTesting\Fakes\DoEvents.cs" />
+    <Compile Include="UnitTesting\Fakes\Environ.cs" />
+    <Compile Include="UnitTesting\FakeBase.cs" />
+    <Compile Include="UnitTesting\FakesProvider.cs" />
+    <Compile Include="UnitTesting\FakesProviderFactory.cs" />
+    <Compile Include="UnitTesting\Fakes\Shell.cs" />
+    <Compile Include="UnitTesting\IFake.cs" />
+    <Compile Include="UnitTesting\IFakesProvider.cs" />
+    <Compile Include="UnitTesting\Fakes\InputBox.cs" />
+    <Compile Include="UnitTesting\IVerify.cs" />
+    <Compile Include="UnitTesting\Fakes\MsgBox.cs" />
+    <Compile Include="UnitTesting\ReturnTypeConverter.cs" />
+    <Compile Include="UnitTesting\Fakes\Timer.cs" />
+    <Compile Include="UnitTesting\Stubs\ChDir.cs" />
+    <Compile Include="UnitTesting\Stubs\ChDrive.cs" />
+    <Compile Include="UnitTesting\Stubs\Kill.cs" />
+    <Compile Include="UnitTesting\Stubs\MkDir.cs" />
+    <Compile Include="UnitTesting\Stubs\RmDir.cs" />
+    <Compile Include="UnitTesting\Stubs\SendKeys.cs" />
+    <Compile Include="UnitTesting\Verifier.cs" />
     <Compile Include="UnitTesting\PermissiveObjectComparer.cs" />
+    <Compile Include="UnitTesting\Stubs\Beep.cs" />
+    <Compile Include="UnitTesting\IStub.cs" />
+    <Compile Include="UnitTesting\StubBase.cs" />
     <Compile Include="VersionCheck\IVersionCheck.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\AppCommandBarBase.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\ContextSelectionLabelMenuItem.cs" />
@@ -1035,7 +1067,6 @@
     <Compile Include="UnitTesting\UnitTestUtils.cs" />
     <Compile Include="UnitTesting\IAssert.cs" />
     <Compile Include="UnitTesting\ITestEngine.cs" />
-    <Compile Include="UnitTesting\ITestRunner.cs" />
     <Compile Include="UnitTesting\ProjectTestExtensions.cs" />
     <Compile Include="UnitTesting\TestEngine.cs" />
     <Compile Include="UnitTesting\TestMethod.cs" />
@@ -1043,7 +1074,6 @@
     <Compile Include="UI\UnitTesting\TestOutcomeImageSourceConverter.cs" />
     <Compile Include="UnitTesting\TestResult.cs" />
     <Compile Include="UI\UnitTesting\TestResultToOutcomeTextConverter.cs" />
-    <Compile Include="UnitTesting\TestRunner.cs" />
     <Compile Include="UnitTesting\PermissiveAssertClass.cs" />
     <Compile Include="UI\Command\Refactorings\RefactorCommandBase.cs" />
     <Compile Include="UI\Command\Refactorings\RefactorExtractMethodCommand.cs" />
@@ -1195,6 +1225,24 @@
     <Resource Include="Resources\disk.png" />
     <Resource Include="Resources\arrow-circle-left.png" />
     <Resource Include="Resources\terminal.png" />
+    <Content Include="EasyHook32.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="EasyHook32Svc.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="EasyHook64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="EasyHook64Svc.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="EasyLoad32.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="EasyLoad64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\arrow_circle_double_mask.bmp" />
     <Content Include="Resources\balloon_ellipsis.bmp" />
     <Content Include="Resources\balloon_mask.bmp" />

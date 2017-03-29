@@ -6,7 +6,7 @@ using Rubberduck.Parsing.Grammar;
 namespace Rubberduck.Parsing.ComReflection
 {
     //See https://limbioliong.wordpress.com/2011/09/04/using-variants-in-managed-code-part-1/
-    public class ComVariant
+    public class ComVariant : IEquatable<ComVariant>
     {
         internal static readonly IDictionary<VarEnum, string> TypeNames = new Dictionary<VarEnum, string>
         {
@@ -51,8 +51,8 @@ namespace Rubberduck.Parsing.ComReflection
             private readonly int data02;
         }
 
-        public VarEnum VariantType { get; private set; }
-        public object Value { get; private set; }
+        public VarEnum VariantType { get; }
+        public object Value { get; }
 
         public ComVariant(IntPtr variant)
         {
@@ -62,6 +62,27 @@ namespace Rubberduck.Parsing.ComReflection
             if (Value == null && VariantType == VarEnum.VT_BSTR)
             {
                 Value = string.Empty;
+            }
+        }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as ComVariant;
+            return other != null ? Equals(other) : Value.Equals(obj);
+        }
+
+        public bool Equals(ComVariant other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return VariantType == other.VariantType && Equals(Value, other.Value);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return ((int)VariantType * 397) ^ (Value?.GetHashCode() ?? 0);
             }
         }
     }

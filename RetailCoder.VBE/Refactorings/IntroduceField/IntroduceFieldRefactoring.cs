@@ -22,8 +22,8 @@ namespace Rubberduck.Refactorings.IntroduceField
 
         public IntroduceFieldRefactoring(IVBE vbe, RubberduckParserState state, IMessageBox messageBox)
         {
-            _declarations = state.AllDeclarations
-                .Where(i => !i.IsBuiltIn && i.DeclarationType == DeclarationType.Variable)
+            _declarations = state.AllUserDeclarations
+                .Where(i => i.DeclarationType == DeclarationType.Variable)
                 .ToList();
 
             _vbe = vbe;

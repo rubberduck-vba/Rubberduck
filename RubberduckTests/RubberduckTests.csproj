@@ -105,7 +105,6 @@
     <Compile Include="Symbols\AccessibilityCheckTests.cs" />
     <Compile Include="Symbols\ClassModuleDeclarationTests.cs" />
     <Compile Include="Symbols\DeclarationFinderTests.cs" />
-    <Compile Include="Symbols\DeclarationFinderTests_VbaBlocks.cs" />
     <Compile Include="Symbols\ProjectDeclarationTests.cs" />
     <Compile Include="Symbols\ConstantDeclarationTests.cs" />
     <Compile Include="Symbols\ProceduralModuleDeclarationTests.cs" />
@@ -128,7 +127,7 @@
     <Compile Include="Inspections\GeneralInspectionTests.cs" />
     <Compile Include="Inspections\ImplicitActiveSheetReferenceInspectionTests.cs" />
     <Compile Include="Inspections\MultipleFolderAnnotationsInspectionTests.cs" />
-    <Compile Include="Inspections\ObjectVariableNotSetInpsectionTests.cs" />
+    <Compile Include="Inspections\ObjectVariableNotSetInspectionTests.cs" />
     <Compile Include="Inspections\MalformedAnnotationInspectionTests.cs" />
     <Compile Include="Inspections\SelfAssignedDeclarationInspectionTests.cs" />
     <Compile Include="Inspections\UntypedFunctionUsageInspectionTests.cs" />
@@ -247,6 +246,8 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <None Include="IntegrationTests\FakeTests.bas" />
+    <None Include="IntegrationTests\StubTests.bas" />
     <Content Include="Testfiles\Grammar\Reference_Module_1.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

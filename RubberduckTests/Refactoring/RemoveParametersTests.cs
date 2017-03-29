@@ -425,7 +425,7 @@ End Property";
         {
             //Input
             const string inputCode = @"
-Private Property Set Foo(ByVal arg1 As Integer, ByVal arg2 As String) 
+Private Property Set Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Property";
 
             //Expectation
@@ -460,7 +460,7 @@ End Property";
         {
             //Input
             const string inputCode =
-@"Private Property Set Foo(ByVal arg1 As Integer, ByVal arg2 As String) 
+@"Private Property Set Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Property";
             var selection = new Selection(1, 23, 1, 27);
 
@@ -725,10 +725,10 @@ End Property";
         {
             //Input
             const string inputCode =
-@"Private Property Get Foo(ByVal arg1 As Integer) 
+@"Private Property Get Foo(ByVal arg1 As Integer)
 End Property
 
-Private Property Set Foo(ByVal arg1 As Integer, ByVal arg2 As String) 
+Private Property Set Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Property";
             var selection = new Selection(1, 23, 1, 27);
 
@@ -764,10 +764,10 @@ End Property";
         {
             //Input
             const string inputCode =
-@"Private Property Get Foo(ByVal arg1 As Integer) 
+@"Private Property Get Foo(ByVal arg1 As Integer)
 End Property
 
-Private Property Let Foo(ByVal arg1 As Integer, ByVal arg2 As String) 
+Private Property Let Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Property";
             var selection = new Selection(1, 23, 1, 27);
 
@@ -895,7 +895,8 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-@"Private Sub Foo(ByVal arg2 As String, ByVal arg3 As Date)
+@"Private Sub Foo(ByVal arg2 As String, _
+                  ByVal arg3 As Date)
 End Sub";   // note: VBE removes excess spaces
 
             IVBComponent component;
@@ -930,7 +931,8 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-@"Private Sub Foo(ByVal arg1 As Integer, ByVal arg3 As Date)
+@"Private Sub Foo(ByVal arg1 As Integer, _
+                  ByVal arg3 As Date)
 End Sub";   // note: VBE removes excess spaces
 
             IVBComponent component;
@@ -965,7 +967,8 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-@"Private Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+@"Private Sub Foo(ByVal arg1 As Integer, _
+                  ByVal arg2 As String)
 End Sub";   // note: VBE removes excess spaces
 
             IVBComponent component;
@@ -1000,7 +1003,8 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-@"Private Sub Foo(ByVal arg2 As String, ByVal arg3 As Date)
+@"Private Sub Foo(ByVal arg2 As String, _
+                  ByVal arg3 As Date)
 End Sub";   // note: VBE removes excess spaces
 
             IVBComponent component;
@@ -1047,7 +1051,8 @@ End Sub
 
 Private Sub Goo(ByVal arg1 as Integer, ByVal arg2 As String, ByVal arg3 As Date)
 
-    Foo arg2, arg3
+    Foo arg2, _
+        arg3
 
 End Sub
 ";   // note: IDE removes excess spaces

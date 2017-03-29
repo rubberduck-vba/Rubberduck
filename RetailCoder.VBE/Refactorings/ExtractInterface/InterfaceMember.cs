@@ -21,8 +21,8 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
     public class InterfaceMember : ViewModelBase
     {
-        private Declaration Member { get; }
-        private IEnumerable<Parameter> MemberParams { get; }
+        public Declaration Member { get; }
+        public IEnumerable<Parameter> MemberParams { get; }
         private string Type { get; }
 
         private string MemberType { get; set; }

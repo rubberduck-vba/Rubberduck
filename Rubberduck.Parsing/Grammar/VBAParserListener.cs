@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from C:\Dev\Rubberduck\Rubberduck.Parsing\Grammar\VBAParser.g4 by ANTLR 4.3
+// Generated from C:\Users\hosch\Documents\Visual Studio 2015\Projects\Rubberduck\Rubberduck.Parsing\Grammar\VBAParser.g4 by ANTLR 4.3
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -1082,6 +1082,17 @@ public interface IVBAParserListener : IParseTreeListener {
 	void ExitLineNumberLabel([NotNull] VBAParser.LineNumberLabelContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.requiredArgument"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterRequiredArgument([NotNull] VBAParser.RequiredArgumentContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.requiredArgument"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitRequiredArgument([NotNull] VBAParser.RequiredArgumentContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.universalLetterRange"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -1115,17 +1126,6 @@ public interface IVBAParserListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitModOp([NotNull] VBAParser.ModOpContext context);
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.namedArgumentList"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterNamedArgumentList([NotNull] VBAParser.NamedArgumentListContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.namedArgumentList"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitNamedArgumentList([NotNull] VBAParser.NamedArgumentListContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.ifWithEmptyThen"/>.
@@ -1170,19 +1170,6 @@ public interface IVBAParserListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitUpperBound([NotNull] VBAParser.UpperBoundContext context);
-
-	/// <summary>
-	/// Enter a parse tree produced by the <c>specifiedPositionalArgument</c>
-	/// labeled alternative in <see cref="VBAParser.positionalArgumentOrMissing"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterSpecifiedPositionalArgument([NotNull] VBAParser.SpecifiedPositionalArgumentContext context);
-	/// <summary>
-	/// Exit a parse tree produced by the <c>specifiedPositionalArgument</c>
-	/// labeled alternative in <see cref="VBAParser.positionalArgumentOrMissing"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitSpecifiedPositionalArgument([NotNull] VBAParser.SpecifiedPositionalArgumentContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.onGoToStmt"/>.
@@ -1859,17 +1846,6 @@ public interface IVBAParserListener : IParseTreeListener {
 	void ExitBuiltInTypeExpr([NotNull] VBAParser.BuiltInTypeExprContext context);
 
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.positionalOrNamedArgumentList"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterPositionalOrNamedArgumentList([NotNull] VBAParser.PositionalOrNamedArgumentListContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.positionalOrNamedArgumentList"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitPositionalOrNamedArgumentList([NotNull] VBAParser.PositionalOrNamedArgumentListContext context);
-
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.defDirective"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -1989,17 +1965,6 @@ public interface IVBAParserListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitBuiltInType([NotNull] VBAParser.BuiltInTypeContext context);
-
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="VBAParser.requiredPositionalArgument"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterRequiredPositionalArgument([NotNull] VBAParser.RequiredPositionalArgumentContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VBAParser.requiredPositionalArgument"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitRequiredPositionalArgument([NotNull] VBAParser.RequiredPositionalArgumentContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.recLength"/>.
@@ -2248,6 +2213,17 @@ public interface IVBAParserListener : IParseTreeListener {
 	void ExitEventArgumentList([NotNull] VBAParser.EventArgumentListContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.argument"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterArgument([NotNull] VBAParser.ArgumentContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.argument"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitArgument([NotNull] VBAParser.ArgumentContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.data"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -2303,19 +2279,6 @@ public interface IVBAParserListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitStatementLabelDefinition([NotNull] VBAParser.StatementLabelDefinitionContext context);
-
-	/// <summary>
-	/// Enter a parse tree produced by the <c>missingPositionalArgument</c>
-	/// labeled alternative in <see cref="VBAParser.positionalArgumentOrMissing"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterMissingPositionalArgument([NotNull] VBAParser.MissingPositionalArgumentContext context);
-	/// <summary>
-	/// Exit a parse tree produced by the <c>missingPositionalArgument</c>
-	/// labeled alternative in <see cref="VBAParser.positionalArgumentOrMissing"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitMissingPositionalArgument([NotNull] VBAParser.MissingPositionalArgumentContext context);
 
 	/// <summary>
 	/// Enter a parse tree produced by the <c>multOp</c>

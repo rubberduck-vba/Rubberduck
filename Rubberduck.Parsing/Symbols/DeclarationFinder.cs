@@ -55,7 +55,7 @@ namespace Rubberduck.Parsing.Symbols
         private readonly Lazy<ConcurrentDictionary<Declaration, Declaration[]>> _handlersByWithEventsField;
         private readonly Lazy<ConcurrentDictionary<VBAParser.ImplementsStmtContext, Declaration[]>> _membersByImplementsContext;
         private readonly Lazy<ConcurrentDictionary<Declaration, Declaration[]>> _interfaceMembers;
-        private Lazy<List<Declaration>> _nonBaseAsType;
+        private readonly Lazy<List<Declaration>> _nonBaseAsType;
         private readonly Lazy<ConcurrentBag<Declaration>> _eventHandlers;
         private readonly Lazy<ConcurrentBag<Declaration>> _classes;
         
@@ -77,7 +77,7 @@ namespace Rubberduck.Parsing.Symbols
             _annotations = annotations.GroupBy(node => node.QualifiedSelection.QualifiedName).ToConcurrentDictionary();
             _declarations = declarations.GroupBy(item => item.QualifiedName.QualifiedModuleName).ToConcurrentDictionary();
             _declarationsByName = declarations.GroupBy(declaration => declaration.IdentifierName.ToLowerInvariant()).ToConcurrentDictionary();
-            _declarationsBySelection = declarations.Where(declaration => !declaration.IsBuiltIn)
+            _declarationsBySelection = declarations.Where(declaration => declaration.IsUserDefined)
                 .GroupBy(GetGroupingKey)
                 .ToDictionary(group => group.Key, group => group.AsEnumerable());
             _referencesBySelection = declarations
@@ -86,7 +86,7 @@ namespace Rubberduck.Parsing.Symbols
                 .ToDictionary(group => group.Key, group => group.AsEnumerable());
             _parametersByParent = declarations.Where(declaration => declaration.DeclarationType == DeclarationType.Parameter)
                 .GroupBy(declaration => declaration.ParentDeclaration).ToConcurrentDictionary();
-            _userDeclarationsByType = declarations.Where(declaration => !declaration.IsBuiltIn).GroupBy(declaration => declaration.DeclarationType).ToConcurrentDictionary();
+            _userDeclarationsByType = declarations.Where(declaration => declaration.IsUserDefined).GroupBy(declaration => declaration.DeclarationType).ToConcurrentDictionary();
             _eventHandlers = new Lazy<ConcurrentBag<Declaration>>(() => FindEventHandlers(declarations), true);
 
             _projects = _projects = new Lazy<ConcurrentBag<Declaration>>(() => new ConcurrentBag<Declaration>(declarations.Where(d => d.DeclarationType == DeclarationType.Project)), true);
@@ -236,7 +236,10 @@ namespace Rubberduck.Parsing.Symbols
 
         public IEnumerable<Declaration> Members(QualifiedModuleName module)
         {
-            return _declarations[module];
+            ConcurrentBag<Declaration> members;
+            return _declarations.TryGetValue(module,out members)
+                    ? members.ToList()
+                    : Enumerable.Empty<Declaration>();
         }
 
         public IEnumerable<Declaration> FindDeclarationsWithNonBaseAsType()
@@ -414,7 +417,7 @@ namespace Rubberduck.Parsing.Symbols
                 var matches = MatchName(name);
                 result = matches.SingleOrDefault(declaration => declaration.DeclarationType.HasFlag(DeclarationType.ProceduralModule)
                     && (parent.Equals(declaration.ParentDeclaration))
-                    && (includeBuiltIn || !declaration.IsBuiltIn));
+                    && (includeBuiltIn || declaration.IsUserDefined));
             }
             catch (InvalidOperationException exception)
             {
@@ -433,7 +436,7 @@ namespace Rubberduck.Parsing.Symbols
                 var matches = MatchName(name);
                 result = matches.SingleOrDefault(declaration => declaration.DeclarationType.HasFlag(DeclarationType.ClassModule)
                     && (parent.Equals(declaration.ParentDeclaration))
-                    && (includeBuiltIn || !declaration.IsBuiltIn));
+                    && (includeBuiltIn || declaration.IsUserDefined));
             }
             catch (InvalidOperationException exception)
             {
@@ -549,7 +552,7 @@ namespace Rubberduck.Parsing.Symbols
             {
                 // Only built-in classes such as Worksheet can be considered "real base classes".
                 // User created interfaces work differently and don't allow accessing accessing implementations.
-                if (!supertype.IsBuiltIn)
+                if (supertype.IsUserDefined)
                 {
                     continue;
                 }
@@ -584,7 +587,7 @@ namespace Rubberduck.Parsing.Symbols
                     new QualifiedMemberName(enclosingProcedure.QualifiedName.QualifiedModuleName, identifierName),
                     enclosingProcedure, enclosingProcedure, "Variant", string.Empty, false, false,
                     Accessibility.Implicit, DeclarationType.Variable, context, context.GetSelection(), false, null,
-                    false, annotations, null, true);
+                    true, annotations, null, true);
 
             var hasUndeclared = _newUndeclared.ContainsKey(enclosingProcedure.QualifiedName);
             if (hasUndeclared)
@@ -642,7 +645,7 @@ namespace Rubberduck.Parsing.Symbols
                 return undeclared.SingleOrDefault();
             }
 
-            var item = new Declaration(qualifiedName, hostApp, hostApp, Tokens.Variant, string.Empty, false, false, Accessibility.Global, DeclarationType.BracketedExpression, context, context.GetSelection(), false, null);
+            var item = new Declaration(qualifiedName, hostApp, hostApp, Tokens.Variant, string.Empty, false, false, Accessibility.Global, DeclarationType.BracketedExpression, context, context.GetSelection(), true, null);
             _newUndeclared.TryAdd(qualifiedName, new ConcurrentBag<Declaration> { item });
             return item;
         }
@@ -768,7 +771,7 @@ namespace Rubberduck.Parsing.Symbols
             var controls = declarations
                 .Where(declaration => declaration.DeclarationType == DeclarationType.Control);
             var handlerNames = declarations
-                .Where(declaration => declaration.IsBuiltIn && declaration.DeclarationType == DeclarationType.Event)
+                .Where(declaration => !declaration.IsUserDefined && declaration.DeclarationType == DeclarationType.Event)
                 .SelectMany(e => controls.Select(c => c.IdentifierName + "_" + e.IdentifierName));
             if (!_userDeclarationsByType.ContainsKey(DeclarationType.Procedure))
             {
@@ -783,7 +786,7 @@ namespace Rubberduck.Parsing.Symbols
         {
             var declarationList = declarations.ToList();
 
-            var handlerNames = declarationList.Where(declaration => declaration.IsBuiltIn && declaration.DeclarationType == DeclarationType.Event)
+            var handlerNames = declarationList.Where(declaration => !declaration.IsUserDefined && declaration.DeclarationType == DeclarationType.Event)
                                            .SelectMany(e =>
                                            {
                                                var parentModuleSubtypes = ((ClassModuleDeclaration)e.ParentDeclaration).Subtypes;
@@ -806,7 +809,7 @@ namespace Rubberduck.Parsing.Symbols
                      item.IdentifierName.Equals("auto_open", StringComparison.InvariantCultureIgnoreCase) ||
                      item.IdentifierName.Equals("auto_close", StringComparison.InvariantCultureIgnoreCase))) ||
                 // user handlers:
-                (!item.IsBuiltIn &&
+                (item.IsUserDefined &&
                  item.DeclarationType == DeclarationType.Procedure &&
                  handlerNames.Contains(item.IdentifierName))
                 )
@@ -843,7 +846,7 @@ namespace Rubberduck.Parsing.Symbols
 
             //Filter accessible declarations to those that would result in name collisions or hiding
             var declarationsToAvoid = GetAccessibleDeclarations(declaration).Where(candidate =>
-                                        !candidate.IsBuiltIn
+                                        candidate.IsUserDefined
                                         && (IsAccessibleInOtherProcedureModule(candidate,declaration)
                                         || candidate.DeclarationType == DeclarationType.Project
                                         || ModuleDeclarationTypes.Contains(candidate.DeclarationType)
@@ -890,9 +893,8 @@ namespace Rubberduck.Parsing.Symbols
         private bool IsInProceduralModule(Declaration candidateDeclaration)
         {
             var candidateModuleDeclaration = Declaration.GetModuleParent(candidateDeclaration);
-            if (null == candidateModuleDeclaration) { return false; }
 
-            return (candidateModuleDeclaration.DeclarationType == DeclarationType.ProceduralModule);
+            return candidateModuleDeclaration?.DeclarationType == DeclarationType.ProceduralModule;
         }
 
         private bool IsDeclarationInSameProcedureScope(Declaration candidateDeclaration, Declaration scopingDeclaration)

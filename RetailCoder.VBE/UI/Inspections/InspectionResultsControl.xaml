@@ -576,7 +576,7 @@
             </DataGrid.Columns>
         </controls:GroupingGrid>
 
-        <controls:BusyIndicator Grid.Row="1" Width="36" Height="36" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
+        <controls:BusyIndicator Grid.Row="1" Width="120" Height="120" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
 
         <GridSplitter Grid.Row="2" Height="5" ShowsPreview="True" Cursor="SizeNS" HorizontalAlignment="Stretch"/>
 

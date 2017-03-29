@@ -7,10 +7,6 @@ namespace Rubberduck.Parsing.Symbols
 {
     public class ParameterDeclaration : Declaration
     {
-        private readonly bool _isOptional;
-        private readonly bool _isByRef;
-        private readonly bool _isImplicitByRef;
-
         /// <summary>
         /// Creates a new built-in parameter declaration.
         /// </summary>
@@ -36,11 +32,12 @@ namespace Rubberduck.Parsing.Symbols
                   null, 
                   Selection.Home,
                   isArray,
-                  asTypeContext)
+                  asTypeContext,
+                  false)
         {
-            _isOptional = isOptional;
-            _isByRef = isByRef;
-            _isImplicitByRef = false;
+            IsOptional = isOptional;
+            IsByRef = isByRef;
+            IsImplicitByRef = false;
             IsParamArray = isParamArray;
         }
 
@@ -58,7 +55,7 @@ namespace Rubberduck.Parsing.Symbols
             bool isByRef,
             bool isArray = false, 
             bool isParamArray = false,
-            bool isBuiltIn = false)
+            bool isUserDefined = true)
             : base(
                   qualifiedName, 
                   parentDeclaration, 
@@ -73,11 +70,11 @@ namespace Rubberduck.Parsing.Symbols
                   selection,
                   isArray,
                   asTypeContext,
-                  isBuiltIn)
+                  isUserDefined)
         {
-            _isOptional = isOptional;
-            _isByRef = isByRef;
-            _isImplicitByRef = isByRef && (context == null || ((VBAParser.ArgContext) context).BYREF() == null);
+            IsOptional = isOptional;
+            IsByRef = isByRef;
+            IsImplicitByRef = isByRef && ((VBAParser.ArgContext) context)?.BYREF() == null;
             IsParamArray = isParamArray;
         }
 
@@ -94,9 +91,9 @@ namespace Rubberduck.Parsing.Symbols
                 parameter.IsParamArray)
         { }
              
-        public bool IsOptional { get { return _isOptional; } }
-        public bool IsByRef { get { return _isByRef; } }
-        public bool IsImplicitByRef { get { return _isImplicitByRef; } }
+        public bool IsOptional { get; }
+        public bool IsByRef { get; }
+        public bool IsImplicitByRef { get; }
         public bool IsParamArray { get; set; }
     }
 }

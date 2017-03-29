@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Windows.Forms;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -30,9 +29,8 @@ End Sub";
             //Expectation
             const string expectedCode =
 @"Private Sub Foo()
-
     Dim bar As Boolean
-    bar = True
+bar = True
 End Sub";
 
             IVBComponent component;
@@ -65,9 +63,8 @@ End Sub";
             //Expectation
             const string expectedCode =
 @"Private Sub Foo()
-
     Dim bar As Boolean
-    bar = True
+bar = True
 End Sub";
 
             IVBComponent component;
@@ -84,7 +81,6 @@ End Sub";
         }
 
         [TestMethod]
-        [Ignore] // bug: test doesn't run to completion, it's stuck in a loop somwehre
         public void MoveCloserToUsageRefactoring_FieldInOtherClass()
         {
             //Input
@@ -146,9 +142,8 @@ End Sub";
             const string expectedCode =
 @"Private Sub Foo()
     Dim bat As Integer
-
     Dim bar As Boolean
-    bar = True
+bar = True
 End Sub";
 
             IVBComponent component;
@@ -183,9 +178,8 @@ End Sub";
             const string expectedCode =
 @"Private Sub Foo()
     Dim bat As Integer
-
     Dim bar As Boolean
-    bar = True
+bar = True
 End Sub";
 
             IVBComponent component;
@@ -221,9 +215,8 @@ End Sub";
 Private bay As Date
 
 Private Sub Foo()
-
     Dim bat As Boolean
-    bat = True
+bat = True
 End Sub";
 
             IVBComponent component;
@@ -259,10 +252,9 @@ End Sub";
           bay As Date
 
 Private Sub Foo()
-
     Dim bar As Integer
-    bar = 3
-End Sub";   // note: VBE will remove extra spaces
+bar = 3
+End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
@@ -297,10 +289,9 @@ End Sub";
           bay As Date
 
 Private Sub Foo()
-
     Dim bat As Boolean
-    bat = True
-End Sub";   // note: VBE will remove extra spaces
+bat = True
+End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
@@ -335,10 +326,9 @@ End Sub";
           bat As Boolean
 
 Private Sub Foo()
-
     Dim bay As Date
-    bay = #1/13/2004#
-End Sub";   // note: VBE will remove extra spaces
+bay = #1/13/2004#
+End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
@@ -375,10 +365,9 @@ End Sub";
         bay As Date
 
     bat = True
-
     Dim bar As Integer
-    bar = 3
-End Sub";   // note: VBE will remove extra spaces
+bar = 3
+End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
@@ -415,10 +404,9 @@ End Sub";
         bay As Date
 
     bar = 1
-
     Dim bat As Boolean
-    bat = True
-End Sub";   // note: VBE will remove extra spaces
+bat = True
+End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
@@ -455,9 +443,8 @@ End Sub";
         bat As Boolean
 
     bar = 4
-
     Dim bay As Date
-    bay = #1/13/2004#
+bay = #1/13/2004#
 End Sub";
 
             IVBComponent component;
@@ -550,9 +537,8 @@ End Sub";
 
             const string expectedCode =
 @"Private Sub Foo(ByRef bat As Boolean)
-
     Dim bar As Boolean
-    bat = bar
+bat = bar
 End Sub";
             var selection = new Selection(1, 1);
 
@@ -583,9 +569,8 @@ End Sub";
 
             const string expectedCode =
 @"Private Sub Foo()
-
     Dim bar As Boolean
-    Baz bar
+Baz bar
 End Sub
 Sub Baz(ByVal bat As Boolean)
 End Sub";
@@ -620,9 +605,8 @@ End Sub";
 
             const string expectedCode =
 @"Private Sub Foo()
-
     Dim bar As Boolean
-    Baz True, _
+Baz True, _
         True, _
         bar
 End Sub
@@ -656,11 +640,8 @@ Private Sub Baz(ByVal bat As Boolean, ByVal bas As Boolean, ByVal bac As Boolean
 
             // Yeah, this code is a mess.  That is why we got the SmartIndenter
             const string expectedCode =
-@"Private Sub Foo()
-    Dim bar As Boolean
-
-Baz True, True, bar
-End Sub
+@"Private Sub Foo(): Dim bar As Boolean
+Baz True, True, bar: End Sub
 Private Sub Baz(ByVal bat As Boolean, ByVal bas As Boolean, ByVal bac As Boolean): End Sub";
 
             IVBComponent component;
@@ -696,9 +677,8 @@ End Sub";
             const string expectedCode =
 @"
 Public Sub Test()
-
     Dim foo As Long
-    SomeSub someParam:=foo
+SomeSub someParam:=foo
 End Sub
 
 Public Sub SomeSub(ByVal someParam As Long)
@@ -723,8 +703,7 @@ End Sub";
         {
             //Input
             const string inputCode =
-@"
-Private foo As Long
+@"Private foo As Long
 
 Public Sub Test(): SomeSub someParam:=foo: End Sub
 
@@ -732,14 +711,10 @@ Public Sub SomeSub(ByVal someParam As Long)
     Debug.Print someParam
 End Sub";
 
-            var selection = new Selection(2, 1);
+            var selection = new Selection(1, 1);
             const string expectedCode =
-@"
-Public Sub Test()
-    Dim foo As Long
-
-SomeSub someParam:=foo
-End Sub
+@"Public Sub Test(): Dim foo As Long
+SomeSub someParam:=foo: End Sub
 
 Public Sub SomeSub(ByVal someParam As Long)
     Debug.Print someParam
