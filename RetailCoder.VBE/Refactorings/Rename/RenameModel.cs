@@ -7,11 +7,14 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.Parsing.PostProcessing;
 
 namespace Rubberduck.Refactorings.Rename
 {
     public class RenameModel
     {
+        private Rewriters _rewriters;
+
         private readonly IVBE _vbe;
         public IVBE VBE { get { return _vbe; } }
         
@@ -43,7 +46,36 @@ namespace Rubberduck.Refactorings.Rename
             _selection = selection;
             _messageBox = messageBox;
 
+            _rewriters = new Rewriters(_state);
+
             AcquireTarget(out _target, Selection);
+        }
+
+        public IModuleRewriter GetRewriter(IVBComponent component)
+        {
+            var qmn = new QualifiedModuleName(component);
+            return GetRewriter(qmn);
+        }
+
+        public IModuleRewriter GetRewriter(Declaration declaration)
+        {
+            var qmn = declaration.QualifiedSelection.QualifiedName;
+            return GetRewriter(qmn);
+        }
+
+        public IModuleRewriter GetRewriter(QualifiedModuleName qmn)
+        {
+            return _rewriters.GetRewriter(qmn);
+        }
+
+        public void Rewrite()
+        {
+            _rewriters.Rewrite();
+        }
+
+        public void ClearRewriters()
+        {
+            _rewriters = new Rewriters(_state);
         }
 
         private void AcquireTarget(out Declaration target, QualifiedSelection selection)
@@ -76,5 +108,41 @@ namespace Rubberduck.Refactorings.Rename
 
             target = interfaceMember;
         }
+
+        internal class Rewriters
+        {
+            Dictionary<string, IModuleRewriter> _rewriters;
+            RubberduckParserState _state;
+
+            public Rewriters(RubberduckParserState state)
+            {
+                _rewriters = new Dictionary<string, IModuleRewriter>();
+                _state = state;
+            }
+
+            public IModuleRewriter GetRewriter(QualifiedModuleName qmn)
+            {
+                IModuleRewriter rewriter;
+                if (_rewriters.ContainsKey(qmn.Name))
+                {
+                    _rewriters.TryGetValue(qmn.Name, out rewriter);
+                }
+                else
+                {
+                    rewriter = _state.GetRewriter(qmn);
+                    _rewriters.Add(qmn.Name, rewriter);
+                }
+                return rewriter;
+            }
+
+            public void Rewrite()
+            {
+                foreach(var rewriter in _rewriters.Values)
+                {
+                    rewriter.Rewrite();
+                }
+            }
+        }
+
     }
 }
