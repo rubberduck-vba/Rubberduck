@@ -160,14 +160,24 @@ namespace Rubberduck.Root
 
         private IEnumerable<Assembly> FindPlugins()
         {
+            var assemblies = new List<Assembly>();
             var basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            yield return Assembly.LoadFile(Path.Combine(basePath, "Rubberduck.Inspections.dll"));
+            assemblies.Add(Assembly.LoadFile(Path.Combine(basePath, "Rubberduck.Inspections.dll")));
 
             var path = Path.Combine(basePath, "Plug-ins");
             foreach (var library in Directory.EnumerateFiles(path, "*.dll"))
             {
-                yield return Assembly.LoadFile(library);
+                try
+                {
+                    assemblies.Add(Assembly.LoadFile(library));
+                }
+                catch (Exception)
+                {
+                    // can we log yet?
+                }
             }
+
+            return assemblies;
         }
 
         private void BindRefactoringDialogs()
