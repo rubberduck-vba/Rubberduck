@@ -35,36 +35,36 @@ namespace Rubberduck.UI.Inspections
         {
             _state = state;
             _inspector = inspector;
-            _navigateCommand = navigateCommand;
+            NavigateCommand = navigateCommand;
             _clipboard = clipboard;
             _configService = configService;
             _operatingSystem = operatingSystem;
-            _refreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), 
+            RefreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), 
                 o => {
                         IsBusy = true;
                         reparseCommand.Execute(o); 
                      },
                 o => !IsBusy && reparseCommand.CanExecute(o));
 
-            _disableInspectionCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteDisableInspectionCommand);
-            _quickFixCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteQuickFixCommand, CanExecuteQuickFixCommand);
-            _quickFixInModuleCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteQuickFixInModuleCommand, _ => SelectedItem != null && _state.Status == ParserState.Ready);
-            _quickFixInProjectCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteQuickFixInProjectCommand, _ => SelectedItem != null && _state.Status == ParserState.Ready);
-            _copyResultsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCopyResultsCommand, CanExecuteCopyResultsCommand);
-            _openSettingsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), OpenSettings);
+            DisableInspectionCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteDisableInspectionCommand);
+            QuickFixCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteQuickFixCommand, CanExecuteQuickFixCommand);
+            QuickFixInModuleCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteQuickFixInModuleCommand, _ => SelectedItem != null && _state.Status == ParserState.Ready);
+            QuickFixInProjectCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteQuickFixInProjectCommand, _ => SelectedItem != null && _state.Status == ParserState.Ready);
+            CopyResultsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCopyResultsCommand, CanExecuteCopyResultsCommand);
+            OpenTodoSettings = new DelegateCommand(LogManager.GetCurrentClassLogger(), OpenSettings);
 
             _configService.SettingsChanged += _configService_SettingsChanged;
             
             // todo: remove I/O work in constructor
             _runInspectionsOnReparse = _configService.LoadConfiguration().UserSettings.CodeInspectionSettings.RunInspectionsOnSuccessfulParse;
 
-            _setInspectionTypeGroupingCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
+            SetInspectionTypeGroupingCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
             {
                 GroupByInspectionType = (bool)param;
                 GroupByLocation = !(bool)param;
             });
 
-            _setLocationGroupingCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
+            SetLocationGroupingCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
             {
                 GroupByLocation = (bool)param;
                 GroupByInspectionType = !(bool)param;
@@ -181,35 +181,16 @@ namespace Rubberduck.UI.Inspections
             }
         }
 
-        private readonly CommandBase _setInspectionTypeGroupingCommand;
-        public CommandBase SetInspectionTypeGroupingCommand { get { return _setInspectionTypeGroupingCommand; } }
-
-        private readonly CommandBase _setLocationGroupingCommand;
-        public CommandBase SetLocationGroupingCommand { get { return _setLocationGroupingCommand; } }
-
-        private readonly INavigateCommand _navigateCommand;
-        public INavigateCommand NavigateCommand { get { return _navigateCommand; } }
-
-        private readonly CommandBase _refreshCommand;
-        public CommandBase RefreshCommand { get { return _refreshCommand; } }
-
-        private readonly CommandBase _quickFixCommand;
-        public CommandBase QuickFixCommand { get { return _quickFixCommand; } }
-
-        private readonly CommandBase _quickFixInModuleCommand;
-        public CommandBase QuickFixInModuleCommand { get { return _quickFixInModuleCommand; } }
-
-        private readonly CommandBase _quickFixInProjectCommand;
-        public CommandBase QuickFixInProjectCommand { get { return _quickFixInProjectCommand; } }
-
-        private readonly CommandBase _disableInspectionCommand;
-        public CommandBase DisableInspectionCommand { get { return _disableInspectionCommand; } }
-
-        private readonly CommandBase _copyResultsCommand;
-        public CommandBase CopyResultsCommand { get { return _copyResultsCommand; } }
-
-        private readonly CommandBase _openSettingsCommand;
-        public CommandBase OpenTodoSettings { get { return _openSettingsCommand; } }
+        public INavigateCommand NavigateCommand { get; }
+        public CommandBase SetInspectionTypeGroupingCommand { get; }
+        public CommandBase SetLocationGroupingCommand { get; }
+        public CommandBase RefreshCommand { get; }
+        public CommandBase QuickFixCommand { get; }
+        public CommandBase QuickFixInModuleCommand { get; }
+        public CommandBase QuickFixInProjectCommand { get; }
+        public CommandBase DisableInspectionCommand { get; }
+        public CommandBase CopyResultsCommand { get; }
+        public CommandBase OpenTodoSettings { get; }
 
         private void OpenSettings(object param)
         {
@@ -312,7 +293,7 @@ namespace Rubberduck.UI.Inspections
             // refresh if any quickfix has completed without cancelling:
             if (completed != 0 && cancelled < completed)
             {
-                Task.Run(() => _refreshCommand.Execute(null));
+                Task.Run(() => RefreshCommand.Execute(null));
             }
         }
 
@@ -358,12 +339,12 @@ namespace Rubberduck.UI.Inspections
                               && result.QualifiedSelection.QualifiedName == selectedResult.QualifiedSelection.QualifiedName)
                 .ToList();
 
-            var items = filteredResults
-                .Where(result => result.GetType().Name != "AggregateInspectionResult")
+            var defaultFixes = filteredResults
+                .Where(result => result is AggregateInspectionResult)
                 .Select(item => item.QuickFixes.Single(fix => fix.GetType() == _defaultFix.GetType()))
-                .Union(filteredResults.Where(r => r.GetType().Name == "AggregateInspectionResult").Select(aggregate => aggregate.DefaultQuickFix))
+                .Union(filteredResults.Where(r => r is AggregateInspectionResult).Select(aggregate => aggregate.DefaultQuickFix))
                 .OrderByDescending(fix => fix.Selection);
-            ExecuteQuickFixes(items);
+            ExecuteQuickFixes(defaultFixes);
         }
 
         private bool _canExecuteQuickFixInProject;
@@ -385,7 +366,7 @@ namespace Rubberduck.UI.Inspections
             var setting = config.UserSettings.CodeInspectionSettings.CodeInspections.Single(e => e.Name == _selectedInspection.Name);
             setting.Severity = CodeInspectionSeverity.DoNotShow;
 
-            Task.Run(() => _configService.SaveConfiguration(config)).ContinueWith(t => _refreshCommand.Execute(null));
+            Task.Run(() => _configService.SaveConfiguration(config)).ContinueWith(t => RefreshCommand.Execute(null));
         }
 
         private bool _canDisableInspection;
@@ -414,7 +395,7 @@ namespace Rubberduck.UI.Inspections
 
         private void ExecuteCopyResultsCommand(object parameter)
         {
-            const string XML_SPREADSHEET_DATA_FORMAT = "XML Spreadsheet";
+            const string xmlSpreadsheetDataFormat = "XML Spreadsheet";
             if (_results == null)
             {
                 return;
@@ -434,9 +415,10 @@ namespace Rubberduck.UI.Inspections
             var htmlResults = ExportFormatter.HtmlClipboardFragment(resultArray, title,columnInfos);
             var rtfResults = ExportFormatter.RTF(resultArray, title);
 
-            MemoryStream strm1 = ExportFormatter.XmlSpreadsheetNew(resultArray, title, columnInfos);
+            // todo: verify that this disposing this stream breaks the xmlSpreadsheetDataFormat
+            var stream = ExportFormatter.XmlSpreadsheetNew(resultArray, title, columnInfos);
             //Add the formats from richest formatting to least formatting
-            _clipboard.AppendStream(DataFormats.GetDataFormat(XML_SPREADSHEET_DATA_FORMAT).Name, strm1);
+            _clipboard.AppendStream(DataFormats.GetDataFormat(xmlSpreadsheetDataFormat).Name, stream);
             _clipboard.AppendString(DataFormats.Rtf, rtfResults);
             _clipboard.AppendString(DataFormats.Html, htmlResults);
             _clipboard.AppendString(DataFormats.CommaSeparatedValue, csvResults);
