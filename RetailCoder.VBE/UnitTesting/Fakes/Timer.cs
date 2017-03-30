@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace Rubberduck.UnitTesting
+namespace Rubberduck.UnitTesting.Fakes
 {
     internal class Timer : FakeBase
     {

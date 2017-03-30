@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using Rubberduck.UI;
 
-namespace Rubberduck.UnitTesting
+namespace Rubberduck.UnitTesting.Fakes
 {
     // TODO: This is currently broken.  The runtime throws a "bad dll calling convention error when it returns", which leads me to
     // believe that it is trying to cast the return value and it isn't marshalling correctly.

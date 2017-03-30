@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using Rubberduck.UI;
 
-namespace Rubberduck.UnitTesting
+namespace Rubberduck.UnitTesting.Fakes
 {
     internal class Environ : FakeBase
     {

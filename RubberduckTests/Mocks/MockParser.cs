@@ -9,10 +9,10 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.Symbols.DeclarationLoaders;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
-using Rubberduck.Parsing.Preprocessing;
 using System.Globalization;
 using System.Reflection;
 using System.Threading;
+using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Mocks

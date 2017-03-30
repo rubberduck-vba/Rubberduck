@@ -2,7 +2,7 @@
 using Antlr4.Runtime.Atn;
 using NLog;
 using System;
-using Rubberduck.Parsing.Preprocessing;
+using Rubberduck.Parsing.PreProcessing;
 
 namespace Rubberduck.Parsing.VBA
 {

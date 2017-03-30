@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ExtractInterface;
-using Rubberduck.UI.Refactorings.ExtractInterface;
+using Rubberduck.UI.Refactorings;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command.Refactorings

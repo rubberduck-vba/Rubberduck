@@ -223,6 +223,10 @@
       <Project>{20589DE8-432E-4359-9232-69EB070B7185}</Project>
       <Name>Rubberduck</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.Inspections\Rubberduck.Inspections.csproj">
+      <Project>{ac4f1d22-d74b-45ff-ab0c-cc2a104fe023}</Project>
+      <Name>Rubberduck.Inspections</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
       <Project>{a4a618e1-cbca-435f-9c6c-5181e030adfc}</Project>
       <Name>Rubberduck.Parsing</Name>
