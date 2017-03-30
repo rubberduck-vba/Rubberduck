@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace Rubberduck.UI.Refactorings.ExtractInterface
+namespace Rubberduck.UI.Refactorings
 {
     public partial class ExtractInterfaceDialog : Form, IRefactoringDialog<ExtractInterfaceViewModel>
     {

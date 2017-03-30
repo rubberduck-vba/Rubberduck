@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using Rubberduck.Common.WinAPI;
 
 namespace Rubberduck.VBEditor.WindowsApi
 {

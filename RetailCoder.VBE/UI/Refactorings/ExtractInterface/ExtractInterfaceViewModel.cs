@@ -7,7 +7,7 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Refactorings.ExtractInterface;
 using Rubberduck.UI.Command;
 
-namespace Rubberduck.UI.Refactorings.ExtractInterface
+namespace Rubberduck.UI.Refactorings
 {
     public class ExtractInterfaceViewModel : ViewModelBase
     {
