@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using NLog;
 using Rubberduck.Navigation.Folders;
 using Rubberduck.Parsing;
@@ -30,7 +31,8 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             _folderHelper = folderHelper;
             _state = state;
-            _state.StateChanged += ParserState_StateChanged;
+            _state.StateChangedCallbackRegistry(UpdateContent, ParserState.ResolvedDeclarations);
+            _state.StateChangedCallbackRegistry(UpdateBusyState, ParserState.Pending | ParserState.LoadingReference | ParserState.Parsing | ParserState.Parsed);
             _state.ModuleStateChanged += ParserState_ModuleStateChanged;
 
             var reparseCommand = commands.OfType<ReparseCommand>().SingleOrDefault();
@@ -241,17 +243,18 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        private void ParserState_StateChanged(object sender, ParserStateEventArgs e)
+        private void UpdateBusyState(CancellationToken c)
         {
+            IsBusy = true;
+        }
+
+        private void UpdateContent(CancellationToken c)
+        {
+            IsBusy = false;
+
             if (Projects == null)
             {
                 Projects = new ObservableCollection<CodeExplorerItemViewModel>();
-            }
-
-            IsBusy = _state.Status < ParserState.ResolvedDeclarations;
-            if (e.State != ParserState.ResolvedDeclarations)
-            {
-                return;
             }
 
             var userDeclarations = _state.AllUserDeclarations
@@ -259,7 +262,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 .ToList();
 
             if (userDeclarations.Any(
-                    grouping => grouping.All(declaration => declaration.DeclarationType != DeclarationType.Project)))
+                grouping => grouping.All(declaration => declaration.DeclarationType != DeclarationType.Project)))
             {
                 return;
             }
@@ -270,7 +273,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                     grouping)).ToList();
 
             UpdateNodes(Projects, newProjects);
-            
+
             Projects = new ObservableCollection<CodeExplorerItemViewModel>(newProjects);
         }
 
@@ -486,7 +489,6 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             if (_state != null)
             {
-                _state.StateChanged -= ParserState_StateChanged;
                 _state.ModuleStateChanged -= ParserState_ModuleStateChanged;
             }
         }

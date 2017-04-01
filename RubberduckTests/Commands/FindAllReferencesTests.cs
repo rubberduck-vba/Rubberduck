@@ -156,7 +156,7 @@ End Sub";
             vbe.Setup(s => s.ActiveCodePane).Returns(value: null);
 
             var state = MockParser.CreateAndParse(vbe.Object);
-            state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
+            state.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
 
             var vm = new SearchResultsWindowViewModel();
             var command = new FindAllReferencesCommand(null, null, state, vbe.Object, vm, null);
@@ -202,7 +202,7 @@ End Sub";
 
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
+            state.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
 
             var vm = new SearchResultsWindowViewModel();
             var command = new FindAllReferencesCommand(null, null, state, vbe.Object, vm, null);

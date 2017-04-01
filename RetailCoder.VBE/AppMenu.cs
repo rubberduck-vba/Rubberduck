@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
@@ -24,7 +25,7 @@ namespace Rubberduck
             _selectionService = selectionService;
             _stateBar = stateBar;
 
-            _parser.State.StateChanged += OnParserStateChanged;
+            _parser.State.StateChangedCallbackRegistry(OnParserStateChanged, (ParserState) int.MaxValue);  // set all the bits
             _selectionService.SelectedDeclarationChanged += OnSelectedDeclarationChange;
         }
 
@@ -42,7 +43,7 @@ namespace Rubberduck
             EvaluateCanExecute(_parser.State);
         }
 
-        private void OnParserStateChanged(object sender, EventArgs e)
+        private void OnParserStateChanged(CancellationToken c)
         {            
             EvaluateCanExecute(_parser.State);
         }
@@ -67,7 +68,6 @@ namespace Rubberduck
 
         public void Dispose()
         {
-            _parser.State.StateChanged -= OnParserStateChanged;
             _selectionService.SelectedDeclarationChanged -= OnSelectedDeclarationChange;
 
             // note: doing this wrecks the teardown process. counter-intuitive? sure. but hey it works.

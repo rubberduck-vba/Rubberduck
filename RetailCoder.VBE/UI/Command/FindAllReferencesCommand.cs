@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows.Forms;
 using NLog;
 using Rubberduck.Parsing.Symbols;
@@ -15,7 +16,7 @@ namespace Rubberduck.UI.Command
     /// A command that locates all references to a specified identifier, or of the active code module.
     /// </summary>
     [ComVisible(false)]
-    public class FindAllReferencesCommand : CommandBase, IDisposable
+    public class FindAllReferencesCommand : CommandBase
     {
         private readonly INavigateCommand _navigateCommand;
         private readonly IMessageBox _messageBox;
@@ -36,7 +37,7 @@ namespace Rubberduck.UI.Command
             _viewModel = viewModel;
             _presenterService = presenterService;
 
-            _state.StateChanged += _state_StateChanged;
+            _state.StateChangedCallbackRegistry(_state_StateChanged, ParserState.Ready);
         }
 
         private Declaration FindNewDeclaration(Declaration declaration)
@@ -49,10 +50,8 @@ namespace Rubberduck.UI.Command
                         item.DeclarationType == declaration.DeclarationType);
         }
 
-        private void _state_StateChanged(object sender, ParserStateEventArgs e)
+        private void _state_StateChanged(CancellationToken c)
         {
-            if (e.State != ParserState.Ready) { return; }
-
             if (_viewModel == null) { return; }
 
             UiDispatcher.InvokeAsync(UpdateTab);
@@ -161,14 +160,6 @@ namespace Rubberduck.UI.Command
             }
 
             return _state.FindSelectedDeclaration(_vbe.ActiveCodePane);
-        }
-
-        public void Dispose()
-        {
-            if (_state != null)
-            {
-                _state.StateChanged -= _state_StateChanged;
-            }
         }
     }
 }

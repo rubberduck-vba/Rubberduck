@@ -104,7 +104,9 @@ namespace Rubberduck.Parsing.VBA
                 _cancellationTokens[0].Dispose();
                 if (createNewTokenSource)
                 {
-                    _cancellationTokens.Add(new CancellationTokenSource());
+                    var token = new CancellationTokenSource();
+                    _cancellationTokens.Add(token);
+                    State.ParseCancellationToken = token.Token;
                 }
                 _cancellationTokens.RemoveAt(0);
             }
@@ -233,7 +235,7 @@ namespace Rubberduck.Parsing.VBA
                 throw new OperationCanceledException(token);
             }
 
-            State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
+            State.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
 
             if (token.IsCancellationRequested || State.Status >= ParserState.Error)
             {
@@ -342,7 +344,7 @@ namespace Rubberduck.Parsing.VBA
                 {
                     throw exception.InnerException ?? exception; //This eliminates the stack trace, but for the cancellation, this is irrelevant.
                 }
-                State.SetStatusAndFireStateChanged(this, ParserState.Error);
+                State.SetStatusAndFireStateChanged(ParserState.Error);
                 throw;
             }
 
@@ -437,7 +439,7 @@ namespace Rubberduck.Parsing.VBA
                 {
                     throw exception.InnerException ?? exception; //This eliminates the stack trace, but for the cancellation, this is irrelevant.
                 }
-                State.SetStatusAndFireStateChanged(this, ParserState.ResolverError);
+                State.SetStatusAndFireStateChanged(ParserState.ResolverError);
                 throw;
             }
         }
@@ -536,7 +538,7 @@ namespace Rubberduck.Parsing.VBA
                 {
                     throw exception.InnerException ?? exception; //This eliminates the stack trace, but for the cancellation, this is irrelevant.
                 }
-                State.SetStatusAndFireStateChanged(this, ParserState.ResolverError);
+                State.SetStatusAndFireStateChanged(ParserState.ResolverError);
                 throw;
             }
 
@@ -626,7 +628,7 @@ namespace Rubberduck.Parsing.VBA
                 {
                     throw exception.InnerException ?? exception; //This eliminates the stack trace, but for the cancellation, this is irrelevant.
                 }
-                State.SetStatusAndFireStateChanged(this, ParserState.ResolverError);
+                State.SetStatusAndFireStateChanged(ParserState.ResolverError);
                 throw;
             }
         }
@@ -687,7 +689,7 @@ namespace Rubberduck.Parsing.VBA
             catch (Exception exception)
             {
                 Logger.Error(exception, "Unexpected exception thrown in parsing run. (thread {0}).", Thread.CurrentThread.ManagedThreadId);
-                State.SetStatusAndFireStateChanged(this, ParserState.Error);
+                State.SetStatusAndFireStateChanged(ParserState.Error);
             }
             finally
             {
@@ -735,10 +737,10 @@ namespace Rubberduck.Parsing.VBA
             {
                 if (componentsRemoved)  // trigger UI updates
                 {
-                    State.SetStatusAndFireStateChanged(requestor, ParserState.ResolvedDeclarations);
+                    State.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
                 }
 
-                State.SetStatusAndFireStateChanged(requestor, State.Status);
+                State.SetStatusAndFireStateChanged(State.Status);
                 //return; // returning here leaves state in 'ResolvedDeclarations' when a module is removed, which disables refresh
             }
 
@@ -933,7 +935,7 @@ namespace Rubberduck.Parsing.VBA
                 {
                     throw exception.InnerException ?? exception; //This eliminates the stack trace, but for the cancellation, this is irrelevant.
                 }
-                State.SetStatusAndFireStateChanged(this, ParserState.Error);
+                State.SetStatusAndFireStateChanged(ParserState.Error);
                 throw;
             }
             token.ThrowIfCancellationRequested();

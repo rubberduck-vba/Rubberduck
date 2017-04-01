@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Rubberduck.Parsing.VBA;
@@ -10,7 +11,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.UnitTesting
 {
-    public class TestExplorerModel : ViewModelBase, IDisposable
+    public class TestExplorerModel : ViewModelBase
     {
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
@@ -20,15 +21,13 @@ namespace Rubberduck.UI.UnitTesting
         {
             _vbe = vbe;
             _state = state;
-            _state.StateChanged += State_StateChanged;
+            _state.StateChangedCallbackRegistry(State_StateChanged, ParserState.ResolvedDeclarations);
 
             _dispatcher = Dispatcher.CurrentDispatcher;
         }
 
-        private void State_StateChanged(object sender, ParserStateEventArgs e)
+        private void State_StateChanged(CancellationToken c)
         {
-            if (e.State != ParserState.ResolvedDeclarations) { return; }
-
             _dispatcher.Invoke(() =>
             {
                 var tests = UnitTestUtils.GetAllTests(_vbe, _state).ToList();
@@ -166,14 +165,6 @@ namespace Rubberduck.UI.UnitTesting
             if (handler != null)
             {
                 handler.Invoke(this, EventArgs.Empty);
-            }
-        }
-
-        public void Dispose()
-        {
-            if (_state != null)
-            {
-                _state.StateChanged -= State_StateChanged;
             }
         }
     }

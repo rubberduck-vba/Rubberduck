@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -22,7 +23,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             _formatter = formatter;
             _selectionService = selectionService;
            
-            _parser.State.StateChanged += OnParserStateChanged;
+            _parser.State.StateChangedCallbackRegistry(OnParserStateChanged, (ParserState) int.MaxValue);
             _parser.State.StatusMessageUpdate += OnParserStatusMessageUpdate;
             _selectionService.SelectionChanged += OnSelectionChange;
         }
@@ -62,10 +63,10 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             if (string.IsNullOrEmpty(caption) && e.VBComponent != null)
             {
                 //Fallback caption for selections in the Project window.
-                caption = string.Format("{0}.{1} ({2})", e.VBComponent.ParentProject.Name, e.VBComponent.Name, e.VBComponent.Type);
+                caption = $"{e.VBComponent.ParentProject.Name}.{e.VBComponent.Name} ({e.VBComponent.Type})";
             }
 
-            var refCount = e.Declaration == null ? 0 : e.Declaration.References.Count();
+            var refCount = e.Declaration?.References.Count() ?? 0;
             SetContextSelectionCaption(caption, refCount);
             EvaluateCanExecute(_parser.State, e.Declaration);
         }
@@ -83,7 +84,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             SetStatusLabelCaption(message, _parser.State.ModuleExceptions.Count);            
         }
 
-        private void OnParserStateChanged(object sender, EventArgs e)
+        private void OnParserStateChanged(CancellationToken c)
         {
             _lastStatus = _parser.State.Status;
             EvaluateCanExecute(_parser.State);    
@@ -135,7 +136,6 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
         public void Dispose()
         {
             _selectionService.SelectionChanged -= OnSelectionChange;
-            _parser.State.StateChanged -= OnParserStateChanged;
             _parser.State.StatusMessageUpdate -= OnParserStatusMessageUpdate;
 
             //note: doing this wrecks the teardown process. counter-intuitive? sure. but hey it works.

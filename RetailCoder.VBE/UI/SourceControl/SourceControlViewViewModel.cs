@@ -7,6 +7,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using NLog;
@@ -33,7 +34,6 @@ namespace Rubberduck.UI.SourceControl
     public sealed class SourceControlViewViewModel : ViewModelBase, IDisposable
     {
         private readonly IVBE _vbe;
-        private readonly RubberduckParserState _state;
         private readonly ISourceControlProviderFactory _providerFactory;
         private readonly IFolderBrowserFactory _folderBrowserFactory;
         private readonly IConfigProvider<SourceControlSettings> _configService;
@@ -56,11 +56,10 @@ namespace Rubberduck.UI.SourceControl
             IEnvironmentProvider environment)
         {
             _vbe = vbe;
-            _state = state;
             _providerFactory = providerFactory;
             _folderBrowserFactory = folderBrowserFactory;
 
-            _state.StateChanged += _state_StateChanged;
+            state.StateChangedCallbackRegistry(_state_StateChanged, ParserState.Pending);
 
             _configService = configService;
             _config = _configService.Create();
@@ -226,12 +225,9 @@ namespace Rubberduck.UI.SourceControl
                 { NotificationType.Error, GetImageSource((Bitmap) resx.ResourceManager.GetObject("cross_circle", CultureInfo.InvariantCulture))}
             };
 
-        private void _state_StateChanged(object sender, ParserStateEventArgs e)
+        private void _state_StateChanged(CancellationToken c)
         {
-            if (e.State == ParserState.Pending)
-            {
-                UiDispatcher.InvokeAsync(Refresh);
-            }
+            UiDispatcher.InvokeAsync(Refresh);
         }
 
         private ISourceControlProvider _provider;
@@ -1091,11 +1087,6 @@ namespace Rubberduck.UI.SourceControl
 
         public void Dispose()
         {
-            if (_state != null)
-            {
-                _state.StateChanged -= _state_StateChanged;
-            }
-
             if (_fileSystemWatcher != null)
             {
                 _fileSystemWatcher.Created -= _fileSystemWatcher_Created;

@@ -9,6 +9,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.Parsing.Preprocessing;
 using System.Globalization;
+using System.Threading;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.API
@@ -63,7 +64,7 @@ namespace Rubberduck.API
 
             _vbe = new VBE(vbe);
             _state = new RubberduckParserState(null);
-            _state.StateChanged += _state_StateChanged;
+            _state.StateChangedCallbackRegistry(_state_StateChanged, (Parsing.VBA.ParserState) int.MaxValue);  // set all the bits
 
             Func<IVBAPreprocessor> preprocessorFactory = () => new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture));
             _attributeParser = new AttributeParser(new ModuleExporter(), preprocessorFactory);
@@ -84,7 +85,7 @@ namespace Rubberduck.API
         public void Parse()
         {
             // blocking call
-            _parser.Parse(new System.Threading.CancellationTokenSource());
+            _parser.Parse(new CancellationTokenSource());
         }
 
         /// <summary>
@@ -100,7 +101,7 @@ namespace Rubberduck.API
         public event Action OnReady;
         public event Action OnError;
 
-        private void _state_StateChanged(object sender, EventArgs e)
+        private void _state_StateChanged(CancellationToken c)
         {
             _allDeclarations = _state.AllDeclarations
                                      .Select(item => new Declaration(item))
@@ -151,12 +152,6 @@ namespace Rubberduck.API
             {
                 return;
             }
-
-            if (_state != null)
-            {
-                _state.StateChanged -= _state_StateChanged;
-            }
-
 
             //_vbe.Release();            
             _disposed = true;

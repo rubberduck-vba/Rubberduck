@@ -34,7 +34,7 @@ namespace RubberduckTests.Commands
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
-            state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
+            state.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
 
             var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(vbe.Object, state, null);
             Assert.IsFalse(encapsulateFieldCommand.CanExecute(null));
@@ -113,7 +113,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleModule(string.Empty, ComponentType.ClassModule, out component, new Selection());
 
             var state = MockParser.CreateAndParse(vbe.Object);
-            state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
+            state.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
 
             var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null);
             Assert.IsFalse(extractInterfaceCommand.CanExecute(null));
@@ -319,7 +319,7 @@ End Property";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out component);
 
             var state = MockParser.CreateAndParse(vbe.Object);
-            state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
+            state.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
 
             var implementInterfaceCommand = new RefactorImplementInterfaceCommand(vbe.Object, state, null);
             Assert.IsFalse(implementInterfaceCommand.CanExecute(null));
@@ -376,7 +376,7 @@ End Property";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out component);
 
             var state = MockParser.CreateAndParse(vbe.Object);
-            state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
+            state.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
 
             var msgbox = new Mock<IMessageBox>();
             var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, state, msgbox.Object);
@@ -436,7 +436,7 @@ End Property";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out component);
 
             var state = MockParser.CreateAndParse(vbe.Object);
-            state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
+            state.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
 
             var msgbox = new Mock<IMessageBox>();
             var introduceParameterCommand = new RefactorIntroduceParameterCommand(vbe.Object, state, msgbox.Object);
@@ -495,7 +495,7 @@ End Property";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out component);
 
             var state = MockParser.CreateAndParse(vbe.Object);
-            state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
+            state.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
 
             var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, state, null);
             Assert.IsFalse(moveCloserToUsageCommand.CanExecute(null));
@@ -618,7 +618,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out component);
 
             var state = MockParser.CreateAndParse(vbe.Object);
-            state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
+            state.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
 
             var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, state, null);
             Assert.IsFalse(removeParametersCommand.CanExecute(null));
@@ -835,7 +835,7 @@ End Property";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out component);
 
             var state = MockParser.CreateAndParse(vbe.Object);
-            state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
+            state.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
 
             var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, null);
             Assert.IsFalse(reorderParametersCommand.CanExecute(null));
