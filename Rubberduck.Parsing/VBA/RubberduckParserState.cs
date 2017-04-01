@@ -68,20 +68,32 @@ namespace Rubberduck.Parsing.VBA
                 if (!state.HasFlag(value)) { continue; }
 
                 ConcurrentDictionary<Action<CancellationToken>, byte> callbacks;
-                if (!_callbacks.ContainsKey(state))
+                if (!_callbacks.ContainsKey(value))
                 {
                     lock (_callbacks)
                     {
                         callbacks = new ConcurrentDictionary<Action<CancellationToken>, byte>();
-                        _callbacks.Add(state, callbacks);
+                        _callbacks.Add(value, callbacks);
                     }
                 }
                 else
                 {
-                    callbacks = _callbacks[state];
+                    callbacks = _callbacks[value];
                 }
 
                 callbacks.TryAdd(callback, 0);
+            }
+        }
+
+        public void UnregisterCallback(Action<CancellationToken> callback)
+        {
+            foreach (var value in _callbacks.Values)
+            {
+                if (value.ContainsKey(callback))
+                {
+                    byte b;
+                    value.TryRemove(callback, out b);
+                }
             }
         }
 
