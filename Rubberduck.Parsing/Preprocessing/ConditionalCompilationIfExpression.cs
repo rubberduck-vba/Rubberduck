@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Rubberduck.Parsing.Preprocessing
+namespace Rubberduck.Parsing.PreProcessing
 {
     public sealed class ConditionalCompilationIfExpression : Expression
     {

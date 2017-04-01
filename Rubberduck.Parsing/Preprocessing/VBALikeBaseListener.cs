@@ -20,7 +20,7 @@ using Antlr4.Runtime.Misc;
 // Missing XML comment for publicly visible type or member '...'
 #pragma warning disable 1591
 
-namespace Rubberduck.Parsing.Preprocessing {
+namespace Rubberduck.Parsing.PreProcessing {
     using IErrorNode = Antlr4.Runtime.Tree.IErrorNode;
 using ITerminalNode = Antlr4.Runtime.Tree.ITerminalNode;
     using ParserRuleContext = Antlr4.Runtime.ParserRuleContext;

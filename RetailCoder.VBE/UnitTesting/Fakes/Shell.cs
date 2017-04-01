@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.Grammar;
 
-namespace Rubberduck.UnitTesting
+namespace Rubberduck.UnitTesting.Fakes
 {
     internal class Shell : FakeBase
     {

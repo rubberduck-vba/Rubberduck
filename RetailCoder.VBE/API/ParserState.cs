@@ -7,9 +7,9 @@ using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols.DeclarationLoaders;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command.MenuItems;
-using Rubberduck.Parsing.Preprocessing;
 using System.Globalization;
 using System.Threading;
+using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.API

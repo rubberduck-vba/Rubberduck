@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 
-namespace Rubberduck.Parsing.Preprocessing
+namespace Rubberduck.Parsing.PreProcessing
 {
     public interface IVBAPreprocessor
     {

@@ -6,7 +6,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.ExtractInterface;
 using Rubberduck.UI.Refactorings;
-using Rubberduck.UI.Refactorings.ExtractInterface;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;

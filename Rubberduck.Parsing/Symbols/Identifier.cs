@@ -1,10 +1,10 @@
 ﻿using System.Diagnostics;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Preprocessing;
 using Rubberduck.VBEditor;
 using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
+using Rubberduck.Parsing.PreProcessing;
 
 namespace Rubberduck.Parsing.Symbols
 {

@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.UI;
 
-namespace Rubberduck.UnitTesting
+namespace Rubberduck.UnitTesting.Fakes
 {
     internal class MsgBox : FakeBase
     {

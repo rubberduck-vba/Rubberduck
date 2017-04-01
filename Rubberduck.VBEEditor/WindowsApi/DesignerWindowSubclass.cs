@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using Rubberduck.Common.WinAPI;
 using Rubberduck.VBEditor.Events;
 
 namespace Rubberduck.VBEditor.WindowsApi
