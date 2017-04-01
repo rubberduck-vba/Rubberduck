@@ -64,7 +64,9 @@ namespace Rubberduck.API
 
             _vbe = new VBE(vbe);
             _state = new RubberduckParserState(null, new ParserStateChangedCallbackRunner());
-            _state.StateChangedCallbackRegistry(_state_StateChanged, (Parsing.VBA.ParserState) int.MaxValue);  // set all the bits
+            _state.StateChangedCallbackRegistry(UpdateOnError, Parsing.VBA.ParserState.Error);
+            _state.StateChangedCallbackRegistry(UpdateOnParsed, Parsing.VBA.ParserState.Parsed);
+            _state.StateChangedCallbackRegistry(UpdateOnReady, Parsing.VBA.ParserState.Ready);
 
             Func<IVBAPreprocessor> preprocessorFactory = () => new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture));
             _attributeParser = new AttributeParser(new ModuleExporter(), preprocessorFactory);
@@ -101,33 +103,48 @@ namespace Rubberduck.API
         public event Action OnReady;
         public event Action OnError;
 
-        private void _state_StateChanged(CancellationToken c)
+        private void UpdateOnError(CancellationToken c)
         {
-            _allDeclarations = _state.AllDeclarations
-                                     .Select(item => new Declaration(item))
-                                     .ToArray();
-            
-            _userDeclarations = _state.AllUserDeclarations
-                                     .Select(item => new Declaration(item))
-                                     .ToArray();
+            UpdateDeclarationsLists();
 
             var errorHandler = OnError;
-            if (_state.Status == Parsing.VBA.ParserState.Error && errorHandler != null)
+            if (errorHandler != null)
             {
                 UiDispatcher.Invoke(errorHandler.Invoke);
             }
+        }
+
+        private void UpdateOnParsed(CancellationToken c)
+        {
+            UpdateDeclarationsLists();
 
             var parsedHandler = OnParsed;
-            if (_state.Status == Parsing.VBA.ParserState.Parsed && parsedHandler != null)
+            if (parsedHandler != null)
             {
                 UiDispatcher.Invoke(parsedHandler.Invoke);
             }
+        }
+
+        private void UpdateOnReady(CancellationToken c)
+        {
+            UpdateDeclarationsLists();
 
             var readyHandler = OnReady;
-            if (_state.Status == Parsing.VBA.ParserState.Ready && readyHandler != null)
+            if (readyHandler != null)
             {
                 UiDispatcher.Invoke(readyHandler.Invoke);
             }
+        }
+
+        private void UpdateDeclarationsLists()
+        {
+            _allDeclarations = _state.AllDeclarations
+                .Select(item => new Declaration(item))
+                .ToArray();
+
+            _userDeclarations = _state.AllUserDeclarations
+                .Select(item => new Declaration(item))
+                .ToArray();
         }
 
         private Declaration[] _allDeclarations;
