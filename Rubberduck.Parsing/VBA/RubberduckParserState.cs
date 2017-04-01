@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.Threading.Tasks;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.ComReflection;
@@ -82,14 +81,14 @@ namespace Rubberduck.Parsing.VBA
                     callbacks = _callbacks[state];
                 }
 
-                while (!callbacks.TryAdd(callback, 0))
-                {
-                }
+                callbacks.TryAdd(callback, 0);
             }
         }
 
         private readonly IVBE _vbe;
-        public RubberduckParserState(IVBE vbe)
+        private readonly IParserStateChangedCallbackRunner _callbackRunner;
+
+        public RubberduckParserState(IVBE vbe, IParserStateChangedCallbackRunner callbackRunner)
         {
             var values = Enum.GetValues(typeof(ParserState));
             foreach (var value in values)
@@ -98,6 +97,7 @@ namespace Rubberduck.Parsing.VBA
             }
 
             _vbe = vbe;
+            _callbackRunner = callbackRunner;
             AddEventHandlers();
             IsEnabled = true;
         }
@@ -338,13 +338,7 @@ namespace Rubberduck.Parsing.VBA
             ConcurrentDictionary<Action<CancellationToken>, byte> callbacks;
             _callbacks.TryGetValue(Status, out callbacks);
 
-            if (callbacks == null) { return; }
-            foreach (var callback in callbacks.Keys)
-            {
-                if (ParseCancellationToken.IsCancellationRequested) { break; }
-
-                Task.Run(() => callback(ParseCancellationToken), ParseCancellationToken);
-            }
+            if (callbacks != null) { _callbackRunner.Run(callbacks.Keys, ParseCancellationToken); }
         }
 
         //Never spawn new threads changing module states in the handler! This will cause deadlocks. 
@@ -454,17 +448,32 @@ namespace Rubberduck.Parsing.VBA
             }
 
             var stateCounts = new int[States.Count];
+            var parserStateToIndex = new Dictionary<ParserState, int>
+            {
+                {ParserState.Pending, 0},
+                {ParserState.LoadingReference, 1},
+                {ParserState.Parsing, 2},
+                {ParserState.Parsed, 3},
+                {ParserState.ResolvingDeclarations, 4},
+                {ParserState.ResolvedDeclarations, 5},
+                {ParserState.ResolvingReferences, 6},
+                {ParserState.Ready, 7},
+                {ParserState.Error, 8},
+                {ParserState.ResolverError, 9},
+                {ParserState.None, 10}
+            };
+
             foreach (var moduleState in moduleStates)
             {
-                stateCounts[(int)moduleState]++;
+                stateCounts[parserStateToIndex[moduleState]]++;
             }
 
             // error state takes precedence over every other state
-            if (stateCounts[(int)ParserState.Error] > 0)
+            if (stateCounts[parserStateToIndex[ParserState.Error]] > 0)
             {
                 return ParserState.Error;
             }
-            if (stateCounts[(int)ParserState.ResolverError] > 0)
+            if (stateCounts[parserStateToIndex[ParserState.ResolverError]] > 0)
             {
                 return ParserState.ResolverError;
             }
@@ -479,19 +488,19 @@ namespace Rubberduck.Parsing.VBA
                 }
             }
 
-            if (stateCounts[(int)ParserState.Pending] > 0)
+            if (stateCounts[parserStateToIndex[ParserState.Pending]] > 0)
             {
                 result = ParserState.Pending;
             }
-            if (stateCounts[(int)ParserState.Parsing] > 0)
+            if (stateCounts[parserStateToIndex[ParserState.Parsing]] > 0)
             {
                 result = ParserState.Parsing;
             }
-            if (stateCounts[(int)ParserState.ResolvingDeclarations] > 0)
+            if (stateCounts[parserStateToIndex[ParserState.ResolvingDeclarations]] > 0)
             {
                 result = ParserState.ResolvingDeclarations;
             }
-            if (stateCounts[(int)ParserState.ResolvingReferences] > 0)
+            if (stateCounts[parserStateToIndex[ParserState.ResolvingReferences]] > 0)
             {
                 result = ParserState.ResolvingReferences;
             }
@@ -500,7 +509,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 for (var i = 0; i < stateCounts.Length; i++)
                 {
-                    if (i == (int)ParserState.Ready || i == (int)ParserState.None)
+                    if (i == parserStateToIndex[ParserState.Ready] || i == parserStateToIndex[ParserState.None])
                     {
                         continue;
                     }
@@ -517,7 +526,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 for (var i = 0; i < stateCounts.Length; i++)
                 {
-                    if (i == (int)ParserState.Ready || i == (int)ParserState.None)
+                    if (i == parserStateToIndex[ParserState.Ready] || i == parserStateToIndex[ParserState.None])
                     {
                         continue;
                     }

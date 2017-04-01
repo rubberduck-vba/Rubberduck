@@ -942,7 +942,7 @@ End Sub";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new ParserStateChangedTestCallbackRunner()));
 
             parser.Parse(new CancellationTokenSource());
             if (state.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -969,7 +969,7 @@ End Sub";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new ParserStateChangedTestCallbackRunner()));
 
             parser.Parse(new CancellationTokenSource());
             if (state.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -996,7 +996,7 @@ End Sub";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new ParserStateChangedTestCallbackRunner()));
 
             parser.Parse(new CancellationTokenSource());
             if (state.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -1021,7 +1021,7 @@ End Sub";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new ParserStateChangedTestCallbackRunner()));
 
             parser.Parse(new CancellationTokenSource());
             if (state.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -1046,7 +1046,7 @@ End Sub";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new ParserStateChangedTestCallbackRunner()));
 
             parser.Parse(new CancellationTokenSource());
             if (state.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -1071,7 +1071,7 @@ End Sub";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new ParserStateChangedTestCallbackRunner()));
 
             parser.Parse(new CancellationTokenSource());
             if (state.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -1096,7 +1096,7 @@ End Sub";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new ParserStateChangedTestCallbackRunner()));
 
             parser.Parse(new CancellationTokenSource());
             if (state.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -1121,7 +1121,7 @@ End Sub";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new ParserStateChangedTestCallbackRunner()));
 
             parser.Parse(new CancellationTokenSource());
             if (state.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -1149,7 +1149,7 @@ End Sub";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new ParserStateChangedTestCallbackRunner()));
 
             parser.Parse(new CancellationTokenSource());
             if (state.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -1177,7 +1177,7 @@ End Sub";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new ParserStateChangedTestCallbackRunner()));
 
             parser.Parse(new CancellationTokenSource());
             if (state.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -1205,7 +1205,7 @@ End Sub";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new ParserStateChangedTestCallbackRunner()));
 
             parser.Parse(new CancellationTokenSource());
             if (state.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -1233,7 +1233,7 @@ End Sub";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new ParserStateChangedTestCallbackRunner()));
 
             parser.Parse(new CancellationTokenSource());
             if (state.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -1259,7 +1259,7 @@ End Sub";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new ParserStateChangedTestCallbackRunner()));
 
             parser.Parse(new CancellationTokenSource());
             if (state.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -1285,7 +1285,7 @@ End Sub";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new ParserStateChangedTestCallbackRunner()));
 
             parser.Parse(new CancellationTokenSource());
             if (state.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -1311,7 +1311,7 @@ End Sub";
             var builder = new MockVbeBuilder();
             IVBComponent component;
             var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new ParserStateChangedTestCallbackRunner()));
 
             parser.Parse(new CancellationTokenSource());
             if (state.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }

@@ -19,7 +19,7 @@ namespace RubberduckTests.Grammar
         {
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleModule(code, moduleType, out component, Selection.Empty, loadStdLib);
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new ParserStateChangedTestCallbackRunner()));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status != ParserState.Ready)
@@ -43,7 +43,7 @@ namespace RubberduckTests.Grammar
             builder.AddProject(project);
             var vbe = builder.Build();
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new ParserStateChangedTestCallbackRunner()));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status == ParserState.ResolverError)
@@ -71,7 +71,7 @@ namespace RubberduckTests.Grammar
             builder.AddProject(project);
             var vbe = builder.Build();
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new ParserStateChangedTestCallbackRunner()));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status == ParserState.ResolverError)
@@ -2021,7 +2021,7 @@ End Sub
             builder.AddProject(project.Build());
             var vbe = builder.Build();
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new ParserStateChangedTestCallbackRunner()));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status == ParserState.ResolverError)

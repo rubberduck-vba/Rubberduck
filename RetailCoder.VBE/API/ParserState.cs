@@ -63,7 +63,7 @@ namespace Rubberduck.API
             }
 
             _vbe = new VBE(vbe);
-            _state = new RubberduckParserState(null);
+            _state = new RubberduckParserState(null, new ParserStateChangedCallbackRunner());
             _state.StateChangedCallbackRegistry(_state_StateChanged, (Parsing.VBA.ParserState) int.MaxValue);  // set all the bits
 
             Func<IVBAPreprocessor> preprocessorFactory = () => new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture));
