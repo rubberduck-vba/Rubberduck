@@ -2,11 +2,8 @@
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.Rename
 {
@@ -32,10 +29,6 @@ namespace Rubberduck.Refactorings.Rename
         public RenameModel Model { get { return _model; } }
 
         public IMessageBox MessageBox { get { return _messageBox; } }
-
-        //private void AddQualifiedName(QualifiedModuleName qmn) { _updatedQMNs.Add(qmn); }
-
-        //private void AddQualifiedNameRange(IEnumerable<QualifiedModuleName> qmns) { _updatedQMNs.AddRange(qmns); }
 
         public void Rewrite()
         {
