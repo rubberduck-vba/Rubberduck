@@ -8,6 +8,8 @@ using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using System;
 using System.Diagnostics;
+using Microsoft.CSharp.RuntimeBinder;
+using System.Runtime.InteropServices;
 
 namespace Rubberduck.Refactorings.Rename
 {
@@ -220,7 +222,11 @@ namespace Rubberduck.Refactorings.Rename
             {
                 handler.Rename();
             }
-            catch (Exception)
+            catch (RuntimeBinderException)
+            {
+                _messageBox.Show(handler.ErrorMessage, RubberduckUI.RenameDialog_Caption);
+            }
+            catch (COMException)
             {
                 _messageBox.Show(handler.ErrorMessage, RubberduckUI.RenameDialog_Caption);
             }
