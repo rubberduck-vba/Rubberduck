@@ -43,6 +43,8 @@ namespace Rubberduck.Parsing.VBA
         private readonly IEnumerable<ICustomDeclarationLoader> _customDeclarationLoaders;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
+        private readonly IModuleToModuleReferenceManager _moduleToModuleReferenceManager;
+
         private readonly bool _isTestScope;
         private readonly string _serializedDeclarationsPath;
         private readonly IHostApplication _hostApp;
@@ -53,6 +55,7 @@ namespace Rubberduck.Parsing.VBA
             IAttributeParser attributeParser,
             Func<IVBAPreprocessor> preprocessorFactory,
             IEnumerable<ICustomDeclarationLoader> customDeclarationLoaders,
+            IModuleToModuleReferenceManager moduleToModuleReferenceManager,
             bool isTestScope = false,
             string serializedDeclarationsPath = null)
         {
@@ -61,6 +64,7 @@ namespace Rubberduck.Parsing.VBA
             _attributeParser = attributeParser;
             _preprocessorFactory = preprocessorFactory;
             _customDeclarationLoaders = customDeclarationLoaders;
+            _moduleToModuleReferenceManager = moduleToModuleReferenceManager;
             _isTestScope = isTestScope;
             _serializedDeclarationsPath = serializedDeclarationsPath
                 ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck", "declarations");
@@ -270,32 +274,21 @@ namespace Rubberduck.Parsing.VBA
         private ICollection<QualifiedModuleName> ModulesForWhichToResolveReferences(ICollection<QualifiedModuleName> modulesToParse)
         {
             var toResolveReferences = modulesToParse.ToHashSet();
-            foreach (var qmn in modulesToParse)
-            { 
-                toResolveReferences.UnionWith(State.ModulesReferencing(qmn));
-            }
+            toResolveReferences.UnionWith(_moduleToModuleReferenceManager.ModulesReferencingAny(modulesToParse));
             return toResolveReferences;
         }
 
         private void PerformPreParseCleanup(ICollection<QualifiedModuleName> modulesToParse, ICollection<QualifiedModuleName> toResolveReferences, CancellationToken token)
         {
-            ClearModuleToModuleReferences(modulesToParse);
+            _moduleToModuleReferenceManager.ClearModuleToModuleReferencesFromModule(modulesToParse);
             RemoveAllReferencesBy(toResolveReferences, modulesToParse, State.DeclarationFinder, token); //All declarations on the modulesToParse get destroyed anyway. 
             _projectDeclarations.Clear();
-        }
-
-        private void ClearModuleToModuleReferences(ICollection<QualifiedModuleName> toClear)
-        {
-            foreach (var qmn in toClear)
-            {
-                State.ClearModuleToModuleReferencesFromModule(qmn);       
-            }
         }
 
         //This does not live on the RubberduckParserState to keep concurrency haanlding out of it.
         public void RemoveAllReferencesBy(ICollection<QualifiedModuleName> referencesFromToRemove, ICollection<QualifiedModuleName> modulesNotNeedingReferenceRemoval, DeclarationFinder finder, CancellationToken token)
         {
-            var referencedModulesNeedingReferenceRemoval = State.ModulesReferencedBy(referencesFromToRemove).Where(qmn => !modulesNotNeedingReferenceRemoval.Contains(qmn));
+            var referencedModulesNeedingReferenceRemoval = _moduleToModuleReferenceManager.ModulesReferencedByAny(referencesFromToRemove).Where(qmn => !modulesNotNeedingReferenceRemoval.Contains(qmn));
 
             var options = new ParallelOptions();
             options.CancellationToken = token;

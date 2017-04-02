@@ -1029,6 +1029,22 @@ namespace Rubberduck.Parsing.VBA
             referencingModuleState.HasReferenceToModule.AddOrUpdate(referencedModule, 1, (key, value) => value);
         }
 
+        public void RemoveModuleToModuleReference(QualifiedModuleName referencedModule, QualifiedModuleName referencingModule)
+        {
+            ModuleState referencedModuleState;
+            ModuleState referencingModuleState;
+            if (!_moduleStates.TryGetValue(referencedModule, out referencedModuleState) || !_moduleStates.TryGetValue(referencingModule, out referencingModuleState))
+            {
+                return;
+            }
+            if (referencedModuleState.IsReferencedByModule.Contains(referencingModule))
+            {
+                referencedModuleState.IsReferencedByModule.Remove(referencingModule);
+            }
+            byte dummyOutValue;
+            referencingModuleState.HasReferenceToModule.TryRemove(referencedModule, out dummyOutValue);
+        }
+
         public void ClearModuleToModuleReferencesFromModule(QualifiedModuleName referencingModule)
         {
             ModuleState referencingModuleState;
@@ -1049,6 +1065,27 @@ namespace Rubberduck.Parsing.VBA
             referencingModuleState.RefreshHasReferenceToModule();
         }
 
+        public void ClearModuleToModuleReferencesToModule(QualifiedModuleName referencedModule)
+        {
+            ModuleState referencedModuleState;
+            if (!_moduleStates.TryGetValue(referencedModule, out referencedModuleState))
+            {
+                return;
+            }
+
+            foreach(var referencingModule in referencedModuleState.IsReferencedByModule)
+            {
+                ModuleState referencingModuleState;
+                if (!_moduleStates.TryGetValue(referencingModule, out referencingModuleState))
+                {
+                    continue;
+                }
+                byte dummyOutValue;
+                referencingModuleState.HasReferenceToModule.TryRemove(referencedModule, out dummyOutValue);
+            }
+            referencedModuleState.RefreshHasReferenceToModule();
+        }
+
         public HashSet<QualifiedModuleName> ModulesReferencedBy(QualifiedModuleName referencingModule)
         { 
             ModuleState referencingModuleState;
@@ -1057,17 +1094,6 @@ namespace Rubberduck.Parsing.VBA
                 return new HashSet<QualifiedModuleName>();
             }
             return new HashSet<QualifiedModuleName>(referencingModuleState.HasReferenceToModule.Keys);
-        }
-
-        public HashSet<QualifiedModuleName> ModulesReferencedBy(IEnumerable<QualifiedModuleName> referencingModules)
-        {
-            var toModules = new HashSet<QualifiedModuleName>();
-
-            foreach (var referencingModule in referencingModules)
-            {
-                toModules.UnionWith(ModulesReferencedBy(referencingModule));
-            }
-            return toModules;
         }
 
         public HashSet<QualifiedModuleName> ModulesReferencing(QualifiedModuleName referencedModule)
@@ -1079,6 +1105,7 @@ namespace Rubberduck.Parsing.VBA
             }
             return new HashSet<QualifiedModuleName>(referencedModuleState.IsReferencedByModule);
         }
+
 
         private bool _isDisposed;
 

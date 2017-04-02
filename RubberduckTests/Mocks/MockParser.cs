@@ -54,7 +54,9 @@ namespace RubberduckTests.Mocks
                     new SpecialFormDeclarations(state), 
                     new FormEventDeclarations(state), 
                     new AliasDeclarations(state),
-                }, true, path);
+                }, 
+                new StateModuleToModuleReferenceManager(state),
+                true, path);
         }
 
         public static RubberduckParserState CreateAndParse(IVBE vbe, string serializedDeclarationsPath = null)
