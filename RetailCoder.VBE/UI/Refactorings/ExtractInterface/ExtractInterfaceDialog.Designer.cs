@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.UI.Refactorings.ExtractInterface
+﻿namespace Rubberduck.UI.Refactorings
 {
     partial class ExtractInterfaceDialog
     {
@@ -30,7 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ExtractInterfaceDialog));
             this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-            this.ExtractInterfaceViewElement = new Rubberduck.UI.Refactorings.ExtractInterface.ExtractInterfaceView();
+            this.ExtractInterfaceViewElement = new ExtractInterfaceView();
             this.SuspendLayout();
             // 
             // elementHost1

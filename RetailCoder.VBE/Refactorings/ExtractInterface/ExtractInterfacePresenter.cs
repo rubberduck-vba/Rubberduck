@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.UI.Refactorings;
-using Rubberduck.UI.Refactorings.ExtractInterface;
 
 namespace Rubberduck.Refactorings.ExtractInterface
 {

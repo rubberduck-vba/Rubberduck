@@ -20,7 +20,7 @@ using Antlr4.Runtime.Misc;
 // Missing XML comment for publicly visible type or member '...'
 #pragma warning disable 1591
 
-namespace Rubberduck.Parsing.Preprocessing {
+namespace Rubberduck.Parsing.PreProcessing {
     using IParseTreeListener = Antlr4.Runtime.Tree.IParseTreeListener;
 
     /// <summary>

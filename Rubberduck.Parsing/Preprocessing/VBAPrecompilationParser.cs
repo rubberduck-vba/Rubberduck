@@ -1,11 +1,11 @@
-﻿using Antlr4.Runtime;
+﻿using System;
+using Antlr4.Runtime;
 using Antlr4.Runtime.Atn;
 using NLog;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using System;
 
-namespace Rubberduck.Parsing.Preprocessing
+namespace Rubberduck.Parsing.PreProcessing
 {
     public sealed class VBAPrecompilationParser
     {

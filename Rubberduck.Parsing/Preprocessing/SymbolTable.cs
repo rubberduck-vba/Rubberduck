@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Rubberduck.Parsing.Preprocessing
+namespace Rubberduck.Parsing.PreProcessing
 {
     public sealed class SymbolTable<TKey, TValue>
     {

@@ -25,11 +25,10 @@ using Rubberduck.UI.Controls;
 using Rubberduck.UI.SourceControl;
 using Rubberduck.UI.ToDoItems;
 using Rubberduck.UI.UnitTesting;
-using Rubberduck.Parsing.Preprocessing;
 using System.Globalization;
+using System.IO;
 using Ninject.Extensions.Interception.Infrastructure.Language;
 using Ninject.Extensions.NamedScope;
-using Rubberduck.Inspections.Abstract;
 using Rubberduck.UI.CodeExplorer.Commands;
 using Rubberduck.UI.Command.MenuItems.CommandBars;
 using Rubberduck.VBEditor.Application;
@@ -37,10 +36,10 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 using ReparseCommandMenuItem = Rubberduck.UI.Command.MenuItems.CommandBars.ReparseCommandMenuItem;
 using Rubberduck.UI.Refactorings;
-using Rubberduck.Inspections;
 using Rubberduck.UI.Refactorings.Rename;
 using Rubberduck.UnitTesting;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.PreProcessing;
 
 namespace Rubberduck.Root
 {
@@ -76,16 +75,18 @@ namespace Rubberduck.Root
             
             Bind<CommandBase>().To<VersionCheckCommand>().WhenInjectedExactlyInto<App>();
 
-            BindCodeInspectionTypes();
-            BindRefactoringDialogs();
-
             var assemblies = new[]
             {
                 Assembly.GetExecutingAssembly(),
                 Assembly.GetAssembly(typeof(IHostApplication)),
                 Assembly.GetAssembly(typeof(IParseCoordinator)),
                 Assembly.GetAssembly(typeof(IIndenter))
-            };
+            }
+            .Concat(FindPlugins())
+            .ToArray();
+
+            BindCodeInspectionTypes(assemblies);
+            BindRefactoringDialogs();
 
             ApplyDefaultInterfacesConvention(assemblies);
             ApplyConfigurationConvention(assemblies);
@@ -145,9 +146,6 @@ namespace Rubberduck.Root
                 .WhenInjectedInto<ToDoExplorerCommand>()
                 .InSingletonScope();
 
-            Bind<IAssignedByValParameterQuickFixDialogFactory>().To<AssignedByValParameterQuickFixDialogFactory>()
-                .WhenInjectedInto<AssignedByValParameterInspection>();
-
             BindDockableToolwindows();
             BindCommandsToCodeExplorer();
             ConfigureRubberduckCommandBar();
@@ -158,8 +156,28 @@ namespace Rubberduck.Root
             ConfigureProjectExplorerContextMenu();
             
             BindWindowsHooks();
+        }
 
+        private IEnumerable<Assembly> FindPlugins()
+        {
+            var assemblies = new List<Assembly>();
+            var basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            assemblies.Add(Assembly.LoadFile(Path.Combine(basePath, "Rubberduck.Inspections.dll")));
 
+            var path = Path.Combine(basePath, "Plug-ins");
+            foreach (var library in Directory.EnumerateFiles(path, "*.dll"))
+            {
+                try
+                {
+                    assemblies.Add(Assembly.LoadFile(library));
+                }
+                catch (Exception)
+                {
+                    // can we log yet?
+                }
+            }
+
+            return assemblies;
         }
 
         private void BindRefactoringDialogs()
@@ -243,35 +261,35 @@ namespace Rubberduck.Root
                 .Configure(binding => binding.InSingletonScope()));
         }
 
-        // note: InspectionBase implementations are discovered in the Rubberduck assembly via reflection.
-        private void BindCodeInspectionTypes()
+        // note: IInspection implementations are discovered in all assemblies, via reflection.
+        private void BindCodeInspectionTypes(IEnumerable<Assembly> assemblies)
         {
-            var inspections = Assembly.GetExecutingAssembly()
-                                      .GetTypes()
-                                      .Where(type => type.BaseType == typeof (InspectionBase));
+            var inspections = assemblies
+                .SelectMany(a => a.GetTypes().Where(type => type.IsClass && !type.IsAbstract && type.GetInterfaces().Contains(typeof (IInspection))))
+                .ToList();
 
             // multibinding for IEnumerable<IInspection> dependency
             foreach (var inspection in inspections)
             {
-                if (typeof(IParseTreeInspection).IsAssignableFrom(inspection))
+                var iParseTreeInspection = inspection.GetInterfaces().SingleOrDefault(i => i.Name == "IParseTreeInspection");
+                if (iParseTreeInspection != null)
                 {
-                    var binding = Bind<IParseTreeInspection>()
+                    var binding = Bind(iParseTreeInspection)
                         .To(inspection)
                         .InCallScope()
                         .Named(inspection.FullName);
 
                     binding.Intercept().With<TimedCallLoggerInterceptor>();
-                    binding.Intercept().With<EnumerableCounterInterceptor<InspectionResultBase>>();
+                    binding.Intercept().With<EnumerableCounterInterceptor<IInspectionResult>>();
 
                     var localInspection = inspection;
-                    Bind<IInspection>().ToMethod(
-                        c => c.Kernel.Get<IParseTreeInspection>(localInspection.FullName));
+                    Bind<IInspection>().ToMethod(c => (IInspection)c.Kernel.Get(iParseTreeInspection, localInspection.FullName));
                 }
                 else
                 {
                     var binding = Bind<IInspection>().To(inspection).InCallScope();
                     binding.Intercept().With<TimedCallLoggerInterceptor>();
-                    binding.Intercept().With<EnumerableCounterInterceptor<InspectionResultBase>>();
+                    binding.Intercept().With<EnumerableCounterInterceptor<IInspectionResult>>();
                 }
             }
         }
