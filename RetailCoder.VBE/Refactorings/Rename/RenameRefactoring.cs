@@ -31,15 +31,12 @@ namespace Rubberduck.Refactorings.Rename
 
         public void Refactor()
         {
-
             var presenter = _factory.Create();
-            _model = presenter.Model;
-            if (null == _model.Target)
-            {
-                _messageBox.Show(RubberduckUI.RefactorRename_TargetNotDefinedError, RubberduckUI.RenameDialog_Caption, MessageBoxButtons.OK,
-                    MessageBoxIcon.Exclamation);
-                return;
-            }
+
+            bool hasNullReferences = false;
+            SetModelMember(presenter, out hasNullReferences);
+
+            if(hasNullReferences) { return; }
 
             _model.Target = PreprocessSelectedTarget(_model.Target);
 
@@ -77,8 +74,16 @@ namespace Rubberduck.Refactorings.Rename
 
         public void Refactor(Declaration target)
         {
+            var presenter = _factory.Create();
+
+            bool hasNullReferences = false;
+            SetModelMember(presenter, out hasNullReferences);
+
+            if (hasNullReferences) { return; }
+
             if (null == target)
             {
+                if (null == _messageBox) { return; }
                 _messageBox.Show(RubberduckUI.RefactorRename_TargetNotDefinedError, RubberduckUI.RenameDialog_Caption, MessageBoxButtons.OK,
                     MessageBoxIcon.Exclamation);
                 return;
@@ -91,9 +96,6 @@ namespace Rubberduck.Refactorings.Rename
                     MessageBoxIcon.Exclamation);
                 return;
             }
-
-            var presenter = _factory.Create();
-            _model = presenter.Model;
 
             _model.Target = PreprocessSelectedTarget(_model.Target);
 
@@ -115,6 +117,30 @@ namespace Rubberduck.Refactorings.Rename
             if (!pane.IsWrappingNullReference)
             {
                 pane.Selection = uqOldSelection;
+            }
+        }
+
+        private void SetModelMember(IRenamePresenter presenter, out bool hasNullReferences)
+        {
+            hasNullReferences = false;
+            presenter = _factory.Create();
+            _model = presenter.Model;
+
+            if (null == _model)
+            {
+                hasNullReferences = true;
+                return;
+            }
+
+            if (null == _model.Target)
+            {
+                hasNullReferences = true;
+                if (null == _messageBox)
+                {
+                    return;
+                }
+                _messageBox.Show(RubberduckUI.RefactorRename_TargetNotDefinedError, RubberduckUI.RenameDialog_Caption, MessageBoxButtons.OK,
+                    MessageBoxIcon.Exclamation);
             }
         }
 
