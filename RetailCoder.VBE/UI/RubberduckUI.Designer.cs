@@ -3042,6 +3042,24 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable To Detect Selected Rename Target.
+        /// </summary>
+        public static string RefactorRename_TargetNotDefinedError {
+            get {
+                return ResourceManager.GetString("RefactorRename_TargetNotDefinedError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Identifier {0} cannot be renamed..
+        /// </summary>
+        public static string RefactorRename_TargetNotUserDefinedError {
+            get {
+                return ResourceManager.GetString("RefactorRename_TargetNotUserDefinedError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Refresh.
         /// </summary>
         public static string Refresh {
@@ -3331,11 +3349,47 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not rename Control {0}..
+        /// </summary>
+        public static string RenameDialog_ControlRenameError {
+            get {
+                return ResourceManager.GetString("RenameDialog_ControlRenameError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Coult not rename {0}..
+        /// </summary>
+        public static string RenameDialog_DefaultRenameError {
+            get {
+                return ResourceManager.GetString("RenameDialog_DefaultRenameError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not rename Event Handler {0}..
+        /// </summary>
+        public static string RenameDialog_EventRenameError {
+            get {
+                return ResourceManager.GetString("RenameDialog_EventRenameError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please specify new name for {0} &apos;{1}&apos;..
         /// </summary>
         public static string RenameDialog_InstructionsLabelText {
             get {
                 return ResourceManager.GetString("RenameDialog_InstructionsLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not rename Interface Member {0}..
+        /// </summary>
+        public static string RenameDialog_InterfaceRenameError {
+            get {
+                return ResourceManager.GetString("RenameDialog_InterfaceRenameError", resourceCulture);
             }
         }
         
@@ -3354,6 +3408,24 @@ namespace Rubberduck.UI {
         public static string RenameDialog_ProjectRenameError {
             get {
                 return ResourceManager.GetString("RenameDialog_ProjectRenameError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not rename Parameter {0} for Property {1}..
+        /// </summary>
+        public static string RenameDialog_PropertyParameterRenameError {
+            get {
+                return ResourceManager.GetString("RenameDialog_PropertyParameterRenameError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not rename Property {0}..
+        /// </summary>
+        public static string RenameDialog_PropertyRenameError {
+            get {
+                return ResourceManager.GetString("RenameDialog_PropertyRenameError", resourceCulture);
             }
         }
         

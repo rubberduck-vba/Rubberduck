@@ -1,20 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.Parsing.PostProcessing;
 
 namespace Rubberduck.Refactorings.Rename
 {
     public class RenameModel
     {
-        private Rewriters _rewriters;
-
         private readonly IVBE _vbe;
         public IVBE VBE { get { return _vbe; } }
         
@@ -46,36 +42,7 @@ namespace Rubberduck.Refactorings.Rename
             _selection = selection;
             _messageBox = messageBox;
 
-            _rewriters = new Rewriters(_state);
-
             AcquireTarget(out _target, Selection);
-        }
-
-        public IModuleRewriter GetRewriter(IVBComponent component)
-        {
-            var qmn = new QualifiedModuleName(component);
-            return GetRewriter(qmn);
-        }
-
-        public IModuleRewriter GetRewriter(Declaration declaration)
-        {
-            var qmn = declaration.QualifiedSelection.QualifiedName;
-            return GetRewriter(qmn);
-        }
-
-        public IModuleRewriter GetRewriter(QualifiedModuleName qmn)
-        {
-            return _rewriters.GetRewriter(qmn);
-        }
-
-        public void Rewrite()
-        {
-            _rewriters.Rewrite();
-        }
-
-        public void ClearRewriters()
-        {
-            _rewriters = new Rewriters(_state);
         }
 
         private void AcquireTarget(out Declaration target, QualifiedSelection selection)
@@ -83,66 +50,63 @@ namespace Rubberduck.Refactorings.Rename
             target = _declarations
                 .Where(item => item.IsUserDefined && item.DeclarationType != DeclarationType.ModuleOption)
                 .FirstOrDefault(item => item.IsSelected(selection) || item.References.Any(r => r.IsSelected(selection)));
-
-            PromptIfTargetImplementsInterface(ref target);
         }
 
-        public void PromptIfTargetImplementsInterface(ref Declaration target)
+        public Declaration ResolveImplementationToInterfaceDeclaration(Declaration target)
         {
-            var declaration = target;
-            var interfaceImplementation = _declarations.FindInterfaceImplementationMembers().SingleOrDefault(m => m.Equals(declaration));
-            if (target == null || interfaceImplementation == null)
+            if (null == target) { return target; }
+            var interfaceImplementation = _declarations.FindInterfaceImplementationMembers()
+                    .SingleOrDefault(m => m.Equals(target));
+            if (null == interfaceImplementation )
             {
-                return;
+                return target;
             }
 
-            var interfaceMember = _declarations.FindInterfaceMember(interfaceImplementation);
-            var message = string.Format(RubberduckUI.RenamePresenter_TargetIsInterfaceMemberImplementation, target.IdentifierName, interfaceMember.ComponentName, interfaceMember.IdentifierName);
-
-            var confirm = _messageBox.Show(message, RubberduckUI.RenameDialog_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
-            if (confirm == DialogResult.No)
-            {
-                target = null;
-                return;
-            }
-
-            target = interfaceMember;
+            return _declarations.FindInterfaceMember(interfaceImplementation);
         }
 
-        internal class Rewriters
+        public Declaration ResolveHandlerToDeclaration(Declaration handlerCandidate, DeclarationType goalType)
         {
-            Dictionary<string, IModuleRewriter> _rewriters;
-            RubberduckParserState _state;
+            if (null == handlerCandidate) { return handlerCandidate; }
 
-            public Rewriters(RubberduckParserState state)
+            if (handlerCandidate.DeclarationType != DeclarationType.Procedure
+                || !(handlerCandidate.IdentifierName.Contains("_")))
             {
-                _rewriters = new Dictionary<string, IModuleRewriter>();
-                _state = state;
+                return handlerCandidate;
             }
 
-            public IModuleRewriter GetRewriter(QualifiedModuleName qmn)
+            var declarationsOfInterest = _declarations.Where(d => d.DeclarationType.HasFlag(goalType)
+                    && handlerCandidate.IdentifierName.Contains(d.IdentifierName));
+
+            if (goalType.HasFlag(DeclarationType.Control))
             {
-                IModuleRewriter rewriter;
-                if (_rewriters.ContainsKey(qmn.Name))
+                foreach (var controlOfInterest in declarationsOfInterest)
                 {
-                    _rewriters.TryGetValue(qmn.Name, out rewriter);
+                    var eventHandler = _declarations.FindEventHandlers(controlOfInterest)
+                            .SingleOrDefault(m => m.Equals(handlerCandidate));
+                    if (null != eventHandler)
+                    {
+                        return controlOfInterest;
+                    }
                 }
-                else
-                {
-                    rewriter = _state.GetRewriter(qmn);
-                    _rewriters.Add(qmn.Name, rewriter);
-                }
-                return rewriter;
+                return handlerCandidate;
             }
 
-            public void Rewrite()
+            if (goalType.HasFlag(DeclarationType.Event))
             {
-                foreach(var rewriter in _rewriters.Values)
+                foreach( var eventOfInterest in declarationsOfInterest)
                 {
-                    rewriter.Rewrite();
+                    var eventHandler = _declarations.FindHandlersForEvent(eventOfInterest)
+                            .SingleOrDefault(m => m.Item2.Equals(handlerCandidate));
+                    if (null != eventHandler)
+                    {
+                        return eventOfInterest;
+                    }
                 }
+                return handlerCandidate;
             }
+
+            return handlerCandidate;
         }
-
     }
 }
