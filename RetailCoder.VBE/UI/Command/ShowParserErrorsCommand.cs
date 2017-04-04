@@ -35,7 +35,7 @@ namespace Rubberduck.UI.Command
             _viewModel = viewModel;
             _presenterService = presenterService;
 
-            _state.StateChangedCallbackRegistry(_state_StateChanged, ParserState.Error | ParserState.Parsed);
+            _state.RegisterStateChangedCallback(_state_StateChanged, ParserState.Error | ParserState.Parsed);
         }
 
         private void _state_StateChanged(CancellationToken c)

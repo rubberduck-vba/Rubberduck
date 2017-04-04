@@ -21,7 +21,7 @@ namespace Rubberduck.UI.UnitTesting
         {
             _vbe = vbe;
             _state = state;
-            _state.StateChangedCallbackRegistry(State_StateChanged, ParserState.ResolvedDeclarations);
+            _state.RegisterStateChangedCallback(State_StateChanged, ParserState.ResolvedDeclarations);
 
             _dispatcher = Dispatcher.CurrentDispatcher;
         }

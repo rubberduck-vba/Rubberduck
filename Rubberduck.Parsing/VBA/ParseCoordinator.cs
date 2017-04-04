@@ -24,23 +24,23 @@ namespace Rubberduck.Parsing.VBA
 {
     public class ParseCoordinator : IParseCoordinator
     {
-        public RubberduckParserState State { get { return _state; } }
+        public RubberduckParserState State { get; }
 
-        private const int _maxDegreeOfParserParallelism = -1;
-        private const int _maxDegreeOfDeclarationResolverParallelism = -1;
-        private const int _maxDegreeOfReferenceResolverParallelism = -1;
-        private const int _maxDegreeOfModuleStateChangeParallelism = -1;
-        private const int _maxDegreeOfReferenceRemovalParallelism = -1;
-        private const int _maxReferenceLoadingConcurrency = -1;
+        private const int MaxDegreeOfParserParallelism = -1;
+        private const int MaxDegreeOfDeclarationResolverParallelism = -1;
+        private const int MaxDegreeOfReferenceResolverParallelism = -1;
+        private const int MaxDegreeOfModuleStateChangeParallelism = -1;
+        private const int MaxDegreeOfReferenceRemovalParallelism = -1;
+        private const int MaxReferenceLoadingConcurrency = -1;
 
         private readonly IDictionary<IVBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>> _componentAttributes
             = new Dictionary<IVBComponent, IDictionary<Tuple<string, DeclarationType>, Attributes>>();
 
         private readonly IVBE _vbe;
-        private readonly RubberduckParserState _state;
         private readonly IAttributeParser _attributeParser;
         private readonly Func<IVBAPreprocessor> _preprocessorFactory;
         private readonly IEnumerable<ICustomDeclarationLoader> _customDeclarationLoaders;
+        private readonly IParserStateChangeCallbackManager _callbackManager;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private readonly bool _isTestScope;
@@ -53,14 +53,16 @@ namespace Rubberduck.Parsing.VBA
             IAttributeParser attributeParser,
             Func<IVBAPreprocessor> preprocessorFactory,
             IEnumerable<ICustomDeclarationLoader> customDeclarationLoaders,
+            IParserStateChangeCallbackManager callbackManager,
             bool isTestScope = false,
             string serializedDeclarationsPath = null)
         {
             _vbe = vbe;
-            _state = state;
+            State = state;
             _attributeParser = attributeParser;
             _preprocessorFactory = preprocessorFactory;
             _customDeclarationLoaders = customDeclarationLoaders;
+            _callbackManager = callbackManager;
             _isTestScope = isTestScope;
             _serializedDeclarationsPath = serializedDeclarationsPath
                 ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck", "declarations");
@@ -88,7 +90,7 @@ namespace Rubberduck.Parsing.VBA
 
             if (!_isTestScope)
             {
-                Task.Run(() => ParseAll(sender, token), token);
+                Task.Run(() => ParseAll(token), token);
             }
             else
             {
@@ -106,7 +108,6 @@ namespace Rubberduck.Parsing.VBA
                 {
                     var token = new CancellationTokenSource();
                     _cancellationTokens.Add(token);
-                    State.ParseCancellationToken = token.Token;
                 }
                 _cancellationTokens.RemoveAt(0);
             }
@@ -156,25 +157,25 @@ namespace Rubberduck.Parsing.VBA
 
         private void ParseInternalInternal(CancellationToken token)
         {
-                token.ThrowIfCancellationRequested();
-            
+            token.ThrowIfCancellationRequested();
+
             State.RefreshProjects(_vbe);
 
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
             var components = State.Projects.SelectMany(project => project.VBComponents).ToList();
 
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
             // tests do not fire events when components are removed--clear components
             ClearComponentStateCacheForTests();
 
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
             // invalidation cleanup should go into ParseAsync?
             CleanUpComponentAttributes(components);
 
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
             ExecuteCommonParseActivities(components, token);
         }
@@ -203,9 +204,11 @@ namespace Rubberduck.Parsing.VBA
             token.ThrowIfCancellationRequested();
 
             SetModuleStates(toParse, ParserState.Pending, token);
+            _callbackManager.RunCallbacks(ParserState.Pending, token);
 
             token.ThrowIfCancellationRequested();
 
+            _callbackManager.RunCallbacks(ParserState.LoadingReference, token);
             SyncComReferences(State.Projects, token);
             RefreshDeclarationFinder();
 
@@ -221,28 +224,26 @@ namespace Rubberduck.Parsing.VBA
             PerformPreParseCleanup(modulesToParse, toResolveReferences, token);
 
             ParseComponents(toParse, token);
+            _callbackManager.RunCallbacks(State.Status, token);
 
             if (token.IsCancellationRequested || State.Status >= ParserState.Error)
             {
                 throw new OperationCanceledException(token);
             }
 
+            _callbackManager.RunCallbacks(ParserState.ResolvingDeclarations, token);
             ResolveAllDeclarations(toParse, token);
             RefreshDeclarationFinder();
+            _callbackManager.RunCallbacks(State.Status, token);
 
             if (token.IsCancellationRequested || State.Status >= ParserState.Error)
             {
                 throw new OperationCanceledException(token);
             }
 
-            State.SetStatusAndFireStateChanged(ParserState.ResolvedDeclarations);
-
-            if (token.IsCancellationRequested || State.Status >= ParserState.Error)
-            {
-                throw new OperationCanceledException(token);
-            }
-
+            _callbackManager.RunCallbacks(ParserState.ResolvingReferences, token);
             ResolveAllReferences(toResolveReferences, token);
+            _callbackManager.RunCallbacks(State.Status, token);
 
             if (token.IsCancellationRequested || State.Status >= ParserState.Error)
             {
@@ -257,23 +258,25 @@ namespace Rubberduck.Parsing.VBA
 
         private void SetModuleStates(ICollection<IVBComponent> components, ParserState parserState, CancellationToken token)
         {
-            var options = new ParallelOptions();
-            options.CancellationToken = token;
-            options.MaxDegreeOfParallelism = _maxDegreeOfModuleStateChangeParallelism;
+            var options = new ParallelOptions
+            {
+                CancellationToken = token,
+                MaxDegreeOfParallelism = MaxDegreeOfModuleStateChangeParallelism
+            };
 
             Parallel.ForEach(components, options, component => State.SetModuleState(component, parserState, token, null, false));
 
-                if (!token.IsCancellationRequested)
-                {
-                    State.EvaluateParserState();
-                }
+            if (!token.IsCancellationRequested)
+            {
+                State.EvaluateParserState();
+            }
         }
 
         private ICollection<QualifiedModuleName> ModulesForWhichToResolveReferences(ICollection<QualifiedModuleName> modulesToParse)
         {
             var toResolveReferences = modulesToParse.ToHashSet();
             foreach (var qmn in modulesToParse)
-            { 
+            {
                 toResolveReferences.UnionWith(State.ModulesReferencing(qmn));
             }
             return toResolveReferences;
@@ -290,7 +293,7 @@ namespace Rubberduck.Parsing.VBA
         {
             foreach (var qmn in toClear)
             {
-                State.ClearModuleToModuleReferencesFromModule(qmn);       
+                State.ClearModuleToModuleReferencesFromModule(qmn);
             }
         }
 
@@ -301,7 +304,7 @@ namespace Rubberduck.Parsing.VBA
 
             var options = new ParallelOptions();
             options.CancellationToken = token;
-            options.MaxDegreeOfParallelism = _maxDegreeOfReferenceRemovalParallelism;
+            options.MaxDegreeOfParallelism = MaxDegreeOfReferenceRemovalParallelism;
 
             Parallel.ForEach(referencedModulesNeedingReferenceRemoval, options, qmn => RemoveReferences(finder.Members(qmn), referencesFromToRemove));
         }
@@ -316,15 +319,17 @@ namespace Rubberduck.Parsing.VBA
 
         private void ParseComponents(ICollection<IVBComponent> components, CancellationToken token)
         {
-                token.ThrowIfCancellationRequested();
-            
+            token.ThrowIfCancellationRequested();
+
             SetModuleStates(components, ParserState.Parsing, token);
 
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
-            var options = new ParallelOptions();
-            options.CancellationToken = token;
-            options.MaxDegreeOfParallelism = _maxDegreeOfParserParallelism;
+            var options = new ParallelOptions
+            {
+                CancellationToken = token,
+                MaxDegreeOfParallelism = MaxDegreeOfParserParallelism
+            };
 
             try
             {
@@ -391,7 +396,7 @@ namespace Rubberduck.Parsing.VBA
                 var result = finishedParseTask.Result;
                 lock (State)
                 {
-                    lock (component)    
+                    lock (component)
                     {
                         State.SetModuleAttributes(component, result.Attributes);
                         State.AddParseTree(component, result.ParseTree);
@@ -411,15 +416,17 @@ namespace Rubberduck.Parsing.VBA
 
         private void ResolveAllDeclarations(ICollection<IVBComponent> components, CancellationToken token)
         {
-                token.ThrowIfCancellationRequested();
-            
+            token.ThrowIfCancellationRequested();
+
             SetModuleStates(components, ParserState.ResolvingDeclarations, token);
 
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
-            var options = new ParallelOptions();
-            options.CancellationToken = token;
-            options.MaxDegreeOfParallelism = _maxDegreeOfDeclarationResolverParallelism;
+            var options = new ParallelOptions
+            {
+                CancellationToken = token,
+                MaxDegreeOfParallelism = MaxDegreeOfDeclarationResolverParallelism
+            };
             try
             {
                 Parallel.ForEach(components,
@@ -428,7 +435,7 @@ namespace Rubberduck.Parsing.VBA
                     {
                         var qualifiedName = new QualifiedModuleName(component);
                         ResolveDeclarations(qualifiedName.Component,
-                            State.ParseTrees.Find(s => s.Key == qualifiedName).Value, 
+                            State.ParseTrees.Find(s => s.Key == qualifiedName).Value,
                             token);
                     }
                 );
@@ -507,25 +514,27 @@ namespace Rubberduck.Parsing.VBA
 
         private void ResolveAllReferences(ICollection<QualifiedModuleName> toResolve, CancellationToken token)
         {
-                token.ThrowIfCancellationRequested();
-    
+            token.ThrowIfCancellationRequested();
+
             var components = toResolve.Select(qmn => qmn.Component).ToList();
-            
-                token.ThrowIfCancellationRequested();
-            
+
+            token.ThrowIfCancellationRequested();
+
             SetModuleStates(components, ParserState.ResolvingReferences, token);
 
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
             ExecuteCompilationPasses();
 
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
             var parseTreesToResolve = State.ParseTrees.Where(kvp => toResolve.Contains(kvp.Key)).ToList();
 
-            var options = new ParallelOptions();
-            options.CancellationToken = token;
-            options.MaxDegreeOfParallelism = _maxDegreeOfReferenceResolverParallelism;
+            var options = new ParallelOptions
+            {
+                CancellationToken = token,
+                MaxDegreeOfParallelism = MaxDegreeOfReferenceResolverParallelism
+            };
             try
             {
                 Parallel.For(0, parseTreesToResolve.Count, options,
@@ -542,19 +551,19 @@ namespace Rubberduck.Parsing.VBA
                 throw;
             }
 
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
             AddModuleToModuleReferences(State.DeclarationFinder, token);
 
-                token.ThrowIfCancellationRequested();
-            
+            token.ThrowIfCancellationRequested();
+
             AddNewUndeclaredVariablesToDeclarations();
             AddNewUnresolvedMemberDeclarations();
 
             //This is here and not in the calling method because it has to happen before the ready state is reached.
             RefreshDeclarationFinder();
 
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
             State.EvaluateParserState();
         }
@@ -575,7 +584,7 @@ namespace Rubberduck.Parsing.VBA
         {
             Debug.Assert(State.GetModuleState(qualifiedName.Component) == ParserState.ResolvingReferences || token.IsCancellationRequested);
 
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
             Logger.Debug("Resolving identifier references in '{0}'... (thread {1})", qualifiedName.Name, Thread.CurrentThread.ManagedThreadId);
 
@@ -613,7 +622,7 @@ namespace Rubberduck.Parsing.VBA
             var options = new ParallelOptions
             {
                 CancellationToken = token,
-                MaxDegreeOfParallelism = _maxDegreeOfReferenceResolverParallelism
+                MaxDegreeOfParallelism = MaxDegreeOfReferenceResolverParallelism
             };
 
             try
@@ -668,18 +677,18 @@ namespace Rubberduck.Parsing.VBA
         /// <summary>
         /// Starts parsing all components of all unprotected VBProjects associated with the VBE-Instance passed to the constructor of this parser instance.
         /// </summary>
-        private void ParseAll(object requestor, CancellationToken token)
+        private void ParseAll(CancellationToken token)
         {
             Stopwatch watch = null;
             var lockTaken = false;
             try
             {
                 Monitor.Enter(_parsingRunSyncObject, ref lockTaken);
-                
+
                 watch = Stopwatch.StartNew();
                 Logger.Debug("Parsing run started. (thread {0}).", Thread.CurrentThread.ManagedThreadId);
-                
-                ParseAllInternal(requestor, token);
+
+                ParseAllInternal(token);
             }
             catch (OperationCanceledException)
             {
@@ -699,39 +708,38 @@ namespace Rubberduck.Parsing.VBA
             if (watch != null) Logger.Debug("Parsing run finished after {0}s. (thread {1}).", watch.Elapsed.Seconds, Thread.CurrentThread.ManagedThreadId);
         }
 
-
-        private void ParseAllInternal(object requestor, CancellationToken token)
+        private void ParseAllInternal(CancellationToken token)
         {
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
             Thread.Sleep(50); //Simplistic hack to give the VBE time to do its work in case the parsing run is requested from an event handler. 
 
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
             State.RefreshProjects(_vbe);
 
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
             var components = State.Projects.SelectMany(project => project.VBComponents).ToList();
 
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
             var componentsRemoved = CleanUpRemovedComponents(components, token);
 
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
             // invalidation cleanup should go into ParseAsync?
             CleanUpComponentAttributes(components);
 
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
             var toParse = components.Where(component => State.IsNewOrModified(component)).ToHashSet();
 
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
             toParse.UnionWith(components.Where(component => State.GetModuleState(component) != ParserState.Ready));
 
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
             if (toParse.Count == 0)
             {
@@ -744,7 +752,7 @@ namespace Rubberduck.Parsing.VBA
                 //return; // returning here leaves state in 'ResolvedDeclarations' when a module is removed, which disables refresh
             }
 
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
             ExecuteCommonParseActivities(toParse, token);
         }
@@ -910,7 +918,7 @@ namespace Rubberduck.Parsing.VBA
 
         private void LoadReferences(List<IReference> referencesToLoad, ConcurrentBag<IReference> unmapped, CancellationToken token)
         {
-            var referenceLoadingTaskScheduler = ThrottelingTaskScheduler(_maxReferenceLoadingConcurrency);
+            var referenceLoadingTaskScheduler = ThrottelingTaskScheduler(MaxReferenceLoadingConcurrency);
 
             //Parallel.ForEach is not used because loading the references can contain IO-bound operations.
             var loadTasks = new List<Task>();
@@ -956,7 +964,7 @@ namespace Rubberduck.Parsing.VBA
 
         private void LoadReference(IReference localReference, ConcurrentBag<IReference> unmapped)
         {
-            Logger.Trace(string.Format("Loading referenced type '{0}'.", localReference.Name));
+            Logger.Trace($"Loading referenced type '{localReference.Name}'.");
             var comReflector = new ReferencedDeclarationsCollector(State, localReference, _serializedDeclarationsPath);
             try
             {
@@ -972,14 +980,14 @@ namespace Rubberduck.Parsing.VBA
             catch (Exception exception)
             {
                 unmapped.Add(localReference);
-                Logger.Warn(string.Format("Types were not loaded from referenced type library '{0}'.", localReference.Name));
+                Logger.Warn($"Types were not loaded from referenced type library '{localReference.Name}'.");
                 Logger.Error(exception);
             }
         }
 
         private void LoadReferenceByDeserialization(IReference localReference, ReferencedDeclarationsCollector comReflector)
         {
-            Logger.Trace(string.Format("Deserializing reference '{0}'.", localReference.Name));
+            Logger.Trace($"Deserializing reference '{localReference.Name}'.");
             var declarations = comReflector.LoadDeclarationsFromXml();
             foreach (var declaration in declarations)
             {
@@ -989,14 +997,14 @@ namespace Rubberduck.Parsing.VBA
 
         private void LoadReferenceFromTypeLibrary(IReference localReference, ReferencedDeclarationsCollector comReflector)
         {
-            Logger.Trace(string.Format("COM reflecting reference '{0}'.", localReference.Name));
+            Logger.Trace($"COM reflecting reference '{localReference.Name}'.");
             var declarations = comReflector.LoadDeclarationsFromLibrary();
             foreach (var declaration in declarations)
             {
                 State.AddDeclaration(declaration);
             }
         }
-        
+
         private List<IReference> NonMappedReferences(IReadOnlyList<IVBProject> projects)
         {
             var mappedIds = _projectReferences.Select(item => item.ReferencedProjectId).ToHashSet();
@@ -1008,7 +1016,7 @@ namespace Rubberduck.Parsing.VBA
         {
             var referencedProjectId = GetReferenceProjectId(reference, projects);
 
-            ReferencePriorityMap map = null;
+            ReferencePriorityMap map;
             try
             {
                 map = _projectReferences.SingleOrDefault(item => item.ReferencedProjectId == referencedProjectId);
@@ -1033,7 +1041,6 @@ namespace Rubberduck.Parsing.VBA
                 State.RemoveBuiltInDeclarations(reference);
             }
         }
-
 
         public void Dispose()
         {

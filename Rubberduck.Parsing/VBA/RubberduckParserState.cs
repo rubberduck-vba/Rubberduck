@@ -37,9 +37,6 @@ namespace Rubberduck.Parsing.VBA
         // circumvents VBIDE API's tendency to return a new instance at every parse, which breaks reference equality checks everywhere
         private readonly IDictionary<string, IVBProject> _projects = new Dictionary<string, IVBProject>();
 
-        private readonly Dictionary<ParserState, ConcurrentDictionary<Action<CancellationToken>, byte>> _callbacks =
-            new Dictionary<ParserState, ConcurrentDictionary<Action<CancellationToken>, byte>>();
-
         private readonly ConcurrentDictionary<QualifiedModuleName, ModuleState> _moduleStates =
             new ConcurrentDictionary<QualifiedModuleName, ModuleState>();
 
@@ -61,46 +58,20 @@ namespace Rubberduck.Parsing.VBA
             DeclarationFinder = new DeclarationFinder(AllDeclarations, AllAnnotations, AllUnresolvedMemberDeclarations, host);
         }
 
-        public void StateChangedCallbackRegistry(Action<CancellationToken> callback, ParserState state)
+        public void RegisterStateChangedCallback(Action<CancellationToken> callback, ParserState state)
         {
-            foreach (ParserState value in Enum.GetValues(typeof(ParserState)))
-            {
-                if (!state.HasFlag(value)) { continue; }
-
-                ConcurrentDictionary<Action<CancellationToken>, byte> callbacks;
-                if (!_callbacks.ContainsKey(value))
-                {
-                    lock (_callbacks)
-                    {
-                        callbacks = new ConcurrentDictionary<Action<CancellationToken>, byte>();
-                        _callbacks.Add(value, callbacks);
-                    }
-                }
-                else
-                {
-                    callbacks = _callbacks[value];
-                }
-
-                callbacks.TryAdd(callback, 0);
-            }
+            _callbackManager.RegisterCallback(callback, state);
         }
 
         public void UnregisterCallback(Action<CancellationToken> callback)
         {
-            foreach (var value in _callbacks.Values)
-            {
-                if (value.ContainsKey(callback))
-                {
-                    byte b;
-                    value.TryRemove(callback, out b);
-                }
-            }
+            _callbackManager.UnregisterCallback(callback);
         }
 
         private readonly IVBE _vbe;
-        private readonly IParserStateChangedCallbackRunner _callbackRunner;
+        private readonly IParserStateChangeCallbackManager _callbackManager;
 
-        public RubberduckParserState(IVBE vbe, IParserStateChangedCallbackRunner callbackRunner)
+        public RubberduckParserState(IVBE vbe, IParserStateChangeCallbackManager callbackManager)
         {
             var values = Enum.GetValues(typeof(ParserState));
             foreach (var value in values)
@@ -109,17 +80,9 @@ namespace Rubberduck.Parsing.VBA
             }
 
             _vbe = vbe;
-            _callbackRunner = callbackRunner;
+            _callbackManager = callbackManager;
             AddEventHandlers();
             IsEnabled = true;
-        }
-
-        private void HandleStateChanged(ParserState state)
-        {
-            if (state == ParserState.ResolvedDeclarations || state == ParserState.Ready)
-            {
-                RefreshUserDeclarationsList();
-            }
         }
 
         #region Event Handling
@@ -161,8 +124,6 @@ namespace Rubberduck.Parsing.VBA
             RemoveProject(e.ProjectId, true);
             OnParseRequested(sender);
         }
-
-        internal CancellationToken ParseCancellationToken { private get; set; }
 
         private void Sinks_ProjectRenamed(object sender, ProjectRenamedEventArgs e)
         {
@@ -337,22 +298,7 @@ namespace Rubberduck.Parsing.VBA
         }
         
         public event EventHandler<ParseProgressEventArgs> ModuleStateChanged;
-
-        private void OnStateChanged()
-        {
-            // some of these states run through really fast, so we have to cache the current state
-            var state = Status;
-
-            Logger.Debug("RubberduckParserState raised StateChanged ({0})", state);
-
-            HandleStateChanged(state);
-            
-            ConcurrentDictionary<Action<CancellationToken>, byte> callbacks;
-            _callbacks.TryGetValue(Status, out callbacks);
-
-            if (callbacks != null) { _callbackRunner.Run(callbacks.Keys, ParseCancellationToken); }
-        }
-
+        
         //Never spawn new threads changing module states in the handler! This will cause deadlocks. 
         private void OnModuleStateChanged(IVBComponent component, ParserState state, ParserState oldState)
         {
@@ -578,7 +524,7 @@ namespace Rubberduck.Parsing.VBA
             return _moduleStates.GetOrAdd(new QualifiedModuleName(component), new ModuleState(ParserState.Pending)).State;
         }
 
-        private readonly object _statusLockObject = new object(); 
+        private readonly object _statusLockObject = new object();
         private ParserState _status;
         public ParserState Status
         {
@@ -588,7 +534,7 @@ namespace Rubberduck.Parsing.VBA
                 if (_status != value)
                 {
                     _status = value;
-                    OnStateChanged();
+                    _callbackManager.RunCallbacks(value, CancellationToken.None);
                 }
             }
         }
@@ -597,7 +543,7 @@ namespace Rubberduck.Parsing.VBA
         {
             if (Status == status)
             {
-                OnStateChanged();
+                _callbackManager.RunCallbacks(status, CancellationToken.None);
             }
             else
             {
@@ -820,12 +766,6 @@ namespace Rubberduck.Parsing.VBA
             {
                 _moduleStates.Clear();
             }
-
-            if (notifyStateChanged)
-            {
-                OnStateChanged();   // trigger test explorer and code explorer updates
-                OnStateChanged();   // trigger find all references &c. updates
-            }
         }
 
         public void ClearBuiltInReferences()
@@ -848,12 +788,12 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public bool ClearStateCache(IVBComponent component, bool notifyStateChanged = false)
+        public bool ClearStateCache(IVBComponent component)
         {
-            return component != null && ClearStateCache(new QualifiedModuleName(component), notifyStateChanged);
+            return component != null && ClearStateCache(new QualifiedModuleName(component));
         }
 
-        public bool ClearStateCache(QualifiedModuleName component, bool notifyStateChanged = false)
+        public bool ClearStateCache(QualifiedModuleName component)
         {
             var keys = new List<QualifiedModuleName> { component };
             foreach (var key in _moduleStates.Keys)
@@ -865,12 +805,6 @@ namespace Rubberduck.Parsing.VBA
             }
 
             var success = RemoveKeysFromCollections(keys);
-
-            if (notifyStateChanged)
-            {
-                OnStateChanged();   // trigger test explorer and code explorer updates
-                OnStateChanged();   // trigger find all references &c. updates
-            }
 
             return success;
         }
@@ -887,12 +821,6 @@ namespace Rubberduck.Parsing.VBA
             }
 
             var success = keys.Count != 0 && RemoveKeysFromCollections(keys);
-
-            if (success)
-            {
-                OnStateChanged();   // trigger test explorer and code explorer updates
-                OnStateChanged();   // trigger find all references &c. updates
-            }
 
             return success;
         }

@@ -23,7 +23,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             _formatter = formatter;
             _selectionService = selectionService;
            
-            _parser.State.StateChangedCallbackRegistry(OnParserStateChanged, (ParserState) int.MaxValue);
+            _parser.State.RegisterStateChangedCallback(OnParserStateChanged, (ParserState) int.MaxValue);
             _parser.State.StatusMessageUpdate += OnParserStatusMessageUpdate;
             _selectionService.SelectionChanged += OnSelectionChange;
         }

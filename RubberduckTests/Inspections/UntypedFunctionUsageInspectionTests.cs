@@ -35,7 +35,7 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new ParserStateChangedTestCallbackRunner()));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new ParserStateChangeCallbackManager()));
 
             GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
 
@@ -64,7 +64,7 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new ParserStateChangedTestCallbackRunner()));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new ParserStateChangeCallbackManager()));
 
             GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
 
@@ -96,7 +96,7 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new ParserStateChangedTestCallbackRunner()));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new ParserStateChangeCallbackManager()));
 
             GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
 
@@ -133,7 +133,7 @@ End Sub";
             var vbe = builder.AddProject(project).Build();
 
             var module = project.Object.VBComponents[0].CodeModule;
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new ParserStateChangedTestCallbackRunner()));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new ParserStateChangeCallbackManager()));
 
             GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
 
@@ -173,7 +173,7 @@ End Sub";
             var vbe = builder.AddProject(project).Build();
 
             var module = project.Object.VBComponents[0].CodeModule;
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new ParserStateChangedTestCallbackRunner()));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new ParserStateChangeCallbackManager()));
 
             GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
 

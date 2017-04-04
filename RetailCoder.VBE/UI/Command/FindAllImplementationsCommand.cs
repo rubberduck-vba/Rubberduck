@@ -40,7 +40,7 @@ namespace Rubberduck.UI.Command
             _viewModel = viewModel;
             _presenterService = presenterService;
 
-            _state.StateChangedCallbackRegistry(_state_StateChanged, ParserState.Ready);
+            _state.RegisterStateChangedCallback(_state_StateChanged, ParserState.Ready);
         }
 
         private Declaration FindNewDeclaration(Declaration declaration)

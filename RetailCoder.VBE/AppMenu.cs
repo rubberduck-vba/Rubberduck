@@ -25,7 +25,7 @@ namespace Rubberduck
             _selectionService = selectionService;
             _stateBar = stateBar;
 
-            _parser.State.StateChangedCallbackRegistry(OnParserStateChanged, (ParserState) int.MaxValue);  // set all the bits
+            _parser.State.RegisterStateChangedCallback(OnParserStateChanged, (ParserState) int.MaxValue);  // set all the bits
             _selectionService.SelectedDeclarationChanged += OnSelectedDeclarationChange;
         }
 

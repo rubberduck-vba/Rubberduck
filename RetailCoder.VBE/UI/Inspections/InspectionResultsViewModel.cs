@@ -70,7 +70,7 @@ namespace Rubberduck.UI.Inspections
                 GroupByInspectionType = !(bool)param;
             });
 
-            _state.StateChangedCallbackRegistry(_state_StateChanged, (ParserState) int.MaxValue);
+            _state.RegisterStateChangedCallback(_state_StateChanged, (ParserState) int.MaxValue);
         }
 
         private void _configService_SettingsChanged(object sender, ConfigurationChangedEventArgs e)

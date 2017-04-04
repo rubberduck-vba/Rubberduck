@@ -31,8 +31,8 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             _folderHelper = folderHelper;
             _state = state;
-            _state.StateChangedCallbackRegistry(UpdateContent, ParserState.ResolvedDeclarations);
-            _state.StateChangedCallbackRegistry(UpdateBusyState, ParserState.Pending | ParserState.LoadingReference | ParserState.Parsing | ParserState.Parsed);
+            _state.RegisterStateChangedCallback(UpdateContent, ParserState.ResolvedDeclarations);
+            _state.RegisterStateChangedCallback(UpdateBusyState, ParserState.Pending | ParserState.LoadingReference | ParserState.Parsing | ParserState.Parsed);
             _state.ModuleStateChanged += ParserState_ModuleStateChanged;
 
             var reparseCommand = commands.OfType<ReparseCommand>().SingleOrDefault();
@@ -315,51 +315,53 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             // if we are resolving references, we already have the declarations and don't need to display error
             if (!(e.State == ParserState.Error ||
-                (e.State == ParserState.ResolverError &&
-                e.OldState == ParserState.ResolvingDeclarations)))
+                  (e.State == ParserState.ResolverError &&
+                   e.OldState == ParserState.ResolvingDeclarations)))
             {
                 return;
             }
 
             var components = e.Component.Collection;
             var componentProject = components.Parent;
-            {
-                var projectNode = Projects.OfType<CodeExplorerProjectViewModel>()
-                    .FirstOrDefault(p => p.Declaration.Project.Equals(componentProject));
+            var projectNode = Projects.OfType<CodeExplorerProjectViewModel>()
+                .FirstOrDefault(p => p.Declaration.Project.Equals(componentProject));
 
-                if (projectNode == null)
+            if (projectNode == null)
+            {
+                return;
+            }
+
+            SetErrorState(projectNode, e.Component);
+
+            if (_errorStateSet)
+            {
+                return;
+            }
+
+            // at this point, we know the node is newly added--we have to add a new node, not just change the icon of the old one.
+            var projectName = componentProject.Name;
+            var folderNode =
+                projectNode.Items.FirstOrDefault(f => f is CodeExplorerCustomFolderViewModel && f.Name == projectName);
+
+            UiDispatcher.Invoke(() =>
+            {
+                if (folderNode == null)
                 {
-                    return;
+                    folderNode = new CodeExplorerCustomFolderViewModel(projectNode, projectName, projectName);
+                    projectNode.AddChild(folderNode);
                 }
 
-                SetErrorState(projectNode, e.Component);
-
-                if (_errorStateSet) { return; }
-
-                // at this point, we know the node is newly added--we have to add a new node, not just change the icon of the old one.
-                var projectName = componentProject.Name;
-                var folderNode = projectNode.Items.FirstOrDefault(f => f is CodeExplorerCustomFolderViewModel && f.Name == projectName);
-
-                UiDispatcher.Invoke(() =>
+                var declaration = CreateDeclaration(e.Component);
+                var newNode = new CodeExplorerComponentViewModel(folderNode, declaration, new List<Declaration>())
                 {
-                    if (folderNode == null)
-                    {
-                        folderNode = new CodeExplorerCustomFolderViewModel(projectNode, projectName, projectName);
-                        projectNode.AddChild(folderNode);
-                    }
+                    IsErrorState = true
+                };
 
-                    var declaration = CreateDeclaration(e.Component);
-                    var newNode = new CodeExplorerComponentViewModel(folderNode, declaration, new List<Declaration>())
-                    {
-                        IsErrorState = true
-                    };
+                folderNode.AddChild(newNode);
 
-                    folderNode.AddChild(newNode);
-
-                    // Force a refresh. OnPropertyChanged("Projects") didn't work.
-                    Projects = Projects;
-                });
-            }
+                // Force a refresh. OnPropertyChanged("Projects") didn't work.
+                Projects = Projects;
+            });
         }
 
         private Declaration CreateDeclaration(IVBComponent component)

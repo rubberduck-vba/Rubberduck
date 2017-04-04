@@ -26,7 +26,7 @@ namespace Rubberduck.UI.ToDoItems
             _state = state;
             _configService = configService;
             _operatingSystem = operatingSystem;
-            _state.StateChangedCallbackRegistry(_state_StateChanged, ParserState.ResolvedDeclarations);
+            _state.RegisterStateChangedCallback(_state_StateChanged, ParserState.ResolvedDeclarations);
 
             _setMarkerGroupingCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
             {

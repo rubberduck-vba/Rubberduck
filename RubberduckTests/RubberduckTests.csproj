@@ -82,7 +82,6 @@
     <Compile Include="Binding\MemberAccessDefaultBindingTests.cs" />
     <Compile Include="Binding\MemberAccessTypeBindingTests.cs" />
     <Compile Include="Binding\MemberAccessProcedurePointerBindingTests.cs" />
-    <Compile Include="Mocks\ParserStateChangedTestCallbackRunner.cs" />
     <Compile Include="Binding\SimpleNameProcedurePointerBindingTests.cs" />
     <Compile Include="Binding\SimpleNameDefaultBindingTests.cs" />
     <Compile Include="Binding\SimpleNameTypeBindingTests.cs" />

@@ -63,10 +63,10 @@ namespace Rubberduck.API
             }
 
             _vbe = new VBE(vbe);
-            _state = new RubberduckParserState(null, new ParserStateChangedCallbackRunner());
-            _state.StateChangedCallbackRegistry(UpdateOnError, Parsing.VBA.ParserState.Error);
-            _state.StateChangedCallbackRegistry(UpdateOnParsed, Parsing.VBA.ParserState.Parsed);
-            _state.StateChangedCallbackRegistry(UpdateOnReady, Parsing.VBA.ParserState.Ready);
+            _state = new RubberduckParserState(null, new ParserStateChangeCallbackManager());
+            _state.RegisterStateChangedCallback(UpdateOnError, Parsing.VBA.ParserState.Error);
+            _state.RegisterStateChangedCallback(UpdateOnParsed, Parsing.VBA.ParserState.Parsed);
+            _state.RegisterStateChangedCallback(UpdateOnReady, Parsing.VBA.ParserState.Ready);
 
             Func<IVBAPreprocessor> preprocessorFactory = () => new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture));
             _attributeParser = new AttributeParser(new ModuleExporter(), preprocessorFactory);
@@ -78,7 +78,7 @@ namespace Rubberduck.API
                     new FormEventDeclarations(_state),
                     new AliasDeclarations(_state),
                     //new RubberduckApiDeclarations(_state)
-                });
+                }, new ParserStateChangeCallbackManager());
         }
 
         /// <summary>

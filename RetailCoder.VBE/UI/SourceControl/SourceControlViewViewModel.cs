@@ -59,7 +59,7 @@ namespace Rubberduck.UI.SourceControl
             _providerFactory = providerFactory;
             _folderBrowserFactory = folderBrowserFactory;
 
-            state.StateChangedCallbackRegistry(_state_StateChanged, ParserState.Pending);
+            state.RegisterStateChangedCallback(_state_StateChanged, ParserState.Pending);
 
             _configService = configService;
             _config = _configService.Create();
