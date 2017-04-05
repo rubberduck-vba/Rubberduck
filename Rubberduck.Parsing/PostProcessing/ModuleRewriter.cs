@@ -80,6 +80,11 @@ namespace Rubberduck.Parsing.PostProcessing
             _rewriter.Replace(token, content);
         }
 
+        public void Replace(Interval tokenInterval, string content)
+        {
+            _rewriter.Replace(tokenInterval.a, tokenInterval.b, content);
+        }
+
         public void InsertBefore(int tokenIndex, string content)
         {
             _rewriter.InsertBefore(tokenIndex, content);

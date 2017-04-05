@@ -10,6 +10,9 @@ using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
+using System.Collections.Generic;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.Common;
 
 namespace RubberduckTests.Refactoring
 {
@@ -738,6 +741,863 @@ End Sub";
 
             var rewriter2 = state.GetRewriter(module2.Parent);
             Assert.AreEqual(expectedCode2, rewriter2.GetText());
+
+            msgbox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()), Times.Never);
+        }
+
+        [TestMethod]
+        public void RenameRefactoring_RenameInterfaceReferences()
+        {
+            const string inputCode1 =
+@"Public Sub DoSomething()
+End Sub";
+            const string inputCode2 =
+@"Implements IClass1
+
+Private Sub IClass1_DoSomething()
+End Sub";
+            const string inputCode3 =
+@"Private Sub RefTheInterface()
+    Dim c1 As Class1
+    Set c1 = new IClass1
+    c1.DoSomething
+End Sub
+
+Private Sub RefTheInterface2()
+    Dim c1 As Class1
+    Dim c2 As IClass1
+    Set c1 = new Class1
+    Set c2 = c1
+    c1.DoSomething
+End Sub"
+;
+            const string expectedCode1 =
+@"Public Sub DoNothing()
+End Sub";
+            const string expectedCode2 =
+@"Implements IClass1
+
+Private Sub IClass1_DoNothing()
+End Sub";
+
+            const string expectedCode3 =
+@"Private Sub RefTheInterface()
+    Dim c1 As Class1
+    Set c1 = new IClass1
+    c1.DoNothing
+End Sub
+
+Private Sub RefTheInterface2()
+    Dim c1 As Class1
+    Dim c2 As IClass1
+    Set c1 = new Class1
+    Set c2 = c1
+    c1.DoNothing
+End Sub"
+;
+            var tdo = new RenameTestsDataObject();
+            tdo.SelectionTarget = "DoSomething";
+            tdo.SelectionLineIdentifier = "Sub DoSomething";
+            tdo.SelectionModuleName = "IClass1";
+            tdo.NewName = "DoNothing";
+
+            var secondClassName = "Class1";
+            var thirdClassName = "Class3";
+            AddTestComponent(tdo, tdo.SelectionModuleName, inputCode1, ComponentType.ClassModule);
+            AddTestComponent(tdo, secondClassName, inputCode2, ComponentType.ClassModule);
+            AddTestComponent(tdo, thirdClassName, inputCode3, ComponentType.ClassModule);
+
+            SetupAndRunRenameRefactorTest(tdo, RefactorParams.QualifiedSelection);
+
+            var rewriter1 = tdo.ParserState.GetRewriter(RetrieveComponent(tdo, tdo.SelectionModuleName).CodeModule.Parent);
+            Assert.AreEqual(expectedCode1, rewriter1.GetText());
+
+            var rewriter2 = tdo.ParserState.GetRewriter(RetrieveComponent(tdo, secondClassName).CodeModule.Parent);
+            Assert.AreEqual(expectedCode2, rewriter2.GetText());
+
+            var rewriter3 = tdo.ParserState.GetRewriter(RetrieveComponent(tdo, thirdClassName).CodeModule.Parent);
+            Assert.AreEqual(expectedCode3, rewriter3.GetText());
+        }
+
+        [TestMethod]
+        public void RenameRefactoring_RenameInterfaceFromImplementation()
+        {
+            const string inputCode1 =
+@"Public Sub DoSomething()
+End Sub";
+            const string inputCode2 =
+@"Implements IClass1
+
+Private Sub IClass1_DoSomething()
+End Sub";
+            const string inputCode3 =
+@"Private Sub RefTheInterface()
+    Dim c1 As Class1
+    Set c1 = new IClass1
+    c1.DoSomething
+End Sub
+
+Private Sub RefTheInterface2()
+    Dim c1 As Class1
+    Dim c2 As IClass1
+    Set c1 = new Class1
+    Set c2 = c1
+    c1.DoSomething
+End Sub"
+;
+
+            const string expectedCode1 =
+@"Public Sub DoNothing()
+End Sub";
+            const string expectedCode2 =
+@"Implements IClass1
+
+Private Sub IClass1_DoNothing()
+End Sub";
+
+            const string expectedCode3 =
+@"Private Sub RefTheInterface()
+    Dim c1 As Class1
+    Set c1 = new IClass1
+    c1.DoNothing
+End Sub
+
+Private Sub RefTheInterface2()
+    Dim c1 As Class1
+    Dim c2 As IClass1
+    Set c1 = new Class1
+    Set c2 = c1
+    c1.DoNothing
+End Sub"
+;
+            var tdo = new RenameTestsDataObject();
+            tdo.SelectionTarget = "DoSomething";
+            tdo.SelectionLineIdentifier = "IClass1_DoSomething(";
+            tdo.SelectionModuleName = "Class1";
+            tdo.NewName = "DoNothing";
+
+            var secondClassName = "IClass1";
+            var thirdClassName = "Class3";
+            AddTestComponent(tdo, tdo.SelectionModuleName, inputCode2, ComponentType.ClassModule);
+            AddTestComponent(tdo, secondClassName, inputCode1, ComponentType.ClassModule);
+            AddTestComponent(tdo, thirdClassName, inputCode3, ComponentType.ClassModule);
+
+            SetupAndRunRenameRefactorTest(tdo, RefactorParams.Declaration);
+
+            var rewriter1 = tdo.ParserState.GetRewriter(RetrieveComponent(tdo, tdo.SelectionModuleName).CodeModule.Parent);
+            Assert.AreEqual(expectedCode2, rewriter1.GetText());
+
+            var rewriter2 = tdo.ParserState.GetRewriter(RetrieveComponent(tdo, secondClassName).CodeModule.Parent);
+            Assert.AreEqual(expectedCode1, rewriter2.GetText());
+
+            var rewriter3 = tdo.ParserState.GetRewriter(RetrieveComponent(tdo, thirdClassName).CodeModule.Parent);
+            Assert.AreEqual(expectedCode3, rewriter3.GetText());
+
+            tdo.MsgBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()), Times.Once);
+        }
+
+        [TestMethod]
+        public void RenameRefactoring_RenameInterfaceNoImplementers()
+        {
+            const string inputCode1 =
+@"Public Sub DoSomething()
+End Sub";
+
+            const string expectedCode1 =
+@"Public Sub DoNothing()
+End Sub";
+            var tdo = new RenameTestsDataObject();
+            tdo.SelectionTarget = "DoSomething";
+            tdo.SelectionLineIdentifier = "Sub DoSomething(";
+            tdo.SelectionModuleName = "IClass1";
+            tdo.NewName = "DoNothing";
+
+            AddTestComponent(tdo, tdo.SelectionModuleName, inputCode1, ComponentType.ClassModule);
+
+            SetupAndRunRenameRefactorTest(tdo, RefactorParams.Declaration);
+
+            var rewriter1 = tdo.ParserState.GetRewriter(RetrieveComponent(tdo, tdo.SelectionModuleName).CodeModule.Parent);
+            Assert.AreEqual(expectedCode1, rewriter1.GetText());
+
+            tdo.MsgBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()), Times.Never);
+        }
+
+        [TestMethod]
+        public void RenameRefactoring_RenameInterfaceFromReference()
+        {
+            const string inputCode1 =
+@"Public Sub DoSomething()
+End Sub";
+            const string inputCode2 =
+@"Implements IClass1
+
+Private Sub IClass1_DoSomething()
+End Sub";
+            const string inputCode3 =
+@"Private Sub RefTheInterface()
+    Dim c1 As Class1
+    Set c1 = new IClass1
+    c1.DoSomething
+End Sub
+
+Private Sub RefTheInterface2()
+    Dim c1 As Class1
+    Dim c2 As IClass1
+    Set c1 = new Class1
+    Set c2 = c1
+    c1.DoSomething
+End Sub"
+;
+
+            const string expectedCode1 =
+@"Public Sub DoNothing()
+End Sub";
+            const string expectedCode2 =
+@"Implements IClass1
+
+Private Sub IClass1_DoNothing()
+End Sub";
+
+            const string expectedCode3 =
+@"Private Sub RefTheInterface()
+    Dim c1 As Class1
+    Set c1 = new IClass1
+    c1.DoNothing
+End Sub
+
+Private Sub RefTheInterface2()
+    Dim c1 As Class1
+    Dim c2 As IClass1
+    Set c1 = new Class1
+    Set c2 = c1
+    c1.DoNothing
+End Sub"
+;
+            var tdo = new RenameTestsDataObject();
+            tdo.SelectionTarget = "DoSomething";
+            tdo.SelectionLineIdentifier = "c1.DoSomething";
+            tdo.SelectionModuleName = "Class3";
+            tdo.NewName = "DoNothing";
+            
+            var secondClassName = "Class1";
+            var thirdClassName = "IClass1";
+            AddTestComponent(tdo, tdo.SelectionModuleName, inputCode3, ComponentType.ClassModule);
+            AddTestComponent(tdo, secondClassName, inputCode2, ComponentType.ClassModule);
+            AddTestComponent(tdo, thirdClassName, inputCode1, ComponentType.ClassModule);
+
+            SetupAndRunRenameRefactorTest(tdo, RefactorParams.QualifiedSelection);
+
+            var rewriter1 = tdo.ParserState.GetRewriter(RetrieveComponent(tdo, tdo.SelectionModuleName).CodeModule.Parent);
+            Assert.AreEqual(expectedCode3, rewriter1.GetText());
+
+            var rewriter2 = tdo.ParserState.GetRewriter(RetrieveComponent(tdo, secondClassName).CodeModule.Parent);
+            Assert.AreEqual(expectedCode2, rewriter2.GetText());
+
+            var rewriter3 = tdo.ParserState.GetRewriter(RetrieveComponent(tdo, thirdClassName).CodeModule.Parent);
+            Assert.AreEqual(expectedCode1, rewriter3.GetText());
+            
+        }
+
+        [TestMethod]
+        public void RenameRefactoring_RenameControl()
+        {
+            const string inputCode1 =
+@"
+Private Sub cmdBtn1_Click()
+
+End Sub
+
+Private Sub tbEnterName_Change()
+    cmdBtn1_Click 'bad idea, but someone will do it
+End Sub
+
+Private Sub UserForm_Click()
+    cmdBtn1.Caption = ""Click This""
+End Sub
+";
+
+            const string expectedCode1 =
+@"
+Private Sub cmdBigButton_Click()
+
+End Sub
+
+Private Sub tbEnterName_Change()
+    cmdBigButton_Click 'bad idea, but someone will do it
+End Sub
+
+Private Sub UserForm_Click()
+    cmdBigButton.Caption = ""Click This""
+End Sub
+";
+            var tdo = new RenameTestsDataObject();
+            tdo.SelectionTarget = "cmdBtn1_Click";
+            tdo.SelectionLineIdentifier = "Private Sub cmdBtn1_Click()";
+            tdo.SelectionModuleName = "UserForm1";
+            tdo.NewName = "cmdBigButton";
+
+            CreateMockVBEForControlsTest(tdo, inputCode1, "cmdBtn1");
+
+            SetupAndRunRenameRefactorTest(tdo, RefactorParams.QualifiedSelection);
+
+            var rewriter1 = tdo.ParserState.GetRewriter(RetrieveComponent(tdo, tdo.SelectionModuleName).CodeModule.Parent);
+            Assert.AreEqual(expectedCode1, rewriter1.GetText());
+        }
+
+        [TestMethod]
+        public void RenameRefactoring_RenameControlRenameInReference()
+        {
+            const string inputCode1 =
+@"
+Private Sub cmdBtn1_Click()
+
+End Sub
+
+Private Sub tbEnterName_Change()
+    cmdBtn1_Click 'bad idea, but someone will do it
+End Sub
+
+Private Sub UserForm_Click()
+    cmdBtn1.Caption = ""Click This""
+End Sub
+";
+
+            const string expectedCode1 = 
+
+@"
+Private Sub cmdBigButton_Click()
+
+End Sub
+
+Private Sub tbEnterName_Change()
+    cmdBigButton_Click 'bad idea, but someone will do it
+End Sub
+
+Private Sub UserForm_Click()
+    cmdBigButton.Caption = ""Click This""
+End Sub
+";
+
+            var tdo = new RenameTestsDataObject();
+            tdo.SelectionTarget = "cmdBtn1";
+            tdo.SelectionLineIdentifier = "cmdBtn1.Caption =";
+            tdo.SelectionModuleName = "UserForm1";
+            tdo.NewName = "cmdBigButton";
+
+            CreateMockVBEForControlsTest(tdo, inputCode1, "cmdBtn1");
+
+            SetupAndRunRenameRefactorTest(tdo, RefactorParams.QualifiedSelection);
+
+            var rewriter1 = tdo.ParserState.GetRewriter(RetrieveComponent(tdo, tdo.SelectionModuleName).CodeModule.Parent);
+            Assert.AreEqual(expectedCode1, rewriter1.GetText());
+
+            tdo.MsgBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()), Times.Never);
+        }
+
+        [TestMethod]
+        public void RenameRefactoring_RenameControlFromEventReference()
+        {
+            const string inputCode1 =
+@"
+Private Sub cmdBtn1_Click()
+
+End Sub
+
+Private Sub tbEnterName_Change()
+    cmdBtn1_Click 'bad idea, but someone will do it
+End Sub
+
+Private Sub UserForm_Click()
+    cmdBtn1.Caption = ""Click This""
+End Sub
+";
+
+            const string expectedCode1 =
+@"
+Private Sub cmdBigButton_Click()
+
+End Sub
+
+Private Sub tbEnterName_Change()
+    cmdBigButton_Click 'bad idea, but someone will do it
+End Sub
+
+Private Sub UserForm_Click()
+    cmdBigButton.Caption = ""Click This""
+End Sub
+";
+            var tdo = new RenameTestsDataObject();
+            tdo.SelectionTarget = "cmdBtn1_Click";
+            tdo.SelectionLineIdentifier = "cmdBtn1_Click 'bad idea";
+            tdo.SelectionModuleName = "UserForm1";
+            tdo.NewName = "cmdBigButton";
+
+            CreateMockVBEForControlsTest(tdo, inputCode1, "cmdBtn1");
+
+            SetupAndRunRenameRefactorTest(tdo, RefactorParams.QualifiedSelection);
+
+            var rewriter1 = tdo.ParserState.GetRewriter(RetrieveComponent(tdo, tdo.SelectionModuleName).CodeModule.Parent);
+            Assert.AreEqual(expectedCode1, rewriter1.GetText());
+
+            tdo.MsgBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.OK, It.IsAny<MessageBoxIcon>()), Times.Never);
+        }
+
+        [TestMethod]
+        public void RenameRefactoring_RenameControlFromChangeEventHandler()
+        {
+            const string inputCode1 =
+@"
+Private Sub cmdBtn1_Click()
+
+End Sub
+
+Private Sub tbEnterName_Change()
+    cmdBtn1_Click 'bad idea, but someone will do it
+End Sub
+
+Private Sub UserForm_Click()
+    cmdBtn1.Caption = ""Click This""
+End Sub
+";
+
+            var tdo = new RenameTestsDataObject();
+            tdo.SelectionTarget = "cmdBtn1_Click";
+            tdo.SelectionLineIdentifier = "Private Sub cmdBtn1_Click()";
+            tdo.SelectionModuleName = "UserForm1";
+            tdo.NewName = "cmdBtn1_ClickAgain";
+
+            CreateMockVBEForControlsTest(tdo, inputCode1, "cmdBtn1");
+
+            SetupAndRunRenameRefactorTest(tdo, RefactorParams.QualifiedSelection);
+
+            tdo.MsgBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.OK, It.IsAny<MessageBoxIcon>()), Times.Never);
+        }
+
+        private void CreateMockVBEForControlsTest(RenameTestsDataObject tdo, string inputCode, string controlName)
+        {
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder(tdo.ProjectName, ProjectProtection.Unprotected);
+            var form = project.MockUserFormBuilder(tdo.SelectionModuleName, inputCode).AddControl(controlName).Build();
+            project.AddComponent(form);
+            builder.AddProject(project.Build());
+            tdo.VBE = builder.Build().Object;
+        }
+
+        [TestMethod]
+        public void RenameRefactoring_RenameInterfaceReferencesWithinScope()
+        {
+            const string inputCode1 =
+@"Public Sub DoSomething()
+End Sub";
+            const string inputCode2 =
+@"Implements IClass1
+
+Private Sub IClass1_DoSomething()
+End Sub";
+            const string inputCode3 =
+@"Private Sub RefTheInterface()
+    Dim c1 As Class1
+    Set c1 = new IClass1
+    c1.DoSomething
+End Sub
+
+Private Sub RefTheInterface2()
+    Dim c1 As Class2
+    Dim c2 As IClass1
+    Set c1 = new Class2
+    Set c2 = c1
+    c1.DoSomething  'This is left alone because it is a member of Class2, not the interface
+    c2.DoSomething
+End Sub"
+;
+
+            const string expectedCode1 =
+@"Public Sub DoNothing()
+End Sub";
+            const string expectedCode2 =
+@"Implements IClass1
+
+Private Sub IClass1_DoNothing()
+End Sub";
+
+            const string expectedCode3 =
+@"Private Sub RefTheInterface()
+    Dim c1 As Class1
+    Set c1 = new IClass1
+    c1.DoNothing
+End Sub
+
+Private Sub RefTheInterface2()
+    Dim c1 As Class2
+    Dim c2 As IClass1
+    Set c1 = new Class2
+    Set c2 = c1
+    c1.DoSomething  'This is left alone because it is a member of Class2, not the interface
+    c2.DoNothing
+End Sub"
+;
+            var tdo = new RenameTestsDataObject();
+            tdo.SelectionTarget = "DoSomething";
+            tdo.SelectionLineIdentifier = "Sub DoSomething";
+            tdo.SelectionModuleName = "IClass1";
+            tdo.NewName = "DoNothing";
+
+            var secondClassName = "Class1";
+            var thirdClassName = "Class3";
+            AddTestComponent(tdo, tdo.SelectionModuleName, inputCode1, ComponentType.ClassModule);
+            AddTestComponent(tdo, secondClassName, inputCode2, ComponentType.ClassModule);
+            AddTestComponent(tdo, "Class3", inputCode3, ComponentType.ClassModule);
+
+            SetupAndRunRenameRefactorTest(tdo, RefactorParams.QualifiedSelection);
+
+            var rewriter1 = tdo.ParserState.GetRewriter(RetrieveComponent(tdo, tdo.SelectionModuleName).CodeModule.Parent);
+            Assert.AreEqual(expectedCode1, rewriter1.GetText());
+
+            var rewriter2 = tdo.ParserState.GetRewriter(RetrieveComponent(tdo, secondClassName).CodeModule.Parent);
+            Assert.AreEqual(expectedCode2, rewriter2.GetText());
+
+            var rewriter3 = tdo.ParserState.GetRewriter(RetrieveComponent(tdo, thirdClassName).CodeModule.Parent);
+            Assert.AreEqual(expectedCode3, rewriter3.GetText());
+        }
+
+        [TestMethod]
+        public void RenameRefactoring_RenameEventWithReferences()
+        {
+            const string inputCode1 =
+@"
+Public Event MyEvent(IDNumber As Long, ByRef Cancel As Boolean)
+
+Sub AAA()
+    Dim Cancel As Boolean
+    Cancel = False
+    RaiseEvent MyEvent(1234, Cancel)
+End Sub
+";
+            const string inputCode2 =
+@"
+Private WithEvents XLEvents As CEventClass
+
+Private Sub Class_Initialize()
+    Set XLEvents = New CEventClass
+End Sub
+
+Private Sub XLEvents_MyEvent(IDNumber As Long, Cancel As Boolean)
+    Cancel = True
+End Sub
+";
+
+            const string expectedCode1 =
+@"
+Public Event YourEvent(IDNumber As Long, ByRef Cancel As Boolean)
+
+Sub AAA()
+    Dim Cancel As Boolean
+    Cancel = False
+    RaiseEvent YourEvent(1234, Cancel)
+End Sub
+";
+            const string expectedCode2 =
+@"
+Private WithEvents XLEvents As CEventClass
+
+Private Sub Class_Initialize()
+    Set XLEvents = New CEventClass
+End Sub
+
+Private Sub XLEvents_YourEvent(IDNumber As Long, Cancel As Boolean)
+    Cancel = True
+End Sub
+";
+            var tdo = new RenameTestsDataObject();
+            tdo.SelectionTarget = "MyEvent";
+            tdo.SelectionLineIdentifier = "Event MyEvent";
+            tdo.SelectionModuleName = "CEventClass";
+            tdo.NewName = "YourEvent";
+
+            var secondClass = "Class2";
+            AddTestComponent(tdo, tdo.SelectionModuleName, inputCode1, ComponentType.ClassModule);
+            AddTestComponent(tdo, secondClass, inputCode2, ComponentType.ClassModule);
+
+            SetupAndRunRenameRefactorTest(tdo, RefactorParams.QualifiedSelection);
+
+            var rewriter1 = tdo.ParserState.GetRewriter(RetrieveComponent(tdo, tdo.SelectionModuleName).CodeModule.Parent);
+            Assert.AreEqual(expectedCode1, rewriter1.GetText());
+
+            var rewriter2 = tdo.ParserState.GetRewriter(RetrieveComponent(tdo, secondClass).CodeModule.Parent);
+            Assert.AreEqual(expectedCode2, rewriter2.GetText());
+        }
+
+        [TestMethod]
+        public void RenameRefactoring_RenameModuleFromReference()
+        {
+            const string inputCode1 =
+@"
+Sub Foo()
+End Sub
+";
+            const string inputCode2 =
+@"
+Sub Foo2()
+    Dim c1 As CTestClass
+    Set c1 = new CTestClass
+    c1.Foo
+End Sub
+";
+
+            const string expectedCode1 =
+@"
+Sub Foo()
+End Sub
+";
+            const string expectedCode2 =
+@"
+Sub Foo2()
+    Dim c1 As CMyTestClass
+    Set c1 = new CMyTestClass
+    c1.Foo
+End Sub
+";
+            var tdo = new RenameTestsDataObject();
+            tdo.SelectionTarget = "CTestClass";
+            tdo.SelectionLineIdentifier = "c1 As CTestClass";
+            tdo.SelectionModuleName = "Class2";
+            tdo.NewName = "CMyTestClass";
+
+            var secondClass = "CTestClass";
+            AddTestComponent(tdo, tdo.SelectionModuleName, inputCode2, ComponentType.ClassModule);
+            AddTestComponent(tdo, secondClass, inputCode1, ComponentType.ClassModule);
+
+            SetupAndRunRenameRefactorTest(tdo, RefactorParams.QualifiedSelection);
+
+            var rewriter1 = tdo.ParserState.GetRewriter(RetrieveComponent(tdo, tdo.SelectionModuleName).CodeModule.Parent);
+            Assert.AreEqual(expectedCode2, rewriter1.GetText());
+
+            var rewriter2 = tdo.ParserState.GetRewriter(RetrieveComponent(tdo, secondClass).CodeModule.Parent);
+            Assert.AreEqual(expectedCode1, rewriter2.GetText());
+
+            var component = RetrieveComponent(tdo, secondClass);
+            Assert.AreSame(tdo.NewName, component.CodeModule.Name);
+        }
+
+        [TestMethod]
+        public void RenameRefactoring_RenameEventFromUsage()
+        {
+            const string inputCode1 =
+@"
+Public Event MyEvent(IDNumber As Long, ByRef Cancel As Boolean)
+
+Sub AAA()
+    Dim Cancel As Boolean
+    Cancel = False
+    RaiseEvent MyEvent(1234, Cancel)
+End Sub
+";
+            const string inputCode2 =
+@"
+Private WithEvents XLEvents As CEventClass
+
+Private Sub Class_Initialize()
+    Set XLEvents = New CEventClass
+End Sub
+
+Private Sub XLEvents_MyEvent(IDNumber As Long, Cancel As Boolean)
+    Cancel = True
+End Sub
+";
+
+            const string expectedCode1 =
+@"
+Public Event YourEvent(IDNumber As Long, ByRef Cancel As Boolean)
+
+Sub AAA()
+    Dim Cancel As Boolean
+    Cancel = False
+    RaiseEvent YourEvent(1234, Cancel)
+End Sub
+";
+            const string expectedCode2 =
+@"
+Private WithEvents XLEvents As CEventClass
+
+Private Sub Class_Initialize()
+    Set XLEvents = New CEventClass
+End Sub
+
+Private Sub XLEvents_YourEvent(IDNumber As Long, Cancel As Boolean)
+    Cancel = True
+End Sub
+";
+            var tdo = new RenameTestsDataObject();
+            tdo.SelectionTarget = "MyEvent";
+            tdo.SelectionLineIdentifier = "RaiseEvent MyEvent";
+            tdo.SelectionModuleName = "CEventClass";
+            tdo.NewName = "YourEvent";
+
+            var secondClass = "Class2";
+            AddTestComponent(tdo, tdo.SelectionModuleName, inputCode1, ComponentType.ClassModule);
+            AddTestComponent(tdo, secondClass, inputCode2, ComponentType.ClassModule);
+
+            SetupAndRunRenameRefactorTest(tdo, RefactorParams.QualifiedSelection);
+
+            var rewriter1 = tdo.ParserState.GetRewriter(RetrieveComponent(tdo, tdo.SelectionModuleName).CodeModule.Parent);
+            Assert.AreEqual(expectedCode1, rewriter1.GetText());
+
+            var rewriter2 = tdo.ParserState.GetRewriter(RetrieveComponent(tdo, secondClass).CodeModule.Parent);
+            Assert.AreEqual(expectedCode2, rewriter2.GetText());
+        }
+
+        [TestMethod]
+        public void RenameRefactoring_RenameEventFromImplementer()
+        {
+            //CEventClass
+            const string inputCode1 =
+@"
+Public Event MyEvent(IDNumber As Long, ByRef Cancel As Boolean)
+
+Sub AAA()
+    Dim Cancel As Boolean
+    Cancel = False
+    RaiseEvent MyEvent(1234, Cancel)
+End Sub
+";
+            //Class2
+            const string inputCode2 =
+@"
+Private WithEvents XLEvents As CEventClass
+
+Private Sub Class_Initialize()
+    Set XLEvents = New CEventClass
+End Sub
+
+Private Sub XLEvents_MyEvent(IDNumber As Long, Cancel As Boolean)
+    Cancel = True
+End Sub
+";
+
+            const string expectedCode1 =
+@"
+Public Event YourEvent_withUnderscore(IDNumber As Long, ByRef Cancel As Boolean)
+
+Sub AAA()
+    Dim Cancel As Boolean
+    Cancel = False
+    RaiseEvent YourEvent_withUnderscore(1234, Cancel)
+End Sub
+";
+            const string expectedCode2 =
+@"
+Private WithEvents XLEvents As CEventClass
+
+Private Sub Class_Initialize()
+    Set XLEvents = New CEventClass
+End Sub
+
+Private Sub XLEvents_YourEvent_withUnderscore(IDNumber As Long, Cancel As Boolean)
+    Cancel = True
+End Sub
+";
+            var tdo = new RenameTestsDataObject();
+            tdo.SelectionTarget = "MyEvent";
+            tdo.SelectionLineIdentifier = "Private Sub XLEvents_MyEvent";
+            tdo.SelectionModuleName = "Class2";
+            tdo.NewName = "YourEvent_withUnderscore";
+
+            var secondClass = "CEventClass";
+            AddTestComponent(tdo, tdo.SelectionModuleName, inputCode2, ComponentType.ClassModule);
+            AddTestComponent(tdo, secondClass, inputCode1, ComponentType.ClassModule);
+
+            SetupAndRunRenameRefactorTest(tdo, RefactorParams.QualifiedSelection);
+
+            var rewriter1 = tdo.ParserState.GetRewriter(RetrieveComponent(tdo, tdo.SelectionModuleName).CodeModule.Parent);
+            Assert.AreEqual(expectedCode2, rewriter1.GetText());
+
+            var rewriter2 = tdo.ParserState.GetRewriter(RetrieveComponent(tdo, secondClass).CodeModule.Parent);
+            Assert.AreEqual(expectedCode1, rewriter2.GetText());
+        }
+
+        [TestMethod]
+        public void RenameRefactoring_RenameControlEventName_AcceptPrompt()
+        {
+            const string inputCode1 =
+@"
+Private Sub cmdBtn1_Click()
+
+End Sub
+";
+
+            var tdo = new RenameTestsDataObject();
+            tdo.SelectionTarget = "cmdBtn1_Click";
+            tdo.SelectionLineIdentifier = "Private Sub cmdBtn1_Click()";
+            tdo.SelectionModuleName = "UserForm1";
+            tdo.NewName = "cmdBtn2";
+
+            CreateMockVBEForControlsTest(tdo, inputCode1, "cmdBtn1");
+
+            SetupAndRunRenameRefactorTest(tdo, RefactorParams.None);
+            tdo.MsgBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()), Times.Never);
+        }
+
+        [TestMethod]
+        public void RenameRefactoring_CheckAllRefactorCallPaths()
+        {
+            const string inputCode1 =
+@"
+Private Sub Foo()
+End Sub
+";
+            const string expectedCode1 =
+@"
+Private Sub Goo()
+End Sub
+";
+            RefactorParams[] refactorParams = { RefactorParams.None, RefactorParams.QualifiedSelection, RefactorParams.Declaration };
+
+            foreach ( var param in refactorParams)
+            {
+                var tdo = new RenameTestsDataObject();
+                tdo.SelectionTarget = "Foo";
+                tdo.SelectionLineIdentifier = "Foo()";
+                tdo.SelectionModuleName = "Class1";
+                tdo.NewName = "Goo";
+                AddTestComponent(tdo, tdo.SelectionModuleName, inputCode1, ComponentType.ClassModule);
+  
+                SetupAndRunRenameRefactorTest(tdo, param);
+
+                var rewriter1 = tdo.ParserState.GetRewriter(RetrieveComponent(tdo, tdo.SelectionModuleName).CodeModule.Parent);
+                Assert.AreEqual(expectedCode1, rewriter1.GetText());
+                tdo.MsgBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()), Times.Never);
+            }
+        }
+
+        [TestMethod]
+        public void RenameRefactoring_RenameControlNameFromEvent_AcceptPrompt()
+        {
+            const string inputCode1 =
+@"
+Private Sub cmdBtn1_Click()
+
+End Sub
+";
+
+            const string expectedCode1 =
+@"
+Private Sub bigButton_ClickAgain_Click()
+
+End Sub
+";
+
+            var tdo = new RenameTestsDataObject();
+            tdo.SelectionTarget = "cmdBtn1_Click";
+            tdo.SelectionLineIdentifier = "Private Sub cmdBtn1_Click()";
+            tdo.SelectionModuleName = "UserForm1";
+            tdo.NewName = "bigButton_ClickAgain";
+
+            CreateMockVBEForControlsTest(tdo, inputCode1, "cmdBtn1");
+
+            SetupAndRunRenameRefactorTest(tdo, RefactorParams.QualifiedSelection);
+            
+            var rewriter1 = tdo.ParserState.GetRewriter(RetrieveComponent(tdo, tdo.SelectionModuleName).CodeModule.Parent);
+            Assert.AreEqual(expectedCode1, rewriter1.GetText());
         }
 
         [TestMethod]
@@ -849,6 +1709,8 @@ End Sub";
             var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, messageBox.Object, state);
             refactoring.Refactor(model.Selection);
 
+            messageBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.YesNo, It.IsAny<MessageBoxIcon>()), Times.Once);
+
             var rewriter1 = state.GetRewriter(module1.Parent);
             Assert.AreEqual(expectedCode1, rewriter1.GetText());
 
@@ -868,6 +1730,8 @@ End Sub";
             const string inputCode2 =
 @"Public Sub DoSomething(ByVal a As Integer, ByVal b As String)
 End Sub";
+            string expectedCode1 = inputCode1;
+            string expectedCode2 = inputCode2;
 
             var selection = new Selection(3, 23, 3, 27);
 
@@ -882,6 +1746,9 @@ End Sub";
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(project.Object.VBComponents[0]), selection);
 
+            var module1 = project.Object.VBComponents[0].CodeModule;
+            var module2 = project.Object.VBComponents[1].CodeModule;
+
             var messageBox = new Mock<IMessageBox>();
             messageBox.Setup(
                 m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
@@ -889,7 +1756,20 @@ End Sub";
 
             var vbeWrapper = vbe.Object;
             var model = new RenameModel(vbeWrapper, state, qualifiedSelection, messageBox.Object);
-            Assert.AreEqual(null, model.Target);
+
+            //SetupFactory
+            var factory = SetupFactory(model);
+
+            var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, messageBox.Object, state);
+            refactoring.Refactor(model.Selection);
+
+            messageBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.YesNo, It.IsAny<MessageBoxIcon>()), Times.Once);
+
+            var rewriter1 = state.GetRewriter(module1.Parent);
+            Assert.AreEqual(expectedCode1, rewriter1.GetText());
+
+            var rewriter2 = state.GetRewriter(module2.Parent);
+            Assert.AreEqual(expectedCode2, rewriter2.GetText());
         }
 
         [TestMethod]
@@ -1122,6 +2002,7 @@ End Sub";
         private static Mock<IRefactoringPresenterFactory<IRenamePresenter>> SetupFactory(RenameModel model)
         {
             var presenter = new Mock<IRenamePresenter>();
+            presenter.Setup(p => p.Model).Returns(model);
             presenter.Setup(p => p.Show()).Returns(model);
             presenter.Setup(p => p.Show(It.IsAny<Declaration>())).Returns(model);
 
@@ -1131,5 +2012,134 @@ End Sub";
         }
 
         #endregion
+
+        private void SetupAndRunRenameRefactorTest(RenameTestsDataObject tdo, RefactorParams refactorParam)
+        {
+            tdo.MsgBox = new Mock<IMessageBox>();
+            tdo.MsgBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.YesNo, It.IsAny<MessageBoxIcon>()))
+                  .Returns(DialogResult.Yes);
+
+            if(tdo.VBE == null)
+            {
+                tdo.VBE = BuildProject(tdo.ProjectName, tdo.Components);
+            }
+            tdo.ParserState = MockParser.CreateAndParse(tdo.VBE);
+
+            CreateQualifiedSelectionForTestCase(tdo);
+            tdo.RenameModel = new RenameModel(tdo.VBE, tdo.ParserState, tdo.QualifiedSelection, tdo.MsgBox.Object) { NewName = tdo.NewName };
+
+            //SetupFactory
+            var factory = SetupFactory(tdo.RenameModel);
+
+            var refactoring = new RenameRefactoring(tdo.VBE, factory.Object, tdo.MsgBox.Object, tdo.ParserState);
+            if(refactorParam == RefactorParams.Declaration)
+            {
+                refactoring.Refactor(tdo.RenameModel.Target);
+            }
+            else if(refactorParam == RefactorParams.QualifiedSelection)
+            {
+                refactoring.Refactor(tdo.QualifiedSelection);
+            }
+            else
+            {
+                refactoring.Refactor();
+            }
+        }
+
+        private void CreateQualifiedSelectionForTestCase(RenameTestsDataObject tdo)
+        {
+            var component = RetrieveComponent(tdo, tdo.SelectionModuleName);
+            var moduleContent = component.CodeModule.GetLines(1, component.CodeModule.CountOfLines);
+
+            var splitToken = new string[] { "\r\n" };
+
+            var lines = moduleContent.Split(splitToken, System.StringSplitOptions.None);
+            int lineOfInterestNumber = 0;
+            string lineOfInterestContent = string.Empty;
+            for (int idx = 0; idx < lines.Count() && lineOfInterestNumber < 1; idx++)
+            {
+                if (lines[idx].Contains(tdo.SelectionLineIdentifier))
+                {
+                    lineOfInterestNumber = idx + 1;
+                    lineOfInterestContent = lines[idx];
+                }
+            }
+            Assert.IsTrue(lineOfInterestNumber > 0, "Unable to find target '" + tdo.SelectionTarget + "' in " + tdo.SelectionModuleName + " content.");
+            var column = lineOfInterestContent.IndexOf(tdo.SelectionLineIdentifier);
+            column = column + tdo.SelectionLineIdentifier.IndexOf(tdo.SelectionTarget) + 1;
+
+            var moduleParent = component.CodeModule.Parent;
+            tdo.QualifiedSelection = new QualifiedSelection(new QualifiedModuleName(moduleParent), new Selection(lineOfInterestNumber, column, lineOfInterestNumber, column));
+        }
+
+        private void AddTestComponent(RenameTestsDataObject tdo, string moduleIdentifier, string moduleContent, ComponentType componentType)
+        {
+            if (null == tdo.Components)
+            {
+                tdo.Components = new List<TestComponentSpecification>();
+            }
+            tdo.Components.Add(new TestComponentSpecification(moduleIdentifier, moduleContent, componentType));
+        }
+
+        private IVBE BuildProject(string projectName, List<TestComponentSpecification> testComponents)
+        {
+            var builder = new MockVbeBuilder();
+            var enclosingProjectBuilder = builder.ProjectBuilder(projectName, ProjectProtection.Unprotected);
+
+            testComponents.ForEach(c => enclosingProjectBuilder.AddComponent(c.Name, c.ModuleType, c.Content));
+            var enclosingProject = enclosingProjectBuilder.Build();
+            builder.AddProject(enclosingProject);
+            return builder.Build().Object;
+        }
+
+        private IVBComponent RetrieveComponent(RenameTestsDataObject tdo, string componentName)
+        {
+            var vbProject = tdo.VBE.VBProjects.Where(item => item.Name == tdo.ProjectName).SingleOrDefault();
+            return vbProject.VBComponents.Where(item => item.Name == componentName).SingleOrDefault();
+        }
+
+        internal class TestComponentSpecification
+        {
+            private string _name;
+            private string _content;
+            private ComponentType _componentType;
+            public TestComponentSpecification(string componentName, string componentContent, ComponentType componentType)
+            {
+                _name = componentName;
+                _content = componentContent;
+                _componentType = componentType;
+            }
+
+            public string Name { get { return _name; } }
+            public string Content { get { return _content; } }
+            public ComponentType ModuleType { get { return _componentType; } }
+        }
+
+
+        enum RefactorParams
+        {
+            None,
+            QualifiedSelection,
+            Declaration
+        };
+
+        internal class RenameTestsDataObject
+        {
+            public RenameTestsDataObject()
+            {
+                ProjectName = "TestProject";
+            }
+            public IVBE VBE { get; set; }
+            public RubberduckParserState ParserState { get; set; }
+            public List<TestComponentSpecification> Components { get; set; }
+            public string ProjectName { get; set; }
+            public string NewName { get; set; }
+            public string SelectionModuleName { get; set; }
+            public string SelectionTarget { get; set; }
+            public string SelectionLineIdentifier { get; set; }
+            public QualifiedSelection QualifiedSelection { get; set; }
+            public RenameModel RenameModel { get; set; }
+            public Mock<IMessageBox> MsgBox { get; set; }
+        }
     }
 }

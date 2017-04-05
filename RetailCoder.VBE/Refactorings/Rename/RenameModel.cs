@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
-using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
@@ -51,30 +49,6 @@ namespace Rubberduck.Refactorings.Rename
             target = _declarations
                 .Where(item => item.IsUserDefined && item.DeclarationType != DeclarationType.ModuleOption)
                 .FirstOrDefault(item => item.IsSelected(selection) || item.References.Any(r => r.IsSelected(selection)));
-
-            PromptIfTargetImplementsInterface(ref target);
-        }
-
-        public void PromptIfTargetImplementsInterface(ref Declaration target)
-        {
-            var declaration = target;
-            var interfaceImplementation = _declarations.FindInterfaceImplementationMembers().SingleOrDefault(m => m.Equals(declaration));
-            if (target == null || interfaceImplementation == null)
-            {
-                return;
-            }
-
-            var interfaceMember = _declarations.FindInterfaceMember(interfaceImplementation);
-            var message = string.Format(RubberduckUI.RenamePresenter_TargetIsInterfaceMemberImplementation, target.IdentifierName, interfaceMember.ComponentName, interfaceMember.IdentifierName);
-
-            var confirm = _messageBox.Show(message, RubberduckUI.RenameDialog_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
-            if (confirm == DialogResult.No)
-            {
-                target = null;
-                return;
-            }
-
-            target = interfaceMember;
         }
     }
 }

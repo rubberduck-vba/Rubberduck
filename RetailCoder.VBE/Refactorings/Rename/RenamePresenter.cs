@@ -9,6 +9,7 @@ namespace Rubberduck.Refactorings.Rename
     {
         RenameModel Show();
         RenameModel Show(Declaration target);
+        RenameModel Model { get; }
     }
 
     public class RenamePresenter : IRenamePresenter
@@ -23,25 +24,19 @@ namespace Rubberduck.Refactorings.Rename
             _model = model;
         }
 
+        public RenameModel Model {get { return _model; } }
+
         public RenameModel Show()
         {
             if (_model.Target == null) { return null; }
 
-            _view.ViewModel.Target = _model.Target;
-
-            _view.ShowDialog();
-            if (_view.DialogResult != DialogResult.OK)
-            {
-                return null;
-            }
-
-            _model.NewName = _view.ViewModel.NewName;
-            return _model;
+            return Show(_model.Target);
         }
 
         public RenameModel Show(Declaration target)
         {
-            _model.PromptIfTargetImplementsInterface(ref target);
+            if(null == target) { return null; }
+
             _model.Target = target;
             _view.ViewModel.Target = target;
 

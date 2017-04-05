@@ -2061,4 +2061,28 @@ Would you like to import them to Rubberduck?</value>
     <value>Invalid setup of IFake {0}. PassThrough property must be False.</value>
     <comment>{0} = name of the function being faked.</comment>
   </data>
+  <data name="RefactorRename_TargetNotDefinedError" xml:space="preserve">
+    <value>Unable To Detect Selected Rename Target</value>
+  </data>
+  <data name="RefactorRename_TargetNotUserDefinedError" xml:space="preserve">
+    <value>Identifier {0} cannot be renamed.</value>
+  </data>
+  <data name="RenameDialog_ControlRenameError" xml:space="preserve">
+    <value>Could not rename Control {0}.</value>
+  </data>
+  <data name="RenameDialog_DefaultRenameError" xml:space="preserve">
+    <value>Coult not rename {0}.</value>
+  </data>
+  <data name="RenameDialog_EventRenameError" xml:space="preserve">
+    <value>Could not rename Event Handler {0}.</value>
+  </data>
+  <data name="RenameDialog_InterfaceRenameError" xml:space="preserve">
+    <value>Could not rename Interface Member {0}.</value>
+  </data>
+  <data name="RenameDialog_PropertyParameterRenameError" xml:space="preserve">
+    <value>Could not rename Parameter {0} for Property {1}.</value>
+  </data>
+  <data name="RenameDialog_PropertyRenameError" xml:space="preserve">
+    <value>Could not rename Property {0}.</value>
+  </data>
 </root>
