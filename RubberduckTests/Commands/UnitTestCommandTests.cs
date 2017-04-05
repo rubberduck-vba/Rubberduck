@@ -75,7 +75,7 @@ Private Assert As Object
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            state.SetStatusAndFireStateChanged(this, ParserState.ResolvingReferences);
+            state.SetStatusAndFireStateChanged(ParserState.ResolvingReferences);
 
             var addTestMethodCommand = new AddTestMethodCommand(vbe.Object, state);
             Assert.IsFalse(addTestMethodCommand.CanExecute(null));
@@ -148,7 +148,7 @@ Private Assert As Object
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out component);
 
             var state = MockParser.CreateAndParse(vbe.Object);
-            state.SetStatusAndFireStateChanged(this, ParserState.ResolvingReferences);
+            state.SetStatusAndFireStateChanged(ParserState.ResolvingReferences);
 
             var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(vbe.Object, state);
             Assert.IsFalse(addTestMethodCommand.CanExecute(null));

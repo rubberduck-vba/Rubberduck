@@ -70,7 +70,7 @@ namespace Rubberduck.UI.Inspections
                 GroupByInspectionType = !(bool)param;
             });
 
-            _state.StateChanged += _state_StateChanged;
+            _state.RegisterStateChangedCallback(_state_StateChanged, (ParserState) int.MaxValue);
         }
 
         private void _configService_SettingsChanged(object sender, ConfigurationChangedEventArgs e)
@@ -216,7 +216,7 @@ namespace Rubberduck.UI.Inspections
         public bool IsBusy { get { return _isBusy; } set { _isBusy = value; OnPropertyChanged(); } }
 
         private bool _runInspectionsOnReparse;
-        private void _state_StateChanged(object sender, EventArgs e)
+        private void _state_StateChanged(CancellationToken c)
         {
             if (_state.Status == ParserState.Error || _state.Status == ParserState.ResolverError)
             {
@@ -230,7 +230,7 @@ namespace Rubberduck.UI.Inspections
                 return;
             }
 
-            if (sender == this || _runInspectionsOnReparse)
+            if (_runInspectionsOnReparse)
             {
                 RefreshInspections();
             }
@@ -434,20 +434,12 @@ namespace Rubberduck.UI.Inspections
 
         public void Dispose()
         {
-            if (_state != null)
-            {
-                _state.StateChanged -= _state_StateChanged;
-            }
-
             if (_configService != null)
             {
                 _configService.SettingsChanged -= _configService_SettingsChanged;
             }
 
-            if (_inspector != null)
-            {
-                _inspector.Dispose();
-            }
+            _inspector?.Dispose();
         }
     }
 }

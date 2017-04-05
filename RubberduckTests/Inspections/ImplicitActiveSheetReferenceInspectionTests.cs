@@ -34,7 +34,7 @@ End Sub
             var vbe = builder.AddProject(project).Build();
 
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new ParserStateChangeCallbackManager()));
             parser.State.AddTestLibrary("Excel.1.8.xml");
 
             parser.Parse(new CancellationTokenSource());
@@ -68,7 +68,7 @@ End Sub
             var vbe = builder.AddProject(project).Build();
 
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new ParserStateChangeCallbackManager()));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -105,7 +105,7 @@ End Sub";
             var vbe = builder.AddProject(project).Build();
 
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new ParserStateChangeCallbackManager()));
             parser.State.AddTestLibrary("Excel.1.8.xml");
 
             parser.Parse(new CancellationTokenSource());

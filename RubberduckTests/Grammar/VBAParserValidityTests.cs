@@ -42,7 +42,7 @@ namespace RubberduckTests.Grammar
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(code, out component);
 
-            var state = new RubberduckParserState(vbe.Object);
+            var state = new RubberduckParserState(vbe.Object, new ParserStateChangeCallbackManager());
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error: " + filename); }

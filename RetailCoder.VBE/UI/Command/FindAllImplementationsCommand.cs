@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows.Forms;
 using NLog;
 using Rubberduck.Common;
@@ -18,7 +19,7 @@ namespace Rubberduck.UI.Command
     /// A command that finds all implementations of a specified method, or of the active interface module.
     /// </summary>
     [ComVisible(false)]
-    public class FindAllImplementationsCommand : CommandBase, IDisposable
+    public class FindAllImplementationsCommand : CommandBase
     {
         private readonly INavigateCommand _navigateCommand;
         private readonly IMessageBox _messageBox;
@@ -39,7 +40,7 @@ namespace Rubberduck.UI.Command
             _viewModel = viewModel;
             _presenterService = presenterService;
 
-            _state.StateChanged += _state_StateChanged;
+            _state.RegisterStateChangedCallback(_state_StateChanged, ParserState.Ready);
         }
 
         private Declaration FindNewDeclaration(Declaration declaration)
@@ -52,10 +53,8 @@ namespace Rubberduck.UI.Command
                         item.DeclarationType == declaration.DeclarationType);
         }
 
-        private void _state_StateChanged(object sender, ParserStateEventArgs e)
+        private void _state_StateChanged(CancellationToken c)
         {
-            if (e.State != ParserState.Ready) { return; }
-
             if (_viewModel == null) { return; }
 
             UiDispatcher.InvokeAsync(UpdateTab);
@@ -226,14 +225,6 @@ namespace Rubberduck.UI.Command
             name = member.ComponentName + "." + member.IdentifierName;
             return items.FindInterfaceImplementationMembers(member.IdentifierName)
                    .Where(item => item.IdentifierName == member.ComponentName + "_" + member.IdentifierName);
-        }
-
-        public void Dispose()
-        {
-            if (_state != null)
-            {
-                _state.StateChanged -= _state_StateChanged;
-            }
         }
     }
 }

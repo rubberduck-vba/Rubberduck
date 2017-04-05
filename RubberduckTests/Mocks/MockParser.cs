@@ -25,7 +25,7 @@ namespace RubberduckTests.Mocks
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             qualifiedModuleName = new QualifiedModuleName(component);
-            var parser = Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = Create(vbe.Object, new RubberduckParserState(vbe.Object, new ParserStateChangeCallbackManager()));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -54,12 +54,12 @@ namespace RubberduckTests.Mocks
                     new SpecialFormDeclarations(state), 
                     new FormEventDeclarations(state), 
                     new AliasDeclarations(state),
-                }, true, path);
+                }, new ParserStateChangeCallbackManager(), true, path);
         }
 
         public static RubberduckParserState CreateAndParse(IVBE vbe, string serializedDeclarationsPath = null)
         {
-            var parser = Create(vbe, new RubberduckParserState(vbe));
+            var parser = Create(vbe, new RubberduckParserState(vbe, new ParserStateChangeCallbackManager()));
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 

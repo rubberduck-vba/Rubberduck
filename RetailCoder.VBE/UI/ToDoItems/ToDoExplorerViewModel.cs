@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using NLog;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
@@ -14,7 +15,7 @@ using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.UI.ToDoItems
 {
-    public sealed class ToDoExplorerViewModel : ViewModelBase, INavigateSelection, IDisposable
+    public sealed class ToDoExplorerViewModel : ViewModelBase, INavigateSelection
     {
         private readonly RubberduckParserState _state;
         private readonly IGeneralConfigService _configService;
@@ -25,7 +26,7 @@ namespace Rubberduck.UI.ToDoItems
             _state = state;
             _configService = configService;
             _operatingSystem = operatingSystem;
-            _state.StateChanged += _state_StateChanged;
+            _state.RegisterStateChangedCallback(_state_StateChanged, ParserState.ResolvedDeclarations);
 
             _setMarkerGroupingCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
             {
@@ -105,13 +106,8 @@ namespace Rubberduck.UI.ToDoItems
             }
         }
 
-        private void _state_StateChanged(object sender, EventArgs e)
+        private void _state_StateChanged(CancellationToken c)
         {
-            if (_state.Status != ParserState.ResolvedDeclarations)
-            {
-                return;
-            }
-
             Items = new ObservableCollection<ToDoItem>(GetItems());
         }
 
@@ -198,14 +194,6 @@ namespace Rubberduck.UI.ToDoItems
         private IEnumerable<ToDoItem> GetItems()
         {
             return _state.AllComments.SelectMany(GetToDoMarkers);
-        }
-
-        public void Dispose()
-        {
-            if (_state != null)
-            {
-                _state.StateChanged -= _state_StateChanged;
-            }
         }
     }
 }

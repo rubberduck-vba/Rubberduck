@@ -8,6 +8,7 @@ using Rubberduck.Parsing.Symbols.DeclarationLoaders;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command.MenuItems;
 using System.Globalization;
+using System.Threading;
 using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
@@ -62,8 +63,10 @@ namespace Rubberduck.API
             }
 
             _vbe = new VBE(vbe);
-            _state = new RubberduckParserState(null);
-            _state.StateChanged += _state_StateChanged;
+            _state = new RubberduckParserState(null, new ParserStateChangeCallbackManager());
+            _state.RegisterStateChangedCallback(UpdateOnError, Parsing.VBA.ParserState.Error);
+            _state.RegisterStateChangedCallback(UpdateOnParsed, Parsing.VBA.ParserState.Parsed);
+            _state.RegisterStateChangedCallback(UpdateOnReady, Parsing.VBA.ParserState.Ready);
 
             Func<IVBAPreprocessor> preprocessorFactory = () => new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture));
             _attributeParser = new AttributeParser(new ModuleExporter(), preprocessorFactory);
@@ -75,7 +78,7 @@ namespace Rubberduck.API
                     new FormEventDeclarations(_state),
                     new AliasDeclarations(_state),
                     //new RubberduckApiDeclarations(_state)
-                });
+                }, new ParserStateChangeCallbackManager());
         }
 
         /// <summary>
@@ -84,7 +87,7 @@ namespace Rubberduck.API
         public void Parse()
         {
             // blocking call
-            _parser.Parse(new System.Threading.CancellationTokenSource());
+            _parser.Parse(new CancellationTokenSource());
         }
 
         /// <summary>
@@ -100,33 +103,48 @@ namespace Rubberduck.API
         public event Action OnReady;
         public event Action OnError;
 
-        private void _state_StateChanged(object sender, EventArgs e)
+        private void UpdateOnError(CancellationToken c)
         {
-            _allDeclarations = _state.AllDeclarations
-                                     .Select(item => new Declaration(item))
-                                     .ToArray();
-            
-            _userDeclarations = _state.AllUserDeclarations
-                                     .Select(item => new Declaration(item))
-                                     .ToArray();
+            UpdateDeclarationsLists();
 
             var errorHandler = OnError;
-            if (_state.Status == Parsing.VBA.ParserState.Error && errorHandler != null)
+            if (errorHandler != null)
             {
                 UiDispatcher.Invoke(errorHandler.Invoke);
             }
+        }
+
+        private void UpdateOnParsed(CancellationToken c)
+        {
+            UpdateDeclarationsLists();
 
             var parsedHandler = OnParsed;
-            if (_state.Status == Parsing.VBA.ParserState.Parsed && parsedHandler != null)
+            if (parsedHandler != null)
             {
                 UiDispatcher.Invoke(parsedHandler.Invoke);
             }
+        }
+
+        private void UpdateOnReady(CancellationToken c)
+        {
+            UpdateDeclarationsLists();
 
             var readyHandler = OnReady;
-            if (_state.Status == Parsing.VBA.ParserState.Ready && readyHandler != null)
+            if (readyHandler != null)
             {
                 UiDispatcher.Invoke(readyHandler.Invoke);
             }
+        }
+
+        private void UpdateDeclarationsLists()
+        {
+            _allDeclarations = _state.AllDeclarations
+                .Select(item => new Declaration(item))
+                .ToArray();
+
+            _userDeclarations = _state.AllUserDeclarations
+                .Select(item => new Declaration(item))
+                .ToArray();
         }
 
         private Declaration[] _allDeclarations;
@@ -151,12 +169,6 @@ namespace Rubberduck.API
             {
                 return;
             }
-
-            if (_state != null)
-            {
-                _state.StateChanged -= _state_StateChanged;
-            }
-
 
             //_vbe.Release();            
             _disposed = true;

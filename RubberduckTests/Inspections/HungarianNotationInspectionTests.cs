@@ -27,7 +27,7 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new ParserStateChangeCallbackManager()));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -53,7 +53,7 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new ParserStateChangeCallbackManager()));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -79,7 +79,7 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new ParserStateChangeCallbackManager()));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -105,7 +105,7 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new ParserStateChangeCallbackManager()));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -129,7 +129,7 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new ParserStateChangeCallbackManager()));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -154,7 +154,7 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new ParserStateChangeCallbackManager()));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -180,7 +180,7 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new ParserStateChangeCallbackManager()));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -205,7 +205,7 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object, new ParserStateChangeCallbackManager()));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
