@@ -40,7 +40,7 @@ namespace Rubberduck.Parsing.VBA
         private readonly IAttributeParser _attributeParser;
         private readonly Func<IVBAPreprocessor> _preprocessorFactory;
         private readonly IEnumerable<ICustomDeclarationLoader> _customDeclarationLoaders;
-        private readonly IParserStateChangeCallbackManager _callbackManager;
+        private readonly ParserStateChangeCallbackManager _callbackManager;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private readonly bool _isTestScope;
@@ -53,7 +53,7 @@ namespace Rubberduck.Parsing.VBA
             IAttributeParser attributeParser,
             Func<IVBAPreprocessor> preprocessorFactory,
             IEnumerable<ICustomDeclarationLoader> customDeclarationLoaders,
-            IParserStateChangeCallbackManager callbackManager,
+            ParserStateChangeCallbackManager callbackManager,
             bool isTestScope = false,
             string serializedDeclarationsPath = null)
         {

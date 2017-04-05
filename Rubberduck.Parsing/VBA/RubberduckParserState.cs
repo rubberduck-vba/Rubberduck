@@ -69,9 +69,9 @@ namespace Rubberduck.Parsing.VBA
         }
 
         private readonly IVBE _vbe;
-        private readonly IParserStateChangeCallbackManager _callbackManager;
+        private readonly ParserStateChangeCallbackManager _callbackManager;
 
-        public RubberduckParserState(IVBE vbe, IParserStateChangeCallbackManager callbackManager)
+        public RubberduckParserState(IVBE vbe, ParserStateChangeCallbackManager callbackManager)
         {
             var values = Enum.GetValues(typeof(ParserState));
             foreach (var value in values)

@@ -66,6 +66,7 @@ namespace Rubberduck.Root
             Bind<IVBE>().ToConstant(_vbe);
             Bind<IAddIn>().ToConstant(_addin);
             Bind<App>().ToSelf().InSingletonScope();
+            Bind<ParserStateChangeCallbackManager>().ToSelf().InSingletonScope();
             Bind<RubberduckParserState>().ToSelf().InSingletonScope();
             Bind<ISelectionChangeService>().To<SelectionChangeService>().InSingletonScope();
             Bind<ISourceControlProvider>().To<GitProvider>();
@@ -101,7 +102,6 @@ namespace Rubberduck.Root
             Bind<Func<IIndenterSettings>>().ToMethod(t => () => KernelInstance.Get<IGeneralConfigService>().LoadConfiguration().UserSettings.IndenterSettings);
 
             BindCustomDeclarationLoadersToParser();
-            Rebind<IParserStateChangeCallbackManager>().To<ParserStateChangeCallbackManager>().InSingletonScope();
             Rebind<IParseCoordinator>().To<ParseCoordinator>().InSingletonScope().WithConstructorArgument("serializedDeclarationsPath", (string)null);
             Bind<Func<IVBAPreprocessor>>().ToMethod(p => () => new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture)));
             

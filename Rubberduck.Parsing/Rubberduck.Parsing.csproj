@@ -335,7 +335,6 @@
     <Compile Include="VBA\EnumerableExtensions.cs" />
     <Compile Include="VBA\IAttributeParser.cs" />
     <Compile Include="VBA\IModuleExporter.cs" />
-    <Compile Include="VBA\IParserStateChangeCallbackManager.cs" />
     <Compile Include="VBA\ParserStateChangeCallbackManager.cs" />
     <Compile Include="VBA\ModuleState.cs" />
     <Compile Include="VBA\ParseErrorEventArgs.cs" />

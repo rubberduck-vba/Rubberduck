@@ -6,13 +6,16 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Parsing.VBA
 {
-    public class ParserStateChangeCallbackManager : IParserStateChangeCallbackManager
+    public class ParserStateChangeCallbackManager
     {
+        private readonly bool _runAsync;
+
         private readonly Dictionary<ParserState, ConcurrentDictionary<Action<CancellationToken>, byte>> _callbacks =
             new Dictionary<ParserState, ConcurrentDictionary<Action<CancellationToken>, byte>>();
 
-        public ParserStateChangeCallbackManager()
+        public ParserStateChangeCallbackManager(bool runAsync = true)
         {
+            _runAsync = runAsync;
             foreach (ParserState value in Enum.GetValues(typeof(ParserState)))
             {
                 _callbacks.Add(value, new ConcurrentDictionary<Action<CancellationToken>, byte>());
@@ -61,7 +64,14 @@ namespace Rubberduck.Parsing.VBA
             {
                 if (token.IsCancellationRequested) { break; }
 
-                Task.Run(() => callback(token), token);
+                if (_runAsync)
+                {
+                    Task.Run(() => callback(token), token);
+                }
+                else
+                {
+                    callback(token);
+                }
             }
         }
     }
