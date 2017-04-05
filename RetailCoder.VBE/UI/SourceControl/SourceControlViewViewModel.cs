@@ -644,6 +644,7 @@ namespace Rubberduck.UI.SourceControl
                     HandleViewModelError(this,
                         new ErrorEventArgs(RubberduckUI.SourceControl_UnknownErrorTitle,
                             RubberduckUI.SourceControl_UnknownErrorMessage, NotificationType.Error));
+                    throw;
                 }
             }
         }
