@@ -7,14 +7,14 @@ using Rubberduck.Parsing.Inspections.Resources;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    internal class RemoveOptionBaseStatementQuickFix : QuickFixBase
+    internal class RemoveOptionBaseStatementQuickFix : IQuickFix
     {
         public RemoveOptionBaseStatementQuickFix(ParserRuleContext context, QualifiedSelection selection)
             : base(context, selection, InspectionsUI.RemoveOptionBaseStatementQuickFix)
         {
         }
 
-        public override void Fix()
+        public void Fix(IInspectionResult result)
         {
             var module = Selection.QualifiedName.Component.CodeModule;
             var lines = module.GetLines(Selection.Selection).Split(new[] { Environment.NewLine }, StringSplitOptions.None);

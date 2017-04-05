@@ -7,14 +7,14 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class SplitMultipleDeclarationsQuickFix : QuickFixBase
+    public class SplitMultipleDeclarationsQuickFix : IQuickFix
     {
         public SplitMultipleDeclarationsQuickFix(ParserRuleContext context, QualifiedSelection selection)
             : base(context, selection, InspectionsUI.SplitMultipleDeclarationsQuickFix)
         {
         }
 
-        public override void Fix()
+        public void Fix(IInspectionResult result)
         {
             var newContent = new StringBuilder();
             var selection = Selection.Selection;

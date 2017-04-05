@@ -12,7 +12,7 @@ namespace Rubberduck.Inspections.QuickFixes
     /// <summary>
     /// A code inspection quickfix that encapsulates a public field with a property
     /// </summary>
-    public class MoveFieldCloserToUsageQuickFix : QuickFixBase
+    public class MoveFieldCloserToUsageQuickFix : IQuickFix
     {
         private readonly Declaration _target;
         private readonly RubberduckParserState _state;
@@ -26,7 +26,7 @@ namespace Rubberduck.Inspections.QuickFixes
             _messageBox = messageBox;
         }
 
-        public override void Fix()
+        public void Fix(IInspectionResult result)
         {
             var vbe = _target.Project.VBE;
 

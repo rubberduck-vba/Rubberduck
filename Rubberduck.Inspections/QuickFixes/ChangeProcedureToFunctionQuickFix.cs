@@ -11,7 +11,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class ChangeProcedureToFunctionQuickFix : QuickFixBase
+    public class ChangeProcedureToFunctionQuickFix : IQuickFix
     {
         public override bool CanFixInModule
         {
@@ -45,7 +45,7 @@ namespace Rubberduck.Inspections.QuickFixes
                     .First(a => a.BYREF() != null || (a.BYREF() == null && a.BYVAL() == null)));
         }
 
-        public override void Fix()
+        public void Fix(IInspectionResult result)
         {
             UpdateCalls();
             UpdateSignature();

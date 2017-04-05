@@ -14,7 +14,7 @@ namespace Rubberduck.Inspections.QuickFixes
     /// <summary>
     /// A code inspection quickfix that addresses a VBProject bearing the default name.
     /// </summary>
-    public class RenameProjectQuickFix : QuickFixBase
+    public class RenameProjectQuickFix : IQuickFix
     {
         private readonly Declaration _target;
         private readonly RubberduckParserState _state;
@@ -28,7 +28,7 @@ namespace Rubberduck.Inspections.QuickFixes
             _messageBox = messageBox;
         }
 
-        public override void Fix()
+        public void Fix(IInspectionResult result)
         {
             var vbe = _target.Project.VBE;
 

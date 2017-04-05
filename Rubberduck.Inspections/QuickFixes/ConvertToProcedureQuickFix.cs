@@ -12,7 +12,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class ConvertToProcedureQuickFix : QuickFixBase
+    public class ConvertToProcedureQuickFix : IQuickFix
     {
         private readonly Declaration _target;
 
@@ -22,7 +22,7 @@ namespace Rubberduck.Inspections.QuickFixes
             _target = target;
         }
 
-        public override void Fix()
+        public void Fix(IInspectionResult result)
         {
             dynamic functionContext = Context as VBAParser.FunctionStmtContext;
             dynamic propertyGetContext = Context as VBAParser.PropertyGetStmtContext;

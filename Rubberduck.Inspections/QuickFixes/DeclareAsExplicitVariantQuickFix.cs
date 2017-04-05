@@ -9,14 +9,14 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class DeclareAsExplicitVariantQuickFix : QuickFixBase 
+    public class DeclareAsExplicitVariantQuickFix : IQuickFix 
     {
         public DeclareAsExplicitVariantQuickFix(ParserRuleContext context, QualifiedSelection selection)
             : base(context, selection, InspectionsUI.DeclareAsExplicitVariantQuickFix)
         {
         }
 
-        public override void Fix()
+        public void Fix(IInspectionResult result)
         {
             var module = Selection.QualifiedName.Component.CodeModule;
             var contextLines = module.GetLines(Context.GetSelection());

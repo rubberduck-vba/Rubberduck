@@ -6,14 +6,14 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class RepaceEmptyStringLiteralStatementQuickFix : QuickFixBase
+    public class RepaceEmptyStringLiteralStatementQuickFix : IQuickFix
     {
         public RepaceEmptyStringLiteralStatementQuickFix(ParserRuleContext context, QualifiedSelection selection)
             : base(context, selection, InspectionsUI.EmptyStringLiteralInspectionQuickFix)
         {
         }
 
-        public override void Fix()
+        public void Fix(IInspectionResult result)
         {
             var module = Selection.QualifiedName.Component.CodeModule;
             if (module == null)

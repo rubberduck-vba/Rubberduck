@@ -10,7 +10,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class RemoveTypeHintsQuickFix : QuickFixBase
+    public class RemoveTypeHintsQuickFix : IQuickFix
     {
         private readonly Declaration _declaration;
 
@@ -20,7 +20,7 @@ namespace Rubberduck.Inspections.QuickFixes
             _declaration = declaration;
         }
 
-        public override void Fix()
+        public void Fix(IInspectionResult result)
         {
             if (!string.IsNullOrWhiteSpace(_declaration.TypeHint))
             {

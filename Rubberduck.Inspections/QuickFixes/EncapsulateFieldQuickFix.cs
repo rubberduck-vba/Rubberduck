@@ -14,7 +14,7 @@ namespace Rubberduck.Inspections.QuickFixes
     /// <summary>
     /// A code inspection quickfix that encapsulates a public field with a property
     /// </summary>
-    public class EncapsulateFieldQuickFix : QuickFixBase
+    public class EncapsulateFieldQuickFix : IQuickFix
     {
         private readonly Declaration _target;
         private readonly RubberduckParserState _state;
@@ -28,7 +28,7 @@ namespace Rubberduck.Inspections.QuickFixes
             _indenter = indenter;
         }
 
-        public override void Fix()
+        public void Fix(IInspectionResult result)
         {
             var vbe = _target.Project.VBE;
 

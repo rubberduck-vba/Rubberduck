@@ -8,14 +8,14 @@ using Rubberduck.VBEditor;
 namespace Rubberduck.Inspections.QuickFixes
 {
     [Undocumented] // todo: use?
-    public class RemoveUnassignedVariableUsageQuickFix : QuickFixBase
+    public class RemoveUnassignedVariableUsageQuickFix : IQuickFix
     {
         public RemoveUnassignedVariableUsageQuickFix(ParserRuleContext context, QualifiedSelection selection)
             : base(context, selection, InspectionsUI.RemoveUnassignedVariableUsageQuickFix)
         {
         }
 
-        public override void Fix()
+        public void Fix(IInspectionResult result)
         {
             var module = Selection.QualifiedName.Component.CodeModule;
             var selection = Selection.Selection;

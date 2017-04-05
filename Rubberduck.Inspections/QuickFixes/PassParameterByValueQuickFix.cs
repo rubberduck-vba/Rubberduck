@@ -11,7 +11,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class PassParameterByValueQuickFix : QuickFixBase
+    public class PassParameterByValueQuickFix : IQuickFix
     {
         private readonly RubberduckParserState _state;
         private readonly Declaration _target;
@@ -23,7 +23,7 @@ namespace Rubberduck.Inspections.QuickFixes
             _target = target;
         }
 
-        public override void Fix()
+        public void Fix(IInspectionResult result)
         {
             if (_target.ParentDeclaration.DeclarationType == DeclarationType.Event ||
                 _state.AllUserDeclarations.FindInterfaceMembers().Contains(_target.ParentDeclaration))

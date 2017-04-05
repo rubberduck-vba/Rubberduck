@@ -7,14 +7,14 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class ReplaceGlobalModifierQuickFix : QuickFixBase
+    public class ReplaceGlobalModifierQuickFix : IQuickFix
     {
         public ReplaceGlobalModifierQuickFix(ParserRuleContext context, QualifiedSelection selection)
             : base(context, selection, InspectionsUI.ObsoleteGlobalInspectionQuickFix)
         {
         }
 
-        public override void Fix()
+        public void Fix(IInspectionResult result)
         {
             var module = Selection.QualifiedName.Component.CodeModule;
             if (module == null)

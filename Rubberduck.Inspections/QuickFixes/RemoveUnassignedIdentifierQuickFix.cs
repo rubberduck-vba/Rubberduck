@@ -7,7 +7,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class RemoveUnassignedIdentifierQuickFix : QuickFixBase
+    public class RemoveUnassignedIdentifierQuickFix : IQuickFix
     {
         private readonly Declaration _target;
         private readonly IModuleRewriter _rewriter;
@@ -19,7 +19,7 @@ namespace Rubberduck.Inspections.QuickFixes
             _rewriter = rewriter;
         }
 
-        public override void Fix()
+        public void Fix(IInspectionResult result)
         {
             _rewriter.Remove(_target);
         }

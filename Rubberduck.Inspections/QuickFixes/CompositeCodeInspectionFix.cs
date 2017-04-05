@@ -20,7 +20,7 @@ namespace Rubberduck.Inspections.QuickFixes
             _children.Add(quickFix);
         }
 
-        public override void Fix()
+        public void Fix(IInspectionResult result)
         {
             _root.Fix();
             _children.ForEach(child => child.Fix());

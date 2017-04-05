@@ -7,7 +7,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public sealed class UseSetKeywordForObjectAssignmentQuickFix : QuickFixBase
+    public sealed class UseSetKeywordForObjectAssignmentQuickFix : IQuickFix
     {
         public UseSetKeywordForObjectAssignmentQuickFix(IdentifierReference reference)
             : base(context: reference.Context.Parent.Parent as ParserRuleContext, // ImplicitCallStmt_InStmtContext 
@@ -19,7 +19,7 @@ namespace Rubberduck.Inspections.QuickFixes
         public override bool CanFixInModule { get { return true; } }
         public override bool CanFixInProject { get { return true; } }
 
-        public override void Fix()
+        public void Fix(IInspectionResult result)
         {
             var module = Selection.QualifiedName.Component.CodeModule;
             {

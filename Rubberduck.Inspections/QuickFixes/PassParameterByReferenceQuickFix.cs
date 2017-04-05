@@ -11,7 +11,7 @@ namespace Rubberduck.Inspections.QuickFixes
     /// <summary>
     /// Encapsulates a code inspection quickfix that changes a ByVal parameter into an explicit ByRef parameter.
     /// </summary>
-    public class PassParameterByReferenceQuickFix : QuickFixBase
+    public class PassParameterByReferenceQuickFix : IQuickFix
     {
         private readonly IModuleRewriter _rewriter;
         private readonly IToken _token;
@@ -23,7 +23,7 @@ namespace Rubberduck.Inspections.QuickFixes
             _token = ((VBAParser.ArgContext)target.Context).BYVAL().Symbol;
         }
 
-        public override void Fix()
+        public void Fix(IInspectionResult result)
         {
             _rewriter.Replace(_token, Tokens.ByRef);
         }

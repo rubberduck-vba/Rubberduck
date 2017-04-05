@@ -10,7 +10,7 @@ namespace Rubberduck.Inspections.QuickFixes
     /// <summary>
     /// A code inspection quickfix that removes an unused identifier declaration.
     /// </summary>
-    public class RemoveUnusedDeclarationQuickFix : QuickFixBase
+    public class RemoveUnusedDeclarationQuickFix : IQuickFix
     {
         private readonly Declaration _target;
         private readonly IModuleRewriter _rewriter;
@@ -22,7 +22,7 @@ namespace Rubberduck.Inspections.QuickFixes
             _rewriter = rewriter;
         }
 
-        public override void Fix()
+        public void Fix(IInspectionResult result)
         {
             _rewriter.Remove(_target);
         }

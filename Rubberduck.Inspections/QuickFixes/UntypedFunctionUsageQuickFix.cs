@@ -8,14 +8,14 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class UntypedFunctionUsageQuickFix : QuickFixBase
+    public class UntypedFunctionUsageQuickFix : IQuickFix
     {
         public UntypedFunctionUsageQuickFix(ParserRuleContext context, QualifiedSelection selection) 
             : base(context, selection, string.Format(InspectionsUI.QuickFixUseTypedFunction_, context.GetText(), GetNewSignature(context)))
         {
         }
 
-        public override void Fix()
+        public void Fix(IInspectionResult result)
         {
             var originalInstruction = Context.GetText();
             var newInstruction = GetNewSignature(Context);

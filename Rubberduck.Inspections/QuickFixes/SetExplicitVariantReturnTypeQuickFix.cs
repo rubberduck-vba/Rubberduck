@@ -6,14 +6,14 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class SetExplicitVariantReturnTypeQuickFix : QuickFixBase
+    public class SetExplicitVariantReturnTypeQuickFix : IQuickFix
     {
         public SetExplicitVariantReturnTypeQuickFix(ParserRuleContext context, QualifiedSelection selection, string description) 
             : base(context, selection, description)
         {
         }
 
-        public override void Fix()
+        public void Fix(IInspectionResult result)
         {
             var procedure = Context.GetText();
             // todo: verify that this isn't a bug / test with a procedure that contains parentheses in the body.

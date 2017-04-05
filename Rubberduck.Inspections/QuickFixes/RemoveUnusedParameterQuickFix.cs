@@ -10,7 +10,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class RemoveUnusedParameterQuickFix : QuickFixBase
+    public class RemoveUnusedParameterQuickFix : IQuickFix
     {
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
@@ -25,7 +25,7 @@ namespace Rubberduck.Inspections.QuickFixes
             _messageBox = messageBox;
         }
 
-        public override void Fix()
+        public void Fix(IInspectionResult result)
         {
             using (var dialog = new RemoveParametersDialog(new RemoveParametersViewModel(_state)))
             {

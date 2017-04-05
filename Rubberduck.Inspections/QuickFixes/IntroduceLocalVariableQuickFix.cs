@@ -5,7 +5,7 @@ using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class IntroduceLocalVariableQuickFix : QuickFixBase
+    public class IntroduceLocalVariableQuickFix : IQuickFix
     {
         private readonly Declaration _undeclared;
 
@@ -18,7 +18,7 @@ namespace Rubberduck.Inspections.QuickFixes
         public override bool CanFixInModule { get { return true; } }
         public override bool CanFixInProject { get { return true; } }
 
-        public override void Fix()
+        public void Fix(IInspectionResult result)
         {
             var instruction = Tokens.Dim + ' ' + _undeclared.IdentifierName + ' ' + Tokens.As + ' ' + Tokens.Variant;
             Selection.QualifiedName.Component.CodeModule.InsertLines(Selection.Selection.StartLine, instruction);

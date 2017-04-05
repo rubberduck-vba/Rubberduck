@@ -7,7 +7,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class IgnoreOnceQuickFix : QuickFixBase
+    public class IgnoreOnceQuickFix : IQuickFix
     {
         private readonly string _annotationText;
 
@@ -21,7 +21,7 @@ namespace Rubberduck.Inspections.QuickFixes
         public override bool CanFixInModule { get { return false; } } // not quite "once" if applied to entire module
         public override bool CanFixInProject { get { return false; } } // use "disable this inspection" instead of ignoring across the project
 
-        public override void Fix()
+        public void Fix(IInspectionResult result)
         {
             var module = Selection.QualifiedName.Component.CodeModule;
             {

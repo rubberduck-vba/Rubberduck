@@ -5,13 +5,13 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class RemoveCommentQuickFix : QuickFixBase
+    public class RemoveCommentQuickFix : IQuickFix
     {
         public RemoveCommentQuickFix(ParserRuleContext context, QualifiedSelection selection)
             : base(context, selection, InspectionsUI.RemoveObsoleteStatementQuickFix)
         { }
 
-        public override void Fix()
+        public void Fix(IInspectionResult result)
         {
             var module = Selection.QualifiedName.Component.CodeModule;
 

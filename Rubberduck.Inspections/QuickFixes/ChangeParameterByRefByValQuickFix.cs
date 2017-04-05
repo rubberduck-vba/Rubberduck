@@ -1,55 +1,52 @@
 using System;
-using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
+using System.Collections.Generic;
+using System.Linq;
+using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.VBEditor;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class ChangeParameterByRefByValQuickFix : QuickFixBase
+    public class ChangeParameterByRefByValQuickFix : IQuickFix
     {
-        private readonly string _newToken;
+        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type> { typeof(ImplicitByRefParameterInspection) };
+        public static IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
 
-        public ChangeParameterByRefByValQuickFix(ParserRuleContext context, QualifiedSelection selection, string description, string newToken) 
-            : base(context, selection, description)
+        public static void AddSupportedInspectionType(Type inspectionType)
         {
-            _newToken = newToken;
-        }
-
-        public override void Fix()
-        {
-            try
+            if (!inspectionType.GetInterfaces().Contains(typeof(IInspection)))
             {
-                dynamic context = Context;
-                var parameter = Context.GetText();
-                dynamic args = Context.parent;
-                var argList = args.GetText();
-                var module = Selection.QualifiedName.Component.CodeModule;
-                {
-                    string result;
-                    if (context.OPTIONAL() != null)
-                    {
-                        result = parameter.Replace(Tokens.Optional, Tokens.Optional + ' ' + _newToken);
-                    }
-                    else
-                    {
-                        result = _newToken + ' ' + parameter;
-                    }
-
-                    dynamic proc = args.parent;
-                    var startLine = proc.GetType().GetProperty("Start").GetValue(proc).Line;
-                    var stopLine = proc.GetType().GetProperty("Stop").GetValue(proc).Line;
-                    var code = module.GetLines(startLine, stopLine - startLine + 1);
-                    result = code.Replace(argList, argList.Replace(parameter, result));
-
-                    foreach (var line in result.Split(new[] {"\r\n"}, StringSplitOptions.None))
-                    {
-                        module.ReplaceLine(startLine++, line);
-                    }
-                }
+                throw new ArgumentException("Type must implement IInspection", nameof(inspectionType));
             }
-            // ReSharper disable once EmptyGeneralCatchClause
-            catch { }
+
+            _supportedInspections.Add(inspectionType);
         }
+
+        private readonly RubberduckParserState _state;
+
+        public ChangeParameterByRefByValQuickFix(RubberduckParserState state)
+        {
+            _state = state;
+        }
+
+        public void Fix(IInspectionResult result)
+        {
+            var rewriter = _state.GetRewriter(result.Target);
+
+            var parameterContext = (VBAParser.ArgContext) result.Target.Context;
+            rewriter.InsertBefore(parameterContext.unrestrictedIdentifier().Start.TokenIndex,
+                parameterContext.OPTIONAL() != null ? " ByRef " : "ByRef ");
+        }
+
+        public string Description(IInspectionResult result)
+        {
+            return InspectionsUI.ImplicitByRefParameterQuickFix;
+        }
+
+        public bool CanFixInProcedure { get; } = true;
+        public bool CanFixInModule { get; } = true;
+        public bool CanFixInProject { get; } = true;
     }
 }

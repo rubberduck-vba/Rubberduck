@@ -8,7 +8,7 @@ using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class WriteOnlyPropertyQuickFix : QuickFixBase 
+    public class WriteOnlyPropertyQuickFix : IQuickFix 
     {
         private readonly Declaration _target;
 
@@ -18,7 +18,7 @@ namespace Rubberduck.Inspections.QuickFixes
             _target = target;
         }
 
-        public override void Fix()
+        public void Fix(IInspectionResult result)
         {
             var parameters = ((IParameterizedDeclaration) _target).Parameters.Cast<ParameterDeclaration>().ToList();
 
