@@ -741,6 +741,8 @@ End Sub";
 
             var rewriter2 = state.GetRewriter(module2.Parent);
             Assert.AreEqual(expectedCode2, rewriter2.GetText());
+
+            msgbox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()), Times.Never);
         }
 
         [TestMethod]
@@ -900,74 +902,23 @@ End Sub"
             const string inputCode1 =
 @"Public Sub DoSomething()
 End Sub";
-/*            const string inputCode2 =
-@"Implements IClass1
-
-Private Sub IClass1_DoSomething()
-End Sub";
-            const string inputCode3 =
-@"Private Sub RefTheInterface()
-    Dim c1 As Class1
-    Set c1 = new IClass1
-    c1.DoSomething
-End Sub
-
-Private Sub RefTheInterface2()
-    Dim c1 As Class1
-    Dim c2 As IClass1
-    Set c1 = new Class1
-    Set c2 = c1
-    c1.DoSomething
-End Sub"
-;*/
 
             const string expectedCode1 =
 @"Public Sub DoNothing()
 End Sub";
-/*            const string expectedCode2 =
-@"Implements IClass1
-
-Private Sub IClass1_DoNothing()
-End Sub";
-
-            const string expectedCode3 =
-@"Private Sub RefTheInterface()
-    Dim c1 As Class1
-    Set c1 = new IClass1
-    c1.DoNothing
-End Sub
-
-Private Sub RefTheInterface2()
-    Dim c1 As Class1
-    Dim c2 As IClass1
-    Set c1 = new Class1
-    Set c2 = c1
-    c1.DoNothing
-End Sub"
-;*/
             var tdo = new RenameTestsDataObject();
             tdo.SelectionTarget = "DoSomething";
             tdo.SelectionLineIdentifier = "Sub DoSomething(";
             tdo.SelectionModuleName = "IClass1";
             tdo.NewName = "DoNothing";
 
-            //var secondClassName = "IClass1";
-            //var thirdClassName = "Class3";
             AddTestComponent(tdo, tdo.SelectionModuleName, inputCode1, ComponentType.ClassModule);
-            //AddTestComponent(tdo, secondClassName, inputCode1, ComponentType.ClassModule);
-            //AddTestComponent(tdo, thirdClassName, inputCode3, ComponentType.ClassModule);
 
             SetupAndRunRenameRefactorTest(tdo, RefactorParams.Declaration);
 
             var rewriter1 = tdo.ParserState.GetRewriter(RetrieveComponent(tdo, tdo.SelectionModuleName).CodeModule.Parent);
             Assert.AreEqual(expectedCode1, rewriter1.GetText());
-/*
-            var rewriter2 = tdo.ParserState.GetRewriter(RetrieveComponent(tdo, secondClassName).CodeModule.Parent);
-            Assert.AreEqual(expectedCode1, rewriter2.GetText());
 
-            var rewriter3 = tdo.ParserState.GetRewriter(RetrieveComponent(tdo, thirdClassName).CodeModule.Parent);
-            Assert.AreEqual(expectedCode3, rewriter3.GetText());
-*/
             tdo.MsgBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()), Times.Never);
         }
 
@@ -1645,8 +1596,6 @@ End Sub
 
             SetupAndRunRenameRefactorTest(tdo, RefactorParams.QualifiedSelection);
             
-            //tdo.MsgBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()), Times.Once);
-
             var rewriter1 = tdo.ParserState.GetRewriter(RetrieveComponent(tdo, tdo.SelectionModuleName).CodeModule.Parent);
             Assert.AreEqual(expectedCode1, rewriter1.GetText());
         }

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
@@ -50,63 +49,6 @@ namespace Rubberduck.Refactorings.Rename
             target = _declarations
                 .Where(item => item.IsUserDefined && item.DeclarationType != DeclarationType.ModuleOption)
                 .FirstOrDefault(item => item.IsSelected(selection) || item.References.Any(r => r.IsSelected(selection)));
-        }
-
-        public Declaration ResolveImplementationToInterfaceDeclaration(Declaration target)
-        {
-            if (null == target) { return target; }
-            var interfaceImplementation = _declarations.FindInterfaceImplementationMembers()
-                    .SingleOrDefault(m => m.Equals(target));
-            if (null == interfaceImplementation )
-            {
-                return target;
-            }
-
-            return _declarations.FindInterfaceMember(interfaceImplementation);
-        }
-
-        public Declaration ResolveHandlerToDeclaration(Declaration handlerCandidate, DeclarationType goalType)
-        {
-            if (null == handlerCandidate) { return handlerCandidate; }
-
-            if (handlerCandidate.DeclarationType != DeclarationType.Procedure
-                || !(handlerCandidate.IdentifierName.Contains("_")))
-            {
-                return handlerCandidate;
-            }
-
-            var declarationsOfInterest = _declarations.Where(d => d.DeclarationType.HasFlag(goalType)
-                    && handlerCandidate.IdentifierName.Contains(d.IdentifierName));
-
-            if (goalType.HasFlag(DeclarationType.Control))
-            {
-                foreach (var controlOfInterest in declarationsOfInterest)
-                {
-                    var eventHandler = _declarations.FindEventHandlers(controlOfInterest)
-                            .SingleOrDefault(m => m.Equals(handlerCandidate));
-                    if (null != eventHandler)
-                    {
-                        return controlOfInterest;
-                    }
-                }
-                return handlerCandidate;
-            }
-
-            if (goalType.HasFlag(DeclarationType.Event))
-            {
-                foreach( var eventOfInterest in declarationsOfInterest)
-                {
-                    var eventHandler = _declarations.FindHandlersForEvent(eventOfInterest)
-                            .SingleOrDefault(m => m.Item2.Equals(handlerCandidate));
-                    if (null != eventHandler)
-                    {
-                        return eventOfInterest;
-                    }
-                }
-                return handlerCandidate;
-            }
-
-            return handlerCandidate;
         }
     }
 }

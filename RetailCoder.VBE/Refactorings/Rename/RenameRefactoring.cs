@@ -42,7 +42,9 @@ namespace Rubberduck.Refactorings.Rename
 
             _model.Target = PreprocessSelectedTarget(_model.Target);
 
-            if(_renameOperationIsCancelled) { return; }
+            ValidateConditionsForRename();
+
+            if (_renameOperationIsCancelled) { return; }
 
             _model = presenter.Show(_model.Target);
 
@@ -93,13 +95,16 @@ namespace Rubberduck.Refactorings.Rename
 
             if (!target.IsUserDefined)
             {
+                if (null == _messageBox) { return; }
                 var message = string.Format(RubberduckUI.RefactorRename_TargetNotUserDefinedError, target.QualifiedName);
                 _messageBox.Show(message, RubberduckUI.RenameDialog_Caption, MessageBoxButtons.OK,
                     MessageBoxIcon.Exclamation);
                 return;
             }
 
-            _model.Target = PreprocessSelectedTarget(_model.Target);
+            _model.Target = PreprocessSelectedTarget(target);
+
+            ValidateConditionsForRename();
 
             if (_renameOperationIsCancelled) { return; }
 
@@ -125,7 +130,12 @@ namespace Rubberduck.Refactorings.Rename
         private void SetModelMember(IRenamePresenter presenter, out bool hasNullReferences)
         {
             hasNullReferences = false;
-            presenter = _factory.Create();
+            if(null == presenter)
+            {
+                hasNullReferences = true;
+                return;
+            }
+
             _model = presenter.Model;
 
             if (null == _model)
@@ -137,57 +147,91 @@ namespace Rubberduck.Refactorings.Rename
             if (null == _model.Target)
             {
                 hasNullReferences = true;
-                if (null == _messageBox)
+                if (null != _messageBox)
                 {
-                    return;
+                    _messageBox.Show(RubberduckUI.RefactorRename_TargetNotDefinedError, RubberduckUI.RenameDialog_Caption, MessageBoxButtons.OK,
+                        MessageBoxIcon.Exclamation);
                 }
-                _messageBox.Show(RubberduckUI.RefactorRename_TargetNotDefinedError, RubberduckUI.RenameDialog_Caption, MessageBoxButtons.OK,
-                    MessageBoxIcon.Exclamation);
+                return;
             }
         }
 
         //For Controls, Events, and Interfaces - make sure what the user is presented with
         //the declaration rather than a handler or implementation so that there is no confusion about what is 
-        //being changed (e.g., If the user selects a control event handler like bnt1_Click, 
-        //he is presented with 'bnt1' to rename.  Otherwise, if presented the handler, it is possible to 
-        //make a change from 'bnt1_Click' to 'bnt1_ClickAgain' which would 
-        //result in 'bnt1_ClickAgain_Click') 
+        //being changed.
+        //(e.g., If the user selects a control event handler like 'bnt1_Click', 
+        //he is presented with 'bnt1' to rename.  
         private Declaration PreprocessSelectedTarget(Declaration selectedTarget)
         {
-            Declaration renameTarget = selectedTarget;
+            if( null == selectedTarget) { return null; }
 
-            if (_model.Target.DeclarationType.HasFlag(DeclarationType.Procedure))
+            if (!selectedTarget.DeclarationType.HasFlag(DeclarationType.Procedure))
             {
-                renameTarget = _model.ResolveHandlerToDeclaration(renameTarget, DeclarationType.Control);
-                if( renameTarget.DeclarationType.HasFlag(DeclarationType.Control))
-                {
-                    return renameTarget;
-                }
-                Debug.Assert(renameTarget.DeclarationType.HasFlag(DeclarationType.Procedure), "Control Resolver Error: modified target type to " + renameTarget.DeclarationType.ToString());
-
-                renameTarget = _model.ResolveHandlerToDeclaration(renameTarget, DeclarationType.Event);
-                if (renameTarget.DeclarationType.HasFlag(DeclarationType.Event))
-                {
-                    return renameTarget;
-                }
-                Debug.Assert(renameTarget.DeclarationType.HasFlag(DeclarationType.Procedure), "Event Resolver Error: modified target type to " + renameTarget.DeclarationType.ToString());
-
-                renameTarget = _model.ResolveImplementationToInterfaceDeclaration(renameTarget);
-
-                if (selectedTarget != renameTarget)
-                {
-                    var message = string.Format(RubberduckUI.RenamePresenter_TargetIsInterfaceMemberImplementation, selectedTarget.IdentifierName, renameTarget.ComponentName, renameTarget.IdentifierName);
-
-                    var confirm = _messageBox.Show(message, RubberduckUI.RenameDialog_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
-                    if (confirm == DialogResult.No)
-                    {
-                        _renameOperationIsCancelled = true;
-                    }
-                }
-                Debug.Assert(renameTarget.DeclarationType.HasFlag(DeclarationType.Procedure), "Interface Resolver Error: modified target type to " + renameTarget.DeclarationType.ToString());
+                return selectedTarget;
             }
 
-            return renameTarget;
+            Declaration control = null;
+            if(IsControlEventHandler(selectedTarget, out control))
+            {
+                return control;
+            }
+            Debug.Assert(selectedTarget.DeclarationType.HasFlag(DeclarationType.Procedure), "Control Resolver Error: modified target type to " + selectedTarget.DeclarationType.ToString());
+
+            Declaration eventDeclaration;
+            if (IsUserEventRelated(selectedTarget, out eventDeclaration))
+            {
+                return eventDeclaration;
+            }
+            Debug.Assert(selectedTarget.DeclarationType.HasFlag(DeclarationType.Procedure), "Event Resolver Error: modified target type to " + selectedTarget.DeclarationType.ToString());
+
+            Declaration interfaceDefinition;
+            if(IsInterfaceImplementation(selectedTarget, out interfaceDefinition))
+            {
+                if (selectedTarget != interfaceDefinition)
+                {
+                    var message = string.Format(RubberduckUI.RenamePresenter_TargetIsInterfaceMemberImplementation, selectedTarget.IdentifierName, selectedTarget.ComponentName, selectedTarget.IdentifierName);
+
+                    var confirm = _messageBox.Show(message, RubberduckUI.RenameDialog_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+                    _renameOperationIsCancelled = (confirm == DialogResult.No);
+                }
+                return interfaceDefinition;
+            }
+            Debug.Assert(selectedTarget.DeclarationType.HasFlag(DeclarationType.Procedure), "Interface Resolver Error: modified target type to " + selectedTarget.DeclarationType.ToString());
+
+            return selectedTarget;
+        }
+
+        private void ValidateConditionsForRename()
+        {
+            //more checks once the RenameModel's target is resolved
+            if (_model.Target.DeclarationType.HasFlag(DeclarationType.Control))
+            {
+                var module = _model.Target.QualifiedName.QualifiedModuleName.Component.CodeModule;
+                var component = module.Parent;
+                var control = component.Controls.SingleOrDefault(item => item.Name == _model.Target.IdentifierName);
+
+                if (control == null)
+                {
+                    _renameOperationIsCancelled = true;
+                    var message = string.Format(RubberduckUI.RenameDialog_ControlRenameError, _model.Target.IdentifierName);
+                    _messageBox.Show(message, RubberduckUI.RenameDialog_Caption, MessageBoxButtons.OK,
+                        MessageBoxIcon.Exclamation);
+                }
+            }
+
+            if (_model.Target.DeclarationType.HasFlag(DeclarationType.Module))
+            {
+                var component = _model.Target.QualifiedName.QualifiedModuleName.Component;
+                var module = component.CodeModule;
+                if (module.IsWrappingNullReference)
+                {
+                    _renameOperationIsCancelled = true;
+                    var message = RubberduckUI.RenameDialog_ModuleRenameError;
+                    _messageBox.Show(message, RubberduckUI.RenameDialog_Caption, MessageBoxButtons.OK,
+                        MessageBoxIcon.Exclamation);
+                }
+            }
+
         }
 
         private bool UserCancelsDueToNameConflict()
@@ -197,76 +241,135 @@ namespace Rubberduck.Refactorings.Rename
 
             if (declarations.Any())
             {
-                var rename = ConfirmProceedWithNameConflict(declarations.FirstOrDefault());
+                var message = string.Format(RubberduckUI.RenameDialog_ConflictingNames, _model.NewName,
+                    declarations.FirstOrDefault().IdentifierName);
 
-                if (rename == DialogResult.No)
-                {
-                    _renameOperationIsCancelled = true;
-                }
+                var rename = _messageBox.Show(message, RubberduckUI.RenameDialog_Caption, MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Exclamation);
+
+                _renameOperationIsCancelled = (rename == DialogResult.No);
             }
             return _renameOperationIsCancelled;
         }
 
-        private DialogResult ConfirmProceedWithNameConflict(Declaration declaration)
+        private bool IsControlEventHandler(Declaration userTarget, out Declaration control)
         {
-            var message = string.Format(RubberduckUI.RenameDialog_ConflictingNames, _model.NewName,
-                declaration);
-            return _messageBox.Show(message, RubberduckUI.RenameDialog_Caption, MessageBoxButtons.YesNo,
-                MessageBoxIcon.Exclamation);
+            control = null;
+            var declarationsOfInterest = _model.State.AllUserDeclarations.Where(d => d.DeclarationType.HasFlag(DeclarationType.Control)
+                    && userTarget.IdentifierName.StartsWith(d.IdentifierName));
+
+            if(declarationsOfInterest.Any())
+            {
+                control = declarationsOfInterest.FirstOrDefault();
+                return true;
+            }
+            return false;
+        }
+
+        private bool IsUserEventRelated(Declaration userTarget, out Declaration eventDeclaration)
+        {
+            var declarationsOfInterest = _model.State.AllUserDeclarations.Where(d => d.DeclarationType.HasFlag(DeclarationType.Event)
+                    && userTarget.IdentifierName.Contains(d.IdentifierName));
+
+            eventDeclaration = null;
+            if (declarationsOfInterest.Any())
+            {
+                eventDeclaration = declarationsOfInterest.FirstOrDefault();
+                return true;
+            }
+            return false;
+        }
+
+        private bool IsInterfaceImplementation(Declaration userTarget, out Declaration interfaceDefinition)
+        {
+            interfaceDefinition = null;
+
+            var interfaceImplementation = _model.State.DeclarationFinder.FindAllInterfaceImplementingMembers()
+                .SingleOrDefault(m => m.Equals(userTarget));
+
+            if(null == interfaceImplementation)
+            {
+                interfaceDefinition = userTarget;
+                return true;
+            }
+
+            var matches = _model.State.DeclarationFinder.FindAllInterfaceMembers()
+                        .Where(m => m.IsUserDefined && interfaceImplementation.IdentifierName == m.ComponentName + '_' + m.IdentifierName).ToList();
+
+            var interfaceMember =  matches.Count > 1
+                ? matches.SingleOrDefault(m => m.ProjectId == interfaceImplementation.ProjectId)
+                : matches.FirstOrDefault();
+
+            if (null != interfaceMember)
+            {
+                interfaceDefinition = interfaceMember;
+                return true;
+            }
+            return false;
         }
 
         private void Rename()
         {
-            var handler = GetHandler(_model, _messageBox);
+            var handler = GetHandler(_model);
             try
             {
-                handler.Rename();
+                handler.Rename(_model.Target, _model.NewName);
+                if (handler.RequestParseAfterRename)
+                {
+                    _model.State.OnParseRequested(this);
+                }
             }
             catch (RuntimeBinderException)
             {
-                _messageBox.Show(handler.ErrorMessage, RubberduckUI.RenameDialog_Caption);
+                if(null != _messageBox)
+                {
+                    _messageBox.Show(handler.ErrorMessage, RubberduckUI.RenameDialog_Caption);
+                }
             }
             catch (COMException)
             {
-                _messageBox.Show(handler.ErrorMessage, RubberduckUI.RenameDialog_Caption);
+                if (null != _messageBox)
+                {
+                    _messageBox.Show(handler.ErrorMessage, RubberduckUI.RenameDialog_Caption);
+                }
             }
         }
 
-        private static IRenameRefactoringHandler GetHandler(RenameModel model, IMessageBox messageBox)
+        private IRename GetHandler(RenameModel model)
         {
-            IRenameRefactoringHandler handler = null;
+            IRename handler = null;
             if (model.Target.DeclarationType.HasFlag(DeclarationType.Property))
             {
-                handler = new RenamePropertyHandler(model, messageBox);
+                handler = new RenameRefactorProperty(model.State);
             }
             else if (model.Target.DeclarationType.HasFlag(DeclarationType.Parameter)
                         && model.Target.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Property))
             {
-                handler = new RenamePropertyParameterHandler(model, messageBox);
+                handler = new RenameRefactorPropertyParameter(model.State);
             }
             else if (model.Target.DeclarationType.HasFlag(DeclarationType.Module))
             {
-                handler = new RenameModuleHandler(model, messageBox);
+                handler = new RenameRefactorModule(model.State);
             }
             else if (model.Target.DeclarationType.HasFlag(DeclarationType.Project))
             {
-                handler = new RenameProjectHandler(model, messageBox);
+                handler = new RenameRefactorProject(model);
             }
             else if (model.Declarations.FindInterfaceMembers().Contains(model.Target))
             {
-                handler = new RenameInterfaceHandler(model, messageBox);
+                handler = new RenameRefactorInterface(model.State);
             }
             else if (model.Target.DeclarationType.HasFlag(DeclarationType.Event)) 
             {
-                handler = new RenameEventHandler(model, messageBox);
+                handler = new RenameRefactorEvent(model.State);
             }
             else if (model.Target.DeclarationType.HasFlag(DeclarationType.Control) )
             {
-                handler = new RenameControlHandler(model, messageBox);
+                handler = new RenameRefactorControl(model.State);
             }
             else
             {
-                handler = new RenameDefaultHandler(model, messageBox);
+                handler = new RenameRefactorDefault(model.State);
             }
             return handler;
         }
