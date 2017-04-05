@@ -30,7 +30,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             _folderHelper = folderHelper;
             _state = state;
-            _state.StateChanged += ParserState_StateChanged;
+            _state.StateChanged += HandleStateChanged;
             _state.ModuleStateChanged += ParserState_ModuleStateChanged;
 
             var reparseCommand = commands.OfType<ReparseCommand>().SingleOrDefault();
@@ -241,14 +241,14 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        private void ParserState_StateChanged(object sender, ParserStateEventArgs e)
+        private void HandleStateChanged(object sender, ParserStateEventArgs e)
         {
             if (Projects == null)
             {
                 Projects = new ObservableCollection<CodeExplorerItemViewModel>();
             }
 
-            IsBusy = _state.Status < ParserState.ResolvedDeclarations;
+            IsBusy = _state.Status != ParserState.Pending && _state.Status < ParserState.ResolvedDeclarations;
             if (e.State != ParserState.ResolvedDeclarations)
             {
                 return;
@@ -486,7 +486,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             if (_state != null)
             {
-                _state.StateChanged -= ParserState_StateChanged;
+                _state.StateChanged -= HandleStateChanged;
                 _state.ModuleStateChanged -= ParserState_ModuleStateChanged;
             }
         }
