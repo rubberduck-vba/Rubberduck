@@ -1,33 +1,56 @@
-﻿using System.Linq;
-using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
-using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class AddIdentifierToWhiteListQuickFix : QuickFixBase
+    public sealed class AddIdentifierToWhiteListQuickFix : IQuickFix
     {
         private readonly IPersistanceService<CodeInspectionSettings> _settings;
-        private readonly Declaration _target;
+        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
+        {
+            typeof(HungarianNotationInspection),
+            typeof(UseMeaningfulNameInspection)
+        };
 
-        public AddIdentifierToWhiteListQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration target, IPersistanceService<CodeInspectionSettings> settings)
-            : base(context, selection, InspectionsUI.WhiteListIdentifierQuickFix)
+        public AddIdentifierToWhiteListQuickFix(IPersistanceService<CodeInspectionSettings> settings)
         {
             _settings = settings;
-            _target = target;
         }
 
-        public override void Fix()
+        public static IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
+
+        public static void AddSupportedInspectionType(Type inspectionType)
+        {
+            if (!inspectionType.GetInterfaces().Contains(typeof(IInspection)))
+            {
+                throw new ArgumentException("Type must implement IInspection", nameof(inspectionType));
+            }
+
+            _supportedInspections.Add(inspectionType);
+        }
+
+        public void Fix(IInspectionResult result)
         {
             var inspectionSettings = _settings.Load(new CodeInspectionSettings()) ?? new CodeInspectionSettings();
             var whitelist = inspectionSettings.WhitelistedIdentifiers;
             inspectionSettings.WhitelistedIdentifiers =
-                whitelist.Concat(new[] { new WhitelistedIdentifierSetting(_target.IdentifierName) }).ToArray();
+                whitelist.Concat(new[] { new WhitelistedIdentifierSetting(result.Target.IdentifierName) }).ToArray();
             _settings.Save(inspectionSettings);
         }
+
+        public string Description(IInspectionResult result)
+        {
+            return InspectionsUI.WhiteListIdentifierQuickFix;
+        }
+
+        public bool CanFixInProcedure { get; } = false;
+        public bool CanFixInModule { get; } = false;
+        public bool CanFixInProject { get; } = false;
     }
 }

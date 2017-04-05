@@ -1,38 +1,61 @@
-﻿using Rubberduck.Inspections.Abstract;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class ApplicationWorksheetFunctionQuickFix : QuickFixBase
+    public class ApplicationWorksheetFunctionQuickFix : IQuickFix
     {
         private readonly string _memberName;
+        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type> {typeof(ApplicationWorksheetFunctionInspection) };
 
-        public ApplicationWorksheetFunctionQuickFix(QualifiedSelection selection, string memberName)
-            : base(null, selection, InspectionsUI.ApplicationWorksheetFunctionQuickFix)
+        public ApplicationWorksheetFunctionQuickFix(string memberName)
         {
             _memberName = memberName;
         }
 
-        public override bool CanFixInModule { get { return true; } }
-        public override bool CanFixInProject { get { return true; } }
+        public static IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
 
-        public override void Fix()
+        public static void AddSupportedInspectionType(Type inspectionType)
         {
-            var module = Selection.QualifiedName.Component.CodeModule;
+            if (!inspectionType.GetInterfaces().Contains(typeof(IInspection)))
+            {
+                throw new ArgumentException("Type must implement IInspection", nameof(inspectionType));
+            }
+
+            _supportedInspections.Add(inspectionType);
+        }
+
+        public void Fix(IInspectionResult result)
+        {
+            var module = result.QualifiedSelection.QualifiedName.Component.CodeModule;
             
-            var oldContent = module.GetLines(Selection.Selection);
-            var newCall = string.Format("WorksheetFunction.{0}", _memberName);
-            var start = Selection.Selection.StartColumn - 1;
+            var oldContent = module.GetLines(result.QualifiedSelection.Selection);
+            var newCall = $"WorksheetFunction.{_memberName}";
+
+            var start = result.QualifiedSelection.Selection.StartColumn - 1;
             //The member being called will always be a single token, so this will always be safe (it will be a single line).
-            var end = Selection.Selection.EndColumn - 1;
+            var end = result.QualifiedSelection.Selection.EndColumn - 1;
+
             var newContent = oldContent.Substring(0, start) + newCall + 
                 (oldContent.Length > end
                 ? oldContent.Substring(end, oldContent.Length - end)
                 : string.Empty);
 
-            module.DeleteLines(Selection.Selection);
-            module.InsertLines(Selection.Selection.StartLine, newContent);
+            module.DeleteLines(result.QualifiedSelection.Selection);
+            module.InsertLines(result.QualifiedSelection.Selection.StartLine, newContent);
         }
+
+        public string Description(IInspectionResult result)
+        {
+            return InspectionsUI.ApplicationWorksheetFunctionQuickFix;
+        }
+
+        public bool CanFixInProcedure { get; } = true;
+        public bool CanFixInModule { get; } = true;
+        public bool CanFixInProject { get; } = true;
     }
 }
