@@ -60,31 +60,28 @@ namespace Rubberduck.UI.SourceControl
             _providerFactory = providerFactory;
             _folderBrowserFactory = folderBrowserFactory;
 
-            _state.StateChanged += _state_StateChanged;
-
             _configService = configService;
             _config = _configService.Create();
             _messageBox = messageBox;
             _environment = environment;
 
-            _initRepoCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => InitRepo(), _ => _vbe.VBProjects.Count != 0);
-            _openRepoCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => OpenRepo(), _ => _vbe.VBProjects.Count != 0);
-            _cloneRepoCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ShowCloneRepoGrid(), _ => _vbe.VBProjects.Count != 0);
-            _publishRepoCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ShowPublishRepoGrid(), _ => _vbe.VBProjects.Count != 0 && Provider != null);
-            _refreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => Refresh());
-            _dismissErrorMessageCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => DismissErrorMessage());
-            _showFilePickerCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ShowFilePicker());
-            _loginGridOkCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => CloseLoginGrid(), text => !string.IsNullOrEmpty((string)text));
-            _loginGridCancelCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => CloseLoginGrid());
+            InitRepoCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => InitRepo(), _ => _vbe.VBProjects.Count != 0);
+            OpenRepoCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => OpenRepo(), _ => _vbe.VBProjects.Count != 0);
+            CloneRepoCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ShowCloneRepoGrid(), _ => _vbe.VBProjects.Count != 0);
+            PublishRepoCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ShowPublishRepoGrid(), _ => _vbe.VBProjects.Count != 0 && Provider != null);
+            RefreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => Refresh());
+            DismissErrorMessageCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => DismissErrorMessage());
+            ShowFilePickerCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ShowFilePicker());
+            LoginGridOkCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => CloseLoginGrid(), text => !string.IsNullOrEmpty((string)text));
+            LoginGridCancelCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => CloseLoginGrid());
 
-            _cloneRepoOkButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => CloneRepo(), _ => !IsNotValidCloneRemotePath);
-            _cloneRepoCancelButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => CloseCloneRepoGrid());
+            CloneRepoOkButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => CloneRepo(), _ => !IsNotValidCloneRemotePath);
+            CloneRepoCancelButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => CloseCloneRepoGrid());
 
-            _publishRepoOkButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => PublishRepo(), _ => !IsNotValidPublishRemotePath);
-            _publishRepoCancelButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ClosePublishRepoGrid());
+            PublishRepoOkButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => PublishRepo(), _ => !IsNotValidPublishRemotePath);
+            PublishRepoCancelButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ClosePublishRepoGrid());
 
-            _openCommandPromptCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => OpenCommandPrompt());
-
+            OpenCommandPromptCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => OpenCommandPrompt());
             
             AddComponentEventHandlers();
 
@@ -100,7 +97,7 @@ namespace Rubberduck.UI.SourceControl
 
         public void SetTab(SourceControlTab tab)
         {
-            Logger.Trace("Setting active tab to {0}", tab);
+            Logger.Trace($"Setting active tab to {tab}");
             SelectedItem = TabItems.First(t => t.ViewModel.Tab == tab);
         }
 
@@ -226,7 +223,7 @@ namespace Rubberduck.UI.SourceControl
                 { NotificationType.Error, GetImageSource((Bitmap) resx.ResourceManager.GetObject("cross_circle", CultureInfo.InvariantCulture))}
             };
 
-        private void _state_StateChanged(object sender, ParserStateEventArgs e)
+        private void HandleStateChanged(object sender, ParserStateEventArgs e)
         {
             if (e.State == ParserState.Pending)
             {
@@ -234,13 +231,25 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
+        private bool _registered;
         private ISourceControlProvider _provider;
         public ISourceControlProvider Provider
         {
-            get { return _provider; }
+            get { return _provider; } // smell: getter can be private
             set
             {
-                Logger.Trace("Provider changed");
+                Logger.Trace($"{nameof(Provider)} is being assigned.");
+
+                if (!_registered)
+                {
+                    Logger.Trace($"Registering {nameof(RubberduckParserState.StateChanged)} parser event.");
+                    _state.StateChanged += HandleStateChanged;
+                    _registered = true;
+                }
+                else
+                {
+                    UnregisterFileSystemWatcherEvents();
+                }
 
                 _provider = value;
                 OnPropertyChanged("RepoDoesNotHaveRemoteLocation");
@@ -252,101 +261,89 @@ namespace Rubberduck.UI.SourceControl
                     _fileSystemWatcher.EnableRaisingEvents = true;
                     _fileSystemWatcher.IncludeSubdirectories = true;
 
-                    _fileSystemWatcher.Created += _fileSystemWatcher_Created;
-                    _fileSystemWatcher.Deleted += _fileSystemWatcher_Deleted;
-                    _fileSystemWatcher.Renamed += _fileSystemWatcher_Renamed;
-                    _fileSystemWatcher.Changed += _fileSystemWatcher_Changed;
+                    RegisterFileSystemWatcherEvents();
                 }
             }
         }
 
-        private void _fileSystemWatcher_Changed(object sender, FileSystemEventArgs e)
+        private void RegisterFileSystemWatcherEvents()
         {
-            // the file system filter doesn't support multiple filters
-            if (!VbFileExtensions.Contains(Path.GetExtension(e.Name)))
-            {
-                return;
-            }
-
-            if (!Provider.NotifyExternalFileChanges)
-            {
-                return;
-            }
-            
-            Logger.Trace("File system watcher detected file changed");
-            if (_messageBox.Show(RubberduckUI.SourceControl_ExternalModifications, RubberduckUI.SourceControlPanel_Caption,
-                MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1) == DialogResult.OK)
-            {
-                Provider.ReloadComponent(e.Name);
-                UiDispatcher.InvokeAsync(Refresh);
-            }
+            _fileSystemWatcher.Created += FileSystemCreated;
+            _fileSystemWatcher.Deleted += FileSystemDeleted;
+            _fileSystemWatcher.Renamed += FileSystemRenamed;
+            _fileSystemWatcher.Changed += FileSystemChanged;
         }
 
-        private void _fileSystemWatcher_Renamed(object sender, RenamedEventArgs e)
+        private void UnregisterFileSystemWatcherEvents()
         {
-            // the file system filter doesn't support multiple filters
-            if (!VbFileExtensions.Contains(Path.GetExtension(e.Name)))
-            {
-                return;
-            }
-
-            if (!Provider.NotifyExternalFileChanges)
-            {
-                return;
-            }
-
-            Logger.Trace("File system watcher detected file renamed");
-            if (_messageBox.Show(RubberduckUI.SourceControl_ExternalModifications, RubberduckUI.SourceControlPanel_Caption,
-                MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1) == DialogResult.OK)
-            {
-                Provider.RemoveFile(e.OldFullPath, true);
-                Provider.AddFile(e.FullPath);
-                UiDispatcher.InvokeAsync(Refresh);
-            }
+            _fileSystemWatcher.Created -= FileSystemCreated;
+            _fileSystemWatcher.Deleted -= FileSystemDeleted;
+            _fileSystemWatcher.Renamed -= FileSystemRenamed;
+            _fileSystemWatcher.Changed -= FileSystemChanged;
         }
 
-        private void _fileSystemWatcher_Deleted(object sender, FileSystemEventArgs e)
+        private void FileSystemChanged(object sender, FileSystemEventArgs e)
         {
-            // the file system filter doesn't support multiple filters
-            if (!VbFileExtensions.Contains(e.Name.Split('.').Last()))
+            if (!HandleExternalModifications(e.Name))
             {
+                Logger.Trace("Ignoring FileSystemWatcher activity notification.");
                 return;
             }
 
-            if (!Provider.NotifyExternalFileChanges)
-            {
-                return;
-            }
-
-            Logger.Trace("File system watcher detected file deleted");
-            if (_messageBox.Show(RubberduckUI.SourceControl_ExternalModifications, RubberduckUI.SourceControlPanel_Caption,
-                MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1) == DialogResult.OK)
-            {
-                Provider.RemoveFile(e.FullPath, true);
-                UiDispatcher.InvokeAsync(Refresh);
-            }
+            Provider.ReloadComponent(e.Name);
+            UiDispatcher.InvokeAsync(Refresh);
         }
 
-        private void _fileSystemWatcher_Created(object sender, FileSystemEventArgs e)
+        private void FileSystemRenamed(object sender, RenamedEventArgs e)
         {
-            // the file system filter doesn't support multiple filters
-            if (!VbFileExtensions.Contains(Path.GetExtension(e.Name)))
+            if(!HandleExternalModifications(e.Name)) { return; }
+
+            Logger.Trace("Handling FileSystemWatcher rename activity notification.");
+            Provider.RemoveFile(e.OldFullPath, true);
+            Provider.AddFile(e.FullPath);
+            UiDispatcher.InvokeAsync(Refresh);
+        }
+
+        private void FileSystemDeleted(object sender, FileSystemEventArgs e)
+        {
+            if(!HandleExternalModifications(e.Name)) { return; }
+
+            Logger.Trace("Handling FileSystemWatcher delete activity notification.");
+            Provider.RemoveFile(e.FullPath, true);
+            UiDispatcher.InvokeAsync(Refresh);
+        }
+
+        private void FileSystemCreated(object sender, FileSystemEventArgs e)
+        {
+            if(!HandleExternalModifications(e.Name)) { return; }
+
+            Logger.Trace("FileSystemWatcher detected the creation of a file.");
+            Provider.AddFile(e.FullPath);
+            UiDispatcher.InvokeAsync(Refresh);
+        }
+
+        private bool HandleExternalModifications(string fullFileName)
+        {
+            if(!Provider.NotifyExternalFileChanges // we don't handle modifications if notifications are off
+                || !VbFileExtensions.Contains(Path.GetExtension(fullFileName))) // we only handle modifications to file types that could be in the VBE
             {
-                return;
+                Logger.Trace("Ignoring FileSystemWatcher activity notification.");
+                return false;
             }
 
-            if (!Provider.NotifyExternalFileChanges)
+            var result = _messageBox.Show( // ..and we don't handle modifications if the user doesn't want to
+                    RubberduckUI.SourceControl_ExternalModifications,
+                    RubberduckUI.SourceControlPanel_Caption,
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Information,
+                    MessageBoxDefaultButton.Button1) == DialogResult.Yes;
+
+            if(!result)
             {
-                return;
+                Logger.Trace("User declined FileSystemWatcher activity notification.");
             }
 
-            Logger.Trace("File system watcher detected file created");
-            if (_messageBox.Show(RubberduckUI.SourceControl_ExternalModifications, RubberduckUI.SourceControlPanel_Caption,
-                MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1) == DialogResult.OK)
-            {
-                Provider.AddFile(e.FullPath);
-                UiDispatcher.InvokeAsync(Refresh);
-            }
+            return result;
         }
 
         private ObservableCollection<IControlView> _tabItems;
@@ -467,13 +464,7 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        public bool RepoDoesNotHaveRemoteLocation
-        {
-            get
-            {
-                return !(Provider != null && Provider.RepoHasRemoteOrigin());
-            }
-        }
+        public bool RepoDoesNotHaveRemoteLocation => !(Provider != null && Provider.RepoHasRemoteOrigin());
 
         private string _localDirectory;
         public string LocalDirectory
@@ -545,17 +536,10 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        public bool IsNotValidCloneRemotePath
-        {
-            get { return !IsValidUri(CloneRemotePath); }
-        }
+        public bool IsNotValidCloneRemotePath => !IsValidUri(CloneRemotePath);
+        public bool IsNotValidPublishRemotePath => !IsValidUri(PublishRemotePath);
 
-        public bool IsNotValidPublishRemotePath
-        {
-            get { return !IsValidUri(PublishRemotePath); }
-        }
-
-        private bool IsValidUri(string path)
+        private static bool IsValidUri(string path) // note: could it be worth extending Uri for this?
         {
             Uri uri;
             return Uri.TryCreate(path, UriKind.Absolute, out uri);
@@ -579,13 +563,14 @@ namespace Rubberduck.UI.SourceControl
         {
             foreach (var tab in TabItems)
             {
-                tab.ViewModel.ErrorThrown += ViewModel_ErrorThrown;
+                tab.ViewModel.ErrorThrown += HandleViewModelError;
             }
         }
 
-        private void ViewModel_ErrorThrown(object sender, ErrorEventArgs e)
+        private void HandleViewModelError(object sender, ErrorEventArgs e)
         {
-            const string unauthorizedMessage = "Request failed with status code: 401";
+            // smell: relies on implementation detail of 3rd-party library
+            const string unauthorizedMessage = "Request failed with status code: 401"; 
 
             if (e.InnerMessage == unauthorizedMessage)
             {
@@ -594,8 +579,7 @@ namespace Rubberduck.UI.SourceControl
             }
             else
             {
-                Logger.Trace("Displaying {0} with title '{1}' and message '{2}'", e.NotificationType, e.Title, e.InnerMessage);
-
+                Logger.Trace($"Displaying {e.NotificationType} notification with title '{e.Title}' and message '{e.InnerMessage}'");
                 ErrorTitle = e.Title;
                 ErrorMessage = e.InnerMessage;
 
@@ -646,21 +630,21 @@ namespace Rubberduck.UI.SourceControl
                     Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject, repo);
 
                     AddOrUpdateLocalPathConfig((Repository) repo);
+                    Status = RubberduckUI.Online;
                 }
-                catch (SourceControlException ex)
+                catch (SourceControlException exception)
                 {
-                    ViewModel_ErrorThrown(this,
-                        new ErrorEventArgs(ex.Message, ex.InnerException, NotificationType.Error));
+                    Logger.Warn($"Handling {nameof(SourceControlException)}: {exception}");
+                    HandleViewModelError(this,
+                        new ErrorEventArgs(exception.Message, exception.InnerException, NotificationType.Error));
                 }
-                catch
+                catch(Exception exception)
                 {
-                    ViewModel_ErrorThrown(this,
+                    Logger.Warn($"Handling {nameof(SourceControlException)}: {exception}");
+                    HandleViewModelError(this,
                         new ErrorEventArgs(RubberduckUI.SourceControl_UnknownErrorTitle,
                             RubberduckUI.SourceControl_UnknownErrorMessage, NotificationType.Error));
-                    throw;
                 }
-
-                Status = RubberduckUI.Online;
             }
         }
 
@@ -668,7 +652,7 @@ namespace Rubberduck.UI.SourceControl
         {
             if (Provider.CurrentBranch == null)
             {
-                ViewModel_ErrorThrown(null,
+                HandleViewModelError(null,
                     new ErrorEventArgs(RubberduckUI.SourceControl_NoBranchesTitle, RubberduckUI.SourceControl_NoBranchesMessage, NotificationType.Error));
 
                 _config.Repositories.Remove(_config.Repositories.FirstOrDefault(repo => repo.Id == _vbe.ActiveVBProject.HelpFile));
@@ -729,12 +713,12 @@ namespace Rubberduck.UI.SourceControl
                 catch (SourceControlException ex)
                 {
                     _listening = true;
-                    ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException, NotificationType.Error));
+                    HandleViewModelError(null, new ErrorEventArgs(ex.Message, ex.InnerException, NotificationType.Error));
                     return;
                 }
                 catch
                 {
-                    ViewModel_ErrorThrown(this,
+                    HandleViewModelError(this,
                         new ErrorEventArgs(RubberduckUI.SourceControl_UnknownErrorTitle,
                             RubberduckUI.SourceControl_UnknownErrorMessage, NotificationType.Error));
                     throw;
@@ -776,12 +760,12 @@ namespace Rubberduck.UI.SourceControl
                     _isCloning = false;
                 }
 
-                ViewModel_ErrorThrown(this, new ErrorEventArgs(ex.Message, ex.InnerException, NotificationType.Error));
+                HandleViewModelError(this, new ErrorEventArgs(ex.Message, ex.InnerException, NotificationType.Error));
                 return;
             }
             catch
             {
-                ViewModel_ErrorThrown(this,
+                HandleViewModelError(this,
                     new ErrorEventArgs(RubberduckUI.SourceControl_UnknownErrorTitle,
                         RubberduckUI.SourceControl_UnknownErrorMessage, NotificationType.Error));
                 throw;
@@ -798,7 +782,7 @@ namespace Rubberduck.UI.SourceControl
         {
             if (Provider == null)
             {
-                ViewModel_ErrorThrown(null,
+                HandleViewModelError(null,
                     new ErrorEventArgs(RubberduckUI.SourceControl_PublishRepo_FailureTitle,
                         RubberduckUI.SourceControl_PublishRepo_NoOpenRepo, NotificationType.Error));
                 return;
@@ -812,11 +796,11 @@ namespace Rubberduck.UI.SourceControl
             }
             catch (SourceControlException ex)
             {
-                ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException, NotificationType.Error));
+                HandleViewModelError(null, new ErrorEventArgs(ex.Message, ex.InnerException, NotificationType.Error));
             }
             catch
             {
-                ViewModel_ErrorThrown(this,
+                HandleViewModelError(this,
                     new ErrorEventArgs(RubberduckUI.SourceControl_UnknownErrorTitle,
                         RubberduckUI.SourceControl_UnknownErrorMessage, NotificationType.Error));
                 throw;
@@ -859,7 +843,7 @@ namespace Rubberduck.UI.SourceControl
             }
             catch
             {
-                ViewModel_ErrorThrown(this,
+                HandleViewModelError(this,
                     new ErrorEventArgs(RubberduckUI.SourceControl_UnknownErrorTitle,
                         RubberduckUI.SourceControl_UnknownErrorMessage, NotificationType.Error));
                 throw;
@@ -883,7 +867,7 @@ namespace Rubberduck.UI.SourceControl
             }
             catch (SourceControlException ex)
             {
-                ViewModel_ErrorThrown(null, new ErrorEventArgs(ex.Message, ex.InnerException, NotificationType.Error));
+                HandleViewModelError(null, new ErrorEventArgs(ex.Message, ex.InnerException, NotificationType.Error));
                 Status = RubberduckUI.Offline;
 
                 _config.Repositories.Remove(_config.Repositories.FirstOrDefault(repo => repo.Id == _vbe.ActiveVBProject.HelpFile));
@@ -891,7 +875,7 @@ namespace Rubberduck.UI.SourceControl
             }
             catch
             {
-                ViewModel_ErrorThrown(this,
+                HandleViewModelError(this,
                     new ErrorEventArgs(RubberduckUI.SourceControl_UnknownErrorTitle,
                         RubberduckUI.SourceControl_UnknownErrorMessage, NotificationType.Error));
                 throw;
@@ -902,10 +886,10 @@ namespace Rubberduck.UI.SourceControl
 
         private void Refresh()
         {
-            Logger.Trace("Refreshing display");
-
             _fileSystemWatcher.EnableRaisingEvents = false;
-            if (Provider == null)
+            Logger.Trace("FileSystemWatcher.EnableRaisingEvents is disabled.");
+
+            if(Provider == null)
             {
                 OpenRepoAssignedToProject();
             }
@@ -915,11 +899,12 @@ namespace Rubberduck.UI.SourceControl
                 {
                     tab.ViewModel.RefreshView();
                 }
-            }
 
-            if (Provider != null && Directory.Exists(Provider.CurrentRepository.LocalLocation))
-            {
-                _fileSystemWatcher.EnableRaisingEvents = true;
+                if(Directory.Exists(Provider.CurrentRepository.LocalLocation))
+                {
+                    _fileSystemWatcher.EnableRaisingEvents = true;
+                    Logger.Trace("FileSystemWatcher.EnableRaisingEvents is enabled.");
+                }
             }
         }
 
@@ -934,13 +919,11 @@ namespace Rubberduck.UI.SourceControl
 
             if (project != null)
             {
-                var possibleRepos = _config.Repositories.Where(repo => repo.Id == _vbe.ActiveVBProject.HelpFile);
+                var possibleRepos = _config.Repositories.Where(repo => repo.Id == _vbe.ActiveVBProject.ProjectId);
                 return possibleRepos.Count() == 1;
             }
 
-            ViewModel_ErrorThrown(this,
-                new ErrorEventArgs(RubberduckUI.SourceControl_NoActiveProject,
-                    RubberduckUI.SourceControl_ActivateProject, NotificationType.Error));
+            HandleViewModelError(this, new ErrorEventArgs(RubberduckUI.SourceControl_NoActiveProject, RubberduckUI.SourceControl_ActivateProject, NotificationType.Error));
             return false;
         }
 
@@ -978,130 +961,34 @@ namespace Rubberduck.UI.SourceControl
             DisplayLoginGrid = false;
         }
 
-        private readonly CommandBase _refreshCommand;
-        public CommandBase RefreshCommand
-        {
-            get { return _refreshCommand; }
-        }
+        public CommandBase RefreshCommand { get; }
+        public CommandBase InitRepoCommand { get; }
+        public CommandBase OpenRepoCommand { get; }
+        public CommandBase CloneRepoCommand { get; }
+        public CommandBase ShowFilePickerCommand { get; }
+        public CommandBase OpenCommandPromptCommand { get; }
+        public CommandBase DismissErrorMessageCommand { get; }
 
-        private readonly CommandBase _initRepoCommand;
-        public CommandBase InitRepoCommand
-        {
-            get { return _initRepoCommand; }
-        }
+        public CommandBase LoginGridOkCommand { get; }
+        public CommandBase LoginGridCancelCommand { get; }
 
-        private readonly CommandBase _openRepoCommand;
-        public CommandBase OpenRepoCommand
-        {
-            get { return _openRepoCommand; }
-        }
+        public CommandBase CloneRepoOkButtonCommand { get; }
+        public CommandBase CloneRepoCancelButtonCommand { get; }
 
-        private readonly CommandBase _cloneRepoCommand;
-        public CommandBase CloneRepoCommand
-        {
-            get { return _cloneRepoCommand; }
-        }
-
-        private readonly CommandBase _showFilePickerCommand;
-        public CommandBase ShowFilePickerCommand
-        {
-            get
-            {
-                return _showFilePickerCommand;
-            }
-        }
-
-        private readonly CommandBase _cloneRepoOkButtonCommand;
-        public CommandBase CloneRepoOkButtonCommand
-        {
-            get
-            {
-                return _cloneRepoOkButtonCommand;
-            }
-        }
-
-        private readonly CommandBase _cloneRepoCancelButtonCommand;
-        public CommandBase CloneRepoCancelButtonCommand
-        {
-            get
-            {
-                return _cloneRepoCancelButtonCommand;
-            }
-        }
-
-        private readonly CommandBase _publishRepoCommand;
-        public CommandBase PublishRepoCommand
-        {
-            get { return _publishRepoCommand; }
-        }
-
-        private readonly CommandBase _publishRepoOkButtonCommand;
-        public CommandBase PublishRepoOkButtonCommand
-        {
-            get
-            {
-                return _publishRepoOkButtonCommand;
-            }
-        }
-
-        private readonly CommandBase _publishRepoCancelButtonCommand;
-        public CommandBase PublishRepoCancelButtonCommand
-        {
-            get
-            {
-                return _publishRepoCancelButtonCommand;
-            }
-        }
-
-        private readonly CommandBase _openCommandPromptCommand;
-        public CommandBase OpenCommandPromptCommand
-        {
-            get
-            {
-                return _openCommandPromptCommand;
-            }
-        }
-
-        private readonly CommandBase _dismissErrorMessageCommand;
-        public CommandBase DismissErrorMessageCommand
-        {
-            get
-            {
-                return _dismissErrorMessageCommand;
-            }
-        }
-
-        private readonly CommandBase _loginGridOkCommand;
-        public CommandBase LoginGridOkCommand
-        {
-            get
-            {
-                return _loginGridOkCommand;
-            }
-        }
-
-        private readonly CommandBase _loginGridCancelCommand;
-        public CommandBase LoginGridCancelCommand
-        {
-            get
-            {
-                return _loginGridCancelCommand;
-            }
-        }
+        public CommandBase PublishRepoCommand { get; }
+        public CommandBase PublishRepoOkButtonCommand { get; }
+        public CommandBase PublishRepoCancelButtonCommand { get; }
 
         public void Dispose()
         {
             if (_state != null)
             {
-                _state.StateChanged -= _state_StateChanged;
+                _state.StateChanged -= HandleStateChanged;
             }
 
             if (_fileSystemWatcher != null)
             {
-                _fileSystemWatcher.Created -= _fileSystemWatcher_Created;
-                _fileSystemWatcher.Deleted -= _fileSystemWatcher_Deleted;
-                _fileSystemWatcher.Renamed -= _fileSystemWatcher_Renamed;
-                _fileSystemWatcher.Changed -= _fileSystemWatcher_Changed;
+                UnregisterFileSystemWatcherEvents();
                 _fileSystemWatcher.Dispose();
             }
 

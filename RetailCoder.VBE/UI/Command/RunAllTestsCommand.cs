@@ -78,17 +78,20 @@ namespace Rubberduck.UI.Command
             _model.ClearLastRun();
             _model.IsBusy = true;
 
-            if (_presenter != null)
-            {
-                _presenter.Show();
-            }
+            _presenter?.Show();
 
             stopwatch.Start();
-            _engine.Run(_model.Tests);
-            stopwatch.Stop();
+            try
+            {
+                _engine.Run(_model.Tests);
+            }
+            finally
+            {
+                stopwatch.Stop();
+                _model.IsBusy = false;
+            }
 
-            _model.IsBusy = false;
-
+            Logger.Info($"Test run completed in {stopwatch.ElapsedMilliseconds}.");
             OnRunCompleted(new TestRunEventArgs(stopwatch.ElapsedMilliseconds));
         }
 
@@ -96,10 +99,7 @@ namespace Rubberduck.UI.Command
         protected virtual void OnRunCompleted(TestRunEventArgs e)
         {
             var handler = RunCompleted;
-            if (handler != null)
-            {
-                handler.Invoke(this, e);
-            }
+            handler?.Invoke(this, e);
         }
     }
     
