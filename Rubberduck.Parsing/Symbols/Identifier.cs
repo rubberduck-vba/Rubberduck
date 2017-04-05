@@ -5,8 +5,6 @@ using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Rubberduck.Parsing.PreProcessing;
-using Antlr4.Runtime.Tree;
-using System.Collections.Generic;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -15,70 +13,50 @@ namespace Rubberduck.Parsing.Symbols
 
         public static string GetName(VBAParser.SubStmtContext context, out Interval tokenInterval)
         {
-            VBAParser.SubroutineNameContext nameContext = null;
-            GetNameContext(context.children, ref nameContext);
+            var nameContext = context.subroutineName();
             return GetName(nameContext, out tokenInterval);
         }
 
         public static string GetName(VBAParser.FunctionStmtContext context, out Interval tokenInterval)
         {
-            VBAParser.FunctionNameContext nameContext = null;
-            GetNameContext(context.children, ref nameContext);
+            var nameContext = context.functionName();
             return GetName(nameContext, out tokenInterval);
         }
 
         public static string GetName(VBAParser.EventStmtContext context, out Interval tokenInterval)
         {
-            VBAParser.IdentifierContext nameContext = null;
-            GetNameContext(context.children, ref nameContext);
+            var nameContext = context.identifier();
             return GetName(nameContext, out tokenInterval);
         }
 
         public static string GetName(VBAParser.VariableSubStmtContext context, out Interval tokenInterval)
         {
-            VBAParser.IdentifierContext nameContext = null;
-            GetNameContext(context.children, ref nameContext);
+            var nameContext = context.identifier();
             return GetName(nameContext, out tokenInterval);
         }
 
         public static string GetName(VBAParser.PropertyGetStmtContext context, out Interval tokenInterval)
         {
-            VBAParser.FunctionNameContext nameContext = null;
-            GetNameContext(context.children, ref nameContext);
+            var nameContext = context.functionName();
             return GetName(nameContext, out tokenInterval);
         }
 
         public static string GetName(VBAParser.PropertyLetStmtContext context, out Interval tokenInterval)
         {
-            VBAParser.SubroutineNameContext nameContext = null;
-            GetNameContext(context.children, ref nameContext);
+            var nameContext = context.subroutineName();
             return GetName(nameContext, out tokenInterval);
         }
 
         public static string GetName(VBAParser.PropertySetStmtContext context, out Interval tokenInterval)
         {
-            VBAParser.SubroutineNameContext nameContext = null;
-            GetNameContext(context.children, ref nameContext);
+            var nameContext = context.subroutineName();
             return GetName(nameContext, out tokenInterval);
         }
 
         public static string GetName(VBAParser.ArgContext context, out Interval tokenInterval)
         {
-            VBAParser.UnrestrictedIdentifierContext nameContext = null;
-            GetNameContext(context.children, ref nameContext);
+            var nameContext = context.unrestrictedIdentifier();
             return GetName(nameContext, out tokenInterval);
-        }
-
-        private static void GetNameContext<T>(IList<IParseTree> children, ref T nameContext)
-        {
-            foreach (var child in children)
-            {
-                if (child.GetType() == typeof(T))
-                {
-                    nameContext = (T)child;
-                    return;
-                }
-            }
         }
 
         public static string GetName(VBAParser.FunctionNameContext context, out Interval tokenInterval)
