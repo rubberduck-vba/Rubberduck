@@ -55,7 +55,7 @@ namespace RubberduckTests.Mocks
                     new FormEventDeclarations(state), 
                     new AliasDeclarations(state),
                 }, 
-                new StateModuleToModuleReferenceManager(state),
+                new ModuleToModuleReferenceManager(state),
                 true, path);
         }
 

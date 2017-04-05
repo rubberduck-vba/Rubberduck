@@ -76,7 +76,7 @@ namespace Rubberduck.API
                     new AliasDeclarations(_state),
                     //new RubberduckApiDeclarations(_state)
                 },
-                new StateModuleToModuleReferenceManager(_state));
+                new ModuleToModuleReferenceManager(_state));
         }
 
         /// <summary>

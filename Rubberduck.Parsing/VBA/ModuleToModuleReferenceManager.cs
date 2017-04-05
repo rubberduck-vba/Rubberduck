@@ -7,11 +7,11 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.VBA
 {
-    public class StateModuleToModuleReferenceManager: ModuleToModuleReferenceManagerBase 
+    public class ModuleToModuleReferenceManager: ModuleToModuleReferenceManagerBase 
     {
         private readonly RubberduckParserState _state;
 
-        public StateModuleToModuleReferenceManager(RubberduckParserState state)
+        public ModuleToModuleReferenceManager(RubberduckParserState state)
         {
             _state = state;
         }
@@ -46,5 +46,6 @@ namespace Rubberduck.Parsing.VBA
         {
             return _state.ModulesReferencing(referencedModule);
         }
+
     }
 }

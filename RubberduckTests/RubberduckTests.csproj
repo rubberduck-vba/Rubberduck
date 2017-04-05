@@ -73,7 +73,9 @@
     </When>
     <Otherwise>
       <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework">
+          <Private>False</Private>
+        </Reference>
       </ItemGroup>
     </Otherwise>
   </Choose>
@@ -100,6 +102,7 @@
     <Compile Include="Inspections\OptionBaseZeroInspectionTests.cs" />
     <Compile Include="Inspections\PassParameterByReferenceQuickFixTests.cs" />
     <Compile Include="Inspections\UndeclaredVariableInspectionTests.cs" />
+    <Compile Include="Parsing\Coordination\IModuleToModuleReferenceManagerTestBase.cs" />
     <Compile Include="PostProcessing\ModuleRewriterTests.cs" />
     <Compile Include="SmartIndenter\VerticalSpacingTests.cs" />
     <Compile Include="Symbols\AccessibilityCheckTests.cs" />

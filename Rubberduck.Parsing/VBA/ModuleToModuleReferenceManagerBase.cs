@@ -13,7 +13,6 @@ namespace Rubberduck.Parsing.VBA
 
         public abstract void RemoveModuleToModuleReference(QualifiedModuleName referencedModule, QualifiedModuleName referencingModule);
 
-
         public virtual void ClearModuleToModuleReferencesFromModule(QualifiedModuleName referencingModule)
         {
             var referencedModules = ModulesReferencedBy(referencingModule);
@@ -76,5 +75,6 @@ namespace Rubberduck.Parsing.VBA
             }
             return fromModules;
         }
+
     }
 }
