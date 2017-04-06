@@ -1,30 +1,39 @@
 using System;
-using Antlr4.Runtime;
-using Rubberduck.Common;
-using Rubberduck.Inspections.Abstract;
+using System.Collections.Generic;
+using System.Linq;
+using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    [Undocumented] // todo: use?
     public class RemoveUnassignedVariableUsageQuickFix : IQuickFix
     {
-        public RemoveUnassignedVariableUsageQuickFix(ParserRuleContext context, QualifiedSelection selection)
-            : base(context, selection, InspectionsUI.RemoveUnassignedVariableUsageQuickFix)
+        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
         {
+        };
+
+        public static IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
+
+        public static void AddSupportedInspectionType(Type inspectionType)
+        {
+            if (!inspectionType.GetInterfaces().Contains(typeof(IInspection)))
+            {
+                throw new ArgumentException("Type must implement IInspection", nameof(inspectionType));
+            }
+
+            _supportedInspections.Add(inspectionType);
         }
 
         public void Fix(IInspectionResult result)
         {
-            var module = Selection.QualifiedName.Component.CodeModule;
-            var selection = Selection.Selection;
+            var module = result.QualifiedSelection.QualifiedName.Component.CodeModule;
+            var selection = result.QualifiedSelection.Selection;
 
             var originalCodeLines = module.GetLines(selection.StartLine, selection.LineCount)
                 .Replace(Environment.NewLine, " ")
                 .Replace("_", string.Empty);
 
-            var originalInstruction = Context.GetText();
+            var originalInstruction = result.Context.GetText();
             module.DeleteLines(selection.StartLine, selection.LineCount);
 
             var newInstruction = InspectionsUI.Inspections_UnassignedVariableTodo;
@@ -37,5 +46,14 @@ namespace Rubberduck.Inspections.QuickFixes
                 module.InsertLines(selection.StartLine, newCodeLines);
             }
         }
+
+        public string Description(IInspectionResult result)
+        {
+            return InspectionsUI.RemoveUnassignedVariableUsageQuickFix;
+        }
+
+        public bool CanFixInProcedure => true;
+        public bool CanFixInModule => true;
+        public bool CanFixInProject => true;
     }
 }

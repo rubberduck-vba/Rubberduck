@@ -1,8 +1,12 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Remoting.Contexts;
 using System.Text.RegularExpressions;
-using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
@@ -12,36 +16,50 @@ namespace Rubberduck.Inspections.QuickFixes
 {
     public class RemoveTypeHintsQuickFix : IQuickFix
     {
-        private readonly Declaration _declaration;
-
-        public RemoveTypeHintsQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration declaration)
-            : base(context, selection, InspectionsUI.RemoveTypeHintsQuickFix)
+        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
         {
-            _declaration = declaration;
+            typeof(ObsoleteTypeHintInspection)
+        };
+
+        public static IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
+
+        public static void AddSupportedInspectionType(Type inspectionType)
+        {
+            if (!inspectionType.GetInterfaces().Contains(typeof(IInspection)))
+            {
+                throw new ArgumentException("Type must implement IInspection", nameof(inspectionType));
+            }
+
+            _supportedInspections.Add(inspectionType);
         }
 
         public void Fix(IInspectionResult result)
         {
-            if (!string.IsNullOrWhiteSpace(_declaration.TypeHint))
+            if (!string.IsNullOrWhiteSpace(result.Target.TypeHint))
             {
-                var module = _declaration.QualifiedName.QualifiedModuleName.Component.CodeModule;
+                var module = result.Target.QualifiedName.QualifiedModuleName.Component.CodeModule;
                 {
-                    FixTypeHintUsage(_declaration.TypeHint, module, _declaration.Selection, true);
+                    FixTypeHintUsage(result.Target.TypeHint, module, result.Target.Selection, true);
                 }
             }
 
-            foreach (var reference in _declaration.References)
+            foreach (var reference in result.Target.References)
             {
                 // or should we assume type hint is the same as declaration?
-                if (!string.IsNullOrWhiteSpace(_declaration.TypeHint))
+                if (!string.IsNullOrWhiteSpace(result.Target.TypeHint))
                 {
                     var module = reference.QualifiedModuleName.Component.CodeModule;
                     {
-                        FixTypeHintUsage(_declaration.TypeHint, module, reference.Selection);
+                        FixTypeHintUsage(result.Target.TypeHint, module, reference.Selection);
                     }
                 }
             }
 
+        }
+
+        public string Description(IInspectionResult result)
+        {
+            return InspectionsUI.RemoveTypeHintsQuickFix;
         }
 
         private void FixTypeHintUsage(string hint, ICodeModule module, Selection selection, bool isDeclaration = false)
@@ -83,5 +101,9 @@ namespace Rubberduck.Inspections.QuickFixes
                 module.ReplaceLine(selection.StartLine, fix);
             }
         }
+
+        public bool CanFixInProcedure => true;
+        public bool CanFixInModule => true;
+        public bool CanFixInProject => true;
     }
 }

@@ -1,28 +1,42 @@
-using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
     public class RemoveExplicitCallStatmentQuickFix : IQuickFix
     {
-        public RemoveExplicitCallStatmentQuickFix(ParserRuleContext context, QualifiedSelection selection)
-            : base(context, selection, InspectionsUI.RemoveObsoleteStatementQuickFix)
+        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
         {
+            typeof(ObsoleteCallStatementInspection)
+        };
+
+        public static IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
+
+        public static void AddSupportedInspectionType(Type inspectionType)
+        {
+            if (!inspectionType.GetInterfaces().Contains(typeof(IInspection)))
+            {
+                throw new ArgumentException("Type must implement IInspection", nameof(inspectionType));
+            }
+
+            _supportedInspections.Add(inspectionType);
         }
 
         public void Fix(IInspectionResult result)
         {
-            var module = Selection.QualifiedName.Component.CodeModule;
+            var module = result.QualifiedSelection.QualifiedName.Component.CodeModule;
 
-            var selection = Context.GetSelection();
+            var selection = result.Context.GetSelection();
             var originalCodeLines = module.GetLines(selection.StartLine, selection.LineCount);
-            var originalInstruction = Context.GetText();
+            var originalInstruction = result.Context.GetText();
 
-            var context = (VBAParser.CallStmtContext)Context;
+            var context = (VBAParser.CallStmtContext)result.Context;
 
             string target;
             string arguments;
@@ -44,5 +58,16 @@ namespace Rubberduck.Inspections.QuickFixes
 
             module.InsertLines(selection.StartLine, newCodeLines);
         }
+
+        public string Description(IInspectionResult result)
+        {
+            return InspectionsUI.RemoveObsoleteStatementQuickFix;
+        }
+
+        public bool CanFixInProcedure => true;
+
+        public bool CanFixInModule => true;
+
+        public bool CanFixInProject => true;
     }
 }
