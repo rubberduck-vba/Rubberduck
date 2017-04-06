@@ -1,32 +1,46 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class DeclareAsExplicitVariantQuickFix : IQuickFix 
+    public class DeclareAsExplicitVariantQuickFix : IQuickFix
     {
-        public DeclareAsExplicitVariantQuickFix(ParserRuleContext context, QualifiedSelection selection)
-            : base(context, selection, InspectionsUI.DeclareAsExplicitVariantQuickFix)
+        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
         {
+            typeof(VariableTypeNotDeclaredInspection)
+        };
+
+        public static IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
+
+        public static void AddSupportedInspectionType(Type inspectionType)
+        {
+            if (!inspectionType.GetInterfaces().Contains(typeof(IInspection)))
+            {
+                throw new ArgumentException("Type must implement IInspection", nameof(inspectionType));
+            }
+
+            _supportedInspections.Add(inspectionType);
         }
 
         public void Fix(IInspectionResult result)
         {
-            var module = Selection.QualifiedName.Component.CodeModule;
-            var contextLines = module.GetLines(Context.GetSelection());
+            var module = result.QualifiedSelection.QualifiedName.Component.CodeModule;
+            var contextLines = module.GetLines(result.Target.Context.GetSelection());
             var originalIndent = contextLines.Substring(0, contextLines.TakeWhile(c => c == ' ').Count());
 
             string originalInstruction;
 
             // DeclareExplicitVariant() overloads return empty string if context is null
             Selection selection;
-            var fix = DeclareExplicitVariant(Context as VBAParser.VariableSubStmtContext, contextLines, out originalInstruction, out selection);
+            var fix = DeclareExplicitVariant(result.Target.Context as VBAParser.VariableSubStmtContext, contextLines, out originalInstruction, out selection);
             if (!string.IsNullOrEmpty(fix))
             {
                 // maintain original indentation for a variable declaration
@@ -35,12 +49,12 @@ namespace Rubberduck.Inspections.QuickFixes
 
             if (string.IsNullOrEmpty(originalInstruction))
             {
-                fix = DeclareExplicitVariant(Context as VBAParser.ConstSubStmtContext, contextLines, out originalInstruction, out selection);
+                fix = DeclareExplicitVariant(result.Target.Context as VBAParser.ConstSubStmtContext, contextLines, out originalInstruction, out selection);
             }
 
             if (string.IsNullOrEmpty(originalInstruction))
             {
-                fix = DeclareExplicitVariant(Context as VBAParser.ArgContext, out originalInstruction, out selection);
+                fix = DeclareExplicitVariant(result.Target.Context as VBAParser.ArgContext, out originalInstruction, out selection);
             }
 
             if (string.IsNullOrEmpty(originalInstruction))
@@ -51,6 +65,15 @@ namespace Rubberduck.Inspections.QuickFixes
             module.DeleteLines(selection.StartLine, selection.LineCount);
             module.InsertLines(selection.StartLine, fix);
         }
+
+        public string Description(IInspectionResult result)
+        {
+            return InspectionsUI.DeclareAsExplicitVariantQuickFix;
+        }
+
+        public bool CanFixInProcedure => true;
+        public bool CanFixInModule => true;
+        public bool CanFixInProject => true;
 
         private string DeclareExplicitVariant(VBAParser.ArgContext context, out string instruction, out Selection selection)
         {

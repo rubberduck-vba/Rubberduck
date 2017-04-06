@@ -1,41 +1,57 @@
-using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.MoveCloserToUsage;
 using Rubberduck.UI;
-using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    /// <summary>
-    /// A code inspection quickfix that encapsulates a public field with a property
-    /// </summary>
     public class MoveFieldCloserToUsageQuickFix : IQuickFix
     {
-        private readonly Declaration _target;
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
-
-        public MoveFieldCloserToUsageQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration target, RubberduckParserState state, IMessageBox messageBox)
-            : base(context, selection, string.Format(InspectionsUI.MoveFieldCloserToUsageInspectionResultFormat, target.IdentifierName))
+        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
         {
-            _target = target;
+            typeof(MoveFieldCloserToUsageInspection)
+        };
+
+        public MoveFieldCloserToUsageQuickFix(RubberduckParserState state, IMessageBox messageBox)
+        {
             _state = state;
             _messageBox = messageBox;
         }
 
-        public void Fix(IInspectionResult result)
+        public static IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
+
+        public static void AddSupportedInspectionType(Type inspectionType)
         {
-            var vbe = _target.Project.VBE;
+            if (!inspectionType.GetInterfaces().Contains(typeof(IInspection)))
+            {
+                throw new ArgumentException("Type must implement IInspection", nameof(inspectionType));
+            }
 
-            var refactoring = new MoveCloserToUsageRefactoring(vbe, _state, _messageBox);
-
-            refactoring.Refactor(_target);
+            _supportedInspections.Add(inspectionType);
         }
 
-        public override bool CanFixInModule { get { return false; } }
-        public override bool CanFixInProject { get { return false; } }
+        public void Fix(IInspectionResult result)
+        {
+            var vbe = result.Target.Project.VBE;
+
+            var refactoring = new MoveCloserToUsageRefactoring(vbe, _state, _messageBox);
+            refactoring.Refactor(result.Target);
+        }
+
+        public string Description(IInspectionResult result)
+        {
+            return string.Format(InspectionsUI.MoveFieldCloserToUsageInspectionResultFormat, result.Target.IdentifierName);
+        }
+
+        public bool CanFixInProcedure => true;
+        public bool CanFixInModule => true;
+        public bool CanFixInProject => true;
     }
 }

@@ -2,40 +2,49 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
     public class ConvertToProcedureQuickFix : IQuickFix
     {
-        private readonly Declaration _target;
-
-        public ConvertToProcedureQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration target)
-            : base(context, selection, InspectionsUI.ConvertFunctionToProcedureQuickFix)
+        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
         {
-            _target = target;
+            typeof(NonReturningFunctionInspection),
+            typeof(FunctionReturnValueNotUsedInspection)
+        };
+
+        public static IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
+
+        public static void AddSupportedInspectionType(Type inspectionType)
+        {
+            if (!inspectionType.GetInterfaces().Contains(typeof(IInspection)))
+            {
+                throw new ArgumentException("Type must implement IInspection", nameof(inspectionType));
+            }
+
+            _supportedInspections.Add(inspectionType);
         }
 
         public void Fix(IInspectionResult result)
         {
-            dynamic functionContext = Context as VBAParser.FunctionStmtContext;
-            dynamic propertyGetContext = Context as VBAParser.PropertyGetStmtContext;
+            dynamic functionContext = result.Target.Context as VBAParser.FunctionStmtContext;
+            dynamic propertyGetContext = result.Target.Context as VBAParser.PropertyGetStmtContext;
 
             var context = functionContext ?? propertyGetContext;
             if (context == null)
             {
-                throw new InvalidOperationException(string.Format(InspectionsUI.InvalidContextTypeInspectionFix, Context.GetType(), GetType()));
+                throw new InvalidOperationException(string.Format(InspectionsUI.InvalidContextTypeInspectionFix, result.Target.Context.GetType(), GetType()));
             }
 
-            var functionName = Context is VBAParser.FunctionStmtContext
-                ? ((VBAParser.FunctionStmtContext) Context).functionName()
-                : ((VBAParser.PropertyGetStmtContext) Context).functionName();
+            var functionName = result.Target.Context is VBAParser.FunctionStmtContext
+                ? ((VBAParser.FunctionStmtContext)result.Target.Context).functionName()
+                : ((VBAParser.PropertyGetStmtContext)result.Target.Context).functionName();
 
             var token = functionContext != null
                 ? Tokens.Function
@@ -54,21 +63,30 @@ namespace Rubberduck.Inspections.QuickFixes
             var oldSignature = visibility + token + name + (hasTypeHint ? Identifier.GetTypeHintValue(functionName.identifier()) : string.Empty) + args + asType;
             var newSignature = visibility + Tokens.Sub + name + args;
 
-            var procedure = Context.GetText();
+            var procedure = result.Target.Context.GetText();
             var noReturnStatements = procedure;
 
-            GetReturnStatements(_target).ToList().ForEach(returnStatement =>
+            GetReturnStatements(result.Target).ToList().ForEach(returnStatement =>
                 noReturnStatements = Regex.Replace(noReturnStatements, @"[ \t\f]*" + returnStatement + @"[ \t\f]*\r?\n?", ""));
-            var result = noReturnStatements.Replace(oldSignature, newSignature)
+            var newText = noReturnStatements.Replace(oldSignature, newSignature)
                 .Replace(Tokens.End + ' ' + endToken, Tokens.End + ' ' + Tokens.Sub)
                 .Replace(Tokens.Exit + ' ' + endToken, Tokens.Exit + ' ' + Tokens.Sub);
 
-            var module = Selection.QualifiedName.Component.CodeModule;
-            var selection = Context.GetSelection();
+            var module = result.QualifiedSelection.QualifiedName.Component.CodeModule;
+            var selection = result.Target.Context.GetSelection();
 
             module.DeleteLines(selection.StartLine, selection.LineCount);
-            module.InsertLines(selection.StartLine, result);
+            module.InsertLines(selection.StartLine, newText);
         }
+
+        public string Description(IInspectionResult result)
+        {
+            return InspectionsUI.ConvertFunctionToProcedureQuickFix;
+        }
+
+        public bool CanFixInProcedure => false;
+        public bool CanFixInModule => true;
+        public bool CanFixInProject => false;
 
         private IEnumerable<string> GetReturnStatements(Declaration declaration)
         {
