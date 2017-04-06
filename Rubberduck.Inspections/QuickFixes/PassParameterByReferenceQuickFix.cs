@@ -1,31 +1,54 @@
-using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.Parsing.PostProcessing;
-using Rubberduck.Parsing.Symbols;
-using Rubberduck.VBEditor;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    /// <summary>
-    /// Encapsulates a code inspection quickfix that changes a ByVal parameter into an explicit ByRef parameter.
-    /// </summary>
     public class PassParameterByReferenceQuickFix : IQuickFix
     {
-        private readonly IModuleRewriter _rewriter;
-        private readonly IToken _token;
-
-        public PassParameterByReferenceQuickFix(Declaration target, QualifiedSelection selection, IModuleRewriter rewriter)
-            : base(target.Context, selection, InspectionsUI.PassParameterByReferenceQuickFix)
+        private readonly RubberduckParserState _state;
+        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
         {
-            _rewriter = rewriter;
-            _token = ((VBAParser.ArgContext)target.Context).BYVAL().Symbol;
+            typeof(AssignedByValParameterInspection)
+        };
+
+        public PassParameterByReferenceQuickFix(RubberduckParserState state)
+        {
+            _state = state;
+        }
+
+        public static IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
+
+        public static void AddSupportedInspectionType(Type inspectionType)
+        {
+            if (!inspectionType.GetInterfaces().Contains(typeof(IInspection)))
+            {
+                throw new ArgumentException("Type must implement IInspection", nameof(inspectionType));
+            }
+
+            _supportedInspections.Add(inspectionType);
         }
 
         public void Fix(IInspectionResult result)
         {
-            _rewriter.Replace(_token, Tokens.ByRef);
+            var rewriter = _state.GetRewriter(result.Target);
+
+            var token = ((VBAParser.ArgContext)result.Target.Context).BYVAL().Symbol;
+            rewriter.Replace(token, Tokens.ByRef);
         }
+
+        public string Description(IInspectionResult result)
+        {
+            return InspectionsUI.PassParameterByReferenceQuickFix;
+        }
+
+        public bool CanFixInProcedure => true;
+        public bool CanFixInModule => true;
+        public bool CanFixInProject => true;
     }
 }

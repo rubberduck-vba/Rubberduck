@@ -1,9 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using Antlr4.Runtime;
 using Rubberduck.Common;
-using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -14,48 +15,66 @@ namespace Rubberduck.Inspections.QuickFixes
     public class PassParameterByValueQuickFix : IQuickFix
     {
         private readonly RubberduckParserState _state;
-        private readonly Declaration _target;
+        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
+        {
+            typeof(ParameterCanBeByValInspection)
+        };
 
-        public PassParameterByValueQuickFix(RubberduckParserState state, Declaration target, ParserRuleContext context, QualifiedSelection selection)
-            : base(context, selection, InspectionsUI.PassParameterByValueQuickFix)
+        public PassParameterByValueQuickFix(RubberduckParserState state)
         {
             _state = state;
-            _target = target;
+        }
+
+        public static IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
+
+        public static void AddSupportedInspectionType(Type inspectionType)
+        {
+            if (!inspectionType.GetInterfaces().Contains(typeof(IInspection)))
+            {
+                throw new ArgumentException("Type must implement IInspection", nameof(inspectionType));
+            }
+
+            _supportedInspections.Add(inspectionType);
         }
 
         public void Fix(IInspectionResult result)
         {
-            if (_target.ParentDeclaration.DeclarationType == DeclarationType.Event ||
-                _state.AllUserDeclarations.FindInterfaceMembers().Contains(_target.ParentDeclaration))
+            if (result.Target.ParentDeclaration.DeclarationType == DeclarationType.Event ||
+                _state.AllUserDeclarations.FindInterfaceMembers().Contains(result.Target.ParentDeclaration))
             {
-                FixMethods();
+                FixMethods(result.Target);
             }
             else
             {
-                FixMethod((VBAParser.ArgContext)Context, Selection);
+                FixMethod((VBAParser.ArgContext)result.Target.Context, result.QualifiedSelection);
             }
         }
 
-        private void FixMethods()
+        public string Description(IInspectionResult result)
+        {
+            return InspectionsUI.PassParameterByValueQuickFix;
+        }
+
+        private void FixMethods(Declaration target)
         {
             var declarationParameters =
                 _state.AllUserDeclarations.Where(declaration => declaration.DeclarationType == DeclarationType.Parameter &&
-                                                                Equals(declaration.ParentDeclaration, _target.ParentDeclaration))
+                                                                Equals(declaration.ParentDeclaration, target.ParentDeclaration))
                     .OrderBy(o => o.Selection.StartLine)
                     .ThenBy(t => t.Selection.StartColumn)
                     .ToList();
 
-            var parameterIndex = declarationParameters.IndexOf(_target);
+            var parameterIndex = declarationParameters.IndexOf(target);
             if (parameterIndex == -1)
             {
                 return; // should only happen if the parse results are stale; prevents a crash in that case
             }
 
-            var members = _target.ParentDeclaration.DeclarationType == DeclarationType.Event
-                ? _state.AllUserDeclarations.FindHandlersForEvent(_target.ParentDeclaration)
+            var members = target.ParentDeclaration.DeclarationType == DeclarationType.Event
+                ? _state.AllUserDeclarations.FindHandlersForEvent(target.ParentDeclaration)
                     .Select(s => s.Item2)
                     .ToList()
-                : _state.AllUserDeclarations.FindInterfaceImplementationMembers(_target.ParentDeclaration).ToList();
+                : _state.AllUserDeclarations.FindInterfaceImplementationMembers(target.ParentDeclaration).ToList();
 
             foreach (var member in members)
             {
@@ -114,5 +133,9 @@ namespace Rubberduck.Inspections.QuickFixes
                 }  
             }
         }
+
+        public bool CanFixInProcedure => true;
+        public bool CanFixInModule => true;
+        public bool CanFixInProject => true;
     }
 }
