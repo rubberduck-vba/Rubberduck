@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -13,54 +14,51 @@ namespace Rubberduck.Inspections.QuickFixes
 {
     public class ChangeProcedureToFunctionQuickFix : IQuickFix
     {
-        public override bool CanFixInModule
-        {
-            get { return false; }
-        }
+        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type> { typeof(ProcedureCanBeWrittenAsFunctionInspection) };
+        public static IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
 
-        public override bool CanFixInProject
+        public static void AddSupportedInspectionType(Type inspectionType)
         {
-            get { return false; }
+            if (!inspectionType.GetInterfaces().Contains(typeof(IInspection)))
+            {
+                throw new ArgumentException("Type must implement IInspection", nameof(inspectionType));
+            }
+
+            _supportedInspections.Add(inspectionType);
         }
 
         private readonly RubberduckParserState _state;
-        private readonly QualifiedContext<VBAParser.ArgListContext> _argListQualifiedContext;
-        private readonly QualifiedContext<VBAParser.SubStmtContext> _subStmtQualifiedContext;
-        private readonly QualifiedContext<VBAParser.ArgContext> _argQualifiedContext;
 
-        private int _lineOffset;
-
-        public ChangeProcedureToFunctionQuickFix(RubberduckParserState state,
-            QualifiedContext<VBAParser.ArgListContext> argListQualifiedContext,
-            QualifiedContext<VBAParser.SubStmtContext> subStmtQualifiedContext,
-            QualifiedSelection selection)
-            : base(subStmtQualifiedContext.Context, selection, InspectionsUI.ProcedureShouldBeFunctionInspectionQuickFix
-                )
+        public ChangeProcedureToFunctionQuickFix(RubberduckParserState state)
         {
             _state = state;
-            _argListQualifiedContext = argListQualifiedContext;
-            _subStmtQualifiedContext = subStmtQualifiedContext;
-            _argQualifiedContext = new QualifiedContext<VBAParser.ArgContext>(_argListQualifiedContext.ModuleName,
-                _argListQualifiedContext.Context.arg()
-                    .First(a => a.BYREF() != null || (a.BYREF() == null && a.BYVAL() == null)));
         }
 
         public void Fix(IInspectionResult result)
         {
-            UpdateCalls();
-            UpdateSignature();
+            var subStmt = (VBAParser.SubStmtContext) result.Target.Context;
+            var parameterList = ((VBAParser.SubStmtContext) result.Target.Context).argList();// new QualifiedContext<VBAParser.SubStmtContext>(result.Target.QualifiedName, (VBAParser.SubStmtContext)result.Target.Context);
+            var arg = parameterList.arg().First(a => a.BYREF() != null || (a.BYREF() == null && a.BYVAL() == null));
+
+            UpdateCalls(subStmt, parameterList, arg, result.Target.QualifiedName.QualifiedModuleName);
+            UpdateSignature(subStmt, parameterList, arg, result.Target.QualifiedName.QualifiedModuleName);
         }
 
-        private void UpdateSignature()
+        public string Description(IInspectionResult result)
         {
-            var argListText = _argListQualifiedContext.Context.GetText();
-            var subStmtText = _subStmtQualifiedContext.Context.GetText();
-            var argText = _argQualifiedContext.Context.GetText();
+            return InspectionsUI.ProcedureShouldBeFunctionInspectionQuickFix;
+        }
+
+        private void UpdateSignature(VBAParser.SubStmtContext subStmt, VBAParser.ArgListContext parameterList, VBAParser.ArgContext arg, QualifiedModuleName qualifiedModuleName)
+        {
+            var argListText = parameterList.GetText();
+            var subStmtText = subStmt.GetText();
+            var argText = arg.GetText();
 
             var newArgText = argText.Contains("ByRef ") ? argText.Replace("ByRef ", "ByVal ") : "ByVal " + argText;
 
-            var asTypeClause = _argQualifiedContext.Context.asTypeClause() != null
-                ? _argQualifiedContext.Context.asTypeClause().GetText()
+            var asTypeClause = arg.asTypeClause() != null
+                ? arg.asTypeClause().GetText()
                 : "As Variant";
 
             var newFunctionWithoutReturn = subStmtText.Insert(
@@ -88,46 +86,36 @@ namespace Rubberduck.Inspections.QuickFixes
 
             var newfunctionWithReturn = newFunctionWithoutReturn
                 .Insert(newFunctionWithoutReturn.LastIndexOf(Environment.NewLine, StringComparison.Ordinal),
-                    Environment.NewLine + "    " + _subStmtQualifiedContext.Context.subroutineName().GetText() +
-                    " = " + _argQualifiedContext.Context.unrestrictedIdentifier().GetText());
+                    Environment.NewLine + "    " + subStmt.subroutineName().GetText() +
+                    " = " + arg.unrestrictedIdentifier().GetText());
 
-            _lineOffset = newfunctionWithReturn.Split(new[] { Environment.NewLine }, StringSplitOptions.None).Length -
-                          subStmtText.Split(new[] { Environment.NewLine }, StringSplitOptions.None).Length;
+            var module = qualifiedModuleName.Component.CodeModule;
 
-            var module = _argListQualifiedContext.ModuleName.Component.CodeModule;
-
-            module.DeleteLines(_subStmtQualifiedContext.Context.Start.Line,
-                _subStmtQualifiedContext.Context.Stop.Line - _subStmtQualifiedContext.Context.Start.Line + 1);
-            module.InsertLines(_subStmtQualifiedContext.Context.Start.Line, newfunctionWithReturn);
+            module.DeleteLines(subStmt.Start.Line,
+                subStmt.Stop.Line - subStmt.Start.Line + 1);
+            module.InsertLines(subStmt.Start.Line, newfunctionWithReturn);
         }
 
-        private void UpdateCalls()
+        private void UpdateCalls(VBAParser.SubStmtContext subStmt, VBAParser.ArgListContext parameterList, VBAParser.ArgContext arg, QualifiedModuleName qualifiedModuleName)
         {
-            var procedureName = Identifier.GetName(_subStmtQualifiedContext.Context.subroutineName().identifier());
+            var procedureName = Identifier.GetName(subStmt.subroutineName().identifier());
 
             var procedure =
                 _state.AllUserDeclarations.SingleOrDefault(d =>
                     d.IdentifierName == procedureName &&
                     d.Context is VBAParser.SubStmtContext &&
-                    d.QualifiedName.QualifiedModuleName.Equals(_subStmtQualifiedContext.ModuleName));
+                    d.QualifiedName.QualifiedModuleName.Equals(qualifiedModuleName));
 
             if (procedure == null)
             {
                 return;
             }
 
-            foreach (
-                var reference in
+            foreach (var reference in
                     procedure.References.OrderByDescending(o => o.Selection.StartLine)
                         .ThenByDescending(d => d.Selection.StartColumn))
             {
                 var startLine = reference.Selection.StartLine;
-
-                if (procedure.ComponentName == reference.QualifiedModuleName.ComponentName &&
-                    procedure.Selection.EndLine < reference.Selection.StartLine)
-                {
-                    startLine += _lineOffset;
-                }
 
                 var referenceParent = ParserRuleContextHelper.GetParent<VBAParser.CallStmtContext>(reference.Context);
                 if (referenceParent == null)
@@ -136,50 +124,52 @@ namespace Rubberduck.Inspections.QuickFixes
                 }
 
                 var module = reference.QualifiedModuleName.Component.CodeModule;
+                var argList = CallStatement.GetArgumentList(referenceParent);
+                var paramNames = new List<string>();
+                var argsCall = string.Empty;
+                var argsCallOffset = 0;
+                if (argList != null)
                 {
-                    var argList = CallStatement.GetArgumentList(referenceParent);
-                    var paramNames = new List<string>();
-                    var argsCall = string.Empty;
-                    var argsCallOffset = 0;
-                    if (argList != null)
+                    argsCallOffset = argList.GetSelection().EndColumn - reference.Context.GetSelection().EndColumn;
+                    argsCall = argList.GetText();
+                    if (argList.argument() != null)
                     {
-                        argsCallOffset = argList.GetSelection().EndColumn - reference.Context.GetSelection().EndColumn;
-                        argsCall = argList.GetText();
-                        if (argList.argument() != null)
-                        {
-                            paramNames.AddRange(
-                                argList.argument().Select(p =>
+                        paramNames.AddRange(
+                            argList.argument().Select(p =>
+                            {
+                                if (p.positionalArgument() != null)
                                 {
-                                    if (p.positionalArgument() != null)
-                                    {
-                                        return p.positionalArgument().GetText();
-                                    }
-                                    if (p.namedArgument() != null)
-                                    {
-                                        return p.namedArgument().GetText();
-                                    }
-                                    return string.Empty;
-                                }).ToList());
-                        }
+                                    return p.positionalArgument().GetText();
+                                }
+                                if (p.namedArgument() != null)
+                                {
+                                    return p.namedArgument().GetText();
+                                }
+                                return string.Empty;
+                            }).ToList());
                     }
-                    var referenceText = reference.Context.GetText();
-                    var newCall =
-                        paramNames.ToList()
-                            .ElementAt(
-                                _argListQualifiedContext.Context.arg().ToList().IndexOf(_argQualifiedContext.Context)) +
-                        " = " + _subStmtQualifiedContext.Context.subroutineName().GetText() +
-                        "(" + argsCall + ")";
-
-                    var oldLines = module.GetLines(startLine, reference.Selection.LineCount);
-
-                    var newText = oldLines.Remove(reference.Selection.StartColumn - 1,
-                        referenceText.Length + argsCallOffset)
-                        .Insert(reference.Selection.StartColumn - 1, newCall);
-
-                    module.DeleteLines(startLine, reference.Selection.LineCount);
-                    module.InsertLines(startLine, newText);
                 }
+                var referenceText = reference.Context.GetText();
+                var newCall =
+                    paramNames.ToList()
+                        .ElementAt(
+                            parameterList.arg().ToList().IndexOf(arg)) +
+                    " = " + subStmt.subroutineName().GetText() +
+                    "(" + argsCall + ")";
+
+                var oldLines = module.GetLines(startLine, reference.Selection.LineCount);
+
+                var newText = oldLines.Remove(reference.Selection.StartColumn - 1,
+                        referenceText.Length + argsCallOffset)
+                    .Insert(reference.Selection.StartColumn - 1, newCall);
+
+                module.DeleteLines(startLine, reference.Selection.LineCount);
+                module.InsertLines(startLine, newText);
             }
         }
+
+        public bool CanFixInProcedure => false;
+        public bool CanFixInModule => false;
+        public bool CanFixInProject => false;
     }
 }
