@@ -118,7 +118,6 @@
     <Compile Include="QuickFixes\RemoveUnusedDeclarationQuickFix.cs" />
     <Compile Include="QuickFixes\RemoveUnusedParameterQuickFix.cs" />
     <Compile Include="QuickFixes\RenameDeclarationQuickFix.cs" />
-    <Compile Include="QuickFixes\RenameProjectQuickFix.cs" />
     <Compile Include="QuickFixes\RepaceEmptyStringLiteralStatementQuickFix.cs" />
     <Compile Include="QuickFixes\ReplaceGlobalModifierQuickFix.cs" />
     <Compile Include="QuickFixes\ReplaceObsoleteCommentMarkerQuickFix.cs" />
