@@ -95,42 +95,14 @@ namespace Rubberduck.Inspections.QuickFixes
 
         private void FixMethod(VBAParser.ArgContext context, QualifiedSelection qualifiedSelection)
         {
-            var parameter = context.GetText();
-            var argList = context.parent.GetText();
-
-            var module = qualifiedSelection.QualifiedName.Component.CodeModule;
+            var rewriter = _state.GetRewriter(qualifiedSelection.QualifiedName);
+            if (context.BYREF() != null)
             {
-                string result;
-                if (context.BYREF() != null)
-                {
-                    result = parameter.Replace(Tokens.ByRef, Tokens.ByVal);
-                }
-                else if (context.OPTIONAL() != null)
-                {
-                    result = parameter.Replace(Tokens.Optional, Tokens.Optional + ' ' + Tokens.ByVal);
-                }
-                else
-                {
-                    result = Tokens.ByVal + ' ' + parameter;
-                }
-
-                var startLine = 0;
-                var stopLine = 0;
-                try
-                {
-                    dynamic proc = context.parent.parent;
-                    startLine = proc.GetType().GetProperty("Start").GetValue(proc).Line;
-                    stopLine =  proc.GetType().GetProperty("Stop").GetValue(proc).Line;
-                }
-                catch { return; }
-
-                var code = module.GetLines(startLine, stopLine - startLine + 1);
-                result = code.Replace(argList, argList.Replace(parameter, result));
-
-                foreach (var line in result.Split(new[] { "\r\n" }, StringSplitOptions.None))
-                {
-                    module.ReplaceLine(startLine++, line);
-                }  
+                rewriter.Replace(context.BYREF(), Tokens.ByVal);
+            }
+            else
+            {
+                rewriter.InsertBefore(context.unrestrictedIdentifier().Start.TokenIndex, "ByVal ");
             }
         }
 

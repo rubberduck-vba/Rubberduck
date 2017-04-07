@@ -616,7 +616,7 @@ End Sub";
             var inspection = new ParameterCanBeByValInspection(state);
             new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -638,7 +638,7 @@ End Sub";
             var inspection = new ParameterCanBeByValInspection(state);
             new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -660,7 +660,7 @@ End Sub";
             var inspection = new ParameterCanBeByValInspection(state);
             new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -684,7 +684,7 @@ End Sub";
             var inspection = new ParameterCanBeByValInspection(state);
             new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -708,7 +708,7 @@ End Sub";
             var inspection = new ParameterCanBeByValInspection(state);
             new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -754,9 +754,9 @@ End Sub";
                 .AddComponent("Class2", ComponentType.ClassModule, inputCode3)
                 .Build();
 
-            var module1 = project.Object.VBComponents["IClass1"].CodeModule;
-            var module2 = project.Object.VBComponents["Class1"].CodeModule;
-            var module3 = project.Object.VBComponents["Class2"].CodeModule;
+            var component1 = project.Object.VBComponents["IClass1"];
+            var component2 = project.Object.VBComponents["Class1"];
+            var component3 = project.Object.VBComponents["Class2"];
             var vbe = builder.AddProject(project).Build();
 
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -764,9 +764,9 @@ End Sub";
             var inspection = new ParameterCanBeByValInspection(state);
             new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
-            Assert.AreEqual(expectedCode1, module1.Content());
-            Assert.AreEqual(expectedCode2, module2.Content());
-            Assert.AreEqual(expectedCode3, module3.Content());
+            Assert.AreEqual(expectedCode1, state.GetRewriter(component1).GetText());
+            Assert.AreEqual(expectedCode2, state.GetRewriter(component2).GetText());
+            Assert.AreEqual(expectedCode3, state.GetRewriter(component3).GetText());
         }
 
         [TestMethod]
@@ -810,9 +810,9 @@ End Sub";
                 .AddComponent("Class3", ComponentType.ClassModule, inputCode3)
                 .Build();
 
-            var module1 = project.Object.VBComponents["Class1"].CodeModule;
-            var module2 = project.Object.VBComponents["Class2"].CodeModule;
-            var module3 = project.Object.VBComponents["Class3"].CodeModule;
+            var component1 = project.Object.VBComponents["Class1"];
+            var component2 = project.Object.VBComponents["Class2"];
+            var component3 = project.Object.VBComponents["Class3"];
             var vbe = builder.AddProject(project).Build();
 
             var state = MockParser.CreateAndParse(vbe.Object);
@@ -820,9 +820,9 @@ End Sub";
             var inspection = new ParameterCanBeByValInspection(state);
             new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
-            Assert.AreEqual(expectedCode1, module1.Content());
-            Assert.AreEqual(expectedCode2, module2.Content());
-            Assert.AreEqual(expectedCode3, module3.Content());
+            Assert.AreEqual(expectedCode1, state.GetRewriter(component1).GetText());
+            Assert.AreEqual(expectedCode2, state.GetRewriter(component2).GetText());
+            Assert.AreEqual(expectedCode3, state.GetRewriter(component3).GetText());
         }
 
         [TestMethod]
@@ -872,7 +872,7 @@ End Sub";
             var inspection = new ParameterCanBeByValInspection(state);
             new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         //https://github.com/rubberduck-vba/Rubberduck/issues/2408
@@ -897,7 +897,7 @@ End Sub";
             var inspection = new ParameterCanBeByValInspection(state);
             new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         //https://github.com/rubberduck-vba/Rubberduck/issues/2408
@@ -932,7 +932,7 @@ End Sub";
             var inspection = new ParameterCanBeByValInspection(state);
             new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
