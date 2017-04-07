@@ -6,7 +6,7 @@ namespace Rubberduck.Parsing.VBA
 {
     public interface IModuleToModuleReferenceManager
     {
-        void AddModuleToModuleReference(QualifiedModuleName referencedModule, QualifiedModuleName referencingModule);
+        void AddModuleToModuleReference(QualifiedModuleName referencingModule, QualifiedModuleName referencedModule);
         void RemoveModuleToModuleReference(QualifiedModuleName referencedModule, QualifiedModuleName referencingModule);
         void ClearModuleToModuleReferencesFromModule(QualifiedModuleName referencingModule);
         void ClearModuleToModuleReferencesFromModule(IEnumerable<QualifiedModuleName> referencingModules);

@@ -89,11 +89,11 @@ namespace RubberduckTests.Parsing.Coordination
             var manager = GetNewTestModuleToModuleReferenceManager();
             var referencedTestModule = ModulesUsedInTheBaseTests[0];
             var referencingTestModule = ModulesUsedInTheBaseTests[1];
-            manager.AddModuleToModuleReference(referencedTestModule, referencingTestModule);
+            manager.AddModuleToModuleReference(referencingTestModule, referencedTestModule);
 
             var referencingModules = manager.ModulesReferencing(referencedTestModule);
 
-            Assert.IsTrue(referencingModules.Count() == 1);
+            Assert.AreEqual(1,referencingModules.Count());
             Assert.IsTrue(referencingModules.Contains(referencingTestModule));
         }
 
@@ -103,11 +103,11 @@ namespace RubberduckTests.Parsing.Coordination
             var manager = GetNewTestModuleToModuleReferenceManager();
             var referencedTestModule = ModulesUsedInTheBaseTests[0];
             var referencingTestModule = ModulesUsedInTheBaseTests[1];
-            manager.AddModuleToModuleReference(referencedTestModule, referencingTestModule);
+            manager.AddModuleToModuleReference(referencingTestModule, referencedTestModule);
 
             var referencedModules = manager.ModulesReferencedBy(referencingTestModule);
 
-            Assert.IsTrue(referencedModules.Count() == 1);
+            Assert.AreEqual(1,referencedModules.Count());
             Assert.IsTrue(referencedModules.Contains(referencedTestModule));
         }
 
@@ -118,12 +118,12 @@ namespace RubberduckTests.Parsing.Coordination
             var referencingTestModule1 = ModulesUsedInTheBaseTests[0];
             var referencingTestModule2 = ModulesUsedInTheBaseTests[1];
             var referencedTestModule = ModulesUsedInTheBaseTests[2];
-            manager.AddModuleToModuleReference(referencedTestModule, referencingTestModule1);
-            manager.AddModuleToModuleReference(referencedTestModule, referencingTestModule2);
+            manager.AddModuleToModuleReference(referencingTestModule1, referencedTestModule);
+            manager.AddModuleToModuleReference(referencingTestModule2, referencedTestModule);
 
             var referencingModules = manager.ModulesReferencing(referencedTestModule);
 
-            Assert.IsTrue(referencingModules.Count() == 2);
+            Assert.AreEqual(2, referencingModules.Count());
             Assert.IsTrue(referencingModules.Contains(referencingTestModule1));
             Assert.IsTrue(referencingModules.Contains(referencingTestModule2));
         }
@@ -135,12 +135,12 @@ namespace RubberduckTests.Parsing.Coordination
             var referencingTestModule = ModulesUsedInTheBaseTests[0];
             var referencedTestModule1 = ModulesUsedInTheBaseTests[1];
             var referencedTestModule2 = ModulesUsedInTheBaseTests[2];
-            manager.AddModuleToModuleReference(referencedTestModule1, referencingTestModule);
-            manager.AddModuleToModuleReference(referencedTestModule2, referencingTestModule);
+            manager.AddModuleToModuleReference(referencingTestModule, referencedTestModule1);
+            manager.AddModuleToModuleReference(referencingTestModule, referencedTestModule2);
 
             var referencedModules = manager.ModulesReferencedBy(referencingTestModule);
 
-            Assert.IsTrue(referencedModules.Count() == 2);
+            Assert.AreEqual(2, referencedModules.Count());
             Assert.IsTrue(referencedModules.Contains(referencedTestModule1));
             Assert.IsTrue(referencedModules.Contains(referencedTestModule2));
         }
@@ -151,12 +151,12 @@ namespace RubberduckTests.Parsing.Coordination
             var manager = GetNewTestModuleToModuleReferenceManager();
             var referencingTestModule = ModulesUsedInTheBaseTests[0];
             var referencedTestModule = ModulesUsedInTheBaseTests[1];
-            manager.AddModuleToModuleReference(referencedTestModule, referencingTestModule);
-            manager.AddModuleToModuleReference(referencedTestModule, referencingTestModule);
+            manager.AddModuleToModuleReference(referencingTestModule, referencedTestModule);
+            manager.AddModuleToModuleReference(referencingTestModule, referencedTestModule);
 
             var referencingModules = manager.ModulesReferencing(referencedTestModule);
 
-            Assert.IsTrue(referencingModules.Count() == 1);
+            Assert.AreEqual(1,referencingModules.Count());
         }
 
         [TestMethod]
@@ -165,12 +165,12 @@ namespace RubberduckTests.Parsing.Coordination
             var manager = GetNewTestModuleToModuleReferenceManager();
             var referencingTestModule = ModulesUsedInTheBaseTests[0];
             var referencedTestModule = ModulesUsedInTheBaseTests[1];
-            manager.AddModuleToModuleReference(referencedTestModule, referencingTestModule);
-            manager.AddModuleToModuleReference(referencedTestModule, referencingTestModule);
+            manager.AddModuleToModuleReference(referencingTestModule, referencedTestModule);
+            manager.AddModuleToModuleReference(referencingTestModule, referencedTestModule);
 
             var referencedModules = manager.ModulesReferencedBy(referencingTestModule);
 
-            Assert.IsTrue(referencedModules.Count() == 1);
+            Assert.AreEqual(1, referencedModules.Count());
         }
 
         [TestMethod]
@@ -180,7 +180,7 @@ namespace RubberduckTests.Parsing.Coordination
             var referencedTestModule = ModulesUsedInTheBaseTests[0];
             var referencingTestModule = ModulesUsedInTheBaseTests[1];
             var notReferencedTestModule = referencingTestModule;
-            manager.AddModuleToModuleReference(referencedTestModule, referencingTestModule);
+            manager.AddModuleToModuleReference(referencingTestModule, referencedTestModule);
 
             var referencingModules = manager.ModulesReferencing(notReferencedTestModule);
 
@@ -194,7 +194,7 @@ namespace RubberduckTests.Parsing.Coordination
             var referencedTestModule = ModulesUsedInTheBaseTests[0];
             var referencingTestModule = ModulesUsedInTheBaseTests[1];
             var notReferencingModule = referencedTestModule;
-            manager.AddModuleToModuleReference(referencedTestModule, referencingTestModule);
+            manager.AddModuleToModuleReference(referencingTestModule, referencedTestModule);
 
             var referencedModules = manager.ModulesReferencedBy(notReferencingModule);
 
@@ -209,12 +209,12 @@ namespace RubberduckTests.Parsing.Coordination
             var referencingTestModule2 = ModulesUsedInTheBaseTests[1];
             var referencedTestModule1 = ModulesUsedInTheBaseTests[2];
             var referencedTestModule2 = ModulesUsedInTheBaseTests[3];
-            manager.AddModuleToModuleReference(referencedTestModule1, referencingTestModule1);
-            manager.AddModuleToModuleReference(referencedTestModule2, referencingTestModule2);
+            manager.AddModuleToModuleReference(referencingTestModule1, referencedTestModule1);
+            manager.AddModuleToModuleReference(referencingTestModule2, referencedTestModule2);
 
             var referencingModules = manager.ModulesReferencing(referencedTestModule1);
 
-            Assert.IsTrue(referencingModules.Count() == 1);
+            Assert.AreEqual(1, referencingModules.Count());
             Assert.IsFalse(referencingModules.Contains(referencingTestModule2));
             Assert.IsTrue(referencingModules.Contains(referencingTestModule1));
         }
@@ -227,12 +227,12 @@ namespace RubberduckTests.Parsing.Coordination
             var referencingTestModule2 = ModulesUsedInTheBaseTests[1];
             var referencedTestModule1 = ModulesUsedInTheBaseTests[2];
             var referencedTestModule2 = ModulesUsedInTheBaseTests[3];
-            manager.AddModuleToModuleReference(referencedTestModule1, referencingTestModule1);
-            manager.AddModuleToModuleReference(referencedTestModule2, referencingTestModule2);
+            manager.AddModuleToModuleReference(referencingTestModule1, referencedTestModule1);
+            manager.AddModuleToModuleReference(referencingTestModule2, referencedTestModule2);
 
             var referencedModules = manager.ModulesReferencedBy(referencingTestModule1);
 
-            Assert.IsTrue(referencedModules.Count() == 1);
+            Assert.AreEqual(1, referencedModules.Count());
             Assert.IsFalse(referencedModules.Contains(referencedTestModule2));
             Assert.IsTrue(referencedModules.Contains(referencedTestModule1));
         }
@@ -250,15 +250,15 @@ namespace RubberduckTests.Parsing.Coordination
             var referencedTestModule1 = ModulesUsedInTheBaseTests[3];
             var referencedTestModule2 = ModulesUsedInTheBaseTests[4];
             var referencedTestModule3 = ModulesUsedInTheBaseTests[5];
-            manager.AddModuleToModuleReference(referencedTestModule1, referencingTestModule1);
-            manager.AddModuleToModuleReference(referencedTestModule2, referencingTestModule2);
-            manager.AddModuleToModuleReference(referencedTestModule3, referencingTestModule3);
-            manager.AddModuleToModuleReference(referencedTestModule2, referencingTestModule1);
+            manager.AddModuleToModuleReference(referencingTestModule1, referencedTestModule1);
+            manager.AddModuleToModuleReference(referencingTestModule2, referencedTestModule2);
+            manager.AddModuleToModuleReference(referencingTestModule3, referencedTestModule3);
+            manager.AddModuleToModuleReference(referencingTestModule1, referencedTestModule2);
 
             var referencedModules = new List<QualifiedModuleName> { referencedTestModule1, referencedTestModule2 };
             var referencingModules = manager.ModulesReferencingAny(referencedModules);
 
-            Assert.IsTrue(referencingModules.Count() == 2);
+            Assert.AreEqual(2, referencingModules.Count());
             Assert.IsTrue(referencingModules.Contains(referencingTestModule1));
             Assert.IsTrue(referencingModules.Contains(referencingTestModule2));
             Assert.IsFalse(referencingModules.Contains(referencingTestModule3));
@@ -274,15 +274,15 @@ namespace RubberduckTests.Parsing.Coordination
             var referencedTestModule1 = ModulesUsedInTheBaseTests[3];
             var referencedTestModule2 = ModulesUsedInTheBaseTests[4];
             var referencedTestModule3 = ModulesUsedInTheBaseTests[5];
-            manager.AddModuleToModuleReference(referencedTestModule1, referencingTestModule1);
-            manager.AddModuleToModuleReference(referencedTestModule2, referencingTestModule2);
-            manager.AddModuleToModuleReference(referencedTestModule3, referencingTestModule3);
-            manager.AddModuleToModuleReference(referencedTestModule2, referencingTestModule1);
+            manager.AddModuleToModuleReference(referencingTestModule1, referencedTestModule1);
+            manager.AddModuleToModuleReference(referencingTestModule2, referencedTestModule2);
+            manager.AddModuleToModuleReference(referencingTestModule3, referencedTestModule3);
+            manager.AddModuleToModuleReference(referencingTestModule1, referencedTestModule2);
 
             var referencingModules = new List<QualifiedModuleName> { referencingTestModule1, referencingTestModule2 };
             var referencedModules = manager.ModulesReferencedByAny(referencingModules);
 
-            Assert.IsTrue(referencedModules.Count() == 2);
+            Assert.AreEqual(2, referencedModules.Count());
             Assert.IsTrue(referencedModules.Contains(referencedTestModule1));
             Assert.IsTrue(referencedModules.Contains(referencedTestModule2));
             Assert.IsFalse(referencedModules.Contains(referencedTestModule3));
@@ -298,10 +298,10 @@ namespace RubberduckTests.Parsing.Coordination
             var referencedTestModule1 = ModulesUsedInTheBaseTests[3];
             var referencedTestModule2 = ModulesUsedInTheBaseTests[4];
             var referencedTestModule3 = ModulesUsedInTheBaseTests[5];
-            manager.AddModuleToModuleReference(referencedTestModule1, referencingTestModule1);
-            manager.AddModuleToModuleReference(referencedTestModule2, referencingTestModule2);
-            manager.AddModuleToModuleReference(referencedTestModule3, referencingTestModule3);
-            manager.AddModuleToModuleReference(referencedTestModule2, referencingTestModule1);
+            manager.AddModuleToModuleReference(referencingTestModule1, referencedTestModule1);
+            manager.AddModuleToModuleReference(referencingTestModule2, referencedTestModule2);
+            manager.AddModuleToModuleReference(referencingTestModule3, referencedTestModule3);
+            manager.AddModuleToModuleReference(referencingTestModule1, referencedTestModule2);
 
             var referencedModules = new List<QualifiedModuleName>();
             var referencingModules = manager.ModulesReferencingAny(referencedModules);
@@ -319,10 +319,10 @@ namespace RubberduckTests.Parsing.Coordination
             var referencedTestModule1 = ModulesUsedInTheBaseTests[3];
             var referencedTestModule2 = ModulesUsedInTheBaseTests[4];
             var referencedTestModule3 = ModulesUsedInTheBaseTests[5];
-            manager.AddModuleToModuleReference(referencedTestModule1, referencingTestModule1);
-            manager.AddModuleToModuleReference(referencedTestModule2, referencingTestModule2);
-            manager.AddModuleToModuleReference(referencedTestModule3, referencingTestModule3);
-            manager.AddModuleToModuleReference(referencedTestModule2, referencingTestModule1);
+            manager.AddModuleToModuleReference(referencingTestModule1, referencedTestModule1);
+            manager.AddModuleToModuleReference(referencingTestModule2, referencedTestModule2);
+            manager.AddModuleToModuleReference(referencingTestModule3, referencedTestModule3);
+            manager.AddModuleToModuleReference(referencingTestModule1, referencedTestModule2);
 
             var referencingModules = new List<QualifiedModuleName>();
             var referencedModules = manager.ModulesReferencedByAny(referencingModules);
@@ -339,8 +339,8 @@ namespace RubberduckTests.Parsing.Coordination
             var manager = GetNewTestModuleToModuleReferenceManager();
             var referencingTestModule = ModulesUsedInTheBaseTests[0];
             var referencedTestModule = ModulesUsedInTheBaseTests[1];
-            manager.AddModuleToModuleReference(referencedTestModule, referencingTestModule);
-            manager.AddModuleToModuleReference(referencedTestModule, referencingTestModule);
+            manager.AddModuleToModuleReference(referencingTestModule, referencedTestModule);
+            manager.AddModuleToModuleReference(referencingTestModule, referencedTestModule);
             manager.RemoveModuleToModuleReference(referencedTestModule, referencingTestModule);
 
             var referencingModules = manager.ModulesReferencing(referencedTestModule);
@@ -354,8 +354,8 @@ namespace RubberduckTests.Parsing.Coordination
             var manager = GetNewTestModuleToModuleReferenceManager();
             var referencingTestModule = ModulesUsedInTheBaseTests[0];
             var referencedTestModule = ModulesUsedInTheBaseTests[1];
-            manager.AddModuleToModuleReference(referencedTestModule, referencingTestModule);
-            manager.AddModuleToModuleReference(referencedTestModule, referencingTestModule);
+            manager.AddModuleToModuleReference(referencingTestModule, referencedTestModule);
+            manager.AddModuleToModuleReference(referencingTestModule, referencedTestModule);
             manager.RemoveModuleToModuleReference(referencedTestModule, referencingTestModule);
 
             var referencedModules = manager.ModulesReferencedBy(referencingTestModule);
@@ -370,13 +370,13 @@ namespace RubberduckTests.Parsing.Coordination
             var referencingTestModule = ModulesUsedInTheBaseTests[0];
             var referencedTestModule = ModulesUsedInTheBaseTests[1];
             var otherReferencedTestModule = ModulesUsedInTheBaseTests[2];
-            manager.AddModuleToModuleReference(referencedTestModule, referencingTestModule);
-            manager.AddModuleToModuleReference(otherReferencedTestModule, referencingTestModule);
+            manager.AddModuleToModuleReference(referencingTestModule, referencedTestModule);
+            manager.AddModuleToModuleReference(referencingTestModule, otherReferencedTestModule);
             manager.RemoveModuleToModuleReference(referencedTestModule, referencingTestModule);
 
             var referencingModules = manager.ModulesReferencing(otherReferencedTestModule);
 
-            Assert.IsTrue(referencingModules.Count() == 1);
+            Assert.AreEqual(1, referencingModules.Count());
             Assert.IsTrue(referencingModules.Contains(referencingTestModule));
         }
 
@@ -387,13 +387,13 @@ namespace RubberduckTests.Parsing.Coordination
             var referencingTestModule = ModulesUsedInTheBaseTests[0];
             var referencedTestModule = ModulesUsedInTheBaseTests[1];
             var otherReferencingTestModule = ModulesUsedInTheBaseTests[2];
-            manager.AddModuleToModuleReference(referencedTestModule, referencingTestModule);
-            manager.AddModuleToModuleReference(referencedTestModule, otherReferencingTestModule);
+            manager.AddModuleToModuleReference(referencingTestModule, referencedTestModule);
+            manager.AddModuleToModuleReference(otherReferencingTestModule, referencedTestModule);
             manager.RemoveModuleToModuleReference(referencedTestModule, referencingTestModule);
 
             var referencedModules = manager.ModulesReferencedBy(otherReferencingTestModule);
 
-            Assert.IsTrue(referencedModules.Count() == 1);
+            Assert.AreEqual(1, referencedModules.Count());
             Assert.IsTrue(referencedModules.Contains(referencedTestModule));
         }
 
@@ -404,13 +404,13 @@ namespace RubberduckTests.Parsing.Coordination
             var referencingTestModule = ModulesUsedInTheBaseTests[0];
             var referencedTestModule = ModulesUsedInTheBaseTests[1];
             var otherReferencingTestModule = ModulesUsedInTheBaseTests[2];
-            manager.AddModuleToModuleReference(referencedTestModule, referencingTestModule);
-            manager.AddModuleToModuleReference(referencedTestModule, otherReferencingTestModule);
+            manager.AddModuleToModuleReference(referencingTestModule, referencedTestModule);
+            manager.AddModuleToModuleReference(otherReferencingTestModule, referencedTestModule);
             manager.RemoveModuleToModuleReference(referencedTestModule, referencingTestModule);
 
             var referencingModules = manager.ModulesReferencing(referencedTestModule);
 
-            Assert.IsTrue(referencingModules.Count() == 1);
+            Assert.AreEqual(1, referencingModules.Count());
             Assert.IsTrue(referencingModules.Contains(otherReferencingTestModule));
         }
 
@@ -421,13 +421,13 @@ namespace RubberduckTests.Parsing.Coordination
             var referencingTestModule = ModulesUsedInTheBaseTests[0];
             var referencedTestModule = ModulesUsedInTheBaseTests[1];
             var otherReferencedTestModule = ModulesUsedInTheBaseTests[2];
-            manager.AddModuleToModuleReference(referencedTestModule, referencingTestModule);
-            manager.AddModuleToModuleReference(otherReferencedTestModule, referencingTestModule);
+            manager.AddModuleToModuleReference(referencingTestModule, referencedTestModule);
+            manager.AddModuleToModuleReference(referencingTestModule, otherReferencedTestModule);
             manager.RemoveModuleToModuleReference(referencedTestModule, referencingTestModule);
 
             var referencedModules = manager.ModulesReferencedBy(referencingTestModule);
 
-            Assert.IsTrue(referencedModules.Count() == 1);
+            Assert.AreEqual(1, referencedModules.Count());
             Assert.IsTrue(referencedModules.Contains(otherReferencedTestModule));
         }
 
@@ -441,8 +441,8 @@ namespace RubberduckTests.Parsing.Coordination
             var referencingTestModule = ModulesUsedInTheBaseTests[0];
             var referencedTestModule1 = ModulesUsedInTheBaseTests[1];
             var referencedTestModule2 = ModulesUsedInTheBaseTests[2];
-            manager.AddModuleToModuleReference(referencedTestModule1, referencingTestModule);
-            manager.AddModuleToModuleReference(referencedTestModule2, referencingTestModule);
+            manager.AddModuleToModuleReference(referencingTestModule, referencedTestModule1);
+            manager.AddModuleToModuleReference(referencingTestModule, referencedTestModule2);
             manager.ClearModuleToModuleReferencesFromModule(referencingTestModule);
 
             var referencedModules = manager.ModulesReferencedBy(referencingTestModule);
@@ -457,8 +457,8 @@ namespace RubberduckTests.Parsing.Coordination
             var referencingTestModule = ModulesUsedInTheBaseTests[0];
             var referencedTestModule1 = ModulesUsedInTheBaseTests[1];
             var referencedTestModule2 = ModulesUsedInTheBaseTests[2];
-            manager.AddModuleToModuleReference(referencedTestModule1, referencingTestModule);
-            manager.AddModuleToModuleReference(referencedTestModule2, referencingTestModule);
+            manager.AddModuleToModuleReference(referencingTestModule, referencedTestModule1);
+            manager.AddModuleToModuleReference(referencingTestModule, referencedTestModule2);
             manager.ClearModuleToModuleReferencesFromModule(referencingTestModule);
 
             var referencingModules1 = manager.ModulesReferencing(referencedTestModule1);
@@ -475,8 +475,8 @@ namespace RubberduckTests.Parsing.Coordination
             var referencedTestModule = ModulesUsedInTheBaseTests[0];
             var referencingTestModule1 = ModulesUsedInTheBaseTests[1];
             var referencingTestModule2 = ModulesUsedInTheBaseTests[2];
-            manager.AddModuleToModuleReference(referencedTestModule, referencingTestModule1);
-            manager.AddModuleToModuleReference(referencedTestModule, referencingTestModule2);
+            manager.AddModuleToModuleReference(referencingTestModule1, referencedTestModule);
+            manager.AddModuleToModuleReference(referencingTestModule2, referencedTestModule);
             manager.ClearModuleToModuleReferencesToModule(referencedTestModule);
 
             var referencedModules1 = manager.ModulesReferencedBy(referencingTestModule1);
@@ -493,8 +493,8 @@ namespace RubberduckTests.Parsing.Coordination
             var referencedTestModule = ModulesUsedInTheBaseTests[0];
             var referencingTestModule1 = ModulesUsedInTheBaseTests[1];
             var referencingTestModule2 = ModulesUsedInTheBaseTests[2];
-            manager.AddModuleToModuleReference(referencedTestModule, referencingTestModule1);
-            manager.AddModuleToModuleReference(referencedTestModule, referencingTestModule2);
+            manager.AddModuleToModuleReference(referencingTestModule1, referencedTestModule);
+            manager.AddModuleToModuleReference(referencingTestModule2, referencedTestModule);
             manager.ClearModuleToModuleReferencesToModule(referencedTestModule);
 
             var referencingModules = manager.ModulesReferencing(referencedTestModule);
@@ -511,15 +511,15 @@ namespace RubberduckTests.Parsing.Coordination
             var referencedTestModule2 = ModulesUsedInTheBaseTests[2];
             var otherReferencingTestModule = ModulesUsedInTheBaseTests[3];
             var otherReferencedTestModule = ModulesUsedInTheBaseTests[4];
-            manager.AddModuleToModuleReference(referencedTestModule1, referencingTestModule);
-            manager.AddModuleToModuleReference(referencedTestModule2, referencingTestModule);
-            manager.AddModuleToModuleReference(referencedTestModule2, otherReferencingTestModule);
-            manager.AddModuleToModuleReference(otherReferencedTestModule, otherReferencingTestModule);
+            manager.AddModuleToModuleReference(referencingTestModule, referencedTestModule1);
+            manager.AddModuleToModuleReference(referencingTestModule, referencedTestModule2);
+            manager.AddModuleToModuleReference(otherReferencingTestModule, referencedTestModule2);
+            manager.AddModuleToModuleReference(otherReferencingTestModule, otherReferencedTestModule);
             manager.ClearModuleToModuleReferencesFromModule(referencingTestModule);
 
             var referencedModules = manager.ModulesReferencedBy(otherReferencingTestModule);
 
-            Assert.IsTrue(referencedModules.Count() == 2);
+            Assert.AreEqual(2, referencedModules.Count());
             Assert.IsTrue(referencedModules.Contains(referencedTestModule2));
             Assert.IsTrue(referencedModules.Contains(otherReferencedTestModule));
         }
@@ -533,18 +533,18 @@ namespace RubberduckTests.Parsing.Coordination
             var referencedTestModule2 = ModulesUsedInTheBaseTests[2];
             var otherReferencingTestModule = ModulesUsedInTheBaseTests[3];
             var otherReferencedTestModule = ModulesUsedInTheBaseTests[4];
-            manager.AddModuleToModuleReference(referencedTestModule1, referencingTestModule);
-            manager.AddModuleToModuleReference(referencedTestModule2, referencingTestModule);
-            manager.AddModuleToModuleReference(referencedTestModule2, otherReferencingTestModule);
-            manager.AddModuleToModuleReference(otherReferencedTestModule, otherReferencingTestModule);
+            manager.AddModuleToModuleReference(referencingTestModule, referencedTestModule1);
+            manager.AddModuleToModuleReference(referencingTestModule, referencedTestModule2);
+            manager.AddModuleToModuleReference(otherReferencingTestModule, referencedTestModule2);
+            manager.AddModuleToModuleReference(otherReferencingTestModule, otherReferencedTestModule);
             manager.ClearModuleToModuleReferencesFromModule(referencingTestModule);
 
             var referencingModules = manager.ModulesReferencing(referencedTestModule2);
             var otherReferencingModules = manager.ModulesReferencing(otherReferencedTestModule);
 
-            Assert.IsTrue(referencingModules.Count() == 1);
+            Assert.AreEqual(1, referencingModules.Count());
             Assert.IsTrue(referencingModules.Contains(otherReferencingTestModule));
-            Assert.IsTrue(otherReferencingModules.Count() == 1);
+            Assert.AreEqual(1, otherReferencingModules.Count());
             Assert.IsTrue(otherReferencingModules.Contains(otherReferencingTestModule));
         }
 
@@ -557,18 +557,18 @@ namespace RubberduckTests.Parsing.Coordination
             var referencingTestModule2 = ModulesUsedInTheBaseTests[2];
             var otherReferencingTestModule = ModulesUsedInTheBaseTests[3];
             var otherReferencedTestModule = ModulesUsedInTheBaseTests[4];
-            manager.AddModuleToModuleReference(referencedTestModule, referencingTestModule1);
-            manager.AddModuleToModuleReference(referencedTestModule, referencingTestModule2);
-            manager.AddModuleToModuleReference(otherReferencedTestModule, referencingTestModule2);
-            manager.AddModuleToModuleReference(otherReferencedTestModule, otherReferencingTestModule);
+            manager.AddModuleToModuleReference(referencingTestModule1, referencedTestModule);
+            manager.AddModuleToModuleReference(referencingTestModule2, referencedTestModule);
+            manager.AddModuleToModuleReference(referencingTestModule2, otherReferencedTestModule);
+            manager.AddModuleToModuleReference(otherReferencingTestModule, otherReferencedTestModule);
             manager.ClearModuleToModuleReferencesToModule(referencedTestModule);
 
             var referencedModules = manager.ModulesReferencedBy(referencingTestModule2);
             var otherReferencedModules = manager.ModulesReferencedBy(otherReferencingTestModule);
 
-            Assert.IsTrue(referencedModules.Count() == 1);
+            Assert.AreEqual(1, referencedModules.Count());
             Assert.IsTrue(referencedModules.Contains(otherReferencedTestModule));
-            Assert.IsTrue(otherReferencedModules.Count() == 1);
+            Assert.AreEqual(1, otherReferencedModules.Count());
             Assert.IsTrue(otherReferencedModules.Contains(otherReferencedTestModule));
         }
 
@@ -581,15 +581,15 @@ namespace RubberduckTests.Parsing.Coordination
             var referencingTestModule2 = ModulesUsedInTheBaseTests[2];
             var otherReferencingTestModule = ModulesUsedInTheBaseTests[3];
             var otherReferencedTestModule = ModulesUsedInTheBaseTests[4];
-            manager.AddModuleToModuleReference(referencedTestModule, referencingTestModule1);
-            manager.AddModuleToModuleReference(referencedTestModule, referencingTestModule2);
-            manager.AddModuleToModuleReference(otherReferencedTestModule, referencingTestModule2);
-            manager.AddModuleToModuleReference(otherReferencedTestModule, otherReferencingTestModule);
+            manager.AddModuleToModuleReference(referencingTestModule1, referencedTestModule);
+            manager.AddModuleToModuleReference(referencingTestModule2, referencedTestModule);
+            manager.AddModuleToModuleReference(referencingTestModule2, otherReferencedTestModule);
+            manager.AddModuleToModuleReference(otherReferencingTestModule, otherReferencedTestModule);
             manager.ClearModuleToModuleReferencesToModule(referencedTestModule);
 
             var referencingModules = manager.ModulesReferencing(otherReferencedTestModule);
 
-            Assert.IsTrue(referencingModules.Count() == 2);
+            Assert.AreEqual(2, referencingModules.Count());
             Assert.IsTrue(referencingModules.Contains(referencingTestModule2));
             Assert.IsTrue(referencingModules.Contains(otherReferencingTestModule));
         }
@@ -607,11 +607,11 @@ namespace RubberduckTests.Parsing.Coordination
             var referencedTestModule2 = ModulesUsedInTheBaseTests[3];
             var otherReferencingTestModule = ModulesUsedInTheBaseTests[4];
             var otherReferencedTestModule = ModulesUsedInTheBaseTests[5];
-            manager.AddModuleToModuleReference(referencedTestModule1, referencingTestModule1);
-            manager.AddModuleToModuleReference(referencedTestModule2, referencingTestModule1);
-            manager.AddModuleToModuleReference(referencedTestModule1, referencingTestModule2);
-            manager.AddModuleToModuleReference(referencedTestModule2, otherReferencingTestModule);
-            manager.AddModuleToModuleReference(otherReferencedTestModule, otherReferencingTestModule);
+            manager.AddModuleToModuleReference(referencingTestModule1, referencedTestModule1);
+            manager.AddModuleToModuleReference(referencingTestModule1, referencedTestModule2);
+            manager.AddModuleToModuleReference(referencingTestModule2, referencedTestModule1);
+            manager.AddModuleToModuleReference(otherReferencingTestModule, referencedTestModule2);
+            manager.AddModuleToModuleReference(otherReferencingTestModule, otherReferencedTestModule);
             var modulesToClearFor = new List<QualifiedModuleName> { referencingTestModule1, referencingTestModule2 };
             manager.ClearModuleToModuleReferencesFromModule(modulesToClearFor);
 
@@ -619,7 +619,7 @@ namespace RubberduckTests.Parsing.Coordination
             var referencedModules = manager.ModulesReferencedByAny(modulesToClearFor);
 
             Assert.IsFalse(referencedModules.Any());
-            Assert.IsTrue(otherReferencedModules.Count() == 2);
+            Assert.AreEqual(2, otherReferencedModules.Count());
             Assert.IsTrue(otherReferencedModules.Contains(referencedTestModule2));
             Assert.IsTrue(otherReferencedModules.Contains(otherReferencedTestModule));
         }
@@ -634,11 +634,11 @@ namespace RubberduckTests.Parsing.Coordination
             var referencedTestModule2 = ModulesUsedInTheBaseTests[3];
             var otherReferencingTestModule = ModulesUsedInTheBaseTests[4];
             var otherReferencedTestModule = ModulesUsedInTheBaseTests[5];
-            manager.AddModuleToModuleReference(referencedTestModule1, referencingTestModule1);
-            manager.AddModuleToModuleReference(referencedTestModule2, referencingTestModule1);
-            manager.AddModuleToModuleReference(referencedTestModule1, referencingTestModule2);
-            manager.AddModuleToModuleReference(referencedTestModule2, otherReferencingTestModule);
-            manager.AddModuleToModuleReference(otherReferencedTestModule, otherReferencingTestModule);
+            manager.AddModuleToModuleReference(referencingTestModule1, referencedTestModule1);
+            manager.AddModuleToModuleReference(referencingTestModule1, referencedTestModule2);
+            manager.AddModuleToModuleReference(referencingTestModule2, referencedTestModule1);
+            manager.AddModuleToModuleReference(otherReferencingTestModule, referencedTestModule2);
+            manager.AddModuleToModuleReference(otherReferencingTestModule, otherReferencedTestModule);
             var modulesToClearFor = new List<QualifiedModuleName> { referencingTestModule1, referencingTestModule2 };
             manager.ClearModuleToModuleReferencesFromModule(modulesToClearFor);
 
@@ -647,9 +647,9 @@ namespace RubberduckTests.Parsing.Coordination
             var otherReferencingModules = manager.ModulesReferencing(otherReferencedTestModule);
 
             Assert.IsFalse(referencingModules1.Any());
-            Assert.IsTrue(referencingModules2.Count() == 1);
+            Assert.AreEqual(1, referencingModules2.Count());
             Assert.IsTrue(referencingModules2.Contains(otherReferencingTestModule));
-            Assert.IsTrue(otherReferencingModules.Count() == 1);
+            Assert.AreEqual(1, otherReferencingModules.Count());
             Assert.IsTrue(otherReferencingModules.Contains(otherReferencingTestModule));
         }
 
@@ -664,22 +664,22 @@ namespace RubberduckTests.Parsing.Coordination
             var referencingTestModule2 = ModulesUsedInTheBaseTests[3];
             var otherReferencingTestModule = ModulesUsedInTheBaseTests[4];
             var otherReferencedTestModule = ModulesUsedInTheBaseTests[5];
-            manager.AddModuleToModuleReference(referencedTestModule1, referencingTestModule1);
-            manager.AddModuleToModuleReference(referencedTestModule1, referencingTestModule2);
-            manager.AddModuleToModuleReference(referencedTestModule2, referencingTestModule1);
-            manager.AddModuleToModuleReference(otherReferencedTestModule, referencingTestModule2);
-            manager.AddModuleToModuleReference(otherReferencedTestModule, otherReferencingTestModule);
+            manager.AddModuleToModuleReference(referencingTestModule1, referencedTestModule1);
+            manager.AddModuleToModuleReference(referencingTestModule2, referencedTestModule1);
+            manager.AddModuleToModuleReference(referencingTestModule1, referencedTestModule2);
+            manager.AddModuleToModuleReference(referencingTestModule2, otherReferencedTestModule);
+            manager.AddModuleToModuleReference(otherReferencingTestModule, otherReferencedTestModule);
             var modulesToClearFor = new List<QualifiedModuleName> { referencedTestModule1, referencedTestModule2 };
             manager.ClearModuleToModuleReferencesToModule(modulesToClearFor);
 
-            var referencedModules1 = manager.ModulesReferencedBy(referencingTestModule2);
+            var referencedModules1 = manager.ModulesReferencedBy(referencingTestModule1);
             var referencedModules2 = manager.ModulesReferencedBy(referencingTestModule2);
             var otherReferencedModules = manager.ModulesReferencedBy(otherReferencingTestModule);
 
             Assert.IsFalse(referencedModules1.Any());
-            Assert.IsTrue(referencedModules2.Count() == 1);
+            Assert.AreEqual(1, referencedModules2.Count());
             Assert.IsTrue(referencedModules2.Contains(otherReferencedTestModule));
-            Assert.IsTrue(otherReferencedModules.Count() == 1);
+            Assert.AreEqual(1, otherReferencedModules.Count());
             Assert.IsTrue(otherReferencedModules.Contains(otherReferencedTestModule));
         }
 
@@ -693,11 +693,11 @@ namespace RubberduckTests.Parsing.Coordination
             var referencingTestModule2 = ModulesUsedInTheBaseTests[3];
             var otherReferencingTestModule = ModulesUsedInTheBaseTests[4];
             var otherReferencedTestModule = ModulesUsedInTheBaseTests[5];
-            manager.AddModuleToModuleReference(referencedTestModule1, referencingTestModule1);
-            manager.AddModuleToModuleReference(referencedTestModule1, referencingTestModule2);
-            manager.AddModuleToModuleReference(referencedTestModule2, referencingTestModule1);
-            manager.AddModuleToModuleReference(otherReferencedTestModule, referencingTestModule2);
-            manager.AddModuleToModuleReference(otherReferencedTestModule, otherReferencingTestModule);
+            manager.AddModuleToModuleReference(referencingTestModule1, referencedTestModule1);
+            manager.AddModuleToModuleReference(referencingTestModule2, referencedTestModule1);
+            manager.AddModuleToModuleReference(referencingTestModule1, referencedTestModule2);
+            manager.AddModuleToModuleReference(referencingTestModule2, otherReferencedTestModule);
+            manager.AddModuleToModuleReference(otherReferencingTestModule, otherReferencedTestModule);
             var modulesToClearFor = new List<QualifiedModuleName> { referencedTestModule1, referencedTestModule2 };
             manager.ClearModuleToModuleReferencesToModule(modulesToClearFor);
 
@@ -705,7 +705,7 @@ namespace RubberduckTests.Parsing.Coordination
             var referencingModules = manager.ModulesReferencingAny(modulesToClearFor);
 
             Assert.IsFalse(referencingModules.Any());
-            Assert.IsTrue(otherReferencingModules.Count() == 2);
+            Assert.AreEqual(2, otherReferencingModules.Count());
             Assert.IsTrue(otherReferencingModules.Contains(referencingTestModule2));
             Assert.IsTrue(otherReferencingModules.Contains(otherReferencingTestModule));
         }
@@ -716,16 +716,16 @@ namespace RubberduckTests.Parsing.Coordination
             var manager = GetNewTestModuleToModuleReferenceManager();
             var referencingTestModule = ModulesUsedInTheBaseTests[0];
             var referencedTestModule = ModulesUsedInTheBaseTests[1];
-            manager.AddModuleToModuleReference(referencedTestModule, referencingTestModule);
+            manager.AddModuleToModuleReference(referencingTestModule, referencedTestModule);
             var modulesToClearFor = new List<QualifiedModuleName>();
             manager.ClearModuleToModuleReferencesFromModule(modulesToClearFor);
 
             var referencingModules = manager.ModulesReferencing(referencedTestModule);
             var referencedgModules = manager.ModulesReferencedBy(referencingTestModule);
 
-            Assert.IsTrue(referencingModules.Count() == 1);
+            Assert.AreEqual(1, referencingModules.Count());
             Assert.IsTrue(referencingModules.Contains(referencingTestModule));
-            Assert.IsTrue(referencedgModules.Count() == 1);
+            Assert.AreEqual(1, referencedgModules.Count());
             Assert.IsTrue(referencedgModules.Contains(referencedTestModule));
         }
 
@@ -736,16 +736,16 @@ namespace RubberduckTests.Parsing.Coordination
             var manager = GetNewTestModuleToModuleReferenceManager();
             var referencingTestModule = ModulesUsedInTheBaseTests[0];
             var referencedTestModule = ModulesUsedInTheBaseTests[1];
-            manager.AddModuleToModuleReference(referencedTestModule, referencingTestModule);
+            manager.AddModuleToModuleReference(referencingTestModule, referencedTestModule);
             var modulesToClearFor = new List<QualifiedModuleName>();
             manager.ClearModuleToModuleReferencesToModule(modulesToClearFor);
 
             var referencingModules = manager.ModulesReferencing(referencedTestModule);
             var referencedgModules = manager.ModulesReferencedBy(referencingTestModule);
 
-            Assert.IsTrue(referencingModules.Count() == 1);
+            Assert.AreEqual(1, referencingModules.Count());
             Assert.IsTrue(referencingModules.Contains(referencingTestModule));
-            Assert.IsTrue(referencedgModules.Count() == 1);
+            Assert.AreEqual(1, referencedgModules.Count());
             Assert.IsTrue(referencedgModules.Contains(referencedTestModule));
         }
     }

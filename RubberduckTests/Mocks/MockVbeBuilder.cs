@@ -87,6 +87,12 @@ namespace RubberduckTests.Mocks
             return result;
         }
 
+        public MockProjectBuilder ProjectBuilder(string name, string filename, string projectId, ProjectProtection protection)
+        {
+            var result = new MockProjectBuilder(name, filename, projectId, protection, () => _vbe.Object, this);
+            return result;
+        }
+
         /// <summary>
         /// Gets the mock <see cref="VBE"/> instance.
         /// </summary>

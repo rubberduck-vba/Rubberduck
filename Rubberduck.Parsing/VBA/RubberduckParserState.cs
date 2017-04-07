@@ -1013,7 +1013,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public void AddModuleToModuleReference(QualifiedModuleName referencedModule, QualifiedModuleName referencingModule)
+        public void AddModuleToModuleReference(QualifiedModuleName referencingModule, QualifiedModuleName referencedModule)
         {
             ModuleState referencedModuleState;
             ModuleState referencingModuleState;
@@ -1083,7 +1083,7 @@ namespace Rubberduck.Parsing.VBA
                 byte dummyOutValue;
                 referencingModuleState.HasReferenceToModule.TryRemove(referencedModule, out dummyOutValue);
             }
-            referencedModuleState.RefreshHasReferenceToModule();
+            referencedModuleState.RefreshIsReferencedByModule();
         }
 
         public HashSet<QualifiedModuleName> ModulesReferencedBy(QualifiedModuleName referencingModule)

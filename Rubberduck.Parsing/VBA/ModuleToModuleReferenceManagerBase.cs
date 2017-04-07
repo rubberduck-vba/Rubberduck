@@ -9,7 +9,7 @@ namespace Rubberduck.Parsing.VBA
 {
     public abstract class ModuleToModuleReferenceManagerBase : IModuleToModuleReferenceManager
     {
-        public abstract void AddModuleToModuleReference(QualifiedModuleName referencedModule, QualifiedModuleName referencingModule);
+        public abstract void AddModuleToModuleReference(QualifiedModuleName referencingModule, QualifiedModuleName referencedModule);
 
         public abstract void RemoveModuleToModuleReference(QualifiedModuleName referencedModule, QualifiedModuleName referencingModule);
 

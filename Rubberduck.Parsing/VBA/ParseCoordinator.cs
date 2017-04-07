@@ -633,7 +633,7 @@ namespace Rubberduck.Parsing.VBA
                                         .Where(referencingModule => !referencedModule.Equals(referencingModule));
             foreach (var referencingModule in referencingModules)
             {
-                State.AddModuleToModuleReference(referencedModule, referencingModule);
+                State.AddModuleToModuleReference(referencingModule, referencedModule);
             }
         }
 

@@ -17,9 +17,9 @@ namespace Rubberduck.Parsing.VBA
         }
 
 
-        public override void AddModuleToModuleReference(QualifiedModuleName referencedModule, QualifiedModuleName referencingModule)
+        public override void AddModuleToModuleReference(QualifiedModuleName referencingModule, QualifiedModuleName referencedModule)
         {
-            _state.AddModuleToModuleReference(referencedModule, referencingModule);
+            _state.AddModuleToModuleReference(referencingModule, referencedModule);
         }
 
         public override void RemoveModuleToModuleReference(QualifiedModuleName referencedModule, QualifiedModuleName referencingModule)
