@@ -104,8 +104,8 @@ namespace RubberduckTests.Inspections
             var inspection = new OptionExplicitInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new OptionExplicitQuickFix().Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            new OptionExplicitQuickFix(state).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
