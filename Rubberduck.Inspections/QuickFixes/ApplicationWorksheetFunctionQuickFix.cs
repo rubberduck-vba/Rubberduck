@@ -9,14 +9,8 @@ namespace Rubberduck.Inspections.QuickFixes
 {
     public class ApplicationWorksheetFunctionQuickFix : IQuickFix
     {
-        private readonly string _memberName;
         private static readonly HashSet<Type> _supportedInspections = new HashSet<Type> {typeof(ApplicationWorksheetFunctionInspection) };
-
-        public ApplicationWorksheetFunctionQuickFix(string memberName)
-        {
-            _memberName = memberName;
-        }
-
+        
         public static IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
 
         public static void AddSupportedInspectionType(Type inspectionType)
@@ -34,7 +28,7 @@ namespace Rubberduck.Inspections.QuickFixes
             var module = result.QualifiedSelection.QualifiedName.Component.CodeModule;
             
             var oldContent = module.GetLines(result.QualifiedSelection.Selection);
-            var newCall = $"WorksheetFunction.{_memberName}";
+            var newCall = $"WorksheetFunction.{result.Target.IdentifierName}";
 
             var start = result.QualifiedSelection.Selection.StartColumn - 1;
             //The member being called will always be a single token, so this will always be safe (it will be a single line).

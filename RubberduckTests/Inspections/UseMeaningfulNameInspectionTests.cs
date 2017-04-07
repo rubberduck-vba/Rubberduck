@@ -2,7 +2,6 @@ using System.Linq;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Rubberduck.Inspections;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -45,7 +44,7 @@ End Sub";
         [TestCategory("Inspections")]
         public void UseMeaningfulName_ReturnsResult_NameWithoutVowels()
         {
-            const string inputCode = 
+            const string inputCode =
 @"Sub Ffffff()
 End Sub";
             AssertVbaFragmentYieldsExpectedInspectionResultCount(inputCode, 1);
@@ -154,8 +153,8 @@ End Sub";
 
             var inspection = new UseMeaningfulNameInspection(null, parser.State, GetInspectionSettings().Object);
             var inspectionResults = inspection.GetInspectionResults();
-            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
-
+            
+            new IgnoreOnceQuickFix(new[] {inspection}).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, module.Content());
         }
 

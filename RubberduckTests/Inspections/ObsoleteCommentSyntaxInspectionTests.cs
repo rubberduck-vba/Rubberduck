@@ -2,7 +2,6 @@ using System.Linq;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Rubberduck.Inspections;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Inspections.Results;
@@ -90,7 +89,7 @@ End Sub";
         [TestCategory("Inspections")]
         public void ObsoleteCommentSyntax_DoesNotReturnResult_RemInStringLiteral()
         {
-            const string inputCode = 
+            const string inputCode =
 @"Sub Foo()
     Dim bar As String
     bar = ""iejo rem oernp"" ' test
@@ -202,7 +201,7 @@ Rem test";
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            inspectionResults.First().QuickFixes.Single(s => s is ReplaceObsoleteCommentMarkerQuickFix).Fix();
+            new ReplaceObsoleteCommentMarkerQuickFix().Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
@@ -231,7 +230,7 @@ a comment";
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            inspectionResults.First().QuickFixes.Single(s => s is ReplaceObsoleteCommentMarkerQuickFix).Fix();
+            new ReplaceObsoleteCommentMarkerQuickFix().Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
@@ -258,7 +257,7 @@ a comment";
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            inspectionResults.First().QuickFixes.Single(s => s is RemoveCommentQuickFix).Fix();
+            new RemoveCommentQuickFix().Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
@@ -286,7 +285,7 @@ continued";
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            inspectionResults.First().QuickFixes.Single(s => s is RemoveCommentQuickFix).Fix();
+            new RemoveCommentQuickFix().Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
@@ -313,7 +312,7 @@ continued";
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            inspectionResults.First().QuickFixes.Single(s => s is ReplaceObsoleteCommentMarkerQuickFix).Fix();
+            new ReplaceObsoleteCommentMarkerQuickFix().Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
@@ -342,7 +341,7 @@ a comment";
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            inspectionResults.First().QuickFixes.Single(s => s is ReplaceObsoleteCommentMarkerQuickFix).Fix();
+            new ReplaceObsoleteCommentMarkerQuickFix().Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
@@ -369,7 +368,7 @@ a comment";
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            inspectionResults.First().QuickFixes.Single(s => s is RemoveCommentQuickFix).Fix();
+            new RemoveCommentQuickFix().Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
@@ -397,7 +396,7 @@ a comment";
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            inspectionResults.First().QuickFixes.Single(s => s is RemoveCommentQuickFix).Fix();
+            new RemoveCommentQuickFix().Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
@@ -425,8 +424,8 @@ Rem test1";
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
+            
+            new IgnoreOnceQuickFix(new[] {inspection}).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 

@@ -2,18 +2,16 @@
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Results
 {
     public class ApplicationWorksheetFunctionInspectionResult : InspectionResultBase
     {
-        private readonly string _memberName;
-
-        public ApplicationWorksheetFunctionInspectionResult(IInspection inspection, QualifiedSelection qualifiedSelection, string memberName)
-            : base(inspection, qualifiedSelection.QualifiedName)
+        public ApplicationWorksheetFunctionInspectionResult(IInspection inspection, QualifiedSelection qualifiedSelection, Declaration target)
+            : base(inspection, qualifiedSelection.QualifiedName, null, target)
         {
-            _memberName = memberName;
             QualifiedSelection = qualifiedSelection;
         }
 
@@ -21,7 +19,7 @@ namespace Rubberduck.Inspections.Results
 
         public override string Description
         {
-            get { return string.Format(InspectionsUI.ApplicationWorksheetFunctionInspectionResultFormat, _memberName).Capitalize(); }
+            get { return string.Format(InspectionsUI.ApplicationWorksheetFunctionInspectionResultFormat, Target.IdentifierName).Capitalize(); }
         }
     }
 }

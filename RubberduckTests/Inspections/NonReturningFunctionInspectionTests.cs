@@ -1,6 +1,5 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck.Inspections;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -178,7 +177,7 @@ End Sub";
             var inspection = new NonReturningFunctionInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            inspectionResults.First().QuickFixes.First().Fix();
+            new ConvertToProcedureQuickFix().Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
@@ -201,7 +200,7 @@ End Sub";
             var inspection = new NonReturningFunctionInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            inspectionResults.First().QuickFixes.First().Fix();
+            new ConvertToProcedureQuickFix().Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
@@ -224,7 +223,7 @@ End Sub";
             var inspection = new NonReturningFunctionInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            inspectionResults.First().QuickFixes.First().Fix();
+            new ConvertToProcedureQuickFix().Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
@@ -247,7 +246,7 @@ End Sub";
             var inspection = new NonReturningFunctionInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            inspectionResults.First().QuickFixes.First().Fix();
+            new ConvertToProcedureQuickFix().Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
@@ -270,7 +269,7 @@ End Sub";
             var inspection = new NonReturningFunctionInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            inspectionResults.First().QuickFixes.First().Fix();
+            new ConvertToProcedureQuickFix().Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
@@ -293,7 +292,7 @@ End Sub";
             var inspection = new NonReturningFunctionInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            inspectionResults.First().QuickFixes.First().Fix();
+            new ConvertToProcedureQuickFix().Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
@@ -316,7 +315,7 @@ End Sub";
             var inspection = new NonReturningFunctionInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            inspectionResults.First().QuickFixes.First().Fix();
+            new ConvertToProcedureQuickFix().Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
@@ -339,38 +338,8 @@ End Sub";
             var inspection = new NonReturningFunctionInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            inspectionResults.First().QuickFixes.First().Fix();
+            new ConvertToProcedureQuickFix().Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void NonReturningFunction_ReturnsResult_InterfaceImplementation_OnlyIgnoreOnceQuickFix()
-        {
-            //Input
-            const string inputCode1 =
-@"Function Foo() As Boolean
-End Function";
-            const string inputCode2 =
-@"Implements IClass1
-
-Function IClass1_Foo() As Boolean
-End Function";
-
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode2)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new NonReturningFunctionInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.IsTrue(inspectionResults.First().QuickFixes.Any() 
-                && inspectionResults.First().QuickFixes.All(quickfix => quickfix.Description == InspectionsUI.IgnoreOnce));
         }
 
         [TestMethod]
@@ -392,8 +361,8 @@ End Function";
 
             var inspection = new NonReturningFunctionInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
-
-            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
+            
+            new IgnoreOnceQuickFix(new[] {inspection}).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 

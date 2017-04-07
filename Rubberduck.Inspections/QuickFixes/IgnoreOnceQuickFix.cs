@@ -45,7 +45,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public void Fix(IInspectionResult result)
         {
-            var annotationText = "'" + Annotations.AnnotationMarker + Annotations.IgnoreInspection + ' ' + result.Inspection;
+            var annotationText = "'" + Annotations.AnnotationMarker + Annotations.IgnoreInspection + ' ' + result.Inspection.AnnotationName;
 
             var module = result.QualifiedSelection.QualifiedName.Component.CodeModule;
             var insertLine = result.QualifiedSelection.Selection.StartLine;

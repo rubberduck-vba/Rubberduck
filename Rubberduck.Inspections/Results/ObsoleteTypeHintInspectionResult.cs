@@ -11,7 +11,7 @@ namespace Rubberduck.Inspections.Results
         private readonly string _result;
 
         public ObsoleteTypeHintInspectionResult(IInspection inspection, string result, QualifiedContext qualifiedContext, Declaration declaration)
-            : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context)
+            : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context, declaration)
         {
             _result = result;
         }

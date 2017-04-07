@@ -1,7 +1,6 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Rubberduck.Inspections;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
@@ -138,7 +137,7 @@ Public Sub Foo(ByVal arg1 As String)
 End Sub";
 
             var quickFixResult = ApplyIgnoreOnceQuickFixToCodeFragment(inputCode);
-            Assert.AreEqual(expectedCode, quickFixResult); 
+            Assert.AreEqual(expectedCode, quickFixResult);
         }
 
         [TestMethod]
@@ -168,9 +167,9 @@ End Sub";
         private string ApplyIgnoreOnceQuickFixToCodeFragment(string inputCode)
         {
             var vbe = BuildMockVBE(inputCode);
-            var inspectionResults = GetInspectionResults(vbe.Object);
+            var inspectionResult = GetInspectionResults(vbe.Object).First();
 
-            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
+            new IgnoreOnceQuickFix(new[] {inspectionResult.Inspection}).Fix(inspectionResult);
 
             return GetModuleContent(vbe.Object);
         }

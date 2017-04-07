@@ -1,6 +1,5 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck.Inspections;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -108,7 +107,7 @@ namespace RubberduckTests.Inspections
         [TestCategory("Inspections")]
         public void OptionBaseOneSpecified_Ignored_DoesNotReturnResult()
         {
-            const string inputCode = 
+            const string inputCode =
 @"'@Ignore OptionBase
 Option Base 1";
 
@@ -139,8 +138,8 @@ Option Base 1";
 
             var inspection = new OptionBaseInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
-
-            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
+            
+            new IgnoreOnceQuickFix(new[] {inspection}).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 

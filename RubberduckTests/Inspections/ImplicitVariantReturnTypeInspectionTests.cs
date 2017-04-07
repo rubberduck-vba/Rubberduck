@@ -1,6 +1,5 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck.Inspections;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -200,7 +199,7 @@ End Function";
             var inspection = new ImplicitVariantReturnTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            inspectionResults.First().QuickFixes.First().Fix();
+            new SetExplicitVariantReturnTypeQuickFix().Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
@@ -223,7 +222,7 @@ End Property";
             var inspection = new ImplicitVariantReturnTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            inspectionResults.First().QuickFixes.First().Fix();
+            new SetExplicitVariantReturnTypeQuickFix().Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
@@ -265,7 +264,7 @@ End Property";
             var inspection = new ImplicitVariantReturnTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            inspectionResults.First().QuickFixes.First().Fix();
+            new SetExplicitVariantReturnTypeQuickFix().Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
@@ -289,7 +288,7 @@ End Function";
             var inspection = new ImplicitVariantReturnTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            inspectionResults.First().QuickFixes.First().Fix();
+            new SetExplicitVariantReturnTypeQuickFix().Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
@@ -313,9 +312,8 @@ End Function";
 
             var inspection = new ImplicitVariantReturnTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
-
-            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
-
+            
+            new IgnoreOnceQuickFix(new[] {inspection}).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 

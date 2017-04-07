@@ -1,6 +1,5 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck.Inspections;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -262,9 +261,10 @@ End Function";
             var inspection = new ObsoleteTypeHintInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            foreach (var inspectionResult in inspectionResults)
+            var fix = new RemoveTypeHintsQuickFix();
+            foreach (var result in inspectionResults)
             {
-                inspectionResult.QuickFixes.First().Fix();
+                fix.Fix(result);
             }
 
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -287,9 +287,10 @@ End Function";
             var inspection = new ObsoleteTypeHintInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            foreach (var inspectionResult in inspectionResults)
+            var fix = new RemoveTypeHintsQuickFix();
+            foreach (var result in inspectionResults)
             {
-                inspectionResult.QuickFixes.First().Fix();
+                fix.Fix(result);
             }
 
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -312,9 +313,10 @@ End Function";
             var inspection = new ObsoleteTypeHintInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            foreach (var inspectionResult in inspectionResults)
+            var fix = new RemoveTypeHintsQuickFix();
+            foreach (var result in inspectionResults)
             {
-                inspectionResult.QuickFixes.First().Fix();
+                fix.Fix(result);
             }
 
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -337,9 +339,10 @@ End Function";
             var inspection = new ObsoleteTypeHintInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            foreach (var inspectionResult in inspectionResults)
+            var fix = new RemoveTypeHintsQuickFix();
+            foreach (var result in inspectionResults)
             {
-                inspectionResult.QuickFixes.First().Fix();
+                fix.Fix(result);
             }
 
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -362,9 +365,10 @@ End Function";
             var inspection = new ObsoleteTypeHintInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            foreach (var inspectionResult in inspectionResults)
+            var fix = new RemoveTypeHintsQuickFix();
+            foreach (var result in inspectionResults)
             {
-                inspectionResult.QuickFixes.First().Fix();
+                fix.Fix(result);
             }
 
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -387,9 +391,10 @@ End Function";
             var inspection = new ObsoleteTypeHintInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            foreach (var inspectionResult in inspectionResults)
+            var fix = new RemoveTypeHintsQuickFix();
+            foreach (var result in inspectionResults)
             {
-                inspectionResult.QuickFixes.First().Fix();
+                fix.Fix(result);
             }
 
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -416,9 +421,10 @@ End Function";
             var inspection = new ObsoleteTypeHintInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            foreach (var inspectionResult in inspectionResults)
+            var fix = new RemoveTypeHintsQuickFix();
+            foreach (var result in inspectionResults)
             {
-                inspectionResult.QuickFixes.First().Fix();
+                fix.Fix(result);
             }
 
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -444,10 +450,11 @@ End Property";
 
             var inspection = new ObsoleteTypeHintInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
-
-            foreach (var inspectionResult in inspectionResults)
+            
+            var fix = new RemoveTypeHintsQuickFix();
+            foreach (var result in inspectionResults)
             {
-                inspectionResult.QuickFixes.First().Fix();
+                fix.Fix(result);
             }
 
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -474,9 +481,10 @@ End Sub";
             var inspection = new ObsoleteTypeHintInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            foreach (var inspectionResult in inspectionResults)
+            var fix = new RemoveTypeHintsQuickFix();
+            foreach (var result in inspectionResults)
             {
-                inspectionResult.QuickFixes.First().Fix();
+                fix.Fix(result);
             }
 
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -503,9 +511,10 @@ End Sub";
             var inspection = new ObsoleteTypeHintInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            foreach (var inspectionResult in inspectionResults)
+            var fix = new RemoveTypeHintsQuickFix();
+            foreach (var result in inspectionResults)
             {
-                inspectionResult.QuickFixes.First().Fix();
+                fix.Fix(result);
             }
 
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -533,9 +542,10 @@ End Function";
             var inspection = new ObsoleteTypeHintInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            foreach (var inspectionResult in inspectionResults)
+            var fix = new IgnoreOnceQuickFix(new[] {inspection});
+            foreach (var result in inspectionResults)
             {
-                inspectionResult.QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
+                fix.Fix(result);
             }
 
             Assert.AreEqual(expectedCode, component.CodeModule.Content());

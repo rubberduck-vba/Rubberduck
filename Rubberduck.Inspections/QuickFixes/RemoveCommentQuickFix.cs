@@ -37,7 +37,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
             var start = result.QualifiedSelection.Selection.StartLine;
             var commentLine = module.GetLines(start, result.QualifiedSelection.Selection.LineCount);
-            var newLine = commentLine.Substring(0, result.QualifiedSelection.Selection.StartColumn).TrimEnd();
+            var newLine = commentLine.Substring(0, result.QualifiedSelection.Selection.StartColumn - 1).TrimEnd();
 
             module.DeleteLines(start, result.QualifiedSelection.Selection.LineCount);
             if (newLine.TrimStart().Length > 0)

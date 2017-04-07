@@ -1,7 +1,6 @@
 using System.Linq;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck.Inspections;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.VBA;
@@ -267,7 +266,7 @@ End Sub
             var inspection = new ApplicationWorksheetFunctionInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
-            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
+            new IgnoreOnceQuickFix(new[] {inspection}).Fix(inspectionResults.First());
 
             var actualCode = project.Object.VBComponents[0].CodeModule.Content();
 
@@ -310,8 +309,8 @@ End Sub
 
             var inspection = new ApplicationWorksheetFunctionInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
-
-            inspectionResults.First().QuickFixes.Single(s => s is ApplicationWorksheetFunctionQuickFix).Fix();
+            
+            new ApplicationWorksheetFunctionQuickFix().Fix(inspectionResults.First());
 
             var actualCode = project.Object.VBComponents[0].CodeModule.Content();
 
@@ -358,8 +357,8 @@ End Sub
 
             var inspection = new ApplicationWorksheetFunctionInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
-
-            inspectionResults.First().QuickFixes.Single(s => s is ApplicationWorksheetFunctionQuickFix).Fix();
+            
+            new ApplicationWorksheetFunctionQuickFix().Fix(inspectionResults.First());
 
             var actualCode = project.Object.VBComponents[0].CodeModule.Content();
 
@@ -402,8 +401,8 @@ End Sub
 
             var inspection = new ApplicationWorksheetFunctionInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
-
-            inspectionResults.First().QuickFixes.Single(s => s is ApplicationWorksheetFunctionQuickFix).Fix();
+            
+            new ApplicationWorksheetFunctionQuickFix().Fix(inspectionResults.First());
 
             var actualCode = project.Object.VBComponents[0].CodeModule.Content();
 

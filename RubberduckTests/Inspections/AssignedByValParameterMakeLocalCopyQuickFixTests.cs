@@ -1,7 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Inspections;
 using Rubberduck.Inspections.QuickFixes;
 using Moq;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -17,16 +16,15 @@ namespace RubberduckTests.Inspections
     [TestClass]
     public class AssignedByValParameterMakeLocalCopyQuickFixTests
     {
-
         [TestMethod]
         [TestCategory("Inspections")]
         public void AssignedByValParameter_LocalVariableAssignment()
         {
-            var inputCode = 
+            var inputCode =
 @"Public Sub Foo(ByVal arg1 As String)
     Let arg1 = ""test""
 End Sub";
-            var expectedCode = 
+            var expectedCode =
 @"Public Sub Foo(ByVal arg1 As String)
 Dim localArg1 As String
 localArg1 = arg1
@@ -36,13 +34,12 @@ End Sub";
             var quickFixResult = ApplyLocalVariableQuickFixToCodeFragment(inputCode);
             Assert.AreEqual(expectedCode, quickFixResult);
         }
-
-        //weaponized formatting
+        
         [TestMethod]
         [TestCategory("Inspections")]
         public void AssignedByValParameter_LocalVariableAssignment_ComplexFormat()
         {
-            var inputCode = 
+            var inputCode =
             @"Sub DoSomething(_
     ByVal foo As Long, _
     ByRef _
@@ -77,7 +74,7 @@ End Sub
         [TestCategory("Inspections")]
         public void AssignedByValParameter_LocalVariableAssignment_ComputedNameAvoidsCollision()
         {
-            var inputCode = 
+            var inputCode =
             @"
 Public Sub Foo(ByVal arg1 As String)
     Dim fooVar, _
@@ -85,7 +82,7 @@ Public Sub Foo(ByVal arg1 As String)
     Let arg1 = ""test""
 End Sub"
 ;
-            var expectedCode = 
+            var expectedCode =
 @"
 Public Sub Foo(ByVal arg1 As String)
 Dim localArg12 As String
@@ -137,7 +134,7 @@ End Sub"
         public void AssignedByValParameter_LocalVariableAssignment_NameInUseOtherProperty()
         {
             //Make sure the modified code stays within the specific method under repair
-            var inputCode = 
+            var inputCode =
 @"
 Option Explicit
 Private mBar as Long
@@ -180,7 +177,7 @@ Public Sub Foo(ByVal target As Range)
     Set target = Selection
 End Sub"
 ;
-            var expectedCode = 
+            var expectedCode =
 @"
 Public Sub Foo(ByVal target As Range)
 Dim localTarget As Range
@@ -264,8 +261,8 @@ End Sub"
             {
                 Assert.Inconclusive("Inspection yielded no results.");
             }
-
-            result.QuickFixes.Single(s => s is AssignedByValParameterMakeLocalCopyQuickFix).Fix();
+            
+            new AssignedByValParameterMakeLocalCopyQuickFix(state, mockDialogFactory.Object).Fix(result);
             return state.GetRewriter(vbe.Object.ActiveVBProject.VBComponents[0]).GetText();
         }
 

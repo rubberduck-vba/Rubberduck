@@ -36,8 +36,7 @@ namespace Rubberduck.Inspections.QuickFixes
             var rewriter = _state.GetRewriter(result.Target);
 
             var parameterContext = (VBAParser.ArgContext) result.Target.Context;
-            rewriter.InsertBefore(parameterContext.unrestrictedIdentifier().Start.TokenIndex,
-                parameterContext.OPTIONAL() != null ? " ByRef " : "ByRef ");
+            rewriter.InsertBefore(parameterContext.unrestrictedIdentifier().Start.TokenIndex, "ByRef ");
         }
 
         public string Description(IInspectionResult result)

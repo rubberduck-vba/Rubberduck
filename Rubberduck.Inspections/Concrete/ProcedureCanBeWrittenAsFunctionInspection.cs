@@ -58,6 +58,7 @@ namespace Rubberduck.Inspections.Concrete
                                    .Select(result => new ProcedureCanBeWrittenAsFunctionInspectionResult(
                                                          this,
                                                          State,
+                                                         result,
                                                          new QualifiedContext<VBAParser.SubStmtContext>(result.QualifiedName, (VBAParser.SubStmtContext)result.Context))
                                    );                   
         }

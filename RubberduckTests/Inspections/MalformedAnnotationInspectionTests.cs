@@ -1,12 +1,10 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Rubberduck.Inspections;
 using RubberduckTests.Mocks;
 using Rubberduck.Settings;
 using System.Threading;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Inspections.Rubberduck.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -126,29 +124,6 @@ namespace RubberduckTests.Inspections
 
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
             Assert.AreEqual(2, inspectionResults.Count());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void MalformedAnnotation_NoIgnoreQuickFix()
-        {
-            const string inputCode =
-@"'@Folder
-'@Ignore";
-
-            var settings = new Mock<IGeneralConfigService>();
-            var config = GetTestConfig();
-            settings.Setup(x => x.LoadConfiguration()).Returns(config);
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new MissingAnnotationArgumentInspection(state);
-            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
-
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            Assert.IsFalse(inspectionResults.ElementAt(0).QuickFixes.Any(q => q is IgnoreOnceQuickFix));
         }
 
         [TestMethod]

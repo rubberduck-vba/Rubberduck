@@ -1,6 +1,5 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck.Inspections;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -131,7 +130,7 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new VariableNotAssignedInspection(state);
-            inspection.GetInspectionResults().First().QuickFixes.First().Fix();
+            new RemoveUnassignedIdentifierQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -156,7 +155,7 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new VariableNotAssignedInspection(state);
-            inspection.GetInspectionResults().First().QuickFixes.First().Fix();
+            new RemoveUnassignedIdentifierQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -180,7 +179,8 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new VariableNotAssignedInspection(state);
-            inspection.GetInspectionResults().Single(s => s.Target.IdentifierName == "var2").QuickFixes.First().Fix();
+            new RemoveUnassignedIdentifierQuickFix(state).Fix(
+                inspection.GetInspectionResults().Single(s => s.Target.IdentifierName == "var2"));
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -204,7 +204,8 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new VariableNotAssignedInspection(state);
-            inspection.GetInspectionResults().Single(s => s.Target.IdentifierName == "var2").QuickFixes.First().Fix();
+            new RemoveUnassignedIdentifierQuickFix(state).Fix(
+                inspection.GetInspectionResults().Single(s => s.Target.IdentifierName == "var2"));
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -229,7 +230,7 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new VariableNotAssignedInspection(state);
-            inspection.GetInspectionResults().First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
+            new IgnoreOnceQuickFix(new[] {inspection}).Fix(inspection.GetInspectionResults().First());
 
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }

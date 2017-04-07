@@ -1,6 +1,5 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck.Inspections;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -13,17 +12,17 @@ namespace RubberduckTests.Inspections
     [TestClass]
     public class ParameterCanBeByValInspectionTests
     {
-            [TestMethod]
-            [TestCategory("Inspections")]
-            public void ParameterCanBeByVal_NoResultForByValObjectInInterfaceImplementationProperty()
-            {
-                const string modelCode = @"
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ParameterCanBeByVal_NoResultForByValObjectInInterfaceImplementationProperty()
+        {
+            const string modelCode = @"
 Option Explicit
 Public Foo As Long
 Public Bar As String
 ";
 
-                const string interfaceCode = @"
+            const string interfaceCode = @"
 Option Explicit
 
 Public Property Get Model() As MyModel
@@ -39,7 +38,7 @@ Public Sub Show()
 End Sub
 ";
 
-                const string implementationCode = @"
+            const string implementationCode = @"
 Option Explicit
 Private Type TView
     Model As MyModel
@@ -65,20 +64,20 @@ Private Sub IView_Show()
 End Sub
 ";
 
-                var builder = new MockVbeBuilder();
-                var vbe = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                    .AddComponent("IView", ComponentType.ClassModule, interfaceCode)
-                    .AddComponent("MyModel", ComponentType.ClassModule, modelCode)
-                    .AddComponent("MyForm", ComponentType.UserForm, implementationCode)
-                    .MockVbeBuilder().Build();
+            var builder = new MockVbeBuilder();
+            var vbe = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("IView", ComponentType.ClassModule, interfaceCode)
+                .AddComponent("MyModel", ComponentType.ClassModule, modelCode)
+                .AddComponent("MyForm", ComponentType.UserForm, implementationCode)
+                .MockVbeBuilder().Build();
 
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ParameterCanBeByValInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+            var inspectionResults = inspection.GetInspectionResults();
 
-                Assert.AreEqual(0, inspectionResults.Count());
-            }
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
 
         [TestMethod]
         [TestCategory("Inspections")]
@@ -472,7 +471,7 @@ End Sub";
 
             var inspection = new ParameterCanBeByValInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
-            
+
             Assert.AreEqual("a", inspectionResults.Single().Target.IdentifierName);
         }
 
@@ -615,7 +614,7 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ParameterCanBeByValInspection(state);
-            inspection.GetInspectionResults().First().QuickFixes.First().Fix();
+            new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
@@ -637,7 +636,7 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ParameterCanBeByValInspection(state);
-            inspection.GetInspectionResults().First().QuickFixes.First().Fix();
+            new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
@@ -659,7 +658,7 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ParameterCanBeByValInspection(state);
-            inspection.GetInspectionResults().First().QuickFixes.First().Fix();
+            new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
@@ -683,7 +682,7 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ParameterCanBeByValInspection(state);
-            inspection.GetInspectionResults().First().QuickFixes.First().Fix();
+            new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
@@ -707,7 +706,7 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ParameterCanBeByValInspection(state);
-            inspection.GetInspectionResults().First().QuickFixes.First().Fix();
+            new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
@@ -763,9 +762,7 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ParameterCanBeByValInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            inspectionResults.Single().QuickFixes.Single(s => s is PassParameterByValueQuickFix).Fix();
+            new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
             Assert.AreEqual(expectedCode1, module1.Content());
             Assert.AreEqual(expectedCode2, module2.Content());
@@ -821,9 +818,7 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ParameterCanBeByValInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            inspectionResults.Single().QuickFixes.Single(s => s is PassParameterByValueQuickFix).Fix();
+            new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
             Assert.AreEqual(expectedCode1, module1.Content());
             Assert.AreEqual(expectedCode2, module2.Content());
@@ -850,7 +845,7 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ParameterCanBeByValInspection(state);
-            inspection.GetInspectionResults().First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
+            new IgnoreOnceQuickFix(new[] {inspection}).Fix(inspection.GetInspectionResults().First());
 
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
@@ -875,7 +870,7 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ParameterCanBeByValInspection(state);
-            inspection.GetInspectionResults().First().QuickFixes.Single(s => s is PassParameterByValueQuickFix).Fix();
+            new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
@@ -900,7 +895,7 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ParameterCanBeByValInspection(state);
-            inspection.GetInspectionResults().First().QuickFixes.Single(s => s is PassParameterByValueQuickFix).Fix();
+            new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
@@ -935,7 +930,7 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ParameterCanBeByValInspection(state);
-            inspection.GetInspectionResults().First().QuickFixes.Single(s => s is PassParameterByValueQuickFix).Fix();
+            new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }

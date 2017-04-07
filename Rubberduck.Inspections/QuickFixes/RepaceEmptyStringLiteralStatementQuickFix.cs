@@ -8,7 +8,7 @@ using Rubberduck.Parsing.Inspections.Resources;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class RepaceEmptyStringLiteralStatementQuickFix : IQuickFix
+    public class ReplaceEmptyStringLiteralStatementQuickFix : IQuickFix
     {
         private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
         {

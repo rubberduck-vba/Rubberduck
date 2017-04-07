@@ -1,7 +1,6 @@
 using System.Linq;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck.Inspections;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.VBA;
@@ -96,7 +95,7 @@ End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
-        [TestMethod,Ignore]
+        [TestMethod, Ignore]
         [TestCategory("Inspections")]
         public void ObjectVariableNotSet_GivenVariantVariableAssignedRange_ReturnsResult()
         {
@@ -248,7 +247,7 @@ End Function";
         [TestCategory("Inspections")]
         public void ObjectVariableNotSet_IgnoreQuickFixWorks()
         {
-            var inputCode = 
+            var inputCode =
             @"
 Private Sub Workbook_Open()
     
@@ -258,7 +257,7 @@ Private Sub Workbook_Open()
     target.Value = ""forgot something?""
 
 End Sub";
-            var expectedCode = 
+            var expectedCode =
             @"
 Private Sub Workbook_Open()
     
@@ -276,9 +275,8 @@ End Sub";
 
             var inspection = new ObjectVariableNotSetInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
-
-            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
-
+            
+            new IgnoreOnceQuickFix(new[] {inspection}).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
@@ -296,7 +294,7 @@ Private Function CombineRanges(ByVal source As Range, ByVal toCombine As Range) 
         CombineRanges = Union(source, toCombine) 'no inspection result (but there should be one!)
     End If
 End Function";
-            var expectedCode = 
+            var expectedCode =
             @"
 Private Function CombineRanges(ByVal source As Range, ByVal toCombine As Range) As Range
     If source Is Nothing Then
@@ -314,10 +312,12 @@ End Function";
             var inspectionResults = inspection.GetInspectionResults().ToList();
 
             Assert.AreEqual(expectedResultCount, inspectionResults.Count);
-            foreach (var fix in inspectionResults.SelectMany(result => result.QuickFixes.Where(s => s is UseSetKeywordForObjectAssignmentQuickFix)))
+            var fix = new UseSetKeywordForObjectAssignmentQuickFix();
+            foreach (var result in inspectionResults)
             {
-                fix.Fix();
+                fix.Fix(result);
             }
+
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
@@ -332,7 +332,7 @@ Public Property Get Example() As MyObject
     Example = example
 End Property
 ";
-            var expectedCode = 
+            var expectedCode =
             @"
 Private example As MyObject
 Public Property Get Example() As MyObject
@@ -348,10 +348,12 @@ End Property
             var inspectionResults = inspection.GetInspectionResults().ToList();
 
             Assert.AreEqual(expectedResultCount, inspectionResults.Count);
-            foreach (var fix in inspectionResults.SelectMany(result => result.QuickFixes.Where(s => s is UseSetKeywordForObjectAssignmentQuickFix)))
+            var fix = new UseSetKeywordForObjectAssignmentQuickFix();
+            foreach (var result in inspectionResults)
             {
-                fix.Fix();
+                fix.Fix(result);
             }
+
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 

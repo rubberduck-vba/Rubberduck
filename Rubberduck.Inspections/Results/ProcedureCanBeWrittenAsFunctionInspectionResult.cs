@@ -15,8 +15,9 @@ namespace Rubberduck.Inspections.Results
         private readonly Declaration _target;
 
         public ProcedureCanBeWrittenAsFunctionInspectionResult(IInspection inspection, RubberduckParserState state,
+            Declaration target,
             QualifiedContext<VBAParser.SubStmtContext> subStmtQualifiedContext)
-            : base(inspection, subStmtQualifiedContext.ModuleName, subStmtQualifiedContext.Context.subroutineName())
+            : base(inspection, subStmtQualifiedContext.ModuleName, subStmtQualifiedContext.Context.subroutineName(), target)
         {
             _target =
                 state.AllUserDeclarations.Single(declaration => declaration.DeclarationType == DeclarationType.Procedure &&

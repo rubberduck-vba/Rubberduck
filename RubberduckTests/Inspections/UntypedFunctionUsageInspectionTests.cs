@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck.Inspections;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Annotations;
@@ -143,7 +142,7 @@ End Sub";
             var inspection = new UntypedFunctionUsageInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
-            inspectionResults.First().QuickFixes.First().Fix();
+            new UntypedFunctionUsageQuickFix().Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, module.Content());
         }
@@ -182,9 +181,8 @@ End Sub";
 
             var inspection = new UntypedFunctionUsageInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
-
-            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
-
+            
+            new IgnoreOnceQuickFix(new[] {inspection}).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, module.Content());
         }
 
@@ -708,7 +706,7 @@ End Sub";
                 false,
                 new List<IAnnotation>(),
                 new Attributes());
-        
+
 
             var timePropertyGet = new PropertyGetDeclaration(
                 new QualifiedMemberName(dateTimeModule.QualifiedName.QualifiedModuleName, "Time"),
