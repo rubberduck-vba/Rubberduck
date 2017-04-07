@@ -143,8 +143,8 @@ End Sub";
             var inspection = new MultilineParameterInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
             
-            new MakeSingleLineParameterQuickFix().Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            new MakeSingleLineParameterQuickFix(state).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
