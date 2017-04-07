@@ -6,15 +6,22 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
     public class RemoveExplicitLetStatementQuickFix : IQuickFix
     {
+        private readonly RubberduckParserState _state;
         private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
         {
             typeof(ObsoleteLetStatementInspection)
         };
+
+        public RemoveExplicitLetStatementQuickFix(RubberduckParserState state)
+        {
+            _state = state;
+        }
 
         public static IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
 
@@ -30,32 +37,11 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public void Fix(IInspectionResult result)
         {
-            var module = result.QualifiedSelection.QualifiedName.Component.CodeModule;
-            {
-                if (module.IsWrappingNullReference)
-                {
-                    return;
-                }
+            var rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
 
-                var selection = result.Context.GetSelection();
-                var context = (VBAParser.LetStmtContext)result.Context;
-
-                // remove line continuations to compare against context:
-                var originalCodeLines = module.GetLines(selection.StartLine, selection.LineCount)
-                    .Replace("\r\n", " ")
-                    .Replace("_", string.Empty);
-                var originalInstruction = result.Context.GetText();
-
-                var identifier = context.lExpression().GetText();
-                var value = context.expression().GetText();
-
-                module.DeleteLines(selection.StartLine, selection.LineCount);
-
-                var newInstruction = identifier + " = " + value;
-                var newCodeLines = originalCodeLines.Replace(originalInstruction, newInstruction);
-
-                module.InsertLines(selection.StartLine, newCodeLines);
-            }
+            var context = (VBAParser.LetStmtContext) result.Context;
+            rewriter.Remove(context.LET());
+            rewriter.Remove(context.whiteSpace().First());
         }
 
         public string Description(IInspectionResult result)

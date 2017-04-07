@@ -4,16 +4,23 @@ using System.Linq;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
     public class RemoveCommentQuickFix : IQuickFix
     {
+        private readonly RubberduckParserState _state;
         private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
         {
             typeof(ObsoleteCommentSyntaxInspection)
         };
 
+        public RemoveCommentQuickFix(RubberduckParserState state)
+        {
+            _state = state;
+        }
+        
         public static IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
 
         public static void AddSupportedInspectionType(Type inspectionType)
@@ -28,22 +35,8 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public void Fix(IInspectionResult result)
         {
-            var module = result.QualifiedSelection.QualifiedName.Component.CodeModule;
-
-            if (module.IsWrappingNullReference)
-            {
-                return;                
-            }
-
-            var start = result.QualifiedSelection.Selection.StartLine;
-            var commentLine = module.GetLines(start, result.QualifiedSelection.Selection.LineCount);
-            var newLine = commentLine.Substring(0, result.QualifiedSelection.Selection.StartColumn - 1).TrimEnd();
-
-            module.DeleteLines(start, result.QualifiedSelection.Selection.LineCount);
-            if (newLine.TrimStart().Length > 0)
-            {
-                module.InsertLines(start, newLine);
-            }
+            var rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
+            rewriter.Remove(result.Context);
         }
 
         public string Description(IInspectionResult result)

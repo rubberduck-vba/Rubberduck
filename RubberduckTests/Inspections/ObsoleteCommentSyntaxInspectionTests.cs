@@ -257,9 +257,9 @@ a comment";
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            new RemoveCommentQuickFix().Fix(inspectionResults.First());
+            new RemoveCommentQuickFix(state).Fix(inspectionResults.First());
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -285,9 +285,9 @@ continued";
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            new RemoveCommentQuickFix().Fix(inspectionResults.First());
+            new RemoveCommentQuickFix(state).Fix(inspectionResults.First());
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -354,7 +354,7 @@ a comment";
 @"Dim Foo As Integer: Rem This is a comment";
 
             const string expectedCode =
-@"Dim Foo As Integer:";
+@"Dim Foo As Integer: ";
 
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
@@ -368,9 +368,9 @@ a comment";
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            new RemoveCommentQuickFix().Fix(inspectionResults.First());
+            new RemoveCommentQuickFix(state).Fix(inspectionResults.First());
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -382,7 +382,7 @@ a comment";
 a comment";
 
             const string expectedCode =
-@"Dim Foo As Integer:";
+@"Dim Foo As Integer: ";
 
             var settings = new Mock<IGeneralConfigService>();
             var config = GetTestConfig();
@@ -396,9 +396,9 @@ a comment";
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            new RemoveCommentQuickFix().Fix(inspectionResults.First());
+            new RemoveCommentQuickFix(state).Fix(inspectionResults.First());
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]

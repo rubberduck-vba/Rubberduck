@@ -261,13 +261,13 @@ End Function";
             var inspection = new ObsoleteTypeHintInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            var fix = new RemoveTypeHintsQuickFix();
+            var fix = new RemoveTypeHintsQuickFix(state);
             foreach (var result in inspectionResults)
             {
                 fix.Fix(result);
             }
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -287,13 +287,13 @@ End Function";
             var inspection = new ObsoleteTypeHintInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            var fix = new RemoveTypeHintsQuickFix();
+            var fix = new RemoveTypeHintsQuickFix(state);
             foreach (var result in inspectionResults)
             {
                 fix.Fix(result);
             }
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -313,13 +313,13 @@ End Function";
             var inspection = new ObsoleteTypeHintInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            var fix = new RemoveTypeHintsQuickFix();
+            var fix = new RemoveTypeHintsQuickFix(state);
             foreach (var result in inspectionResults)
             {
                 fix.Fix(result);
             }
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -339,13 +339,13 @@ End Function";
             var inspection = new ObsoleteTypeHintInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            var fix = new RemoveTypeHintsQuickFix();
+            var fix = new RemoveTypeHintsQuickFix(state);
             foreach (var result in inspectionResults)
             {
                 fix.Fix(result);
             }
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -365,13 +365,13 @@ End Function";
             var inspection = new ObsoleteTypeHintInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            var fix = new RemoveTypeHintsQuickFix();
+            var fix = new RemoveTypeHintsQuickFix(state);
             foreach (var result in inspectionResults)
             {
                 fix.Fix(result);
             }
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -391,13 +391,13 @@ End Function";
             var inspection = new ObsoleteTypeHintInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            var fix = new RemoveTypeHintsQuickFix();
+            var fix = new RemoveTypeHintsQuickFix(state);
             foreach (var result in inspectionResults)
             {
                 fix.Fix(result);
             }
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -421,13 +421,13 @@ End Function";
             var inspection = new ObsoleteTypeHintInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            var fix = new RemoveTypeHintsQuickFix();
+            var fix = new RemoveTypeHintsQuickFix(state);
             foreach (var result in inspectionResults)
             {
                 fix.Fix(result);
             }
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -451,13 +451,13 @@ End Property";
             var inspection = new ObsoleteTypeHintInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
             
-            var fix = new RemoveTypeHintsQuickFix();
+            var fix = new RemoveTypeHintsQuickFix(state);
             foreach (var result in inspectionResults)
             {
                 fix.Fix(result);
             }
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -481,13 +481,13 @@ End Sub";
             var inspection = new ObsoleteTypeHintInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            var fix = new RemoveTypeHintsQuickFix();
+            var fix = new RemoveTypeHintsQuickFix(state);
             foreach (var result in inspectionResults)
             {
                 fix.Fix(result);
             }
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -511,13 +511,13 @@ End Sub";
             var inspection = new ObsoleteTypeHintInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            var fix = new RemoveTypeHintsQuickFix();
+            var fix = new RemoveTypeHintsQuickFix(state);
             foreach (var result in inspectionResults)
             {
                 fix.Fix(result);
             }
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
