@@ -55,6 +55,7 @@ namespace Rubberduck.UI.UnitTesting
             _refreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRefreshCommand, CanExecuteRefreshCommand);
             _repeatLastRunCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRepeatLastRunCommand, CanExecuteRepeatLastRunCommand);
             _runNotExecutedTestsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRunNotExecutedTestsCommand, CanExecuteRunNotExecutedTestsCommand);
+            _runInconclusiveTestsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(),ExecuteRunInconclusiveTestsCommand, CanExecuteRunInconclusiveTestsCommand);
             _runFailedTestsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRunFailedTestsCommand, CanExecuteRunFailedTestsCommand);
             _runPassedTestsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRunPassedTestsCommand, CanExecuteRunPassedTestsCommand);
             _runSelectedTestCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteSelectedTestCommand, CanExecuteSelectedTestCommand);
@@ -96,6 +97,11 @@ namespace Rubberduck.UI.UnitTesting
         private bool CanExecuteRunNotExecutedTestsCommand(object obj)
         {
             return _vbe.IsInDesignMode && AllowedRunStates.Contains(_state.Status) && _model.Tests.Any(test => test.Result.Outcome == TestOutcome.Unknown);
+        }
+
+        private bool CanExecuteRunInconclusiveTestsCommand(object obj)
+        {
+            return _vbe.IsInDesignMode && AllowedRunStates.Contains(_state.Status) & _model.Tests.Any(test => test.Result.Outcome == TestOutcome.Inconclusive);
         }
 
         private bool CanExecuteRepeatLastRunCommand(object obj)
@@ -183,6 +189,9 @@ namespace Rubberduck.UI.UnitTesting
         private readonly CommandBase _runNotExecutedTestsCommand;
         public CommandBase RunNotExecutedTestsCommand { get { return _runNotExecutedTestsCommand; } }
 
+        private readonly CommandBase _runInconclusiveTestsCommand;
+        public CommandBase RunInconclusiveTestsCommand { get { return _runInconclusiveTestsCommand; } }
+
         private readonly CommandBase _runFailedTestsCommand;
         public CommandBase RunFailedTestsCommand { get { return _runFailedTestsCommand; } }
 
@@ -268,6 +277,23 @@ namespace Rubberduck.UI.UnitTesting
 
             stopwatch.Start();
             _testEngine.Run(_model.Tests.Where(test => test.Result.Outcome == TestOutcome.Unknown));
+            stopwatch.Stop();
+
+            Model.IsBusy = false;
+            TotalDuration = stopwatch.ElapsedMilliseconds;
+        }
+
+        private void ExecuteRunInconclusiveTestsCommand(object parameter)
+        {
+            EnsureRubberduckIsReferencedForEarlyBoundTests();
+
+            _model.ClearLastRun();
+
+            var stopwatch = new Stopwatch();
+            Model.IsBusy = true;
+
+            stopwatch.Start();
+            _testEngine.Run(_model.Tests.Where(test => test.Result.Outcome == TestOutcome.Inconclusive));
             stopwatch.Stop();
 
             Model.IsBusy = false;
