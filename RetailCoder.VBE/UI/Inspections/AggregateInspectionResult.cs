@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Rubberduck.Parsing.Inspections.Abstract;
+﻿using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
@@ -23,10 +22,6 @@ namespace Rubberduck.UI.Inspections
         public IInspection Inspection => _result.Inspection;
 
         public Declaration Target => _result.Target;
-
-        public IEnumerable<IQuickFix> QuickFixes => _result.QuickFixes;
-
-        public bool HasQuickFixes => _result.HasQuickFixes;
 
         public IQuickFix DefaultQuickFix => _result.DefaultQuickFix;
 

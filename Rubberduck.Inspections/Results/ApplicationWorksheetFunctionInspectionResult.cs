@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using Rubberduck.Common;
+﻿using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.VBEditor;
@@ -10,37 +8,20 @@ namespace Rubberduck.Inspections.Results
 {
     public class ApplicationWorksheetFunctionInspectionResult : InspectionResultBase
     {
-        private readonly QualifiedSelection _qualifiedSelection;
         private readonly string _memberName;
-        private IEnumerable<IQuickFix> _quickFixes;
 
         public ApplicationWorksheetFunctionInspectionResult(IInspection inspection, QualifiedSelection qualifiedSelection, string memberName)
             : base(inspection, qualifiedSelection.QualifiedName)
         {
             _memberName = memberName;
-            _qualifiedSelection = qualifiedSelection;
+            QualifiedSelection = qualifiedSelection;
         }
 
-        public override QualifiedSelection QualifiedSelection
-        {
-            get { return _qualifiedSelection; }
-        }
-
-        public override IEnumerable<IQuickFix> QuickFixes
-        {
-            get
-            {
-                return _quickFixes ?? (_quickFixes = new IQuickFix[]
-                {
-                    new IgnoreOnceQuickFix(null, _qualifiedSelection, Inspection.AnnotationName),
-                    new ApplicationWorksheetFunctionQuickFix(_qualifiedSelection, _memberName)
-                });
-            }
-        }
+        public override QualifiedSelection QualifiedSelection { get; }
 
         public override string Description
         {
-            get { return string.Format(InspectionsUI.ApplicationWorksheetFunctionInspectionResultFormat, _memberName).Captialize(); }
+            get { return string.Format(InspectionsUI.ApplicationWorksheetFunctionInspectionResultFormat, _memberName).Capitalize(); }
         }
     }
 }

@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using Rubberduck.Common;
+﻿using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -12,11 +10,8 @@ namespace Rubberduck.Inspections.Results
 {
     public class MultilineParameterInspectionResult : InspectionResultBase
     {
-        private IEnumerable<IQuickFix> _quickFixes;
-
         public MultilineParameterInspectionResult(IInspection inspection, Declaration target)
-            : base(inspection, target)
-        { }
+            : base(inspection, target) {}
 
         public override string Description
         {
@@ -25,19 +20,7 @@ namespace Rubberduck.Inspections.Results
                 return string.Format(
                     Target.Context.GetSelection().LineCount > 3
                         ? RubberduckUI.EasterEgg_Continuator
-                        : InspectionsUI.MultilineParameterInspectionResultFormat, Target.IdentifierName).Captialize();
-            }
-        }
-
-        public override IEnumerable<IQuickFix> QuickFixes
-        {
-            get
-            {
-                return _quickFixes ?? (_quickFixes = new IQuickFix[]
-                {
-                    new MakeSingleLineParameterQuickFix(Context, QualifiedSelection),
-                    new IgnoreOnceQuickFix(Target.ParentDeclaration.Context, Target.ParentDeclaration.QualifiedSelection, Inspection.AnnotationName) 
-                });
+                        : InspectionsUI.MultilineParameterInspectionResultFormat, Target.IdentifierName).Capitalize();
             }
         }
     }

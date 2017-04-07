@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using Antlr4.Runtime;
+﻿using Antlr4.Runtime;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -13,30 +11,12 @@ namespace Rubberduck.Inspections.Results
 {
     public class MultipleDeclarationsInspectionResult : InspectionResultBase
     {
-        private IEnumerable<IQuickFix> _quickFixes;
-        private readonly QualifiedContext<ParserRuleContext> _qualifiedContext;
-
         public MultipleDeclarationsInspectionResult(IInspection inspection, QualifiedContext<ParserRuleContext> qualifiedContext)
-            : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context)
-        {
-            _qualifiedContext = qualifiedContext;
-        }
+            : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context) {}
 
         public override string Description
         {
-            get { return InspectionsUI.MultipleDeclarationsInspectionResultFormat.Captialize(); }
-        }
-
-        public override IEnumerable<IQuickFix> QuickFixes
-        {
-            get
-            {
-                return _quickFixes ?? (_quickFixes = new IQuickFix[]
-                {
-                    new SplitMultipleDeclarationsQuickFix(Context, QualifiedSelection), 
-                    new IgnoreOnceQuickFix(_qualifiedContext.Context, QualifiedSelection, Inspection.AnnotationName)
-                });
-            }
+            get { return InspectionsUI.MultipleDeclarationsInspectionResultFormat.Capitalize(); }
         }
 
         private new QualifiedSelection QualifiedSelection

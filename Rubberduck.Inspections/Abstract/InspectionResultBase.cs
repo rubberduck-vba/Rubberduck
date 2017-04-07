@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using Antlr4.Runtime;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
@@ -75,13 +73,6 @@ namespace Rubberduck.Inspections.Abstract
                     : new QualifiedSelection(_qualifiedName, _context.GetSelection());
             }
         }
-
-        /// <summary>
-        /// Gets all available "quick fixes" for a code inspection result.
-        /// </summary>
-        public virtual IEnumerable<IQuickFix> QuickFixes { get { return Enumerable.Empty<IQuickFix>(); } }
-
-        public bool HasQuickFixes => QuickFixes.Any();
 
         public virtual IQuickFix DefaultQuickFix => QuickFixes.FirstOrDefault();
 
