@@ -14,7 +14,7 @@ namespace RubberduckTests.Symbols
         public void ClassModulesHaveDeclarationTypeClassModule()
         {
             var projectDeclaration = GetTestProject("testProject");
-            var classModule = GetTestClassModule(projectDeclaration, "testClass", false, null);
+            var classModule = GetTestClassModule(projectDeclaration, "testClass", true, null);
 
             Assert.IsTrue(classModule.DeclarationType.HasFlag(DeclarationType.ClassModule));
         }
@@ -22,7 +22,7 @@ namespace RubberduckTests.Symbols
             private static ProjectDeclaration GetTestProject(string name)
             {
                 var qualifiedProjectName = new QualifiedMemberName(StubQualifiedModuleName(), name);
-                return new ProjectDeclaration(qualifiedProjectName, name, false, null);
+                return new ProjectDeclaration(qualifiedProjectName, name, true, null);
             }
 
                 private static QualifiedModuleName StubQualifiedModuleName()
@@ -30,10 +30,10 @@ namespace RubberduckTests.Symbols
                     return new QualifiedModuleName("dummy", "dummy", "dummy");
                 }
 
-            private static ClassModuleDeclaration GetTestClassModule(Declaration projectDeclatation, string name, bool isBuiltIn, Attributes attributes, bool hasDefaultInstanceVariable = false)
+            private static ClassModuleDeclaration GetTestClassModule(Declaration projectDeclatation, string name, bool isUserDefined, Attributes attributes, bool hasDefaultInstanceVariable = false)
             {
                 var qualifiedClassModuleMemberName = new QualifiedMemberName(StubQualifiedModuleName(), name);
-                return new ClassModuleDeclaration(qualifiedClassModuleMemberName, projectDeclatation, name, isBuiltIn, null, attributes, hasDefaultInstanceVariable);
+                return new ClassModuleDeclaration(qualifiedClassModuleMemberName, projectDeclatation, name, isUserDefined, null, attributes, hasDefaultInstanceVariable);
             }
 
 
@@ -42,7 +42,7 @@ namespace RubberduckTests.Symbols
         public void ByDefaultSubtypesIsEmpty()
         {
             var projectDeclaration = GetTestProject("testProject");
-            var classModule = GetTestClassModule(projectDeclaration, "testClass", false, null);
+            var classModule = GetTestClassModule(projectDeclaration, "testClass", true, null);
 
             Assert.IsFalse(classModule.Subtypes.Any());
         }
@@ -53,8 +53,8 @@ namespace RubberduckTests.Symbols
         public void AddSubtypeAddsClassToSubtypes()
         {
             var projectDeclaration = GetTestProject("testProject");
-            var classModule = GetTestClassModule(projectDeclaration, "testClass", false, null);
-            var subtype = GetTestClassModule(projectDeclaration, "testSubtype", false, null);
+            var classModule = GetTestClassModule(projectDeclaration, "testClass", true, null);
+            var subtype = GetTestClassModule(projectDeclaration, "testSubtype", true, null);
             classModule.AddSubtype(subtype);
 
             Assert.IsTrue(classModule.Subtypes.First().Equals(subtype));
@@ -66,7 +66,7 @@ namespace RubberduckTests.Symbols
         public void ByDefaultSupertypesIsEmpty()
         {
             var projectDeclaration = GetTestProject("testProject");
-            var classModule = GetTestClassModule(projectDeclaration, "testClass", false, null);
+            var classModule = GetTestClassModule(projectDeclaration, "testClass", true, null);
 
             Assert.IsFalse(classModule.Supertypes.Any());
         }
@@ -77,8 +77,8 @@ namespace RubberduckTests.Symbols
         public void AddSupertypeForDeclarationsAddsClassToSupertypes()
         {
             var projectDeclaration = GetTestProject("testProject");
-            var classModule = GetTestClassModule(projectDeclaration, "testClass", false, null);
-            var supertype = GetTestClassModule(projectDeclaration, "testSupertype", false, null);
+            var classModule = GetTestClassModule(projectDeclaration, "testClass", true, null);
+            var supertype = GetTestClassModule(projectDeclaration, "testSupertype", true, null);
             classModule.AddSupertype(supertype);
 
             Assert.IsTrue(classModule.Supertypes.First().Equals(supertype));
@@ -90,7 +90,7 @@ namespace RubberduckTests.Symbols
         public void ByDefaultSupertypeNamesIsEmpty()
         {
             var projectDeclaration = GetTestProject("testProject");
-            var classModule = GetTestClassModule(projectDeclaration, "testClass", false, null);
+            var classModule = GetTestClassModule(projectDeclaration, "testClass", true, null);
 
             Assert.IsFalse(classModule.SupertypeNames.Any());
         }
@@ -101,7 +101,7 @@ namespace RubberduckTests.Symbols
         public void AddSupertypeForStringsAddsTypenameToSupertypeNames()
         {
             var projectDeclaration = GetTestProject("testProject");
-            var classModule = GetTestClassModule(projectDeclaration, "testClass", false, null);
+            var classModule = GetTestClassModule(projectDeclaration, "testClass", true, null);
             var supertypeName = "testSupertypeName";
             classModule.AddSupertype(supertypeName);
 
@@ -114,8 +114,8 @@ namespace RubberduckTests.Symbols
         public void AddSupertypeForDeclarationsHasNoEffectOnSupertypeNames()
         {
             var projectDeclaration = GetTestProject("testProject");
-            var classModule = GetTestClassModule(projectDeclaration, "testClass", false, null);
-            var supertype = GetTestClassModule(projectDeclaration, "testSupertype", false, null);
+            var classModule = GetTestClassModule(projectDeclaration, "testClass", true, null);
+            var supertype = GetTestClassModule(projectDeclaration, "testSupertype", true, null);
             classModule.AddSupertype(supertype);
 
             Assert.IsFalse(classModule.SupertypeNames.Any());
@@ -127,7 +127,7 @@ namespace RubberduckTests.Symbols
         public void AddSupertypeForStringsHasNoEffectsOnSupertypes()
         {
             var projectDeclaration = GetTestProject("testProject");
-            var classModule = GetTestClassModule(projectDeclaration, "testClass", false, null);
+            var classModule = GetTestClassModule(projectDeclaration, "testClass", true, null);
             var supertypeName = "testSupertypeName";
             classModule.AddSupertype(supertypeName);
 
@@ -148,7 +148,7 @@ namespace RubberduckTests.Symbols
             private static ProceduralModuleDeclaration GetTestProceduralModule(Declaration projectDeclatation, string name)
             {
                 var qualifiedClassModuleMemberName = new QualifiedMemberName(StubQualifiedModuleName(), name);
-                return new ProceduralModuleDeclaration(qualifiedClassModuleMemberName, projectDeclatation, name, false, null, null);
+                return new ProceduralModuleDeclaration(qualifiedClassModuleMemberName, projectDeclatation, name, true, null, null);
             }
 
 
@@ -157,8 +157,8 @@ namespace RubberduckTests.Symbols
         public void GetSupertypesReturnsTheSupertypesOfAClassModule()
         {
             var projectDeclaration = GetTestProject("testProject");
-            var supertype = GetTestClassModule(projectDeclaration, "testSupertype", false, null);
-            var classModule = GetTestClassModule(projectDeclaration, "testClass", false, null);
+            var supertype = GetTestClassModule(projectDeclaration, "testSupertype", true, null);
+            var classModule = GetTestClassModule(projectDeclaration, "testClass", true, null);
             classModule.AddSupertype(supertype);
 
             Assert.AreEqual(supertype, ClassModuleDeclaration.GetSupertypes(classModule).First());
@@ -178,7 +178,7 @@ namespace RubberduckTests.Symbols
             private static Declaration GetTestFakeClassModule(Declaration parentDeclatation, string name)
             {
                 var qualifiedVariableMemberName = new QualifiedMemberName(StubQualifiedModuleName(), name);
-                return new Declaration(qualifiedVariableMemberName, parentDeclatation, "dummy", "test", "test", false, false, Accessibility.Public, DeclarationType.ClassModule, null, Selection.Home, false, null);
+                return new Declaration(qualifiedVariableMemberName, parentDeclatation, "dummy", "test", "test", false, false, Accessibility.Public, DeclarationType.ClassModule, null, Selection.Home, true, null);
             }
 
 
@@ -188,7 +188,7 @@ namespace RubberduckTests.Symbols
         public void ByDefaultDefaultMemberIsNull()
         {
             var projectDeclaration = GetTestProject("testProject");
-            var classModule = GetTestClassModule(projectDeclaration, "testClass", false, null);
+            var classModule = GetTestClassModule(projectDeclaration, "testClass", true, null);
 
             Assert.IsNull(classModule.DefaultMember);
         }
@@ -199,7 +199,7 @@ namespace RubberduckTests.Symbols
         public void ByDefaultClassModulesNotBuiltInAreNotExposed()
         {
             var projectDeclaration = GetTestProject("testProject");
-            var classModule = GetTestClassModule(projectDeclaration, "testClass", false, null);
+            var classModule = GetTestClassModule(projectDeclaration, "testClass", true, null);
 
             Assert.IsFalse(classModule.IsExposed);
         }
@@ -212,7 +212,7 @@ namespace RubberduckTests.Symbols
         public void BuiltInClassesAreExposed()
         {
             var projectDeclaration = GetTestProject("testProject");
-            var classModule = GetTestClassModule(projectDeclaration, "testClass", true, null);
+            var classModule = GetTestClassModule(projectDeclaration, "testClass", false, null);
 
             Assert.IsTrue(classModule.IsExposed);
         }
@@ -225,7 +225,7 @@ namespace RubberduckTests.Symbols
             var projectDeclaration = GetTestProject("testProject");
             var classAttributes = new Attributes();
             classAttributes.AddExposedClassAttribute();
-            var classModule = GetTestClassModule(projectDeclaration, "testClass", false, classAttributes);
+            var classModule = GetTestClassModule(projectDeclaration, "testClass", true, classAttributes);
 
             Assert.IsTrue(classModule.IsExposed);
         }
@@ -236,7 +236,7 @@ namespace RubberduckTests.Symbols
         public void ByDefaultClassModulesAreNotGlobalClasses()
         {
             var projectDeclaration = GetTestProject("testProject");
-            var classModule = GetTestClassModule(projectDeclaration, "testClass", false, null);
+            var classModule = GetTestClassModule(projectDeclaration, "testClass", true, null);
 
             Assert.IsFalse(classModule.IsGlobalClassModule);
         }
@@ -249,7 +249,7 @@ namespace RubberduckTests.Symbols
             var projectDeclaration = GetTestProject("testProject");
             var classAttributes = new Attributes();
             classAttributes.AddGlobalClassAttribute();
-            var classModule = GetTestClassModule(projectDeclaration, "testClass", false, classAttributes);
+            var classModule = GetTestClassModule(projectDeclaration, "testClass", true, classAttributes);
 
             Assert.IsTrue(classModule.IsGlobalClassModule);
         }
@@ -262,10 +262,10 @@ namespace RubberduckTests.Symbols
             var projectDeclaration = GetTestProject("testProject");
             var classAttributes = new Attributes();
             classAttributes.AddGlobalClassAttribute();
-            var subsubtype = GetTestClassModule(projectDeclaration, "testSubSubtype", false, classAttributes);
-            var subtype = GetTestClassModule(projectDeclaration, "testSubtype", false, null);
+            var subsubtype = GetTestClassModule(projectDeclaration, "testSubSubtype", true, classAttributes);
+            var subtype = GetTestClassModule(projectDeclaration, "testSubtype", true, null);
             subtype.AddSubtype(subsubtype);
-            var classModule = GetTestClassModule(projectDeclaration, "testClass", false, null);
+            var classModule = GetTestClassModule(projectDeclaration, "testClass", true, null);
             classModule.AddSubtype(subtype);
 
             Assert.IsTrue(classModule.IsGlobalClassModule);
@@ -279,10 +279,10 @@ namespace RubberduckTests.Symbols
             var projectDeclaration = GetTestProject("testProject");
             var classAttributes = new Attributes();
             classAttributes.AddGlobalClassAttribute();
-            var subsubtype = GetTestClassModule(projectDeclaration, "testSubSubtype", false, classAttributes);
-            var subtype = GetTestClassModule(projectDeclaration, "testSubtype", false, null);
+            var subsubtype = GetTestClassModule(projectDeclaration, "testSubSubtype", true, classAttributes);
+            var subtype = GetTestClassModule(projectDeclaration, "testSubtype", true, null);
             subtype.AddSubtype(subsubtype);
-            var classModule = GetTestClassModule(projectDeclaration, "testClass", false, null);
+            var classModule = GetTestClassModule(projectDeclaration, "testClass", true, null);
             var dummy = classModule.IsGlobalClassModule;
             classModule.AddSubtype(subtype);
 
@@ -297,9 +297,9 @@ namespace RubberduckTests.Symbols
             var projectDeclaration = GetTestProject("testProject");
             var classAttributes = new Attributes();
             classAttributes.AddGlobalClassAttribute();
-            var subsubtype = GetTestClassModule(projectDeclaration, "testSubSubtype", false, classAttributes);
-            var subtype = GetTestClassModule(projectDeclaration, "testSubtype", false, null);
-            var classModule = GetTestClassModule(projectDeclaration, "testClass", false, null);
+            var subsubtype = GetTestClassModule(projectDeclaration, "testSubSubtype", true, classAttributes);
+            var subtype = GetTestClassModule(projectDeclaration, "testSubtype", true, null);
+            var classModule = GetTestClassModule(projectDeclaration, "testClass", true, null);
             classModule.AddSubtype(subtype);
             var dummy = classModule.IsGlobalClassModule;
             subtype.AddSubtype(subsubtype);
@@ -313,7 +313,7 @@ namespace RubberduckTests.Symbols
         public void ByDefaultClassModulesDoNotHaveAPredeclaredID()
         {
             var projectDeclaration = GetTestProject("testProject");
-            var classModule = GetTestClassModule(projectDeclaration, "testClass", false, null);
+            var classModule = GetTestClassModule(projectDeclaration, "testClass", true, null);
 
             Assert.IsFalse(classModule.HasPredeclaredId);
         }
@@ -324,7 +324,7 @@ namespace RubberduckTests.Symbols
         public void ClassModulesHaveAPredeclaredIDIfStatedInTheConstructorThatTheyHaveADefaultInstanceVariable()
         {
             var projectDeclaration = GetTestProject("testProject");
-            var classModule = GetTestClassModule(projectDeclaration, "testClass", false, null, true);
+            var classModule = GetTestClassModule(projectDeclaration, "testClass", true, null, true);
 
             Assert.IsTrue(classModule.HasPredeclaredId);
         }
@@ -337,7 +337,7 @@ namespace RubberduckTests.Symbols
             var projectDeclaration = GetTestProject("testProject");
             var classAttributes = new Attributes();
             classAttributes.AddPredeclaredIdTypeAttribute();
-            var classModule = GetTestClassModule(projectDeclaration, "testClass", false, classAttributes);
+            var classModule = GetTestClassModule(projectDeclaration, "testClass", true, classAttributes);
 
             Assert.IsTrue(classModule.HasPredeclaredId);
         }
@@ -348,7 +348,7 @@ namespace RubberduckTests.Symbols
         public void ByDefaultClassModulesDoNotHaveADefaultInstanceVariable()
         {
             var projectDeclaration = GetTestProject("testProject");
-            var classModule = GetTestClassModule(projectDeclaration, "testClass", false, null);
+            var classModule = GetTestClassModule(projectDeclaration, "testClass", true, null);
 
             Assert.IsFalse(classModule.HasDefaultInstanceVariable);
         }
@@ -361,7 +361,7 @@ namespace RubberduckTests.Symbols
             var projectDeclaration = GetTestProject("testProject");
             var classAttributes = new Attributes();
             classAttributes.AddGlobalClassAttribute();
-            var classModule = GetTestClassModule(projectDeclaration, "testClass", false, classAttributes);
+            var classModule = GetTestClassModule(projectDeclaration, "testClass", true, classAttributes);
 
             Assert.IsTrue(classModule.HasDefaultInstanceVariable);
         }
@@ -374,7 +374,7 @@ namespace RubberduckTests.Symbols
             var projectDeclaration = GetTestProject("testProject");
             var classAttributes = new Attributes();
             classAttributes.AddPredeclaredIdTypeAttribute();
-            var classModule = GetTestClassModule(projectDeclaration, "testClass", false, classAttributes);
+            var classModule = GetTestClassModule(projectDeclaration, "testClass", true, classAttributes);
 
             Assert.IsTrue(classModule.HasDefaultInstanceVariable);
         }
@@ -385,7 +385,7 @@ namespace RubberduckTests.Symbols
         public void ClassModulesHaveADefaultInstanceVariableIfThisIsStated()
         {
             var projectDeclaration = GetTestProject("testProject");
-            var classModule = GetTestClassModule(projectDeclaration, "testClass", false, null, true);
+            var classModule = GetTestClassModule(projectDeclaration, "testClass", true, null, true);
 
             Assert.IsTrue(classModule.HasDefaultInstanceVariable);
         }

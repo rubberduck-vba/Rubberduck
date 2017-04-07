@@ -132,6 +132,11 @@ namespace Rubberduck.UI
 
         private void DispatchSelectedProjectNodeDeclaration(IVBComponent component)
         {
+            if (_parser.State.DeclarationFinder == null)
+            {
+                return;
+            }
+
             if ((component == null || component.IsWrappingNullReference) && !_vbe.ActiveVBProject.IsWrappingNullReference)
             {
                 //The user might have selected the project node in Project Explorer. If they've chosen a folder, we'll return the project anyway.

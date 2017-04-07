@@ -6,7 +6,8 @@ using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Resources;
+using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.UI;
 
 namespace RubberduckTests.Inspections
@@ -33,6 +34,8 @@ namespace RubberduckTests.Inspections
                           .Where(i => string.IsNullOrEmpty(InspectionsUI.ResourceManager.GetString(i.Name + "Name")))
                           .Select(i => i.Name)
                           .ToList();
+            if(!inspections.Any())
+            { Assert.Inconclusive("0 inspections found"); }
 
             Assert.IsFalse(inspections.Any(), string.Join(Environment.NewLine, inspections));
         }
@@ -46,6 +49,8 @@ namespace RubberduckTests.Inspections
                           .Where(i => string.IsNullOrEmpty(InspectionsUI.ResourceManager.GetString(i.Name + "Meta")))
                           .Select(i => i.Name)
                           .ToList();
+
+            if (!inspections.Any()) { Assert.Inconclusive("0 inspections found");}
 
             Assert.IsFalse(inspections.Any(), string.Join(Environment.NewLine, inspections));
         }
@@ -72,6 +77,9 @@ namespace RubberduckTests.Inspections
                           .Select(i => i.Name)
                           .ToList();
 
+            if(!inspections.Any())
+            { Assert.Inconclusive("0 inspections found"); }
+
             Assert.IsFalse(inspections.Any(), string.Join(Environment.NewLine, inspections));
         }
 
@@ -88,6 +96,9 @@ namespace RubberduckTests.Inspections
                           })
                           .Select(i => i.Name)
                           .ToList();
+
+            if(!inspections.Any())
+            { Assert.Inconclusive("0 inspections found"); }
 
             Assert.IsFalse(inspections.Any(), string.Join(Environment.NewLine, inspections));
         }

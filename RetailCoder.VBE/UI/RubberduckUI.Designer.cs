@@ -64,6 +64,7 @@ namespace Rubberduck.UI {
         ///   Looks up a localized string similar to Parsing powered by ANTLR
         ///GitHub integration powered by LibGit2Sharp
         ///Syntax highlighting powered by AvalonEdit
+        ///Native hooks powered by EasyHook
         ///Fugue icons by Yusuke Kamiyamane
         ///IDE icons from SharpDevelop
         ///WPF localization support by Grant Frisken.
@@ -190,6 +191,231 @@ namespace Rubberduck.UI {
         public static string AllReferences_NoneFound {
             get {
                 return ResourceManager.GetString("AllReferences_NoneFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unexpected COM exception while running tests..
+        /// </summary>
+        public static string Assert_ComException {
+            get {
+                return ResourceManager.GetString("Assert_ComException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to expected has {0} dimensions; actual has {1} dimensions. {2}.
+        /// </summary>
+        public static string Assert_DimensionMismatchFormat {
+            get {
+                return ResourceManager.GetString("Assert_DimensionMismatchFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OK, Rubberduck asserted.  Now what?.
+        /// </summary>
+        public static string Assert_EasterEggAssertClassPassed {
+            get {
+                return ResourceManager.GetString("Assert_EasterEggAssertClassPassed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expected: Stack overflow?; Actual: Guard clause..
+        /// </summary>
+        public static string Assert_EasterEggIFakePassed {
+            get {
+                return ResourceManager.GetString("Assert_EasterEggIFakePassed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to IVerify too..
+        /// </summary>
+        public static string Assert_EasterEggIVerifyPassed {
+            get {
+                return ResourceManager.GetString("Assert_EasterEggIVerifyPassed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} assertion failed. {1}.
+        /// </summary>
+        public static string Assert_FailedMessageFormat {
+            get {
+                return ResourceManager.GetString("Assert_FailedMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unexpected exception while running tests..
+        /// </summary>
+        public static string Assert_GenericException {
+            get {
+                return ResourceManager.GetString("Assert_GenericException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid setup of IFake {0}. PassThrough property must be False..
+        /// </summary>
+        public static string Assert_InvalidFakePassThrough {
+            get {
+                return ResourceManager.GetString("Assert_InvalidFakePassThrough", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dimension {0}: expected has an LBound of {1}; actual has an LBound of {2}. {3}.
+        /// </summary>
+        public static string Assert_LBoundMismatchFormat {
+            get {
+                return ResourceManager.GetString("Assert_LBoundMismatchFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [expected] and [actual] values are not the same type..
+        /// </summary>
+        public static string Assert_MismatchedTypes {
+            get {
+                return ResourceManager.GetString("Assert_MismatchedTypes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Neither [expected] or [actual] is an array..
+        /// </summary>
+        public static string Assert_NeitherParameterIsArray {
+            get {
+                return ResourceManager.GetString("Assert_NeitherParameterIsArray", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not implemented..
+        /// </summary>
+        public static string Assert_NotImplemented {
+            get {
+                return ResourceManager.GetString("Assert_NotImplemented", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} is not an array..
+        /// </summary>
+        public static string Assert_ParameterIsNotArrayFormat {
+            get {
+                return ResourceManager.GetString("Assert_ParameterIsNotArrayFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expected: {0}; Actual: {1}. {2}.
+        /// </summary>
+        public static string Assert_ParameterResultFormat {
+            get {
+                return ResourceManager.GetString("Assert_ParameterResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [expected] is a reference type and [actual] is a value type..
+        /// </summary>
+        public static string Assert_ReferenceValueMismatch {
+            get {
+                return ResourceManager.GetString("Assert_ReferenceValueMismatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dimension {0}: expected has a UBound of {1}; actual has a UBound of {2}. {3}.
+        /// </summary>
+        public static string Assert_UBoundMismatchFormat {
+            get {
+                return ResourceManager.GetString("Assert_UBoundMismatchFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [expected] and [actual] are arrays. Consider using {0}..
+        /// </summary>
+        public static string Assert_UnexpectedArrayFormat {
+            get {
+                return ResourceManager.GetString("Assert_UnexpectedArrayFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [expected] and [actual] are Nothing. Consider using {0}..
+        /// </summary>
+        public static string Assert_UnexpectedNullArraysFormat {
+            get {
+                return ResourceManager.GetString("Assert_UnexpectedNullArraysFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [expected] and [actual] are reference types. Consider using {0}..
+        /// </summary>
+        public static string Assert_UnexpectedReferenceComparisonFormat {
+            get {
+                return ResourceManager.GetString("Assert_UnexpectedReferenceComparisonFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [expected] and [actual] are value types. Consider using {0}..
+        /// </summary>
+        public static string Assert_UnexpectedValueComparisonFormat {
+            get {
+                return ResourceManager.GetString("Assert_UnexpectedValueComparisonFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [expected] is a value type and [actual] is a reference type..
+        /// </summary>
+        public static string Assert_ValueReferenceMismatch {
+            get {
+                return ResourceManager.GetString("Assert_ValueReferenceMismatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck could not process the invocation results..
+        /// </summary>
+        public static string Assert_VerifyInternalErrorMessage {
+            get {
+                return ResourceManager.GetString("Assert_VerifyInternalErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No matching invocation for parameter {0}; Only {1} invocations. {2}.
+        /// </summary>
+        public static string Assert_VerifyNoInvocationFormat {
+            get {
+                return ResourceManager.GetString("Assert_VerifyNoInvocationFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Parameter {0} was not a numeric value on invocatoin {1}. {2}.
+        /// </summary>
+        public static string Assert_VerifyParameterNonNumeric {
+            get {
+                return ResourceManager.GetString("Assert_VerifyParameterNonNumeric", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Parameter {0} was not passed on invocation {1}. {2}.
+        /// </summary>
+        public static string Assert_VerifyParameterNotPassed {
+            get {
+                return ResourceManager.GetString("Assert_VerifyParameterNotPassed", resourceCulture);
             }
         }
         
@@ -1987,7 +2213,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Entire project.
+        ///   Looks up a localized string similar to Current Project.
         /// </summary>
         public static string IndentCurrentProject {
             get {
@@ -2657,6 +2883,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Preview.
+        /// </summary>
+        public static string Preview {
+            get {
+                return ResourceManager.GetString("Preview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Previous.
         /// </summary>
         public static string Previous {
@@ -2803,6 +3038,24 @@ namespace Rubberduck.UI {
         public static string RefactorMenu_ReorderParameters {
             get {
                 return ResourceManager.GetString("RefactorMenu_ReorderParameters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable To Detect Selected Rename Target.
+        /// </summary>
+        public static string RefactorRename_TargetNotDefinedError {
+            get {
+                return ResourceManager.GetString("RefactorRename_TargetNotDefinedError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Identifier {0} cannot be renamed..
+        /// </summary>
+        public static string RefactorRename_TargetNotUserDefinedError {
+            get {
+                return ResourceManager.GetString("RefactorRename_TargetNotUserDefinedError", resourceCulture);
             }
         }
         
@@ -3096,11 +3349,47 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not rename Control {0}..
+        /// </summary>
+        public static string RenameDialog_ControlRenameError {
+            get {
+                return ResourceManager.GetString("RenameDialog_ControlRenameError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Coult not rename {0}..
+        /// </summary>
+        public static string RenameDialog_DefaultRenameError {
+            get {
+                return ResourceManager.GetString("RenameDialog_DefaultRenameError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not rename Event Handler {0}..
+        /// </summary>
+        public static string RenameDialog_EventRenameError {
+            get {
+                return ResourceManager.GetString("RenameDialog_EventRenameError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please specify new name for {0} &apos;{1}&apos;..
         /// </summary>
         public static string RenameDialog_InstructionsLabelText {
             get {
                 return ResourceManager.GetString("RenameDialog_InstructionsLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not rename Interface Member {0}..
+        /// </summary>
+        public static string RenameDialog_InterfaceRenameError {
+            get {
+                return ResourceManager.GetString("RenameDialog_InterfaceRenameError", resourceCulture);
             }
         }
         
@@ -3119,6 +3408,24 @@ namespace Rubberduck.UI {
         public static string RenameDialog_ProjectRenameError {
             get {
                 return ResourceManager.GetString("RenameDialog_ProjectRenameError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not rename Parameter {0} for Property {1}..
+        /// </summary>
+        public static string RenameDialog_PropertyParameterRenameError {
+            get {
+                return ResourceManager.GetString("RenameDialog_PropertyParameterRenameError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not rename Property {0}..
+        /// </summary>
+        public static string RenameDialog_PropertyRenameError {
+            get {
+                return ResourceManager.GetString("RenameDialog_PropertyRenameError", resourceCulture);
             }
         }
         

@@ -7,9 +7,10 @@ using Rubberduck.Settings;
 using Rubberduck.UI;
 using Rubberduck.UI.Command.MenuItems;
 using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.Windows.Forms;
-using Rubberduck.Inspections.Resources;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VersionCheck;
@@ -90,7 +91,8 @@ namespace Rubberduck
             }
             // The parser swallows the error if deletions fail - clean up any temp files on startup
             foreach (var file in new DirectoryInfo(ApplicationConstants.RUBBERDUCK_TEMP_PATH).GetFiles())
-            {            try
+            {
+                try
                 {
                         file.Delete();
                 }
@@ -129,6 +131,7 @@ namespace Rubberduck
         {
             try
             {
+                Debug.WriteLine("App calling Hooks.Detach.");
                 _hooks.Detach();
             }
             catch

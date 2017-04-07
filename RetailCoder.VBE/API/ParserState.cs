@@ -7,8 +7,8 @@ using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols.DeclarationLoaders;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command.MenuItems;
-using Rubberduck.Parsing.Preprocessing;
 using System.Globalization;
+using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.API
@@ -26,7 +26,7 @@ namespace Rubberduck.API
     }
 
     [ComVisible(true)]
-    [Guid("3D8EAA28-8983-44D5-83AF-2EEC4C363079")]
+    [Guid(RubberduckGuid.IParserStateEventsGuid)]
     [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
     public interface IParserStateEvents
     {
@@ -36,17 +36,14 @@ namespace Rubberduck.API
     }
 
     [ComVisible(true)]
-    [Guid(ClassId)]
-    [ProgId(ProgId)]
+    [Guid(RubberduckGuid.ParserStateClassGuid)]
+    [ProgId(RubberduckProgId.ParserStateProgId)]
     [ClassInterface(ClassInterfaceType.AutoDual)]
     [ComDefaultInterface(typeof(IParserState))]
     [ComSourceInterfaces(typeof(IParserStateEvents))]
     [EditorBrowsable(EditorBrowsableState.Always)]
     public sealed class ParserState : IParserState, IDisposable
     {
-        private const string ClassId = "28754D11-10CC-45FD-9F6A-525A65412B7A";
-        private const string ProgId = "Rubberduck.ParserState";
-
         private RubberduckParserState _state;
         private AttributeParser _attributeParser;
         private ParseCoordinator _parser;
@@ -161,7 +158,7 @@ namespace Rubberduck.API
             }
 
 
-            _vbe.Release();            
+            //_vbe.Release();            
             _disposed = true;
         }
     }

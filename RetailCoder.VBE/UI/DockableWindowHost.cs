@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -10,19 +11,16 @@ using User32 = Rubberduck.Common.WinAPI.User32;
 
 namespace Rubberduck.UI
 {
-    [Guid(ClassId)]
-    [ProgId(ProgId)]
     [ComVisible(true)]
+    [Guid(RubberduckGuid.DockableWindowHostGuid)]
+    [ProgId(RubberduckProgId.DockableWindowHostProgId)]    
     [EditorBrowsable(EditorBrowsableState.Never)]
-
     //Nothing breaks because we declare a ProgId
     // ReSharper disable once InconsistentNaming
     //Underscores make classes invisible to VB6 object explorer
     public partial class _DockableWindowHost : UserControl
-    {
-        private const string ClassId = "9CF1392A-2DC9-48A6-AC0B-E601A9802608";
-        private const string ProgId = "Rubberduck.UI.DockableWindowHost";
-        public static string RegisteredProgId { get { return ProgId; } }
+    {       
+        public static string RegisteredProgId => RubberduckProgId.DockableWindowHostProgId;
 
         // ReSharper disable UnusedAutoPropertyAccessor.Local
         [StructLayout(LayoutKind.Sequential)]
@@ -85,8 +83,8 @@ namespace Rubberduck.UI
             }
             else
             {
+                Debug.WriteLine("DockableWindowHost removed event handler.");
                 _subClassingWindow.CallBackEvent -= OnCallBackEvent;
-                _subClassingWindow.Dispose();
             }
         }
 
@@ -146,9 +144,24 @@ namespace Rubberduck.UI
             //See the comment in the ctor for why we have to listen for this.
             if (m.Msg == (int) WM.DESTROY)
             {
+                Debug.WriteLine("DockableWindowHost received WM.DESTROY.");
                 _thisHandle.Free();
             }
             base.DefWndProc(ref m);
+        }
+
+        //override 
+
+        public void Release()
+        {
+            Debug.WriteLine("DockableWindowHost release called.");
+            _subClassingWindow.Dispose();
+        }
+
+        protected override void DestroyHandle()
+        {
+            Debug.WriteLine("DockableWindowHost DestroyHandle called.");
+            base.DestroyHandle();
         }
 
         [ComVisible(false)]

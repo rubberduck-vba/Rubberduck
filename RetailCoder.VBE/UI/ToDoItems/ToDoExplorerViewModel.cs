@@ -25,7 +25,7 @@ namespace Rubberduck.UI.ToDoItems
             _state = state;
             _configService = configService;
             _operatingSystem = operatingSystem;
-            _state.StateChanged += _state_StateChanged;
+            _state.StateChanged += HandleStateChanged;
 
             _setMarkerGroupingCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
             {
@@ -105,7 +105,7 @@ namespace Rubberduck.UI.ToDoItems
             }
         }
 
-        private void _state_StateChanged(object sender, EventArgs e)
+        private void HandleStateChanged(object sender, EventArgs e)
         {
             if (_state.Status != ParserState.ResolvedDeclarations)
             {
@@ -204,7 +204,7 @@ namespace Rubberduck.UI.ToDoItems
         {
             if (_state != null)
             {
-                _state.StateChanged -= _state_StateChanged;
+                _state.StateChanged -= HandleStateChanged;
             }
         }
     }

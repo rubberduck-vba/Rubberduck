@@ -80,19 +80,19 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             return ((IEnumerable<IReference>)this).GetEnumerator();
         }
 
-        public override void Release(bool final = false)
-        {
-            if (!IsWrappingNullReference)
-            {
-                Target.ItemAdded -= Target_ItemAdded;
-                Target.ItemRemoved -= Target_ItemRemoved;
-                for (var i = 1; i <= Count; i++)
-                {
-                    this[i].Release();
-                }
-                base.Release(final);
-            }
-        }
+        //public override void Release(bool final = false)
+        //{
+        //    if (!IsWrappingNullReference)
+        //    {
+        //        Target.ItemAdded -= Target_ItemAdded;
+        //        Target.ItemRemoved -= Target_ItemRemoved;
+        //        for (var i = 1; i <= Count; i++)
+        //        {
+        //            this[i].Release();
+        //        }
+        //        base.Release(final);
+        //    }
+        //}
 
         public override bool Equals(ISafeComWrapper<VB.References> other)
         {

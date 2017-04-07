@@ -8,7 +8,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UnitTesting
 {
-    public static class UnitTestUtils
+    public static class UnitTestUtils // todo: reimplement using state.DeclarationFinder
     {
         public static IEnumerable<TestMethod> GetAllTests(IVBE vbe, RubberduckParserState state)
         {

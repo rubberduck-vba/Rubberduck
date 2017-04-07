@@ -1,7 +1,6 @@
 ﻿using Extensibility;
 using Ninject;
 using Ninject.Extensions.Factory;
-using Rubberduck.Common.WinAPI;
 using Rubberduck.Root;
 using Rubberduck.UI;
 using System;
@@ -14,12 +13,16 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Windows.Threading;
+using Microsoft.Vbe.Interop;
 using Ninject.Extensions.Interception;
 using NLog;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor.Events;
+using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.WindowsApi;
+using User32 = Rubberduck.Common.WinAPI.User32;
 
 namespace Rubberduck
 {
@@ -27,15 +30,12 @@ namespace Rubberduck
     /// Special thanks to Carlos Quintero (MZ-Tools) for providing the general structure here.
     /// </remarks>
     [ComVisible(true)]
-    [Guid(ClassId)]
-    [ProgId(ProgId)]
+    [Guid(RubberduckGuid.ExtensionGuid)]
+    [ProgId(RubberduckProgId.ExtensionProgId)]
     [EditorBrowsable(EditorBrowsableState.Never)]
     // ReSharper disable once InconsistentNaming // note: underscore prefix hides class from COM API
     public class _Extension : IDTExtensibility2
     {
-        private const string ClassId = "8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66";
-        private const string ProgId = "Rubberduck.Extension";
-
         private IVBE _ide;
         private IAddIn _addin;
         private bool _isInitialized;
@@ -52,13 +52,13 @@ namespace Rubberduck
         {
             try
             {
-                if (Application is Microsoft.Vbe.Interop.VBE)
+                if (Application is VBE)
                 {
-                    var vbe = (Microsoft.Vbe.Interop.VBE) Application;                  
+                    var vbe = (VBE) Application;                  
                     _ide = new VBEditor.SafeComWrappers.VBA.VBE(vbe);
                     VBENativeServices.HookEvents(_ide);
                     
-                    var addin = (Microsoft.Vbe.Interop.AddIn)AddInInst;
+                    var addin = (AddIn)AddInInst;
                     _addin = new VBEditor.SafeComWrappers.VBA.AddIn(addin) { Object = this };
                 }
                 else if (Application is Microsoft.VB6.Interop.VBIDE.VBE)
@@ -221,35 +221,31 @@ namespace Rubberduck
 
         private void ShutdownAddIn()
         {
+            Debug.WriteLine("Extension unhooking VBENativeServices events.");
             VBENativeServices.UnhookEvents();
 
             var currentDomain = AppDomain.CurrentDomain;
             currentDomain.AssemblyResolve -= LoadFromSameFolder;
-
+            Debug.WriteLine("Extension broadcasting shutdown.");
             User32.EnumChildWindows(_ide.MainWindow.Handle(), EnumCallback, new IntPtr(0));
+
+            Debug.WriteLine("Extension calling ReleaseDockableHosts.");
+            VBEditor.SafeComWrappers.VBA.Windows.ReleaseDockableHosts();
 
             if (_app != null)
             {
+                Debug.WriteLine("Extension calling App.Shutdown.");
                 _app.Shutdown();
                 _app = null;
             }
 
             if (_kernel != null)
             {
+                Debug.WriteLine("Extension calling Kernel.Dispose.");
                 _kernel.Dispose();
                 _kernel = null;
             }
 
-            try
-            {
-                _ide.Release();
-            }
-            catch (Exception e)
-            {
-                _logger.Error(e);
-            }
-
-            GC.WaitForPendingFinalizers();
             _isInitialized = false;
         }
 

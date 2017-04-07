@@ -1,14 +1,14 @@
-using System.Threading;
 using System.Windows.Forms;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Common;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.VBEditor;
 using RubberduckTests.Mocks;
 using Rubberduck.SmartIndenter;
+using Rubberduck.UI.Refactorings;
+using Rubberduck.UI.Refactorings.EncapsulateField;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -23,7 +23,7 @@ namespace RubberduckTests.Refactoring
             //Input
             const string inputCode =
 @"Public fizz As Integer";
-            var selection = new Selection(1, 1, 1, 1);
+            var selection = new Selection(1, 1);
 
             //Expectation
             const string expectedCode =
@@ -59,7 +59,8 @@ End Property
             var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            var rewriter = state.GetRewriter(model.TargetDeclaration);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
         }
 
         [TestMethod]
@@ -71,7 +72,7 @@ End Property
 fizz _
 As _
 Integer";
-            var selection = new Selection(1, 1, 1, 1);
+            var selection = new Selection(1, 1);
 
             //Expectation
             const string expectedCode =
@@ -107,7 +108,8 @@ End Property
             var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            var rewriter = state.GetRewriter(model.TargetDeclaration);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
         }
 
         [TestMethod]
@@ -116,7 +118,7 @@ End Property
             //Input
             const string inputCode =
 @"Public fizz As Variant";
-            var selection = new Selection(1, 1, 1, 1);
+            var selection = new Selection(1, 1);
 
             //Expectation
             const string expectedCode =
@@ -152,7 +154,8 @@ End Property
             var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            var rewriter = state.GetRewriter(model.TargetDeclaration);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
         }
 
         [TestMethod]
@@ -161,7 +164,7 @@ End Property
             //Input
             const string inputCode =
 @"Public fizz As Variant";
-            var selection = new Selection(1, 1, 1, 1);
+            var selection = new Selection(1, 1);
 
             //Expectation
             const string expectedCode =
@@ -193,7 +196,8 @@ End Property
             var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            var rewriter = state.GetRewriter(model.TargetDeclaration);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
         }
 
         [TestMethod]
@@ -209,7 +213,7 @@ End Sub
 Function Bar() As Integer
     Bar = 0
 End Function";
-            var selection = new Selection(1, 1, 1, 1);
+            var selection = new Selection(1, 1);
 
             //Expectation
             const string expectedCode =
@@ -251,7 +255,8 @@ End Function";
             var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            var rewriter = state.GetRewriter(model.TargetDeclaration);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
         }
 
         [TestMethod]
@@ -270,7 +275,7 @@ End Property
 
 Property Set Foo(ByVal vall As Variant)
 End Property";
-            var selection = new Selection(1, 1, 1, 1);
+            var selection = new Selection(1, 1);
 
             //Expectation
             const string expectedCode =
@@ -315,7 +320,8 @@ End Property";
             var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            var rewriter = state.GetRewriter(model.TargetDeclaration);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
         }
 
         [TestMethod]
@@ -325,7 +331,7 @@ End Property";
             const string inputCode =
 @"Public fizz As Integer
 Public buzz As Boolean";
-            var selection = new Selection(1, 1, 1, 1);
+            var selection = new Selection(1, 1);
 
             //Expectation
             const string expectedCode =
@@ -362,7 +368,8 @@ End Property
             var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            var rewriter = state.GetRewriter(model.TargetDeclaration);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
         }
 
         [TestMethod]
@@ -373,11 +380,12 @@ End Property
 @"Public fizz, _
          buzz As Boolean, _
          bazz As Date";
-            var selection = new Selection(1, 12, 1, 12);
+            var selection = new Selection(1, 12);
 
             //Expectation
             const string expectedCode =
-@"Public          buzz As Boolean,         bazz As Date
+@"Public buzz As Boolean, _
+         bazz As Date
 Private fizz As Variant
 
 Public Property Get Name() As Variant
@@ -395,7 +403,7 @@ End Property
 Public Property Set Name(ByVal value As Variant)
     Set fizz = value
 End Property
-";   // note: VBE removes excess spaces
+";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
@@ -417,9 +425,9 @@ End Property
 
             var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
-            var actual = component.CodeModule.Content();
 
-            Assert.AreEqual(expectedCode, actual);
+            var rewriter = state.GetRewriter(model.TargetDeclaration);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
         }
 
         [TestMethod]
@@ -428,13 +436,14 @@ End Property
             //Input
             const string inputCode =
 @"Public fizz, _
-         buzz As Boolean, _
-         bazz As Date";
-            var selection = new Selection(2, 12, 2, 12);
+buzz As Boolean, _
+bazz As Date";
+            var selection = new Selection(2, 12);
 
             //Expectation
             const string expectedCode =
-@"Public fizz,                  bazz As Date
+@"Public fizz, _
+bazz As Date
 Private buzz As Boolean
 
 Public Property Get Name() As Boolean
@@ -444,7 +453,7 @@ End Property
 Public Property Let Name(ByVal value As Boolean)
     buzz = value
 End Property
-";   // note: VBE removes excess spaces
+";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
@@ -467,7 +476,8 @@ End Property
             var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            var rewriter = state.GetRewriter(model.TargetDeclaration);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
         }
 
         [TestMethod]
@@ -476,13 +486,14 @@ End Property
             //Input
             const string inputCode =
 @"Public fizz, _
-         buzz As Boolean, _
-         bazz As Date";
-            var selection = new Selection(3, 12, 3, 12);
+buzz As Boolean, _
+bazz As Date";
+            var selection = new Selection(3, 12);
 
             //Expectation
             const string expectedCode =
-@"Public fizz,         buzz As Boolean         
+@"Public fizz, _
+buzz As Boolean
 Private bazz As Date
 
 Public Property Get Name() As Date
@@ -492,7 +503,7 @@ End Property
 Public Property Let Name(ByVal value As Date)
     bazz = value
 End Property
-";   // note: VBE removes excess spaces
+";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
@@ -515,7 +526,8 @@ End Property
             var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            var rewriter = state.GetRewriter(model.TargetDeclaration);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
         }
 
         [TestMethod]
@@ -524,7 +536,7 @@ End Property
             //Input
             const string inputCode =
 @"Private fizz As Integer";
-            var selection = new Selection(1, 1, 1, 1);
+            var selection = new Selection(1, 1);
 
             //Expectation
             const string expectedCode =
@@ -559,9 +571,9 @@ End Property
 
             var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
-            var actual = component.CodeModule.Content();
 
-            Assert.AreEqual(expectedCode, actual);
+            var rewriter = state.GetRewriter(model.TargetDeclaration);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
         }
 
         [TestMethod]
@@ -578,7 +590,7 @@ End Sub
 
 Sub Bar(ByVal name As Integer)
 End Sub";
-            var selection = new Selection(1, 1, 1, 1);
+            var selection = new Selection(1, 1);
 
             //Expectation
             const string expectedCode =
@@ -621,7 +633,8 @@ End Sub";
             var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            var rewriter = state.GetRewriter(model.TargetDeclaration);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
         }
 
         [TestMethod]
@@ -644,7 +657,7 @@ End Sub
 Sub Bar(ByVal v As Integer)
 End Sub";
 
-            var selection = new Selection(1, 1, 1, 1);
+            var selection = new Selection(1, 1);
 
             //Expectation
             const string expectedCode1 =
@@ -707,6 +720,12 @@ End Sub";
 
             Assert.AreEqual(expectedCode1, actualCode1);
             Assert.AreEqual(expectedCode2, actualCode2);
+
+            var rewriter1 = state.GetRewriter(module1.Parent);
+            Assert.AreEqual(expectedCode1, rewriter1.GetText());
+
+            var rewriter2 = state.GetRewriter(module2.Parent);
+            Assert.AreEqual(expectedCode2, rewriter2.GetText());
         }
 
         [TestMethod]
@@ -715,7 +734,7 @@ End Sub";
             //Input
             const string inputCode =
 @"Private fizz As Integer";
-            var selection = new Selection(1, 1, 1, 1);
+            var selection = new Selection(1, 1);
 
             //Expectation
             const string expectedCode =
@@ -751,7 +770,8 @@ End Property
             var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(state.AllUserDeclarations.FindVariable(qualifiedSelection));
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            var rewriter = state.GetRewriter(component);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
         }
 
         [TestMethod]
@@ -771,7 +791,8 @@ End Property
             var refactoring = new EncapsulateFieldRefactoring(vbeWrapper, CreateIndenter(vbe.Object), factory);
             refactoring.Refactor();
 
-            Assert.AreEqual(inputCode, component.CodeModule.Content());
+            var rewriter = state.GetRewriter(component);
+            Assert.AreEqual(inputCode, rewriter.GetText());
         }
 
         [TestMethod]
@@ -780,7 +801,7 @@ End Property
             //Input
             const string inputCode =
 @"Private fizz As Variant";
-            var selection = new Selection(1, 1, 1, 1);
+            var selection = new Selection(1, 1);
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
@@ -794,7 +815,8 @@ End Property
             var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
-            Assert.AreEqual(inputCode, component.CodeModule.Content());
+            var rewriter = state.GetRewriter(component);
+            Assert.AreEqual(inputCode, rewriter.GetText());
         }
 
         [TestMethod]
@@ -822,7 +844,7 @@ End Property
             const string inputCode =
 @"Private Sub Foo()
 End Sub";
-            var selection = new Selection(1, 15, 1, 15);
+            var selection = new Selection(1, 15);
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
@@ -864,15 +886,15 @@ End Sub";
             //Input
             const string inputCode =
 @"Private fizz As Variant";
-            var selection = new Selection(1, 15, 1, 15);
+            var selection = new Selection(1, 15);
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var view = new Mock<IEncapsulateFieldDialog>();
-            view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
-            view.SetupProperty(v => v.ParameterName, "myVal");
+            var view = new Mock<IRefactoringDialog<EncapsulateFieldViewModel>>();
+            view.Setup(v => v.DialogResult).Returns(DialogResult.OK);
+            view.SetupGet(v => v.ViewModel).Returns(new EncapsulateFieldViewModel(state, null) {ParameterName = "myVal"});
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, state, view.Object);
 
@@ -888,66 +910,20 @@ End Sub";
             const string inputCode =
 @"Private Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub";
-            var selection = new Selection(1, 15, 1, 15);
+            var selection = new Selection(1, 15);
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var view = new Mock<IEncapsulateFieldDialog>();
-            view.Setup(v => v.ShowDialog()).Returns(DialogResult.Cancel);
+            var view = new Mock<IRefactoringDialog<EncapsulateFieldViewModel>>();
+            view.Setup(v => v.DialogResult).Returns(DialogResult.Cancel);
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, state, view.Object);
 
             var presenter = factory.Create();
 
             Assert.AreEqual(null, presenter.Show());
-        }
-
-        [TestMethod]
-        public void Presenter_Accept_ReturnsModelWithPropertyNameChanged()
-        {
-            //Input
-            const string inputCode =
-@"Private fizz As Variant";
-            var selection = new Selection(1, 15, 1, 15);
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var view = new Mock<IEncapsulateFieldDialog>();
-            view.Setup(v => v.NewPropertyName).Returns("MyProperty");
-            view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
-
-            var factory = new EncapsulateFieldPresenterFactory(vbe.Object, state, view.Object);
-
-            var presenter = factory.Create();
-
-            Assert.AreEqual("MyProperty", presenter.Show().PropertyName);
-        }
-
-        [TestMethod]
-        public void Presenter_Accept_ReturnsModelWithCanImplementLetChanged()
-        {
-            //Input
-            const string inputCode =
-@"Private fizz As Variant";
-            var selection = new Selection(1, 15, 1, 15);
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var view = new Mock<IEncapsulateFieldDialog>();
-            view.SetupProperty(v => v.CanImplementLetSetterType, true);
-            view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
-
-            var factory = new EncapsulateFieldPresenterFactory(vbe.Object, state, view.Object);
-
-            var presenter = factory.Create();
-
-            Assert.AreEqual(true, presenter.Show().CanImplementLet);
         }
 
         //NOTE: The tests below are commented out pending some sort of refactoring that enables them

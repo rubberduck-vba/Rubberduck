@@ -369,7 +369,7 @@ namespace Rubberduck.Parsing.Binding
             {
                 return true;
             }
-            if (((IDeclarationWithParameter)match).Parameters.Any())
+            if (((IParameterizedDeclaration)match).Parameters.Any())
             {
                 return true;
             }

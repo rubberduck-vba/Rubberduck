@@ -1,8 +1,9 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections;
+using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Inspections.Resources;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
@@ -12,17 +13,17 @@ namespace RubberduckTests.Inspections
     [TestClass]
     public class ParameterCanBeByValInspectionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void ParameterCanBeByVal_NoResultForByValObjectInInterfaceImplementationProperty()
-        {
-            const string modelCode = @"
+            [TestMethod]
+            [TestCategory("Inspections")]
+            public void ParameterCanBeByVal_NoResultForByValObjectInInterfaceImplementationProperty()
+            {
+                const string modelCode = @"
 Option Explicit
 Public Foo As Long
 Public Bar As String
 ";
 
-            const string interfaceCode = @"
+                const string interfaceCode = @"
 Option Explicit
 
 Public Property Get Model() As MyModel
@@ -38,7 +39,7 @@ Public Sub Show()
 End Sub
 ";
 
-            const string implementationCode = @"
+                const string implementationCode = @"
 Option Explicit
 Private Type TView
     Model As MyModel
@@ -64,20 +65,20 @@ Private Sub IView_Show()
 End Sub
 ";
 
-            var builder = new MockVbeBuilder();
-            var vbe = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("IView", ComponentType.ClassModule, interfaceCode)
-                .AddComponent("MyModel", ComponentType.ClassModule, modelCode)
-                .AddComponent("MyForm", ComponentType.UserForm, implementationCode)
-                .MockVbeBuilder().Build();
-            
+                var builder = new MockVbeBuilder();
+                var vbe = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                    .AddComponent("IView", ComponentType.ClassModule, interfaceCode)
+                    .AddComponent("MyModel", ComponentType.ClassModule, modelCode)
+                    .AddComponent("MyForm", ComponentType.UserForm, implementationCode)
+                    .MockVbeBuilder().Build();
+
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ParameterCanBeByValInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(0, inspectionResults.Count());
-        }
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
 
         [TestMethod]
         [TestCategory("Inspections")]
@@ -369,7 +370,7 @@ End Sub";
                 .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
-            
+
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ParameterCanBeByValInspection(state);
@@ -399,7 +400,7 @@ End Sub";
                 .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
-            
+
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ParameterCanBeByValInspection(state);
@@ -430,7 +431,7 @@ End Sub";
                 .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
-            
+
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ParameterCanBeByValInspection(state);
@@ -466,12 +467,12 @@ End Sub";
                 .AddComponent("Class2", ComponentType.ClassModule, inputCode3)
                 .Build();
             var vbe = builder.AddProject(project).Build();
-            
+
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ParameterCanBeByValInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
-
+            
             Assert.AreEqual("a", inspectionResults.Single().Target.IdentifierName);
         }
 
@@ -496,7 +497,7 @@ End Sub";
                 .AddComponent("Class3", ComponentType.ClassModule, inputCode2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
-            
+
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ParameterCanBeByValInspection(state);
@@ -526,7 +527,7 @@ End Sub";
                 .AddComponent("Class3", ComponentType.ClassModule, inputCode2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
-            
+
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ParameterCanBeByValInspection(state);
@@ -557,7 +558,7 @@ End Sub";
                 .AddComponent("Class3", ComponentType.ClassModule, inputCode2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
-            
+
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ParameterCanBeByValInspection(state);
@@ -588,7 +589,7 @@ End Sub";
                 .AddComponent("Class3", ComponentType.ClassModule, inputCode2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
-            
+
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ParameterCanBeByValInspection(state);
@@ -758,7 +759,7 @@ End Sub";
             var module2 = project.Object.VBComponents["Class1"].CodeModule;
             var module3 = project.Object.VBComponents["Class2"].CodeModule;
             var vbe = builder.AddProject(project).Build();
-            
+
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ParameterCanBeByValInspection(state);
@@ -816,7 +817,7 @@ End Sub";
             var module2 = project.Object.VBComponents["Class2"].CodeModule;
             var module3 = project.Object.VBComponents["Class3"].CodeModule;
             var vbe = builder.AddProject(project).Build();
-            
+
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ParameterCanBeByValInspection(state);

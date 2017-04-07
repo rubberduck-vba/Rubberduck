@@ -3,10 +3,12 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Inspections;
 using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Inspections.Resources;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 using System.Collections.Generic;
+using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace RubberduckTests.Inspections
@@ -136,7 +138,7 @@ Public Sub Foo(ByVal arg1 As String)
 End Sub";
 
             var quickFixResult = ApplyIgnoreOnceQuickFixToCodeFragment(inputCode);
-            Assert.AreEqual(expectedCode, quickFixResult);
+            Assert.AreEqual(expectedCode, quickFixResult); 
         }
 
         [TestMethod]
@@ -180,13 +182,13 @@ End Sub";
             return module.Content();
         }
 
-        private IEnumerable<Rubberduck.Inspections.Abstract.InspectionResultBase> GetInspectionResults(string inputCode)
+        private IEnumerable<IInspectionResult> GetInspectionResults(string inputCode)
         {
             var vbe = BuildMockVBE(inputCode);
             return GetInspectionResults(vbe.Object);
         }
 
-        private IEnumerable<Rubberduck.Inspections.Abstract.InspectionResultBase> GetInspectionResults(IVBE vbe)
+        private IEnumerable<IInspectionResult> GetInspectionResults(IVBE vbe)
         {
             var state = MockParser.CreateAndParse(vbe);
             var inspection = new AssignedByValParameterInspection(state, null);

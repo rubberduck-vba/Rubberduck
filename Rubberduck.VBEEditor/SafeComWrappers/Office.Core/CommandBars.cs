@@ -78,10 +78,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
             get { return new CommandBar(IsWrappingNullReference ? null : Target[index]); }
         }
 
-        public override void Release(bool final = false)
-        {
-            // important: no-op
-        }
+        //public override void Release(bool final = false)
+        //{
+        //    // important: no-op
+        //}
 
         public override bool Equals(ISafeComWrapper<Microsoft.Office.Core.CommandBars> other)
         {

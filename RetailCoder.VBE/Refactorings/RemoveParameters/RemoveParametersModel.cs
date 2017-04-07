@@ -11,11 +11,8 @@ namespace Rubberduck.Refactorings.RemoveParameters
 {
     public class RemoveParametersModel
     {
-        private readonly RubberduckParserState _state;
-        public RubberduckParserState State { get { return _state; } }
-
-        private readonly IList<Declaration> _declarations;
-        public IEnumerable<Declaration> Declarations { get { return _declarations; } }
+        public RubberduckParserState State { get; }
+        public IEnumerable<Declaration> Declarations { get; }
 
         public Declaration TargetDeclaration { get; private set; }
         public List<Parameter> Parameters { get; set; }
@@ -24,13 +21,11 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         public RemoveParametersModel(RubberduckParserState state, QualifiedSelection selection, IMessageBox messageBox)
         {
-            _state = state;
-            _declarations = state.AllDeclarations.ToList();
+            State = state;
+            Declarations = state.AllDeclarations.ToList();
             _messageBox = messageBox;
 
             AcquireTarget(selection);
-
-            Parameters = new List<Parameter>();
             LoadParameters();
         }
 
@@ -45,11 +40,8 @@ namespace Rubberduck.Refactorings.RemoveParameters
         private void LoadParameters()
         {
             if (TargetDeclaration == null) { return; }
-
-            Parameters.Clear();
-
-            var index = 0;
-            Parameters = GetParameters().Select(arg => new Parameter(arg, index++)).ToList();
+            
+            Parameters = GetParameters().Select(arg => new Parameter(arg)).ToList();
 
             if (TargetDeclaration.DeclarationType == DeclarationType.PropertyLet ||
                 TargetDeclaration.DeclarationType == DeclarationType.PropertySet)
@@ -60,17 +52,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         private IEnumerable<Declaration> GetParameters()
         {
-            var targetSelection = new Selection(TargetDeclaration.Context.Start.Line,
-                TargetDeclaration.Context.Start.Column,
-                TargetDeclaration.Context.Stop.Line,
-                TargetDeclaration.Context.Stop.Column);
-
-            return Declarations.Where(d => d.DeclarationType == DeclarationType.Parameter
-                                       && d.ComponentName == TargetDeclaration.ComponentName
-                                       && d.ProjectId == TargetDeclaration.ProjectId
-                                       && targetSelection.Contains(d.Selection))
-                              .OrderBy(item => item.Selection.StartLine)
-                              .ThenBy(item => item.Selection.StartColumn);
+            return ((IParameterizedDeclaration) TargetDeclaration).Parameters;
         }
 
         public static readonly DeclarationType[] ValidDeclarationTypes =

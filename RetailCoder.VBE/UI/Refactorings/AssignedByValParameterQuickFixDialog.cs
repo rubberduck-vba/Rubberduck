@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using Rubberduck.Inspections;
 using System.Linq;
+using Rubberduck.Common;
 
 namespace Rubberduck.UI.Refactorings
 {

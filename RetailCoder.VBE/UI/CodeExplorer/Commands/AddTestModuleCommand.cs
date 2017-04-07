@@ -46,7 +46,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 node = node.Parent;
             }
 
-            return node == null ? null : ((ICodeExplorerDeclarationViewModel)node).Declaration;
+            return ((ICodeExplorerDeclarationViewModel) node)?.Declaration;
         }
     }
 }

@@ -8,7 +8,9 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 using Rubberduck.UI.Refactorings;
 using System.Windows.Forms;
-using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.Inspections
 {
@@ -20,12 +22,11 @@ namespace RubberduckTests.Inspections
         [TestCategory("Inspections")]
         public void AssignedByValParameter_LocalVariableAssignment()
         {
-            var inputCode =
+            var inputCode = 
 @"Public Sub Foo(ByVal arg1 As String)
     Let arg1 = ""test""
 End Sub";
-
-            var expectedCode =
+            var expectedCode = 
 @"Public Sub Foo(ByVal arg1 As String)
 Dim localArg1 As String
 localArg1 = arg1
@@ -34,10 +35,15 @@ End Sub";
 
             var quickFixResult = ApplyLocalVariableQuickFixToCodeFragment(inputCode);
             Assert.AreEqual(expectedCode, quickFixResult);
+        }
 
-            //weaponized formatting
-            inputCode =
-@"Sub DoSomething(_
+        //weaponized formatting
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void AssignedByValParameter_LocalVariableAssignment_ComplexFormat()
+        {
+            var inputCode = 
+            @"Sub DoSomething(_
     ByVal foo As Long, _
     ByRef _
         bar, _
@@ -48,9 +54,8 @@ End Sub";
                 bar + foo / barbecue
 End Sub
 ";
-
-            expectedCode =
-@"Sub DoSomething(_
+            var expectedCode =
+            @"Sub DoSomething(_
     ByVal foo As Long, _
     ByRef _
         bar, _
@@ -63,7 +68,8 @@ localFoo = foo
                 bar + localFoo / barbecue
 End Sub
 ";
-            quickFixResult = ApplyLocalVariableQuickFixToCodeFragment(inputCode);
+
+            var quickFixResult = ApplyLocalVariableQuickFixToCodeFragment(inputCode);
             Assert.AreEqual(expectedCode, quickFixResult);
         }
 
@@ -71,16 +77,15 @@ End Sub
         [TestCategory("Inspections")]
         public void AssignedByValParameter_LocalVariableAssignment_ComputedNameAvoidsCollision()
         {
-            var inputCode =
-@"
+            var inputCode = 
+            @"
 Public Sub Foo(ByVal arg1 As String)
     Dim fooVar, _
         localArg1 As Long
     Let arg1 = ""test""
 End Sub"
 ;
-
-            var expectedCode =
+            var expectedCode = 
 @"
 Public Sub Foo(ByVal arg1 As String)
 Dim localArg12 As String
@@ -89,10 +94,10 @@ localArg12 = arg1
         localArg1 As Long
     Let localArg12 = ""test""
 End Sub"
-;
+            ;
+
             var quickFixResult = ApplyLocalVariableQuickFixToCodeFragment(inputCode);
             Assert.AreEqual(expectedCode, quickFixResult);
-
         }
 
         [TestMethod]
@@ -101,7 +106,7 @@ End Sub"
         {
             //Make sure the modified code stays within the specific method under repair
             var inputCode =
-@"
+            @"
 Public Function Bar2(ByVal arg2 As String) As String
     Dim arg1 As String
     Let arg1 = ""Test1""
@@ -118,19 +123,13 @@ Public Sub Bar(ByVal arg2 As String)
     Let arg1 = ""Test2""
 End Sub"
 ;
-            var expectedFragment =
-@"
-Public Sub Bar(ByVal arg2 As String)
-    Dim arg1 As String
-    Let arg1 = ""Test2""
-End Sub"
-;
             string[] splitToken = { "'VerifyNoChangeBelowThisLine" };
             var expectedCode = inputCode.Split(splitToken, System.StringSplitOptions.None)[1];
 
             var quickFixResult = ApplyLocalVariableQuickFixToCodeFragment(inputCode);
-            var evaluatedFragment = quickFixResult.Split(splitToken, System.StringSplitOptions.None)[1];
-            Assert.AreEqual(expectedFragment, evaluatedFragment);
+            var evaluatedResult = quickFixResult.Split(splitToken, System.StringSplitOptions.None)[1];
+
+            Assert.AreEqual(expectedCode, evaluatedResult);
         }
 
         [TestMethod]
@@ -138,7 +137,7 @@ End Sub"
         public void AssignedByValParameter_LocalVariableAssignment_NameInUseOtherProperty()
         {
             //Make sure the modified code stays within the specific method under repair
-            var inputCode =
+            var inputCode = 
 @"
 Option Explicit
 Private mBar as Long
@@ -166,76 +165,90 @@ End Function
 
             var quickFixResult = ApplyLocalVariableQuickFixToCodeFragment(inputCode);
             var evaluatedResult = quickFixResult.Split(splitToken, System.StringSplitOptions.None)[1];
+
             Assert.AreEqual(expectedCode, evaluatedResult);
+        }
 
+        //Replicates issue #2873 : AssignedByValParameter quick fix needs to use `Set` for reference types.
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void AssignedByValParameter_LocalVariableAssignment_UsesSet()
+        {
+            var inputCode =
+            @"
+Public Sub Foo(ByVal target As Range)
+    Set target = Selection
+End Sub"
+;
+            var expectedCode = 
+@"
+Public Sub Foo(ByVal target As Range)
+Dim localTarget As Range
+Set localTarget = target
+    Set localTarget = Selection
+End Sub"
+;
+
+            var quickFixResult = ApplyLocalVariableQuickFixToCodeFragment(inputCode);
+            Assert.AreEqual(expectedCode, quickFixResult);
         }
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void AssignedByValParameter_LocalVariableAssignment_RespectsAccessibleDeclarations_InProcedure()
+        public void AssignedByValParameter_LocalVariableAssignment_NoAsTypeClause()
         {
-            string[] accessibleWithinParentProcedure = { "localVar" };
-            RespectsDeclarationAccessibilityRules(accessibleWithinParentProcedure, "Procedure Scope", true, false);
+            var inputCode =
+@"
+Public Sub Foo(FirstArg As Long, ByVal arg1)
+    arg1 = Range(""A1: C4"")
+End Sub"
+;
+            var expectedCode =
+@"
+Public Sub Foo(FirstArg As Long, ByVal arg1)
+Dim localArg1 As Variant
+localArg1 = arg1
+    localArg1 = Range(""A1: C4"")
+End Sub"
+;
+
+            var quickFixResult = ApplyLocalVariableQuickFixToCodeFragment(inputCode);
+            Assert.AreEqual(expectedCode, quickFixResult);
         }
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void AssignedByValParameter_LocalVariableAssignment_RespectsAccessibleDeclarations_ModuleScope()
+        public void AssignedByValParameter_LocalVariableAssignment_EnumType()
         {
-            string[] accessibleModuleScope = { "memberString", "KungFooFighting", "FooFight" };
-            RespectsDeclarationAccessibilityRules(accessibleModuleScope, "ModuleScope", true, false);
-        }
+            var inputCode =
+@"
+Enum TestEnum
+    EnumOne
+    EnumTwo
+    EnumThree
+End Enum
 
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void AssignedByValParameter_LocalVariableAssignment_RespectsAccessibleDeclarations_GlobalScope()
-        {
-            string[] accessibleGlobalScope = { "CantTouchThis", "BigNumber", "DoSomething", "SetFilename" };
-            RespectsDeclarationAccessibilityRules(accessibleGlobalScope, "GlobalScope", true, true);
-        }
+Public Sub Foo(FirstArg As Long, ByVal arg1 As TestEnum)
+    arg1 = EnumThree
+End Sub"
+;
+            var expectedCode =
+@"
+Enum TestEnum
+    EnumOne
+    EnumTwo
+    EnumThree
+End Enum
 
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void AssignedByValParameter_LocalVariableAssignment_RespectsAccessibleDeclarations_PublicClassElements()
-        {
-            string[] allowsNamesThatArePublicDeclarationsWithinAnotherClassModule = { "mySecondEggo", "Bar" };
-            RespectsDeclarationAccessibilityRules(allowsNamesThatArePublicDeclarationsWithinAnotherClassModule, "Different Class, Public Member", false, false);
-        }
+Public Sub Foo(FirstArg As Long, ByVal arg1 As TestEnum)
+Dim localArg1 As TestEnum
+localArg1 = arg1
+    localArg1 = EnumThree
+End Sub"
+;
 
-        private void RespectsDeclarationAccessibilityRules(string[] namesToTest, string scope, bool expectedEqualsInput, bool includeModuleNames)
-        {
-            var firstClassBody = GetRespectsDeclarationsAccessibilityRules_FirstClassBody();
-            var secondClassBody = GetRespectsDeclarationsAccessibilityRules_SecondClassBody();
-            var firstModuleBody = GetRespectsDeclarationsAccessibilityRules_FirstModuleBody();
-            var secondModuleBody = GetRespectsDeclarationsAccessibilityRules_SecondModuleBody();
-
-            var firstClass = new TestComponentSpecification("CFirstClass", firstClassBody, ComponentType.ClassModule);
-            var secondClass = new TestComponentSpecification("CSecondClass", secondClassBody, ComponentType.ClassModule);
-            var firstModule = new TestComponentSpecification("modFirst", firstModuleBody, ComponentType.StandardModule);
-            var secondModule = new TestComponentSpecification("modSecond", secondModuleBody, ComponentType.StandardModule);
-
-
-            var expectedCode = firstClass.Content;
-            TestComponentSpecification[] testComponents = { firstClass, secondClass, firstModule, secondModule };
-            var allTestNames = namesToTest.ToList();
-            if (includeModuleNames)
-            {
-                allTestNames.AddRange(testComponents.Select(n => n.Name));
-            }
-
-            var messagePreface = "Test failed for  " + scope + " identifier: ";
-            foreach (var nameToTest in allTestNames)
-            {
-                var quickFixResult = GetQuickFixResult(nameToTest, firstClass, testComponents);
-                if (expectedEqualsInput)
-                {
-                    Assert.AreEqual(expectedCode, quickFixResult, messagePreface + nameToTest);
-                }
-                else
-                {
-                    Assert.AreNotEqual(expectedCode, quickFixResult, messagePreface + nameToTest);
-                }
-            }
+            var quickFixResult = ApplyLocalVariableQuickFixToCodeFragment(inputCode);
+            Assert.AreEqual(expectedCode, quickFixResult);
         }
 
         private string ApplyLocalVariableQuickFixToCodeFragment(string inputCode, string userEnteredName = "")
@@ -244,7 +257,8 @@ End Function
 
             var mockDialogFactory = BuildMockDialogFactory(userEnteredName);
 
-            var inspectionResults = GetInspectionResults(vbe.Object, mockDialogFactory.Object);
+            RubberduckParserState state;
+            var inspectionResults = GetInspectionResults(vbe.Object, mockDialogFactory.Object, out state);
             var result = inspectionResults.FirstOrDefault();
             if (result == null)
             {
@@ -252,8 +266,7 @@ End Function
             }
 
             result.QuickFixes.Single(s => s is AssignedByValParameterMakeLocalCopyQuickFix).Fix();
-
-            return GetModuleContent(vbe.Object);
+            return state.GetRewriter(vbe.Object.ActiveVBProject.VBComponents[0]).GetText();
         }
 
         private Mock<IVBE> BuildMockVBE(string inputCode)
@@ -262,9 +275,9 @@ End Function
             return MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
         }
 
-        private IEnumerable<Rubberduck.Inspections.Abstract.InspectionResultBase> GetInspectionResults(IVBE vbe, IAssignedByValParameterQuickFixDialogFactory mockDialogFactory)
+        private IEnumerable<IInspectionResult> GetInspectionResults(IVBE vbe, IAssignedByValParameterQuickFixDialogFactory mockDialogFactory, out RubberduckParserState state)
         {
-            var state = MockParser.CreateAndParse(vbe);
+            state = MockParser.CreateAndParse(vbe);
 
             var inspection = new AssignedByValParameterInspection(state, mockDialogFactory);
             return inspection.GetInspectionResults();
@@ -286,189 +299,6 @@ End Function
             mockDialogFactory.Setup(f => f.Create(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IEnumerable<string>>())).Returns(mockDialog.Object);
 
             return mockDialogFactory;
-        }
-
-        private string GetModuleContent(IVBE vbe, string componentName = "")
-        {
-            var project = vbe.VBProjects[0];
-            var module = componentName.Length > 0
-                ? project.VBComponents[componentName].CodeModule : project.VBComponents[0].CodeModule;
-            return module.Content();
-        }
-
-        internal class TestComponentSpecification
-        {
-            private string _name;
-            private string _content;
-            private ComponentType _componentType;
-            public TestComponentSpecification(string componentName, string componentContent, ComponentType componentType)
-            {
-                _name = componentName;
-                _content = componentContent;
-                _componentType = componentType;
-            }
-
-            public string Name { get { return _name; } }
-            public string Content { get { return _content; } }
-            public ComponentType ModuleType { get { return _componentType; } }
-        }
-
-        private string GetQuickFixResult(string userEnteredNames, TestComponentSpecification resultsComponent, TestComponentSpecification[] testComponents)
-        {
-            var vbe = BuildProject("TestProject", testComponents.ToList());
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var mockDialogFactory = BuildMockDialogFactory(userEnteredNames);
-            var inspection = new AssignedByValParameterInspection(state, mockDialogFactory.Object);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            inspectionResults.First().QuickFixes.Single(s => s is AssignedByValParameterMakeLocalCopyQuickFix).Fix();
-
-            return GetModuleContent(vbe.Object, resultsComponent.Name);
-        }
-
-        private Mock<IVBE> BuildProject(string projectName, List<TestComponentSpecification> testComponents)
-        {
-            var builder = new MockVbeBuilder();
-            var enclosingProjectBuilder = builder.ProjectBuilder(projectName, ProjectProtection.Unprotected);
-
-            testComponents.ForEach(c => enclosingProjectBuilder.AddComponent(c.Name, c.ModuleType, c.Content));
-            var enclosingProject = enclosingProjectBuilder.Build();
-            builder.AddProject(enclosingProject);
-            return builder.Build();
-        }
-
-        private string GetNameAlreadyAccessibleWithinClass_FirstClassBody()
-        {
-            return
-                @"
-Private memberString As String
-Private memberLong As Long
-
-Private Sub Class_Initialize()
-    memberLong = 6
-    memberString = ""No Value""
-End Sub
-
-Public Sub Foo(ByVal arg1 As String, theSecondArg As Long)
-    Let arg1 = ""test""
-End Sub
-
-Private Sub FooFight(ByRef arg1 As String)
-    xArg1 = 6
-    Let arg1 = ""test""
-End Sub
-";
-
-        }
-        private string GetRespectsDeclarationsAccessibilityRules_FirstClassBody()
-        {
-            return
-@"
-Private memberString As String
-Private memberLong As Long
-Private myEggo as String
-
-Public Sub Foo(ByVal arg1 As String)
-    Dim localVar as Long
-    localVar = 7
-    Let arg1 = ""test""
-    memberString = arg1 & ""Foo""
-End Sub
-
-Public Function KungFooFighting(ByRef arg1 As String, theSecondArg As Long) As String
-    Let arg1 = ""test""
-    Dim result As String
-    result = arg1 & theSecondArg
-    KungFooFighting = result
-End Function
-
-Property Let GoMyEggo(newValue As String)
-    myEggo = newValue
-End Property
-
-Property Get GoMyEggo()
-    GoMyEggo = myEggo
-End Property
-
-Private Sub FooFight(ByRef arg1 As String)
-    xArg1 = 6
-    Let arg1 = ""test""
-End Sub
-";
-        }
-        private string GetRespectsDeclarationsAccessibilityRules_SecondClassBody()
-        {
-            return
-@"
-Private memberString As String
-Private memberLong As Long
-Public mySecondEggo as String
-
-
-Public Sub Foo2( arg1 As String, theSecondArg As Long)
-    Let arg1 = ""test""
-    memberString = arg1 & ""Foo""
-End Sub
-
-Public Function KungFooFighting(ByRef arg1 As String, theSecondArg As Long) As String
-    Let arg1 = ""test""
-    Dim result As String
-    result = arg1 & theSecondArg
-    KungFooFighting = result
-End Function
-
-Property Let GoMyOtherEggo(newValue As String)
-    mySecondEggo = newValue
-End Property
-
-Property Get GoMyOtherEggo()
-    GoMyOtherEggo = mySecondEggo
-End Property
-
-Private Sub FooFighters(ByRef arg1 As String)
-    xArg1 = 6
-    Let arg1 = ""test""
-End Sub
-
-Sub Bar()
-    Dim st As String
-    st = ""Test""
-    Dim v As Long
-    v = 5
-    result = KungFooFighting(st, v)
-End Sub
-";
-        }
-        private string GetRespectsDeclarationsAccessibilityRules_FirstModuleBody()
-        {
-            return
-@"
-Option Explicit
-
-
-Public Const CantTouchThis As String = ""Can't Touch this""
-Public THE_FILENAME As String
-
-Sub SetFilename(filename As String)
-    THE_FILENAME = filename
-End Sub
-";
-        }
-        private string GetRespectsDeclarationsAccessibilityRules_SecondModuleBody()
-        {
-            return
-@"
-Option Explicit
-
-
-Public BigNumber as Long
-Public ShortStory As String
-
-Public Sub DoSomething(filename As String)
-    ShortStory = filename
-End Sub
-";
         }
     }
 }

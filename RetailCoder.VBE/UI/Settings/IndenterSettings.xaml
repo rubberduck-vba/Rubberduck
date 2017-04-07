@@ -153,6 +153,7 @@
                             </TextBlock>
                             <controls:NumberPicker Margin="0,-6,0,0"
                                          MinNumber="0"
+                                         MaxNumber="{x:Static smartIndenter:IndenterSettings.MaximumIndentSpaces}"
                                          NumValue="{Binding IndentSpaces,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
                         </StackPanel>
                     </StackPanel>
@@ -202,6 +203,7 @@
                             <controls:NumberPicker Margin="0,-6,0,0"
                                          HorizontalAlignment="Left"
                                          MinNumber="0"
+                                         MaxNumber="{x:Static smartIndenter:IndenterSettings.MaximumAlignDimColumn}"
                                          IsEnabled="{Binding ElementName=AlignDimColumn,Path=IsChecked}"
                                          NumValue="{Binding AlignDimColumn,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
                         </WrapPanel>
@@ -227,6 +229,7 @@
                                 <controls:NumberPicker Margin="0,-4,0,0"
                                              HorizontalAlignment="Left"
                                              MinNumber="0"
+                                             MaxNumber="{x:Static smartIndenter:IndenterSettings.MaximumEndOfLineCommentColumnSpaceAlignment}"
                                              NumValue="{Binding EndOfLineCommentColumnSpaceAlignment,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                                              Visibility="{Binding EndOfLineCommentStyle,Converter={StaticResource EndOfLineCommentStyleToVisibility}}"/>
                             </StackPanel>
@@ -289,14 +292,14 @@
                             <controls:NumberPicker Margin="0,-6,0,0"
                                          HorizontalAlignment="Left"
                                          MinNumber="0"
-                                         MaxNumber="2"
+                                         MaxNumber="{x:Static smartIndenter:IndenterSettings.MaximumVerticalSpacing}"
                                          IsEnabled="{Binding ElementName=SpaceProcedures,Path=IsChecked}"
                                          NumValue="{Binding LinesBetweenProcedures,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
                         </WrapPanel>
                     </StackPanel>
                 </Expander>
                 <Expander Grid.Row="4"
-                         IsExpanded="False"
+                         IsExpanded="True"
                          Background="#FFFFFFFF"
                          BorderBrush="#FFA9A9A9"
                          Margin="0,0,0,3">

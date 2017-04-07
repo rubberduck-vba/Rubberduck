@@ -39,7 +39,7 @@ namespace Rubberduck.UI.Command.Refactorings
                 var targetInterface = _state.AllUserDeclarations.FindInterface(selection.Value);
 
                 var targetClass = _state.AllUserDeclarations.SingleOrDefault(d =>
-                    !d.IsBuiltIn && d.DeclarationType == DeclarationType.ClassModule &&
+                    d.DeclarationType == DeclarationType.ClassModule &&
                     d.QualifiedSelection.QualifiedName.Equals(selection.Value.QualifiedName));
 
                 return targetInterface != null && targetClass != null;

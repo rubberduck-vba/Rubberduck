@@ -1,5 +1,9 @@
-﻿using System.Windows.Forms;
+﻿using System.Collections.ObjectModel;
+using System.Linq;
+using System.Windows.Forms;
 using Rubberduck.UI;
+using Rubberduck.UI.Refactorings;
+using Rubberduck.UI.Refactorings.ReorderParameters;
 
 namespace Rubberduck.Refactorings.ReorderParameters
 {
@@ -10,11 +14,11 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
     public class ReorderParametersPresenter : IReorderParametersPresenter
     {
-        private readonly IReorderParametersDialog _view;
+        private readonly IRefactoringDialog<ReorderParametersViewModel> _view;
         private readonly ReorderParametersModel _model;
         private readonly IMessageBox _messageBox;
 
-        public ReorderParametersPresenter(IReorderParametersDialog view, ReorderParametersModel model, IMessageBox messageBox)
+        public ReorderParametersPresenter(IRefactoringDialog<ReorderParametersViewModel> view, ReorderParametersModel model, IMessageBox messageBox)
         {
             _view = view;
             _model = model;
@@ -32,15 +36,15 @@ namespace Rubberduck.Refactorings.ReorderParameters
                 return null;
             }
 
-            _view.Parameters = _model.Parameters;
-            _view.InitializeParameterGrid();
+            _view.ViewModel.Parameters = new ObservableCollection<Parameter>(_model.Parameters);
 
-            if (_view.ShowDialog() != DialogResult.OK)
+            _view.ShowDialog();
+            if (_view.DialogResult != DialogResult.OK)
             {
                 return null;
             }
 
-            _model.Parameters = _view.Parameters;
+            _model.Parameters = _view.ViewModel.Parameters.ToList();
             return _model;
         }
     }
