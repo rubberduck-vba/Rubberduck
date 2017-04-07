@@ -197,9 +197,9 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new VariableTypeNotDeclaredInspection(state);
-            new DeclareAsExplicitVariantQuickFix().Fix(inspection.GetInspectionResults().First());
+            new DeclareAsExplicitVariantQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -219,9 +219,9 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new VariableTypeNotDeclaredInspection(state);
-            new DeclareAsExplicitVariantQuickFix().Fix(inspection.GetInspectionResults().First());
+            new DeclareAsExplicitVariantQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -243,9 +243,9 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new VariableTypeNotDeclaredInspection(state);
-            new DeclareAsExplicitVariantQuickFix().Fix(inspection.GetInspectionResults().First());
+            new DeclareAsExplicitVariantQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -265,9 +265,9 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new VariableTypeNotDeclaredInspection(state);
-            new DeclareAsExplicitVariantQuickFix().Fix(inspection.GetInspectionResults().First());
+            new DeclareAsExplicitVariantQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -287,9 +287,9 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new VariableTypeNotDeclaredInspection(state);
-            new DeclareAsExplicitVariantQuickFix().Fix(inspection.GetInspectionResults().First());
+            new DeclareAsExplicitVariantQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
