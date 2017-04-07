@@ -177,8 +177,8 @@ End Sub";
             var inspection = new NonReturningFunctionInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ConvertToProcedureQuickFix().Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -200,8 +200,8 @@ End Sub";
             var inspection = new NonReturningFunctionInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ConvertToProcedureQuickFix().Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -223,8 +223,8 @@ End Sub";
             var inspection = new NonReturningFunctionInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ConvertToProcedureQuickFix().Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -246,8 +246,8 @@ End Sub";
             var inspection = new NonReturningFunctionInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ConvertToProcedureQuickFix().Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -269,8 +269,8 @@ End Sub";
             var inspection = new NonReturningFunctionInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ConvertToProcedureQuickFix().Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -292,8 +292,8 @@ End Sub";
             var inspection = new NonReturningFunctionInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ConvertToProcedureQuickFix().Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -315,8 +315,8 @@ End Sub";
             var inspection = new NonReturningFunctionInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ConvertToProcedureQuickFix().Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -338,8 +338,8 @@ End Sub";
             var inspection = new NonReturningFunctionInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ConvertToProcedureQuickFix().Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]

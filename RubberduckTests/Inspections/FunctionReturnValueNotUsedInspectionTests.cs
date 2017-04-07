@@ -401,7 +401,9 @@ End Function";
             const string expectedCode =
 @"Public Sub Foo(ByVal bar As String)
     If True Then
+        
     Else
+        
     End If
 End Sub";
 
@@ -412,8 +414,8 @@ End Sub";
             var inspection = new FunctionReturnValueNotUsedInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ConvertToProcedureQuickFix().Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -435,6 +437,7 @@ End Sub";
     fizz = True
     goo
 label1:
+    
 End Sub
 
 Sub goo()
@@ -447,8 +450,8 @@ End Sub";
             var inspection = new FunctionReturnValueNotUsedInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ConvertToProcedureQuickFix().Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -495,12 +498,10 @@ End Function";
             var inspection = new FunctionReturnValueNotUsedInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ConvertToProcedureQuickFix().Fix(inspectionResults.First());
+            new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
 
-            var project = vbe.Object.VBProjects[0];
-            var interfaceModule = project.VBComponents[0].CodeModule;
-            string actualInterface = interfaceModule.Content();
-            Assert.AreEqual(expectedInterfaceCode, actualInterface, "Interface");
+            var component = vbe.Object.VBProjects[0].VBComponents[0];
+            Assert.AreEqual(expectedInterfaceCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
