@@ -13,9 +13,7 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class ModuleScopeDimKeywordInspection : InspectionBase
     {
         public ModuleScopeDimKeywordInspection(RubberduckParserState state) 
-            : base(state, CodeInspectionSeverity.Suggestion)
-        {
-        }
+            : base(state, CodeInspectionSeverity.Suggestion) { }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
@@ -31,9 +29,8 @@ namespace Rubberduck.Inspections.Concrete
         {
             var moduleVariables = State.AllUserDeclarations
                 .Where(declaration => declaration.DeclarationType == DeclarationType.Variable
-                                   && ModuleTypes.Contains(declaration.ParentDeclaration.DeclarationType)
-                                   && declaration.Context.Parent.Parent is VBAParser.VariableStmtContext
-                                   && ((VBAParser.VariableStmtContext)declaration.Context.Parent.Parent).DIM() != null);
+                                      && ModuleTypes.Contains(declaration.ParentDeclaration.DeclarationType)
+                                      && (declaration.Context.Parent.Parent as VBAParser.VariableStmtContext)?.DIM() != null);
             return moduleVariables.Select(variable => new ModuleScopeDimKeywordInspectionResult(this, variable));
         }
     }

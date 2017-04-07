@@ -97,7 +97,6 @@
     <Compile Include="QuickFixes\ChangeDimToPrivateQuickFix.cs" />
     <Compile Include="QuickFixes\ChangeParameterByRefByValQuickFix.cs" />
     <Compile Include="QuickFixes\ChangeProcedureToFunctionQuickFix.cs" />
-    <Compile Include="QuickFixes\CompositeCodeInspectionFix.cs" />
     <Compile Include="QuickFixes\ConvertToProcedureQuickFix.cs" />
     <Compile Include="QuickFixes\DeclareAsExplicitVariantQuickFix.cs" />
     <Compile Include="QuickFixes\EncapsulateFieldQuickFix.cs" />

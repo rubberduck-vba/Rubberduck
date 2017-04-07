@@ -6,21 +6,15 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI.Refactorings;
 
 namespace Rubberduck.Inspections.Concrete
 {
     public sealed class AssignedByValParameterInspection : InspectionBase
     {
-        private readonly IAssignedByValParameterQuickFixDialogFactory _dialogFactory;
-        private readonly RubberduckParserState _parserState;
-        public AssignedByValParameterInspection(RubberduckParserState state, IAssignedByValParameterQuickFixDialogFactory dialogFactory)
+        public AssignedByValParameterInspection(RubberduckParserState state)
             : base(state)
         {
             Severity = DefaultSeverity;
-            _dialogFactory = dialogFactory;
-            _parserState = state;
-
         }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
@@ -28,7 +22,7 @@ namespace Rubberduck.Inspections.Concrete
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
             var parameters = State.DeclarationFinder.UserDeclarations(DeclarationType.Parameter)
-                .OfType<ParameterDeclaration>()
+                .Cast<ParameterDeclaration>()
                 .Where(item => !item.IsByRef 
                     && !IsIgnoringInspectionResultFor(item, AnnotationName)
                     && item.References.Any(reference => reference.IsAssignment))

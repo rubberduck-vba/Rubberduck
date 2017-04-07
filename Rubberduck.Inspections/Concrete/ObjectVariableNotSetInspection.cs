@@ -30,7 +30,7 @@ namespace Rubberduck.Inspections.Concrete
             var referencesRequiringSetAssignment = candidateReferencesRequiringSetAssignment                  
                 .Where(reference => VariableRequiresSetAssignmentEvaluator.RequiresSetAssignment(reference, State));
 
-            var objectVariableNotSetReferences = referencesRequiringSetAssignment.Where(reference => FlagIfObjectVariableNotSet(reference));
+            var objectVariableNotSetReferences = referencesRequiringSetAssignment.Where(FlagIfObjectVariableNotSet);
 
             return objectVariableNotSetReferences.Select(reference => new ObjectVariableNotSetInspectionResult(this, reference));
         }

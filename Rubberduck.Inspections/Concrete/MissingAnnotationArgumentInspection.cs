@@ -16,9 +16,7 @@ namespace Rubberduck.Inspections.Concrete
         private IEnumerable<QualifiedContext> _parseTreeResults;
  
         public MissingAnnotationArgumentInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Error)
-        {
-        }
+            : base(state, CodeInspectionSeverity.Error) { }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 

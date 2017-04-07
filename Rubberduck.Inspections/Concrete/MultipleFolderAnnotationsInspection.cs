@@ -13,9 +13,7 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class MultipleFolderAnnotationsInspection : InspectionBase
     {
         public MultipleFolderAnnotationsInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Error)
-        {
-        }
+            : base(state, CodeInspectionSeverity.Error) { }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 

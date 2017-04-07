@@ -19,9 +19,7 @@ namespace Rubberduck.Inspections.Concrete
         private IEnumerable<QualifiedContext> _parseTreeResults;
 
         public ProcedureCanBeWrittenAsFunctionInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Suggestion)
-        {
-        }
+            : base(state, CodeInspectionSeverity.Suggestion) { }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
 
@@ -59,8 +57,7 @@ namespace Rubberduck.Inspections.Concrete
                                                          this,
                                                          State,
                                                          result,
-                                                         new QualifiedContext<VBAParser.SubStmtContext>(result.QualifiedName, (VBAParser.SubStmtContext)result.Context))
-                                   );                   
+                                                         new QualifiedContext<VBAParser.SubStmtContext>(result.QualifiedName, (VBAParser.SubStmtContext)result.Context)));                   
         }
 
         public class SingleByRefParamArgListListener : VBAParserBaseListener

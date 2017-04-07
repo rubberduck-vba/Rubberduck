@@ -22,7 +22,7 @@ namespace RubberduckTests.Inspections
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EncapsulatePublicFieldInspection(state, null);
+            var inspection = new EncapsulatePublicFieldInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
@@ -41,7 +41,7 @@ Public buzz As Integer, _
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EncapsulatePublicFieldInspection(state, null);
+            var inspection = new EncapsulatePublicFieldInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(3, inspectionResults.Count());
@@ -58,7 +58,7 @@ Public buzz As Integer, _
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EncapsulatePublicFieldInspection(state, null);
+            var inspection = new EncapsulatePublicFieldInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(0, inspectionResults.Count());
@@ -76,7 +76,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EncapsulatePublicFieldInspection(state, null);
+            var inspection = new EncapsulatePublicFieldInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(0, inspectionResults.Count());
@@ -94,7 +94,7 @@ Public fizz As Boolean";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EncapsulatePublicFieldInspection(state, null);
+            var inspection = new EncapsulatePublicFieldInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.IsFalse(inspectionResults.Any());
@@ -115,7 +115,7 @@ Public fizz As Boolean";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EncapsulatePublicFieldInspection(state, null);
+            var inspection = new EncapsulatePublicFieldInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
             
             new IgnoreOnceQuickFix(new[] {inspection}).Fix(inspectionResults.First());
@@ -126,7 +126,7 @@ Public fizz As Boolean";
         [TestCategory("Inspections")]
         public void InspectionType()
         {
-            var inspection = new EncapsulatePublicFieldInspection(null, null);
+            var inspection = new EncapsulatePublicFieldInspection(null);
             Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
         }
 
@@ -135,7 +135,7 @@ Public fizz As Boolean";
         public void InspectionName()
         {
             const string inspectionName = "EncapsulatePublicFieldInspection";
-            var inspection = new EncapsulatePublicFieldInspection(null, null);
+            var inspection = new EncapsulatePublicFieldInspection(null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
         }

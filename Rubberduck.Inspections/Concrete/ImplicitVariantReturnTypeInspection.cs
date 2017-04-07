@@ -14,9 +14,7 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class ImplicitVariantReturnTypeInspection : InspectionBase
     {
         public ImplicitVariantReturnTypeInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Hint)
-        {
-        }
+            : base(state, CodeInspectionSeverity.Hint) { }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
@@ -30,9 +28,9 @@ namespace Rubberduck.Inspections.Concrete
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
             var issues = from item in UserDeclarations
-                               where ProcedureTypes.Contains(item.DeclarationType) && !item.IsTypeSpecified
-                               let issue = new {Declaration = item, QualifiedContext = new QualifiedContext<ParserRuleContext>(item.QualifiedName, item.Context)}
-                               select new ImplicitVariantReturnTypeInspectionResult(this, issue.QualifiedContext, item);
+                         where ProcedureTypes.Contains(item.DeclarationType) && !item.IsTypeSpecified
+                         let issue = new {Declaration = item, QualifiedContext = new QualifiedContext<ParserRuleContext>(item.QualifiedName, item.Context)}
+                         select new ImplicitVariantReturnTypeInspectionResult(this, issue.QualifiedContext, item);
             return issues;
         }
     }

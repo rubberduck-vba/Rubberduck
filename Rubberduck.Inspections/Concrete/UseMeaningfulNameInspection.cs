@@ -9,19 +9,16 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
-using Rubberduck.UI;
 
 namespace Rubberduck.Inspections.Concrete
 {
     public sealed class UseMeaningfulNameInspection : InspectionBase
     {
-        private readonly IMessageBox _messageBox;
         private readonly IPersistanceService<CodeInspectionSettings> _settings;
 
-        public UseMeaningfulNameInspection(IMessageBox messageBox, RubberduckParserState state, IPersistanceService<CodeInspectionSettings> settings)
+        public UseMeaningfulNameInspection(RubberduckParserState state, IPersistanceService<CodeInspectionSettings> settings)
             : base(state, CodeInspectionSeverity.Suggestion)
         {
-            _messageBox = messageBox;
             _settings = settings;
         }
 

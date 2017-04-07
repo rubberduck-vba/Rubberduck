@@ -255,7 +255,7 @@ End Sub"
             var mockDialogFactory = BuildMockDialogFactory(userEnteredName);
 
             RubberduckParserState state;
-            var inspectionResults = GetInspectionResults(vbe.Object, mockDialogFactory.Object, out state);
+            var inspectionResults = GetInspectionResults(vbe.Object, out state);
             var result = inspectionResults.FirstOrDefault();
             if (result == null)
             {
@@ -272,11 +272,11 @@ End Sub"
             return MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
         }
 
-        private IEnumerable<IInspectionResult> GetInspectionResults(IVBE vbe, IAssignedByValParameterQuickFixDialogFactory mockDialogFactory, out RubberduckParserState state)
+        private IEnumerable<IInspectionResult> GetInspectionResults(IVBE vbe, out RubberduckParserState state)
         {
             state = MockParser.CreateAndParse(vbe);
 
-            var inspection = new AssignedByValParameterInspection(state, mockDialogFactory);
+            var inspection = new AssignedByValParameterInspection(state);
             return inspection.GetInspectionResults();
         }
 

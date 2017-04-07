@@ -14,9 +14,7 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class UnassignedVariableUsageInspection : InspectionBase
     {
         public UnassignedVariableUsageInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Error)
-        {
-        }
+            : base(state, CodeInspectionSeverity.Error) { }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 

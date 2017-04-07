@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Antlr4.Runtime;
+﻿using Antlr4.Runtime;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -13,14 +11,7 @@ namespace Rubberduck.Inspections.Results
 {
     public class FunctionReturnValueNotUsedInspectionResult : InspectionResultBase
     {
-        public FunctionReturnValueNotUsedInspectionResult(IInspection inspection, ParserRuleContext context, QualifiedMemberName qualifiedName, Declaration target,
-                                                          bool allowConvertToProcedure = true)
-            : this(inspection, context, qualifiedName, new List<Tuple<ParserRuleContext, QualifiedSelection, Declaration>>(), target, allowConvertToProcedure)
-        { }
-
-        public FunctionReturnValueNotUsedInspectionResult(IInspection inspection, ParserRuleContext context, QualifiedMemberName qualifiedName, 
-                                                          IEnumerable<Tuple<ParserRuleContext, QualifiedSelection, Declaration>> children, Declaration target, 
-                                                          bool allowConvertToProcedure = true)
+        public FunctionReturnValueNotUsedInspectionResult(IInspection inspection, ParserRuleContext context, QualifiedMemberName qualifiedName, Declaration target)
             : base(inspection, qualifiedName.QualifiedModuleName, context, target) {}
 
         public override string Description

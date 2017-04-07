@@ -12,9 +12,7 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class ConstantNotUsedInspection : InspectionBase
     {
         public ConstantNotUsedInspection(RubberduckParserState state)
-            : base(state)
-        {
-        }
+            : base(state) { }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 

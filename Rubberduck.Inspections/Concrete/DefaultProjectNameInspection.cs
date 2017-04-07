@@ -6,19 +6,13 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
 
 namespace Rubberduck.Inspections.Concrete
 {
     public sealed class DefaultProjectNameInspection : InspectionBase
     {
-        private readonly IMessageBox _messageBox;
-
-        public DefaultProjectNameInspection(RubberduckParserState state, IMessageBox messageBox)
-            : base(state, CodeInspectionSeverity.Suggestion)
-        {
-            _messageBox = messageBox;
-        }
+        public DefaultProjectNameInspection(RubberduckParserState state)
+            : base(state, CodeInspectionSeverity.Suggestion) { }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
@@ -29,7 +23,7 @@ namespace Rubberduck.Inspections.Concrete
                 .ToList();
 
             return projects
-                .Select(issue => new DefaultProjectNameInspectionResult(this, issue, State, _messageBox))
+                .Select(issue => new DefaultProjectNameInspectionResult(this, issue))
                 .ToList();
         }
     }

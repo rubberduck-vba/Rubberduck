@@ -6,19 +6,13 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.SmartIndenter;
 
 namespace Rubberduck.Inspections.Concrete
 {
     public sealed class EncapsulatePublicFieldInspection : InspectionBase
     {
-        private readonly IIndenter _indenter;
-
-        public EncapsulatePublicFieldInspection(RubberduckParserState state, IIndenter indenter)
-            : base(state, CodeInspectionSeverity.Suggestion)
-        {
-            _indenter = indenter;
-        }
+        public EncapsulatePublicFieldInspection(RubberduckParserState state)
+            : base(state, CodeInspectionSeverity.Suggestion) { }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 

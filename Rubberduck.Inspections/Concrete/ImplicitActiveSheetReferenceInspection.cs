@@ -11,9 +11,7 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class ImplicitActiveSheetReferenceInspection : InspectionBase
     {
         public ImplicitActiveSheetReferenceInspection(RubberduckParserState state)
-            : base(state)
-        {
-        }
+            : base(state) { }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 

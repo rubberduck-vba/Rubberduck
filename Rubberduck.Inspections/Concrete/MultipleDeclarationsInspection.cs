@@ -14,9 +14,7 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class MultipleDeclarationsInspection : InspectionBase
     {
         public MultipleDeclarationsInspection(RubberduckParserState state)
-            : base(state)
-        {
-        }
+            : base(state) { }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 

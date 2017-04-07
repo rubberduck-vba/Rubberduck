@@ -14,7 +14,7 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class ObsoleteCommentSyntaxInspection : InspectionBase, IParseTreeInspection
     {
         private IEnumerable<QualifiedContext> _parseTreeResults;
-        public IEnumerable<QualifiedContext<VBAParser.RemCommentContext>> ParseTreeResults => _parseTreeResults.OfType<QualifiedContext<VBAParser.RemCommentContext>>();
+        private IEnumerable<QualifiedContext<VBAParser.RemCommentContext>> ParseTreeResults => _parseTreeResults.OfType<QualifiedContext<VBAParser.RemCommentContext>>();
 
         public ObsoleteCommentSyntaxInspection(RubberduckParserState state) : base(state, CodeInspectionSeverity.Suggestion) { }
 

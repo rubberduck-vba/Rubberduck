@@ -15,9 +15,7 @@ namespace Rubberduck.Inspections.Concrete
         private IEnumerable<QualifiedContext> _parseTreeResults;
 
         public EmptyStringLiteralInspection(RubberduckParserState state)
-            : base(state)
-        {
-        }
+            : base(state) { }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
 

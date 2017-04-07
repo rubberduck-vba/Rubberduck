@@ -15,15 +15,13 @@ namespace Rubberduck.Inspections.Concrete
         private IEnumerable<QualifiedContext> _parseTreeResults;
 
         public OptionBaseZeroInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Hint)
-        {
-        }
+            : base(state, CodeInspectionSeverity.Hint) { }
 
         public override string Meta => InspectionsUI.OptionBaseZeroInspectionMeta;
         public override string Description => InspectionsUI.OptionBaseZeroInspectionName;
         public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
-        public IEnumerable<QualifiedContext<VBAParser.OptionBaseStmtContext>> ParseTreeResults => _parseTreeResults.OfType<QualifiedContext<VBAParser.OptionBaseStmtContext>>();
+        private IEnumerable<QualifiedContext<VBAParser.OptionBaseStmtContext>> ParseTreeResults => _parseTreeResults.OfType<QualifiedContext<VBAParser.OptionBaseStmtContext>>();
         public void SetResults(IEnumerable<QualifiedContext> results) { _parseTreeResults = results; } 
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()

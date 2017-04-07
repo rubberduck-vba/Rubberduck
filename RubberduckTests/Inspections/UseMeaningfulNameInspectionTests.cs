@@ -151,7 +151,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new UseMeaningfulNameInspection(null, parser.State, GetInspectionSettings().Object);
+            var inspection = new UseMeaningfulNameInspection(parser.State, GetInspectionSettings().Object);
             var inspectionResults = inspection.GetInspectionResults();
             
             new IgnoreOnceQuickFix(new[] {inspection}).Fix(inspectionResults.First());
@@ -162,7 +162,7 @@ End Sub";
         [TestCategory("Inspections")]
         public void InspectionType()
         {
-            var inspection = new UseMeaningfulNameInspection(null, null, null);
+            var inspection = new UseMeaningfulNameInspection(null, null);
             Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
         }
 
@@ -171,7 +171,7 @@ End Sub";
         public void InspectionName()
         {
             const string inspectionName = "UseMeaningfulNameInspection";
-            var inspection = new UseMeaningfulNameInspection(null, null, null);
+            var inspection = new UseMeaningfulNameInspection(null, null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
         }
@@ -189,7 +189,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new UseMeaningfulNameInspection(null, parser.State, GetInspectionSettings().Object);
+            var inspection = new UseMeaningfulNameInspection(parser.State, GetInspectionSettings().Object);
             var inspectionResults = inspection.GetInspectionResults();
             Assert.AreEqual(expectedCount, inspectionResults.Count());
         }

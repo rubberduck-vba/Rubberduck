@@ -144,7 +144,7 @@ End Sub";
         [TestCategory("Inspections")]
         public void InspectionType()
         {
-            var inspection = new AssignedByValParameterInspection(null, null);
+            var inspection = new AssignedByValParameterInspection(null);
             Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
         }
 
@@ -153,7 +153,7 @@ End Sub";
         public void InspectionName()
         {
             const string inspectionName = "AssignedByValParameterInspection";
-            var inspection = new AssignedByValParameterInspection(null, null);
+            var inspection = new AssignedByValParameterInspection(null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
         }
@@ -190,7 +190,7 @@ End Sub";
         private IEnumerable<IInspectionResult> GetInspectionResults(IVBE vbe)
         {
             var state = MockParser.CreateAndParse(vbe);
-            var inspection = new AssignedByValParameterInspection(state, null);
+            var inspection = new AssignedByValParameterInspection(state);
             return inspection.GetInspectionResults();
         }
 

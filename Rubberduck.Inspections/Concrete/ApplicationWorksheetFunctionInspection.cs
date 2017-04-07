@@ -13,8 +13,7 @@ namespace Rubberduck.Inspections.Concrete
     public class ApplicationWorksheetFunctionInspection : InspectionBase
     {
         public ApplicationWorksheetFunctionInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Suggestion)
-        { }
+            : base(state, CodeInspectionSeverity.Suggestion) { }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
@@ -33,10 +32,10 @@ namespace Rubberduck.Inspections.Concrete
                                                            decl.ComponentName.Equals("Application") &&
                                                            members.Contains(decl.IdentifierName));
 
-            return (from usage in usages
-                from reference in usage.References.Where(use => !IsIgnoringInspectionResultFor(use, AnnotationName))
-                let qualifiedSelection = new QualifiedSelection(reference.QualifiedModuleName, reference.Selection)
-                select new ApplicationWorksheetFunctionInspectionResult(this, qualifiedSelection, usage));
+            return from usage in usages
+                   from reference in usage.References.Where(use => !IsIgnoringInspectionResultFor(use, AnnotationName))
+                   let qualifiedSelection = new QualifiedSelection(reference.QualifiedModuleName, reference.Selection)
+                   select new ApplicationWorksheetFunctionInspectionResult(this, qualifiedSelection, usage);
         }
     }
 }

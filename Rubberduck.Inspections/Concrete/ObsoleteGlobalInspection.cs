@@ -14,9 +14,7 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class ObsoleteGlobalInspection : InspectionBase
     {
         public ObsoleteGlobalInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Suggestion)
-        {
-        }
+            : base(state, CodeInspectionSeverity.Suggestion) { }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
 

@@ -6,19 +6,13 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
 
 namespace Rubberduck.Inspections.Concrete
 {
     public sealed class ParameterNotUsedInspection : InspectionBase
     {
-        private readonly IMessageBox _messageBox;
-
-        public ParameterNotUsedInspection(RubberduckParserState state, IMessageBox messageBox)
-            : base(state)
-        {
-            _messageBox = messageBox;
-        }
+        public ParameterNotUsedInspection(RubberduckParserState state)
+            : base(state) { }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 

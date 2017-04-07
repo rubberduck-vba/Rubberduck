@@ -16,9 +16,7 @@ namespace Rubberduck.Inspections.Concrete
         private IEnumerable<QualifiedContext> _parseTreeResults;
 
         public ObsoleteLetStatementInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Suggestion)
-        {
-        }
+            : base(state, CodeInspectionSeverity.Suggestion) { }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
 

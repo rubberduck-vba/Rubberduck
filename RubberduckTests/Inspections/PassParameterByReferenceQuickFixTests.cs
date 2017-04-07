@@ -176,7 +176,7 @@ End Sub
         {
             state = MockParser.CreateAndParse(vbe);
 
-            var inspection = new AssignedByValParameterInspection(state, null);
+            var inspection = new AssignedByValParameterInspection(state);
             return inspection.GetInspectionResults();
         }
 

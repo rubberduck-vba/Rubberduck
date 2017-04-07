@@ -26,7 +26,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new ParameterNotUsedInspection(state, null);
+            var inspection = new ParameterNotUsedInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
@@ -47,7 +47,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new ParameterNotUsedInspection(state, null);
+            var inspection = new ParameterNotUsedInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(2, inspectionResults.Count());
@@ -66,7 +66,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new ParameterNotUsedInspection(state, null);
+            var inspection = new ParameterNotUsedInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(0, inspectionResults.Count());
@@ -85,7 +85,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new ParameterNotUsedInspection(state, null);
+            var inspection = new ParameterNotUsedInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
@@ -114,7 +114,7 @@ End Sub";
 
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new ParameterNotUsedInspection(state, null);
+            var inspection = new ParameterNotUsedInspection(state);
             var inspectionResults = inspection.GetInspectionResults().ToList();
 
             Assert.AreEqual(1, inspectionResults.Count);
@@ -134,7 +134,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new ParameterNotUsedInspection(state, null);
+            var inspection = new ParameterNotUsedInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.IsFalse(inspectionResults.Any());
@@ -156,7 +156,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new ParameterNotUsedInspection(state, null);
+            var inspection = new ParameterNotUsedInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             new RemoveUnusedParameterQuickFix(vbe.Object, state, new Mock<IMessageBox>().Object).Fix(
@@ -181,7 +181,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new ParameterNotUsedInspection(state, null);
+            var inspection = new ParameterNotUsedInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
             
             new IgnoreOnceQuickFix(new[] {inspection}).Fix(inspectionResults.First());
@@ -192,7 +192,7 @@ End Sub";
         [TestCategory("Inspections")]
         public void InspectionType()
         {
-            var inspection = new ParameterNotUsedInspection(null, null);
+            var inspection = new ParameterNotUsedInspection(null);
             Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
         }
 
@@ -201,7 +201,7 @@ End Sub";
         public void InspectionName()
         {
             const string inspectionName = "ParameterNotUsedInspection";
-            var inspection = new ParameterNotUsedInspection(null, null);
+            var inspection = new ParameterNotUsedInspection(null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
         }

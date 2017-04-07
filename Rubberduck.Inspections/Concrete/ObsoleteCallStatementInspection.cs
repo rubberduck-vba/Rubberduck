@@ -15,9 +15,7 @@ namespace Rubberduck.Inspections.Concrete
         private IEnumerable<QualifiedContext> _parseTreeResults;
 
         public ObsoleteCallStatementInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Suggestion)
-        {
-        }
+            : base(state, CodeInspectionSeverity.Suggestion) { }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
 
@@ -38,22 +36,22 @@ namespace Rubberduck.Inspections.Concrete
             foreach (var context in _parseTreeResults.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName.Component, context.Context.Start.Line)))
             {
                 var module = context.ModuleName.Component.CodeModule;
+                var lines = module.GetLines(context.Context.Start.Line,
+                    context.Context.Stop.Line - context.Context.Start.Line + 1);
+
+                var stringStrippedLines = string.Join(string.Empty, lines).StripStringLiterals();
+
+                int commentIndex;
+                if (stringStrippedLines.HasComment(out commentIndex))
                 {
-                    var lines = module.GetLines(context.Context.Start.Line, context.Context.Stop.Line - context.Context.Start.Line + 1);
+                    stringStrippedLines = stringStrippedLines.Remove(commentIndex);
+                }
 
-                    var stringStrippedLines = string.Join(string.Empty, lines).StripStringLiterals();
-
-                    int commentIndex;
-                    if (stringStrippedLines.HasComment(out commentIndex))
-                    {
-                        stringStrippedLines = stringStrippedLines.Remove(commentIndex);
-                    }
-
-                    if (!stringStrippedLines.Contains(":"))
-                    {
-                        results.Add(new ObsoleteCallStatementUsageInspectionResult(this,
-                                new QualifiedContext<VBAParser.CallStmtContext>(context.ModuleName, (VBAParser.CallStmtContext)context.Context)));
-                    }
+                if (!stringStrippedLines.Contains(":"))
+                {
+                    results.Add(new ObsoleteCallStatementUsageInspectionResult(this,
+                        new QualifiedContext<VBAParser.CallStmtContext>(context.ModuleName,
+                            (VBAParser.CallStmtContext) context.Context)));
                 }
             }
 
