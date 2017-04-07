@@ -4,13 +4,20 @@ using System.Linq;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
     public class ApplicationWorksheetFunctionQuickFix : IQuickFix
     {
+        private readonly RubberduckParserState _state;
         private static readonly HashSet<Type> _supportedInspections = new HashSet<Type> {typeof(ApplicationWorksheetFunctionInspection) };
-        
+
+        public ApplicationWorksheetFunctionQuickFix(RubberduckParserState state)
+        {
+            _state = state;
+        }
+
         public static IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
 
         public static void AddSupportedInspectionType(Type inspectionType)
@@ -25,22 +32,8 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public void Fix(IInspectionResult result)
         {
-            var module = result.QualifiedSelection.QualifiedName.Component.CodeModule;
-            
-            var oldContent = module.GetLines(result.QualifiedSelection.Selection);
-            var newCall = $"WorksheetFunction.{result.Target.IdentifierName}";
-
-            var start = result.QualifiedSelection.Selection.StartColumn - 1;
-            //The member being called will always be a single token, so this will always be safe (it will be a single line).
-            var end = result.QualifiedSelection.Selection.EndColumn - 1;
-
-            var newContent = oldContent.Substring(0, start) + newCall + 
-                (oldContent.Length > end
-                ? oldContent.Substring(end, oldContent.Length - end)
-                : string.Empty);
-
-            module.DeleteLines(result.QualifiedSelection.Selection);
-            module.InsertLines(result.QualifiedSelection.Selection.StartLine, newContent);
+            var rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
+            rewriter.InsertBefore(result.Context.Start.TokenIndex, "WorksheetFunction.");
         }
 
         public string Description(IInspectionResult result)

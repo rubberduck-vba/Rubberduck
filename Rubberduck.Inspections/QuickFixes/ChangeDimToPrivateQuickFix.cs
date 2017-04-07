@@ -2,16 +2,23 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
     public class ChangeDimToPrivateQuickFix : IQuickFix
     {
         private static readonly HashSet<Type> _supportedInspections = new HashSet<Type> { typeof(ModuleScopeDimKeywordInspection) };
+        private readonly RubberduckParserState _state;
+
+        public ChangeDimToPrivateQuickFix(RubberduckParserState state)
+        {
+            _state = state;
+        }
+        
         public static IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
 
         public static void AddSupportedInspectionType(Type inspectionType)
@@ -26,26 +33,10 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public void Fix(IInspectionResult result)
         {
-            var module = result.QualifiedSelection.QualifiedName.Component.CodeModule;
-            if (module == null)
-            {
-                return;
-            }
+            var rewriter = _state.GetRewriter(result.Target);
 
             var context = (VBAParser.VariableStmtContext)result.Target.Context.Parent.Parent;
-            var newInstruction = Tokens.Private + " ";
-            for (var i = 1; i < context.ChildCount; i++)
-            {
-                // index 0 would be the 'Dim' keyword
-                newInstruction += context.GetChild(i).GetText();
-            }
-
-            var selection = context.GetSelection();
-            var oldContent = module.GetLines(selection);
-            var newContent = oldContent.Replace(context.GetText(), newInstruction);
-
-            module.DeleteLines(selection);
-            module.InsertLines(selection.StartLine, newContent);
+            rewriter.Replace(context.DIM(), Tokens.Private);
         }
 
         public string Description(IInspectionResult result)

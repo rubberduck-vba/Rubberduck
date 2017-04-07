@@ -9,8 +9,8 @@ namespace Rubberduck.Inspections.Results
 {
     public class ApplicationWorksheetFunctionInspectionResult : InspectionResultBase
     {
-        public ApplicationWorksheetFunctionInspectionResult(IInspection inspection, QualifiedSelection qualifiedSelection, Declaration target)
-            : base(inspection, qualifiedSelection.QualifiedName, null, target)
+        public ApplicationWorksheetFunctionInspectionResult(IInspection inspection, QualifiedSelection qualifiedSelection, IdentifierReference reference)
+            : base(inspection, qualifiedSelection.QualifiedName, reference.Context, reference.Declaration)
         {
             QualifiedSelection = qualifiedSelection;
         }

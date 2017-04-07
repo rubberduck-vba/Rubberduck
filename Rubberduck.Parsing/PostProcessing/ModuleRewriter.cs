@@ -55,7 +55,7 @@ namespace Rubberduck.Parsing.PostProcessing
             _rewriter.Delete(info.StartTokenIndex, info.StopTokenIndex);
         }
 
-        public void Remove(TerminalNodeImpl target)
+        public void Remove(ITerminalNode target)
         {
             _rewriter.Delete(target.Symbol.TokenIndex);
         }
@@ -78,6 +78,11 @@ namespace Rubberduck.Parsing.PostProcessing
         public void Replace(IToken token, string content)
         {
             _rewriter.Replace(token, content);
+        }
+
+        public void Replace(ITerminalNode target, string content)
+        {
+            _rewriter.Replace(target.Symbol.TokenIndex, content);
         }
 
         public void InsertBefore(int tokenIndex, string content)

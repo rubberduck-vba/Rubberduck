@@ -1,0 +1,205 @@
+using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Rubberduck.Inspections.Concrete;
+using Rubberduck.Inspections.QuickFixes;
+using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using RubberduckTests.Mocks;
+
+namespace RubberduckTests.Inspections
+{
+    [TestClass]
+    public class ModuleScopeDimKeywordInspectionTests
+    {
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ModuleScopeDimKeyword_ReturnsResult()
+        {
+            const string inputCode =
+@"Dim foo As String";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new ModuleScopeDimKeywordInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ModuleScopeDimKeyword_ReturnsResult_Multiple()
+        {
+            const string inputCode =
+@"Dim foo
+Dim bar";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new ModuleScopeDimKeywordInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(2, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ModuleScopeDimKeyword_DoesNotReturnResult()
+        {
+            const string inputCode =
+@"Private foo";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new ModuleScopeDimKeywordInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ModuleScopeDimKeyword_IgnoreModule_All_YieldsNoResult()
+        {
+            const string inputCode =
+@"'@IgnoreModule
+
+Dim foo";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new ModuleScopeDimKeywordInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.IsFalse(inspectionResults.Any());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ModuleScopeDimKeyword_IgnoreModule_AnnotationName_YieldsNoResult()
+        {
+            const string inputCode =
+@"'@IgnoreModule ModuleScopeDimKeyword
+
+Dim foo";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new ModuleScopeDimKeywordInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.IsFalse(inspectionResults.Any());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ModuleScopeDimKeyword_IgnoreModule_OtherAnnotationName_YieldsResults()
+        {
+            const string inputCode =
+@"'@IgnoreModule VariableNotUsed
+
+Dim foo";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new ModuleScopeDimKeywordInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.IsTrue(inspectionResults.Any());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ModuleScopeDimKeyword_Ignored_DoesNotReturnResult()
+        {
+            const string inputCode =
+@"'@Ignore ModuleScopeDimKeyword
+Dim foo";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new ModuleScopeDimKeywordInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.IsFalse(inspectionResults.Any());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ModuleScopeDimKeyword_QuickFixWorks()
+        {
+            const string inputCode =
+@"Dim foo As String";
+
+            const string expectedCode =
+@"Private foo As String";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new ModuleScopeDimKeywordInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            new ChangeDimToPrivateQuickFix(state).Fix(inspectionResults.First());
+
+            var rewriter = state.GetRewriter(component);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ModuleScopeDimKeyword_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+@"Dim foo";
+
+            const string expectedCode =
+@"'@Ignore ModuleScopeDimKeyword
+Dim foo";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new ModuleScopeDimKeywordInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+            
+            new IgnoreOnceQuickFix(new[] {inspection}).Fix(inspectionResults.First());
+
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void InspectionType()
+        {
+            var inspection = new ModuleScopeDimKeywordInspection(null);
+            Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void InspectionName()
+        {
+            const string inspectionName = "ModuleScopeDimKeywordInspection";
+            var inspection = new ModuleScopeDimKeywordInspection(null);
+
+            Assert.AreEqual(inspectionName, inspection.Name);
+        }
+    }
+}

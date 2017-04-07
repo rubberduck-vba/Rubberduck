@@ -27,7 +27,7 @@ namespace Rubberduck.Inspections.Concrete
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
-            var moduleVariables = State.AllUserDeclarations
+            var moduleVariables = UserDeclarations
                 .Where(declaration => declaration.DeclarationType == DeclarationType.Variable
                                       && ModuleTypes.Contains(declaration.ParentDeclaration.DeclarationType)
                                       && (declaration.Context.Parent.Parent as VBAParser.VariableStmtContext)?.DIM() != null);
