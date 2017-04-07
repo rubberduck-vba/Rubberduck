@@ -17,7 +17,7 @@ namespace Rubberduck.Inspections.Concrete
         {
         }
 
-        public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
+        public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
@@ -56,7 +56,7 @@ namespace Rubberduck.Inspections.Concrete
                            }.Contains(parentDeclaration.DeclarationType);
                 })
                 .Select(issue =>
-                        new MoveFieldCloserToUsageInspectionResult(this, issue, State, new MessageBox()));
+                        new MoveFieldCloserToUsageInspectionResult(this, issue));
         }
 
         private Declaration ParentDeclaration(IdentifierReference reference)

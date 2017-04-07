@@ -20,7 +20,7 @@ namespace Rubberduck.Inspections.Concrete
         {
         }
 
-        public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
+        public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
 
         public void SetResults(IEnumerable<QualifiedContext> results)
         {
@@ -41,7 +41,7 @@ namespace Rubberduck.Inspections.Concrete
         public class ObsoleteLetStatementListener : VBAParserBaseListener
         {
             private readonly IList<VBAParser.LetStmtContext> _contexts = new List<VBAParser.LetStmtContext>();
-            public IEnumerable<VBAParser.LetStmtContext> Contexts { get { return _contexts; } }
+            public IEnumerable<VBAParser.LetStmtContext> Contexts => _contexts;
 
             public override void ExitLetStmt(VBAParser.LetStmtContext context)
             {

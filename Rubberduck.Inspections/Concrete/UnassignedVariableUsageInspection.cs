@@ -18,7 +18,7 @@ namespace Rubberduck.Inspections.Concrete
         {
         }
 
-        public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
+        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
@@ -37,7 +37,7 @@ namespace Rubberduck.Inspections.Concrete
                    where issue.References.Any()
                       && !DeclarationReferencesContainsReference(lenFunction, issue) 
                       && !DeclarationReferencesContainsReference(lenbFunction, issue) 
-                   select new UnassignedVariableUsageInspectionResult(this, issue.Context, issue.QualifiedName.QualifiedModuleName, issue);
+                   select new UnassignedVariableUsageInspectionResult(this, issue);
         }
 
         private bool DeclarationReferencesContainsReference(Declaration parentDeclaration, Declaration target)

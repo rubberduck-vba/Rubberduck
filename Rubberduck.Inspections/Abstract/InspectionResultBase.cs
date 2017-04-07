@@ -16,7 +16,7 @@ namespace Rubberduck.Inspections.Abstract
         protected InspectionResultBase(IInspection inspection, Declaration target)
             : this(inspection, target.QualifiedName.QualifiedModuleName, target.Context)
         {
-            _target = target;
+            Target = target;
         }
 
         /// <summary>
@@ -31,9 +31,9 @@ namespace Rubberduck.Inspections.Abstract
         /// </summary>
         protected InspectionResultBase(IInspection inspection, QualifiedModuleName qualifiedName, ParserRuleContext context)
         {
-            _inspection = inspection;
-            _qualifiedName = qualifiedName;
-            _context = context;
+            Inspection = inspection;
+            QualifiedName = qualifiedName;
+            Context = context;
         }
 
         /// <summary>
@@ -41,25 +41,21 @@ namespace Rubberduck.Inspections.Abstract
         /// </summary>
         protected InspectionResultBase(IInspection inspection, QualifiedModuleName qualifiedName, ParserRuleContext context, Declaration declaration)
         {
-            _inspection = inspection;
-            _qualifiedName = qualifiedName;
-            _context = context;
-            _target = declaration;
+            Inspection = inspection;
+            QualifiedName = qualifiedName;
+            Context = context;
+            Target = declaration;
         }
 
-        private readonly IInspection _inspection;
-        public IInspection Inspection { get { return _inspection; } }
+        public IInspection Inspection { get; }
 
         public abstract string Description { get; }
 
-        private readonly QualifiedModuleName _qualifiedName;
-        protected QualifiedModuleName QualifiedName { get { return _qualifiedName; } }
+        protected QualifiedModuleName QualifiedName { get; }
 
-        private readonly ParserRuleContext _context;
-        public ParserRuleContext Context { get { return _context; } }
+        public ParserRuleContext Context { get; }
 
-        private readonly Declaration _target;
-        public Declaration Target { get { return _target; } }
+        public Declaration Target { get; }
 
         /// <summary>
         /// Gets the information needed to select the target instruction in the VBE.
@@ -68,13 +64,11 @@ namespace Rubberduck.Inspections.Abstract
         {
             get
             {
-                return _context == null
-                    ? _target.QualifiedSelection
-                    : new QualifiedSelection(_qualifiedName, _context.GetSelection());
+                return Context == null
+                    ? Target.QualifiedSelection
+                    : new QualifiedSelection(QualifiedName, Context.GetSelection());
             }
         }
-
-        public virtual IQuickFix DefaultQuickFix => QuickFixes.FirstOrDefault();
 
         public virtual int CompareTo(IInspectionResult other)
         {
@@ -88,7 +82,7 @@ namespace Rubberduck.Inspections.Abstract
         public string ToClipboardString()
         {           
             var module = QualifiedSelection.QualifiedName;
-            var documentName = _target != null ? _target.ProjectDisplayName : string.Empty;
+            var documentName = Target != null ? Target.ProjectDisplayName : string.Empty;
             if (string.IsNullOrEmpty(documentName))
             {
                 var component = module.Component;

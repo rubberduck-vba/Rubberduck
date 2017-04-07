@@ -20,7 +20,7 @@ namespace Rubberduck.Inspections.Concrete
         {
         }
 
-        public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
+        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
         private static readonly DeclarationType[] ReturningMemberTypes =
         {
@@ -48,8 +48,7 @@ namespace Rubberduck.Inspections.Concrete
 
             return unassigned
                 .Select(issue =>
-                    new NonReturningFunctionInspectionResult(this, new QualifiedContext<ParserRuleContext>(issue.QualifiedName, issue.Context), issue, 
-                        canConvertToProcedure: !IsRecursive(issue) && !interfaceImplementationMembers.Select(m => m.Scope).Contains(issue.Scope)));
+                    new NonReturningFunctionInspectionResult(this, new QualifiedContext<ParserRuleContext>(issue.QualifiedName, issue.Context), issue));
         }
 
         private bool IsReturningUserDefinedType(Declaration member)

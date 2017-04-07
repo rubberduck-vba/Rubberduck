@@ -23,7 +23,7 @@ namespace Rubberduck.Inspections.Concrete
 
         }
 
-        public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
+        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
@@ -35,7 +35,7 @@ namespace Rubberduck.Inspections.Concrete
                 .ToList();
 
             return parameters
-                .Select(param => new AssignedByValParameterInspectionResult(this, param, _parserState, _dialogFactory))
+                .Select(param => new AssignedByValParameterInspectionResult(this, param))
                 .ToList();
         }
     }

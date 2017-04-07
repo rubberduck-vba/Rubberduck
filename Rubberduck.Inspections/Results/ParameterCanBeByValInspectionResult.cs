@@ -1,17 +1,15 @@
-using Antlr4.Runtime;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Results
 {
     public class ParameterCanBeByValInspectionResult : InspectionResultBase
     {
-        public ParameterCanBeByValInspectionResult(IInspection inspection, Declaration target, ParserRuleContext context, QualifiedMemberName qualifiedName)
-            : base(inspection, qualifiedName.QualifiedModuleName, context, target) {}
+        public ParameterCanBeByValInspectionResult(IInspection inspection, Declaration target)
+            : base(inspection, target.QualifiedName.QualifiedModuleName, target.Context, target) {}
 
         public override string Description
         {

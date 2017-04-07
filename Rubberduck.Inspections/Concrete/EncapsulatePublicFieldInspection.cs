@@ -20,7 +20,7 @@ namespace Rubberduck.Inspections.Concrete
             _indenter = indenter;
         }
 
-        public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
+        public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
@@ -39,7 +39,7 @@ namespace Rubberduck.Inspections.Concrete
                 .ToList();
 
             return fields
-                .Select(issue => new EncapsulatePublicFieldInspectionResult(this, issue, State, _indenter))
+                .Select(issue => new EncapsulatePublicFieldInspectionResult(this, issue))
                 .ToList();
         }
     }

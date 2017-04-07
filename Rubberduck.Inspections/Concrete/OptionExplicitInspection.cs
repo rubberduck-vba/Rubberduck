@@ -17,7 +17,7 @@ namespace Rubberduck.Inspections.Concrete
         {
         }
 
-        public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
+        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
         private static readonly DeclarationType[] ModuleTypes =
         {

@@ -42,7 +42,7 @@ namespace Rubberduck.Inspections.QuickFixes
             module.ReplaceLine(selection.StartLine, Tokens.Public + ' ' + result.Context.GetText());
         }
 
-        public string Description(IInspectionResult)
+        public string Description(IInspectionResult result)
         {
             return InspectionsUI.ObsoleteGlobalInspectionQuickFix;
         }

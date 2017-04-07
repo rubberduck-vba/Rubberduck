@@ -7,8 +7,6 @@ namespace Rubberduck.Parsing.Inspections.Abstract
 {
     public interface IInspectionResult : IComparable<IInspectionResult>, IComparable
     {
-        IQuickFix DefaultQuickFix { get; }
-
         string Description { get; }
         QualifiedSelection QualifiedSelection { get; }
         IInspection Inspection { get; }

@@ -20,7 +20,7 @@ namespace Rubberduck.Inspections.Concrete
             _messageBox = messageBox;
         }
 
-        public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
+        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
@@ -42,7 +42,7 @@ namespace Rubberduck.Inspections.Concrete
 
             var issues = from issue in parameters
                 let isInterfaceImplementationMember = interfaceImplementationMembers.Contains(issue.ParentDeclaration)
-                select new ParameterNotUsedInspectionResult(this, issue, isInterfaceImplementationMember, issue.Project.VBE, State, _messageBox);
+                select new ParameterNotUsedInspectionResult(this, issue);
 
             return issues.ToList();
         }

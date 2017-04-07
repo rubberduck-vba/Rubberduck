@@ -15,7 +15,7 @@ namespace Rubberduck.Inspections.Concrete
         public ObjectVariableNotSetInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Error) {  }
 
-        public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
+        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {

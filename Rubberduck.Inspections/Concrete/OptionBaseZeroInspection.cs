@@ -19,11 +19,11 @@ namespace Rubberduck.Inspections.Concrete
         {
         }
 
-        public override string Meta { get { return InspectionsUI.OptionBaseZeroInspectionMeta; } }
-        public override string Description { get { return InspectionsUI.OptionBaseZeroInspectionName; } }
-        public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
+        public override string Meta => InspectionsUI.OptionBaseZeroInspectionMeta;
+        public override string Description => InspectionsUI.OptionBaseZeroInspectionName;
+        public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
-        public IEnumerable<QualifiedContext<VBAParser.OptionBaseStmtContext>> ParseTreeResults { get { return _parseTreeResults.OfType<QualifiedContext<VBAParser.OptionBaseStmtContext>>(); } }
+        public IEnumerable<QualifiedContext<VBAParser.OptionBaseStmtContext>> ParseTreeResults => _parseTreeResults.OfType<QualifiedContext<VBAParser.OptionBaseStmtContext>>();
         public void SetResults(IEnumerable<QualifiedContext> results) { _parseTreeResults = results; } 
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
@@ -40,7 +40,7 @@ namespace Rubberduck.Inspections.Concrete
         public class OptionBaseStatementListener : VBAParserBaseListener
         {
             private readonly IList<VBAParser.OptionBaseStmtContext> _contexts = new List<VBAParser.OptionBaseStmtContext>();
-            public IEnumerable<VBAParser.OptionBaseStmtContext> Contexts { get { return _contexts; } }
+            public IEnumerable<VBAParser.OptionBaseStmtContext> Contexts => _contexts;
 
             public override void ExitOptionBaseStmt(VBAParser.OptionBaseStmtContext context)
             {

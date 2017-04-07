@@ -35,6 +35,6 @@ namespace Rubberduck.Inspections.Concrete
             return interestingReferences.Select(reference => new ImplicitDefaultMemberAssignmentInspectionResult(this, reference));
         }
 
-        public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
+        public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
     }
 }

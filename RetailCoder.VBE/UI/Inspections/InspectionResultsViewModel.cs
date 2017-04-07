@@ -113,8 +113,8 @@ namespace Rubberduck.UI.Inspections
                 if (inspectionResult != null)
                 {
                     SelectedInspection = inspectionResult.Inspection;
-                    CanQuickFix = inspectionResult.HasQuickFixes;
-                    _defaultFix = inspectionResult.DefaultQuickFix;
+                    //CanQuickFix = inspectionResult.HasQuickFixes;
+                    //_defaultFix = inspectionResult.DefaultQuickFix;
                     CanExecuteQuickFixInModule = _defaultFix != null && _defaultFix.CanFixInModule;
                 }
 
@@ -279,7 +279,7 @@ namespace Rubberduck.UI.Inspections
             var cancelled = 0;
             foreach (var quickFix in fixes)
             {
-                quickFix.IsCancelled = false;
+                /*quickFix.IsCancelled = false;
                 quickFix.Fix();
                 completed++;
 
@@ -287,7 +287,7 @@ namespace Rubberduck.UI.Inspections
                 {
                     cancelled++;
                     break;
-                }
+                }*/
             }
 
             // refresh if any quickfix has completed without cancelling:
@@ -339,12 +339,12 @@ namespace Rubberduck.UI.Inspections
                               && result.QualifiedSelection.QualifiedName == selectedResult.QualifiedSelection.QualifiedName)
                 .ToList();
 
-            var defaultFixes = filteredResults
+            /*var defaultFixes = filteredResults
                 .Where(result => result is AggregateInspectionResult)
                 .Select(item => item.QuickFixes.Single(fix => fix.GetType() == _defaultFix.GetType()))
                 .Union(filteredResults.Where(r => r is AggregateInspectionResult).Select(aggregate => aggregate.DefaultQuickFix))
                 .OrderByDescending(fix => fix.Selection);
-            ExecuteQuickFixes(defaultFixes);
+            ExecuteQuickFixes(defaultFixes);*/
         }
 
         private bool _canExecuteQuickFixInProject;
@@ -384,13 +384,13 @@ namespace Rubberduck.UI.Inspections
                 return;
             }
 
-            var items = _results.Where(result => result.Inspection == SelectedInspection)
+            /*var items = _results.Where(result => result.Inspection == SelectedInspection)
                 .Select(item => item.QuickFixes.Single(fix => fix.GetType() == _defaultFix.GetType()))
                 .OrderBy(item => item.Selection.QualifiedName.ComponentName)
                 .ThenByDescending(item => item.Selection.Selection.EndLine)
                 .ThenByDescending(item => item.Selection.Selection.EndColumn);
 
-            ExecuteQuickFixes(items);
+            ExecuteQuickFixes(items);*/
         }
 
         private void ExecuteCopyResultsCommand(object parameter)

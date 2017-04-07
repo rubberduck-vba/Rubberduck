@@ -106,10 +106,7 @@ namespace Rubberduck.Inspections.Concrete
             _settings = settings;
         }
 
-        public override CodeInspectionType InspectionType
-        {
-            get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; }
-        }
+        public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
@@ -120,7 +117,7 @@ namespace Rubberduck.Inspections.Concrete
                                 .Where(declaration => !whitelistedNames.Contains(declaration.IdentifierName) &&
                                                       TargetDeclarationTypes.Contains(declaration.DeclarationType) &&
                                                       HungarianIdentifierRegex.IsMatch(declaration.IdentifierName))
-                                .Select(issue => new IdentifierNameInspectionResult(this, issue, State, _messageBox, _settings))
+                                .Select(issue => new IdentifierNameInspectionResult(this, issue))
                                 .ToList();
             return hungarians;
         }

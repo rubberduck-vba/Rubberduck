@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting.Contexts;
 using System.Text.RegularExpressions;
+using Antlr4.Runtime;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
@@ -39,7 +39,7 @@ namespace Rubberduck.Inspections.QuickFixes
             {
                 var module = result.Target.QualifiedName.QualifiedModuleName.Component.CodeModule;
                 {
-                    FixTypeHintUsage(result.Target.TypeHint, module, result.Target.Selection, true);
+                    FixTypeHintUsage(result.Target.TypeHint, module, result.Target.Selection, result.Target.Context, result.Target.IdentifierName, true);
                 }
             }
 
@@ -49,9 +49,7 @@ namespace Rubberduck.Inspections.QuickFixes
                 if (!string.IsNullOrWhiteSpace(result.Target.TypeHint))
                 {
                     var module = reference.QualifiedModuleName.Component.CodeModule;
-                    {
-                        FixTypeHintUsage(result.Target.TypeHint, module, reference.Selection);
-                    }
+                    FixTypeHintUsage(result.Target.TypeHint, module, reference.Selection, reference.Context, result.Target.IdentifierName);
                 }
             }
 
@@ -62,7 +60,7 @@ namespace Rubberduck.Inspections.QuickFixes
             return InspectionsUI.RemoveTypeHintsQuickFix;
         }
 
-        private void FixTypeHintUsage(string hint, ICodeModule module, Selection selection, bool isDeclaration = false)
+        private void FixTypeHintUsage(string hint, ICodeModule module, Selection selection, ParserRuleContext context, string identifier, bool isDeclaration = false)
         {
             var line = module.GetLines(selection.StartLine, 1);
 
@@ -70,10 +68,10 @@ namespace Rubberduck.Inspections.QuickFixes
 
             string fix;
 
-            if (isDeclaration && Context is VBAParser.FunctionStmtContext)
+            if (isDeclaration && context is VBAParser.FunctionStmtContext)
             {
-                var typeHint = Identifier.GetTypeHintContext(((VBAParser.FunctionStmtContext)Context).functionName().identifier());
-                var argList = ((VBAParser.FunctionStmtContext)Context).argList();
+                var typeHint = Identifier.GetTypeHintContext(((VBAParser.FunctionStmtContext)context).functionName().identifier());
+                var argList = ((VBAParser.FunctionStmtContext)context).argList();
                 var endLine = argList.Stop.Line;
                 var endColumn = argList.Stop.Column;
 
@@ -82,10 +80,10 @@ namespace Rubberduck.Inspections.QuickFixes
 
                 module.ReplaceLine(endLine, fix);
             }
-            else if (isDeclaration && Context is VBAParser.PropertyGetStmtContext)
+            else if (isDeclaration && context is VBAParser.PropertyGetStmtContext)
             {
-                var typeHint = Identifier.GetTypeHintContext(((VBAParser.PropertyGetStmtContext)Context).functionName().identifier());
-                var argList = ((VBAParser.PropertyGetStmtContext)Context).argList();
+                var typeHint = Identifier.GetTypeHintContext(((VBAParser.PropertyGetStmtContext)context).functionName().identifier());
+                var argList = ((VBAParser.PropertyGetStmtContext)context).argList();
                 var endLine = argList.Stop.Line;
                 var endColumn = argList.Stop.Column;
 
@@ -96,8 +94,8 @@ namespace Rubberduck.Inspections.QuickFixes
             }
             else
             {
-                var pattern = "\\b" + _declaration.IdentifierName + "\\" + hint;
-                fix = Regex.Replace(line, pattern, _declaration.IdentifierName + (isDeclaration ? asTypeClause : string.Empty));
+                var pattern = "\\b" + identifier + "\\" + hint;
+                fix = Regex.Replace(line, pattern, identifier + (isDeclaration ? asTypeClause : string.Empty));
                 module.ReplaceLine(selection.StartLine, fix);
             }
         }

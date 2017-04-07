@@ -18,7 +18,7 @@ namespace Rubberduck.Inspections.Concrete
         {
         }
 
-        public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
+        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
         private static readonly DeclarationType[] ProcedureTypes = 
         {
@@ -32,7 +32,7 @@ namespace Rubberduck.Inspections.Concrete
             var issues = from item in UserDeclarations
                                where ProcedureTypes.Contains(item.DeclarationType) && !item.IsTypeSpecified
                                let issue = new {Declaration = item, QualifiedContext = new QualifiedContext<ParserRuleContext>(item.QualifiedName, item.Context)}
-                               select new ImplicitVariantReturnTypeInspectionResult(this, issue.Declaration.IdentifierName, issue.QualifiedContext, item);
+                               select new ImplicitVariantReturnTypeInspectionResult(this, issue.QualifiedContext, item);
             return issues;
         }
     }

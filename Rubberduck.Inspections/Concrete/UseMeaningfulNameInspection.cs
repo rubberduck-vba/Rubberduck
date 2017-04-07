@@ -25,7 +25,7 @@ namespace Rubberduck.Inspections.Concrete
             _settings = settings;
         }
 
-        public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
+        public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
         private static readonly DeclarationType[] IgnoreDeclarationTypes = 
         {
@@ -50,7 +50,7 @@ namespace Rubberduck.Inspections.Concrete
                                     !handlers.Contains(declaration.ParentDeclaration)) &&
                                 !whitelistedNames.Contains(declaration.IdentifierName) &&
                                 !VariableNameValidator.IsMeaningfulName(declaration.IdentifierName))
-                            .Select(issue => new IdentifierNameInspectionResult(this, issue, State, _messageBox, _settings))
+                            .Select(issue => new IdentifierNameInspectionResult(this, issue))
                             .ToList();
 
             return issues;
