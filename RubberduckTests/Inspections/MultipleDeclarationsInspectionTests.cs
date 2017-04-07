@@ -139,7 +139,7 @@ End Sub";
 
             const string expectedCode =
 @"Public Sub Foo()
-Dim var1 As Integer
+    Dim var1 As Integer
 Dim var2 As String
 
 End Sub";
@@ -151,8 +151,8 @@ End Sub";
             var inspection = new MultipleDeclarationsInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new SplitMultipleDeclarationsQuickFix().Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            new SplitMultipleDeclarationsQuickFix(state).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -166,7 +166,7 @@ End Sub";
 
             const string expectedCode =
 @"Public Sub Foo()
-Const var1 As Integer = 9
+    Const var1 As Integer = 9
 Const var2 As String = ""test""
 
 End Sub";
@@ -178,8 +178,8 @@ End Sub";
             var inspection = new MultipleDeclarationsInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new SplitMultipleDeclarationsQuickFix().Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            new SplitMultipleDeclarationsQuickFix(state).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -193,7 +193,7 @@ End Sub";
 
             const string expectedCode =
 @"Public Sub Foo()
-Static var1 As Integer
+    Static var1 As Integer
 Static var2 As String
 
 End Sub";
@@ -205,8 +205,8 @@ End Sub";
             var inspection = new MultipleDeclarationsInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
             
-            new SplitMultipleDeclarationsQuickFix().Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            new SplitMultipleDeclarationsQuickFix(state).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]

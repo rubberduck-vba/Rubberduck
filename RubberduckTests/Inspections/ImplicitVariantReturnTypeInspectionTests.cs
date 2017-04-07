@@ -199,8 +199,8 @@ End Function";
             var inspection = new ImplicitVariantReturnTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new SetExplicitVariantReturnTypeQuickFix().Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            new SetExplicitVariantReturnTypeQuickFix(state).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -222,9 +222,9 @@ End Property";
             var inspection = new ImplicitVariantReturnTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new SetExplicitVariantReturnTypeQuickFix().Fix(inspectionResults.First());
+            new SetExplicitVariantReturnTypeQuickFix(state).Fix(inspectionResults.First());
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -264,9 +264,9 @@ End Property";
             var inspection = new ImplicitVariantReturnTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new SetExplicitVariantReturnTypeQuickFix().Fix(inspectionResults.First());
+            new SetExplicitVariantReturnTypeQuickFix(state).Fix(inspectionResults.First());
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -288,9 +288,9 @@ End Function";
             var inspection = new ImplicitVariantReturnTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new SetExplicitVariantReturnTypeQuickFix().Fix(inspectionResults.First());
+            new SetExplicitVariantReturnTypeQuickFix(state).Fix(inspectionResults.First());
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]

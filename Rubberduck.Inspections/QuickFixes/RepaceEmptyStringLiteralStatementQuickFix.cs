@@ -2,18 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
     public class ReplaceEmptyStringLiteralStatementQuickFix : IQuickFix
     {
+        private readonly RubberduckParserState _state;
         private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
         {
             typeof(EmptyStringLiteralInspection)
         };
+
+        public ReplaceEmptyStringLiteralStatementQuickFix(RubberduckParserState state)
+        {
+            _state = state;
+        }
 
         public static IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
 
@@ -29,16 +35,8 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public void Fix(IInspectionResult result)
         {
-            var module = result.QualifiedSelection.QualifiedName.Component.CodeModule;
-            if (module == null)
-            {
-                return;
-            }
-
-            var literal = (VBAParser.LiteralExpressionContext)result.Context;
-            var newCodeLines = module.GetLines(literal.Start.Line, 1).Replace("\"\"", "vbNullString");
-
-            module.ReplaceLine(literal.Start.Line, newCodeLines);
+            var rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
+            rewriter.Replace(result.Context, "vbNullString");
         }
 
         public string Description(IInspectionResult result)

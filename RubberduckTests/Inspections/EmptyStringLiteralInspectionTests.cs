@@ -147,9 +147,9 @@ End Sub";
 
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new ReplaceEmptyStringLiteralStatementQuickFix().Fix(inspectionResults.First());
+            new ReplaceEmptyStringLiteralStatementQuickFix(state).Fix(inspectionResults.First());
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]

@@ -2,19 +2,26 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
     public class SetExplicitVariantReturnTypeQuickFix : IQuickFix
     {
+        private readonly RubberduckParserState _state;
         private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
         {
             typeof(ImplicitVariantReturnTypeInspection)
         };
+
+        public SetExplicitVariantReturnTypeQuickFix(RubberduckParserState state)
+        {
+            _state = state;
+        }
 
         public static IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
 
@@ -30,19 +37,32 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public void Fix(IInspectionResult result)
         {
-            var procedure = result.Context.GetText();
-            // todo: verify that this isn't a bug / test with a procedure that contains parentheses in the body.
-            var indexOfLastClosingParen = procedure.LastIndexOf(')');
-
-            var newContent = indexOfLastClosingParen == procedure.Length
-                ? procedure + ' ' + Tokens.As + ' ' + Tokens.Variant
-                : procedure.Insert(procedure.LastIndexOf(')') + 1, ' ' + Tokens.As + ' ' + Tokens.Variant);
+            var rewriter = _state.GetRewriter(result.Target);
             
-            var module = result.QualifiedSelection.QualifiedName.Component.CodeModule;
-            var selection = result.Context.GetSelection();
-
-            module.DeleteLines(selection.StartLine, selection.LineCount);
-            module.InsertLines(selection.StartLine, newContent);
+            var asTypeClause = " As Variant";
+            switch (result.Target.DeclarationType)
+            {
+                case DeclarationType.Variable:
+                    var variableContext = (VBAParser.VariableSubStmtContext)result.Target.Context;
+                    rewriter.InsertAfter(variableContext.identifier().Stop.TokenIndex, asTypeClause);
+                    break;
+                case DeclarationType.Parameter:
+                    var parameterContext = (VBAParser.ArgContext)result.Target.Context;
+                    rewriter.InsertAfter(parameterContext.unrestrictedIdentifier().Stop.TokenIndex, asTypeClause);
+                    break;
+                case DeclarationType.Function:
+                    var functionContext = (VBAParser.FunctionStmtContext)result.Target.Context;
+                    rewriter.InsertAfter(functionContext.argList().Stop.TokenIndex, asTypeClause);
+                    break;
+                case DeclarationType.LibraryFunction:
+                    var declareContext = (VBAParser.DeclareStmtContext)result.Target.Context;
+                    rewriter.InsertAfter(declareContext.argList().Stop.TokenIndex, asTypeClause);
+                    break;
+                case DeclarationType.PropertyGet:
+                    var propertyContext = (VBAParser.PropertyGetStmtContext)result.Target.Context;
+                    rewriter.InsertAfter(propertyContext.argList().Stop.TokenIndex, asTypeClause);
+                    break;
+            }
         }
 
         public string Description(IInspectionResult result)

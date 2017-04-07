@@ -5,15 +5,22 @@ using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
     public class ReplaceObsoleteCommentMarkerQuickFix : IQuickFix
     {
+        private readonly RubberduckParserState _state;
         private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
         {
             typeof(ObsoleteCommentSyntaxInspection)
         };
+
+        public ReplaceObsoleteCommentMarkerQuickFix(RubberduckParserState state)
+        {
+            _state = state;
+        }
 
         public static IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
 
@@ -29,25 +36,10 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public void Fix(IInspectionResult result)
         {
-            var module = result.QualifiedSelection.QualifiedName.Component.CodeModule;
+            var rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
+            var context = (VBAParser.RemCommentContext) result.Context;
 
-            if (module.IsWrappingNullReference)
-            {
-                return;
-            }
-            var comment = result.Context.GetText();
-            var start = result.Context.Start.Line;           
-            var commentLine = module.GetLines(start, 1);
-            var newComment = commentLine.Substring(0, result.Context.Start.Column) +
-                             Tokens.CommentMarker +
-                             comment.Substring(Tokens.Rem.Length, comment.Length - Tokens.Rem.Length);
-
-            var lines = result.QualifiedSelection.Selection.LineCount;
-            if (lines > 1)
-            {
-                module.DeleteLines(start + 1, lines - 1);
-            }
-            module.ReplaceLine(start, newComment);
+            rewriter.Replace(context.REM(), "'");
         }
 
         public string Description(IInspectionResult result)

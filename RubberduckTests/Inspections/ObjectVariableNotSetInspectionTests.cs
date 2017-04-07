@@ -8,7 +8,6 @@ using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
-
 namespace RubberduckTests.Inspections
 {
     [TestClass]
@@ -312,13 +311,13 @@ End Function";
             var inspectionResults = inspection.GetInspectionResults().ToList();
 
             Assert.AreEqual(expectedResultCount, inspectionResults.Count);
-            var fix = new UseSetKeywordForObjectAssignmentQuickFix();
+            var fix = new UseSetKeywordForObjectAssignmentQuickFix(state);
             foreach (var result in inspectionResults)
             {
                 fix.Fix(result);
             }
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -348,13 +347,13 @@ End Property
             var inspectionResults = inspection.GetInspectionResults().ToList();
 
             Assert.AreEqual(expectedResultCount, inspectionResults.Count);
-            var fix = new UseSetKeywordForObjectAssignmentQuickFix();
+            var fix = new UseSetKeywordForObjectAssignmentQuickFix(state);
             foreach (var result in inspectionResults)
             {
                 fix.Fix(result);
             }
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]

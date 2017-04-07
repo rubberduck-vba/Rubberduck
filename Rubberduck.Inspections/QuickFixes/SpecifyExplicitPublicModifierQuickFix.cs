@@ -6,15 +6,22 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
     public class SpecifyExplicitPublicModifierQuickFix : IQuickFix
     {
+        private readonly RubberduckParserState _state;
         private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
         {
             typeof(ImplicitPublicMemberInspection)
         };
+
+        public SpecifyExplicitPublicModifierQuickFix(RubberduckParserState state)
+        {
+            _state = state;
+        }
 
         public static IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
 
@@ -30,15 +37,8 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public void Fix(IInspectionResult result)
         {
-            var selection = result.Context.GetSelection();
-            var module = result.QualifiedSelection.QualifiedName.Component.CodeModule;
-            var signatureLine = selection.StartLine;
-
-            var oldContent = module.GetLines(signatureLine, 1);
-            var newContent = Tokens.Public + ' ' + oldContent;
-
-            module.DeleteLines(signatureLine);
-            module.InsertLines(signatureLine, newContent);
+            var rewriter = _state.GetRewriter(result.Target);
+            rewriter.InsertBefore(result.Context.Start.TokenIndex, "Public ");
         }
 
         public string Description(IInspectionResult result)

@@ -7,15 +7,22 @@ using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
     public class UntypedFunctionUsageQuickFix : IQuickFix
     {
+        private readonly RubberduckParserState _state;
         private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
         {
             typeof(UntypedFunctionUsageInspection)
         };
+
+        public UntypedFunctionUsageQuickFix(RubberduckParserState state)
+        {
+            _state = state;
+        }
 
         public static IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
 
@@ -31,16 +38,8 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public void Fix(IInspectionResult result)
         {
-            var originalInstruction = result.Context.GetText();
-            var newInstruction = GetNewSignature(result.Context);
-            var selection = result.QualifiedSelection.Selection;
-
-            var module = result.QualifiedSelection.QualifiedName.Component.CodeModule;
-            var lines = module.GetLines(selection.StartLine, selection.LineCount);
-
-            var newContent = lines.Remove(result.Context.Start.Column, originalInstruction.Length)
-                .Insert(result.Context.Start.Column, newInstruction);
-            module.ReplaceLine(selection.StartLine, newContent);
+            var rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
+            rewriter.InsertAfter(result.Context.Stop.TokenIndex, "$");
         }
 
         public string Description(IInspectionResult result)

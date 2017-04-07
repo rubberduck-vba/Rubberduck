@@ -116,8 +116,8 @@ Global var1 As Integer";
             var inspection = new ObsoleteGlobalInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ReplaceGlobalModifierQuickFix().Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            new ReplaceGlobalModifierQuickFix(state).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
