@@ -1,4 +1,5 @@
 using Antlr4.Runtime;
+using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Symbols;
 
@@ -55,6 +56,13 @@ namespace Rubberduck.Parsing.PostProcessing
         /// <param name="token">The <see cref="IToken"/> to replace.</param>
         /// <param name="content">The literal replacement for the expression.</param>
         void Replace(IToken token, string content);
+
+        /// <summary>
+        /// Replaces specified interval with specified content. Use <see cref="Rewrite"/> method to apply changes.
+        /// </summary>
+        /// <param name="tokenInterval">The <see cref="Interval"/> to replace.</param>
+        /// <param name="content">The literal replacement for the expression.</param>
+        void Replace(Interval tokenInterval, string content);
 
         /// <summary>
         /// Inserts specified content before the specified token index in the module. Use <see cref="Rewrite"/> method to apply changes.
