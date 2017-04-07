@@ -36,12 +36,15 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public void Fix(IInspectionResult result)
         {
-            var subStmt = (VBAParser.SubStmtContext) result.Target.Context;
-            var parameterList = ((VBAParser.SubStmtContext) result.Target.Context).argList();// new QualifiedContext<VBAParser.SubStmtContext>(result.Target.QualifiedName, (VBAParser.SubStmtContext)result.Target.Context);
-            var arg = parameterList.arg().First(a => a.BYREF() != null || (a.BYREF() == null && a.BYVAL() == null));
-
-            UpdateCalls(subStmt, parameterList, arg, result.Target.QualifiedName.QualifiedModuleName);
-            UpdateSignature(subStmt, parameterList, arg, result.Target.QualifiedName.QualifiedModuleName);
+            var parameterizedDeclaration = (IParameterizedDeclaration) result.Target;
+            var arg = parameterizedDeclaration.Parameters.Cast<ParameterDeclaration>().First(p => p.IsByRef || p.IsImplicitByRef);
+            var argIndex = parameterizedDeclaration.Parameters.ToList().IndexOf(arg);
+            
+            UpdateSignature(result.Target, arg);
+            foreach (var reference in result.Target.References)
+            {
+                UpdateCall(reference, argIndex);
+            }
         }
 
         public string Description(IInspectionResult result)
@@ -49,123 +52,43 @@ namespace Rubberduck.Inspections.QuickFixes
             return InspectionsUI.ProcedureShouldBeFunctionInspectionQuickFix;
         }
 
-        private void UpdateSignature(VBAParser.SubStmtContext subStmt, VBAParser.ArgListContext parameterList, VBAParser.ArgContext arg, QualifiedModuleName qualifiedModuleName)
+        private void UpdateSignature(Declaration target, ParameterDeclaration arg)
         {
-            var argListText = parameterList.GetText();
-            var subStmtText = subStmt.GetText();
-            var argText = arg.GetText();
+            var subStmt = (VBAParser.SubStmtContext) target.Context;
+            var argContext = (VBAParser.ArgContext)arg.Context;
 
-            var newArgText = argText.Contains("ByRef ") ? argText.Replace("ByRef ", "ByVal ") : "ByVal " + argText;
+            var rewriter = _state.GetRewriter(target);
 
-            var asTypeClause = arg.asTypeClause() != null
-                ? arg.asTypeClause().GetText()
-                : "As Variant";
+            rewriter.Replace(subStmt.SUB(), Tokens.Function);
+            rewriter.Replace(subStmt.END_SUB(), "End Function");
 
-            var newFunctionWithoutReturn = subStmtText.Insert(
-                subStmtText.IndexOf(argListText, StringComparison.Ordinal) + argListText.Length,
-                " " + asTypeClause)
-                .Replace("Sub", "Function")
-                .Replace(argText, newArgText);
+            rewriter.InsertAfter(subStmt.argList().Stop.TokenIndex, $" As {arg.AsTypeName}");
 
-            var indexOfInstructionSeparators = new List<int>();
-            var functionWithoutStringLiterals = newFunctionWithoutReturn.StripStringLiterals();
-            for (var i = 0; i < functionWithoutStringLiterals.Length; i++)
+            if (arg.IsByRef)
             {
-                if (functionWithoutStringLiterals[i] == ':')
-                {
-                    indexOfInstructionSeparators.Add(i);
-                }
+                rewriter.Replace(argContext.BYREF(), Tokens.ByVal);
+            }
+            else if (arg.IsImplicitByRef)
+            {
+                rewriter.InsertBefore(argContext.unrestrictedIdentifier().Start.TokenIndex, Tokens.ByVal);
             }
 
-            if (indexOfInstructionSeparators.Count > 1)
-            {
-                indexOfInstructionSeparators.Reverse();
-                newFunctionWithoutReturn = indexOfInstructionSeparators.Aggregate(newFunctionWithoutReturn,
-                    (current, index) => current.Remove(index, 1).Insert(index, Environment.NewLine));
-            }
-
-            var newfunctionWithReturn = newFunctionWithoutReturn
-                .Insert(newFunctionWithoutReturn.LastIndexOf(Environment.NewLine, StringComparison.Ordinal),
-                    Environment.NewLine + "    " + subStmt.subroutineName().GetText() +
-                    " = " + arg.unrestrictedIdentifier().GetText());
-
-            var module = qualifiedModuleName.Component.CodeModule;
-
-            module.DeleteLines(subStmt.Start.Line,
-                subStmt.Stop.Line - subStmt.Start.Line + 1);
-            module.InsertLines(subStmt.Start.Line, newfunctionWithReturn);
+            var returnStmt = "    " + subStmt.subroutineName().GetText() + " = " + argContext.unrestrictedIdentifier().GetText() + Environment.NewLine;
+            rewriter.InsertBefore(subStmt.END_SUB().Symbol.TokenIndex, returnStmt);
         }
 
-        private void UpdateCalls(VBAParser.SubStmtContext subStmt, VBAParser.ArgListContext parameterList, VBAParser.ArgContext arg, QualifiedModuleName qualifiedModuleName)
+        private void UpdateCall(IdentifierReference reference, int argIndex)
         {
-            var procedureName = Identifier.GetName(subStmt.subroutineName().identifier());
+            var rewriter = _state.GetRewriter(reference.QualifiedModuleName);
+            var callStmtContext = ParserRuleContextHelper.GetParent<VBAParser.CallStmtContext>(reference.Context);
+            var argListContext = ParserRuleContextHelper.GetChild<VBAParser.ArgumentListContext>(callStmtContext);
 
-            var procedure =
-                _state.AllUserDeclarations.SingleOrDefault(d =>
-                    d.IdentifierName == procedureName &&
-                    d.Context is VBAParser.SubStmtContext &&
-                    d.QualifiedName.QualifiedModuleName.Equals(qualifiedModuleName));
+            var arg = argListContext.argument()[argIndex];
+            var argName = arg.positionalArgument()?.argumentExpression() ?? arg.namedArgument().argumentExpression();
 
-            if (procedure == null)
-            {
-                return;
-            }
-
-            foreach (var reference in
-                    procedure.References.OrderByDescending(o => o.Selection.StartLine)
-                        .ThenByDescending(d => d.Selection.StartColumn))
-            {
-                var startLine = reference.Selection.StartLine;
-
-                var referenceParent = ParserRuleContextHelper.GetParent<VBAParser.CallStmtContext>(reference.Context);
-                if (referenceParent == null)
-                {
-                    continue;
-                }
-
-                var module = reference.QualifiedModuleName.Component.CodeModule;
-                var argList = CallStatement.GetArgumentList(referenceParent);
-                var paramNames = new List<string>();
-                var argsCall = string.Empty;
-                var argsCallOffset = 0;
-                if (argList != null)
-                {
-                    argsCallOffset = argList.GetSelection().EndColumn - reference.Context.GetSelection().EndColumn;
-                    argsCall = argList.GetText();
-                    if (argList.argument() != null)
-                    {
-                        paramNames.AddRange(
-                            argList.argument().Select(p =>
-                            {
-                                if (p.positionalArgument() != null)
-                                {
-                                    return p.positionalArgument().GetText();
-                                }
-                                if (p.namedArgument() != null)
-                                {
-                                    return p.namedArgument().GetText();
-                                }
-                                return string.Empty;
-                            }).ToList());
-                    }
-                }
-                var referenceText = reference.Context.GetText();
-                var newCall =
-                    paramNames.ToList()
-                        .ElementAt(
-                            parameterList.arg().ToList().IndexOf(arg)) +
-                    " = " + subStmt.subroutineName().GetText() +
-                    "(" + argsCall + ")";
-
-                var oldLines = module.GetLines(startLine, reference.Selection.LineCount);
-
-                var newText = oldLines.Remove(reference.Selection.StartColumn - 1,
-                        referenceText.Length + argsCallOffset)
-                    .Insert(reference.Selection.StartColumn - 1, newCall);
-
-                module.DeleteLines(startLine, reference.Selection.LineCount);
-                module.InsertLines(startLine, newText);
-            }
+            rewriter.InsertBefore(callStmtContext.Start.TokenIndex, $"{argName.GetText()} = ");
+            rewriter.Replace(callStmtContext.whiteSpace(), "(");
+            rewriter.InsertAfter(argListContext.Stop.TokenIndex, ")");
         }
 
         public bool CanFixInProcedure => false;

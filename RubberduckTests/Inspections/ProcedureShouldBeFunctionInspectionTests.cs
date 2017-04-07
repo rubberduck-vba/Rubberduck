@@ -286,7 +286,7 @@ End Function";
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
             new ChangeProcedureToFunctionQuickFix(state).Fix(inspectionResults.First());
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -316,7 +316,7 @@ End Function";
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
             new ChangeProcedureToFunctionQuickFix(state).Fix(inspectionResults.First());
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -356,7 +356,7 @@ End Sub";
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
             new ChangeProcedureToFunctionQuickFix(state).Fix(inspectionResults.First());
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -370,11 +370,8 @@ Sub Goo(ByVal a As Integer)
 End Sub";
 
             const string expectedCode =
-@"Private Function Foo(ByVal arg1 As Integer) As Integer
- arg1 = 6
- Goo arg1
-    Foo = arg1
- End Function
+@"Private Function Foo(ByVal arg1 As Integer) As Integer: arg1 = 6: Goo arg1:     Foo = arg1
+End Function
 
 Sub Goo(ByVal a As Integer)
 End Sub";
@@ -393,7 +390,7 @@ End Sub";
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
             new ChangeProcedureToFunctionQuickFix(state).Fix(inspectionResults.First());
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -407,11 +404,8 @@ Sub Goo(ByVal a As String)
 End Sub";
 
             const string expectedCode =
-@"Private Function Foo(ByVal arg1 As Integer) As Integer
- arg1 = 6
- Goo ""test: test""
-    Foo = arg1
- End Function
+@"Private Function Foo(ByVal arg1 As Integer) As Integer: arg1 = 6: Goo ""test: test"":     Foo = arg1
+End Function
 
 Sub Goo(ByVal a As String)
 End Sub";
@@ -430,7 +424,7 @@ End Sub";
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
             new ChangeProcedureToFunctionQuickFix(state).Fix(inspectionResults.First());
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -470,7 +464,7 @@ End Function";
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
             new ChangeProcedureToFunctionQuickFix(state).Fix(inspectionResults.First());
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -510,7 +504,7 @@ End Sub";
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
             new ChangeProcedureToFunctionQuickFix(state).Fix(inspectionResults.First());
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
