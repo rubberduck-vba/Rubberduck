@@ -1,26 +1,40 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
     public class SplitMultipleDeclarationsQuickFix : IQuickFix
     {
-        public SplitMultipleDeclarationsQuickFix(ParserRuleContext context, QualifiedSelection selection)
-            : base(context, selection, InspectionsUI.SplitMultipleDeclarationsQuickFix)
+        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
         {
+            typeof(MultipleDeclarationsInspection)
+        };
+
+        public static IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
+
+        public static void AddSupportedInspectionType(Type inspectionType)
+        {
+            if (!inspectionType.GetInterfaces().Contains(typeof(IInspection)))
+            {
+                throw new ArgumentException("Type must implement IInspection", nameof(inspectionType));
+            }
+
+            _supportedInspections.Add(inspectionType);
         }
 
         public void Fix(IInspectionResult result)
         {
             var newContent = new StringBuilder();
-            var selection = Selection.Selection;
+            var selection = result.QualifiedSelection.Selection;
             var keyword = string.Empty;
 
-            var variables = Context.Parent as VBAParser.VariableStmtContext;
+            var variables = result.Context.Parent as VBAParser.VariableStmtContext;
             if (variables != null)
             {
                 if (variables.DIM() != null)
@@ -42,7 +56,7 @@ namespace Rubberduck.Inspections.QuickFixes
                 }
             }
 
-            var consts = Context as VBAParser.ConstStmtContext;
+            var consts = result.Context as VBAParser.ConstStmtContext;
             if (consts != null)
             {
                 var keywords = string.Empty;
@@ -60,9 +74,18 @@ namespace Rubberduck.Inspections.QuickFixes
                 }
             }
 
-            var module = Selection.QualifiedName.Component.CodeModule;
+            var module = result.QualifiedSelection.QualifiedName.Component.CodeModule;
             module.DeleteLines(selection);
             module.InsertLines(selection.StartLine, newContent.ToString());
         }
+
+        public string Description(IInspectionResult result)
+        {
+            return InspectionsUI.SplitMultipleDeclarationsQuickFix;
+        }
+
+        public bool CanFixInProcedure => true;
+        public bool CanFixInModule => true;
+        public bool CanFixInProject => true;
     }
 }
