@@ -45,21 +45,29 @@ namespace RubberduckTests.Mocks
         {
             var path = serializedDeclarationsPath ??
                        Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(typeof(MockParser)).Location), "TestFiles", "Resolver");
+            Func<IVBAPreprocessor> preprocessorFactory = () => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture));
             var parserStateManager = new SynchronousParserStateManager(state);
+            var builtInDeclarationLoader = new BuiltInDeclarationLoader(state,
+                new List<ICustomDeclarationLoader>
+                {
+                    new DebugDeclarations(state),
+                    new SpecialFormDeclarations(state),
+                    new FormEventDeclarations(state),
+                    new AliasDeclarations(state),
+                });
+            var parseRunner = new SynchronousParseRunner(
+                state,
+                parserStateManager,
+                preprocessorFactory,
+                attributeParser);
 
-            return new ParseCoordinator(vbe, state, attributeParser,
-                () => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture)),
+            return new ParseCoordinator(vbe, 
+                state, 
                 new ModuleToModuleReferenceManager(state),
                 parserStateManager,
                 new COMReferenceManager(state, parserStateManager, path),
-                new BuiltInDeclarationLoader(state,
-                    new List<ICustomDeclarationLoader>
-                    {
-                        new DebugDeclarations(state),
-                        new SpecialFormDeclarations(state),
-                        new FormEventDeclarations(state),
-                        new AliasDeclarations(state),
-                    }), 
+                builtInDeclarationLoader,
+                parseRunner,
                 true);
         }
 

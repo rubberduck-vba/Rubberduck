@@ -333,6 +333,9 @@
     <Compile Include="VBA\AttributeParser.cs" />
     <Compile Include="VBA\Attributes.cs" />
     <Compile Include="VBA\BuiltInDeclarationLoader.cs" />
+    <Compile Include="VBA\SynchronousParseRunner.cs" />
+    <Compile Include="VBA\ParseRunner.cs" />
+    <Compile Include="VBA\ParseRunnerBase.cs" />
     <Compile Include="VBA\IBuiltInDeclarationLoader.cs" />
     <Compile Include="VBA\SynchronousCOMReferenceManager.cs" />
     <Compile Include="VBA\COMReferenceManager.cs" />

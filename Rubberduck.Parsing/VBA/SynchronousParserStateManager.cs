@@ -1,5 +1,6 @@
 ﻿using Rubberduck.VBEditor;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 namespace Rubberduck.Parsing.VBA
@@ -12,6 +13,11 @@ namespace Rubberduck.Parsing.VBA
 
         public override void SetModuleStates(ICollection<QualifiedModuleName> modules, ParserState parserState, CancellationToken token, bool evaluateOverallParserState = true)
         {
+            if (!modules.Any())
+            {
+                return;
+            }
+
             foreach (var module in modules)
             {
                 SetModuleState(module, parserState, token, false);

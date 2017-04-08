@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
@@ -22,21 +21,19 @@ namespace Rubberduck.Parsing.VBA
     {
         public RubberduckParserState State { get { return _state; } }
 
-        private const int _maxDegreeOfParserParallelism = -1;
         private const int _maxDegreeOfDeclarationResolverParallelism = -1;
         private const int _maxDegreeOfReferenceResolverParallelism = -1;
         private const int _maxDegreeOfReferenceRemovalParallelism = -1;
 
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
-        private readonly IAttributeParser _attributeParser;
-        private readonly Func<IVBAPreprocessor> _preprocessorFactory;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private readonly IModuleToModuleReferenceManager _moduleToModuleReferenceManager;
         private readonly IParserStateManager _parserStateManager;
         private readonly ICOMReferenceManager _comReferenceManager;
         private readonly IBuiltInDeclarationLoader _builtInDeclarationLoader;
+        private readonly IParseRunner _parseRunner;
 
         private readonly bool _isTestScope;
         private readonly IHostApplication _hostApp;
@@ -44,22 +41,20 @@ namespace Rubberduck.Parsing.VBA
         public ParseCoordinator(
             IVBE vbe,
             RubberduckParserState state,
-            IAttributeParser attributeParser,
-            Func<IVBAPreprocessor> preprocessorFactory,
             IModuleToModuleReferenceManager moduleToModuleReferenceManager,
             IParserStateManager parserStateManager,
             ICOMReferenceManager comSynchronizationRunner,
             IBuiltInDeclarationLoader builtInDeclarationLoader,
+            IParseRunner parseRunner,
             bool isTestScope = false)
         {
             _vbe = vbe;
             _state = state;
-            _attributeParser = attributeParser;
-            _preprocessorFactory = preprocessorFactory;
             _moduleToModuleReferenceManager = moduleToModuleReferenceManager;
             _parserStateManager = parserStateManager;
             _comReferenceManager = comSynchronizationRunner;
             _builtInDeclarationLoader = builtInDeclarationLoader;
+            _parseRunner = parseRunner;
             _isTestScope = isTestScope;
             _hostApp = _vbe.HostApplication();
 
@@ -204,7 +199,7 @@ namespace Rubberduck.Parsing.VBA
             var toResolveReferences = ModulesForWhichToResolveReferences(toParse);
             PerformPreParseCleanup(toParse, toResolveReferences, token);
 
-            ParseComponents(toParse, token);
+            _parseRunner.ParseModules(toParse, token);
 
             if (token.IsCancellationRequested || State.Status >= ParserState.Error)
             {
@@ -270,101 +265,6 @@ namespace Rubberduck.Parsing.VBA
             foreach (var declaration in declarations)
             {
                 declaration.RemoveReferencesFrom(referencesFromToRemove);
-            }
-        }
-
-        private void ParseComponents(ICollection<QualifiedModuleName> modules, CancellationToken token)
-        {
-                token.ThrowIfCancellationRequested();
-            
-            _parserStateManager.SetModuleStates(modules, ParserState.Parsing, token);
-
-                token.ThrowIfCancellationRequested();
-
-            var options = new ParallelOptions();
-            options.CancellationToken = token;
-            options.MaxDegreeOfParallelism = _maxDegreeOfParserParallelism;
-
-            try
-            {
-                Parallel.ForEach(modules,
-                    options,
-                    module =>
-                    {
-                        State.ClearStateCache(module);
-                        var finishedParseTask = FinishedParseComponentTask(module, token);
-                        ProcessComponentParseResults(module, finishedParseTask, token);
-                    }
-                );
-            }
-            catch (AggregateException exception)
-            {
-                if (exception.Flatten().InnerExceptions.All(ex => ex is OperationCanceledException))
-                {
-                    throw exception.InnerException ?? exception; //This eliminates the stack trace, but for the cancellation, this is irrelevant.
-                }
-                _parserStateManager.SetStatusAndFireStateChanged(this, ParserState.Error, token);
-                throw;
-            }
-
-            State.EvaluateParserState();
-        }
-
-        private Task<ComponentParseTask.ParseCompletionArgs> FinishedParseComponentTask(QualifiedModuleName module, CancellationToken token, TokenStreamRewriter rewriter = null)
-        {
-            var tcs = new TaskCompletionSource<ComponentParseTask.ParseCompletionArgs>();
-
-            var preprocessor = _preprocessorFactory();
-            var parser = new ComponentParseTask(module.Component, preprocessor, _attributeParser, rewriter);
-
-            parser.ParseFailure += (sender, e) =>
-            {
-                if (e.Cause is OperationCanceledException)
-                {
-                    tcs.SetCanceled();
-                }
-                else
-                {
-                    tcs.SetException(e.Cause);
-                }
-            };
-            parser.ParseCompleted += (sender, e) =>
-            {
-                tcs.SetResult(e);
-            };
-
-            parser.Start(token);
-
-            return tcs.Task;
-        }
-
-        private void ProcessComponentParseResults(QualifiedModuleName module, Task<ComponentParseTask.ParseCompletionArgs> finishedParseTask, CancellationToken token)
-        {
-            if (finishedParseTask.IsFaulted)
-            {
-                //In contrast to the situation in the success scenario, the overall parser state is reevaluated immediately.
-                //This sets the state directly on the state because it is the sole instance where we have to pass the potential SyntaxErorException.
-                State.SetModuleState(module.Component, ParserState.Error, token, finishedParseTask.Exception.InnerException as SyntaxErrorException);
-            }
-            else if (finishedParseTask.IsCompleted)
-            {
-                var result = finishedParseTask.Result;
-                lock (State)
-                {
-                    lock (module.Component)    
-                    {
-                        State.SetModuleAttributes(module, result.Attributes);
-                        State.AddParseTree(module, result.ParseTree);
-                        State.AddTokenStream(module, result.Tokens);
-                        State.SetModuleComments(module, result.Comments);
-                        State.SetModuleAnnotations(module, result.Annotations);
-
-                        // This really needs to go last
-                        //It does not reevaluate the overall parer state to avoid concurrent evaluation of all module states and for performance reasons.
-                        //The evaluation has to be triggered manually in the calling procedure.
-                        _parserStateManager.SetModuleState(module, ParserState.Parsed, token, false); //Note that this is ok because locks allow re-entrancy.
-                    }
-                }
             }
         }
 
