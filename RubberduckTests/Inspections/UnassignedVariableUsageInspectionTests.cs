@@ -62,7 +62,7 @@ End Sub
             var inspection = new UnassignedVariableUsageInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(1, inspectionResults.Count());
+            Assert.AreEqual(2, inspectionResults.Count());
         }
 
         [TestMethod]
@@ -127,9 +127,7 @@ End Sub";
 
             Assert.IsFalse(inspectionResults.Any());
         }
-
-        //Ignored until we can reinstate the quick fix on a specific reference
-        [Ignore]
+        
         [TestMethod]
         [TestCategory("Inspections")]
         public void UnassignedVariableUsage_QuickFixWorks()
@@ -145,7 +143,7 @@ End Sub";
 @"Sub Foo()
     Dim b As Boolean
     Dim bb As Boolean
-    TODOTODO = TODO
+    
 End Sub";
 
             IVBComponent component;
@@ -155,8 +153,8 @@ End Sub";
             var inspection = new UnassignedVariableUsageInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new RemoveUnassignedVariableUsageQuickFix().Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            new RemoveUnassignedVariableUsageQuickFix(state).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -172,9 +170,9 @@ End Sub";
 
             const string expectedCode =
 @"Sub Foo()
-'@Ignore UnassignedVariableUsage
     Dim b As Boolean
     Dim bb As Boolean
+'@Ignore UnassignedVariableUsage
     bb = b
 End Sub";
 

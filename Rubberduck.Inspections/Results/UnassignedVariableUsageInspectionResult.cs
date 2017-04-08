@@ -8,8 +8,8 @@ namespace Rubberduck.Inspections.Results
 {
     public class UnassignedVariableUsageInspectionResult : InspectionResultBase
     {
-        public UnassignedVariableUsageInspectionResult(IInspection inspection, Declaration declaration)
-            : base(inspection, declaration) {}
+        public UnassignedVariableUsageInspectionResult(IInspection inspection, IdentifierReference reference)
+            : base(inspection, reference.QualifiedModuleName, reference.Context) {}
 
         public override string Description
         {

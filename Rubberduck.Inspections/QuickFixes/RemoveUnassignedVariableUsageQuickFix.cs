@@ -1,16 +1,28 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Antlr4.Runtime;
+using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
     public class RemoveUnassignedVariableUsageQuickFix : IQuickFix
     {
+        private readonly RubberduckParserState _state;
         private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
         {
+            typeof(UnassignedVariableUsageInspection)
         };
+
+        public RemoveUnassignedVariableUsageQuickFix(RubberduckParserState state)
+        {
+            _state = state;
+        }
 
         public static IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
 
@@ -26,25 +38,12 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public void Fix(IInspectionResult result)
         {
-            var module = result.QualifiedSelection.QualifiedName.Component.CodeModule;
-            var selection = result.QualifiedSelection.Selection;
+            var rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
 
-            var originalCodeLines = module.GetLines(selection.StartLine, selection.LineCount)
-                .Replace(Environment.NewLine, " ")
-                .Replace("_", string.Empty);
+            var assignmentContext = ParserRuleContextHelper.GetParent<VBAParser.LetStmtContext>(result.Context) ??
+                                                  (ParserRuleContext)ParserRuleContextHelper.GetParent<VBAParser.CallStmtContext>(result.Context);
 
-            var originalInstruction = result.Context.GetText();
-            module.DeleteLines(selection.StartLine, selection.LineCount);
-
-            var newInstruction = InspectionsUI.Inspections_UnassignedVariableTodo;
-            var newCodeLines = string.IsNullOrEmpty(newInstruction)
-                ? string.Empty
-                : originalCodeLines.Replace(originalInstruction, newInstruction);
-
-            if (!string.IsNullOrEmpty(newCodeLines))
-            {
-                module.InsertLines(selection.StartLine, newCodeLines);
-            }
+            rewriter.Remove(assignmentContext);
         }
 
         public string Description(IInspectionResult result)
