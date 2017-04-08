@@ -304,11 +304,13 @@ namespace Rubberduck.Parsing.VBA
 
         public event EventHandler<ParserStateEventArgs> StateChanged;
 
+        private int _stateChangedInvocations = 0;
         private void OnStateChanged(object requestor, ParserState state = ParserState.Pending)
         {
-            Logger.Debug("RubberduckParserState raised StateChanged ({0})", Status);
-
+            _stateChangedInvocations++;
             HandleStateChanged(state);
+
+            Logger.Info($"{nameof(RubberduckParserState)} ({_stateChangedInvocations}) is invoking {nameof(StateChanged)} ({Status})");
             StateChanged?.Invoke(requestor, new ParserStateEventArgs(state));
         }
         public event EventHandler<ParseProgressEventArgs> ModuleStateChanged;

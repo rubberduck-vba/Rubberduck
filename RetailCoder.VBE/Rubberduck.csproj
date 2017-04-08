@@ -361,6 +361,15 @@
     <Compile Include="Refactorings\ExtractMethod\IExtractMethodProc.cs" />
     <Compile Include="Refactorings\ExtractMethod\IExtractMethodRule.cs" />
     <Compile Include="Refactorings\ExtractMethod\IExtractMethodSelectionValidation.cs" />
+    <Compile Include="Refactorings\Rename\RenameRefactorBase.cs" />
+    <Compile Include="Refactorings\Rename\RenameRefactorControl.cs" />
+    <Compile Include="Refactorings\Rename\RenameRefactorDefault.cs" />
+    <Compile Include="Refactorings\Rename\RenameRefactorEvent.cs" />
+    <Compile Include="Refactorings\Rename\RenameRefactorInterface.cs" />
+    <Compile Include="Refactorings\Rename\RenameRefactorModule.cs" />
+    <Compile Include="Refactorings\Rename\RenameRefactorProject.cs" />
+    <Compile Include="Refactorings\Rename\RenameRefactorProperty.cs" />
+    <Compile Include="Refactorings\Rename\RenameRefactorPropertyParameter.cs" />
     <Compile Include="Root\EnumerableCounterInterceptor.cs" />
     <Compile Include="Root\InterceptedException.cs" />
     <Compile Include="Root\InterceptorBase.cs" />
@@ -408,6 +417,7 @@
     <Compile Include="UI\CodeExplorer\Commands\AddTestModuleCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddComponentCommand.cs" />
     <Compile Include="UI\Command\IndentCurrentProjectCommand.cs" />
+    <Compile Include="UI\Command\MenuItems\CommandBars\ContextDescriptionLabelMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\IndentCurrentProjectCommandMenuItem.cs" />
     <Compile Include="UI\EnvironmentProvider.cs" />
     <Compile Include="UI\Inspections\AggregateInspectionResult.cs" />

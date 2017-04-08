@@ -10,10 +10,59 @@ namespace Rubberduck.Parsing.Symbols
 {
     public static class Identifier
     {
+
+        public static string GetName(VBAParser.SubStmtContext context, out Interval tokenInterval)
+        {
+            var nameContext = context.subroutineName();
+            return GetName(nameContext, out tokenInterval);
+        }
+
+        public static string GetName(VBAParser.FunctionStmtContext context, out Interval tokenInterval)
+        {
+            var nameContext = context.functionName();
+            return GetName(nameContext, out tokenInterval);
+        }
+
+        public static string GetName(VBAParser.EventStmtContext context, out Interval tokenInterval)
+        {
+            var nameContext = context.identifier();
+            return GetName(nameContext, out tokenInterval);
+        }
+
+        public static string GetName(VBAParser.VariableSubStmtContext context, out Interval tokenInterval)
+        {
+            var nameContext = context.identifier();
+            return GetName(nameContext, out tokenInterval);
+        }
+
+        public static string GetName(VBAParser.PropertyGetStmtContext context, out Interval tokenInterval)
+        {
+            var nameContext = context.functionName();
+            return GetName(nameContext, out tokenInterval);
+        }
+
+        public static string GetName(VBAParser.PropertyLetStmtContext context, out Interval tokenInterval)
+        {
+            var nameContext = context.subroutineName();
+            return GetName(nameContext, out tokenInterval);
+        }
+
+        public static string GetName(VBAParser.PropertySetStmtContext context, out Interval tokenInterval)
+        {
+            var nameContext = context.subroutineName();
+            return GetName(nameContext, out tokenInterval);
+        }
+
+        public static string GetName(VBAParser.ArgContext context, out Interval tokenInterval)
+        {
+            var nameContext = context.unrestrictedIdentifier();
+            return GetName(nameContext, out tokenInterval);
+        }
+
         public static string GetName(VBAParser.FunctionNameContext context, out Interval tokenInterval)
         {
-            var ctx = context.identifier();
-            tokenInterval = Interval.Of(ctx.Start.TokenIndex, ctx.Stop.TokenIndex);
+            var nameContext = context.identifier();
+            tokenInterval = Interval.Of(nameContext.Start.TokenIndex, nameContext.Stop.TokenIndex);
             return GetName(context);
         }
 
@@ -24,8 +73,8 @@ namespace Rubberduck.Parsing.Symbols
 
         public static string GetName(VBAParser.SubroutineNameContext context, out Interval tokenInterval)
         {
-            var ctx = context.identifier();
-            tokenInterval = Interval.Of(ctx.Start.TokenIndex, ctx.Stop.TokenIndex);
+            var nameContext = context.identifier();
+            tokenInterval = Interval.Of(nameContext.Start.TokenIndex, nameContext.Stop.TokenIndex);
             return GetName(context);
         }
 
@@ -36,8 +85,8 @@ namespace Rubberduck.Parsing.Symbols
 
         public static string GetName(VBAParser.UnrestrictedIdentifierContext context, out Interval tokenInterval)
         {
-            var ctx = context.identifier();
-            tokenInterval = Interval.Of(ctx.Start.TokenIndex, ctx.Stop.TokenIndex);
+            var nameContext = context.identifier();
+            tokenInterval = Interval.Of(nameContext.Start.TokenIndex, nameContext.Stop.TokenIndex);
             return GetName(context);
         }
 

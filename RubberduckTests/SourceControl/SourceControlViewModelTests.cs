@@ -91,7 +91,9 @@ namespace RubberduckTests.SourceControl
 
         private void SetupValidVbProject()
         {
-            var project = new Mock<IVBProject>().SetupProperty(p => p.HelpFile, DummyRepoId);
+            var project = new Mock<IVBProject>();
+            project.Setup(p => p.ProjectId).Returns(DummyRepoId);
+            project.Setup(p => p.HelpFile).Returns(DummyRepoId);
             _vbe.SetupProperty(vbe => vbe.ActiveVBProject, project.Object);
         }
 
