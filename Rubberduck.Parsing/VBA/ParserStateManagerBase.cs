@@ -28,6 +28,11 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
+        public ParserState GetModuleState(QualifiedModuleName module)
+        {
+            return _state.GetModuleState(module);
+        }
+
         public void EvaluateOverallParserState(CancellationToken token)
         {
             _state.EvaluateParserState();

@@ -527,7 +527,12 @@ namespace Rubberduck.Parsing.VBA
 
         public ParserState GetModuleState(IVBComponent component)
         {
-            return _moduleStates.GetOrAdd(new QualifiedModuleName(component), new ModuleState(ParserState.Pending)).State;
+            return GetModuleState(new QualifiedModuleName(component));
+        }
+
+        public ParserState GetModuleState(QualifiedModuleName module)
+        {
+            return _moduleStates.GetOrAdd(module, new ModuleState(ParserState.Pending)).State;  //Why does getting the module state potentially create a new one? That is not too intuitive.
         }
 
         private readonly object _statusLockObject = new object(); 
@@ -607,8 +612,13 @@ namespace Rubberduck.Parsing.VBA
 
         public IEnumerable<IAnnotation> GetModuleAnnotations(IVBComponent component)
         {
+            return GetModuleAnnotations(new QualifiedModuleName(component));
+        }
+
+        public IEnumerable<IAnnotation> GetModuleAnnotations(QualifiedModuleName module)
+        {
             ModuleState result;
-            if (_moduleStates.TryGetValue(new QualifiedModuleName(component), out result))
+            if (_moduleStates.TryGetValue(module, out result))
             {
                 return result.Annotations;
             }
@@ -709,9 +719,14 @@ namespace Rubberduck.Parsing.VBA
             _allUserDeclarations = declarations;
         }
 
-        internal IDictionary<Tuple<string, DeclarationType>, Attributes> GetModuleAttributes(IVBComponent vbComponent)
+        internal IDictionary<Tuple<string, DeclarationType>, Attributes> GetModulAttributes(IVBComponent vbComponent)
         {
-            return _moduleStates[new QualifiedModuleName(vbComponent)].ModuleAttributes;
+            return GetModuleAttributes(new QualifiedModuleName(vbComponent));
+        }
+
+        internal IDictionary<Tuple<string, DeclarationType>, Attributes> GetModuleAttributes(QualifiedModuleName module)
+        {
+            return _moduleStates[module].ModuleAttributes;
         }
 
         /// <summary>

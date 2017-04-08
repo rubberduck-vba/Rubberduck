@@ -8,6 +8,8 @@ namespace Rubberduck.Parsing.VBA
     {
         ParserState OverallParserState { get; }
 
+        ParserState GetModuleState(QualifiedModuleName module);
+
         void SetModuleState(QualifiedModuleName module, ParserState parserState, CancellationToken token, bool evaluateOverallParserState = true);
         void SetModuleStates(ICollection<QualifiedModuleName> modules, ParserState parserState, CancellationToken token, bool evaluateOverallParserState = true);
         void EvaluateOverallParserState(CancellationToken token);
