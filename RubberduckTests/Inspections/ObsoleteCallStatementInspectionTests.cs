@@ -306,13 +306,13 @@ End Sub";
 
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            var fix = new IgnoreOnceQuickFix(new[] {inspection});
+            var fix = new IgnoreOnceQuickFix(state, new[] {inspection});
             foreach (var result in inspectionResults)
             {
                 fix.Fix(result);
             }
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]

@@ -273,7 +273,7 @@ End Property";
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
                 .Build();
-            var module = project.Object.VBComponents[0].CodeModule;
+            var component = project.Object.VBComponents[0];
             var vbe = builder.AddProject(project).Build();
 
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
@@ -284,9 +284,9 @@ End Property";
             var inspection = new WriteOnlyPropertyInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new IgnoreOnceQuickFix(new[] {inspection}).Fix(inspectionResults.First());
+            new IgnoreOnceQuickFix(parser.State, new[] {inspection}).Fix(inspectionResults.First());
 
-            Assert.AreEqual(expectedCode, module.Content());
+            Assert.AreEqual(expectedCode, parser.State.GetRewriter(component).GetText());
         }
 
         [TestMethod]

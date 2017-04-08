@@ -255,6 +255,7 @@ End Sub
                 .Build();
 
             var vbe = builder.AddProject(project).Build();
+            var component = vbe.Object.SelectedVBComponent;
 
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
@@ -266,11 +267,9 @@ End Sub
             var inspection = new ApplicationWorksheetFunctionInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new IgnoreOnceQuickFix(new[] {inspection}).Fix(inspectionResults.First());
+            new IgnoreOnceQuickFix(parser.State, new[] {inspection}).Fix(inspectionResults.First());
 
-            var actualCode = project.Object.VBComponents[0].CodeModule.Content();
-
-            Assert.AreEqual(expectedCode, actualCode);
+            Assert.AreEqual(expectedCode, parser.State.GetRewriter(component).GetText());
         }
 
         [TestMethod]

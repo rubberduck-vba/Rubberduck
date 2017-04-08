@@ -845,9 +845,9 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ParameterCanBeByValInspection(state);
-            new IgnoreOnceQuickFix(new[] {inspection}).Fix(inspection.GetInspectionResults().First());
+            new IgnoreOnceQuickFix(state, new[] {inspection}).Fix(inspection.GetInspectionResults().First());
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         //https://github.com/rubberduck-vba/Rubberduck/issues/2408

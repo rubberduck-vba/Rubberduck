@@ -425,8 +425,8 @@ Rem test1";
 
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
             
-            new IgnoreOnceQuickFix(new[] {inspection}).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            new IgnoreOnceQuickFix(state, new[] {inspection}).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]

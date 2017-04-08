@@ -1,12 +1,9 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
-using System.Collections.Generic;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.VBEditor.SafeComWrappers;
 
@@ -24,7 +21,14 @@ namespace RubberduckTests.Inspections
     Let arg1 = ""test""
 End Sub";
 
-            AssertVbaFragmentYieldsExpectedInspectionResultCount(inputCode, 1);
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var state = MockParser.CreateAndParse(vbe.Object);
+            var inspection = new AssignedByValParameterInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(1, inspectionResults.Count());
         }
 
         [TestMethod]
@@ -36,7 +40,14 @@ End Sub";
     Let arg1 = 9
 End Function";
 
-            AssertVbaFragmentYieldsExpectedInspectionResultCount(inputCode, 1);
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var state = MockParser.CreateAndParse(vbe.Object);
+            var inspection = new AssignedByValParameterInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(1, inspectionResults.Count());
         }
 
         [TestMethod]
@@ -49,7 +60,14 @@ End Function";
     Let arg2 = 9
 End Sub";
 
-            AssertVbaFragmentYieldsExpectedInspectionResultCount(inputCode, 2);
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var state = MockParser.CreateAndParse(vbe.Object);
+            var inspection = new AssignedByValParameterInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(2, inspectionResults.Count());
         }
 
         [TestMethod]
@@ -60,7 +78,14 @@ End Sub";
 @"Public Sub Foo(ByVal arg1 As String)
 End Sub";
 
-            AssertVbaFragmentYieldsExpectedInspectionResultCount(inputCode, 0);
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var state = MockParser.CreateAndParse(vbe.Object);
+            var inspection = new AssignedByValParameterInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.IsFalse(inspectionResults.Any());
         }
 
         [TestMethod]
@@ -73,7 +98,14 @@ Public Sub Foo(ByVal arg1 As String)
     Let arg1 = ""test""
 End Sub";
 
-            AssertVbaFragmentYieldsExpectedInspectionResultCount(inputCode, 0);
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var state = MockParser.CreateAndParse(vbe.Object);
+            var inspection = new AssignedByValParameterInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.IsFalse(inspectionResults.Any());
         }
 
         [TestMethod]
@@ -88,7 +120,14 @@ End Sub";
     var1 = arg2
 End Sub";
 
-            AssertVbaFragmentYieldsExpectedInspectionResultCount(inputCode, 1);
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var state = MockParser.CreateAndParse(vbe.Object);
+            var inspection = new AssignedByValParameterInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(1, inspectionResults.Count());
         }
 
         [TestMethod]
@@ -117,8 +156,12 @@ End Sub
                 .AddComponent("Module1", ComponentType.StandardModule, caller)
                 .MockVbeBuilder()
                 .Build();
-            var results = GetInspectionResults(vbe.Object);
-            Assert.AreEqual(0, results.Count());
+            
+            var state = MockParser.CreateAndParse(vbe.Object);
+            var inspection = new AssignedByValParameterInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+            
+            Assert.IsFalse(inspectionResults.Any());
         }
 
         [TestMethod]
@@ -136,8 +179,15 @@ Public Sub Foo(ByVal arg1 As String)
     Let arg1 = ""test""
 End Sub";
 
-            var quickFixResult = ApplyIgnoreOnceQuickFixToCodeFragment(inputCode);
-            Assert.AreEqual(expectedCode, quickFixResult);
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var state = MockParser.CreateAndParse(vbe.Object);
+            var inspection = new AssignedByValParameterInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            new IgnoreOnceQuickFix(state, new[] {inspection}).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -156,48 +206,6 @@ End Sub";
             var inspection = new AssignedByValParameterInspection(null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
-        }
-
-        private void AssertVbaFragmentYieldsExpectedInspectionResultCount(string inputCode, int expectedCount)
-        {
-            var inspectionResults = GetInspectionResults(inputCode);
-            Assert.AreEqual(expectedCount, inspectionResults.Count());
-        }
-
-        private string ApplyIgnoreOnceQuickFixToCodeFragment(string inputCode)
-        {
-            var vbe = BuildMockVBE(inputCode);
-            var inspectionResult = GetInspectionResults(vbe.Object).First();
-
-            new IgnoreOnceQuickFix(new[] {inspectionResult.Inspection}).Fix(inspectionResult);
-
-            return GetModuleContent(vbe.Object);
-        }
-
-        private string GetModuleContent(IVBE vbe)
-        {
-            var project = vbe.VBProjects[0];
-            var module = project.VBComponents[0].CodeModule;
-            return module.Content();
-        }
-
-        private IEnumerable<IInspectionResult> GetInspectionResults(string inputCode)
-        {
-            var vbe = BuildMockVBE(inputCode);
-            return GetInspectionResults(vbe.Object);
-        }
-
-        private IEnumerable<IInspectionResult> GetInspectionResults(IVBE vbe)
-        {
-            var state = MockParser.CreateAndParse(vbe);
-            var inspection = new AssignedByValParameterInspection(state);
-            return inspection.GetInspectionResults();
-        }
-
-        private Mock<IVBE> BuildMockVBE(string inputCode)
-        {
-            IVBComponent component;
-            return MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
         }
     }
 }

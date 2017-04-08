@@ -175,8 +175,8 @@ End Sub";
             var inspection = new MultilineParameterInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
             
-            new IgnoreOnceQuickFix(new[] {inspection}).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            new IgnoreOnceQuickFix(state, new[] {inspection}).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]

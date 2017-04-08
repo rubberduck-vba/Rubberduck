@@ -212,8 +212,8 @@ End Sub";
             var inspection = new ImplicitByRefParameterInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
             
-            new IgnoreOnceQuickFix(new[] {inspection}).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            new IgnoreOnceQuickFix(state, new[] {inspection}).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         //http://chat.stackexchange.com/transcript/message/34001991#34001991

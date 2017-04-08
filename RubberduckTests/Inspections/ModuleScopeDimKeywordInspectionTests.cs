@@ -229,9 +229,9 @@ Dim foo";
             var inspection = new ModuleScopeDimKeywordInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
             
-            new IgnoreOnceQuickFix(new[] {inspection}).Fix(inspectionResults.First());
+            new IgnoreOnceQuickFix(state, new[] {inspection}).Fix(inspectionResults.First());
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]

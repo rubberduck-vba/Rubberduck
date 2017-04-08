@@ -103,7 +103,7 @@ End Sub";
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode)
                 .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
                 .Build();
-            var module = project.Object.VBComponents[0].CodeModule;
+            var component = project.Object.VBComponents[0];
             var vbe = builder.AddProject(project).Build();
 
 
@@ -116,8 +116,8 @@ End Sub";
             var inspection = new ImplicitActiveWorkbookReferenceInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
             
-            new IgnoreOnceQuickFix(new[] {inspection}).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, module.Content());
+            new IgnoreOnceQuickFix(parser.State, new[] {inspection}).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, parser.State.GetRewriter(component).GetText());
         }
 
         [TestMethod]

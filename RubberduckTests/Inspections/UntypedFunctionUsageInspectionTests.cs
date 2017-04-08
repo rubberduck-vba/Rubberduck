@@ -171,7 +171,7 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var module = project.Object.VBComponents[0].CodeModule;
+            var component = project.Object.VBComponents[0];
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
@@ -182,8 +182,8 @@ End Sub";
             var inspection = new UntypedFunctionUsageInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
             
-            new IgnoreOnceQuickFix(new[] {inspection}).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, module.Content());
+            new IgnoreOnceQuickFix(parser.State, new[] {inspection}).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, parser.State.GetRewriter(component).GetText());
         }
 
         [TestMethod]
