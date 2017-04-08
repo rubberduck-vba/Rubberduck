@@ -315,6 +315,10 @@ namespace Rubberduck.Parsing.ComReflection
             {
                 attributes.AddEvaluateMemberAttribute(member.Name);
             }
+            else if (!string.IsNullOrEmpty(member.Documentation.DocString))
+            {
+                attributes.AddMemberDescriptionAttribute(member.Name, member.Documentation.DocString);
+            }
             return attributes;
         }
     }

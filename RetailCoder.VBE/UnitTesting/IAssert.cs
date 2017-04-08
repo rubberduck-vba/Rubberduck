@@ -1,8 +1,9 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.ComponentModel;
+using System.Runtime.InteropServices;
 
+// ReSharper disable InconsistentNaming
 // The parameters on RD's public interfaces are following VBA conventions not C# conventions to stop the
 // obnoxious "Can I haz all identifiers with the same casing" behavior of the VBE.
-// ReSharper disable InconsistentNaming
 
 namespace Rubberduck.UnitTesting
 {
@@ -16,6 +17,7 @@ namespace Rubberduck.UnitTesting
         /// <param name="Condition">Any Boolean value or expression.</param>
         /// <param name="Message">An optional message to display if the assertion fails.</param>
         [DispId(1)]
+        [Description("Verifies that the specified condition is true. The assertion fails if the condition is false.")]
         void IsTrue(bool Condition, string Message = "");
 
         /// <summary>
@@ -24,6 +26,7 @@ namespace Rubberduck.UnitTesting
         /// <param name="Condition">Any Boolean value or expression.</param>
         /// <param name="Message">An optional message to display if the assertion fails.</param>
         [DispId(2)]
+        [Description("Verifies that the specified condition is false. The assertion fails if the condition is true.")]
         void IsFalse(bool Condition, string Message = "");
 
         /// <summary>
@@ -31,6 +34,7 @@ namespace Rubberduck.UnitTesting
         /// </summary>
         /// <param name="Message">An optional message to display.</param>
         [DispId(3)]
+        [Description("Indicates that the assertion cannot be verified.")]
         void Inconclusive(string Message = "");
 
         /// <summary>
@@ -38,12 +42,14 @@ namespace Rubberduck.UnitTesting
         /// </summary>
         /// <param name="Message">An optional message to display.</param>
         [DispId(4)]
+        [Description("Fails the assertion without checking any conditions.")]
         void Fail(string Message = "");
 
         /// <summary>
         /// Passes the assertion without checking any conditions.
         /// </summary>
         [DispId(5)]
+        [Description("Passes the assertion without checking any conditions.")]
         void Succeed();
 
         /// <summary>
@@ -52,6 +58,7 @@ namespace Rubberduck.UnitTesting
         /// <param name="Value">The object to verify.</param>
         /// <param name="Message">An optional message to display if the assertion fails.</param>
         [DispId(6)]
+        [Description("Verifies that the specified object is Nothing. The assertion fails if it is not Nothing.")]
         void IsNothing(object Value, string Message = "");
 
         /// <summary>
@@ -60,6 +67,7 @@ namespace Rubberduck.UnitTesting
         /// <param name="Value">The object to verify.</param>
         /// <param name="Message">An optional message to display if the assertion fails.</param>
         [DispId(7)]
+        [Description("Verifies that the specified object is not Nothing. The assertion fails if it is Nothing.")]
         void IsNotNothing(object Value, string Message = "");
 
         /// <summary>
@@ -72,6 +80,7 @@ namespace Rubberduck.UnitTesting
         /// <paramref name="Expected"/> and <paramref name="Actual"/> must be the same type.
         /// </remarks>
         [DispId(8)]
+        [Description("Verifies that two specified objects are equal. The assertion fails if the objects are not equal.")]
         void AreEqual(object Expected, object Actual, string Message = "");
 
         /// <summary>
@@ -84,6 +93,7 @@ namespace Rubberduck.UnitTesting
         /// <paramref name="Expected"/> and <paramref name="Actual"/> must be the same type.
         /// </remarks>
         [DispId(9)]
+        [Description("Verifies that two specified objects are not equal. The assertion fails if the objects are equal.")]
         void AreNotEqual(object Expected, object Actual, string Message = "");
 
         /// <summary>
@@ -93,6 +103,7 @@ namespace Rubberduck.UnitTesting
         /// <param name="Actual">The actual reference.</param>
         /// <param name="Message">An optional message to display if the assertion fails.</param>
         [DispId(10)]
+        [Description("Verifies that two specified object variables refer to the same object. The assertion fails if they refer to different objects.")]
         void AreSame(object Expected, object Actual, string Message = "");
 
         /// <summary>
@@ -102,6 +113,7 @@ namespace Rubberduck.UnitTesting
         /// <param name="Actual">The actual reference.</param>
         /// <param name="Message">An optional message to display if the assertion fails.</param>
         [DispId(11)]
+        [Description("Verifies that two specified object variables refer to different objects. The assertion fails if they refer to the same object.")]
         void AreNotSame(object Expected, object Actual, string Message = "");
 
         /// <summary>
@@ -113,6 +125,7 @@ namespace Rubberduck.UnitTesting
         /// <param name="Actual">The actual sequence.</param>
         /// <param name="Message">An optional message to display if the assertion fails.</param>
         [DispId(12)]
+        [Description("Verifies that all of the items in 2 arrays are equal. The assertion fails if any items is different, if either the lower bounds or upper bounds are different, or if the ranks (number of dimensions) differ.")]
         void SequenceEquals(object Expected, object Actual, string Message = "");
 
         /// <summary>
@@ -124,6 +137,7 @@ namespace Rubberduck.UnitTesting
         /// <param name="Actual">The actual sequence.</param>
         /// <param name="Message">An optional message to display if the assertion fails.</param>
         [DispId(13)]
+        [Description("Verifies that at least one of the items in 2 arrays differs at any give index. The assertion fails if all of the items are the same, if the lower bounds and upper bounds are the same, and the ranks (number of dimensions) are the same.")]
         void NotSequenceEquals(object Expected, object Actual, string Message = "");
     }
 }
