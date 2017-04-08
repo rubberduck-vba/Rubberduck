@@ -131,6 +131,7 @@
     <Compile Include="Grammar\VBAParserBaseVisitor.cs" />
     <Compile Include="Grammar\VBAParserListener.cs" />
     <Compile Include="Grammar\VBAParserVisitor.cs" />
+    <Compile Include="Inspections\Abstract\IQuickFixProvider.cs" />
     <Compile Include="Inspections\Abstract\IInspection.cs" />
     <Compile Include="Inspections\Abstract\IInspectionModel.cs" />
     <Compile Include="Inspections\Abstract\IInspectionResult.cs" />

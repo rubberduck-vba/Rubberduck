@@ -482,14 +482,14 @@
                 <Menu>
                     <MenuItem VerticalAlignment="Center" 
                           Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Fix}"
-                          ItemsSource="{Binding SelectedItem.QuickFixes}">
+                          ItemsSource="{Binding QuickFixes}">
                         <MenuItem.Icon>
                             <Image Height="16" Source="../../Resources/tick.png" />
                         </MenuItem.Icon>
                         <MenuItem.ItemContainerStyle>
                             <Style TargetType="{x:Type MenuItem}">
                                 <Setter Property="Command" Value="{Binding Path=DataContext.QuickFixCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=Menu, AncestorLevel=1}}" />
-                                <Setter Property="CommandParameter" Value="{Binding}" />
+                                <Setter Property="CommandParameter" Value="{Binding Fix}" />
                                 <Setter Property="Header" Value="{Binding Description}" />
                             </Style>
                         </MenuItem.ItemContainerStyle>

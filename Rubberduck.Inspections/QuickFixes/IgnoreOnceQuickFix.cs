@@ -22,27 +22,7 @@ namespace Rubberduck.Inspections.QuickFixes
             _supportedInspections.UnionWith(inspections.Select(i => i.GetType()));
         }
 
-        public static IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
-
-        public static void AddSupportedInspectionType(Type inspectionType)
-        {
-            if (!inspectionType.GetInterfaces().Contains(typeof(IInspection)))
-            {
-                throw new ArgumentException("Type must implement IInspection", nameof(inspectionType));
-            }
-
-            _supportedInspections.Add(inspectionType);
-        }
-
-        public static void RemoveSupportedInspectionType(Type inspectionType)
-        {
-            if (!inspectionType.GetInterfaces().Contains(typeof(IInspection)))
-            {
-                throw new ArgumentException("Type must implement IInspection", nameof(inspectionType));
-            }
-
-            _supportedInspections.Remove(inspectionType);
-        }
+        public IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
 
         public bool CanFixInProcedure => false;
         public bool CanFixInModule => false;

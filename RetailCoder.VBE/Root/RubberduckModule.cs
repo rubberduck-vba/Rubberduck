@@ -86,6 +86,7 @@ namespace Rubberduck.Root
             .ToArray();
 
             BindCodeInspectionTypes(assemblies);
+            BindQuickFixTypes(assemblies);
             BindRefactoringDialogs();
 
             ApplyDefaultInterfacesConvention(assemblies);
@@ -291,6 +292,20 @@ namespace Rubberduck.Root
                     binding.Intercept().With<TimedCallLoggerInterceptor>();
                     binding.Intercept().With<EnumerableCounterInterceptor<IInspectionResult>>();
                 }
+            }
+        }
+
+        // note: IQuickFix implementations are discovered in all assemblies, via reflection.
+        private void BindQuickFixTypes(IEnumerable<Assembly> assemblies)
+        {
+            var quickFixes = assemblies
+                .SelectMany(a => a.GetTypes().Where(type => type.IsClass && !type.IsAbstract && type.GetInterfaces().Contains(typeof(IQuickFix))))
+                .ToList();
+
+            // multibinding for IEnumerable<IQuickFix> dependency
+            foreach (var quickFix in quickFixes)
+            {
+                Bind<IQuickFix>().To(quickFix).InSingletonScope();
             }
         }
 

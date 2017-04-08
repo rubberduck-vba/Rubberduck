@@ -15,17 +15,8 @@ namespace Rubberduck.Inspections.QuickFixes
     public class ChangeProcedureToFunctionQuickFix : IQuickFix
     {
         private static readonly HashSet<Type> _supportedInspections = new HashSet<Type> { typeof(ProcedureCanBeWrittenAsFunctionInspection) };
-        public static IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
 
-        public static void AddSupportedInspectionType(Type inspectionType)
-        {
-            if (!inspectionType.GetInterfaces().Contains(typeof(IInspection)))
-            {
-                throw new ArgumentException("Type must implement IInspection", nameof(inspectionType));
-            }
-
-            _supportedInspections.Add(inspectionType);
-        }
+        public IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
 
         private readonly RubberduckParserState _state;
 

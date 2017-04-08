@@ -1,4 +1,7 @@
-﻿namespace Rubberduck.Parsing.Inspections.Abstract
+﻿using System;
+using System.Collections.Generic;
+
+namespace Rubberduck.Parsing.Inspections.Abstract
 {
     public interface IQuickFix
     {
@@ -8,5 +11,7 @@
         bool CanFixInProcedure { get; }
         bool CanFixInModule { get; }
         bool CanFixInProject { get; }
+
+        IReadOnlyCollection<Type> SupportedInspections { get; }
     }
 }

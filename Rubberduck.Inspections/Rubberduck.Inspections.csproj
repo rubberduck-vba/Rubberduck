@@ -52,7 +52,6 @@
   <ItemGroup>
     <Compile Include="Abstract\InspectionBase.cs" />
     <Compile Include="Abstract\InspectionResultBase.cs" />
-    <Compile Include="Abstract\QuickFixBase.cs" />
     <Compile Include="Concrete\ApplicationWorksheetFunctionInspection.cs" />
     <Compile Include="Concrete\AssignedByValParameterInspection.cs" />
     <Compile Include="Concrete\ConstantNotUsedInspection.cs" />
@@ -117,7 +116,7 @@
     <Compile Include="QuickFixes\RemoveUnusedDeclarationQuickFix.cs" />
     <Compile Include="QuickFixes\RemoveUnusedParameterQuickFix.cs" />
     <Compile Include="QuickFixes\RenameDeclarationQuickFix.cs" />
-    <Compile Include="QuickFixes\RepaceEmptyStringLiteralStatementQuickFix.cs" />
+    <Compile Include="QuickFixes\ReplaceEmptyStringLiteralStatementQuickFix.cs" />
     <Compile Include="QuickFixes\ReplaceGlobalModifierQuickFix.cs" />
     <Compile Include="QuickFixes\ReplaceObsoleteCommentMarkerQuickFix.cs" />
     <Compile Include="QuickFixes\SetExplicitVariantReturnTypeQuickFix.cs" />
@@ -126,6 +125,7 @@
     <Compile Include="QuickFixes\UntypedFunctionUsageQuickFix.cs" />
     <Compile Include="QuickFixes\UseSetKeywordForObjectAssignmentQuickFix.cs" />
     <Compile Include="QuickFixes\WriteOnlyPropertyQuickFix.cs" />
+    <Compile Include="QuickFixProvider.cs" />
     <Compile Include="Results\ApplicationWorksheetFunctionInspectionResult.cs" />
     <Compile Include="Results\AssignedByValParameterInspectionResult.cs" />
     <Compile Include="Results\DefaultProjectNameInspectionResult.cs" />
