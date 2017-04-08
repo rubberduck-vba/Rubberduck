@@ -12,7 +12,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class RemoveUnusedParameterQuickFix : IQuickFix
+    public sealed class RemoveUnusedParameterQuickFix : IQuickFix
     {
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;

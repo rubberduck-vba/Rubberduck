@@ -9,7 +9,7 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class ReplaceObsoleteCommentMarkerQuickFix : IQuickFix
+    public sealed class ReplaceObsoleteCommentMarkerQuickFix : IQuickFix
     {
         private readonly RubberduckParserState _state;
         private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>

@@ -11,7 +11,7 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class RemoveUnassignedVariableUsageQuickFix : IQuickFix
+    public sealed class RemoveUnassignedVariableUsageQuickFix : IQuickFix
     {
         private readonly RubberduckParserState _state;
         private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>

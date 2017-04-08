@@ -10,7 +10,7 @@ using Rubberduck.UI;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class MoveFieldCloserToUsageQuickFix : IQuickFix
+    public sealed class MoveFieldCloserToUsageQuickFix : IQuickFix
     {
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;

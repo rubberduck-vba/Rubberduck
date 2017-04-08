@@ -11,7 +11,7 @@ using Rubberduck.UI.Refactorings.EncapsulateField;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class EncapsulateFieldQuickFix : IQuickFix
+    public sealed class EncapsulateFieldQuickFix : IQuickFix
     {
         private readonly RubberduckParserState _state;
         private readonly IIndenter _indenter;

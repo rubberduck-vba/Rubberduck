@@ -8,7 +8,7 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class MakeSingleLineParameterQuickFix : IQuickFix
+    public sealed class MakeSingleLineParameterQuickFix : IQuickFix
     {
         private readonly RubberduckParserState _state;
         private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>

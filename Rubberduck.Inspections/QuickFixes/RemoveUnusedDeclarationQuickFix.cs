@@ -11,7 +11,7 @@ namespace Rubberduck.Inspections.QuickFixes
     /// <summary>
     /// A code inspection quickfix that removes an unused identifier declaration.
     /// </summary>
-    public class RemoveUnusedDeclarationQuickFix : IQuickFix
+    public sealed class RemoveUnusedDeclarationQuickFix : IQuickFix
     {
         private readonly RubberduckParserState _state;
         private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>

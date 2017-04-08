@@ -15,7 +15,7 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class AssignedByValParameterMakeLocalCopyQuickFix : IQuickFix
+    public sealed class AssignedByValParameterMakeLocalCopyQuickFix : IQuickFix
     {
         private readonly IAssignedByValParameterQuickFixDialogFactory _dialogFactory;
         private readonly RubberduckParserState _parserState;

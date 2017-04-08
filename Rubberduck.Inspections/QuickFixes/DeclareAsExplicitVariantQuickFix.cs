@@ -10,7 +10,7 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class DeclareAsExplicitVariantQuickFix : IQuickFix
+    public sealed class DeclareAsExplicitVariantQuickFix : IQuickFix
     {
         private readonly RubberduckParserState _state;
         private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>

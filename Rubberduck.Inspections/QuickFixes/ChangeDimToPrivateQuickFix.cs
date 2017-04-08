@@ -9,7 +9,7 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class ChangeDimToPrivateQuickFix : IQuickFix
+    public sealed class ChangeDimToPrivateQuickFix : IQuickFix
     {
         private static readonly HashSet<Type> _supportedInspections = new HashSet<Type> { typeof(ModuleScopeDimKeywordInspection) };
         private readonly RubberduckParserState _state;

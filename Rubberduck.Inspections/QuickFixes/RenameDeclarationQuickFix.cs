@@ -11,7 +11,7 @@ using Rubberduck.UI.Refactorings.Rename;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class RenameDeclarationQuickFix : IQuickFix
+    public sealed class RenameDeclarationQuickFix : IQuickFix
     {
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
