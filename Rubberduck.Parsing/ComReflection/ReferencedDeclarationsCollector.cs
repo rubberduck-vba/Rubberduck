@@ -229,7 +229,7 @@ namespace Rubberduck.Parsing.ComReflection
                 var memberTree = new SerializableDeclarationTree(memberDeclaration);
                 moduleTree.AddChildTree(memberTree);
 
-                var hasParams = memberDeclaration as IDeclarationWithParameter;
+                var hasParams = memberDeclaration as IParameterizedDeclaration;
                 if (hasParams != null)
                 {
                     _declarations.AddRange(hasParams.Parameters);
@@ -283,6 +283,8 @@ namespace Rubberduck.Parsing.ComReflection
                     return new SubroutineDeclaration(member, parent, module, attributes, handler);
                 case DeclarationType.Function:
                     return new FunctionDeclaration(member, parent, module, attributes);
+                case DeclarationType.Event:
+                    return new EventDeclaration(member, parent, module, attributes);
                 case DeclarationType.PropertyGet:
                     return new PropertyGetDeclaration(member, parent, module, attributes);
                 case DeclarationType.PropertySet:
@@ -312,6 +314,10 @@ namespace Rubberduck.Parsing.ComReflection
             else if (member.IsEvaluateFunction)
             {
                 attributes.AddEvaluateMemberAttribute(member.Name);
+            }
+            else if (!string.IsNullOrEmpty(member.Documentation.DocString))
+            {
+                attributes.AddMemberDescriptionAttribute(member.Name, member.Documentation.DocString);
             }
             return attributes;
         }

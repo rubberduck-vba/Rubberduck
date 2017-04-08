@@ -24,7 +24,8 @@ namespace Rubberduck.UI.Controls
             TextArea.TextView.LinkTextUnderline = false;
             TextArea.TextView.LinkTextForegroundBrush = new SolidColorBrush(Colors.Green);
             Options.RequireControlModifierForHyperlinkClick = false;
-            Options.EnableHyperlinks = true;
+            //This needs some work if hyperlinks need to open in an external browser.
+            Options.EnableHyperlinks = false;
             Options.EnableEmailHyperlinks = true;
         }
 

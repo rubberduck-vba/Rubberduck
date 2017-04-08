@@ -6,6 +6,9 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.Inspections
 {
@@ -163,23 +166,16 @@ End Sub
         private string ApplyPassParameterByReferenceQuickFixToVBAFragment(string inputCode)
         {
             var vbe = BuildMockVBEStandardModuleForVBAFragment(inputCode);
-            var inspectionResults = GetAssignedByValParameterInspectionResults(vbe.Object);
+            RubberduckParserState state;
+            var inspectionResults = GetAssignedByValParameterInspectionResults(vbe.Object, out state);
 
             inspectionResults.First().QuickFixes.Single(s => s is PassParameterByReferenceQuickFix).Fix();
-
-            return GetModuleContent(vbe.Object);
+            return state.GetRewriter(vbe.Object.ActiveVBProject.VBComponents[0]).GetText();
         }
 
-        private string GetModuleContent(IVBE vbe)
+        private IEnumerable<IInspectionResult> GetAssignedByValParameterInspectionResults(IVBE vbe, out RubberduckParserState state)
         {
-            var project = vbe.VBProjects[0];
-            var module = project.VBComponents[0].CodeModule;
-            return module.Content();
-        }
-
-        private IEnumerable<Rubberduck.Inspections.Abstract.InspectionResultBase> GetAssignedByValParameterInspectionResults(IVBE vbe)
-        {
-            var state = MockParser.CreateAndParse(vbe);
+            state = MockParser.CreateAndParse(vbe);
 
             var inspection = new AssignedByValParameterInspection(state, null);
             return inspection.GetInspectionResults();

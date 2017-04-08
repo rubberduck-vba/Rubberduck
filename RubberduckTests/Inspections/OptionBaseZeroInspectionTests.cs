@@ -5,9 +5,10 @@ using Rubberduck.Inspections;
 using RubberduckTests.Mocks;
 using Rubberduck.Settings;
 using System.Threading;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Concrete.Rubberduck.Inspections;
-using Rubberduck.Inspections.Resources;
+using Rubberduck.Inspections.Concrete;
+using Rubberduck.Inspections.Rubberduck.Inspections;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Inspections

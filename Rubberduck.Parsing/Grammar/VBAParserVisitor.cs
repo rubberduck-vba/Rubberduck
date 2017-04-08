@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from C:\Dev\Rubberduck\Rubberduck.Parsing\Grammar\VBAParser.g4 by ANTLR 4.3
+// Generated from C:\Users\hosch\Documents\Visual Studio 2015\Projects\Rubberduck\Rubberduck.Parsing\Grammar\VBAParser.g4 by ANTLR 4.3
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -695,6 +695,13 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitLineNumberLabel([NotNull] VBAParser.LineNumberLabelContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.requiredArgument"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitRequiredArgument([NotNull] VBAParser.RequiredArgumentContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.universalLetterRange"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -715,13 +722,6 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitModOp([NotNull] VBAParser.ModOpContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.namedArgumentList"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitNamedArgumentList([NotNull] VBAParser.NamedArgumentListContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.ifWithEmptyThen"/>.
@@ -750,14 +750,6 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitUpperBound([NotNull] VBAParser.UpperBoundContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>specifiedPositionalArgument</c>
-	/// labeled alternative in <see cref="VBAParser.positionalArgumentOrMissing"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitSpecifiedPositionalArgument([NotNull] VBAParser.SpecifiedPositionalArgumentContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.onGoToStmt"/>.
@@ -1187,13 +1179,6 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitBuiltInTypeExpr([NotNull] VBAParser.BuiltInTypeExprContext context);
 
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.positionalOrNamedArgumentList"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitPositionalOrNamedArgumentList([NotNull] VBAParser.PositionalOrNamedArgumentListContext context);
-
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.defDirective"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -1269,13 +1254,6 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitBuiltInType([NotNull] VBAParser.BuiltInTypeContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="VBAParser.requiredPositionalArgument"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitRequiredPositionalArgument([NotNull] VBAParser.RequiredPositionalArgumentContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.recLength"/>.
@@ -1434,6 +1412,13 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitEventArgumentList([NotNull] VBAParser.EventArgumentListContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.argument"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitArgument([NotNull] VBAParser.ArgumentContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.data"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -1468,14 +1453,6 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitStatementLabelDefinition([NotNull] VBAParser.StatementLabelDefinitionContext context);
-
-	/// <summary>
-	/// Visit a parse tree produced by the <c>missingPositionalArgument</c>
-	/// labeled alternative in <see cref="VBAParser.positionalArgumentOrMissing"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitMissingPositionalArgument([NotNull] VBAParser.MissingPositionalArgumentContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>multOp</c>

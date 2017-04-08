@@ -419,7 +419,7 @@ propertyLetStmt :
 // 5.4.2.20 RaiseEvent Statement
 raiseEventStmt : RAISEEVENT whiteSpace identifier (whiteSpace? LPAREN whiteSpace? eventArgumentList? whiteSpace? RPAREN)?;
 eventArgumentList : eventArgument (whiteSpace? COMMA whiteSpace? eventArgument)*;
-eventArgument : expression;
+eventArgument : (BYVAL whiteSpace)? expression;
 
 // 5.4.3.3 ReDim Statement
 // To make the grammar non-ambiguous we treat redim statements as index expressions.
@@ -628,19 +628,19 @@ builtInType :
 ;
 
 // 5.6.13.1 Argument Lists
-argumentList : positionalOrNamedArgumentList;
-positionalOrNamedArgumentList :
-    (positionalArgumentOrMissing whiteSpace?)* requiredPositionalArgument 
-    | (positionalArgumentOrMissing whiteSpace?)* namedArgumentList  
+argumentList :
+    (whiteSpace? argument? (whiteSpace? COMMA whiteSpace? argument)*)?
 ;
-positionalArgumentOrMissing :
-    positionalArgument whiteSpace? COMMA                                                            # specifiedPositionalArgument
-    | whiteSpace? COMMA                                                                             # missingPositionalArgument
+
+requiredArgument : argument;
+argument :
+    positionalArgument
+    | namedArgument
 ;
+
 positionalArgument : argumentExpression;
-requiredPositionalArgument : argumentExpression;  
-namedArgumentList : namedArgument (whiteSpace? COMMA whiteSpace? namedArgument)*;
 namedArgument : unrestrictedIdentifier whiteSpace? ASSIGN whiteSpace? argumentExpression;
+
 argumentExpression :
     (BYVAL whiteSpace)? expression
     | addressOfExpression
@@ -705,15 +705,12 @@ keyword :
      | LENB
      | LIB
      | LIKE
-     | LOAD
      | LONG
      | LONGLONG
      | LONGPTR
      | ME
      | MID
      | MIDB
-//     | MIDBTYPESUFFIX
-//     | MIDTYPESUFFIX
      | MOD
      | NEW
      | NOT
@@ -745,7 +742,6 @@ keyword :
      | XOR
      | STEP
      | ON_ERROR
-     | RESUME_NEXT
      | ERROR
      | APPEND
      | BINARY

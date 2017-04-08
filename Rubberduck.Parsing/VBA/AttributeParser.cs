@@ -1,13 +1,13 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Preprocessing;
 using Rubberduck.Parsing.Symbols;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 

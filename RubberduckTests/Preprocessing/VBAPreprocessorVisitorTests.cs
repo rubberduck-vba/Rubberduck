@@ -1,12 +1,13 @@
-using Antlr4.Runtime;
+﻿using Antlr4.Runtime;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Preprocessing;
 using System;
 using System.Diagnostics;
 using System.Globalization;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.PreProcessing;
 
-namespace RubberduckTests.Preprocessing
+namespace RubberduckTests.PreProcessing
 {
     [TestClass]
     public class VBAPreprocessorVisitorTests

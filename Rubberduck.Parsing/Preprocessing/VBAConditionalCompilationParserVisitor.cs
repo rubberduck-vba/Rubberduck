@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from C:\Users\hosch\Documents\Visual Studio 2015\Projects\Rubberduck\Rubberduck.Parsing\Preprocessing\VBAConditionalCompilationParser.g4 by ANTLR 4.3
+// Generated from C:\Dev\Rubberduck\Rubberduck.Parsing\Preprocessing\VBAConditionalCompilationParser.g4 by ANTLR 4.3
 
 // Unreachable code detected
 
@@ -21,7 +21,7 @@ using Antlr4.Runtime.Tree;
 // Missing XML comment for publicly visible type or member '...'
 #pragma warning disable 1591
 
-namespace Rubberduck.Parsing.Preprocessing {
+namespace Rubberduck.Parsing.PreProcessing {
     /// <summary>
 /// This interface defines a complete generic visitor for a parse tree produced
 /// by <see cref="VBAConditionalCompilationParser"/>.

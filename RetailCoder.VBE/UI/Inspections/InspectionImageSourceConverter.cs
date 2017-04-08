@@ -1,7 +1,7 @@
 using System;
 using System.Globalization;
 using System.Windows.Data;
-using Rubberduck.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Abstract;
 
 namespace Rubberduck.UI.Inspections
 {

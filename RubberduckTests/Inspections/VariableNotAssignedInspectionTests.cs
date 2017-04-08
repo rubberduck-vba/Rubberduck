@@ -1,8 +1,9 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections;
+using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Inspections.Resources;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
@@ -98,8 +99,8 @@ End Sub";
         {
             const string inputCode =
 @"Sub Foo()
-    '@Ignore VariableNotAssigned
-    Dim var1 As String
+'@Ignore VariableNotAssigned
+Dim var1 As String
 End Sub";
 
             IVBComponent component;
@@ -118,7 +119,7 @@ End Sub";
         {
             const string inputCode =
 @"Sub Foo()
-    Dim var1 as Integer
+Dim var1 as Integer
 End Sub";
 
             const string expectedCode =
@@ -132,7 +133,7 @@ End Sub";
             var inspection = new VariableNotAssignedInspection(state);
             inspection.GetInspectionResults().First().QuickFixes.First().Fix();
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -140,10 +141,10 @@ End Sub";
         {
             const string inputCode =
 @"Sub Foo()
-    Dim _
-    var1 _
-    as _
-    Integer
+Dim _
+var1 _
+as _
+Integer
 End Sub";
 
             const string expectedCode =
@@ -157,7 +158,7 @@ End Sub";
             var inspection = new VariableNotAssignedInspection(state);
             inspection.GetInspectionResults().First().QuickFixes.First().Fix();
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -165,13 +166,13 @@ End Sub";
         {
             const string inputCode =
 @"Sub Foo()
-    Dim var1 As Integer, var2 As Boolean
+Dim var1 As Integer, var2 As Boolean
 End Sub";
 
             // note the extra space after "Integer"--the VBE will remove it
             const string expectedCode =
 @"Sub Foo()
-    Dim var1 As Integer 
+Dim var1 As Integer
 End Sub";
 
             IVBComponent component;
@@ -181,7 +182,7 @@ End Sub";
             var inspection = new VariableNotAssignedInspection(state);
             inspection.GetInspectionResults().Single(s => s.Target.IdentifierName == "var2").QuickFixes.First().Fix();
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -189,13 +190,13 @@ End Sub";
         {
             const string inputCode =
 @"Sub Foo()
-    Dim var1 As Integer, _
-        var2 As Boolean
+Dim var1 As Integer, _
+var2 As Boolean
 End Sub";
 
             const string expectedCode =
 @"Sub Foo()
-    Dim var1 As Integer
+Dim var1 As Integer
 End Sub";
 
             IVBComponent component;
@@ -205,7 +206,7 @@ End Sub";
             var inspection = new VariableNotAssignedInspection(state);
             inspection.GetInspectionResults().Single(s => s.Target.IdentifierName == "var2").QuickFixes.First().Fix();
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -214,13 +215,13 @@ End Sub";
         {
             const string inputCode =
 @"Sub Foo()
-    Dim var1 as Integer
+Dim var1 as Integer
 End Sub";
 
             const string expectedCode =
 @"Sub Foo()
 '@Ignore VariableNotAssigned
-    Dim var1 as Integer
+Dim var1 as Integer
 End Sub";
 
             IVBComponent component;

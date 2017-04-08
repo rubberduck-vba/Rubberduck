@@ -23,7 +23,7 @@ using Antlr4.Runtime.Tree;
 // Missing XML comment for publicly visible type or member '...'
 #pragma warning disable 1591
 
-namespace Rubberduck.Parsing.Preprocessing {
+namespace Rubberduck.Parsing.PreProcessing {
     [System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.3")]
 [System.CLSCompliant(false)]
 public partial class VBALikeParser : Parser {

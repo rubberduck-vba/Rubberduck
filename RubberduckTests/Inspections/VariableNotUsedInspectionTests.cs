@@ -1,12 +1,9 @@
 using System.Linq;
-using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 using Rubberduck.Inspections;
+using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Inspections.Resources;
-using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
@@ -28,7 +25,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new VariableNotUsedInspection(state, new Mock<IMessageBox>().Object);
+            var inspection = new VariableNotUsedInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
@@ -48,7 +45,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new VariableNotUsedInspection(state, new Mock<IMessageBox>().Object);
+            var inspection = new VariableNotUsedInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(2, inspectionResults.Count());
@@ -73,7 +70,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new VariableNotUsedInspection(state, new Mock<IMessageBox>().Object);
+            var inspection = new VariableNotUsedInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(0, inspectionResults.Count());
@@ -100,7 +97,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new VariableNotUsedInspection(state, new Mock<IMessageBox>().Object);
+            var inspection = new VariableNotUsedInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
@@ -120,7 +117,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new VariableNotUsedInspection(state, new Mock<IMessageBox>().Object);
+            var inspection = new VariableNotUsedInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.IsFalse(inspectionResults.Any());
@@ -140,7 +137,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new VariableNotUsedInspection(state, new Mock<IMessageBox>().Object);
+            var inspection = new VariableNotUsedInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.IsFalse(inspectionResults.Any());
@@ -152,7 +149,7 @@ End Sub";
         {
             const string inputCode =
 @"Sub Foo()
-    Dim var1 As String
+Dim var1 As String
 End Sub";
 
             const string expectedCode =
@@ -163,10 +160,11 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new VariableNotUsedInspection(state, new Mock<IMessageBox>().Object);
+            var inspection = new VariableNotUsedInspection(state);
             inspection.GetInspectionResults().First().QuickFixes.First().Fix();
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            var rewriter = state.GetRewriter(component);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
         }
 
         [TestMethod]
@@ -175,20 +173,20 @@ End Sub";
         {
             const string inputCode =
 @"Sub Foo()
-    Dim var1 As String
+Dim var1 As String
 End Sub";
 
             const string expectedCode =
 @"Sub Foo()
 '@Ignore VariableNotUsed
-    Dim var1 As String
+Dim var1 As String
 End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new VariableNotUsedInspection(state, new Mock<IMessageBox>().Object);
+            var inspection = new VariableNotUsedInspection(state);
             inspection.GetInspectionResults().First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
 
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -198,7 +196,7 @@ End Sub";
         [TestCategory("Inspections")]
         public void InspectionType()
         {
-            var inspection = new VariableNotUsedInspection(null, new Mock<IMessageBox>().Object);
+            var inspection = new VariableNotUsedInspection(null);
             Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
         }
 
@@ -207,7 +205,7 @@ End Sub";
         public void InspectionName()
         {
             const string inspectionName = "VariableNotUsedInspection";
-            var inspection = new VariableNotUsedInspection(null, new Mock<IMessageBox>().Object);
+            var inspection = new VariableNotUsedInspection(null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
         }

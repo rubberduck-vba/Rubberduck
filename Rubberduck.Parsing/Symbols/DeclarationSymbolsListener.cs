@@ -55,7 +55,7 @@ namespace Rubberduck.Parsing.Symbols
                     _qualifiedName.QualifyMemberName(_qualifiedName.ComponentName),
                     projectDeclaration,
                     _qualifiedName.ComponentName,
-                    false,
+                    true,
                     FindAnnotations(),
                     moduleAttributes);
             }
@@ -109,7 +109,7 @@ namespace Rubberduck.Parsing.Symbols
                     _qualifiedName.QualifyMemberName(_qualifiedName.ComponentName),
                     projectDeclaration,
                     _qualifiedName.ComponentName,
-                    false,
+                    true,
                     FindAnnotations(),
                     moduleAttributes,
                     hasDefaultInstanceVariable: hasDefaultInstanceVariable);
@@ -193,7 +193,7 @@ namespace Rubberduck.Parsing.Symbols
                     Selection.Home,
                     false,
                     null,
-                    false);
+                    true);
                 AddDeclaration(declaration);
             }
         }
@@ -231,9 +231,9 @@ namespace Rubberduck.Parsing.Symbols
                     isByRef,
                     isArray,
                     isParamArray);
-                if (_parentDeclaration is IDeclarationWithParameter)
+                if (_parentDeclaration is IParameterizedDeclaration)
                 {
-                    ((IDeclarationWithParameter)_parentDeclaration).AddParameter(result);
+                    ((IParameterizedDeclaration)_parentDeclaration).AddParameter(result);
                 }
             }
             else
@@ -248,7 +248,7 @@ namespace Rubberduck.Parsing.Symbols
                 var annotations = FindAnnotations(selection.StartLine);
                 if (declarationType == DeclarationType.Procedure)
                 {
-                    result = new SubroutineDeclaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, _currentScopeDeclaration, asTypeName, accessibility, context, selection, false, annotations, attributes);
+                    result = new SubroutineDeclaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, _currentScopeDeclaration, asTypeName, accessibility, context, selection, true, annotations, attributes);
                 }
                 else if (declarationType == DeclarationType.Function)
                 {
@@ -263,13 +263,30 @@ namespace Rubberduck.Parsing.Symbols
                         context,
                         selection,
                         isArray,
-                        false,
+                        true,
+                        annotations,
+                        attributes);
+                }
+                else if (declarationType == DeclarationType.Event)
+                {
+                    result = new EventDeclaration(
+                        new QualifiedMemberName(_qualifiedName, identifierName),
+                        _parentDeclaration,
+                        _currentScopeDeclaration,
+                        asTypeName,
+                        asTypeContext,
+                        typeHint,
+                        accessibility,
+                        context,
+                        selection,
+                        isArray,
+                        true,
                         annotations,
                         attributes);
                 }
                 else if (declarationType == DeclarationType.LibraryProcedure || declarationType == DeclarationType.LibraryFunction)
                 {
-                    result = new ExternalProcedureDeclaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, _currentScopeDeclaration, declarationType, asTypeName, asTypeContext, accessibility, context, selection, false, annotations);
+                    result = new ExternalProcedureDeclaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, _currentScopeDeclaration, declarationType, asTypeName, asTypeContext, accessibility, context, selection, true, annotations);
                 }
                 else if (declarationType == DeclarationType.PropertyGet)
                 {
@@ -284,17 +301,17 @@ namespace Rubberduck.Parsing.Symbols
                         context,
                         selection,
                         isArray,
-                        false,
+                        true,
                         annotations,
                         attributes);
                 }
                 else if (declarationType == DeclarationType.PropertySet)
                 {
-                    result = new PropertySetDeclaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, _currentScopeDeclaration, asTypeName, accessibility, context, selection, false, annotations, attributes);
+                    result = new PropertySetDeclaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, _currentScopeDeclaration, asTypeName, accessibility, context, selection, true, annotations, attributes);
                 }
                 else if (declarationType == DeclarationType.PropertyLet)
                 {
-                    result = new PropertyLetDeclaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, _currentScopeDeclaration, asTypeName, accessibility, context, selection, false, annotations, attributes);
+                    result = new PropertyLetDeclaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, _currentScopeDeclaration, asTypeName, accessibility, context, selection, true, annotations, attributes);
                 }
                 else
                 {
@@ -312,7 +329,7 @@ namespace Rubberduck.Parsing.Symbols
                         selection,
                         isArray,
                         asTypeContext,
-                        false,
+                        true,
                         annotations,
                         attributes);
                 }

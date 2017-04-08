@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using Rubberduck.UI;
 
 namespace Rubberduck.UnitTesting
 {
@@ -8,39 +11,33 @@ namespace Rubberduck.UnitTesting
 
         public static void OnAssertSucceeded()
         {
-            var handler = OnAssertCompleted;
-            if (handler != null)
-            {
-                handler(null, new AssertCompletedEventArgs(TestOutcome.Succeeded));
-            }
+            OnAssertCompleted?.Invoke(null, new AssertCompletedEventArgs(TestOutcome.Succeeded));
         }
 
-        public static void OnAssertFailed(string methodName, string message)
+        public static void OnAssertFailed(string message, [CallerMemberName] string methodName = "")
         {
-            var handler = OnAssertCompleted;
-            if (handler != null)
-            {
-                handler(null, new AssertCompletedEventArgs(TestOutcome.Failed,
-                                methodName + " assertion failed." + (string.IsNullOrEmpty(message) ? string.Empty : " " + message)));
-            }
+            OnAssertCompleted?.Invoke(null,
+                    new AssertCompletedEventArgs(TestOutcome.Failed,
+                        string.Format(RubberduckUI.Assert_FailedMessageFormat, methodName, message).Trim()));
         }
 
         public static void OnAssertInconclusive(string message)
         {
-            var handler = OnAssertCompleted;
-            if (handler != null)
-            {
-                handler(null, new AssertCompletedEventArgs(TestOutcome.Inconclusive, message));
-            }
+            OnAssertCompleted?.Invoke(null, new AssertCompletedEventArgs(TestOutcome.Inconclusive, message));
         }
 
         public static void OnAssertIgnored()
         {
-            var handler = OnAssertCompleted;
-            if (handler != null)
-            {
-                handler(null, new AssertCompletedEventArgs(TestOutcome.Ignored));
-            }
+            OnAssertCompleted?.Invoke(null, new AssertCompletedEventArgs(TestOutcome.Ignored));
+        }
+
+        [DllImport("vbe7.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.IUnknown)]
+        private static extern object rtcErrObj();
+
+        public static void RaiseVbaError(int number, string source = "", string description = "", string helpfile = "", int helpcontext = 0)
+        {
+            OnAssertInconclusive(RubberduckUI.Assert_NotImplemented);
         }
     }
 }

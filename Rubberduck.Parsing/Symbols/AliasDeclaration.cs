@@ -20,7 +20,7 @@ namespace Rubberduck.Parsing.Symbols
                 Selection.Home,
                 false,
                 null,
-                true)
+                false)
         { }
     }
 }

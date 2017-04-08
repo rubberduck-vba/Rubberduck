@@ -22,7 +22,7 @@ namespace Rubberduck.UI.Controls
         private SearchResultsDockablePresenter _presenter;
         public SearchResultsDockablePresenter Presenter(ISearchResultsWindowViewModel viewModel)
         {
-            if (_presenter == null || _presenter.IsDisposed)
+            if (_presenter == null)
             {
                 if (_view.ViewModel == null)
                 {
@@ -54,13 +54,6 @@ namespace Rubberduck.UI.Controls
             {
                 _view.ViewModel.LastTabClosed -= viewModel_LastTabClosed;
             }
-
-            if (_presenter != null)
-            {
-                _presenter.Dispose();
-                _presenter = null;
-            }
-
             _disposed = true;
         }
     }

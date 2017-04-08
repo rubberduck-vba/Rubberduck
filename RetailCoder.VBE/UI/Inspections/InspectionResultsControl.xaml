@@ -3,13 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:inspections="clr-namespace:Rubberduck.Inspections"
              xmlns:codeInspections="clr-namespace:Rubberduck.UI.Inspections"
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
-             xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
              xmlns:converters="clr-namespace:Rubberduck.UI.Converters"
-             xmlns:abstract="clr-namespace:Rubberduck.Inspections.Abstract"
+             xmlns:abstract1="clr-namespace:Rubberduck.Parsing.Inspections.Abstract;assembly=Rubberduck.Parsing"
              ResxExtension.DefaultResxName="Rubberduck.UI.RubberduckUI" 
              Language="{UICulture}"
              mc:Ignorable="d" 
@@ -547,7 +545,7 @@
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspectionResults_Type}" SortDirection="Descending">
                     <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate DataType="abstract:IInspectionResult">
+                        <DataTemplate DataType="abstract1:IInspectionResult">
                             <Image Source="{Binding Inspection, Converter={StaticResource InspectionIconConverter}}" Height="16" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
@@ -565,7 +563,7 @@
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspectionResults_Type}">
                     <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate DataType="abstract:IInspectionResult">
+                        <DataTemplate DataType="abstract1:IInspectionResult">
                             <Image Source="{Binding Inspection, Converter={StaticResource InspectionIconConverter}}" Height="16" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
@@ -575,7 +573,7 @@
             </DataGrid.Columns>
         </controls:GroupingGrid>
 
-        <controls:BusyIndicator Grid.Row="1" Width="36" Height="36" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
+        <controls:BusyIndicator Grid.Row="1" Width="120" Height="120" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
 
         <GridSplitter Grid.Row="2" Height="5" ShowsPreview="True" Cursor="SizeNS" HorizontalAlignment="Stretch"/>
 

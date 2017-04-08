@@ -15,6 +15,7 @@ namespace Rubberduck.Parsing.VBA
         public ConcurrentDictionary<Declaration, byte> Declarations { get; private set; }
         public ConcurrentDictionary<UnboundMemberDeclaration, byte> UnresolvedMemberDeclarations { get; private set; }
         public ITokenStream TokenStream { get; private set; }
+        public TokenStreamRewriter Rewriter { get; private set; }
         public IParseTree ParseTree { get; private set; }
         public ParserState State { get; private set; }
         public int ModuleContentHashCode { get; private set; }
@@ -31,7 +32,7 @@ namespace Rubberduck.Parsing.VBA
         {
             Declarations = declarations;
             UnresolvedMemberDeclarations = new ConcurrentDictionary<UnboundMemberDeclaration, byte>();
-            TokenStream = null;UnboundMemberDeclaration
+            TokenStream = null;
             ParseTree = null;
 
             if (declarations.Any() && declarations.ElementAt(0).Key.QualifiedName.QualifiedModuleName.Component != null)
@@ -111,6 +112,7 @@ namespace Rubberduck.Parsing.VBA
         public ModuleState SetTokenStream(ITokenStream tokenStream)
         {
             TokenStream = tokenStream;
+            Rewriter = new TokenStreamRewriter(tokenStream);
             return this;
         }
 

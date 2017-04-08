@@ -502,7 +502,7 @@ End Property";
         {
             //Input
             const string inputCode =
-@"Private Property Let Foo(ByVal arg1 As Integer, ByVal arg2 As String, ByVal arg3 As Date) 
+@"Private Property Let Foo(ByVal arg1 As Integer, ByVal arg2 As String, ByVal arg3 As Date)
 End Property";
             var selection = new Selection(1, 23, 1, 27);
 
@@ -535,7 +535,7 @@ End Property";
         {
             //Input
             const string inputCode =
-@"Private Property Set Foo(ByVal arg1 As Integer, ByVal arg2 As String, ByVal arg3 As Date) 
+@"Private Property Set Foo(ByVal arg1 As Integer, ByVal arg2 As String, ByVal arg3 As Date)
 End Property";
             var selection = new Selection(1, 23, 1, 27);
 
@@ -616,7 +616,9 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-@"Private Sub Foo(ByVal arg3 As Date, ByVal arg2 As String, ByVal arg1 As Integer)
+@"Private Sub Foo(ByVal arg3 As Date, _
+                  ByVal arg2 As String, _
+                  ByVal arg1 As Integer)
 End Sub";   // note: IDE removes excess spaces
 
             IVBComponent component;
@@ -663,7 +665,9 @@ End Sub
 
 Private Sub Goo(ByVal arg1 as Integer, ByVal arg2 As String, ByVal arg3 As Date)
 
-    Foo arg3, arg2, arg1
+    Foo arg3, _
+        arg2, _
+        arg1
 
 End Sub
 ";
@@ -837,7 +841,14 @@ Public Sub Goo(ByVal arg As Date, _
                ByVal arg5 As Integer, _
                ByVal arg6 As Integer)
               
-    Foo arg, ""test"", test1x, test2x, test3x, test4x, test5x, test6x
+    Foo arg, _
+        ""test"", _
+        test1x, _
+        test2x, _
+        test3x, _
+        test4x, _
+        test5x, _
+        test6x
 End Sub
 ";
 
@@ -1536,64 +1547,6 @@ End Sub";   // note: IDE removes excess spaces
             Assert.AreEqual(expectedCode1, module1.Content());
             Assert.AreEqual(expectedCode2, module2.Content());
             Assert.AreEqual(expectedCode3, module3.Content());
-        }
-
-        [TestMethod]
-        public void Presenter_AcceptDialog_ReordersProcedureWithTwoParameters()
-        {
-            //Input
-            const string inputCode =
-@"Private Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
-End Sub";
-            var selection = new Selection(1, 15, 1, 15);
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-
-            var model = new ReorderParametersModel(state, qualifiedSelection, new Mock<IMessageBox>().Object);
-            model.Parameters.Reverse();
-
-            var view = new Mock<IReorderParametersDialog>();
-            view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
-            view.Setup(v => v.Parameters).Returns(model.Parameters);
-
-            var factory = new ReorderParametersPresenterFactory(vbe.Object, view.Object, state, null);
-
-            var presenter = factory.Create();
-
-            Assert.AreEqual(model.Parameters, presenter.Show().Parameters);
-        }
-
-        [TestMethod]
-        public void Presenter_CancelDialogCreatesNullModel()
-        {
-            //Input
-            const string inputCode =
-@"Private Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
-End Sub";
-            var selection = new Selection(1, 15, 1, 15);
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-
-            var model = new ReorderParametersModel(state, qualifiedSelection, new Mock<IMessageBox>().Object);
-
-            var view = new Mock<IReorderParametersDialog>();
-            view.Setup(v => v.ShowDialog()).Returns(DialogResult.Cancel);
-            view.Setup(v => v.Parameters).Returns(model.Parameters);
-
-            var factory = new ReorderParametersPresenterFactory(vbe.Object, view.Object, state, null);
-            var presenter = factory.Create();
-
-            var result = presenter.Show();
-
-            Assert.IsNull(result);
         }
 
         [TestMethod]

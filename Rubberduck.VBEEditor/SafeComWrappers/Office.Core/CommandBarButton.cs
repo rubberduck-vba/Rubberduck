@@ -66,7 +66,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
             var args = new CommandBarButtonClickEventArgs(button);
             handler.Invoke(this, args);
             cancelDefault = args.Cancel;
-            button.Release(final:true);
+            //button.Release(final:true);
         }
 
         public bool IsBuiltInFace

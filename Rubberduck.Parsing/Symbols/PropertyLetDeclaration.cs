@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Rubberduck.Parsing.Symbols
 {
-    public sealed class PropertyLetDeclaration : Declaration, IDeclarationWithParameter, ICanBeDefaultMember
+    public sealed class PropertyLetDeclaration : Declaration, IParameterizedDeclaration, ICanBeDefaultMember
     {
         private readonly List<Declaration> _parameters;
 
@@ -20,7 +20,7 @@ namespace Rubberduck.Parsing.Symbols
             Accessibility accessibility,
             ParserRuleContext context,
             Selection selection,
-            bool isBuiltIn,
+            bool isUserDefined,
             IEnumerable<IAnnotation> annotations,
             Attributes attributes)
             : base(
@@ -37,7 +37,7 @@ namespace Rubberduck.Parsing.Symbols
                   selection,
                   false,
                   null,
-                  isBuiltIn,
+                  isUserDefined,
                   annotations,
                   attributes)
         {
@@ -54,7 +54,7 @@ namespace Rubberduck.Parsing.Symbols
                 Accessibility.Global,
                 null,
                 Selection.Home,
-                true,
+                false,
                 null,
                 attributes)
         {
@@ -64,13 +64,7 @@ namespace Rubberduck.Parsing.Symbols
                     .ToList(); 
         }
 
-        public IEnumerable<Declaration> Parameters
-        {
-            get
-            {
-                return _parameters.ToList();
-            }
-        }
+        public IEnumerable<Declaration> Parameters => _parameters.ToList();
 
         public void AddParameter(Declaration parameter)
         {

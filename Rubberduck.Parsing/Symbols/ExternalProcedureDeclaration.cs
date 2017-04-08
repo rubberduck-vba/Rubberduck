@@ -7,7 +7,7 @@ using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.Symbols
 {
-    public sealed class ExternalProcedureDeclaration : Declaration, IDeclarationWithParameter
+    public sealed class ExternalProcedureDeclaration : Declaration, IParameterizedDeclaration
     {
         private readonly List<Declaration> _parameters;
 
@@ -21,7 +21,7 @@ namespace Rubberduck.Parsing.Symbols
             Accessibility accessibility,
             ParserRuleContext context,
             Selection selection,
-            bool isBuiltIn,
+            bool isUserDefined,
             IEnumerable<IAnnotation> annotations)
             : base(
                   name,
@@ -37,20 +37,14 @@ namespace Rubberduck.Parsing.Symbols
                   selection,
                   false,
                   asTypeContext,
-                  isBuiltIn,
+                  isUserDefined,
                   annotations,
                   null)
         {
             _parameters = new List<Declaration>();
         }
 
-        public IEnumerable<Declaration> Parameters
-        {
-            get
-            {
-                return _parameters.ToList();
-            }
-        }
+        public IEnumerable<Declaration> Parameters => _parameters.ToList();
 
         public void AddParameter(Declaration parameter)
         {
