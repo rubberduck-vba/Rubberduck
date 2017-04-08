@@ -16,15 +16,15 @@ namespace RubberduckTests.Inspections
             const string inputCode = @"
 Public Function GetSomething() As Long
     '@Ignore VariableNotAssigned: Is followed by a comment.
-    Dim foo As Long
+    Dim foo
     GetSomething = foo
 End Function
 ";
 
             const string expectedCode = @"
 Public Function GetSomething() As Long
-    '@Ignore UnassignedVariableUsage, VariableNotAssigned: Is followed by a comment.
-    Dim foo As Long
+    '@Ignore VariableTypeNotDeclared, VariableNotAssigned: Is followed by a comment.
+    Dim foo
     GetSomething = foo
 End Function
 ";
@@ -33,7 +33,7 @@ End Function
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new UnassignedVariableUsageInspection(state);
+            var inspection = new VariableTypeNotDeclaredInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
             
             new IgnoreOnceQuickFix(state, new[] {inspection}).Fix(inspectionResults.First());
