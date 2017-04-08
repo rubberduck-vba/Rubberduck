@@ -290,10 +290,15 @@ namespace Rubberduck.Parsing.Symbols
             get
             {
                 IEnumerable<string> value;
-                if (_attributes.TryGetValue("VB_Description", out value))
+                if (_attributes.TryGetValue($"{IdentifierName}.VB_Description", out value))
                 {
                     return value.Single();
                 }
+                if(_attributes.TryGetValue("VB_Description", out value))
+                {
+                    return value.Single();
+                }
+
 
                 return string.Empty;
             }
