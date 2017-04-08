@@ -13,7 +13,7 @@ namespace Rubberduck.Parsing.VBA
 
         public ModuleToModuleReferenceManager(RubberduckParserState state)
         {
-            if (state == null) throw new ArgumentException(nameof(state));
+            if (state == null) throw new ArgumentNullException(nameof(state));
 
             _state = state;
         }

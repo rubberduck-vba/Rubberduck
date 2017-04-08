@@ -5,16 +5,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
-using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.Symbols.DeclarationLoaders;
 using Rubberduck.VBEditor;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using NLog;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using System.Runtime.InteropServices;
 using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.VBEditor.Application;
 
@@ -39,12 +36,12 @@ namespace Rubberduck.Parsing.VBA
         private readonly RubberduckParserState _state;
         private readonly IAttributeParser _attributeParser;
         private readonly Func<IVBAPreprocessor> _preprocessorFactory;
-        private readonly IEnumerable<ICustomDeclarationLoader> _customDeclarationLoaders;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private readonly IModuleToModuleReferenceManager _moduleToModuleReferenceManager;
         private readonly IParserStateManager _parserStateManager;
         private readonly ICOMReferenceManager _comReferenceManager;
+        private readonly IBuiltInDeclarationLoader _builtInDeclarationLoader;
 
         private readonly bool _isTestScope;
         private readonly IHostApplication _hostApp;
@@ -54,20 +51,20 @@ namespace Rubberduck.Parsing.VBA
             RubberduckParserState state,
             IAttributeParser attributeParser,
             Func<IVBAPreprocessor> preprocessorFactory,
-            IEnumerable<ICustomDeclarationLoader> customDeclarationLoaders,
             IModuleToModuleReferenceManager moduleToModuleReferenceManager,
             IParserStateManager parserStateManager,
             ICOMReferenceManager comSynchronizationRunner,
+            IBuiltInDeclarationLoader builtInDeclarationLoader,
             bool isTestScope = false)
         {
             _vbe = vbe;
             _state = state;
             _attributeParser = attributeParser;
             _preprocessorFactory = preprocessorFactory;
-            _customDeclarationLoaders = customDeclarationLoaders;
             _moduleToModuleReferenceManager = moduleToModuleReferenceManager;
             _parserStateManager = parserStateManager;
             _comReferenceManager = comSynchronizationRunner;
+            _builtInDeclarationLoader = builtInDeclarationLoader;
             _isTestScope = isTestScope;
             _hostApp = _vbe.HostApplication();
 
@@ -221,8 +218,11 @@ namespace Rubberduck.Parsing.VBA
 
             token.ThrowIfCancellationRequested();
 
-            AddBuiltInDeclarations();
-            RefreshDeclarationFinder();
+            _builtInDeclarationLoader.LoadBuitInDeclarations();
+            if (_builtInDeclarationLoader.LastExecutionLoadedDeclarations)
+            { 
+                RefreshDeclarationFinder();
+            }
 
             token.ThrowIfCancellationRequested();
 
@@ -759,25 +759,6 @@ namespace Rubberduck.Parsing.VBA
             var removedModuledecalrations = moduleDeclarations.Where(declaration => !componentKeys.Contains(new { name = declaration.ComponentName, projectId = declaration.ProjectId }));
             return removedModuledecalrations;
         }
-
-
-        private void AddBuiltInDeclarations()
-        {
-            foreach (var customDeclarationLoader in _customDeclarationLoaders)
-            {
-                try
-                {
-                    foreach (var declaration in customDeclarationLoader.Load())
-                    {
-                        State.AddDeclaration(declaration);
-                    }
-                }
-                catch (Exception exception)
-                {
-                    Logger.Error(exception, "Exception thrown adding built-in declarations. (thread {0}).", Thread.CurrentThread.ManagedThreadId);
-                }
-            }
-        }  
 
 
         public void Dispose()

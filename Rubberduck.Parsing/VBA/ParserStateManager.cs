@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Rubberduck.VBEditor;
+using System.Linq;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -17,6 +17,11 @@ namespace Rubberduck.Parsing.VBA
 
         public override void SetModuleStates(ICollection<QualifiedModuleName> modules, ParserState parserState, CancellationToken token, bool evaluateOverallParserState = true)
         {
+            if (!modules.Any())
+            {
+                return;
+            }
+
             var options = new ParallelOptions();
             options.CancellationToken = token;
             options.MaxDegreeOfParallelism = _maxDegreeOfModuleStateChangeParallelism;

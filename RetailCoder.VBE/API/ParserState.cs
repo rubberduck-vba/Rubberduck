@@ -69,17 +69,18 @@ namespace Rubberduck.API
             _attributeParser = new AttributeParser(new ModuleExporter(), preprocessorFactory);
             var parserStateManager = new ParserStateManager(_state);
             _parser = new ParseCoordinator(_vbe, _state, _attributeParser, preprocessorFactory,
-                new List<ICustomDeclarationLoader>
-                {
-                    new DebugDeclarations(_state),
-                    new SpecialFormDeclarations(_state),
-                    new FormEventDeclarations(_state),
-                    new AliasDeclarations(_state),
-                    //new RubberduckApiDeclarations(_state)
-                },
                 new ModuleToModuleReferenceManager(_state),
                 parserStateManager,
-                new COMReferenceManager(_state, parserStateManager));
+                new COMReferenceManager(_state, parserStateManager),
+                new BuiltInDeclarationLoader(_state,
+                    new List<ICustomDeclarationLoader>
+                        {
+                            new DebugDeclarations(_state),
+                            new SpecialFormDeclarations(_state),
+                            new FormEventDeclarations(_state),
+                            new AliasDeclarations(_state),
+                            //new RubberduckApiDeclarations(_state)
+                        }));
         }
 
         /// <summary>

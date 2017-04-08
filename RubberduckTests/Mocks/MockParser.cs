@@ -49,16 +49,17 @@ namespace RubberduckTests.Mocks
 
             return new ParseCoordinator(vbe, state, attributeParser,
                 () => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture)),
-                new List<ICustomDeclarationLoader>
-                {
-                    new DebugDeclarations(state), 
-                    new SpecialFormDeclarations(state), 
-                    new FormEventDeclarations(state), 
-                    new AliasDeclarations(state),
-                }, 
                 new ModuleToModuleReferenceManager(state),
                 parserStateManager,
                 new COMReferenceManager(state, parserStateManager, path),
+                new BuiltInDeclarationLoader(state,
+                    new List<ICustomDeclarationLoader>
+                    {
+                        new DebugDeclarations(state),
+                        new SpecialFormDeclarations(state),
+                        new FormEventDeclarations(state),
+                        new AliasDeclarations(state),
+                    }), 
                 true);
         }
 

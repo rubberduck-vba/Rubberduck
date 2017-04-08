@@ -332,6 +332,8 @@
     <Compile Include="Syntax\TextSpan.cs" />
     <Compile Include="VBA\AttributeParser.cs" />
     <Compile Include="VBA\Attributes.cs" />
+    <Compile Include="VBA\BuiltInDeclarationLoader.cs" />
+    <Compile Include="VBA\IBuiltInDeclarationLoader.cs" />
     <Compile Include="VBA\SynchronousCOMReferenceManager.cs" />
     <Compile Include="VBA\COMReferenceManager.cs" />
     <Compile Include="VBA\COMReferenceManagerBase.cs" />

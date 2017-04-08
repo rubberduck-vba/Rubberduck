@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using NLog;
 using System.Collections.Concurrent;
@@ -26,8 +25,8 @@ namespace Rubberduck.Parsing.VBA
 
         public COMReferenceManagerBase(RubberduckParserState state, IParserStateManager parserStateManager, string serializedDeclarationsPath = null)
         {
-            if (state == null) throw new ArgumentException(nameof(state));
-            if (parserStateManager == null) throw new ArgumentException(nameof(parserStateManager));
+            if (state == null) throw new ArgumentNullException(nameof(state));
+            if (parserStateManager == null) throw new ArgumentNullException(nameof(parserStateManager));
 
             _state = state;
             _parserStateManager = parserStateManager;
