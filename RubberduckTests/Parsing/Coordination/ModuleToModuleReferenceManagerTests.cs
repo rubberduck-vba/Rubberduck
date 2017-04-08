@@ -4,9 +4,7 @@ using System.Linq;
 using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using System.Collections.Generic;
 using Moq;
-using Rubberduck.VBEditor;
 using System.Threading;
 
 namespace RubberduckTests.Parsing.Coordination

@@ -332,6 +332,9 @@
     <Compile Include="Syntax\TextSpan.cs" />
     <Compile Include="VBA\AttributeParser.cs" />
     <Compile Include="VBA\Attributes.cs" />
+    <Compile Include="VBA\ParserStateManagerBase.cs" />
+    <Compile Include="VBA\SynchronousParserStateManager.cs" />
+    <Compile Include="VBA\ParserStateManager.cs" />
     <Compile Include="VBA\ModuleToModuleReferenceManagerBase.cs" />
     <Compile Include="VBA\ModuleToModuleReferenceManager.cs" />
     <Compile Include="VBA\CombinedParseTreeListener.cs" />

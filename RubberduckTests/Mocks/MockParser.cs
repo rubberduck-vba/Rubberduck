@@ -56,6 +56,7 @@ namespace RubberduckTests.Mocks
                     new AliasDeclarations(state),
                 }, 
                 new ModuleToModuleReferenceManager(state),
+                new SynchronousParserStateManager(state),
                 true, path);
         }
 

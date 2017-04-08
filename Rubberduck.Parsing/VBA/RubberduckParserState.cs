@@ -559,7 +559,12 @@ namespace Rubberduck.Parsing.VBA
 
         internal void SetModuleAttributes(IVBComponent component, IDictionary<Tuple<string, DeclarationType>, Attributes> attributes)
         {
-            _moduleStates.AddOrUpdate(new QualifiedModuleName(component), new ModuleState(attributes), (c, s) => s.SetModuleAttributes(attributes));
+            SetModuleAttributes(new QualifiedModuleName(component), attributes);
+        }
+
+        internal void SetModuleAttributes(QualifiedModuleName module, IDictionary<Tuple<string, DeclarationType>, Attributes> attributes)
+        {
+            _moduleStates.AddOrUpdate(module, new ModuleState(attributes), (c, s) => s.SetModuleAttributes(attributes));
         }
 
         public List<CommentNode> AllComments
@@ -578,7 +583,12 @@ namespace Rubberduck.Parsing.VBA
 
         public void SetModuleComments(IVBComponent component, IEnumerable<CommentNode> comments)
         {
-            _moduleStates[new QualifiedModuleName(component)].SetComments(new List<CommentNode>(comments));
+            SetModuleComments(new QualifiedModuleName(component), comments);
+        }
+
+        public void SetModuleComments(QualifiedModuleName module, IEnumerable<CommentNode> comments)
+        {
+            _moduleStates[module].SetComments(new List<CommentNode>(comments));
         }
 
         public List<IAnnotation> AllAnnotations
@@ -608,7 +618,12 @@ namespace Rubberduck.Parsing.VBA
 
         public void SetModuleAnnotations(IVBComponent component, IEnumerable<IAnnotation> annotations)
         {
-            _moduleStates[new QualifiedModuleName(component)].SetAnnotations(new List<IAnnotation>(annotations));
+            SetModuleAnnotations(new QualifiedModuleName(component), annotations);
+        }
+
+        public void SetModuleAnnotations(QualifiedModuleName module, IEnumerable<IAnnotation> annotations)
+        {
+            _moduleStates[module].SetAnnotations(new List<IAnnotation>(annotations));
         }
 
         /// <summary>
@@ -868,12 +883,22 @@ namespace Rubberduck.Parsing.VBA
 
         public void AddTokenStream(IVBComponent component, ITokenStream stream)
         {
-            _moduleStates[new QualifiedModuleName(component)].SetTokenStream(stream);
+            AddTokenStream(new QualifiedModuleName(component), stream);
+        }
+
+        public void AddTokenStream(QualifiedModuleName module, ITokenStream stream)
+        {
+            _moduleStates[module].SetTokenStream(stream);
         }
 
         public void AddParseTree(IVBComponent component, IParseTree parseTree)
         {
-            var key = new QualifiedModuleName(component);
+            AddParseTree(new QualifiedModuleName(component), parseTree);
+        }
+
+        public void AddParseTree(QualifiedModuleName module, IParseTree parseTree)
+        {
+            var key = module;
             _moduleStates[key].SetParseTree(parseTree);
             _moduleStates[key].SetModuleContentHashCode(key.ContentHashCode);
         }
