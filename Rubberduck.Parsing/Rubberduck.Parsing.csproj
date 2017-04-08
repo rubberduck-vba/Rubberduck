@@ -332,6 +332,9 @@
     <Compile Include="Syntax\TextSpan.cs" />
     <Compile Include="VBA\AttributeParser.cs" />
     <Compile Include="VBA\Attributes.cs" />
+    <Compile Include="VBA\SynchronousCOMReferenceManager.cs" />
+    <Compile Include="VBA\COMReferenceManager.cs" />
+    <Compile Include="VBA\COMReferenceManagerBase.cs" />
     <Compile Include="VBA\ParserStateManagerBase.cs" />
     <Compile Include="VBA\SynchronousParserStateManager.cs" />
     <Compile Include="VBA\ParserStateManager.cs" />
@@ -344,7 +347,7 @@
     <Compile Include="VBA\IModuleExporter.cs" />
     <Compile Include="VBA\IModuleToModuleReferenceManager.cs" />
     <Compile Include="VBA\IDeclarationResolveRunner.cs" />
-    <Compile Include="VBA\ICOMReferenceSynchronizationRunner.cs" />
+    <Compile Include="VBA\ICOMReferenceManager.cs" />
     <Compile Include="VBA\IProjectManager.cs" />
     <Compile Include="VBA\IParserStateManager.cs" />
     <Compile Include="VBA\IReferenceResolveRunner.cs" />

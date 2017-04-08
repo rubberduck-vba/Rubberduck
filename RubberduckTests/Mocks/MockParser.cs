@@ -45,6 +45,7 @@ namespace RubberduckTests.Mocks
         {
             var path = serializedDeclarationsPath ??
                        Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(typeof(MockParser)).Location), "TestFiles", "Resolver");
+            var parserStateManager = new SynchronousParserStateManager(state);
 
             return new ParseCoordinator(vbe, state, attributeParser,
                 () => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture)),
@@ -56,8 +57,9 @@ namespace RubberduckTests.Mocks
                     new AliasDeclarations(state),
                 }, 
                 new ModuleToModuleReferenceManager(state),
-                new SynchronousParserStateManager(state),
-                true, path);
+                parserStateManager,
+                new COMReferenceManager(state, parserStateManager, path),
+                true);
         }
 
         public static RubberduckParserState CreateAndParse(IVBE vbe, string serializedDeclarationsPath = null)
