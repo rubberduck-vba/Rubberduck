@@ -302,31 +302,6 @@ namespace Rubberduck.UI.Inspections
             LogManager.GetCurrentClassLogger().Trace("Inspections loaded in {0}ms", stopwatch.ElapsedMilliseconds);
         }
 
-        private void ExecuteQuickFixes(IEnumerable<IQuickFix> quickFixes)
-        {
-            var fixes = quickFixes.ToList();
-            var completed = 0;
-            var cancelled = 0;
-            foreach (var quickFix in fixes)
-            {
-                /*quickFix.IsCancelled = false;
-                quickFix.Fix();
-                completed++;
-
-                if (quickFix.IsCancelled)
-                {
-                    cancelled++;
-                    break;
-                }*/
-            }
-
-            // refresh if any quickfix has completed without cancelling:
-            if (completed != 0 && cancelled < completed)
-            {
-                Task.Run(() => RefreshCommand.Execute(null));
-            }
-        }
-
         private void ExecuteQuickFixCommand(object parameter)
         {
             var quickFix = parameter as IQuickFix;
@@ -477,10 +452,7 @@ namespace Rubberduck.UI.Inspections
                 _configService.SettingsChanged -= _configService_SettingsChanged;
             }
 
-            if (_inspector != null)
-            {
-                _inspector.Dispose();
-            }
+            _inspector?.Dispose();
         }
     }
 }
