@@ -306,7 +306,10 @@ namespace Rubberduck.Parsing.VBA
             catch (Exception exception)
             {
                 Logger.Error(exception, "Unexpected exception thrown in parsing run. (thread {0}).", Thread.CurrentThread.ManagedThreadId);
-                State.SetStatusAndFireStateChanged(this, ParserState.Error);
+                if (!(_parserStateManager.OverallParserState >= ParserState.Error))
+                {
+                    _parserStateManager.SetStatusAndFireStateChanged(this, ParserState.Error, token);
+                }
             }
             finally
             {
@@ -375,6 +378,7 @@ namespace Rubberduck.Parsing.VBA
                 foreach (var module in removedModules)
                 {
                     _moduleToModuleReferenceManager.ClearModuleToModuleReferencesFromModule(module);
+                    _moduleToModuleReferenceManager.ClearModuleToModuleReferencesToModule(module);
                     State.ClearStateCache(module);
                 }
             }
