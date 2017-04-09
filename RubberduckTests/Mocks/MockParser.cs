@@ -48,7 +48,10 @@ namespace RubberduckTests.Mocks
             Func<IVBAPreprocessor> preprocessorFactory = () => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture));
             var moduleToModuleReferenceManager = new ModuleToModuleReferenceManager(state);
             var parserStateManager = new SynchronousParserStateManager(state);
-            var comReferenceManager = new COMReferenceManager(state, parserStateManager, path);
+            var comReferenceManager = new SynchronousCOMReferenceManager(
+                state, 
+                parserStateManager, 
+                path);
             var builtInDeclarationLoader = new BuiltInDeclarationLoader(
                 state,
                 new List<ICustomDeclarationLoader>
@@ -67,6 +70,10 @@ namespace RubberduckTests.Mocks
                 state, 
                 parserStateManager, 
                 comReferenceManager);
+            var referenceResolveRunner = new SynchronousReferenceResolveRunner(
+                state,
+                parserStateManager,
+                moduleToModuleReferenceManager);
 
             return new ParseCoordinator(
                 vbe, 
@@ -77,6 +84,7 @@ namespace RubberduckTests.Mocks
                 builtInDeclarationLoader,
                 parseRunner,
                 declarationResolveRunner,
+                referenceResolveRunner,
                 true);
         }
 

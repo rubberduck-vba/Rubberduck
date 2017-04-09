@@ -90,6 +90,10 @@ namespace Rubberduck.API
                 _state, 
                 parserStateManager, 
                 comReferenceManager);
+            var referenceResolveRunner = new ReferenceResolveRunner(
+                _state,
+                parserStateManager,
+                moduleToModuleReferenceManager);
 
             _parser = new ParseCoordinator(
                 _vbe, 
@@ -99,7 +103,8 @@ namespace Rubberduck.API
                 comReferenceManager,
                 builtInDeclarationLoader,
                 parseRunner,
-                declarationResolveRunner);
+                declarationResolveRunner,
+                referenceResolveRunner);
         }
 
         /// <summary>

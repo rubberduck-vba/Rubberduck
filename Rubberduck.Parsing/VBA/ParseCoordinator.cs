@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using System.Diagnostics;
@@ -19,7 +18,6 @@ namespace Rubberduck.Parsing.VBA
     {
         public RubberduckParserState State { get { return _state; } }
 
-        private const int _maxDegreeOfReferenceResolverParallelism = -1;
         private const int _maxDegreeOfReferenceRemovalParallelism = -1;
 
         private readonly IVBE _vbe;
@@ -32,6 +30,7 @@ namespace Rubberduck.Parsing.VBA
         private readonly IBuiltInDeclarationLoader _builtInDeclarationLoader;
         private readonly IParseRunner _parseRunner;
         private readonly IDeclarationResolveRunner _declarationResolveRunner;
+        private readonly IReferenceResolveRunner _referenceResolveRunner;
 
         private readonly bool _isTestScope;
         private readonly IHostApplication _hostApp;
@@ -45,6 +44,7 @@ namespace Rubberduck.Parsing.VBA
             IBuiltInDeclarationLoader builtInDeclarationLoader,
             IParseRunner parseRunner,
             IDeclarationResolveRunner declarationResolveRunner,
+            IReferenceResolveRunner referenceResolveRunner,
             bool isTestScope = false)
         {
             _vbe = vbe;
@@ -55,6 +55,7 @@ namespace Rubberduck.Parsing.VBA
             _builtInDeclarationLoader = builtInDeclarationLoader;
             _parseRunner = parseRunner;
             _declarationResolveRunner = declarationResolveRunner;
+            _referenceResolveRunner = referenceResolveRunner;
             _isTestScope = isTestScope;
             _hostApp = _vbe.HostApplication();
 
@@ -221,7 +222,21 @@ namespace Rubberduck.Parsing.VBA
                 throw new OperationCanceledException(token);
             }
 
-            ResolveAllReferences(toResolveReferences, token);
+            _referenceResolveRunner.ResolveReferences(toResolveReferences, token);
+
+            if (token.IsCancellationRequested || State.Status >= ParserState.Error)
+            {
+                throw new OperationCanceledException(token);
+            }
+
+            RefreshDeclarationFinder();
+
+            if (token.IsCancellationRequested || State.Status >= ParserState.Error)
+            {
+                throw new OperationCanceledException(token);
+            }
+
+            _parserStateManager.EvaluateOverallParserState(token);
 
             if (token.IsCancellationRequested || State.Status >= ParserState.Error)
             {
@@ -267,163 +282,6 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-
-        private void ResolveAllReferences(ICollection<QualifiedModuleName> toResolve, CancellationToken token)
-        {
-            
-                token.ThrowIfCancellationRequested();
-            
-            _parserStateManager.SetModuleStates(toResolve, ParserState.ResolvingReferences, token);
-
-                token.ThrowIfCancellationRequested();
-
-            ExecuteCompilationPasses();
-
-                token.ThrowIfCancellationRequested();
-
-            var parseTreesToResolve = State.ParseTrees.Where(kvp => toResolve.Contains(kvp.Key)).ToList();
-
-            var options = new ParallelOptions();
-            options.CancellationToken = token;
-            options.MaxDegreeOfParallelism = _maxDegreeOfReferenceResolverParallelism;
-            try
-            {
-                Parallel.For(0, parseTreesToResolve.Count, options,
-                    (index) => ResolveReferences(State.DeclarationFinder, parseTreesToResolve[index].Key, parseTreesToResolve[index].Value, token)
-                );
-            }
-            catch (AggregateException exception)
-            {
-                if (exception.Flatten().InnerExceptions.All(ex => ex is OperationCanceledException))
-                {
-                    throw exception.InnerException ?? exception; //This eliminates the stack trace, but for the cancellation, this is irrelevant.
-                }
-                _parserStateManager.SetStatusAndFireStateChanged(this, ParserState.ResolverError, token);
-                throw;
-            }
-
-                token.ThrowIfCancellationRequested();
-
-            AddModuleToModuleReferences(State.DeclarationFinder, token);
-
-                token.ThrowIfCancellationRequested();
-            
-            AddNewUndeclaredVariablesToDeclarations();
-            AddNewUnresolvedMemberDeclarations();
-
-            //This is here and not in the calling method because it has to happen before the ready state is reached.
-            RefreshDeclarationFinder();
-
-                token.ThrowIfCancellationRequested();
-
-            State.EvaluateParserState();
-        }
-
-        private void ExecuteCompilationPasses()
-        {
-            var passes = new List<ICompilationPass>
-                {
-                    // This pass has to come first because the type binding resolution depends on it.
-                    new ProjectReferencePass(State.DeclarationFinder),
-                    new TypeHierarchyPass(State.DeclarationFinder, new VBAExpressionParser()),
-                    new TypeAnnotationPass(State.DeclarationFinder, new VBAExpressionParser())
-                };
-            passes.ForEach(p => p.Execute());
-        }
-
-        private void ResolveReferences(DeclarationFinder finder, QualifiedModuleName qualifiedName, IParseTree tree, CancellationToken token)
-        {
-            Debug.Assert(State.GetModuleState(qualifiedName.Component) == ParserState.ResolvingReferences || token.IsCancellationRequested);
-
-                token.ThrowIfCancellationRequested();
-
-            Logger.Debug("Resolving identifier references in '{0}'... (thread {1})", qualifiedName.Name, Thread.CurrentThread.ManagedThreadId);
-
-            var resolver = new IdentifierReferenceResolver(qualifiedName, finder);
-            var listener = new IdentifierReferenceListener(resolver);
-
-            if (!string.IsNullOrWhiteSpace(tree.GetText().Trim()))
-            {
-                var walker = new ParseTreeWalker();
-                try
-                {
-                    var watch = Stopwatch.StartNew();
-                    walker.Walk(listener, tree);
-                    watch.Stop();
-                    Logger.Debug("Binding resolution done for component '{0}' in {1}ms (thread {2})", qualifiedName.Name,
-                        watch.ElapsedMilliseconds, Thread.CurrentThread.ManagedThreadId);
-
-                    //Evaluation of the overall status has to be defered to allow processing of undeclared variables before setting the ready state.
-                    State.SetModuleState(qualifiedName.Component, ParserState.Ready, token, null, false);
-                }
-                catch (OperationCanceledException)
-                {
-                    throw;  //We do not want to set an error state if the exception was just caused by some cancellation.
-                }
-                catch (Exception exception)
-                {
-                    Logger.Error(exception, "Exception thrown resolving '{0}' (thread {1}).", qualifiedName.Name, Thread.CurrentThread.ManagedThreadId);
-                    State.SetModuleState(qualifiedName.Component, ParserState.ResolverError, token);
-                }
-            }
-        }
-
-        private void AddModuleToModuleReferences(DeclarationFinder finder, CancellationToken token)
-        {
-            var options = new ParallelOptions
-            {
-                CancellationToken = token,
-                MaxDegreeOfParallelism = _maxDegreeOfReferenceResolverParallelism
-            };
-
-            try
-            {
-                Parallel.For(0, State.ParseTrees.Count, options,
-                    (index) => AddModuleToModuleReferences(finder, State.ParseTrees[index].Key)
-                );
-            }
-            catch (AggregateException exception)
-            {
-                if (exception.Flatten().InnerExceptions.All(ex => ex is OperationCanceledException))
-                {
-                    throw exception.InnerException ?? exception; //This eliminates the stack trace, but for the cancellation, this is irrelevant.
-                }
-                
-                _parserStateManager.SetStatusAndFireStateChanged(this, ParserState.ResolverError, token);
-                throw;
-            }
-        }
-
-        private void AddModuleToModuleReferences(DeclarationFinder finder, QualifiedModuleName referencedModule)
-        {
-            var referencingModules = finder.Members(referencedModule)
-                                        .SelectMany(declaration => declaration.References)
-                                        .Select(reference => reference.QualifiedModuleName)
-                                        .Distinct()
-                                        .Where(referencingModule => !referencedModule.Equals(referencingModule));
-            foreach (var referencingModule in referencingModules)
-            {
-                _moduleToModuleReferenceManager.AddModuleToModuleReference(referencingModule, referencedModule);
-            }
-        }
-
-        private void AddNewUndeclaredVariablesToDeclarations()
-        {
-            var undeclared = State.DeclarationFinder.FreshUndeclared.ToList();
-            foreach (var declaration in undeclared)
-            {
-                State.AddDeclaration(declaration);
-            }
-        }
-
-        private void AddNewUnresolvedMemberDeclarations()
-        {
-            var unresolved = State.DeclarationFinder.FreshUnresolvedMemberDeclarations().ToList();
-            foreach (var declaration in unresolved)
-            {
-                State.AddUnresolvedMemberDeclaration(declaration);
-            }
-        }
 
 
         /// <summary>
@@ -487,7 +345,7 @@ namespace Rubberduck.Parsing.VBA
 
             toParse.UnionWith(modules.Where(module => _parserStateManager.GetModuleState(module) != ParserState.Ready));
 
-                token.ThrowIfCancellationRequested();
+                token.ThrowIfCancellationRequested();           
 
             if (toParse.Count == 0)
             {

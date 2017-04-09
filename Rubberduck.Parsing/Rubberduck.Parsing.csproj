@@ -333,6 +333,10 @@
     <Compile Include="VBA\AttributeParser.cs" />
     <Compile Include="VBA\Attributes.cs" />
     <Compile Include="VBA\BuiltInDeclarationLoader.cs" />
+    <Compile Include="VBA\SynchronousReferenceResolveRunner.cs" />
+    <Compile Include="VBA\ReferenceResolveRunner.cs" />
+    <Compile Include="VBA\ReferenceResolveRunnerBase.cs" />
+    <Compile Include="VBA\IReferenceRemover.cs" />
     <Compile Include="VBA\SynchronousDeclarationResolveRunner.cs" />
     <Compile Include="VBA\DeclarationResolveRunner.cs" />
     <Compile Include="VBA\DeclarationResolveRunnerBase.cs" />
