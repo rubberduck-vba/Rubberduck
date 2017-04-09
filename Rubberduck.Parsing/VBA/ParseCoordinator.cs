@@ -7,10 +7,7 @@ using Rubberduck.VBEditor;
 using System.Diagnostics;
 using System.Linq;
 using NLog;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.Application;
 
-// ReSharper disable LoopCanBeConvertedToQuery
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -20,11 +17,11 @@ namespace Rubberduck.Parsing.VBA
 
         private const int _maxDegreeOfReferenceRemovalParallelism = -1;
 
-        private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private readonly IDeclarationFinderManager _declarationFinderManager;
+        private readonly IProjectManager _projectManager;
         private readonly IModuleToModuleReferenceManager _moduleToModuleReferenceManager;
         private readonly IParserStateManager _parserStateManager;
         private readonly ICOMReferenceManager _comReferenceManager;
@@ -36,9 +33,9 @@ namespace Rubberduck.Parsing.VBA
         private readonly bool _isTestScope;
 
         public ParseCoordinator(
-            IVBE vbe,
             RubberduckParserState state,
             IDeclarationFinderManager declarationFinderManager,
+            IProjectManager projectManager,
             IModuleToModuleReferenceManager moduleToModuleReferenceManager,
             IParserStateManager parserStateManager,
             ICOMReferenceManager comSynchronizationRunner,
@@ -48,9 +45,9 @@ namespace Rubberduck.Parsing.VBA
             IReferenceResolveRunner referenceResolveRunner,
             bool isTestScope = false)
         {
-            _vbe = vbe;
             _state = state;
             _declarationFinderManager = declarationFinderManager;
+            _projectManager = projectManager;
             _moduleToModuleReferenceManager = moduleToModuleReferenceManager;
             _parserStateManager = parserStateManager;
             _comReferenceManager = comSynchronizationRunner;
@@ -149,12 +146,12 @@ namespace Rubberduck.Parsing.VBA
         private void ParseInternalInternal(CancellationToken token)
         {
                 token.ThrowIfCancellationRequested();
-            
-            State.RefreshProjects(_vbe);
+
+            _projectManager.RefreshProjects();
 
                 token.ThrowIfCancellationRequested();
 
-            var modules = State.Projects.SelectMany(project => project.VBComponents).Select(component => new QualifiedModuleName(component)).ToHashSet();
+            var modules = _projectManager.AllModules();
 
                 token.ThrowIfCancellationRequested();
 
@@ -328,11 +325,11 @@ namespace Rubberduck.Parsing.VBA
 
                 token.ThrowIfCancellationRequested();
 
-            State.RefreshProjects(_vbe);
+            _projectManager.RefreshProjects();
 
                 token.ThrowIfCancellationRequested();
 
-            var modules = State.Projects.SelectMany(project => project.VBComponents).Select(component => new QualifiedModuleName(component)).ToList();
+            var modules = _projectManager.AllModules();
 
                 token.ThrowIfCancellationRequested();
 
@@ -377,7 +374,7 @@ namespace Rubberduck.Parsing.VBA
                 RemoveAllReferencesBy(removedModules, removedModules, State.DeclarationFinder, token);
                 foreach (var module in removedModules)
                 {
-                    State.ClearModuleToModuleReferencesFromModule(module);
+                    _moduleToModuleReferenceManager.ClearModuleToModuleReferencesFromModule(module);
                     State.ClearStateCache(module);
                 }
             }

@@ -68,6 +68,7 @@ namespace Rubberduck.API
             Func<IVBAPreprocessor> preprocessorFactory = () => new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture));
             _attributeParser = new AttributeParser(new ModuleExporter(), preprocessorFactory);
             var decalarationFinderManager = new DeclarationFinderManager(_state, _vbe);
+            var projectManager = new ProjectManager(_state, _vbe);
             var moduleToModuleReferenceManager = new ModuleToModuleReferenceManager(_state);
             var parserStateManager = new ParserStateManager(_state);
             var comReferenceManager = new COMReferenceManager(_state, parserStateManager);
@@ -97,9 +98,9 @@ namespace Rubberduck.API
                 moduleToModuleReferenceManager);
 
             _parser = new ParseCoordinator(
-                _vbe, 
                 _state,
                 decalarationFinderManager,
+                projectManager,
                 moduleToModuleReferenceManager,
                 parserStateManager,
                 comReferenceManager,

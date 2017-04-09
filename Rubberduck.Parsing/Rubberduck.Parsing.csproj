@@ -333,6 +333,7 @@
     <Compile Include="VBA\AttributeParser.cs" />
     <Compile Include="VBA\Attributes.cs" />
     <Compile Include="VBA\BuiltInDeclarationLoader.cs" />
+    <Compile Include="VBA\ProjectManager.cs" />
     <Compile Include="VBA\DeclarationFinderManager.cs" />
     <Compile Include="VBA\IDeclarationFinderManager.cs" />
     <Compile Include="VBA\IDeclarationFinderProvider.cs" />
