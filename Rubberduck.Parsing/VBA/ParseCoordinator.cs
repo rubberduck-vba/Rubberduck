@@ -24,6 +24,7 @@ namespace Rubberduck.Parsing.VBA
         private readonly RubberduckParserState _state;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
+        private readonly IDeclarationFinderManager _declarationFinderManager;
         private readonly IModuleToModuleReferenceManager _moduleToModuleReferenceManager;
         private readonly IParserStateManager _parserStateManager;
         private readonly ICOMReferenceManager _comReferenceManager;
@@ -33,11 +34,11 @@ namespace Rubberduck.Parsing.VBA
         private readonly IReferenceResolveRunner _referenceResolveRunner;
 
         private readonly bool _isTestScope;
-        private readonly IHostApplication _hostApp;
 
         public ParseCoordinator(
             IVBE vbe,
             RubberduckParserState state,
+            IDeclarationFinderManager declarationFinderManager,
             IModuleToModuleReferenceManager moduleToModuleReferenceManager,
             IParserStateManager parserStateManager,
             ICOMReferenceManager comSynchronizationRunner,
@@ -49,6 +50,7 @@ namespace Rubberduck.Parsing.VBA
         {
             _vbe = vbe;
             _state = state;
+            _declarationFinderManager = declarationFinderManager;
             _moduleToModuleReferenceManager = moduleToModuleReferenceManager;
             _parserStateManager = parserStateManager;
             _comReferenceManager = comSynchronizationRunner;
@@ -57,7 +59,6 @@ namespace Rubberduck.Parsing.VBA
             _declarationResolveRunner = declarationResolveRunner;
             _referenceResolveRunner = referenceResolveRunner;
             _isTestScope = isTestScope;
-            _hostApp = _vbe.HostApplication();
 
             state.ParseRequest += ReparseRequested;
         }
@@ -246,7 +247,7 @@ namespace Rubberduck.Parsing.VBA
 
         private void RefreshDeclarationFinder()
         {
-            State.RefreshFinder(_hostApp);
+            _declarationFinderManager.RefreshDeclarationFinder();
         }
 
         private ICollection<QualifiedModuleName> ModulesForWhichToResolveReferences(ICollection<QualifiedModuleName> modulesToParse)
