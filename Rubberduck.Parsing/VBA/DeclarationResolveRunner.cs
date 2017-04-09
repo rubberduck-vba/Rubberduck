@@ -29,13 +29,9 @@ namespace Rubberduck.Parsing.VBA
                 return;
             }
 
-            _parserStateManager.SetModuleStates(modules, ParserState.ResolvingDeclarations, token);
-
-            token.ThrowIfCancellationRequested();
-
             _projectDeclarations.Clear();
 
-            token.ThrowIfCancellationRequested();
+                token.ThrowIfCancellationRequested();
 
             var options = new ParallelOptions();
             options.CancellationToken = token;

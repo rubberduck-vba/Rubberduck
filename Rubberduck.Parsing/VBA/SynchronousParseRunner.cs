@@ -27,11 +27,7 @@ namespace Rubberduck.Parsing.VBA
                 return;
             }
 
-            token.ThrowIfCancellationRequested();
-
-            _parserStateManager.SetModuleStates(modules, ParserState.Parsing, token);
-
-            token.ThrowIfCancellationRequested();
+                token.ThrowIfCancellationRequested();
 
             try
             {
@@ -49,8 +45,6 @@ namespace Rubberduck.Parsing.VBA
                 _parserStateManager.SetStatusAndFireStateChanged(this, ParserState.Error, token);
                 throw;
             }
-
-            _parserStateManager.EvaluateOverallParserState(token);
         }
     }
 }

@@ -174,11 +174,11 @@ namespace Rubberduck.Parsing.VBA
 
         private void ExecuteCommonParseActivities(ICollection<QualifiedModuleName> toParse, CancellationToken token)
         {
-            token.ThrowIfCancellationRequested();
+                token.ThrowIfCancellationRequested();
 
             _parserStateManager.SetModuleStates(toParse, ParserState.Pending, token);
 
-            token.ThrowIfCancellationRequested();
+                token.ThrowIfCancellationRequested();
 
             _comReferenceManager.SyncComReferences(State.Projects, token);
             if (_comReferenceManager.LastRunLoadedReferences || _comReferenceManager.LastRunUnloadedReferences)
@@ -186,7 +186,7 @@ namespace Rubberduck.Parsing.VBA
                 RefreshDeclarationFinder();
             }
 
-            token.ThrowIfCancellationRequested();
+                token.ThrowIfCancellationRequested();
 
             _builtInDeclarationLoader.LoadBuitInDeclarations();
             if (_builtInDeclarationLoader.LastExecutionLoadedDeclarations)
@@ -194,53 +194,78 @@ namespace Rubberduck.Parsing.VBA
                 RefreshDeclarationFinder();
             }
 
-            token.ThrowIfCancellationRequested();
+                token.ThrowIfCancellationRequested();
 
-            var toResolveReferences = ModulesForWhichToResolveReferences(toParse);
-            PerformPreParseCleanup(toParse, toResolveReferences, token);
+            ICollection<QualifiedModuleName> toResolveReferences;
 
-            _parseRunner.ParseModules(toParse, token);
-
-            if (token.IsCancellationRequested || State.Status >= ParserState.Error)
+            if (!toParse.Any())
             {
-                throw new OperationCanceledException(token);
+                toResolveReferences = new HashSet<QualifiedModuleName>();
+            }
+            else
+            {
+                toResolveReferences = ModulesForWhichToResolveReferences(toParse);
+                PerformPreParseCleanup(toParse, toResolveReferences, token);
+
+                    token.ThrowIfCancellationRequested();
+
+                _parserStateManager.SetModuleStates(toParse, ParserState.Parsing, token);
+
+                    token.ThrowIfCancellationRequested();
+
+                _parseRunner.ParseModules(toParse, token);
+
+                    if (token.IsCancellationRequested || State.Status >= ParserState.Error)
+                    {
+                        throw new OperationCanceledException(token);
+                    }
+
+                _parserStateManager.EvaluateOverallParserState(token);
+
+
+                    if (token.IsCancellationRequested || State.Status >= ParserState.Error)
+                    {
+                        throw new OperationCanceledException(token);
+                    }
+
+                _parserStateManager.SetModuleStates(toParse, ParserState.ResolvingDeclarations, token);
+
+                    token.ThrowIfCancellationRequested();
+
+                _declarationResolveRunner.ResolveDeclarations(toParse, token);
+                RefreshDeclarationFinder();
             }
 
-            _declarationResolveRunner.ResolveDeclarations(toParse, token);
-            RefreshDeclarationFinder();
-
-            if (token.IsCancellationRequested || State.Status >= ParserState.Error)
-            {
-                throw new OperationCanceledException(token);
-            }
+                if (token.IsCancellationRequested || State.Status >= ParserState.Error)
+                {
+                    throw new OperationCanceledException(token);
+                }
 
             State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
 
-            if (token.IsCancellationRequested || State.Status >= ParserState.Error)
-            {
-                throw new OperationCanceledException(token);
-            }
+                if (token.IsCancellationRequested || State.Status >= ParserState.Error)
+                {
+                    throw new OperationCanceledException(token);
+                }
+
+            _parserStateManager.SetModuleStates(toResolveReferences, ParserState.ResolvingReferences, token);
+
+                token.ThrowIfCancellationRequested();
 
             _referenceResolveRunner.ResolveReferences(toResolveReferences, token);
 
-            if (token.IsCancellationRequested || State.Status >= ParserState.Error)
-            {
-                throw new OperationCanceledException(token);
-            }
+                if (token.IsCancellationRequested || State.Status >= ParserState.Error)
+                {
+                    throw new OperationCanceledException(token);
+                }
 
             RefreshDeclarationFinder();
 
-            if (token.IsCancellationRequested || State.Status >= ParserState.Error)
-            {
-                throw new OperationCanceledException(token);
-            }
+                token.ThrowIfCancellationRequested();
 
             _parserStateManager.EvaluateOverallParserState(token);
 
-            if (token.IsCancellationRequested || State.Status >= ParserState.Error)
-            {
-                throw new OperationCanceledException(token);
-            }
+                token.ThrowIfCancellationRequested();
         }
 
         private void RefreshDeclarationFinder()

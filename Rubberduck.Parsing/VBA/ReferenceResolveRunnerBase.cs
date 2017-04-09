@@ -47,10 +47,6 @@ namespace Rubberduck.Parsing.VBA
         {
                 token.ThrowIfCancellationRequested();
 
-            _parserStateManager.SetModuleStates(toResolve, ParserState.ResolvingReferences, token);
-
-                token.ThrowIfCancellationRequested();
-
             _toResolve.UnionWith(toResolve);
 
                 token.ThrowIfCancellationRequested();
