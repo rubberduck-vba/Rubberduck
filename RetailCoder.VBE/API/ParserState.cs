@@ -71,6 +71,7 @@ namespace Rubberduck.API
             var projectManager = new ProjectManager(_state, _vbe);
             var moduleToModuleReferenceManager = new ModuleToModuleReferenceManager(_state);
             var parserStateManager = new ParserStateManager(_state);
+            var referenceRemover = new ReferenceRemover(_state, moduleToModuleReferenceManager);
             var comReferenceManager = new COMReferenceManager(_state, parserStateManager);
             var builtInDeclarationLoader = new BuiltInDeclarationLoader(
                 _state,
@@ -103,6 +104,7 @@ namespace Rubberduck.API
                 projectManager,
                 moduleToModuleReferenceManager,
                 parserStateManager,
+                referenceRemover,
                 comReferenceManager,
                 builtInDeclarationLoader,
                 parseRunner,

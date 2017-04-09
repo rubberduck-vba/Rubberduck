@@ -15,8 +15,6 @@ namespace Rubberduck.Parsing.VBA
     {
         public RubberduckParserState State { get { return _state; } }
 
-        private const int _maxDegreeOfReferenceRemovalParallelism = -1;
-
         private readonly RubberduckParserState _state;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -24,6 +22,7 @@ namespace Rubberduck.Parsing.VBA
         private readonly IProjectManager _projectManager;
         private readonly IModuleToModuleReferenceManager _moduleToModuleReferenceManager;
         private readonly IParserStateManager _parserStateManager;
+        private readonly IReferenceRemover _referenceRemover;
         private readonly ICOMReferenceManager _comReferenceManager;
         private readonly IBuiltInDeclarationLoader _builtInDeclarationLoader;
         private readonly IParseRunner _parseRunner;
@@ -38,6 +37,7 @@ namespace Rubberduck.Parsing.VBA
             IProjectManager projectManager,
             IModuleToModuleReferenceManager moduleToModuleReferenceManager,
             IParserStateManager parserStateManager,
+            IReferenceRemover referenceRemover,
             ICOMReferenceManager comSynchronizationRunner,
             IBuiltInDeclarationLoader builtInDeclarationLoader,
             IParseRunner parseRunner,
@@ -50,6 +50,7 @@ namespace Rubberduck.Parsing.VBA
             _projectManager = projectManager;
             _moduleToModuleReferenceManager = moduleToModuleReferenceManager;
             _parserStateManager = parserStateManager;
+            _referenceRemover = referenceRemover;
             _comReferenceManager = comSynchronizationRunner;
             _builtInDeclarationLoader = builtInDeclarationLoader;
             _parseRunner = parseRunner;
@@ -257,29 +258,8 @@ namespace Rubberduck.Parsing.VBA
         private void PerformPreParseCleanup(ICollection<QualifiedModuleName> modulesToParse, ICollection<QualifiedModuleName> toResolveReferences, CancellationToken token)
         {
             _moduleToModuleReferenceManager.ClearModuleToModuleReferencesFromModule(modulesToParse);
-            RemoveAllReferencesBy(toResolveReferences, modulesToParse, State.DeclarationFinder, token); //All declarations on the modulesToParse get destroyed anyway. 
+            _referenceRemover.RemoveReferencesBy(toResolveReferences, token); 
         }
-
-        //This does not live on the RubberduckParserState to keep concurrency haanlding out of it.
-        public void RemoveAllReferencesBy(ICollection<QualifiedModuleName> referencesFromToRemove, ICollection<QualifiedModuleName> modulesNotNeedingReferenceRemoval, DeclarationFinder finder, CancellationToken token)
-        {
-            var referencedModulesNeedingReferenceRemoval = _moduleToModuleReferenceManager.ModulesReferencedByAny(referencesFromToRemove).Where(qmn => !modulesNotNeedingReferenceRemoval.Contains(qmn));
-
-            var options = new ParallelOptions();
-            options.CancellationToken = token;
-            options.MaxDegreeOfParallelism = _maxDegreeOfReferenceRemovalParallelism;
-
-            Parallel.ForEach(referencedModulesNeedingReferenceRemoval, options, qmn => RemoveReferences(finder.Members(qmn), referencesFromToRemove));
-        }
-
-        private void RemoveReferences(IEnumerable<Declaration> declarations, ICollection<QualifiedModuleName> referencesFromToRemove)
-        {
-            foreach (var declaration in declarations)
-            {
-                declaration.RemoveReferencesFrom(referencesFromToRemove);
-            }
-        }
-
 
 
         /// <summary>
@@ -374,7 +354,7 @@ namespace Rubberduck.Parsing.VBA
             var componentRemoved = removedModules.Any();
             if (componentRemoved)
             {
-                RemoveAllReferencesBy(removedModules, removedModules, State.DeclarationFinder, token);
+                _referenceRemover.RemoveReferencesBy(removedModules, token);
                 foreach (var module in removedModules)
                 {
                     _moduleToModuleReferenceManager.ClearModuleToModuleReferencesFromModule(module);

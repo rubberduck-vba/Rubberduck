@@ -50,6 +50,7 @@ namespace RubberduckTests.Mocks
             var projectManager = new ProjectManager(state, vbe);
             var moduleToModuleReferenceManager = new ModuleToModuleReferenceManager(state);
             var parserStateManager = new SynchronousParserStateManager(state);
+            var referenceRemover = new ReferenceRemover(state, moduleToModuleReferenceManager);
             var comReferenceManager = new SynchronousCOMReferenceManager(
                 state, 
                 parserStateManager, 
@@ -83,6 +84,7 @@ namespace RubberduckTests.Mocks
                 projectManager,
                 moduleToModuleReferenceManager,
                 parserStateManager,
+                referenceRemover,
                 comReferenceManager,
                 builtInDeclarationLoader,
                 parseRunner,
