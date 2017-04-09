@@ -80,6 +80,7 @@ namespace Rubberduck.Parsing.VBA
             _vbe = vbe;
             AddEventHandlers();
             IsEnabled = true;
+            RefreshFinder(vbe.HostApplication());
         }
 
         private void HandleStateChanged(ParserState state)
