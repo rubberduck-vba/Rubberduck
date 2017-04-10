@@ -2085,4 +2085,7 @@ Would you like to import them to Rubberduck?</value>
   <data name="RenameDialog_PropertyRenameError" xml:space="preserve">
     <value>Could not rename Property {0}.</value>
   </data>
+  <data name="TestExplorer_RunInconclusiveTests" xml:space="preserve">
+    <value>Inconclusive Tests</value>
+  </data>
 </root>

@@ -97,6 +97,11 @@ namespace Rubberduck.UI.UnitTesting
             return _vbe.IsInDesignMode && AllowedRunStates.Contains(_state.Status) && Model.Tests.Any(test => test.Result.Outcome == TestOutcome.Unknown);
         }
 
+        private bool CanExecuteRunInconclusiveTestsCommand(object obj)
+        {
+            return _vbe.IsInDesignMode && AllowedRunStates.Contains(_state.Status) & _model.Tests.Any(test => test.Result.Outcome == TestOutcome.Inconclusive);
+        }
+
         private bool CanExecuteRepeatLastRunCommand(object obj)
         {
             return _vbe.IsInDesignMode && AllowedRunStates.Contains(_state.Status) && Model.LastRun.Any();
@@ -170,6 +175,10 @@ namespace Rubberduck.UI.UnitTesting
 
         public CommandBase RunNotExecutedTestsCommand { get; }
 
+        private readonly CommandBase _runInconclusiveTestsCommand;
+        public CommandBase RunInconclusiveTestsCommand { get { return _runInconclusiveTestsCommand; } }
+
+        private readonly CommandBase _runFailedTestsCommand;
         public CommandBase RunFailedTestsCommand { get; }
 
         public CommandBase RunPassedTestsCommand { get; }
@@ -250,6 +259,23 @@ namespace Rubberduck.UI.UnitTesting
 
             stopwatch.Start();
             _testEngine.Run(Model.Tests.Where(test => test.Result.Outcome == TestOutcome.Unknown));
+            stopwatch.Stop();
+
+            Model.IsBusy = false;
+            TotalDuration = stopwatch.ElapsedMilliseconds;
+        }
+
+        private void ExecuteRunInconclusiveTestsCommand(object parameter)
+        {
+            EnsureRubberduckIsReferencedForEarlyBoundTests();
+
+            _model.ClearLastRun();
+
+            var stopwatch = new Stopwatch();
+            Model.IsBusy = true;
+
+            stopwatch.Start();
+            _testEngine.Run(_model.Tests.Where(test => test.Result.Outcome == TestOutcome.Inconclusive));
             stopwatch.Stop();
 
             Model.IsBusy = false;
