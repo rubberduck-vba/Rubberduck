@@ -2,7 +2,6 @@ using System.Linq;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Rubberduck.Inspections;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -45,7 +44,7 @@ End Sub";
         [TestCategory("Inspections")]
         public void UseMeaningfulName_ReturnsResult_NameWithoutVowels()
         {
-            const string inputCode = 
+            const string inputCode =
 @"Sub Ffffff()
 End Sub";
             AssertVbaFragmentYieldsExpectedInspectionResultCount(inputCode, 1);
@@ -144,7 +143,7 @@ End Sub";
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
                 .Build();
-            var module = project.Object.VBComponents[0].CodeModule;
+            var component = project.Object.VBComponents[0];
             var vbe = builder.AddProject(project).Build();
 
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
@@ -152,18 +151,18 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new UseMeaningfulNameInspection(null, parser.State, GetInspectionSettings().Object);
+            var inspection = new UseMeaningfulNameInspection(parser.State, GetInspectionSettings().Object);
             var inspectionResults = inspection.GetInspectionResults();
-            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
-
-            Assert.AreEqual(expectedCode, module.Content());
+            
+            new IgnoreOnceQuickFix(parser.State, new[] {inspection}).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, parser.State.GetRewriter(component).GetText());
         }
 
         [TestMethod]
         [TestCategory("Inspections")]
         public void InspectionType()
         {
-            var inspection = new UseMeaningfulNameInspection(null, null, null);
+            var inspection = new UseMeaningfulNameInspection(null, null);
             Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
         }
 
@@ -172,7 +171,7 @@ End Sub";
         public void InspectionName()
         {
             const string inspectionName = "UseMeaningfulNameInspection";
-            var inspection = new UseMeaningfulNameInspection(null, null, null);
+            var inspection = new UseMeaningfulNameInspection(null, null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
         }
@@ -190,7 +189,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new UseMeaningfulNameInspection(null, parser.State, GetInspectionSettings().Object);
+            var inspection = new UseMeaningfulNameInspection(parser.State, GetInspectionSettings().Object);
             var inspectionResults = inspection.GetInspectionResults();
             Assert.AreEqual(expectedCount, inspectionResults.Count());
         }

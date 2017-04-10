@@ -1,44 +1,41 @@
-using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Parsing;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.VBEditor;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class ChangeDimToPrivateQuickFix : QuickFixBase
+    public sealed class ChangeDimToPrivateQuickFix : IQuickFix
     {
-        public ChangeDimToPrivateQuickFix(ParserRuleContext context, QualifiedSelection selection) 
-            : base(context, selection, InspectionsUI.ChangeDimToPrivateQuickFix)
+        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type> { typeof(ModuleScopeDimKeywordInspection) };
+        private readonly RubberduckParserState _state;
+
+        public ChangeDimToPrivateQuickFix(RubberduckParserState state)
         {
+            _state = state;
         }
 
-        public override bool CanFixInModule { get { return true; } }
-        public override bool CanFixInProject { get { return true; } }
+        public IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
 
-        public override void Fix()
+        public void Fix(IInspectionResult result)
         {
-            var module = Selection.QualifiedName.Component.CodeModule;
-            if (module == null)
-            {
-                return;
-            }
+            var rewriter = _state.GetRewriter(result.Target);
 
-            var context = (VBAParser.VariableStmtContext)Context.Parent.Parent;
-            var newInstruction = Tokens.Private + " ";
-            for (var i = 1; i < context.ChildCount; i++)
-            {
-                // index 0 would be the 'Dim' keyword
-                newInstruction += context.GetChild(i).GetText();
-            }
-
-            var selection = context.GetSelection();
-            var oldContent = module.GetLines(selection);
-            var newContent = oldContent.Replace(context.GetText(), newInstruction);
-
-            module.DeleteLines(selection);
-            module.InsertLines(selection.StartLine, newContent);
+            var context = (VBAParser.VariableStmtContext)result.Target.Context.Parent.Parent;
+            rewriter.Replace(context.DIM(), Tokens.Private);
         }
+
+        public string Description(IInspectionResult result)
+        {
+            return InspectionsUI.ChangeDimToPrivateQuickFix;
+        }
+
+        public bool CanFixInProcedure { get; } = false;
+        public bool CanFixInModule { get; } = true;
+        public bool CanFixInProject { get; } = true;
     }
 }

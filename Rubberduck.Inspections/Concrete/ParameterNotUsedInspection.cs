@@ -6,21 +6,15 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
 
 namespace Rubberduck.Inspections.Concrete
 {
     public sealed class ParameterNotUsedInspection : InspectionBase
     {
-        private readonly IMessageBox _messageBox;
+        public ParameterNotUsedInspection(RubberduckParserState state)
+            : base(state) { }
 
-        public ParameterNotUsedInspection(RubberduckParserState state, IMessageBox messageBox)
-            : base(state)
-        {
-            _messageBox = messageBox;
-        }
-
-        public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
+        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
@@ -42,7 +36,7 @@ namespace Rubberduck.Inspections.Concrete
 
             var issues = from issue in parameters
                 let isInterfaceImplementationMember = interfaceImplementationMembers.Contains(issue.ParentDeclaration)
-                select new ParameterNotUsedInspectionResult(this, issue, isInterfaceImplementationMember, issue.Project.VBE, State, _messageBox);
+                select new ParameterNotUsedInspectionResult(this, issue);
 
             return issues.ToList();
         }

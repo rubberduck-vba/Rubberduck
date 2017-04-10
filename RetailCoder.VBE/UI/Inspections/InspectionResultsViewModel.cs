@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,20 +20,34 @@ using Rubberduck.UI.Settings;
 
 namespace Rubberduck.UI.Inspections
 {
+    public class DisplayQuickFix
+    {
+        public IQuickFix Fix { get; }
+        public string Description { get; }
+
+        public DisplayQuickFix(IQuickFix fix, IInspectionResult result)
+        {
+            Fix = fix;
+            Description = fix.Description(result);
+        }
+    }
+
     public sealed class InspectionResultsViewModel : ViewModelBase, INavigateSelection, IDisposable
     {
         private readonly RubberduckParserState _state;
         private readonly IInspector _inspector;
+        private readonly IQuickFixProvider _quickFixProvider;
         private readonly IClipboardWriter _clipboard;
         private readonly IGeneralConfigService _configService;
         private readonly IOperatingSystem _operatingSystem;
 
-        public InspectionResultsViewModel(RubberduckParserState state, IInspector inspector, 
+        public InspectionResultsViewModel(RubberduckParserState state, IInspector inspector, IQuickFixProvider quickFixProvider,
             INavigateCommand navigateCommand, ReparseCommand reparseCommand,
             IClipboardWriter clipboard, IGeneralConfigService configService, IOperatingSystem operatingSystem)
         {
             _state = state;
             _inspector = inspector;
+            _quickFixProvider = quickFixProvider;
             NavigateCommand = navigateCommand;
             _clipboard = clipboard;
             _configService = configService;
@@ -50,6 +63,7 @@ namespace Rubberduck.UI.Inspections
             QuickFixCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteQuickFixCommand, CanExecuteQuickFixCommand);
             QuickFixInModuleCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteQuickFixInModuleCommand, _ => SelectedItem != null && _state.Status == ParserState.Ready);
             QuickFixInProjectCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteQuickFixInProjectCommand, _ => SelectedItem != null && _state.Status == ParserState.Ready);
+            QuickFixInAllProjectsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteQuickFixInAllProjectsCommand, _ => SelectedItem != null && _state.Status == ParserState.Ready);
             CopyResultsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCopyResultsCommand, CanExecuteCopyResultsCommand);
             OpenTodoSettings = new DelegateCommand(LogManager.GetCurrentClassLogger(), OpenSettings);
 
@@ -103,6 +117,7 @@ namespace Rubberduck.UI.Inspections
             {
                 _selectedItem = value; 
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(QuickFixes));
 
                 SelectedInspection = null;
                 CanQuickFix = false;
@@ -113,8 +128,8 @@ namespace Rubberduck.UI.Inspections
                 if (inspectionResult != null)
                 {
                     SelectedInspection = inspectionResult.Inspection;
-                    CanQuickFix = inspectionResult.HasQuickFixes;
-                    _defaultFix = inspectionResult.DefaultQuickFix;
+                    CanQuickFix = _quickFixProvider.HasQuickFixes(inspectionResult);
+                    _defaultFix = _quickFixProvider.QuickFixes(inspectionResult).FirstOrDefault();
                     CanExecuteQuickFixInModule = _defaultFix != null && _defaultFix.CanFixInModule;
                 }
 
@@ -131,6 +146,20 @@ namespace Rubberduck.UI.Inspections
             {
                 _selectedInspection = value;
                 OnPropertyChanged();
+            }
+        }
+
+        public IEnumerable<DisplayQuickFix> QuickFixes
+        {
+            get
+            {
+                if (SelectedItem == null)
+                {
+                    return Enumerable.Empty<DisplayQuickFix>();
+                }
+
+                return _quickFixProvider.QuickFixes(SelectedItem as IInspectionResult)
+                    .Select(fix => new DisplayQuickFix(fix, (IInspectionResult) _selectedItem));
             }
         }
 
@@ -188,6 +217,7 @@ namespace Rubberduck.UI.Inspections
         public CommandBase QuickFixCommand { get; }
         public CommandBase QuickFixInModuleCommand { get; }
         public CommandBase QuickFixInProjectCommand { get; }
+        public CommandBase QuickFixInAllProjectsCommand { get; }
         public CommandBase DisableInspectionCommand { get; }
         public CommandBase CopyResultsCommand { get; }
         public CommandBase OpenTodoSettings { get; }
@@ -272,40 +302,10 @@ namespace Rubberduck.UI.Inspections
             LogManager.GetCurrentClassLogger().Trace("Inspections loaded in {0}ms", stopwatch.ElapsedMilliseconds);
         }
 
-        private void ExecuteQuickFixes(IEnumerable<IQuickFix> quickFixes)
-        {
-            var fixes = quickFixes.ToList();
-            var completed = 0;
-            var cancelled = 0;
-            foreach (var quickFix in fixes)
-            {
-                quickFix.IsCancelled = false;
-                quickFix.Fix();
-                completed++;
-
-                if (quickFix.IsCancelled)
-                {
-                    cancelled++;
-                    break;
-                }
-            }
-
-            // refresh if any quickfix has completed without cancelling:
-            if (completed != 0 && cancelled < completed)
-            {
-                Task.Run(() => RefreshCommand.Execute(null));
-            }
-        }
-
         private void ExecuteQuickFixCommand(object parameter)
         {
             var quickFix = parameter as IQuickFix;
-            if (quickFix == null)
-            {
-                return;
-            }
-
-            ExecuteQuickFixes(new[] {quickFix});
+            _quickFixProvider.Fix(quickFix, SelectedItem as IInspectionResult);
         }
 
         private bool CanExecuteQuickFixCommand(object parameter)
@@ -333,18 +333,9 @@ namespace Rubberduck.UI.Inspections
             {
                 return;
             }
-
-            var filteredResults = _results
-                .Where(result => result.Inspection == SelectedInspection
-                              && result.QualifiedSelection.QualifiedName == selectedResult.QualifiedSelection.QualifiedName)
-                .ToList();
-
-            var defaultFixes = filteredResults
-                .Where(result => result is AggregateInspectionResult)
-                .Select(item => item.QuickFixes.Single(fix => fix.GetType() == _defaultFix.GetType()))
-                .Union(filteredResults.Where(r => r is AggregateInspectionResult).Select(aggregate => aggregate.DefaultQuickFix))
-                .OrderByDescending(fix => fix.Selection);
-            ExecuteQuickFixes(defaultFixes);
+            
+            _quickFixProvider.FixInModule(_defaultFix, selectedResult.QualifiedSelection,
+                selectedResult.Inspection.GetType(), Results);
         }
 
         private bool _canExecuteQuickFixInProject;
@@ -384,13 +375,30 @@ namespace Rubberduck.UI.Inspections
                 return;
             }
 
-            var items = _results.Where(result => result.Inspection == SelectedInspection)
-                .Select(item => item.QuickFixes.Single(fix => fix.GetType() == _defaultFix.GetType()))
-                .OrderBy(item => item.Selection.QualifiedName.ComponentName)
-                .ThenByDescending(item => item.Selection.Selection.EndLine)
-                .ThenByDescending(item => item.Selection.Selection.EndColumn);
+            var selectedResult = SelectedItem as IInspectionResult;
+            if (selectedResult == null)
+            {
+                return;
+            }
 
-            ExecuteQuickFixes(items);
+            _quickFixProvider.FixInProject(_defaultFix, selectedResult.QualifiedSelection,
+                selectedResult.Inspection.GetType(), Results);
+        }
+
+        private void ExecuteQuickFixInAllProjectsCommand(object parameter)
+        {
+            if (_defaultFix == null)
+            {
+                return;
+            }
+
+            var selectedResult = SelectedItem as IInspectionResult;
+            if (selectedResult == null)
+            {
+                return;
+            }
+
+            _quickFixProvider.FixAll(_defaultFix, selectedResult.Inspection.GetType(), Results);
         }
 
         private void ExecuteCopyResultsCommand(object parameter)
@@ -444,10 +452,7 @@ namespace Rubberduck.UI.Inspections
                 _configService.SettingsChanged -= _configService_SettingsChanged;
             }
 
-            if (_inspector != null)
-            {
-                _inspector.Dispose();
-            }
+            _inspector?.Dispose();
         }
     }
 }

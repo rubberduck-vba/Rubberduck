@@ -6,18 +6,15 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
 
 namespace Rubberduck.Inspections.Concrete
 {
     public sealed class MoveFieldCloserToUsageInspection : InspectionBase
     {
         public MoveFieldCloserToUsageInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Suggestion)
-        {
-        }
+            : base(state, CodeInspectionSeverity.Suggestion) { }
 
-        public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
+        public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
@@ -56,7 +53,7 @@ namespace Rubberduck.Inspections.Concrete
                            }.Contains(parentDeclaration.DeclarationType);
                 })
                 .Select(issue =>
-                        new MoveFieldCloserToUsageInspectionResult(this, issue, State, new MessageBox()));
+                        new MoveFieldCloserToUsageInspectionResult(this, issue));
         }
 
         private Declaration ParentDeclaration(IdentifierReference reference)

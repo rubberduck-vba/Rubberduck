@@ -13,14 +13,13 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    // bug: quick fix for converting to sub is exposed for interface members now
     public sealed class FunctionReturnValueNotUsedInspection : InspectionBase
     {
         public FunctionReturnValueNotUsedInspection(RubberduckParserState state)
-            : base(state)
-        {
-        }
+            : base(state) { }
 
-        public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
+        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
@@ -53,8 +52,8 @@ namespace Rubberduck.Inspections.Concrete
                                    new QualifiedSelection(implementationMember.QualifiedName.QualifiedModuleName,
                                        implementationMember.Selection), implementationMember))
                    select
-                       new FunctionReturnValueNotUsedInspectionResult(this, interfaceMember.Context,
-                           interfaceMember.QualifiedName, implementationMemberIssues, interfaceMember)).ToList();
+                       new FunctionReturnValueNotUsedInspectionResult((IInspection) this, interfaceMember.Context,
+                           interfaceMember.QualifiedName, interfaceMember)).ToList();
         }
 
         private IEnumerable<FunctionReturnValueNotUsedInspectionResult> GetNonInterfaceIssues(IEnumerable<Declaration> nonInterfaceFunctions)

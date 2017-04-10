@@ -16,11 +16,9 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class NonReturningFunctionInspection : InspectionBase
     {
         public NonReturningFunctionInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Error)
-        {
-        }
+            : base(state, CodeInspectionSeverity.Error) { }
 
-        public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
+        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
         private static readonly DeclarationType[] ReturningMemberTypes =
         {
@@ -33,7 +31,6 @@ namespace Rubberduck.Inspections.Concrete
             var declarations = UserDeclarations.ToList();
 
             var interfaceMembers = declarations.FindInterfaceMembers();
-            var interfaceImplementationMembers = declarations.FindInterfaceImplementationMembers();
 
             var functions = declarations
                 .Where(declaration => ReturningMemberTypes.Contains(declaration.DeclarationType)
@@ -48,8 +45,7 @@ namespace Rubberduck.Inspections.Concrete
 
             return unassigned
                 .Select(issue =>
-                    new NonReturningFunctionInspectionResult(this, new QualifiedContext<ParserRuleContext>(issue.QualifiedName, issue.Context), issue, 
-                        canConvertToProcedure: !IsRecursive(issue) && !interfaceImplementationMembers.Select(m => m.Scope).Contains(issue.Scope)));
+                    new NonReturningFunctionInspectionResult(this, new QualifiedContext<ParserRuleContext>(issue.QualifiedName, issue.Context), issue));
         }
 
         private bool IsReturningUserDefinedType(Declaration member)
@@ -68,47 +64,7 @@ namespace Rubberduck.Inspections.Concrete
             var result = visitor.VisitBlock(block);
             return result;
         }
-
-        private bool IsRecursive(Declaration function)
-        {
-            return function.References.Any(usage => usage.ParentScoping.Equals(function) && IsIndexExprOrCallStmt(usage));
-        }
-
-        private bool IsIndexExprOrCallStmt(IdentifierReference usage)
-        {
-            return IsCallStmt(usage) || IsIndexExprContext(usage);
-        }
-
-        private bool IsCallStmt(IdentifierReference usage)
-        {
-            var callStmt = ParserRuleContextHelper.GetParent<VBAParser.CallStmtContext>(usage.Context);
-            if (callStmt == null)
-            {
-                return false;
-            }
-            var argumentList = CallStatement.GetArgumentList(callStmt);
-            if (argumentList == null)
-            {
-                return true;
-            }
-            return !ParserRuleContextHelper.HasParent(usage.Context, argumentList);
-        }
-
-        private bool IsIndexExprContext(IdentifierReference usage)
-        {
-            var indexExpr = ParserRuleContextHelper.GetParent<VBAParser.IndexExprContext>(usage.Context);
-            if (indexExpr == null)
-            {
-                return false;
-            }
-            var argumentList = indexExpr.argumentList();
-            if (argumentList == null)
-            {
-                return true;
-            }
-            return !ParserRuleContextHelper.HasParent(usage.Context, argumentList);
-        }
-
+        
         /// <summary>
         /// A visitor that visits a member's body and returns <c>true</c> if any <c>LET</c> statement (assignment) is assigning the specified <c>name</c>.
         /// </summary>

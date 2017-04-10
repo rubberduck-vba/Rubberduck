@@ -13,7 +13,7 @@ namespace Rubberduck.Inspections.Concrete
     {
         public VariableNotUsedInspection(RubberduckParserState state) : base(state) { }
 
-        public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
+        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
@@ -23,7 +23,7 @@ namespace Rubberduck.Inspections.Concrete
                 && declaration.References.All(reference => reference.IsAssignment));
 
             return declarations.Select(issue => 
-                new IdentifierNotUsedInspectionResult(this, issue, ((dynamic)issue.Context).identifier(), issue.QualifiedName.QualifiedModuleName, State.GetRewriter(issue.QualifiedSelection.QualifiedName)));
+                new IdentifierNotUsedInspectionResult(this, issue, ((dynamic)issue.Context).identifier(), issue.QualifiedName.QualifiedModuleName));
         }
     }
 }

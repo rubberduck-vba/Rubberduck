@@ -14,11 +14,9 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class ParameterCanBeByValInspection : InspectionBase
     {
         public ParameterCanBeByValInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Suggestion)
-        {
-        }
+            : base(state, CodeInspectionSeverity.Suggestion) { }
 
-        public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
+        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
@@ -48,7 +46,7 @@ namespace Rubberduck.Inspections.Concrete
             
             issues.AddRange(declarations.OfType<ParameterDeclaration>()
                 .Where(declaration => IsIssue(declaration, declarations, declareScopes, eventScopes, interfaceScopes))
-                .Select(issue => new ParameterCanBeByValInspectionResult(this, State, issue, issue.Context, issue.QualifiedName)));
+                .Select(issue => new ParameterCanBeByValInspectionResult(this, issue)));
 
             return issues;
         }
@@ -106,8 +104,7 @@ namespace Rubberduck.Inspections.Concrete
                 {
                     if (parametersAreByRef[i])
                     {
-                        yield return new ParameterCanBeByValInspectionResult(this, State, declarationParameters[i],
-                            declarationParameters[i].Context, declarationParameters[i].QualifiedName);
+                        yield return new ParameterCanBeByValInspectionResult(this, declarationParameters[i]);
                     }
                 }
             }

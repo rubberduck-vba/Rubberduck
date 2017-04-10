@@ -11,11 +11,9 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class ImplicitActiveWorkbookReferenceInspection : InspectionBase
     {
         public ImplicitActiveWorkbookReferenceInspection(RubberduckParserState state)
-            : base(state)
-        {
-        }
+            : base(state) { }
 
-        public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
+        public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
         private static readonly string[] Targets =
         {

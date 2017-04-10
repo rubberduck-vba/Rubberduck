@@ -1,30 +1,46 @@
-using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.Parsing.PostProcessing;
-using Rubberduck.Parsing.Symbols;
-using Rubberduck.VBEditor;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
     /// <summary>
     /// A code inspection quickfix that removes an unused identifier declaration.
     /// </summary>
-    public class RemoveUnusedDeclarationQuickFix : QuickFixBase
+    public sealed class RemoveUnusedDeclarationQuickFix : IQuickFix
     {
-        private readonly Declaration _target;
-        private readonly IModuleRewriter _rewriter;
-
-        public RemoveUnusedDeclarationQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration target, IModuleRewriter rewriter)
-            : base(context, selection, InspectionsUI.RemoveUnusedDeclarationQuickFix)
+        private readonly RubberduckParserState _state;
+        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
         {
-            _target = target;
-            _rewriter = rewriter;
+            typeof(ConstantNotUsedInspection),
+            typeof(ProcedureNotUsedInspection),
+            typeof(VariableNotUsedInspection)
+        };
+
+        public RemoveUnusedDeclarationQuickFix(RubberduckParserState state)
+        {
+            _state = state;
         }
 
-        public override void Fix()
+        public IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
+
+        public void Fix(IInspectionResult result)
         {
-            _rewriter.Remove(_target);
+            var rewriter = _state.GetRewriter(result.Target);
+            rewriter.Remove(result.Target);
         }
+
+        public string Description(IInspectionResult result)
+        {
+            return InspectionsUI.RemoveUnusedDeclarationQuickFix;
+        }
+
+        public bool CanFixInProcedure => false;
+        public bool CanFixInModule => true;
+        public bool CanFixInProject => true;
     }
 }

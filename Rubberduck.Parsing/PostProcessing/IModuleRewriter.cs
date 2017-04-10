@@ -31,11 +31,11 @@ namespace Rubberduck.Parsing.PostProcessing
         /// <remarks>Removes a line that would be left empty by the removal of the identifier reference token.</remarks>
         void Remove(IToken target);
         /// <summary>
-        /// Removes all tokens for specified <see cref="TerminalNodeImpl"/>. Use <see cref="Rewrite"/> method to apply changes.
+        /// Removes all tokens for specified <see cref="ITerminalNode"/>. Use <see cref="Rewrite"/> method to apply changes.
         /// </summary>
-        /// <param name="target">The <see cref="TerminalNodeImpl"/> to remove.</param>
+        /// <param name="target">The <see cref="ITerminalNode"/> to remove.</param>
         /// <remarks>Removes a line that would be left empty by the removal of the identifier reference token.</remarks>
-        void Remove(TerminalNodeImpl target);
+        void Remove(ITerminalNode target);
 
         /// <summary>
         /// Replaces all tokens for specified <see cref="Declaration"/> with specified content. Use <see cref="Rewrite"/> method to apply changes.
@@ -56,6 +56,12 @@ namespace Rubberduck.Parsing.PostProcessing
         /// <param name="token">The <see cref="IToken"/> to replace.</param>
         /// <param name="content">The literal replacement for the expression.</param>
         void Replace(IToken token, string content);
+        /// <summary>
+        /// Replaces specified token with specified content. Use <see cref="Rewrite"/> method to apply changes.
+        /// </summary>
+        /// <param name="target">The <see cref="ITerminalNode"/> to replace.</param>
+        /// <param name="content">The literal replacement for the expression.</param>
+        void Replace(ITerminalNode target, string content);
 
         /// <summary>
         /// Replaces specified interval with specified content. Use <see cref="Rewrite"/> method to apply changes.

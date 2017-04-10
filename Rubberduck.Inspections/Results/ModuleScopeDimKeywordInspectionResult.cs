@@ -1,7 +1,5 @@
-using System.Collections.Generic;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
@@ -10,26 +8,12 @@ namespace Rubberduck.Inspections.Results
 {
     public class ModuleScopeDimKeywordInspectionResult : InspectionResultBase
     {
-        private IEnumerable<IQuickFix> _quickFixes;
-
         public ModuleScopeDimKeywordInspectionResult(IInspection inspection, Declaration target) 
-            : base(inspection, target)
-        { }
-
-        public override IEnumerable<IQuickFix> QuickFixes
-        {
-            get
-            {
-                return _quickFixes ?? (_quickFixes = new IQuickFix[]
-                {
-                    new ChangeDimToPrivateQuickFix(Target.Context, Target.QualifiedSelection)
-                });
-            }
-        }
+            : base(inspection, target) {}
 
         public override string Description
         {
-            get { return string.Format(InspectionsUI.ModuleScopeDimKeywordInspectionResultFormat, Target.IdentifierName).Captialize(); }
+            get { return string.Format(InspectionsUI.ModuleScopeDimKeywordInspectionResultFormat, Target.IdentifierName).Capitalize(); }
         }
     }
 }

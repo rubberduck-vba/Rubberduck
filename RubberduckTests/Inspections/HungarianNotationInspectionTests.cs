@@ -1,7 +1,6 @@
 using System.Linq;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck.Inspections;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -32,7 +31,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new HungarianNotationInspection(null, parser.State, UseMeaningfulNameInspectionTests.GetInspectionSettings().Object);
+            var inspection = new HungarianNotationInspection(parser.State, UseMeaningfulNameInspectionTests.GetInspectionSettings().Object);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
@@ -58,7 +57,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new HungarianNotationInspection(null, parser.State, UseMeaningfulNameInspectionTests.GetInspectionSettings().Object);
+            var inspection = new HungarianNotationInspection(parser.State, UseMeaningfulNameInspectionTests.GetInspectionSettings().Object);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
@@ -84,7 +83,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new HungarianNotationInspection(null, parser.State, UseMeaningfulNameInspectionTests.GetInspectionSettings().Object);
+            var inspection = new HungarianNotationInspection(parser.State, UseMeaningfulNameInspectionTests.GetInspectionSettings().Object);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
@@ -110,7 +109,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new HungarianNotationInspection(null, parser.State, UseMeaningfulNameInspectionTests.GetInspectionSettings().Object);
+            var inspection = new HungarianNotationInspection(parser.State, UseMeaningfulNameInspectionTests.GetInspectionSettings().Object);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.IsFalse(inspectionResults.Any());
@@ -134,12 +133,12 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new HungarianNotationInspection(null, parser.State, UseMeaningfulNameInspectionTests.GetInspectionSettings().Object);
+            var inspection = new HungarianNotationInspection(parser.State, UseMeaningfulNameInspectionTests.GetInspectionSettings().Object);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.IsFalse(inspectionResults.Any());
         }
-        
+
         [TestMethod]
         [TestCategory("Inspections")]
         public void HungarianNotation_DoesNotReturnsResult_ThreeLetterVariable()
@@ -159,7 +158,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new HungarianNotationInspection(null, parser.State, UseMeaningfulNameInspectionTests.GetInspectionSettings().Object);
+            var inspection = new HungarianNotationInspection(parser.State, UseMeaningfulNameInspectionTests.GetInspectionSettings().Object);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.IsFalse(inspectionResults.Any());
@@ -185,7 +184,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new UseMeaningfulNameInspection(null, parser.State, UseMeaningfulNameInspectionTests.GetInspectionSettings().Object);
+            var inspection = new UseMeaningfulNameInspection(parser.State, UseMeaningfulNameInspectionTests.GetInspectionSettings().Object);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.IsFalse(inspectionResults.Any());
@@ -210,7 +209,7 @@ End Sub";
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var inspection = new UseMeaningfulNameInspection(null, parser.State, UseMeaningfulNameInspectionTests.GetInspectionSettings().Object);
+            var inspection = new UseMeaningfulNameInspection(parser.State, UseMeaningfulNameInspectionTests.GetInspectionSettings().Object);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.IsFalse(inspectionResults.Any());

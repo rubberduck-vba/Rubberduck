@@ -1,151 +1,47 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Parsing;
+using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.VBEditor;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class DeclareAsExplicitVariantQuickFix : QuickFixBase 
+    public sealed class DeclareAsExplicitVariantQuickFix : IQuickFix
     {
-        public DeclareAsExplicitVariantQuickFix(ParserRuleContext context, QualifiedSelection selection)
-            : base(context, selection, InspectionsUI.DeclareAsExplicitVariantQuickFix)
+        private readonly RubberduckParserState _state;
+        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
         {
+            typeof(VariableTypeNotDeclaredInspection)
+        };
+        
+        public DeclareAsExplicitVariantQuickFix(RubberduckParserState state)
+        {
+            _state = state;
         }
 
-        public override void Fix()
+        public IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
+
+        public void Fix(IInspectionResult result)
         {
-            var module = Selection.QualifiedName.Component.CodeModule;
-            var contextLines = module.GetLines(Context.GetSelection());
-            var originalIndent = contextLines.Substring(0, contextLines.TakeWhile(c => c == ' ').Count());
+            var rewriter = _state.GetRewriter(result.Target);
 
-            string originalInstruction;
-
-            // DeclareExplicitVariant() overloads return empty string if context is null
-            Selection selection;
-            var fix = DeclareExplicitVariant(Context as VBAParser.VariableSubStmtContext, contextLines, out originalInstruction, out selection);
-            if (!string.IsNullOrEmpty(fix))
-            {
-                // maintain original indentation for a variable declaration
-                fix = originalIndent + fix;
-            }
-
-            if (string.IsNullOrEmpty(originalInstruction))
-            {
-                fix = DeclareExplicitVariant(Context as VBAParser.ConstSubStmtContext, contextLines, out originalInstruction, out selection);
-            }
-
-            if (string.IsNullOrEmpty(originalInstruction))
-            {
-                fix = DeclareExplicitVariant(Context as VBAParser.ArgContext, out originalInstruction, out selection);
-            }
-
-            if (string.IsNullOrEmpty(originalInstruction))
-            {
-                return;
-            }
-
-            module.DeleteLines(selection.StartLine, selection.LineCount);
-            module.InsertLines(selection.StartLine, fix);
+            ParserRuleContext identifierNode = result.Context is VBAParser.VariableSubStmtContext
+                ? result.Context.children[0]
+                : ((dynamic) result.Context).unrestrictedIdentifier();
+            rewriter.InsertAfter(identifierNode.Stop.TokenIndex, " As Variant");
         }
 
-        private string DeclareExplicitVariant(VBAParser.ArgContext context, out string instruction, out Selection selection)
+        public string Description(IInspectionResult result)
         {
-            if (context == null)
-            {
-                instruction = null;
-                selection = VBEditor.Selection.Empty;
-                return null;
-            }
-
-            var memberContext = (ParserRuleContext) context.Parent.Parent;
-            selection = memberContext.GetSelection();
-            instruction = memberContext.GetText();
-
-            var fix = string.Empty;
-            foreach (var child in memberContext.children)
-            {
-                if (child is VBAParser.ArgListContext)
-                {
-                    foreach (var tree in ((VBAParser.ArgListContext) child).children)
-                    {
-                        if (tree.Equals(context))
-                        {
-                            foreach (var part in context.children)
-                            {
-                                if (part is VBAParser.UnrestrictedIdentifierContext)
-                                {
-                                    fix += part.GetText() + ' ' + Tokens.As + ' ' + Tokens.Variant;
-                                }
-                                else
-                                {
-                                    fix += part.GetText();
-                                }
-                            }
-                        }
-                        else
-                        {
-                            fix += tree.GetText();
-                        }
-                    }
-                }
-                else
-                {
-                    fix += child.GetText();
-                }
-            }
-
-            return fix;
+            return InspectionsUI.DeclareAsExplicitVariantQuickFix;
         }
 
-        private string DeclareExplicitVariant(VBAParser.VariableSubStmtContext context, string contextLines, out string instruction, out Selection selection)
-        {
-            if (context == null)
-            {
-                instruction = null;
-                selection = VBEditor.Selection.Empty;
-                return null;
-            }
-
-            var parent = (ParserRuleContext)context.Parent.Parent;
-            selection = parent.GetSelection();
-            instruction = contextLines.Substring(selection.StartColumn - 1);
-
-            var variable = context.GetText();
-            var replacement = context.identifier().GetText() + ' ' + Tokens.As + ' ' + Tokens.Variant;
-
-            var insertIndex = instruction.IndexOf(variable, StringComparison.Ordinal);
-            var result = instruction.Substring(0, insertIndex)
-                         + replacement + instruction.Substring(insertIndex + variable.Length);
-            return result;
-        }
-
-        private string DeclareExplicitVariant(VBAParser.ConstSubStmtContext context, string contextLines, out string instruction, out Selection selection)
-        {
-            if (context == null)
-            {
-                instruction = null;
-                selection = VBEditor.Selection.Empty;
-                return null;
-            }
-
-            var parent = (ParserRuleContext)context.Parent;
-            selection = parent.GetSelection();
-            instruction = contextLines.Substring(selection.StartColumn - 1);
-
-            var constant = context.GetText();
-            var replacement = context.identifier().GetText() + ' '
-                              + Tokens.As + ' ' + Tokens.Variant + ' '
-                              + context.EQ().GetText() + ' '
-                              + context.expression().GetText();
-
-            var insertIndex = instruction.IndexOf(constant, StringComparison.Ordinal);
-            var result = instruction.Substring(0, insertIndex)
-                         + replacement + instruction.Substring(insertIndex + constant.Length);
-            return result;
-        }
+        public bool CanFixInProcedure => true;
+        public bool CanFixInModule => true;
+        public bool CanFixInProject => true;
     }
 }

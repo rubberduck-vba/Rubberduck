@@ -1,38 +1,44 @@
-using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.VBEditor;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class ReplaceObsoleteCommentMarkerQuickFix : QuickFixBase
+    public sealed class ReplaceObsoleteCommentMarkerQuickFix : IQuickFix
     {
-        public ReplaceObsoleteCommentMarkerQuickFix(ParserRuleContext context, QualifiedSelection selection)
-            : base(context, selection, InspectionsUI.RemoveObsoleteStatementQuickFix)
-        { }
-
-        public override void Fix()
+        private readonly RubberduckParserState _state;
+        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
         {
-            var module = Selection.QualifiedName.Component.CodeModule;
+            typeof(ObsoleteCommentSyntaxInspection)
+        };
 
-            if (module.IsWrappingNullReference)
-            {
-                return;
-            }
-            var comment = Context.GetText();
-            var start = Context.Start.Line;           
-            var commentLine = module.GetLines(start, 1);
-            var newComment = commentLine.Substring(0, Context.Start.Column) +
-                             Tokens.CommentMarker +
-                             comment.Substring(Tokens.Rem.Length, comment.Length - Tokens.Rem.Length);
-
-            var lines = Selection.Selection.LineCount;
-            if (lines > 1)
-            {
-                module.DeleteLines(start + 1, lines - 1);
-            }
-            module.ReplaceLine(start, newComment);
+        public ReplaceObsoleteCommentMarkerQuickFix(RubberduckParserState state)
+        {
+            _state = state;
         }
+
+        public IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
+
+        public void Fix(IInspectionResult result)
+        {
+            var rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
+            var context = (VBAParser.RemCommentContext) result.Context;
+
+            rewriter.Replace(context.REM(), "'");
+        }
+
+        public string Description(IInspectionResult result)
+        {
+            return InspectionsUI.RemoveObsoleteStatementQuickFix;
+        }
+
+        public bool CanFixInProcedure => true;
+        public bool CanFixInModule => true;
+        public bool CanFixInProject => true;
     }
 }
