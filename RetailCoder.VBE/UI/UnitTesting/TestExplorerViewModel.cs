@@ -99,7 +99,7 @@ namespace Rubberduck.UI.UnitTesting
 
         private bool CanExecuteRunInconclusiveTestsCommand(object obj)
         {
-            return _vbe.IsInDesignMode && AllowedRunStates.Contains(_state.Status) & _model.Tests.Any(test => test.Result.Outcome == TestOutcome.Inconclusive);
+            return _vbe.IsInDesignMode && AllowedRunStates.Contains(_state.Status) & Model.Tests.Any(test => test.Result.Outcome == TestOutcome.Inconclusive);
         }
 
         private bool CanExecuteRepeatLastRunCommand(object obj)
@@ -269,13 +269,13 @@ namespace Rubberduck.UI.UnitTesting
         {
             EnsureRubberduckIsReferencedForEarlyBoundTests();
 
-            _model.ClearLastRun();
+            Model.ClearLastRun();
 
             var stopwatch = new Stopwatch();
             Model.IsBusy = true;
 
             stopwatch.Start();
-            _testEngine.Run(_model.Tests.Where(test => test.Result.Outcome == TestOutcome.Inconclusive));
+            _testEngine.Run(Model.Tests.Where(test => test.Result.Outcome == TestOutcome.Inconclusive));
             stopwatch.Stop();
 
             Model.IsBusy = false;
