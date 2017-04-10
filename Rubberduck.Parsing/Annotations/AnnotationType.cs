@@ -13,6 +13,7 @@
         IgnoreModule,
         Folder,
         NoIndent,
-        Interface
+        Interface,
+        Description,
     }
 }
