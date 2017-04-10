@@ -1,7 +1,6 @@
 using System.Linq;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck.Inspections;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -29,7 +28,7 @@ End Sub
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", "TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode)
-                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)                
+                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
@@ -101,7 +100,7 @@ End Sub";
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode)
                 .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
                 .Build();
-            var module = project.Object.VBComponents[0].CodeModule;
+            var component = project.Object.VBComponents[0];
             var vbe = builder.AddProject(project).Build();
 
 
@@ -113,10 +112,9 @@ End Sub";
 
             var inspection = new ImplicitActiveSheetReferenceInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
-
-            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
-
-            Assert.AreEqual(expectedCode, module.Content());
+            
+            new IgnoreOnceQuickFix(parser.State, new[] {inspection}).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, parser.State.GetRewriter(component).GetText());
         }
 
         [TestMethod]

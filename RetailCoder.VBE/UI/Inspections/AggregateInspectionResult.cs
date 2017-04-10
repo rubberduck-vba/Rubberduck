@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using Antlr4.Runtime;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
@@ -24,11 +24,7 @@ namespace Rubberduck.UI.Inspections
 
         public Declaration Target => _result.Target;
 
-        public IEnumerable<IQuickFix> QuickFixes => _result.QuickFixes;
-
-        public bool HasQuickFixes => _result.HasQuickFixes;
-
-        public IQuickFix DefaultQuickFix => _result.DefaultQuickFix;
+        public ParserRuleContext Context => _result.Context;
 
         public int CompareTo(IInspectionResult other)
         {

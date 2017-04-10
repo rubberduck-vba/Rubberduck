@@ -1,6 +1,5 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck.Inspections;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -402,7 +401,9 @@ End Function";
             const string expectedCode =
 @"Public Sub Foo(ByVal bar As String)
     If True Then
+        
     Else
+        
     End If
 End Sub";
 
@@ -413,8 +414,8 @@ End Sub";
             var inspection = new FunctionReturnValueNotUsedInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            inspectionResults.First().QuickFixes.First().Fix();
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -436,6 +437,7 @@ End Sub";
     fizz = True
     goo
 label1:
+    
 End Sub
 
 Sub goo()
@@ -448,8 +450,8 @@ End Sub";
             var inspection = new FunctionReturnValueNotUsedInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            inspectionResults.First().QuickFixes.First().Fix();
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -496,12 +498,10 @@ End Function";
             var inspection = new FunctionReturnValueNotUsedInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            inspectionResults.First().QuickFixes.First().Fix();
+            new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
 
-            var project = vbe.Object.VBProjects[0];
-            var interfaceModule = project.VBComponents[0].CodeModule;
-            string actualInterface = interfaceModule.Content();
-            Assert.AreEqual(expectedInterfaceCode, actualInterface, "Interface");
+            var component = vbe.Object.VBProjects[0].VBComponents[0];
+            Assert.AreEqual(expectedInterfaceCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -530,10 +530,9 @@ End Sub";
 
             var inspection = new FunctionReturnValueNotUsedInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
-
-            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
-
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            
+            new IgnoreOnceQuickFix(state, new[] {inspection}).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]

@@ -1,10 +1,7 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck.Inspections;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
@@ -71,27 +68,6 @@ End Sub";
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void MultipleFolderAnnotations_NoIgnoreQuickFix()
-        {
-            const string inputCode =
-@"'@Folder ""Foo.Bar""
-'@Folder ""Biz.Buz""
-Public Sub Foo()
-    Const const1 As Integer = 9
-End Sub";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new MultipleFolderAnnotationsInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.IsFalse(inspectionResults.ElementAt(0).QuickFixes.Any(q => q is IgnoreOnceQuickFix));
         }
 
         [TestMethod]

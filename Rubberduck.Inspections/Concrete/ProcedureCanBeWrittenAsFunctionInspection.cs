@@ -19,11 +19,9 @@ namespace Rubberduck.Inspections.Concrete
         private IEnumerable<QualifiedContext> _parseTreeResults;
 
         public ProcedureCanBeWrittenAsFunctionInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Suggestion)
-        {
-        }
+            : base(state, CodeInspectionSeverity.Suggestion) { }
 
-        public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
+        public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
 
         public void SetResults(IEnumerable<QualifiedContext> results)
         {
@@ -56,17 +54,16 @@ namespace Rubberduck.Inspections.Concrete
                                                                   .All(withEvents => userDeclarations.FindEventProcedures(withEvents) == null) &&
                                                                   !builtinHandlers.Contains(decl))
                                    .Select(result => new ProcedureCanBeWrittenAsFunctionInspectionResult(
-                                                         this, 
-                                                         State, 
-                                                         new QualifiedContext<VBAParser.ArgListContext>(result.QualifiedName,result.Context.GetChild<VBAParser.ArgListContext>(0)),
-                                                         new QualifiedContext<VBAParser.SubStmtContext>(result.QualifiedName, (VBAParser.SubStmtContext)result.Context))
-                                   );                   
+                                                         this,
+                                                         State,
+                                                         result,
+                                                         new QualifiedContext<VBAParser.SubStmtContext>(result.QualifiedName, (VBAParser.SubStmtContext)result.Context)));                   
         }
 
         public class SingleByRefParamArgListListener : VBAParserBaseListener
         {
             private readonly IList<VBAParser.ArgListContext> _contexts = new List<VBAParser.ArgListContext>();
-            public IEnumerable<VBAParser.ArgListContext> Contexts { get { return _contexts; } }
+            public IEnumerable<VBAParser.ArgListContext> Contexts => _contexts;
 
             public override void ExitArgList(VBAParser.ArgListContext context)
             {

@@ -1,87 +1,81 @@
-using System.Text.RegularExpressions;
-using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class RemoveTypeHintsQuickFix : QuickFixBase
+    public sealed class RemoveTypeHintsQuickFix : IQuickFix
     {
-        private readonly Declaration _declaration;
-
-        public RemoveTypeHintsQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration declaration)
-            : base(context, selection, InspectionsUI.RemoveTypeHintsQuickFix)
+        private readonly RubberduckParserState _state;
+        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
         {
-            _declaration = declaration;
+            typeof(ObsoleteTypeHintInspection)
+        };
+
+        public RemoveTypeHintsQuickFix(RubberduckParserState state)
+        {
+            _state = state;
         }
 
-        public override void Fix()
+        public IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
+
+        public void Fix(IInspectionResult result)
         {
-            if (!string.IsNullOrWhiteSpace(_declaration.TypeHint))
+            if (!string.IsNullOrWhiteSpace(result.Target.TypeHint))
             {
-                var module = _declaration.QualifiedName.QualifiedModuleName.Component.CodeModule;
+                var rewriter = _state.GetRewriter(result.Target);
+                var typeHintContext = ParserRuleContextHelper.GetDescendent<VBAParser.TypeHintContext>(result.Context);
+
+                rewriter.Remove(typeHintContext);
+
+                var asTypeClause = ' ' + Tokens.As + ' ' + SymbolList.TypeHintToTypeName[result.Target.TypeHint];
+                switch (result.Target.DeclarationType)
                 {
-                    FixTypeHintUsage(_declaration.TypeHint, module, _declaration.Selection, true);
+                    case DeclarationType.Variable:
+                        var variableContext = (VBAParser.VariableSubStmtContext) result.Target.Context;
+                        rewriter.InsertAfter(variableContext.identifier().Stop.TokenIndex, asTypeClause);
+                        break;
+                    case DeclarationType.Parameter:
+                        var parameterContext = (VBAParser.ArgContext)result.Target.Context;
+                        rewriter.InsertAfter(parameterContext.unrestrictedIdentifier().Stop.TokenIndex, asTypeClause);
+                        break;
+                    case DeclarationType.Function:
+                        var functionContext = (VBAParser.FunctionStmtContext) result.Target.Context;
+                        rewriter.InsertAfter(functionContext.argList().Stop.TokenIndex, asTypeClause);
+                        break;
+                    case DeclarationType.PropertyGet:
+                        var propertyContext = (VBAParser.PropertyGetStmtContext)result.Target.Context;
+                        rewriter.InsertAfter(propertyContext.argList().Stop.TokenIndex, asTypeClause);
+                        break;
                 }
             }
 
-            foreach (var reference in _declaration.References)
+            foreach (var reference in result.Target.References)
             {
-                // or should we assume type hint is the same as declaration?
-                if (!string.IsNullOrWhiteSpace(_declaration.TypeHint))
+                var rewriter = _state.GetRewriter(reference.QualifiedModuleName);
+                var context = ParserRuleContextHelper.GetDescendent<VBAParser.TypeHintContext>(reference.Context);
+
+                if (context != null)
                 {
-                    var module = reference.QualifiedModuleName.Component.CodeModule;
-                    {
-                        FixTypeHintUsage(_declaration.TypeHint, module, reference.Selection);
-                    }
+                    rewriter.Remove(context);
                 }
             }
-
         }
 
-        private void FixTypeHintUsage(string hint, ICodeModule module, Selection selection, bool isDeclaration = false)
+        public string Description(IInspectionResult result)
         {
-            var line = module.GetLines(selection.StartLine, 1);
-
-            var asTypeClause = ' ' + Tokens.As + ' ' + SymbolList.TypeHintToTypeName[hint];
-
-            string fix;
-
-            if (isDeclaration && Context is VBAParser.FunctionStmtContext)
-            {
-                var typeHint = Identifier.GetTypeHintContext(((VBAParser.FunctionStmtContext)Context).functionName().identifier());
-                var argList = ((VBAParser.FunctionStmtContext)Context).argList();
-                var endLine = argList.Stop.Line;
-                var endColumn = argList.Stop.Column;
-
-                var oldLine = module.GetLines(endLine, selection.LineCount);
-                fix = oldLine.Insert(endColumn + 1, asTypeClause).Remove(typeHint.Start.Column, 1);  // adjust for VBA 0-based indexing
-
-                module.ReplaceLine(endLine, fix);
-            }
-            else if (isDeclaration && Context is VBAParser.PropertyGetStmtContext)
-            {
-                var typeHint = Identifier.GetTypeHintContext(((VBAParser.PropertyGetStmtContext)Context).functionName().identifier());
-                var argList = ((VBAParser.PropertyGetStmtContext)Context).argList();
-                var endLine = argList.Stop.Line;
-                var endColumn = argList.Stop.Column;
-
-                var oldLine = module.GetLines(endLine, selection.LineCount);
-                fix = oldLine.Insert(endColumn + 1, asTypeClause).Remove(typeHint.Start.Column, 1);  // adjust for VBA 0-based indexing
-
-                module.ReplaceLine(endLine, fix);
-            }
-            else
-            {
-                var pattern = "\\b" + _declaration.IdentifierName + "\\" + hint;
-                fix = Regex.Replace(line, pattern, _declaration.IdentifierName + (isDeclaration ? asTypeClause : string.Empty));
-                module.ReplaceLine(selection.StartLine, fix);
-            }
+            return InspectionsUI.RemoveTypeHintsQuickFix;
         }
+
+        public bool CanFixInProcedure => true;
+        public bool CanFixInModule => true;
+        public bool CanFixInProject => true;
     }
 }

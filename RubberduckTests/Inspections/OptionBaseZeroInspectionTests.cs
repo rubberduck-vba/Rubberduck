@@ -1,11 +1,11 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Rubberduck.Inspections;
 using RubberduckTests.Mocks;
 using Rubberduck.Settings;
 using System.Threading;
 using Rubberduck.Inspections.Concrete;
+using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Inspections.Rubberduck.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -101,9 +101,9 @@ Option Base 0";
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            inspectionResults.First().QuickFixes.First().Fix();
-            
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            new RemoveOptionBaseStatementQuickFix(state).Fix(inspectionResults.First());
+
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -129,9 +129,9 @@ Base _
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            inspectionResults.First().QuickFixes.First().Fix();
-            
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            new RemoveOptionBaseStatementQuickFix(state).Fix(inspectionResults.First());
+
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -154,9 +154,9 @@ Base _
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            inspectionResults.First().QuickFixes.First().Fix();
-            
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            new RemoveOptionBaseStatementQuickFix(state).Fix(inspectionResults.First());
+
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -182,9 +182,9 @@ Base _
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            inspectionResults.First().QuickFixes.First().Fix();
-            
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            new RemoveOptionBaseStatementQuickFix(state).Fix(inspectionResults.First());
+
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
