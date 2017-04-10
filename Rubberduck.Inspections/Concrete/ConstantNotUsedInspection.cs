@@ -12,9 +12,7 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class ConstantNotUsedInspection : InspectionBase
     {
         public ConstantNotUsedInspection(RubberduckParserState state)
-            : base(state)
-        {
-        }
+            : base(state) { }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
@@ -28,7 +26,7 @@ namespace Rubberduck.Inspections.Concrete
                 .ToList();
 
             return results.Select(issue => 
-                new IdentifierNotUsedInspectionResult(this, issue, ((dynamic)issue.Context).identifier(), issue.QualifiedName.QualifiedModuleName, State.GetRewriter(issue)));
+                new IdentifierNotUsedInspectionResult(this, issue, ((dynamic)issue.Context).identifier(), issue.QualifiedName.QualifiedModuleName));
         }
     }
 }

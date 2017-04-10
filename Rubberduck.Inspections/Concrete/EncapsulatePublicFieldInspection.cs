@@ -6,21 +6,15 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.SmartIndenter;
 
 namespace Rubberduck.Inspections.Concrete
 {
     public sealed class EncapsulatePublicFieldInspection : InspectionBase
     {
-        private readonly IIndenter _indenter;
+        public EncapsulatePublicFieldInspection(RubberduckParserState state)
+            : base(state, CodeInspectionSeverity.Suggestion) { }
 
-        public EncapsulatePublicFieldInspection(RubberduckParserState state, IIndenter indenter)
-            : base(state, CodeInspectionSeverity.Suggestion)
-        {
-            _indenter = indenter;
-        }
-
-        public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
+        public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
@@ -39,7 +33,7 @@ namespace Rubberduck.Inspections.Concrete
                 .ToList();
 
             return fields
-                .Select(issue => new EncapsulatePublicFieldInspectionResult(this, issue, State, _indenter))
+                .Select(issue => new EncapsulatePublicFieldInspectionResult(this, issue))
                 .ToList();
         }
     }

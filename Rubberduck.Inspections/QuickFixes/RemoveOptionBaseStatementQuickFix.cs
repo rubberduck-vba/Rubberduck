@@ -1,35 +1,41 @@
-﻿using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.VBEditor;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    internal class RemoveOptionBaseStatementQuickFix : QuickFixBase
+    public sealed class RemoveOptionBaseStatementQuickFix : IQuickFix
     {
-        public RemoveOptionBaseStatementQuickFix(ParserRuleContext context, QualifiedSelection selection)
-            : base(context, selection, InspectionsUI.RemoveOptionBaseStatementQuickFix)
+        private readonly RubberduckParserState _state;
+        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
         {
+            typeof(OptionBaseZeroInspection)
+        };
+
+        public RemoveOptionBaseStatementQuickFix(RubberduckParserState state)
+        {
+            _state = state;
         }
 
-        public override void Fix()
+        public IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
+
+        public void Fix(IInspectionResult result)
         {
-            var module = Selection.QualifiedName.Component.CodeModule;
-            var lines = module.GetLines(Selection.Selection).Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-
-            var newContent = Selection.Selection.LineCount != 1
-                ? lines[0].Remove(Selection.Selection.StartColumn - 1)
-                : lines[0].Remove(Selection.Selection.StartColumn - 1, Selection.Selection.EndColumn - Selection.Selection.StartColumn);
-            
-            if (Selection.Selection.LineCount != 1)
-            {
-                newContent += lines.Last().Remove(0, Selection.Selection.EndColumn - 1);
-            }
-
-            module.DeleteLines(Selection.Selection);
-            module.InsertLines(Selection.Selection.StartLine, newContent);
+            var rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
+            rewriter.Remove(result.Context);
         }
+
+        public string Description(IInspectionResult result)
+        {
+            return InspectionsUI.RemoveOptionBaseStatementQuickFix;
+        }
+
+        public bool CanFixInProcedure => false;
+        public bool CanFixInModule => false;
+        public bool CanFixInProject => false;
     }
 }

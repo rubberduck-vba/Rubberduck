@@ -15,11 +15,9 @@ namespace Rubberduck.Inspections.Concrete
         private IEnumerable<QualifiedContext> _parseTreeResults;
 
         public EmptyStringLiteralInspection(RubberduckParserState state)
-            : base(state)
-        {
-        }
+            : base(state) { }
 
-        public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
+        public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
 
         public void SetResults(IEnumerable<QualifiedContext> results)
         {
@@ -41,7 +39,7 @@ namespace Rubberduck.Inspections.Concrete
         public class EmptyStringLiteralListener : VBAParserBaseListener
         {
             private readonly IList<VBAParser.LiteralExpressionContext> _contexts = new List<VBAParser.LiteralExpressionContext>();
-            public IEnumerable<VBAParser.LiteralExpressionContext> Contexts { get { return _contexts; } }
+            public IEnumerable<VBAParser.LiteralExpressionContext> Contexts => _contexts;
 
             public override void ExitLiteralExpression(VBAParser.LiteralExpressionContext context)
             {

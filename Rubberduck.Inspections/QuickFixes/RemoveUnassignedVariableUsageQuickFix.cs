@@ -1,41 +1,48 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Antlr4.Runtime;
-using Rubberduck.Common;
-using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.VBEditor;
+using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    [Undocumented] // todo: use?
-    public class RemoveUnassignedVariableUsageQuickFix : QuickFixBase
+    public sealed class RemoveUnassignedVariableUsageQuickFix : IQuickFix
     {
-        public RemoveUnassignedVariableUsageQuickFix(ParserRuleContext context, QualifiedSelection selection)
-            : base(context, selection, InspectionsUI.RemoveUnassignedVariableUsageQuickFix)
+        private readonly RubberduckParserState _state;
+        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
         {
+            typeof(UnassignedVariableUsageInspection)
+        };
+
+        public RemoveUnassignedVariableUsageQuickFix(RubberduckParserState state)
+        {
+            _state = state;
         }
 
-        public override void Fix()
+        public IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
+
+        public void Fix(IInspectionResult result)
         {
-            var module = Selection.QualifiedName.Component.CodeModule;
-            var selection = Selection.Selection;
+            var rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
 
-            var originalCodeLines = module.GetLines(selection.StartLine, selection.LineCount)
-                .Replace(Environment.NewLine, " ")
-                .Replace("_", string.Empty);
+            var assignmentContext = ParserRuleContextHelper.GetParent<VBAParser.LetStmtContext>(result.Context) ??
+                                                  (ParserRuleContext)ParserRuleContextHelper.GetParent<VBAParser.CallStmtContext>(result.Context);
 
-            var originalInstruction = Context.GetText();
-            module.DeleteLines(selection.StartLine, selection.LineCount);
-
-            var newInstruction = InspectionsUI.Inspections_UnassignedVariableTodo;
-            var newCodeLines = string.IsNullOrEmpty(newInstruction)
-                ? string.Empty
-                : originalCodeLines.Replace(originalInstruction, newInstruction);
-
-            if (!string.IsNullOrEmpty(newCodeLines))
-            {
-                module.InsertLines(selection.StartLine, newCodeLines);
-            }
+            rewriter.Remove(assignmentContext);
         }
+
+        public string Description(IInspectionResult result)
+        {
+            return InspectionsUI.RemoveUnassignedVariableUsageQuickFix;
+        }
+
+        public bool CanFixInProcedure => true;
+        public bool CanFixInModule => true;
+        public bool CanFixInProject => true;
     }
 }

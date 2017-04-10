@@ -1,33 +1,67 @@
-using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Parsing;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.VBEditor;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class SetExplicitVariantReturnTypeQuickFix : QuickFixBase
+    public sealed class SetExplicitVariantReturnTypeQuickFix : IQuickFix
     {
-        public SetExplicitVariantReturnTypeQuickFix(ParserRuleContext context, QualifiedSelection selection, string description) 
-            : base(context, selection, description)
+        private readonly RubberduckParserState _state;
+        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
         {
+            typeof(ImplicitVariantReturnTypeInspection)
+        };
+
+        public SetExplicitVariantReturnTypeQuickFix(RubberduckParserState state)
+        {
+            _state = state;
         }
 
-        public override void Fix()
-        {
-            var procedure = Context.GetText();
-            // todo: verify that this isn't a bug / test with a procedure that contains parentheses in the body.
-            var indexOfLastClosingParen = procedure.LastIndexOf(')');
+        public IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
 
-            var result = indexOfLastClosingParen == procedure.Length
-                ? procedure + ' ' + Tokens.As + ' ' + Tokens.Variant
-                : procedure.Insert(procedure.LastIndexOf(')') + 1, ' ' + Tokens.As + ' ' + Tokens.Variant);
+        public void Fix(IInspectionResult result)
+        {
+            var rewriter = _state.GetRewriter(result.Target);
             
-            var module = Selection.QualifiedName.Component.CodeModule;
-            var selection = Context.GetSelection();
-
-            module.DeleteLines(selection.StartLine, selection.LineCount);
-            module.InsertLines(selection.StartLine, result);
+            var asTypeClause = " As Variant";
+            switch (result.Target.DeclarationType)
+            {
+                case DeclarationType.Variable:
+                    var variableContext = (VBAParser.VariableSubStmtContext)result.Target.Context;
+                    rewriter.InsertAfter(variableContext.identifier().Stop.TokenIndex, asTypeClause);
+                    break;
+                case DeclarationType.Parameter:
+                    var parameterContext = (VBAParser.ArgContext)result.Target.Context;
+                    rewriter.InsertAfter(parameterContext.unrestrictedIdentifier().Stop.TokenIndex, asTypeClause);
+                    break;
+                case DeclarationType.Function:
+                    var functionContext = (VBAParser.FunctionStmtContext)result.Target.Context;
+                    rewriter.InsertAfter(functionContext.argList().Stop.TokenIndex, asTypeClause);
+                    break;
+                case DeclarationType.LibraryFunction:
+                    var declareContext = (VBAParser.DeclareStmtContext)result.Target.Context;
+                    rewriter.InsertAfter(declareContext.argList().Stop.TokenIndex, asTypeClause);
+                    break;
+                case DeclarationType.PropertyGet:
+                    var propertyContext = (VBAParser.PropertyGetStmtContext)result.Target.Context;
+                    rewriter.InsertAfter(propertyContext.argList().Stop.TokenIndex, asTypeClause);
+                    break;
+            }
         }
+
+        public string Description(IInspectionResult result)
+        {
+            return InspectionsUI.SetExplicitVariantReturnTypeQuickFix;
+        }
+
+        public bool CanFixInProcedure => true;
+        public bool CanFixInModule => true;
+        public bool CanFixInProject => true;
     }
 }

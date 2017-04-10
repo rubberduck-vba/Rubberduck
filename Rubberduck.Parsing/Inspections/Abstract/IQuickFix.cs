@@ -1,16 +1,17 @@
-﻿using Rubberduck.VBEditor;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Rubberduck.Parsing.Inspections.Abstract
 {
     public interface IQuickFix
     {
-        void Fix();
-        bool CanFixInProject { get; }
-        bool CanFixInModule { get; }
-        bool CanFixInProcedure { get; }
+        void Fix(IInspectionResult result);
+        string Description(IInspectionResult result);
 
-        string Description { get; }
-        bool IsCancelled { get; set; }
-        QualifiedSelection Selection { get; }
+        bool CanFixInProcedure { get; }
+        bool CanFixInModule { get; }
+        bool CanFixInProject { get; }
+
+        IReadOnlyCollection<Type> SupportedInspections { get; }
     }
 }

@@ -1,68 +1,93 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.VBEditor;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class SplitMultipleDeclarationsQuickFix : QuickFixBase
+    public sealed class SplitMultipleDeclarationsQuickFix : IQuickFix
     {
-        public SplitMultipleDeclarationsQuickFix(ParserRuleContext context, QualifiedSelection selection)
-            : base(context, selection, InspectionsUI.SplitMultipleDeclarationsQuickFix)
+        private readonly RubberduckParserState _state;
+        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
         {
+            typeof(MultipleDeclarationsInspection)
+        };
+
+        public SplitMultipleDeclarationsQuickFix(RubberduckParserState state)
+        {
+            _state = state;
         }
 
-        public override void Fix()
+        public IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
+
+        public void Fix(IInspectionResult result)
         {
-            var newContent = new StringBuilder();
-            var selection = Selection.Selection;
+            dynamic context = result.Context is VBAParser.ConstStmtContext
+                ? result.Context
+                : result.Context.Parent;
+
+            var declarationsText = GetDeclarationsText(context);
+
+            var rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
+            rewriter.Replace(context, declarationsText);
+        }
+
+        private string GetDeclarationsText(VBAParser.ConstStmtContext consts)
+        {
             var keyword = string.Empty;
-
-            var variables = Context.Parent as VBAParser.VariableStmtContext;
-            if (variables != null)
+            if (consts.visibility() != null)
             {
-                if (variables.DIM() != null)
-                {
-                    keyword += Tokens.Dim + ' ';
-                }
-                else if (variables.visibility() != null)
-                {
-                    keyword += variables.visibility().GetText() + ' ';
-                }
-                else if (variables.STATIC() != null)
-                {
-                    keyword += variables.STATIC().GetText() + ' ';
-                }
-
-                foreach (var variable in variables.variableListStmt().variableSubStmt())
-                {
-                    newContent.AppendLine(keyword + variable.GetText());
-                }
+                keyword += consts.visibility().GetText() + ' ';
             }
 
-            var consts = Context as VBAParser.ConstStmtContext;
-            if (consts != null)
+            keyword += consts.CONST().GetText() + ' ';
+
+            var newContent = new StringBuilder();
+            foreach (var constant in consts.constSubStmt())
             {
-                var keywords = string.Empty;
-
-                if (consts.visibility() != null)
-                {
-                    keywords += consts.visibility().GetText() + ' ';
-                }
-
-                keywords += consts.CONST().GetText() + ' ';
-
-                foreach (var constant in consts.constSubStmt())
-                {
-                    newContent.AppendLine(keywords + constant.GetText());
-                }
+                newContent.AppendLine(keyword + constant.GetText());
             }
 
-            var module = Selection.QualifiedName.Component.CodeModule;
-            module.DeleteLines(selection);
-            module.InsertLines(selection.StartLine, newContent.ToString());
+            return newContent.ToString();
         }
+
+        private string GetDeclarationsText(VBAParser.VariableStmtContext variables)
+        {
+            var keyword = string.Empty;
+            if (variables.DIM() != null)
+            {
+                keyword += Tokens.Dim + ' ';
+            }
+            else if (variables.visibility() != null)
+            {
+                keyword += variables.visibility().GetText() + ' ';
+            }
+            else if (variables.STATIC() != null)
+            {
+                keyword += variables.STATIC().GetText() + ' ';
+            }
+
+            var newContent = new StringBuilder();
+            foreach (var variable in variables.variableListStmt().variableSubStmt())
+            {
+                newContent.AppendLine(keyword + variable.GetText());
+            }
+
+            return newContent.ToString();
+        }
+
+        public string Description(IInspectionResult result)
+        {
+            return InspectionsUI.SplitMultipleDeclarationsQuickFix;
+        }
+
+        public bool CanFixInProcedure => true;
+        public bool CanFixInModule => true;
+        public bool CanFixInProject => true;
     }
 }

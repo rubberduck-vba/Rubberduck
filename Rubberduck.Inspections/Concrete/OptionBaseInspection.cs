@@ -13,11 +13,9 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class OptionBaseInspection : InspectionBase
     {
         public OptionBaseInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Hint)
-        {
-        }
+            : base(state, CodeInspectionSeverity.Hint) { }
 
-        public override CodeInspectionType InspectionType { get { return CodeInspectionType.MaintainabilityAndReadabilityIssues; } }
+        public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {

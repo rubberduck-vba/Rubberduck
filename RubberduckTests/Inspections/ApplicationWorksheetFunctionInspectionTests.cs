@@ -1,7 +1,6 @@
 using System.Linq;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck.Inspections;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.VBA;
@@ -256,6 +255,7 @@ End Sub
                 .Build();
 
             var vbe = builder.AddProject(project).Build();
+            var component = vbe.Object.SelectedVBComponent;
 
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
@@ -267,11 +267,9 @@ End Sub
             var inspection = new ApplicationWorksheetFunctionInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
-            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
+            new IgnoreOnceQuickFix(parser.State, new[] {inspection}).Fix(inspectionResults.First());
 
-            var actualCode = project.Object.VBComponents[0].CodeModule.Content();
-
-            Assert.AreEqual(expectedCode, actualCode);
+            Assert.AreEqual(expectedCode, parser.State.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -310,12 +308,9 @@ End Sub
 
             var inspection = new ApplicationWorksheetFunctionInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
-
-            inspectionResults.First().QuickFixes.Single(s => s is ApplicationWorksheetFunctionQuickFix).Fix();
-
-            var actualCode = project.Object.VBComponents[0].CodeModule.Content();
-
-            Assert.AreEqual(expectedCode, actualCode);
+            
+            new ApplicationWorksheetFunctionQuickFix(parser.State).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, parser.State.GetRewriter(project.Object.VBComponents.First()).GetText());
         }
 
         [TestMethod]
@@ -359,11 +354,8 @@ End Sub
             var inspection = new ApplicationWorksheetFunctionInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
-            inspectionResults.First().QuickFixes.Single(s => s is ApplicationWorksheetFunctionQuickFix).Fix();
-
-            var actualCode = project.Object.VBComponents[0].CodeModule.Content();
-
-            Assert.AreEqual(expectedCode, actualCode);
+            new ApplicationWorksheetFunctionQuickFix(parser.State).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, parser.State.GetRewriter(project.Object.VBComponents.First()).GetText());
         }
 
         [TestMethod]
@@ -403,11 +395,8 @@ End Sub
             var inspection = new ApplicationWorksheetFunctionInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
-            inspectionResults.First().QuickFixes.Single(s => s is ApplicationWorksheetFunctionQuickFix).Fix();
-
-            var actualCode = project.Object.VBComponents[0].CodeModule.Content();
-
-            Assert.AreEqual(expectedCode, actualCode);
+            new ApplicationWorksheetFunctionQuickFix(parser.State).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, parser.State.GetRewriter(project.Object.VBComponents.First()).GetText());
         }
     }
 }

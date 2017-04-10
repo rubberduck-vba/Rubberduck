@@ -1,6 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Rubberduck.Inspections;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
@@ -169,7 +168,7 @@ End Sub
             RubberduckParserState state;
             var inspectionResults = GetAssignedByValParameterInspectionResults(vbe.Object, out state);
 
-            inspectionResults.First().QuickFixes.Single(s => s is PassParameterByReferenceQuickFix).Fix();
+            new PassParameterByReferenceQuickFix(state).Fix(inspectionResults.First());
             return state.GetRewriter(vbe.Object.ActiveVBProject.VBComponents[0]).GetText();
         }
 
@@ -177,7 +176,7 @@ End Sub
         {
             state = MockParser.CreateAndParse(vbe);
 
-            var inspection = new AssignedByValParameterInspection(state, null);
+            var inspection = new AssignedByValParameterInspection(state);
             return inspection.GetInspectionResults();
         }
 

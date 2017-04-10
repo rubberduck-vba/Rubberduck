@@ -1,52 +1,19 @@
-using System.Collections.Generic;
-using System.Linq;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Inspections.Results
 {
     public class ParameterNotUsedInspectionResult : InspectionResultBase
     {
-        private IEnumerable<IQuickFix> _quickFixes;
-        private readonly bool _isInterfaceImplementation;
-        private readonly IVBE _vbe;
-        private readonly RubberduckParserState _state;
-        private readonly IMessageBox _messageBox;
-
-        public ParameterNotUsedInspectionResult(IInspection inspection, Declaration target,
-            bool isInterfaceImplementation, IVBE vbe, RubberduckParserState state, IMessageBox messageBox)
-            : base(inspection, target)
-        {
-            _isInterfaceImplementation = isInterfaceImplementation;
-            _vbe = vbe;
-            _state = state;
-            _messageBox = messageBox;
-        }
-
-        public override IEnumerable<IQuickFix> QuickFixes
-        {
-            get
-            {
-                return _isInterfaceImplementation
-                    ? Enumerable.Empty<IQuickFix>()
-                    : (_quickFixes ?? (_quickFixes = new IQuickFix[]
-                    {
-                        new RemoveUnusedParameterQuickFix(Context, QualifiedSelection, _vbe, _state, _messageBox),
-                        new IgnoreOnceQuickFix(Context, QualifiedSelection, Inspection.AnnotationName)
-                    }));
-            }
-        }
+        public ParameterNotUsedInspectionResult(IInspection inspection, Declaration target)
+            : base(inspection, target) {}
 
         public override string Description
         {
-            get { return string.Format(InspectionsUI.ParameterNotUsedInspectionResultFormat, Target.IdentifierName).Captialize(); }
+            get { return string.Format(InspectionsUI.ParameterNotUsedInspectionResultFormat, Target.IdentifierName).Capitalize(); }
         }
     }
 }

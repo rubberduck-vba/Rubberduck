@@ -1,32 +1,41 @@
-using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Grammar;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.VBEditor;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class SpecifyExplicitPublicModifierQuickFix : QuickFixBase
+    public sealed class SpecifyExplicitPublicModifierQuickFix : IQuickFix
     {
-        public SpecifyExplicitPublicModifierQuickFix(ParserRuleContext context, QualifiedSelection selection)
-            : base(context, selection, InspectionsUI.SpecifyExplicitPublicModifierQuickFix)
+        private readonly RubberduckParserState _state;
+        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
         {
+            typeof(ImplicitPublicMemberInspection)
+        };
+
+        public SpecifyExplicitPublicModifierQuickFix(RubberduckParserState state)
+        {
+            _state = state;
         }
 
-        public override void Fix()
+        public IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
+
+        public void Fix(IInspectionResult result)
         {
-            var selection = Context.GetSelection();
-            var module = Selection.QualifiedName.Component.CodeModule;
-            {
-                var signatureLine = selection.StartLine;
-
-                var oldContent = module.GetLines(signatureLine, 1);
-                var newContent = Tokens.Public + ' ' + oldContent;
-
-                module.DeleteLines(signatureLine);
-                module.InsertLines(signatureLine, newContent);
-            }
+            var rewriter = _state.GetRewriter(result.Target);
+            rewriter.InsertBefore(result.Context.Start.TokenIndex, "Public ");
         }
+
+        public string Description(IInspectionResult result)
+        {
+            return InspectionsUI.SpecifyExplicitPublicModifierQuickFix;
+        }
+
+        public bool CanFixInProcedure => false;
+        public bool CanFixInModule => true;
+        public bool CanFixInProject => true;
     }
 }

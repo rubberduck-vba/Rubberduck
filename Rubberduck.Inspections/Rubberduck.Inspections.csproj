@@ -52,7 +52,6 @@
   <ItemGroup>
     <Compile Include="Abstract\InspectionBase.cs" />
     <Compile Include="Abstract\InspectionResultBase.cs" />
-    <Compile Include="Abstract\QuickFixBase.cs" />
     <Compile Include="Concrete\ApplicationWorksheetFunctionInspection.cs" />
     <Compile Include="Concrete\AssignedByValParameterInspection.cs" />
     <Compile Include="Concrete\ConstantNotUsedInspection.cs" />
@@ -97,7 +96,6 @@
     <Compile Include="QuickFixes\ChangeDimToPrivateQuickFix.cs" />
     <Compile Include="QuickFixes\ChangeParameterByRefByValQuickFix.cs" />
     <Compile Include="QuickFixes\ChangeProcedureToFunctionQuickFix.cs" />
-    <Compile Include="QuickFixes\CompositeCodeInspectionFix.cs" />
     <Compile Include="QuickFixes\ConvertToProcedureQuickFix.cs" />
     <Compile Include="QuickFixes\DeclareAsExplicitVariantQuickFix.cs" />
     <Compile Include="QuickFixes\EncapsulateFieldQuickFix.cs" />
@@ -118,8 +116,7 @@
     <Compile Include="QuickFixes\RemoveUnusedDeclarationQuickFix.cs" />
     <Compile Include="QuickFixes\RemoveUnusedParameterQuickFix.cs" />
     <Compile Include="QuickFixes\RenameDeclarationQuickFix.cs" />
-    <Compile Include="QuickFixes\RenameProjectQuickFix.cs" />
-    <Compile Include="QuickFixes\RepaceEmptyStringLiteralStatementQuickFix.cs" />
+    <Compile Include="QuickFixes\ReplaceEmptyStringLiteralStatementQuickFix.cs" />
     <Compile Include="QuickFixes\ReplaceGlobalModifierQuickFix.cs" />
     <Compile Include="QuickFixes\ReplaceObsoleteCommentMarkerQuickFix.cs" />
     <Compile Include="QuickFixes\SetExplicitVariantReturnTypeQuickFix.cs" />
@@ -128,6 +125,7 @@
     <Compile Include="QuickFixes\UntypedFunctionUsageQuickFix.cs" />
     <Compile Include="QuickFixes\UseSetKeywordForObjectAssignmentQuickFix.cs" />
     <Compile Include="QuickFixes\WriteOnlyPropertyQuickFix.cs" />
+    <Compile Include="QuickFixProvider.cs" />
     <Compile Include="Results\ApplicationWorksheetFunctionInspectionResult.cs" />
     <Compile Include="Results\AssignedByValParameterInspectionResult.cs" />
     <Compile Include="Results\DefaultProjectNameInspectionResult.cs" />
@@ -214,7 +212,7 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy $(TargetPath) $(SolutionDir)RetailCoder.VBE\bin\Debug /Y</PostBuildEvent>
+    <PostBuildEvent>copy "$(TargetPath)" "$(SolutionDir)RetailCoder.VBE\bin\Debug" /Y</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
