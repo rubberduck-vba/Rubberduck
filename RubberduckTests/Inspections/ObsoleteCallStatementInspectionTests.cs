@@ -1,7 +1,6 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Rubberduck.Inspections;
 using RubberduckTests.Mocks;
 using Rubberduck.Settings;
 using System.Threading;
@@ -261,12 +260,13 @@ End Sub";
 
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            foreach (var inspectionResult in inspectionResults)
+            var fix = new RemoveExplicitCallStatmentQuickFix(state);
+            foreach (var result in inspectionResults)
             {
-                inspectionResult.QuickFixes.First().Fix();
+                fix.Fix(result);
             }
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -306,12 +306,13 @@ End Sub";
 
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            foreach (var inspectionResult in inspectionResults)
+            var fix = new IgnoreOnceQuickFix(state, new[] {inspection});
+            foreach (var result in inspectionResults)
             {
-                inspectionResult.QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
+                fix.Fix(result);
             }
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]

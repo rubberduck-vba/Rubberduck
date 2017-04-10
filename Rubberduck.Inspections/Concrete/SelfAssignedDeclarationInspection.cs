@@ -13,11 +13,9 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class SelfAssignedDeclarationInspection : InspectionBase
     {
         public SelfAssignedDeclarationInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Hint)
-        {
-        }
+            : base(state, CodeInspectionSeverity.Hint) { }
 
-        public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
+        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {

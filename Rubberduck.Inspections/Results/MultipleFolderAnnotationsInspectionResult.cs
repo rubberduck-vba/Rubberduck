@@ -9,13 +9,11 @@ namespace Rubberduck.Inspections.Results
     public class MultipleFolderAnnotationsInspectionResult : InspectionResultBase
     {
         public MultipleFolderAnnotationsInspectionResult(IInspection inspection, Declaration target) 
-            : base(inspection, target)
-        {
-        }
+            : base(inspection, target) {}
 
         public override string Description
         {
-            get { return string.Format(InspectionsUI.MultipleFolderAnnotationsInspectionResultFormat, Target.IdentifierName).Captialize(); }
+            get { return string.Format(InspectionsUI.MultipleFolderAnnotationsInspectionResultFormat, Target.IdentifierName).Capitalize(); }
         }
     }
 }

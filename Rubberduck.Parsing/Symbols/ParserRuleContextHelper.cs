@@ -66,5 +66,30 @@ namespace Rubberduck.Parsing.Symbols
 
             return default(T);
         }
+
+        public static T GetDescendent<T>(RuleContext context)
+        {
+            if (context == null)
+            {
+                return default(T);
+            }
+
+            for (var index = 0; index < context.ChildCount; index++)
+            {
+                var child = context.GetChild(index);
+                if (context.GetChild(index) is T)
+                {
+                    return (T)child;
+                }
+
+                var descendent = GetDescendent<T>(child as RuleContext);
+                if (descendent != null)
+                {
+                    return descendent;
+                }
+            }
+
+            return default(T);
+        }
     }
 }

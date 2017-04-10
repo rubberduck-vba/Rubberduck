@@ -12,11 +12,9 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class VariableNotAssignedInspection : InspectionBase
     {
         public VariableNotAssignedInspection(RubberduckParserState state)
-            : base(state)
-        {
-        }
+            : base(state) { }
 
-        public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
+        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
@@ -37,7 +35,7 @@ namespace Rubberduck.Inspections.Concrete
                 && !declaration.References.Any(reference => reference.IsAssignment));
 
             return declarations.Select(issue => 
-                new IdentifierNotAssignedInspectionResult(this, issue, issue.Context, State.GetRewriter(issue.QualifiedSelection.QualifiedName)));
+                new IdentifierNotAssignedInspectionResult(this, issue));
         }
     }
 }

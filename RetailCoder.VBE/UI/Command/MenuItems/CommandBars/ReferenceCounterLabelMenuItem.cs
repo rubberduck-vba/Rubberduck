@@ -11,13 +11,12 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             _caption = string.Empty;
         }
 
-        private string _caption;
         private int _count;
 
         public void SetCaption(int referenceCount)
         {
             _count = referenceCount;
-            _caption = string.Format("{0} {1}", referenceCount, RubberduckUI.ContextReferences);
+            _caption = $"{referenceCount} {RubberduckUI.ContextReferences}";
         }
 
         public override bool EvaluateCanExecute(RubberduckParserState state)
@@ -25,9 +24,11 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             return _count > 0;
         }
 
+        private string _caption;
         public override Func<string> Caption { get { return () => _caption; } }
-        public override string Key { get { return string.Empty; } }
-        public override bool BeginGroup { get { return true; } }
-        public override int DisplayOrder { get { return (int)RubberduckCommandBarItemDisplayOrder.ContextRefCount; } }
+
+        public override string Key => string.Empty;
+        public override bool BeginGroup => true;
+        public override int DisplayOrder => (int)RubberduckCommandBarItemDisplayOrder.ContextRefCount;
     }
 }

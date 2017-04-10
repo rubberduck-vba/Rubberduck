@@ -1,31 +1,43 @@
-using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Parsing;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.VBEditor;
+using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class ReplaceGlobalModifierQuickFix : QuickFixBase
+    public sealed class ReplaceGlobalModifierQuickFix : IQuickFix
     {
-        public ReplaceGlobalModifierQuickFix(ParserRuleContext context, QualifiedSelection selection)
-            : base(context, selection, InspectionsUI.ObsoleteGlobalInspectionQuickFix)
+        private readonly RubberduckParserState _state;
+        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
         {
+            typeof(ObsoleteGlobalInspection)
+        };
+
+        public ReplaceGlobalModifierQuickFix(RubberduckParserState state)
+        {
+            _state = state;
         }
 
-        public override void Fix()
+        public IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
+
+        public void Fix(IInspectionResult result)
         {
-            var module = Selection.QualifiedName.Component.CodeModule;
-            if (module == null)
-            {
-                return;
-            }
-
-            var selection = Context.GetSelection();
-
-            // bug: this should make a test fail somewhere - what if identifier is one of many declarations on a line?
-            module.ReplaceLine(selection.StartLine, Tokens.Public + ' ' + Context.GetText());
+            var rewriter = _state.GetRewriter(result.Target);
+            rewriter.Replace(ParserRuleContextHelper.GetDescendent<VBAParser.VisibilityContext>(result.Context.Parent.Parent), Tokens.Public);
         }
+
+        public string Description(IInspectionResult result)
+        {
+            return InspectionsUI.ObsoleteGlobalInspectionQuickFix;
+        }
+
+        public bool CanFixInProcedure => false;
+        public bool CanFixInModule => true;
+        public bool CanFixInProject => true;
     }
 }

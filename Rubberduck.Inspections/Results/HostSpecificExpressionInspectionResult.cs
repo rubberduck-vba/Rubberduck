@@ -8,9 +8,7 @@ namespace Rubberduck.Inspections.Results
     public class HostSpecificExpressionInspectionResult : InspectionResultBase
     {
         public HostSpecificExpressionInspectionResult(IInspection inspection, Declaration target)
-            : base(inspection, target)
-        {
-        }
+            : base(inspection, target) {}
 
         public override string Description
         {

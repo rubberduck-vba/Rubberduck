@@ -16,11 +16,9 @@ namespace Rubberduck.Inspections.Concrete
         private IEnumerable<QualifiedContext> _parseTreeResults;
  
         public MissingAnnotationArgumentInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Error)
-        {
-        }
+            : base(state, CodeInspectionSeverity.Error) { }
 
-        public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
+        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
         public void SetResults(IEnumerable<QualifiedContext> results)
         {
@@ -45,7 +43,7 @@ namespace Rubberduck.Inspections.Concrete
         public class InvalidAnnotationStatementListener : VBAParserBaseListener
         {
             private readonly IList<VBAParser.AnnotationContext> _contexts = new List<VBAParser.AnnotationContext>();
-            public IEnumerable<VBAParser.AnnotationContext> Contexts { get { return _contexts; } }
+            public IEnumerable<VBAParser.AnnotationContext> Contexts => _contexts;
 
             public override void ExitAnnotation(VBAParser.AnnotationContext context)
             {

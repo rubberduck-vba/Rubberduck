@@ -1,80 +1,112 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Parsing;
+using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.VBEditor;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class ConvertToProcedureQuickFix : QuickFixBase
+    public sealed class ConvertToProcedureQuickFix : IQuickFix
     {
-        private readonly Declaration _target;
-
-        public ConvertToProcedureQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration target)
-            : base(context, selection, InspectionsUI.ConvertFunctionToProcedureQuickFix)
+        private readonly RubberduckParserState _state;
+        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
         {
-            _target = target;
+            typeof(NonReturningFunctionInspection),
+            typeof(FunctionReturnValueNotUsedInspection)
+        };
+
+        public ConvertToProcedureQuickFix(RubberduckParserState state)
+        {
+            _state = state;
         }
 
-        public override void Fix()
-        {
-            dynamic functionContext = Context as VBAParser.FunctionStmtContext;
-            dynamic propertyGetContext = Context as VBAParser.PropertyGetStmtContext;
+        public IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
 
-            var context = functionContext ?? propertyGetContext;
-            if (context == null)
+        public void Fix(IInspectionResult result)
+        {
+            var functionContext = result.Context as VBAParser.FunctionStmtContext;
+            if (functionContext != null)
             {
-                throw new InvalidOperationException(string.Format(InspectionsUI.InvalidContextTypeInspectionFix, Context.GetType(), GetType()));
+                ConvertFunction(result, functionContext);
             }
 
-            var functionName = Context is VBAParser.FunctionStmtContext
-                ? ((VBAParser.FunctionStmtContext) Context).functionName()
-                : ((VBAParser.PropertyGetStmtContext) Context).functionName();
-
-            var token = functionContext != null
-                ? Tokens.Function
-                : Tokens.Property + ' ' + Tokens.Get;
-            var endToken = token == Tokens.Function
-                ? token
-                : Tokens.Property;
-
-            string visibility = context.visibility() == null ? string.Empty : context.visibility().GetText() + ' ';
-            var name = ' ' + Identifier.GetName(functionName.identifier());
-            var hasTypeHint = Identifier.GetTypeHintValue(functionName.identifier()) != null;
-
-            string args = context.argList().GetText();
-            string asType = context.asTypeClause() == null ? string.Empty : ' ' + context.asTypeClause().GetText();
-
-            var oldSignature = visibility + token + name + (hasTypeHint ? Identifier.GetTypeHintValue(functionName.identifier()) : string.Empty) + args + asType;
-            var newSignature = visibility + Tokens.Sub + name + args;
-
-            var procedure = Context.GetText();
-            var noReturnStatements = procedure;
-
-            GetReturnStatements(_target).ToList().ForEach(returnStatement =>
-                noReturnStatements = Regex.Replace(noReturnStatements, @"[ \t\f]*" + returnStatement + @"[ \t\f]*\r?\n?", ""));
-            var result = noReturnStatements.Replace(oldSignature, newSignature)
-                .Replace(Tokens.End + ' ' + endToken, Tokens.End + ' ' + Tokens.Sub)
-                .Replace(Tokens.Exit + ' ' + endToken, Tokens.Exit + ' ' + Tokens.Sub);
-
-            var module = Selection.QualifiedName.Component.CodeModule;
-            var selection = Context.GetSelection();
-
-            module.DeleteLines(selection.StartLine, selection.LineCount);
-            module.InsertLines(selection.StartLine, result);
+            var propertyGetContext = result.Context as VBAParser.PropertyGetStmtContext;
+            if (propertyGetContext != null)
+            {
+                ConvertPropertyGet(result, propertyGetContext);
+            }
         }
 
-        private IEnumerable<string> GetReturnStatements(Declaration declaration)
+        private void ConvertFunction(IInspectionResult result, VBAParser.FunctionStmtContext functionContext)
+        {
+            var rewriter = _state.GetRewriter(result.Target);
+
+            var asTypeContext = ParserRuleContextHelper.GetChild<VBAParser.AsTypeClauseContext>(functionContext);
+            if (asTypeContext != null)
+            {
+                rewriter.Remove(asTypeContext);
+                rewriter.Remove(functionContext.children.ElementAt(functionContext.children.IndexOf(asTypeContext) - 1) as ParserRuleContext);
+            }
+
+            if (result.Target.TypeHint != null)
+            {
+                rewriter.Remove(ParserRuleContextHelper.GetDescendent<VBAParser.TypeHintContext>(functionContext));
+            }
+
+            rewriter.Replace(functionContext.FUNCTION(), Tokens.Sub);
+            rewriter.Replace(functionContext.END_FUNCTION(), "End Sub");
+
+            foreach (var returnStatement in GetReturnStatements(result.Target))
+            {
+                rewriter.Remove(returnStatement);
+            }
+        }
+
+        private void ConvertPropertyGet(IInspectionResult result, VBAParser.PropertyGetStmtContext propertyGetContext)
+        {
+            var rewriter = _state.GetRewriter(result.Target);
+
+            var asTypeContext = ParserRuleContextHelper.GetChild<VBAParser.AsTypeClauseContext>(propertyGetContext);
+            if (asTypeContext != null)
+            {
+                rewriter.Remove(asTypeContext);
+                rewriter.Remove(propertyGetContext.children.ElementAt(propertyGetContext.children.IndexOf(asTypeContext) - 1) as ParserRuleContext);
+            }
+
+            if (result.Target.TypeHint != null)
+            {
+                rewriter.Remove(ParserRuleContextHelper.GetDescendent<VBAParser.TypeHintContext>(propertyGetContext));
+            }
+
+            rewriter.Replace(propertyGetContext.PROPERTY_GET(), Tokens.Sub);
+            rewriter.Replace(propertyGetContext.END_PROPERTY(), "End Sub");
+
+            foreach (var returnStatement in GetReturnStatements(result.Target))
+            {
+                rewriter.Remove(returnStatement);
+            }
+        }
+
+        public string Description(IInspectionResult result)
+        {
+            return InspectionsUI.ConvertFunctionToProcedureQuickFix;
+        }
+
+        public bool CanFixInProcedure => false;
+        public bool CanFixInModule => true;
+        public bool CanFixInProject => false;
+
+        private IEnumerable<ParserRuleContext> GetReturnStatements(Declaration declaration)
         {
             return declaration.References
                 .Where(usage => IsReturnStatement(declaration, usage))
-                .Select(usage => usage.Context.Parent.GetText());
+                .Select(usage => usage.Context.Parent)
+                .Cast<ParserRuleContext>();
         }
 
         private bool IsReturnStatement(Declaration declaration, IdentifierReference assignment)

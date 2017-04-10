@@ -12,11 +12,9 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class VariableTypeNotDeclaredInspection : InspectionBase
     {
         public VariableTypeNotDeclaredInspection(RubberduckParserState state)
-            : base(state)
-        {
-        }
+            : base(state) { }
 
-        public override CodeInspectionType InspectionType { get { return CodeInspectionType.LanguageOpportunities; } }
+        public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {

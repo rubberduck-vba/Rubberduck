@@ -1,9 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using Antlr4.Runtime;
 using Rubberduck.Common;
-using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -11,51 +12,59 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class PassParameterByValueQuickFix : QuickFixBase
+    public sealed class PassParameterByValueQuickFix : IQuickFix
     {
         private readonly RubberduckParserState _state;
-        private readonly Declaration _target;
+        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
+        {
+            typeof(ParameterCanBeByValInspection)
+        };
 
-        public PassParameterByValueQuickFix(RubberduckParserState state, Declaration target, ParserRuleContext context, QualifiedSelection selection)
-            : base(context, selection, InspectionsUI.PassParameterByValueQuickFix)
+        public PassParameterByValueQuickFix(RubberduckParserState state)
         {
             _state = state;
-            _target = target;
         }
 
-        public override void Fix()
+        public IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
+
+        public void Fix(IInspectionResult result)
         {
-            if (_target.ParentDeclaration.DeclarationType == DeclarationType.Event ||
-                _state.AllUserDeclarations.FindInterfaceMembers().Contains(_target.ParentDeclaration))
+            if (result.Target.ParentDeclaration.DeclarationType == DeclarationType.Event ||
+                _state.AllUserDeclarations.FindInterfaceMembers().Contains(result.Target.ParentDeclaration))
             {
-                FixMethods();
+                FixMethods(result.Target);
             }
             else
             {
-                FixMethod((VBAParser.ArgContext)Context, Selection);
+                FixMethod((VBAParser.ArgContext)result.Target.Context, result.QualifiedSelection);
             }
         }
 
-        private void FixMethods()
+        public string Description(IInspectionResult result)
+        {
+            return InspectionsUI.PassParameterByValueQuickFix;
+        }
+
+        private void FixMethods(Declaration target)
         {
             var declarationParameters =
                 _state.AllUserDeclarations.Where(declaration => declaration.DeclarationType == DeclarationType.Parameter &&
-                                                                Equals(declaration.ParentDeclaration, _target.ParentDeclaration))
+                                                                Equals(declaration.ParentDeclaration, target.ParentDeclaration))
                     .OrderBy(o => o.Selection.StartLine)
                     .ThenBy(t => t.Selection.StartColumn)
                     .ToList();
 
-            var parameterIndex = declarationParameters.IndexOf(_target);
+            var parameterIndex = declarationParameters.IndexOf(target);
             if (parameterIndex == -1)
             {
                 return; // should only happen if the parse results are stale; prevents a crash in that case
             }
 
-            var members = _target.ParentDeclaration.DeclarationType == DeclarationType.Event
-                ? _state.AllUserDeclarations.FindHandlersForEvent(_target.ParentDeclaration)
+            var members = target.ParentDeclaration.DeclarationType == DeclarationType.Event
+                ? _state.AllUserDeclarations.FindHandlersForEvent(target.ParentDeclaration)
                     .Select(s => s.Item2)
                     .ToList()
-                : _state.AllUserDeclarations.FindInterfaceImplementationMembers(_target.ParentDeclaration).ToList();
+                : _state.AllUserDeclarations.FindInterfaceImplementationMembers(target.ParentDeclaration).ToList();
 
             foreach (var member in members)
             {
@@ -76,43 +85,19 @@ namespace Rubberduck.Inspections.QuickFixes
 
         private void FixMethod(VBAParser.ArgContext context, QualifiedSelection qualifiedSelection)
         {
-            var parameter = context.GetText();
-            var argList = context.parent.GetText();
-
-            var module = qualifiedSelection.QualifiedName.Component.CodeModule;
+            var rewriter = _state.GetRewriter(qualifiedSelection.QualifiedName);
+            if (context.BYREF() != null)
             {
-                string result;
-                if (context.BYREF() != null)
-                {
-                    result = parameter.Replace(Tokens.ByRef, Tokens.ByVal);
-                }
-                else if (context.OPTIONAL() != null)
-                {
-                    result = parameter.Replace(Tokens.Optional, Tokens.Optional + ' ' + Tokens.ByVal);
-                }
-                else
-                {
-                    result = Tokens.ByVal + ' ' + parameter;
-                }
-
-                var startLine = 0;
-                var stopLine = 0;
-                try
-                {
-                    dynamic proc = context.parent.parent;
-                    startLine = proc.GetType().GetProperty("Start").GetValue(proc).Line;
-                    stopLine =  proc.GetType().GetProperty("Stop").GetValue(proc).Line;
-                }
-                catch { return; }
-
-                var code = module.GetLines(startLine, stopLine - startLine + 1);
-                result = code.Replace(argList, argList.Replace(parameter, result));
-
-                foreach (var line in result.Split(new[] { "\r\n" }, StringSplitOptions.None))
-                {
-                    module.ReplaceLine(startLine++, line);
-                }  
+                rewriter.Replace(context.BYREF(), Tokens.ByVal);
+            }
+            else
+            {
+                rewriter.InsertBefore(context.unrestrictedIdentifier().Start.TokenIndex, "ByVal ");
             }
         }
+
+        public bool CanFixInProcedure => true;
+        public bool CanFixInModule => true;
+        public bool CanFixInProject => true;
     }
 }

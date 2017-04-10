@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck.Inspections;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Annotations;
@@ -132,7 +131,7 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var module = project.Object.VBComponents[0].CodeModule;
+            var component = project.Object.VBComponents[0];
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
@@ -143,9 +142,9 @@ End Sub";
             var inspection = new UntypedFunctionUsageInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
-            inspectionResults.First().QuickFixes.First().Fix();
+            new UntypedFunctionUsageQuickFix(parser.State).Fix(inspectionResults.First());
 
-            Assert.AreEqual(expectedCode, module.Content());
+            Assert.AreEqual(expectedCode, parser.State.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -172,7 +171,7 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var module = project.Object.VBComponents[0].CodeModule;
+            var component = project.Object.VBComponents[0];
             var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
@@ -182,10 +181,9 @@ End Sub";
 
             var inspection = new UntypedFunctionUsageInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
-
-            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
-
-            Assert.AreEqual(expectedCode, module.Content());
+            
+            new IgnoreOnceQuickFix(parser.State, new[] {inspection}).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, parser.State.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -708,7 +706,7 @@ End Sub";
                 false,
                 new List<IAnnotation>(),
                 new Attributes());
-        
+
 
             var timePropertyGet = new PropertyGetDeclaration(
                 new QualifiedMemberName(dateTimeModule.QualifiedName.QualifiedModuleName, "Time"),

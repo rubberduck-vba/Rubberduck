@@ -86,6 +86,7 @@ namespace Rubberduck.Root
             .ToArray();
 
             BindCodeInspectionTypes(assemblies);
+            BindQuickFixTypes(assemblies);
             BindRefactoringDialogs();
 
             ApplyDefaultInterfacesConvention(assemblies);
@@ -294,6 +295,20 @@ namespace Rubberduck.Root
             }
         }
 
+        // note: IQuickFix implementations are discovered in all assemblies, via reflection.
+        private void BindQuickFixTypes(IEnumerable<Assembly> assemblies)
+        {
+            var quickFixes = assemblies
+                .SelectMany(a => a.GetTypes().Where(type => type.IsClass && !type.IsAbstract && type.GetInterfaces().Contains(typeof(IQuickFix))))
+                .ToList();
+
+            // multibinding for IEnumerable<IQuickFix> dependency
+            foreach (var quickFix in quickFixes)
+            {
+                Bind<IQuickFix>().To(quickFix).InSingletonScope();
+            }
+        }
+
         private void ConfigureRubberduckCommandBar()
         {
             var commandBars = _vbe.CommandBars;
@@ -454,6 +469,7 @@ namespace Rubberduck.Root
                 KernelInstance.Get<ReparseCommandMenuItem>(),
                 KernelInstance.Get<ShowParserErrorsCommandMenuItem>(),
                 KernelInstance.Get<ContextSelectionLabelMenuItem>(),
+                KernelInstance.Get<ContextDescriptionLabelMenuItem>(),
                 KernelInstance.Get<ReferenceCounterLabelMenuItem>(),
 #if DEBUG
                 KernelInstance.Get<SerializeDeclarationsCommandMenuItem>()

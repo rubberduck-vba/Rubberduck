@@ -11,12 +11,10 @@ namespace Rubberduck.Inspections.Concrete
 {
     public sealed class MemberNotOnInterfaceInspection : InspectionBase
     {
-        public MemberNotOnInterfaceInspection(RubberduckParserState state, CodeInspectionSeverity defaultSeverity = CodeInspectionSeverity.Warning)
-            : base(state, defaultSeverity)
-        {
-        }
+        public MemberNotOnInterfaceInspection(RubberduckParserState state)
+            : base(state) { }
 
-        public override CodeInspectionType InspectionType { get { return CodeInspectionType.CodeQualityIssues; } }
+        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
@@ -28,12 +26,10 @@ namespace Rubberduck.Inspections.Concrete
                                                      ((ClassModuleDeclaration)decl.AsTypeDeclaration).IsExtensible)
                                        .SelectMany(decl => decl.References).ToList();
 
-            return (from access in unresolved
-                let callingContext = targets.FirstOrDefault(usage => usage.Context.Equals(access.CallingContext))
-                where callingContext != null
-                select
-                    new MemberNotOnInterfaceInspectionResult(this, access, callingContext.Declaration.AsTypeDeclaration))
-                .ToList();
+            return from access in unresolved
+                   let callingContext = targets.FirstOrDefault(usage => usage.Context.Equals(access.CallingContext))
+                   where callingContext != null
+                   select new MemberNotOnInterfaceInspectionResult(this, access, callingContext.Declaration.AsTypeDeclaration);
         }
     }
 }
