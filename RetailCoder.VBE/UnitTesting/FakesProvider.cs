@@ -14,7 +14,8 @@ namespace Rubberduck.UnitTesting
     public class FakesProvider : IFakesProvider
     {
         internal const int AllInvocations = -1;
-        // ReSharper disable once InconsistentNaming
+        // ReSharper disable once InconsistentNaming - respects COM naming conventions
+        [Description("A value indicating that specified configuration applies to all invocations.")]
         public const int rdAllInvocations = AllInvocations;     
 
         private static Dictionary<Type, StubBase> ActiveFakes { get; } = new Dictionary<Type, StubBase>();
