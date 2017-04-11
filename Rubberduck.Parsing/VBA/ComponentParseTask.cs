@@ -84,42 +84,38 @@ namespace Rubberduck.Parsing.VBA
             {
                 Logger.Error(exception, "Exception thrown in thread {0}, ParseTaskID {1}.", Thread.CurrentThread.ManagedThreadId, _taskId);
                 var failedHandler = ParseFailure;
-                if (failedHandler != null)
-                    failedHandler.Invoke(this, new ParseFailureArgs
-                    {
-                        Cause = exception
-                    });
+                failedHandler?.Invoke(this, new ParseFailureArgs
+                {
+                    Cause = exception
+                });
             }
             catch (SyntaxErrorException exception)
             {
                 Logger.Warn("Syntax error; offending token '{0}' at line {1}, column {2} in module {3}.", exception.OffendingSymbol.Text, exception.LineNumber, exception.Position, _qualifiedName);
                 Logger.Error(exception, "Exception thrown in thread {0}, ParseTaskID {1}.", Thread.CurrentThread.ManagedThreadId, _taskId);
                 var failedHandler = ParseFailure;
-                if (failedHandler != null)
-                    failedHandler.Invoke(this, new ParseFailureArgs
-                    {
-                        Cause = exception
-                    });
+                failedHandler?.Invoke(this, new ParseFailureArgs
+                {
+                    Cause = exception
+                });
             }
             catch (OperationCanceledException exception)
             {
                 //We return this, so that the calling code knows that the operation actually has been cancelled.
                 var failedHandler = ParseFailure;
-                if (failedHandler != null)
-                    failedHandler.Invoke(this, new ParseFailureArgs
-                    {
-                        Cause = exception
-                    });
+                failedHandler?.Invoke(this, new ParseFailureArgs
+                {
+                    Cause = exception
+                });
             }
             catch (Exception exception)
             {
                 Logger.Error(exception, "Exception thrown in thread {0}, ParseTaskID {1}.", Thread.CurrentThread.ManagedThreadId, _taskId);
                 var failedHandler = ParseFailure;
-                if (failedHandler != null)
-                    failedHandler.Invoke(this, new ParseFailureArgs
-                    {
-                        Cause = exception
-                    });
+                failedHandler?.Invoke(this, new ParseFailureArgs
+                {
+                    Cause = exception
+                });
             }
         }
 
@@ -217,10 +213,10 @@ namespace Rubberduck.Parsing.VBA
         private class CommentListener : VBAParserBaseListener
         {
             private readonly IList<VBAParser.RemCommentContext> _remComments = new List<VBAParser.RemCommentContext>();
-            public IEnumerable<VBAParser.RemCommentContext> RemComments { get { return _remComments; } }
+            public IEnumerable<VBAParser.RemCommentContext> RemComments => _remComments;
 
             private readonly IList<VBAParser.CommentContext> _comments = new List<VBAParser.CommentContext>();
-            public IEnumerable<VBAParser.CommentContext> Comments { get { return _comments; } }
+            public IEnumerable<VBAParser.CommentContext> Comments => _comments;
 
             public override void ExitRemComment([NotNull] VBAParser.RemCommentContext context)
             {
