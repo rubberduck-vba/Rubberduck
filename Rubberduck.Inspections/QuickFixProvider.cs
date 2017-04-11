@@ -36,8 +36,18 @@ namespace Rubberduck.Inspections
             return _quickFixes[result.Inspection.GetType()];
         }
 
+        private bool CanFix(IQuickFix fix, Type inspection)
+        {
+            return _quickFixes.ContainsKey(inspection) && _quickFixes[inspection].Contains(fix);
+        }
+
         public void Fix(IQuickFix fix, IInspectionResult result)
         {
+            if (!CanFix(fix, result.Inspection.GetType()))
+            {
+                throw new ArgumentException("Fix does not support this inspection.", nameof(result));
+            }
+
             fix.Fix(result);
             _state.GetRewriter(result.QualifiedSelection.QualifiedName).Rewrite();
             _state.OnParseRequested(this);
@@ -46,11 +56,21 @@ namespace Rubberduck.Inspections
         public void FixInProcedure(IQuickFix fix, QualifiedSelection selection, Type inspectionType,
             IEnumerable<IInspectionResult> results)
         {
+            if (!CanFix(fix, inspectionType))
+            {
+                throw new ArgumentException("Fix does not support this inspection.", nameof(inspectionType));
+            }
+
             throw new NotImplementedException("A qualified selection does not state which proc we are in, so we could really only use this on inspection results that expose a Declaration.");
         }
 
         public void FixInModule(IQuickFix fix, QualifiedSelection selection, Type inspectionType, IEnumerable<IInspectionResult> results)
         {
+            if (!CanFix(fix, inspectionType))
+            {
+                throw new ArgumentException("Fix does not support this inspection.", nameof(inspectionType));
+            }
+
             var filteredResults = results
                 .Where(result => result.Inspection.GetType() == inspectionType
                               && result.QualifiedSelection.QualifiedName == selection.QualifiedName)
@@ -71,6 +91,11 @@ namespace Rubberduck.Inspections
         public void FixInProject(IQuickFix fix, QualifiedSelection selection, Type inspectionType,
             IEnumerable<IInspectionResult> results)
         {
+            if (!CanFix(fix, inspectionType))
+            {
+                throw new ArgumentException("Fix does not support this inspection.", nameof(inspectionType));
+            }
+
             var filteredResults = results
                 .Where(result => result.Inspection.GetType() == inspectionType
                               && result.QualifiedSelection.QualifiedName.ProjectId == selection.QualifiedName.ProjectId)
@@ -95,6 +120,11 @@ namespace Rubberduck.Inspections
 
         public void FixAll(IQuickFix fix, Type inspectionType, IEnumerable<IInspectionResult> results)
         {
+            if (!CanFix(fix, inspectionType))
+            {
+                throw new ArgumentException("Fix does not support this inspection.", nameof(inspectionType));
+            }
+
             var filteredResults = results.Where(result => result.Inspection.GetType() == inspectionType);
 
             foreach (var result in filteredResults)
