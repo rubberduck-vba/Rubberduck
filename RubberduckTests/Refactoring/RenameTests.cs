@@ -1540,12 +1540,12 @@ End Sub
         [TestMethod]
         public void RenameRefactoring_CheckAllRefactorCallPaths()
         {
-            const string inputCode1 =
+            const string inputCode =
 @"
 Private Sub Foo()
 End Sub
 ";
-            const string expectedCode1 =
+            const string expectedCode =
 @"
 Private Sub Goo()
 End Sub
@@ -1554,17 +1554,19 @@ End Sub
 
             foreach ( var param in refactorParams)
             {
-                var tdo = new RenameTestsDataObject();
-                tdo.SelectionTarget = "Foo";
-                tdo.SelectionLineIdentifier = "Foo()";
-                tdo.SelectionModuleName = "Class1";
-                tdo.NewName = "Goo";
-                AddTestComponent(tdo, tdo.SelectionModuleName, inputCode1, ComponentType.ClassModule);
+                var tdo = new RenameTestsDataObject
+                {
+                    SelectionTarget = "Foo",
+                    SelectionLineIdentifier = "Foo()",
+                    SelectionModuleName = "Class1",
+                    NewName = "Goo"
+                };
+                AddTestComponent(tdo, tdo.SelectionModuleName, inputCode, ComponentType.ClassModule);
   
                 SetupAndRunRenameRefactorTest(tdo, param);
 
-                var rewriter1 = tdo.ParserState.GetRewriter(RetrieveComponent(tdo, tdo.SelectionModuleName).CodeModule.Parent);
-                Assert.AreEqual(expectedCode1, rewriter1.GetText());
+                var rewriter = tdo.ParserState.GetRewriter(RetrieveComponent(tdo, tdo.SelectionModuleName).CodeModule.Parent);
+                Assert.AreEqual(expectedCode, rewriter.GetText());
                 tdo.MsgBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()), Times.Never);
             }
         }
