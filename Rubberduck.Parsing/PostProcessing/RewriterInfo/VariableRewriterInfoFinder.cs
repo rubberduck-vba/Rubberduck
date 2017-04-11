@@ -22,7 +22,7 @@ namespace Rubberduck.Parsing.PostProcessing.RewriterInfo
 
             var items = context.variableSubStmt();
             var itemIndex = items.ToList().IndexOf(variable);
-            var count = items.Count;
+            var count = items.Length;
 
             var element = context.Parent.Parent as VBAParser.ModuleDeclarationsElementContext;
             if (element != null)

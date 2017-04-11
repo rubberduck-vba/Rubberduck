@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\Antlr4.4.3.0\build\Antlr4.props" Condition="Exists('..\packages\Antlr4.4.3.0\build\Antlr4.props')" />
+  <Import Project="..\packages\Antlr4.4.5.3\build\Antlr4.props" Condition="Exists('..\packages\Antlr4.4.5.3\build\Antlr4.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -12,7 +12,8 @@
     <AssemblyName>Rubberduck.Parsing</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>5f9fbe2b</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
   </PropertyGroup>
@@ -42,9 +43,9 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Antlr4.Runtime.net45, Version=4.3.0.0, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Antlr4.Runtime.4.3.0\lib\net45\Antlr4.Runtime.net45.dll</HintPath>
+    <Reference Include="Antlr4.Runtime, Version=4.5.0.0, Culture=neutral, PublicKeyToken=09abb75b9ed49849, processorArchitecture=MSIL">
+      <HintPath>..\packages\Antlr4.Runtime.4.5.3\lib\net45\Antlr4.Runtime.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Build.Tasks.v4.0" />
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
@@ -130,7 +131,6 @@
     <Compile Include="Grammar\VBAParser.cs" />
     <Compile Include="Grammar\VBAParserBaseListener.cs" />
     <Compile Include="Grammar\VBAParserBaseVisitor.cs" />
-    <Compile Include="Grammar\VBAParserIdentifierContext.cs" />
     <Compile Include="Grammar\VBAParserListener.cs" />
     <Compile Include="Grammar\VBAParserVisitor.cs" />
     <Compile Include="Inspections\Abstract\IQuickFixProvider.cs" />
@@ -167,6 +167,11 @@
     <Compile Include="PostProcessing\RewriterInfo\RewriterInfoFinderBase.cs" />
     <Compile Include="PostProcessing\RewriterInfo\VariableRewriterInfoFinder.cs" />
     <Compile Include="PreProcessing\IVBAPreprocessor.cs" />
+    <Compile Include="ComReflection\ComField.cs" />
+    <Compile Include="ComReflection\ComMember.cs" />
+    <Compile Include="ComReflection\ComModule.cs" />
+    <Compile Include="ComReflection\ComProject.cs" />
+    <Compile Include="PostProcessing\IModuleRewriter.cs" />
     <Compile Include="PreProcessing\VBAConditionalCompilationParser.cs" />
     <Compile Include="PreProcessing\VBAConditionalCompilationParserBaseListener.cs" />
     <Compile Include="PreProcessing\VBAConditionalCompilationParserBaseVisitor.cs" />
@@ -178,11 +183,12 @@
     <Compile Include="PreProcessing\VBADateListener.cs" />
     <Compile Include="PreProcessing\VBADateParser.cs" />
     <Compile Include="PreProcessing\VBADateVisitor.cs" />
-    <Compile Include="ComReflection\ComField.cs" />
-    <Compile Include="ComReflection\ComMember.cs" />
-    <Compile Include="ComReflection\ComModule.cs" />
-    <Compile Include="ComReflection\ComProject.cs" />
-    <Compile Include="PostProcessing\IModuleRewriter.cs" />
+    <Compile Include="PreProcessing\VBALikeBaseListener.cs" />
+    <Compile Include="PreProcessing\VBALikeBaseVisitor.cs" />
+    <Compile Include="PreProcessing\VBALikeLexer.cs" />
+    <Compile Include="PreProcessing\VBALikeListener.cs" />
+    <Compile Include="PreProcessing\VBALikeParser.cs" />
+    <Compile Include="PreProcessing\VBALikeVisitor.cs" />
     <Compile Include="SymbolList.cs" />
     <Compile Include="Symbols\AliasDeclaration.cs" />
     <Compile Include="Symbols\DeclarationLoaders\SpecialFormDeclarations.cs" />
@@ -270,12 +276,6 @@
     <Compile Include="PreProcessing\UnaryNotExpression.cs" />
     <Compile Include="PreProcessing\ValueType.cs" />
     <Compile Include="PreProcessing\VBALibrary.cs" />
-    <Compile Include="PreProcessing\VBALikeBaseListener.cs" />
-    <Compile Include="PreProcessing\VBALikeBaseVisitor.cs" />
-    <Compile Include="PreProcessing\VBALikeLexer.cs" />
-    <Compile Include="PreProcessing\VBALikeListener.cs" />
-    <Compile Include="PreProcessing\VBALikeParser.cs" />
-    <Compile Include="PreProcessing\VBALikeVisitor.cs" />
     <Compile Include="PreProcessing\VBAPrecompilationParser.cs" />
     <Compile Include="PreProcessing\VBADateConstants.cs" />
     <Compile Include="PreProcessing\SymbolTable.cs" />
@@ -407,16 +407,16 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Antlr4.4.3.0\build\Antlr4.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Antlr4.4.3.0\build\Antlr4.props'))" />
-    <Error Condition="!Exists('..\packages\Antlr4.4.3.0\build\Antlr4.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Antlr4.4.3.0\build\Antlr4.targets'))" />
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+    <Error Condition="!Exists('..\packages\Antlr4.4.5.3\build\Antlr4.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Antlr4.4.5.3\build\Antlr4.props'))" />
+    <Error Condition="!Exists('..\packages\Antlr4.4.5.3\build\Antlr4.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Antlr4.4.5.3\build\Antlr4.targets'))" />
   </Target>
-  <Import Project="..\packages\Antlr4.4.3.0\build\Antlr4.targets" Condition="Exists('..\packages\Antlr4.4.3.0\build\Antlr4.targets')" />
   <PropertyGroup>
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Import Project="..\packages\Antlr4.4.5.3\build\Antlr4.targets" Condition="Exists('..\packages\Antlr4.4.5.3\build\Antlr4.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

@@ -208,7 +208,7 @@ namespace Rubberduck.Parsing.Symbols
         public void Resolve(VBAParser.OnGoToStmtContext context)
         {
             ResolveDefault(context.expression()[0]);
-            for (int labelIndex = 1; labelIndex < context.expression().Count; labelIndex++)
+            for (int labelIndex = 1; labelIndex < context.expression().Length; labelIndex++)
             {
                 ResolveLabel(context.expression()[labelIndex], context.expression()[labelIndex].GetText());
             }
@@ -222,7 +222,7 @@ namespace Rubberduck.Parsing.Symbols
         public void Resolve(VBAParser.OnGoSubStmtContext context)
         {
             ResolveDefault(context.expression()[0]);
-            for (int labelIndex = 1; labelIndex < context.expression().Count; labelIndex++)
+            for (int labelIndex = 1; labelIndex < context.expression().Length; labelIndex++)
             {
                 ResolveLabel(context.expression()[labelIndex], context.expression()[labelIndex].GetText());
             }
@@ -629,7 +629,7 @@ namespace Rubberduck.Parsing.Symbols
                 _qualifiedModuleName,
                 _currentScope,
                 _currentParent);
-            for (int exprIndex = 1; exprIndex < context.expression().Count; exprIndex++)
+            for (int exprIndex = 1; exprIndex < context.expression().Length; exprIndex++)
             {
                 ResolveDefault(context.expression()[exprIndex]);
             }
@@ -667,7 +667,7 @@ namespace Rubberduck.Parsing.Symbols
                 //    _currentScope,
                 //    _currentParent);
             }
-            for (int exprIndex = 1; exprIndex < context.expression().Count; exprIndex++)
+            for (int exprIndex = 1; exprIndex < context.expression().Length; exprIndex++)
             {
                 ResolveDefault(context.expression()[exprIndex]);
             }
