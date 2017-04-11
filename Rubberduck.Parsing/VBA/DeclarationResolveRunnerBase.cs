@@ -34,7 +34,7 @@ namespace Rubberduck.Parsing.VBA
             _comReferenceManager = comReferenceManager;
         }
 
-        public abstract void ResolveDeclarations(ICollection<QualifiedModuleName> modules, CancellationToken token);
+        public abstract void ResolveDeclarations(IReadOnlyCollection<QualifiedModuleName> modules, CancellationToken token);
 
 
         protected void ResolveDeclarations(QualifiedModuleName module, IParseTree tree, CancellationToken token)

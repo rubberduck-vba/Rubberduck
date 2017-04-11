@@ -43,34 +43,29 @@ namespace Rubberduck.Parsing.VBA
         protected abstract void AddModuleToModuleReferences(DeclarationFinder finder, CancellationToken token);
 
 
-        public void ResolveReferences(ICollection<QualifiedModuleName> toResolve, CancellationToken token)
+        public void ResolveReferences(IReadOnlyCollection<QualifiedModuleName> toResolve, CancellationToken token)
         {
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
             _toResolve.UnionWith(toResolve);
-
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
             ExecuteCompilationPasses();
-
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
             var parseTreesToResolve = _state.ParseTrees.Where(kvp => _toResolve.Contains(kvp.Key)).ToList();
+            token.ThrowIfCancellationRequested();
 
             ResolveReferences(parseTreesToResolve, token);
-
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
             AddModuleToModuleReferences(_state.DeclarationFinder, token);
-
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
             AddNewUndeclaredVariablesToDeclarations();
             AddNewUnresolvedMemberDeclarations();
 
             _toResolve.Clear();
-
-
         }
 
         private void ExecuteCompilationPasses()

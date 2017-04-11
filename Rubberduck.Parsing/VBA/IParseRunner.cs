@@ -6,6 +6,6 @@ namespace Rubberduck.Parsing.VBA
 {
     public interface IParseRunner
     {
-        void ParseModules(ICollection<QualifiedModuleName> modulesToParse, CancellationToken token);
+        void ParseModules(IReadOnlyCollection<QualifiedModuleName> modulesToParse, CancellationToken token);
     }
 }

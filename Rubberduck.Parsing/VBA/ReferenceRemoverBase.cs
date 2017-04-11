@@ -15,17 +15,23 @@ namespace Rubberduck.Parsing.VBA
             RubberduckParserState state,
             IModuleToModuleReferenceManager moduleToModuleReferenceManager)
         {
-            if (state == null) throw new ArgumentNullException(nameof(state));
-            if (moduleToModuleReferenceManager == null) throw new ArgumentNullException(nameof(moduleToModuleReferenceManager));
+            if (state == null)
+            {
+                throw new ArgumentNullException(nameof(state));
+            }
+            if (moduleToModuleReferenceManager == null)
+            {
+                throw new ArgumentNullException(nameof(moduleToModuleReferenceManager));
+            }
 
             _state = state;
             _moduleToModuleReferenceManager = moduleToModuleReferenceManager;
         }
 
-        public abstract void RemoveReferencesTo(ICollection<QualifiedModuleName> modules, CancellationToken token);
-        protected abstract void RemoveReferencesByFromTargetModules(ICollection<QualifiedModuleName> referencingModules, ICollection<QualifiedModuleName> targetModules, CancellationToken token);
+        public abstract void RemoveReferencesTo(IReadOnlyCollection<QualifiedModuleName> modules, CancellationToken token);
+        protected abstract void RemoveReferencesByFromTargetModules(IReadOnlyCollection<QualifiedModuleName> referencingModules, IReadOnlyCollection<QualifiedModuleName> targetModules, CancellationToken token);
 
-        public void RemoveReferencesBy(ICollection<QualifiedModuleName> modules, CancellationToken token)
+        public void RemoveReferencesBy(IReadOnlyCollection<QualifiedModuleName> modules, CancellationToken token)
         {
             if (!modules.Any())
             {
@@ -35,7 +41,7 @@ namespace Rubberduck.Parsing.VBA
             RemoveReferencesByFromTargetModules(modules, referencedModulesNeedingReferenceRemoval, token);
         }
 
-        protected void RemoveReferencesByFromTargetModule(ICollection<QualifiedModuleName> referencingModules, QualifiedModuleName targetModule)
+        protected void RemoveReferencesByFromTargetModule(IReadOnlyCollection<QualifiedModuleName> referencingModules, QualifiedModuleName targetModule)
         {
             var declarationsInTargetModule = _state.DeclarationFinder.Members(targetModule);
             foreach (var declaration in declarationsInTargetModule)
@@ -46,7 +52,7 @@ namespace Rubberduck.Parsing.VBA
 
         public void RemoveReferencesBy(QualifiedModuleName module, CancellationToken token)
         {
-            var modules = new HashSet<QualifiedModuleName> { module };
+            var modules = new HashSet<QualifiedModuleName> { module }.AsReadOnly();
             RemoveReferencesBy(modules, token);
         }
 

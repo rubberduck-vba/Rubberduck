@@ -334,6 +334,7 @@
     <Compile Include="VBA\AttributeParser.cs" />
     <Compile Include="VBA\Attributes.cs" />
     <Compile Include="VBA\BuiltInDeclarationLoader.cs" />
+    <Compile Include="VBA\CollectionExtensions.cs" />
     <Compile Include="VBA\SynchronousReferenceRemover.cs" />
     <Compile Include="VBA\ReferenceRemover.cs" />
     <Compile Include="VBA\ReferenceRemoverBase.cs" />

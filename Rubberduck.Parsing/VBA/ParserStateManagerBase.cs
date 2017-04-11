@@ -11,13 +11,16 @@ namespace Rubberduck.Parsing.VBA
 
         public ParserStateManagerBase(RubberduckParserState state)
         {
-            if (state == null) throw new ArgumentNullException(nameof(state));
+            if (state == null)
+            {
+                throw new ArgumentNullException(nameof(state));
+            }
 
             _state = state;
         }
 
 
-        public abstract void SetModuleStates(ICollection<QualifiedModuleName> modules, ParserState parserState, CancellationToken token, bool evaluateOverallParserState = true);
+        public abstract void SetModuleStates(IReadOnlyCollection<QualifiedModuleName> modules, ParserState parserState, CancellationToken token, bool evaluateOverallParserState = true);
 
 
         public ParserState OverallParserState

@@ -6,8 +6,10 @@ namespace Rubberduck.Parsing.VBA
     public abstract class ModuleToModuleReferenceManagerBase : IModuleToModuleReferenceManager
     {
         public abstract void AddModuleToModuleReference(QualifiedModuleName referencingModule, QualifiedModuleName referencedModule);
-
         public abstract void RemoveModuleToModuleReference(QualifiedModuleName referencedModule, QualifiedModuleName referencingModule);
+        public abstract IReadOnlyCollection<QualifiedModuleName> ModulesReferencing(QualifiedModuleName referencedModule);
+        public abstract IReadOnlyCollection<QualifiedModuleName> ModulesReferencedBy(QualifiedModuleName referencingModule);
+
 
         public virtual void ClearModuleToModuleReferencesFromModule(QualifiedModuleName referencingModule)
         {
@@ -26,7 +28,6 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-
         public virtual void ClearModuleToModuleReferencesToModule(QualifiedModuleName referencedModule)
         {
             var referencingModules = ModulesReferencing(referencedModule);
@@ -44,10 +45,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-
-        public abstract ICollection<QualifiedModuleName> ModulesReferencedBy(QualifiedModuleName referencingModule);
-
-        public virtual ICollection<QualifiedModuleName> ModulesReferencedByAny(IEnumerable<QualifiedModuleName> referencingModules)
+        public virtual IReadOnlyCollection<QualifiedModuleName> ModulesReferencedByAny(IEnumerable<QualifiedModuleName> referencingModules)
         {
             var toModules = new HashSet<QualifiedModuleName>();
 
@@ -55,13 +53,10 @@ namespace Rubberduck.Parsing.VBA
             {
                 toModules.UnionWith(ModulesReferencedBy(referencingModule));
             }
-            return toModules;
+            return toModules.AsReadOnly();
         }
 
-
-        public abstract ICollection<QualifiedModuleName> ModulesReferencing(QualifiedModuleName referencedModule);
-
-        public ICollection<QualifiedModuleName> ModulesReferencingAny(IEnumerable<QualifiedModuleName> referencedModules)
+        public IReadOnlyCollection<QualifiedModuleName> ModulesReferencingAny(IEnumerable<QualifiedModuleName> referencedModules)
         {
             var fromModules = new HashSet<QualifiedModuleName>();
 
@@ -69,7 +64,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 fromModules.UnionWith(ModulesReferencing(referencedModule));
             }
-            return fromModules;
+            return fromModules.AsReadOnly();
         }
 
     }

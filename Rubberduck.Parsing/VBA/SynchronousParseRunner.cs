@@ -20,14 +20,14 @@ namespace Rubberduck.Parsing.VBA
                   attributeParser)
         { }
 
-        public override void ParseModules(ICollection<QualifiedModuleName> modules, CancellationToken token)
+        public override void ParseModules(IReadOnlyCollection<QualifiedModuleName> modules, CancellationToken token)
         {
             if (!modules.Any())
             {
                 return;
             }
 
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
             try
             {

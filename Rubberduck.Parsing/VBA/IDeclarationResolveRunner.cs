@@ -6,6 +6,6 @@ namespace Rubberduck.Parsing.VBA
 {
     public interface IDeclarationResolveRunner
     {
-        void ResolveDeclarations(ICollection<QualifiedModuleName> modules, CancellationToken token);
+        void ResolveDeclarations(IReadOnlyCollection<QualifiedModuleName> modules, CancellationToken token);
     }
 }

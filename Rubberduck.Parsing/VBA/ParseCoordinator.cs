@@ -146,20 +146,17 @@ namespace Rubberduck.Parsing.VBA
 
         private void ParseInternalInternal(CancellationToken token)
         {
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
             _projectManager.RefreshProjects();
-
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
             var modules = _projectManager.AllModules();
-
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
             // tests do not fire events when components are removed--clear components
             ClearComponentStateCacheForTests();
-
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
             ExecuteCommonParseActivities(modules, token);
         }
@@ -172,100 +169,89 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private void ExecuteCommonParseActivities(ICollection<QualifiedModuleName> toParse, CancellationToken token)
+        private void ExecuteCommonParseActivities(IReadOnlyCollection<QualifiedModuleName> toParse, CancellationToken token)
         {
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
             _parserStateManager.SetModuleStates(toParse, ParserState.Pending, token);
-
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
             _comReferenceManager.SyncComReferences(State.Projects, token);
             if (_comReferenceManager.LastRunLoadedReferences || _comReferenceManager.LastRunUnloadedReferences)
             {
                 RefreshDeclarationFinder();
             }
-
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
             _builtInDeclarationLoader.LoadBuitInDeclarations();
             if (_builtInDeclarationLoader.LastExecutionLoadedDeclarations)
             { 
                 RefreshDeclarationFinder();
             }
+            token.ThrowIfCancellationRequested();
 
-                token.ThrowIfCancellationRequested();
-
-            ICollection<QualifiedModuleName> toResolveReferences;
-
+            IReadOnlyCollection<QualifiedModuleName> toResolveReferences;
             if (!toParse.Any())
             {
-                toResolveReferences = new HashSet<QualifiedModuleName>();
+                toResolveReferences = new HashSet<QualifiedModuleName>().AsReadOnly();
             }
             else
             {
                 toResolveReferences = ModulesForWhichToResolveReferences(toParse);
                 PerformPreParseCleanup(toParse, toResolveReferences, token);
-
-                    token.ThrowIfCancellationRequested();
+                token.ThrowIfCancellationRequested();
 
                 _parserStateManager.SetModuleStates(toParse, ParserState.Parsing, token);
-
-                    token.ThrowIfCancellationRequested();
+                token.ThrowIfCancellationRequested();
 
                 _parseRunner.ParseModules(toParse, token);
 
-                    if (token.IsCancellationRequested || State.Status >= ParserState.Error)
-                    {
-                        throw new OperationCanceledException(token);
-                    }
+                if (token.IsCancellationRequested || State.Status >= ParserState.Error)
+                {
+                    throw new OperationCanceledException(token);
+                }
 
                 _parserStateManager.EvaluateOverallParserState(token);
 
-
-                    if (token.IsCancellationRequested || State.Status >= ParserState.Error)
-                    {
-                        throw new OperationCanceledException(token);
-                    }
+                if (token.IsCancellationRequested || State.Status >= ParserState.Error)
+                {
+                    throw new OperationCanceledException(token);
+                }
 
                 _parserStateManager.SetModuleStates(toParse, ParserState.ResolvingDeclarations, token);
-
-                    token.ThrowIfCancellationRequested();
+                token.ThrowIfCancellationRequested();
 
                 _declarationResolveRunner.ResolveDeclarations(toParse, token);
                 RefreshDeclarationFinder();
             }
 
-                if (token.IsCancellationRequested || State.Status >= ParserState.Error)
-                {
-                    throw new OperationCanceledException(token);
-                }
+            if (token.IsCancellationRequested || State.Status >= ParserState.Error)
+            {
+                throw new OperationCanceledException(token);
+            }
 
             State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
 
-                if (token.IsCancellationRequested || State.Status >= ParserState.Error)
-                {
-                    throw new OperationCanceledException(token);
-                }
+            if (token.IsCancellationRequested || State.Status >= ParserState.Error)
+            {
+                throw new OperationCanceledException(token);
+            }
 
             _parserStateManager.SetModuleStates(toResolveReferences, ParserState.ResolvingReferences, token);
-
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
             _referenceResolveRunner.ResolveReferences(toResolveReferences, token);
 
-                if (token.IsCancellationRequested || State.Status >= ParserState.Error)
-                {
-                    throw new OperationCanceledException(token);
-                }
+            if (token.IsCancellationRequested || State.Status >= ParserState.Error)
+            {
+                throw new OperationCanceledException(token);
+            }
 
             RefreshDeclarationFinder();
-
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
             _parserStateManager.EvaluateOverallParserState(token);
-
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
         }
 
         private void RefreshDeclarationFinder()
@@ -273,14 +259,14 @@ namespace Rubberduck.Parsing.VBA
             _declarationFinderManager.RefreshDeclarationFinder();
         }
 
-        private ICollection<QualifiedModuleName> ModulesForWhichToResolveReferences(ICollection<QualifiedModuleName> modulesToParse)
+        private IReadOnlyCollection<QualifiedModuleName> ModulesForWhichToResolveReferences(IReadOnlyCollection<QualifiedModuleName> modulesToParse)
         {
             var toResolveReferences = modulesToParse.ToHashSet();
             toResolveReferences.UnionWith(_moduleToModuleReferenceManager.ModulesReferencingAny(modulesToParse));
-            return toResolveReferences;
+            return toResolveReferences.AsReadOnly();
         }
 
-        private void PerformPreParseCleanup(ICollection<QualifiedModuleName> modulesToParse, ICollection<QualifiedModuleName> toResolveReferences, CancellationToken token)
+        private void PerformPreParseCleanup(IReadOnlyCollection<QualifiedModuleName> modulesToParse, IReadOnlyCollection<QualifiedModuleName> toResolveReferences, CancellationToken token)
         {
             _moduleToModuleReferenceManager.ClearModuleToModuleReferencesFromModule(modulesToParse);
             _referenceRemover.RemoveReferencesBy(toResolveReferences, token); 
@@ -327,31 +313,25 @@ namespace Rubberduck.Parsing.VBA
 
         private void ParseAllInternal(object requestor, CancellationToken token)
         {
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
             Thread.Sleep(50); //Simplistic hack to give the VBE time to do its work in case the parsing run is requested from an event handler. 
-
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
             _projectManager.RefreshProjects();
-
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
             var modules = _projectManager.AllModules();
-
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
             var componentsRemoved = CleanUpRemovedComponents(modules, token);
-
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
             var toParse = modules.Where(module => State.IsNewOrModified(module)).ToHashSet();
-
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
             toParse.UnionWith(modules.Where(module => _parserStateManager.GetModuleState(module) != ParserState.Ready));
-
-                token.ThrowIfCancellationRequested();           
+            token.ThrowIfCancellationRequested();           
 
             if (toParse.Count == 0)
             {
@@ -364,18 +344,18 @@ namespace Rubberduck.Parsing.VBA
                 //return; // returning here leaves state in 'ResolvedDeclarations' when a module is removed, which disables refresh
             }
 
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
-            ExecuteCommonParseActivities(toParse, token);
+            ExecuteCommonParseActivities(toParse.AsReadOnly(), token);
         }
 
         /// <summary>
         /// Clears state cache of removed components.
         /// Returns whether components have been removed.
         /// </summary>
-        private bool CleanUpRemovedComponents(ICollection<QualifiedModuleName> modules, CancellationToken token)
+        private bool CleanUpRemovedComponents(IReadOnlyCollection<QualifiedModuleName> modules, CancellationToken token)
         {
-            var removedModules = RemovedModules(modules).ToHashSet();
+            var removedModules = RemovedModules(modules);
             var componentRemoved = removedModules.Any();
             if (componentRemoved)
             {
@@ -390,12 +370,12 @@ namespace Rubberduck.Parsing.VBA
             return componentRemoved;
         }
 
-        private IEnumerable<QualifiedModuleName> RemovedModules(ICollection<QualifiedModuleName> modules)
+        private IReadOnlyCollection<QualifiedModuleName> RemovedModules(IReadOnlyCollection<QualifiedModuleName> modules)
         {
             var modulesWithModuleDeclarations = State.DeclarationFinder.UserDeclarations(DeclarationType.Module).Select(declaration => declaration.QualifiedName.QualifiedModuleName);
             var currentlyExistingModules = modules.ToHashSet();
             var removedModuledecalrations = modulesWithModuleDeclarations.Where(module => !currentlyExistingModules.Contains(module));
-            return removedModuledecalrations;
+            return removedModuledecalrations.ToHashSet().AsReadOnly();
         }
 
 

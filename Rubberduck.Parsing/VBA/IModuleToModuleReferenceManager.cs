@@ -13,9 +13,9 @@ namespace Rubberduck.Parsing.VBA
         void ClearModuleToModuleReferencesToModule(QualifiedModuleName referencedModule);
         void ClearModuleToModuleReferencesToModule(IEnumerable<QualifiedModuleName> referencedModules);
 
-        ICollection<QualifiedModuleName> ModulesReferencedBy(QualifiedModuleName referencingModule);
-        ICollection<QualifiedModuleName> ModulesReferencedByAny(IEnumerable<QualifiedModuleName> referencingModules);
-        ICollection<QualifiedModuleName> ModulesReferencing(QualifiedModuleName referencedModule);
-        ICollection<QualifiedModuleName> ModulesReferencingAny(IEnumerable<QualifiedModuleName> referencedModules);
+        IReadOnlyCollection<QualifiedModuleName> ModulesReferencedBy(QualifiedModuleName referencingModule);
+        IReadOnlyCollection<QualifiedModuleName> ModulesReferencedByAny(IEnumerable<QualifiedModuleName> referencingModules);
+        IReadOnlyCollection<QualifiedModuleName> ModulesReferencing(QualifiedModuleName referencedModule);
+        IReadOnlyCollection<QualifiedModuleName> ModulesReferencingAny(IEnumerable<QualifiedModuleName> referencedModules);
     }
 }

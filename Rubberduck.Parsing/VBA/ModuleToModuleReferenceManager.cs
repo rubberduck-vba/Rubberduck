@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.VBA
@@ -13,7 +10,10 @@ namespace Rubberduck.Parsing.VBA
 
         public ModuleToModuleReferenceManager(RubberduckParserState state)
         {
-            if (state == null) throw new ArgumentNullException(nameof(state));
+            if (state == null)
+            {
+                throw new ArgumentNullException(nameof(state));
+            }
 
             _state = state;
         }
@@ -39,14 +39,14 @@ namespace Rubberduck.Parsing.VBA
             _state.ClearModuleToModuleReferencesToModule(referencedModule);
         }
 
-        public override ICollection<QualifiedModuleName> ModulesReferencedBy(QualifiedModuleName referencingModule)
+        public override IReadOnlyCollection<QualifiedModuleName> ModulesReferencedBy(QualifiedModuleName referencingModule)
         {
-            return _state.ModulesReferencedBy(referencingModule);
+            return _state.ModulesReferencedBy(referencingModule).AsReadOnly();
         }
 
-        public override ICollection<QualifiedModuleName> ModulesReferencing(QualifiedModuleName referencedModule)
+        public override IReadOnlyCollection<QualifiedModuleName> ModulesReferencing(QualifiedModuleName referencedModule)
         {
-            return _state.ModulesReferencing(referencedModule);
+            return _state.ModulesReferencing(referencedModule).AsReadOnly();
         }
 
     }

@@ -1,6 +1,5 @@
 ﻿using Rubberduck.VBEditor;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 
 namespace Rubberduck.Parsing.VBA
@@ -15,25 +14,16 @@ namespace Rubberduck.Parsing.VBA
             moduleToModuleReferenceManager)
         { }
 
-        public override void RemoveReferencesTo(ICollection<QualifiedModuleName> modules, CancellationToken token)
+        public override void RemoveReferencesTo(IReadOnlyCollection<QualifiedModuleName> modules, CancellationToken token)
         {
-            if (!modules.Any())
-            {
-                return;
-            }
             foreach(var module in modules)
             {
                 RemoveReferencesTo(module, token);
             }
         }
 
-        protected override void RemoveReferencesByFromTargetModules(ICollection<QualifiedModuleName> referencingModules, ICollection<QualifiedModuleName> targetModules, CancellationToken token)
+        protected override void RemoveReferencesByFromTargetModules(IReadOnlyCollection<QualifiedModuleName> referencingModules, IReadOnlyCollection<QualifiedModuleName> targetModules, CancellationToken token)
         {
-            if (!targetModules.Any())
-            {
-                return;
-            }
-
             foreach(var targetModule in targetModules )
             {
                 RemoveReferencesByFromTargetModule(referencingModules, targetModule);

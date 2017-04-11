@@ -23,10 +23,22 @@ namespace Rubberduck.Parsing.VBA
             Func<IVBAPreprocessor> preprocessorFactory,
             IAttributeParser attributeParser)
         {
-            if (state == null) throw new ArgumentNullException(nameof(state));
-            if (parserStateManager == null) throw new ArgumentNullException(nameof(parserStateManager));
-            if (preprocessorFactory == null) throw new ArgumentNullException(nameof(preprocessorFactory));
-            if (attributeParser == null) throw new ArgumentNullException(nameof(attributeParser));
+            if (state == null)
+            {
+                throw new ArgumentNullException(nameof(state));
+            }
+            if (parserStateManager == null)
+            {
+                throw new ArgumentNullException(nameof(parserStateManager));
+            }
+            if (preprocessorFactory == null)
+            {
+                throw new ArgumentNullException(nameof(preprocessorFactory));
+            }
+            if (attributeParser == null)
+            {
+                throw new ArgumentNullException(nameof(attributeParser));
+            }
 
             _state = state;
             _parserStateManager = parserStateManager;
@@ -35,7 +47,7 @@ namespace Rubberduck.Parsing.VBA
         }
 
 
-        public abstract void ParseModules(ICollection<QualifiedModuleName> modules, CancellationToken token);
+        public abstract void ParseModules(IReadOnlyCollection<QualifiedModuleName> modules, CancellationToken token);
 
 
         protected void ParseModule(QualifiedModuleName module, CancellationToken token)

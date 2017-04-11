@@ -18,7 +18,7 @@ namespace Rubberduck.Parsing.VBA
             moduleToModuleReferenceManager)
         {}
 
-        public override void RemoveReferencesTo(ICollection<QualifiedModuleName> modules, CancellationToken token)
+        public override void RemoveReferencesTo(IReadOnlyCollection<QualifiedModuleName> modules, CancellationToken token)
         {
             if (!modules.Any())
             {
@@ -32,7 +32,7 @@ namespace Rubberduck.Parsing.VBA
             Parallel.ForEach(modules, options, module => RemoveReferencesTo(module, token));
         }
 
-        protected override void RemoveReferencesByFromTargetModules(ICollection<QualifiedModuleName> referencingModules, ICollection<QualifiedModuleName> targetModules, CancellationToken token)
+        protected override void RemoveReferencesByFromTargetModules(IReadOnlyCollection<QualifiedModuleName> referencingModules, IReadOnlyCollection<QualifiedModuleName> targetModules, CancellationToken token)
         {
             if (!targetModules.Any())
             {

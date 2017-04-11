@@ -15,8 +15,7 @@ namespace Rubberduck.Parsing.VBA
         {
             foreach (var reference in referencesToLoad)
             {
-                var localReference = reference;
-                LoadReference(localReference, unmapped);
+                LoadReference(reference, unmapped);
             }
             token.ThrowIfCancellationRequested();
         }

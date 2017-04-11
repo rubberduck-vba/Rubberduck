@@ -8,7 +8,7 @@ namespace Rubberduck.Parsing.VBA
     {
         bool LastRunLoadedReferences { get; }
         bool LastRunUnloadedReferences { get; }
-        ICollection<ReferencePriorityMap> ProjectReferences { get; }
+        IReadOnlyCollection<ReferencePriorityMap> ProjectReferences { get; }
 
         void SyncComReferences(IReadOnlyList<IVBProject> projects, CancellationToken token);
     }

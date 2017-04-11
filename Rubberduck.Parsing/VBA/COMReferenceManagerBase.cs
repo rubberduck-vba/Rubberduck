@@ -54,11 +54,11 @@ namespace Rubberduck.Parsing.VBA
         }
 
         private readonly HashSet<ReferencePriorityMap> _projectReferences = new HashSet<ReferencePriorityMap>();
-        public ICollection<ReferencePriorityMap> ProjectReferences
+        public IReadOnlyCollection<ReferencePriorityMap> ProjectReferences
         {
             get
             {
-                return _projectReferences.ToHashSet();
+                return _projectReferences.ToHashSet().AsReadOnly();
             }
         }
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Rubberduck.VBEditor;
@@ -22,7 +21,7 @@ namespace Rubberduck.Parsing.VBA
              comReferenceManager)
         { }
 
-        public override void ResolveDeclarations(ICollection<QualifiedModuleName> modules, CancellationToken token)
+        public override void ResolveDeclarations(IReadOnlyCollection<QualifiedModuleName> modules, CancellationToken token)
         {
             if (!modules.Any())
             {
