@@ -68,7 +68,14 @@ namespace Rubberduck.Parsing.VBA
             DeclarationFinder = new DeclarationFinder(AllDeclarations, AllAnnotations, AllUnresolvedMemberDeclarations, host);
         }
 
+        public void RefreshDeclarationFinder()
+        {
+            RefreshFinder(_hostApp);
+        }
+
         private readonly IVBE _vbe;
+        private readonly IHostApplication _hostApp;
+
         public RubberduckParserState(IVBE vbe)
         {
             var values = Enum.GetValues(typeof(ParserState));
@@ -78,9 +85,10 @@ namespace Rubberduck.Parsing.VBA
             }
 
             _vbe = vbe;
+            _hostApp = _vbe.HostApplication();
             AddEventHandlers();
             IsEnabled = true;
-            RefreshFinder(vbe.HostApplication());
+            RefreshFinder(_hostApp);
         }
 
         private void HandleStateChanged(ParserState state)

@@ -19,7 +19,7 @@ namespace Rubberduck.Parsing.VBA
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private readonly IParsingStageService _parsingStageService;
-        private readonly IDeclarationFinderManager _declarationFinderManager;
+        private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly IProjectManager _projectManager;
         private readonly IModuleToModuleReferenceManager _moduleToModuleReferenceManager;
         private readonly IParserStateManager _parserStateManager;
@@ -30,7 +30,7 @@ namespace Rubberduck.Parsing.VBA
         public ParseCoordinator(
             RubberduckParserState state,
             IParsingStageService parsingStageService,
-            IDeclarationFinderManager declarationFinderManager,
+            IDeclarationFinderProvider declarationFinderProvider,
             IProjectManager projectManager,
             IModuleToModuleReferenceManager moduleToModuleReferenceManager,
             IParserStateManager parserStateManager,
@@ -39,7 +39,7 @@ namespace Rubberduck.Parsing.VBA
         {
             _state = state;
             _parsingStageService = parsingStageService;
-            _declarationFinderManager = declarationFinderManager;
+            _declarationFinderProvider = declarationFinderProvider;
             _projectManager = projectManager;
             _moduleToModuleReferenceManager = moduleToModuleReferenceManager;
             _parserStateManager = parserStateManager;
@@ -247,7 +247,7 @@ namespace Rubberduck.Parsing.VBA
 
         private void RefreshDeclarationFinder()
         {
-            _declarationFinderManager.RefreshDeclarationFinder();
+            _declarationFinderProvider.RefreshDeclarationFinder();
         }
 
         private IReadOnlyCollection<QualifiedModuleName> ModulesForWhichToResolveReferences(IReadOnlyCollection<QualifiedModuleName> modulesToParse)
