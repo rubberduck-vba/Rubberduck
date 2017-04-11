@@ -83,14 +83,12 @@ namespace RubberduckTests.Mocks
 
         public MockProjectBuilder ProjectBuilder(string name, string filename, ProjectProtection protection)
         {
-            var result = new MockProjectBuilder(name, filename, protection, () => _vbe.Object, this);
-            return result;
+            return new MockProjectBuilder(name, filename, protection, () => _vbe.Object, this);
         }
 
         public MockProjectBuilder ProjectBuilder(string name, string filename, string projectId, ProjectProtection protection)
         {
-            var result = new MockProjectBuilder(name, filename, projectId, protection, () => _vbe.Object, this);
-            return result;
+            return new MockProjectBuilder(name, filename, projectId, protection, () => _vbe.Object, this);
         }
 
         /// <summary>

@@ -12,8 +12,15 @@ namespace Rubberduck.Parsing.VBA
     {
         private const int _maxReferenceLoadingConcurrency = -1;
 
-        public COMReferenceSynchronizer(RubberduckParserState state, IParserStateManager parserStateManager, string serializedDeclarationsPath = null)
-        :base(state, parserStateManager, serializedDeclarationsPath) { }
+        public COMReferenceSynchronizer(
+            RubberduckParserState state, 
+            IParserStateManager parserStateManager, 
+            string serializedDeclarationsPath = null)
+        :base(
+            state, 
+            parserStateManager, 
+            serializedDeclarationsPath)
+        { }
 
 
         protected override void LoadReferences(List<IReference> referencesToLoad, ConcurrentBag<IReference> unmapped, CancellationToken token)

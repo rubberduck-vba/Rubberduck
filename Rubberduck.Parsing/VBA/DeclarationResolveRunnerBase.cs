@@ -25,9 +25,18 @@ namespace Rubberduck.Parsing.VBA
             IParserStateManager parserStateManager,
             IProjectReferencesProvider projectReferencesProvider)
         {
-            if (state == null) throw new ArgumentNullException(nameof(state));
-            if (parserStateManager == null) throw new ArgumentNullException(nameof(parserStateManager));
-            if (projectReferencesProvider == null) throw new ArgumentNullException(nameof(projectReferencesProvider));
+            if (state == null)
+            {
+                throw new ArgumentNullException(nameof(state));
+            }
+            if (parserStateManager == null)
+            {
+                throw new ArgumentNullException(nameof(parserStateManager));
+            }
+            if (projectReferencesProvider == null)
+            {
+                throw new ArgumentNullException(nameof(projectReferencesProvider));
+            }
 
             _state = state;
             _parserStateManager = parserStateManager;

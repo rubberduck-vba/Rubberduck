@@ -12,7 +12,7 @@ namespace Rubberduck.Parsing.VBA
 
 
         public ParserStateManager(RubberduckParserState state)
-        : base(state) { }
+        :base(state) { }
 
 
         public override void SetModuleStates(IReadOnlyCollection<QualifiedModuleName> modules, ParserState parserState, CancellationToken token, bool evaluateOverallParserState = true)

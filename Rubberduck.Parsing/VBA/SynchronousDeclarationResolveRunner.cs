@@ -13,9 +13,9 @@ namespace Rubberduck.Parsing.VBA
             IParserStateManager parserStateManager,
             IProjectReferencesProvider projectReferencesProvider) 
         :base(
-             state, 
-             parserStateManager, 
-             projectReferencesProvider)
+            state, 
+            parserStateManager, 
+            projectReferencesProvider)
         { }
 
         public override void ResolveDeclarations(IReadOnlyCollection<QualifiedModuleName> modules, CancellationToken token)

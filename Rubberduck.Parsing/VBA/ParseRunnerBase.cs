@@ -93,7 +93,7 @@ namespace Rubberduck.Parsing.VBA
                 //This sets the state directly on the state because it is the sole instance where we have to pass the potential SyntaxErorException.
                 _state.SetModuleState(module.Component, ParserState.Error, token, finishedParseTask.Exception.InnerException as SyntaxErrorException);
             }
-            else if (finishedParseTask.IsCompleted)
+            else
             {
                 var result = finishedParseTask.Result;
                 lock (_state)

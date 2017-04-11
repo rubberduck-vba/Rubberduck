@@ -37,6 +37,35 @@ namespace Rubberduck.Parsing.VBA
             IReferenceRemover referenceRemover,
             bool isTestScope = false)
         {
+            if (state == null)
+            {
+                throw new ArgumentNullException(nameof(state));
+            }
+            if (parsingStageService == null)
+            {
+                throw new ArgumentNullException(nameof(parsingStageService));
+            }
+            if (parsingStageService == null)
+            {
+                throw new ArgumentNullException(nameof(parsingStageService));
+            }
+            if (declarationFinderProvider == null)
+            {
+                throw new ArgumentNullException(nameof(declarationFinderProvider));
+            }
+            if (moduleToModuleReferenceManager == null)
+            {
+                throw new ArgumentNullException(nameof(moduleToModuleReferenceManager));
+            }
+            if (parserStateManager == null)
+            {
+                throw new ArgumentNullException(nameof(parserStateManager));
+            }
+            if (referenceRemover == null)
+            {
+                throw new ArgumentNullException(nameof(referenceRemover));
+            }
+
             _state = state;
             _parsingStageService = parsingStageService;
             _declarationFinderProvider = declarationFinderProvider;

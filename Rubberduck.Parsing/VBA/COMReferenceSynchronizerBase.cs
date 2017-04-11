@@ -25,8 +25,14 @@ namespace Rubberduck.Parsing.VBA
 
         public COMReferenceSynchronizerBase(RubberduckParserState state, IParserStateManager parserStateManager, string serializedDeclarationsPath = null)
         {
-            if (state == null) throw new ArgumentNullException(nameof(state));
-            if (parserStateManager == null) throw new ArgumentNullException(nameof(parserStateManager));
+            if (state == null)
+            {
+                throw new ArgumentNullException(nameof(state));
+            }
+            if (parserStateManager == null)
+            {
+                throw new ArgumentNullException(nameof(parserStateManager));
+            }
 
             _state = state;
             _parserStateManager = parserStateManager;
@@ -35,23 +41,8 @@ namespace Rubberduck.Parsing.VBA
         }
 
 
-        private bool _lastRunLoadedReferences;
-        public bool LastSyncOfCOMReferencesLoadedReferences
-        {
-            get
-            {
-                return _lastRunLoadedReferences;
-            }
-        }
-
-        private bool _lastRunUnloadedReferences;
-        public bool LastSyncOfCOMReferencesUnloadedReferences
-        {
-            get
-            {
-                return _lastRunUnloadedReferences;
-            }
-        }
+        public bool LastSyncOfCOMReferencesLoadedReferences { get; private set; }
+        public bool LastSyncOfCOMReferencesUnloadedReferences { get; private set; }
 
         private readonly HashSet<ReferencePriorityMap> _projectReferences = new HashSet<ReferencePriorityMap>();
         public IReadOnlyCollection<ReferencePriorityMap> ProjectReferences
@@ -68,8 +59,8 @@ namespace Rubberduck.Parsing.VBA
 
         public void SyncComReferences(IReadOnlyList<IVBProject> projects, CancellationToken token)
         {
-            _lastRunLoadedReferences = false;
-            _lastRunUnloadedReferences = false;
+            LastSyncOfCOMReferencesLoadedReferences = false;
+            LastSyncOfCOMReferencesUnloadedReferences = false;
 
             var unmapped = new ConcurrentBag<IReference>();
 
@@ -77,7 +68,7 @@ namespace Rubberduck.Parsing.VBA
 
             if (referencesToLoad.Any())
             {
-                _lastRunLoadedReferences = true;
+                LastSyncOfCOMReferencesLoadedReferences = true;
                 LoadReferences(referencesToLoad, unmapped, token);
             }
 
@@ -89,7 +80,7 @@ namespace Rubberduck.Parsing.VBA
 
             if (unmapped.Any())
             {
-                _lastRunUnloadedReferences = true;
+                LastSyncOfCOMReferencesUnloadedReferences = true;
                 foreach (var reference in unmapped)
                 {
                     UnloadComReference(reference, projects);
@@ -122,8 +113,8 @@ namespace Rubberduck.Parsing.VBA
                         // todo: figure out why Rubberduck.tlb *sometimes* throws
                         //continue;
                     }
-                    var referencedProjectId = GetReferenceProjectId(reference, projects);
 
+                    var referencedProjectId = GetReferenceProjectId(reference, projects);
                     var map = _projectReferences.FirstOrDefault(item => item.ReferencedProjectId == referencedProjectId);
 
                     if (map == null)

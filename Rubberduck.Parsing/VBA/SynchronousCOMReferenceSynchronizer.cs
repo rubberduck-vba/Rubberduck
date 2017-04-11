@@ -7,8 +7,15 @@ namespace Rubberduck.Parsing.VBA
 {
     public class SynchronousCOMReferenceSynchronizer:COMReferenceSynchronizerBase 
     {
-        public SynchronousCOMReferenceSynchronizer(RubberduckParserState state, IParserStateManager parserStateManager, string serializedDeclarationsPath = null)
-        :base(state, parserStateManager, serializedDeclarationsPath) { }
+        public SynchronousCOMReferenceSynchronizer(
+            RubberduckParserState state,
+            IParserStateManager parserStateManager,
+            string serializedDeclarationsPath = null)
+        :base(
+            state,
+            parserStateManager,
+            serializedDeclarationsPath)
+        { }
 
 
         protected override void LoadReferences(List<IReference> referencesToLoad, ConcurrentBag<IReference> unmapped, CancellationToken token)

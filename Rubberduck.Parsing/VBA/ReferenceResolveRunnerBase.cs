@@ -29,9 +29,18 @@ namespace Rubberduck.Parsing.VBA
             IParserStateManager parserStateManager,
             IModuleToModuleReferenceManager moduletToModuleReferenceManager)
         {
-            if (state == null) throw new ArgumentNullException(nameof(state));
-            if (parserStateManager == null) throw new ArgumentNullException(nameof(parserStateManager));
-            if (moduletToModuleReferenceManager == null) throw new ArgumentNullException(nameof(moduletToModuleReferenceManager));
+            if (state == null)
+            {
+                throw new ArgumentNullException(nameof(state));
+            }
+            if (parserStateManager == null)
+            {
+                throw new ArgumentNullException(nameof(parserStateManager));
+            }
+            if (moduletToModuleReferenceManager == null)
+            {
+                throw new ArgumentNullException(nameof(moduletToModuleReferenceManager));
+            }
 
             _state = state;
             _parserStateManager = parserStateManager;
@@ -133,7 +142,7 @@ namespace Rubberduck.Parsing.VBA
 
         private void AddNewUndeclaredVariablesToDeclarations()
         {
-            var undeclared = _state.DeclarationFinder.FreshUndeclared.ToList();
+            var undeclared = _state.DeclarationFinder.FreshUndeclared;
             foreach (var declaration in undeclared)
             {
                 _state.AddDeclaration(declaration);
@@ -142,7 +151,7 @@ namespace Rubberduck.Parsing.VBA
 
         private void AddNewUnresolvedMemberDeclarations()
         {
-            var unresolved = _state.DeclarationFinder.FreshUnresolvedMemberDeclarations().ToList();
+            var unresolved = _state.DeclarationFinder.FreshUnresolvedMemberDeclarations();
             foreach (var declaration in unresolved)
             {
                 _state.AddUnresolvedMemberDeclaration(declaration);

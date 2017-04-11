@@ -17,10 +17,10 @@ namespace Rubberduck.Parsing.VBA
             IParserStateManager parserStateManager, 
             Func<IVBAPreprocessor> preprocessorFactory, 
             IAttributeParser attributeParser) 
-            : base(state, 
-                  parserStateManager, 
-                  preprocessorFactory, 
-                  attributeParser)
+        :base(state, 
+            parserStateManager, 
+            preprocessorFactory, 
+            attributeParser)
         { }
 
         public override void ParseModules(IReadOnlyCollection<QualifiedModuleName> modules, CancellationToken token)
@@ -30,7 +30,7 @@ namespace Rubberduck.Parsing.VBA
                 return;
             }
 
-                token.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
 
             var options = new ParallelOptions();
             options.CancellationToken = token;

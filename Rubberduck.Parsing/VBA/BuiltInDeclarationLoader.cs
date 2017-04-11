@@ -17,25 +17,24 @@ namespace Rubberduck.Parsing.VBA
 
         public BuiltInDeclarationLoader(RubberduckParserState state, IEnumerable<ICustomDeclarationLoader> customDeclarationLoaders)
         {
-            if (state == null) throw new ArgumentNullException(nameof(state));
-            if (customDeclarationLoaders == null) throw new ArgumentNullException(nameof(customDeclarationLoaders));
+            if (state == null)
+            {
+                throw new ArgumentNullException(nameof(state));
+            }
+            if (customDeclarationLoaders == null)
+            {
+                throw new ArgumentNullException(nameof(customDeclarationLoaders));
+            }
 
             _state = state;
             _customDeclarationLoaders = customDeclarationLoaders;
         }
 
-        private bool _lastExecutionLoadedDeclarations;
-        public bool LastLoadOfBuiltInDeclarationsLoadedDeclarations
-        {
-            get
-            {
-                return _lastExecutionLoadedDeclarations;
-            }
-        }
+        public bool LastLoadOfBuiltInDeclarationsLoadedDeclarations { get; private set; }
 
         public void LoadBuitInDeclarations()
         {
-            _lastExecutionLoadedDeclarations = false;
+            LastLoadOfBuiltInDeclarationsLoadedDeclarations = false;
             foreach (var customDeclarationLoader in _customDeclarationLoaders)
             {
                 try
@@ -43,7 +42,7 @@ namespace Rubberduck.Parsing.VBA
                     var customDeclarations = customDeclarationLoader.Load();
                     if (customDeclarations.Any())
                     {
-                        _lastExecutionLoadedDeclarations = true;
+                        LastLoadOfBuiltInDeclarationsLoadedDeclarations = true;
                         foreach (var declaration in customDeclarationLoader.Load())
                         {
                             _state.AddDeclaration(declaration);
