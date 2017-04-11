@@ -48,7 +48,7 @@ namespace Rubberduck.Parsing.VBA
         {
             try
             {
-                Logger.Trace("Starting ParseTaskID {0} on thread {1}.", _taskId, Thread.CurrentThread.ManagedThreadId);
+                Logger.Trace($"Starting ParseTaskID {_taskId} on thread {Thread.CurrentThread.ManagedThreadId}.");
 
                 var code = RewriteAndPreprocess(token);
                 token.ThrowIfCancellationRequested();
@@ -82,7 +82,7 @@ namespace Rubberduck.Parsing.VBA
             }
             catch (COMException exception)
             {
-                Logger.Error(exception, "Exception thrown in thread {0}, ParseTaskID {1}.", Thread.CurrentThread.ManagedThreadId, _taskId);
+                Logger.Error(exception, $"Exception thrown in thread {Thread.CurrentThread.ManagedThreadId}, ParseTaskID {_taskId}.");
                 var failedHandler = ParseFailure;
                 failedHandler?.Invoke(this, new ParseFailureArgs
                 {
@@ -91,8 +91,8 @@ namespace Rubberduck.Parsing.VBA
             }
             catch (SyntaxErrorException exception)
             {
-                Logger.Warn("Syntax error; offending token '{0}' at line {1}, column {2} in module {3}.", exception.OffendingSymbol.Text, exception.LineNumber, exception.Position, _qualifiedName);
-                Logger.Error(exception, "Exception thrown in thread {0}, ParseTaskID {1}.", Thread.CurrentThread.ManagedThreadId, _taskId);
+                Logger.Warn($"Syntax error; offending token '{exception.OffendingSymbol.Text}' at line {exception.LineNumber}, column {exception.Position} in module {_qualifiedName}.");
+                Logger.Error(exception, $"Exception thrown in thread {Thread.CurrentThread.ManagedThreadId}, ParseTaskID {_taskId}.");
                 var failedHandler = ParseFailure;
                 failedHandler?.Invoke(this, new ParseFailureArgs
                 {
@@ -110,7 +110,7 @@ namespace Rubberduck.Parsing.VBA
             }
             catch (Exception exception)
             {
-                Logger.Error(exception, "Exception thrown in thread {0}, ParseTaskID {1}.", Thread.CurrentThread.ManagedThreadId, _taskId);
+                Logger.Error(exception, $"Exception thrown in thread {Thread.CurrentThread.ManagedThreadId}, ParseTaskID {_taskId}.");
                 var failedHandler = ParseFailure;
                 failedHandler?.Invoke(this, new ParseFailureArgs
                 {

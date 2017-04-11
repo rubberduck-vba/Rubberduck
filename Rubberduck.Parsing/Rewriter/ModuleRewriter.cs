@@ -4,11 +4,11 @@ using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.PostProcessing.RewriterInfo;
+using Rubberduck.Parsing.Rewriter.RewriterInfo;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
-namespace Rubberduck.Parsing.PostProcessing
+namespace Rubberduck.Parsing.Rewriter
 {
     public class ModuleRewriter : IModuleRewriter
     {

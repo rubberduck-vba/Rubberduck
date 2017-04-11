@@ -3,7 +3,7 @@ using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Symbols;
 
-namespace Rubberduck.Parsing.PostProcessing
+namespace Rubberduck.Parsing.Rewriter
 {
     public interface IModuleRewriter
     {

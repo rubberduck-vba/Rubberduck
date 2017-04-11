@@ -1,6 +1,6 @@
 using Antlr4.Runtime;
 
-namespace Rubberduck.Parsing.PostProcessing.RewriterInfo
+namespace Rubberduck.Parsing.Rewriter.RewriterInfo
 {
     public class DefaultRewriterInfoFinder : RewriterInfoFinderBase
     {

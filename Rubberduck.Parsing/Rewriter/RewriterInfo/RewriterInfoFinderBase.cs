@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
 
-namespace Rubberduck.Parsing.PostProcessing.RewriterInfo
+namespace Rubberduck.Parsing.Rewriter.RewriterInfo
 {
     public abstract class RewriterInfoFinderBase : IRewriterInfoFinder
     {

@@ -1,10 +1,9 @@
 using System;
 using System.Linq;
 using Antlr4.Runtime;
-using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Grammar;
 
-namespace Rubberduck.Parsing.PostProcessing.RewriterInfo
+namespace Rubberduck.Parsing.Rewriter.RewriterInfo
 {
     public class ParameterRewriterInfoFinder : RewriterInfoFinderBase
     {

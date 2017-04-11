@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.PostProcessing;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;

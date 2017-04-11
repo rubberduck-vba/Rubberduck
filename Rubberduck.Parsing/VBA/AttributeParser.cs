@@ -60,6 +60,7 @@ namespace Rubberduck.Parsing.VBA
             // line numbers are offset due to module header and attributes
             // (these don't show up in the VBE, that's why we're parsing an exported file)
             ITokenStream tokenStream;
+
             new VBAModuleParser().Parse(component.Name, preprocessed, new IParseTreeListener[] { listener }, new ExceptionErrorListener(), out tokenStream);
             return listener.Attributes;
         }
@@ -75,10 +76,7 @@ namespace Rubberduck.Parsing.VBA
                 _currentScopeAttributes = new Attributes();
             }
 
-            public IDictionary<Tuple<string, DeclarationType>, Attributes> Attributes
-            {
-                get { return _attributes; }
-            }
+            public IDictionary<Tuple<string, DeclarationType>, Attributes> Attributes => _attributes;
 
             private Tuple<string, DeclarationType> _currentScope;
             private Attributes _currentScopeAttributes;
@@ -166,17 +164,11 @@ namespace Rubberduck.Parsing.VBA
                 // We assume attributes can either be simple names (VB_Name) or, if they are inside procedures, member access expressions
                 // (e.g. Foo.VB_UserMemId = 0)
                 var expr = context.attributeName().lExpression();
-                string name;
-                if (expr is VBAParser.SimpleNameExprContext)
-                {
-                    name = ((VBAParser.SimpleNameExprContext)expr).identifier().GetText();
-                }
-                else
-                {
-                    // Turns "Foo.VB_ProcData.VB_Invoke_Func" into "VB_ProcData.VB_Invoke_Func",
-                    // because we are not interested in the subroutine name Foo.
-                    name = GetAttributeNameWithoutProcedureName((VBAParser.MemberAccessExprContext)expr);
-                }
+                var exprContext = expr as VBAParser.SimpleNameExprContext;
+                var name = exprContext != null 
+                    ? exprContext.identifier().GetText() 
+                    : GetAttributeNameWithoutProcedureName((VBAParser.MemberAccessExprContext)expr);
+
                 var values = context.attributeValue().Select(e => e.GetText().Replace("\"", string.Empty)).ToList();
                 IEnumerable<string> existingValues;
                 if (_currentScopeAttributes.TryGetValue(name, out existingValues))
@@ -186,16 +178,16 @@ namespace Rubberduck.Parsing.VBA
                 _currentScopeAttributes[name] = values;
             }
 
-            private string GetAttributeNameWithoutProcedureName(VBAParser.MemberAccessExprContext expr)
+            private static string GetAttributeNameWithoutProcedureName(VBAParser.MemberAccessExprContext expr)
             {
-                string name = expr.unrestrictedIdentifier().GetText();
+                var name = expr.unrestrictedIdentifier().GetText();
                 // The simple name expression represents the procedure's name.
                 // We don't want that one though so we simply ignore it.
                 if (expr.lExpression() is VBAParser.SimpleNameExprContext)
                 {
                     return name;
                 }
-                return string.Format("{0}.{1}", GetAttributeNameWithoutProcedureName((VBAParser.MemberAccessExprContext)expr.lExpression()), name);
+                return $"{GetAttributeNameWithoutProcedureName((VBAParser.MemberAccessExprContext) expr.lExpression())}.{name}";
             }
 
             public override void ExitModuleConfigElement(VBAParser.ModuleConfigElementContext context)

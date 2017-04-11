@@ -158,15 +158,15 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="PostProcessing\RewriterInfo\ConstantRewriterInfoFinder.cs" />
-    <Compile Include="PostProcessing\RewriterInfo\DefaultRewriterInfoFinder.cs" />
-    <Compile Include="PostProcessing\RewriterInfo\IRewriterInfoFinder.cs" />
-    <Compile Include="PostProcessing\ModuleRewriter.cs" />
-    <Compile Include="PostProcessing\RewriterInfo\ArgumentRewriterInfoFinder.cs" />
-    <Compile Include="PostProcessing\RewriterInfo\ParameterRewriterInfoFinder.cs" />
-    <Compile Include="PostProcessing\RewriterInfo\RewriterInfo.cs" />
-    <Compile Include="PostProcessing\RewriterInfo\RewriterInfoFinderBase.cs" />
-    <Compile Include="PostProcessing\RewriterInfo\VariableRewriterInfoFinder.cs" />
+    <Compile Include="Rewriter\RewriterInfo\ConstantRewriterInfoFinder.cs" />
+    <Compile Include="Rewriter\RewriterInfo\DefaultRewriterInfoFinder.cs" />
+    <Compile Include="Rewriter\RewriterInfo\IRewriterInfoFinder.cs" />
+    <Compile Include="Rewriter\ModuleRewriter.cs" />
+    <Compile Include="Rewriter\RewriterInfo\ArgumentRewriterInfoFinder.cs" />
+    <Compile Include="Rewriter\RewriterInfo\ParameterRewriterInfoFinder.cs" />
+    <Compile Include="Rewriter\RewriterInfo\RewriterInfo.cs" />
+    <Compile Include="Rewriter\RewriterInfo\RewriterInfoFinderBase.cs" />
+    <Compile Include="Rewriter\RewriterInfo\VariableRewriterInfoFinder.cs" />
     <Compile Include="PreProcessing\IVBAPreprocessor.cs" />
     <Compile Include="PreProcessing\VBAConditionalCompilationParser.cs" />
     <Compile Include="PreProcessing\VBAConditionalCompilationParserBaseListener.cs" />
@@ -183,7 +183,7 @@
     <Compile Include="ComReflection\ComMember.cs" />
     <Compile Include="ComReflection\ComModule.cs" />
     <Compile Include="ComReflection\ComProject.cs" />
-    <Compile Include="PostProcessing\IModuleRewriter.cs" />
+    <Compile Include="Rewriter\IModuleRewriter.cs" />
     <Compile Include="SymbolList.cs" />
     <Compile Include="Symbols\AliasDeclaration.cs" />
     <Compile Include="Symbols\DeclarationLoaders\SpecialFormDeclarations.cs" />

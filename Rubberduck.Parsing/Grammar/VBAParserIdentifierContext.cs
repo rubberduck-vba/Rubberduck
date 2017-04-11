@@ -11,7 +11,7 @@ namespace Rubberduck.Parsing.Grammar
             {
                 get
                 {
-                    Interval tokenInterval = Interval.Invalid;
+                    Interval tokenInterval;
                     Identifier.GetName(this, out tokenInterval);
                     return tokenInterval;
                 }
@@ -24,7 +24,7 @@ namespace Rubberduck.Parsing.Grammar
             {
                 get
                 {
-                    Interval tokenInterval = Interval.Invalid;
+                    Interval tokenInterval;
                     Identifier.GetName(this, out tokenInterval);
                     return tokenInterval;
                 }
@@ -37,7 +37,7 @@ namespace Rubberduck.Parsing.Grammar
             {
                 get
                 {
-                    Interval tokenInterval = Interval.Invalid;
+                    Interval tokenInterval;
                     Identifier.GetName(this, out tokenInterval);
                     return tokenInterval;
                 }
@@ -50,7 +50,7 @@ namespace Rubberduck.Parsing.Grammar
             {
                 get
                 {
-                    Interval tokenInterval = Interval.Invalid;
+                    Interval tokenInterval;
                     Identifier.GetName(this, out tokenInterval);
                     return tokenInterval;
                 }
@@ -63,7 +63,7 @@ namespace Rubberduck.Parsing.Grammar
             {
                 get
                 {
-                    Interval tokenInterval = Interval.Invalid;
+                    Interval tokenInterval;
                     Identifier.GetName(this, out tokenInterval);
                     return tokenInterval;
                 }
@@ -76,7 +76,7 @@ namespace Rubberduck.Parsing.Grammar
             {
                 get
                 {
-                    Interval tokenInterval = Interval.Invalid;
+                    Interval tokenInterval;
                     Identifier.GetName(this, out tokenInterval);
                     return tokenInterval;
                 }
@@ -88,7 +88,7 @@ namespace Rubberduck.Parsing.Grammar
             {
                 get
                 {
-                    Interval tokenInterval = Interval.Invalid;
+                    Interval tokenInterval;
                     Identifier.GetName(this, out tokenInterval);
                     return tokenInterval;
                 }
@@ -100,7 +100,7 @@ namespace Rubberduck.Parsing.Grammar
             {
                 get
                 {
-                    Interval tokenInterval = Interval.Invalid;
+                    Interval tokenInterval;
                     Identifier.GetName(this, out tokenInterval);
                     return tokenInterval;
                 }

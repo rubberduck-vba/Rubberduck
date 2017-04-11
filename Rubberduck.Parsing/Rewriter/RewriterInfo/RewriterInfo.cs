@@ -1,7 +1,7 @@
 using System;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.Parsing.PostProcessing.RewriterInfo
+namespace Rubberduck.Parsing.Rewriter.RewriterInfo
 {
     public struct RewriterInfo : IEquatable<RewriterInfo>
     {
