@@ -30,21 +30,27 @@ namespace Rubberduck.UI.Command
         }
 
         private const string FolderAnnotation = "'@Folder(\"Tests\")\r\n";
-        private const string ModuleLateBinding = "Private Assert As Object\r\n";
-        private const string ModuleEarlyBinding = "Private Assert As New Rubberduck.{0}AssertClass\r\n";
+        private const string AssertLateBinding = "Private Assert As Object";
 
-        private const string TestModuleEmptyTemplate = "'@TestModule\r\n{0}\r\n{1}\r\n";
+        private const string ModuleFakesProvider = "Private Fakes As {0}";
+        private const string AssertEarlyBinding = "Private Assert As Rubberduck.{0}AssertClass";
 
-        private const string ModuleInitLateBinding = "Set Assert = CreateObject(\"Rubberduck.{0}AssertClass\")\r\n";
+        private const string TestModuleEmptyTemplate = "'@TestModule\r\n{0}\r\n{1}\r\n{2}\r\n\r\n";
+
+        private const string ModuleInitLateBinding = "Set Assert = CreateObject(\"Rubberduck.{0}AssertClass\")";
         private readonly string _moduleInit = string.Concat(
-            "'@ModuleInitialize\r\n"
-            , "Public Sub ModuleInitialize()\r\n"
-            , "    '", RubberduckUI.UnitTest_NewModule_RunOnce, ".\r\n    {0}\r\n"
-            , "End Sub\r\n\r\n"
-            , "'@ModuleCleanup\r\n"
-            , "Public Sub ModuleCleanup()\r\n"
-            , "    '", RubberduckUI.UnitTest_NewModule_RunOnce, ".\r\n"
-            , "End Sub\r\n\r\n"
+            "'@ModuleInitialize\r\n",
+            "Public Sub ModuleInitialize()\r\n",
+            $"    '{RubberduckUI.UnitTest_NewModule_RunOnce}.\r\n",
+            "    {0}\r\n",
+            "    {1}\r\n",
+            "End Sub\r\n\r\n",
+            "'@ModuleCleanup\r\n",
+            "Public Sub ModuleCleanup()\r\n",
+            $"    '{RubberduckUI.UnitTest_NewModule_RunOnce}.\r\n",
+            "    Set Assert = Nothing\r\n",
+            "    Set Fakes = nothing\r\n",
+            "End Sub\r\n\r\n"
         );
 
         private readonly string _methodInit = string.Concat(
@@ -63,18 +69,30 @@ namespace Rubberduck.UI.Command
         private string GetTestModule(IUnitTestSettings settings)
         {
             var assertClass = settings.AssertMode == AssertMode.StrictAssert ? string.Empty : "Permissive";
-            var moduleBinding = settings.BindingMode == BindingMode.EarlyBinding
-                ? string.Format(ModuleEarlyBinding, assertClass)
-                : ModuleLateBinding;
 
-            var formattedModuleTemplate = string.Format(TestModuleEmptyTemplate, FolderAnnotation, moduleBinding);
+            bool isEarlyBinding = settings.BindingMode == BindingMode.EarlyBinding;
+            var moduleBinding = isEarlyBinding
+                    ? string.Format(AssertEarlyBinding,assertClass)
+                    : AssertLateBinding;
+            var moduleFakes = string.Format(ModuleFakesProvider, isEarlyBinding
+                                            ? "Rubberduck.IFakesProvider"
+                                            : "Object");
+
+            var formattedModuleTemplate = string.Format(TestModuleEmptyTemplate, FolderAnnotation, moduleBinding, moduleFakes);
 
             if (settings.ModuleInit)
             {
-                var lateBindingString = string.Format(ModuleInitLateBinding,
-                    settings.AssertMode == AssertMode.StrictAssert ? string.Empty : "Permissive");
+                var assertLateBindingString = string.Format(ModuleInitLateBinding, assertClass);
+                var assertEarlyBindingString = "Set Assert = New Rubberduck.AssertClass";
 
-                formattedModuleTemplate += string.Format(_moduleInit, settings.BindingMode == BindingMode.EarlyBinding ? string.Empty : lateBindingString);
+                const string rdFakes = "Rubberduck.FakesProvider";
+                var fakesEarlyBindingString = $"New {rdFakes}";
+                var fakesLateBindingString = $"CreateObject({rdFakes})";
+
+                formattedModuleTemplate += string.Format(_moduleInit,
+                                                        isEarlyBinding ? assertEarlyBindingString : assertLateBindingString,
+                                                        string.Format("Set Fakes = {0}", isEarlyBinding ? fakesEarlyBindingString : fakesLateBindingString)
+                                                        );
             }
 
             if (settings.MethodInit)
