@@ -5,9 +5,9 @@ using System.Threading;
 
 namespace Rubberduck.Parsing.VBA
 {
-    public class SynchronousCOMReferenceManager:COMReferenceManagerBase 
+    public class SynchronousCOMReferenceSynchronizer:COMReferenceSynchronizerBase 
     {
-        public SynchronousCOMReferenceManager(RubberduckParserState state, IParserStateManager parserStateManager, string serializedDeclarationsPath = null)
+        public SynchronousCOMReferenceSynchronizer(RubberduckParserState state, IParserStateManager parserStateManager, string serializedDeclarationsPath = null)
         :base(state, parserStateManager, serializedDeclarationsPath) { }
 
 

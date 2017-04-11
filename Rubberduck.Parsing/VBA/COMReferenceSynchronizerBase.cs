@@ -12,7 +12,7 @@ using Rubberduck.Parsing.ComReflection;
 
 namespace Rubberduck.Parsing.VBA
 {
-    public abstract class COMReferenceManagerBase : ICOMReferenceManager
+    public abstract class COMReferenceSynchronizerBase : ICOMReferenceSynchronizer, IProjectReferencesProvider 
     {
         private const string rubberduckGUID = "{E07C841C-14B4-4890-83E9-8C80B06DD59D}";
 
@@ -23,7 +23,7 @@ namespace Rubberduck.Parsing.VBA
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
 
-        public COMReferenceManagerBase(RubberduckParserState state, IParserStateManager parserStateManager, string serializedDeclarationsPath = null)
+        public COMReferenceSynchronizerBase(RubberduckParserState state, IParserStateManager parserStateManager, string serializedDeclarationsPath = null)
         {
             if (state == null) throw new ArgumentNullException(nameof(state));
             if (parserStateManager == null) throw new ArgumentNullException(nameof(parserStateManager));
@@ -36,7 +36,7 @@ namespace Rubberduck.Parsing.VBA
 
 
         private bool _lastRunLoadedReferences;
-        public bool LastRunLoadedReferences
+        public bool LastSyncOfCOMReferencesLoadedReferences
         {
             get
             {
@@ -45,7 +45,7 @@ namespace Rubberduck.Parsing.VBA
         }
 
         private bool _lastRunUnloadedReferences;
-        public bool LastRunUnloadedReferences
+        public bool LastSyncOfCOMReferencesUnloadedReferences
         {
             get
             {
@@ -74,8 +74,6 @@ namespace Rubberduck.Parsing.VBA
             var unmapped = new ConcurrentBag<IReference>();
 
             var referencesToLoad = GetReferencesToLoadAndSaveReferencePriority(projects);
-
-            _state.OnStatusMessageUpdate(ParserState.LoadingReference.ToString()); //Why do we use this method to change the displayed state?
 
             if (referencesToLoad.Any())
             {

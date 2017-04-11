@@ -11,11 +11,11 @@ namespace Rubberduck.Parsing.VBA
         public SynchronousDeclarationResolveRunner(
             RubberduckParserState state,
             IParserStateManager parserStateManager,
-            ICOMReferenceManager comReferenceManager) 
+            IProjectReferencesProvider projectReferencesProvider) 
         :base(
              state, 
              parserStateManager, 
-             comReferenceManager)
+             projectReferencesProvider)
         { }
 
         public override void ResolveDeclarations(IReadOnlyCollection<QualifiedModuleName> modules, CancellationToken token)

@@ -72,7 +72,7 @@ namespace Rubberduck.API
             var moduleToModuleReferenceManager = new ModuleToModuleReferenceManager(_state);
             var parserStateManager = new ParserStateManager(_state);
             var referenceRemover = new ReferenceRemover(_state, moduleToModuleReferenceManager);
-            var comReferenceManager = new COMReferenceManager(_state, parserStateManager);
+            var comSynchronizer = new COMReferenceSynchronizer(_state, parserStateManager);
             var builtInDeclarationLoader = new BuiltInDeclarationLoader(
                 _state,
                 new List<ICustomDeclarationLoader>
@@ -92,24 +92,27 @@ namespace Rubberduck.API
             var declarationResolveRunner = new DeclarationResolveRunner(
                 _state, 
                 parserStateManager, 
-                comReferenceManager);
+                comSynchronizer);
             var referenceResolveRunner = new ReferenceResolveRunner(
                 _state,
                 parserStateManager,
                 moduleToModuleReferenceManager);
+            var parsingStageService = new ParsingStageService(
+                comSynchronizer,
+                builtInDeclarationLoader,
+                parseRunner,
+                declarationResolveRunner,
+                referenceResolveRunner  
+                );
 
             _parser = new ParseCoordinator(
                 _state,
+                parsingStageService,
                 decalarationFinderManager,
                 projectManager,
                 moduleToModuleReferenceManager,
                 parserStateManager,
-                referenceRemover,
-                comReferenceManager,
-                builtInDeclarationLoader,
-                parseRunner,
-                declarationResolveRunner,
-                referenceResolveRunner);
+                referenceRemover);
         }
 
         /// <summary>

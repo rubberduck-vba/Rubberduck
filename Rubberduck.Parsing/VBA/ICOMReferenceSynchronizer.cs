@@ -4,11 +4,10 @@ using System.Threading;
 
 namespace Rubberduck.Parsing.VBA
 {
-    public interface ICOMReferenceManager
+    public interface ICOMReferenceSynchronizer
     {
-        bool LastRunLoadedReferences { get; }
-        bool LastRunUnloadedReferences { get; }
-        IReadOnlyCollection<ReferencePriorityMap> ProjectReferences { get; }
+        bool LastSyncOfCOMReferencesLoadedReferences { get; }
+        bool LastSyncOfCOMReferencesUnloadedReferences { get; }
 
         void SyncComReferences(IReadOnlyList<IVBProject> projects, CancellationToken token);
     }

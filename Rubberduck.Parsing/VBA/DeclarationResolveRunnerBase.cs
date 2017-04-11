@@ -18,20 +18,20 @@ namespace Rubberduck.Parsing.VBA
 
         protected readonly RubberduckParserState _state;
         protected readonly IParserStateManager _parserStateManager;
-        private readonly ICOMReferenceManager _comReferenceManager;
+        private readonly IProjectReferencesProvider _projectReferencesProvider;
 
         public DeclarationResolveRunnerBase(
             RubberduckParserState state,
             IParserStateManager parserStateManager,
-            ICOMReferenceManager comReferenceManager)
+            IProjectReferencesProvider projectReferencesProvider)
         {
             if (state == null) throw new ArgumentNullException(nameof(state));
             if (parserStateManager == null) throw new ArgumentNullException(nameof(parserStateManager));
-            if (comReferenceManager == null) throw new ArgumentNullException(nameof(comReferenceManager));
+            if (projectReferencesProvider == null) throw new ArgumentNullException(nameof(projectReferencesProvider));
 
             _state = state;
             _parserStateManager = parserStateManager;
-            _comReferenceManager = comReferenceManager;
+            _projectReferencesProvider = projectReferencesProvider;
         }
 
         public abstract void ResolveDeclarations(IReadOnlyCollection<QualifiedModuleName> modules, CancellationToken token);
@@ -78,7 +78,7 @@ namespace Rubberduck.Parsing.VBA
             var projectDeclaration = new ProjectDeclaration(qualifiedName, project.Name, true, project);
 
             var references = new List<ReferencePriorityMap>();
-            foreach (var item in _comReferenceManager.ProjectReferences)
+            foreach (var item in _projectReferencesProvider.ProjectReferences)
             {
                 if (item.ContainsKey(projectId))
                 {

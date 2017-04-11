@@ -18,44 +18,32 @@ namespace Rubberduck.Parsing.VBA
         private readonly RubberduckParserState _state;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
+        private readonly IParsingStageService _parsingStageService;
         private readonly IDeclarationFinderManager _declarationFinderManager;
         private readonly IProjectManager _projectManager;
         private readonly IModuleToModuleReferenceManager _moduleToModuleReferenceManager;
         private readonly IParserStateManager _parserStateManager;
         private readonly IReferenceRemover _referenceRemover;
-        private readonly ICOMReferenceManager _comReferenceManager;
-        private readonly IBuiltInDeclarationLoader _builtInDeclarationLoader;
-        private readonly IParseRunner _parseRunner;
-        private readonly IDeclarationResolveRunner _declarationResolveRunner;
-        private readonly IReferenceResolveRunner _referenceResolveRunner;
 
         private readonly bool _isTestScope;
 
         public ParseCoordinator(
             RubberduckParserState state,
+            IParsingStageService parsingStageService,
             IDeclarationFinderManager declarationFinderManager,
             IProjectManager projectManager,
             IModuleToModuleReferenceManager moduleToModuleReferenceManager,
             IParserStateManager parserStateManager,
             IReferenceRemover referenceRemover,
-            ICOMReferenceManager comSynchronizationRunner,
-            IBuiltInDeclarationLoader builtInDeclarationLoader,
-            IParseRunner parseRunner,
-            IDeclarationResolveRunner declarationResolveRunner,
-            IReferenceResolveRunner referenceResolveRunner,
             bool isTestScope = false)
         {
             _state = state;
+            _parsingStageService = parsingStageService;
             _declarationFinderManager = declarationFinderManager;
             _projectManager = projectManager;
             _moduleToModuleReferenceManager = moduleToModuleReferenceManager;
             _parserStateManager = parserStateManager;
             _referenceRemover = referenceRemover;
-            _comReferenceManager = comSynchronizationRunner;
-            _builtInDeclarationLoader = builtInDeclarationLoader;
-            _parseRunner = parseRunner;
-            _declarationResolveRunner = declarationResolveRunner;
-            _referenceResolveRunner = referenceResolveRunner;
             _isTestScope = isTestScope;
 
             state.ParseRequest += ReparseRequested;
@@ -172,19 +160,22 @@ namespace Rubberduck.Parsing.VBA
         private void ExecuteCommonParseActivities(IReadOnlyCollection<QualifiedModuleName> toParse, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
-
+            
             _parserStateManager.SetModuleStates(toParse, ParserState.Pending, token);
             token.ThrowIfCancellationRequested();
 
-            _comReferenceManager.SyncComReferences(State.Projects, token);
-            if (_comReferenceManager.LastRunLoadedReferences || _comReferenceManager.LastRunUnloadedReferences)
+            _parserStateManager.SetStatusAndFireStateChanged(this, ParserState.LoadingReference, token);
+            token.ThrowIfCancellationRequested();
+
+            _parsingStageService.SyncComReferences(State.Projects, token);
+            if (_parsingStageService.LastSyncOfCOMReferencesLoadedReferences || _parsingStageService.LastSyncOfCOMReferencesUnloadedReferences)
             {
                 RefreshDeclarationFinder();
             }
             token.ThrowIfCancellationRequested();
 
-            _builtInDeclarationLoader.LoadBuitInDeclarations();
-            if (_builtInDeclarationLoader.LastExecutionLoadedDeclarations)
+            _parsingStageService.LoadBuitInDeclarations();
+            if (_parsingStageService.LastLoadOfBuiltInDeclarationsLoadedDeclarations)
             { 
                 RefreshDeclarationFinder();
             }
@@ -204,7 +195,7 @@ namespace Rubberduck.Parsing.VBA
                 _parserStateManager.SetModuleStates(toParse, ParserState.Parsing, token);
                 token.ThrowIfCancellationRequested();
 
-                _parseRunner.ParseModules(toParse, token);
+                _parsingStageService.ParseModules(toParse, token);
 
                 if (token.IsCancellationRequested || State.Status >= ParserState.Error)
                 {
@@ -221,7 +212,7 @@ namespace Rubberduck.Parsing.VBA
                 _parserStateManager.SetModuleStates(toParse, ParserState.ResolvingDeclarations, token);
                 token.ThrowIfCancellationRequested();
 
-                _declarationResolveRunner.ResolveDeclarations(toParse, token);
+                _parsingStageService.ResolveDeclarations(toParse, token);
                 RefreshDeclarationFinder();
             }
 
@@ -240,7 +231,7 @@ namespace Rubberduck.Parsing.VBA
             _parserStateManager.SetModuleStates(toResolveReferences, ParserState.ResolvingReferences, token);
             token.ThrowIfCancellationRequested();
 
-            _referenceResolveRunner.ResolveReferences(toResolveReferences, token);
+            _parsingStageService.ResolveReferences(toResolveReferences, token);
 
             if (token.IsCancellationRequested || State.Status >= ParserState.Error)
             {

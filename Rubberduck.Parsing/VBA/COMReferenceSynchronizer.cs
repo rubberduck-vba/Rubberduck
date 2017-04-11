@@ -8,11 +8,11 @@ using System.Collections.Concurrent;
 
 namespace Rubberduck.Parsing.VBA
 {
-    public class COMReferenceManager : COMReferenceManagerBase
+    public class COMReferenceSynchronizer : COMReferenceSynchronizerBase
     {
         private const int _maxReferenceLoadingConcurrency = -1;
 
-        public COMReferenceManager(RubberduckParserState state, IParserStateManager parserStateManager, string serializedDeclarationsPath = null)
+        public COMReferenceSynchronizer(RubberduckParserState state, IParserStateManager parserStateManager, string serializedDeclarationsPath = null)
         :base(state, parserStateManager, serializedDeclarationsPath) { }
 
 

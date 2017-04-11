@@ -3,7 +3,7 @@ namespace Rubberduck.Parsing.VBA
 {
     public interface IBuiltInDeclarationLoader
     {
-        bool LastExecutionLoadedDeclarations { get; }
+        bool LastLoadOfBuiltInDeclarationsLoadedDeclarations { get; }
 
         void LoadBuitInDeclarations();
     }

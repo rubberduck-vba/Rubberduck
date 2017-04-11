@@ -334,7 +334,10 @@
     <Compile Include="VBA\AttributeParser.cs" />
     <Compile Include="VBA\Attributes.cs" />
     <Compile Include="VBA\BuiltInDeclarationLoader.cs" />
+    <Compile Include="VBA\ParsingStageService.cs" />
     <Compile Include="VBA\CollectionExtensions.cs" />
+    <Compile Include="VBA\IParsingStageService.cs" />
+    <Compile Include="VBA\IProjectReferencesProvider.cs" />
     <Compile Include="VBA\SynchronousReferenceRemover.cs" />
     <Compile Include="VBA\ReferenceRemover.cs" />
     <Compile Include="VBA\ReferenceRemoverBase.cs" />
@@ -354,9 +357,9 @@
     <Compile Include="VBA\ParseRunner.cs" />
     <Compile Include="VBA\ParseRunnerBase.cs" />
     <Compile Include="VBA\IBuiltInDeclarationLoader.cs" />
-    <Compile Include="VBA\SynchronousCOMReferenceManager.cs" />
-    <Compile Include="VBA\COMReferenceManager.cs" />
-    <Compile Include="VBA\COMReferenceManagerBase.cs" />
+    <Compile Include="VBA\SynchronousCOMReferenceSynchronizer.cs" />
+    <Compile Include="VBA\COMReferenceSynchronizer.cs" />
+    <Compile Include="VBA\COMReferenceSynchronizerBase.cs" />
     <Compile Include="VBA\ParserStateManagerBase.cs" />
     <Compile Include="VBA\SynchronousParserStateManager.cs" />
     <Compile Include="VBA\ParserStateManager.cs" />
@@ -369,7 +372,7 @@
     <Compile Include="VBA\IModuleExporter.cs" />
     <Compile Include="VBA\IModuleToModuleReferenceManager.cs" />
     <Compile Include="VBA\IDeclarationResolveRunner.cs" />
-    <Compile Include="VBA\ICOMReferenceManager.cs" />
+    <Compile Include="VBA\ICOMReferenceSynchronizer.cs" />
     <Compile Include="VBA\IProjectManager.cs" />
     <Compile Include="VBA\IParserStateManager.cs" />
     <Compile Include="VBA\IReferenceResolveRunner.cs" />

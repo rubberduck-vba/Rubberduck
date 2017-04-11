@@ -51,7 +51,7 @@ namespace RubberduckTests.Mocks
             var moduleToModuleReferenceManager = new ModuleToModuleReferenceManager(state);
             var parserStateManager = new SynchronousParserStateManager(state);
             var referenceRemover = new ReferenceRemover(state, moduleToModuleReferenceManager);
-            var comReferenceManager = new SynchronousCOMReferenceManager(
+            var comSynchronizer = new SynchronousCOMReferenceSynchronizer(
                 state, 
                 parserStateManager, 
                 path);
@@ -72,24 +72,27 @@ namespace RubberduckTests.Mocks
             var declarationResolveRunner = new SynchronousDeclarationResolveRunner(
                 state, 
                 parserStateManager, 
-                comReferenceManager);
+                comSynchronizer);
             var referenceResolveRunner = new SynchronousReferenceResolveRunner(
                 state,
                 parserStateManager,
                 moduleToModuleReferenceManager);
+            var parsingStageService = new ParsingStageService(
+                comSynchronizer,
+                builtInDeclarationLoader,
+                parseRunner,
+                declarationResolveRunner,
+                referenceResolveRunner
+                );
 
             return new ParseCoordinator( 
                 state,
+                parsingStageService,
                 declarationFinderManager,
                 projectManager,
                 moduleToModuleReferenceManager,
                 parserStateManager,
                 referenceRemover,
-                comReferenceManager,
-                builtInDeclarationLoader,
-                parseRunner,
-                declarationResolveRunner,
-                referenceResolveRunner,
                 true);
         }
 

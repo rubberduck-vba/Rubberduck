@@ -25,7 +25,7 @@ namespace Rubberduck.Parsing.VBA
         }
 
         private bool _lastExecutionLoadedDeclarations;
-        public bool LastExecutionLoadedDeclarations
+        public bool LastLoadOfBuiltInDeclarationsLoadedDeclarations
         {
             get
             {
