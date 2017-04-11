@@ -36,7 +36,6 @@ namespace RubberduckTests.Binding
         }
 
         [TestMethod]
-        [Ignore] // todo: figure out why this test randomly fails
         public void EnclosingProjectComesBeforeOtherModuleInEnclosingProject()
         {
             var builder = new MockVbeBuilder();
