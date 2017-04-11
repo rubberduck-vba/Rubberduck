@@ -42,7 +42,7 @@ namespace Rubberduck.Parsing.VBA
         public string Message { get; }
     }
 
-    public sealed class RubberduckParserState : IDisposable, IDeclarationFinderProvider, IParseTreeProvider 
+    public sealed class RubberduckParserState : IDisposable
     {
         // circumvents VBIDE API's tendency to return a new instance at every parse, which breaks reference equality checks everywhere
         private readonly IDictionary<string, IVBProject> _projects = new Dictionary<string, IVBProject>();

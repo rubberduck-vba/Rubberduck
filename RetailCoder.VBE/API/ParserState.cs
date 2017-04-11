@@ -107,7 +107,6 @@ namespace Rubberduck.API
             _parser = new ParseCoordinator(
                 _state,
                 parsingStageService,
-                _state,
                 projectManager,
                 moduleToModuleReferenceManager,
                 parserStateManager,

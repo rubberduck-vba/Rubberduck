@@ -87,7 +87,6 @@ namespace RubberduckTests.Mocks
             return new ParseCoordinator( 
                 state,
                 parsingStageService,
-                state,
                 projectManager,
                 moduleToModuleReferenceManager,
                 parserStateManager,

@@ -342,8 +342,6 @@
     <Compile Include="VBA\ReferenceRemover.cs" />
     <Compile Include="VBA\ReferenceRemoverBase.cs" />
     <Compile Include="VBA\ProjectManager.cs" />
-    <Compile Include="VBA\IDeclarationFinderProvider.cs" />
-    <Compile Include="VBA\IParseTreeProvider.cs" />
     <Compile Include="VBA\SynchronousReferenceResolveRunner.cs" />
     <Compile Include="VBA\ReferenceResolveRunner.cs" />
     <Compile Include="VBA\ReferenceResolveRunnerBase.cs" />
