@@ -103,12 +103,11 @@ namespace Rubberduck.Root
 
             BindCustomDeclarationLoadersToParser();
             Rebind<ICOMReferenceSynchronizer>().To<COMReferenceSynchronizer>().InSingletonScope().WithConstructorArgument("serializedDeclarationsPath", (string)null);
+            Bind<IProjectReferencesProvider>().To<COMReferenceSynchronizer>().InSingletonScope().WithConstructorArgument("serializedDeclarationsPath", (string)null);
             Bind<Func<IVBAPreprocessor>>().ToMethod(p => () => new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture)));
 
             Bind<IDeclarationFinderProvider>().To<RubberduckParserState>().InSingletonScope();
             Bind<IParseTreeProvider>().To<RubberduckParserState>().InSingletonScope();
-
-            Bind<IProjectReferencesProvider>().To<COMReferenceSynchronizer>();
 
             Rebind<ISearchResultsWindowViewModel>().To<SearchResultsWindowViewModel>().InSingletonScope();
 
