@@ -306,6 +306,11 @@ namespace Rubberduck.Root
             foreach (var quickFix in quickFixes)
             {
                 Bind<IQuickFix>().To(quickFix).InSingletonScope();
+                if (quickFix.Name.Equals("AssignedByValParameterMakeLocalCopyQuickFix"))
+                {
+                    Bind<IAssignedByValParameterQuickFixDialogFactory>().To<AssignedByValParameterQuickFixDialogFactory>()
+                        .WhenInjectedInto(quickFix);
+                }
             }
         }
 
