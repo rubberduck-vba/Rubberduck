@@ -28,8 +28,10 @@ namespace Rubberduck.Parsing.VBA
             _moduleToModuleReferenceManager = moduleToModuleReferenceManager;
         }
 
+
         public abstract void RemoveReferencesTo(IReadOnlyCollection<QualifiedModuleName> modules, CancellationToken token);
         protected abstract void RemoveReferencesByFromTargetModules(IReadOnlyCollection<QualifiedModuleName> referencingModules, IReadOnlyCollection<QualifiedModuleName> targetModules, CancellationToken token);
+
 
         public void RemoveReferencesBy(IReadOnlyCollection<QualifiedModuleName> modules, CancellationToken token)
         {

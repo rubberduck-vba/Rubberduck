@@ -7,9 +7,9 @@ namespace Rubberduck.Parsing.VBA
 {
     public class SynchronousParserStateManager:ParserStateManagerBase 
     {
-
         public SynchronousParserStateManager(RubberduckParserState state)
         :base(state) { } 
+
 
         public override void SetModuleStates(IReadOnlyCollection<QualifiedModuleName> modules, ParserState parserState, CancellationToken token, bool evaluateOverallParserState = true)
         {

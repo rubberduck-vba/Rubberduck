@@ -541,7 +541,7 @@ namespace Rubberduck.Parsing.VBA
 
         public ParserState GetModuleState(QualifiedModuleName module)
         {
-            return _moduleStates.GetOrAdd(module, new ModuleState(ParserState.Pending)).State;  //Why does getting the module state potentially create a new one? That is not too intuitive.
+            return _moduleStates.GetOrAdd(module, new ModuleState(ParserState.Pending)).State;
         }
 
         private readonly object _statusLockObject = new object(); 

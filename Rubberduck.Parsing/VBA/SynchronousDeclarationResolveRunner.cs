@@ -18,6 +18,7 @@ namespace Rubberduck.Parsing.VBA
             projectReferencesProvider)
         { }
 
+
         public override void ResolveDeclarations(IReadOnlyCollection<QualifiedModuleName> modules, CancellationToken token)
         {
             if (!modules.Any())

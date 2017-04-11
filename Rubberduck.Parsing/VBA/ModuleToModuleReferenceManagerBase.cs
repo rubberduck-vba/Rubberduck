@@ -66,6 +66,5 @@ namespace Rubberduck.Parsing.VBA
             }
             return fromModules.AsReadOnly();
         }
-
     }
 }

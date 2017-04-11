@@ -43,6 +43,7 @@ namespace Rubberduck.Parsing.VBA
             _projectReferencesProvider = projectReferencesProvider;
         }
 
+
         public abstract void ResolveDeclarations(IReadOnlyCollection<QualifiedModuleName> modules, CancellationToken token);
 
 

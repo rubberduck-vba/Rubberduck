@@ -18,7 +18,7 @@ namespace Rubberduck.Parsing.VBA
         { }
 
 
-        protected override void LoadReferences(List<IReference> referencesToLoad, ConcurrentBag<IReference> unmapped, CancellationToken token)
+        protected override void LoadReferences(IEnumerable<IReference> referencesToLoad, ConcurrentBag<IReference> unmapped, CancellationToken token)
         {
             foreach (var reference in referencesToLoad)
             {

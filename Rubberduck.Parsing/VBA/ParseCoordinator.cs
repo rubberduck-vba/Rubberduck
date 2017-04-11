@@ -8,7 +8,6 @@ using System.Diagnostics;
 using System.Linq;
 using NLog;
 
-
 namespace Rubberduck.Parsing.VBA
 {
     public class ParseCoordinator : IParseCoordinator
@@ -329,7 +328,6 @@ namespace Rubberduck.Parsing.VBA
             }
             if (watch != null) Logger.Debug("Parsing run finished after {0}s. (thread {1}).", watch.Elapsed.Seconds, Thread.CurrentThread.ManagedThreadId);
         }
-
 
         private void ParseAllInternal(object requestor, CancellationToken token)
         {

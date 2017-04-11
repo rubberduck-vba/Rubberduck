@@ -14,6 +14,7 @@ namespace Rubberduck.Parsing.VBA
             moduleToModuleReferenceManager)
         { }
 
+
         public override void RemoveReferencesTo(IReadOnlyCollection<QualifiedModuleName> modules, CancellationToken token)
         {
             foreach(var module in modules)

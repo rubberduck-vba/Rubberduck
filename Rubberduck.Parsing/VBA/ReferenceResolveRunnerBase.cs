@@ -12,7 +12,6 @@ namespace Rubberduck.Parsing.VBA
 {
     public abstract class ReferenceResolveRunnerBase : IReferenceResolveRunner
     {
-
         //This is used to buffer the modules for which to resolve references
         //to avoid missing modules in case of a cancellation or a resolver error.
         private readonly HashSet<QualifiedModuleName> _toResolve = new HashSet<QualifiedModuleName>();
@@ -22,7 +21,6 @@ namespace Rubberduck.Parsing.VBA
         protected readonly RubberduckParserState _state;
         protected readonly IParserStateManager _parserStateManager;
         private readonly IModuleToModuleReferenceManager _moduleToModuleReferenceManager;
-
 
         public ReferenceResolveRunnerBase(
             RubberduckParserState state,
@@ -125,7 +123,6 @@ namespace Rubberduck.Parsing.VBA
                 }
             }
         }
-
 
         protected void AddModuleToModuleReferences(DeclarationFinder finder, QualifiedModuleName referencedModule)
         {

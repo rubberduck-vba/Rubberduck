@@ -54,7 +54,7 @@ namespace Rubberduck.Parsing.VBA
         }
 
 
-        protected abstract void LoadReferences(List<IReference> referencesToLoad, ConcurrentBag<IReference> unmapped, CancellationToken token);
+        protected abstract void LoadReferences(IEnumerable<IReference> referencesToLoad, ConcurrentBag<IReference> unmapped, CancellationToken token);
 
 
         public void SyncComReferences(IReadOnlyList<IVBProject> projects, CancellationToken token)
@@ -88,7 +88,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private List<IReference> GetReferencesToLoadAndSaveReferencePriority(IReadOnlyList<IVBProject> projects)
+        private IEnumerable<IReference> GetReferencesToLoadAndSaveReferencePriority(IReadOnlyList<IVBProject> projects)
         {
             var referencesToLoad = new List<IReference>();
 
@@ -172,8 +172,6 @@ namespace Rubberduck.Parsing.VBA
             return QualifiedModuleName.GetProjectId(reference);
         }
 
-        
-
         protected void LoadReference(IReference localReference, ConcurrentBag<IReference> unmapped)
         {
             Logger.Trace(string.Format("Loading referenced type '{0}'.", localReference.Name));
@@ -217,7 +215,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private List<IReference> NonMappedReferences(IReadOnlyList<IVBProject> projects)
+        private IEnumerable<IReference> NonMappedReferences(IReadOnlyList<IVBProject> projects)
         {
             var mappedIds = _projectReferences.Select(item => item.ReferencedProjectId).ToHashSet();
             var references = projects.SelectMany(project => project.References);
@@ -242,7 +240,7 @@ namespace Rubberduck.Parsing.VBA
 
             if (map == null || !map.IsLoaded)
             {
-                // we're removing a reference we weren't tracking? ...this shouldn't happen.
+                Logger.Warn("Tried to unload untracked project reference."); //This shouldn't happen.
                 return;
             }
 
@@ -253,6 +251,5 @@ namespace Rubberduck.Parsing.VBA
                 _state.RemoveBuiltInDeclarations(reference);
             }
         }
-
     }
 }

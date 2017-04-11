@@ -23,17 +23,16 @@ namespace Rubberduck.Parsing.VBA
         { }
 
 
-        protected override void LoadReferences(List<IReference> referencesToLoad, ConcurrentBag<IReference> unmapped, CancellationToken token)
+        protected override void LoadReferences(IEnumerable<IReference> referencesToLoad, ConcurrentBag<IReference> unmapped, CancellationToken token)
         {
-            var referenceLoadingTaskScheduler = ThrottelingTaskScheduler(_maxReferenceLoadingConcurrency);
+            var referenceLoadingTaskScheduler = ThrottledTaskScheduler(_maxReferenceLoadingConcurrency);
 
             //Parallel.ForEach is not used because loading the references can contain IO-bound operations.
             var loadTasks = new List<Task>();
             foreach (var reference in referencesToLoad)
             {
-                var localReference = reference;
                 loadTasks.Add(Task.Factory.StartNew(
-                                    () => LoadReference(localReference, unmapped),
+                                    () => LoadReference(reference, unmapped),
                                     token,
                                     TaskCreationOptions.None,
                                     referenceLoadingTaskScheduler
@@ -56,7 +55,7 @@ namespace Rubberduck.Parsing.VBA
             token.ThrowIfCancellationRequested();
         }
 
-        private TaskScheduler ThrottelingTaskScheduler(int maxLevelOfConcurrency)
+        private TaskScheduler ThrottledTaskScheduler(int maxLevelOfConcurrency)
         {
             if (maxLevelOfConcurrency <= 0)
             {
@@ -68,6 +67,5 @@ namespace Rubberduck.Parsing.VBA
                 return taskSchedulerPair.ConcurrentScheduler;
             }
         }
-
     }
 }

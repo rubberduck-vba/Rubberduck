@@ -2,7 +2,6 @@
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
 
-
 namespace Rubberduck.Parsing.VBA
 {
     public interface IParseTreeProvider

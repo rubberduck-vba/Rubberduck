@@ -8,7 +8,6 @@ namespace Rubberduck.Parsing.VBA
 {
     public class ProjectManager : IProjectManager
     {
-
         private readonly RubberduckParserState _state;
         private readonly IVBE _vbe;
 
@@ -40,8 +39,12 @@ namespace Rubberduck.Parsing.VBA
 
         public IReadOnlyCollection<QualifiedModuleName> AllModules()
         {
-            return Projects.SelectMany(project => project.VBComponents).Select(component => new QualifiedModuleName(component)).ToHashSet().AsReadOnly(); ;
+            return Projects.SelectMany(project => project.VBComponents)
+                            .Select(component => new QualifiedModuleName(component))
+                            .ToHashSet()
+                            .AsReadOnly(); ;
         }
+
 
         public void RefreshProjects()
         {

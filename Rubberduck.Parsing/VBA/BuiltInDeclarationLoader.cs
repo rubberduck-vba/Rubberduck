@@ -9,7 +9,6 @@ namespace Rubberduck.Parsing.VBA
 {
     public class BuiltInDeclarationLoader : IBuiltInDeclarationLoader
     {
-
         private readonly IEnumerable<ICustomDeclarationLoader> _customDeclarationLoaders;
         private RubberduckParserState _state;
 
@@ -30,7 +29,9 @@ namespace Rubberduck.Parsing.VBA
             _customDeclarationLoaders = customDeclarationLoaders;
         }
 
+
         public bool LastLoadOfBuiltInDeclarationsLoadedDeclarations { get; private set; }
+
 
         public void LoadBuitInDeclarations()
         {
