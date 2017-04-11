@@ -1,32 +1,40 @@
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.VBEditor;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class UntypedFunctionUsageQuickFix : QuickFixBase
+    public sealed class UntypedFunctionUsageQuickFix : IQuickFix
     {
-        public UntypedFunctionUsageQuickFix(ParserRuleContext context, QualifiedSelection selection) 
-            : base(context, selection, string.Format(InspectionsUI.QuickFixUseTypedFunction_, context.GetText(), GetNewSignature(context)))
+        private readonly RubberduckParserState _state;
+        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
         {
+            typeof(UntypedFunctionUsageInspection)
+        };
+
+        public UntypedFunctionUsageQuickFix(RubberduckParserState state)
+        {
+            _state = state;
         }
 
-        public override void Fix()
+        public IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
+
+        public void Fix(IInspectionResult result)
         {
-            var originalInstruction = Context.GetText();
-            var newInstruction = GetNewSignature(Context);
-            var selection = Selection.Selection;
+            var rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
+            rewriter.InsertAfter(result.Context.Stop.TokenIndex, "$");
+        }
 
-            var module = Selection.QualifiedName.Component.CodeModule;
-            var lines = module.GetLines(selection.StartLine, selection.LineCount);
-
-            var result = lines.Remove(Context.Start.Column, originalInstruction.Length)
-                .Insert(Context.Start.Column, newInstruction);
-            module.ReplaceLine(selection.StartLine, result);
+        public string Description(IInspectionResult result)
+        {
+            return string.Format(InspectionsUI.QuickFixUseTypedFunction_, result.Context.GetText(), GetNewSignature(result.Context));
         }
 
         private static string GetNewSignature(ParserRuleContext context)
@@ -39,5 +47,9 @@ namespace Rubberduck.Inspections.QuickFixes
                 return current + member.GetText() + (isIdentifierNode ? "$" : string.Empty);
             });
         }
+
+        public bool CanFixInProcedure => false;
+        public bool CanFixInModule => true;
+        public bool CanFixInProject => true;
     }
 }

@@ -1,27 +1,41 @@
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Parsing.Grammar;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class IntroduceLocalVariableQuickFix : QuickFixBase
+    public sealed class IntroduceLocalVariableQuickFix : IQuickFix
     {
-        private readonly Declaration _undeclared;
-
-        public IntroduceLocalVariableQuickFix(Declaration undeclared) 
-            : base(undeclared.Context, undeclared.QualifiedSelection, InspectionsUI.IntroduceLocalVariableQuickFix)
+        private readonly RubberduckParserState _state;
+        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
         {
-            _undeclared = undeclared;
+            typeof(UndeclaredVariableInspection)
+        };
+
+        public IntroduceLocalVariableQuickFix(RubberduckParserState state)
+        {
+            _state = state;
         }
 
-        public override bool CanFixInModule { get { return true; } }
-        public override bool CanFixInProject { get { return true; } }
+        public IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
 
-        public override void Fix()
+        public bool CanFixInProcedure => true;
+        public bool CanFixInModule => true;
+        public bool CanFixInProject => true;
+
+        public void Fix(IInspectionResult result)
         {
-            var instruction = Tokens.Dim + ' ' + _undeclared.IdentifierName + ' ' + Tokens.As + ' ' + Tokens.Variant;
-            Selection.QualifiedName.Component.CodeModule.InsertLines(Selection.Selection.StartLine, instruction);
+            var instruction = $"{Environment.NewLine}Dim {result.Target.IdentifierName} As Variant{Environment.NewLine}";
+            _state.GetRewriter(result.Target).InsertBefore(result.Target.Context.Start.TokenIndex, instruction);
+        }
+
+        public string Description(IInspectionResult result)
+        {
+            return InspectionsUI.IntroduceLocalVariableQuickFix;
         }
     }
 }

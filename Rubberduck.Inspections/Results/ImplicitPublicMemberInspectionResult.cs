@@ -1,7 +1,5 @@
-using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -12,26 +10,8 @@ namespace Rubberduck.Inspections.Results
 {
     public class ImplicitPublicMemberInspectionResult : InspectionResultBase
     {
-        private IEnumerable<IQuickFix> _quickFixes;
-        private readonly QualifiedContext<ParserRuleContext> _qualifiedContext;
-
         public ImplicitPublicMemberInspectionResult(IInspection inspection, QualifiedContext<ParserRuleContext> qualifiedContext, Declaration item)
-            : base(inspection, item)
-        {
-            _qualifiedContext = qualifiedContext;
-        }
-
-        public override IEnumerable<IQuickFix> QuickFixes
-        {
-            get
-            {
-                return _quickFixes ?? (_quickFixes = new IQuickFix[]
-                {
-                    new SpecifyExplicitPublicModifierQuickFix(_qualifiedContext.Context, QualifiedSelection), 
-                    new IgnoreOnceQuickFix(_qualifiedContext.Context, QualifiedSelection, Inspection.AnnotationName)
-                });
-            }
-        }
+            : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context, item) {}
 
         public override string Description
         {

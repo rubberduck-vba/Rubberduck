@@ -2,7 +2,6 @@ using System.Linq;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Rubberduck.Inspections;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.Application;

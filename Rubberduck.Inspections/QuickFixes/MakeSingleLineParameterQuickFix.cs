@@ -1,41 +1,46 @@
-using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class MakeSingleLineParameterQuickFix : QuickFixBase
+    public sealed class MakeSingleLineParameterQuickFix : IQuickFix
     {
-        public MakeSingleLineParameterQuickFix(ParserRuleContext context, QualifiedSelection selection)
-            : base(context, selection, InspectionsUI.MakeSingleLineParameterQuickFix)
+        private readonly RubberduckParserState _state;
+        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
         {
+            typeof(MultilineParameterInspection)
+        };
+
+        public MakeSingleLineParameterQuickFix(RubberduckParserState state)
+        {
+            _state = state;
         }
 
-        public override void Fix()
+        public IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
+
+        public void Fix(IInspectionResult result)
         {
-            var module = Selection.QualifiedName.Component.CodeModule;
-            var selection = Selection.Selection;
+            var rewriter = _state.GetRewriter(result.Target);
 
-            var lines = module.GetLines(selection.StartLine, selection.EndLine - selection.StartLine + 1);
-
-            var startLine = module.GetLines(selection.StartLine, 1);
-            var endLine = module.GetLines(selection.EndLine, 1);
-
-            var adjustedStartColumn = selection.StartColumn - 1;
-            var adjustedEndColumn = lines.Length - (endLine.Length - (selection.EndColumn > endLine.Length ? endLine.Length : selection.EndColumn - 1));
-
-            var parameter = lines.Substring(adjustedStartColumn,
-                adjustedEndColumn - adjustedStartColumn)
+            var parameter = result.Context.GetText()
                 .Replace("_", "")
                 .RemoveExtraSpacesLeavingIndentation();
 
-            var start = startLine.Remove(adjustedStartColumn);
-            var end = lines.Remove(0, adjustedEndColumn);
-
-            module.ReplaceLine(selection.StartLine, start + parameter + end);
-            module.DeleteLines(selection.StartLine + 1, selection.EndLine - selection.StartLine);
+            rewriter.Replace(result.Target, parameter);
         }
+
+        public string Description(IInspectionResult result)
+        {
+            return InspectionsUI.MakeSingleLineParameterQuickFix;
+        }
+
+        public bool CanFixInProcedure => true;
+        public bool CanFixInModule => true;
+        public bool CanFixInProject => true;
     }
 }

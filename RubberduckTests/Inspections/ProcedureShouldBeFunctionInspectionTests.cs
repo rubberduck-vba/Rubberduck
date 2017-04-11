@@ -1,7 +1,6 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Rubberduck.Inspections;
 using RubberduckTests.Mocks;
 using Rubberduck.Settings;
 using System.Threading;
@@ -285,9 +284,9 @@ End Function";
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            inspectionResults.First().QuickFixes.First().Fix();
+            new ChangeProcedureToFunctionQuickFix(state).Fix(inspectionResults.First());
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -315,9 +314,9 @@ End Function";
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            inspectionResults.First().QuickFixes.First().Fix();
+            new ChangeProcedureToFunctionQuickFix(state).Fix(inspectionResults.First());
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -355,9 +354,9 @@ End Sub";
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            inspectionResults.First().QuickFixes.First().Fix();
+            new ChangeProcedureToFunctionQuickFix(state).Fix(inspectionResults.First());
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -371,11 +370,8 @@ Sub Goo(ByVal a As Integer)
 End Sub";
 
             const string expectedCode =
-@"Private Function Foo(ByVal arg1 As Integer) As Integer
- arg1 = 6
- Goo arg1
-    Foo = arg1
- End Function
+@"Private Function Foo(ByVal arg1 As Integer) As Integer: arg1 = 6: Goo arg1:     Foo = arg1
+End Function
 
 Sub Goo(ByVal a As Integer)
 End Sub";
@@ -392,9 +388,9 @@ End Sub";
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            inspectionResults.First().QuickFixes.First().Fix();
+            new ChangeProcedureToFunctionQuickFix(state).Fix(inspectionResults.First());
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -408,11 +404,8 @@ Sub Goo(ByVal a As String)
 End Sub";
 
             const string expectedCode =
-@"Private Function Foo(ByVal arg1 As Integer) As Integer
- arg1 = 6
- Goo ""test: test""
-    Foo = arg1
- End Function
+@"Private Function Foo(ByVal arg1 As Integer) As Integer: arg1 = 6: Goo ""test: test"":     Foo = arg1
+End Function
 
 Sub Goo(ByVal a As String)
 End Sub";
@@ -429,9 +422,9 @@ End Sub";
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            inspectionResults.First().QuickFixes.First().Fix();
+            new ChangeProcedureToFunctionQuickFix(state).Fix(inspectionResults.First());
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -469,9 +462,9 @@ End Function";
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            inspectionResults.First().QuickFixes.First().Fix();
+            new ChangeProcedureToFunctionQuickFix(state).Fix(inspectionResults.First());
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -509,9 +502,9 @@ End Sub";
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            inspectionResults.First().QuickFixes.First().Fix();
+            new ChangeProcedureToFunctionQuickFix(state).Fix(inspectionResults.First());
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -539,9 +532,9 @@ End Sub";
             var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
+            new IgnoreOnceQuickFix(state, new[] {inspection}).Fix(inspectionResults.First());
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]

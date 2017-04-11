@@ -1,47 +1,45 @@
-using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Parsing;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.VBEditor;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class RemoveExplicitLetStatementQuickFix : QuickFixBase
+    public sealed class RemoveExplicitLetStatementQuickFix : IQuickFix
     {
-        public RemoveExplicitLetStatementQuickFix(ParserRuleContext context, QualifiedSelection selection)
-            : base(context, selection, InspectionsUI.RemoveObsoleteStatementQuickFix)
+        private readonly RubberduckParserState _state;
+        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
         {
+            typeof(ObsoleteLetStatementInspection)
+        };
+
+        public RemoveExplicitLetStatementQuickFix(RubberduckParserState state)
+        {
+            _state = state;
         }
 
-        public override void Fix()
+        public IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
+
+        public void Fix(IInspectionResult result)
         {
-            var module = Selection.QualifiedName.Component.CodeModule;
-            {
-                if (module.IsWrappingNullReference)
-                {
-                    return;
-                }
+            var rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
 
-                var selection = Context.GetSelection();
-                var context = (VBAParser.LetStmtContext)Context;
-
-                // remove line continuations to compare against context:
-                var originalCodeLines = module.GetLines(selection.StartLine, selection.LineCount)
-                    .Replace("\r\n", " ")
-                    .Replace("_", string.Empty);
-                var originalInstruction = Context.GetText();
-
-                var identifier = context.lExpression().GetText();
-                var value = context.expression().GetText();
-
-                module.DeleteLines(selection.StartLine, selection.LineCount);
-
-                var newInstruction = identifier + " = " + value;
-                var newCodeLines = originalCodeLines.Replace(originalInstruction, newInstruction);
-
-                module.InsertLines(selection.StartLine, newCodeLines);
-            }
+            var context = (VBAParser.LetStmtContext) result.Context;
+            rewriter.Remove(context.LET());
+            rewriter.Remove(context.whiteSpace().First());
         }
+
+        public string Description(IInspectionResult result)
+        {
+            return InspectionsUI.RemoveObsoleteStatementQuickFix;
+        }
+
+        public bool CanFixInProcedure => true;
+        public bool CanFixInModule => true;
+        public bool CanFixInProject => true;
     }
 }

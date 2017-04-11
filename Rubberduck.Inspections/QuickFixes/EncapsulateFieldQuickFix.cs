@@ -1,47 +1,52 @@
-using System.Windows.Forms;
-using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.SmartIndenter;
 using Rubberduck.UI.Refactorings.EncapsulateField;
-using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    /// <summary>
-    /// A code inspection quickfix that encapsulates a public field with a property
-    /// </summary>
-    public class EncapsulateFieldQuickFix : QuickFixBase
+    public sealed class EncapsulateFieldQuickFix : IQuickFix
     {
-        private readonly Declaration _target;
         private readonly RubberduckParserState _state;
         private readonly IIndenter _indenter;
-
-        public EncapsulateFieldQuickFix(ParserRuleContext context, QualifiedSelection selection, Declaration target, RubberduckParserState state, IIndenter indenter)
-            : base(context, selection, string.Format(InspectionsUI.EncapsulatePublicFieldInspectionQuickFix, target.IdentifierName))
+        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
         {
-            _target = target;
+            typeof(EncapsulatePublicFieldInspection)
+        };
+
+        public EncapsulateFieldQuickFix(RubberduckParserState state, IIndenter indenter)
+        {
             _state = state;
             _indenter = indenter;
         }
 
-        public override void Fix()
+        public IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
+
+        public void Fix(IInspectionResult result)
         {
-            var vbe = _target.Project.VBE;
+            var vbe = result.Target.Project.VBE;
 
             using (var view = new EncapsulateFieldDialog(new EncapsulateFieldViewModel(_state, _indenter)))
             {
                 var factory = new EncapsulateFieldPresenterFactory(vbe, _state, view);
                 var refactoring = new EncapsulateFieldRefactoring(vbe, _indenter, factory);
-                refactoring.Refactor(_target);
-                IsCancelled = view.DialogResult != DialogResult.OK;
+                refactoring.Refactor(result.Target);
             }
         }
 
-        public override bool CanFixInModule { get { return false; } }
-        public override bool CanFixInProject { get { return false; } }
+        public string Description(IInspectionResult result)
+        {
+            return string.Format(InspectionsUI.EncapsulatePublicFieldInspectionQuickFix, result.Target.IdentifierName);
+        }
+
+        public bool CanFixInProcedure => false;
+        public bool CanFixInModule => false;
+        public bool CanFixInProject => false;
     }
 }

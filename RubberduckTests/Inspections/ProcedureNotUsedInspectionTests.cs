@@ -1,12 +1,9 @@
 using System.Linq;
-using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck.Inspections;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
@@ -168,7 +165,7 @@ End Sub";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
-                             
+
             var inspection = new ProcedureNotUsedInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
@@ -269,7 +266,7 @@ End Sub";
             var inspection = new ProcedureNotUsedInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            inspectionResults.First().QuickFixes.First().Fix();
+            new RemoveUnusedDeclarationQuickFix(state).Fix(inspectionResults.First());
 
             var rewriter = state.GetRewriter(component);
             Assert.AreEqual(expectedCode, rewriter.GetText());
@@ -294,9 +291,9 @@ End Sub";
 
             var inspection = new ProcedureNotUsedInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
-
-            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            
+            new IgnoreOnceQuickFix(state, new[] {inspection}).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]

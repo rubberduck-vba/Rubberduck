@@ -1,38 +1,38 @@
-﻿using Rubberduck.Inspections.Abstract;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.VBEditor;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class ApplicationWorksheetFunctionQuickFix : QuickFixBase
+    public sealed class ApplicationWorksheetFunctionQuickFix : IQuickFix
     {
-        private readonly string _memberName;
+        private readonly RubberduckParserState _state;
+        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type> {typeof(ApplicationWorksheetFunctionInspection) };
 
-        public ApplicationWorksheetFunctionQuickFix(QualifiedSelection selection, string memberName)
-            : base(null, selection, InspectionsUI.ApplicationWorksheetFunctionQuickFix)
+        public ApplicationWorksheetFunctionQuickFix(RubberduckParserState state)
         {
-            _memberName = memberName;
+            _state = state;
+        }
+        
+        public IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
+
+        public void Fix(IInspectionResult result)
+        {
+            var rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
+            rewriter.InsertBefore(result.Context.Start.TokenIndex, "WorksheetFunction.");
         }
 
-        public override bool CanFixInModule { get { return true; } }
-        public override bool CanFixInProject { get { return true; } }
-
-        public override void Fix()
+        public string Description(IInspectionResult result)
         {
-            var module = Selection.QualifiedName.Component.CodeModule;
-            
-            var oldContent = module.GetLines(Selection.Selection);
-            var newCall = string.Format("WorksheetFunction.{0}", _memberName);
-            var start = Selection.Selection.StartColumn - 1;
-            //The member being called will always be a single token, so this will always be safe (it will be a single line).
-            var end = Selection.Selection.EndColumn - 1;
-            var newContent = oldContent.Substring(0, start) + newCall + 
-                (oldContent.Length > end
-                ? oldContent.Substring(end, oldContent.Length - end)
-                : string.Empty);
-
-            module.DeleteLines(Selection.Selection);
-            module.InsertLines(Selection.Selection.StartLine, newContent);
+            return InspectionsUI.ApplicationWorksheetFunctionQuickFix;
         }
+
+        public bool CanFixInProcedure { get; } = true;
+        public bool CanFixInModule { get; } = true;
+        public bool CanFixInProject { get; } = true;
     }
 }

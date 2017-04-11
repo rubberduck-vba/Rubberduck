@@ -94,6 +94,7 @@
     <Compile Include="Grammar\ParserRuleContextExtensionTests.cs" />
     <Compile Include="Inspections\ApplicationWorksheetFunctionInspectionTests.cs" />
     <Compile Include="Inspections\AssignedByValParameterMakeLocalCopyQuickFixTests.cs" />
+    <Compile Include="Inspections\ModuleScopeDimKeywordInspectionTests.cs" />
     <Compile Include="Inspections\HostSpecificExpressionInspectionTests.cs" />
     <Compile Include="Inspections\HungarianNotationInspectionTests.cs" />
     <Compile Include="Inspections\IgnoreOnceQuickFixTests.cs" />
@@ -101,6 +102,7 @@
     <Compile Include="Inspections\MemberNotOnInterfaceInspectionTests.cs" />
     <Compile Include="Inspections\OptionBaseZeroInspectionTests.cs" />
     <Compile Include="Inspections\PassParameterByReferenceQuickFixTests.cs" />
+    <Compile Include="Inspections\QuickFixProviderTests.cs" />
     <Compile Include="Inspections\UndeclaredVariableInspectionTests.cs" />
     <Compile Include="Parsing\Coordination\IModuleToModuleReferenceManagerTestBase.cs" />
     <Compile Include="Parsing\Coordination\ModuleToModuleReferenceManagerTests.cs" />
