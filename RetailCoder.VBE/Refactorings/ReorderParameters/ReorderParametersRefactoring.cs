@@ -147,7 +147,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
             var args = argList.argument().Select((s, i) => new { Index = i, Text = s.GetText() }).ToList();
             for (var i = 0; i < _model.Parameters.Count; i++)
             {
-                if (argList.argument().Count <= i)
+                if (argList.argument().Length <= i)
                 {
                     break;
                 }
