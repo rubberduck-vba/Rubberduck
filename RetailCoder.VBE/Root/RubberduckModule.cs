@@ -66,7 +66,7 @@ namespace Rubberduck.Root
             Bind<IVBE>().ToConstant(_vbe);
             Bind<IAddIn>().ToConstant(_addin);
             Bind<App>().ToSelf().InSingletonScope();
-            Bind<RubberduckParserState>().ToSelf().InSingletonScope();
+            Bind<RubberduckParserState, IParseTreeProvider, IDeclarationFinderProvider>().To<RubberduckParserState>().InSingletonScope();
             Bind<ISelectionChangeService>().To<SelectionChangeService>().InSingletonScope();
             Bind<ISourceControlProvider>().To<GitProvider>();
             //Bind<GitProvider>().ToSelf().InSingletonScope();        
