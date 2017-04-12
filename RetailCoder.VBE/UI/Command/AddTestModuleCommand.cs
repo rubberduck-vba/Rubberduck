@@ -29,15 +29,12 @@ namespace Rubberduck.UI.Command
             _configLoader = configLoader;
         }
 
+        private const string TestModuleEmptyTemplate = "'@TestModule\r\n{0}\r\n{1}\r\n{2}\r\n\r\n";
         private const string FolderAnnotation = "'@Folder(\"Tests\")\r\n";
-        private const string AssertLateBinding = "Private Assert As Object";
 
         private const string ModuleFakesProvider = "Private Fakes As {0}";
-        private const string AssertEarlyBinding = "Private Assert As Rubberduck.{0}AssertClass";
+        private const string ModuleAssertProvide = "Private Assert As {0}";
 
-        private const string TestModuleEmptyTemplate = "'@TestModule\r\n{0}\r\n{1}\r\n{2}\r\n\r\n";
-
-        private const string ModuleInitLateBinding = "Set Assert = CreateObject(\"Rubberduck.{0}AssertClass\")";
         private readonly string _moduleInit = string.Concat(
             "'@ModuleInitialize\r\n",
             "Public Sub ModuleInitialize()\r\n",
@@ -66,33 +63,31 @@ namespace Rubberduck.UI.Command
 
         private const string TestModuleBaseName = "TestModule";
 
+        private const string EarlyBinding = "New {0}";
+        private const string LateBinding = "CreateObject(\"{0}\")";
+
         private string GetTestModule(IUnitTestSettings settings)
         {
-            var assertClass = settings.AssertMode == AssertMode.StrictAssert ? string.Empty : "Permissive";
-
             bool isEarlyBinding = settings.BindingMode == BindingMode.EarlyBinding;
-            var moduleBinding = isEarlyBinding
-                    ? string.Format(AssertEarlyBinding,assertClass)
-                    : AssertLateBinding;
-            var moduleFakes = string.Format(ModuleFakesProvider, isEarlyBinding
-                                            ? "Rubberduck.IFakesProvider"
-                                            : "Object");
 
-            var formattedModuleTemplate = string.Format(TestModuleEmptyTemplate, FolderAnnotation, moduleBinding, moduleFakes);
+            var assertType = string.Format("Rubberduck.{0}AssertClass", settings.AssertMode == AssertMode.StrictAssert ? string.Empty : "Permissive");
+
+            var fakesType = "Rubberduck.IFake";
+
+            string assertDeclaredAs = DeclareAs(isEarlyBinding, ModuleAssertProvide, assertType);
+            string fakesDeclaredAs = DeclareAs(isEarlyBinding, ModuleFakesProvider, fakesType);
+
+            var formattedModuleTemplate = string.Format(TestModuleEmptyTemplate, FolderAnnotation, assertDeclaredAs, fakesDeclaredAs);
 
             if (settings.ModuleInit)
             {
-                var assertLateBindingString = string.Format(ModuleInitLateBinding, assertClass);
-                var assertEarlyBindingString = "Set Assert = New Rubberduck.AssertClass";
+                var assertBinding = GetBinding(isEarlyBinding, assertType);
+                string assertSetAs = $"Set Assert = {assertBinding}";
 
-                const string rdFakes = "Rubberduck.FakesProvider";
-                var fakesEarlyBindingString = $"New {rdFakes}";
-                var fakesLateBindingString = $"CreateObject({rdFakes})";
-
-                formattedModuleTemplate += string.Format(_moduleInit,
-                                                        isEarlyBinding ? assertEarlyBindingString : assertLateBindingString,
-                                                        string.Format("Set Fakes = {0}", isEarlyBinding ? fakesEarlyBindingString : fakesLateBindingString)
-                                                        );
+                var fakesBinding = GetBinding(isEarlyBinding, fakesType);
+                string fakesSetAs = $"Set Fakes = {fakesBinding}";
+                
+                formattedModuleTemplate += string.Format(_moduleInit, assertSetAs, fakesSetAs);
             }
 
             if (settings.MethodInit)
@@ -101,6 +96,16 @@ namespace Rubberduck.UI.Command
             }
 
             return formattedModuleTemplate;
+        }
+
+        private string GetBinding(bool isEarlyBinding, string theType)
+        {
+            return string.Format(isEarlyBinding ? EarlyBinding : LateBinding, theType);
+        }
+
+        private string DeclareAs(bool isEarlyBinding,string ModuleProvider, string theType)
+        {
+            return string.Format(ModuleProvider, isEarlyBinding ? theType : "Object");
         }
 
         private IVBProject GetProject()
