@@ -5168,6 +5168,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Inconclusive Tests.
+        /// </summary>
+        public static string TestExplorer_RunInconclusiveTests {
+            get {
+                return ResourceManager.GetString("TestExplorer_RunInconclusiveTests", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Repeat Last Run.
         /// </summary>
         public static string TestExplorer_RunLastRunTests {
