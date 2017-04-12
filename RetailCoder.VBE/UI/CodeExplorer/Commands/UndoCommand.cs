@@ -40,7 +40,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             }
 
             panelViewModel.SetTab(SourceControlTab.Changes);
-            var viewModel = panelViewModel.SelectedItem.ViewModel as ChangesViewViewModel;
+            var viewModel = panelViewModel.SelectedItem.ViewModel as ChangesPanelViewModel;
 
             return viewModel != null && viewModel.IncludedChanges != null &&
                    viewModel.IncludedChanges.Select(s => s.FilePath).Contains(GetFileName(node));
@@ -58,7 +58,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             }
 
             panelViewModel.SetTab(SourceControlTab.Changes);
-            var viewModel = panelViewModel.SelectedItem.ViewModel as ChangesViewViewModel;
+            var viewModel = panelViewModel.SelectedItem.ViewModel as ChangesPanelViewModel;
             if (viewModel == null)
             {
                 return;

@@ -9,11 +9,11 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.SourceControl
 {
-    public class BranchesViewViewModel : ViewModelBase, IControlViewModel
+    public class BranchesPanelViewModel : ViewModelBase, IControlViewModel
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public BranchesViewViewModel()
+        public BranchesPanelViewModel()
         {
             _newBranchCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => CreateBranch(), _ => Provider != null);
             _mergeBranchCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => MergeBranch(), _ => Provider != null);

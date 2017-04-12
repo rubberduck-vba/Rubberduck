@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.Common;
+using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.Parsing.Symbols.DeclarationLoaders;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command.MenuItems;
-using System.Globalization;
-using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
-namespace Rubberduck.API
+namespace Rubberduck.API.VBA
 {
     [ComVisible(true)]
     public interface IParserState

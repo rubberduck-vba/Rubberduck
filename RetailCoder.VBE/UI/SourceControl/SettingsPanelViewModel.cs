@@ -9,14 +9,14 @@ using Rubberduck.SourceControl;
 
 namespace Rubberduck.UI.SourceControl
 {
-    public class SettingsViewViewModel : ViewModelBase, IControlViewModel, IDisposable
+    public class SettingsPanelViewModel : ViewModelBase, IControlViewModel, IDisposable
     {
         private readonly IConfigProvider<SourceControlSettings> _configService;
         private readonly IFolderBrowserFactory _folderBrowserFactory;
         private readonly IOpenFileDialog _openFileDialog;
         private readonly SourceControlSettings _config;
 
-        public SettingsViewViewModel(
+        public SettingsPanelViewModel(
             IConfigProvider<SourceControlSettings> configService,
             IFolderBrowserFactory folderBrowserFactory,
             IOpenFileDialog openFileDialog)

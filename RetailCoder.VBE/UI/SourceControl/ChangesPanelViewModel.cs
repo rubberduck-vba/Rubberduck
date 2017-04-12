@@ -10,11 +10,11 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.SourceControl
 {
-    public class ChangesViewViewModel : ViewModelBase, IControlViewModel
+    public class ChangesPanelViewModel : ViewModelBase, IControlViewModel
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public ChangesViewViewModel()
+        public ChangesPanelViewModel()
         {
             _commitCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => Commit(), _ => !string.IsNullOrEmpty(CommitMessage) && IncludedChanges != null && IncludedChanges.Any());
 

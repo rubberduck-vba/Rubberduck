@@ -2,18 +2,18 @@
 
 namespace Rubberduck.UI.Inspections
 {
-    public partial class CodeInspectionsWindow : UserControl, IDockableUserControl
+    public partial class InspectionResultsWindow : UserControl, IDockableUserControl
     {
         private const string ClassId = "D3B2A683-9856-4246-BDC8-6B0795DC875B";
         string IDockableUserControl.ClassId { get { return ClassId; } }
         string IDockableUserControl.Caption { get { return RubberduckUI.CodeInspections; } }
         
-        private CodeInspectionsWindow()
+        private InspectionResultsWindow()
         {
             InitializeComponent();
         }
 
-        public CodeInspectionsWindow(InspectionResultsViewModel viewModel) : this()
+        public InspectionResultsWindow(InspectionResultsViewModel viewModel) : this()
         {
             _viewModel = viewModel;
             wpfInspectionResultsControl.DataContext = _viewModel;

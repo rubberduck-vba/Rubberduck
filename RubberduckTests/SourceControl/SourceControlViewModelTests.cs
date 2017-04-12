@@ -27,10 +27,10 @@ namespace RubberduckTests.SourceControl
 
         private SourceControlViewViewModel _vm;
 
-        private ChangesViewViewModel _changesVM;
-        private BranchesViewViewModel _branchesVM;
-        private UnsyncedCommitsViewViewModel _unsyncedVM;
-        private SettingsViewViewModel _settingsVM;
+        private ChangesPanelViewModel _changesVM;
+        private BranchesPanelViewModel _branchesVM;
+        private UnsyncedCommitsPanelViewModel _unsyncedVM;
+        private SettingsPanelViewModel _settingsVM;
 
         private Mock<IConfigProvider<SourceControlSettings>> _configService;
 
@@ -83,10 +83,10 @@ namespace RubberduckTests.SourceControl
             _providerFactory.Setup(f => f.CreateProvider(It.IsAny<IVBProject>(), It.IsAny<IRepository>(), It.IsAny<SecureCredentials>()))
                 .Returns(_provider.Object);
 
-            _changesVM = new ChangesViewViewModel();
-            _branchesVM = new BranchesViewViewModel();
-            _unsyncedVM = new UnsyncedCommitsViewViewModel();
-            _settingsVM = new SettingsViewViewModel(_configService.Object, _folderBrowserFactory.Object, new Rubberduck.UI.OpenFileDialog());
+            _changesVM = new ChangesPanelViewModel();
+            _branchesVM = new BranchesPanelViewModel();
+            _unsyncedVM = new UnsyncedCommitsPanelViewModel();
+            _settingsVM = new SettingsPanelViewModel(_configService.Object, _folderBrowserFactory.Object, new Rubberduck.UI.OpenFileDialog());
         }
 
         private void SetupValidVbProject()

@@ -6,11 +6,11 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.SourceControl
 {
-    public class UnsyncedCommitsViewViewModel : ViewModelBase, IControlViewModel
+    public class UnsyncedCommitsPanelViewModel : ViewModelBase, IControlViewModel
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public UnsyncedCommitsViewViewModel()
+        public UnsyncedCommitsPanelViewModel()
         {
             _fetchCommitsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => FetchCommits(), _ => Provider != null);
             _pullCommitsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => PullCommits(), _ => Provider != null);

@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace Rubberduck.API
+namespace Rubberduck.API.VBA
 {
     [ComVisible(true)]
     //[Flags]

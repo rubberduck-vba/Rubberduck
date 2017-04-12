@@ -314,11 +314,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="API\Accessibility.cs" />
-    <Compile Include="API\Declaration.cs" />
-    <Compile Include="API\DeclarationType.cs" />
-    <Compile Include="API\IdentifierReference.cs" />
-    <Compile Include="API\ParserState.cs" />
+    <Compile Include="API\VBA\Accessibility.cs" />
+    <Compile Include="API\VBA\Declaration.cs" />
+    <Compile Include="API\VBA\DeclarationType.cs" />
+    <Compile Include="API\VBA\IdentifierReference.cs" />
+    <Compile Include="API\VBA\ParserState.cs" />
     <Compile Include="AppMenu.cs" />
     <Compile Include="AutoSave\AutoSave.cs" />
     <Compile Include="Common\ApplicationConstants.cs" />
@@ -641,7 +641,7 @@
     <Compile Include="UI\Command\RunAllTestsCommand.cs" />
     <Compile Include="UI\Command\MenuItems\RunAllTestsCommandMenuItem.cs" />
     <Compile Include="UI\Command\InspectionResultsCommand.cs" />
-    <Compile Include="UI\Command\ShowSourceControlPanelCommand.cs" />
+    <Compile Include="UI\Command\SourceControlCommand.cs" />
     <Compile Include="UI\Command\MenuItems\ShowSourceControlPanelCommandMenuItem.cs" />
     <Compile Include="UI\Command\TestExplorerCommand.cs" />
     <Compile Include="UI\Command\MenuItems\TestExplorerCommandMenuItem.cs" />
@@ -826,11 +826,11 @@
     <Compile Include="UI\SourceControl\BranchesView.xaml.cs">
       <DependentUpon>BranchesView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\SourceControl\BranchesViewViewModel.cs" />
+    <Compile Include="UI\SourceControl\BranchesPanelViewModel.cs" />
     <Compile Include="UI\SourceControl\ChangesView.xaml.cs">
       <DependentUpon>ChangesView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\SourceControl\ChangesViewViewModel.cs" />
+    <Compile Include="UI\SourceControl\ChangesPanelViewModel.cs" />
     <Compile Include="UI\SourceControl\CommitAction.cs" />
     <Compile Include="UI\SourceControl\Converters\ChangeTypesToTextConverter.cs" />
     <Compile Include="UI\SourceControl\Converters\CommitActionsToTextConverter.cs" />
@@ -849,7 +849,7 @@
     <Compile Include="UI\SourceControl\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\SourceControl\SettingsViewViewModel.cs" />
+    <Compile Include="UI\SourceControl\SettingsPanelViewModel.cs" />
     <Compile Include="UI\SourceControl\SourceControl.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -871,7 +871,7 @@
     <Compile Include="UI\SourceControl\UnsyncedCommitsView.xaml.cs">
       <DependentUpon>UnsyncedCommitsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\SourceControl\UnsyncedCommitsViewViewModel.cs" />
+    <Compile Include="UI\SourceControl\UnsyncedCommitsPanelViewModel.cs" />
     <Compile Include="UI\Splash.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -890,12 +890,12 @@
     <Compile Include="UI\CodeExplorer\CodeExplorerWindow.Designer.cs">
       <DependentUpon>CodeExplorerWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Inspections\CodeInspectionsDockablePresenter.cs" />
-    <Compile Include="UI\Inspections\CodeInspectionsWindow.cs">
+    <Compile Include="UI\Inspections\InspectionResultsDockablePresenter.cs" />
+    <Compile Include="UI\Inspections\InspectionResultsWindow.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\Inspections\CodeInspectionsWindow.Designer.cs">
-      <DependentUpon>CodeInspectionsWindow.cs</DependentUpon>
+    <Compile Include="UI\Inspections\InspectionResultsWindow.Designer.cs">
+      <DependentUpon>InspectionResultsWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\NavigateCodeEventArgs.cs" />
     <Compile Include="UI\Inspections\QuickFixEventArgs.cs" />
@@ -974,8 +974,8 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Inspections\CodeInspectionsWindow.resx">
-      <DependentUpon>CodeInspectionsWindow.cs</DependentUpon>
+    <EmbeddedResource Include="UI\Inspections\InspectionResultsWindow.resx">
+      <DependentUpon>InspectionResultsWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Controls\SearchResultWindow.resx">
       <DependentUpon>SearchResultWindow.cs</DependentUpon>
@@ -1081,6 +1081,7 @@
     <Resource Include="Resources\magnifier--arrow.png" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="API\Plugin\" />
     <Folder Include="Properties\DataSources\" />
   </ItemGroup>
   <ItemGroup>

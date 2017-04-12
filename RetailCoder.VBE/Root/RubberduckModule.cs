@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Ninject;
@@ -85,13 +86,14 @@ namespace Rubberduck.Root
             .Concat(FindPlugins())
             .ToArray();
 
+            ApplyDefaultInterfacesConvention(assemblies);
+            ApplyConfigurationConvention(assemblies);
+            ApplyAbstractFactoryConvention(assemblies);
+
             BindCodeInspectionTypes(assemblies);
             BindQuickFixTypes(assemblies);
             BindRefactoringDialogs();
 
-            ApplyDefaultInterfacesConvention(assemblies);
-            ApplyConfigurationConvention(assemblies);
-            ApplyAbstractFactoryConvention(assemblies);
             Rebind<IFolderBrowserFactory>().To<DialogFactory>().InSingletonScope();
             Rebind<IFakesProviderFactory>().To<FakesProviderFactory>().InSingletonScope();
 
@@ -104,51 +106,37 @@ namespace Rubberduck.Root
             BindCustomDeclarationLoadersToParser();
             Rebind<ICOMReferenceSynchronizer>().To<COMReferenceSynchronizer>().InSingletonScope().WithConstructorArgument("serializedDeclarationsPath", (string)null);
             Bind<IProjectReferencesProvider>().To<COMReferenceSynchronizer>().InSingletonScope().WithConstructorArgument("serializedDeclarationsPath", (string)null);
-            Bind<Func<IVBAPreprocessor>>().ToMethod(p => () => new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture)));
+            Bind<Func<IVBAPreprocessor>>().ToMethod(p => () => new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture))).InSingletonScope();
 
             Rebind<ISearchResultsWindowViewModel>().To<SearchResultsWindowViewModel>().InSingletonScope();
 
             Bind<SourceControlViewViewModel>().ToSelf().InSingletonScope();
-            Bind<IControlView>().To<ChangesView>().InCallScope();
-            Bind<IControlView>().To<BranchesView>().InCallScope();
-            Bind<IControlView>().To<UnsyncedCommitsView>().InCallScope();
-            Bind<IControlView>().To<SettingsView>().InCallScope();
+            Bind<IControlView>().To<ChangesView>().InSingletonScope();
+            Bind<IControlView>().To<BranchesView>().InSingletonScope();
+            Bind<IControlView>().To<UnsyncedCommitsView>().InSingletonScope();
+            Bind<IControlView>().To<SettingsView>().InSingletonScope();
 
-            Bind<IControlViewModel>().To<ChangesViewViewModel>().WhenInjectedInto<ChangesView>().InCallScope();
-            Bind<IControlViewModel>().To<BranchesViewViewModel>().WhenInjectedInto<BranchesView>().InCallScope();
-            Bind<IControlViewModel>().To<UnsyncedCommitsViewViewModel>().WhenInjectedInto<UnsyncedCommitsView>().InCallScope();
-            Bind<IControlViewModel>().To<SettingsViewViewModel>().WhenInjectedInto<SettingsView>().InCallScope();
+            Bind<IControlViewModel>().To<ChangesPanelViewModel>().WhenInjectedInto<ChangesView>().InSingletonScope();
+            Bind<IControlViewModel>().To<BranchesPanelViewModel>().WhenInjectedInto<BranchesView>().InSingletonScope();
+            Bind<IControlViewModel>().To<UnsyncedCommitsPanelViewModel>().WhenInjectedInto<UnsyncedCommitsView>().InSingletonScope();
+            Bind<IControlViewModel>().To<SettingsPanelViewModel>().WhenInjectedInto<SettingsView>().InSingletonScope();
 
-            Bind<SearchResultPresenterInstanceManager>()
-                .ToSelf()
-                .InSingletonScope();
+            Bind<SearchResultPresenterInstanceManager>().ToSelf().InSingletonScope();
 
-            Bind<IDockablePresenter>().To<SourceControlDockablePresenter>()
-                .WhenInjectedInto(
-                    typeof(ShowSourceControlPanelCommand),
-                    typeof(CommitCommand),
-                    typeof(UndoCommand))
-                .InSingletonScope();
+            BindDockablePresenters(assemblies);
+            #region additional DockablePresenter bindings
+            
+            // add any IDockablePresenter bindings that don't follow the naming convention here
 
             Bind<IDockablePresenter>().To<TestExplorerDockablePresenter>()
-                .WhenInjectedInto(
-                    typeof (RunAllTestsCommand), 
-                    typeof (TestExplorerCommand))
-                .InSingletonScope();
+                .WhenInjectedInto(typeof (RunAllTestsCommand)).InSingletonScope();
 
-            Bind<IDockablePresenter>().To<CodeInspectionsDockablePresenter>()
-                .WhenInjectedInto<InspectionResultsCommand>()
-                .InSingletonScope();
+            Bind<IDockablePresenter>().To<SourceControlDockablePresenter>()
+                .WhenInjectedInto(typeof(CommitCommand), typeof(UndoCommand)).InSingletonScope();
+            
+            #endregion
 
-            Bind<IDockablePresenter>().To<CodeExplorerDockablePresenter>()
-                .WhenInjectedInto<CodeExplorerCommand>()
-                .InSingletonScope();
-
-            Bind<IDockablePresenter>().To<ToDoExplorerDockablePresenter>()
-                .WhenInjectedInto<ToDoExplorerCommand>()
-                .InSingletonScope();
-
-            BindDockableToolwindows();
+            BindDockableToolwindows(assemblies);
             BindCommandsToCodeExplorer();
             ConfigureRubberduckCommandBar();
             ConfigureRubberduckMenu();
@@ -164,6 +152,7 @@ namespace Rubberduck.Root
         {
             var assemblies = new List<Assembly>();
             var basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            Debug.Assert(basePath != null);
             assemblies.Add(Assembly.LoadFile(Path.Combine(basePath, "Rubberduck.Inspections.dll")));
 
             var path = Path.Combine(basePath, "Plug-ins");
@@ -187,13 +176,36 @@ namespace Rubberduck.Root
             Bind<IRefactoringDialog<RenameViewModel>>().To<RenameDialog>();
         }
 
-        private void BindDockableToolwindows()
+        private void BindDockableToolwindows(IEnumerable<Assembly> assemblies)
         {
-            Kernel.Bind(t => t.FromThisAssembly()
-                .SelectAllClasses()
-                .InheritedFrom<IDockableUserControl>()
-                .BindToSelf()
-                .Configure(binding => binding.InSingletonScope()));
+            Kernel?.Bind(t => t.From(assemblies)
+                   .SelectAllClasses()
+                   .InheritedFrom<IDockableUserControl>()
+                   .BindToSelf()
+                   .Configure(binding => binding.InSingletonScope()));
+        }
+
+        private void BindDockablePresenters(IEnumerable<Assembly> assemblies)
+        {
+            /*
+             * convention: bind IDockablePresenter to FooDockablePresenter when injected into FooCommand
+            */
+            const string dockablePresenter = "DockablePresenter";
+            var presenters = assemblies
+                .SelectMany(assembly => assembly.GetTypes()
+                .Where(t => !t.IsAbstract 
+                    && t.Name.EndsWith(dockablePresenter)
+                    && t. GetInterfaces().Any(i => i == typeof(IDockablePresenter))));
+
+            var postFixLength = dockablePresenter.Length;
+            foreach (var presenter in presenters)
+            {
+                var name = presenter.Name.Substring(0, presenter.Name.Length - postFixLength);
+                Kernel?.Bind<IDockablePresenter>()
+                       .To(presenter)
+                       .When(r => r.Target?.Type.Name.Equals(name + "Command") ?? false)
+                       .InSingletonScope();
+            }
         }
 
         private void BindWindowsHooks()

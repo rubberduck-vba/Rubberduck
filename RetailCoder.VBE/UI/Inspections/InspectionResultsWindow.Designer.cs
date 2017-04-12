@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace Rubberduck.UI.Inspections
 {
-    partial class CodeInspectionsWindow
+    partial class InspectionResultsWindow
     {
         /// <summary> 
         /// Required designer variable.
@@ -31,28 +31,26 @@ namespace Rubberduck.UI.Inspections
         private void InitializeComponent()
         {
             this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-            this.wpfInspectionResultsControl = new InspectionResultsControl();
+            this.wpfInspectionResultsControl = new Rubberduck.UI.Inspections.InspectionResultsControl();
             this.SuspendLayout();
             // 
             // elementHost1
             // 
             this.elementHost1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.elementHost1.Location = new System.Drawing.Point(0, 0);
-            this.elementHost1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.elementHost1.Name = "elementHost1";
-            this.elementHost1.Size = new System.Drawing.Size(740, 154);
+            this.elementHost1.Size = new System.Drawing.Size(555, 125);
             this.elementHost1.TabIndex = 0;
             this.elementHost1.Text = "elementHost1";
             this.elementHost1.Child = this.wpfInspectionResultsControl;
             // 
-            // CodeInspectionsWindow
+            // InspectionResultsWindow
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.elementHost1);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.Name = "CodeInspectionsWindow";
-            this.Size = new System.Drawing.Size(740, 154);
+            this.Name = "InspectionResultsWindow";
+            this.Size = new System.Drawing.Size(555, 125);
             this.ResumeLayout(false);
 
         }

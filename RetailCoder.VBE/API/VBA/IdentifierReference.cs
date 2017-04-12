@@ -1,8 +1,7 @@
-﻿
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.InteropServices;
 
-namespace Rubberduck.API
+namespace Rubberduck.API.VBA
 {
     [ComVisible(true)]
     public interface IIdentifierReference

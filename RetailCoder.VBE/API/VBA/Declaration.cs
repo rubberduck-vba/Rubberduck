@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using RubberduckDeclaration = Rubberduck.Parsing.Symbols.Declaration;
 
-namespace Rubberduck.API
+namespace Rubberduck.API.VBA
 {
     [ComVisible(true)]
     [InterfaceType(ComInterfaceType.InterfaceIsDual)]
