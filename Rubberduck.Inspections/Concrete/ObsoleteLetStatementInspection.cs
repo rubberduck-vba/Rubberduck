@@ -8,44 +8,47 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete
 {
     public sealed class ObsoleteLetStatementInspection : InspectionBase, IParseTreeInspection
     {
-        private IEnumerable<QualifiedContext> _parseTreeResults;
-
         public ObsoleteLetStatementInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Suggestion) { }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
 
-        public void SetResults(IEnumerable<QualifiedContext> results)
-        {
-            _parseTreeResults = results;
-        }
+        public IInspectionListener Listener { get; } =
+            new ObsoleteLetStatementListener();
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
-            if (_parseTreeResults == null)
+            if (Listener?.Contexts == null)
             {
                 return Enumerable.Empty<IInspectionResult>();
             }
-            return _parseTreeResults.Where(context => context.Context is VBAParser.LetStmtContext 
-                && !IsIgnoringInspectionResultFor(context.ModuleName.Component, context.Context.Start.Line))
+            return Listener.Contexts.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName.Component, context.Context.Start.Line))
                 .Select(context => new ObsoleteLetStatementUsageInspectionResult(this, new QualifiedContext<ParserRuleContext>(context.ModuleName, context.Context)));
         }
 
-        public class ObsoleteLetStatementListener : VBAParserBaseListener
+        public class ObsoleteLetStatementListener : VBAParserBaseListener, IInspectionListener
         {
-            private readonly IList<VBAParser.LetStmtContext> _contexts = new List<VBAParser.LetStmtContext>();
-            public IEnumerable<VBAParser.LetStmtContext> Contexts => _contexts;
+            private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
+            public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
+
+            public QualifiedModuleName CurrentModuleName { get; set; }
+
+            public void ClearContexts()
+            {
+                _contexts.Clear();
+            }
 
             public override void ExitLetStmt(VBAParser.LetStmtContext context)
             {
                 if (context.LET() != null)
                 {
-                    _contexts.Add(context);
+                    _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
                 }
             }
         }

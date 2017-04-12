@@ -45,6 +45,17 @@ namespace RubberduckTests.Mocks
         }
 
         public MockProjectBuilder(string name, string filename, ProjectProtection protection, Func<IVBE> getVbe, MockVbeBuilder mockVbeBuilder)
+        :this(
+            name,
+            filename,
+            Guid.NewGuid().ToString(),
+            protection,
+            getVbe,
+            mockVbeBuilder
+            )
+        { }
+
+        public MockProjectBuilder(string name, string filename, string projectId, ProjectProtection protection, Func<IVBE> getVbe, MockVbeBuilder mockVbeBuilder)
         {
             _getVbe = getVbe;
             _mockVbeBuilder = mockVbeBuilder;
@@ -54,7 +65,7 @@ namespace RubberduckTests.Mocks
             _project.SetupProperty(m => m.HelpFile);
             _project.SetupGet(m => m.ProjectId).Returns(() => _project.Object.HelpFile);
             _project.Setup(m => m.AssignProjectId())
-                .Callback(() => _project.Object.HelpFile = Guid.NewGuid().ToString());
+                .Callback(() => _project.Object.HelpFile = projectId);
 
             _vbComponents = CreateComponentsMock();
             _project.SetupGet(m => m.VBComponents).Returns(_vbComponents.Object);
