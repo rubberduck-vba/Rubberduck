@@ -25,13 +25,13 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public void Fix(IInspectionResult result)
         {
-            var rewriter = _state.GetRewriter(result.Target);
+            var rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
 
             var parameter = result.Context.GetText()
                 .Replace("_", "")
                 .RemoveExtraSpacesLeavingIndentation();
 
-            rewriter.Replace(result.Target, parameter);
+            rewriter.Replace(result.Context, parameter);
         }
 
         public string Description(IInspectionResult result)

@@ -1,8 +1,12 @@
 using System.Linq;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
+using Rubberduck.Inspections.Rubberduck.Inspections;
 using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Settings;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
@@ -27,7 +31,8 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new MultilineParameterInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = new Inspector(GetSettings(), new[] { inspection });
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.AreEqual(1, inspectionResults.Count());
         }
@@ -45,7 +50,8 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new MultilineParameterInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = new Inspector(GetSettings(), new[] { inspection });
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.AreEqual(0, inspectionResults.Count());
         }
@@ -71,7 +77,8 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new MultilineParameterInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = new Inspector(GetSettings(), new[] { inspection });
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.AreEqual(2, inspectionResults.Count());
         }
@@ -92,7 +99,8 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new MultilineParameterInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = new Inspector(GetSettings(), new[] { inspection });
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.AreEqual(1, inspectionResults.Count());
         }
@@ -114,7 +122,8 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new MultilineParameterInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = new Inspector(GetSettings(), new[] { inspection });
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.IsFalse(inspectionResults.Any());
         }
@@ -141,8 +150,9 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new MultilineParameterInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-            
+            var inspector = new Inspector(GetSettings(), new[] { inspection });
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
             new MakeSingleLineParameterQuickFix(state).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -173,8 +183,9 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new MultilineParameterInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-            
+            var inspector = new Inspector(GetSettings(), new[] { inspection });
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
             new IgnoreOnceQuickFix(state, new[] {inspection}).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -195,6 +206,29 @@ End Sub";
             var inspection = new MultilineParameterInspection(null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
+        }
+
+        private IGeneralConfigService GetSettings()
+        {
+            var settings = new Mock<IGeneralConfigService>();
+            var config = GetTestConfig();
+            settings.Setup(x => x.LoadConfiguration()).Returns(config);
+
+            return settings.Object;
+        }
+
+        private Configuration GetTestConfig()
+        {
+            var settings = new CodeInspectionSettings();
+            settings.CodeInspections.Add(new CodeInspectionSetting
+            {
+                Description = new MultilineParameterInspection(null).Description,
+                Severity = CodeInspectionSeverity.Suggestion
+            });
+            return new Configuration
+            {
+                UserSettings = new UserSettings(null, null, null, settings, null, null, null)
+            };
         }
     }
 }

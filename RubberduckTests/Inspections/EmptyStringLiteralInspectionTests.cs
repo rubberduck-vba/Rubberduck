@@ -27,17 +27,13 @@ End Sub
 
 Public Sub Foo(ByRef arg1 As String)
 End Sub";
-
-            var settings = new Mock<IGeneralConfigService>();
-            var config = GetTestConfig();
-            settings.Setup(x => x.LoadConfiguration()).Returns(config);
-
+            
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyStringLiteralInspection(state);
-            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+            var inspector = new Inspector(GetSettings(), new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
@@ -52,17 +48,13 @@ End Sub";
 @"Public Sub Foo(ByRef arg1 As String)
     arg1 = """"
 End Sub";
-
-            var settings = new Mock<IGeneralConfigService>();
-            var config = GetTestConfig();
-            settings.Setup(x => x.LoadConfiguration()).Returns(config);
-
+            
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyStringLiteralInspection(state);
-            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+            var inspector = new Inspector(GetSettings(), new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
@@ -77,17 +69,13 @@ End Sub";
 @"Public Sub Foo(ByRef arg1 As String)
     arg1 = ""test""
 End Sub";
-
-            var settings = new Mock<IGeneralConfigService>();
-            var config = GetTestConfig();
-            settings.Setup(x => x.LoadConfiguration()).Returns(config);
-
+            
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyStringLiteralInspection(state);
-            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+            var inspector = new Inspector(GetSettings(), new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
@@ -103,17 +91,13 @@ End Sub";
     '@Ignore EmptyStringLiteral
     arg1 = """"
 End Sub";
-
-            var settings = new Mock<IGeneralConfigService>();
-            var config = GetTestConfig();
-            settings.Setup(x => x.LoadConfiguration()).Returns(config);
-
+            
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyStringLiteralInspection(state);
-            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+            var inspector = new Inspector(GetSettings(), new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
@@ -133,17 +117,13 @@ End Sub";
 @"Public Sub Foo(ByRef arg1 As String)
     arg1 = vbNullString
 End Sub";
-
-            var settings = new Mock<IGeneralConfigService>();
-            var config = GetTestConfig();
-            settings.Setup(x => x.LoadConfiguration()).Returns(config);
-
+            
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyStringLiteralInspection(state);
-            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+            var inspector = new Inspector(GetSettings(), new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
@@ -166,17 +146,13 @@ End Sub";
 '@Ignore EmptyStringLiteral
     arg1 = """"
 End Sub";
-
-            var settings = new Mock<IGeneralConfigService>();
-            var config = GetTestConfig();
-            settings.Setup(x => x.LoadConfiguration()).Returns(config);
-
+            
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyStringLiteralInspection(state);
-            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+            var inspector = new Inspector(GetSettings(), new IInspection[] { inspection });
 
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
             new IgnoreOnceQuickFix(state, new[] {inspection}).Fix(inspectionResults.First());
@@ -200,6 +176,15 @@ End Sub";
             var inspection = new EmptyStringLiteralInspection(null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
+        }
+
+        private IGeneralConfigService GetSettings()
+        {
+            var settings = new Mock<IGeneralConfigService>();
+            var config = GetTestConfig();
+            settings.Setup(x => x.LoadConfiguration()).Returns(config);
+
+            return settings.Object;
         }
 
         private Configuration GetTestConfig()
