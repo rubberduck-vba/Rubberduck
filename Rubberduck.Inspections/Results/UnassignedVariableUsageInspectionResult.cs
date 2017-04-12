@@ -9,7 +9,7 @@ namespace Rubberduck.Inspections.Results
     public class UnassignedVariableUsageInspectionResult : InspectionResultBase
     {
         public UnassignedVariableUsageInspectionResult(IInspection inspection, IdentifierReference reference)
-            : base(inspection, reference.QualifiedModuleName, reference.Context) {}
+            : base(inspection, reference.QualifiedModuleName, reference.Context, reference.Declaration) {}
 
         public override string Description
         {
