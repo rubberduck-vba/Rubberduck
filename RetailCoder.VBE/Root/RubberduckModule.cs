@@ -170,6 +170,7 @@ namespace Rubberduck.Root
                 assemblies.Add(Assembly.LoadFile(inspectionsAssembly));
             }
 
+            //var path = Path.Combine(basePath, "Plug-ins");
             var path = Path.Combine(basePath, "Plug-ins");
             if (!Directory.Exists(path))
             {
