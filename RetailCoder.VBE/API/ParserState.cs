@@ -67,15 +67,50 @@ namespace Rubberduck.API
 
             Func<IVBAPreprocessor> preprocessorFactory = () => new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture));
             _attributeParser = new AttributeParser(new ModuleExporter(), preprocessorFactory);
-            _parser = new ParseCoordinator(_vbe, _state, _attributeParser, preprocessorFactory,
+            var projectManager = new ProjectManager(_state, _vbe);
+            var moduleToModuleReferenceManager = new ModuleToModuleReferenceManager(_state);
+            var parserStateManager = new ParserStateManager(_state);
+            var referenceRemover = new ReferenceRemover(_state, moduleToModuleReferenceManager);
+            var comSynchronizer = new COMReferenceSynchronizer(_state, parserStateManager);
+            var builtInDeclarationLoader = new BuiltInDeclarationLoader(
+                _state,
                 new List<ICustomDeclarationLoader>
-                {
-                    new DebugDeclarations(_state),
-                    new SpecialFormDeclarations(_state),
-                    new FormEventDeclarations(_state),
-                    new AliasDeclarations(_state),
-                    //new RubberduckApiDeclarations(_state)
-                });
+                    {
+                        new DebugDeclarations(_state),
+                        new SpecialFormDeclarations(_state),
+                        new FormEventDeclarations(_state),
+                        new AliasDeclarations(_state),
+                        //new RubberduckApiDeclarations(_state)
+                    }
+                );
+            var parseRunner = new ParseRunner(
+                _state,
+                parserStateManager,
+                preprocessorFactory,
+                _attributeParser);
+            var declarationResolveRunner = new DeclarationResolveRunner(
+                _state, 
+                parserStateManager, 
+                comSynchronizer);
+            var referenceResolveRunner = new ReferenceResolveRunner(
+                _state,
+                parserStateManager,
+                moduleToModuleReferenceManager);
+            var parsingStageService = new ParsingStageService(
+                comSynchronizer,
+                builtInDeclarationLoader,
+                parseRunner,
+                declarationResolveRunner,
+                referenceResolveRunner  
+                );
+
+            _parser = new ParseCoordinator(
+                _state,
+                parsingStageService,
+                projectManager,
+                moduleToModuleReferenceManager,
+                parserStateManager,
+                referenceRemover);
         }
 
         /// <summary>
