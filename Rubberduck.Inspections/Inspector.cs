@@ -7,9 +7,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Antlr4.Runtime.Tree;
 using NLog;
-using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
@@ -70,11 +67,7 @@ namespace Rubberduck.Inspections
                 var allIssues = new ConcurrentBag<IInspectionResult>();
 
                 // Prepare ParseTreeWalker based inspections
-                var parseTreeWalkResults = GetParseTreeResults(config, state);
-                foreach (var parseTreeInspection in _inspections.OfType<IParseTreeInspection>().Where(inspection => inspection.Severity != CodeInspectionSeverity.DoNotShow))
-                {
-                    parseTreeInspection.SetResults(parseTreeWalkResults);
-                }
+                WalkTrees(config.UserSettings.CodeInspectionSettings, state, _inspections.OfType<IParseTreeInspection>());
 
                 var inspections = _inspections.Where(inspection => inspection.Severity != CodeInspectionSeverity.DoNotShow)
                     .Select(inspection =>
@@ -110,72 +103,31 @@ namespace Rubberduck.Inspections
                 return results;
             }
 
-            private IReadOnlyList<QualifiedContext> GetParseTreeResults(Configuration config, RubberduckParserState state)
+            private void WalkTrees(CodeInspectionSettings settings, RubberduckParserState state, IEnumerable<IParseTreeInspection> inspections)
             {
-                var result = new List<QualifiedContext>();
-                var settings = config.UserSettings.CodeInspectionSettings;
+                var listeners =
+                    inspections.Where(i => i.Severity != CodeInspectionSeverity.DoNotShow && !IsDisabled(settings, i))
+                        .Select(inspection =>
+                        {
+                            inspection.Listener.ClearContexts();
+                            return inspection.Listener;
+                        })
+                        .ToList();
 
                 foreach (var componentTreePair in state.ParseTrees)
                 {
-                    /*
-                    Need to reinitialize these for each and every ParseTree we process, since the results are aggregated in the instances themselves 
-                    before moving them into the ParseTreeResults after qualifying them 
-                    */
-                    var obsoleteCallStatementListener = IsDisabled<ObsoleteCallStatementInspection>(settings) ? null : new ObsoleteCallStatementInspection.ObsoleteCallStatementListener();
-                    var obsoleteLetStatementListener = IsDisabled<ObsoleteLetStatementInspection>(settings) ? null : new ObsoleteLetStatementInspection.ObsoleteLetStatementListener();
-                    var obsoleteCommentSyntaxListener = IsDisabled<ObsoleteCommentSyntaxInspection>(settings) ? null : new ObsoleteCommentSyntaxInspection.ObsoleteCommentSyntaxListener();
-                    var emptyStringLiteralListener = IsDisabled<EmptyStringLiteralInspection>(settings) ? null : new EmptyStringLiteralInspection.EmptyStringLiteralListener();
-                    var argListWithOneByRefParamListener = IsDisabled<ProcedureCanBeWrittenAsFunctionInspection>(settings) ? null : new ProcedureCanBeWrittenAsFunctionInspection.SingleByRefParamArgListListener();
-                    var invalidAnnotationListener = IsDisabled<MissingAnnotationArgumentInspection>(settings) ? null : new MissingAnnotationArgumentInspection.InvalidAnnotationStatementListener();
-                    var optionBaseZeroListener = IsDisabled<OptionBaseZeroInspection>(settings) ? null : new OptionBaseZeroInspection.OptionBaseStatementListener();
+                    foreach (var listener in listeners)
+                    {
+                        listener.CurrentModuleName = componentTreePair.Key;
+                    }
 
-                    var combinedListener = new CombinedParseTreeListener(new IParseTreeListener[]{
-                        obsoleteCallStatementListener,
-                        obsoleteLetStatementListener,
-                        obsoleteCommentSyntaxListener,
-                        emptyStringLiteralListener,
-                        argListWithOneByRefParamListener,
-                        invalidAnnotationListener,
-                        optionBaseZeroListener
-                    });
-
-                    ParseTreeWalker.Default.Walk(combinedListener, componentTreePair.Value);
-
-                    if (argListWithOneByRefParamListener != null)
-                    {
-                        result.AddRange(argListWithOneByRefParamListener.Contexts.Select(context => new QualifiedContext<VBAParser.ArgListContext>(componentTreePair.Key, context)));
-                    }
-                    if (emptyStringLiteralListener != null)
-                    {
-                        result.AddRange(emptyStringLiteralListener.Contexts.Select(context => new QualifiedContext<VBAParser.LiteralExpressionContext>(componentTreePair.Key, context)));
-                    }
-                    if (obsoleteLetStatementListener != null)
-                    {
-                        result.AddRange(obsoleteLetStatementListener.Contexts.Select(context => new QualifiedContext<VBAParser.LetStmtContext>(componentTreePair.Key, context)));
-                    }
-                    if (obsoleteCommentSyntaxListener != null)
-                    {
-                        result.AddRange(obsoleteCommentSyntaxListener.Contexts.Select(context => new QualifiedContext<VBAParser.RemCommentContext>(componentTreePair.Key, context)));
-                    }
-                    if (obsoleteCallStatementListener != null)
-                    {
-                        result.AddRange(obsoleteCallStatementListener.Contexts.Select(context => new QualifiedContext<VBAParser.CallStmtContext>(componentTreePair.Key, context)));
-                    }
-                    if (invalidAnnotationListener != null)
-                    {
-                        result.AddRange(invalidAnnotationListener.Contexts.Select(context => new QualifiedContext<VBAParser.AnnotationContext>(componentTreePair.Key, context)));
-                    }
-                    if (optionBaseZeroListener != null)
-                    {
-                        result.AddRange(optionBaseZeroListener.Contexts.Select(context => new QualifiedContext<VBAParser.OptionBaseStmtContext>(componentTreePair.Key, context)));
-                    }
+                    ParseTreeWalker.Default.Walk(new CombinedParseTreeListener(listeners), componentTreePair.Value);
                 }
-                return result;
             }
 
-            private bool IsDisabled<TInspection>(CodeInspectionSettings config) where TInspection : IInspection
+            private bool IsDisabled(CodeInspectionSettings config, IInspection inspection)
             {
-                var setting = config.GetSetting<TInspection>();
+                var setting = config.GetSetting(inspection.GetType());
                 return setting != null && setting.Severity == CodeInspectionSeverity.DoNotShow;
             }
 

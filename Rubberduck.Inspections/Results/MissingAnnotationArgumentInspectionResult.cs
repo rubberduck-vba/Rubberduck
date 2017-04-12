@@ -1,3 +1,4 @@
+using Antlr4.Runtime;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing;
@@ -9,7 +10,7 @@ namespace Rubberduck.Inspections.Results
 {
     public class MissingAnnotationArgumentInspectionResult : InspectionResultBase
     {
-        public MissingAnnotationArgumentInspectionResult(IInspection inspection, QualifiedContext<VBAParser.AnnotationContext> qualifiedContext)
+        public MissingAnnotationArgumentInspectionResult(IInspection inspection, QualifiedContext<ParserRuleContext> qualifiedContext)
             : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context) {}
 
         public override string Description
