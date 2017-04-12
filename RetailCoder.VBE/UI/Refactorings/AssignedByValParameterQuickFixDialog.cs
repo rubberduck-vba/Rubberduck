@@ -10,10 +10,10 @@ namespace Rubberduck.UI.Refactorings
     {
         private readonly IEnumerable<string> _forbiddenNames;
 
-        internal AssignedByValParameterQuickFixDialog(string identifierName, string declarationType, IEnumerable<string> forbiddenNames)
+        public AssignedByValParameterQuickFixDialog(string identifier, string identifierType, IEnumerable<string> forbiddenNames)
         {
             InitializeComponent();
-            InitializeCaptions(identifierName, declarationType);
+            InitializeCaptions(identifier, identifierType);
             _forbiddenNames = forbiddenNames;
         }
 

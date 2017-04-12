@@ -422,7 +422,6 @@
     <Compile Include="UI\EnvironmentProvider.cs" />
     <Compile Include="UI\Inspections\AggregateInspectionResult.cs" />
     <Compile Include="UI\ModernFolderBrowser.cs" />
-    <Compile Include="UI\Refactorings\AssignedByValParameterQuickFixDialogFactory.cs" />
     <Compile Include="UI\Refactorings\EncapsulateField\EncapsulateFieldView.xaml.cs">
       <DependentUpon>EncapsulateFieldView.xaml</DependentUpon>
     </Compile>

@@ -2044,7 +2044,6 @@ End Sub
         }
 
         [TestMethod]
-        [Ignore] // todo: figure out why test is randomly failing
         public void GivenLocalDeclarationAsQualifiedClassName_ResolvesFirstPartToProject()
         {
             var code_class1 = @"
