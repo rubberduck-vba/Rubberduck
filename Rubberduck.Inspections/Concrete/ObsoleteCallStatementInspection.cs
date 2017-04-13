@@ -24,11 +24,6 @@ namespace Rubberduck.Inspections.Concrete
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
-            if (Listener?.Contexts == null)
-            {
-                return new InspectionResultBase[] { };
-            }
-
             var results = new List<ObsoleteCallStatementUsageInspectionResult>();
 
             foreach (var context in Listener.Contexts.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName.Component, context.Context.Start.Line)))

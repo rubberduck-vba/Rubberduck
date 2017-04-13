@@ -25,11 +25,6 @@ namespace Rubberduck.Inspections.Concrete
         
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
-            if (Listener?.Contexts == null)
-            {
-                return new InspectionResultBase[] { };
-            }
-
             return (from result in Listener.Contexts
                     let context = (VBAParser.AnnotationContext)result.Context 
                     where context.annotationName().GetText() == AnnotationType.Ignore.ToString() 

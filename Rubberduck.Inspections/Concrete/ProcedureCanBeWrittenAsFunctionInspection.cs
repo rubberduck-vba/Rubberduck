@@ -29,12 +29,6 @@ namespace Rubberduck.Inspections.Concrete
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
-            if (Listener?.Contexts == null)
-            {
-                Logger.Debug("Aborting GetInspectionResults because ParseTree results were not passed");
-                return new InspectionResultBase[] { };
-            }
-
             var userDeclarations = UserDeclarations.ToList();
             var builtinHandlers = State.DeclarationFinder.FindEventHandlers().ToList();
 
