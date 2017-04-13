@@ -67,7 +67,7 @@ namespace Rubberduck.Root
             Bind<IVBE>().ToConstant(_vbe);
             Bind<IAddIn>().ToConstant(_addin);
             Bind<App>().ToSelf().InSingletonScope();
-            Bind<RubberduckParserState>().ToSelf().InSingletonScope();
+            Bind<RubberduckParserState, IParseTreeProvider, IDeclarationFinderProvider>().To<RubberduckParserState>().InSingletonScope();
             Bind<ISelectionChangeService>().To<SelectionChangeService>().InSingletonScope();
             Bind<ISourceControlProvider>().To<GitProvider>();
             //Bind<GitProvider>().ToSelf().InSingletonScope();        
@@ -104,9 +104,19 @@ namespace Rubberduck.Root
             Bind<Func<IIndenterSettings>>().ToMethod(t => () => KernelInstance.Get<IGeneralConfigService>().LoadConfiguration().UserSettings.IndenterSettings);
 
             BindCustomDeclarationLoadersToParser();
-            Rebind<ICOMReferenceSynchronizer>().To<COMReferenceSynchronizer>().InSingletonScope().WithConstructorArgument("serializedDeclarationsPath", (string)null);
-            Bind<IProjectReferencesProvider>().To<COMReferenceSynchronizer>().InSingletonScope().WithConstructorArgument("serializedDeclarationsPath", (string)null);
-            Bind<Func<IVBAPreprocessor>>().ToMethod(p => () => new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture))).InSingletonScope();
+            Rebind<ICOMReferenceSynchronizer, IProjectReferencesProvider>().To<COMReferenceSynchronizer>().InSingletonScope().WithConstructorArgument("serializedDeclarationsPath", (string)null);
+            Rebind<IBuiltInDeclarationLoader>().To<BuiltInDeclarationLoader>().InSingletonScope();
+            Rebind<IDeclarationResolveRunner>().To<DeclarationResolveRunner>().InSingletonScope();
+            Rebind<IModuleToModuleReferenceManager>().To<ModuleToModuleReferenceManager>().InSingletonScope();
+            Rebind<IParserStateManager>().To<ParserStateManager>().InSingletonScope();
+            Rebind<IParseRunner>().To<ParseRunner>().InSingletonScope();
+            Rebind<IParsingStageService>().To<ParsingStageService>().InSingletonScope();
+            Rebind<IProjectManager>().To<ProjectManager>().InSingletonScope();
+            Rebind<IReferenceRemover>().To<ReferenceRemover>().InSingletonScope();
+            Rebind<IReferenceResolveRunner>().To<ReferenceResolveRunner>().InSingletonScope();
+            Rebind<IParseCoordinator>().To<ParseCoordinator>().InSingletonScope();
+
+            Bind<Func<IVBAPreprocessor>>().ToMethod(p => () => new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture)));
 
             Rebind<ISearchResultsWindowViewModel>().To<SearchResultsWindowViewModel>().InSingletonScope();
 

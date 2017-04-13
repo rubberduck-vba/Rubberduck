@@ -26,11 +26,6 @@ namespace Rubberduck.Inspections.Concrete
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
-            if (Listener?.Contexts == null)
-            {
-                return new InspectionResultBase[] { };
-            }
-
             return Listener.Contexts.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName.Component, context.Context.Start.Line))
                                    .Select(context => new OptionBaseZeroInspectionResult(this, context));
         }

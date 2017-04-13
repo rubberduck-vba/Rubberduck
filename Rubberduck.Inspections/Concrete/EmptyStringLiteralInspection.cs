@@ -23,11 +23,7 @@ namespace Rubberduck.Inspections.Concrete
             new EmptyStringLiteralListener();
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
-        {   
-            if (Listener?.Contexts == null)
-            {
-                return Enumerable.Empty<IInspectionResult>();
-            }
+        {
             return Listener.Contexts
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName.Component, result.Context.Start.Line))
                 .Select(result => new EmptyStringLiteralInspectionResult(this, result));

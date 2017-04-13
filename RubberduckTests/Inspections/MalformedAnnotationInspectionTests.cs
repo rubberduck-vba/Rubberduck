@@ -1,12 +1,8 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 using RubberduckTests.Mocks;
-using Rubberduck.Settings;
 using System.Threading;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Inspections.Rubberduck.Inspections;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -21,19 +17,15 @@ namespace RubberduckTests.Inspections
         {
             const string inputCode =
 @"'@Folder";
-
-            var settings = new Mock<IGeneralConfigService>();
-            var config = GetTestConfig();
-            settings.Setup(x => x.LoadConfiguration()).Returns(config);
-
+            
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new MissingAnnotationArgumentInspection(state);
-            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
-
+            var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
@@ -43,19 +35,15 @@ namespace RubberduckTests.Inspections
         {
             const string inputCode =
 @"'@Folder ""Foo""";
-
-            var settings = new Mock<IGeneralConfigService>();
-            var config = GetTestConfig();
-            settings.Setup(x => x.LoadConfiguration()).Returns(config);
-
+            
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new MissingAnnotationArgumentInspection(state);
-            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
-
+            var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
             Assert.AreEqual(0, inspectionResults.Count());
         }
 
@@ -65,19 +53,15 @@ namespace RubberduckTests.Inspections
         {
             const string inputCode =
 @"'@Ignore";
-
-            var settings = new Mock<IGeneralConfigService>();
-            var config = GetTestConfig();
-            settings.Setup(x => x.LoadConfiguration()).Returns(config);
-
+            
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new MissingAnnotationArgumentInspection(state);
-            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
-
+            var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
@@ -87,19 +71,15 @@ namespace RubberduckTests.Inspections
         {
             const string inputCode =
 @"'@Ignore ProcedureNotUsedInspection";
-
-            var settings = new Mock<IGeneralConfigService>();
-            var config = GetTestConfig();
-            settings.Setup(x => x.LoadConfiguration()).Returns(config);
-
+            
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new MissingAnnotationArgumentInspection(state);
-            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
-
+            var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
             Assert.AreEqual(0, inspectionResults.Count());
         }
 
@@ -110,19 +90,15 @@ namespace RubberduckTests.Inspections
             const string inputCode =
 @"'@Folder
 '@Ignore";
-
-            var settings = new Mock<IGeneralConfigService>();
-            var config = GetTestConfig();
-            settings.Setup(x => x.LoadConfiguration()).Returns(config);
-
+            
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new MissingAnnotationArgumentInspection(state);
-            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
-
+            var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
             Assert.AreEqual(2, inspectionResults.Count());
         }
 
@@ -142,20 +118,6 @@ namespace RubberduckTests.Inspections
             var inspection = new MissingAnnotationArgumentInspection(null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
-        }
-
-        private Configuration GetTestConfig()
-        {
-            var settings = new CodeInspectionSettings();
-            settings.CodeInspections.Add(new CodeInspectionSetting
-            {
-                Description = new MissingAnnotationArgumentInspection(null).Description,
-                Severity = CodeInspectionSeverity.Error
-            });
-            return new Configuration
-            {
-                UserSettings = new UserSettings(null, null, null, settings, null, null, null)
-            };
         }
     }
 }
