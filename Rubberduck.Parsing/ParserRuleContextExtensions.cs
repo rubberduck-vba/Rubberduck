@@ -11,8 +11,7 @@ namespace Rubberduck.Parsing
         public static Selection GetSelection(this ParserRuleContext context)
         {
             // if we have an empty module, `Stop` is null
-            if (context?.Stop == null)
-                return Selection.Home;
+            if (context?.Stop == null) { return Selection.Home; }
 
             // ANTLR indexes are 0-based, but VBE's are 1-based.
             // 1 is the default value that will select all lines. Replace zeroes with ones.
@@ -51,7 +50,7 @@ namespace Rubberduck.Parsing
         private class ChildNodeListener<TContext> : VBAParserBaseListener where TContext : ParserRuleContext
         {
             private readonly HashSet<TContext> _matches = new HashSet<TContext>();
-            public IEnumerable<TContext> Matches { get { return _matches; } }
+            public IEnumerable<TContext> Matches => _matches;
 
             public override void EnterEveryRule(ParserRuleContext context)
             {
