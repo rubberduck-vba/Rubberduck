@@ -10,45 +10,15 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     public class VBComponent : SafeComWrapper<VB.VBComponent>, IVBComponent
     {
-        public VBComponent(VB.VBComponent target) 
-            : base(target)
-        {
-        }
+        public VBComponent(VB.VBComponent target) : base(target) { }
 
-        public ComponentType Type
-        {
-            get { return IsWrappingNullReference ? 0 : (ComponentType)Target.Type; }
-        }
-
-        public ICodeModule CodeModule
-        {
-            get { return new CodeModule(IsWrappingNullReference ? null : Target.CodeModule); }
-        }
-
-        public IVBE VBE
-        {
-            get { return new VBE(IsWrappingNullReference ? null : Target.VBE); }
-        }
-
-        public IVBComponents Collection
-        {
-            get { return new VBComponents(IsWrappingNullReference ? null : Target.Collection); }
-        }
-
-        public IProperties Properties
-        {
-            get { return new Properties(IsWrappingNullReference ? null : Target.Properties); }
-        }
-
-        public bool HasOpenDesigner
-        {
-            get { return !IsWrappingNullReference && Target.HasOpenDesigner; }
-        }
-
-        public string DesignerId
-        {
-            get { return IsWrappingNullReference ? string.Empty : Target.DesignerID; }
-        }
+        public ComponentType Type => IsWrappingNullReference ? 0 : (ComponentType)Target.Type;
+        public ICodeModule CodeModule => new CodeModule(IsWrappingNullReference ? null : Target.CodeModule);
+        public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
+        public IVBComponents Collection => new VBComponents(IsWrappingNullReference ? null : Target.Collection);
+        public IProperties Properties => new Properties(IsWrappingNullReference ? null : Target.Properties);
+        public bool HasOpenDesigner => !IsWrappingNullReference && Target.HasOpenDesigner;
+        public string DesignerId => IsWrappingNullReference ? string.Empty : Target.DesignerID;
 
         public string Name
         {
@@ -56,10 +26,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             set { if (!IsWrappingNullReference) Target.Name = value; }
         }
 
-        private string SafeName
-        {
-            get { return Path.GetInvalidFileNameChars().Aggregate(Name, (current, c) => current.Replace(c.ToString(), "_")); }
-        }
+        private string SafeName => Path.GetInvalidFileNameChars().Aggregate(Name, (current, c) => current.Replace(c.ToString(), "_"));
 
         public IControls Controls
         {
@@ -103,22 +70,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             }
         }
 
-        public IWindow DesignerWindow()
-        {
-            return new Window(IsWrappingNullReference ? null : Target.DesignerWindow());
-        }
-
-        public void Activate()
-        {
-            Target.Activate();
-        }
-
-        public bool IsSaved { get { return !IsWrappingNullReference && Target.Saved; } }
-
-        public void Export(string path)
-        {
-            Target.Export(path);
-        }
+        public IWindow DesignerWindow() => new Window(IsWrappingNullReference ? null : Target.DesignerWindow());
+        public void Activate() => Target.Activate();
+        public bool IsSaved => !IsWrappingNullReference && Target.Saved;
+        public void Export(string path) => Target.Export(path);
 
         /// <summary>
         /// Exports the component to the folder. The file is name matches the component name and file extension is based on the component's type.
@@ -146,10 +101,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return fullPath;
         }
 
-        public IVBProject ParentProject
-        {
-            get { return Collection.Parent; }
-        }
+        public IVBProject ParentProject => Collection.Parent;
 
         private void ExportUserFormModule(string path)
         {

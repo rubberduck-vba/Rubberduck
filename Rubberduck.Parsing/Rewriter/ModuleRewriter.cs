@@ -12,22 +12,21 @@ namespace Rubberduck.Parsing.Rewriter
 {
     public class ModuleRewriter : IModuleRewriter
     {
-        private readonly ICodeModule _module;
-        private readonly TokenStreamRewriter _rewriter;
-
-        public ITokenStream TokenStream => _rewriter.TokenStream;
+        protected ICodeModule Module { get; }
+        protected TokenStreamRewriter Rewriter { get; }
+        public ITokenStream TokenStream => Rewriter.TokenStream;
 
         public ModuleRewriter(ICodeModule module, TokenStreamRewriter rewriter)
         {
-            _module = module;
-            _rewriter = rewriter;
+            Module = module;
+            Rewriter = rewriter;
         }
 
-        public void Rewrite()
+        public virtual void Rewrite()
         {
-            _module.Clear();
-            var content = _rewriter.GetText();
-            _module.InsertLines(1, content);
+            Module.Clear();
+            var content = Rewriter.GetText();
+            Module.InsertLines(1, content);
         }
 
         private static readonly IDictionary<Type, IRewriterInfoFinder> Finders =
@@ -52,62 +51,62 @@ namespace Rubberduck.Parsing.Rewriter
                 : new DefaultRewriterInfoFinder().GetRewriterInfo(target);
 
             if (info.Equals(RewriterInfo.RewriterInfo.None)) { return; }
-            _rewriter.Delete(info.StartTokenIndex, info.StopTokenIndex);
+            Rewriter.Delete(info.StartTokenIndex, info.StopTokenIndex);
         }
 
         public void Remove(ITerminalNode target)
         {
-            _rewriter.Delete(target.Symbol.TokenIndex);
+            Rewriter.Delete(target.Symbol.TokenIndex);
         }
 
         public void Remove(IToken target)
         {
-            _rewriter.Delete(target);
+            Rewriter.Delete(target);
         }
 
         public void Replace(Declaration target, string content)
         {
-            _rewriter.Replace(target.Context.Start.TokenIndex, target.Context.Stop.TokenIndex, content);
+            Rewriter.Replace(target.Context.Start.TokenIndex, target.Context.Stop.TokenIndex, content);
         }
 
         public void Replace(ParserRuleContext target, string content)
         {
-            _rewriter.Replace(target.Start.TokenIndex, target.Stop.TokenIndex, content);
+            Rewriter.Replace(target.Start.TokenIndex, target.Stop.TokenIndex, content);
         }
 
         public void Replace(IToken token, string content)
         {
-            _rewriter.Replace(token, content);
+            Rewriter.Replace(token, content);
         }
 
         public void Replace(ITerminalNode target, string content)
         {
-            _rewriter.Replace(target.Symbol.TokenIndex, content);
+            Rewriter.Replace(target.Symbol.TokenIndex, content);
         }
 
         public void Replace(Interval tokenInterval, string content)
         {
-            _rewriter.Replace(tokenInterval.a, tokenInterval.b, content);
+            Rewriter.Replace(tokenInterval.a, tokenInterval.b, content);
         }
 
         public void InsertBefore(int tokenIndex, string content)
         {
-            _rewriter.InsertBefore(tokenIndex, content);
+            Rewriter.InsertBefore(tokenIndex, content);
         }
 
         public void InsertAfter(int tokenIndex, string content)
         {
-            _rewriter.InsertAfter(tokenIndex, content);
+            Rewriter.InsertAfter(tokenIndex, content);
         }
 
         public string GetText(int startTokenIndex, int stopTokenIndex)
         {
-            return _rewriter.GetText(Interval.Of(startTokenIndex, stopTokenIndex));
+            return Rewriter.GetText(Interval.Of(startTokenIndex, stopTokenIndex));
         }
 
         public string GetText()
         {
-            return _rewriter.GetText();
+            return Rewriter.GetText();
         }
     }
 }

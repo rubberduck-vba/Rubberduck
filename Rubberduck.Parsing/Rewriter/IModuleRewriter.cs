@@ -96,6 +96,9 @@ namespace Rubberduck.Parsing.Rewriter
         /// <returns></returns>
         string GetText();
 
+        /// <summary>
+        /// Gets the stream of tokens the rewriter is working with.
+        /// </summary>
         ITokenStream TokenStream { get; }
     }
 }

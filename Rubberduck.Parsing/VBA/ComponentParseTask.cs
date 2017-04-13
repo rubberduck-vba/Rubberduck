@@ -13,6 +13,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Rubberduck.Parsing.PreProcessing;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Parsing.VBA
@@ -23,6 +24,7 @@ namespace Rubberduck.Parsing.VBA
         private readonly QualifiedModuleName _qualifiedName;
         private readonly TokenStreamRewriter _rewriter;
         private readonly IAttributeParser _attributeParser;
+        private readonly IModuleExporter _exporter;
         private readonly IVBAPreprocessor _preprocessor;
         private readonly VBAModuleParser _parser;
 
@@ -32,11 +34,12 @@ namespace Rubberduck.Parsing.VBA
 
         private readonly Guid _taskId;
 
-        public ComponentParseTask(IVBComponent vbComponent, IVBAPreprocessor preprocessor, IAttributeParser attributeParser, TokenStreamRewriter rewriter = null)
+        public ComponentParseTask(IVBComponent vbComponent, IVBAPreprocessor preprocessor, IAttributeParser attributeParser, IModuleExporter exporter, TokenStreamRewriter rewriter = null)
         {
             _taskId = Guid.NewGuid();
 
             _attributeParser = attributeParser;
+            _exporter = exporter;
             _preprocessor = preprocessor;
             _component = vbComponent;
             _rewriter = rewriter;
@@ -53,7 +56,12 @@ namespace Rubberduck.Parsing.VBA
                 var code = RewriteAndPreprocess(token);
                 token.ThrowIfCancellationRequested();
 
-                var attributes = _attributeParser.Parse(_component, token);
+                Logger.Trace($"ParseTaskID {_taskId} begins attributes pass.");
+                ITokenStream tokenStream;
+                var attributes = _attributeParser.Parse(_component, token, out tokenStream);
+                Logger.Trace($"ParseTaskID {_taskId} finished attributes pass.");
+
+                var rewriter = new MemberAttributesRewriter(_exporter, _component.CodeModule, new TokenStreamRewriter(tokenStream));
 
                 // temporal coupling... comments must be acquired before we walk the parse tree for declarations
                 // otherwise none of the annotations get associated to their respective Declaration
@@ -75,6 +83,7 @@ namespace Rubberduck.Parsing.VBA
                     {
                         ParseTree = tree,
                         Tokens = stream,
+                        AttributesRewriter = rewriter,
                         Attributes = attributes,
                         Comments = comments,
                         Annotations = annotationListener.Annotations
@@ -199,6 +208,7 @@ namespace Rubberduck.Parsing.VBA
         public class ParseCompletionArgs
         {
             public ITokenStream Tokens { get; internal set; }
+            public IModuleRewriter AttributesRewriter { get; internal set; }
             public IParseTree ParseTree { get; internal set; }
             public IDictionary<Tuple<string, DeclarationType>, Attributes> Attributes { get; internal set; }
             public IEnumerable<CommentNode> Comments { get; internal set; }

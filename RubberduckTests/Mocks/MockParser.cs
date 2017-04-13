@@ -12,6 +12,7 @@ using Rubberduck.VBEditor;
 using System.Globalization;
 using System.Reflection;
 using System.Threading;
+using Antlr4.Runtime;
 using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -36,12 +37,14 @@ namespace RubberduckTests.Mocks
         public static ParseCoordinator Create(IVBE vbe, RubberduckParserState state, string serializedDeclarationsPath = null)
         {
             var attributeParser = new Mock<IAttributeParser>();
-            attributeParser.Setup(m => m.Parse(It.IsAny<IVBComponent>(), It.IsAny<CancellationToken>()))
+            ITokenStream stream;
+            attributeParser.Setup(m => m.Parse(It.IsAny<IVBComponent>(), It.IsAny<CancellationToken>(), out stream))
                            .Returns(() => new Dictionary<Tuple<string, DeclarationType>, Attributes>());
-            return Create(vbe, state, attributeParser.Object, serializedDeclarationsPath);
+            var exporter = new Mock<IModuleExporter>().Object;
+            return Create(vbe, state, attributeParser.Object, exporter, serializedDeclarationsPath);
         }
 
-        public static ParseCoordinator Create(IVBE vbe, RubberduckParserState state, IAttributeParser attributeParser, string serializedDeclarationsPath = null)
+        public static ParseCoordinator Create(IVBE vbe, RubberduckParserState state, IAttributeParser attributeParser, IModuleExporter exporter, string serializedDeclarationsPath = null)
         {
             var path = serializedDeclarationsPath ??
                        Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(typeof(MockParser)).Location), "TestFiles", "Resolver");
@@ -67,7 +70,8 @@ namespace RubberduckTests.Mocks
                 state,
                 parserStateManager,
                 preprocessorFactory,
-                attributeParser);
+                attributeParser,
+                exporter);
             var declarationResolveRunner = new SynchronousDeclarationResolveRunner(
                 state, 
                 parserStateManager, 
