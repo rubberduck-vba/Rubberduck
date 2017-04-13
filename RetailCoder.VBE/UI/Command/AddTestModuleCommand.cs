@@ -32,8 +32,8 @@ namespace Rubberduck.UI.Command
         private const string TestModuleEmptyTemplate = "'@TestModule\r\n{0}\r\n{1}\r\n{2}\r\n\r\n";
         private const string FolderAnnotation = "'@Folder(\"Tests\")\r\n";
 
-        private const string ModuleFakesProvider = "Private Fakes As {0}";
-        private const string ModuleAssertProvide = "Private Assert As {0}";
+        private const string FakesFieldDeclarationFormat = "Private Fakes As {0}";
+        private const string AssertFieldDeclarationFormat = "Private Assert As {0}";
 
         private readonly string _moduleInit = string.Concat(
             "'@ModuleInitialize\r\n",
@@ -63,30 +63,24 @@ namespace Rubberduck.UI.Command
 
         private const string TestModuleBaseName = "TestModule";
 
-        private const string EarlyBinding = "New {0}";
-        private const string LateBinding = "CreateObject(\"{0}\")";
-
         private string GetTestModule(IUnitTestSettings settings)
         {
-            bool isEarlyBinding = settings.BindingMode == BindingMode.EarlyBinding;
-
             var assertType = string.Format("Rubberduck.{0}AssertClass", settings.AssertMode == AssertMode.StrictAssert ? string.Empty : "Permissive");
+            var assertDeclaredAs = DeclarationFormatFor(AssertFieldDeclarationFormat, assertType, settings);
 
             var fakesType = "Rubberduck.IFake";
-
-            string assertDeclaredAs = DeclareAs(isEarlyBinding, ModuleAssertProvide, assertType);
-            string fakesDeclaredAs = DeclareAs(isEarlyBinding, ModuleFakesProvider, fakesType);
+            var fakesDeclaredAs = DeclarationFormatFor(FakesFieldDeclarationFormat, fakesType, settings); 
 
             var formattedModuleTemplate = string.Format(TestModuleEmptyTemplate, FolderAnnotation, assertDeclaredAs, fakesDeclaredAs);
 
             if (settings.ModuleInit)
             {
-                var assertBinding = GetBinding(isEarlyBinding, assertType);
-                string assertSetAs = $"Set Assert = {assertBinding}";
+                var assertBinding = InstantiationFormatFor(assertType, settings);
+                var assertSetAs = $"Set Assert = {assertBinding}";
 
-                var fakesBinding = GetBinding(isEarlyBinding, fakesType);
-                string fakesSetAs = $"Set Fakes = {fakesBinding}";
-                
+                var fakesBinding = InstantiationFormatFor(fakesType, settings);
+                var fakesSetAs = $"Set Fakes = {fakesBinding}";
+
                 formattedModuleTemplate += string.Format(_moduleInit, assertSetAs, fakesSetAs);
             }
 
@@ -98,14 +92,16 @@ namespace Rubberduck.UI.Command
             return formattedModuleTemplate;
         }
 
-        private string GetBinding(bool isEarlyBinding, string theType)
+        private string InstantiationFormatFor(string type, IUnitTestSettings settings) 
         {
-            return string.Format(isEarlyBinding ? EarlyBinding : LateBinding, theType);
+            const string EarlyBoundInstantiationFormat = "New {0}";
+            const string LateBoundInstantiationFormat = "CreateObject(\"{0}\")";
+            return string.Format(settings.BindingMode == BindingMode.EarlyBinding ? EarlyBoundInstantiationFormat : LateBoundInstantiationFormat, type); 
         }
 
-        private string DeclareAs(bool isEarlyBinding,string ModuleProvider, string theType)
+        private string DeclarationFormatFor(string declarationFormat, string type, IUnitTestSettings settings) 
         {
-            return string.Format(ModuleProvider, isEarlyBinding ? theType : "Object");
+            return string.Format(declarationFormat, settings.BindingMode == BindingMode.EarlyBinding ? type : "Object");
         }
 
         private IVBProject GetProject()
