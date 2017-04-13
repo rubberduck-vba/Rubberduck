@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
@@ -25,7 +26,8 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new MultipleDeclarationsInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.AreEqual(1, inspectionResults.Count());
         }
@@ -44,7 +46,8 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new MultipleDeclarationsInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.AreEqual(1, inspectionResults.Count());
         }
@@ -63,7 +66,8 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new MultipleDeclarationsInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.AreEqual(1, inspectionResults.Count());
         }
@@ -83,7 +87,8 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new MultipleDeclarationsInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.AreEqual(2, inspectionResults.Count());
         }
@@ -103,7 +108,8 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new MultipleDeclarationsInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.AreEqual(1, inspectionResults.Count());
         }
@@ -123,7 +129,8 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new MultipleDeclarationsInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.IsFalse(inspectionResults.Any());
         }
@@ -149,7 +156,8 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new MultipleDeclarationsInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             new SplitMultipleDeclarationsQuickFix(state).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
@@ -176,7 +184,8 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new MultipleDeclarationsInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             new SplitMultipleDeclarationsQuickFix(state).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
@@ -203,8 +212,9 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new MultipleDeclarationsInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-            
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
             new SplitMultipleDeclarationsQuickFix(state).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -229,8 +239,9 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new MultipleDeclarationsInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-            
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
             new IgnoreOnceQuickFix(state, new[] {inspection}).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
