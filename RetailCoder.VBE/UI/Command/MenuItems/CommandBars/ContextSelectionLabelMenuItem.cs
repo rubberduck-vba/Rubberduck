@@ -30,8 +30,8 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
         }
 
         public override Func<string> Caption { get { return () => _caption; } }
-        public override string Key { get { return string.Empty; } }
-        public override bool BeginGroup { get { return true; } }
-        public override int DisplayOrder { get { return (int)RubberduckCommandBarItemDisplayOrder.ContextStatus; } }
+        public override string Key => string.Empty;
+        public override bool BeginGroup => true;
+        public override int DisplayOrder => (int)RubberduckCommandBarItemDisplayOrder.ContextStatus;
     }
 }

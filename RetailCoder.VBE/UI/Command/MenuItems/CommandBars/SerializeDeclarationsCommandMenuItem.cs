@@ -15,7 +15,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
         }
 
         public override Func<string> Caption { get { return () => "Serialize"; } }
-        public override string Key { get { return "SerializeDeclarations"; } }
+        public override string Key => "SerializeDeclarations";
     }
 
     public class SerializeDeclarationsCommand : CommandBase

@@ -11,10 +11,10 @@ namespace Rubberduck.UI.Command.MenuItems
         {
         }
 
-        public override string Key { get { return "TestExplorerMenu_AddExpectedErrorTestMethod"; } }
-        public override int DisplayOrder { get { return (int)UnitTestingMenuItemDisplayOrder.AddTestMethodExpectedError; } }
+        public override string Key => "TestExplorerMenu_AddExpectedErrorTestMethod";
+        public override int DisplayOrder => (int)UnitTestingMenuItemDisplayOrder.AddTestMethodExpectedError;
 
-        public override Image Image { get { return Resources.flask_exclamation; } }
-        public override Image Mask { get { return Resources.flask_exclamation_mask; } }
+        public override Image Image => Resources.flask_exclamation;
+        public override Image Mask => Resources.flask_exclamation_mask;
     }
 }

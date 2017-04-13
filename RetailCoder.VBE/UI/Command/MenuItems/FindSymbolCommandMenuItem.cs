@@ -12,12 +12,12 @@ namespace Rubberduck.UI.Command.MenuItems
         {
         }
 
-        public override string Key { get {return "ContextMenu_FindSymbol"; } }
-        public override int DisplayOrder { get { return (int)CodePaneContextMenuItemDisplayOrder.FindSymbol; } }
-        public override bool BeginGroup { get { return true; } }
+        public override string Key => "ContextMenu_FindSymbol";
+        public override int DisplayOrder => (int)CodePaneContextMenuItemDisplayOrder.FindSymbol;
+        public override bool BeginGroup => true;
 
-        public override Image Image { get { return Resources.FindSymbol; } }
-        public override Image Mask { get { return Resources.FindSymbolMask; } }
+        public override Image Image => Resources.FindSymbol;
+        public override Image Mask => Resources.FindSymbolMask;
 
         public override bool EvaluateCanExecute(RubberduckParserState state)
         {

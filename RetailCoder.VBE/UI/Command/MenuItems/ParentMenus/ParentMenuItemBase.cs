@@ -26,7 +26,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
         public ICommandBarControls Parent { get; set; }
         public ICommandBarPopup Item { get; private set; }
 
-        public string Key { get { return Item == null ? null : Item.Tag; } }
+        public string Key => Item == null ? null : Item.Tag;
 
         public Func<string> Caption { get { return () => Key == null ? null : RubberduckUI.ResourceManager.GetString(Key, Settings.Settings.Culture); } }
 
@@ -41,8 +41,8 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             }
         }
 
-        public virtual bool BeginGroup { get { return false; } }
-        public virtual int DisplayOrder { get { return default(int); } }
+        public virtual bool BeginGroup => false;
+        public virtual int DisplayOrder => default(int);
 
         public void Localize()
         {
