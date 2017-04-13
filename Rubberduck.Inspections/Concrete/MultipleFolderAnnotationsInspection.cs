@@ -1,30 +1,53 @@
 using System.Collections.Generic;
 using System.Linq;
+using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    public sealed class MultipleFolderAnnotationsInspection : InspectionBase
+    public sealed class MultipleFolderAnnotationsInspection : InspectionBase, IParseTreeInspection
     {
         public MultipleFolderAnnotationsInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Error) { }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
+        public IInspectionListener Listener { get; } = new FolderAnnotationStatementListener();
+
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
-            var issues = UserDeclarations.Where(declaration =>
-                 (declaration.DeclarationType == DeclarationType.ClassModule
-                || declaration.DeclarationType == DeclarationType.ProceduralModule)
-                && declaration.Annotations.Count(annotation => annotation.AnnotationType == AnnotationType.Folder) > 1);
-            return issues.Select(issue =>
-                new MultipleFolderAnnotationsInspectionResult(this, issue));
+            return Listener.Contexts.GroupBy(s => s.ModuleName)
+                .Where(g => g.Count() > 1)
+                .Select(r => new MultipleFolderAnnotationsInspectionResult(this, r.First()));
+        }
+
+        public class FolderAnnotationStatementListener : VBAParserBaseListener, IInspectionListener
+        {
+            private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
+            public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
+
+            public QualifiedModuleName CurrentModuleName { get; set; }
+
+            public void ClearContexts()
+            {
+                _contexts.Clear();
+            }
+
+            public override void ExitAnnotation(VBAParser.AnnotationContext context)
+            {
+                if (context.annotationName()?.GetText() == nameof(AnnotationType.Folder))
+                {
+                    _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
+                }
+            }
         }
     }
 }

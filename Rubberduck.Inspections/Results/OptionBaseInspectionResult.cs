@@ -1,14 +1,15 @@
+using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections.Results
 {
     public class OptionBaseInspectionResult : InspectionResultBase
     {
-        public OptionBaseInspectionResult(IInspection inspection, Declaration target)
-            : base(inspection, target) {}
+        public OptionBaseInspectionResult(IInspection inspection, QualifiedContext<ParserRuleContext> context)
+            : base(inspection, context.ModuleName, context.Context) {}
 
         public override string Description
         {

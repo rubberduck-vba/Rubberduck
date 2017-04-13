@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -24,7 +25,8 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new MultipleFolderAnnotationsInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.IsFalse(inspectionResults.Any());
         }
@@ -44,7 +46,8 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new MultipleFolderAnnotationsInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.IsFalse(inspectionResults.Any());
         }
@@ -57,15 +60,15 @@ End Sub";
 @"'@Folder ""Foo.Bar""
 '@Folder ""Biz.Buz""
 Public Sub Foo()
-    Const const1 As Integer = 9
 End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new ConstantNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspection = new MultipleFolderAnnotationsInspection(state);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.AreEqual(1, inspectionResults.Count());
         }

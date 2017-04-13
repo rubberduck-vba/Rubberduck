@@ -33,7 +33,9 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<IQuickFix> QuickFixes(IInspectionResult result)
         {
-            return _quickFixes[result.Inspection.GetType()];
+            return _quickFixes.ContainsKey(result.Inspection.GetType())
+                ? _quickFixes[result.Inspection.GetType()]
+                : Enumerable.Empty<IQuickFix>();
         }
 
         private bool CanFix(IQuickFix fix, Type inspection)
@@ -146,7 +148,8 @@ namespace Rubberduck.Inspections
 
         public bool HasQuickFixes(IInspectionResult inspectionResult)
         {
-            return _quickFixes[inspectionResult.Inspection.GetType()].Any();
+            return _quickFixes.ContainsKey(inspectionResult.Inspection.GetType()) &&
+                   _quickFixes[inspectionResult.Inspection.GetType()].Any();
         }
     }
 }
