@@ -1,13 +1,9 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 using RubberduckTests.Mocks;
-using Rubberduck.Settings;
 using System.Threading;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Inspections.Rubberduck.Inspections;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -33,8 +29,7 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyStringLiteralInspection(state);
-            var inspector = new Inspector(GetSettings(), new IInspection[] { inspection });
-
+            var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.AreEqual(1, inspectionResults.Count());
@@ -54,8 +49,7 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyStringLiteralInspection(state);
-            var inspector = new Inspector(GetSettings(), new IInspection[] { inspection });
-
+            var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.AreEqual(1, inspectionResults.Count());
@@ -75,8 +69,7 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyStringLiteralInspection(state);
-            var inspector = new Inspector(GetSettings(), new IInspection[] { inspection });
-
+            var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.AreEqual(0, inspectionResults.Count());
@@ -97,8 +90,7 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyStringLiteralInspection(state);
-            var inspector = new Inspector(GetSettings(), new IInspection[] { inspection });
-
+            var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.AreEqual(0, inspectionResults.Count());
@@ -123,8 +115,7 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyStringLiteralInspection(state);
-            var inspector = new Inspector(GetSettings(), new IInspection[] { inspection });
-
+            var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             new ReplaceEmptyStringLiteralStatementQuickFix(state).Fix(inspectionResults.First());
@@ -152,11 +143,10 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyStringLiteralInspection(state);
-            var inspector = new Inspector(GetSettings(), new IInspection[] { inspection });
-
+            var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            new IgnoreOnceQuickFix(state, new[] {inspection}).Fix(inspectionResults.First());
 
+            new IgnoreOnceQuickFix(state, new[] {inspection}).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
@@ -176,29 +166,6 @@ End Sub";
             var inspection = new EmptyStringLiteralInspection(null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
-        }
-
-        private IGeneralConfigService GetSettings()
-        {
-            var settings = new Mock<IGeneralConfigService>();
-            var config = GetTestConfig();
-            settings.Setup(x => x.LoadConfiguration()).Returns(config);
-
-            return settings.Object;
-        }
-
-        private Configuration GetTestConfig()
-        {
-            var settings = new CodeInspectionSettings();
-            settings.CodeInspections.Add(new CodeInspectionSetting
-            {
-                Description = new EmptyStringLiteralInspection(null).Description,
-                Severity = CodeInspectionSeverity.Suggestion
-            });
-            return new Configuration
-            {
-                UserSettings = new UserSettings(null, null, null, settings, null, null, null)
-            };
         }
     }
 }

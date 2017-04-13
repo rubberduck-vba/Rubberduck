@@ -1,13 +1,9 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 using RubberduckTests.Mocks;
-using Rubberduck.Settings;
 using System.Threading;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Inspections.Rubberduck.Inspections;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -24,18 +20,13 @@ namespace RubberduckTests.Inspections
 @"Sub Foo()
     Call Foo
 End Sub";
-
-            var settings = new Mock<IGeneralConfigService>();
-            var config = GetTestConfig();
-            settings.Setup(x => x.LoadConfiguration()).Returns(config);
-
+            
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCallStatementInspection(state);
-            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
-
+            var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.AreEqual(1, inspectionResults.Count());
@@ -49,18 +40,13 @@ End Sub";
 @"Sub Foo()
     Foo
 End Sub";
-
-            var settings = new Mock<IGeneralConfigService>();
-            var config = GetTestConfig();
-            settings.Setup(x => x.LoadConfiguration()).Returns(config);
-
+            
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCallStatementInspection(state);
-            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
-
+            var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.AreEqual(0, inspectionResults.Count());
@@ -74,18 +60,13 @@ End Sub";
 @"Sub Foo()
     Call Foo: Foo
 End Sub";
-
-            var settings = new Mock<IGeneralConfigService>();
-            var config = GetTestConfig();
-            settings.Setup(x => x.LoadConfiguration()).Returns(config);
-
+            
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCallStatementInspection(state);
-            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
-
+            var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.AreEqual(0, inspectionResults.Count());
@@ -99,18 +80,13 @@ End Sub";
 @"Sub Foo()
     Call Foo ' I''ve got a colon: see?
 End Sub";
-
-            var settings = new Mock<IGeneralConfigService>();
-            var config = GetTestConfig();
-            settings.Setup(x => x.LoadConfiguration()).Returns(config);
-
+            
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCallStatementInspection(state);
-            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
-
+            var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.AreEqual(1, inspectionResults.Count());
@@ -124,18 +100,13 @@ End Sub";
 @"Sub Foo(ByVal str As String)
     Call Foo("":"")
 End Sub";
-
-            var settings = new Mock<IGeneralConfigService>();
-            var config = GetTestConfig();
-            settings.Setup(x => x.LoadConfiguration()).Returns(config);
-
+            
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCallStatementInspection(state);
-            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
-
+            var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.AreEqual(1, inspectionResults.Count());
@@ -153,18 +124,13 @@ End Sub
 Sub Goo(arg1 As Integer, arg1 As String)
     Call Foo
 End Sub";
-
-            var settings = new Mock<IGeneralConfigService>();
-            var config = GetTestConfig();
-            settings.Setup(x => x.LoadConfiguration()).Returns(config);
-
+            
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCallStatementInspection(state);
-            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
-
+            var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.AreEqual(2, inspectionResults.Count());
@@ -182,18 +148,13 @@ End Sub
 Sub Goo(arg1 As Integer, arg1 As String)
     Foo
 End Sub";
-
-            var settings = new Mock<IGeneralConfigService>();
-            var config = GetTestConfig();
-            settings.Setup(x => x.LoadConfiguration()).Returns(config);
-
+            
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCallStatementInspection(state);
-            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
-
+            var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.AreEqual(1, inspectionResults.Count());
@@ -208,18 +169,13 @@ End Sub";
     '@Ignore ObsoleteCallStatement
     Call Foo
 End Sub";
-
-            var settings = new Mock<IGeneralConfigService>();
-            var config = GetTestConfig();
-            settings.Setup(x => x.LoadConfiguration()).Returns(config);
-
+            
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCallStatementInspection(state);
-            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
-
+            var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.IsFalse(inspectionResults.Any());
@@ -246,18 +202,13 @@ End Sub
 Sub Goo(arg1 As Integer, arg1 As String)
     Foo
 End Sub";
-
-            var settings = new Mock<IGeneralConfigService>();
-            var config = GetTestConfig();
-            settings.Setup(x => x.LoadConfiguration()).Returns(config);
-
+            
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCallStatementInspection(state);
-            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
-
+            var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             var fix = new RemoveExplicitCallStatmentQuickFix(state);
@@ -292,18 +243,13 @@ Sub Goo(arg1 As Integer, arg1 As String)
 '@Ignore ObsoleteCallStatement
     Call Foo
 End Sub";
-
-            var settings = new Mock<IGeneralConfigService>();
-            var config = GetTestConfig();
-            settings.Setup(x => x.LoadConfiguration()).Returns(config);
-
+            
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCallStatementInspection(state);
-            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
-
+            var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             var fix = new IgnoreOnceQuickFix(state, new[] {inspection});
@@ -331,20 +277,6 @@ End Sub";
             var inspection = new ObsoleteCallStatementInspection(null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
-        }
-
-        private Configuration GetTestConfig()
-        {
-            var settings = new CodeInspectionSettings();
-            settings.CodeInspections.Add(new CodeInspectionSetting
-            {
-                Description = new ObsoleteCallStatementInspection(null).Description,
-                Severity = CodeInspectionSeverity.Suggestion
-            });
-            return new Configuration
-            {
-                UserSettings = new UserSettings(null, null, null, settings, null, null, null)
-            };
         }
     }
 }
