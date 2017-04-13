@@ -10,7 +10,8 @@ namespace Rubberduck.Parsing
     {
         public static Selection GetSelection(this ParserRuleContext context)
         {
-            if (context == null)
+            // if we have an empty module, `Stop` is null
+            if (context?.Stop == null)
                 return Selection.Home;
 
             // ANTLR indexes are 0-based, but VBE's are 1-based.
