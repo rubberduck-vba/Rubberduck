@@ -73,7 +73,9 @@
     </When>
     <Otherwise>
       <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework">
+          <Private>False</Private>
+        </Reference>
       </ItemGroup>
     </Otherwise>
   </Choose>
@@ -92,6 +94,7 @@
     <Compile Include="Grammar\ParserRuleContextExtensionTests.cs" />
     <Compile Include="Inspections\ApplicationWorksheetFunctionInspectionTests.cs" />
     <Compile Include="Inspections\AssignedByValParameterMakeLocalCopyQuickFixTests.cs" />
+    <Compile Include="Inspections\InspectionsHelper.cs" />
     <Compile Include="Inspections\ModuleScopeDimKeywordInspectionTests.cs" />
     <Compile Include="Inspections\HostSpecificExpressionInspectionTests.cs" />
     <Compile Include="Inspections\HungarianNotationInspectionTests.cs" />
@@ -102,6 +105,8 @@
     <Compile Include="Inspections\PassParameterByReferenceQuickFixTests.cs" />
     <Compile Include="Inspections\QuickFixProviderTests.cs" />
     <Compile Include="Inspections\UndeclaredVariableInspectionTests.cs" />
+    <Compile Include="Parsing\Coordination\IModuleToModuleReferenceManagerTestBase.cs" />
+    <Compile Include="Parsing\Coordination\ModuleToModuleReferenceManagerTests.cs" />
     <Compile Include="PostProcessing\ModuleRewriterTests.cs" />
     <Compile Include="SmartIndenter\VerticalSpacingTests.cs" />
     <Compile Include="Symbols\AccessibilityCheckTests.cs" />

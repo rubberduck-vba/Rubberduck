@@ -45,16 +45,53 @@ namespace RubberduckTests.Mocks
         {
             var path = serializedDeclarationsPath ??
                        Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(typeof(MockParser)).Location), "TestFiles", "Resolver");
-
-            return new ParseCoordinator(vbe, state, attributeParser,
-                () => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture)),
+            Func<IVBAPreprocessor> preprocessorFactory = () => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture));
+            var projectManager = new ProjectManager(state, vbe);
+            var moduleToModuleReferenceManager = new ModuleToModuleReferenceManager(state);
+            var parserStateManager = new SynchronousParserStateManager(state);
+            var referenceRemover = new ReferenceRemover(state, moduleToModuleReferenceManager);
+            var comSynchronizer = new SynchronousCOMReferenceSynchronizer(
+                state, 
+                parserStateManager, 
+                path);
+            var builtInDeclarationLoader = new BuiltInDeclarationLoader(
+                state,
                 new List<ICustomDeclarationLoader>
                 {
-                    new DebugDeclarations(state), 
-                    new SpecialFormDeclarations(state), 
-                    new FormEventDeclarations(state), 
+                    new DebugDeclarations(state),
+                    new SpecialFormDeclarations(state),
+                    new FormEventDeclarations(state),
                     new AliasDeclarations(state),
-                }, true, path);
+                });
+            var parseRunner = new SynchronousParseRunner(
+                state,
+                parserStateManager,
+                preprocessorFactory,
+                attributeParser);
+            var declarationResolveRunner = new SynchronousDeclarationResolveRunner(
+                state, 
+                parserStateManager, 
+                comSynchronizer);
+            var referenceResolveRunner = new SynchronousReferenceResolveRunner(
+                state,
+                parserStateManager,
+                moduleToModuleReferenceManager);
+            var parsingStageService = new ParsingStageService(
+                comSynchronizer,
+                builtInDeclarationLoader,
+                parseRunner,
+                declarationResolveRunner,
+                referenceResolveRunner
+                );
+
+            return new ParseCoordinator( 
+                state,
+                parsingStageService,
+                projectManager,
+                moduleToModuleReferenceManager,
+                parserStateManager,
+                referenceRemover,
+                true);
         }
 
         public static RubberduckParserState CreateAndParse(IVBE vbe, string serializedDeclarationsPath = null)

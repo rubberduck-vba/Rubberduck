@@ -8,42 +8,40 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete
 {
     public sealed class ObsoleteCommentSyntaxInspection : InspectionBase, IParseTreeInspection
     {
-        private IEnumerable<QualifiedContext> _parseTreeResults;
-        private IEnumerable<QualifiedContext<VBAParser.RemCommentContext>> ParseTreeResults => _parseTreeResults.OfType<QualifiedContext<VBAParser.RemCommentContext>>();
-
         public ObsoleteCommentSyntaxInspection(RubberduckParserState state) : base(state, CodeInspectionSeverity.Suggestion) { }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
 
+        public IInspectionListener Listener { get; } =
+            new ObsoleteCommentSyntaxListener();
+
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
-            if (ParseTreeResults == null)
-            {
-                return Enumerable.Empty<IInspectionResult>();
-            }
-            return ParseTreeResults.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName.Component, context.Context.Start.Line))
+            return Listener.Contexts.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName.Component, context.Context.Start.Line))
                 .Select(context => new ObsoleteCommentSyntaxInspectionResult(this, new QualifiedContext<ParserRuleContext>(context.ModuleName, context.Context)));
         }
 
-        public void SetResults(IEnumerable<QualifiedContext> results)
+        public class ObsoleteCommentSyntaxListener : VBAParserBaseListener, IInspectionListener
         {
-            _parseTreeResults = results;
-        }
+            private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
+            public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
 
-        public class ObsoleteCommentSyntaxListener : VBAParserBaseListener
-        {
-            private readonly IList<VBAParser.RemCommentContext> _contexts = new List<VBAParser.RemCommentContext>();
+            public QualifiedModuleName CurrentModuleName { get; set; }
 
-            public IEnumerable<VBAParser.RemCommentContext> Contexts => _contexts;
+            public void ClearContexts()
+            {
+                _contexts.Clear();
+            }
 
             public override void ExitRemComment(VBAParser.RemCommentContext context)
             {
-                _contexts.Add(context);
+                _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
             }
         }
     }
