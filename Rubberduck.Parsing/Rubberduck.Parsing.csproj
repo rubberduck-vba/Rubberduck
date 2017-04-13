@@ -335,6 +335,8 @@
     <Compile Include="VBA\AttributeParser.cs" />
     <Compile Include="VBA\Attributes.cs" />
     <Compile Include="VBA\BuiltInDeclarationLoader.cs" />
+    <Compile Include="VBA\IDeclarationFinderProvider.cs" />
+    <Compile Include="VBA\IParseTreeProvider.cs" />
     <Compile Include="VBA\ParsingStageService.cs" />
     <Compile Include="VBA\CollectionExtensions.cs" />
     <Compile Include="VBA\IParsingStageService.cs" />
