@@ -183,7 +183,7 @@ namespace Rubberduck.Root
 
         private void BindRefactoringDialogs()
         {
-            Bind<IRefactoringDialog<RenameViewModel>>().To<RenameDialog>();
+            Bind<IRefactoringDialog<RenameViewModel>>().To<RenameDialog>().InSingletonScope();
         }
 
         private void BindDockableToolwindows(IEnumerable<Assembly> assemblies)
