@@ -18,8 +18,7 @@ namespace Rubberduck.Inspections.Concrete
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
-            var results = State.DeclarationFinder
-                .UserDeclarations(DeclarationType.Constant)
+            var results = State.DeclarationFinder.UserDeclarations(DeclarationType.Constant)
                 .Where(declaration => declaration.Context != null
                     && !declaration.References.Any()
                     && !IsIgnoringInspectionResultFor(declaration, AnnotationName))
