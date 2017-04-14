@@ -43,7 +43,7 @@ namespace Rubberduck.Parsing.VBA
 
         public void SetModuleState(QualifiedModuleName module, ParserState parserState, CancellationToken token, bool evaluateOverallParserState = true)
         {
-            _state.SetModuleState(module.Component, parserState, token, null, evaluateOverallParserState);
+            _state.SetModuleState(module, parserState, token, null, evaluateOverallParserState);
         }
 
         public void SetStatusAndFireStateChanged(object requestor, ParserState status, CancellationToken token)
