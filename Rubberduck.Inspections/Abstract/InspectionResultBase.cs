@@ -37,7 +37,7 @@ namespace Rubberduck.Inspections.Abstract
 
         private QualifiedMemberName? GetQualifiedMemberName(Declaration target)
         {
-            if (string.IsNullOrEmpty(target.QualifiedName.QualifiedModuleName.ComponentName))
+            if (string.IsNullOrEmpty(target?.QualifiedName.QualifiedModuleName.ComponentName))
             {
                 return null;
             }
