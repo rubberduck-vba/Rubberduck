@@ -105,7 +105,7 @@ namespace Rubberduck.Root
             Rebind<ICOMReferenceSynchronizer, IProjectReferencesProvider>().To<COMReferenceSynchronizer>().InSingletonScope().WithConstructorArgument("serializedDeclarationsPath", (string)null);
             Rebind<IBuiltInDeclarationLoader>().To<BuiltInDeclarationLoader>().InSingletonScope();
             Rebind<IDeclarationResolveRunner>().To<DeclarationResolveRunner>().InSingletonScope();
-            Rebind<IModuleToModuleReferenceManager>().To<ModuleToModuleReferenceManager>().InSingletonScope();
+            Rebind<IModuleToModuleReferenceManager>().To<StandAloneModuleToModuleReferenceManager>().InSingletonScope();
             Rebind<IParserStateManager>().To<ParserStateManager>().InSingletonScope();
             Rebind<IParseRunner>().To<ParseRunner>().InSingletonScope();
             Rebind<IParsingStageService>().To<ParsingStageService>().InSingletonScope();
