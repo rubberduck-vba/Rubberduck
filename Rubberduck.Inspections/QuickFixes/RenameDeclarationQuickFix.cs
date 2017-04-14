@@ -36,7 +36,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
             using (var view = new RenameDialog(new RenameViewModel(_state)))
             {
-                var factory = new RenamePresenterFactory(vbe, view, _state, _messageBox);
+                var factory = new RenamePresenterFactory(vbe, view, _state);
                 var refactoring = new RenameRefactoring(vbe, factory, _messageBox, _state);
                 refactoring.Refactor(result.Target);
             }

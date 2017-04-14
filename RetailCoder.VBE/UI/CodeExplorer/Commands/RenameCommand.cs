@@ -33,7 +33,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         protected override void ExecuteImpl(object parameter)
         {
-            var factory = new RenamePresenterFactory(_vbe, _view, _state, _msgBox);
+            var factory = new RenamePresenterFactory(_vbe, _view, _state);
             var refactoring = new RenameRefactoring(_vbe, factory, _msgBox, _state);
 
             refactoring.Refactor(((ICodeExplorerDeclarationViewModel)parameter).Declaration);

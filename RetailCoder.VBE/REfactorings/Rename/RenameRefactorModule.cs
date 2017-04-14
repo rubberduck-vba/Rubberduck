@@ -11,11 +11,11 @@ namespace Rubberduck.Refactorings.Rename
         public RenameRefactorModule(RubberduckParserState state)
             : base(state) { }
 
-        override public string ErrorMessage { get { return RubberduckUI.RenameDialog_ModuleRenameError; } }
+        public override string ErrorMessage => RubberduckUI.RenameDialog_ModuleRenameError;
 
-        public override bool RequestParseAfterRename { get { return false; } }
+        public override bool RequestParseAfterRename => false;
 
-        override public void Rename(Declaration renameTarget, string newName)
+        public override void Rename(Declaration renameTarget, string newName)
         {
             var component = renameTarget.QualifiedName.QualifiedModuleName.Component;
             var module = component.CodeModule;
