@@ -61,6 +61,7 @@ namespace Rubberduck.UI.Inspections
 
             DisableInspectionCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteDisableInspectionCommand);
             QuickFixCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteQuickFixCommand, CanExecuteQuickFixCommand);
+            QuickFixInProcedureCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteQuickFixInProcedureCommand, _ => SelectedItem != null && _state.Status == ParserState.Ready);
             QuickFixInModuleCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteQuickFixInModuleCommand, _ => SelectedItem != null && _state.Status == ParserState.Ready);
             QuickFixInProjectCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteQuickFixInProjectCommand, _ => SelectedItem != null && _state.Status == ParserState.Ready);
             QuickFixInAllProjectsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteQuickFixInAllProjectsCommand, _ => SelectedItem != null && _state.Status == ParserState.Ready);
@@ -121,6 +122,7 @@ namespace Rubberduck.UI.Inspections
 
                 SelectedInspection = null;
                 CanQuickFix = false;
+                CanExecuteQuickFixInProcedure = false;
                 CanExecuteQuickFixInModule = false;
                 CanExecuteQuickFixInProject = false;
 
@@ -130,11 +132,13 @@ namespace Rubberduck.UI.Inspections
                     SelectedInspection = inspectionResult.Inspection;
                     CanQuickFix = _quickFixProvider.HasQuickFixes(inspectionResult);
                     _defaultFix = _quickFixProvider.QuickFixes(inspectionResult).FirstOrDefault();
+                    CanExecuteQuickFixInProcedure = _defaultFix != null && _defaultFix.CanFixInProcedure;
                     CanExecuteQuickFixInModule = _defaultFix != null && _defaultFix.CanFixInModule;
+                    CanExecuteQuickFixInModule = _defaultFix != null && _defaultFix.CanFixInProcedure;
+                    CanExecuteQuickFixInProject = _defaultFix != null && _defaultFix.CanFixInProject;
                 }
 
                 CanDisableInspection = SelectedInspection != null;
-                CanExecuteQuickFixInProject = _defaultFix != null && _defaultFix.CanFixInProject;
             }
         }
 
@@ -215,6 +219,7 @@ namespace Rubberduck.UI.Inspections
         public CommandBase SetLocationGroupingCommand { get; }
         public CommandBase RefreshCommand { get; }
         public CommandBase QuickFixCommand { get; }
+        public CommandBase QuickFixInProcedureCommand { get; }
         public CommandBase QuickFixInModuleCommand { get; }
         public CommandBase QuickFixInProjectCommand { get; }
         public CommandBase QuickFixInAllProjectsCommand { get; }
@@ -312,6 +317,30 @@ namespace Rubberduck.UI.Inspections
         {
             var quickFix = parameter as IQuickFix;
             return !IsBusy && quickFix != null && _state.Status == ParserState.Ready;
+        }
+
+        private bool _canExecuteQuickFixInProcedure;
+        public bool CanExecuteQuickFixInProcedure
+        {
+            get { return _canExecuteQuickFixInProcedure; }
+            set { _canExecuteQuickFixInProcedure = value; OnPropertyChanged(); }
+        }
+
+        private void ExecuteQuickFixInProcedureCommand(object parameter)
+        {
+            if (_defaultFix == null)
+            {
+                return;
+            }
+
+            var selectedResult = SelectedItem as IInspectionResult;
+            if (selectedResult == null)
+            {
+                return;
+            }
+
+            _quickFixProvider.FixInProcedure(_defaultFix, selectedResult.QualifiedMemberName,
+                selectedResult.Inspection.GetType(), Results);
         }
 
         private bool _canExecuteQuickFixInModule;

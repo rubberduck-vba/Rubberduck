@@ -26,7 +26,7 @@ namespace Rubberduck.Inspections.Concrete
         {
             return Listener.Contexts.GroupBy(s => s.ModuleName)
                 .Where(g => g.Count() > 1)
-                .Select(r => new MultipleFolderAnnotationsInspectionResult(this, r.First()));
+                .Select(r => new MultipleFolderAnnotationsInspectionResult(this, r.First(), GetQualifiedMemberName(r.First())));
         }
 
         public class FolderAnnotationStatementListener : VBAParserBaseListener, IInspectionListener

@@ -14,44 +14,49 @@ namespace Rubberduck.Inspections.Abstract
     public abstract class InspectionResultBase : IInspectionResult, INavigateSource, IExportable
     {
         protected InspectionResultBase(IInspection inspection, Declaration target)
-            : this(inspection, target.QualifiedName.QualifiedModuleName, target.Context)
-        {
-            Target = target;
-        }
-
-        /// <summary>
-        /// Creates a comment inspection result.
-        /// </summary>
-        protected InspectionResultBase(IInspection inspection, QualifiedModuleName qualifiedName)
-            : this(inspection, qualifiedName, null)
+            : this(inspection, target.QualifiedName.QualifiedModuleName, target.Context, target)
         { }
-
-        /// <summary>
-        /// Creates an inspection result.
-        /// </summary>
-        protected InspectionResultBase(IInspection inspection, QualifiedModuleName qualifiedName, ParserRuleContext context)
+        
+        protected InspectionResultBase(IInspection inspection, QualifiedModuleName qualifiedName, QualifiedMemberName? qualifiedMemberName, ParserRuleContext context)
+        {
+            Inspection = inspection;
+            QualifiedName = qualifiedName;
+            QualifiedMemberName = qualifiedMemberName;
+            Context = context;
+        }
+        
+        protected InspectionResultBase(IInspection inspection, QualifiedModuleName qualifiedName, ParserRuleContext context, Declaration target)
         {
             Inspection = inspection;
             QualifiedName = qualifiedName;
             Context = context;
+            Target = target;
+
+            QualifiedMemberName = GetQualifiedMemberName(target);
         }
 
-        /// <summary>
-        /// Creates an inspection result.
-        /// </summary>
-        protected InspectionResultBase(IInspection inspection, QualifiedModuleName qualifiedName, ParserRuleContext context, Declaration declaration)
+        private QualifiedMemberName? GetQualifiedMemberName(Declaration target)
         {
-            Inspection = inspection;
-            QualifiedName = qualifiedName;
-            Context = context;
-            Target = declaration;
-        }
+            if (string.IsNullOrEmpty(target.QualifiedName.QualifiedModuleName.ComponentName))
+            {
+                return null;
+            }
 
+            if (target.DeclarationType.HasFlag(DeclarationType.Member))
+            {
+                return target.QualifiedName;
+            }
+
+            return GetQualifiedMemberName(target.ParentDeclaration);
+        }
+        
         public IInspection Inspection { get; }
 
         public abstract string Description { get; }
 
         protected QualifiedModuleName QualifiedName { get; }
+
+        public QualifiedMemberName? QualifiedMemberName { get; }
 
         public ParserRuleContext Context { get; }
 

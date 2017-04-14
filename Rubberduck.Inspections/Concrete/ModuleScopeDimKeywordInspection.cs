@@ -29,7 +29,7 @@ namespace Rubberduck.Inspections.Concrete
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName.Component, result.Context.Start.Line))
                 .SelectMany(result => result.Context.FindChildren<VBAParser.VariableSubStmtContext>()
                         .Select(r => new QualifiedContext<ParserRuleContext>(result.ModuleName, r)))
-                .Select(result => new ModuleScopeDimKeywordInspectionResult(this, result));
+                .Select(result => new ModuleScopeDimKeywordInspectionResult(this, result, GetQualifiedMemberName(result)));
         }
 
         public class ModuleScopedDimListener : VBAParserBaseListener, IInspectionListener

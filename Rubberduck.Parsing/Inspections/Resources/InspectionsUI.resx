@@ -662,4 +662,10 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="RemoveOptionBaseStatementQuickFix" xml:space="preserve">
     <value>Remove 'Option Base' statement</value>
   </data>
+  <data name="QuickFix_All" xml:space="preserve">
+    <value>Fix all occurences</value>
+  </data>
+  <data name="QuickFix_ThisProcedure" xml:space="preserve">
+    <value>Fix all occurrences in procedure</value>
+  </data>
 </root>
