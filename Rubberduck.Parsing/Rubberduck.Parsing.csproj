@@ -364,7 +364,6 @@
     <Compile Include="VBA\SynchronousParserStateManager.cs" />
     <Compile Include="VBA\ParserStateManager.cs" />
     <Compile Include="VBA\ModuleToModuleReferenceManagerBase.cs" />
-    <Compile Include="VBA\ModuleToModuleReferenceManager.cs" />
     <Compile Include="VBA\CombinedParseTreeListener.cs" />
     <Compile Include="VBA\ComponentParseTask.cs" />
     <Compile Include="VBA\EnumerableExtensions.cs" />
