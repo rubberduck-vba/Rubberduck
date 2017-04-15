@@ -13,9 +13,9 @@ namespace Rubberduck.Refactorings.Rename
             : base(state) { _errorMessage = string.Empty; }
 
         private string _errorMessage;
-        override public string ErrorMessage { get { return _errorMessage; } }
+        public override string ErrorMessage => _errorMessage;
 
-        override public void Rename(Declaration eventDeclaration, string newName)
+        public override void Rename(Declaration eventDeclaration, string newName)
         {
             _errorMessage = string.Format(RubberduckUI.RenameDialog_EventRenameError, eventDeclaration.IdentifierName);
             Debug.Assert(eventDeclaration.DeclarationType == DeclarationType.Event, "Resolving User Selection to Declaration Failed");

@@ -135,9 +135,8 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
                 oldSelection = module.GetQualifiedSelection();
             }
 
-            var newTarget = _state.AllUserDeclarations.FirstOrDefault(
+            var newTarget = _state.DeclarationFinder.MatchName(_target.IdentifierName).FirstOrDefault(
                 item => item.ComponentName == _target.ComponentName &&
-                        item.IdentifierName == _target.IdentifierName &&
                         item.ParentScope == _target.ParentScope &&
                         item.ProjectId == _target.ProjectId &&
                         Equals(item.Selection, _target.Selection));

@@ -20,6 +20,7 @@ namespace Rubberduck.UI.Inspections
         public string Description => string.Format(InspectionsUI.AggregateInspectionResultFormat, _result.Inspection.Description, _count);
 
         public QualifiedSelection QualifiedSelection => _result.QualifiedSelection;
+        public QualifiedMemberName? QualifiedMemberName => _result.QualifiedMemberName;
         public IInspection Inspection => _result.Inspection;
 
         public Declaration Target => _result.Target;

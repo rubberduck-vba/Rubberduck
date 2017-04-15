@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
@@ -23,7 +24,8 @@ namespace RubberduckTests.Inspections
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ModuleScopeDimKeywordInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.AreEqual(1, inspectionResults.Count());
         }
@@ -41,7 +43,8 @@ Dim bar";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ModuleScopeDimKeywordInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.AreEqual(2, inspectionResults.Count());
         }
@@ -58,9 +61,10 @@ Dim bar";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ModuleScopeDimKeywordInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.AreEqual(0, inspectionResults.Count());
+            Assert.IsFalse(inspectionResults.Any());
         }
 
         [TestMethod]
@@ -77,7 +81,8 @@ Dim foo";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ModuleScopeDimKeywordInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.IsFalse(inspectionResults.Any());
         }
@@ -96,7 +101,8 @@ Dim foo";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ModuleScopeDimKeywordInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.IsFalse(inspectionResults.Any());
         }
@@ -115,7 +121,8 @@ Dim foo";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ModuleScopeDimKeywordInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.IsTrue(inspectionResults.Any());
         }
@@ -133,7 +140,8 @@ Dim foo";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ModuleScopeDimKeywordInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.IsFalse(inspectionResults.Any());
         }
@@ -153,12 +161,11 @@ Dim foo";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ModuleScopeDimKeywordInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             new ChangeDimToPrivateQuickFix(state).Fix(inspectionResults.First());
-
-            var rewriter = state.GetRewriter(component);
-            Assert.AreEqual(expectedCode, rewriter.GetText());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -178,12 +185,11 @@ Dim foo";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ModuleScopeDimKeywordInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             new ChangeDimToPrivateQuickFix(state).Fix(inspectionResults.First());
-
-            var rewriter = state.GetRewriter(component);
-            Assert.AreEqual(expectedCode, rewriter.GetText());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -203,12 +209,11 @@ Dim foo";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ModuleScopeDimKeywordInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             new ChangeDimToPrivateQuickFix(state).Fix(inspectionResults.First());
-
-            var rewriter = state.GetRewriter(component);
-            Assert.AreEqual(expectedCode, rewriter.GetText());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
@@ -227,10 +232,10 @@ Dim foo";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ModuleScopeDimKeywordInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-            
-            new IgnoreOnceQuickFix(state, new[] {inspection}).Fix(inspectionResults.First());
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
+            new IgnoreOnceQuickFix(state, new[] {inspection}).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
