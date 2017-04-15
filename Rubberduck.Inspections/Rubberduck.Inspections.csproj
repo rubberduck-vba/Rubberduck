@@ -67,6 +67,7 @@
     <Compile Include="Concrete\ImplicitDefaultMemberAssignmentInspection.cs" />
     <Compile Include="Concrete\ImplicitPublicMemberInspection.cs" />
     <Compile Include="Concrete\ImplicitVariantReturnTypeInspection.cs" />
+    <Compile Include="Concrete\MissingAttributeInspection.cs" />
     <Compile Include="Inspector.cs" />
     <Compile Include="Concrete\MemberNotOnInterfaceInspection.cs" />
     <Compile Include="Concrete\MissingAnnotationArgumentInspection.cs" />
