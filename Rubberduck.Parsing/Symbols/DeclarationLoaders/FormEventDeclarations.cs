@@ -1,24 +1,24 @@
 using System.Collections.Generic;
-using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
+using System.Linq;
 
 namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
 {
     public class FormEventDeclarations : ICustomDeclarationLoader
     {
-        private readonly RubberduckParserState _state;
+        private readonly DeclarationFinder _finder;
 
-        public FormEventDeclarations(RubberduckParserState state)
+        public FormEventDeclarations(IDeclarationFinderProvider finderProvider)
         {
-            _state = state;
+            _finder = finderProvider.DeclarationFinder;
         }
 
         public IReadOnlyList<Declaration> Load()
         {
-            var formsClassModule = FormsClassModuleFromParserState(_state);
+            var formsClassModule = FormsClassModuleFromParserState(_finder);
 
-            if (formsClassModule == null)
+            if (formsClassModule == null || WeHaveAlreadyLoadedTheDeclarationsBefore(_finder, formsClassModule))
             {
                 return new List<Declaration>();
             }
@@ -26,10 +26,8 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
             return AddHiddenMSFormDeclarations(formsClassModule);
         }
 
-        private static Declaration FormsClassModuleFromParserState(RubberduckParserState state)
+        private static Declaration FormsClassModuleFromParserState(DeclarationFinder finder)
         {
-            var finder = state.DeclarationFinder;
-
             var msForms = finder.FindProject("MSForms");
             if (msForms == null)
             {
@@ -40,6 +38,17 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
             return finder.FindClassModule("FormEvents", msForms, true);
         }
 
+        private static bool WeHaveAlreadyLoadedTheDeclarationsBefore(DeclarationFinder finder, Declaration formsClassModule)
+        {
+            return TheFormsActivateEventIsAlreadyThere(finder, formsClassModule);
+        }
+
+        private static bool TheFormsActivateEventIsAlreadyThere(DeclarationFinder finder, Declaration formsClassModule)
+        {
+            var userFormActivateEvent = UserFormActivateEvent(formsClassModule);
+            return finder.MatchName(userFormActivateEvent.IdentifierName)
+                            .Any(declaration => declaration.Equals(userFormActivateEvent));
+        }
 
         private IReadOnlyList<Declaration> AddHiddenMSFormDeclarations(Declaration formsClassModule)
         {

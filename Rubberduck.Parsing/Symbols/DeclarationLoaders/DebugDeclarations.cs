@@ -9,23 +9,16 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
     public class DebugDeclarations : ICustomDeclarationLoader
     {
         public static Declaration DebugPrint;
-        private readonly RubberduckParserState _state;
+        private readonly DeclarationFinder _finder;
 
-        public DebugDeclarations(RubberduckParserState state)
+        public DebugDeclarations(IDeclarationFinderProvider finderProvider)
         {
-            _state = state;
+            _finder = finderProvider.DeclarationFinder;
         }
 
         public IReadOnlyList<Declaration> Load()
         {
-            var finder = _state.DeclarationFinder;;
-
-            if (WeHaveAlreadyLoadedTheDeclarationsBefore(finder))
-            {
-                return new List<Declaration>();
-            }
-
-            var vba = finder.FindProject("VBA");
+            var vba = _finder.FindProject("VBA");
             if (vba == null)
             {
                 // If the VBA project is null, we haven't loaded any COM references;
@@ -33,19 +26,24 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 return new List<Declaration>();
             }
 
+            if (WeHaveAlreadyLoadedTheDeclarationsBefore(_finder, vba))
+            {
+                return new List<Declaration>();
+            }
+
             return LoadDebugDeclarations(vba);
         }
 
-        private static bool WeHaveAlreadyLoadedTheDeclarationsBefore(DeclarationFinder finder)
+        private static bool WeHaveAlreadyLoadedTheDeclarationsBefore(DeclarationFinder finder, Declaration vbaProject)
         {
-            return ThereIsAGlobalBuiltInErrVariableDeclaration(finder);
+            return ThereIsADebugModule(finder, vbaProject);
         }
 
-            private static bool ThereIsAGlobalBuiltInErrVariableDeclaration(DeclarationFinder finder) 
+            private static bool ThereIsADebugModule(DeclarationFinder finder, Declaration vbaProject) 
             {
-                return finder.MatchName(Grammar.Tokens.Err).Any(declaration => !declaration.IsUserDefined
-                                                                        && declaration.DeclarationType == DeclarationType.Variable
-                                                                        && declaration.Accessibility == Accessibility.Global);
+                var debugModule = DebugModuleDeclaration(vbaProject);
+                return finder.MatchName(debugModule.IdentifierName)
+                                .Any(declaration => declaration.Equals(debugModule));
             }
 
 
