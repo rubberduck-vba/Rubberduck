@@ -42,8 +42,7 @@ namespace Rubberduck.Inspections.Concrete
 
                 if (!stringStrippedLines.Contains(":"))
                 {
-                    results.Add(new ObsoleteCallStatementUsageInspectionResult(this,
-                        new QualifiedContext<ParserRuleContext>(context.ModuleName, context.Context)));
+                    results.Add(new ObsoleteCallStatementUsageInspectionResult(this, context, GetQualifiedMemberName(context)));
                 }
             }
 

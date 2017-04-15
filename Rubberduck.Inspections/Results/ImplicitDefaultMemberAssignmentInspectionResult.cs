@@ -2,6 +2,7 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Results
 {
@@ -10,8 +11,8 @@ namespace Rubberduck.Inspections.Results
         private readonly string _assignedIdentifier;
         private readonly string _defaultMemberOf;
 
-        public ImplicitDefaultMemberAssignmentInspectionResult(IInspection inspection, IdentifierReference reference)
-            :base(inspection, reference.QualifiedModuleName, reference.Context)
+        public ImplicitDefaultMemberAssignmentInspectionResult(IInspection inspection, IdentifierReference reference, QualifiedMemberName? qualifiedName)
+            :base(inspection, reference.QualifiedModuleName, qualifiedName, reference.Context)
         {
             var module = reference.Declaration.AsTypeDeclaration as ClassModuleDeclaration;
             System.Diagnostics.Debug.Assert(module != null);

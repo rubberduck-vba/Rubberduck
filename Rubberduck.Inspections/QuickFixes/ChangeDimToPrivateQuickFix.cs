@@ -23,9 +23,9 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public void Fix(IInspectionResult result)
         {
-            var rewriter = _state.GetRewriter(result.Target);
+            var rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
 
-            var context = (VBAParser.VariableStmtContext)result.Target.Context.Parent.Parent;
+            var context = (VBAParser.VariableStmtContext)result.Context.Parent.Parent;
             rewriter.Replace(context.DIM(), Tokens.Private);
         }
 

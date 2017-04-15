@@ -11,8 +11,8 @@ namespace Rubberduck.Inspections.Results
 {
     public class MultipleDeclarationsInspectionResult : InspectionResultBase
     {
-        public MultipleDeclarationsInspectionResult(IInspection inspection, QualifiedContext<ParserRuleContext> qualifiedContext)
-            : base(inspection, qualifiedContext.ModuleName, qualifiedContext.Context) {}
+        public MultipleDeclarationsInspectionResult(IInspection inspection, QualifiedContext<ParserRuleContext> qualifiedContext, QualifiedMemberName? qualifiedName)
+            : base(inspection, qualifiedContext.ModuleName, qualifiedName, qualifiedContext.Context) {}
 
         public override string Description
         {

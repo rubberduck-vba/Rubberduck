@@ -24,7 +24,7 @@ namespace Rubberduck.Refactorings.Rename
             _model = model;
         }
 
-        public RenameModel Model {get { return _model; } }
+        public RenameModel Model => _model;
 
         public RenameModel Show()
         {

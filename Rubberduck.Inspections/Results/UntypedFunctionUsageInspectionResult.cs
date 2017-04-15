@@ -7,6 +7,7 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Results
 {
@@ -14,8 +15,8 @@ namespace Rubberduck.Inspections.Results
     {
         private readonly IdentifierReference _reference;
 
-        public UntypedFunctionUsageInspectionResult(IInspection inspection, IdentifierReference reference) 
-            : base(inspection, reference.QualifiedModuleName, reference.Context)
+        public UntypedFunctionUsageInspectionResult(IInspection inspection, IdentifierReference reference, QualifiedMemberName? qualifiedName) 
+            : base(inspection, reference.QualifiedModuleName, qualifiedName, reference.Context)
         {
             _reference = reference;
         }

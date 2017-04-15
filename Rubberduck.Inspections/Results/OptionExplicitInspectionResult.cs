@@ -3,13 +3,14 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Results
 {
     public class OptionExplicitInspectionResult : InspectionResultBase
     {
-        public OptionExplicitInspectionResult(IInspection inspection, QualifiedContext<ParserRuleContext> context)
-            : base(inspection, context.ModuleName, context.Context) {}
+        public OptionExplicitInspectionResult(IInspection inspection, QualifiedContext<ParserRuleContext> context, QualifiedMemberName? qualifiedName)
+            : base(inspection, context.ModuleName, qualifiedName, context.Context) {}
 
         public override string Description
         {

@@ -26,7 +26,7 @@ namespace Rubberduck.Inspections.Concrete
         {
             return Listener.Contexts
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))
-                .Select(result => new EmptyStringLiteralInspectionResult(this, result));
+                .Select(result => new EmptyStringLiteralInspectionResult(this, result, GetQualifiedMemberName(result)));
         }
 
         public class EmptyStringLiteralListener : VBAParserBaseListener, IInspectionListener
