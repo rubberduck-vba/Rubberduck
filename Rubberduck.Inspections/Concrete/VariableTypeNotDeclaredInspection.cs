@@ -18,10 +18,16 @@ namespace Rubberduck.Inspections.Concrete
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
-            var issues = from item in UserDeclarations
-                         where (item.DeclarationType == DeclarationType.Variable
-                            || item.DeclarationType == DeclarationType.Constant
-                            || (item.DeclarationType == DeclarationType.Parameter && !item.IsArray))
+            var s =
+                State.DeclarationFinder.UserDeclarations(DeclarationType.Variable | DeclarationType.Constant |
+                                                         DeclarationType.Parameter);
+
+            var issues = from item in State.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
+                         .Union(State.DeclarationFinder.UserDeclarations(DeclarationType.Constant))
+                         .Union(State.DeclarationFinder.UserDeclarations(DeclarationType.Parameter))
+                         where (item.DeclarationType != DeclarationType.Parameter || (item.DeclarationType == DeclarationType.Parameter && !item.IsArray))
+                         && item.DeclarationType != DeclarationType.Control
+                         && !IsIgnoringInspectionResultFor(item, AnnotationName)
                          && !item.IsTypeSpecified
                          && !item.IsUndeclared
                          select new VariableTypeNotDeclaredInspectionResult(this, item);
