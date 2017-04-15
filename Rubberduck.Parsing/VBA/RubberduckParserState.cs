@@ -972,8 +972,6 @@ namespace Rubberduck.Parsing.VBA
             return false;
         }
 
-
-
         public IModuleRewriter GetRewriter(IVBComponent component)
         {
             var qualifiedModuleName = new QualifiedModuleName(component);
@@ -982,7 +980,7 @@ namespace Rubberduck.Parsing.VBA
 
         public IModuleRewriter GetRewriter(QualifiedModuleName qualifiedModuleName)
         {
-            var rewriter = _moduleStates[qualifiedModuleName].Rewriter;
+            var rewriter = _moduleStates[qualifiedModuleName].ModuleRewriter;
             return new ModuleRewriter(qualifiedModuleName.Component.CodeModule, rewriter);
         }
 
@@ -1055,11 +1053,7 @@ namespace Rubberduck.Parsing.VBA
             ModuleState moduleState;
             if (_moduleStates.TryRemove(key, out moduleState))
             {
-                if (moduleState != null)
-                {
-                    moduleState.Dispose();
-                }
-
+                moduleState?.Dispose();
                 Logger.Warn("Could not remove declarations for removed reference '{0}' ({1}).", reference.Name, QualifiedModuleName.GetProjectId(reference));
             }
         }
@@ -1158,6 +1152,13 @@ namespace Rubberduck.Parsing.VBA
         }
 
 
+        public void AddAttributesRewriter(QualifiedModuleName module, IModuleRewriter attributesRewriter)
+        {
+            var key = module;
+            _moduleStates[key].SetAttributesRewriter(attributesRewriter);
+            _moduleStates[key].SetModuleContentHashCode(key.ContentHashCode);
+        }
+
         private bool _isDisposed;
 
         public void Dispose()
@@ -1172,11 +1173,7 @@ namespace Rubberduck.Parsing.VBA
                 item.Value.Dispose();
             }
 
-            if (CoClasses != null)
-            {
-                CoClasses.Clear();
-            }
-
+            CoClasses?.Clear();
             RemoveEventHandlers();
 
             _moduleStates.Clear();

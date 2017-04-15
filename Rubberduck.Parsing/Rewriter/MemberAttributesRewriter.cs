@@ -8,12 +8,14 @@ namespace Rubberduck.Parsing.Rewriter
 {
     /// <summary>
     /// A module rewriter that works off the MemberAttributes token stream and exports, overwrites and re-imports its module on <see cref="Rewrite"/>.
+    /// This rewriter works off a token stream obtained from the AttributeParser, well before the code pane parse tree is acquired.
     /// </summary>
     /// <remarks>
-    /// DO NOT use this rewriter with any pending (not yet re-parsed) changes (e.g. refactorings, quick-fixes), or these changes will be lost.
-    /// This rewriter works off a token stream obtained from the AttributeParser, well before the code pane parse tree is acquired.
-    /// 
-    /// 
+    /// <ul>
+    /// <li>DO NOT use this rewriter with any pending (not yet re-parsed) changes (e.g. refactorings, quick-fixes), or these changes will be lost.</li>
+    /// <li>DO NOT use this rewriter to change any token that the VBE renders, or line number positions will be off.</li>
+    /// <li>DO use this rewriter to add/remove hidden <c>Attribute</c> instructions to/from a module.</li>
+    /// </ul>
     /// </remarks>
     public class MemberAttributesRewriter : ModuleRewriter
     {

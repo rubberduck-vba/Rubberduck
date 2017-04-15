@@ -5,6 +5,7 @@ using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 
@@ -15,7 +16,8 @@ namespace Rubberduck.Parsing.VBA
         public ConcurrentDictionary<Declaration, byte> Declarations { get; private set; }
         public ConcurrentDictionary<UnboundMemberDeclaration, byte> UnresolvedMemberDeclarations { get; private set; }
         public ITokenStream TokenStream { get; private set; }
-        public TokenStreamRewriter Rewriter { get; private set; }
+        public TokenStreamRewriter ModuleRewriter { get; private set; }
+        public IModuleRewriter AttributesRewriter { get; private set; }
         public IParseTree ParseTree { get; private set; }
         public ParserState State { get; private set; }
         public int ModuleContentHashCode { get; private set; }
@@ -112,7 +114,7 @@ namespace Rubberduck.Parsing.VBA
         public ModuleState SetTokenStream(ITokenStream tokenStream)
         {
             TokenStream = tokenStream;
-            Rewriter = new TokenStreamRewriter(tokenStream);
+            ModuleRewriter = new TokenStreamRewriter(tokenStream);
             return this;
         }
 
@@ -159,6 +161,12 @@ namespace Rubberduck.Parsing.VBA
             return this;
         }
 
+        public ModuleState SetAttributesRewriter(IModuleRewriter rewriter)
+        {
+            AttributesRewriter = rewriter;
+            return this;
+        }
+
         public void RefreshHasReferenceToModule()
         {
             HasReferenceToModule = new ConcurrentDictionary<QualifiedModuleName, byte>();
@@ -168,7 +176,6 @@ namespace Rubberduck.Parsing.VBA
         {
             IsReferencedByModule = new HashSet<QualifiedModuleName>();
         }
-
 
         private bool _isDisposed;
         public void Dispose()

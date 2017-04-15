@@ -93,7 +93,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 //In contrast to the situation in the success scenario, the overall parser state is reevaluated immediately.
                 //This sets the state directly on the state because it is the sole instance where we have to pass the potential SyntaxErorException.
-                _state.SetModuleState(module.Component, ParserState.Error, token, finishedParseTask.Exception.InnerException as SyntaxErrorException);
+                _state.SetModuleState(module.Component, ParserState.Error, token, finishedParseTask.Exception?.InnerException as SyntaxErrorException);
             }
             else
             {
@@ -107,7 +107,7 @@ namespace Rubberduck.Parsing.VBA
                         _state.AddTokenStream(module, result.Tokens);
                         _state.SetModuleComments(module, result.Comments);
                         _state.SetModuleAnnotations(module, result.Annotations);
-                        //_state.AddAttributesRewriter(module, result.AttributesRewriter);
+                        _state.AddAttributesRewriter(module, result.AttributesRewriter);
 
                         // This really needs to go last
                         //It does not reevaluate the overall parer state to avoid concurrent evaluation of all module states and for performance reasons.
