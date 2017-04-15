@@ -18,17 +18,10 @@ namespace Rubberduck.Inspections.Concrete
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
-        private static readonly DeclarationType[] ProcedureTypes = 
-        {
-            DeclarationType.Function,
-            DeclarationType.PropertyGet,
-            DeclarationType.LibraryFunction
-        };
-
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
-            var issues = from item in UserDeclarations
-                         where ProcedureTypes.Contains(item.DeclarationType) && !item.IsTypeSpecified
+            var issues = from item in State.DeclarationFinder.UserDeclarations(DeclarationType.Function)
+                         where !item.IsTypeSpecified && !IsIgnoringInspectionResultFor(item, AnnotationName)
                          let issue = new {Declaration = item, QualifiedContext = new QualifiedContext<ParserRuleContext>(item.QualifiedName, item.Context)}
                          select new ImplicitVariantReturnTypeInspectionResult(this, issue.QualifiedContext, item);
             return issues;

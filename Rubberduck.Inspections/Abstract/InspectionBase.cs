@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Abstract
@@ -94,6 +94,18 @@ namespace Rubberduck.Inspections.Abstract
             get { return State.AllDeclarations.Where(declaration => !declaration.IsUserDefined); }
         }
 
+        protected QualifiedMemberName? GetQualifiedMemberName(QualifiedContext context)
+        {
+            var members = State.DeclarationFinder.Members(context.ModuleName);
+            return members.SingleOrDefault(m => m.Selection.Contains(context.Context.GetSelection()))?.QualifiedName;
+        }
+
+        protected QualifiedMemberName? GetQualifiedMemberName(IdentifierReference reference)
+        {
+            var members = State.DeclarationFinder.Members(reference.QualifiedModuleName);
+            return members.SingleOrDefault(m => m.Selection.Contains(reference.Selection))?.QualifiedName;
+        }
+
         protected bool IsIgnoringInspectionResultFor(QualifiedModuleName module, int line)
         {
             var annotations = State.GetModuleAnnotations(module).ToList();
@@ -106,8 +118,18 @@ namespace Rubberduck.Inspections.Abstract
             // VBE 1-based indexing
             for (var i = line; i >= 1; i--)
             {
-                var annotation = annotations.SingleOrDefault(a => a.QualifiedSelection.Selection.StartLine == i) as IgnoreAnnotation;
-                if (annotation != null && annotation.InspectionNames.Contains(AnnotationName))
+                var annotation = annotations.SingleOrDefault(a => a.QualifiedSelection.Selection.StartLine == i);
+                var ignoreAnnotation = annotation as IgnoreAnnotation;
+                var ignoreModuleAnnotation = annotation as IgnoreModuleAnnotation;
+
+                if (ignoreAnnotation?.InspectionNames.Contains(AnnotationName) == true)
+                {
+                    return true;
+                }
+
+                if (ignoreModuleAnnotation != null &&
+                    (ignoreModuleAnnotation.InspectionNames.Contains(AnnotationName) ||
+                     !ignoreModuleAnnotation.InspectionNames.Any()))
                 {
                     return true;
                 }

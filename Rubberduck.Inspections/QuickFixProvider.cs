@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
@@ -33,7 +34,9 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<IQuickFix> QuickFixes(IInspectionResult result)
         {
-            return _quickFixes[result.Inspection.GetType()];
+            return _quickFixes.ContainsKey(result.Inspection.GetType())
+                ? _quickFixes[result.Inspection.GetType()]
+                : Enumerable.Empty<IQuickFix>();
         }
 
         private bool CanFix(IQuickFix fix, Type inspection)
@@ -53,7 +56,7 @@ namespace Rubberduck.Inspections
             _state.OnParseRequested(this);
         }
 
-        public void FixInProcedure(IQuickFix fix, QualifiedSelection selection, Type inspectionType,
+        public void FixInProcedure(IQuickFix fix, QualifiedMemberName? qualifiedMember, Type inspectionType,
             IEnumerable<IInspectionResult> results)
         {
             if (!CanFix(fix, inspectionType))
@@ -61,7 +64,23 @@ namespace Rubberduck.Inspections
                 throw new ArgumentException("Fix does not support this inspection.", nameof(inspectionType));
             }
 
-            throw new NotImplementedException("A qualified selection does not state which proc we are in, so we could really only use this on inspection results that expose a Declaration.");
+            Debug.Assert(qualifiedMember.HasValue, "Null qualified member.");
+
+            var filteredResults = results
+                .Where(result => result.Inspection.GetType() == inspectionType
+                                 && result.QualifiedMemberName == qualifiedMember)
+                .ToList();
+
+            foreach (var result in filteredResults)
+            {
+                fix.Fix(result);
+            }
+
+            if (filteredResults.Any())
+            {
+                _state.GetRewriter(filteredResults.First().QualifiedSelection.QualifiedName).Rewrite();
+                _state.OnParseRequested(this);
+            }
         }
 
         public void FixInModule(IQuickFix fix, QualifiedSelection selection, Type inspectionType, IEnumerable<IInspectionResult> results)
@@ -146,7 +165,8 @@ namespace Rubberduck.Inspections
 
         public bool HasQuickFixes(IInspectionResult inspectionResult)
         {
-            return _quickFixes[inspectionResult.Inspection.GetType()].Any();
+            return _quickFixes.ContainsKey(inspectionResult.Inspection.GetType()) &&
+                   _quickFixes[inspectionResult.Inspection.GetType()].Any();
         }
     }
 }

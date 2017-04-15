@@ -25,7 +25,7 @@ namespace Rubberduck.Inspections.Concrete
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
             return Listener.Contexts.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName, context.Context.Start.Line))
-                .Select(context => new ObsoleteLetStatementUsageInspectionResult(this, new QualifiedContext<ParserRuleContext>(context.ModuleName, context.Context)));
+                .Select(context => new ObsoleteLetStatementUsageInspectionResult(this, context, GetQualifiedMemberName(context)));
         }
 
         public class ObsoleteLetStatementListener : VBAParserBaseListener, IInspectionListener

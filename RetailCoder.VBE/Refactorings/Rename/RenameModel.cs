@@ -2,7 +2,6 @@
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -10,11 +9,10 @@ namespace Rubberduck.Refactorings.Rename
 {
     public class RenameModel
     {
-        private readonly IVBE _vbe;
-        public IVBE VBE { get { return _vbe; } }
-        
+        public IVBE VBE { get; }
+
         private readonly IList<Declaration> _declarations;
-        public IEnumerable<Declaration> Declarations { get { return _declarations; } }
+        public IEnumerable<Declaration> Declarations => _declarations;
 
         private Declaration _target;
         public Declaration Target
@@ -23,23 +21,18 @@ namespace Rubberduck.Refactorings.Rename
             set { _target = value; }
         }
 
-        private readonly QualifiedSelection _selection;
-        public QualifiedSelection Selection { get { return _selection; } }
+        public QualifiedSelection Selection { get; }
 
-        private readonly RubberduckParserState _state;
-        public RubberduckParserState State { get { return _state; } }
+        public RubberduckParserState State { get; }
 
         public string NewName { get; set; }
 
-        private readonly IMessageBox _messageBox;
-
-        public RenameModel(IVBE vbe, RubberduckParserState state, QualifiedSelection selection, IMessageBox messageBox)
+        public RenameModel(IVBE vbe, RubberduckParserState state, QualifiedSelection selection)
         {
-            _vbe = vbe;
-            _state = state;
+            VBE = vbe;
+            State = state;
             _declarations = state.AllDeclarations.ToList();
-            _selection = selection;
-            _messageBox = messageBox;
+            Selection = selection;
 
             AcquireTarget(out _target, Selection);
         }

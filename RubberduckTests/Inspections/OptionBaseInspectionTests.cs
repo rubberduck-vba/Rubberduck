@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
@@ -23,7 +24,8 @@ namespace RubberduckTests.Inspections
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new OptionBaseInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.AreEqual(1, inspectionResults.Count());
         }
@@ -39,7 +41,8 @@ namespace RubberduckTests.Inspections
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new OptionBaseInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.AreEqual(0, inspectionResults.Count());
         }
@@ -55,7 +58,8 @@ namespace RubberduckTests.Inspections
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new OptionBaseInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.AreEqual(0, inspectionResults.Count());
         }
@@ -76,7 +80,8 @@ namespace RubberduckTests.Inspections
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new OptionBaseInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.AreEqual(2, inspectionResults.Count());
         }
@@ -98,7 +103,8 @@ namespace RubberduckTests.Inspections
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new OptionBaseInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.AreEqual(1, inspectionResults.Count());
         }
@@ -116,7 +122,8 @@ Option Base 1";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new OptionBaseInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.IsFalse(inspectionResults.Any());
         }
@@ -137,8 +144,9 @@ Option Base 1";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new OptionBaseInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-            
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
             new IgnoreOnceQuickFix(state, new[] {inspection}).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
