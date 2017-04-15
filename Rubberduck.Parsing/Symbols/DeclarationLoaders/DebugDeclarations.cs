@@ -9,16 +9,18 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
     public class DebugDeclarations : ICustomDeclarationLoader
     {
         public static Declaration DebugPrint;
-        private readonly DeclarationFinder _finder;
+        private readonly IDeclarationFinderProvider _finderProvider;
 
         public DebugDeclarations(IDeclarationFinderProvider finderProvider)
         {
-            _finder = finderProvider.DeclarationFinder;
+            _finderProvider = finderProvider;
         }
 
         public IReadOnlyList<Declaration> Load()
         {
-            var vba = _finder.FindProject("VBA");
+            var finder = _finderProvider.DeclarationFinder;
+
+            var vba = finder.FindProject("VBA");
             if (vba == null)
             {
                 // If the VBA project is null, we haven't loaded any COM references;
@@ -26,7 +28,7 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 return new List<Declaration>();
             }
 
-            if (WeHaveAlreadyLoadedTheDeclarationsBefore(_finder, vba))
+            if (WeHaveAlreadyLoadedTheDeclarationsBefore(finder, vba))
             {
                 return new List<Declaration>();
             }
@@ -87,7 +89,7 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                     return new QualifiedModuleName(
                         parentProject.QualifiedName.QualifiedModuleName.ProjectName,
                         parentProject.QualifiedName.QualifiedModuleName.ProjectPath,
-                        "DebugClass");
+                        "DebugModule");
                 }
 
 

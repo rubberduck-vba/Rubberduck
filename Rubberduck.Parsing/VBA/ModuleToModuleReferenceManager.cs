@@ -4,7 +4,7 @@ using System.Collections.Concurrent;
 
 namespace Rubberduck.Parsing.VBA
 {
-    public class StandAloneModuleToModuleReferenceManager : ModuleToModuleReferenceManagerBase
+    public class ModuleToModuleReferenceManager : ModuleToModuleReferenceManagerBase
     {
         private ConcurrentDictionary<QualifiedModuleName, ConcurrentDictionary<QualifiedModuleName, byte>> _referencesFrom = new ConcurrentDictionary<QualifiedModuleName, ConcurrentDictionary<QualifiedModuleName, byte>>();
         private ConcurrentDictionary<QualifiedModuleName, ConcurrentDictionary<QualifiedModuleName, byte>> _referencesTo = new ConcurrentDictionary<QualifiedModuleName, ConcurrentDictionary<QualifiedModuleName, byte>>();

@@ -7,18 +7,20 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
 {
     public class FormEventDeclarations : ICustomDeclarationLoader
     {
-        private readonly DeclarationFinder _finder;
+        private readonly IDeclarationFinderProvider _finderProvider;
 
         public FormEventDeclarations(IDeclarationFinderProvider finderProvider)
         {
-            _finder = finderProvider.DeclarationFinder;
+            _finderProvider = finderProvider;
         }
 
         public IReadOnlyList<Declaration> Load()
         {
-            var formsClassModule = FormsClassModuleFromParserState(_finder);
+            var finder = _finderProvider.DeclarationFinder;
 
-            if (formsClassModule == null || WeHaveAlreadyLoadedTheDeclarationsBefore(_finder, formsClassModule))
+            var formsClassModule = FormsClassModuleFromParserState(finder);
+
+            if (formsClassModule == null || WeHaveAlreadyLoadedTheDeclarationsBefore(finder, formsClassModule))
             {
                 return new List<Declaration>();
             }

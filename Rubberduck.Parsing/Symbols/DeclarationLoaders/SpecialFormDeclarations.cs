@@ -8,17 +8,19 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
 {
     public class SpecialFormDeclarations : ICustomDeclarationLoader
     {
-        private readonly DeclarationFinder _finder;
+        private readonly IDeclarationFinderProvider _finderProvider;
 
         public SpecialFormDeclarations(IDeclarationFinderProvider finderProvider)
         {
-            _finder = finderProvider.DeclarationFinder;
+            _finderProvider = finderProvider;
         }
 
 
         public IReadOnlyList<Declaration> Load()
         {
-            var vba = _finder.FindProject("VBA");
+            var finder = _finderProvider.DeclarationFinder;
+
+            var vba = finder.FindProject("VBA");
             if (vba == null)
             {
                 // If the VBA project is null, we haven't loaded any COM references;
@@ -26,7 +28,7 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 return new List<Declaration>();
             }
 
-            var informationModule = _finder.FindStdModule("Information", vba, true);
+            var informationModule = finder.FindStdModule("Information", vba, true);
             if (informationModule == null)
             {
                 //This should not happen under normal circumstances.
@@ -34,7 +36,7 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 return new List<Declaration>();
             }
 
-            if (WeHaveAlreadyLoadedTheDeclarationsBefore(_finder, informationModule))
+            if (WeHaveAlreadyLoadedTheDeclarationsBefore(finder, informationModule))
             {
                 return new List<Declaration>();
             }

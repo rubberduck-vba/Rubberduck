@@ -11,7 +11,7 @@ namespace RubberduckTests.Parsing.Coordination
     {
         protected override IModuleToModuleReferenceManager GetNewTestModuleToModuleReferenceManager()
         {
-            return new StandAloneModuleToModuleReferenceManager();
+            return new ModuleToModuleReferenceManager();
         }
     }
 }
