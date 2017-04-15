@@ -35,7 +35,7 @@ namespace Rubberduck.Refactorings.Rename
         {
             var presenter = _factory.Create();
 
-            bool hasNullReferences = false;
+            bool hasNullReferences;
             SetModelMember(presenter, out hasNullReferences);
 
             if(hasNullReferences) { return; }
@@ -80,22 +80,21 @@ namespace Rubberduck.Refactorings.Rename
         {
             var presenter = _factory.Create();
 
-            bool hasNullReferences = false;
+            bool hasNullReferences;
             SetModelMember(presenter, out hasNullReferences);
 
             if (hasNullReferences) { return; }
 
-            if (null == target)
+            if (target == null)
             {
-                if (null == _messageBox) { return; }
-                _messageBox.Show(RubberduckUI.RefactorRename_TargetNotDefinedError, RubberduckUI.RenameDialog_Caption, MessageBoxButtons.OK,
+                _messageBox?.Show(RubberduckUI.RefactorRename_TargetNotDefinedError, RubberduckUI.RenameDialog_Caption, MessageBoxButtons.OK,
                     MessageBoxIcon.Exclamation);
                 return;
             }
 
             if (!target.IsUserDefined)
             {
-                if (null == _messageBox) { return; }
+                if (_messageBox == null) { return; }
                 var message = string.Format(RubberduckUI.RefactorRename_TargetNotUserDefinedError, target.QualifiedName);
                 _messageBox.Show(message, RubberduckUI.RenameDialog_Caption, MessageBoxButtons.OK,
                     MessageBoxIcon.Exclamation);
@@ -130,7 +129,7 @@ namespace Rubberduck.Refactorings.Rename
         private void SetModelMember(IRenamePresenter presenter, out bool hasNullReferences)
         {
             hasNullReferences = false;
-            if(null == presenter)
+            if(presenter == null)
             {
                 hasNullReferences = true;
                 return;
@@ -138,7 +137,7 @@ namespace Rubberduck.Refactorings.Rename
 
             _model = presenter.Model;
 
-            if (null == _model)
+            if (_model == null)
             {
                 hasNullReferences = true;
                 return;
@@ -147,12 +146,8 @@ namespace Rubberduck.Refactorings.Rename
             if (null == _model.Target)
             {
                 hasNullReferences = true;
-                if (null != _messageBox)
-                {
-                    _messageBox.Show(RubberduckUI.RefactorRename_TargetNotDefinedError, RubberduckUI.RenameDialog_Caption, MessageBoxButtons.OK,
-                        MessageBoxIcon.Exclamation);
-                }
-                return;
+                _messageBox?.Show(RubberduckUI.RefactorRename_TargetNotDefinedError, RubberduckUI.RenameDialog_Caption, MessageBoxButtons.OK,
+                    MessageBoxIcon.Exclamation);
             }
         }
 
@@ -163,14 +158,14 @@ namespace Rubberduck.Refactorings.Rename
         //he is presented with 'bnt1' to rename.  
         private Declaration PreprocessSelectedTarget(Declaration selectedTarget)
         {
-            if( null == selectedTarget) { return null; }
+            if(selectedTarget == null) { return null; }
 
             if (!selectedTarget.DeclarationType.HasFlag(DeclarationType.Procedure))
             {
                 return selectedTarget;
             }
 
-            Declaration control = null;
+            Declaration control;
             if(IsControlEventHandler(selectedTarget, out control))
             {
                 return control;
@@ -287,7 +282,7 @@ namespace Rubberduck.Refactorings.Rename
             var interfaceImplementation = _model.State.DeclarationFinder.FindAllInterfaceImplementingMembers()
                 .SingleOrDefault(m => m.Equals(userTarget));
 
-            if(null == interfaceImplementation)
+            if(interfaceImplementation == null)
             {
                 interfaceDefinition = userTarget;
                 return true;
@@ -300,7 +295,7 @@ namespace Rubberduck.Refactorings.Rename
                 ? matches.SingleOrDefault(m => m.ProjectId == interfaceImplementation.ProjectId)
                 : matches.FirstOrDefault();
 
-            if (null != interfaceMember)
+            if (interfaceMember != null)
             {
                 interfaceDefinition = interfaceMember;
                 return true;
@@ -321,23 +316,17 @@ namespace Rubberduck.Refactorings.Rename
             }
             catch (RuntimeBinderException)
             {
-                if(null != _messageBox)
-                {
-                    _messageBox.Show(handler.ErrorMessage, RubberduckUI.RenameDialog_Caption);
-                }
+                _messageBox?.Show(handler.ErrorMessage, RubberduckUI.RenameDialog_Caption);
             }
             catch (COMException)
             {
-                if (null != _messageBox)
-                {
-                    _messageBox.Show(handler.ErrorMessage, RubberduckUI.RenameDialog_Caption);
-                }
+                _messageBox?.Show(handler.ErrorMessage, RubberduckUI.RenameDialog_Caption);
             }
         }
 
         private IRename GetHandler(RenameModel model)
         {
-            IRename handler = null;
+            IRename handler;
             if (model.Target.DeclarationType.HasFlag(DeclarationType.Property))
             {
                 handler = new RenameRefactorProperty(model.State);

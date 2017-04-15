@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Windows.Forms;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -12,7 +13,6 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 using System.Collections.Generic;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Common;
 
 namespace RubberduckTests.Refactoring
 {
@@ -44,7 +44,7 @@ End Sub";
                   .Returns(DialogResult.Yes);
 
             var vbeWrapper = vbe.Object;
-            var model = new RenameModel(vbeWrapper, state, qualifiedSelection, msgbox.Object) { NewName = "Goo" };
+            var model = new RenameModel(vbeWrapper, state, qualifiedSelection) { NewName = "Goo" };
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -82,7 +82,7 @@ End Sub";
                   .Returns(DialogResult.Yes);
 
             var vbeWrapper = vbe.Object;
-            var model = new RenameModel(vbeWrapper, state, qualifiedSelection, msgbox.Object) { NewName = "val2" };
+            var model = new RenameModel(vbeWrapper, state, qualifiedSelection) { NewName = "val2" };
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -118,7 +118,7 @@ End Sub";
                   .Returns(DialogResult.Yes);
 
             var vbeWrapper = vbe.Object;
-            var model = new RenameModel(vbeWrapper, state, qualifiedSelection, msgbox.Object) { NewName = "arg2" };
+            var model = new RenameModel(vbeWrapper, state, qualifiedSelection) { NewName = "arg2" };
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -157,7 +157,7 @@ End Sub";
                   .Returns(DialogResult.Yes);
 
             var vbeWrapper = vbe.Object;
-            var model = new RenameModel(vbeWrapper, state, qualifiedSelection, msgbox.Object) { NewName = "arg2" };
+            var model = new RenameModel(vbeWrapper, state, qualifiedSelection) { NewName = "arg2" };
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -204,7 +204,7 @@ End Sub
                   .Returns(DialogResult.Yes);
 
             var vbeWrapper = vbe.Object;
-            var model = new RenameModel(vbeWrapper, state, qualifiedSelection, msgbox.Object) { NewName = "Hoo" };
+            var model = new RenameModel(vbeWrapper, state, qualifiedSelection) { NewName = "Hoo" };
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -245,7 +245,7 @@ End Sub";
                   .Returns(DialogResult.Yes);
 
             var vbeWrapper = vbe.Object;
-            var model = new RenameModel(vbeWrapper, state, qualifiedSelection, msgbox.Object) { NewName = "val2" };
+            var model = new RenameModel(vbeWrapper, state, qualifiedSelection) { NewName = "val2" };
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -284,7 +284,7 @@ End Sub";
                   .Returns(DialogResult.Yes);
 
             var vbeWrapper = vbe.Object;
-            var model = new RenameModel(vbeWrapper, state, qualifiedSelection, msgbox.Object) { NewName = "arg2" };
+            var model = new RenameModel(vbeWrapper, state, qualifiedSelection) { NewName = "arg2" };
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -345,7 +345,7 @@ End Property";
                   .Returns(DialogResult.Yes);
 
             var vbeWrapper = vbe.Object;
-            var model = new RenameModel(vbeWrapper, state, qualifiedSelection, msgbox.Object) { NewName = "renamed" };
+            var model = new RenameModel(vbeWrapper, state, qualifiedSelection) { NewName = "renamed" };
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -402,7 +402,7 @@ End Property";
                   .Returns(DialogResult.Yes);
 
             var vbeWrapper = vbe.Object;
-            var model = new RenameModel(vbeWrapper, state, qualifiedSelection, msgbox.Object) { NewName = "renamed" };
+            var model = new RenameModel(vbeWrapper, state, qualifiedSelection) { NewName = "renamed" };
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -459,7 +459,7 @@ End Property";
                   .Returns(DialogResult.Yes);
 
             var vbeWrapper = vbe.Object;
-            var model = new RenameModel(vbeWrapper, state, qualifiedSelection, msgbox.Object) { NewName = "renamed" };
+            var model = new RenameModel(vbeWrapper, state, qualifiedSelection) { NewName = "renamed" };
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -502,7 +502,7 @@ End Property";
                   .Returns(DialogResult.Yes);
 
             var vbeWrapper = vbe.Object;
-            var model = new RenameModel(vbeWrapper, state, qualifiedSelection, msgbox.Object) { NewName = "Goo" };
+            var model = new RenameModel(vbeWrapper, state, qualifiedSelection) { NewName = "Goo" };
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -545,7 +545,7 @@ End Property";
                   .Returns(DialogResult.Yes);
 
             var vbeWrapper = vbe.Object;
-            var model = new RenameModel(vbeWrapper, state, qualifiedSelection, msgbox.Object) { NewName = "Goo" };
+            var model = new RenameModel(vbeWrapper, state, qualifiedSelection) { NewName = "Goo" };
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -584,7 +584,7 @@ End Function";
                   .Returns(DialogResult.Yes);
 
             var vbeWrapper = vbe.Object;
-            var model = new RenameModel(vbeWrapper, state, qualifiedSelection, msgbox.Object) { NewName = "Goo" };
+            var model = new RenameModel(vbeWrapper, state, qualifiedSelection) { NewName = "Goo" };
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -635,7 +635,7 @@ End Sub
                   .Returns(DialogResult.Yes);
 
             var vbeWrapper = vbe.Object;
-            var model = new RenameModel(vbeWrapper, state, qualifiedSelection, msgbox.Object) { NewName = "Hoo" };
+            var model = new RenameModel(vbeWrapper, state, qualifiedSelection) { NewName = "Hoo" };
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -668,7 +668,7 @@ End Sub";
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             var vbeWrapper = vbe.Object;
-            var model = new RenameModel(vbeWrapper, state, qualifiedSelection, null) { NewName = "Goo" };
+            var model = new RenameModel(vbeWrapper, state, qualifiedSelection) { NewName = "Goo" };
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -728,7 +728,7 @@ End Sub";
                   .Returns(DialogResult.Yes);
 
             var vbeWrapper = vbe.Object;
-            var model = new RenameModel(vbeWrapper, state, qualifiedSelection, msgbox.Object) { NewName = "DoNothing" };
+            var model = new RenameModel(vbeWrapper, state, qualifiedSelection) { NewName = "DoNothing" };
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -795,11 +795,13 @@ Private Sub RefTheInterface2()
     c1.DoNothing
 End Sub"
 ;
-            var tdo = new RenameTestsDataObject();
-            tdo.SelectionTarget = "DoSomething";
-            tdo.SelectionLineIdentifier = "Sub DoSomething";
-            tdo.SelectionModuleName = "IClass1";
-            tdo.NewName = "DoNothing";
+            var tdo = new RenameTestsDataObject
+            {
+                SelectionTarget = "DoSomething",
+                SelectionLineIdentifier = "Sub DoSomething",
+                SelectionModuleName = "IClass1",
+                NewName = "DoNothing"
+            };
 
             var secondClassName = "Class1";
             var thirdClassName = "Class3";
@@ -870,11 +872,13 @@ Private Sub RefTheInterface2()
     c1.DoNothing
 End Sub"
 ;
-            var tdo = new RenameTestsDataObject();
-            tdo.SelectionTarget = "DoSomething";
-            tdo.SelectionLineIdentifier = "IClass1_DoSomething(";
-            tdo.SelectionModuleName = "Class1";
-            tdo.NewName = "DoNothing";
+            var tdo = new RenameTestsDataObject
+            {
+                SelectionTarget = "DoSomething",
+                SelectionLineIdentifier = "IClass1_DoSomething(",
+                SelectionModuleName = "Class1",
+                NewName = "DoNothing"
+            };
 
             var secondClassName = "IClass1";
             var thirdClassName = "Class3";
@@ -906,11 +910,13 @@ End Sub";
             const string expectedCode1 =
 @"Public Sub DoNothing()
 End Sub";
-            var tdo = new RenameTestsDataObject();
-            tdo.SelectionTarget = "DoSomething";
-            tdo.SelectionLineIdentifier = "Sub DoSomething(";
-            tdo.SelectionModuleName = "IClass1";
-            tdo.NewName = "DoNothing";
+            var tdo = new RenameTestsDataObject
+            {
+                SelectionTarget = "DoSomething",
+                SelectionLineIdentifier = "Sub DoSomething(",
+                SelectionModuleName = "IClass1",
+                NewName = "DoNothing"
+            };
 
             AddTestComponent(tdo, tdo.SelectionModuleName, inputCode1, ComponentType.ClassModule);
 
@@ -973,12 +979,14 @@ Private Sub RefTheInterface2()
     c1.DoNothing
 End Sub"
 ;
-            var tdo = new RenameTestsDataObject();
-            tdo.SelectionTarget = "DoSomething";
-            tdo.SelectionLineIdentifier = "c1.DoSomething";
-            tdo.SelectionModuleName = "Class3";
-            tdo.NewName = "DoNothing";
-            
+            var tdo = new RenameTestsDataObject
+            {
+                SelectionTarget = "DoSomething",
+                SelectionLineIdentifier = "c1.DoSomething",
+                SelectionModuleName = "Class3",
+                NewName = "DoNothing"
+            };
+
             var secondClassName = "Class1";
             var thirdClassName = "IClass1";
             AddTestComponent(tdo, tdo.SelectionModuleName, inputCode3, ComponentType.ClassModule);
@@ -1030,11 +1038,13 @@ Private Sub UserForm_Click()
     cmdBigButton.Caption = ""Click This""
 End Sub
 ";
-            var tdo = new RenameTestsDataObject();
-            tdo.SelectionTarget = "cmdBtn1_Click";
-            tdo.SelectionLineIdentifier = "Private Sub cmdBtn1_Click()";
-            tdo.SelectionModuleName = "UserForm1";
-            tdo.NewName = "cmdBigButton";
+            var tdo = new RenameTestsDataObject
+            {
+                SelectionTarget = "cmdBtn1_Click",
+                SelectionLineIdentifier = "Private Sub cmdBtn1_Click()",
+                SelectionModuleName = "UserForm1",
+                NewName = "cmdBigButton"
+            };
 
             CreateMockVBEForControlsTest(tdo, inputCode1, "cmdBtn1");
 
@@ -1078,11 +1088,13 @@ Private Sub UserForm_Click()
 End Sub
 ";
 
-            var tdo = new RenameTestsDataObject();
-            tdo.SelectionTarget = "cmdBtn1";
-            tdo.SelectionLineIdentifier = "cmdBtn1.Caption =";
-            tdo.SelectionModuleName = "UserForm1";
-            tdo.NewName = "cmdBigButton";
+            var tdo = new RenameTestsDataObject
+            {
+                SelectionTarget = "cmdBtn1",
+                SelectionLineIdentifier = "cmdBtn1.Caption =",
+                SelectionModuleName = "UserForm1",
+                NewName = "cmdBigButton"
+            };
 
             CreateMockVBEForControlsTest(tdo, inputCode1, "cmdBtn1");
 
@@ -1126,11 +1138,13 @@ Private Sub UserForm_Click()
     cmdBigButton.Caption = ""Click This""
 End Sub
 ";
-            var tdo = new RenameTestsDataObject();
-            tdo.SelectionTarget = "cmdBtn1_Click";
-            tdo.SelectionLineIdentifier = "cmdBtn1_Click 'bad idea";
-            tdo.SelectionModuleName = "UserForm1";
-            tdo.NewName = "cmdBigButton";
+            var tdo = new RenameTestsDataObject
+            {
+                SelectionTarget = "cmdBtn1_Click",
+                SelectionLineIdentifier = "cmdBtn1_Click 'bad idea",
+                SelectionModuleName = "UserForm1",
+                NewName = "cmdBigButton"
+            };
 
             CreateMockVBEForControlsTest(tdo, inputCode1, "cmdBtn1");
 
@@ -1160,11 +1174,13 @@ Private Sub UserForm_Click()
 End Sub
 ";
 
-            var tdo = new RenameTestsDataObject();
-            tdo.SelectionTarget = "cmdBtn1_Click";
-            tdo.SelectionLineIdentifier = "Private Sub cmdBtn1_Click()";
-            tdo.SelectionModuleName = "UserForm1";
-            tdo.NewName = "cmdBtn1_ClickAgain";
+            var tdo = new RenameTestsDataObject
+            {
+                SelectionTarget = "cmdBtn1_Click",
+                SelectionLineIdentifier = "Private Sub cmdBtn1_Click()",
+                SelectionModuleName = "UserForm1",
+                NewName = "cmdBtn1_ClickAgain"
+            };
 
             CreateMockVBEForControlsTest(tdo, inputCode1, "cmdBtn1");
 
@@ -1236,11 +1252,13 @@ Private Sub RefTheInterface2()
     c2.DoNothing
 End Sub"
 ;
-            var tdo = new RenameTestsDataObject();
-            tdo.SelectionTarget = "DoSomething";
-            tdo.SelectionLineIdentifier = "Sub DoSomething";
-            tdo.SelectionModuleName = "IClass1";
-            tdo.NewName = "DoNothing";
+            var tdo = new RenameTestsDataObject
+            {
+                SelectionTarget = "DoSomething",
+                SelectionLineIdentifier = "Sub DoSomething",
+                SelectionModuleName = "IClass1",
+                NewName = "DoNothing"
+            };
 
             var secondClassName = "Class1";
             var thirdClassName = "Class3";
@@ -1308,11 +1326,13 @@ Private Sub XLEvents_YourEvent(IDNumber As Long, Cancel As Boolean)
     Cancel = True
 End Sub
 ";
-            var tdo = new RenameTestsDataObject();
-            tdo.SelectionTarget = "MyEvent";
-            tdo.SelectionLineIdentifier = "Event MyEvent";
-            tdo.SelectionModuleName = "CEventClass";
-            tdo.NewName = "YourEvent";
+            var tdo = new RenameTestsDataObject
+            {
+                SelectionTarget = "MyEvent",
+                SelectionLineIdentifier = "Event MyEvent",
+                SelectionModuleName = "CEventClass",
+                NewName = "YourEvent"
+            };
 
             var secondClass = "Class2";
             AddTestComponent(tdo, tdo.SelectionModuleName, inputCode1, ComponentType.ClassModule);
@@ -1357,11 +1377,13 @@ Sub Foo2()
     c1.Foo
 End Sub
 ";
-            var tdo = new RenameTestsDataObject();
-            tdo.SelectionTarget = "CTestClass";
-            tdo.SelectionLineIdentifier = "c1 As CTestClass";
-            tdo.SelectionModuleName = "Class2";
-            tdo.NewName = "CMyTestClass";
+            var tdo = new RenameTestsDataObject
+            {
+                SelectionTarget = "CTestClass",
+                SelectionLineIdentifier = "c1 As CTestClass",
+                SelectionModuleName = "Class2",
+                NewName = "CMyTestClass"
+            };
 
             var secondClass = "CTestClass";
             AddTestComponent(tdo, tdo.SelectionModuleName, inputCode2, ComponentType.ClassModule);
@@ -1427,11 +1449,13 @@ Private Sub XLEvents_YourEvent(IDNumber As Long, Cancel As Boolean)
     Cancel = True
 End Sub
 ";
-            var tdo = new RenameTestsDataObject();
-            tdo.SelectionTarget = "MyEvent";
-            tdo.SelectionLineIdentifier = "RaiseEvent MyEvent";
-            tdo.SelectionModuleName = "CEventClass";
-            tdo.NewName = "YourEvent";
+            var tdo = new RenameTestsDataObject
+            {
+                SelectionTarget = "MyEvent",
+                SelectionLineIdentifier = "RaiseEvent MyEvent",
+                SelectionModuleName = "CEventClass",
+                NewName = "YourEvent"
+            };
 
             var secondClass = "Class2";
             AddTestComponent(tdo, tdo.SelectionModuleName, inputCode1, ComponentType.ClassModule);
@@ -1496,11 +1520,13 @@ Private Sub XLEvents_YourEvent_withUnderscore(IDNumber As Long, Cancel As Boolea
     Cancel = True
 End Sub
 ";
-            var tdo = new RenameTestsDataObject();
-            tdo.SelectionTarget = "MyEvent";
-            tdo.SelectionLineIdentifier = "Private Sub XLEvents_MyEvent";
-            tdo.SelectionModuleName = "Class2";
-            tdo.NewName = "YourEvent_withUnderscore";
+            var tdo = new RenameTestsDataObject
+            {
+                SelectionTarget = "MyEvent",
+                SelectionLineIdentifier = "Private Sub XLEvents_MyEvent",
+                SelectionModuleName = "Class2",
+                NewName = "YourEvent_withUnderscore"
+            };
 
             var secondClass = "CEventClass";
             AddTestComponent(tdo, tdo.SelectionModuleName, inputCode2, ComponentType.ClassModule);
@@ -1525,11 +1551,13 @@ Private Sub cmdBtn1_Click()
 End Sub
 ";
 
-            var tdo = new RenameTestsDataObject();
-            tdo.SelectionTarget = "cmdBtn1_Click";
-            tdo.SelectionLineIdentifier = "Private Sub cmdBtn1_Click()";
-            tdo.SelectionModuleName = "UserForm1";
-            tdo.NewName = "cmdBtn2";
+            var tdo = new RenameTestsDataObject
+            {
+                SelectionTarget = "cmdBtn1_Click",
+                SelectionLineIdentifier = "Private Sub cmdBtn1_Click()",
+                SelectionModuleName = "UserForm1",
+                NewName = "cmdBtn2"
+            };
 
             CreateMockVBEForControlsTest(tdo, inputCode1, "cmdBtn1");
 
@@ -1554,11 +1582,13 @@ End Sub
 
             foreach ( var param in refactorParams)
             {
-                var tdo = new RenameTestsDataObject();
-                tdo.SelectionTarget = "Foo";
-                tdo.SelectionLineIdentifier = "Foo()";
-                tdo.SelectionModuleName = "Class1";
-                tdo.NewName = "Goo";
+                var tdo = new RenameTestsDataObject
+                {
+                    SelectionTarget = "Foo",
+                    SelectionLineIdentifier = "Foo()",
+                    SelectionModuleName = "Class1",
+                    NewName = "Goo"
+                };
                 AddTestComponent(tdo, tdo.SelectionModuleName, inputCode1, ComponentType.ClassModule);
   
                 SetupAndRunRenameRefactorTest(tdo, param);
@@ -1586,11 +1616,13 @@ Private Sub bigButton_ClickAgain_Click()
 End Sub
 ";
 
-            var tdo = new RenameTestsDataObject();
-            tdo.SelectionTarget = "cmdBtn1_Click";
-            tdo.SelectionLineIdentifier = "Private Sub cmdBtn1_Click()";
-            tdo.SelectionModuleName = "UserForm1";
-            tdo.NewName = "bigButton_ClickAgain";
+            var tdo = new RenameTestsDataObject
+            {
+                SelectionTarget = "cmdBtn1_Click",
+                SelectionLineIdentifier = "Private Sub cmdBtn1_Click()",
+                SelectionModuleName = "UserForm1",
+                NewName = "bigButton_ClickAgain"
+            };
 
             CreateMockVBEForControlsTest(tdo, inputCode1, "cmdBtn1");
 
@@ -1642,7 +1674,7 @@ End Sub";
                   .Returns(DialogResult.Yes);
 
             var vbeWrapper = vbe.Object;
-            var model = new RenameModel(vbeWrapper, state, qualifiedSelection, msgbox.Object) { NewName = "Goo" };
+            var model = new RenameModel(vbeWrapper, state, qualifiedSelection) { NewName = "Goo" };
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -1701,7 +1733,7 @@ End Sub";
                       .Returns(DialogResult.Yes);
 
             var vbeWrapper = vbe.Object;
-            var model = new RenameModel(vbeWrapper, state, qualifiedSelection, messageBox.Object) { NewName = "DoNothing" };
+            var model = new RenameModel(vbeWrapper, state, qualifiedSelection) { NewName = "DoNothing" };
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -1755,7 +1787,7 @@ End Sub";
                 .Returns(DialogResult.No);
 
             var vbeWrapper = vbe.Object;
-            var model = new RenameModel(vbeWrapper, state, qualifiedSelection, messageBox.Object);
+            var model = new RenameModel(vbeWrapper, state, qualifiedSelection);
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -1790,7 +1822,7 @@ End Sub";
             vbe.Setup(v => v.ActiveCodePane).Returns(codePaneMock.Object);
 
             var vbeWrapper = vbe.Object;
-            var factory = new RenamePresenterFactory(vbeWrapper, null, state, null);
+            var factory = new RenamePresenterFactory(vbeWrapper, null, state);
 
             var refactoring = new RenameRefactoring(vbeWrapper, factory, null, state);
             refactoring.Refactor();
@@ -1818,7 +1850,7 @@ End Sub";
             vbe.Setup(v => v.ActiveCodePane).Returns(codePaneMock.Object);
 
             var vbeWrapper = vbe.Object;
-            var factory = new RenamePresenterFactory(vbeWrapper, null, state, null);
+            var factory = new RenamePresenterFactory(vbeWrapper, null, state);
 
             var presenter = factory.Create();
 
@@ -1843,7 +1875,7 @@ End Sub";
             vbe.Setup(v => v.ActiveCodePane).Returns(codePaneMock.Object);
 
             var vbeWrapper = vbe.Object;
-            var factory = new RenamePresenterFactory(vbeWrapper, null, state, null);
+            var factory = new RenamePresenterFactory(vbeWrapper, null, state);
 
             var presenter = factory.Create();
             Assert.AreEqual(null, presenter.Show());
@@ -1869,7 +1901,7 @@ End Sub";
                   .Returns(DialogResult.Yes);
 
             var vbeWrapper = vbe.Object;
-            var model = new RenameModel(vbeWrapper, state, default(QualifiedSelection), msgbox.Object) { NewName = newName };
+            var model = new RenameModel(vbeWrapper, state, default(QualifiedSelection)) { NewName = newName };
             model.Target = model.Declarations.First(i => i.DeclarationType == DeclarationType.Project && i.IsUserDefined);
 
             //SetupFactory
@@ -1904,7 +1936,7 @@ End Sub";
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             var vbeWrapper = vbe.Object;
-            var model = new RenameModel(vbeWrapper, state, qualifiedSelection, null) { NewName = "Goo" };
+            var model = new RenameModel(vbeWrapper, state, qualifiedSelection) { NewName = "Goo" };
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -1945,7 +1977,7 @@ End Sub";
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
             var vbeWrapper = vbe.Object;
-            var model = new RenameModel(vbeWrapper, state, qualifiedSelection, null) { NewName = "Goo" };
+            var model = new RenameModel(vbeWrapper, state, qualifiedSelection) { NewName = "Goo" };
 
             //SetupFactory
             var factory = SetupFactory(model);
@@ -1986,7 +2018,7 @@ End Sub";
                   .Returns(DialogResult.Yes);
 
             var vbeWrapper = vbe.Object;
-            var model = new RenameModel(vbeWrapper, state, qualifiedSelection, msgbox.Object) { NewName = newName };
+            var model = new RenameModel(vbeWrapper, state, qualifiedSelection) { NewName = newName };
             model.Target = model.Declarations.FirstOrDefault(i => i.DeclarationType == DeclarationType.ClassModule && i.IdentifierName == "Class1");
 
             //SetupFactory
@@ -2026,7 +2058,7 @@ End Sub";
             tdo.ParserState = MockParser.CreateAndParse(tdo.VBE);
 
             CreateQualifiedSelectionForTestCase(tdo);
-            tdo.RenameModel = new RenameModel(tdo.VBE, tdo.ParserState, tdo.QualifiedSelection, tdo.MsgBox.Object) { NewName = tdo.NewName };
+            tdo.RenameModel = new RenameModel(tdo.VBE, tdo.ParserState, tdo.QualifiedSelection) { NewName = tdo.NewName };
 
             //SetupFactory
             var factory = SetupFactory(tdo.RenameModel);
@@ -2051,12 +2083,12 @@ End Sub";
             var component = RetrieveComponent(tdo, tdo.SelectionModuleName);
             var moduleContent = component.CodeModule.GetLines(1, component.CodeModule.CountOfLines);
 
-            var splitToken = new string[] { "\r\n" };
+            var splitToken = new[] { "\r\n" };
 
-            var lines = moduleContent.Split(splitToken, System.StringSplitOptions.None);
+            var lines = moduleContent.Split(splitToken, StringSplitOptions.None);
             int lineOfInterestNumber = 0;
             string lineOfInterestContent = string.Empty;
-            for (int idx = 0; idx < lines.Count() && lineOfInterestNumber < 1; idx++)
+            for (int idx = 0; idx < lines.Length && lineOfInterestNumber < 1; idx++)
             {
                 if (lines[idx].Contains(tdo.SelectionLineIdentifier))
                 {
@@ -2065,8 +2097,8 @@ End Sub";
                 }
             }
             Assert.IsTrue(lineOfInterestNumber > 0, "Unable to find target '" + tdo.SelectionTarget + "' in " + tdo.SelectionModuleName + " content.");
-            var column = lineOfInterestContent.IndexOf(tdo.SelectionLineIdentifier);
-            column = column + tdo.SelectionLineIdentifier.IndexOf(tdo.SelectionTarget) + 1;
+            var column = lineOfInterestContent.IndexOf(tdo.SelectionLineIdentifier, StringComparison.Ordinal);
+            column = column + tdo.SelectionLineIdentifier.IndexOf(tdo.SelectionTarget, StringComparison.Ordinal) + 1;
 
             var moduleParent = component.CodeModule.Parent;
             tdo.QualifiedSelection = new QualifiedSelection(new QualifiedModuleName(moduleParent), new Selection(lineOfInterestNumber, column, lineOfInterestNumber, column));
@@ -2094,25 +2126,22 @@ End Sub";
 
         private IVBComponent RetrieveComponent(RenameTestsDataObject tdo, string componentName)
         {
-            var vbProject = tdo.VBE.VBProjects.Where(item => item.Name == tdo.ProjectName).SingleOrDefault();
-            return vbProject.VBComponents.Where(item => item.Name == componentName).SingleOrDefault();
+            var vbProject = tdo.VBE.VBProjects.Single(item => item.Name == tdo.ProjectName);
+            return vbProject.VBComponents.SingleOrDefault(item => item.Name == componentName);
         }
 
         internal class TestComponentSpecification
         {
-            private string _name;
-            private string _content;
-            private ComponentType _componentType;
             public TestComponentSpecification(string componentName, string componentContent, ComponentType componentType)
             {
-                _name = componentName;
-                _content = componentContent;
-                _componentType = componentType;
+                Name = componentName;
+                Content = componentContent;
+                ModuleType = componentType;
             }
 
-            public string Name { get { return _name; } }
-            public string Content { get { return _content; } }
-            public ComponentType ModuleType { get { return _componentType; } }
+            public string Name { get; }
+            public string Content { get; }
+            public ComponentType ModuleType { get; }
         }
 
 

@@ -10,7 +10,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
     public class Parameter : ViewModelBase
     {
         public ParameterDeclaration Declaration { get; }
-        public string Name { get; private set; }
+        public string Name { get; }
         public bool IsParamArray => Declaration.IsParamArray;
 
         private bool _isRemoved;
