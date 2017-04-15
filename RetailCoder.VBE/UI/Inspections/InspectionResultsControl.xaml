@@ -593,20 +593,28 @@
 
                 <TextBlock Margin="4" Text="{Binding SelectedItem.Inspection.Meta}" FontSize="10" TextWrapping="WrapWithOverflow"/>
                 <TextBlock Margin="8" Text="{Binding SelectedItem.QualifiedSelection}" FontSize="10" TextWrapping="WrapWithOverflow" />
-                
+
                 <WrapPanel>
                     <controls:LinkButton Margin="4"
-                            Visibility="{Binding CanExecuteQuickFixInModule, Converter={StaticResource BoolToVisibility}}"
-                            Command="{Binding QuickFixInModuleCommand}"
-                            Content="{Resx ResxName=Rubberduck.Inspections.Resources.InspectionsUI, Key=QuickFix_ThisModule}" />
+                                         Visibility="{Binding CanExecuteQuickFixInProcedure, Converter={StaticResource BoolToVisibility}}"
+                                         Command="{Binding QuickFixInProcedureCommand}"
+                                         Content="{Resx ResxName=Rubberduck.Parsing.Inspections.Resources.InspectionsUI, Key=QuickFix_ThisProcedure}" />
                     <controls:LinkButton Margin="4"
-                            Visibility="{Binding CanExecuteQuickFixInProject, Converter={StaticResource BoolToVisibility}}"
-                            Command="{Binding QuickFixInProjectCommand}"
-                            Content="{Resx ResxName=Rubberduck.Inspections.Resources.InspectionsUI, Key=QuickFix_ThisProject}" />
+                                         Visibility="{Binding CanExecuteQuickFixInModule, Converter={StaticResource BoolToVisibility}}"
+                                         Command="{Binding QuickFixInModuleCommand}"
+                                         Content="{Resx ResxName=Rubberduck.Parsing.Inspections.Resources.InspectionsUI, Key=QuickFix_ThisModule}" />
+                    <controls:LinkButton Margin="4"
+                                         Visibility="{Binding CanExecuteQuickFixInProject, Converter={StaticResource BoolToVisibility}}"
+                                         Command="{Binding QuickFixInProjectCommand}"
+                                         Content="{Resx ResxName=Rubberduck.Parsing.Inspections.Resources.InspectionsUI, Key=QuickFix_ThisProject}" />
+                    <controls:LinkButton Margin="4"
+                                         Visibility="{Binding CanExecuteQuickFixInProject, Converter={StaticResource BoolToVisibility}}"
+                                         Command="{Binding QuickFixInAllProjectsCommand}"
+                                         Content="{Resx ResxName=Rubberduck.Parsing.Inspections.Resources.InspectionsUI, Key=QuickFix_All}" />
                     <controls:LinkButton Margin="4"
                             Visibility="{Binding CanDisableInspection, Converter={StaticResource BoolToVisibility}}"
                             Command="{Binding DisableInspectionCommand}"
-                            Content="{Resx ResxName=Rubberduck.Inspections.Resources.InspectionsUI, Key=DisableThisInspection}" />
+                            Content="{Resx ResxName=Rubberduck.Parsing.Inspections.Resources.InspectionsUI, Key=DisableThisInspection}" />
                 </WrapPanel>
             </StackPanel>
         </Border>

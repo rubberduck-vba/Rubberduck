@@ -13,7 +13,7 @@ namespace Rubberduck.Parsing.Inspections.Abstract
 
         void Fix(IQuickFix fix, IInspectionResult result);
 
-        void FixInProcedure(IQuickFix fix, QualifiedSelection selection, Type inspectionType,
+        void FixInProcedure(IQuickFix fix, QualifiedMemberName? selection, Type inspectionType,
             IEnumerable<IInspectionResult> results);
 
         void FixInModule(IQuickFix fix, QualifiedSelection selection, Type inspectionType,
