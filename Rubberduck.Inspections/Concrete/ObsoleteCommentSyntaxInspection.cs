@@ -23,8 +23,8 @@ namespace Rubberduck.Inspections.Concrete
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
-            return Listener.Contexts.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName.Component, context.Context.Start.Line))
-                .Select(context => new ObsoleteCommentSyntaxInspectionResult(this, new QualifiedContext<ParserRuleContext>(context.ModuleName, context.Context)));
+            return Listener.Contexts.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName, context.Context.Start.Line))
+                .Select(context => new ObsoleteCommentSyntaxInspectionResult(this, context, GetQualifiedMemberName(context)));
         }
 
         public class ObsoleteCommentSyntaxListener : VBAParserBaseListener, IInspectionListener

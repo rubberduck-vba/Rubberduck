@@ -13,9 +13,9 @@ namespace Rubberduck.Refactorings.Rename
             : base(state) { _errorMessage = string.Empty; }
 
         private string _errorMessage;
-        override public string ErrorMessage { get { return _errorMessage; } }
+        public override string ErrorMessage => _errorMessage;
 
-        override public void Rename(Declaration controlDeclaration, string newControlName)
+        public override void Rename(Declaration controlDeclaration, string newControlName)
         {
             _errorMessage = string.Format(RubberduckUI.RenameDialog_ControlRenameError, controlDeclaration.IdentifierName);
 

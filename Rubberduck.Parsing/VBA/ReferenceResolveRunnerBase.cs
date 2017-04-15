@@ -89,7 +89,7 @@ namespace Rubberduck.Parsing.VBA
 
         protected void ResolveReferences(DeclarationFinder finder, QualifiedModuleName module, IParseTree tree, CancellationToken token)
         {
-            Debug.Assert(_state.GetModuleState(module.Component) == ParserState.ResolvingReferences || token.IsCancellationRequested);
+            Debug.Assert(_state.GetModuleState(module) == ParserState.ResolvingReferences || token.IsCancellationRequested);
 
             token.ThrowIfCancellationRequested();
 

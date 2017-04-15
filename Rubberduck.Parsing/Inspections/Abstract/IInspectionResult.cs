@@ -9,6 +9,7 @@ namespace Rubberduck.Parsing.Inspections.Abstract
     {
         string Description { get; }
         QualifiedSelection QualifiedSelection { get; }
+        QualifiedMemberName? QualifiedMemberName { get; }
         IInspection Inspection { get; }
         Declaration Target { get; }
         ParserRuleContext Context { get; }

@@ -25,8 +25,8 @@ namespace Rubberduck.Inspections.Concrete
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
             return Listener.Contexts
-                .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName.Component, result.Context.Start.Line))
-                .Select(result => new EmptyStringLiteralInspectionResult(this, result));
+                .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))
+                .Select(result => new EmptyStringLiteralInspectionResult(this, result, GetQualifiedMemberName(result)));
         }
 
         public class EmptyStringLiteralListener : VBAParserBaseListener, IInspectionListener

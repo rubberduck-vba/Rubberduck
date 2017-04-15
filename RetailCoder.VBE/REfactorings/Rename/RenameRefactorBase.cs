@@ -16,21 +16,20 @@ namespace Rubberduck.Refactorings.Rename
 
     public abstract class RenameRefactorBase : IRename
     {
-        private readonly RubberduckParserState _state;
-        private List<QualifiedModuleName> _modulesToRewrite;
+        private readonly List<QualifiedModuleName> _modulesToRewrite;
 
-        public RenameRefactorBase(RenameModel model)
+        protected RenameRefactorBase()
         {
             _modulesToRewrite = new List<QualifiedModuleName>();
         }
 
-        public RenameRefactorBase(RubberduckParserState state)
+        protected RenameRefactorBase(RubberduckParserState state)
         {
-            _state = state;
+            State = state;
             _modulesToRewrite = new List<QualifiedModuleName>();
         }
 
-        public RubberduckParserState State { get { return _state; } }
+        public RubberduckParserState State { get; }
 
         public void Rewrite()
         {
@@ -44,7 +43,7 @@ namespace Rubberduck.Refactorings.Rename
 
         public abstract string ErrorMessage { get; }
 
-        public virtual bool RequestParseAfterRename { get { return true; } }
+        public virtual bool RequestParseAfterRename => true;
 
         public void RenameUsages(Declaration target, string newName)
         {
@@ -52,7 +51,7 @@ namespace Rubberduck.Refactorings.Rename
             foreach (var grouping in modules)
             {
                 _modulesToRewrite.Add(grouping.Key);
-                var rewriter = _state.GetRewriter(grouping.Key);
+                var rewriter = State.GetRewriter(grouping.Key);
                 foreach (var reference in grouping)
                 {
                     rewriter.Replace(reference.Context, newName);
@@ -63,11 +62,11 @@ namespace Rubberduck.Refactorings.Rename
         public void RenameDeclaration(Declaration target, string newName)
         {
             _modulesToRewrite.Add(target.QualifiedName.QualifiedModuleName);
-            var rewriter = _state.GetRewriter(target.QualifiedName.QualifiedModuleName);
+            var rewriter = State.GetRewriter(target.QualifiedName.QualifiedModuleName);
 
             if (target.DeclarationType.HasFlag(DeclarationType.Property))
             {
-                var members = _state.DeclarationFinder.MatchName(target.IdentifierName)
+                var members = State.DeclarationFinder.MatchName(target.IdentifierName)
                     .Where(item => item.ProjectId == target.ProjectId
                         && item.ComponentName == target.ComponentName
                         && item.DeclarationType.HasFlag(DeclarationType.Property));

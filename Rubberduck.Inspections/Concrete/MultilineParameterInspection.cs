@@ -26,8 +26,8 @@ namespace Rubberduck.Inspections.Concrete
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
             return Listener.Contexts
-                .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName.Component, result.Context.Start.Line))
-                .Select(p => new MultilineParameterInspectionResult(this, p));
+                .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))
+                .Select(p => new MultilineParameterInspectionResult(this, p, GetQualifiedMemberName(p)));
         }
 
         public class ParameterListener : VBAParserBaseListener, IInspectionListener
