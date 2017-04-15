@@ -19,15 +19,15 @@ namespace Rubberduck.Inspections.Concrete
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
-            return UserDeclarations
+            return State.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
                 .Where(declaration => declaration.IsSelfAssigned 
                     && declaration.IsTypeSpecified
                     && !SymbolList.ValueTypes.Contains(declaration.AsTypeName)
-                    && declaration.DeclarationType == DeclarationType.Variable
                     && (declaration.AsTypeDeclaration == null
                         || declaration.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType)
                     && declaration.ParentScopeDeclaration != null
                     && declaration.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member))
+                .Where(result => !IsIgnoringInspectionResultFor(result, AnnotationName))
                 .Select(issue => new SelfAssignedDeclarationInspectionResult(this, issue));
         }
     }
