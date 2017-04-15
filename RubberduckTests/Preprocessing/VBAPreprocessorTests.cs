@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor;
 
 namespace RubberduckTests.PreProcessing
 {
@@ -49,7 +50,7 @@ namespace RubberduckTests.PreProcessing
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(code, out component);
             
             var state = MockParser.CreateAndParse(vbe.Object);
-            var tree = state.GetParseTree(component);
+            var tree = state.GetParseTree(new QualifiedModuleName(component));
             var parsed = tree.GetText();
             var withoutEOF = parsed.Substring(0, parsed.Length - 5);
             return withoutEOF;

@@ -24,7 +24,7 @@ namespace Rubberduck.Inspections.Concrete
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
-            return Listener.Contexts.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName.Component, context.Context.Start.Line))
+            return Listener.Contexts.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName, context.Context.Start.Line))
                 .Select(context => new OptionBaseInspectionResult(this, context, GetQualifiedMemberName(context)));
         }
 

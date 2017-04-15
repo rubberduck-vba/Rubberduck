@@ -7,5 +7,7 @@ namespace Rubberduck.Parsing.VBA
     public interface IParseTreeProvider
     {
         List<KeyValuePair<QualifiedModuleName, IParseTree>> ParseTrees { get; }
+
+        IParseTree GetParseTree(QualifiedModuleName module);
     }
 }

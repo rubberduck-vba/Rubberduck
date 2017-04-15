@@ -26,7 +26,7 @@ namespace Rubberduck.Inspections.Concrete
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
             return Listener.Contexts
-                .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName.Component, result.Context.Start.Line))
+                .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))
                 .SelectMany(result => result.Context.FindChildren<VBAParser.VariableSubStmtContext>()
                         .Select(r => new QualifiedContext<ParserRuleContext>(result.ModuleName, r)))
                 .Select(result => new ModuleScopeDimKeywordInspectionResult(this, result, GetQualifiedMemberName(result)));
