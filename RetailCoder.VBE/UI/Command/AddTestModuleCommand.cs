@@ -8,6 +8,7 @@ using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
+using System.Text;
 
 namespace Rubberduck.UI.Command
 {
@@ -29,37 +30,47 @@ namespace Rubberduck.UI.Command
             _configLoader = configLoader;
         }
 
-        private const string TestModuleEmptyTemplate = "'@TestModule\r\n{0}\r\n{1}\r\n{2}\r\n\r\n";
-        private const string FolderAnnotation = "'@Folder(\"Tests\")\r\n";
+        private string TestModuleEmptyTemplate = new StringBuilder()
+            .AppendLine("'@TestModule")
+            .AppendLine("'@Folder(\"Tests\")")
+            .AppendLine()
+            .AppendLine("{0}")
+            .AppendLine("{1")
+            .AppendLine()
+            .ToString();
+
+        private readonly string _moduleInit = new StringBuilder()
+            .AppendLine("'@ModuleInitialize")
+            .AppendLine("Public Sub ModuleInitialize()")
+            .AppendLine($"    '{RubberduckUI.UnitTest_NewModule_RunOnce}.")
+            .AppendLine("    {0}")
+            .AppendLine("    {1}")
+            .AppendLine("End Sub")
+            .AppendLine()
+            .AppendLine("'@ModuleCleanup")
+            .AppendLine("Public Sub ModuleCleanup()")
+            .AppendLine($"    '{RubberduckUI.UnitTest_NewModule_RunOnce}.")
+            .AppendLine("    Set Assert = Nothing")
+            .AppendLine("    Set Fakes = Nothing")
+            .AppendLine("End Sub")
+            .AppendLine()
+            .ToString();
+
+        private readonly string _methodInit = new StringBuilder()
+            .AppendLine("'@TestInitialize")
+            .AppendLine("Public Sub TestInitialize()")
+            .AppendLine($"    '{RubberduckUI.UnitTest_NewModule_RunBeforeTest}.")
+            .AppendLine("End Sub")
+            .AppendLine()
+            .AppendLine("'@TestCleanup")
+            .AppendLine("Public Sub TestCleanup()")
+            .AppendLine($"    '{RubberduckUI.UnitTest_NewModule_RunAfterTest}.")
+            .AppendLine("End Sub")
+            .AppendLine()
+            .ToString();
 
         private const string FakesFieldDeclarationFormat = "Private Fakes As {0}";
         private const string AssertFieldDeclarationFormat = "Private Assert As {0}";
-
-        private readonly string _moduleInit = string.Concat(
-            "'@ModuleInitialize\r\n",
-            "Public Sub ModuleInitialize()\r\n",
-            $"    '{RubberduckUI.UnitTest_NewModule_RunOnce}.\r\n",
-            "    {0}\r\n",
-            "    {1}\r\n",
-            "End Sub\r\n\r\n",
-            "'@ModuleCleanup\r\n",
-            "Public Sub ModuleCleanup()\r\n",
-            $"    '{RubberduckUI.UnitTest_NewModule_RunOnce}.\r\n",
-            "    Set Assert = Nothing\r\n",
-            "    Set Fakes = nothing\r\n",
-            "End Sub\r\n\r\n"
-        );
-
-        private readonly string _methodInit = string.Concat(
-            "'@TestInitialize\r\n"
-            , "Public Sub TestInitialize()\r\n"
-            , "    '", RubberduckUI.UnitTest_NewModule_RunBeforeTest, ".\r\n"
-            , "End Sub\r\n\r\n"
-            , "'@TestCleanup\r\n"
-            , "Public Sub TestCleanup()\r\n"
-            , "    '", RubberduckUI.UnitTest_NewModule_RunAfterTest, ".\r\n"
-            , "End Sub\r\n\r\n"
-        );
 
         private const string TestModuleBaseName = "TestModule";
 
@@ -71,7 +82,7 @@ namespace Rubberduck.UI.Command
             var fakesType = "Rubberduck.IFake";
             var fakesDeclaredAs = DeclarationFormatFor(FakesFieldDeclarationFormat, fakesType, settings); 
 
-            var formattedModuleTemplate = string.Format(TestModuleEmptyTemplate, FolderAnnotation, assertDeclaredAs, fakesDeclaredAs);
+            var formattedModuleTemplate = string.Format(TestModuleEmptyTemplate, assertDeclaredAs, fakesDeclaredAs);
 
             if (settings.ModuleInit)
             {
