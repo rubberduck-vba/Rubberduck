@@ -127,7 +127,7 @@
     <value>Code quality issues</value>
   </data>
   <data name="ConstantNotUsedInspectionMeta" xml:space="preserve">
-    <value>Constant value is declared but Rubberduck could not find any reference to it. Consider removing the unused declaration.</value>
+    <value>Rubberduck could not find any reference to constant. Consider removing the unused declaration.</value>
   </data>
   <data name="ConstantNotUsedInspectionName" xml:space="preserve">
     <value>Constant is not used</value>
@@ -327,13 +327,13 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>Use meaningful names</value>
   </data>
   <data name="VariableNotAssignedInspectionMeta" xml:space="preserve">
-    <value>A variable is declared, but never assigned a value/reference. If Rubberduck is correct, the variable could probably be safely removed.</value>
+    <value>Variable does not seem to be assigned. If Rubberduck is correct, the variable could probably be safely removed.</value>
   </data>
   <data name="VariableNotAssignedInspectionName" xml:space="preserve">
-    <value>Variable is declared but never assigned</value>
+    <value>Variable is not assigned</value>
   </data>
   <data name="VariableNotUsedInspectionMeta" xml:space="preserve">
-    <value>A variable is declared, but never referred to.</value>
+    <value>Variable is not referred to</value>
   </data>
   <data name="VariableNotUsedInspectionName" xml:space="preserve">
     <value>Variable is not referred to</value>
@@ -499,7 +499,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>'vbNullString' preferred to empty string literals</value>
   </data>
   <data name="VariableNotAssignedInspectionResultFormat" xml:space="preserve">
-    <value>Variable '{0}' is never assigned</value>
+    <value>Variable '{0}' is not assigned</value>
   </data>
   <data name="DisableThisInspection" xml:space="preserve">
     <value>Disable this inspection</value>
