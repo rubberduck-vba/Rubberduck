@@ -448,10 +448,10 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>Ändere '{0}' zu '{1}'</value>
   </data>
   <data name="QuickFix_ThisModule" xml:space="preserve">
-    <value>Verarbeite alle Vorkommen im Modul</value>
+    <value>Alle Vorkommnisse im Modul beheben</value>
   </data>
   <data name="QuickFix_ThisProject" xml:space="preserve">
-    <value>Verarbeite alle Vorkommen im Projekt</value>
+    <value>Alle Vorkommnisse im Projekt beheben</value>
   </data>
   <data name="RemoveCommentQuickFix" xml:space="preserve">
     <value>Entferne Kommentar</value>
@@ -643,6 +643,24 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>Geklammerte Ausdrücke werden von der Hostanwendung zur Laufzeit ausgewertet, was bedeutet, dass VBA den Ausdruck nicht zur Kompilierzeit validieren kann. Erwägen sie, das hostspezifische Objektmodell zu verwenden.</value>
   </data>
   <data name="AssignedByValParameterMakeLocalCopyQuickFix">
-    <value />
+    <value>Eine lokale Kopie des Parameters erstellen und verwenden</value>
+  </data>
+  <data name="OptionBaseZeroInspectionName">
+    <value>'Option Base 0' ist redundant</value>
+  </data>
+  <data name="OptionBaseZeroInspectionResultFormat">
+    <value>Komponente '{0}' verwendet 'Option Base 0'</value>
+  </data>
+  <data name="QuickFix_All">
+    <value>Alle Vorkommnisse beheben</value>
+  </data>
+  <data name="QuickFix_ThisProcedure">
+    <value>Alle Vorkommnisse in der Prozedur beheben</value>
+  </data>
+  <data name="OptionBaseZeroInspectionMeta">
+    <value>Dies ist die Standardeinstellung, sie muss nicht spezifiziert werden.</value>
+  </data>
+  <data name="RemoveOptionBaseStatementQuickFix">
+    <value>'Option Base'-Anweisung entfernen</value>
   </data>
 </root>
