@@ -1,54 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using System.Threading.Tasks;
+using System.Collections.Concurrent;
 
 namespace Rubberduck.Parsing.VBA
 {
-    public class ProjectManager : IProjectManager
+    public class ProjectManager : ProjectManagerBase
     {
-        private readonly RubberduckParserState _state;
-        private readonly IVBE _vbe;
+        private const int _maxDegreeOfQMNCreationParallelism = -1;
 
         public ProjectManager(
             RubberduckParserState state,
             IVBE vbe)
+        :base(state, 
+            vbe)
+        { }
+
+
+        public override IReadOnlyCollection<QualifiedModuleName> AllModules()
         {
-            if (state == null)
-            {
-                throw new ArgumentNullException(nameof(state));
-            }
-            if (vbe == null)
-            {
-                throw new ArgumentNullException(nameof(vbe));
-            }
+            var components = Projects.SelectMany(project => project.VBComponents);
 
-            _state = state;
-            _vbe = vbe;
-        }
+            var options = new ParallelOptions();
+            options.MaxDegreeOfParallelism = _maxDegreeOfQMNCreationParallelism;
 
+            var modules = new ConcurrentBag<QualifiedModuleName>();
+            Parallel.ForEach(components,
+                options,
+                component =>
+                {
+                    modules.Add(new QualifiedModuleName(component));
+                }
+            );
 
-        public IReadOnlyCollection<IVBProject> Projects
-        {
-            get
-            {
-                return _state.Projects.AsReadOnly();
-            }
-        }
-
-        public IReadOnlyCollection<QualifiedModuleName> AllModules()
-        {
-            return Projects.SelectMany(project => project.VBComponents)
-                            .Select(component => new QualifiedModuleName(component))
-                            .ToHashSet()
-                            .AsReadOnly(); ;
-        }
-
-
-        public void RefreshProjects()
-        {
-            _state.RefreshProjects(_vbe);
+            return modules.ToHashSet().AsReadOnly();
         }
     }
 }
