@@ -657,7 +657,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>'Option Base 0' is redundant</value>
   </data>
   <data name="OptionBaseZeroInspectionResultFormat" xml:space="preserve">
-    <value>Component '{0} uses 'Option Base 0'</value>
+    <value>Component '{0}' uses 'Option Base 0'</value>
   </data>
   <data name="RemoveOptionBaseStatementQuickFix" xml:space="preserve">
     <value>Remove 'Option Base' statement</value>
