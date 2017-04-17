@@ -170,7 +170,7 @@ namespace Rubberduck.Parsing.VBA
             ClearComponentStateCacheForTests();
             token.ThrowIfCancellationRequested();
 
-            ExecuteCommonParseActivities(modules, token);
+            ExecuteCommonParseActivities(modules, new List<QualifiedModuleName>(), token);
         }
 
         private void ClearComponentStateCacheForTests()
@@ -181,7 +181,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private void ExecuteCommonParseActivities(IReadOnlyCollection<QualifiedModuleName> toParse, CancellationToken token)
+        private void ExecuteCommonParseActivities(IReadOnlyCollection<QualifiedModuleName> toParse, IReadOnlyCollection<QualifiedModuleName> toReresolveReferences, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
             
@@ -208,11 +208,11 @@ namespace Rubberduck.Parsing.VBA
             IReadOnlyCollection<QualifiedModuleName> toResolveReferences;
             if (!toParse.Any())
             {
-                toResolveReferences = new HashSet<QualifiedModuleName>().AsReadOnly();
+                toResolveReferences = toReresolveReferences;
             }
             else
             {
-                toResolveReferences = ModulesForWhichToResolveReferences(toParse);
+                toResolveReferences = ModulesForWhichToResolveReferences(toParse, toReresolveReferences);
                 PerformPreParseCleanup(toParse, toResolveReferences, token);
                 token.ThrowIfCancellationRequested();
 
@@ -274,10 +274,11 @@ namespace Rubberduck.Parsing.VBA
             State.RefreshDeclarationFinder();
         }
 
-        private IReadOnlyCollection<QualifiedModuleName> ModulesForWhichToResolveReferences(IReadOnlyCollection<QualifiedModuleName> modulesToParse)
+        private IReadOnlyCollection<QualifiedModuleName> ModulesForWhichToResolveReferences(IReadOnlyCollection<QualifiedModuleName> modulesToParse, IReadOnlyCollection<QualifiedModuleName> toReresolveReferences)
         {
             var toResolveReferences = modulesToParse.ToHashSet();
             toResolveReferences.UnionWith(_moduleToModuleReferenceManager.ModulesReferencingAny(modulesToParse));
+            toResolveReferences.UnionWith(toReresolveReferences);
             return toResolveReferences.AsReadOnly();
         }
 
@@ -342,7 +343,13 @@ namespace Rubberduck.Parsing.VBA
             var modules = _projectManager.AllModules();
             token.ThrowIfCancellationRequested();
 
-            var componentsRemoved = CleanUpRemovedComponents(modules, token);
+            var removedModules = RemovedModules(modules);
+            token.ThrowIfCancellationRequested();
+
+            var toReResolveReferences = _moduleToModuleReferenceManager.ModulesReferencingAny(removedModules);
+            token.ThrowIfCancellationRequested();
+
+            CleanUpRemovedComponents(removedModules, token);
             token.ThrowIfCancellationRequested();
 
             var toParse = modules.Where(module => State.IsNewOrModified(module)).ToHashSet();
@@ -353,7 +360,7 @@ namespace Rubberduck.Parsing.VBA
 
             if (toParse.Count == 0)
             {
-                if (componentsRemoved)  // trigger UI updates
+                if (removedModules.Any())  // trigger UI updates
                 {
                     _parserStateManager.SetStatusAndFireStateChanged(requestor, ParserState.ResolvedDeclarations, token);
                 }
@@ -364,18 +371,12 @@ namespace Rubberduck.Parsing.VBA
 
             token.ThrowIfCancellationRequested();
 
-            ExecuteCommonParseActivities(toParse.AsReadOnly(), token);
+            ExecuteCommonParseActivities(toParse.AsReadOnly(), toReResolveReferences, token);
         }
 
-        /// <summary>
-        /// Clears state cache of removed components.
-        /// Returns whether components have been removed.
-        /// </summary>
-        private bool CleanUpRemovedComponents(IReadOnlyCollection<QualifiedModuleName> modules, CancellationToken token)
+        private void CleanUpRemovedComponents(IReadOnlyCollection<QualifiedModuleName> removedModules, CancellationToken token)
         {
-            var removedModules = RemovedModules(modules);
-            var componentRemoved = removedModules.Any();
-            if (componentRemoved)
+            if (removedModules.Any())
             {
                 _referenceRemover.RemoveReferencesBy(removedModules, token);
                 foreach (var module in removedModules)
@@ -385,7 +386,6 @@ namespace Rubberduck.Parsing.VBA
                     State.ClearStateCache(module);
                 }
             }
-            return componentRemoved;
         }
 
         private IReadOnlyCollection<QualifiedModuleName> RemovedModules(IReadOnlyCollection<QualifiedModuleName> modules)
