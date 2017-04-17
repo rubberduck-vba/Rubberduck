@@ -358,19 +358,6 @@ namespace Rubberduck.Parsing.VBA
             toParse.UnionWith(modules.Where(module => _parserStateManager.GetModuleState(module) != ParserState.Ready));
             token.ThrowIfCancellationRequested();           
 
-            if (toParse.Count == 0)
-            {
-                if (removedModules.Any())  // trigger UI updates
-                {
-                    _parserStateManager.SetStatusAndFireStateChanged(requestor, ParserState.ResolvedDeclarations, token);
-                }
-
-                _parserStateManager.SetStatusAndFireStateChanged(requestor, State.Status, token);
-                //return; // returning here leaves state in 'ResolvedDeclarations' when a module is removed, which disables refresh
-            }
-
-            token.ThrowIfCancellationRequested();
-
             ExecuteCommonParseActivities(toParse.AsReadOnly(), toReResolveReferences, token);
         }
 
