@@ -157,6 +157,9 @@ namespace Rubberduck.Parsing.VBA
         {
             token.ThrowIfCancellationRequested();
 
+            _parserStateManager.SetStatusAndFireStateChanged(this, ParserState.Pending, token);
+            token.ThrowIfCancellationRequested();
+
             _projectManager.RefreshProjects();
             token.ThrowIfCancellationRequested();
 
@@ -327,6 +330,9 @@ namespace Rubberduck.Parsing.VBA
         {
             token.ThrowIfCancellationRequested();
 
+            _parserStateManager.SetStatusAndFireStateChanged(requestor, ParserState.ResolvedDeclarations, token);
+            token.ThrowIfCancellationRequested();
+
             Thread.Sleep(50); //Simplistic hack to give the VBE time to do its work in case the parsing run is requested from an event handler. 
             token.ThrowIfCancellationRequested();
 
@@ -349,10 +355,10 @@ namespace Rubberduck.Parsing.VBA
             {
                 if (componentsRemoved)  // trigger UI updates
                 {
-                    State.SetStatusAndFireStateChanged(requestor, ParserState.ResolvedDeclarations);
+                    _parserStateManager.SetStatusAndFireStateChanged(requestor, ParserState.ResolvedDeclarations, token);
                 }
 
-                State.SetStatusAndFireStateChanged(requestor, State.Status);
+                _parserStateManager.SetStatusAndFireStateChanged(requestor, State.Status, token);
                 //return; // returning here leaves state in 'ResolvedDeclarations' when a module is removed, which disables refresh
             }
 
