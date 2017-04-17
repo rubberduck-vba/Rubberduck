@@ -57,6 +57,11 @@ namespace Rubberduck.Parsing.VBA
             _toResolve.UnionWith(toResolve);
             token.ThrowIfCancellationRequested();
 
+            if(!_toResolve.Any())
+            {
+                return;
+            }
+
             ExecuteCompilationPasses();
             token.ThrowIfCancellationRequested();
 

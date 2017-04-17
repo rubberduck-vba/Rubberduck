@@ -167,17 +167,19 @@ namespace Rubberduck.Parsing.VBA
             token.ThrowIfCancellationRequested();
 
             // tests do not fire events when components are removed--clear components
-            ClearComponentStateCacheForTests();
+            ClearComponentsForTests();
             token.ThrowIfCancellationRequested();
 
             ExecuteCommonParseActivities(modules, new List<QualifiedModuleName>(), token);
         }
 
-        private void ClearComponentStateCacheForTests()
+        private void ClearComponentsForTests()
         {
             foreach (var tree in State.ParseTrees)
             {
                 State.ClearStateCache(tree.Key);    // handle potentially removed components without crashing
+                _moduleToModuleReferenceManager.ClearModuleToModuleReferencesFromModule(tree.Key);
+                _moduleToModuleReferenceManager.ClearModuleToModuleReferencesToModule(tree.Key);
             }
         }
 
@@ -245,6 +247,8 @@ namespace Rubberduck.Parsing.VBA
                 throw new OperationCanceledException(token);
             }
 
+            //Explicitely setting the overall state here guerantees that the handlers attached 
+            //to the state change to ResolvedDeclarations always run in case there is no error.
             State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
 
             if (token.IsCancellationRequested || State.Status >= ParserState.Error)
@@ -265,6 +269,8 @@ namespace Rubberduck.Parsing.VBA
             RefreshDeclarationFinder();
             token.ThrowIfCancellationRequested();
 
+            //At this point all modules should either be in the Ready state or in an error state.
+            //This is the point where the change of the overall state to Ready is triggered on the success path.
             _parserStateManager.EvaluateOverallParserState(token);
             token.ThrowIfCancellationRequested();
         }
