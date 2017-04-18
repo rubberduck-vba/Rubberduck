@@ -18,13 +18,16 @@ namespace RubberduckTests.Refactoring.ExtractMethod
         string codeSnippet = @"
 Option explicit
 Public Sub CodeWithDeclaration()
-    Dim x as long
-    Dim z as long
+    Dim x As Long
+    Dim z As Long
 
     z = 1
     x = 1 + 2
-    Debug.Print x
+    DoNothing x
 
+End Sub
+
+Public Sub DoNothing(n As Long)
 End Sub
 ";
         #endregion
@@ -33,7 +36,7 @@ End Sub
         public class WhenClassifyingDeclarations : ExtractMethodParameterClassificationTests
         {
 
-            [TestMethod]
+            [TestMethod] 
             public void shouldUseEachRuleInRulesCollectionToCheckEachReference()
             {
                 QualifiedModuleName qualifiedModuleName;
