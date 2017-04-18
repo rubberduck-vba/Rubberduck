@@ -8,7 +8,7 @@
     <locale name="de" />
     <locale name="fr" />
   </resource-set>
-  <resource-set name="InspectionsUI" folder="RetailCoder.VBE\Inspections\Resources">
+  <resource-set name="InspectionsUI" folder="Rubberduck.Parsing\Inspections\Resources">
     <locale name="de" />
     <locale name="fr" />
   </resource-set>
