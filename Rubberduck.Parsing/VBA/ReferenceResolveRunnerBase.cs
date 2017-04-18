@@ -21,11 +21,13 @@ namespace Rubberduck.Parsing.VBA
         protected readonly RubberduckParserState _state;
         protected readonly IParserStateManager _parserStateManager;
         private readonly IModuleToModuleReferenceManager _moduleToModuleReferenceManager;
+        private readonly IReferenceRemover _referenceRemover;
 
         public ReferenceResolveRunnerBase(
             RubberduckParserState state,
             IParserStateManager parserStateManager,
-            IModuleToModuleReferenceManager moduletToModuleReferenceManager)
+            IModuleToModuleReferenceManager moduletToModuleReferenceManager,
+            IReferenceRemover referenceRemover)
         {
             if (state == null)
             {
@@ -39,10 +41,15 @@ namespace Rubberduck.Parsing.VBA
             {
                 throw new ArgumentNullException(nameof(moduletToModuleReferenceManager));
             }
+            if (referenceRemover == null)
+            {
+                throw new ArgumentNullException(nameof(referenceRemover));
+            }
 
             _state = state;
             _parserStateManager = parserStateManager;
             _moduleToModuleReferenceManager = moduletToModuleReferenceManager;
+            _referenceRemover = referenceRemover;
         }
 
 
@@ -62,6 +69,9 @@ namespace Rubberduck.Parsing.VBA
                 return;
             }
 
+            PerformPreResolveCleanup(_toResolve.AsReadOnly(), token);
+            token.ThrowIfCancellationRequested();
+
             ExecuteCompilationPasses();
             token.ThrowIfCancellationRequested();
 
@@ -78,6 +88,13 @@ namespace Rubberduck.Parsing.VBA
             AddNewUnresolvedMemberDeclarations();
 
             _toResolve.Clear();
+        }
+
+        private void PerformPreResolveCleanup(IReadOnlyCollection<QualifiedModuleName> toResolve, CancellationToken token)
+        {
+            _moduleToModuleReferenceManager.ClearModuleToModuleReferencesFromModule(toResolve);
+            _moduleToModuleReferenceManager.ClearModuleToModuleReferencesToModule(toResolve);
+            _referenceRemover.RemoveReferencesBy(toResolve, token);
         }
 
         private void ExecuteCompilationPasses()

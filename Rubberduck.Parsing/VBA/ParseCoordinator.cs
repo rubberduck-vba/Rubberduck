@@ -215,7 +215,10 @@ namespace Rubberduck.Parsing.VBA
             else
             {
                 toResolveReferences = ModulesForWhichToResolveReferences(toParse, toReresolveReferences);
-                PerformPreParseCleanup(toParse, toResolveReferences, token);
+                token.ThrowIfCancellationRequested();
+
+                //This is purely a security measure. In the success path the reference resolver removes the old references. 
+                _referenceRemover.RemoveReferencesBy(toParse, token);   
                 token.ThrowIfCancellationRequested();
 
                 _parserStateManager.SetModuleStates(toParse, ParserState.Parsing, token);
@@ -286,13 +289,6 @@ namespace Rubberduck.Parsing.VBA
             toResolveReferences.UnionWith(_moduleToModuleReferenceManager.ModulesReferencingAny(modulesToParse));
             toResolveReferences.UnionWith(toReresolveReferences);
             return toResolveReferences.AsReadOnly();
-        }
-
-        private void PerformPreParseCleanup(IReadOnlyCollection<QualifiedModuleName> modulesToParse, IReadOnlyCollection<QualifiedModuleName> toResolveReferences, CancellationToken token)
-        {
-            _moduleToModuleReferenceManager.ClearModuleToModuleReferencesFromModule(modulesToParse);
-            _moduleToModuleReferenceManager.ClearModuleToModuleReferencesToModule(modulesToParse);
-            _referenceRemover.RemoveReferencesBy(toResolveReferences, token); 
         }
 
 
