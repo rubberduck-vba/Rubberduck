@@ -342,10 +342,12 @@
     <Compile Include="VBA\CollectionExtensions.cs" />
     <Compile Include="VBA\IParsingStageService.cs" />
     <Compile Include="VBA\IProjectReferencesProvider.cs" />
+    <Compile Include="VBA\ProjectManagerBase.cs" />
+    <Compile Include="VBA\ProjectManager.cs" />
     <Compile Include="VBA\SynchronousReferenceRemover.cs" />
     <Compile Include="VBA\ReferenceRemover.cs" />
     <Compile Include="VBA\ReferenceRemoverBase.cs" />
-    <Compile Include="VBA\ProjectManager.cs" />
+    <Compile Include="VBA\SynchronousProjectManager.cs" />
     <Compile Include="VBA\SynchronousReferenceResolveRunner.cs" />
     <Compile Include="VBA\ReferenceResolveRunner.cs" />
     <Compile Include="VBA\ReferenceResolveRunnerBase.cs" />
