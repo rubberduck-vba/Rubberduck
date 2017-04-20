@@ -35,7 +35,7 @@ namespace Rubberduck.UI.Command
             .AppendLine("'@Folder(\"Tests\")")
             .AppendLine()
             .AppendLine("{0}")
-            .AppendLine("{1")
+            .AppendLine("{1}")
             .AppendLine()
             .ToString();
 
