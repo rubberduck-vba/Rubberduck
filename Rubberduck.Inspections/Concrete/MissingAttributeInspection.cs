@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
@@ -226,6 +227,108 @@ namespace Rubberduck.Inspections.Concrete
                 }
 
                 base.ExitAttributeStmt(context);
+            }
+        }
+    }
+
+    public sealed class IllegalAnnotationInspection : InspectionBase, IParseTreeInspection
+    {
+        public IllegalAnnotationInspection(RubberduckParserState state)
+            : base(state, CodeInspectionSeverity.Warning)
+        {
+            Listener = new IllegalAttributeAnnotationsListener(state.DeclarationFinder);
+        }
+
+        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
+        public IInspectionListener Listener { get; }
+
+        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public class IllegalAttributeAnnotationsListener : VBAParserBaseListener, IInspectionListener
+        {
+            private readonly IDictionary<AnnotationType, int> _annotationCounts;
+
+            private static readonly AnnotationType[] AnnotationTypes = Enum.GetValues(typeof(AnnotationType)).Cast<AnnotationType>().ToArray(); 
+            private static readonly HashSet<AnnotationType> PerModuleAnnotations;
+            private static readonly HashSet<AnnotationType> PerMemberAnnotations;
+
+            static IllegalAttributeAnnotationsListener()
+            {
+                PerModuleAnnotations = new HashSet<AnnotationType>(AnnotationTypes.Where(type => type.HasFlag(AnnotationType.ModuleAnnotation)));
+                PerMemberAnnotations = new HashSet<AnnotationType>(AnnotationTypes.Where(type => type.HasFlag(AnnotationType.MemberAnnotation)));
+            }
+
+            public IllegalAttributeAnnotationsListener(DeclarationFinder finder)
+            {
+                _annotationCounts = AnnotationTypes.ToDictionary(a => a, a => 0);
+            }
+
+            private readonly List<QualifiedContext<ParserRuleContext>> _contexts =
+                new List<QualifiedContext<ParserRuleContext>>();
+
+            public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
+
+            public QualifiedModuleName CurrentModuleName { get; set; }
+
+            public void ClearContexts()
+            {
+                _contexts.Clear();
+            }
+
+            private string _currentScope;
+
+            private void SetCurrentScope(string name)
+            {
+                _currentScope = name;
+            }
+
+
+            public override void EnterSubStmt(VBAParser.SubStmtContext context)
+            {
+                SetCurrentScope(Identifier.GetName(context.subroutineName()));
+            }
+
+            public override void EnterFunctionStmt(VBAParser.FunctionStmtContext context)
+            {
+                SetCurrentScope(Identifier.GetName(context.functionName()));
+            }
+
+            public override void EnterPropertyGetStmt(VBAParser.PropertyGetStmtContext context)
+            {
+                SetCurrentScope(Identifier.GetName(context.functionName()));
+            }
+
+            public override void EnterPropertyLetStmt(VBAParser.PropertyLetStmtContext context)
+            {
+                SetCurrentScope(Identifier.GetName(context.subroutineName()));
+            }
+
+            public override void EnterPropertySetStmt(VBAParser.PropertySetStmtContext context)
+            {
+                SetCurrentScope(Identifier.GetName(context.subroutineName()));
+            }
+
+            public override void ExitAnnotation(VBAParser.AnnotationContext context)
+            {
+                var name = Identifier.GetName(context.annotationName().unrestrictedIdentifier());
+                var annotationType = (AnnotationType) Enum.Parse(typeof (AnnotationType), name);
+                _annotationCounts[annotationType]++;
+
+                var isPerModule = PerModuleAnnotations.Any(a => annotationType.HasFlag(a));
+                var isMemberOnModule = _currentScope != null && isPerModule;
+
+                var isPerMember = PerMemberAnnotations.Any(a => annotationType.HasFlag(a));
+                var isModuleOnMember = _currentScope == null && isPerMember;
+
+                var isOnlyAllowedOnce = isPerModule || isPerMember;
+
+                if (isOnlyAllowedOnce && _annotationCounts[annotationType] > 1 || isModuleOnMember || isMemberOnModule)
+                {
+                    _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
+                }
             }
         }
     }
