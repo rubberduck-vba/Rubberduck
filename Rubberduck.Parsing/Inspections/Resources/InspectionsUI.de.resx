@@ -127,7 +127,7 @@
     <value>Code Qualitätsproblem</value>
   </data>
   <data name="ConstantNotUsedInspectionMeta" xml:space="preserve">
-    <value>Ein konstanter Wert ist deklariert, aber Rubberduck konnte keine Referenz auf ihn finden. Bedenken sie eine Entfernung der nicht verwendeten Deklaration.</value>
+    <value>Rubberduck konnte keine Referenz auf eine Konstante finden. Überlegen Sie eine Entfernung der nicht verwendeten Deklaration.</value>
   </data>
   <data name="ConstantNotUsedInspectionName" xml:space="preserve">
     <value>Konstante wird nicht verwendet</value>
@@ -327,13 +327,13 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>Nutze aussagekräftige Namen.</value>
   </data>
   <data name="VariableNotAssignedInspectionMeta" xml:space="preserve">
-    <value>Eine Variable, die keine Wert-/Referenzzuweisung hat, wurde deklariert. Rubberduck schlägt vor, dass diese gefahrlos gelöscht werden kann.</value>
+    <value>Einer Variable wird kein Wert zugewiesen. Falls Rubberduck recht hat, kann diese wahrscheinlich gefahrlos gelöscht werden.</value>
   </data>
   <data name="VariableNotAssignedInspectionName" xml:space="preserve">
-    <value>Variable wurde deklariert aber nie genutzt.</value>
+    <value>Variable wird nicht beschrieben.</value>
   </data>
   <data name="VariableNotUsedInspectionMeta" xml:space="preserve">
-    <value>Eine Variable wurde deklariert, allerdings wird diese Variable nicht weitergenutzt.</value>
+    <value>Variable wird nicht gelesen</value>
   </data>
   <data name="VariableNotUsedInspectionName" xml:space="preserve">
     <value>Die Variable wird nicht referenziert.</value>
@@ -448,10 +448,10 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>Ändere '{0}' zu '{1}'</value>
   </data>
   <data name="QuickFix_ThisModule" xml:space="preserve">
-    <value>Verarbeite alle Vorkommen im Modul</value>
+    <value>Alle Vorkommnisse im Modul beheben</value>
   </data>
   <data name="QuickFix_ThisProject" xml:space="preserve">
-    <value>Verarbeite alle Vorkommen im Projekt</value>
+    <value>Alle Vorkommnisse im Projekt beheben</value>
   </data>
   <data name="RemoveCommentQuickFix" xml:space="preserve">
     <value>Entferne Kommentar</value>
@@ -643,6 +643,24 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>Geklammerte Ausdrücke werden von der Hostanwendung zur Laufzeit ausgewertet, was bedeutet, dass VBA den Ausdruck nicht zur Kompilierzeit validieren kann. Erwägen sie, das hostspezifische Objektmodell zu verwenden.</value>
   </data>
   <data name="AssignedByValParameterMakeLocalCopyQuickFix">
-    <value />
+    <value>Eine lokale Kopie des Parameters erstellen und verwenden</value>
+  </data>
+  <data name="OptionBaseZeroInspectionName">
+    <value>'Option Base 0' ist redundant</value>
+  </data>
+  <data name="OptionBaseZeroInspectionResultFormat">
+    <value>Komponente '{0}' verwendet 'Option Base 0'</value>
+  </data>
+  <data name="QuickFix_All">
+    <value>Alle Vorkommnisse beheben</value>
+  </data>
+  <data name="QuickFix_ThisProcedure">
+    <value>Alle Vorkommnisse in der Prozedur beheben</value>
+  </data>
+  <data name="OptionBaseZeroInspectionMeta">
+    <value>Dies ist die Standardeinstellung, sie muss nicht spezifiziert werden.</value>
+  </data>
+  <data name="RemoveOptionBaseStatementQuickFix">
+    <value>'Option Base'-Anweisung entfernen</value>
   </data>
 </root>

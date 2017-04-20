@@ -268,6 +268,12 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
+        //Overload using the vbe instance injected via the constructor.
+        private void RefreshProjects()
+        {
+            RefreshProjects(_vbe);
+        }
+
         private void RemoveProject(string projectId, bool notifyStateChanged = false)
         {
             lock (_projects)
@@ -335,61 +341,64 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-
-        public void SetModuleState(IVBComponent component, ParserState state, CancellationToken token, SyntaxErrorException parserError = null, bool evaluateOverallState = true)
+        public void SetModuleState(QualifiedModuleName module, ParserState state, CancellationToken token, SyntaxErrorException parserError = null, bool evaluateOverallState = true)
         {
             if (!token.IsCancellationRequested)
             {
-                SetModuleState(component, state, parserError, evaluateOverallState);
+                SetModuleState(module, state, parserError, evaluateOverallState);
             }
         }
-        
-        public void SetModuleState(IVBComponent component, ParserState state, SyntaxErrorException parserError = null, bool evaluateOverallState = true)
+
+        public void SetModuleState(QualifiedModuleName module, ParserState state, SyntaxErrorException parserError = null, bool evaluateOverallState = true)
         {
             if (AllUserDeclarations.Count > 0)
             {
-                var projectId = component.Collection.Parent.HelpFile;
-
-                IVBProject project = null;
-                lock (_projects)
-                {
-                    foreach (var item in _projects)
-                    {
-                        if (item.Value.HelpFile == projectId)
-                        {
-                            if (project != null)
-                            {
-                                // ghost component detected, abort project iteration
-                                project = null;
-                                break;
-                            }
-                            project = item.Value;
-                        }
-                    }
-                }
+                var projectId = module.ProjectId;
+                IVBProject project = GetProject(projectId);
 
                 if (project == null)
                 {
                     // ghost component shouldn't even exist
-                    ClearStateCache(component);
+                    ClearStateCache(module);
                     EvaluateParserState();
                     return;
                 }
             }
-            var key = new QualifiedModuleName(component);
 
-            var oldState = GetModuleState(component);
+            var oldState = GetModuleState(module);
 
-            _moduleStates.AddOrUpdate(key, new ModuleState(state), (c, e) => e.SetState(state));
-            _moduleStates.AddOrUpdate(key, new ModuleState(parserError), (c, e) => e.SetModuleException(parserError));
-            Logger.Debug("Module '{0}' state is changing to '{1}' (thread {2})", key.ComponentName, state, Thread.CurrentThread.ManagedThreadId);
-            OnModuleStateChanged(component, state, oldState);
+            _moduleStates.AddOrUpdate(module, new ModuleState(state), (c, e) => e.SetState(state));
+            _moduleStates.AddOrUpdate(module, new ModuleState(parserError), (c, e) => e.SetModuleException(parserError));
+            Logger.Debug("Module '{0}' state is changing to '{1}' (thread {2})", module.ComponentName, state, Thread.CurrentThread.ManagedThreadId);
+            OnModuleStateChanged(module.Component, state, oldState);
             if (evaluateOverallState)
             {
                 EvaluateParserState();
             }
         }
 
+        private IVBProject GetProject(string projectId)
+        {
+            IVBProject project = null;
+            lock (_projects)
+            {
+                foreach (var item in _projects)
+                {
+                    if (item.Value.HelpFile == projectId)
+                    {
+                        if (project != null)
+                        {
+                            // ghost project detected, abort project iteration
+                            project = null;
+                            break;
+                        }
+                        project = item.Value;
+                    }
+                }
+            }
+
+            return project;
+        }
 
         public void EvaluateParserState()
         {
@@ -515,28 +524,22 @@ namespace Rubberduck.Parsing.VBA
             return result;
         }
 
-        public ParserState GetOrCreateModuleState(IVBComponent component)
+        public ParserState GetOrCreateModuleState(QualifiedModuleName module)
         {
-            var key = new QualifiedModuleName(component);
-            var state = _moduleStates.GetOrAdd(key, new ModuleState(ParserState.Pending)).State;
+            var state = _moduleStates.GetOrAdd(module, new ModuleState(ParserState.Pending)).State;
 
             if (state == ParserState.Pending)
             {
                 return state;   // we are slated for a reparse already
             }
 
-            if (!IsNewOrModified(key))
+            if (!IsNewOrModified(module))
             {
                 return state;
             }
 
-            _moduleStates.AddOrUpdate(key, new ModuleState(ParserState.Pending), (c, s) => s.SetState(ParserState.Pending));
+            _moduleStates.AddOrUpdate(module, new ModuleState(ParserState.Pending), (c, s) => s.SetState(ParserState.Pending));
             return ParserState.Pending;
-        }
-
-        public ParserState GetModuleState(IVBComponent component)
-        {
-            return GetModuleState(new QualifiedModuleName(component));
         }
 
         public ParserState GetModuleState(QualifiedModuleName module)
@@ -571,11 +574,6 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        internal void SetModuleAttributes(IVBComponent component, IDictionary<Tuple<string, DeclarationType>, Attributes> attributes)
-        {
-            SetModuleAttributes(new QualifiedModuleName(component), attributes);
-        }
-
         internal void SetModuleAttributes(QualifiedModuleName module, IDictionary<Tuple<string, DeclarationType>, Attributes> attributes)
         {
             _moduleStates.AddOrUpdate(module, new ModuleState(attributes), (c, s) => s.SetModuleAttributes(attributes));
@@ -593,11 +591,6 @@ namespace Rubberduck.Parsing.VBA
 
                 return comments;
             }
-        }
-
-        public void SetModuleComments(IVBComponent component, IEnumerable<CommentNode> comments)
-        {
-            SetModuleComments(new QualifiedModuleName(component), comments);
         }
 
         public void SetModuleComments(QualifiedModuleName module, IEnumerable<CommentNode> comments)
@@ -619,11 +612,6 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public IEnumerable<IAnnotation> GetModuleAnnotations(IVBComponent component)
-        {
-            return GetModuleAnnotations(new QualifiedModuleName(component));
-        }
-
         public IEnumerable<IAnnotation> GetModuleAnnotations(QualifiedModuleName module)
         {
             ModuleState result;
@@ -633,11 +621,6 @@ namespace Rubberduck.Parsing.VBA
             }
 
             return new List<IAnnotation>();
-        }
-
-        public void SetModuleAnnotations(IVBComponent component, IEnumerable<IAnnotation> annotations)
-        {
-            SetModuleAnnotations(new QualifiedModuleName(component), annotations);
         }
 
         public void SetModuleAnnotations(QualifiedModuleName module, IEnumerable<IAnnotation> annotations)
@@ -726,11 +709,6 @@ namespace Rubberduck.Parsing.VBA
             }
 
             _allUserDeclarations = declarations;
-        }
-
-        internal IDictionary<Tuple<string, DeclarationType>, Attributes> GetModulAttributes(IVBComponent vbComponent)
-        {
-            return GetModuleAttributes(new QualifiedModuleName(vbComponent));
         }
 
         internal IDictionary<Tuple<string, DeclarationType>, Attributes> GetModuleAttributes(QualifiedModuleName module)
@@ -844,12 +822,12 @@ namespace Rubberduck.Parsing.VBA
             return component != null && ClearStateCache(new QualifiedModuleName(component), notifyStateChanged);
         }
 
-        public bool ClearStateCache(QualifiedModuleName component, bool notifyStateChanged = false)
+        public bool ClearStateCache(QualifiedModuleName module, bool notifyStateChanged = false)
         {
-            var keys = new List<QualifiedModuleName> { component };
+            var keys = new List<QualifiedModuleName> { module };
             foreach (var key in _moduleStates.Keys)
             {
-                if (key.Equals(component) && !keys.Contains(key))
+                if (key.Equals(module) && !keys.Contains(key))
                 {
                     keys.Add(key);
                 }
@@ -905,19 +883,9 @@ namespace Rubberduck.Parsing.VBA
             return success;
         }
 
-        public void AddTokenStream(IVBComponent component, ITokenStream stream)
-        {
-            AddTokenStream(new QualifiedModuleName(component), stream);
-        }
-
         public void AddTokenStream(QualifiedModuleName module, ITokenStream stream)
         {
             _moduleStates[module].SetTokenStream(stream);
-        }
-
-        public void AddParseTree(IVBComponent component, IParseTree parseTree)
-        {
-            AddParseTree(new QualifiedModuleName(component), parseTree);
         }
 
         public void AddParseTree(QualifiedModuleName module, IParseTree parseTree)
@@ -927,9 +895,9 @@ namespace Rubberduck.Parsing.VBA
             _moduleStates[key].SetModuleContentHashCode(key.ContentHashCode);
         }
 
-        public IParseTree GetParseTree(IVBComponent component)
+        public IParseTree GetParseTree(QualifiedModuleName module)
         {
-            return _moduleStates[new QualifiedModuleName(component)].ParseTree;
+            return _moduleStates[module].ParseTree;
         }
 
         public List<KeyValuePair<QualifiedModuleName, IParseTree>> ParseTrees
@@ -1056,99 +1024,6 @@ namespace Rubberduck.Parsing.VBA
                 moduleState?.Dispose();
                 Logger.Warn("Could not remove declarations for removed reference '{0}' ({1}).", reference.Name, QualifiedModuleName.GetProjectId(reference));
             }
-        }
-
-        public void AddModuleToModuleReference(QualifiedModuleName referencingModule, QualifiedModuleName referencedModule)
-        {
-            ModuleState referencedModuleState;
-            ModuleState referencingModuleState;
-            if (!_moduleStates.TryGetValue(referencedModule, out referencedModuleState) || !_moduleStates.TryGetValue(referencingModule, out referencingModuleState))
-            {
-                return;
-            }
-            if (referencedModuleState.IsReferencedByModule.Contains(referencingModule))
-            {
-                return;
-            }
-            referencedModuleState.IsReferencedByModule.Add(referencingModule);
-            referencingModuleState.HasReferenceToModule.AddOrUpdate(referencedModule, 1, (key, value) => value);
-        }
-
-        public void RemoveModuleToModuleReference(QualifiedModuleName referencedModule, QualifiedModuleName referencingModule)
-        {
-            ModuleState referencedModuleState;
-            ModuleState referencingModuleState;
-            if (!_moduleStates.TryGetValue(referencedModule, out referencedModuleState) || !_moduleStates.TryGetValue(referencingModule, out referencingModuleState))
-            {
-                return;
-            }
-            if (referencedModuleState.IsReferencedByModule.Contains(referencingModule))
-            {
-                referencedModuleState.IsReferencedByModule.Remove(referencingModule);
-            }
-            byte dummyOutValue;
-            referencingModuleState.HasReferenceToModule.TryRemove(referencedModule, out dummyOutValue);
-        }
-
-        public void ClearModuleToModuleReferencesFromModule(QualifiedModuleName referencingModule)
-        {
-            ModuleState referencingModuleState;
-            if (!_moduleStates.TryGetValue(referencingModule, out referencingModuleState))
-            {
-                return;
-            }
-
-            foreach (var referencedModule in referencingModuleState.HasReferenceToModule.Keys)
-            {
-                ModuleState referencedModuleState;
-                if (!_moduleStates.TryGetValue(referencedModule,out referencedModuleState))
-                {
-                    continue;
-                }
-                referencedModuleState.IsReferencedByModule.Remove(referencingModule);
-            }
-            referencingModuleState.RefreshHasReferenceToModule();
-        }
-
-        public void ClearModuleToModuleReferencesToModule(QualifiedModuleName referencedModule)
-        {
-            ModuleState referencedModuleState;
-            if (!_moduleStates.TryGetValue(referencedModule, out referencedModuleState))
-            {
-                return;
-            }
-
-            foreach(var referencingModule in referencedModuleState.IsReferencedByModule)
-            {
-                ModuleState referencingModuleState;
-                if (!_moduleStates.TryGetValue(referencingModule, out referencingModuleState))
-                {
-                    continue;
-                }
-                byte dummyOutValue;
-                referencingModuleState.HasReferenceToModule.TryRemove(referencedModule, out dummyOutValue);
-            }
-            referencedModuleState.RefreshIsReferencedByModule();
-        }
-
-        public HashSet<QualifiedModuleName> ModulesReferencedBy(QualifiedModuleName referencingModule)
-        { 
-            ModuleState referencingModuleState;
-            if (!_moduleStates.TryGetValue(referencingModule, out referencingModuleState))
-            {
-                return new HashSet<QualifiedModuleName>();
-            }
-            return new HashSet<QualifiedModuleName>(referencingModuleState.HasReferenceToModule.Keys);
-        }
-
-        public HashSet<QualifiedModuleName> ModulesReferencing(QualifiedModuleName referencedModule)
-        {
-            ModuleState referencedModuleState;
-            if (!_moduleStates.TryGetValue(referencedModule, out referencedModuleState))
-            {
-                return new HashSet<QualifiedModuleName>();
-            }
-            return new HashSet<QualifiedModuleName>(referencedModuleState.IsReferencedByModule);
         }
 
 

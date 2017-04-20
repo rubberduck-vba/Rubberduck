@@ -18,24 +18,19 @@ namespace Rubberduck.Inspections.Concrete
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
-            var items = UserDeclarations.ToList();
-
             // ignore arrays. todo: ArrayIndicesNotAccessedInspection
-            var arrays = items.Where(declaration =>
-                declaration.DeclarationType == DeclarationType.Variable
-                && declaration.IsArray).ToList();
+            var arrays = State.DeclarationFinder.UserDeclarations(DeclarationType.Variable).Where(declaration => declaration.IsArray);
 
-            var declarations = items.Except(arrays).Where(declaration =>
-                declaration.DeclarationType == DeclarationType.Variable
-                && !declaration.IsWithEvents
-                && !items.Any(item => 
-                    item.IdentifierName == declaration.AsTypeName 
-                    && item.DeclarationType == DeclarationType.UserDefinedType) // UDT variables don't need to be assigned
-                && !declaration.IsSelfAssigned
-                && !declaration.References.Any(reference => reference.IsAssignment));
+            var declarations = State.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
+                .Except(arrays)
+                .Where(declaration =>
+                    !declaration.IsWithEvents
+                    && State.DeclarationFinder.MatchName(declaration.AsTypeName).All(item => item.DeclarationType != DeclarationType.UserDefinedType) // UDT variables don't need to be assigned
+                    && !declaration.IsSelfAssigned
+                    && !declaration.References.Any(reference => reference.IsAssignment))
+                .Where(result => !IsIgnoringInspectionResultFor(result, AnnotationName));
 
-            return declarations.Select(issue => 
-                new IdentifierNotAssignedInspectionResult(this, issue));
+            return declarations.Select(issue => new IdentifierNotAssignedInspectionResult(this, issue));
         }
     }
 }

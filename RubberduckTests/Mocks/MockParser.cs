@@ -49,10 +49,10 @@ namespace RubberduckTests.Mocks
             var path = serializedDeclarationsPath ??
                        Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(typeof(MockParser)).Location), "TestFiles", "Resolver");
             Func<IVBAPreprocessor> preprocessorFactory = () => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture));
-            var projectManager = new ProjectManager(state, vbe);
-            var moduleToModuleReferenceManager = new ModuleToModuleReferenceManager(state);
+            var projectManager = new SynchronousProjectManager(state, vbe);
+            var moduleToModuleReferenceManager = new ModuleToModuleReferenceManager();
             var parserStateManager = new SynchronousParserStateManager(state);
-            var referenceRemover = new ReferenceRemover(state, moduleToModuleReferenceManager);
+            var referenceRemover = new SynchronousReferenceRemover(state, moduleToModuleReferenceManager);
             var comSynchronizer = new SynchronousCOMReferenceSynchronizer(
                 state, 
                 parserStateManager, 

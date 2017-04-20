@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor;
 
 namespace RubberduckTests.Grammar
 {
@@ -47,7 +48,7 @@ namespace RubberduckTests.Grammar
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error: " + filename); }
 
-            var tree = state.GetParseTree(component);
+            var tree = state.GetParseTree(new QualifiedModuleName(component));
             var parsed = tree.GetText();
             var withoutEOF = parsed.Substring(0, parsed.Length - 5);
             return withoutEOF;
