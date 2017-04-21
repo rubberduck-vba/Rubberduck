@@ -61,12 +61,14 @@
     <Compile Include="Concrete\FunctionReturnValueNotUsedInspection.cs" />
     <Compile Include="Concrete\HostSpecificExpressionInspection.cs" />
     <Compile Include="Concrete\HungarianNotationInspection.cs" />
+    <Compile Include="Concrete\IllegalAnnotationInspection.cs" />
     <Compile Include="Concrete\ImplicitActiveSheetReferenceInspection.cs" />
     <Compile Include="Concrete\ImplicitActiveWorkbookReferenceInspection.cs" />
     <Compile Include="Concrete\ImplicitByRefParameterInspection.cs" />
     <Compile Include="Concrete\ImplicitDefaultMemberAssignmentInspection.cs" />
     <Compile Include="Concrete\ImplicitPublicMemberInspection.cs" />
     <Compile Include="Concrete\ImplicitVariantReturnTypeInspection.cs" />
+    <Compile Include="Concrete\MissingAnnotationInspection.cs" />
     <Compile Include="Concrete\MissingAttributeInspection.cs" />
     <Compile Include="Inspector.cs" />
     <Compile Include="Concrete\MemberNotOnInterfaceInspection.cs" />
@@ -75,7 +77,6 @@
     <Compile Include="Concrete\MoveFieldCloserToUsageInspection.cs" />
     <Compile Include="Concrete\MultilineParameterInspection.cs" />
     <Compile Include="Concrete\MultipleDeclarationsInspection.cs" />
-    <Compile Include="Concrete\MultipleFolderAnnotationsInspection.cs" />
     <Compile Include="Concrete\NonReturningFunctionInspection.cs" />
     <Compile Include="Concrete\ObjectVariableNotSetInspection.cs" />
     <Compile Include="Concrete\ObsoleteCallStatementInspection.cs" />
@@ -137,6 +138,7 @@
     <Compile Include="Results\IdentifierNameInspectionResult.cs" />
     <Compile Include="Results\IdentifierNotAssignedInspectionResult.cs" />
     <Compile Include="Results\IdentifierNotUsedInspectionResult.cs" />
+    <Compile Include="Results\IllegalAnnotationInspectionResult.cs" />
     <Compile Include="Results\ImplicitActiveSheetReferenceInspectionResult.cs" />
     <Compile Include="Results\ImplicitActiveWorkbookReferenceInspectionResult.cs" />
     <Compile Include="Results\ImplicitByRefParameterInspectionResult.cs" />
@@ -145,11 +147,12 @@
     <Compile Include="Results\ImplicitVariantReturnTypeInspectionResult.cs" />
     <Compile Include="Results\MemberNotOnInterfaceInspectionResult.cs" />
     <Compile Include="Results\MissingAnnotationArgumentInspectionResult.cs" />
+    <Compile Include="Results\MissingAnnotationInspectionResult.cs" />
+    <Compile Include="Results\MissingAttributeInspectionResult.cs" />
     <Compile Include="Results\ModuleScopeDimKeywordInspectionResult.cs" />
     <Compile Include="Results\MoveFieldCloserToUsageInspectionResult.cs" />
     <Compile Include="Results\MultilineParameterInspectionResult.cs" />
     <Compile Include="Results\MultipleDeclarationsInspectionResult.cs" />
-    <Compile Include="Results\MultipleFolderAnnotationsInspectionResult.cs" />
     <Compile Include="Results\NonReturningFunctionInspectionResult.cs" />
     <Compile Include="Results\ObjectVariableNotSetInspectionResult.cs" />
     <Compile Include="Results\ObsoleteCallStatementUsageInspectionResult.cs" />

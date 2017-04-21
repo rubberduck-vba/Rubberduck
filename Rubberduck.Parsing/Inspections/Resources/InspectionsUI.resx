@@ -668,4 +668,37 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="QuickFix_ThisProcedure" xml:space="preserve">
     <value>Fix all occurrences in procedure</value>
   </data>
+  <data name="IllegalAnnotationInspectionMeta" xml:space="preserve">
+    <value>An annotation meant to be specified at module level cannot be used to annotate members; annotations meant to be annotate members cannot be used at module level; module and member annotations should only be specified once.</value>
+  </data>
+  <data name="IllegalAnnotationInspectionName" xml:space="preserve">
+    <value>Illegal annotation</value>
+  </data>
+  <data name="IllegalAnnotationInspectionResultFormat" xml:space="preserve">
+    <value>Annotation '{0}' is illegal in this context.</value>
+    <comment>{0} annotation name</comment>
+  </data>
+  <data name="MissingAnnotationInspectionMeta" xml:space="preserve">
+    <value>Module and member attributes are not displayed in the VBE. By adding an annotation, you make these attributes more explicit, and Rubberduck can keep annotations and attributes synchronized.</value>
+  </data>
+  <data name="MissingAnnotationInspectionName" xml:space="preserve">
+    <value>Missing annotation</value>
+  </data>
+  <data name="MissingAnnotationInspectionResultFormat" xml:space="preserve">
+    <value>Module or member '{0}' has a '{1}' attribute, but no corresponding annotation.</value>
+    <comment>{0} module/member; {1} specified attribute</comment>
+  </data>
+  <data name="MissingAttributeInspectionMeta" xml:space="preserve">
+    <value>A Rubberduck annotation is specified for a module or member, but the corresponding attribute isn't present. Module needs to be synchronized.</value>
+  </data>
+  <data name="MissingAttributeInspectionName" xml:space="preserve">
+    <value>Missing attribute</value>
+  </data>
+  <data name="MissingAttributeInspectionResultFormat" xml:space="preserve">
+    <value>Module or member '{0}' has a '{1}' annotation, but no corresponding attribute.</value>
+    <comment>{0} module/member; {1} specified annotation</comment>
+  </data>
+  <data name="SynchronizeAttributesQuickFix" xml:space="preserve">
+    <value>Synchronize attributes/annotations in module</value>
+  </data>
 </root>

@@ -9,12 +9,12 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Results
 {
-    public class MissingAnnotationArgumentInspectionResult : InspectionResultBase
+    public class IllegalAnnotationInspectionResult : InspectionResultBase
     {
-        public MissingAnnotationArgumentInspectionResult(IInspection inspection, QualifiedContext<ParserRuleContext> qualifiedContext, QualifiedMemberName? qualifiedName)
+        public IllegalAnnotationInspectionResult(IInspection inspection, QualifiedContext<ParserRuleContext> qualifiedContext, QualifiedMemberName? qualifiedName)
             : base(inspection, qualifiedContext.ModuleName, qualifiedName, qualifiedContext.Context) { }
 
         public override string Description => 
-            string.Format(InspectionsUI.MissingAnnotationArgumentInspectionResultFormat, ((VBAParser.AnnotationContext)Context).annotationName().GetText()).Capitalize();
+            string.Format(InspectionsUI.IllegalAnnotationInspectionResultFormat, ((VBAParser.AnnotationContext)Context).annotationName().GetText()).Capitalize();
     }
 }

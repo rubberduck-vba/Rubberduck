@@ -9,11 +9,11 @@ using RubberduckTests.Mocks;
 namespace RubberduckTests.Inspections
 {
     [TestClass]
-    public class MultipleFolderAnnotationsInspectionTests
+    public class IllegalAnnotationsInspectionTests
     {
         [TestMethod]
         [TestCategory("Inspections")]
-        public void NoFolderAnnotation_NoResult()
+        public void NoAnnotation_NoResult()
         {
             const string inputCode =
 @"Public Sub Foo()
@@ -24,7 +24,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new MultipleFolderAnnotationsInspection(state);
+            var inspection = new IllegalAnnotationInspection(state);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
@@ -45,7 +45,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new MultipleFolderAnnotationsInspection(state);
+            var inspection = new IllegalAnnotationInspection(state);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
@@ -66,7 +66,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new MultipleFolderAnnotationsInspection(state);
+            var inspection = new IllegalAnnotationInspection(state);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
@@ -77,7 +77,7 @@ End Sub";
         [TestCategory("Inspections")]
         public void InspectionType()
         {
-            var inspection = new MultipleFolderAnnotationsInspection(null);
+            var inspection = new IllegalAnnotationInspection(null);
             Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
         }
 
@@ -86,7 +86,7 @@ End Sub";
         public void InspectionName()
         {
             const string inspectionName = "MultipleFolderAnnotationsInspection";
-            var inspection = new MultipleFolderAnnotationsInspection(null);
+            var inspection = new IllegalAnnotationInspection(null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
         }

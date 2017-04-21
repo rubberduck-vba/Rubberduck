@@ -14,12 +14,12 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    public sealed class MissingAttributeInspection : InspectionBase, IParseTreeInspection
+    public sealed class MissingAnnotationInspection : InspectionBase, IParseTreeInspection
     {
-        public MissingAttributeInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Error)
+        public MissingAnnotationInspection(RubberduckParserState state)
+            : base(state, CodeInspectionSeverity.Hint)
         {
-            Listener = new MissingAttributeAnnotationListener(state.DeclarationFinder);
+            Listener = new MissingMemberAttributeListener(state.DeclarationFinder);
         }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
@@ -27,15 +27,15 @@ namespace Rubberduck.Inspections.Concrete
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
-            return Listener.Contexts.Select(context => new MissingAttributeInspectionResult(this, context, context.MemberName));
+            return Listener.Contexts.Select(context => new MissingAnnotationInspectionResult(this, context, context.MemberName));
         }
 
-        public class MissingAttributeAnnotationListener : VBAParserBaseListener, IInspectionListener
+        public class MissingMemberAttributeListener : VBAParserBaseListener, IInspectionListener
         {
             private readonly DeclarationFinder _finder;
             private readonly HashSet<string> _attributeNames;
 
-            public MissingAttributeAnnotationListener(DeclarationFinder finder)
+            public MissingMemberAttributeListener(DeclarationFinder finder)
             {
                 _finder = finder;
 
@@ -92,6 +92,11 @@ namespace Rubberduck.Inspections.Concrete
             public override void EnterPropertySetStmt(VBAParser.PropertySetStmtContext context)
             {
                 SetCurrentScope(Identifier.GetName(context.subroutineName()));
+            }
+
+            public override void ExitAnnotation(VBAParser.AnnotationContext context)
+            {
+                base.ExitAnnotation(context);
             }
 
             public override void ExitAttributeStmt(VBAParser.AttributeStmtContext context)

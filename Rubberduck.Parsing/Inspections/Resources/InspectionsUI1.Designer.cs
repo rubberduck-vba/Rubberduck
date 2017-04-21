@@ -160,7 +160,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Constant value is declared but Rubberduck could not find any reference to it. Consider removing the unused declaration..
+        ///   Looks up a localized string similar to Rubberduck could not find any reference to constant. Consider removing the unused declaration..
         /// </summary>
         public static string ConstantNotUsedInspectionMeta {
             get {
@@ -408,6 +408,33 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         public static string IgnoreOnce {
             get {
                 return ResourceManager.GetString("IgnoreOnce", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An annotation meant to be specified at module level cannot be used to annotate members; annotations meant to be annotate members cannot be used at module level; module and member annotations should only be specified once..
+        /// </summary>
+        public static string IllegalAnnotationInspectionMeta {
+            get {
+                return ResourceManager.GetString("IllegalAnnotationInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Illegal annotation.
+        /// </summary>
+        public static string IllegalAnnotationInspectionName {
+            get {
+                return ResourceManager.GetString("IllegalAnnotationInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Annotation &apos;{0}&apos; is illegal in this context..
+        /// </summary>
+        public static string IllegalAnnotationInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("IllegalAnnotationInspectionResultFormat", resourceCulture);
             }
         }
         
@@ -714,6 +741,60 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         public static string MissingAnnotationArgumentInspectionResultFormat {
             get {
                 return ResourceManager.GetString("MissingAnnotationArgumentInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Module and member attributes are not displayed in the VBE. By adding an annotation, you make these attributes more explicit, and Rubberduck can keep annotations and attributes synchronized..
+        /// </summary>
+        public static string MissingAnnotationInspectionMeta {
+            get {
+                return ResourceManager.GetString("MissingAnnotationInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing annotation.
+        /// </summary>
+        public static string MissingAnnotationInspectionName {
+            get {
+                return ResourceManager.GetString("MissingAnnotationInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Module or member &apos;{0}&apos; has a &apos;{1}&apos; attribute, but no corresponding annotation..
+        /// </summary>
+        public static string MissingAnnotationInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("MissingAnnotationInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A Rubberduck annotation is specified for a module or member, but the corresponding attribute isn&apos;t present. Module needs to be synchronized..
+        /// </summary>
+        public static string MissingAttributeInspectionMeta {
+            get {
+                return ResourceManager.GetString("MissingAttributeInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing attribute.
+        /// </summary>
+        public static string MissingAttributeInspectionName {
+            get {
+                return ResourceManager.GetString("MissingAttributeInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Module or member &apos;{0}&apos; has a &apos;{1}&apos; annotation, but no corresponding attribute..
+        /// </summary>
+        public static string MissingAttributeInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("MissingAttributeInspectionResultFormat", resourceCulture);
             }
         }
         
@@ -1096,7 +1177,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Component &apos;{0} uses &apos;Option Base 0&apos;.
+        ///   Looks up a localized string similar to Component &apos;{0}&apos; uses &apos;Option Base 0&apos;.
         /// </summary>
         public static string OptionBaseZeroInspectionResultFormat {
             get {
@@ -1474,6 +1555,15 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Synchronize attributes/annotations in module.
+        /// </summary>
+        public static string SynchronizeAttributesQuickFix {
+            get {
+                return ResourceManager.GetString("SynchronizeAttributesQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This is likely a bug. A variable is being referred to, but is never assigned..
         /// </summary>
         public static string UnassignedVariableUsageInspectionMeta {
@@ -1574,7 +1664,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A variable is declared, but never assigned a value/reference. If Rubberduck is correct, the variable could probably be safely removed..
+        ///   Looks up a localized string similar to Variable does not seem to be assigned. If Rubberduck is correct, the variable could probably be safely removed..
         /// </summary>
         public static string VariableNotAssignedInspectionMeta {
             get {
@@ -1583,7 +1673,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Variable is declared but never assigned.
+        ///   Looks up a localized string similar to Variable is not assigned.
         /// </summary>
         public static string VariableNotAssignedInspectionName {
             get {
@@ -1592,7 +1682,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Variable &apos;{0}&apos; is never assigned.
+        ///   Looks up a localized string similar to Variable &apos;{0}&apos; is not assigned.
         /// </summary>
         public static string VariableNotAssignedInspectionResultFormat {
             get {
@@ -1601,7 +1691,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A variable is declared, but never referred to..
+        ///   Looks up a localized string similar to Variable is not referred to.
         /// </summary>
         public static string VariableNotUsedInspectionMeta {
             get {

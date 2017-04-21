@@ -133,7 +133,7 @@
     <Compile Include="Inspections\FunctionReturnValueNotUsedInspectionTests.cs" />
     <Compile Include="Inspections\GeneralInspectionTests.cs" />
     <Compile Include="Inspections\ImplicitActiveSheetReferenceInspectionTests.cs" />
-    <Compile Include="Inspections\MultipleFolderAnnotationsInspectionTests.cs" />
+    <Compile Include="Inspections\IllegalAnnotationsInspectionTests.cs" />
     <Compile Include="Inspections\ObjectVariableNotSetInspectionTests.cs" />
     <Compile Include="Inspections\MalformedAnnotationInspectionTests.cs" />
     <Compile Include="Inspections\SelfAssignedDeclarationInspectionTests.cs" />
