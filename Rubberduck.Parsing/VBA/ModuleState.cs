@@ -156,16 +156,6 @@ namespace Rubberduck.Parsing.VBA
             return this;
         }
 
-        public void RefreshHasReferenceToModule()
-        {
-            HasReferenceToModule = new ConcurrentDictionary<QualifiedModuleName, byte>();
-        }
-
-        public void RefreshIsReferencedByModule()
-        {
-            IsReferencedByModule = new HashSet<QualifiedModuleName>();
-        }
-
         private bool _isDisposed;
         public void Dispose()
         {
