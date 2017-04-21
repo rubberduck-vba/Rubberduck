@@ -29,6 +29,8 @@ namespace Rubberduck.Parsing.Rewriter
 
         public override void Rewrite()
         {
+            if(!IsDirty) { return; }
+
             var component = Module.Parent;
             if (component.Type == ComponentType.Document)
             {

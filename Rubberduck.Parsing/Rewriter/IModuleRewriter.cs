@@ -7,6 +7,8 @@ namespace Rubberduck.Parsing.Rewriter
 {
     public interface IModuleRewriter
     {
+        bool IsDirty { get; }
+
         /// <summary>
         /// Rewrites the entire module / applies all changes.
         /// </summary>

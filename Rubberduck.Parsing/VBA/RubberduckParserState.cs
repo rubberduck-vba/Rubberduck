@@ -958,6 +958,11 @@ namespace Rubberduck.Parsing.VBA
             return GetRewriter(qualifiedModuleName);
         }
 
+        public IModuleRewriter GetAttributeRewriter(QualifiedModuleName qualifiedModuleName)
+        {
+            return _moduleStates[qualifiedModuleName].AttributesRewriter;
+        }
+
         /// <summary>
         /// Removes the specified <see cref="declaration"/> from the collection.
         /// </summary>

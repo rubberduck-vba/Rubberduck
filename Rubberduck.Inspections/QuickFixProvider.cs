@@ -48,7 +48,7 @@ namespace Rubberduck.Inspections
         {
             if (!CanFix(fix, result.Inspection.GetType()))
             {
-                throw new ArgumentException("Fix does not support this inspection.", nameof(result));
+                throw new NotSupportedException($"{fix.GetType().Name} does not support this inspection.");
             }
 
             fix.Fix(result);
@@ -61,7 +61,7 @@ namespace Rubberduck.Inspections
         {
             if (!CanFix(fix, inspectionType))
             {
-                throw new ArgumentException("Fix does not support this inspection.", nameof(inspectionType));
+                throw new NotSupportedException($"{fix.GetType().Name} does not support this inspection.");
             }
 
             Debug.Assert(qualifiedMember.HasValue, "Null qualified member.");
@@ -87,7 +87,7 @@ namespace Rubberduck.Inspections
         {
             if (!CanFix(fix, inspectionType))
             {
-                throw new ArgumentException("Fix does not support this inspection.", nameof(inspectionType));
+                throw new NotSupportedException($"{fix.GetType().Name} does not support this inspection.");
             }
 
             var filteredResults = results
@@ -112,7 +112,7 @@ namespace Rubberduck.Inspections
         {
             if (!CanFix(fix, inspectionType))
             {
-                throw new ArgumentException("Fix does not support this inspection.", nameof(inspectionType));
+                throw new NotSupportedException($"{fix.GetType().Name} does not support this inspection.");
             }
 
             var filteredResults = results
@@ -141,12 +141,12 @@ namespace Rubberduck.Inspections
         {
             if (!CanFix(fix, inspectionType))
             {
-                throw new ArgumentException("Fix does not support this inspection.", nameof(inspectionType));
+                throw new NotSupportedException($"{fix.GetType().Name} does not support this inspection.");
             }
 
-            var filteredResults = results.Where(result => result.Inspection.GetType() == inspectionType);
+            var filteredResults = results.Where(result => result.Inspection.GetType() == inspectionType).ToArray();
 
-            foreach (var result in filteredResults)
+            foreach(var result in filteredResults)
             {
                 fix.Fix(result);
             }
@@ -156,7 +156,17 @@ namespace Rubberduck.Inspections
                 var modules = filteredResults.Select(s => s.QualifiedSelection.QualifiedName).Distinct();
                 foreach (var module in modules)
                 {
-                    _state.GetRewriter(module).Rewrite();
+                    var moduleRewriter = _state.GetRewriter(module);
+                    if (moduleRewriter.IsDirty)
+                    {
+                        _state.GetRewriter(module).Rewrite();
+                    }
+
+                    var attributesRewriter = _state.GetAttributeRewriter(module);
+                    if (attributesRewriter.IsDirty)
+                    {
+                        _state.GetAttributeRewriter(module).Rewrite();
+                    }
                 }
 
                 _state.OnParseRequested(this);

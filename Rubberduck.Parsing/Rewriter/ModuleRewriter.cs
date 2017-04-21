@@ -14,7 +14,6 @@ namespace Rubberduck.Parsing.Rewriter
     {
         protected ICodeModule Module { get; }
         protected TokenStreamRewriter Rewriter { get; }
-        public ITokenStream TokenStream => Rewriter.TokenStream;
 
         public ModuleRewriter(ICodeModule module, TokenStreamRewriter rewriter)
         {
@@ -22,8 +21,13 @@ namespace Rubberduck.Parsing.Rewriter
             Rewriter = rewriter;
         }
 
+        public virtual bool IsDirty { get; private set; }
+        public ITokenStream TokenStream => Rewriter.TokenStream;
+
         public virtual void Rewrite()
         {
+            if (!IsDirty) { return; }
+
             Module.Clear();
             var content = Rewriter.GetText();
             Module.InsertLines(1, content);
@@ -52,51 +56,61 @@ namespace Rubberduck.Parsing.Rewriter
 
             if (info.Equals(RewriterInfo.RewriterInfo.None)) { return; }
             Rewriter.Delete(info.StartTokenIndex, info.StopTokenIndex);
+            IsDirty = true;
         }
 
         public void Remove(ITerminalNode target)
         {
             Rewriter.Delete(target.Symbol.TokenIndex);
+            IsDirty = true;
         }
 
         public void Remove(IToken target)
         {
             Rewriter.Delete(target);
+            IsDirty = true;
         }
 
         public void Replace(Declaration target, string content)
         {
             Rewriter.Replace(target.Context.Start.TokenIndex, target.Context.Stop.TokenIndex, content);
+            IsDirty = true;
         }
 
         public void Replace(ParserRuleContext target, string content)
         {
             Rewriter.Replace(target.Start.TokenIndex, target.Stop.TokenIndex, content);
+            IsDirty = true;
         }
 
         public void Replace(IToken token, string content)
         {
             Rewriter.Replace(token, content);
+            IsDirty = true;
         }
 
         public void Replace(ITerminalNode target, string content)
         {
             Rewriter.Replace(target.Symbol.TokenIndex, content);
+            IsDirty = true;
         }
 
         public void Replace(Interval tokenInterval, string content)
         {
             Rewriter.Replace(tokenInterval.a, tokenInterval.b, content);
+            IsDirty = true;
         }
 
         public void InsertBefore(int tokenIndex, string content)
         {
             Rewriter.InsertBefore(tokenIndex, content);
+            IsDirty = true;
         }
 
         public void InsertAfter(int tokenIndex, string content)
         {
             Rewriter.InsertAfter(tokenIndex, content);
+            IsDirty = true;
         }
 
         public string GetText(int startTokenIndex, int stopTokenIndex)
