@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
@@ -19,7 +20,7 @@ namespace Rubberduck.Inspections.Concrete
         public MissingAttributeInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Error)
         {
-            Listener = new MissingAttributeAnnotationListener(state.DeclarationFinder);
+            Listener = new MissingMemberAttributeListener(state.DeclarationFinder);
         }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
@@ -30,21 +31,26 @@ namespace Rubberduck.Inspections.Concrete
             return Listener.Contexts.Select(context => new MissingAttributeInspectionResult(this, context, context.MemberName));
         }
 
-        public class MissingAttributeAnnotationListener : VBAParserBaseListener, IInspectionListener
+        public class MissingMemberAttributeListener : VBAParserBaseListener, IInspectionListener
         {
             private readonly DeclarationFinder _finder;
-            private readonly HashSet<string> _attributeNames;
+            private readonly IDictionary<AnnotationType, string> _attributeNames;
 
-            public MissingAttributeAnnotationListener(DeclarationFinder finder)
+            public MissingMemberAttributeListener(DeclarationFinder finder)
             {
                 _finder = finder;
 
-                _attributeNames = new HashSet<string>(AnnotationType.Attribute.GetType()
+                _attributeNames = AnnotationType.Attribute.GetType()
                     .GetFields()
-                    .Where(field => field.GetCustomAttributes(typeof(AttributeAnnotationAttribute), true).Any())
-                    .SelectMany(a => a.GetCustomAttributes(typeof(AttributeAnnotationAttribute), true)
-                        .Cast<AttributeAnnotationAttribute>())
-                    .Select(a => a.AttributeName));
+                    .Where(field => field.GetCustomAttributes(typeof (AttributeAnnotationAttribute), true).Any())
+                    .Select(a => new
+                    {
+                        Key = (AnnotationType) Enum.Parse(typeof (AnnotationType), a.Name),
+                        Attribute = a.GetCustomAttributes(typeof (AttributeAnnotationAttribute), true)
+                            .Cast<AttributeAnnotationAttribute>()
+                            .SingleOrDefault()
+                    })
+                    .ToDictionary(a => a.Key, a => a.Attribute.AttributeName);
             }
 
             private readonly List<QualifiedContext<ParserRuleContext>> _contexts =
@@ -92,6 +98,29 @@ namespace Rubberduck.Inspections.Concrete
             public override void EnterPropertySetStmt(VBAParser.PropertySetStmtContext context)
             {
                 SetCurrentScope(Identifier.GetName(context.subroutineName()));
+            }
+
+            public override void ExitAnnotation(VBAParser.AnnotationContext context)
+            {
+                var name = context.annotationName().GetText();
+                if (_currentScope == null)
+                {
+                    // module-level annotation
+                    var module = _finder.UserDeclarations(DeclarationType.Module).Single(m => m.QualifiedName.QualifiedModuleName == CurrentModuleName);
+                    if (!module.Attributes.ContainsKey(name))
+                    {
+                        _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
+                    }
+                }
+                else
+                {
+                    // member-level annotation
+                    var member = _finder.Members(CurrentModuleName).Single(m => m.QualifiedName == _currentScope.QualifiedName);
+                    if (!member.Attributes.ContainsKey(name))
+                    {
+                        _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
+                    }
+                }
             }
 
             public override void ExitAttributeStmt(VBAParser.AttributeStmtContext context)

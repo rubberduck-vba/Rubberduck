@@ -19,7 +19,7 @@ namespace Rubberduck.Inspections.Concrete
         public MissingAnnotationInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Hint)
         {
-            Listener = new MissingMemberAttributeListener(state.DeclarationFinder);
+            Listener = new MissingAttributeAnnotationListener(state.DeclarationFinder);
         }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
@@ -30,12 +30,12 @@ namespace Rubberduck.Inspections.Concrete
             return Listener.Contexts.Select(context => new MissingAnnotationInspectionResult(this, context, context.MemberName));
         }
 
-        public class MissingMemberAttributeListener : VBAParserBaseListener, IInspectionListener
+        public class MissingAttributeAnnotationListener : VBAParserBaseListener, IInspectionListener
         {
             private readonly DeclarationFinder _finder;
             private readonly HashSet<string> _attributeNames;
 
-            public MissingMemberAttributeListener(DeclarationFinder finder)
+            public MissingAttributeAnnotationListener(DeclarationFinder finder)
             {
                 _finder = finder;
 
@@ -92,11 +92,6 @@ namespace Rubberduck.Inspections.Concrete
             public override void EnterPropertySetStmt(VBAParser.PropertySetStmtContext context)
             {
                 SetCurrentScope(Identifier.GetName(context.subroutineName()));
-            }
-
-            public override void ExitAnnotation(VBAParser.AnnotationContext context)
-            {
-                base.ExitAnnotation(context);
             }
 
             public override void ExitAttributeStmt(VBAParser.AttributeStmtContext context)
