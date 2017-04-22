@@ -95,7 +95,8 @@ namespace Rubberduck.API
             var referenceResolveRunner = new ReferenceResolveRunner(
                 _state,
                 parserStateManager,
-                moduleToModuleReferenceManager);
+                moduleToModuleReferenceManager,
+                referenceRemover);
             var parsingStageService = new ParsingStageService(
                 comSynchronizer,
                 builtInDeclarationLoader,

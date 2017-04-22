@@ -75,7 +75,8 @@ namespace RubberduckTests.Mocks
             var referenceResolveRunner = new SynchronousReferenceResolveRunner(
                 state,
                 parserStateManager,
-                moduleToModuleReferenceManager);
+                moduleToModuleReferenceManager,
+                referenceRemover);
             var parsingStageService = new ParsingStageService(
                 comSynchronizer,
                 builtInDeclarationLoader,
