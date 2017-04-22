@@ -250,8 +250,8 @@ namespace Rubberduck.Parsing.VBA
                 throw new OperationCanceledException(token);
             }
 
-            //Explicitely setting the overall state here guerantees that the handlers attached 
-            //to the state change to ResolvedDeclarations always run in case there is no error.
+            //Explicitly setting the overall state here guarantees that the handlers attached 
+            //to the state change to ResolvedDeclarations always run, provided there is no error.
             State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
 
             if (token.IsCancellationRequested || State.Status >= ParserState.Error)
