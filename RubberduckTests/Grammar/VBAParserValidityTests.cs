@@ -50,7 +50,11 @@ namespace RubberduckTests.Grammar
 
             var tree = state.GetParseTree(new QualifiedModuleName(component));
             var parsed = tree.GetText();
-            var withoutEOF = parsed.Substring(0, parsed.Length - 5);
+            var withoutEOF = parsed;
+            while (String.Equals(withoutEOF.Substring(withoutEOF.Length - 5, 5), "<EOF>"))
+            {
+                withoutEOF = withoutEOF.Substring(0, withoutEOF.Length - 5);
+            }
             return withoutEOF;
         }
     }
