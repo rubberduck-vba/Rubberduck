@@ -844,7 +844,7 @@ endOfLine :
 ;
 
 endOfStatement :
-    (endOfLine | (whiteSpace? COLON whiteSpace?))+ EOF?
+    (endOfLine | (whiteSpace? COLON whiteSpace?))+
 	| EOF
 ;
 
