@@ -296,7 +296,7 @@ SINGLEQUOTE : '\'';
 UNDERSCORE : '_';
 WS : [ \t];
 GUIDLITERAL : '{' [0-9A-F]+ '-' [0-9A-F]+ '-' [0-9A-F]+ '-' [0-9A-F]+ '-' [0-9A-F]+ '}';
-IDENTIFIER :  ~[\[\]\(\)\r\n\t.,'"|!@#$%^&*\-+:=; 0-9-/\\] ~[\[\]\(\)\r\n\t.,'"|!@#$%^&*\-+:=; ]*;
+IDENTIFIER :  ~[[\]()\r\n\t.,'"|!@#$%^&*\-+:=; 0-9-/\\] ~[[\]()\r\n\t.,'"|!@#$%^&*\-+:=; ]*;
 LINE_CONTINUATION : [ \t]* UNDERSCORE [ \t]* '\r'? '\n';
 fragment LETTER : [a-zA-Z_הצüִײÜ];
 fragment DIGIT : [0-9];

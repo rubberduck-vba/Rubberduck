@@ -24,7 +24,7 @@ options { tokenVocab = VBALexer; }
 startRule : module EOF;
 
 module :
-    endOfStatement
+	endOfStatement?
     moduleAttributes
     moduleHeader?
     moduleAttributes
@@ -844,7 +844,8 @@ endOfLine :
 ;
 
 endOfStatement :
-    (endOfLine | (whiteSpace? COLON whiteSpace?))*
+    (endOfLine | (whiteSpace? COLON whiteSpace?))+ EOF?
+	| EOF
 ;
 
 // Annotations must come before comments because of precedence. ANTLR4 matches as much as possible then chooses the one that comes first.
