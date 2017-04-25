@@ -24,7 +24,7 @@ options { tokenVocab = VBALexer; }
 startRule : module EOF;
 
 module :
-    endOfStatement
+	endOfStatement?
     moduleAttributes
     moduleHeader?
     moduleAttributes
@@ -372,7 +372,7 @@ elseBlock :
 // 5.4.2.9 Single-line If Statement
 singleLineIfStmt : ifWithNonEmptyThen | ifWithEmptyThen;
 ifWithNonEmptyThen : IF whiteSpace? booleanExpression whiteSpace? THEN whiteSpace? listOrLabel (whiteSpace singleLineElseClause)?;
-ifWithEmptyThen : IF whiteSpace? booleanExpression whiteSpace? THEN endOfStatement whiteSpace? singleLineElseClause;
+ifWithEmptyThen : IF whiteSpace? booleanExpression whiteSpace? THEN endOfStatement? whiteSpace? singleLineElseClause;
 singleLineElseClause : ELSE whiteSpace? listOrLabel?;
 // lineNumberLabel should actually be "statement-label" according to MS VBAL but they only allow lineNumberLabels:
 // A <statement-label> that occurs as the first element of a <list-or-label> element has the effect 
@@ -844,7 +844,8 @@ endOfLine :
 ;
 
 endOfStatement :
-    (endOfLine | (whiteSpace? COLON whiteSpace?))*
+    (endOfLine | (whiteSpace? COLON whiteSpace?))+
+	| whiteSpace? EOF
 ;
 
 // Annotations must come before comments because of precedence. ANTLR4 matches as much as possible then chooses the one that comes first.

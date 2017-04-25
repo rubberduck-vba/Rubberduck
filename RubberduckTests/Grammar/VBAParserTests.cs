@@ -1669,6 +1669,57 @@ End Sub
 
         [TestCategory("Parser")]
         [TestMethod]
+        [Ignore] // ref. https://github.com/rubberduck-vba/Rubberduck/issues/2888
+        public void TestFunctionArgumentsOnContinuedLine_Multiple()
+        {
+            const string code = @"
+Sub Test()
+    Dim x As Long    
+    x = SomeFunction _
+    (foo, bar)
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//letStmt", matches => matches.Count == 1);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//argumentExpression", matches => matches.Count == 2);
+        }
+
+        [TestCategory("Parser")]
+        [TestMethod]
+        [Ignore] // ref. https://github.com/rubberduck-vba/Rubberduck/issues/2888
+        public void TestFunctionArgumentsOnContinuedLine_Single()
+        {
+            const string code = @"
+Sub Test()
+    Dim x As Long    
+    x = SomeFunction _
+    (foo)
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//letStmt", matches => matches.Count == 1);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//argumentExpression", matches => matches.Count == 1);
+        }
+
+        [TestCategory("Parser")]
+        [TestMethod]
+        [Ignore] // ref. https://github.com/rubberduck-vba/Rubberduck/issues/2888
+        public void TestReDimWithLineContinuation()
+        {
+            const string code = @"
+Sub Test()
+    Dim x() As Long    
+    Redim x _
+    (1, 2)
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//redimStmt", matches => matches.Count == 1);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//argumentExpression", matches => matches.Count == 2);
+        }
+
+        [TestCategory("Parser")]
+        [TestMethod]
         public void TestCaseIsEqExpressionWithLiteral()
         {
             const string code = @"
