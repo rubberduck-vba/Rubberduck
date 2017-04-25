@@ -26,12 +26,12 @@ namespace Rubberduck.UI.Command
             get { return RubberduckHotkey.IndentModule; }
         }
 
-        protected override bool CanExecuteImpl(object parameter)
+        protected override bool EvaluateCanExecute(object parameter)
         {
             return !_vbe.ActiveCodePane.IsWrappingNullReference;
         }
 
-        protected override void ExecuteImpl(object parameter)
+        protected override void OnExecute(object parameter)
         {
             _indenter.IndentCurrentModule();
             _state.OnParseRequested(this, _vbe.ActiveCodePane.CodeModule.Parent);

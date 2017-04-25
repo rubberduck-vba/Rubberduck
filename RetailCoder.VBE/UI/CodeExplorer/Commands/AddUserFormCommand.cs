@@ -15,12 +15,12 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _addComponentCommand = addComponentCommand;
         }
 
-        protected override bool CanExecuteImpl(object parameter)
+        protected override bool EvaluateCanExecute(object parameter)
         {
             return _addComponentCommand.CanAddComponent(parameter as CodeExplorerItemViewModel);
         }
 
-        protected override void ExecuteImpl(object parameter)
+        protected override void OnExecute(object parameter)
         {
             _addComponentCommand.AddComponent(parameter as CodeExplorerItemViewModel, ComponentType.UserForm);
         }

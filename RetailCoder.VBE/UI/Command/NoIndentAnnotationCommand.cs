@@ -21,7 +21,7 @@ namespace Rubberduck.UI.Command
             _state = state;
         }
 
-        protected override bool CanExecuteImpl(object parameter)
+        protected override bool EvaluateCanExecute(object parameter)
         {
             var target = FindTarget(parameter);
             var pane = _vbe.ActiveCodePane;
@@ -31,7 +31,7 @@ namespace Rubberduck.UI.Command
             }
         }
 
-        protected override void ExecuteImpl(object parameter)
+        protected override void OnExecute(object parameter)
         {
             _vbe.ActiveCodePane.CodeModule.InsertLines(1, "'@NoIndent");
         }
