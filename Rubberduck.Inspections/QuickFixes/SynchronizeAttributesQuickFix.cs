@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Antlr4.Runtime;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
@@ -91,8 +92,13 @@ namespace Rubberduck.Inspections.QuickFixes
 
         private int FindInsertPosition(QualifiedMemberName memberName, VBAParser.AnnotationContext context)
         {
-            var finder = _state.DeclarationFinder;
-            throw new NotImplementedException();
+            var result = 1; // todo: actually append to module attributes section
+            if (context.ParentContext != null)
+            {
+                var member = context.ParentContext;
+                result = member.Start.TokenIndex; // todo: make IMemberContext give us the token index
+            }
+            return result;
         }
 
         private string GetAttributeInstruction(VBAParser.AnnotationContext context, string attributeName, AnnotationType annotationType)
