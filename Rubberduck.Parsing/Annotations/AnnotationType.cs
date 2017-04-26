@@ -39,7 +39,7 @@ namespace Rubberduck.Parsing.Annotations
         [AttributeAnnotation("VB_PredeclaredId")]
         PredeclaredId = 1 << 16 | Attribute | ModuleAnnotation,
         [AttributeAnnotation("VB_Exposed")]
-        Internal = 1 << 17 | Attribute | ModuleAnnotation,
+        Exposed = 1 << 17 | Attribute | ModuleAnnotation,
     }
 
     [AttributeUsage(AttributeTargets.Field)]

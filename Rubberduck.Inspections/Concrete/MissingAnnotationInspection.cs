@@ -39,8 +39,7 @@ namespace Rubberduck.Inspections.Concrete
             {
                 _finder = finder;
 
-                _attributeNames = new HashSet<string>(AnnotationType.Attribute.GetType()
-                    .GetFields()
+                _attributeNames = new HashSet<string>(typeof(AnnotationType).GetFields()
                     .Where(field => field.GetCustomAttributes(typeof(AttributeAnnotationAttribute), true).Any())
                     .SelectMany(a => a.GetCustomAttributes(typeof(AttributeAnnotationAttribute), true)
                         .Cast<AttributeAnnotationAttribute>())
@@ -59,6 +58,7 @@ namespace Rubberduck.Inspections.Concrete
                 _contexts.Clear();
             }
 
+            #region scoping
             private Declaration _currentScope;
 
             private void SetCurrentScope(string name)
@@ -93,6 +93,7 @@ namespace Rubberduck.Inspections.Concrete
             {
                 SetCurrentScope(Identifier.GetName(context.subroutineName()));
             }
+            #endregion
 
             public override void ExitAttributeStmt(VBAParser.AttributeStmtContext context)
             {
@@ -103,15 +104,12 @@ namespace Rubberduck.Inspections.Concrete
                 }
 
                 var name = context.attributeName().GetText();
-
-
+                var value = context.attributeValue();
                 if(!_currentScope.Annotations.Any(a => a.AnnotationType.HasFlag(AnnotationType.Attribute)
-                                                       &&
-                                                       _attributeNames.Select(
-                                                           n => $"{_currentScope.IdentifierName}.{n}")
-                                                           .All(n => n != name)))
+                                                       && _attributeNames.Select(n => $"{_currentScope.IdentifierName}.{n}")
+                                                                         .All(n => n != name)))
                 {
-                    // current scope is missing an annotation for this attribute
+                    // current scope is POSSIBLY missing an annotation for this attribute... todo: verify the value too
                     _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
                 }
 

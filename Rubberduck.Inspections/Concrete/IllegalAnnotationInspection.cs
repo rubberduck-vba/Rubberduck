@@ -20,7 +20,7 @@ namespace Rubberduck.Inspections.Concrete
         public IllegalAnnotationInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Warning)
         {
-            Listener = new IllegalAttributeAnnotationsListener(state.DeclarationFinder);
+            Listener = new IllegalAttributeAnnotationsListener();
         }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
@@ -36,16 +36,8 @@ namespace Rubberduck.Inspections.Concrete
             private readonly IDictionary<AnnotationType, int> _annotationCounts;
 
             private static readonly AnnotationType[] AnnotationTypes = Enum.GetValues(typeof(AnnotationType)).Cast<AnnotationType>().ToArray(); 
-            private static readonly HashSet<AnnotationType> PerModuleAnnotations;
-            private static readonly HashSet<AnnotationType> PerMemberAnnotations;
 
-            static IllegalAttributeAnnotationsListener()
-            {
-                PerModuleAnnotations = new HashSet<AnnotationType>(AnnotationTypes.Where(type => type.HasFlag(AnnotationType.ModuleAnnotation)));
-                PerMemberAnnotations = new HashSet<AnnotationType>(AnnotationTypes.Where(type => type.HasFlag(AnnotationType.MemberAnnotation)));
-            }
-
-            public IllegalAttributeAnnotationsListener(DeclarationFinder finder)
+            public IllegalAttributeAnnotationsListener()
             {
                 _annotationCounts = AnnotationTypes.ToDictionary(a => a, a => 0);
             }
@@ -62,13 +54,13 @@ namespace Rubberduck.Inspections.Concrete
                 _contexts.Clear();
             }
 
+            #region scoping
             private string _currentScope;
 
             private void SetCurrentScope(string name)
             {
                 _currentScope = name;
             }
-
 
             public override void EnterSubStmt(VBAParser.SubStmtContext context)
             {
@@ -94,6 +86,7 @@ namespace Rubberduck.Inspections.Concrete
             {
                 SetCurrentScope(Identifier.GetName(context.subroutineName()));
             }
+            #endregion
 
             public override void ExitAnnotation(VBAParser.AnnotationContext context)
             {
@@ -101,10 +94,10 @@ namespace Rubberduck.Inspections.Concrete
                 var annotationType = (AnnotationType) Enum.Parse(typeof (AnnotationType), name);
                 _annotationCounts[annotationType]++;
 
-                var isPerModule = PerModuleAnnotations.Any(a => annotationType.HasFlag(a));
+                var isPerModule = annotationType.HasFlag(AnnotationType.ModuleAnnotation);
                 var isMemberOnModule = _currentScope != null && isPerModule;
 
-                var isPerMember = PerMemberAnnotations.Any(a => annotationType.HasFlag(a));
+                var isPerMember = annotationType.HasFlag(AnnotationType.MemberAnnotation);
                 var isModuleOnMember = _currentScope == null && isPerMember;
 
                 var isOnlyAllowedOnce = isPerModule || isPerMember;

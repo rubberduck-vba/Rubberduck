@@ -160,12 +160,14 @@ namespace Rubberduck.Inspections
                     if (moduleRewriter.IsDirty)
                     {
                         _state.GetRewriter(module).Rewrite();
+                        continue;
                     }
 
                     var attributesRewriter = _state.GetAttributeRewriter(module);
                     if (attributesRewriter.IsDirty)
                     {
                         _state.GetAttributeRewriter(module).Rewrite();
+                        continue;
                     }
                 }
 

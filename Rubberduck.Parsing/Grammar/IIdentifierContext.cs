@@ -1,4 +1,5 @@
 ﻿using Antlr4.Runtime.Misc;
+using Rubberduck.Parsing.Annotations;
 
 namespace Rubberduck.Parsing.Grammar
 {
