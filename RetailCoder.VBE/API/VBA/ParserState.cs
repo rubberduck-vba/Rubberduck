@@ -98,7 +98,8 @@ namespace Rubberduck.API.VBA
             var referenceResolveRunner = new ReferenceResolveRunner(
                 _state,
                 parserStateManager,
-                moduleToModuleReferenceManager);
+                moduleToModuleReferenceManager,
+                referenceRemover);
             var parsingStageService = new ParsingStageService(
                 comSynchronizer,
                 builtInDeclarationLoader,

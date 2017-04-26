@@ -13,10 +13,12 @@ namespace Rubberduck.Parsing.VBA
         public SynchronousReferenceResolveRunner(
             RubberduckParserState state,
             IParserStateManager parserStateManager,
-            IModuleToModuleReferenceManager moduletToModuleReferenceManager) 
-        :base(state, 
-            parserStateManager, 
-            moduletToModuleReferenceManager)
+            IModuleToModuleReferenceManager moduletToModuleReferenceManager,
+            IReferenceRemover referenceRemover)
+        : base(state,
+            parserStateManager,
+            moduletToModuleReferenceManager,
+            referenceRemover)
         { }
 
 
