@@ -78,14 +78,14 @@ namespace Rubberduck.Parsing.VBA
 
             public IDictionary<Tuple<string, DeclarationType>, Attributes> Attributes => _attributes;
 
-            private IMemberContext _currentMember;
+            private IAnnotatedContext _currentAnnotatedContext;
             private Tuple<string, DeclarationType> _currentScope;
             private Attributes _currentScopeAttributes;
 
             public override void ExitAnnotation(VBAParser.AnnotationContext context)
             {
-                _currentMember?.Annotate(context);
-                context.ParentContext = _currentMember as ParserRuleContext;
+                _currentAnnotatedContext?.Annotate(context);
+                context.AnnotatedContext = _currentAnnotatedContext as ParserRuleContext;
             }
 
             public override void ExitModuleAttributes(VBAParser.ModuleAttributesContext context)
@@ -100,7 +100,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 _currentScopeAttributes = new Attributes();
                 _currentScope = Tuple.Create(Identifier.GetName(context.subroutineName()), DeclarationType.Procedure);
-                _currentMember = context;
+                _currentAnnotatedContext = context;
             }
 
             public override void ExitSubStmt(VBAParser.SubStmtContext context)
@@ -116,7 +116,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 _currentScopeAttributes = new Attributes();
                 _currentScope = Tuple.Create(Identifier.GetName(context.functionName()), DeclarationType.Function);
-                _currentMember = context;
+                _currentAnnotatedContext = context;
             }
 
             public override void ExitFunctionStmt(VBAParser.FunctionStmtContext context)
@@ -132,7 +132,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 _currentScopeAttributes = new Attributes();
                 _currentScope = Tuple.Create(Identifier.GetName(context.functionName()), DeclarationType.PropertyGet);
-                _currentMember = context;
+                _currentAnnotatedContext = context;
             }
 
             public override void ExitPropertyGetStmt(VBAParser.PropertyGetStmtContext context)
@@ -148,7 +148,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 _currentScopeAttributes = new Attributes();
                 _currentScope = Tuple.Create(Identifier.GetName(context.subroutineName()), DeclarationType.PropertyLet);
-                _currentMember = context;
+                _currentAnnotatedContext = context;
             }
 
             public override void ExitPropertyLetStmt(VBAParser.PropertyLetStmtContext context)
@@ -164,7 +164,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 _currentScopeAttributes = new Attributes();
                 _currentScope = Tuple.Create(Identifier.GetName(context.subroutineName()), DeclarationType.PropertySet);
-                _currentMember = context;
+                _currentAnnotatedContext = context;
             }
 
             public override void ExitPropertySetStmt(VBAParser.PropertySetStmtContext context)

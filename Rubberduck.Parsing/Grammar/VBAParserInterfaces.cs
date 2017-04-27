@@ -9,12 +9,12 @@ namespace Rubberduck.Parsing.Grammar
 {
     public partial class VBAParser
     {
-        public partial class AnnotationContext : IChildContext
+        public partial class AnnotationContext : IAnnotatingContext
         {
-            public ParserRuleContext ParentContext { get; internal set; }
+            public ParserRuleContext AnnotatedContext { get; internal set; }
         }
 
-        public partial class SubStmtContext : IIdentifierContext, IMemberContext
+        public partial class SubStmtContext : IIdentifierContext, IAnnotatedContext
         {
             #region IIdentifierContext
 
@@ -50,7 +50,7 @@ namespace Rubberduck.Parsing.Grammar
             #endregion
         }
 
-        public partial class FunctionStmtContext : IIdentifierContext, IMemberContext
+        public partial class FunctionStmtContext : IIdentifierContext, IAnnotatedContext
         {
             #region IIdentifierContext
 
@@ -87,7 +87,7 @@ namespace Rubberduck.Parsing.Grammar
             #endregion
         }
 
-        public partial class EventStmtContext : IIdentifierContext, IMemberContext
+        public partial class EventStmtContext : IIdentifierContext, IAnnotatedContext
         {
             #region IIdentifierContext
 
@@ -140,7 +140,7 @@ namespace Rubberduck.Parsing.Grammar
             #endregion
         }
 
-        public partial class ConstSubStmtContext : IIdentifierContext, IMemberContext
+        public partial class ConstSubStmtContext : IIdentifierContext, IAnnotatedContext
         {
             #region IIdentifierContext
             public Interval IdentifierTokens
@@ -175,7 +175,7 @@ namespace Rubberduck.Parsing.Grammar
             #endregion
         }
 
-        public partial class VariableSubStmtContext : IIdentifierContext, IMemberContext
+        public partial class VariableSubStmtContext : IIdentifierContext, IAnnotatedContext
         {
             #region IIdentifierContext
             public Interval IdentifierTokens
@@ -210,7 +210,7 @@ namespace Rubberduck.Parsing.Grammar
             #endregion
         }
 
-        public partial class PropertyGetStmtContext : IIdentifierContext, IMemberContext
+        public partial class PropertyGetStmtContext : IIdentifierContext, IAnnotatedContext
         {
             #region IIdentifierContext
             public Interval IdentifierTokens
@@ -245,7 +245,7 @@ namespace Rubberduck.Parsing.Grammar
             #endregion
         }
 
-        public partial class PropertyLetStmtContext : IIdentifierContext, IMemberContext
+        public partial class PropertyLetStmtContext : IIdentifierContext, IAnnotatedContext
         {
             #region IIdentifierContext
             public Interval IdentifierTokens
@@ -280,7 +280,7 @@ namespace Rubberduck.Parsing.Grammar
             #endregion
         }
 
-        public partial class PropertySetStmtContext : IIdentifierContext, IMemberContext
+        public partial class PropertySetStmtContext : IIdentifierContext, IAnnotatedContext
         {
             #region IIdentifierContext
             public Interval IdentifierTokens

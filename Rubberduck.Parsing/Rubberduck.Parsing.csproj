@@ -128,7 +128,7 @@
     <Compile Include="Emitter.cs" />
     <Compile Include="Grammar\Annotations.cs" />
     <Compile Include="Grammar\IIdentifierContext.cs" />
-    <Compile Include="Grammar\IMemberContext.cs" />
+    <Compile Include="Grammar\IAnnotatedContext.cs" />
     <Compile Include="Grammar\Tokens.cs" />
     <Compile Include="Grammar\VBALexer.cs" />
     <Compile Include="Grammar\VBAParser.cs" />

@@ -4,7 +4,7 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Parsing.Grammar
 {
-    public interface IMemberContext : IIdentifierContext
+    public interface IAnnotatedContext : IIdentifierContext
     {
         Attributes Attributes { get; }
         IEnumerable<VBAParser.AnnotationContext> Annotations { get; }
@@ -13,8 +13,8 @@ namespace Rubberduck.Parsing.Grammar
         void AddAttributes(Attributes attributes);
     }
 
-    public interface IChildContext
+    public interface IAnnotatingContext
     {
-        ParserRuleContext ParentContext { get; }
+        ParserRuleContext AnnotatedContext { get; }
     }
 }

@@ -93,9 +93,9 @@ namespace Rubberduck.Inspections.QuickFixes
         private int FindInsertPosition(QualifiedMemberName memberName, VBAParser.AnnotationContext context)
         {
             var result = 1; // todo: actually append to module attributes section
-            if (context.ParentContext != null)
+            if (context.AnnotatedContext != null)
             {
-                var member = context.ParentContext;
+                var member = context.AnnotatedContext;
                 result = member.Start.TokenIndex; // todo: make IMemberContext give us the token index
             }
             return result;
