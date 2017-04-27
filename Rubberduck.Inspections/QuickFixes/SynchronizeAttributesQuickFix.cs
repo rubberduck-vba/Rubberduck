@@ -84,21 +84,15 @@ namespace Rubberduck.Inspections.QuickFixes
                 + _attributeNames[annotationName];
 
             var attributeInstruction = GetAttributeInstruction(context, attributeName, annotationType);
-            var insertPosition = FindInsertPosition(memberName, context);
+            var insertPosition = FindInsertPosition(context);
 
             var rewriter = _state.GetAttributeRewriter(memberName.QualifiedModuleName);
             rewriter.InsertBefore(insertPosition, attributeInstruction);
         }
 
-        private int FindInsertPosition(QualifiedMemberName memberName, VBAParser.AnnotationContext context)
+        private int FindInsertPosition(VBAParser.AnnotationContext context)
         {
-            var result = 1; // todo: actually append to module attributes section
-            if (context.AnnotatedContext != null)
-            {
-                var member = context.AnnotatedContext;
-                result = member.Start.TokenIndex; // todo: make IMemberContext give us the token index
-            }
-            return result;
+            return (context.AnnotatedContext as IAnnotatedContext)?.AttributeTokenIndex ?? 1;
         }
 
         private string GetAttributeInstruction(VBAParser.AnnotationContext context, string attributeName, AnnotationType annotationType)

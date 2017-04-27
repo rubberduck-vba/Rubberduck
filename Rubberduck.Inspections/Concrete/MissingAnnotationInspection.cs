@@ -19,7 +19,7 @@ namespace Rubberduck.Inspections.Concrete
         public MissingAnnotationInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Hint)
         {
-            Listener = new MissingAttributeAnnotationListener(state.DeclarationFinder);
+            Listener = new MissingAttributeAnnotationListener();
         }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
@@ -32,13 +32,10 @@ namespace Rubberduck.Inspections.Concrete
 
         public class MissingAttributeAnnotationListener : VBAParserBaseListener, IInspectionListener
         {
-            private readonly DeclarationFinder _finder;
             private readonly HashSet<string> _attributeNames;
 
-            public MissingAttributeAnnotationListener(DeclarationFinder finder)
+            public MissingAttributeAnnotationListener()
             {
-                _finder = finder;
-
                 _attributeNames = new HashSet<string>(typeof(AnnotationType).GetFields()
                     .Where(field => field.GetCustomAttributes(typeof(AttributeAnnotationAttribute), true).Any())
                     .SelectMany(a => a.GetCustomAttributes(typeof(AttributeAnnotationAttribute), true)
@@ -59,39 +56,54 @@ namespace Rubberduck.Inspections.Concrete
             }
 
             #region scoping
-            private Declaration _currentScope;
+            private IAnnotatedContext _currentScope;
+            private string _currentScopeName;
 
-            private void SetCurrentScope(string name)
+            public override void EnterModuleBody(VBAParser.ModuleBodyContext context)
             {
-                _currentScope = _finder
-                    .Members(CurrentModuleName)
-                    .Single(m => m.IdentifierName == name);
+                var firstMember = context.moduleBodyElement().FirstOrDefault()?.GetChild(0);
+                _currentScope = firstMember as IAnnotatedContext;
+                // name?
             }
 
+            public override void ExitModuleAttributes(VBAParser.ModuleAttributesContext context)
+            {
+                if (_currentScope == null)
+                {
+                    // anything we pick up between here and the actual module body, belongs to the module
+                    _currentScope = context;
+                    _currentScopeName = CurrentModuleName.Name;
+                }
+                else
+                {
+                    // don't re-assign _currentScope here.
+                    // we're at the end of the module and that attribute actually belongs to the last procedure.
+                }
+            }
 
             public override void EnterSubStmt(VBAParser.SubStmtContext context)
             {
-                SetCurrentScope(Identifier.GetName(context.subroutineName()));
+                _currentScope = context;
             }
 
             public override void EnterFunctionStmt(VBAParser.FunctionStmtContext context)
             {
-                SetCurrentScope(Identifier.GetName(context.functionName()));
+                _currentScope = context;
             }
 
             public override void EnterPropertyGetStmt(VBAParser.PropertyGetStmtContext context)
             {
-                SetCurrentScope(Identifier.GetName(context.functionName()));
+                _currentScope = context;
             }
 
             public override void EnterPropertyLetStmt(VBAParser.PropertyLetStmtContext context)
             {
-                SetCurrentScope(Identifier.GetName(context.subroutineName()));
+                _currentScope = context;
             }
 
             public override void EnterPropertySetStmt(VBAParser.PropertySetStmtContext context)
             {
-                SetCurrentScope(Identifier.GetName(context.subroutineName()));
+                _currentScope = context;
             }
             #endregion
 
@@ -106,7 +118,7 @@ namespace Rubberduck.Inspections.Concrete
                 var name = context.attributeName().GetText();
                 var value = context.attributeValue();
                 if(!_currentScope.Annotations.Any(a => a.AnnotationType.HasFlag(AnnotationType.Attribute)
-                                                       && _attributeNames.Select(n => $"{_currentScope.IdentifierName}.{n}")
+                                                       && _attributeNames.Select(n => $"{_currentScopeName}.{n}")
                                                                          .All(n => n != name)))
                 {
                     // current scope is POSSIBLY missing an annotation for this attribute... todo: verify the value too

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Rubberduck.Parsing.Annotations;
@@ -12,12 +13,39 @@ namespace Rubberduck.Parsing.Grammar
         public partial class AnnotationContext : IAnnotatingContext
         {
             public ParserRuleContext AnnotatedContext { get; internal set; }
+
+            public AnnotationType AnnotationType => (AnnotationType) Enum.Parse(typeof (AnnotationType), 
+                Identifier.GetName(this.annotationName().unrestrictedIdentifier()));
+        }
+
+        public partial class ModuleAttributesContext : IAnnotatedContext
+        {
+            #region IAnnotatedContext
+            public Attributes Attributes { get; } = new Attributes();
+
+            private readonly List<AnnotationContext> _annotations = new List<AnnotationContext>();
+            public IEnumerable<AnnotationContext> Annotations => _annotations;
+
+            public int AttributeTokenIndex => this.Stop.TokenIndex + 1;
+
+            public void Annotate(AnnotationContext annotation)
+            {
+                _annotations.Add(annotation);
+            }
+
+            public void AddAttributes(Attributes attributes)
+            {
+                foreach(var attribute in attributes)
+                {
+                    Attributes.Add(attribute.Key, attribute.Value);
+                }
+            }
+            #endregion
         }
 
         public partial class SubStmtContext : IIdentifierContext, IAnnotatedContext
         {
             #region IIdentifierContext
-
             public Interval IdentifierTokens
             {
                 get
@@ -29,8 +57,9 @@ namespace Rubberduck.Parsing.Grammar
             }
             #endregion
 
-            #region IMemberContext
+            #region IAnnotatedContext
             public Attributes Attributes { get; } = new Attributes();
+            public int AttributeTokenIndex => block()?.Start.TokenIndex ?? Stop.TokenIndex + 1;
 
             private readonly List<AnnotationContext> _annotations = new List<AnnotationContext>();
             public IEnumerable<AnnotationContext> Annotations => _annotations;
@@ -66,8 +95,9 @@ namespace Rubberduck.Parsing.Grammar
 
             #endregion
 
-            #region IMemberContext
+            #region IAnnotatedContext
             public Attributes Attributes { get; } = new Attributes();
+            public int AttributeTokenIndex => block()?.Start.TokenIndex ?? Stop.TokenIndex + 1;
 
             private readonly List<AnnotationContext> _annotations = new List<AnnotationContext>();
             public IEnumerable<AnnotationContext> Annotations => _annotations;
@@ -103,8 +133,9 @@ namespace Rubberduck.Parsing.Grammar
 
             #endregion
 
-            #region IMemberContext
+            #region IAnnotatedContext
             public Attributes Attributes { get; } = new Attributes();
+            public int AttributeTokenIndex => Start.TokenIndex - 1;
 
             private readonly List<AnnotationContext> _annotations = new List<AnnotationContext>();
             public IEnumerable<AnnotationContext> Annotations => _annotations;
@@ -154,8 +185,9 @@ namespace Rubberduck.Parsing.Grammar
             }
             #endregion
 
-            #region IMemberContext
+            #region IAnnotatedContext
             public Attributes Attributes { get; } = new Attributes();
+            public int AttributeTokenIndex => Start.TokenIndex - 1;
 
             private readonly List<AnnotationContext> _annotations = new List<AnnotationContext>();
             public IEnumerable<AnnotationContext> Annotations => _annotations;
@@ -189,8 +221,9 @@ namespace Rubberduck.Parsing.Grammar
             }
             #endregion 
 
-            #region IMemberContext
+            #region IAnnotatedContext
             public Attributes Attributes { get; } = new Attributes();
+            public int AttributeTokenIndex => Start.TokenIndex - 1;
 
             private readonly List<AnnotationContext> _annotations = new List<AnnotationContext>();
             public IEnumerable<AnnotationContext> Annotations => _annotations;
@@ -224,8 +257,9 @@ namespace Rubberduck.Parsing.Grammar
             }
             #endregion
 
-            #region IMemberContext
+            #region IAnnotatedContext
             public Attributes Attributes { get; } = new Attributes();
+            public int AttributeTokenIndex => block()?.Start.TokenIndex ?? Stop.TokenIndex + 1;
 
             private readonly List<AnnotationContext> _annotations = new List<AnnotationContext>();
             public IEnumerable<AnnotationContext> Annotations => _annotations;
@@ -259,8 +293,9 @@ namespace Rubberduck.Parsing.Grammar
             }
             #endregion
 
-            #region IMemberContext
+            #region IAnnotatedContext
             public Attributes Attributes { get; } = new Attributes();
+            public int AttributeTokenIndex => block()?.Start.TokenIndex ?? Stop.TokenIndex + 1;
 
             private readonly List<AnnotationContext> _annotations = new List<AnnotationContext>();
             public IEnumerable<AnnotationContext> Annotations => _annotations;
@@ -294,8 +329,9 @@ namespace Rubberduck.Parsing.Grammar
             }
             #endregion
 
-            #region IMemberContext
+            #region IAnnotatedContext
             public Attributes Attributes { get; } = new Attributes();
+            public int AttributeTokenIndex => block()?.Start.TokenIndex ?? Stop.TokenIndex + 1;
 
             private readonly List<AnnotationContext> _annotations = new List<AnnotationContext>();
             public IEnumerable<AnnotationContext> Annotations => _annotations;
