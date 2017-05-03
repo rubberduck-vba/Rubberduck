@@ -2,7 +2,6 @@
 using Antlr4.Runtime;
 using Antlr4.Runtime.Atn;
 using NLog;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Parsing.PreProcessing
