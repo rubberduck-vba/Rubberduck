@@ -32,15 +32,15 @@ namespace Rubberduck.Parsing.VBA
 
         private readonly Guid _taskId;
 
-        public ComponentParseTask(IVBComponent vbComponent, IVBAPreprocessor preprocessor, IAttributeParser attributeParser, TokenStreamRewriter rewriter = null)
+        public ComponentParseTask(QualifiedModuleName module, IVBAPreprocessor preprocessor, IAttributeParser attributeParser, TokenStreamRewriter rewriter = null)
         {
             _taskId = Guid.NewGuid();
 
             _attributeParser = attributeParser;
             _preprocessor = preprocessor;
-            _component = vbComponent;
+            _component = module.Component;
             _rewriter = rewriter;
-            _qualifiedName = new QualifiedModuleName(vbComponent);
+            _qualifiedName = module;
             _parser = new VBAModuleParser();
         }
         
@@ -189,7 +189,9 @@ namespace Rubberduck.Parsing.VBA
         {
             //var errorNotifier = new SyntaxErrorNotificationListener();
             //errorNotifier.OnSyntaxError += ParserSyntaxError;
-            return _parser.Parse(moduleName, code, listeners, new ExceptionErrorListener(), out outStream);
+            var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();
+            var tokens = tokenStreamProvider.Tokens(code);
+            return _parser.Parse(moduleName, tokens, listeners, new ExceptionErrorListener(), out outStream);
         }
 
         private IEnumerable<CommentNode> QualifyAndUnionComments(QualifiedModuleName qualifiedName, IEnumerable<VBAParser.CommentContext> comments, IEnumerable<VBAParser.RemCommentContext> remComments)

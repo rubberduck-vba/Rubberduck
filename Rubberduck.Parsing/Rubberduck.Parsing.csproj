@@ -335,6 +335,8 @@
     <Compile Include="VBA\AttributeParser.cs" />
     <Compile Include="VBA\Attributes.cs" />
     <Compile Include="VBA\BuiltInDeclarationLoader.cs" />
+    <Compile Include="VBA\SimpleVBAModuleTokenStreamProvider.cs" />
+    <Compile Include="VBA\ICommonTokenStreamProvider.cs" />
     <Compile Include="VBA\ModuleToModuleReferenceManager.cs" />
     <Compile Include="VBA\IDeclarationFinderProvider.cs" />
     <Compile Include="VBA\IParseTreeProvider.cs" />
