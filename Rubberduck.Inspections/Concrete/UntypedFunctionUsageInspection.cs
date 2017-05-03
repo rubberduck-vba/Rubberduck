@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
+using Antlr4.Runtime;
+using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -52,7 +54,10 @@ namespace Rubberduck.Inspections.Concrete
             return declarations.SelectMany(declaration => declaration.References
                 .Where(item => _tokens.Contains(item.IdentifierName) &&
                                !IsIgnoringInspectionResultFor(item, AnnotationName))
-                .Select(item => new UntypedFunctionUsageInspectionResult(this, item, GetQualifiedMemberName(item))));
+                .Select(item => new InspectionResult(this,
+                                                     string.Format(InspectionsUI.UntypedFunctionUsageInspectionResultFormat, item.Declaration.IdentifierName).Capitalize(),
+                                                     new QualifiedContext<ParserRuleContext>(item.QualifiedModuleName, item.Context),
+                                                     GetQualifiedMemberName(item))));
         }
     }
 }

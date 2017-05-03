@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
+using Antlr4.Runtime;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
@@ -61,7 +62,10 @@ namespace Rubberduck.Inspections.Concrete
 
             var items = declarations
                 .Where(item => !IsIgnoredDeclaration(item, interfaceMembers, implementingMembers, handlers, classes, modules)).ToList();
-            var issues = items.Select(issue => new IdentifierNotUsedInspectionResult(this, issue, issue.Context, issue.QualifiedName.QualifiedModuleName));
+            var issues = items.Select(issue => new InspectionResult(this,
+                                                                    string.Format(InspectionsUI.IdentifierNotUsedInspectionResultFormat, issue.DeclarationType.ToLocalizedString(), issue.IdentifierName),
+                                                                    new QualifiedContext<ParserRuleContext>(issue.QualifiedName.QualifiedModuleName, issue.Context),
+                                                                    issue));
 
             issues = DocumentEventHandlerPrefixes
                 .Aggregate(issues, (current, item) => current.Where(issue => !issue.Description.Contains("'" + item)));

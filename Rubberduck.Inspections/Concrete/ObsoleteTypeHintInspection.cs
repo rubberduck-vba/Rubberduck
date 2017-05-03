@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -23,7 +22,7 @@ namespace Rubberduck.Inspections.Concrete
             var declarations = from item in results
                 where item.HasTypeHint
                 select
-                    new ObsoleteTypeHintInspectionResult(this,
+                    new InspectionResult(this,
                         string.Format(InspectionsUI.ObsoleteTypeHintInspectionResultFormat,
                             InspectionsUI.Inspections_Declaration, item.DeclarationType.ToString().ToLower(),
                             item.IdentifierName), new QualifiedContext(item.QualifiedName, item.Context), item);
@@ -31,11 +30,12 @@ namespace Rubberduck.Inspections.Concrete
             var references = from item in results.SelectMany(d => d.References)
                 where item.HasTypeHint()
                 select
-                    new ObsoleteTypeHintInspectionResult(this,
+                    new InspectionResult(this,
                         string.Format(InspectionsUI.ObsoleteTypeHintInspectionResultFormat,
                             InspectionsUI.Inspections_Usage, item.Declaration.DeclarationType.ToString().ToLower(),
                             item.IdentifierName), new QualifiedContext(item.QualifiedModuleName, item.Context),
-                        item.Declaration);
+                        item.Declaration,
+                        false);
 
             return declarations.Union(references);
         }

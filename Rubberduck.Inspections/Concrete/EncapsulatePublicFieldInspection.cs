@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
@@ -33,7 +33,9 @@ namespace Rubberduck.Inspections.Concrete
                 .ToList();
 
             return fields
-                .Select(issue => new EncapsulatePublicFieldInspectionResult(this, issue))
+                .Select(issue => new InspectionResult(this,
+                                                      string.Format(InspectionsUI.EncapsulatePublicFieldInspectionResultFormat, issue.IdentifierName).Capitalize(),
+                                                      issue))
                 .ToList();
         }
     }

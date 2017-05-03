@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -35,7 +34,11 @@ namespace Rubberduck.Inspections.Concrete
                                            !DeclarationReferencesContainsReference(lenFunction, d) &&
                                            !DeclarationReferencesContainsReference(lenbFunction, d))
                                .SelectMany(d => d.References)
-                               .Select(r => new UnassignedVariableUsageInspectionResult(this, r));
+                               .Select(r => new InspectionResult(this,
+                                                                 string.Format(InspectionsUI.UnassignedVariableUsageInspectionResultFormat, r.IdentifierName),
+                                                                 new QualifiedContext<ParserRuleContext>(r.QualifiedModuleName, r.Context),
+                                                                 r.Declaration,
+                                                                 false));
         }
 
         private bool DeclarationReferencesContainsReference(Declaration parentDeclaration, Declaration target)

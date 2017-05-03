@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
@@ -25,12 +24,12 @@ namespace Rubberduck.Inspections.Concrete
                 .Cast<ParameterDeclaration>()
                 .Where(item => !item.IsByRef 
                     && !IsIgnoringInspectionResultFor(item, AnnotationName)
-                    && item.References.Any(reference => reference.IsAssignment))
-                .ToList();
+                    && item.References.Any(reference => reference.IsAssignment));
 
             return parameters
-                .Select(param => new AssignedByValParameterInspectionResult(this, param))
-                .ToList();
+                .Select(param => new InspectionResult(this,
+                                                      string.Format(InspectionsUI.AssignedByValParameterInspectionResultFormat, param.IdentifierName),
+                                                      param));
         }
     }
 }

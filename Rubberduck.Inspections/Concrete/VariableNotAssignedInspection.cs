@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
@@ -35,7 +35,7 @@ namespace Rubberduck.Inspections.Concrete
                 && !declaration.References.Any(reference => reference.IsAssignment));
 
             return declarations.Select(issue => 
-                new IdentifierNotAssignedInspectionResult(this, issue));
+                new InspectionResult(this, string.Format(InspectionsUI.VariableNotAssignedInspectionResultFormat, issue.IdentifierName).Capitalize(), issue));
         }
     }
 }

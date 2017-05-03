@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -30,7 +29,10 @@ namespace Rubberduck.Inspections.Concrete
             var issues = from item in UserDeclarations
                          where ProcedureTypes.Contains(item.DeclarationType) && !item.IsTypeSpecified
                          let issue = new {Declaration = item, QualifiedContext = new QualifiedContext<ParserRuleContext>(item.QualifiedName, item.Context)}
-                         select new ImplicitVariantReturnTypeInspectionResult(this, issue.QualifiedContext, item);
+                         select new InspectionResult(this,
+                                                     string.Format(InspectionsUI.ImplicitVariantReturnTypeInspectionResultFormat, item.IdentifierName),
+                                                     issue.QualifiedContext,
+                                                     item);
             return issues;
         }
     }

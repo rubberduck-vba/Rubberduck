@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Antlr4.Runtime;
+using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -32,7 +34,12 @@ namespace Rubberduck.Inspections.Concrete
 
             var objectVariableNotSetReferences = referencesRequiringSetAssignment.Where(FlagIfObjectVariableNotSet);
 
-            return objectVariableNotSetReferences.Select(reference => new ObjectVariableNotSetInspectionResult(this, reference));
+            return objectVariableNotSetReferences.Select(reference =>
+                new InspectionResult(this,
+                                     string.Format(InspectionsUI.ObjectVariableNotSetInspectionResultFormat, reference.Declaration.IdentifierName).Capitalize(),
+                                     new QualifiedContext<ParserRuleContext>(reference.QualifiedModuleName, reference.Context),
+                                     reference.Declaration,
+                                     false));
         }
 
         private bool FlagIfObjectVariableNotSet(IdentifierReference reference)

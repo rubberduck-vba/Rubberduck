@@ -3,7 +3,6 @@ using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -24,7 +23,10 @@ namespace Rubberduck.Inspections.Concrete
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
-            return Listener.Contexts.Select(c => new OptionExplicitInspectionResult(this, c, GetQualifiedMemberName(c)));
+            return Listener.Contexts.Select(context => new InspectionResult(this,
+                                                                      string.Format(InspectionsUI.OptionExplicitInspectionResultFormat, context.ModuleName.ComponentName),
+                                                                      context,
+                                                                      GetQualifiedMemberName(context)));
         }
 
         public class MissingOptionExplicitListener : VBAParserBaseListener, IInspectionListener

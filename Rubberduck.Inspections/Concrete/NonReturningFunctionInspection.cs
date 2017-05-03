@@ -3,7 +3,6 @@ using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -45,7 +44,9 @@ namespace Rubberduck.Inspections.Concrete
 
             return unassigned
                 .Select(issue =>
-                    new NonReturningFunctionInspectionResult(this, new QualifiedContext<ParserRuleContext>(issue.QualifiedName, issue.Context), issue));
+                    new InspectionResult(this,
+                                         string.Format(InspectionsUI.NonReturningFunctionInspectionResultFormat, issue.IdentifierName),
+                                         new QualifiedContext<ParserRuleContext>(issue.QualifiedName, issue.Context), issue));
         }
 
         private bool IsReturningUserDefinedType(Declaration member)

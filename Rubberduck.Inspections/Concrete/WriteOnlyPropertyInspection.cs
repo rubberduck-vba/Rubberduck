@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
@@ -31,7 +31,9 @@ namespace Rubberduck.Inspections.Concrete
                 .Select(grouping => grouping.First()); // don't get both Let and Set accessors
 
             return setters.Select(setter =>
-                new WriteOnlyPropertyInspectionResult(this, setter));
+                new InspectionResult(this,
+                                     string.Format(InspectionsUI.WriteOnlyPropertyInspectionResultFormat, setter.IdentifierName).Capitalize(),
+                                     setter));
         }
     }
 }

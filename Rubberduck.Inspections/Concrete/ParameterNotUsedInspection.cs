@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
@@ -36,9 +36,9 @@ namespace Rubberduck.Inspections.Concrete
 
             var issues = from issue in parameters
                 let isInterfaceImplementationMember = interfaceImplementationMembers.Contains(issue.ParentDeclaration)
-                select new ParameterNotUsedInspectionResult(this, issue);
+                select new InspectionResult(this, string.Format(InspectionsUI.ParameterNotUsedInspectionResultFormat, issue.IdentifierName).Capitalize(), issue);
 
-            return issues.ToList();
+            return issues;
         }
     }
 }

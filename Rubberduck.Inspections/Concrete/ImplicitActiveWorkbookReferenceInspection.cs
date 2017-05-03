@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
@@ -23,7 +24,7 @@ namespace Rubberduck.Inspections.Concrete
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
             var excel = State.DeclarationFinder.Projects.SingleOrDefault(item => !item.IsUserDefined && item.IdentifierName == "Excel");
-            if (excel == null) { return Enumerable.Empty<InspectionResultBase>(); }
+            if (excel == null) { return Enumerable.Empty<InspectionResult>(); }
 
             var modules = new[]
             {
@@ -41,7 +42,10 @@ namespace Rubberduck.Inspections.Concrete
                 .SelectMany(item => item.References.Where(reference => !IsIgnoringInspectionResultFor(reference, AnnotationName)))
                 .ToList();
                 
-            return members.Select(issue => new ImplicitActiveWorkbookReferenceInspectionResult(this, issue, GetQualifiedMemberName(issue)));
+            return members.Select(issue => new InspectionResult(this,
+                                                                string.Format(InspectionsUI.ImplicitActiveWorkbookReferenceInspectionResultFormat, issue.Context.GetText()),
+                                                                new QualifiedContext<ParserRuleContext>(issue.QualifiedModuleName, issue.Context),
+                                                                GetQualifiedMemberName(issue)));
         }
     }
 }

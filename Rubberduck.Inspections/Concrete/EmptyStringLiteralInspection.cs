@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
+using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -26,7 +26,10 @@ namespace Rubberduck.Inspections.Concrete
         {
             return Listener.Contexts
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName.Component, result.Context.Start.Line))
-                .Select(result => new EmptyStringLiteralInspectionResult(this, result, GetQualifiedMemberName(result)));
+                .Select(result => new InspectionResult(this,
+                                                       InspectionsUI.EmptyStringLiteralInspectionResultFormat.Capitalize(),
+                                                       result,
+                                                       GetQualifiedMemberName(result)));
         }
 
         public class EmptyStringLiteralListener : VBAParserBaseListener, IInspectionListener

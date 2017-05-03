@@ -9,31 +9,36 @@ using Rubberduck.UI;
 using Rubberduck.UI.Controls;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.Inspections.Abstract
+namespace Rubberduck.Inspections
 {
-    public abstract class InspectionResultBase : IInspectionResult, INavigateSource, IExportable
+    public class InspectionResult : IInspectionResult, INavigateSource, IExportable
     {
-        protected InspectionResultBase(IInspection inspection, Declaration target)
-            : this(inspection, target.QualifiedName.QualifiedModuleName, target.Context, target)
+        public InspectionResult(IInspection inspection, string description, Declaration target)
+            : this(inspection, description, new QualifiedContext<ParserRuleContext>(target.QualifiedName.QualifiedModuleName, target.Context), target)
         { }
-        
-        protected InspectionResultBase(IInspection inspection, QualifiedModuleName qualifiedName, QualifiedMemberName? qualifiedMemberName, ParserRuleContext context)
+
+        public InspectionResult(IInspection inspection, string description, QualifiedContext context, QualifiedMemberName? qualifiedMemberName)
         {
             Inspection = inspection;
-            QualifiedName = qualifiedName;
+            Description = description.Capitalize();
+            QualifiedName = context.ModuleName;
             QualifiedMemberName = qualifiedMemberName;
-            Context = context;
+            Context = context.Context;
         }
-        
-        protected InspectionResultBase(IInspection inspection, QualifiedModuleName qualifiedName, ParserRuleContext context, Declaration target)
+
+        public InspectionResult(IInspection inspection, string description, QualifiedContext context, Declaration target, bool useTargetForNavigation = true)
         {
             Inspection = inspection;
-            QualifiedName = qualifiedName;
-            Context = context;
+            Description = description.Capitalize();
+            QualifiedName = context.ModuleName;
+            Context = context.Context;
             Target = target;
+            UseTargetForNavigation = useTargetForNavigation;
 
             QualifiedMemberName = GetQualifiedMemberName(target);
         }
+
+        private bool UseTargetForNavigation { get; } = false;
 
         private QualifiedMemberName? GetQualifiedMemberName(Declaration target)
         {
@@ -52,9 +57,9 @@ namespace Rubberduck.Inspections.Abstract
         
         public IInspection Inspection { get; }
 
-        public abstract string Description { get; }
+        public string Description { get; }
 
-        protected QualifiedModuleName QualifiedName { get; }
+        public QualifiedModuleName QualifiedName { get; }
 
         public QualifiedMemberName? QualifiedMemberName { get; }
 
@@ -65,17 +70,17 @@ namespace Rubberduck.Inspections.Abstract
         /// <summary>
         /// Gets the information needed to select the target instruction in the VBE.
         /// </summary>
-        public virtual QualifiedSelection QualifiedSelection
+        public QualifiedSelection QualifiedSelection
         {
             get
             {
-                return Context == null
+                return UseTargetForNavigation
                     ? Target.QualifiedSelection
                     : new QualifiedSelection(QualifiedName, Context.GetSelection());
             }
         }
 
-        public virtual int CompareTo(IInspectionResult other)
+        public int CompareTo(IInspectionResult other)
         {
             return Inspection.CompareTo(other.Inspection);
         }
@@ -108,7 +113,7 @@ namespace Rubberduck.Inspections.Abstract
                 QualifiedSelection.Selection.StartLine);
         }
 
-        public virtual NavigateCodeEventArgs GetNavigationArgs()
+        public NavigateCodeEventArgs GetNavigationArgs()
         {
             return new NavigateCodeEventArgs(QualifiedSelection);
         }

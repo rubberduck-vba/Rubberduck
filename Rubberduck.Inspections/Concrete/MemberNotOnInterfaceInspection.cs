@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
@@ -29,7 +28,9 @@ namespace Rubberduck.Inspections.Concrete
             return from access in unresolved
                    let callingContext = targets.FirstOrDefault(usage => usage.Context.Equals(access.CallingContext))
                    where callingContext != null
-                   select new MemberNotOnInterfaceInspectionResult(this, access, callingContext.Declaration.AsTypeDeclaration);
+                   select new InspectionResult(this,
+                                               string.Format(InspectionsUI.MemberNotOnInterfaceInspectionResultFormat, access.IdentifierName, callingContext.Declaration.AsTypeDeclaration.IdentifierName),
+                                               access);
         }
     }
 }

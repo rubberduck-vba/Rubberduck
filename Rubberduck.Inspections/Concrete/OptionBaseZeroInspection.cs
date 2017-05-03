@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
+using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -27,7 +27,7 @@ namespace Rubberduck.Inspections.Concrete
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
             return Listener.Contexts.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName.Component, context.Context.Start.Line))
-                                   .Select(context => new OptionBaseZeroInspectionResult(this, context, GetQualifiedMemberName(context)));
+                                   .Select(context => new InspectionResult(this, string.Format(InspectionsUI.OptionBaseZeroInspectionResultFormat.Capitalize(), context.ModuleName.ComponentName), context, GetQualifiedMemberName(context)));
         }
 
         public class OptionBaseStatementListener : VBAParserBaseListener, IInspectionListener

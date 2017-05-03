@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
@@ -23,7 +23,7 @@ namespace Rubberduck.Inspections.Concrete
                 .ToList();
 
             return projects
-                .Select(issue => new DefaultProjectNameInspectionResult(this, issue))
+                .Select(issue => new InspectionResult(this, Description.Capitalize(), issue))
                 .ToList();
         }
     }

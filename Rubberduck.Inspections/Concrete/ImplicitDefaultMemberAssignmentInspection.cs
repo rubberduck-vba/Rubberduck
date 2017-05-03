@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -30,7 +31,12 @@ namespace Rubberduck.Inspections.Concrete
                     return reference.IsAssignment && letStmtContext != null && letStmtContext.LET() == null;
                 });
 
-            return interestingReferences.Select(reference => new ImplicitDefaultMemberAssignmentInspectionResult(this, reference, GetQualifiedMemberName(reference)));
+            return interestingReferences.Select(reference => new InspectionResult(this,
+                                                                                  string.Format(InspectionsUI.ImplicitDefaultMemberAssignmentInspectionResultFormat,
+                                                                                                reference.Declaration.IdentifierName,
+                                                                                                reference.Declaration.AsTypeDeclaration.IdentifierName),
+                                                                                  new QualifiedContext<ParserRuleContext>(reference.QualifiedModuleName, reference.Context),
+                                                                                  GetQualifiedMemberName(reference)));
         }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;

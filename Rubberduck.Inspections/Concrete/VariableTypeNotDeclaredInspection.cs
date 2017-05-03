@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
@@ -24,7 +23,11 @@ namespace Rubberduck.Inspections.Concrete
                             || (item.DeclarationType == DeclarationType.Parameter && !item.IsArray))
                          && !item.IsTypeSpecified
                          && !item.IsUndeclared
-                         select new VariableTypeNotDeclaredInspectionResult(this, item);
+                         select new InspectionResult(this,
+                                                     string.Format(InspectionsUI.ImplicitVariantDeclarationInspectionResultFormat,
+                                                                   item.DeclarationType,
+                                                                   item.IdentifierName),
+                                                     item);
 
             return issues;
         }

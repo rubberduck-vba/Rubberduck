@@ -3,12 +3,13 @@ using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Common;
+using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete
@@ -27,7 +28,12 @@ namespace Rubberduck.Inspections.Concrete
         {
             return Listener.Contexts
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName.Component, result.Context.Start.Line))
-                .Select(p => new MultilineParameterInspectionResult(this, p, GetQualifiedMemberName(p)));
+                .Select(context => new InspectionResult(this,
+                                                  string.Format(context.Context.GetSelection().LineCount > 3
+                                                        ? RubberduckUI.EasterEgg_Continuator
+                                                        : InspectionsUI.MultilineParameterInspectionResultFormat, ((VBAParser.ArgContext)context.Context).unrestrictedIdentifier().ToString()).Capitalize(),
+                                                  context,
+                                                  GetQualifiedMemberName(context)));
         }
 
         public class ParameterListener : VBAParserBaseListener, IInspectionListener

@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -21,7 +20,7 @@ namespace Rubberduck.Inspections.Concrete
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
             var declarations = UserDeclarations.ToArray();
-            var issues = new List<ParameterCanBeByValInspectionResult>();
+            var issues = new List<IInspectionResult>();
 
             var interfaceDeclarationMembers = declarations.FindInterfaceMembers().ToArray();
             var interfaceScopes = declarations.FindInterfaceImplementationMembers().Concat(interfaceDeclarationMembers).Select(s => s.Scope).ToArray();
@@ -46,7 +45,7 @@ namespace Rubberduck.Inspections.Concrete
             
             issues.AddRange(declarations.OfType<ParameterDeclaration>()
                 .Where(declaration => IsIssue(declaration, declarations, declareScopes, eventScopes, interfaceScopes))
-                .Select(issue => new ParameterCanBeByValInspectionResult(this, issue)));
+                .Select(issue => new InspectionResult(this, string.Format(InspectionsUI.ParameterCanBeByValInspectionResultFormat, issue.IdentifierName).Capitalize(), issue)));
 
             return issues;
         }
@@ -66,7 +65,7 @@ namespace Rubberduck.Inspections.Concrete
             return isIssue;
         }
 
-        private IEnumerable<ParameterCanBeByValInspectionResult> GetResults(Declaration[] declarations, Declaration[] declarationMembers)
+        private IEnumerable<IInspectionResult> GetResults(Declaration[] declarations, Declaration[] declarationMembers)
         {
             foreach (var declaration in declarationMembers)
             {
@@ -104,7 +103,9 @@ namespace Rubberduck.Inspections.Concrete
                 {
                     if (parametersAreByRef[i])
                     {
-                        yield return new ParameterCanBeByValInspectionResult(this, declarationParameters[i]);
+                        yield return new InspectionResult(this,
+                                                          string.Format(InspectionsUI.ParameterCanBeByValInspectionResultFormat, declarationParameters[i].IdentifierName).Capitalize(),
+                                                          declarationParameters[i]);
                     }
                 }
             }

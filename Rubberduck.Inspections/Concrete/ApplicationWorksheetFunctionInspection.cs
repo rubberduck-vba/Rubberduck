@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
@@ -35,7 +36,11 @@ namespace Rubberduck.Inspections.Concrete
             return from usage in usages
                    from reference in usage.References.Where(use => !IsIgnoringInspectionResultFor(use, AnnotationName))
                    let qualifiedSelection = new QualifiedSelection(reference.QualifiedModuleName, reference.Selection)
-                   select new ApplicationWorksheetFunctionInspectionResult(this, qualifiedSelection, reference);
+                   select new InspectionResult(this,
+                                               string.Format(InspectionsUI.ApplicationWorksheetFunctionInspectionResultFormat, usage.IdentifierName),
+                                               new QualifiedContext<ParserRuleContext>(qualifiedSelection.QualifiedName, reference.Context),
+                                               reference.Declaration,
+                                               false);
         }
     }
 }
