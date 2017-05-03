@@ -13,6 +13,7 @@ namespace Rubberduck.Parsing.VBA
 
         public IParseTree Parse(string moduleName, CommonTokenStream moduleTokens, IParseTreeListener[] listeners, BaseErrorListener errorListener, out ITokenStream outStream)
         {
+            moduleTokens.Reset();
             var parser = new VBAParser(moduleTokens);
             parser.AddErrorListener(errorListener);
             ParserRuleContext tree;

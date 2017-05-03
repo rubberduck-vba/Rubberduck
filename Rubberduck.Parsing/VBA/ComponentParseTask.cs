@@ -181,7 +181,9 @@ namespace Rubberduck.Parsing.VBA
         private string RewriteAndPreprocess(CancellationToken token)
         {
             var code = _rewriter == null ? string.Join(Environment.NewLine, GetSanitizedCode(_component.CodeModule)) : _rewriter.GetText();
-            var processed = _preprocessor.Execute(_component.Name, code, token);
+            var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();
+            var tokens = tokenStreamProvider.Tokens(code);
+            var processed = _preprocessor.Execute(_component.Name, tokens, token);
             return processed;
         }
 
