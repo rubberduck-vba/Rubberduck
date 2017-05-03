@@ -27,7 +27,7 @@ namespace Rubberduck.Inspections.Concrete
             return Listener.Contexts
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName.Component, result.Context.Start.Line))
                 .Select(result => new InspectionResult(this,
-                                                       InspectionsUI.EmptyStringLiteralInspectionResultFormat.Capitalize(),
+                                                       InspectionsUI.EmptyStringLiteralInspectionResultFormat,
                                                        result,
                                                        GetQualifiedMemberName(result)));
         }

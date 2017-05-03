@@ -45,7 +45,7 @@ namespace Rubberduck.Inspections.Concrete
             
             issues.AddRange(declarations.OfType<ParameterDeclaration>()
                 .Where(declaration => IsIssue(declaration, declarations, declareScopes, eventScopes, interfaceScopes))
-                .Select(issue => new InspectionResult(this, string.Format(InspectionsUI.ParameterCanBeByValInspectionResultFormat, issue.IdentifierName).Capitalize(), issue)));
+                .Select(issue => new InspectionResult(this, string.Format(InspectionsUI.ParameterCanBeByValInspectionResultFormat, issue.IdentifierName), issue)));
 
             return issues;
         }
@@ -104,7 +104,7 @@ namespace Rubberduck.Inspections.Concrete
                     if (parametersAreByRef[i])
                     {
                         yield return new InspectionResult(this,
-                                                          string.Format(InspectionsUI.ParameterCanBeByValInspectionResultFormat, declarationParameters[i].IdentifierName).Capitalize(),
+                                                          string.Format(InspectionsUI.ParameterCanBeByValInspectionResultFormat, declarationParameters[i].IdentifierName),
                                                           declarationParameters[i]);
                     }
                 }

@@ -29,7 +29,7 @@ namespace Rubberduck.Inspections.Concrete
                 .SelectMany(result => result.Context.FindChildren<VBAParser.VariableSubStmtContext>()
                         .Select(r => new QualifiedContext<ParserRuleContext>(result.ModuleName, r)))
                 .Select(result => new InspectionResult(this,
-                                                       string.Format(InspectionsUI.ModuleScopeDimKeywordInspectionResultFormat, ((VBAParser.VariableSubStmtContext)result.Context).identifier().GetText()).Capitalize(),
+                                                       string.Format(InspectionsUI.ModuleScopeDimKeywordInspectionResultFormat, ((VBAParser.VariableSubStmtContext)result.Context).identifier().GetText()),
                                                        result,
                                                        GetQualifiedMemberName(result)));
         }

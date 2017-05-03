@@ -23,7 +23,7 @@ namespace Rubberduck.Inspections.Concrete
                 .ToList();
 
             return projects
-                .Select(issue => new InspectionResult(this, Description.Capitalize(), issue))
+                .Select(issue => new InspectionResult(this, Description, issue))
                 .ToList();
         }
     }

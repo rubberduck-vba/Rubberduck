@@ -55,7 +55,7 @@ namespace Rubberduck.Inspections.Concrete
                 .Where(item => _tokens.Contains(item.IdentifierName) &&
                                !IsIgnoringInspectionResultFor(item, AnnotationName))
                 .Select(item => new InspectionResult(this,
-                                                     string.Format(InspectionsUI.UntypedFunctionUsageInspectionResultFormat, item.Declaration.IdentifierName).Capitalize(),
+                                                     string.Format(InspectionsUI.UntypedFunctionUsageInspectionResultFormat, item.Declaration.IdentifierName),
                                                      new QualifiedContext<ParserRuleContext>(item.QualifiedModuleName, item.Context),
                                                      GetQualifiedMemberName(item))));
         }

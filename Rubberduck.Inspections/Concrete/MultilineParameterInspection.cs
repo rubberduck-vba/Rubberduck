@@ -31,7 +31,7 @@ namespace Rubberduck.Inspections.Concrete
                 .Select(context => new InspectionResult(this,
                                                   string.Format(context.Context.GetSelection().LineCount > 3
                                                         ? RubberduckUI.EasterEgg_Continuator
-                                                        : InspectionsUI.MultilineParameterInspectionResultFormat, ((VBAParser.ArgContext)context.Context).unrestrictedIdentifier().ToString()).Capitalize(),
+                                                        : InspectionsUI.MultilineParameterInspectionResultFormat, ((VBAParser.ArgContext)context.Context).unrestrictedIdentifier().ToString()),
                                                   context,
                                                   GetQualifiedMemberName(context)));
         }

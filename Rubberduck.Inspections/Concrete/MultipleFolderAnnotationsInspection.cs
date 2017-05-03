@@ -27,7 +27,7 @@ namespace Rubberduck.Inspections.Concrete
             return Listener.Contexts.GroupBy(s => s.ModuleName)
                 .Where(g => g.Count() > 1)
                 .Select(r => new InspectionResult(this,
-                    string.Format(InspectionsUI.MultipleFolderAnnotationsInspectionResultFormat, r.First().ModuleName.ComponentName).Capitalize(),
+                    string.Format(InspectionsUI.MultipleFolderAnnotationsInspectionResultFormat, r.First().ModuleName.ComponentName),
                     r.First(),
                     GetQualifiedMemberName(r.First())));
         }

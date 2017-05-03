@@ -43,7 +43,7 @@ namespace Rubberduck.Inspections.Concrete
                 if (!stringStrippedLines.Contains(":"))
                 {
                     results.Add(new InspectionResult(this,
-                                                     InspectionsUI.ObsoleteCallStatementInspectionResultFormat.Capitalize(),
+                                                     InspectionsUI.ObsoleteCallStatementInspectionResultFormat,
                                                      context,
                                                      GetQualifiedMemberName(context)));
                 }

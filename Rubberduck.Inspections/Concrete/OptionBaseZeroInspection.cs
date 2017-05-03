@@ -27,7 +27,7 @@ namespace Rubberduck.Inspections.Concrete
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
             return Listener.Contexts.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName.Component, context.Context.Start.Line))
-                                   .Select(context => new InspectionResult(this, string.Format(InspectionsUI.OptionBaseZeroInspectionResultFormat.Capitalize(), context.ModuleName.ComponentName), context, GetQualifiedMemberName(context)));
+                                   .Select(context => new InspectionResult(this, string.Format(InspectionsUI.OptionBaseZeroInspectionResultFormat, context.ModuleName.ComponentName), context, GetQualifiedMemberName(context)));
         }
 
         public class OptionBaseStatementListener : VBAParserBaseListener, IInspectionListener

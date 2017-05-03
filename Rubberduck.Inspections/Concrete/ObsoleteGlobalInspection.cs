@@ -23,7 +23,7 @@ namespace Rubberduck.Inspections.Concrete
             var issues = from item in UserDeclarations
                          where item.Accessibility == Accessibility.Global && item.Context != null
                          select new InspectionResult(this,
-                                                     string.Format(InspectionsUI.ObsoleteGlobalInspectionResultFormat, item.DeclarationType.ToLocalizedString(), item.IdentifierName).Capitalize(),
+                                                     string.Format(InspectionsUI.ObsoleteGlobalInspectionResultFormat, item.DeclarationType.ToLocalizedString(), item.IdentifierName),
                                                      new QualifiedContext<ParserRuleContext>(item.QualifiedName.QualifiedModuleName, item.Context),
                                                      item);
 

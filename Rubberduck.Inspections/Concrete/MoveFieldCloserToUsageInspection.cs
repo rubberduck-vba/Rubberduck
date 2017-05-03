@@ -53,7 +53,7 @@ namespace Rubberduck.Inspections.Concrete
                            }.Contains(parentDeclaration.DeclarationType);
                 })
                 .Select(issue =>
-                        new InspectionResult(this, string.Format(InspectionsUI.MoveFieldCloserToUsageInspectionResultFormat, issue.IdentifierName).Capitalize(), issue));
+                        new InspectionResult(this, string.Format(InspectionsUI.MoveFieldCloserToUsageInspectionResultFormat, issue.IdentifierName), issue));
         }
 
         private Declaration ParentDeclaration(IdentifierReference reference)

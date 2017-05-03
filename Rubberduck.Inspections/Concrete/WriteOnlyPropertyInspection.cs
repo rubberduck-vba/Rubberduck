@@ -32,7 +32,7 @@ namespace Rubberduck.Inspections.Concrete
 
             return setters.Select(setter =>
                 new InspectionResult(this,
-                                     string.Format(InspectionsUI.WriteOnlyPropertyInspectionResultFormat, setter.IdentifierName).Capitalize(),
+                                     string.Format(InspectionsUI.WriteOnlyPropertyInspectionResultFormat, setter.IdentifierName),
                                      setter));
         }
     }

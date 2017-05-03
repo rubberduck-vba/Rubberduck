@@ -34,7 +34,7 @@ namespace Rubberduck.Inspections.Concrete
 
             return fields
                 .Select(issue => new InspectionResult(this,
-                                                      string.Format(InspectionsUI.EncapsulatePublicFieldInspectionResultFormat, issue.IdentifierName).Capitalize(),
+                                                      string.Format(InspectionsUI.EncapsulatePublicFieldInspectionResultFormat, issue.IdentifierName),
                                                       issue))
                 .ToList();
         }

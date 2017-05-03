@@ -12,7 +12,6 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 using System.Collections.Generic;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Common;
 
 namespace RubberduckTests.Refactoring
 {

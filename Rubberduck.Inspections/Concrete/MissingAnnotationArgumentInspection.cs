@@ -32,7 +32,7 @@ namespace Rubberduck.Inspections.Concrete
                     where context.annotationArgList() == null 
                     select new InspectionResult(this,
                                                 string.Format(InspectionsUI.MissingAnnotationArgumentInspectionResultFormat,
-                                                              ((VBAParser.AnnotationContext)result.Context).annotationName().GetText()).Capitalize(),
+                                                              ((VBAParser.AnnotationContext)result.Context).annotationName().GetText()),
                                                 result,
                                                 GetQualifiedMemberName(result))).ToList();
         }

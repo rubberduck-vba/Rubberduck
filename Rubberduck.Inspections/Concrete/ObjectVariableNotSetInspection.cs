@@ -36,7 +36,7 @@ namespace Rubberduck.Inspections.Concrete
 
             return objectVariableNotSetReferences.Select(reference =>
                 new InspectionResult(this,
-                                     string.Format(InspectionsUI.ObjectVariableNotSetInspectionResultFormat, reference.Declaration.IdentifierName).Capitalize(),
+                                     string.Format(InspectionsUI.ObjectVariableNotSetInspectionResultFormat, reference.Declaration.IdentifierName),
                                      new QualifiedContext<ParserRuleContext>(reference.QualifiedModuleName, reference.Context),
                                      reference.Declaration,
                                      false));

@@ -35,7 +35,7 @@ namespace Rubberduck.Inspections.Concrete
                 && !declaration.References.Any(reference => reference.IsAssignment));
 
             return declarations.Select(issue => 
-                new InspectionResult(this, string.Format(InspectionsUI.VariableNotAssignedInspectionResultFormat, issue.IdentifierName).Capitalize(), issue));
+                new InspectionResult(this, string.Format(InspectionsUI.VariableNotAssignedInspectionResultFormat, issue.IdentifierName), issue));
         }
     }
 }
