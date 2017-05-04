@@ -26,19 +26,19 @@ namespace Rubberduck.Inspections
             Context = context.Context;
         }
 
-        public InspectionResult(IInspection inspection, string description, QualifiedContext context, Declaration target, bool useTargetForNavigation = true)
+        public InspectionResult(IInspection inspection, string description, QualifiedContext context, Declaration target, bool navigateToTarget = true)
         {
             Inspection = inspection;
             Description = description.Capitalize();
             QualifiedName = context.ModuleName;
             Context = context.Context;
             Target = target;
-            UseTargetForNavigation = useTargetForNavigation;
+            NavigateToTarget = navigateToTarget;
 
             QualifiedMemberName = GetQualifiedMemberName(target);
         }
 
-        private bool UseTargetForNavigation { get; } = false;
+        private bool NavigateToTarget { get; } = false;
 
         private QualifiedMemberName? GetQualifiedMemberName(Declaration target)
         {
@@ -74,7 +74,7 @@ namespace Rubberduck.Inspections
         {
             get
             {
-                return UseTargetForNavigation
+                return NavigateToTarget
                     ? Target.QualifiedSelection
                     : new QualifiedSelection(QualifiedName, Context.GetSelection());
             }
