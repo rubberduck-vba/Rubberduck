@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -35,8 +33,8 @@ namespace Rubberduck.Inspections.Concrete
                                                                                   string.Format(InspectionsUI.ImplicitDefaultMemberAssignmentInspectionResultFormat,
                                                                                                 reference.Declaration.IdentifierName,
                                                                                                 reference.Declaration.AsTypeDeclaration.IdentifierName),
-                                                                                  new QualifiedContext<ParserRuleContext>(reference.QualifiedModuleName, reference.Context),
-                                                                                  GetQualifiedMemberName(reference)));
+                                                                                  State,
+                                                                                  reference));
         }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;

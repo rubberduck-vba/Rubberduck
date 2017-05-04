@@ -1,9 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Antlr4.Runtime;
-using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -56,8 +53,8 @@ namespace Rubberduck.Inspections.Concrete
                                !IsIgnoringInspectionResultFor(item, AnnotationName))
                 .Select(item => new InspectionResult(this,
                                                      string.Format(InspectionsUI.UntypedFunctionUsageInspectionResultFormat, item.Declaration.IdentifierName),
-                                                     new QualifiedContext<ParserRuleContext>(item.QualifiedModuleName, item.Context),
-                                                     GetQualifiedMemberName(item))));
+                                                     State,
+                                                     item)));
         }
     }
 }

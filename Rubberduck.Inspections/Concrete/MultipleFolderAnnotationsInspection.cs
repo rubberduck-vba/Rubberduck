@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
-using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Annotations;
@@ -28,8 +27,8 @@ namespace Rubberduck.Inspections.Concrete
                 .Where(g => g.Count() > 1)
                 .Select(r => new InspectionResult(this,
                     string.Format(InspectionsUI.MultipleFolderAnnotationsInspectionResultFormat, r.First().ModuleName.ComponentName),
-                    r.First(),
-                    GetQualifiedMemberName(r.First())));
+                    State,
+                    r.First()));
         }
 
         public class FolderAnnotationStatementListener : VBAParserBaseListener, IInspectionListener

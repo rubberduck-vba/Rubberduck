@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
@@ -42,8 +40,8 @@ namespace Rubberduck.Inspections.Concrete
                 .Where(issue => !issue.IsIgnoringInspectionResultFor(AnnotationName))
                 .Select(issue => new InspectionResult(this,
                                                       string.Format(InspectionsUI.ImplicitActiveSheetReferenceInspectionResultFormat, issue.Declaration.IdentifierName),
-                                                      new QualifiedContext<ParserRuleContext>(issue.QualifiedModuleName, issue.Context),
-                                                      GetQualifiedMemberName(issue)))
+                                                      State,
+                                                      issue))
                 .ToList();
         }
     }

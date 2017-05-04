@@ -1,10 +1,13 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.UI.Controls;
 using Rubberduck.VBEditor;
@@ -17,13 +20,22 @@ namespace Rubberduck.Inspections
             : this(inspection, description, new QualifiedContext<ParserRuleContext>(target.QualifiedName.QualifiedModuleName, target.Context), target)
         { }
 
-        public InspectionResult(IInspection inspection, string description, QualifiedContext context, QualifiedMemberName? qualifiedMemberName)
+        public InspectionResult(IInspection inspection, string description, RubberduckParserState state, IdentifierReference reference)
+            : this(inspection, description, new QualifiedContext<ParserRuleContext>(reference.QualifiedModuleName, reference.Context), reference.Declaration, false)
+        {
+            QualifiedMemberName = GetQualifiedMemberName(state, reference);
+        }
+
+        public InspectionResult(IInspection inspection, string description, RubberduckParserState state, QualifiedContext context)
         {
             Inspection = inspection;
             Description = description.Capitalize();
             QualifiedName = context.ModuleName;
-            QualifiedMemberName = qualifiedMemberName;
+            QualifiedMemberName = GetQualifiedMemberName(state, context);
             Context = context.Context;
+
+            QualifiedSelection = new QualifiedSelection(QualifiedName, Context.GetSelection());
+            _navigationArgs = new Lazy<NavigateCodeEventArgs>(() => new NavigateCodeEventArgs(QualifiedSelection));
         }
 
         public InspectionResult(IInspection inspection, string description, QualifiedContext context, Declaration target, bool navigateToTarget = true)
@@ -33,12 +45,13 @@ namespace Rubberduck.Inspections
             QualifiedName = context.ModuleName;
             Context = context.Context;
             Target = target;
-            NavigateToTarget = navigateToTarget;
+            QualifiedSelection = navigateToTarget
+                    ? Target.QualifiedSelection
+                    : new QualifiedSelection(QualifiedName, Context.GetSelection());
+            _navigationArgs = new Lazy<NavigateCodeEventArgs>(() => new NavigateCodeEventArgs(QualifiedSelection));
 
             QualifiedMemberName = GetQualifiedMemberName(target);
         }
-
-        private bool NavigateToTarget { get; } = false;
 
         private QualifiedMemberName? GetQualifiedMemberName(Declaration target)
         {
@@ -54,7 +67,19 @@ namespace Rubberduck.Inspections
 
             return GetQualifiedMemberName(target.ParentDeclaration);
         }
-        
+
+        private QualifiedMemberName? GetQualifiedMemberName(RubberduckParserState state, QualifiedContext context)
+        {
+            var members = state.DeclarationFinder.Members(context.ModuleName);
+            return members.SingleOrDefault(m => m.Selection.Contains(context.Context.GetSelection()))?.QualifiedName;
+        }
+
+        private QualifiedMemberName? GetQualifiedMemberName(RubberduckParserState state, IdentifierReference reference)
+        {
+            var members = state.DeclarationFinder.Members(reference.QualifiedModuleName);
+            return members.SingleOrDefault(m => m.Selection.Contains(reference.Selection))?.QualifiedName;
+        }
+
         public IInspection Inspection { get; }
 
         public string Description { get; }
@@ -70,15 +95,7 @@ namespace Rubberduck.Inspections
         /// <summary>
         /// Gets the information needed to select the target instruction in the VBE.
         /// </summary>
-        public QualifiedSelection QualifiedSelection
-        {
-            get
-            {
-                return NavigateToTarget
-                    ? Target.QualifiedSelection
-                    : new QualifiedSelection(QualifiedName, Context.GetSelection());
-            }
-        }
+        public QualifiedSelection QualifiedSelection { get; }
 
         public int CompareTo(IInspectionResult other)
         {
@@ -113,10 +130,8 @@ namespace Rubberduck.Inspections
                 QualifiedSelection.Selection.StartLine);
         }
 
-        public NavigateCodeEventArgs GetNavigationArgs()
-        {
-            return new NavigateCodeEventArgs(QualifiedSelection);
-        }
+        private readonly Lazy<NavigateCodeEventArgs> _navigationArgs;
+        public NavigateCodeEventArgs GetNavigationArgs() => _navigationArgs.Value;
 
         public int CompareTo(object obj)
         {

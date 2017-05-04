@@ -8,7 +8,6 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Common;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
@@ -32,8 +31,8 @@ namespace Rubberduck.Inspections.Concrete
                                                   string.Format(context.Context.GetSelection().LineCount > 3
                                                         ? RubberduckUI.EasterEgg_Continuator
                                                         : InspectionsUI.MultilineParameterInspectionResultFormat, ((VBAParser.ArgContext)context.Context).unrestrictedIdentifier().ToString()),
-                                                  context,
-                                                  GetQualifiedMemberName(context)));
+                                                  State,
+                                                  context));
         }
 
         public class ParameterListener : VBAParserBaseListener, IInspectionListener

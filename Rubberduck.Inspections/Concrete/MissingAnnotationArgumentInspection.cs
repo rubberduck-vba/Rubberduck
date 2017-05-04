@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
-using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Annotations;
@@ -33,8 +32,8 @@ namespace Rubberduck.Inspections.Concrete
                     select new InspectionResult(this,
                                                 string.Format(InspectionsUI.MissingAnnotationArgumentInspectionResultFormat,
                                                               ((VBAParser.AnnotationContext)result.Context).annotationName().GetText()),
-                                                result,
-                                                GetQualifiedMemberName(result))).ToList();
+                                                State,
+                                                result));
         }
 
         public class InvalidAnnotationStatementListener : VBAParserBaseListener, IInspectionListener

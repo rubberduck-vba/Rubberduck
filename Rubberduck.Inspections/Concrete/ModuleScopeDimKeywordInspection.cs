@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
-using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
@@ -30,8 +29,8 @@ namespace Rubberduck.Inspections.Concrete
                         .Select(r => new QualifiedContext<ParserRuleContext>(result.ModuleName, r)))
                 .Select(result => new InspectionResult(this,
                                                        string.Format(InspectionsUI.ModuleScopeDimKeywordInspectionResultFormat, ((VBAParser.VariableSubStmtContext)result.Context).identifier().GetText()),
-                                                       result,
-                                                       GetQualifiedMemberName(result)));
+                                                       State,
+                                                       result));
         }
 
         public class ModuleScopedDimListener : VBAParserBaseListener, IInspectionListener

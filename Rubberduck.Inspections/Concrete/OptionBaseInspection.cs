@@ -26,8 +26,8 @@ namespace Rubberduck.Inspections.Concrete
             return Listener.Contexts.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName, context.Context.Start.Line))
                 .Select(context => new InspectionResult(this,
                                                         string.Format(InspectionsUI.OptionBaseInspectionResultFormat, context.ModuleName.ComponentName),
-                                                        context,
-                                                        GetQualifiedMemberName(context)));
+                                                        State,
+                                                        context));
         }
 
         public class OptionBaseStatementListener : VBAParserBaseListener, IInspectionListener
