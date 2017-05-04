@@ -21,11 +21,13 @@ namespace Rubberduck.Parsing.VBA
         protected readonly RubberduckParserState _state;
         protected readonly IParserStateManager _parserStateManager;
         private readonly IModuleToModuleReferenceManager _moduleToModuleReferenceManager;
+        private readonly IReferenceRemover _referenceRemover;
 
         public ReferenceResolveRunnerBase(
             RubberduckParserState state,
             IParserStateManager parserStateManager,
-            IModuleToModuleReferenceManager moduletToModuleReferenceManager)
+            IModuleToModuleReferenceManager moduletToModuleReferenceManager,
+            IReferenceRemover referenceRemover)
         {
             if (state == null)
             {
@@ -39,10 +41,15 @@ namespace Rubberduck.Parsing.VBA
             {
                 throw new ArgumentNullException(nameof(moduletToModuleReferenceManager));
             }
+            if (referenceRemover == null)
+            {
+                throw new ArgumentNullException(nameof(referenceRemover));
+            }
 
             _state = state;
             _parserStateManager = parserStateManager;
             _moduleToModuleReferenceManager = moduletToModuleReferenceManager;
+            _referenceRemover = referenceRemover;
         }
 
 
@@ -55,6 +62,14 @@ namespace Rubberduck.Parsing.VBA
             token.ThrowIfCancellationRequested();
 
             _toResolve.UnionWith(toResolve);
+            token.ThrowIfCancellationRequested();
+
+            if(!_toResolve.Any())
+            {
+                return;
+            }
+
+            PerformPreResolveCleanup(_toResolve.AsReadOnly(), token);
             token.ThrowIfCancellationRequested();
 
             ExecuteCompilationPasses();
@@ -75,6 +90,13 @@ namespace Rubberduck.Parsing.VBA
             _toResolve.Clear();
         }
 
+        private void PerformPreResolveCleanup(IReadOnlyCollection<QualifiedModuleName> toResolve, CancellationToken token)
+        {
+            _moduleToModuleReferenceManager.ClearModuleToModuleReferencesFromModule(toResolve);
+            _moduleToModuleReferenceManager.ClearModuleToModuleReferencesToModule(toResolve);
+            _referenceRemover.RemoveReferencesBy(toResolve, token);
+        }
+
         private void ExecuteCompilationPasses()
         {
             var passes = new List<ICompilationPass>
@@ -89,7 +111,7 @@ namespace Rubberduck.Parsing.VBA
 
         protected void ResolveReferences(DeclarationFinder finder, QualifiedModuleName module, IParseTree tree, CancellationToken token)
         {
-            Debug.Assert(_state.GetModuleState(module.Component) == ParserState.ResolvingReferences || token.IsCancellationRequested);
+            Debug.Assert(_state.GetModuleState(module) == ParserState.ResolvingReferences || token.IsCancellationRequested);
 
             token.ThrowIfCancellationRequested();
 

@@ -26,7 +26,7 @@ namespace Rubberduck.Inspections.Concrete
         {
             var results = new List<IInspectionResult>();
 
-            foreach (var context in Listener.Contexts.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName.Component, context.Context.Start.Line)))
+            foreach (var context in Listener.Contexts.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName, context.Context.Start.Line)))
             {
                 var module = context.ModuleName.Component.CodeModule;
                 var lines = module.GetLines(context.Context.Start.Line,

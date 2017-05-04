@@ -94,7 +94,7 @@ End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
-        [TestMethod, Ignore]
+        [TestMethod]
         [TestCategory("Inspections")]
         public void ObjectVariableNotSet_GivenVariantVariableAssignedRange_ReturnsResult()
         {

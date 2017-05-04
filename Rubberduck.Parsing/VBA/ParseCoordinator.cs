@@ -157,6 +157,9 @@ namespace Rubberduck.Parsing.VBA
         {
             token.ThrowIfCancellationRequested();
 
+            _parserStateManager.SetStatusAndFireStateChanged(this, ParserState.Pending, token);
+            token.ThrowIfCancellationRequested();
+
             _projectManager.RefreshProjects();
             token.ThrowIfCancellationRequested();
 
@@ -164,21 +167,23 @@ namespace Rubberduck.Parsing.VBA
             token.ThrowIfCancellationRequested();
 
             // tests do not fire events when components are removed--clear components
-            ClearComponentStateCacheForTests();
+            ClearComponentsForTests();
             token.ThrowIfCancellationRequested();
 
-            ExecuteCommonParseActivities(modules, token);
+            ExecuteCommonParseActivities(modules, new List<QualifiedModuleName>(), token);
         }
 
-        private void ClearComponentStateCacheForTests()
+        private void ClearComponentsForTests()
         {
             foreach (var tree in State.ParseTrees)
             {
                 State.ClearStateCache(tree.Key);    // handle potentially removed components without crashing
+                _moduleToModuleReferenceManager.ClearModuleToModuleReferencesFromModule(tree.Key);
+                _moduleToModuleReferenceManager.ClearModuleToModuleReferencesToModule(tree.Key);
             }
         }
 
-        private void ExecuteCommonParseActivities(IReadOnlyCollection<QualifiedModuleName> toParse, CancellationToken token)
+        private void ExecuteCommonParseActivities(IReadOnlyCollection<QualifiedModuleName> toParse, IReadOnlyCollection<QualifiedModuleName> toReresolveReferences, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
             
@@ -205,12 +210,15 @@ namespace Rubberduck.Parsing.VBA
             IReadOnlyCollection<QualifiedModuleName> toResolveReferences;
             if (!toParse.Any())
             {
-                toResolveReferences = new HashSet<QualifiedModuleName>().AsReadOnly();
+                toResolveReferences = toReresolveReferences;
             }
             else
             {
-                toResolveReferences = ModulesForWhichToResolveReferences(toParse);
-                PerformPreParseCleanup(toParse, toResolveReferences, token);
+                toResolveReferences = ModulesForWhichToResolveReferences(toParse, toReresolveReferences);
+                token.ThrowIfCancellationRequested();
+
+                //This is purely a security measure. In the success path the reference resolver removes the old references. 
+                _referenceRemover.RemoveReferencesBy(toParse, token);   
                 token.ThrowIfCancellationRequested();
 
                 _parserStateManager.SetModuleStates(toParse, ParserState.Parsing, token);
@@ -242,6 +250,8 @@ namespace Rubberduck.Parsing.VBA
                 throw new OperationCanceledException(token);
             }
 
+            //Explicitly setting the overall state here guarantees that the handlers attached 
+            //to the state change to ResolvedDeclarations always run, provided there is no error.
             State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
 
             if (token.IsCancellationRequested || State.Status >= ParserState.Error)
@@ -262,6 +272,8 @@ namespace Rubberduck.Parsing.VBA
             RefreshDeclarationFinder();
             token.ThrowIfCancellationRequested();
 
+            //At this point all modules should either be in the Ready state or in an error state.
+            //This is the point where the change of the overall state to Ready is triggered on the success path.
             _parserStateManager.EvaluateOverallParserState(token);
             token.ThrowIfCancellationRequested();
         }
@@ -271,18 +283,12 @@ namespace Rubberduck.Parsing.VBA
             State.RefreshDeclarationFinder();
         }
 
-        private IReadOnlyCollection<QualifiedModuleName> ModulesForWhichToResolveReferences(IReadOnlyCollection<QualifiedModuleName> modulesToParse)
+        private IReadOnlyCollection<QualifiedModuleName> ModulesForWhichToResolveReferences(IReadOnlyCollection<QualifiedModuleName> modulesToParse, IReadOnlyCollection<QualifiedModuleName> toReresolveReferences)
         {
             var toResolveReferences = modulesToParse.ToHashSet();
             toResolveReferences.UnionWith(_moduleToModuleReferenceManager.ModulesReferencingAny(modulesToParse));
+            toResolveReferences.UnionWith(toReresolveReferences);
             return toResolveReferences.AsReadOnly();
-        }
-
-        private void PerformPreParseCleanup(IReadOnlyCollection<QualifiedModuleName> modulesToParse, IReadOnlyCollection<QualifiedModuleName> toResolveReferences, CancellationToken token)
-        {
-            _moduleToModuleReferenceManager.ClearModuleToModuleReferencesFromModule(modulesToParse);
-            _moduleToModuleReferenceManager.ClearModuleToModuleReferencesToModule(modulesToParse);
-            _referenceRemover.RemoveReferencesBy(toResolveReferences, token); 
         }
 
 
@@ -327,7 +333,7 @@ namespace Rubberduck.Parsing.VBA
         {
             token.ThrowIfCancellationRequested();
 
-            Thread.Sleep(50); //Simplistic hack to give the VBE time to do its work in case the parsing run is requested from an event handler. 
+            _parserStateManager.SetStatusAndFireStateChanged(requestor, ParserState.ResolvedDeclarations, token);
             token.ThrowIfCancellationRequested();
 
             _projectManager.RefreshProjects();
@@ -336,7 +342,13 @@ namespace Rubberduck.Parsing.VBA
             var modules = _projectManager.AllModules();
             token.ThrowIfCancellationRequested();
 
-            var componentsRemoved = CleanUpRemovedComponents(modules, token);
+            var removedModules = RemovedModules(modules);
+            token.ThrowIfCancellationRequested();
+
+            var toReResolveReferences = _moduleToModuleReferenceManager.ModulesReferencingAny(removedModules);
+            token.ThrowIfCancellationRequested();
+
+            CleanUpRemovedComponents(removedModules, token);
             token.ThrowIfCancellationRequested();
 
             var toParse = modules.Where(module => State.IsNewOrModified(module)).ToHashSet();
@@ -345,31 +357,12 @@ namespace Rubberduck.Parsing.VBA
             toParse.UnionWith(modules.Where(module => _parserStateManager.GetModuleState(module) != ParserState.Ready));
             token.ThrowIfCancellationRequested();           
 
-            if (toParse.Count == 0)
-            {
-                if (componentsRemoved)  // trigger UI updates
-                {
-                    State.SetStatusAndFireStateChanged(requestor, ParserState.ResolvedDeclarations);
-                }
-
-                State.SetStatusAndFireStateChanged(requestor, State.Status);
-                //return; // returning here leaves state in 'ResolvedDeclarations' when a module is removed, which disables refresh
-            }
-
-            token.ThrowIfCancellationRequested();
-
-            ExecuteCommonParseActivities(toParse.AsReadOnly(), token);
+            ExecuteCommonParseActivities(toParse.AsReadOnly(), toReResolveReferences, token);
         }
 
-        /// <summary>
-        /// Clears state cache of removed components.
-        /// Returns whether components have been removed.
-        /// </summary>
-        private bool CleanUpRemovedComponents(IReadOnlyCollection<QualifiedModuleName> modules, CancellationToken token)
+        private void CleanUpRemovedComponents(IReadOnlyCollection<QualifiedModuleName> removedModules, CancellationToken token)
         {
-            var removedModules = RemovedModules(modules);
-            var componentRemoved = removedModules.Any();
-            if (componentRemoved)
+            if (removedModules.Any())
             {
                 _referenceRemover.RemoveReferencesBy(removedModules, token);
                 foreach (var module in removedModules)
@@ -379,7 +372,6 @@ namespace Rubberduck.Parsing.VBA
                     State.ClearStateCache(module);
                 }
             }
-            return componentRemoved;
         }
 
         private IReadOnlyCollection<QualifiedModuleName> RemovedModules(IReadOnlyCollection<QualifiedModuleName> modules)

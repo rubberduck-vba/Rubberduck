@@ -9,7 +9,6 @@ using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Inspections.Abstract
 {
@@ -107,11 +106,11 @@ namespace Rubberduck.Inspections.Abstract
             return members.SingleOrDefault(m => m.Selection.Contains(reference.Selection))?.QualifiedName;
         }
 
-        protected bool IsIgnoringInspectionResultFor(IVBComponent component, int line)
+        protected bool IsIgnoringInspectionResultFor(QualifiedModuleName module, int line)
         {
-            var annotations = State.GetModuleAnnotations(component).ToList();
+            var annotations = State.GetModuleAnnotations(module).ToList();
 
-            if (State.GetModuleAnnotations(component) == null)
+            if (State.GetModuleAnnotations(module) == null)
             {
                 return false;
             }

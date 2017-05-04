@@ -62,14 +62,9 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
         {
             var finder = _state.DeclarationFinder;;
 
-            if (WeHaveAlreadyLoadedTheDeclarationsBefore(finder))
-            {
-                return new List<Declaration>();
-            }
-
             UpdateAliasFunctionModulesFromReferencedProjects(finder);
 
-            if (NoReferenceToProjectContainingTheFunctionAliases())
+            if (NoReferenceToProjectContainingTheFunctionAliases() || WeHaveAlreadyLoadedTheDeclarationsBefore(finder))
             {
                 return new List<Declaration>();
             }
@@ -99,26 +94,23 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
             _hiddenModule = finder.FindStdModule("_HiddenModule", vba, true);
         }
 
-
-        private static bool WeHaveAlreadyLoadedTheDeclarationsBefore(DeclarationFinder finder)
-        {
-            return ThereIsAGlobalBuiltInErrVariableDeclaration(finder);
-        }
-
-        private static bool ThereIsAGlobalBuiltInErrVariableDeclaration(DeclarationFinder finder)
-        {
-            return finder.MatchName(Grammar.Tokens.Err).Any(declaration => !declaration.IsUserDefined
-                                                                    && declaration.DeclarationType == DeclarationType.Variable
-                                                                    && declaration.Accessibility == Accessibility.Global);
-        }
-
-
         private bool NoReferenceToProjectContainingTheFunctionAliases()
         {
             return _conversionModule == null;
-                // All the modules containing function aliases are part of the same project. --> Only need to check one.
+            // All the modules containing function aliases are part of the same project. --> Only need to check one.
         }
 
+        private bool WeHaveAlreadyLoadedTheDeclarationsBefore(DeclarationFinder finder)
+        {
+            return ThereIsAnErrorFunctionDeclaration(finder);
+        }
+
+        private bool ThereIsAnErrorFunctionDeclaration(DeclarationFinder finder)
+        {
+            var errorFunction = ErrorFunction();
+            return finder.MatchName(errorFunction.IdentifierName)
+                            .Any(declaration => declaration.Equals(errorFunction));
+        }
 
         private List<Declaration> ReferencedBuiltInFunctionsThatMightHaveAnAlias(RubberduckParserState state)
         {

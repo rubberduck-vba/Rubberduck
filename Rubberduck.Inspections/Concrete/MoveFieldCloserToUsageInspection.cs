@@ -18,11 +18,12 @@ namespace Rubberduck.Inspections.Concrete
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
-            return UserDeclarations
+            return State.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
                 .Where(declaration =>
                 {
-                    if (declaration.DeclarationType != DeclarationType.Variable || declaration.IsWithEvents ||
-                        !new[] {DeclarationType.ClassModule, DeclarationType.ProceduralModule}.Contains(declaration.ParentDeclaration.DeclarationType))
+                    if (declaration.IsWithEvents
+                        || !new[] {DeclarationType.ClassModule, DeclarationType.ProceduralModule}.Contains(declaration.ParentDeclaration.DeclarationType)
+                        || IsIgnoringInspectionResultFor(declaration, AnnotationName))
                     {
                         return false;
                     }

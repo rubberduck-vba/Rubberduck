@@ -18,15 +18,13 @@ namespace Rubberduck.Inspections.Concrete
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
-            var declarations = UserDeclarations.ToList();
-            var setters = declarations
+            var setters = State.DeclarationFinder.UserDeclarations(DeclarationType.Property | DeclarationType.Procedure)
                 .Where(item => 
                        (item.Accessibility == Accessibility.Implicit || 
                         item.Accessibility == Accessibility.Public || 
                         item.Accessibility == Accessibility.Global)
-                    && (item.DeclarationType == DeclarationType.PropertyLet ||
-                        item.DeclarationType == DeclarationType.PropertySet)
-                    && declarations.Where(declaration => declaration.IdentifierName == item.IdentifierName).All(accessor => accessor.DeclarationType != DeclarationType.PropertyGet))
+                    && State.DeclarationFinder.MatchName(item.IdentifierName).All(accessor => accessor.DeclarationType != DeclarationType.PropertyGet))
+                .Where(result => !IsIgnoringInspectionResultFor(result, AnnotationName))
                 .GroupBy(item => new {item.QualifiedName, item.DeclarationType})
                 .Select(grouping => grouping.First()); // don't get both Let and Set accessors
 

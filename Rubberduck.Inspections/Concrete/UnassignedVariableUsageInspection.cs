@@ -19,12 +19,12 @@ namespace Rubberduck.Inspections.Concrete
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
-            var declarations = UserDeclarations.Where(declaration => 
-                declaration.DeclarationType == DeclarationType.Variable
-                && !UserDeclarations.Any(d => d.DeclarationType == DeclarationType.UserDefinedType
-                    && d.IdentifierName == declaration.AsTypeName)
-                && !declaration.IsSelfAssigned
-                && !declaration.References.Any(reference => reference.IsAssignment && !IsIgnoringInspectionResultFor(reference, AnnotationName)));
+            var declarations = State.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
+                .Where(result => !IsIgnoringInspectionResultFor(result, AnnotationName))
+                .Where(declaration => 
+                    State.DeclarationFinder.MatchName(declaration.AsTypeName).All(d => d.DeclarationType != DeclarationType.UserDefinedType)
+                    && !declaration.IsSelfAssigned
+                    && !declaration.References.Any(reference => reference.IsAssignment && !IsIgnoringInspectionResultFor(reference, AnnotationName)));
 
             //The parameter scoping was apparently incorrect before - need to filter for the actual function.
             var lenFunction = BuiltInDeclarations.SingleOrDefault(s => s.DeclarationType == DeclarationType.Function && s.Scope.Equals("VBE7.DLL;VBA.Strings.Len"));
