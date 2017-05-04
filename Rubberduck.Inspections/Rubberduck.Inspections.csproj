@@ -66,7 +66,7 @@
     <Compile Include="Concrete\ImplicitDefaultMemberAssignmentInspection.cs" />
     <Compile Include="Concrete\ImplicitPublicMemberInspection.cs" />
     <Compile Include="Concrete\ImplicitVariantReturnTypeInspection.cs" />
-    <Compile Include="InspectionResult.cs" />
+    <Compile Include="Abstract\InspectionResultBase.cs" />
     <Compile Include="Inspector.cs" />
     <Compile Include="Concrete\MemberNotOnInterfaceInspection.cs" />
     <Compile Include="Concrete\MissingAnnotationArgumentInspection.cs" />
@@ -133,6 +133,9 @@
     <Compile Include="Concrete\UseMeaningfulNameInspection.cs" />
     <Compile Include="Concrete\VariableNotAssignedInspection.cs" />
     <Compile Include="Concrete\VariableNotUsedInspection.cs" />
+    <Compile Include="Results\DeclarationInspectionResult.cs" />
+    <Compile Include="Results\IdentifierReferenceInspectionResult.cs" />
+    <Compile Include="Results\QualifiedContextInspectionResult.cs" />
     <Compile Include="VariableRequiresSetAssignmentEvaluator.cs" />
     <Compile Include="Concrete\VariableTypeNotDeclaredInspection.cs" />
     <Compile Include="Concrete\WriteOnlyPropertyInspection.cs" />
