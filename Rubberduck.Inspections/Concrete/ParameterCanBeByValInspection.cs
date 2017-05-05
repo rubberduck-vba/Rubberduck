@@ -104,7 +104,7 @@ namespace Rubberduck.Inspections.Concrete
                 {
                     if (parametersAreByRef[i])
                     {
-                        yield return new InspectionResult(this,
+                        yield return new DeclarationInspectionResult(this,
                                                           string.Format(InspectionsUI.ParameterCanBeByValInspectionResultFormat, declarationParameters[i].IdentifierName),
                                                           declarationParameters[i]);
                     }

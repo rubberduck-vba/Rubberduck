@@ -29,8 +29,8 @@ namespace Rubberduck.Inspections.Concrete
             return declarations.Select(issue => 
                 new DeclarationInspectionResult(this,
                                      string.Format(InspectionsUI.IdentifierNotUsedInspectionResultFormat, issue.DeclarationType.ToLocalizedString(), issue.IdentifierName),
-                                     new QualifiedContext<ParserRuleContext>(issue.QualifiedName.QualifiedModuleName, ((dynamic)issue.Context).identifier()),
-                                     issue));
+                                     issue,
+                                     new QualifiedContext<ParserRuleContext>(issue.QualifiedName.QualifiedModuleName, ((dynamic)issue.Context).identifier())));
         }
     }
 }
