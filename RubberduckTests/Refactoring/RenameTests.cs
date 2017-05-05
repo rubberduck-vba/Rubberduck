@@ -131,6 +131,59 @@ End Sub";
         }
 
         [TestMethod]
+        public void RenameRefactoring_RenameParameter_DoesNotAlterPrecompilerDirectives()
+        {
+            //Input
+            const string inputCode =
+@"#Const Bar = 42
+
+#If False Then
+Private Sub Goo(ByVal arg1 As String)
+#ElseIf True Then
+Private Sub Foo(ByVal arg1 As String)
+#Else
+Private Sub Foo(ByVal arg1 As String, arg2 As String)
+#EndIf
+End Sub";
+            var selection = new Selection(6, 25, 6, 25);
+
+            //Expectation
+            const string expectedCode =
+@"#Const Bar = 42
+
+#If False Then
+Private Sub Goo(ByVal arg1 As String)
+#ElseIf True Then
+Private Sub Foo(ByVal arg2 As String)
+#Else
+Private Sub Foo(ByVal arg1 As String, arg2 As String)
+#EndIf
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+            var msgbox = new Mock<IMessageBox>();
+            msgbox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.YesNo, It.IsAny<MessageBoxIcon>()))
+                  .Returns(DialogResult.Yes);
+
+            var vbeWrapper = vbe.Object;
+            var model = new RenameModel(vbeWrapper, state, qualifiedSelection) { NewName = "arg2" };
+
+            //SetupFactory
+            var factory = SetupFactory(model);
+
+            var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, msgbox.Object, state);
+            refactoring.Refactor(qualifiedSelection);
+
+            var rewriter = state.GetRewriter(component);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
+        }
+
+        [TestMethod]
         public void RenameRefactoring_RenameMulitlinedParameter()
         {
             //Input
