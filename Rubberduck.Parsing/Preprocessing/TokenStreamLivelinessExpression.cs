@@ -31,11 +31,12 @@ namespace Rubberduck.Parsing.PreProcessing
 
         private void HideDeadTokens(IEnumerable<IToken> deadTokens)
         {
+            CommonToken commonToken;
             foreach(var token in deadTokens)
             {
                 //We need this cast because the IToken interface does not expose the setters for the properties.
                 //CommonToken is the default token type used by Antlr. (Any custom token types should extend it.)
-                var commonToken = token as CommonToken;
+                commonToken = token as CommonToken;
                 if (commonToken != null)
                 {
                     HideNonNewline(commonToken);
