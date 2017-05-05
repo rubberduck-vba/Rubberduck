@@ -167,7 +167,10 @@
     <Compile Include="PostProcessing\RewriterInfo\RewriterInfo.cs" />
     <Compile Include="PostProcessing\RewriterInfo\RewriterInfoFinderBase.cs" />
     <Compile Include="PostProcessing\RewriterInfo\VariableRewriterInfoFinder.cs" />
+    <Compile Include="PreProcessing\TokenStreamConditionalCompilationIfExpression.cs" />
+    <Compile Include="PreProcessing\TokenStreamConditionalCompilationConstantExpression.cs" />
     <Compile Include="PreProcessing\IVBAPreprocessor.cs" />
+    <Compile Include="PreProcessing\TokenStreamLivelinessExpression.cs" />
     <Compile Include="PreProcessing\VBAConditionalCompilationParser.cs" />
     <Compile Include="PreProcessing\VBAConditionalCompilationParserBaseListener.cs" />
     <Compile Include="PreProcessing\VBAConditionalCompilationParserBaseVisitor.cs" />
@@ -184,6 +187,7 @@
     <Compile Include="ComReflection\ComModule.cs" />
     <Compile Include="ComReflection\ComProject.cs" />
     <Compile Include="PostProcessing\IModuleRewriter.cs" />
+    <Compile Include="PreProcessing\VBATokenStreamPreprocessorVisitor.cs" />
     <Compile Include="SymbolList.cs" />
     <Compile Include="Symbols\AliasDeclaration.cs" />
     <Compile Include="Symbols\DeclarationLoaders\SpecialFormDeclarations.cs" />

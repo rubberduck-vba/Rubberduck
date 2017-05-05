@@ -5,6 +5,6 @@ namespace Rubberduck.Parsing.PreProcessing
 {
     public interface IVBAPreprocessor
     {
-        string Execute(string moduleName, CommonTokenStream unprocessedTokenStream, CancellationToken token);
+        CommonTokenStream Execute(string moduleName, CommonTokenStream unprocessedTokenStream, CancellationToken token);
     }
 }

@@ -14,16 +14,17 @@ namespace Rubberduck.Parsing.PreProcessing
             _parser = new VBAPrecompilationParser();
         }
 
-        public string Execute(string moduleName, CommonTokenStream unprocessedTokenStream, CancellationToken token)
+        public CommonTokenStream Execute(string moduleName, CommonTokenStream unprocessedTokenStream, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
             var symbolTable = new SymbolTable<string, IValue>();
             var tree = _parser.Parse(moduleName, unprocessedTokenStream);
             token.ThrowIfCancellationRequested();
-            var stream = tree.Start.InputStream;
-            var evaluator = new VBAPreprocessorVisitor(symbolTable, new VBAPredefinedCompilationConstants(_vbaVersion), stream);
+            var stream = unprocessedTokenStream.TokenSource.InputStream;
+            var evaluator = new VBATokenStreamPreprocessorVisitor(symbolTable, new VBAPredefinedCompilationConstants(_vbaVersion), stream, unprocessedTokenStream);
             var expr = evaluator.Visit(tree);
-            return expr.Evaluate().AsString;
+            var dummyValue = expr.Evaluate();
+            return unprocessedTokenStream;
         }
     }
 }
