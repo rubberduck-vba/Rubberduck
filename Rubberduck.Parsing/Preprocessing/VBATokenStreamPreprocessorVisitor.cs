@@ -91,7 +91,7 @@ namespace Rubberduck.Parsing.PreProcessing
             var elseIfCodeCondBlocks = context
                 .ccElseIfBlock()
                 .Select(elseIf =>
-                        Tuple.Create<IExpression, IEnumerable<CommonToken>, IExpression, IExpression, IEnumerable<CommonToken>>(
+                        Tuple.Create<IExpression, IEnumerable<IToken>, IExpression, IExpression, IEnumerable<IToken>>(
                             new ConstantExpression(new StringValue(ParserRuleContextHelper.GetText(elseIf.ccElseIf(), _stream))),
                             ParserRuleContextHelper.GetTokens(elseIf.ccElseIf(), _tokenStream),
                             Visit(elseIf.ccElseIf().ccExpression()),
@@ -100,9 +100,9 @@ namespace Rubberduck.Parsing.PreProcessing
                 .ToList();
 
             IExpression elseCondCode = null;
-            IEnumerable<CommonToken> elseCondTokens = new List<CommonToken>();
+            IEnumerable<IToken> elseCondTokens = new List<CommonToken>();
             IExpression elseBlock = null;
-            IEnumerable<CommonToken> elseBlockTokens = new List<CommonToken>();
+            IEnumerable<IToken> elseBlockTokens = new List<CommonToken>();
             if (context.ccElseBlock() != null)
             {
                 elseCondCode = new ConstantExpression(new StringValue(ParserRuleContextHelper.GetText(context.ccElseBlock().ccElse(), _stream)));

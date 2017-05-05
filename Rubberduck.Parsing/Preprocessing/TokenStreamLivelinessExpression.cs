@@ -9,9 +9,9 @@ namespace Rubberduck.Parsing.PreProcessing
     {
         private readonly IExpression _isAlive;
         private readonly IExpression _code;
-        private readonly IEnumerable<CommonToken> _tokens;
+        private readonly IEnumerable<IToken> _tokens;
 
-        public TokenStreamLivelinessExpression(IExpression isAlive, IExpression code, IEnumerable<CommonToken> tokens)
+        public TokenStreamLivelinessExpression(IExpression isAlive, IExpression code, IEnumerable<IToken> tokens)
         {
             _isAlive = isAlive;
             _code = code;
@@ -29,11 +29,17 @@ namespace Rubberduck.Parsing.PreProcessing
             return isAlive ? new StringValue(code) : new StringValue(MarkAsDead(code));
         }
 
-        private void HideDeadTokens(IEnumerable<CommonToken> deadTokens)
+        private void HideDeadTokens(IEnumerable<IToken> deadTokens)
         {
             foreach(var token in deadTokens)
             {
-                HideNonNewline(token);
+                //We need this cast because the IToken interface does not expose the setters for the properties.
+                //CommonToken is the default token type used by Antlr. (Any custom token types should extend it.)
+                var commonToken = token as CommonToken;
+                if (commonToken != null)
+                {
+                    HideNonNewline(commonToken);
+                }
             }
         }
 
