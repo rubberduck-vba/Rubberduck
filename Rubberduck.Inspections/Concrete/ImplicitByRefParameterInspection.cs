@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
@@ -30,7 +31,7 @@ namespace Rubberduck.Inspections.Concrete
                     && !builtinEventHandlers.Contains(item.ParentDeclaration))
                 .ToList();
 
-            return issues.Select(issue => new InspectionResult(this, string.Format(InspectionsUI.ImplicitByRefParameterInspectionResultFormat, issue.IdentifierName), issue));
+            return issues.Select(issue => new DeclarationInspectionResult(this, string.Format(InspectionsUI.ImplicitByRefParameterInspectionResultFormat, issue.IdentifierName), issue));
         }
     }
 }

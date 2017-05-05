@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Linq;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
@@ -48,7 +49,7 @@ namespace Rubberduck.Inspections.Concrete
                                     !handlers.Contains(declaration.ParentDeclaration)) &&
                                 !whitelistedNames.Contains(declaration.IdentifierName) &&
                                 !VariableNameValidator.IsMeaningfulName(declaration.IdentifierName))
-                            .Select(issue => new InspectionResult(this,
+                            .Select(issue => new DeclarationInspectionResult(this,
                                                                   string.Format(InspectionsUI.IdentifierNameInspectionResultFormat,
                                                                                 RubberduckUI.ResourceManager.GetString("DeclarationType_" + issue.DeclarationType, CultureInfo.CurrentUICulture),
                                                                                 issue.IdentifierName),

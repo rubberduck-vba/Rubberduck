@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -51,7 +52,7 @@ namespace Rubberduck.Inspections.Concrete
             return declarations.SelectMany(declaration => declaration.References
                 .Where(item => _tokens.Contains(item.IdentifierName) &&
                                !IsIgnoringInspectionResultFor(item, AnnotationName))
-                .Select(item => new InspectionResult(this,
+                .Select(item => new IdentifierReferenceInspectionResult(this,
                                                      string.Format(InspectionsUI.UntypedFunctionUsageInspectionResultFormat, item.Declaration.IdentifierName),
                                                      State,
                                                      item)));

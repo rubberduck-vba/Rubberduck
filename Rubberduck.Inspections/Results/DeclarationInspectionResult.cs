@@ -1,4 +1,5 @@
 ﻿using Rubberduck.Inspections.Abstract;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
@@ -7,11 +8,11 @@ namespace Rubberduck.Inspections.Results
 {
     class DeclarationInspectionResult : InspectionResultBase
     {
-        public DeclarationInspectionResult(IInspection inspection, string description, Declaration target) :
+        public DeclarationInspectionResult(IInspection inspection, string description, Declaration target, QualifiedContext context = null) :
             base(inspection,
                  description,
-                 target.QualifiedName.QualifiedModuleName,
-                 target.Context,
+                 context == null ? target.QualifiedName.QualifiedModuleName : context.ModuleName,
+                 context == null ? target.Context : context.Context,
                  target,
                  target.QualifiedSelection,
                  GetQualifiedMemberName(target))

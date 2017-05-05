@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -29,7 +30,7 @@ namespace Rubberduck.Inspections.Concrete
                     return reference.IsAssignment && letStmtContext != null && letStmtContext.LET() == null;
                 });
 
-            return interestingReferences.Select(reference => new InspectionResult(this,
+            return interestingReferences.Select(reference => new IdentifierReferenceInspectionResult(this,
                                                                                   string.Format(InspectionsUI.ImplicitDefaultMemberAssignmentInspectionResultFormat,
                                                                                                 reference.Declaration.IdentifierName,
                                                                                                 reference.Declaration.AsTypeDeclaration.IdentifierName),

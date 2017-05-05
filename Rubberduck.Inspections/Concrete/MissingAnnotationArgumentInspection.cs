@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
@@ -29,7 +30,7 @@ namespace Rubberduck.Inspections.Concrete
                     where context.annotationName().GetText() == AnnotationType.Ignore.ToString() 
                        || context.annotationName().GetText() == AnnotationType.Folder.ToString() 
                     where context.annotationArgList() == null 
-                    select new InspectionResult(this,
+                    select new QualifiedContextInspectionResult(this,
                                                 string.Format(InspectionsUI.MissingAnnotationArgumentInspectionResultFormat,
                                                               ((VBAParser.AnnotationContext)result.Context).annotationName().GetText()),
                                                 State,

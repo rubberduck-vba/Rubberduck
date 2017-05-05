@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
@@ -25,7 +26,7 @@ namespace Rubberduck.Inspections.Concrete
         {
             return Listener.Contexts.GroupBy(s => s.ModuleName)
                 .Where(g => g.Count() > 1)
-                .Select(r => new InspectionResult(this,
+                .Select(r => new QualifiedContextInspectionResult(this,
                     string.Format(InspectionsUI.MultipleFolderAnnotationsInspectionResultFormat, r.First().ModuleName.ComponentName),
                     State,
                     r.First()));

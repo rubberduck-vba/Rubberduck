@@ -4,6 +4,7 @@ using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -38,7 +39,7 @@ namespace Rubberduck.Inspections.Concrete
             return interfaceMemberIssues.Union(nonInterfaceIssues);
         }
 
-        private IEnumerable<InspectionResult> GetInterfaceMemberIssues(IEnumerable<Declaration> interfaceMembers)
+        private IEnumerable<IInspectionResult> GetInterfaceMemberIssues(IEnumerable<Declaration> interfaceMembers)
         {
             return from interfaceMember in interfaceMembers
                    let implementationMembers =
@@ -53,22 +54,20 @@ namespace Rubberduck.Inspections.Concrete
                                    new QualifiedSelection(implementationMember.QualifiedName.QualifiedModuleName,
                                        implementationMember.Selection), implementationMember))
                    select
-                       new InspectionResult(this,
+                       new DeclarationInspectionResult(this,
                                             string.Format(InspectionsUI.FunctionReturnValueNotUsedInspectionResultFormat, interfaceMember.IdentifierName),
-                                            new QualifiedContext<ParserRuleContext>(interfaceMember.QualifiedName.QualifiedModuleName, interfaceMember.Context),
                                             interfaceMember);
         }
 
-        private IEnumerable<InspectionResult> GetNonInterfaceIssues(IEnumerable<Declaration> nonInterfaceFunctions)
+        private IEnumerable<IInspectionResult> GetNonInterfaceIssues(IEnumerable<Declaration> nonInterfaceFunctions)
         {
             var returnValueNotUsedFunctions = nonInterfaceFunctions.Where(function => function.DeclarationType == DeclarationType.Function && !IsReturnValueUsed(function));
             var nonInterfaceIssues = returnValueNotUsedFunctions
                 .Where(function => !IsRecursive(function))
                 .Select(function =>
-                        new InspectionResult(
+                        new DeclarationInspectionResult(
                             this,
                             string.Format(InspectionsUI.FunctionReturnValueNotUsedInspectionResultFormat, function.IdentifierName),
-                            new QualifiedContext<ParserRuleContext>(function.QualifiedName.QualifiedModuleName, function.Context),
                             function));
             return nonInterfaceIssues;
         }

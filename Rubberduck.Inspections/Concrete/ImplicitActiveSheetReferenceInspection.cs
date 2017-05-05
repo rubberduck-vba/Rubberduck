@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
@@ -22,7 +23,7 @@ namespace Rubberduck.Inspections.Concrete
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
             var excel = State.DeclarationFinder.Projects.SingleOrDefault(item => !item.IsUserDefined && item.IdentifierName == "Excel");
-            if (excel == null) { return Enumerable.Empty<InspectionResult>(); }
+            if (excel == null) { return Enumerable.Empty<IInspectionResult>(); }
 
             var globalModules = new[]
             {
@@ -38,7 +39,7 @@ namespace Rubberduck.Inspections.Concrete
             return members
                 .SelectMany(declaration => declaration.References)
                 .Where(issue => !issue.IsIgnoringInspectionResultFor(AnnotationName))
-                .Select(issue => new InspectionResult(this,
+                .Select(issue => new IdentifierReferenceInspectionResult(this,
                                                       string.Format(InspectionsUI.ImplicitActiveSheetReferenceInspectionResultFormat, issue.Declaration.IdentifierName),
                                                       State,
                                                       issue))

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -27,7 +28,7 @@ namespace Rubberduck.Inspections.Concrete
                     && declaration.ParentScopeDeclaration != null
                     && declaration.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member))
                 .Where(result => !IsIgnoringInspectionResultFor(result, AnnotationName))
-                .Select(issue => new InspectionResult(this,
+                .Select(issue => new DeclarationInspectionResult(this,
                                                       string.Format(InspectionsUI.SelfAssignedDeclarationInspectionResultFormat, issue.IdentifierName),
                                                       issue));
         }

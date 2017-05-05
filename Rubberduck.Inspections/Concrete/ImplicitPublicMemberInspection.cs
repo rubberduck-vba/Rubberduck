@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -31,10 +32,8 @@ namespace Rubberduck.Inspections.Concrete
             var issues = from item in UserDeclarations
                          where ProcedureTypes.Contains(item.DeclarationType)
                                && item.Accessibility == Accessibility.Implicit
-                         let context = new QualifiedContext<ParserRuleContext>(item.QualifiedName, item.Context)
-                         select new InspectionResult(this,
+                         select new DeclarationInspectionResult(this,
                                                      string.Format(InspectionsUI.ImplicitPublicMemberInspectionResultFormat, item.IdentifierName),
-                                                     context,
                                                      item);
             return issues;
         }

@@ -3,6 +3,7 @@ using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -27,7 +28,7 @@ namespace Rubberduck.Inspections.Concrete
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))
                 .SelectMany(result => result.Context.FindChildren<VBAParser.VariableSubStmtContext>()
                         .Select(r => new QualifiedContext<ParserRuleContext>(result.ModuleName, r)))
-                .Select(result => new InspectionResult(this,
+                .Select(result => new QualifiedContextInspectionResult(this,
                                                        string.Format(InspectionsUI.ModuleScopeDimKeywordInspectionResultFormat, ((VBAParser.VariableSubStmtContext)result.Context).identifier().GetText()),
                                                        State,
                                                        result));

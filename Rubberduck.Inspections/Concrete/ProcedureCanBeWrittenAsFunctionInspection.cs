@@ -4,6 +4,7 @@ using Antlr4.Runtime;
 using NLog;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -45,11 +46,9 @@ namespace Rubberduck.Inspections.Concrete
                                                   userDeclarations.Where(item => item.IsWithEvents)
                                                                   .All(withEvents => userDeclarations.FindEventProcedures(withEvents) == null) &&
                                                                   !builtinHandlers.Contains(decl))
-                                   .Select(result => new InspectionResult(
-                                                         this,
-                                                         string.Format(InspectionsUI.ProcedureCanBeWrittenAsFunctionInspectionResultFormat, result.IdentifierName),
-                                                         new QualifiedContext<ParserRuleContext>(result.QualifiedName, (VBAParser.SubStmtContext)result.Context),
-                                                         result));                   
+                                   .Select(result => new DeclarationInspectionResult(this,
+                                                             string.Format(InspectionsUI.ProcedureCanBeWrittenAsFunctionInspectionResultFormat, result.IdentifierName),
+                                                             result));                   
         }
 
         public class SingleByRefParamArgListListener : VBAParserBaseListener, IInspectionListener
