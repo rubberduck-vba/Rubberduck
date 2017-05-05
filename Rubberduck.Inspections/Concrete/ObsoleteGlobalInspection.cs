@@ -1,10 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
-using Antlr4.Runtime;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
@@ -23,9 +21,8 @@ namespace Rubberduck.Inspections.Concrete
         {
             var issues = from item in UserDeclarations
                          where item.Accessibility == Accessibility.Global && item.Context != null
-                         select new QualifiedContextInspectionResult(this,
+                         select new DeclarationInspectionResult(this,
                                                      string.Format(InspectionsUI.ObsoleteGlobalInspectionResultFormat, item.DeclarationType.ToLocalizedString(), item.IdentifierName),
-                                                     new QualifiedContext<ParserRuleContext>(item.QualifiedName.QualifiedModuleName, item.Context),
                                                      item);
 
             return issues;
