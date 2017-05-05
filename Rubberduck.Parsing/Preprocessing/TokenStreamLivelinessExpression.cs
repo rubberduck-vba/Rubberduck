@@ -46,8 +46,8 @@ namespace Rubberduck.Parsing.PreProcessing
 
         private void HideNonNewline(CommonToken token)
         {
-            //We do not remove the newlines to keep the line counts intact.
-            if (token.Type != Grammar.VBALexer.NEWLINE)
+            //We do not remove the newlines or line continuations to keep physical and logical line counts intact.
+            if (token.Type != Grammar.VBALexer.NEWLINE && token.Type != Grammar.VBALexer.LINE_CONTINUATION)
             {
                 token.Channel = TokenConstants.HiddenChannel;
             }
