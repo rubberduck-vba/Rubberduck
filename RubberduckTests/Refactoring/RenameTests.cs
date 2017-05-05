@@ -143,7 +143,7 @@ Private Sub Goo(ByVal arg1 As String)
 Private Sub Foo(ByVal arg1 As String)
 #Else
 Private Sub Foo(ByVal arg1 As String, arg2 As String)
-#EndIf
+#End If
 End Sub";
             var selection = new Selection(6, 25, 6, 25);
 
@@ -157,7 +157,7 @@ Private Sub Goo(ByVal arg1 As String)
 Private Sub Foo(ByVal arg2 As String)
 #Else
 Private Sub Foo(ByVal arg1 As String, arg2 As String)
-#EndIf
+#End If
 End Sub";
 
             IVBComponent component;
