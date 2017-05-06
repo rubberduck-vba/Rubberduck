@@ -4,8 +4,8 @@ using Rubberduck.Parsing.Grammar;
 using System;
 using System.Diagnostics;
 using System.Globalization;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.PreProcessing;
+using Antlr4.Runtime.Tree;
 
 namespace RubberduckTests.PreProcessing
 {
@@ -1158,7 +1158,7 @@ namespace RubberduckTests.PreProcessing
 
 ";
             var result = Preprocess(code);
-            Assert.AreEqual(evaluated, result.Item2.AsString);
+            Assert.AreEqual(evaluated, result.Item3);
         }
 
         [TestMethod]
@@ -1180,7 +1180,7 @@ a:
 End Sub
 ";
             var result = Preprocess(code);
-            Assert.AreEqual(evaluated, result.Item2.AsString);
+            Assert.AreEqual(evaluated, result.Item3);
         }
 
         [TestMethod]
@@ -1200,7 +1200,7 @@ Sub FileTest()
 End Sub
 ";
             var result = Preprocess(code);
-            Assert.AreEqual(evaluated, result.Item2.AsString);
+            Assert.AreEqual(evaluated, result.Item3);
         }
 
         [TestMethod]
@@ -1258,10 +1258,10 @@ End Sub
         ' #End If
 ";
             var result = Preprocess(code);
-            Assert.AreEqual(evaluated, result.Item2.AsString);
+            Assert.AreEqual(evaluated, result.Item3);
         }
 
-        private Tuple<SymbolTable<string, IValue>, IValue> Preprocess(string code)
+        private Tuple<SymbolTable<string, IValue>, IValue, string> Preprocess(string code)
         {
             SymbolTable<string, IValue> symbolTable = new SymbolTable<string, IValue>();
             var stream = new AntlrInputStream(code);
@@ -1271,11 +1271,21 @@ End Sub
             parser.ErrorHandler = new BailErrorStrategy();
             //parser.AddErrorListener(new ExceptionErrorListener());
             var tree = parser.compilationUnit();
-            var evaluator = new VBAPreprocessorVisitor(symbolTable, new VBAPredefinedCompilationConstants(7.01), tree.start.InputStream);
+            var evaluator = new VBATokenStreamPreprocessorVisitor(symbolTable, new VBAPredefinedCompilationConstants(7.01), tree.start.InputStream, tokens);
             var expr = evaluator.Visit(tree);
+            var resultValue = expr.Evaluate();
+            tokens.Reset();
+            var resultParser = new VBAConditionalCompilationParser(tokens);
+            IParseTree resultTree = resultParser.compilationUnit();
+            var resultCode = resultTree.GetText();
+            var resultCodeWithoutEOF = resultCode;
+            while (String.Equals(resultCodeWithoutEOF.Substring(resultCodeWithoutEOF.Length - 5, 5), "<EOF>"))
+            {
+                resultCodeWithoutEOF = resultCodeWithoutEOF.Substring(0, resultCodeWithoutEOF.Length - 5);
+            }
 
             Debug.Assert(parser.NumberOfSyntaxErrors == 0);
-            return Tuple.Create(symbolTable, expr.Evaluate());
+            return Tuple.Create(symbolTable, resultValue, resultCodeWithoutEOF);
         }
     }
 }
