@@ -1279,7 +1279,7 @@ End Sub
             IParseTree resultTree = resultParser.compilationUnit();
             var resultCode = resultTree.GetText();
             var resultCodeWithoutEOF = resultCode;
-            while (String.Equals(resultCodeWithoutEOF.Substring(resultCodeWithoutEOF.Length - 5, 5), "<EOF>"))
+            while (resultCodeWithoutEOF.Length >= 5 && String.Equals(resultCodeWithoutEOF.Substring(resultCodeWithoutEOF.Length - 5, 5), "<EOF>"))
             {
                 resultCodeWithoutEOF = resultCodeWithoutEOF.Substring(0, resultCodeWithoutEOF.Length - 5);
             }

@@ -1,16 +1,17 @@
-﻿using System;
+﻿using Antlr4.Runtime;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
-using Antlr4.Runtime;
+using System.Text;
 
 namespace Rubberduck.Parsing.PreProcessing
 {
-    public sealed class StringValue : IValue
+    public sealed class TokensValue : IValue
     {
-        private readonly string _value;
+        private readonly IEnumerable<IToken> _value;
 
-        public StringValue(string value)
+        public TokensValue(IEnumerable<IToken> value)
         {
             _value = value;
         }
@@ -19,7 +20,7 @@ namespace Rubberduck.Parsing.PreProcessing
         {
             get
             {
-                return ValueType.String;
+                return ValueType.Tokens;
             }
         }
 
@@ -31,17 +32,17 @@ namespace Rubberduck.Parsing.PreProcessing
                 {
                     return false;
                 }
-                var value = _value;
+                var value = AsString;
                 if (string.CompareOrdinal(value.ToLower(), "true") == 0 || string.CompareOrdinal(value, "#TRUE#") == 0)
                 {
                     return true;
                 }
-                
+
                 if (string.CompareOrdinal(value.ToLower(), "false") == 0 || string.CompareOrdinal(value, "#FALSE#") == 0)
                 {
                     return false;
                 }
-                
+
                 return new DecimalValue(AsDecimal).ToString() != "0"; // any non-zero value evaluates to TRUE in VBA
             }
         }
@@ -51,11 +52,11 @@ namespace Rubberduck.Parsing.PreProcessing
             get
             {
                 byte value;
-                if (byte.TryParse(_value, NumberStyles.Float, CultureInfo.InvariantCulture, out value))
+                if (byte.TryParse(AsString, NumberStyles.Float, CultureInfo.InvariantCulture, out value))
                 {
                     return value;
                 }
-                return byte.Parse(_value, NumberStyles.Float);
+                return byte.Parse(AsString, NumberStyles.Float);
             }
         }
 
@@ -64,7 +65,7 @@ namespace Rubberduck.Parsing.PreProcessing
             get
             {
                 DateTime value;
-                if (DateTime.TryParse(_value, out value))
+                if (DateTime.TryParse(AsString, out value))
                 {
                     return value;
                 }
@@ -78,7 +79,7 @@ namespace Rubberduck.Parsing.PreProcessing
             get
             {
                 decimal value;
-                if (decimal.TryParse(_value, NumberStyles.Float, CultureInfo.InvariantCulture, out value))
+                if (decimal.TryParse(AsString, NumberStyles.Float, CultureInfo.InvariantCulture, out value))
                 {
                     return value;
                 }
@@ -91,7 +92,15 @@ namespace Rubberduck.Parsing.PreProcessing
         {
             get
             {
-                return _value;
+                var builder = new StringBuilder();
+                foreach (var token in _value)
+                {
+                    if (token.Channel == TokenConstants.DefaultChannel)
+                    {
+                        builder.Append(token.Text);
+                    }
+                }
+                return builder.ToString();
             }
         }
 
@@ -99,13 +108,13 @@ namespace Rubberduck.Parsing.PreProcessing
         {
             get
             {
-                return new List<IToken>();
+                return _value;
             }
         }
 
         public override string ToString()
         {
-            return _value;
+            return AsString;
         }
     }
 }

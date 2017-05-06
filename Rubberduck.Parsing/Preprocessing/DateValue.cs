@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Antlr4.Runtime;
+using System;
+using System.Collections.Generic;
 
 namespace Rubberduck.Parsing.PreProcessing
 {
@@ -60,6 +62,14 @@ namespace Rubberduck.Parsing.PreProcessing
                     return _value.ToLongTimeString();
                 }
                 return _value.ToShortDateString();
+            }
+        }
+
+        public IEnumerable<IToken> AsTokens
+        {
+            get
+            {
+                return new List<IToken>();
             }
         }
 
