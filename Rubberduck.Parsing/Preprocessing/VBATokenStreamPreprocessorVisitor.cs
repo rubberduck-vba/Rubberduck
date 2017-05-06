@@ -59,7 +59,7 @@ namespace Rubberduck.Parsing.PreProcessing
 
         public override IExpression VisitPhysicalLine([NotNull] VBAConditionalCompilationParser.PhysicalLineContext context)
         {
-            return new ConstantExpression(new StringValue(ParserRuleContextHelper.GetText(context, _stream)));
+            return new ConstantExpression(new TokensValue(ParserRuleContextHelper.GetTokens(context, _tokenStream)));
         }
 
         public override IExpression VisitCcBlock([NotNull] VBAConditionalCompilationParser.CcBlockContext context)
