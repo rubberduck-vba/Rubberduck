@@ -30,7 +30,11 @@ namespace Rubberduck.Inspections.Concrete
                          && !IsIgnoringInspectionResultFor(item, AnnotationName)
                          && !item.IsTypeSpecified
                          && !item.IsUndeclared
-                         select new VariableTypeNotDeclaredInspectionResult(this, item);
+                         select new DeclarationInspectionResult(this,
+                                                     string.Format(InspectionsUI.ImplicitVariantDeclarationInspectionResultFormat,
+                                                                   item.DeclarationType,
+                                                                   item.IdentifierName),
+                                                     item);
 
             return issues;
         }

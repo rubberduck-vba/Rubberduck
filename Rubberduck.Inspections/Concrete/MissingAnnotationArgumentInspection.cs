@@ -30,7 +30,11 @@ namespace Rubberduck.Inspections.Concrete
                     where context.annotationName().GetText() == AnnotationType.Ignore.ToString() 
                        || context.annotationName().GetText() == AnnotationType.Folder.ToString() 
                     where context.annotationArgList() == null 
-                    select new MissingAnnotationArgumentInspectionResult(this, result, GetQualifiedMemberName(result))).ToList();
+                    select new QualifiedContextInspectionResult(this,
+                                                string.Format(InspectionsUI.MissingAnnotationArgumentInspectionResultFormat,
+                                                              ((VBAParser.AnnotationContext)result.Context).annotationName().GetText()),
+                                                State,
+                                                result));
         }
 
         public class InvalidAnnotationStatementListener : VBAParserBaseListener, IInspectionListener

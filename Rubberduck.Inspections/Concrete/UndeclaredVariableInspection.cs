@@ -20,7 +20,7 @@ namespace Rubberduck.Inspections.Concrete
         {
             return State.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
                 .Where(item => item.IsUndeclared && !IsIgnoringInspectionResultFor(item, AnnotationName))
-                .Select(item => new UndeclaredVariableInspectionResult(this, item));
+                .Select(item => new DeclarationInspectionResult(this, string.Format(InspectionsUI.UndeclaredVariableInspectionResultFormat, item.IdentifierName), item));
         }
     }
 }

@@ -32,7 +32,11 @@ namespace Rubberduck.Inspections.Concrete
 
             var objectVariableNotSetReferences = referencesRequiringSetAssignment.Where(FlagIfObjectVariableNotSet);
 
-            return objectVariableNotSetReferences.Select(reference => new ObjectVariableNotSetInspectionResult(this, reference));
+            return objectVariableNotSetReferences.Select(reference =>
+                new IdentifierReferenceInspectionResult(this,
+                                     string.Format(InspectionsUI.ObjectVariableNotSetInspectionResultFormat, reference.Declaration.IdentifierName),
+                                     State,
+                                     reference));
         }
 
         private bool FlagIfObjectVariableNotSet(IdentifierReference reference)

@@ -31,7 +31,7 @@ namespace Rubberduck.Inspections.Concrete
                     && !builtinEventHandlers.Contains(item.ParentDeclaration))
                 .ToList();
 
-            return issues.Select(issue => new ImplicitByRefParameterInspectionResult(this, issue));
+            return issues.Select(issue => new DeclarationInspectionResult(this, string.Format(InspectionsUI.ImplicitByRefParameterInspectionResultFormat, issue.IdentifierName), issue));
         }
     }
 }

@@ -46,11 +46,9 @@ namespace Rubberduck.Inspections.Concrete
                                                   userDeclarations.Where(item => item.IsWithEvents)
                                                                   .All(withEvents => userDeclarations.FindEventProcedures(withEvents) == null) &&
                                                                   !builtinHandlers.Contains(decl))
-                                   .Select(result => new ProcedureCanBeWrittenAsFunctionInspectionResult(
-                                                         this,
-                                                         State,
-                                                         result,
-                                                         new QualifiedContext<VBAParser.SubStmtContext>(result.QualifiedName, (VBAParser.SubStmtContext)result.Context)));                   
+                                   .Select(result => new DeclarationInspectionResult(this,
+                                                             string.Format(InspectionsUI.ProcedureCanBeWrittenAsFunctionInspectionResultFormat, result.IdentifierName),
+                                                             result));                   
         }
 
         public class SingleByRefParamArgListListener : VBAParserBaseListener, IInspectionListener

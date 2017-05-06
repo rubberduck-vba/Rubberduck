@@ -28,7 +28,9 @@ namespace Rubberduck.Inspections.Concrete
                     && declaration.ParentScopeDeclaration != null
                     && declaration.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member))
                 .Where(result => !IsIgnoringInspectionResultFor(result, AnnotationName))
-                .Select(issue => new SelfAssignedDeclarationInspectionResult(this, issue));
+                .Select(issue => new DeclarationInspectionResult(this,
+                                                      string.Format(InspectionsUI.SelfAssignedDeclarationInspectionResultFormat, issue.IdentifierName),
+                                                      issue));
         }
     }
 }

@@ -3,7 +3,6 @@ using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
@@ -66,7 +65,7 @@ End Sub";
             var inspector = InspectionsHelper.GetInspector(inspection, emptyStringLiteralInspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.AreEqual(0, inspectionResults.Count(r => r is ObsoleteCommentSyntaxInspectionResult));
+            Assert.AreEqual(0, inspectionResults.Count(r => r.Inspection is ObsoleteCommentSyntaxInspection));
         }
 
         [TestMethod]

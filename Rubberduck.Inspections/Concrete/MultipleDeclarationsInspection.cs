@@ -24,7 +24,10 @@ namespace Rubberduck.Inspections.Concrete
         {
             return Listener.Contexts
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))
-                .Select(p => new MultipleDeclarationsInspectionResult(this, p, GetQualifiedMemberName(p)));
+                .Select(context => new QualifiedContextInspectionResult(this,
+                                                        InspectionsUI.MultipleDeclarationsInspectionResultFormat,
+                                                        State,
+                                                        context));
         }
 
         public IInspectionListener Listener { get; } = new ParameterListListener();
