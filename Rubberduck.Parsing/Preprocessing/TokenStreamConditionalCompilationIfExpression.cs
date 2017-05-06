@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Rubberduck.Parsing.PreProcessing
 {
@@ -51,65 +50,65 @@ namespace Rubberduck.Parsing.PreProcessing
 
         public override IValue Evaluate()
         {
-            StringBuilder builder = new StringBuilder();
-            List<bool> conditions = new List<bool>();
-            builder.Append(
+            var tokens = new List<IToken>();
+            var conditions = new List<bool>();
+            tokens.AddRange(
                 new TokenStreamLivelinessExpression(
                     new ConstantExpression(new BoolValue(false)),
                     _ifCondCode,
                     _ifCondTokens)
-                    .Evaluate().AsString);
+                    .Evaluate().AsTokens);
 
             var ifIsAlive = _ifCond.EvaluateCondition();
             conditions.Add(ifIsAlive);
-            builder.Append(
+            tokens.AddRange(
                 new TokenStreamLivelinessExpression(
                     new ConstantExpression(new BoolValue(ifIsAlive)),
                     _ifBlock,
                     _ifBlockTokens)
-                    .Evaluate().AsString);
+                    .Evaluate().AsTokens);
 
             foreach (var elseIf in _elseIfCodeCondBlocks)
             {
-                builder.Append(
+                tokens.AddRange(
                    new TokenStreamLivelinessExpression(
                        new ConstantExpression(new BoolValue(false)),
                        elseIf.Item1,
                        elseIf.Item2)
-                       .Evaluate().AsString);
+                       .Evaluate().AsTokens);
                 var elseIfIsAlive = !ifIsAlive && elseIf.Item3.EvaluateCondition();
                 conditions.Add(elseIfIsAlive);
-                builder.Append(
+                tokens.AddRange(
                     new TokenStreamLivelinessExpression(
                         new ConstantExpression(new BoolValue(elseIfIsAlive)),
                         elseIf.Item4,
                         elseIf.Item5)
-                        .Evaluate().AsString);
+                        .Evaluate().AsTokens);
             }
 
             if (_elseCondCode != null)
             {
-                builder.Append(
+                tokens.AddRange(
                    new TokenStreamLivelinessExpression(
                        new ConstantExpression(new BoolValue(false)),
                        _elseCondCode,
                        _elseCondTokens)
-                       .Evaluate().AsString);
+                       .Evaluate().AsTokens);
                 var elseIsAlive = conditions.All(condition => !condition);
-                builder.Append(
+                tokens.AddRange(
                     new TokenStreamLivelinessExpression(
                         new ConstantExpression(new BoolValue(elseIsAlive)),
                         _elseBlock,
                         _elseBlockTokens)
-                        .Evaluate().AsString);
+                        .Evaluate().AsTokens);
             }
-            builder.Append(
+            tokens.AddRange(
                   new TokenStreamLivelinessExpression(
                       new ConstantExpression(new BoolValue(false)),
                       _endIfCode,
                       _endIfTokens)
-                      .Evaluate().AsString);
-            return new StringValue(builder.ToString());
+                      .Evaluate().AsTokens);
+            return new TokensValue(tokens);
         }
     }
 }
