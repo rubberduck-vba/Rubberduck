@@ -87,7 +87,7 @@ namespace Rubberduck.Parsing.PreProcessing
             var ifCondTokens = new ConstantExpression(new TokensValue(ParserRuleContextHelper.GetTokens(context.ccIf(), _tokenStream)));
             var ifCond = Visit(context.ccIf().ccExpression());
             var ifBlock = Visit(context.ccBlock());
-            var ifBlockTokens = new ConstantExpression(new TokensValue(ParserRuleContextHelper.GetTokens(context.ccBlock(), _tokenStream)));
+            var ifBlockTokens = Visit(context.ccBlock());
             var elseIfCodeCondBlocks = context
                 .ccElseIfBlock()
                 .Select(elseIf =>
@@ -96,7 +96,7 @@ namespace Rubberduck.Parsing.PreProcessing
                             new ConstantExpression(new TokensValue(ParserRuleContextHelper.GetTokens(elseIf.ccElseIf(), _tokenStream))),
                             Visit(elseIf.ccElseIf().ccExpression()),
                             Visit(elseIf.ccBlock()),
-                            new ConstantExpression(new TokensValue(ParserRuleContextHelper.GetTokens(elseIf.ccBlock(), _tokenStream)))))
+                            Visit(elseIf.ccBlock())))
                 .ToList();
 
             IExpression elseCondCode = null;
@@ -108,7 +108,7 @@ namespace Rubberduck.Parsing.PreProcessing
                 elseCondCode = new ConstantExpression(new StringValue(ParserRuleContextHelper.GetText(context.ccElseBlock().ccElse(), _stream)));
                 elseCondTokens = new ConstantExpression(new TokensValue(ParserRuleContextHelper.GetTokens(context.ccElseBlock().ccElse(), _tokenStream)));
                 elseBlock = Visit(context.ccElseBlock().ccBlock());
-                elseBlockTokens = new ConstantExpression(new TokensValue(ParserRuleContextHelper.GetTokens(context.ccElseBlock().ccBlock(), _tokenStream)));
+                elseBlockTokens = Visit(context.ccElseBlock().ccBlock());
             }
             IExpression endIf = new ConstantExpression(new StringValue(ParserRuleContextHelper.GetText(context.ccEndIf(), _stream)));
             var endIfTokens = new ConstantExpression(new TokensValue(ParserRuleContextHelper.GetTokens(context.ccEndIf(), _tokenStream)));

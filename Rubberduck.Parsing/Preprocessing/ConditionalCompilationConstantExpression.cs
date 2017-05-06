@@ -6,22 +6,22 @@ namespace Rubberduck.Parsing.PreProcessing
     public sealed class ConditionalCompilationConstantExpression : Expression
     {
         private readonly IExpression _tokenText;
+        private readonly IExpression _tokens;
         private readonly IExpression _identifier;
         private readonly IExpression _expression;
-        private readonly IExpression _tokens;
         private readonly SymbolTable<string, IValue> _symbolTable;
 
         public ConditionalCompilationConstantExpression(
             IExpression tokenText,
+            IExpression tokens,
             IExpression identifier, 
             IExpression expression,
-            IExpression tokens,
             SymbolTable<string, IValue> symbolTable)
         {
             _tokenText = tokenText;
+            _tokens = tokens;
             _identifier = identifier;
             _expression = expression;
-            _tokens = tokens;
             _symbolTable = symbolTable;
         }
 
