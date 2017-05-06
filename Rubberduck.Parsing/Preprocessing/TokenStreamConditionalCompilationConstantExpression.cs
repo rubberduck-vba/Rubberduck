@@ -8,14 +8,14 @@ namespace Rubberduck.Parsing.PreProcessing
         private readonly IExpression _tokenText;
         private readonly IExpression _identifier;
         private readonly IExpression _expression;
-        private readonly IEnumerable<IToken> _tokens;
+        private readonly IExpression _tokens;
         private readonly SymbolTable<string, IValue> _symbolTable;
 
         public TokenStreamConditionalCompilationConstantExpression(
             IExpression tokenText,
             IExpression identifier, 
             IExpression expression,
-            IEnumerable<IToken> tokens,
+            IExpression tokens,
             SymbolTable<string, IValue> symbolTable)
         {
             _tokenText = tokenText;

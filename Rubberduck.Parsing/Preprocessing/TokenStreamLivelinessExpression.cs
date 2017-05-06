@@ -9,9 +9,9 @@ namespace Rubberduck.Parsing.PreProcessing
     {
         private readonly IExpression _isAlive;
         private readonly IExpression _code;
-        private readonly IEnumerable<IToken> _tokens;
+        private readonly IExpression _tokens;
 
-        public TokenStreamLivelinessExpression(IExpression isAlive, IExpression code, IEnumerable<IToken> tokens)
+        public TokenStreamLivelinessExpression(IExpression isAlive, IExpression code, IExpression tokens)
         {
             _isAlive = isAlive;
             _code = code;
@@ -22,9 +22,10 @@ namespace Rubberduck.Parsing.PreProcessing
         {
             var isAlive = _isAlive.Evaluate().AsBool;
             var code = _code.Evaluate().AsString;
+            var tokens = _tokens.Evaluate().AsTokens;
             if (!isAlive)
             {
-                HideDeadTokens(_tokens);
+                HideDeadTokens(tokens);
             }
             return isAlive ? new StringValue(code) : new StringValue(MarkAsDead(code));
         }

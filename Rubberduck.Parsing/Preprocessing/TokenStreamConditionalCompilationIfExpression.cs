@@ -9,31 +9,31 @@ namespace Rubberduck.Parsing.PreProcessing
     public sealed class TokenStreamConditionalCompilationIfExpression : Expression
     {
         private readonly IExpression _ifCondCode;
-        private readonly IEnumerable<IToken> _ifCondTokens;
+        private readonly IExpression _ifCondTokens;
         private readonly IExpression _ifCond;
         private readonly IExpression _ifBlock;
-        private readonly IEnumerable<IToken> _ifBlockTokens;
-        private readonly IEnumerable<Tuple<IExpression, IEnumerable<IToken>, IExpression, IExpression, IEnumerable<IToken>>> _elseIfCodeCondBlocks;
+        private readonly IExpression _ifBlockTokens;
+        private readonly IEnumerable<Tuple<IExpression, IExpression, IExpression, IExpression, IExpression>> _elseIfCodeCondBlocks;
         private readonly IExpression _elseCondCode;
-        private readonly IEnumerable<IToken> _elseCondTokens;
+        private readonly IExpression _elseCondTokens;
         private readonly IExpression _elseBlock;
-        private readonly IEnumerable<IToken> _elseBlockTokens;
+        private readonly IExpression _elseBlockTokens;
         private readonly IExpression _endIfCode;
-        private readonly IEnumerable<IToken> _endIfTokens;
+        private readonly IExpression _endIfTokens;
 
         public TokenStreamConditionalCompilationIfExpression(
             IExpression ifCondCode,
-            IEnumerable<IToken> ifCondTokens,
+            IExpression ifCondTokens,
             IExpression ifCond,
             IExpression ifBlock,
-            IEnumerable<IToken> ifBlockTokens,
-            IEnumerable<Tuple<IExpression, IEnumerable<IToken>, IExpression, IExpression, IEnumerable<IToken>>> elseIfCodeCondBlocks,
+            IExpression ifBlockTokens,
+            IEnumerable<Tuple<IExpression, IExpression, IExpression, IExpression, IExpression>> elseIfCodeCondBlocks,
             IExpression elseCondCode,
-            IEnumerable<IToken> elseCondTokens,
+            IExpression elseCondTokens,
             IExpression elseBlock,
-            IEnumerable<IToken> elseBlockTokens,
+            IExpression elseBlockTokens,
             IExpression endIfCode,
-            IEnumerable<IToken> endIfTokens)
+            IExpression endIfTokens)
         {
             _ifCondCode = ifCondCode;
             _ifCondTokens = ifCondTokens;

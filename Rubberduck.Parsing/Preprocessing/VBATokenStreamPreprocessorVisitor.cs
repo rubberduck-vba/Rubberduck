@@ -77,41 +77,41 @@ namespace Rubberduck.Parsing.PreProcessing
                     new ConstantExpression(new StringValue(ParserRuleContextHelper.GetText(context, _stream))),
                     new ConstantExpression(new StringValue(Identifier.GetName(context.ccVarLhs().name()))),
                     Visit(context.ccExpression()),
-                    ParserRuleContextHelper.GetTokens(context,_tokenStream),
+                    new ConstantExpression(new TokensValue(ParserRuleContextHelper.GetTokens(context,_tokenStream))),
                     _symbolTable);
         }
 
         public override IExpression VisitCcIfBlock([NotNull] VBAConditionalCompilationParser.CcIfBlockContext context)
         {
             var ifCondCode = new ConstantExpression(new StringValue(ParserRuleContextHelper.GetText(context.ccIf(), _stream)));
-            var ifCondTokens = ParserRuleContextHelper.GetTokens(context.ccIf(), _tokenStream);
+            var ifCondTokens = new ConstantExpression(new TokensValue(ParserRuleContextHelper.GetTokens(context.ccIf(), _tokenStream)));
             var ifCond = Visit(context.ccIf().ccExpression());
             var ifBlock = Visit(context.ccBlock());
-            var ifBlockTokens = ParserRuleContextHelper.GetTokens(context.ccBlock(), _tokenStream);
+            var ifBlockTokens = new ConstantExpression(new TokensValue(ParserRuleContextHelper.GetTokens(context.ccBlock(), _tokenStream)));
             var elseIfCodeCondBlocks = context
                 .ccElseIfBlock()
                 .Select(elseIf =>
-                        Tuple.Create<IExpression, IEnumerable<IToken>, IExpression, IExpression, IEnumerable<IToken>>(
+                        Tuple.Create<IExpression, IExpression, IExpression, IExpression, IExpression>(
                             new ConstantExpression(new StringValue(ParserRuleContextHelper.GetText(elseIf.ccElseIf(), _stream))),
-                            ParserRuleContextHelper.GetTokens(elseIf.ccElseIf(), _tokenStream),
+                            new ConstantExpression(new TokensValue(ParserRuleContextHelper.GetTokens(elseIf.ccElseIf(), _tokenStream))),
                             Visit(elseIf.ccElseIf().ccExpression()),
                             Visit(elseIf.ccBlock()),
-                            ParserRuleContextHelper.GetTokens(elseIf.ccBlock(), _tokenStream)))
+                            new ConstantExpression(new TokensValue(ParserRuleContextHelper.GetTokens(elseIf.ccBlock(), _tokenStream)))))
                 .ToList();
 
             IExpression elseCondCode = null;
-            IEnumerable<IToken> elseCondTokens = new List<CommonToken>();
+            IExpression elseCondTokens = null;
             IExpression elseBlock = null;
-            IEnumerable<IToken> elseBlockTokens = new List<CommonToken>();
+            IExpression elseBlockTokens = null;
             if (context.ccElseBlock() != null)
             {
                 elseCondCode = new ConstantExpression(new StringValue(ParserRuleContextHelper.GetText(context.ccElseBlock().ccElse(), _stream)));
-                elseCondTokens = ParserRuleContextHelper.GetTokens(context.ccElseBlock().ccElse(), _tokenStream);
+                elseCondTokens = new ConstantExpression(new TokensValue(ParserRuleContextHelper.GetTokens(context.ccElseBlock().ccElse(), _tokenStream)));
                 elseBlock = Visit(context.ccElseBlock().ccBlock());
-                elseBlockTokens = ParserRuleContextHelper.GetTokens(context.ccElseBlock().ccBlock(), _tokenStream);
+                elseBlockTokens = new ConstantExpression(new TokensValue(ParserRuleContextHelper.GetTokens(context.ccElseBlock().ccBlock(), _tokenStream)));
             }
             IExpression endIf = new ConstantExpression(new StringValue(ParserRuleContextHelper.GetText(context.ccEndIf(), _stream)));
-            var endIfTokens = ParserRuleContextHelper.GetTokens(context.ccEndIf(), _tokenStream);
+            var endIfTokens = new ConstantExpression(new TokensValue(ParserRuleContextHelper.GetTokens(context.ccEndIf(), _tokenStream)));
             return new TokenStreamConditionalCompilationIfExpression(
                     ifCondCode,
                     ifCondTokens,
