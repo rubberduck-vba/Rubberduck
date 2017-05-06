@@ -1,7 +1,5 @@
 ﻿using Antlr4.Runtime;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Rubberduck.Parsing.PreProcessing
 {
@@ -27,7 +25,7 @@ namespace Rubberduck.Parsing.PreProcessing
             {
                 HideDeadTokens(tokens);
             }
-            return isAlive ? new StringValue(code) : new StringValue(MarkAsDead(code));
+            return new TokensValue(tokens);
         }
 
         private void HideDeadTokens(IEnumerable<IToken> deadTokens)
@@ -52,20 +50,6 @@ namespace Rubberduck.Parsing.PreProcessing
             {
                 token.Channel = TokenConstants.HiddenChannel;
             }
-        }
-
-        private string MarkAsDead(string code)
-        {
-            var hasNewLine = code.EndsWith(Environment.NewLine);
-            // Remove parsed new line.
-            code = code.Substring(0, code.Length - Environment.NewLine.Length);
-            var lines = code.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-            var result = string.Join(Environment.NewLine, lines.Select(_ => string.Empty));
-            if (hasNewLine)
-            {
-                result += Environment.NewLine;
-            }
-            return result;
         }
     }
 }

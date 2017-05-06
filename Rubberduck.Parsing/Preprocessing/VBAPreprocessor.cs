@@ -24,6 +24,7 @@ namespace Rubberduck.Parsing.PreProcessing
             var evaluator = new VBATokenStreamPreprocessorVisitor(symbolTable, new VBAPredefinedCompilationConstants(_vbaVersion), stream, unprocessedTokenStream);
             var expr = evaluator.Visit(tree);
             var dummyValue = expr.Evaluate();
+            unprocessedTokenStream.Reset();
             return unprocessedTokenStream;
         }
     }
