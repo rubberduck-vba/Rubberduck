@@ -1316,7 +1316,7 @@ End Sub
             parser.ErrorHandler = new BailErrorStrategy();
             //parser.AddErrorListener(new ExceptionErrorListener());
             var tree = parser.compilationUnit();
-            var evaluator = new VBATokenStreamPreprocessorVisitor(symbolTable, new VBAPredefinedCompilationConstants(7.01), tree.start.InputStream, tokens);
+            var evaluator = new VBAPreprocessorVisitor(symbolTable, new VBAPredefinedCompilationConstants(7.01), tree.start.InputStream, tokens);
             var expr = evaluator.Visit(tree);
             var resultValue = expr.Evaluate();
 

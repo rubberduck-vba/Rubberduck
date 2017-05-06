@@ -21,7 +21,7 @@ namespace Rubberduck.Parsing.PreProcessing
             var tree = _parser.Parse(moduleName, unprocessedTokenStream);
             token.ThrowIfCancellationRequested();
             var stream = unprocessedTokenStream.TokenSource.InputStream;
-            var evaluator = new VBATokenStreamPreprocessorVisitor(symbolTable, new VBAPredefinedCompilationConstants(_vbaVersion), stream, unprocessedTokenStream);
+            var evaluator = new VBAPreprocessorVisitor(symbolTable, new VBAPredefinedCompilationConstants(_vbaVersion), stream, unprocessedTokenStream);
             var expr = evaluator.Visit(tree);
             var dummyValue = expr.Evaluate();
             unprocessedTokenStream.Reset();
