@@ -52,7 +52,10 @@ namespace Rubberduck.Inspections.Concrete
             return declarations.SelectMany(declaration => declaration.References
                 .Where(item => _tokens.Contains(item.IdentifierName) &&
                                !IsIgnoringInspectionResultFor(item, AnnotationName))
-                .Select(item => new UntypedFunctionUsageInspectionResult(this, item, GetQualifiedMemberName(item))));
+                .Select(item => new IdentifierReferenceInspectionResult(this,
+                                                     string.Format(InspectionsUI.UntypedFunctionUsageInspectionResultFormat, item.Declaration.IdentifierName),
+                                                     State,
+                                                     item)));
         }
     }
 }

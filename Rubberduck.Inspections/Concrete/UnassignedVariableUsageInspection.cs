@@ -35,7 +35,10 @@ namespace Rubberduck.Inspections.Concrete
                                            !DeclarationReferencesContainsReference(lenFunction, d) &&
                                            !DeclarationReferencesContainsReference(lenbFunction, d))
                                .SelectMany(d => d.References)
-                               .Select(r => new UnassignedVariableUsageInspectionResult(this, r));
+                               .Select(r => new IdentifierReferenceInspectionResult(this,
+                                                                 string.Format(InspectionsUI.UnassignedVariableUsageInspectionResultFormat, r.IdentifierName),
+                                                                 State,
+                                                                 r));
         }
 
         private bool DeclarationReferencesContainsReference(Declaration parentDeclaration, Declaration target)

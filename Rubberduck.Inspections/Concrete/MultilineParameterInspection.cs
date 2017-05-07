@@ -9,6 +9,7 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete
@@ -27,7 +28,12 @@ namespace Rubberduck.Inspections.Concrete
         {
             return Listener.Contexts
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))
-                .Select(p => new MultilineParameterInspectionResult(this, p, GetQualifiedMemberName(p)));
+                .Select(context => new QualifiedContextInspectionResult(this,
+                                                  string.Format(context.Context.GetSelection().LineCount > 3
+                                                        ? RubberduckUI.EasterEgg_Continuator
+                                                        : InspectionsUI.MultilineParameterInspectionResultFormat, ((VBAParser.ArgContext)context.Context).unrestrictedIdentifier().ToString()),
+                                                  State,
+                                                  context));
         }
 
         public class ParameterListener : VBAParserBaseListener, IInspectionListener
