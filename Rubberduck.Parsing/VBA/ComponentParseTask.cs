@@ -183,8 +183,8 @@ namespace Rubberduck.Parsing.VBA
             var code = _rewriter == null ? string.Join(Environment.NewLine, GetSanitizedCode(_component.CodeModule)) : _rewriter.GetText();
             var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();
             var tokens = tokenStreamProvider.Tokens(code);
-            var processed = _preprocessor.Execute(_component.Name, tokens, token);
-            return processed;
+            _preprocessor.PreprocessTokenStream(_component.Name, tokens, token);
+            return tokens;
         }
 
         private IParseTree ParseInternal(string moduleName, CommonTokenStream tokenStream, IParseTreeListener[] listeners, out ITokenStream outStream)
