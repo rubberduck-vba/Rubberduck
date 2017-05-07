@@ -17,6 +17,18 @@
 
 lexer grammar VBALexer;
 
+@lexer::members 
+{
+//We initialize this to NEWLINE to avoid having to special case the start of the module.
+private int lastTokenType = NEWLINE;
+
+public override void Emit(IToken token)
+{
+	base.Emit(token);
+	lastTokenType = token.Type;
+}
+}
+
 ABS : A B S;
 ANY : A N Y;
 ARRAY : A R R A Y;
@@ -250,6 +262,12 @@ fragment FLOATINGPOINTLITERAL :
     DECIMALLITERAL EXPONENT
     | DECIMALLITERAL '.' DECIMALLITERAL?  EXPONENT?
     | '.' DECIMALLITERAL EXPONENT?;
+LINENUMBER : DECIMALLITERAL {lastTokenType == NEWLINE 
+								&& (_input.La(1) == ' '
+									|| _input.La(1) == '\t'
+									|| _input.La(1) == '\r' 
+									|| _input.La(1) == Eof)}? 
+				-> channel(HIDDEN);
 INTEGERLITERAL : DECIMALLITERAL INTEGERTYPESUFFIX?;
 fragment INTEGERTYPESUFFIX : [%&^];
 fragment FLOATINGPOINTTYPESUFFIX : [!#@];

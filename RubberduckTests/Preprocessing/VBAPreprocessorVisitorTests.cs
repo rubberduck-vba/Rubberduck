@@ -4,10 +4,9 @@ using Rubberduck.Parsing.Grammar;
 using System;
 using System.Diagnostics;
 using System.Globalization;
-using Rubberduck.Parsing.PreProcessing;
-using Antlr4.Runtime.Tree;
 using System.Text;
 using System.Collections.Generic;
+using Rubberduck.Parsing.PreProcessing;
 
 namespace RubberduckTests.PreProcessing
 {
@@ -1331,7 +1330,12 @@ End Sub
             {
                 builder.Append(token.Text);
             }
-            return builder.ToString();
+            var withoutEOF = builder.ToString();
+            while (withoutEOF.Length >= 5 && String.Equals(withoutEOF.Substring(withoutEOF.Length - 5, 5), "<EOF>"))
+            {
+                withoutEOF = withoutEOF.Substring(0, withoutEOF.Length - 5);
+            }
+            return withoutEOF;
         }
     }
 }
