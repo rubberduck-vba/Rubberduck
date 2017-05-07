@@ -3,7 +3,6 @@ using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Rubberduck.Parsing.Symbols;
-using System.Collections.Generic;
 
 namespace Rubberduck.Parsing.PreProcessing
 {
@@ -74,56 +73,41 @@ namespace Rubberduck.Parsing.PreProcessing
         public override IExpression VisitCcConst([NotNull] VBAConditionalCompilationParser.CcConstContext context)
         {
             return new ConditionalCompilationConstantExpression(
-                    new ConstantExpression(new StringValue(ParserRuleContextHelper.GetText(context, _stream))),
+                    new ConstantExpression(new TokensValue(ParserRuleContextHelper.GetTokens(context, _tokenStream))),
                     new ConstantExpression(new StringValue(Identifier.GetName(context.ccVarLhs().name()))),
                     Visit(context.ccExpression()),
-                    new ConstantExpression(new TokensValue(ParserRuleContextHelper.GetTokens(context,_tokenStream))),
                     _symbolTable);
         }
 
         public override IExpression VisitCcIfBlock([NotNull] VBAConditionalCompilationParser.CcIfBlockContext context)
         {
-            var ifCondCode = new ConstantExpression(new StringValue(ParserRuleContextHelper.GetText(context.ccIf(), _stream)));
             var ifCondTokens = new ConstantExpression(new TokensValue(ParserRuleContextHelper.GetTokens(context.ccIf(), _tokenStream)));
             var ifCond = Visit(context.ccIf().ccExpression());
             var ifBlock = Visit(context.ccBlock());
-            var ifBlockTokens = Visit(context.ccBlock());
             var elseIfCodeCondBlocks = context
                 .ccElseIfBlock()
                 .Select(elseIf =>
-                        Tuple.Create<IExpression, IExpression, IExpression, IExpression, IExpression>(
-                            new ConstantExpression(new StringValue(ParserRuleContextHelper.GetText(elseIf.ccElseIf(), _stream))),
+                        Tuple.Create<IExpression, IExpression, IExpression>(
                             new ConstantExpression(new TokensValue(ParserRuleContextHelper.GetTokens(elseIf.ccElseIf(), _tokenStream))),
                             Visit(elseIf.ccElseIf().ccExpression()),
-                            Visit(elseIf.ccBlock()),
                             Visit(elseIf.ccBlock())))
                 .ToList();
 
-            IExpression elseCondCode = null;
             IExpression elseCondTokens = null;
             IExpression elseBlock = null;
-            IExpression elseBlockTokens = null;
             if (context.ccElseBlock() != null)
             {
-                elseCondCode = new ConstantExpression(new StringValue(ParserRuleContextHelper.GetText(context.ccElseBlock().ccElse(), _stream)));
                 elseCondTokens = new ConstantExpression(new TokensValue(ParserRuleContextHelper.GetTokens(context.ccElseBlock().ccElse(), _tokenStream)));
                 elseBlock = Visit(context.ccElseBlock().ccBlock());
-                elseBlockTokens = Visit(context.ccElseBlock().ccBlock());
             }
-            IExpression endIf = new ConstantExpression(new StringValue(ParserRuleContextHelper.GetText(context.ccEndIf(), _stream)));
             var endIfTokens = new ConstantExpression(new TokensValue(ParserRuleContextHelper.GetTokens(context.ccEndIf(), _tokenStream)));
             return new ConditionalCompilationIfExpression(
-                    ifCondCode,
                     ifCondTokens,
                     ifCond,
                     ifBlock,
-                    ifBlockTokens,
                     elseIfCodeCondBlocks,
-                    elseCondCode,
                     elseCondTokens,
                     elseBlock,
-                    elseBlockTokens,
-                    endIf,
                     endIfTokens);
         }
 

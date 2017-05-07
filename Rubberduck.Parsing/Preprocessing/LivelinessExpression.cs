@@ -6,20 +6,17 @@ namespace Rubberduck.Parsing.PreProcessing
     public sealed class LivelinessExpression : Expression
     {
         private readonly IExpression _isAlive;
-        private readonly IExpression _code;
         private readonly IExpression _tokens;
 
-        public LivelinessExpression(IExpression isAlive, IExpression code, IExpression tokens)
+        public LivelinessExpression(IExpression isAlive, IExpression tokens)
         {
             _isAlive = isAlive;
-            _code = code;
             _tokens = tokens;
         }
 
         public override IValue Evaluate()
         {
             var isAlive = _isAlive.Evaluate().AsBool;
-            var code = _code.Evaluate().AsString;
             var tokens = _tokens.Evaluate().AsTokens;
             if (!isAlive)
             {
