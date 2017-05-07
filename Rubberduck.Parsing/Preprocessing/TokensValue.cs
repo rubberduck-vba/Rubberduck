@@ -114,7 +114,7 @@ namespace Rubberduck.Parsing.PreProcessing
 
         public override string ToString()
         {
-            return AsString;
+            return _value.ToString();
         }
     }
 }
