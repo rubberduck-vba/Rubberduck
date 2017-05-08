@@ -180,6 +180,7 @@ namespace Rubberduck.Parsing.VBA
 
         private CommonTokenStream RewriteAndPreprocess(CancellationToken token)
         {
+            var componentCode = _component.CodeModule;
             var code = _rewriter == null ? string.Join(Environment.NewLine, GetSanitizedCode(_component.CodeModule)) : _rewriter.GetText();
             var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();
             var tokens = tokenStreamProvider.Tokens(code);

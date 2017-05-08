@@ -24,9 +24,9 @@ namespace RubberduckTests.Grammar
             string expectedTextOnDefaultChannel = @" Sub Test()
      For n = 1 To 10
      Next n%
-
+4
  End Sub
-";
+23";
             var tokenStream = TokenizedCode(code);
             tokenStream.Fill();
             var tokens = tokenStream.GetTokens();

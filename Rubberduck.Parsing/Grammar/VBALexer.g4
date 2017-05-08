@@ -253,6 +253,19 @@ RPAREN : ')';
 L_SQUARE_BRACKET : '[';
 R_SQUARE_BRACKET : ']';
 STRINGLITERAL : '"' (~["\r\n] | '""')* '"';
+//Atm, we do not tokenize line numbers as such adn hide them if they are the only text on the line because the parser can deal with that.  
+LINENUMBER : (INTEGERLITERAL
+				| HEXLITERAL
+				| OCTLITERAL
+				| HEXLITERAL)
+			{lastTokenType == NEWLINE 
+				&& (_input.La(1) == ' '
+					|| _input.La(1) == '\t'
+//					|| _input.La(1) == '\r'
+//					|| _input.La(1) == '\n' 
+//					|| _input.La(1) == Eof
+					)}? 
+				-> channel(HIDDEN);
 OCTLITERAL : '&O' [0-8]+ INTEGERTYPESUFFIX?;
 HEXLITERAL : '&H' [0-9A-F]+ INTEGERTYPESUFFIX?;
 FLOATLITERAL :
@@ -262,12 +275,6 @@ fragment FLOATINGPOINTLITERAL :
     DECIMALLITERAL EXPONENT
     | DECIMALLITERAL '.' DECIMALLITERAL?  EXPONENT?
     | '.' DECIMALLITERAL EXPONENT?;
-LINENUMBER : DECIMALLITERAL {lastTokenType == NEWLINE 
-								&& (_input.La(1) == ' '
-									|| _input.La(1) == '\t'
-									|| _input.La(1) == '\r' 
-									|| _input.La(1) == Eof)}? 
-				-> channel(HIDDEN);
 INTEGERLITERAL : DECIMALLITERAL INTEGERTYPESUFFIX?;
 fragment INTEGERTYPESUFFIX : [%&^];
 fragment FLOATINGPOINTTYPESUFFIX : [!#@];
