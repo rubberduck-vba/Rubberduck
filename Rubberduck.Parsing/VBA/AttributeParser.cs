@@ -53,14 +53,17 @@ namespace Rubberduck.Parsing.VBA
             var type = component.Type == ComponentType.StandardModule
                 ? DeclarationType.ProceduralModule
                 : DeclarationType.ClassModule;
+            var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();
+            var tokens = tokenStreamProvider.Tokens(code);
             var preprocessor = _preprocessorFactory();
-            var preprocessed = preprocessor.Execute(component.Name, code, token);
+            preprocessor.PreprocessTokenStream(component.Name, tokens, token);
             var listener = new AttributeListener(Tuple.Create(component.Name, type));
             // parse tree isn't usable for declarations because
             // line numbers are offset due to module header and attributes
             // (these don't show up in the VBE, that's why we're parsing an exported file)
+
             ITokenStream tokenStream;
-            new VBAModuleParser().Parse(component.Name, preprocessed, new IParseTreeListener[] { listener }, new ExceptionErrorListener(), out tokenStream);
+            new VBAModuleParser().Parse(component.Name, tokens, new IParseTreeListener[] { listener }, new ExceptionErrorListener(), out tokenStream);
             return listener.Attributes;
         }
 

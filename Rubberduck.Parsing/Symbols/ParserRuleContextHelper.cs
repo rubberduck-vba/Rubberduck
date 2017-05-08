@@ -1,6 +1,8 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -46,6 +48,17 @@ namespace Rubberduck.Parsing.Symbols
             }
             // Gets the original source, without "synthetic" text such as "<EOF>".
             return stream.GetText(new Interval(context.Start.StartIndex, context.Stop.StopIndex));
+        }
+
+        public static IEnumerable<IToken> GetTokens(ParserRuleContext context, CommonTokenStream tokenStream)
+        {
+            var sourceInterval = context.SourceInterval;
+            if (sourceInterval.Equals(Interval.Invalid) || sourceInterval.b < sourceInterval.a)
+            {
+                return new List<IToken>();
+            }
+            // Gets the tokens belonging to the context from the token stream. 
+           return tokenStream.GetTokens(sourceInterval.a, sourceInterval.b);
         }
 
         public static T GetChild<T>(RuleContext context)

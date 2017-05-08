@@ -1669,6 +1669,36 @@ End Sub
 
         [TestCategory("Parser")]
         [TestMethod]
+        public void TestDefaultMemberAccessCallStmtOnFunctionReturnValue_Single()
+        {
+            const string code = @"
+Sub Test()
+    SomeFunction(foo) bar
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//callStmt", matches => matches.Count == 1);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//argumentExpression", matches => matches.Count == 2);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//argumentList", matches => matches.Count == 2);
+        }
+
+        [TestCategory("Parser")]
+        [TestMethod]
+        public void TestDefaultMemberAccessCallStmtOnFunctionReturnValue_Multiple()
+        {
+            const string code = @"
+Sub Test()   
+    SomeFunction(foo, bar) foobar
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//callStmt", matches => matches.Count == 1);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//argumentExpression", matches => matches.Count == 3);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//argumentList", matches => matches.Count == 2);
+        }
+
+        [TestCategory("Parser")]
+        [TestMethod]
         [Ignore] // ref. https://github.com/rubberduck-vba/Rubberduck/issues/2888
         public void TestFunctionArgumentsOnContinuedLine_Multiple()
         {
@@ -1699,6 +1729,40 @@ End Sub
             var parseResult = Parse(code);
             AssertTree(parseResult.Item1, parseResult.Item2, "//letStmt", matches => matches.Count == 1);
             AssertTree(parseResult.Item1, parseResult.Item2, "//argumentExpression", matches => matches.Count == 1);
+        }
+
+        [TestCategory("Parser")]
+        [TestMethod]
+        [Ignore] // ref. https://github.com/rubberduck-vba/Rubberduck/issues/2888
+        public void TestDefaultMemberAccessCallStmtOnFunctionReturnValue_FunctionArgumentsOnContinuedLine_Single()
+        {
+            const string code = @"
+Sub Test() 
+    SomeFunction _
+    (foo) bar
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//callStmt", matches => matches.Count == 1);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//argumentExpression", matches => matches.Count == 2);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//argumentList", matches => matches.Count == 2);
+        }
+
+        [TestCategory("Parser")]
+        [TestMethod]
+        [Ignore] // ref. https://github.com/rubberduck-vba/Rubberduck/issues/2888
+        public void TestDefaultMemberAccessCallStmtOnFunctionReturnValue_FunctionArgumentsOnContinuedLine_Multiple()
+        {
+            const string code = @"
+Sub Test()   
+    SomeFunction _
+    (foo, bar) foobar
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//callStmt", matches => matches.Count == 1);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//argumentExpression", matches => matches.Count == 3);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//argumentList", matches => matches.Count == 2);
         }
 
         [TestCategory("Parser")]
