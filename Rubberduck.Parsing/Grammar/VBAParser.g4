@@ -94,8 +94,8 @@ moduleBodyElement :
 block : (blockStmt endOfStatement)*;
 
 blockStmt :
-    statementLabelDefinition
-    | fileStmt
+    statementLabelDefinition? whiteSpace? 
+    ( fileStmt
     | attributeStmt
     | constStmt
     | doLoopStmt
@@ -131,6 +131,7 @@ blockStmt :
     | scaleSpecialForm
     | callStmt
     | nameStmt
+	)
 ;
 
 // 5.4.5 File Statements
@@ -558,9 +559,12 @@ complexType :
 
 fieldLength : MULT whiteSpace? (numberLiteral | identifierValue);
 
-statementLabelDefinition : identifierStatementLabel | lineNumberLabel;
-identifierStatementLabel : unrestrictedIdentifier whiteSpace? COLON;
-lineNumberLabel : numberLiteral whiteSpace? COLON?;
+//Statement labels can only appear at the start of a line.
+statementLabelDefinition : {_input.Lt(-1).Type == NEWLINE}? (combinedLabels | identifierStatementLabel | lineNumberLabel);
+identifierStatementLabel : unrestrictedIdentifier whiteSpace? COLON; 
+lineNumberLabel : LINENUMBER whiteSpace COLON? 
+					| numberLiteral COLON
+combinedLabels : LINENUMBER whiteSpace identifierStatementLabel;
 
 numberLiteral : HEXLITERAL | OCTLITERAL | FLOATLITERAL | INTEGERLITERAL;
 
