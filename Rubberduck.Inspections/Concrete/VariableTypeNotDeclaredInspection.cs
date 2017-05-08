@@ -18,10 +18,6 @@ namespace Rubberduck.Inspections.Concrete
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
-            var s =
-                State.DeclarationFinder.UserDeclarations(DeclarationType.Variable | DeclarationType.Constant |
-                                                         DeclarationType.Parameter);
-
             var issues = from item in State.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
                          .Union(State.DeclarationFinder.UserDeclarations(DeclarationType.Constant))
                          .Union(State.DeclarationFinder.UserDeclarations(DeclarationType.Parameter))
