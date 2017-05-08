@@ -91,7 +91,7 @@ namespace Rubberduck.Inspections
                     LogManager.GetCurrentClassLogger().Error(e);
                 }
 
-                var issuesByType = allIssues.GroupBy(issue => issue.GetType())
+                var issuesByType = allIssues.GroupBy(issue => issue.Inspection.Name)
                                             .ToDictionary(grouping => grouping.Key, grouping => grouping.ToList());
                 var results = issuesByType.Where(kv => kv.Value.Count <= AGGREGATION_THRESHOLD)
                     .SelectMany(kv => kv.Value)
