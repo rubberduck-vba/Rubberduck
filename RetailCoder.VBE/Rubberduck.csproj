@@ -319,7 +319,6 @@
     <Compile Include="API\IdentifierReference.cs" />
     <Compile Include="API\ParserState.cs" />
     <Compile Include="AppMenu.cs" />
-    <Compile Include="AutoSave\AutoSave.cs" />
     <Compile Include="Common\ApplicationConstants.cs" />
     <Compile Include="Common\ExportFormatter.cs" />
     <Compile Include="Common\ClipboardWriter.cs" />
