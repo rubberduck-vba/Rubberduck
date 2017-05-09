@@ -17,17 +17,6 @@
 
 lexer grammar VBALexer;
 
-@lexer::members 
-{
-//We initialize this to NEWLINE to avoid having to special case the start of the module.
-private int lastTokenType = NEWLINE;
-
-public override void Emit(IToken token)
-{
-	base.Emit(token);
-	lastTokenType = token.Type;
-}
-}
 
 ABS : A B S;
 ANY : A N Y;
@@ -253,18 +242,6 @@ RPAREN : ')';
 L_SQUARE_BRACKET : '[';
 R_SQUARE_BRACKET : ']';
 STRINGLITERAL : '"' (~["\r\n] | '""')* '"';
-//Line numbers can only be at the start of a line.
-LINENUMBER : (INTEGERLITERAL
-				| HEXLITERAL
-				| OCTLITERAL
-				| HEXLITERAL)
-			{lastTokenType == NEWLINE 
-				&& (_input.La(1) == ' '
-					|| _input.La(1) == '\t'
-					|| _input.La(1) == '\r'
-					|| _input.La(1) == '\n' 
-					|| _input.La(1) == Eof
-					)}?;
 OCTLITERAL : '&O' [0-8]+ INTEGERTYPESUFFIX?;
 HEXLITERAL : '&H' [0-9A-F]+ INTEGERTYPESUFFIX?;
 FLOATLITERAL :
