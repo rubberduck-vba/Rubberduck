@@ -1490,6 +1490,19 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	public virtual void ExitAttributeName([NotNull] VBAParser.AttributeNameContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.mainBlockStmt"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterMainBlockStmt([NotNull] VBAParser.MainBlockStmtContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.mainBlockStmt"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitMainBlockStmt([NotNull] VBAParser.MainBlockStmtContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.implementsStmt"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -2021,6 +2034,19 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitIdentifier([NotNull] VBAParser.IdentifierContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.combinedLabels"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterCombinedLabels([NotNull] VBAParser.CombinedLabelsContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.combinedLabels"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitCombinedLabels([NotNull] VBAParser.CombinedLabelsContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.attributeStmt"/>.
@@ -2762,6 +2788,19 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitComparisonOperator([NotNull] VBAParser.ComparisonOperatorContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.standaloneLineNumberLabel"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterStandaloneLineNumberLabel([NotNull] VBAParser.StandaloneLineNumberLabelContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.standaloneLineNumberLabel"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitStandaloneLineNumberLabel([NotNull] VBAParser.StandaloneLineNumberLabelContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.startRecordNumber"/>.

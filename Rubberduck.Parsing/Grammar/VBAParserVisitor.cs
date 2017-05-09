@@ -837,6 +837,13 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitAttributeName([NotNull] VBAParser.AttributeNameContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.mainBlockStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitMainBlockStmt([NotNull] VBAParser.MainBlockStmtContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.implementsStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -1125,6 +1132,13 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitIdentifier([NotNull] VBAParser.IdentifierContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.combinedLabels"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitCombinedLabels([NotNull] VBAParser.CombinedLabelsContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.attributeStmt"/>.
@@ -1532,6 +1546,13 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitComparisonOperator([NotNull] VBAParser.ComparisonOperatorContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.standaloneLineNumberLabel"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitStandaloneLineNumberLabel([NotNull] VBAParser.StandaloneLineNumberLabelContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.startRecordNumber"/>.
