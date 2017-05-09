@@ -94,12 +94,12 @@ moduleBodyElement :
 block : (blockStmt endOfStatement)*;
 
 blockStmt : 
-	statementLabelDefinition? whiteSpace? mainBlockStmt
-	| statementLabelDefinition 
+	statementLabelDefinition
+	| statementLabelDefinition? whiteSpace? mainBlockStmt 
 ;
 
 mainBlockStmt :
-      fileStmt
+    fileStmt
     | attributeStmt
     | constStmt
     | doLoopStmt
