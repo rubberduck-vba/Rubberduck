@@ -707,15 +707,28 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
-        public override void EnterStatementLabelDefinition(VBAParser.StatementLabelDefinitionContext context)
+        public override void EnterIdentifierStatementLabel(VBAParser.IdentifierStatementLabelContext context)
         {
-            var statementText = context.identifierStatementLabel() != null
-                ? context.identifierStatementLabel().unrestrictedIdentifier().GetText()
-                : context.lineNumberLabel().numberLiteral().GetText();
+            var statementText = context.unrestrictedIdentifier().GetText();
+            var statementSelection = context.unrestrictedIdentifier().GetSelection();
 
-            var statementSelection = context.identifierStatementLabel() != null
-                ? context.identifierStatementLabel().unrestrictedIdentifier().GetSelection()
-                : context.lineNumberLabel().numberLiteral().GetSelection();
+            AddDeclaration(
+                CreateDeclaration(
+                    statementText,
+                    null,
+                    Accessibility.Private,
+                    DeclarationType.LineLabel,
+                    context,
+                    statementSelection,
+                    true,
+                    null,
+                    null));
+        }
+
+        public override void EnterLineNumberLabel(VBAParser.LineNumberLabelContext context)
+        {
+            var statementText = context.numberLiteral().GetText();
+            var statementSelection = context.numberLiteral().GetSelection();
 
             AddDeclaration(
                 CreateDeclaration(

@@ -837,9 +837,9 @@ End Sub";
         {
             string code = @"
 Sub Test()
-    a:
-    10:
-    15
+a:
+10:
+15
 End Sub";
             var parseResult = Parse(code);
             AssertTree(parseResult.Item1, parseResult.Item2, "//statementLabelDefinition", matches => matches.Count == 3);
