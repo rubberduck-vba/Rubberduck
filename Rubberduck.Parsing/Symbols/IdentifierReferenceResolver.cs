@@ -316,11 +316,11 @@ namespace Rubberduck.Parsing.Symbols
 
         private void ResolveListOrLabel(VBAParser.ListOrLabelContext listOrLabel)
         {
-            if (listOrLabel == null || listOrLabel.lineNumberLabel() == null)
+            if (listOrLabel == null || listOrLabel.standaloneLineNumberLabel().lineNumberLabel() == null)
             {
                 return;
             }
-            ResolveLabel(listOrLabel.lineNumberLabel(), listOrLabel.lineNumberLabel().GetText());
+            ResolveLabel(listOrLabel.standaloneLineNumberLabel().lineNumberLabel(), listOrLabel.standaloneLineNumberLabel().lineNumberLabel().GetText());
         }
 
         public void Resolve(VBAParser.SelectCaseStmtContext context)

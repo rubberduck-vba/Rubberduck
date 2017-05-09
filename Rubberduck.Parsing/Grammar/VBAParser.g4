@@ -384,7 +384,7 @@ singleLineElseClause : ELSE whiteSpace? listOrLabel?;
 // <statement-label>. This <goto-statement> takes the place of <line-number-label> in 
 // <statement-list>.  
 listOrLabel :
-    lineNumberLabel (whiteSpace? COLON whiteSpace? sameLineStatement?)*
+    standaloneLineNumberLabel (whiteSpace? COLON whiteSpace? sameLineStatement?)*
     | (COLON whiteSpace?)? sameLineStatement (whiteSpace? COLON whiteSpace? sameLineStatement?)*
 ;
 sameLineStatement : blockStmt;

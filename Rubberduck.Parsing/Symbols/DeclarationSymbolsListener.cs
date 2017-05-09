@@ -707,7 +707,27 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
-        public override void EnterIdentifierStatementLabel(VBAParser.IdentifierStatementLabelContext context)
+
+        public override void EnterStatementLabelDefinition(VBAParser.StatementLabelDefinitionContext context)
+        {
+            if (context.combinedLabels() != null)
+            {
+                var combinedLabel = context.combinedLabels();
+                AddIdentifierStatementLabelDeclaration(combinedLabel.identifierStatementLabel());
+                AddLineNumberLabelDeclaration(combinedLabel.lineNumberLabel(), combinedLabel.lineNumberLabel());
+            }
+            else if (context.identifierStatementLabel() != null) 
+            {
+                AddIdentifierStatementLabelDeclaration(context.identifierStatementLabel());
+            }
+            else
+            {
+                var standalonLineNumber = context.standaloneLineNumberLabel();
+                AddLineNumberLabelDeclaration(standalonLineNumber.lineNumberLabel(), standalonLineNumber);
+            }
+        }
+
+        private void AddIdentifierStatementLabelDeclaration(VBAParser.IdentifierStatementLabelContext context)
         {
             var statementText = context.unrestrictedIdentifier().GetText();
             var statementSelection = context.unrestrictedIdentifier().GetSelection();
@@ -720,15 +740,15 @@ namespace Rubberduck.Parsing.Symbols
                     DeclarationType.LineLabel,
                     context,
                     statementSelection,
-                    true,
+                    false,
                     null,
                     null));
         }
 
-        public override void EnterLineNumberLabel(VBAParser.LineNumberLabelContext context)
+        private void AddLineNumberLabelDeclaration(VBAParser.LineNumberLabelContext lineNumberContext, ParserRuleContext context)
         {
-            var statementText = context.numberLiteral().GetText();
-            var statementSelection = context.numberLiteral().GetSelection();
+            var statementText = lineNumberContext.numberLiteral().GetText();
+            var statementSelection = lineNumberContext.numberLiteral().GetSelection();
 
             AddDeclaration(
                 CreateDeclaration(
@@ -738,7 +758,7 @@ namespace Rubberduck.Parsing.Symbols
                     DeclarationType.LineLabel,
                     context,
                     statementSelection,
-                    true,
+                    false,
                     null,
                     null));
         }

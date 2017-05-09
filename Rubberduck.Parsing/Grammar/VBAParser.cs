@@ -8271,8 +8271,8 @@ public partial class VBAParser : Parser {
 		public IReadOnlyList<WhiteSpaceContext> whiteSpace() {
 			return GetRuleContexts<WhiteSpaceContext>();
 		}
-		public LineNumberLabelContext lineNumberLabel() {
-			return GetRuleContext<LineNumberLabelContext>(0);
+		public StandaloneLineNumberLabelContext standaloneLineNumberLabel() {
+			return GetRuleContext<StandaloneLineNumberLabelContext>(0);
 		}
 		public SameLineStatementContext sameLineStatement(int i) {
 			return GetRuleContext<SameLineStatementContext>(i);
@@ -8312,7 +8312,7 @@ public partial class VBAParser : Parser {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 1489; lineNumberLabel();
+				State = 1489; standaloneLineNumberLabel();
 				State = 1502;
 				_errHandler.Sync(this);
 				_alt = Interpreter.AdaptivePredict(_input,169,_ctx);
@@ -20329,7 +20329,7 @@ public partial class VBAParser : Parser {
 		"\x2\x5C9\x5CA\x3\x2\x2\x2\x5CA\x5CB\x5\xD2j\x2\x5CB\xD1\x3\x2\x2\x2\x5CC"+
 		"\x5CE\aY\x2\x2\x5CD\x5CF\x5\x1BC\xDF\x2\x5CE\x5CD\x3\x2\x2\x2\x5CE\x5CF"+
 		"\x3\x2\x2\x2\x5CF\x5D1\x3\x2\x2\x2\x5D0\x5D2\x5\xD4k\x2\x5D1\x5D0\x3\x2"+
-		"\x2\x2\x5D1\x5D2\x3\x2\x2\x2\x5D2\xD3\x3\x2\x2\x2\x5D3\x5E0\x5\x172\xBA"+
+		"\x2\x2\x5D1\x5D2\x3\x2\x2\x2\x5D2\xD3\x3\x2\x2\x2\x5D3\x5E0\x5\x16E\xB8"+
 		"\x2\x5D4\x5D6\x5\x1BC\xDF\x2\x5D5\x5D4\x3\x2\x2\x2\x5D5\x5D6\x3\x2\x2"+
 		"\x2\x5D6\x5D7\x3\x2\x2\x2\x5D7\x5D9\a*\x2\x2\x5D8\x5DA\x5\x1BC\xDF\x2"+
 		"\x5D9\x5D8\x3\x2\x2\x2\x5D9\x5DA\x3\x2\x2\x2\x5DA\x5DC\x3\x2\x2\x2\x5DB"+
