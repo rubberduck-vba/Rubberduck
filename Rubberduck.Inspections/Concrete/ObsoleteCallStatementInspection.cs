@@ -24,7 +24,7 @@ namespace Rubberduck.Inspections.Concrete
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
-            var results = new List<ObsoleteCallStatementUsageInspectionResult>();
+            var results = new List<IInspectionResult>();
 
             foreach (var context in Listener.Contexts.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName, context.Context.Start.Line)))
             {
@@ -42,7 +42,10 @@ namespace Rubberduck.Inspections.Concrete
 
                 if (!stringStrippedLines.Contains(":"))
                 {
-                    results.Add(new ObsoleteCallStatementUsageInspectionResult(this, context, GetQualifiedMemberName(context)));
+                    results.Add(new QualifiedContextInspectionResult(this,
+                                                     InspectionsUI.ObsoleteCallStatementInspectionResultFormat,
+                                                     State,
+                                                     context));
                 }
             }
 

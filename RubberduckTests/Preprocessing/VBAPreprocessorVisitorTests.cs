@@ -4,8 +4,10 @@ using Rubberduck.Parsing.Grammar;
 using System;
 using System.Diagnostics;
 using System.Globalization;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.PreProcessing;
+using Antlr4.Runtime.Tree;
+using System.Text;
+using System.Collections.Generic;
 
 namespace RubberduckTests.PreProcessing
 {
@@ -1162,6 +1164,49 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        public void TestPreprocessingLiveDeadCodeTokensDoNotGetRemoved()
+        {
+            string code = @"
+#Const a = 2 + 5
+
+#If a = 7 Then
+    Public Sub Alive()
+        #If True Then
+            Debug.Print 2
+        #ElseIf 1 = 2 Then
+            Debug.Print 4
+        #End If
+    End Sub
+#Else
+    Public Sub Dead()
+        Debug.Print 3
+    End Sub
+#End If
+";
+
+            string evaluated = @"
+#Const a = 2 + 5
+
+#If a = 7 Then
+    Public Sub Alive()
+        #If True Then
+            Debug.Print 2
+        #ElseIf 1 = 2 Then
+            Debug.Print 4
+        #End If
+    End Sub
+#Else
+    Public Sub Dead()
+        Debug.Print 3
+    End Sub
+#End If
+";
+            var result = Preprocess(code);
+            var allTokenText = TokenText(result.Item2.AsTokens);
+            Assert.AreEqual(evaluated, allTokenText);
+        }
+
+        [TestMethod]
         public void TestPreprocessingNoConditionalCompilation()
         {
             string code = @"
@@ -1271,11 +1316,22 @@ End Sub
             parser.ErrorHandler = new BailErrorStrategy();
             //parser.AddErrorListener(new ExceptionErrorListener());
             var tree = parser.compilationUnit();
-            var evaluator = new VBAPreprocessorVisitor(symbolTable, new VBAPredefinedCompilationConstants(7.01), tree.start.InputStream);
+            var evaluator = new VBAPreprocessorVisitor(symbolTable, new VBAPredefinedCompilationConstants(7.01), tree.start.InputStream, tokens);
             var expr = evaluator.Visit(tree);
+            var resultValue = expr.Evaluate();
 
             Debug.Assert(parser.NumberOfSyntaxErrors == 0);
-            return Tuple.Create(symbolTable, expr.Evaluate());
+            return Tuple.Create(symbolTable, resultValue);
+        }
+
+        private string TokenText(IEnumerable<IToken> tokens)
+        {
+            var builder = new StringBuilder();
+            foreach(var token in tokens)
+            {
+                builder.Append(token.Text);
+            }
+            return builder.ToString();
         }
     }
 }

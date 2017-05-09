@@ -19,7 +19,7 @@ namespace Rubberduck.Inspections.Concrete
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
             return Declarations.Where(item => item.DeclarationType == DeclarationType.BracketedExpression)
-                .Select(item => new HostSpecificExpressionInspectionResult(this, item)).ToList();
+                .Select(item => new DeclarationInspectionResult(this, string.Format(InspectionsUI.HostSpecificExpressionInspectionResultFormat, item.IdentifierName), item));
         }
     }
 }

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -92,18 +91,6 @@ namespace Rubberduck.Inspections.Abstract
         protected virtual IEnumerable<Declaration> BuiltInDeclarations
         {
             get { return State.AllDeclarations.Where(declaration => !declaration.IsUserDefined); }
-        }
-
-        protected QualifiedMemberName? GetQualifiedMemberName(QualifiedContext context)
-        {
-            var members = State.DeclarationFinder.Members(context.ModuleName);
-            return members.SingleOrDefault(m => m.Selection.Contains(context.Context.GetSelection()))?.QualifiedName;
-        }
-
-        protected QualifiedMemberName? GetQualifiedMemberName(IdentifierReference reference)
-        {
-            var members = State.DeclarationFinder.Members(reference.QualifiedModuleName);
-            return members.SingleOrDefault(m => m.Selection.Contains(reference.Selection))?.QualifiedName;
         }
 
         protected bool IsIgnoringInspectionResultFor(QualifiedModuleName module, int line)

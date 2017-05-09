@@ -24,7 +24,10 @@ namespace Rubberduck.Inspections.Concrete
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
-            return Listener.Contexts.Select(c => new OptionExplicitInspectionResult(this, c, GetQualifiedMemberName(c)));
+            return Listener.Contexts.Select(context => new QualifiedContextInspectionResult(this,
+                                                                      string.Format(InspectionsUI.OptionExplicitInspectionResultFormat, context.ModuleName.ComponentName),
+                                                                      State,
+                                                                      context));
         }
 
         public class MissingOptionExplicitListener : VBAParserBaseListener, IInspectionListener

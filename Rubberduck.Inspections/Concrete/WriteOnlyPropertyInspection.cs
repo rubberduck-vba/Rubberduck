@@ -29,7 +29,9 @@ namespace Rubberduck.Inspections.Concrete
                 .Select(grouping => grouping.First()); // don't get both Let and Set accessors
 
             return setters.Select(setter =>
-                new WriteOnlyPropertyInspectionResult(this, setter));
+                new DeclarationInspectionResult(this,
+                                                string.Format(InspectionsUI.WriteOnlyPropertyInspectionResultFormat, setter.IdentifierName),
+                                                setter));
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Antlr4.Runtime;
+using System;
+using System.Collections.Generic;
 
 namespace Rubberduck.Parsing.PreProcessing
 {
@@ -56,6 +58,14 @@ namespace Rubberduck.Parsing.PreProcessing
             get
             {
                 return _value.ToString();
+            }
+        }
+
+        public IEnumerable<IToken> AsTokens
+        {
+            get
+            {
+                return new List<IToken>();
             }
         }
 

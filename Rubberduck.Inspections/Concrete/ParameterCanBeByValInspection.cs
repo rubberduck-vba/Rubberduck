@@ -21,7 +21,7 @@ namespace Rubberduck.Inspections.Concrete
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
             var declarations = UserDeclarations.ToArray();
-            var issues = new List<ParameterCanBeByValInspectionResult>();
+            var issues = new List<IInspectionResult>();
 
             var interfaceDeclarationMembers = declarations.FindInterfaceMembers().ToArray();
             var interfaceScopes = declarations.FindInterfaceImplementationMembers().Concat(interfaceDeclarationMembers).Select(s => s.Scope).ToArray();
@@ -46,7 +46,7 @@ namespace Rubberduck.Inspections.Concrete
             
             issues.AddRange(declarations.OfType<ParameterDeclaration>()
                 .Where(declaration => IsIssue(declaration, declarations, declareScopes, eventScopes, interfaceScopes))
-                .Select(issue => new ParameterCanBeByValInspectionResult(this, issue)));
+                .Select(issue => new DeclarationInspectionResult(this, string.Format(InspectionsUI.ParameterCanBeByValInspectionResultFormat, issue.IdentifierName), issue)));
 
             return issues;
         }
@@ -66,7 +66,7 @@ namespace Rubberduck.Inspections.Concrete
             return isIssue;
         }
 
-        private IEnumerable<ParameterCanBeByValInspectionResult> GetResults(Declaration[] declarations, Declaration[] declarationMembers)
+        private IEnumerable<IInspectionResult> GetResults(Declaration[] declarations, Declaration[] declarationMembers)
         {
             foreach (var declaration in declarationMembers)
             {
@@ -104,7 +104,9 @@ namespace Rubberduck.Inspections.Concrete
                 {
                     if (parametersAreByRef[i])
                     {
-                        yield return new ParameterCanBeByValInspectionResult(this, declarationParameters[i]);
+                        yield return new DeclarationInspectionResult(this,
+                                                          string.Format(InspectionsUI.ParameterCanBeByValInspectionResultFormat, declarationParameters[i].IdentifierName),
+                                                          declarationParameters[i]);
                     }
                 }
             }

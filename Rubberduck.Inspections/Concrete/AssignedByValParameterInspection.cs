@@ -25,12 +25,12 @@ namespace Rubberduck.Inspections.Concrete
                 .Cast<ParameterDeclaration>()
                 .Where(item => !item.IsByRef 
                     && !IsIgnoringInspectionResultFor(item, AnnotationName)
-                    && item.References.Any(reference => reference.IsAssignment))
-                .ToList();
+                    && item.References.Any(reference => reference.IsAssignment));
 
             return parameters
-                .Select(param => new AssignedByValParameterInspectionResult(this, param))
-                .ToList();
+                .Select(param => new DeclarationInspectionResult(this,
+                                                      string.Format(InspectionsUI.AssignedByValParameterInspectionResultFormat, param.IdentifierName),
+                                                      param));
         }
     }
 }
