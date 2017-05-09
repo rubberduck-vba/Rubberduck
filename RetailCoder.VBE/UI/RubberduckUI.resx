@@ -1257,14 +1257,8 @@ Are you sure you want to proceed with this rename?</value>
   <data name="GroupingStyle_ByOutcome" xml:space="preserve">
     <value>By outcome</value>
   </data>
-  <data name="GeneralSettings_AutoSaveLabel" xml:space="preserve">
-    <value>Auto Save:</value>
-  </data>
   <data name="GeneralSettings_HotkeysLabel" xml:space="preserve">
     <value>Hotkeys:</value>
-  </data>
-  <data name="GeneralSettings_AutoSaveEnabled" xml:space="preserve">
-    <value>Enable Auto Save</value>
   </data>
   <data name="Settings" xml:space="preserve">
     <value>Settings</value>
