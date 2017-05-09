@@ -53,14 +53,15 @@ namespace Rubberduck.Parsing.PostProcessing.RewriterInfo
             VBAParser.ConstStmtContext constants,
             int count, int itemIndex, IReadOnlyList<VBAParser.ConstSubStmtContext> items)
         {
-            var blockStmt = (VBAParser.BlockStmtContext)constants.Parent;
-            var startIndex = blockStmt.Start.TokenIndex;
-            var parent = (VBAParser.BlockContext)blockStmt.Parent;
-            var statements = parent.blockStmt();
+            var mainBlockStmt = (VBAParser.MainBlockStmtContext)constants.Parent;
+            var startIndex = mainBlockStmt.Start.TokenIndex;
+            var blockStmt = (VBAParser.BlockStmtContext)mainBlockStmt.Parent;
+            var block = (VBAParser.BlockContext)blockStmt.Parent;
+            var statements = block.blockStmt();
 
             if (count == 1)
             {
-                var stopIndex = FindStopTokenIndex(statements, blockStmt, parent);
+                var stopIndex = FindStopTokenIndex(statements, mainBlockStmt, block);
                 return new RewriterInfo(startIndex, stopIndex);
             }
             return GetRewriterInfoForTargetRemovedFromListStmt(target.Start, itemIndex, items);
