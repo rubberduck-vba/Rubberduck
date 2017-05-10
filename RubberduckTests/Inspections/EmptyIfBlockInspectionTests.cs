@@ -79,6 +79,29 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
+        public void EmptyIfBlock_FiresOnEmptySingleLineIfStmt()
+        {
+            const string inputCode =
+@"Sub Foo()
+    If True Then Else Bar
+End Sub
+
+Sub Bar()
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new EmptyIfBlockInspection(state);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void EmptyIfBlock_FiresOnEmptyIfBlock_HasNonEmptyElseBlock()
         {
             const string inputCode =
@@ -191,6 +214,29 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
+        public void EmptyIfBlock_SingleLineIfBlockHasExecutableStatement()
+        {
+            const string inputCode =
+@"Sub Foo()
+    If True Then Bar
+End Sub
+
+Sub Bar()
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new EmptyIfBlockInspection(state);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            Assert.IsFalse(inspectionResults.Any());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void EmptyIfBlock_ElseIfBlockHasExecutableStatement()
         {
             const string inputCode =
@@ -225,6 +271,72 @@ End Sub";
             const string expectedCode =
 @"Sub Foo()
     
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new EmptyIfBlockInspection(state);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            new RemoveEmptyIfBlockQuickFix(state).Fix(inspectionResults.First());
+
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void EmptyIfBlock_QuickFixRemovesSingleLineIf()
+        {
+            const string inputCode =
+@"Sub Foo()
+    If True Then Else Bar
+End Sub
+
+Sub Bar()
+End Sub";
+
+            const string expectedCode =
+@"Sub Foo()
+    If Not (True) Then Bar
+End Sub
+
+Sub Bar()
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new EmptyIfBlockInspection(state);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            new RemoveEmptyIfBlockQuickFix(state).Fix(inspectionResults.First());
+
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void EmptyIfBlock_QuickFixRemovesSingleLineIf_NoWhiteSpace()
+        {
+            const string inputCode =
+@"Sub Foo()
+    If True Then Else(Bar)
+End Sub
+
+Sub Bar()
+End Sub";
+
+            const string expectedCode =
+@"Sub Foo()
+    If Not (True) Then (Bar)
+End Sub
+
+Sub Bar()
 End Sub";
 
             IVBComponent component;

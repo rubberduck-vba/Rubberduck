@@ -57,6 +57,22 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
+        private void UpdateContext(VBAParser.IfWithEmptyThenContext context, IModuleRewriter rewriter)
+        {
+            var elseClause = context.singleLineElseClause();
+            if (context.singleLineElseClause().whiteSpace() != null)
+            {
+                rewriter.RemoveRange(elseClause.ELSE().Symbol.TokenIndex, elseClause.whiteSpace().Stop.TokenIndex);
+            }
+            else
+            {
+                rewriter.Remove(elseClause.ELSE());
+            }
+
+            Debug.Assert(context.booleanExpression().children.Count == 1);
+            UpdateCondition((dynamic)context.booleanExpression().children[0], rewriter);
+        }
+
         private void UpdateContext(VBAParser.ElseIfBlockContext context, IModuleRewriter rewriter)
         {
             rewriter.Remove(context);

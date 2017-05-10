@@ -63,6 +63,14 @@ namespace Rubberduck.Inspections.Concrete
                 }
             }
 
+            public override void EnterSingleLineIfStmt([NotNull] VBAParser.SingleLineIfStmtContext context)
+            {
+                if (context.ifWithEmptyThen() != null)
+                {
+                    _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context.ifWithEmptyThen()));
+                }
+            }
+
             private bool ContainsExecutableStatements(VBAParser.BlockContext block)
             {
                 foreach (var child in block.children)
