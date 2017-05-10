@@ -668,4 +668,16 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="QuickFix_ThisProcedure" xml:space="preserve">
     <value>Fix all occurrences in procedure</value>
   </data>
+  <data name="EmptyIfBlockInspectionMeta" xml:space="preserve">
+    <value>An If block should have executable statements</value>
+  </data>
+  <data name="EmptyIfBlockInspectionName" xml:space="preserve">
+    <value>Empty If block</value>
+  </data>
+  <data name="EmptyIfBlockInspectionResultFormat" xml:space="preserve">
+    <value>If block has no executable statements</value>
+  </data>
+  <data name="RemoveEmptyIfBlockQuickFix" xml:space="preserve">
+    <value>Remove empty If block</value>
+  </data>
 </root>
