@@ -168,7 +168,7 @@ namespace Rubberduck.Inspections.QuickFixes
         }
 
         public bool CanFixInProcedure { get; } = false;
-        public bool CanFixInModule { get; } = true;
-        public bool CanFixInProject { get; } = true;
+        public bool CanFixInModule { get; } = false;
+        public bool CanFixInProject { get; } = false;
     }
 }
