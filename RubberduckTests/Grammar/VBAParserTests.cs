@@ -839,11 +839,16 @@ End Sub";
 Sub Test()
 a:
 10:
-15
+154
 12 b:
+52'comment
+644 _
+
+71Rem stupid Rem comment
+22 
 End Sub";
             var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//statementLabelDefinition", matches => matches.Count == 4);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//statementLabelDefinition", matches => matches.Count == 8);
         }
 
         [TestCategory("Parser")]

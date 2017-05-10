@@ -384,7 +384,7 @@ singleLineElseClause : ELSE whiteSpace? listOrLabel?;
 // <statement-label>. This <goto-statement> takes the place of <line-number-label> in 
 // <statement-list>.  
 listOrLabel :
-    standaloneLineNumberLabel (whiteSpace? COLON whiteSpace? sameLineStatement?)*
+    lineNumberLabel (whiteSpace? COLON whiteSpace? sameLineStatement?)*
     | (COLON whiteSpace?)? sameLineStatement (whiteSpace? COLON whiteSpace? sameLineStatement?)*
 ;
 sameLineStatement : blockStmt;
@@ -563,9 +563,15 @@ complexType :
 fieldLength : MULT whiteSpace? (numberLiteral | identifierValue);
 
 //Statement labels can only appear at the start of a line.
-statementLabelDefinition : {_input.Lt(-1).Type == NEWLINE}? (combinedLabels | identifierStatementLabel | standaloneLineNumberLabel);
+statementLabelDefinition : {_input.La(-1) == NEWLINE}? (combinedLabels | identifierStatementLabel | standaloneLineNumberLabel);
 identifierStatementLabel : unrestrictedIdentifier whiteSpace? COLON; 
-standaloneLineNumberLabel : lineNumberLabel whiteSpace? COLON? ;
+standaloneLineNumberLabel : 
+	lineNumberLabel whiteSpace? COLON
+	| {_input.La(2) == NEWLINE 
+		|| _input.La(2) == WS
+		|| _input.La(2) == LINE_CONTINUATION
+		|| _input.La(2) == SINGLEQUOTE
+		|| _input.La(2) == REM}? lineNumberLabel;
 combinedLabels : lineNumberLabel whiteSpace identifierStatementLabel;
 lineNumberLabel : numberLiteral;
 

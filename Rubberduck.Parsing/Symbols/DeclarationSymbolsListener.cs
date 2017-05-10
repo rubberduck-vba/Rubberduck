@@ -714,7 +714,7 @@ namespace Rubberduck.Parsing.Symbols
             {
                 var combinedLabel = context.combinedLabels();
                 AddIdentifierStatementLabelDeclaration(combinedLabel.identifierStatementLabel());
-                AddLineNumberLabelDeclaration(combinedLabel.lineNumberLabel(), combinedLabel.lineNumberLabel());
+                AddLineNumberLabelDeclaration(combinedLabel.lineNumberLabel());
             }
             else if (context.identifierStatementLabel() != null) 
             {
@@ -722,8 +722,7 @@ namespace Rubberduck.Parsing.Symbols
             }
             else
             {
-                var standalonLineNumber = context.standaloneLineNumberLabel();
-                AddLineNumberLabelDeclaration(standalonLineNumber.lineNumberLabel(), standalonLineNumber);
+                AddLineNumberLabelDeclaration(context.standaloneLineNumberLabel().lineNumberLabel());
             }
         }
 
@@ -745,10 +744,10 @@ namespace Rubberduck.Parsing.Symbols
                     null));
         }
 
-        private void AddLineNumberLabelDeclaration(VBAParser.LineNumberLabelContext lineNumberContext, ParserRuleContext context)
+        private void AddLineNumberLabelDeclaration(VBAParser.LineNumberLabelContext context)
         {
-            var statementText = lineNumberContext.numberLiteral().GetText();
-            var statementSelection = lineNumberContext.numberLiteral().GetSelection();
+            var statementText = context.numberLiteral().GetText();
+            var statementSelection = context.numberLiteral().GetSelection();
 
             AddDeclaration(
                 CreateDeclaration(
