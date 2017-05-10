@@ -79,6 +79,8 @@ namespace Rubberduck.Inspections.Concrete
                     if (child is VBAParser.BlockStmtContext)
                     {
                         Debug.Assert(child.ChildCount == 1);
+
+                        // exclude variables and consts because they are not executable statements
                         if (child.GetChild(0) is VBAParser.VariableStmtContext ||
                             child.GetChild(0) is VBAParser.ConstStmtContext)
                         {
@@ -91,9 +93,7 @@ namespace Rubberduck.Inspections.Concrete
                     if (child is VBAParser.RemCommentContext ||
                         child is VBAParser.CommentContext ||
                         child is VBAParser.CommentOrAnnotationContext ||
-                        child is VBAParser.EndOfStatementContext ||
-                        child is VBAParser.VariableStmtContext ||
-                        child is VBAParser.ConstStmtContext)
+                        child is VBAParser.EndOfStatementContext)
                     {
                         continue;
                     }
