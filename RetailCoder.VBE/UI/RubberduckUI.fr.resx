@@ -1209,9 +1209,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="UnitTest_NewMethod_Rename" xml:space="preserve">
     <value>Renommer le test</value>
   </data>
-  <data name="GeneralSettings_AutoSaveEnabled" xml:space="preserve">
-    <value>Activer la sauvegarde auto</value>
-  </data>
   <data name="SettingsCaption_IndenterSettings" xml:space="preserve">
     <value>Indentation</value>
   </data>
@@ -1253,9 +1250,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   </data>
   <data name="SettingsInstructions_IndenterSettings" xml:space="preserve">
     <value>Configuration des options d'indentation</value>
-  </data>
-  <data name="GeneralSettings_AutoSaveLabel" xml:space="preserve">
-    <value>Sauvegarde auto:</value>
   </data>
   <data name="GeneralSettings_HotkeyDescription" xml:space="preserve">
     <value>Description</value>

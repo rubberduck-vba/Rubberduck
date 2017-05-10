@@ -21,7 +21,6 @@ namespace Rubberduck
     public sealed class App : IDisposable
     {
         private readonly IMessageBox _messageBox;
-        private readonly AutoSave.AutoSave _autoSave;
         private readonly IGeneralConfigService _configService;
         private readonly IAppMenu _appMenus;
         private readonly IRubberduckHooks _hooks;
@@ -42,7 +41,6 @@ namespace Rubberduck
         {
             _messageBox = messageBox;
             _configService = configService;
-            _autoSave = new AutoSave.AutoSave(vbe, _configService);
             _appMenus = appMenus;
             _hooks = hooks;
             _version = version;
@@ -143,7 +141,6 @@ namespace Rubberduck
         private void LoadConfig()
         {
             _config = _configService.LoadConfiguration();
-            _autoSave.ConfigServiceSettingsChanged(this, EventArgs.Empty);
 
             var currentCulture = RubberduckUI.Culture;
             try
@@ -214,11 +211,6 @@ namespace Rubberduck
             if (_configService != null)
             {
                 _configService.SettingsChanged -= _configService_SettingsChanged;
-            }
-
-            if (_autoSave != null)
-            {
-                _autoSave.Dispose();
             }
 
             UiDispatcher.Shutdown();

@@ -14,7 +14,7 @@
         <converters:DelimiterValueToTextConverter x:Key="DelimiterValueToText" />
         <converters:DelimiterToTextConverter x:Key="DelimiterToText" />
         <converters:HotkeyDisplayConverter x:Key="HotkeyDisplay" />
-        
+
         <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
             <GradientStop Color="#FFD9F4FF" Offset="0"/>
             <GradientStop Color="#FF9BDDFB" Offset="1"/>
@@ -107,7 +107,7 @@
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" DockPanel.Dock="Right"/>
                         </DockPanel>
-                    </Label>                  
+                    </Label>
                     <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_LanguageLabel}" FontWeight="SemiBold" />
                     <ComboBox Width="210"
                       HorizontalAlignment="Left"
@@ -121,20 +121,7 @@
 
                     <CheckBox Margin="5,0,0,5" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_CheckVersion}"
                               IsChecked="{Binding CheckVersionAtStartup}" />
-
-                    <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_AutoSaveLabel}" FontWeight="SemiBold" />
-                    <StackPanel Orientation="Horizontal">
-                        <CheckBox Name="AutoSaveButton"
-                          Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_AutoSaveEnabled}"
-                          Margin="5,0,0,5"
-                          IsChecked="{Binding AutoSaveEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                          HorizontalAlignment="Left" />
-                        <controls:NumberPicker Margin="0,-6,0,0"
-                                       IsEnabled="{Binding ElementName=AutoSaveButton, Path=IsChecked}"
-                                       NumValue="{Binding AutoSavePeriod, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                       MinNumber="1"
-                                       HorizontalAlignment="Left" />
-                    </StackPanel>
+                    <StackPanel Orientation="Horizontal"/>
 
                     <!--<Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_FolderDelimiterLabel}" FontWeight="SemiBold" />
                     <ComboBox Width="210"

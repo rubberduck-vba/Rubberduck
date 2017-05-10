@@ -55,6 +55,7 @@
     <Compile Include="Concrete\AssignedByValParameterInspection.cs" />
     <Compile Include="Concrete\ConstantNotUsedInspection.cs" />
     <Compile Include="Concrete\DefaultProjectNameInspection.cs" />
+    <Compile Include="Concrete\EmptyIfBlockInspection.cs" />
     <Compile Include="Concrete\EmptyStringLiteralInspection.cs" />
     <Compile Include="Concrete\EncapsulatePublicFieldInspection.cs" />
     <Compile Include="Concrete\FunctionReturnValueNotUsedInspection.cs" />
@@ -107,6 +108,7 @@
     <Compile Include="QuickFixes\PassParameterByReferenceQuickFix.cs" />
     <Compile Include="QuickFixes\PassParameterByValueQuickFix.cs" />
     <Compile Include="QuickFixes\RemoveCommentQuickFix.cs" />
+    <Compile Include="QuickFixes\RemoveEmptyIfBlockQuickFix.cs" />
     <Compile Include="QuickFixes\RemoveExplicitCallStatmentQuickFix.cs" />
     <Compile Include="QuickFixes\RemoveExplicitLetStatementQuickFix.cs" />
     <Compile Include="QuickFixes\RemoveOptionBaseStatementQuickFix.cs" />

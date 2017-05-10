@@ -65,6 +65,11 @@ namespace Rubberduck.Parsing.PostProcessing
             _rewriter.Delete(target);
         }
 
+        public void RemoveRange(int start, int stop)
+        {
+            _rewriter.Delete(start, stop);
+        }
+
         public void Replace(Declaration target, string content)
         {
             _rewriter.Replace(target.Context.Start.TokenIndex, target.Context.Stop.TokenIndex, content);
