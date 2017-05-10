@@ -160,7 +160,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Constant value is declared but Rubberduck could not find any reference to it. Consider removing the unused declaration..
+        ///   Looks up a localized string similar to Rubberduck could not find any reference to constant. Consider removing the unused declaration..
         /// </summary>
         public static string ConstantNotUsedInspectionMeta {
             get {
@@ -228,6 +228,33 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         public static string DisableThisInspection {
             get {
                 return ResourceManager.GetString("DisableThisInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An If block should have executable statements.
+        /// </summary>
+        public static string EmptyIfBlockInspectionMeta {
+            get {
+                return ResourceManager.GetString("EmptyIfBlockInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Empty If block.
+        /// </summary>
+        public static string EmptyIfBlockInspectionName {
+            get {
+                return ResourceManager.GetString("EmptyIfBlockInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If block has no executable statements.
+        /// </summary>
+        public static string EmptyIfBlockInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("EmptyIfBlockInspectionResultFormat", resourceCulture);
             }
         }
         
@@ -1096,7 +1123,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Component &apos;{0} uses &apos;Option Base 0&apos;.
+        ///   Looks up a localized string similar to Component &apos;{0}&apos; uses &apos;Option Base 0&apos;.
         /// </summary>
         public static string OptionBaseZeroInspectionResultFormat {
             get {
@@ -1339,6 +1366,15 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Remove empty If block.
+        /// </summary>
+        public static string RemoveEmptyIfBlockQuickFix {
+            get {
+                return ResourceManager.GetString("RemoveEmptyIfBlockQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Remove obsolete statement.
         /// </summary>
         public static string RemoveObsoleteStatementQuickFix {
@@ -1574,7 +1610,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A variable is declared, but never assigned a value/reference. If Rubberduck is correct, the variable could probably be safely removed..
+        ///   Looks up a localized string similar to Variable does not seem to be assigned. If Rubberduck is correct, the variable could probably be safely removed..
         /// </summary>
         public static string VariableNotAssignedInspectionMeta {
             get {
@@ -1583,7 +1619,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Variable is declared but never assigned.
+        ///   Looks up a localized string similar to Variable is not assigned.
         /// </summary>
         public static string VariableNotAssignedInspectionName {
             get {
@@ -1592,7 +1628,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Variable &apos;{0}&apos; is never assigned.
+        ///   Looks up a localized string similar to Variable &apos;{0}&apos; is not assigned.
         /// </summary>
         public static string VariableNotAssignedInspectionResultFormat {
             get {
@@ -1601,7 +1637,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A variable is declared, but never referred to..
+        ///   Looks up a localized string similar to Variable is not referred to.
         /// </summary>
         public static string VariableNotUsedInspectionMeta {
             get {
