@@ -36,14 +36,26 @@ namespace Rubberduck.Inspections.QuickFixes
             var elseBlock = context.elseBlock();
             var elseIfBlock = context.elseIfBlock().FirstOrDefault();
 
+            if (BlockHasDeclaration(context.block()))
+            {
+                rewriter.InsertBefore(context.Start.TokenIndex, context.block().GetText());
+            }
+
             if (elseIfBlock != null)
             {
-                rewriter.RemoveRange(context.IF().Symbol.TokenIndex, context.endOfStatement().Stop.TokenIndex);
+                rewriter.RemoveRange(context.IF().Symbol.TokenIndex, context.block()?.Stop.TokenIndex ?? context.endOfStatement().Stop.TokenIndex);
                 rewriter.Replace(elseIfBlock.ELSEIF(), "If");
             }
             else if (elseBlock != null)
             {
-                rewriter.Remove(elseBlock.ELSE());
+                if (!string.IsNullOrEmpty(context.block()?.GetText()))
+                {
+                    rewriter.RemoveRange(context.block().Start.TokenIndex, elseBlock.ELSE().Symbol.TokenIndex);
+                }
+                else
+                {
+                    rewriter.Remove(elseBlock.ELSE());
+                }
 
                 Debug.Assert(context.booleanExpression().children.Count == 1);
                 UpdateCondition((dynamic)context.booleanExpression().children[0], rewriter);
@@ -72,6 +84,11 @@ namespace Rubberduck.Inspections.QuickFixes
 
         private void UpdateContext(VBAParser.ElseIfBlockContext context, IModuleRewriter rewriter)
         {
+            if (BlockHasDeclaration(context.block()))
+            {
+                rewriter.InsertBefore(((VBAParser.IfStmtContext)context.Parent).Start.TokenIndex, context.block().GetText());
+            }
+
             rewriter.Remove(context);
         }
 
@@ -131,9 +148,19 @@ namespace Rubberduck.Inspections.QuickFixes
 
         private void UpdateCondition(ParserRuleContext condition, IModuleRewriter rewriter)
         {
-            rewriter.InsertBefore(condition.Start.TokenIndex, "Not (");
-            rewriter.InsertAfter(condition.Stop.TokenIndex, ")");
+            if (condition.GetText().Contains(' '))
+            {
+                rewriter.InsertBefore(condition.Start.TokenIndex, "Not (");
+                rewriter.InsertAfter(condition.Stop.TokenIndex, ")");
+            }
+            else
+            {
+                rewriter.InsertBefore(condition.Start.TokenIndex, "Not ");
+            }
         }
+
+        private bool BlockHasDeclaration(VBAParser.BlockContext block)
+            => block.children?.Any(s => s is VBAParser.BlockStmtContext) ?? false;
 
         public string Description(IInspectionResult result)
         {

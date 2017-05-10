@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
@@ -75,9 +76,24 @@ namespace Rubberduck.Inspections.Concrete
             {
                 foreach (var child in block.children)
                 {
+                    if (child is VBAParser.BlockStmtContext)
+                    {
+                        Debug.Assert(child.ChildCount == 1);
+                        if (child.GetChild(0) is VBAParser.VariableStmtContext ||
+                            child.GetChild(0) is VBAParser.ConstStmtContext)
+                        {
+                            continue;
+                        }
+
+                        return true;
+                    }
+
                     if (child is VBAParser.RemCommentContext ||
                         child is VBAParser.CommentContext ||
-                        child is VBAParser.CommentOrAnnotationContext)
+                        child is VBAParser.CommentOrAnnotationContext ||
+                        child is VBAParser.EndOfStatementContext ||
+                        child is VBAParser.VariableStmtContext ||
+                        child is VBAParser.ConstStmtContext)
                     {
                         continue;
                     }
