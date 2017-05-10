@@ -939,6 +939,66 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
+        public void EmptyIfBlock_QuickFixRemovesElse_InvertsIf_ComplexCondition_WithParentheses()
+        {
+            const string inputCode =
+@"Sub Foo()
+    If (True Or True) And (True Or True) Then
+    Else
+    End If
+End Sub";
+            const string expectedCode =
+@"Sub Foo()
+    If (True Or True) Or (True Or True) Then
+    
+    End If
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new EmptyIfBlockInspection(state);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            new RemoveEmptyIfBlockQuickFix(state).Fix(inspectionResults.First());
+
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void EmptyIfBlock_QuickFixRemovesElse_InvertsIf_ComplexCondition2()
+        {
+            const string inputCode =
+@"Sub Foo()
+    If 1 > 2 And 3 = 3 Or 4 <> 5 And 8 - 6 = 2 Then
+    Else
+    End If
+End Sub";
+            const string expectedCode =
+@"Sub Foo()
+    If 1 > 2 And 3 = 3 And 4 <> 5 And 8 - 6 = 2 Then
+    
+    End If
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new EmptyIfBlockInspection(state);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            new RemoveEmptyIfBlockQuickFix(state).Fix(inspectionResults.First());
+
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionType()
         {
             var inspection = new EmptyIfBlockInspection(null);
