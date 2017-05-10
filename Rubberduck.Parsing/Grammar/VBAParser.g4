@@ -567,11 +567,7 @@ statementLabelDefinition : {_input.La(-1) == NEWLINE}? (combinedLabels | identif
 identifierStatementLabel : unrestrictedIdentifier whiteSpace? COLON; 
 standaloneLineNumberLabel : 
 	lineNumberLabel whiteSpace? COLON
-	| {_input.La(2) == NEWLINE 
-		|| _input.La(2) == WS
-		|| _input.La(2) == LINE_CONTINUATION
-		|| _input.La(2) == SINGLEQUOTE
-		|| _input.La(2) == REM}? lineNumberLabel;
+	| {_input.La(2) != COLON}? lineNumberLabel;
 combinedLabels : lineNumberLabel whiteSpace identifierStatementLabel;
 lineNumberLabel : numberLiteral;
 

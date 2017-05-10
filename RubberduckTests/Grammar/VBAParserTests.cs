@@ -846,9 +846,13 @@ a:
 
 71Rem stupid Rem comment
 22 
+
+77 _
+ : 
+42whatever
 End Sub";
             var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//statementLabelDefinition", matches => matches.Count == 8);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//statementLabelDefinition", matches => matches.Count == 10);
         }
 
         [TestCategory("Parser")]

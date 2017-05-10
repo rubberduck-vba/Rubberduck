@@ -15258,11 +15258,7 @@ public partial class VBAParser : Parser {
 				EnterOuterAlt(_localctx, 2);
 				{
 				State = 2346;
-				if (!(_input.La(2) == NEWLINE 
-						|| _input.La(2) == WS
-						|| _input.La(2) == LINE_CONTINUATION
-						|| _input.La(2) == SINGLEQUOTE
-						|| _input.La(2) == REM)) throw new FailedPredicateException(this, "_input.La(2) == NEWLINE \r\n\t\t|| _input.La(2) == WS\r\n\t\t|| _input.La(2) == LINE_CONTINUATION\r\n\t\t|| _input.La(2) == SINGLEQUOTE\r\n\t\t|| _input.La(2) == REM");
+				if (!(_input.La(2) != COLON)) throw new FailedPredicateException(this, "_input.La(2) != COLON");
 				State = 2347; lineNumberLabel();
 				}
 				break;
@@ -19551,11 +19547,7 @@ public partial class VBAParser : Parser {
 	}
 	private bool standaloneLineNumberLabel_sempred(StandaloneLineNumberLabelContext _localctx, int predIndex) {
 		switch (predIndex) {
-		case 3: return _input.La(2) == NEWLINE 
-				|| _input.La(2) == WS
-				|| _input.La(2) == LINE_CONTINUATION
-				|| _input.La(2) == SINGLEQUOTE
-				|| _input.La(2) == REM;
+		case 3: return _input.La(2) != COLON;
 		}
 		return true;
 	}
