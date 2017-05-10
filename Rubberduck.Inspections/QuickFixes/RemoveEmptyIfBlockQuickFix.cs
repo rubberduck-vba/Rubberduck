@@ -34,26 +34,23 @@ namespace Rubberduck.Inspections.QuickFixes
         private void UpdateContext(VBAParser.IfStmtContext context, IModuleRewriter rewriter)
         {
             var elseBlock = context.elseBlock();
+            var elseIfBlock = context.elseIfBlock().FirstOrDefault();
 
-            if (elseBlock == null)
+            if (elseIfBlock != null)
             {
-                var elseIfBlock = context.elseIfBlock().FirstOrDefault();
-                if (elseIfBlock != null)
-                {
-                    rewriter.RemoveRange(context.IF().Symbol.TokenIndex, context.endOfStatement().Stop.TokenIndex);
-                    rewriter.Replace(elseIfBlock.ELSEIF(), "If");
-                }
-                else
-                {
-                    rewriter.Remove(context);
-                }
+                rewriter.RemoveRange(context.IF().Symbol.TokenIndex, context.endOfStatement().Stop.TokenIndex);
+                rewriter.Replace(elseIfBlock.ELSEIF(), "If");
             }
-            else
+            else if (elseBlock != null)
             {
                 rewriter.Remove(elseBlock.ELSE());
 
                 Debug.Assert(context.booleanExpression().children.Count == 1);
                 UpdateCondition((dynamic)context.booleanExpression().children[0], rewriter);
+            }
+            else
+            {
+                rewriter.Remove(context);
             }
         }
 

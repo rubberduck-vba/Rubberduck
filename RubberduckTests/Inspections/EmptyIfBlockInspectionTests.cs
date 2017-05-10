@@ -382,6 +382,41 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
+        public void EmptyIfBlock_QuickFixRemovesIf_WithElseIfAndElse()
+        {
+            const string inputCode =
+@"Sub Foo()
+    If True Then
+    ElseIf False Then
+        Dim d
+    Else
+        Dim b
+    End If
+End Sub";
+            const string expectedCode =
+@"Sub Foo()
+    If False Then
+        Dim d
+    Else
+        Dim b
+    End If
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new EmptyIfBlockInspection(state);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            new RemoveEmptyIfBlockQuickFix(state).Fix(inspectionResults.First());
+
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void EmptyIfBlock_QuickFixRemovesElseIf()
         {
             const string inputCode =
