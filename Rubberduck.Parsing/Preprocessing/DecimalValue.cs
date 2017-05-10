@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Antlr4.Runtime;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
 
 namespace Rubberduck.Parsing.PreProcessing
@@ -57,6 +59,14 @@ namespace Rubberduck.Parsing.PreProcessing
             get
             {
                 return _value.ToString(CultureInfo.InvariantCulture);
+            }
+        }
+
+        public IEnumerable<IToken> AsTokens
+        {
+            get
+            {
+                return new List<IToken>();
             }
         }
 

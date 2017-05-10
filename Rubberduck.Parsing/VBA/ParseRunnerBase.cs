@@ -62,7 +62,7 @@ namespace Rubberduck.Parsing.VBA
             var tcs = new TaskCompletionSource<ComponentParseTask.ParseCompletionArgs>();
 
             var preprocessor = _preprocessorFactory();
-            var parser = new ComponentParseTask(module.Component, preprocessor, _attributeParser, rewriter);
+            var parser = new ComponentParseTask(module, preprocessor, _attributeParser, rewriter);
 
             parser.ParseFailure += (sender, e) =>
             {

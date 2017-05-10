@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Antlr4.Runtime;
+using System;
+using System.Collections.Generic;
 
 namespace Rubberduck.Parsing.PreProcessing
 {
@@ -10,5 +12,6 @@ namespace Rubberduck.Parsing.PreProcessing
         decimal AsDecimal { get; }
         DateTime AsDate { get; }
         string AsString { get; }
+        IEnumerable<IToken> AsTokens {get;}
     }
 }

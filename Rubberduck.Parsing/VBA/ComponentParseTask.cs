@@ -32,15 +32,15 @@ namespace Rubberduck.Parsing.VBA
 
         private readonly Guid _taskId;
 
-        public ComponentParseTask(IVBComponent vbComponent, IVBAPreprocessor preprocessor, IAttributeParser attributeParser, TokenStreamRewriter rewriter = null)
+        public ComponentParseTask(QualifiedModuleName module, IVBAPreprocessor preprocessor, IAttributeParser attributeParser, TokenStreamRewriter rewriter = null)
         {
             _taskId = Guid.NewGuid();
 
             _attributeParser = attributeParser;
             _preprocessor = preprocessor;
-            _component = vbComponent;
+            _component = module.Component;
             _rewriter = rewriter;
-            _qualifiedName = new QualifiedModuleName(vbComponent);
+            _qualifiedName = module;
             _parser = new VBAModuleParser();
         }
         
@@ -50,7 +50,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 Logger.Trace("Starting ParseTaskID {0} on thread {1}.", _taskId, Thread.CurrentThread.ManagedThreadId);
 
-                var code = RewriteAndPreprocess(token);
+                var tokenStream = RewriteAndPreprocess(token);
                 token.ThrowIfCancellationRequested();
 
                 var attributes = _attributeParser.Parse(_component, token);
@@ -62,7 +62,7 @@ namespace Rubberduck.Parsing.VBA
 
                 var stopwatch = Stopwatch.StartNew();
                 ITokenStream stream;
-                var tree = ParseInternal(_component.Name, code, new IParseTreeListener[]{ commentListener, annotationListener }, out stream);
+                var tree = ParseInternal(_component.Name, tokenStream, new IParseTreeListener[]{ commentListener, annotationListener }, out stream);
                 stopwatch.Stop();
                 token.ThrowIfCancellationRequested();
 
@@ -178,18 +178,20 @@ namespace Rubberduck.Parsing.VBA
             return false;
         }
 
-        private string RewriteAndPreprocess(CancellationToken token)
+        private CommonTokenStream RewriteAndPreprocess(CancellationToken token)
         {
             var code = _rewriter == null ? string.Join(Environment.NewLine, GetSanitizedCode(_component.CodeModule)) : _rewriter.GetText();
-            var processed = _preprocessor.Execute(_component.Name, code, token);
-            return processed;
+            var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();
+            var tokens = tokenStreamProvider.Tokens(code);
+            _preprocessor.PreprocessTokenStream(_component.Name, tokens, token);
+            return tokens;
         }
 
-        private IParseTree ParseInternal(string moduleName, string code, IParseTreeListener[] listeners, out ITokenStream outStream)
+        private IParseTree ParseInternal(string moduleName, CommonTokenStream tokenStream, IParseTreeListener[] listeners, out ITokenStream outStream)
         {
             //var errorNotifier = new SyntaxErrorNotificationListener();
             //errorNotifier.OnSyntaxError += ParserSyntaxError;
-            return _parser.Parse(moduleName, code, listeners, new ExceptionErrorListener(), out outStream);
+            return _parser.Parse(moduleName, tokenStream, listeners, new ExceptionErrorListener(), out outStream);
         }
 
         private IEnumerable<CommentNode> QualifyAndUnionComments(QualifiedModuleName qualifiedName, IEnumerable<VBAParser.CommentContext> comments, IEnumerable<VBAParser.RemCommentContext> remComments)

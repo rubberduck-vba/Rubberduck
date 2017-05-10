@@ -167,7 +167,10 @@
     <Compile Include="PostProcessing\RewriterInfo\RewriterInfo.cs" />
     <Compile Include="PostProcessing\RewriterInfo\RewriterInfoFinderBase.cs" />
     <Compile Include="PostProcessing\RewriterInfo\VariableRewriterInfoFinder.cs" />
+    <Compile Include="PreProcessing\ConditionalCompilationIfExpression.cs" />
+    <Compile Include="PreProcessing\ConditionalCompilationConstantExpression.cs" />
     <Compile Include="PreProcessing\IVBAPreprocessor.cs" />
+    <Compile Include="PreProcessing\LivelinessExpression.cs" />
     <Compile Include="PreProcessing\VBAConditionalCompilationParser.cs" />
     <Compile Include="PreProcessing\VBAConditionalCompilationParserBaseListener.cs" />
     <Compile Include="PreProcessing\VBAConditionalCompilationParserBaseVisitor.cs" />
@@ -184,6 +187,7 @@
     <Compile Include="ComReflection\ComModule.cs" />
     <Compile Include="ComReflection\ComProject.cs" />
     <Compile Include="PostProcessing\IModuleRewriter.cs" />
+    <Compile Include="PreProcessing\VBAPreprocessorVisitor.cs" />
     <Compile Include="SymbolList.cs" />
     <Compile Include="Symbols\AliasDeclaration.cs" />
     <Compile Include="Symbols\DeclarationLoaders\SpecialFormDeclarations.cs" />
@@ -218,12 +222,9 @@
     <Compile Include="PreProcessing\CByteLibraryFunctionExpression.cs" />
     <Compile Include="PreProcessing\CDateLibraryFunctionExpression.cs" />
     <Compile Include="PreProcessing\ConditionalCompilationBlockExpression.cs" />
-    <Compile Include="PreProcessing\ConditionalCompilationConstantExpression.cs" />
-    <Compile Include="PreProcessing\ConditionalCompilationIfExpression.cs" />
     <Compile Include="PreProcessing\DateLiteralExpression.cs" />
     <Compile Include="PreProcessing\Expression.cs" />
     <Compile Include="PreProcessing\HexNumberLiteralExpression.cs" />
-    <Compile Include="PreProcessing\LivelinessExpression.cs" />
     <Compile Include="PreProcessing\ModExpression.cs" />
     <Compile Include="PreProcessing\BinaryIntDivExpression.cs" />
     <Compile Include="PreProcessing\BinaryDivisionExpression.cs" />
@@ -282,7 +283,6 @@
     <Compile Include="PreProcessing\SymbolTable.cs" />
     <Compile Include="PreProcessing\VBAPredefinedCompilationConstants.cs" />
     <Compile Include="PreProcessing\VBAPreprocessor.cs" />
-    <Compile Include="PreProcessing\VBAPreprocessorVisitor.cs" />
     <Compile Include="StaTaskScheduler.cs" />
     <Compile Include="Symbols\AccessibilityCheck.cs" />
     <Compile Include="Symbols\CallStatement.cs" />
@@ -335,6 +335,9 @@
     <Compile Include="VBA\AttributeParser.cs" />
     <Compile Include="VBA\Attributes.cs" />
     <Compile Include="VBA\BuiltInDeclarationLoader.cs" />
+    <Compile Include="PreProcessing\TokensValue.cs" />
+    <Compile Include="VBA\SimpleVBAModuleTokenStreamProvider.cs" />
+    <Compile Include="VBA\ICommonTokenStreamProvider.cs" />
     <Compile Include="VBA\ModuleToModuleReferenceManager.cs" />
     <Compile Include="VBA\IDeclarationFinderProvider.cs" />
     <Compile Include="VBA\IParseTreeProvider.cs" />
