@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -10,14 +11,15 @@ namespace Rubberduck.Inspections.Results
 {
     class IdentifierReferenceInspectionResult : InspectionResultBase
     {
-        public IdentifierReferenceInspectionResult(IInspection inspection, string description, RubberduckParserState state, IdentifierReference reference) :
+        public IdentifierReferenceInspectionResult(IInspection inspection, string description, RubberduckParserState state, IdentifierReference reference, Dictionary<string, string> properties = null) :
             base(inspection,
                  description,
                  reference.QualifiedModuleName,
                  reference.Context,
                  reference.Declaration,
                  new QualifiedSelection(reference.QualifiedModuleName, reference.Context.GetSelection()),
-                 GetQualifiedMemberName(state, reference))
+                 GetQualifiedMemberName(state, reference),
+                 properties)
         {
         }
 
