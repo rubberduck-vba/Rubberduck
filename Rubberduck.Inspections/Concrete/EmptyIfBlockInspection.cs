@@ -78,11 +78,19 @@ namespace Rubberduck.Inspections.Concrete
                 {
                     if (child is VBAParser.BlockStmtContext)
                     {
-                        Debug.Assert(child.ChildCount == 1);
+                        var blockStmt = (VBAParser.BlockStmtContext)child;
+                        var mainBlockStmt = blockStmt.mainBlockStmt();
+
+                        if(mainBlockStmt == null)
+                        {
+                            continue;   //We have a lone line lable, which is not executable.
+                        }
+
+                        Debug.Assert(mainBlockStmt.ChildCount == 1);
 
                         // exclude variables and consts because they are not executable statements
-                        if (child.GetChild(0) is VBAParser.VariableStmtContext ||
-                            child.GetChild(0) is VBAParser.ConstStmtContext)
+                        if (mainBlockStmt.GetChild(0) is VBAParser.VariableStmtContext ||
+                            mainBlockStmt.GetChild(0) is VBAParser.ConstStmtContext)
                         {
                             continue;
                         }

@@ -8,13 +8,9 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from C:\Dev\Rubberduck\Rubberduck.Parsing\Preprocessing\VBAConditionalCompilationParser.g4 by ANTLR 4.3
+// Generated from H:\Repositories\Rubberduck\Rubberduck.Parsing\PreProcessing\VBAConditionalCompilationParser.g4 by ANTLR 4.3
 
 // Unreachable code detected
-
-using Antlr4.Runtime.Misc;
-using Antlr4.Runtime.Tree;
-
 #pragma warning disable 0162
 // The variable '...' is assigned but its value is never used
 #pragma warning disable 0219
@@ -22,7 +18,11 @@ using Antlr4.Runtime.Tree;
 #pragma warning disable 1591
 
 namespace Rubberduck.Parsing.PreProcessing {
-    /// <summary>
+using Antlr4.Runtime.Misc;
+using Antlr4.Runtime.Tree;
+using IToken = Antlr4.Runtime.IToken;
+
+/// <summary>
 /// This interface defines a complete generic visitor for a parse tree produced
 /// by <see cref="VBAConditionalCompilationParser"/>.
 /// </summary>

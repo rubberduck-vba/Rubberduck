@@ -17,6 +17,7 @@
 
 lexer grammar VBALexer;
 
+
 ABS : A B S;
 ANY : A N Y;
 ARRAY : A R R A Y;

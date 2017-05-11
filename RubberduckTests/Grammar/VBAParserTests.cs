@@ -837,12 +837,40 @@ End Sub";
         {
             string code = @"
 Sub Test()
-    a:
-    10:
-    15
+a:
+10:
+154
+12 b:
+52'comment
+644 _
+
+71Rem stupid Rem comment
+22 
+
+77 _
+ : 
+42whatever
 End Sub";
             var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//statementLabelDefinition", matches => matches.Count == 3);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//statementLabelDefinition", matches => matches.Count == 10);
+        }
+
+        [TestCategory("Parser")]
+        [TestMethod]
+        public void TestLineLabelStatementWithCodeOnSameLine()
+        {
+            string code = @"
+Sub Test()
+a: foo
+10: bar: foo
+15 bar
+12 b: foo: bar
+77 _
+ : bar
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//statementLabelDefinition", matches => matches.Count == 5);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//callStmt", matches => matches.Count == 7);
         }
 
         [TestCategory("Parser")]
