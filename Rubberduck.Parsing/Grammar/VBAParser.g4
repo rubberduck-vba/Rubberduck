@@ -94,8 +94,8 @@ moduleBodyElement :
 block : (blockStmt endOfStatement)*;
 
 blockStmt : 
-	statementLabelDefinition
-	| statementLabelDefinition? whiteSpace? mainBlockStmt 
+	statementLabelDefinition whiteSpace? mainBlockStmt?
+	| mainBlockStmt 
 ;
 
 mainBlockStmt :

@@ -865,10 +865,12 @@ a: foo
 10: bar: foo
 15 bar
 12 b: foo: bar
+77 _
+ : bar
 End Sub";
             var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//statementLabelDefinition", matches => matches.Count == 4);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//callStmt", matches => matches.Count == 6);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//statementLabelDefinition", matches => matches.Count == 5);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//callStmt", matches => matches.Count == 7);
         }
 
         [TestCategory("Parser")]
