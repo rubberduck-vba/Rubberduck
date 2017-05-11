@@ -10,8 +10,7 @@ namespace Rubberduck.Parsing.VBA
             RubberduckParserState state,
             IModuleToModuleReferenceManager moduleToModuleReferenceManager) 
         :base(
-            state, 
-            moduleToModuleReferenceManager)
+            state)
         { }
 
 
