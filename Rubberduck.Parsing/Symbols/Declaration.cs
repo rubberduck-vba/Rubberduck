@@ -195,7 +195,10 @@ namespace Rubberduck.Parsing.Symbols
                 null,
                 Selection.Home,
                 false,
-                null) { }
+                null,
+                false,
+                null,
+                new Attributes()) { }
 
         public Declaration(ComField field, Declaration parent, QualifiedModuleName module)
             : this(
@@ -211,7 +214,10 @@ namespace Rubberduck.Parsing.Symbols
                 null,
                 Selection.Home,
                 false,
-                null) { }
+                null,
+                false,
+                null,
+                new Attributes()) { }
 
         private string FolderFromAnnotations()
             {
