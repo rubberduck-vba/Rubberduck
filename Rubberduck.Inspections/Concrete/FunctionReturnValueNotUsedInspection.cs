@@ -54,7 +54,7 @@ namespace Rubberduck.Inspections.Concrete
                    select
                        new DeclarationInspectionResult(this,
                                             string.Format(InspectionsUI.FunctionReturnValueNotUsedInspectionResultFormat, interfaceMember.IdentifierName),
-                                            interfaceMember);
+                                            interfaceMember, properties: new Dictionary<string, string> { { "DisableFixes", nameof(QuickFixes.ConvertToProcedureQuickFix) } });
         }
 
         private IEnumerable<IInspectionResult> GetNonInterfaceIssues(IEnumerable<Declaration> nonInterfaceFunctions)

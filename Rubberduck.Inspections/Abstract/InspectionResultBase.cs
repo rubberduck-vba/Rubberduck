@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using Antlr4.Runtime;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -12,7 +13,14 @@ namespace Rubberduck.Inspections.Abstract
 {
     public abstract class InspectionResultBase : IInspectionResult, INavigateSource, IExportable
     {
-        protected InspectionResultBase(IInspection inspection, string description, QualifiedModuleName qualifiedName, ParserRuleContext context, Declaration target, QualifiedSelection qualifiedSelection, QualifiedMemberName? qualifiedMemberName)
+        protected InspectionResultBase(IInspection inspection,
+            string description,
+            QualifiedModuleName qualifiedName,
+            ParserRuleContext context,
+            Declaration target,
+            QualifiedSelection qualifiedSelection,
+            QualifiedMemberName? qualifiedMemberName,
+            Dictionary<string, string> properties)
         {
             Inspection = inspection;
             Description = description.Capitalize();
@@ -21,6 +29,7 @@ namespace Rubberduck.Inspections.Abstract
             Target = target;
             QualifiedSelection = qualifiedSelection;
             QualifiedMemberName = qualifiedMemberName;
+            Properties = properties ?? new Dictionary<string, string>();
         }
 
         public IInspection Inspection { get; }
@@ -29,6 +38,7 @@ namespace Rubberduck.Inspections.Abstract
         public QualifiedMemberName? QualifiedMemberName { get; }
         public ParserRuleContext Context { get; }
         public Declaration Target { get; }
+        public IDictionary<string, string> Properties { get; }
 
         /// <summary>
         /// Gets the information needed to select the target instruction in the VBE.

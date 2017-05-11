@@ -1,4 +1,5 @@
-﻿using Rubberduck.Inspections.Abstract;
+﻿using System.Collections.Generic;
+using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
@@ -8,14 +9,15 @@ namespace Rubberduck.Inspections.Results
 {
     class DeclarationInspectionResult : InspectionResultBase
     {
-        public DeclarationInspectionResult(IInspection inspection, string description, Declaration target, QualifiedContext context = null) :
+        public DeclarationInspectionResult(IInspection inspection, string description, Declaration target, QualifiedContext context = null, Dictionary<string, string> properties = null) :
             base(inspection,
                  description,
                  context == null ? target.QualifiedName.QualifiedModuleName : context.ModuleName,
                  context == null ? target.Context : context.Context,
                  target,
                  target.QualifiedSelection,
-                 GetQualifiedMemberName(target))
+                 GetQualifiedMemberName(target),
+                 properties)
         {
         }
         
