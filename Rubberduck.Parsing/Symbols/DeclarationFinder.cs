@@ -242,6 +242,11 @@ namespace Rubberduck.Parsing.Symbols
                     : Enumerable.Empty<Declaration>();
         }
 
+        public IReadOnlyCollection<QualifiedModuleName> AllModules()
+        {
+            return _declarations.Keys.ToList();
+        }
+
         public IEnumerable<Declaration> FindDeclarationsWithNonBaseAsType()
         {
             return _nonBaseAsType.Value;
