@@ -65,9 +65,11 @@
     <Compile Include="Annotations\DefaultMemberAnnotation.cs" />
     <Compile Include="Annotations\DescriptionAnnotation.cs" />
     <Compile Include="Annotations\EnumeratorMemberAnnotation.cs" />
+    <Compile Include="Annotations\ExposedModuleAnnotation.cs" />
     <Compile Include="Annotations\FolderAnnotation.cs" />
     <Compile Include="Annotations\IAnnotation.cs" />
     <Compile Include="Annotations\IAnnotationFactory.cs" />
+    <Compile Include="Annotations\IAttributeAnnotation.cs" />
     <Compile Include="Annotations\IgnoreAnnotation.cs" />
     <Compile Include="Annotations\IgnoreModuleAnnotation.cs" />
     <Compile Include="Annotations\InterfaceAnnotation.cs" />
@@ -76,6 +78,7 @@
     <Compile Include="Annotations\ModuleInitializeAnnotation.cs" />
     <Compile Include="Annotations\IgnoreTestAnnotation.cs" />
     <Compile Include="Annotations\NoIndentAnnotation.cs" />
+    <Compile Include="Annotations\PredeclaredIdAnnotation.cs" />
     <Compile Include="Annotations\TestCleanupAnnotation.cs" />
     <Compile Include="Annotations\TestInitializeAnnotation.cs" />
     <Compile Include="Annotations\TestMethodAnnotation.cs" />

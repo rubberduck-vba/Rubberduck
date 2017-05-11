@@ -17,7 +17,7 @@ namespace Rubberduck.Inspections.Results
             get
             {
                 var name = QualifiedMemberName.HasValue ? QualifiedMemberName.Value.MemberName : QualifiedName.Name;
-                return string.Format("InspectionsUI.MissingAnnotationInspectionResultFormat", name, Context.GetText());
+                return string.Format(InspectionsUI.MissingAnnotationInspectionResultFormat, name, Context.GetText());
             }
         }
     }

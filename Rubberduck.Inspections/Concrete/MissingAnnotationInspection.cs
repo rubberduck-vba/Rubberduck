@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
@@ -19,7 +21,7 @@ namespace Rubberduck.Inspections.Concrete
         public MissingAnnotationInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Hint)
         {
-            Listener = new MissingAttributeAnnotationListener();
+            Listener = new MissingAnnotationListener(State);
         }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
@@ -30,12 +32,28 @@ namespace Rubberduck.Inspections.Concrete
             return Listener.Contexts.Select(context => new MissingAnnotationInspectionResult(this, context, context.MemberName));
         }
 
-        public class MissingAttributeAnnotationListener : VBAParserBaseListener, IInspectionListener
+        public class MissingAnnotationListener : VBAParserBaseListener, IInspectionListener
         {
+            private readonly RubberduckParserState _state;
+
+            private readonly Lazy<Declaration> _module;
+            private readonly Lazy<IDictionary<string, Declaration>> _members;
+
             private readonly HashSet<string> _attributeNames;
 
-            public MissingAttributeAnnotationListener()
+            public MissingAnnotationListener(RubberduckParserState state)
             {
+                _state = state;
+                _annotations = new VBAParserAnnotationFactory();
+
+                _module = new Lazy<Declaration>(() => _state.DeclarationFinder
+                    .UserDeclarations(DeclarationType.Module)
+                    .SingleOrDefault(m => m.QualifiedName.QualifiedModuleName.Equals(CurrentModuleName)));
+
+                _members = new Lazy<IDictionary<string, Declaration>>(() => _state.DeclarationFinder
+                    .Members(CurrentModuleName)
+                    .ToDictionary(m => m.IdentifierName, m => m));
+
                 _attributeNames = new HashSet<string>(typeof(AnnotationType).GetFields()
                     .Where(field => field.GetCustomAttributes(typeof(AttributeAnnotationAttribute), true).Any())
                     .SelectMany(a => a.GetCustomAttributes(typeof(AttributeAnnotationAttribute), true)
@@ -52,75 +70,107 @@ namespace Rubberduck.Inspections.Concrete
 
             public void ClearContexts()
             {
-                _contexts.Clear();
+                _contexts.Clear();   
             }
 
             #region scoping
             private IAnnotatedContext _currentScope;
-            private string _currentScopeName;
+            private Declaration _currentScopeDeclaration;
 
             public override void EnterModuleBody(VBAParser.ModuleBodyContext context)
             {
                 var firstMember = context.moduleBodyElement().FirstOrDefault()?.GetChild(0);
                 _currentScope = firstMember as IAnnotatedContext;
-                // name?
             }
 
-            public override void ExitModuleAttributes(VBAParser.ModuleAttributesContext context)
+            public override void EnterModuleAttributes(VBAParser.ModuleAttributesContext context)
             {
+                // note: using ModuleAttributesContext for module-scope
+
                 if (_currentScope == null)
                 {
-                    // anything we pick up between here and the actual module body, belongs to the module
+                    // we're at the top of the module.
+                    // everything we pick up between here and the module body, is module-scoped:
                     _currentScope = context;
-                    _currentScopeName = CurrentModuleName.Name;
                 }
                 else
                 {
-                    // don't re-assign _currentScope here.
-                    // we're at the end of the module and that attribute actually belongs to the last procedure.
+                    // DO NOT re-assign _currentScope here.
+                    // we're at the end of the module and that attribute is actually scoped to the last procedure.
+                    Debug.Assert(_currentScope != null); // deliberate no-op
                 }
+            }
+
+            private bool _hasMembers;
+            private IAnnotationFactory _annotations;
+
+            private void SetCurrentScope(IAnnotatedContext context, string memberName = null)
+            {
+                _hasMembers = !string.IsNullOrEmpty(memberName);
+                _currentScope = context;
+                _currentScopeDeclaration = _hasMembers ? _members.Value[memberName] : _module.Value;
             }
 
             public override void EnterSubStmt(VBAParser.SubStmtContext context)
             {
-                _currentScope = context;
+                SetCurrentScope(context, Identifier.GetName(context.subroutineName()));
             }
 
             public override void EnterFunctionStmt(VBAParser.FunctionStmtContext context)
             {
-                _currentScope = context;
+                SetCurrentScope(context, Identifier.GetName(context.functionName()));
             }
 
             public override void EnterPropertyGetStmt(VBAParser.PropertyGetStmtContext context)
             {
-                _currentScope = context;
+                SetCurrentScope(context, Identifier.GetName(context.functionName()));
             }
 
             public override void EnterPropertyLetStmt(VBAParser.PropertyLetStmtContext context)
             {
-                _currentScope = context;
+                SetCurrentScope(context, Identifier.GetName(context.subroutineName()));
             }
 
             public override void EnterPropertySetStmt(VBAParser.PropertySetStmtContext context)
             {
-                _currentScope = context;
+                SetCurrentScope(context, Identifier.GetName(context.subroutineName()));
             }
             #endregion
 
+            
+
             public override void ExitAttributeStmt(VBAParser.AttributeStmtContext context)
             {
-                if(_currentScope == null)
+                Debug.Assert(_currentScopeDeclaration != null);
+                var annotations = _currentScopeDeclaration.Annotations;
+                var isModule = _currentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Module);
+                var isMember = _currentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member);
+
+                
+
+                if(isModule)
                 {
-                    // not scoped yet can't be a member attribute
+
+                }
+                else if (isMember)
+                {
+                    
+                }
+
+                if(!_hasMembers)
+                {
+                    // module attribute
+                    _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
                     return;
                 }
 
                 var name = context.attributeName().GetText();
                 var value = context.attributeValue();
                 if(!_currentScope.Annotations.Any(a => a.AnnotationType.HasFlag(AnnotationType.Attribute)
-                                                       && _attributeNames.Select(n => $"{_currentScopeName}.{n}")
+                                                       && _attributeNames.Select(n => $"{_currentScopeDeclaration.IdentifierName}.{n}")
                                                                          .All(n => n != name)))
                 {
+
                     // current scope is POSSIBLY missing an annotation for this attribute... todo: verify the value too
                     _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
                 }
