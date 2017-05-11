@@ -94,8 +94,8 @@ moduleBodyElement :
 block : (blockStmt endOfStatement)*;
 
 blockStmt : 
-	statementLabelDefinition whiteSpace? mainBlockStmt?
-	| mainBlockStmt 
+    statementLabelDefinition whiteSpace? mainBlockStmt?
+    | mainBlockStmt 
 ;
 
 mainBlockStmt :
@@ -567,7 +567,7 @@ statementLabelDefinition : {_input.La(-1) == NEWLINE}? (combinedLabels | identif
 identifierStatementLabel : unrestrictedIdentifier whiteSpace? COLON; 
 standaloneLineNumberLabel : 
 	lineNumberLabel whiteSpace? COLON
-	| {_input.La(2) != COLON}? lineNumberLabel;
+	| lineNumberLabel;
 combinedLabels : lineNumberLabel whiteSpace identifierStatementLabel;
 lineNumberLabel : numberLiteral;
 
