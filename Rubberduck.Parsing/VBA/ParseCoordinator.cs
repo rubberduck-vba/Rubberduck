@@ -218,7 +218,7 @@ namespace Rubberduck.Parsing.VBA
                 token.ThrowIfCancellationRequested();
 
                 //This is purely a security measure. In the success path the reference resolver removes the old references. 
-                _referenceRemover.RemoveReferencesBy(toParse, token);   
+                PerformPreParseCleanup(toParse, token);
                 token.ThrowIfCancellationRequested();
 
                 _parserStateManager.SetModuleStates(toParse, ParserState.Parsing, token);
@@ -276,6 +276,12 @@ namespace Rubberduck.Parsing.VBA
             //This is the point where the change of the overall state to Ready is triggered on the success path.
             _parserStateManager.EvaluateOverallParserState(token);
             token.ThrowIfCancellationRequested();
+        }
+
+        private void PerformPreParseCleanup(IReadOnlyCollection<QualifiedModuleName> toParse, CancellationToken token)
+        {
+            _referenceRemover.RemoveReferencesBy(toParse, token);
+            _moduleToModuleReferenceManager.ClearModuleToModuleReferencesFromModule(toParse);
         }
 
         private void RefreshDeclarationFinder()
