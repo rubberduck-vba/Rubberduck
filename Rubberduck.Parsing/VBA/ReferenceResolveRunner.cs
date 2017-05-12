@@ -57,10 +57,12 @@ namespace Rubberduck.Parsing.VBA
                 MaxDegreeOfParallelism = _maxDegreeOfReferenceResolverParallelism
             };
 
+            var allModules = finder.AllModules();
+
             try
             {
-                Parallel.For(0, _state.ParseTrees.Count, options,
-                    (index) => AddModuleToModuleReferences(finder, _state.ParseTrees[index].Key)
+                Parallel.ForEach(allModules, options,
+                    referencedModule => AddModuleToModuleReferences(finder, referencedModule)
                 );
             }
             catch (AggregateException exception)
