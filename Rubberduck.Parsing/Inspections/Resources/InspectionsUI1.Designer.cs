@@ -232,6 +232,33 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An If block should have executable statements.
+        /// </summary>
+        public static string EmptyIfBlockInspectionMeta {
+            get {
+                return ResourceManager.GetString("EmptyIfBlockInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Empty If block.
+        /// </summary>
+        public static string EmptyIfBlockInspectionName {
+            get {
+                return ResourceManager.GetString("EmptyIfBlockInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If block has no executable statements.
+        /// </summary>
+        public static string EmptyIfBlockInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("EmptyIfBlockInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Prefer &apos;vbNullString&apos; to an empty string literal.
         /// </summary>
         public static string EmptyStringLiteralInspection {
@@ -1416,6 +1443,15 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         public static string RemoveCommentQuickFix {
             get {
                 return ResourceManager.GetString("RemoveCommentQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove empty If block.
+        /// </summary>
+        public static string RemoveEmptyIfBlockQuickFix {
+            get {
+                return ResourceManager.GetString("RemoveEmptyIfBlockQuickFix", resourceCulture);
             }
         }
         

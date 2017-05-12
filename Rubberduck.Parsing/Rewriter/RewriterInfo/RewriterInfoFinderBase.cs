@@ -35,6 +35,24 @@ namespace Rubberduck.Parsing.Rewriter.RewriterInfo
             return item.Stop.TokenIndex;
         }
 
+        protected static int FindStopTokenIndex(IReadOnlyList<VBAParser.BlockStmtContext> blockStmts, VBAParser.MainBlockStmtContext mainBlockStmt, VBAParser.BlockContext block)
+        {
+            for (var i = 0; i < blockStmts.Count; i++)
+            {
+                if (blockStmts[i].mainBlockStmt() != mainBlockStmt)
+                {
+                    continue;
+                }
+                if (blockStmts[i].statementLabelDefinition() != null)
+                {
+                    return mainBlockStmt.Stop.TokenIndex;   //Removing the following endOfStatement if there is a label on the line would break the code. 
+                }
+                return FindStopTokenIndex(block, i);
+            }
+
+            return mainBlockStmt.Stop.TokenIndex;
+        }
+
         private static int FindStopTokenIndex(VBAParser.BlockContext context, int index)
         {
             return context.endOfStatement(index).Stop.TokenIndex;

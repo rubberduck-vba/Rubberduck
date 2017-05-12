@@ -35,7 +35,10 @@ namespace Rubberduck.Inspections.Concrete
             return from usage in usages
                    from reference in usage.References.Where(use => !IsIgnoringInspectionResultFor(use, AnnotationName))
                    let qualifiedSelection = new QualifiedSelection(reference.QualifiedModuleName, reference.Selection)
-                   select new ApplicationWorksheetFunctionInspectionResult(this, qualifiedSelection, reference);
+                   select new IdentifierReferenceInspectionResult(this,
+                                               string.Format(InspectionsUI.ApplicationWorksheetFunctionInspectionResultFormat, usage.IdentifierName),
+                                               State,
+                                               reference);
         }
     }
 }

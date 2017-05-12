@@ -204,7 +204,8 @@ End Sub";
             new RemoveUnusedDeclarationQuickFix(state).Fix(inspectionResults.First());
 
             var rewriter = state.GetRewriter(component);
-            Assert.AreEqual(expectedCode, rewriter.GetText());
+            var rewrittenCode = rewriter.GetText();
+            Assert.AreEqual(expectedCode, rewrittenCode);
         }
 
         [TestMethod]

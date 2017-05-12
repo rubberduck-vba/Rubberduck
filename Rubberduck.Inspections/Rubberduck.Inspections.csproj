@@ -51,11 +51,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Abstract\InspectionBase.cs" />
-    <Compile Include="Abstract\InspectionResultBase.cs" />
     <Compile Include="Concrete\ApplicationWorksheetFunctionInspection.cs" />
     <Compile Include="Concrete\AssignedByValParameterInspection.cs" />
     <Compile Include="Concrete\ConstantNotUsedInspection.cs" />
     <Compile Include="Concrete\DefaultProjectNameInspection.cs" />
+    <Compile Include="Concrete\EmptyIfBlockInspection.cs" />
     <Compile Include="Concrete\EmptyStringLiteralInspection.cs" />
     <Compile Include="Concrete\EncapsulatePublicFieldInspection.cs" />
     <Compile Include="Concrete\FunctionReturnValueNotUsedInspection.cs" />
@@ -70,6 +70,7 @@
     <Compile Include="Concrete\ImplicitVariantReturnTypeInspection.cs" />
     <Compile Include="Concrete\MissingAnnotationInspection.cs" />
     <Compile Include="Concrete\MissingAttributeInspection.cs" />
+    <Compile Include="Abstract\InspectionResultBase.cs" />
     <Compile Include="Inspector.cs" />
     <Compile Include="Concrete\MemberNotOnInterfaceInspection.cs" />
     <Compile Include="Concrete\MissingAnnotationArgumentInspection.cs" />
@@ -109,6 +110,7 @@
     <Compile Include="QuickFixes\PassParameterByReferenceQuickFix.cs" />
     <Compile Include="QuickFixes\PassParameterByValueQuickFix.cs" />
     <Compile Include="QuickFixes\RemoveCommentQuickFix.cs" />
+    <Compile Include="QuickFixes\RemoveEmptyIfBlockQuickFix.cs" />
     <Compile Include="QuickFixes\RemoveExplicitCallStatmentQuickFix.cs" />
     <Compile Include="QuickFixes\RemoveExplicitLetStatementQuickFix.cs" />
     <Compile Include="QuickFixes\RemoveOptionBaseStatementQuickFix.cs" />
@@ -139,7 +141,6 @@
     <Compile Include="Results\IdentifierNameInspectionResult.cs" />
     <Compile Include="Results\IdentifierNotAssignedInspectionResult.cs" />
     <Compile Include="Results\IdentifierNotUsedInspectionResult.cs" />
-    <Compile Include="Results\IllegalAnnotationInspectionResult.cs" />
     <Compile Include="Results\ImplicitActiveSheetReferenceInspectionResult.cs" />
     <Compile Include="Results\ImplicitActiveWorkbookReferenceInspectionResult.cs" />
     <Compile Include="Results\ImplicitByRefParameterInspectionResult.cs" />
@@ -148,12 +149,11 @@
     <Compile Include="Results\ImplicitVariantReturnTypeInspectionResult.cs" />
     <Compile Include="Results\MemberNotOnInterfaceInspectionResult.cs" />
     <Compile Include="Results\MissingAnnotationArgumentInspectionResult.cs" />
-    <Compile Include="Results\MissingAnnotationInspectionResult.cs" />
-    <Compile Include="Results\MissingAttributeInspectionResult.cs" />
     <Compile Include="Results\ModuleScopeDimKeywordInspectionResult.cs" />
     <Compile Include="Results\MoveFieldCloserToUsageInspectionResult.cs" />
     <Compile Include="Results\MultilineParameterInspectionResult.cs" />
     <Compile Include="Results\MultipleDeclarationsInspectionResult.cs" />
+    <Compile Include="Results\MultipleFolderAnnotationsInspectionResult.cs" />
     <Compile Include="Results\NonReturningFunctionInspectionResult.cs" />
     <Compile Include="Results\ObjectVariableNotSetInspectionResult.cs" />
     <Compile Include="Results\ObsoleteCallStatementUsageInspectionResult.cs" />

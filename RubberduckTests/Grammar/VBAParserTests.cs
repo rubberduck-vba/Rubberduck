@@ -837,12 +837,40 @@ End Sub";
         {
             string code = @"
 Sub Test()
-    a:
-    10:
-    15
+a:
+10:
+154
+12 b:
+52'comment
+644 _
+
+71Rem stupid Rem comment
+22 
+
+77 _
+ : 
+42whatever
 End Sub";
             var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//statementLabelDefinition", matches => matches.Count == 3);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//statementLabelDefinition", matches => matches.Count == 10);
+        }
+
+        [TestCategory("Parser")]
+        [TestMethod]
+        public void TestLineLabelStatementWithCodeOnSameLine()
+        {
+            string code = @"
+Sub Test()
+a: foo
+10: bar: foo
+15 bar
+12 b: foo: bar
+77 _
+ : bar
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//statementLabelDefinition", matches => matches.Count == 5);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//callStmt", matches => matches.Count == 7);
         }
 
         [TestCategory("Parser")]
@@ -1669,6 +1697,36 @@ End Sub
 
         [TestCategory("Parser")]
         [TestMethod]
+        public void TestDefaultMemberAccessCallStmtOnFunctionReturnValue_Single()
+        {
+            const string code = @"
+Sub Test()
+    SomeFunction(foo) bar
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//callStmt", matches => matches.Count == 1);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//argumentExpression", matches => matches.Count == 2);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//argumentList", matches => matches.Count == 2);
+        }
+
+        [TestCategory("Parser")]
+        [TestMethod]
+        public void TestDefaultMemberAccessCallStmtOnFunctionReturnValue_Multiple()
+        {
+            const string code = @"
+Sub Test()   
+    SomeFunction(foo, bar) foobar
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//callStmt", matches => matches.Count == 1);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//argumentExpression", matches => matches.Count == 3);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//argumentList", matches => matches.Count == 2);
+        }
+
+        [TestCategory("Parser")]
+        [TestMethod]
         [Ignore] // ref. https://github.com/rubberduck-vba/Rubberduck/issues/2888
         public void TestFunctionArgumentsOnContinuedLine_Multiple()
         {
@@ -1699,6 +1757,40 @@ End Sub
             var parseResult = Parse(code);
             AssertTree(parseResult.Item1, parseResult.Item2, "//letStmt", matches => matches.Count == 1);
             AssertTree(parseResult.Item1, parseResult.Item2, "//argumentExpression", matches => matches.Count == 1);
+        }
+
+        [TestCategory("Parser")]
+        [TestMethod]
+        [Ignore] // ref. https://github.com/rubberduck-vba/Rubberduck/issues/2888
+        public void TestDefaultMemberAccessCallStmtOnFunctionReturnValue_FunctionArgumentsOnContinuedLine_Single()
+        {
+            const string code = @"
+Sub Test() 
+    SomeFunction _
+    (foo) bar
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//callStmt", matches => matches.Count == 1);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//argumentExpression", matches => matches.Count == 2);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//argumentList", matches => matches.Count == 2);
+        }
+
+        [TestCategory("Parser")]
+        [TestMethod]
+        [Ignore] // ref. https://github.com/rubberduck-vba/Rubberduck/issues/2888
+        public void TestDefaultMemberAccessCallStmtOnFunctionReturnValue_FunctionArgumentsOnContinuedLine_Multiple()
+        {
+            const string code = @"
+Sub Test()   
+    SomeFunction _
+    (foo, bar) foobar
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//callStmt", matches => matches.Count == 1);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//argumentExpression", matches => matches.Count == 3);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//argumentList", matches => matches.Count == 2);
         }
 
         [TestCategory("Parser")]

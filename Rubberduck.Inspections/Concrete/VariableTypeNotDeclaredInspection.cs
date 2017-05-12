@@ -18,10 +18,6 @@ namespace Rubberduck.Inspections.Concrete
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
-            var s =
-                State.DeclarationFinder.UserDeclarations(DeclarationType.Variable | DeclarationType.Constant |
-                                                         DeclarationType.Parameter);
-
             var issues = from item in State.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
                          .Union(State.DeclarationFinder.UserDeclarations(DeclarationType.Constant))
                          .Union(State.DeclarationFinder.UserDeclarations(DeclarationType.Parameter))
@@ -30,7 +26,11 @@ namespace Rubberduck.Inspections.Concrete
                          && !IsIgnoringInspectionResultFor(item, AnnotationName)
                          && !item.IsTypeSpecified
                          && !item.IsUndeclared
-                         select new VariableTypeNotDeclaredInspectionResult(this, item);
+                         select new DeclarationInspectionResult(this,
+                                                     string.Format(InspectionsUI.ImplicitVariantDeclarationInspectionResultFormat,
+                                                                   item.DeclarationType,
+                                                                   item.IdentifierName),
+                                                     item);
 
             return issues;
         }

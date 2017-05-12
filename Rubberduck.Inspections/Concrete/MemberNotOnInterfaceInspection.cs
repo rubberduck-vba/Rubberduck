@@ -29,7 +29,9 @@ namespace Rubberduck.Inspections.Concrete
             return from access in unresolved
                    let callingContext = targets.FirstOrDefault(usage => usage.Context.Equals(access.CallingContext))
                    where callingContext != null
-                   select new MemberNotOnInterfaceInspectionResult(this, access, callingContext.Declaration.AsTypeDeclaration);
+                   select new DeclarationInspectionResult(this,
+                                               string.Format(InspectionsUI.MemberNotOnInterfaceInspectionResultFormat, access.IdentifierName, callingContext.Declaration.AsTypeDeclaration.IdentifierName),
+                                               access);
         }
     }
 }

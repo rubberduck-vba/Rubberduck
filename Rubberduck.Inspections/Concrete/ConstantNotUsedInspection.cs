@@ -1,7 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
+using Antlr4.Runtime;
+using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
@@ -25,7 +28,10 @@ namespace Rubberduck.Inspections.Concrete
                 .ToList();
 
             return results.Select(issue => 
-                new IdentifierNotUsedInspectionResult(this, issue, ((dynamic)issue.Context).identifier(), issue.QualifiedName.QualifiedModuleName));
+                new DeclarationInspectionResult(this,
+                                     string.Format(InspectionsUI.IdentifierNotUsedInspectionResultFormat, issue.DeclarationType.ToLocalizedString(), issue.IdentifierName),
+                                     issue,
+                                     new QualifiedContext<ParserRuleContext>(issue.QualifiedName.QualifiedModuleName, ((dynamic)issue.Context).identifier())));
         }
     }
 }

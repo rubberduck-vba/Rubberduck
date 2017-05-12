@@ -23,7 +23,9 @@ namespace Rubberduck.Inspections.Concrete
             var issues = from item in State.DeclarationFinder.UserDeclarations(DeclarationType.Function)
                          where !item.IsTypeSpecified && !IsIgnoringInspectionResultFor(item, AnnotationName)
                          let issue = new {Declaration = item, QualifiedContext = new QualifiedContext<ParserRuleContext>(item.QualifiedName, item.Context)}
-                         select new ImplicitVariantReturnTypeInspectionResult(this, issue.QualifiedContext, item);
+                         select new DeclarationInspectionResult(this,
+                                                     string.Format(InspectionsUI.ImplicitVariantReturnTypeInspectionResultFormat, item.IdentifierName),
+                                                     item);
             return issues;
         }
     }

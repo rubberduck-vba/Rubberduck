@@ -1781,24 +1781,6 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable Auto Save.
-        /// </summary>
-        public static string GeneralSettings_AutoSaveEnabled {
-            get {
-                return ResourceManager.GetString("GeneralSettings_AutoSaveEnabled", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Auto Save:.
-        /// </summary>
-        public static string GeneralSettings_AutoSaveLabel {
-            get {
-                return ResourceManager.GetString("GeneralSettings_AutoSaveLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Check if a newer version is available at startup.
         /// </summary>
         public static string GeneralSettings_CheckVersion {

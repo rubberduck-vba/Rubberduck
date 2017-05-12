@@ -7,6 +7,7 @@
         Byte,
         Decimal,
         Date,
-        String
+        String,
+        Tokens
     }
 }

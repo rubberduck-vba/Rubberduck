@@ -37,9 +37,9 @@ namespace Rubberduck.Inspections.Concrete
             return interfaceMemberIssues.Union(nonInterfaceIssues);
         }
 
-        private IEnumerable<FunctionReturnValueNotUsedInspectionResult> GetInterfaceMemberIssues(IEnumerable<Declaration> interfaceMembers)
+        private IEnumerable<IInspectionResult> GetInterfaceMemberIssues(IEnumerable<Declaration> interfaceMembers)
         {
-            return (from interfaceMember in interfaceMembers
+            return from interfaceMember in interfaceMembers
                    let implementationMembers =
                        UserDeclarations.FindInterfaceImplementationMembers(interfaceMember.IdentifierName).ToList()
                    where interfaceMember.DeclarationType == DeclarationType.Function &&
@@ -52,20 +52,20 @@ namespace Rubberduck.Inspections.Concrete
                                    new QualifiedSelection(implementationMember.QualifiedName.QualifiedModuleName,
                                        implementationMember.Selection), implementationMember))
                    select
-                       new FunctionReturnValueNotUsedInspectionResult((IInspection) this, interfaceMember.Context,
-                           interfaceMember.QualifiedName, interfaceMember)).ToList();
+                       new DeclarationInspectionResult(this,
+                                            string.Format(InspectionsUI.FunctionReturnValueNotUsedInspectionResultFormat, interfaceMember.IdentifierName),
+                                            interfaceMember, properties: new Dictionary<string, string> { { "DisableFixes", nameof(QuickFixes.ConvertToProcedureQuickFix) } });
         }
 
-        private IEnumerable<FunctionReturnValueNotUsedInspectionResult> GetNonInterfaceIssues(IEnumerable<Declaration> nonInterfaceFunctions)
+        private IEnumerable<IInspectionResult> GetNonInterfaceIssues(IEnumerable<Declaration> nonInterfaceFunctions)
         {
             var returnValueNotUsedFunctions = nonInterfaceFunctions.Where(function => function.DeclarationType == DeclarationType.Function && !IsReturnValueUsed(function));
             var nonInterfaceIssues = returnValueNotUsedFunctions
                 .Where(function => !IsRecursive(function))
                 .Select(function =>
-                        new FunctionReturnValueNotUsedInspectionResult(
+                        new DeclarationInspectionResult(
                             this,
-                            function.Context,
-                            function.QualifiedName,
+                            string.Format(InspectionsUI.FunctionReturnValueNotUsedInspectionResultFormat, function.IdentifierName),
                             function));
             return nonInterfaceIssues;
         }

@@ -30,7 +30,8 @@ namespace Rubberduck.Inspections.Concrete
                     && !declaration.References.Any(reference => reference.IsAssignment))
                 .Where(result => !IsIgnoringInspectionResultFor(result, AnnotationName));
 
-            return declarations.Select(issue => new IdentifierNotAssignedInspectionResult(this, issue));
+            return declarations.Select(issue => 
+                new DeclarationInspectionResult(this, string.Format(InspectionsUI.VariableNotAssignedInspectionResultFormat, issue.IdentifierName), issue));
         }
     }
 }

@@ -702,3 +702,16 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>Synchronize attributes/annotations in module</value>
   </data>
 </root>
+  <data name="EmptyIfBlockInspectionMeta" xml:space="preserve">
+    <value>An If block should have executable statements</value>
+  </data>
+  <data name="EmptyIfBlockInspectionName" xml:space="preserve">
+    <value>Empty If block</value>
+  </data>
+  <data name="EmptyIfBlockInspectionResultFormat" xml:space="preserve">
+    <value>If block has no executable statements</value>
+  </data>
+  <data name="RemoveEmptyIfBlockQuickFix" xml:space="preserve">
+    <value>Remove empty If block</value>
+  </data>
+</root>

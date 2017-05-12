@@ -1205,14 +1205,8 @@ Wollen Sie trotzdem fortfahren?</value>
   <data name="GroupingStyle_ByOutcome" xml:space="preserve">
     <value>Nach Ergebnis</value>
   </data>
-  <data name="GeneralSettings_AutoSaveLabel" xml:space="preserve">
-    <value>Autospeicherung:</value>
-  </data>
   <data name="GeneralSettings_HotkeysLabel" xml:space="preserve">
     <value>Tastenkürzel:</value>
-  </data>
-  <data name="GeneralSettings_AutoSaveEnabled" xml:space="preserve">
-    <value>Autospeicherung aktivieren</value>
   </data>
   <data name="Settings" xml:space="preserve">
     <value>Einstellungen</value>

@@ -72,7 +72,7 @@ namespace Rubberduck.API.VBA
             var projectManager = new ProjectManager(_state, _vbe);
             var moduleToModuleReferenceManager = new ModuleToModuleReferenceManager();
             var parserStateManager = new ParserStateManager(_state);
-            var referenceRemover = new ReferenceRemover(_state, moduleToModuleReferenceManager);
+            var referenceRemover = new ReferenceRemover(_state);
             var comSynchronizer = new COMReferenceSynchronizer(_state, parserStateManager);
             var builtInDeclarationLoader = new BuiltInDeclarationLoader(
                 _state,

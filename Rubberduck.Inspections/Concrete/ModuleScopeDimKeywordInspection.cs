@@ -8,7 +8,6 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 
@@ -29,7 +28,10 @@ namespace Rubberduck.Inspections.Concrete
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))
                 .SelectMany(result => result.Context.FindChildren<VBAParser.VariableSubStmtContext>()
                         .Select(r => new QualifiedContext<ParserRuleContext>(result.ModuleName, r)))
-                .Select(result => new ModuleScopeDimKeywordInspectionResult(this, result, GetQualifiedMemberName(result)));
+                .Select(result => new QualifiedContextInspectionResult(this,
+                                                       string.Format(InspectionsUI.ModuleScopeDimKeywordInspectionResultFormat, ((VBAParser.VariableSubStmtContext)result.Context).identifier().GetText()),
+                                                       State,
+                                                       result));
         }
 
         public class ModuleScopedDimListener : VBAParserBaseListener, IInspectionListener

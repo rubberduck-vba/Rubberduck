@@ -184,7 +184,8 @@ End Sub
             var rewriter = parser.State.GetRewriter(target);
             rewriter.Remove(target);
 
-            Assert.AreEqual(expected, rewriter.GetText());
+            var rewrittenCode = rewriter.GetText();
+            Assert.AreEqual(expected, rewrittenCode);
         }
 
         [TestMethod]

@@ -23,7 +23,7 @@ namespace Rubberduck.Inspections.Concrete
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
             var excel = State.DeclarationFinder.Projects.SingleOrDefault(item => !item.IsUserDefined && item.IdentifierName == "Excel");
-            if (excel == null) { return Enumerable.Empty<InspectionResultBase>(); }
+            if (excel == null) { return Enumerable.Empty<IInspectionResult>(); }
 
             var globalModules = new[]
             {
@@ -39,7 +39,10 @@ namespace Rubberduck.Inspections.Concrete
             return members
                 .SelectMany(declaration => declaration.References)
                 .Where(issue => !issue.IsIgnoringInspectionResultFor(AnnotationName))
-                .Select(issue => new ImplicitActiveSheetReferenceInspectionResult(this, issue, GetQualifiedMemberName(issue)))
+                .Select(issue => new IdentifierReferenceInspectionResult(this,
+                                                      string.Format(InspectionsUI.ImplicitActiveSheetReferenceInspectionResultFormat, issue.Declaration.IdentifierName),
+                                                      State,
+                                                      issue))
                 .ToList();
         }
     }

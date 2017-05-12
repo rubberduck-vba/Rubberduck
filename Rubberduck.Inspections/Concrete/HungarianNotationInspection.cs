@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Rubberduck.Inspections.Abstract;
@@ -9,6 +10,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
+using Rubberduck.UI;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -114,7 +116,11 @@ namespace Rubberduck.Inspections.Concrete
                 .Where(declaration => !whitelistedNames.Contains(declaration.IdentifierName) &&
                                       TargetDeclarationTypes.Contains(declaration.DeclarationType) &&
                                       HungarianIdentifierRegex.IsMatch(declaration.IdentifierName))
-                .Select(issue => new IdentifierNameInspectionResult(this, issue));
+                .Select(issue => new DeclarationInspectionResult(this,
+                                                      string.Format(InspectionsUI.IdentifierNameInspectionResultFormat,
+                                                                    RubberduckUI.ResourceManager.GetString("DeclarationType_" + issue.DeclarationType, CultureInfo.CurrentUICulture),
+                                                                    issue.IdentifierName),
+                                                      issue));
 
             return hungarians;
         }

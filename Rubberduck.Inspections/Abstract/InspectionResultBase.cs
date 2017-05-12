@@ -1,7 +1,7 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using Antlr4.Runtime;
 using Rubberduck.Common;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
@@ -13,69 +13,39 @@ namespace Rubberduck.Inspections.Abstract
 {
     public abstract class InspectionResultBase : IInspectionResult, INavigateSource, IExportable
     {
-        protected InspectionResultBase(IInspection inspection, Declaration target)
-            : this(inspection, target.QualifiedName.QualifiedModuleName, target.Context, target)
-        { }
-        
-        protected InspectionResultBase(IInspection inspection, QualifiedModuleName qualifiedName, QualifiedMemberName? qualifiedMemberName, ParserRuleContext context)
+        protected InspectionResultBase(IInspection inspection,
+            string description,
+            QualifiedModuleName qualifiedName,
+            ParserRuleContext context,
+            Declaration target,
+            QualifiedSelection qualifiedSelection,
+            QualifiedMemberName? qualifiedMemberName,
+            Dictionary<string, string> properties)
         {
             Inspection = inspection;
-            QualifiedName = qualifiedName;
-            QualifiedMemberName = qualifiedMemberName;
-            Context = context;
-        }
-        
-        protected InspectionResultBase(IInspection inspection, QualifiedModuleName qualifiedName, ParserRuleContext context, Declaration target)
-        {
-            Inspection = inspection;
+            Description = description.Capitalize();
             QualifiedName = qualifiedName;
             Context = context;
             Target = target;
-
-            QualifiedMemberName = GetQualifiedMemberName(target);
+            QualifiedSelection = qualifiedSelection;
+            QualifiedMemberName = qualifiedMemberName;
+            Properties = properties ?? new Dictionary<string, string>();
         }
 
-        private QualifiedMemberName? GetQualifiedMemberName(Declaration target)
-        {
-            if (string.IsNullOrEmpty(target?.QualifiedName.QualifiedModuleName.ComponentName))
-            {
-                return null;
-            }
-
-            if (target.DeclarationType.HasFlag(DeclarationType.Member))
-            {
-                return target.QualifiedName;
-            }
-
-            return GetQualifiedMemberName(target.ParentDeclaration);
-        }
-        
         public IInspection Inspection { get; }
-
-        public abstract string Description { get; }
-
-        protected QualifiedModuleName QualifiedName { get; }
-
+        public string Description { get; }
+        public QualifiedModuleName QualifiedName { get; }
         public QualifiedMemberName? QualifiedMemberName { get; }
-
         public ParserRuleContext Context { get; }
-
         public Declaration Target { get; }
+        public IDictionary<string, string> Properties { get; }
 
         /// <summary>
         /// Gets the information needed to select the target instruction in the VBE.
         /// </summary>
-        public virtual QualifiedSelection QualifiedSelection
-        {
-            get
-            {
-                return Context == null
-                    ? Target.QualifiedSelection
-                    : new QualifiedSelection(QualifiedName, Context.GetSelection());
-            }
-        }
+        public QualifiedSelection QualifiedSelection { get; }
 
-        public virtual int CompareTo(IInspectionResult other)
+        public int CompareTo(IInspectionResult other)
         {
             return Inspection.CompareTo(other.Inspection);
         }
@@ -108,9 +78,13 @@ namespace Rubberduck.Inspections.Abstract
                 QualifiedSelection.Selection.StartLine);
         }
 
-        public virtual NavigateCodeEventArgs GetNavigationArgs()
+        private NavigateCodeEventArgs _navigationArgs;
+        public NavigateCodeEventArgs GetNavigationArgs()
         {
-            return new NavigateCodeEventArgs(QualifiedSelection);
+            if (_navigationArgs != null) { return _navigationArgs; }
+
+            _navigationArgs = new NavigateCodeEventArgs(QualifiedSelection);
+            return _navigationArgs;
         }
 
         public int CompareTo(object obj)

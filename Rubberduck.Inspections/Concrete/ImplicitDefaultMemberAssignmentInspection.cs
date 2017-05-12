@@ -30,7 +30,12 @@ namespace Rubberduck.Inspections.Concrete
                     return reference.IsAssignment && letStmtContext != null && letStmtContext.LET() == null;
                 });
 
-            return interestingReferences.Select(reference => new ImplicitDefaultMemberAssignmentInspectionResult(this, reference, GetQualifiedMemberName(reference)));
+            return interestingReferences.Select(reference => new IdentifierReferenceInspectionResult(this,
+                                                                                  string.Format(InspectionsUI.ImplicitDefaultMemberAssignmentInspectionResultFormat,
+                                                                                                reference.Declaration.IdentifierName,
+                                                                                                reference.Declaration.AsTypeDeclaration.IdentifierName),
+                                                                                  State,
+                                                                                  reference));
         }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;

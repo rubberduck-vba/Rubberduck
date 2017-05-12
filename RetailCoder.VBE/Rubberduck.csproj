@@ -294,7 +294,6 @@
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xaml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Xml" />
@@ -320,7 +319,6 @@
     <Compile Include="API\VBA\IdentifierReference.cs" />
     <Compile Include="API\VBA\ParserState.cs" />
     <Compile Include="AppMenu.cs" />
-    <Compile Include="AutoSave\AutoSave.cs" />
     <Compile Include="Common\ApplicationConstants.cs" />
     <Compile Include="Common\ExportFormatter.cs" />
     <Compile Include="Common\ClipboardWriter.cs" />
@@ -419,6 +417,9 @@
     <Compile Include="UI\Command\IndentCurrentProjectCommand.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\ContextDescriptionLabelMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\IndentCurrentProjectCommandMenuItem.cs" />
+    <Compile Include="UI\Controls\SelectableTreeView.xaml.cs">
+      <DependentUpon>SelectableTreeView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\EnvironmentProvider.cs" />
     <Compile Include="UI\Inspections\AggregateInspectionResult.cs" />
     <Compile Include="UI\ModernFolderBrowser.cs" />
@@ -910,7 +911,6 @@
     <Compile Include="UI\ToDoItems\ToDoExplorerDockablePresenter.cs" />
     <Compile Include="UI\ToDoItems\ToDoExplorerViewModel.cs" />
     <Compile Include="UI\ToDoItems\ToDoItemClickEventArgs.cs" />
-    <Compile Include="UI\Controls\BindableSelectedItemBehavior.cs" />
     <Compile Include="UI\UnitTesting\TestExplorerControl.xaml.cs">
       <DependentUpon>TestExplorerControl.xaml</DependentUpon>
     </Compile>
@@ -1378,6 +1378,10 @@
     <Page Include="UI\CodeExplorer\CodeExplorerControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Controls\SelectableTreeView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Inspections\InspectionResultsControl.xaml">
       <SubType>Designer</SubType>

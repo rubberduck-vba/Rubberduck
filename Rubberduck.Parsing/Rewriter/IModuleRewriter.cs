@@ -40,6 +40,13 @@ namespace Rubberduck.Parsing.Rewriter
         void Remove(ITerminalNode target);
 
         /// <summary>
+        /// Removes all tokens from the start of the first node to the end of the second node.
+        /// </summary>
+        /// <param name="start">The start index to remove.</param>
+        /// <param name="stop">The end index to remove.</param>
+        void RemoveRange(int start, int stop);
+
+        /// <summary>
         /// Replaces all tokens for specified <see cref="Declaration"/> with specified content. Use <see cref="Rewrite"/> method to apply changes.
         /// </summary>
         /// <param name="target">The <see cref="Declaration"/> to replace.</param>

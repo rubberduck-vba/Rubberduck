@@ -79,7 +79,7 @@ namespace Rubberduck.UI.Command
             var assertType = string.Format("Rubberduck.{0}AssertClass", settings.AssertMode == AssertMode.StrictAssert ? string.Empty : "Permissive");
             var assertDeclaredAs = DeclarationFormatFor(AssertFieldDeclarationFormat, assertType, settings);
 
-            var fakesType = "Rubberduck.IFake";
+            var fakesType = "Rubberduck.FakesProvider";
             var fakesDeclaredAs = DeclarationFormatFor(FakesFieldDeclarationFormat, fakesType, settings); 
 
             var formattedModuleTemplate = string.Format(TestModuleEmptyTemplate, assertDeclaredAs, fakesDeclaredAs);
