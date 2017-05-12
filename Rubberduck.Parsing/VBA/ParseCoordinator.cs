@@ -281,7 +281,6 @@ namespace Rubberduck.Parsing.VBA
         private void PerformPreParseCleanup(IReadOnlyCollection<QualifiedModuleName> toParse, CancellationToken token)
         {
             _referenceRemover.RemoveReferencesBy(toParse, token);
-            _moduleToModuleReferenceManager.ClearModuleToModuleReferencesFromModule(toParse);
         }
 
         private void RefreshDeclarationFinder()
