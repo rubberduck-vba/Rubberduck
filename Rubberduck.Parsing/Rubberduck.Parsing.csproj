@@ -175,15 +175,6 @@
     <Compile Include="Rewriter\RewriterInfo\RewriterInfo.cs" />
     <Compile Include="Rewriter\RewriterInfo\RewriterInfoFinderBase.cs" />
     <Compile Include="Rewriter\RewriterInfo\VariableRewriterInfoFinder.cs" />
-    <Compile Include="PostProcessing\RewriterInfo\ConstantRewriterInfoFinder.cs" />
-    <Compile Include="PostProcessing\RewriterInfo\DefaultRewriterInfoFinder.cs" />
-    <Compile Include="PostProcessing\RewriterInfo\IRewriterInfoFinder.cs" />
-    <Compile Include="PostProcessing\ModuleRewriter.cs" />
-    <Compile Include="PostProcessing\RewriterInfo\ArgumentRewriterInfoFinder.cs" />
-    <Compile Include="PostProcessing\RewriterInfo\ParameterRewriterInfoFinder.cs" />
-    <Compile Include="PostProcessing\RewriterInfo\RewriterInfo.cs" />
-    <Compile Include="PostProcessing\RewriterInfo\RewriterInfoFinderBase.cs" />
-    <Compile Include="PostProcessing\RewriterInfo\VariableRewriterInfoFinder.cs" />
     <Compile Include="PreProcessing\ConditionalCompilationIfExpression.cs" />
     <Compile Include="PreProcessing\ConditionalCompilationConstantExpression.cs" />
     <Compile Include="PreProcessing\IVBAPreprocessor.cs" />
@@ -204,7 +195,6 @@
     <Compile Include="ComReflection\ComModule.cs" />
     <Compile Include="ComReflection\ComProject.cs" />
     <Compile Include="Rewriter\IModuleRewriter.cs" />
-    <Compile Include="PostProcessing\IModuleRewriter.cs" />
     <Compile Include="PreProcessing\VBAPreprocessorVisitor.cs" />
     <Compile Include="SymbolList.cs" />
     <Compile Include="Symbols\AliasDeclaration.cs" />
