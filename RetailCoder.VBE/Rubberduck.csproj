@@ -643,7 +643,7 @@
     <Compile Include="UI\Command\MenuItems\RunAllTestsCommandMenuItem.cs" />
     <Compile Include="UI\Command\InspectionResultsCommand.cs" />
     <Compile Include="UI\Command\SourceControlCommand.cs" />
-    <Compile Include="UI\Command\MenuItems\ShowSourceControlPanelCommandMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\SourceControlCommandMenuItem.cs" />
     <Compile Include="UI\Command\TestExplorerCommand.cs" />
     <Compile Include="UI\Command\MenuItems\TestExplorerCommandMenuItem.cs" />
     <Compile Include="UI\Command\ToDoExplorerCommand.cs" />
