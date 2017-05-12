@@ -64,8 +64,7 @@ namespace Rubberduck.Parsing.VBA
             // line numbers are offset due to module header and attributes
             // (these don't show up in the VBE, that's why we're parsing an exported file)
 
-            ITokenStream tokenStream;
-            new VBAModuleParser().Parse(component.Name, tokens, new IParseTreeListener[] { listener }, new ExceptionErrorListener(), out tokenStream);
+            new VBAModuleParser().Parse(component.Name, tokens, new IParseTreeListener[] { listener }, new ExceptionErrorListener(), out stream);
             return listener.Attributes;
         }
 
