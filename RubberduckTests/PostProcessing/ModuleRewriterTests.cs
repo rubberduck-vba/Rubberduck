@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Antlr4.Runtime;
@@ -26,7 +27,12 @@ namespace RubberduckTests.PostProcessing
             var rewriter = new TokenStreamRewriter(new CommonTokenStream(new ListTokenSource(new List<IToken>())));
             var sut = new ModuleRewriter(module.Object, rewriter);
 
+            if (!sut.IsDirty)
+            {
+                sut.InsertBefore(0, "foo");
+            }
             sut.Rewrite();
+
             module.Verify(m => m.Clear());
         }
 

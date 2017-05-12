@@ -12,10 +12,11 @@ namespace Rubberduck.Parsing.Annotations
         public DescriptionAnnotation(QualifiedSelection qualifiedSelection, IEnumerable<string> parameters)
             : base(AnnotationType.Description, qualifiedSelection)
         {
-            Description = parameters.FirstOrDefault();
+            Description = parameters?.FirstOrDefault();
             if ((Description?.StartsWith("\"") ?? false) && Description.EndsWith("\""))
             {
-                
+                // strip surrounding double quotes
+                Description = Description.Substring(1, Description.Length - 2);
             }
         }
 

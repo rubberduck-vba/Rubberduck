@@ -78,14 +78,14 @@ End Sub";
         public void InspectionType()
         {
             var inspection = new IllegalAnnotationInspection(null);
-            Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
+            Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
         }
 
         [TestMethod]
         [TestCategory("Inspections")]
         public void InspectionName()
         {
-            const string inspectionName = "MultipleFolderAnnotationsInspection";
+            const string inspectionName = "IllegalAnnotationInspection";
             var inspection = new IllegalAnnotationInspection(null);
 
             Assert.AreEqual(inspectionName, inspection.Name);

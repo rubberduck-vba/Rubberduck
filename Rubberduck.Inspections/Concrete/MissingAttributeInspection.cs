@@ -28,28 +28,21 @@ namespace Rubberduck.Inspections.Concrete
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
-            return Listener.Contexts.Select(context => new MissingAttributeInspectionResult(this, context, context.MemberName));
+            return Listener.Contexts.Select(context =>
+            {
+                var name = string.Format(InspectionsUI.MissingAttributeInspectionResultFormat, context.MemberName,
+                    ((VBAParser.AnnotationContext) context.Context).annotationName().GetText());
+                return new QualifiedContextInspectionResult(this, name, State, context);
+            });
         }
 
         public class MissingMemberAttributeListener : VBAParserBaseListener, IInspectionListener
         {
             private readonly DeclarationFinder _finder;
-            private readonly IDictionary<AnnotationType, string> _attributeNames;
 
             public MissingMemberAttributeListener(DeclarationFinder finder)
             {
                 _finder = finder;
-
-                _attributeNames = typeof(AnnotationType).GetFields()
-                    .Where(field => field.GetCustomAttributes(typeof (AttributeAnnotationAttribute), true).Any())
-                    .Select(a => new
-                    {
-                        Key = (AnnotationType) Enum.Parse(typeof (AnnotationType), a.Name),
-                        Attribute = a.GetCustomAttributes(typeof (AttributeAnnotationAttribute), true)
-                            .Cast<AttributeAnnotationAttribute>()
-                            .SingleOrDefault()
-                    })
-                    .ToDictionary(a => a.Key, a => a.Attribute.AttributeName);
             }
 
             private readonly List<QualifiedContext<ParserRuleContext>> _contexts =

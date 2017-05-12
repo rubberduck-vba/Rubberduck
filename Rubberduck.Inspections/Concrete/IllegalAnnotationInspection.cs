@@ -28,7 +28,10 @@ namespace Rubberduck.Inspections.Concrete
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
-            return Listener.Contexts.Select(context => new IllegalAnnotationInspectionResult(this, context, context.MemberName));
+            return Listener.Contexts.Select(context => 
+                new QualifiedContextInspectionResult(this, 
+                string.Format(InspectionsUI.IllegalAnnotationInspectionResultFormat, ((VBAParser.AnnotationContext)context.Context).annotationName().GetText()), 
+                State, context));
         }
 
         public class IllegalAttributeAnnotationsListener : VBAParserBaseListener, IInspectionListener

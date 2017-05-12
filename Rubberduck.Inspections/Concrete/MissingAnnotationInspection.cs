@@ -29,7 +29,14 @@ namespace Rubberduck.Inspections.Concrete
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
-            return Listener.Contexts.Select(context => new MissingAnnotationInspectionResult(this, context, context.MemberName));
+            return Listener.Contexts.Select(context =>
+            {
+                var name = string.Format(InspectionsUI.MissingAnnotationInspectionResultFormat, 
+                    context.MemberName,
+                    ((VBAParser.AnnotationContext) context.Context).annotationName().GetText());
+
+                return new QualifiedContextInspectionResult(this, name, State, context);
+            });
         }
 
         public class MissingAnnotationListener : VBAParserBaseListener, IInspectionListener
