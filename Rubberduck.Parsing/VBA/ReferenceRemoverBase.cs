@@ -9,16 +9,23 @@ namespace Rubberduck.Parsing.VBA
     public abstract class ReferenceRemoverBase : IReferenceRemover
     {
         private readonly RubberduckParserState _state;
+        private readonly IModuleToModuleReferenceManager _moduleToModuleReferenceManager;
 
         public ReferenceRemoverBase(
-            RubberduckParserState state)
+            RubberduckParserState state,
+            IModuleToModuleReferenceManager moduleToModuleReferenceManager)
         {
             if (state == null)
             {
                 throw new ArgumentNullException(nameof(state));
             }
+            if (moduleToModuleReferenceManager == null)
+            {
+                throw new ArgumentNullException(nameof(moduleToModuleReferenceManager));
+            }
 
             _state = state;
+            _moduleToModuleReferenceManager = moduleToModuleReferenceManager;
         }
 
 
@@ -32,7 +39,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 return;
             }
-            var modulesNeedingReferenceRemoval = _state.DeclarationFinder.AllModules();
+            var modulesNeedingReferenceRemoval = _moduleToModuleReferenceManager.ModulesReferencedByAny(modules);
             RemoveReferencesByFromTargetModules(modules, modulesNeedingReferenceRemoval, token);
         }
 

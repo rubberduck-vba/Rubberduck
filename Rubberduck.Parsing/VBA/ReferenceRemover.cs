@@ -11,9 +11,11 @@ namespace Rubberduck.Parsing.VBA
         private const int _maxDegreeOfReferenceRemovalParallelism = -1;
 
         public ReferenceRemover(
-            RubberduckParserState state) 
+            RubberduckParserState state,
+            IModuleToModuleReferenceManager moduleToModuleReferenceManager) 
         :base(
-            state)
+            state,
+            moduleToModuleReferenceManager)
         {}
 
 

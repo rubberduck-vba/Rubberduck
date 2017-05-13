@@ -8,9 +8,10 @@ namespace Rubberduck.Parsing.VBA
     {
         public SynchronousReferenceRemover(
             RubberduckParserState state,
-            IModuleToModuleReferenceManager moduleToModuleReferenceManager) 
+            IModuleToModuleReferenceManager moduleToModuleReferenceManager)
         :base(
-            state)
+            state,
+            moduleToModuleReferenceManager)
         { }
 
 
