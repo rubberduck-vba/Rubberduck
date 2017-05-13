@@ -46,8 +46,6 @@ namespace Rubberduck.Inspections.Concrete
             private readonly Lazy<Declaration> _module;
             private readonly Lazy<IDictionary<string, Declaration>> _members;
 
-            private readonly HashSet<string> _attributeNames;
-
             public MissingAnnotationListener(RubberduckParserState state)
             {
                 _state = state;
@@ -60,12 +58,6 @@ namespace Rubberduck.Inspections.Concrete
                 _members = new Lazy<IDictionary<string, Declaration>>(() => _state.DeclarationFinder
                     .Members(CurrentModuleName)
                     .ToDictionary(m => m.IdentifierName, m => m));
-
-                _attributeNames = new HashSet<string>(typeof(AnnotationType).GetFields()
-                    .Where(field => field.GetCustomAttributes(typeof(AttributeAnnotationAttribute), true).Any())
-                    .SelectMany(a => a.GetCustomAttributes(typeof(AttributeAnnotationAttribute), true)
-                        .Cast<AttributeAnnotationAttribute>())
-                    .Select(a => a.AttributeName));
             }
 
             private readonly List<QualifiedContext<ParserRuleContext>> _contexts =
