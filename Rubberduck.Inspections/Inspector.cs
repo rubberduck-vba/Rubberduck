@@ -106,7 +106,7 @@ namespace Rubberduck.Inspections
             private void WalkTrees(CodeInspectionSettings settings, RubberduckParserState state, IEnumerable<IParseTreeInspection> inspections)
             {
                 var listeners =
-                    inspections.Where(i => i.Severity != CodeInspectionSeverity.DoNotShow && !IsDisabled(settings, i))
+                    inspections.Where(i => i.Pass == ParsePass.CodePanePass && i.Severity != CodeInspectionSeverity.DoNotShow && !IsDisabled(settings, i))
                         .Select(inspection =>
                         {
                             inspection.Listener.ClearContexts();
