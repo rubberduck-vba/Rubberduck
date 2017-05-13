@@ -14,15 +14,14 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    public sealed class MultilineParameterInspection : InspectionBase, IParseTreeInspection
+    public sealed class MultilineParameterInspection : ParseTreeInspectionBase
     {
         public MultilineParameterInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Suggestion) { }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
-        public IInspectionListener Listener { get; } =
-            new ParameterListener();
+        public override IInspectionListener Listener => new ParameterListener();
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {

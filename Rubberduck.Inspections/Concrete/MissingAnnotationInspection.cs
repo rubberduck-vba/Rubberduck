@@ -16,16 +16,16 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    public sealed class MissingAnnotationInspection : InspectionBase, IParseTreeInspection
+    public sealed class MissingAnnotationInspection : ParseTreeInspectionBase
     {
         public MissingAnnotationInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Hint)
         {
-            Listener = new MissingAnnotationListener(State);
         }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
-        public IInspectionListener Listener { get; }
+        public override IInspectionListener Listener => new MissingAnnotationListener(State);
+        public override ParsePass Pass => ParsePass.AttributesPass;
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {

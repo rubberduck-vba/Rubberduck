@@ -15,7 +15,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    public sealed class IllegalAnnotationInspection : InspectionBase, IParseTreeInspection
+    public sealed class IllegalAnnotationInspection : ParseTreeInspectionBase
     {
         public IllegalAnnotationInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Warning)
@@ -24,7 +24,7 @@ namespace Rubberduck.Inspections.Concrete
         }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
-        public IInspectionListener Listener { get; }
+        public override IInspectionListener Listener { get; }
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {

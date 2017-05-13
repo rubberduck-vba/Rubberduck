@@ -5,7 +5,6 @@ using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
-using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -15,7 +14,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    public sealed class MissingAttributeInspection : InspectionBase, IParseTreeInspection
+    public sealed class MissingAttributeInspection : ParseTreeInspectionBase
     {
         public MissingAttributeInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Error)
@@ -24,7 +23,7 @@ namespace Rubberduck.Inspections.Concrete
         }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
-        public IInspectionListener Listener { get; }
+        public override IInspectionListener Listener { get; }
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {

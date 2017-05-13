@@ -15,7 +15,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    public sealed class ProcedureCanBeWrittenAsFunctionInspection : InspectionBase, IParseTreeInspection
+    public sealed class ProcedureCanBeWrittenAsFunctionInspection : ParseTreeInspectionBase
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -23,9 +23,7 @@ namespace Rubberduck.Inspections.Concrete
             : base(state, CodeInspectionSeverity.Suggestion) { }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
-
-        public IInspectionListener Listener { get; } =
-            new SingleByRefParamArgListListener();
+        public override IInspectionListener Listener => new SingleByRefParamArgListListener();
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {

@@ -12,7 +12,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    public sealed class OptionBaseZeroInspection : InspectionBase, IParseTreeInspection
+    public sealed class OptionBaseZeroInspection : ParseTreeInspectionBase
     {
         public OptionBaseZeroInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Hint) { }
@@ -21,8 +21,7 @@ namespace Rubberduck.Inspections.Concrete
         public override string Description => InspectionsUI.OptionBaseZeroInspectionName;
         public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
-        public IInspectionListener Listener { get; } =
-            new OptionBaseStatementListener();
+        public override IInspectionListener Listener => new OptionBaseStatementListener();
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
