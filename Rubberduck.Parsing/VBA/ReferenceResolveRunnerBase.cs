@@ -92,9 +92,9 @@ namespace Rubberduck.Parsing.VBA
 
         private void PerformPreResolveCleanup(IReadOnlyCollection<QualifiedModuleName> toResolve, CancellationToken token)
         {
+            _referenceRemover.RemoveReferencesBy(toResolve, token);
             _moduleToModuleReferenceManager.ClearModuleToModuleReferencesFromModule(toResolve);
             _moduleToModuleReferenceManager.ClearModuleToModuleReferencesToModule(toResolve);
-            _referenceRemover.RemoveReferencesBy(toResolve, token);
         }
 
         private void ExecuteCompilationPasses()
