@@ -143,46 +143,18 @@ namespace Rubberduck.Inspections.Concrete
                 SetCurrentScope(context, Identifier.GetName(context.subroutineName()));
             }
             #endregion
-
             
-
             public override void ExitAttributeStmt(VBAParser.AttributeStmtContext context)
             {
                 Debug.Assert(_currentScopeDeclaration != null);
                 var annotations = _currentScopeDeclaration.Annotations;
-                var isModule = _currentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Module);
-                var isMember = _currentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member);
 
-                
-
-                if(isModule)
+                var type = context.AnnotationType();
+                if (type != null && annotations.All(a => a.AnnotationType != type))
                 {
-
-                }
-                else if (isMember)
-                {
-                    
-                }
-
-                if(!_hasMembers)
-                {
-                    // module attribute
-                    _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
-                    return;
-                }
-
-                var name = context.attributeName().GetText();
-                var value = context.attributeValue();
-                if(!_currentScope.Annotations.Any(a => a.AnnotationType.HasFlag(AnnotationType.Attribute)
-                                                       && _attributeNames.Select(n => $"{_currentScopeDeclaration.IdentifierName}.{n}")
-                                                                         .All(n => n != name)))
-                {
-
-                    // current scope is POSSIBLY missing an annotation for this attribute... todo: verify the value too
+                    // attribute is mapped to an annotation, but current scope doesn't have that annotation:
                     _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
                 }
-
-                base.ExitAttributeStmt(context);
             }
         }
     }

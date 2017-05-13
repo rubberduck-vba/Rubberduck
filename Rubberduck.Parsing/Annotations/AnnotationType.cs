@@ -35,24 +35,31 @@ namespace Rubberduck.Parsing.Annotations
         Interface = 1 << 19 | ModuleAnnotation,
         [AttributeAnnotation("VB_Description")]
         Description = 1 << 13 | Attribute | MemberAnnotation,
-        [AttributeAnnotation("VB_UserMemId")]
+        [AttributeAnnotation("VB_UserMemId", "0")]
         DefaultMember = 1 << 14 | Attribute | ModuleAnnotation,
-        [AttributeAnnotation("VB_UserMemId")]
+        [AttributeAnnotation("VB_UserMemId", "-4")]
         Enumerator = 1 << 15 | Attribute | MemberAnnotation,
-        [AttributeAnnotation("VB_PredeclaredId")]
+        [AttributeAnnotation("VB_PredeclaredId", "True")]
         PredeclaredId = 1 << 16 | Attribute | ModuleAnnotation,
-        [AttributeAnnotation("VB_Exposed")]
+        [AttributeAnnotation("VB_Exposed", "True")]
         Exposed = 1 << 17 | Attribute | ModuleAnnotation,
     }
 
     [AttributeUsage(AttributeTargets.Field)]
     public class AttributeAnnotationAttribute : Attribute
     {
-        public AttributeAnnotationAttribute(string name)
+        /// <summary>
+        /// Enum value is associated with a VB_Attribute.
+        /// </summary>
+        /// <param name="name">The name of the associated attribute.</param>
+        /// <param name="value">If specified, contrains the association to a specific value.</param>
+        public AttributeAnnotationAttribute(string name, string value = null)
         {
             AttributeName = name;
+            AttributeValue = value; // null default is assumed in AttributeExtensions.AnnotationType()
         }
 
         public string AttributeName { get; }
+        public string AttributeValue { get; }
     }
 }

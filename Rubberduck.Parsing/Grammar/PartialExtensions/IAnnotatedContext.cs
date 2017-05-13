@@ -3,6 +3,7 @@ using Antlr4.Runtime;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.VBA;
 
+// ReSharper disable once CheckNamespace
 namespace Rubberduck.Parsing.Grammar
 {
     public interface IAnnotatedContext

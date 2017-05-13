@@ -62,6 +62,7 @@
     <Compile Include="Annotations\AnnotationListener.cs" />
     <Compile Include="Annotations\AnnotationService.cs" />
     <Compile Include="Annotations\AnnotationType.cs" />
+    <Compile Include="Annotations\AttributeExtensions.cs" />
     <Compile Include="Annotations\DefaultMemberAnnotation.cs" />
     <Compile Include="Annotations\DescriptionAnnotation.cs" />
     <Compile Include="Annotations\EnumeratorMemberAnnotation.cs" />
@@ -130,14 +131,14 @@
     <Compile Include="ComReflection\ComVariant.cs" />
     <Compile Include="Emitter.cs" />
     <Compile Include="Grammar\Annotations.cs" />
-    <Compile Include="Grammar\IIdentifierContext.cs" />
-    <Compile Include="Grammar\IAnnotatedContext.cs" />
+    <Compile Include="Grammar\PartialExtensions\IIdentifierContext.cs" />
+    <Compile Include="Grammar\PartialExtensions\IAnnotatedContext.cs" />
     <Compile Include="Grammar\Tokens.cs" />
     <Compile Include="Grammar\VBALexer.cs" />
     <Compile Include="Grammar\VBAParser.cs" />
     <Compile Include="Grammar\VBAParserBaseListener.cs" />
     <Compile Include="Grammar\VBAParserBaseVisitor.cs" />
-    <Compile Include="Grammar\VBAParserInterfaces.cs" />
+    <Compile Include="Grammar\PartialExtensions\VBAParserInterfaces.cs" />
     <Compile Include="Grammar\VBAParserListener.cs" />
     <Compile Include="Grammar\VBAParserVisitor.cs" />
     <Compile Include="Inspections\Abstract\IInpsectionListener.cs" />

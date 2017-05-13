@@ -6,6 +6,7 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
+// ReSharper disable once CheckNamespace; namespace MUST be the same as Antlr-generated VBAParser types.
 namespace Rubberduck.Parsing.Grammar
 {
     public partial class VBAParser
@@ -18,7 +19,7 @@ namespace Rubberduck.Parsing.Grammar
                 Identifier.GetName(this.annotationName().unrestrictedIdentifier()));
         }
 
-        public partial class ModuleAttributesContext : IAnnotatedContext
+        public partial class ModuleAttributesContext : IAnnotatedContext // holds module-scoped annotations
         {
             #region IAnnotatedContext
             public Attributes Attributes { get; } = new Attributes();
