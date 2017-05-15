@@ -445,8 +445,8 @@ modeSpecifier :	(MID | MIDB) DOLLAR? ;
 integerExpression : expression;
 
 callStmt :
-    CALL whiteSpace expression
-    | expression (whiteSpace argumentList)?
+    CALL whiteSpace lExpression
+    | lExpression (whiteSpace argumentList)?
 ;
 
 resumeStmt : RESUME (whiteSpace (NEXT | expression))?;

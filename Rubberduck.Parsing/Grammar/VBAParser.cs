@@ -10067,8 +10067,8 @@ public partial class VBAParser : Parser {
 		public WhiteSpaceContext whiteSpace() {
 			return GetRuleContext<WhiteSpaceContext>(0);
 		}
-		public ExpressionContext expression() {
-			return GetRuleContext<ExpressionContext>(0);
+		public LExpressionContext lExpression() {
+			return GetRuleContext<LExpressionContext>(0);
 		}
 		public ArgumentListContext argumentList() {
 			return GetRuleContext<ArgumentListContext>(0);
@@ -10105,7 +10105,7 @@ public partial class VBAParser : Parser {
 				{
 				State = 1796; Match(CALL);
 				State = 1797; whiteSpace();
-				State = 1798; expression(0);
+				State = 1798; lExpression(0);
 				}
 				break;
 			case ABS:
@@ -10144,7 +10144,6 @@ public partial class VBAParser : Parser {
 			case UBOUND:
 			case EXCLAMATIONPOINT:
 			case DOT:
-			case HASH:
 			case ACCESS:
 			case ADDRESSOF:
 			case ALIAS:
@@ -10162,7 +10161,6 @@ public partial class VBAParser : Parser {
 			case DATABASE:
 			case DATE:
 			case DOUBLE:
-			case EMPTY:
 			case END:
 			case EQV:
 			case ERROR:
@@ -10225,21 +10223,11 @@ public partial class VBAParser : Parser {
 			case WITHEVENTS:
 			case WRITE:
 			case XOR:
-			case LPAREN:
-			case MINUS:
 			case L_SQUARE_BRACKET:
-			case STRINGLITERAL:
-			case OCTLITERAL:
-			case HEXLITERAL:
-			case FLOATLITERAL:
-			case INTEGERLITERAL:
-			case DATELITERAL:
-			case WS:
 			case IDENTIFIER:
-			case LINE_CONTINUATION:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 1800; expression(0);
+				State = 1800; lExpression(0);
 				State = 1804;
 				switch ( Interpreter.AdaptivePredict(_input,226,_ctx) ) {
 				case 1:
@@ -20454,8 +20442,8 @@ public partial class VBAParser : Parser {
 		"\x5\x17C\xBF\x2\x6FF\xF9\x3\x2\x2\x2\x700\x702\t\r\x2\x2\x701\x703\a\x31"+
 		"\x2\x2\x702\x701\x3\x2\x2\x2\x702\x703\x3\x2\x2\x2\x703\xFB\x3\x2\x2\x2"+
 		"\x704\x705\x5\x17C\xBF\x2\x705\xFD\x3\x2\x2\x2\x706\x707\a@\x2\x2\x707"+
-		"\x708\x5\x1BC\xDF\x2\x708\x709\x5\x17C\xBF\x2\x709\x711\x3\x2\x2\x2\x70A"+
-		"\x70E\x5\x17C\xBF\x2\x70B\x70C\x5\x1BC\xDF\x2\x70C\x70D\x5\x18C\xC7\x2"+
+		"\x708\x5\x1BC\xDF\x2\x708\x709\x5\x188\xC5\x2\x709\x711\x3\x2\x2\x2\x70A"+
+		"\x70E\x5\x188\xC5\x2\x70B\x70C\x5\x1BC\xDF\x2\x70C\x70D\x5\x18C\xC7\x2"+
 		"\x70D\x70F\x3\x2\x2\x2\x70E\x70B\x3\x2\x2\x2\x70E\x70F\x3\x2\x2\x2\x70F"+
 		"\x711\x3\x2\x2\x2\x710\x706\x3\x2\x2\x2\x710\x70A\x3\x2\x2\x2\x711\xFF"+
 		"\x3\x2\x2\x2\x712\x718\a\xAF\x2\x2\x713\x716\x5\x1BC\xDF\x2\x714\x717"+
