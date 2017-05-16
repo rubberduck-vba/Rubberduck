@@ -626,7 +626,7 @@ lExpression :
     | identifier                                                                                                    # simpleNameExpr
     | DOT mandatoryLineContinuation? unrestrictedIdentifier                                                         # withMemberAccessExpr
     | EXCLAMATIONPOINT mandatoryLineContinuation? unrestrictedIdentifier                                            # withDictionaryAccessExpr
-	| lExpression whiteSpace LPAREN whiteSpace? argumentList? whiteSpace? RPAREN									# whitespaceIndexExpr
+	| lExpression mandatoryLineContinuation whiteSpace? LPAREN whiteSpace? argumentList? whiteSpace? RPAREN			# whitespaceIndexExpr
 ;
 
 // 3.3.5.3 Special Identifier Forms
