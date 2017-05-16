@@ -167,6 +167,14 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitModuleDeclarations([NotNull] VBAParser.ModuleDeclarationsContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by the <c>whitespaceIndexExpr</c>
+	/// labeled alternative in <see cref="VBAParser.lExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitWhitespaceIndexExpr([NotNull] VBAParser.WhitespaceIndexExprContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by the <c>indexExpr</c>
 	/// labeled alternative in <see cref="VBAParser.lExpression"/>.
 	/// </summary>
