@@ -13,6 +13,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Threading;
 using Antlr4.Runtime;
+using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -38,7 +39,8 @@ namespace RubberduckTests.Mocks
         {
             var attributeParser = new Mock<IAttributeParser>();
             ITokenStream stream;
-            attributeParser.Setup(m => m.Parse(It.IsAny<IVBComponent>(), It.IsAny<CancellationToken>(), out stream))
+            IParseTree tree;
+            attributeParser.Setup(m => m.Parse(It.IsAny<IVBComponent>(), It.IsAny<CancellationToken>(), out stream, out tree))
                            .Returns(() => new Dictionary<Tuple<string, DeclarationType>, Attributes>());
             var exporter = new Mock<IModuleExporter>().Object;
             return Create(vbe, state, attributeParser.Object, exporter, serializedDeclarationsPath);

@@ -160,6 +160,7 @@ namespace Rubberduck.Parsing.Symbols
                 }
 
                 annotations.Add(annotation);
+
             }
 
             return annotations;

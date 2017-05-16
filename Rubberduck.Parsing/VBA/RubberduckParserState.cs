@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Antlr4.Runtime;
@@ -11,6 +12,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Annotations;
 using NLog;
+using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.Events;
@@ -326,7 +328,7 @@ namespace Rubberduck.Parsing.VBA
             HandleStateChanged(state);
 
             Logger.Info($"{nameof(RubberduckParserState)} ({_stateChangedInvocations}) is invoking {nameof(StateChanged)} ({Status})");
-            StateChanged?.Invoke(requestor, new ParserStateEventArgs(state));
+             StateChanged?.Invoke(requestor, new ParserStateEventArgs(state));
         }
         public event EventHandler<ParseProgressEventArgs> ModuleStateChanged;
 
@@ -620,7 +622,7 @@ namespace Rubberduck.Parsing.VBA
                 return result.Annotations;
             }
 
-            return new List<IAnnotation>();
+            return Enumerable.Empty<IAnnotation>();
         }
 
         public void SetModuleAnnotations(QualifiedModuleName module, IEnumerable<IAnnotation> annotations)
@@ -636,13 +638,8 @@ namespace Rubberduck.Parsing.VBA
             get
             {
                 var declarations = new List<Declaration>();
-                foreach (var state in _moduleStates.Values)
+                foreach (var state in _moduleStates.Values.Where(state => state.Declarations != null))
                 {
-                    if (state.Declarations == null)
-                    {
-                        continue;
-                    }
-
                     declarations.AddRange(state.Declarations.Keys);
                 }
 
@@ -658,13 +655,8 @@ namespace Rubberduck.Parsing.VBA
             get
             {
                 var declarations = new List<UnboundMemberDeclaration>();
-                foreach (var state in _moduleStates.Values)
+                foreach (var state in _moduleStates.Values.Where(state => state.UnresolvedMemberDeclarations != null))
                 {
-                    if (state.UnresolvedMemberDeclarations == null)
-                    {
-                        continue;
-                    }
-
                     declarations.AddRange(state.UnresolvedMemberDeclarations.Keys);
                 }
 
@@ -888,16 +880,41 @@ namespace Rubberduck.Parsing.VBA
             _moduleStates[module].SetTokenStream(stream);
         }
 
-        public void AddParseTree(QualifiedModuleName module, IParseTree parseTree)
+        public void AddParseTree(QualifiedModuleName module, IParseTree parseTree, ParsePass pass = ParsePass.CodePanePass)
         {
             var key = module;
-            _moduleStates[key].SetParseTree(parseTree);
+            _moduleStates[key].SetParseTree(parseTree, pass);
             _moduleStates[key].SetModuleContentHashCode(key.ContentHashCode);
         }
 
-        public IParseTree GetParseTree(QualifiedModuleName module)
+        public IParseTree GetParseTree(QualifiedModuleName module, ParsePass pass = ParsePass.CodePanePass)
         {
-            return _moduleStates[module].ParseTree;
+            switch (pass)
+            {
+                case ParsePass.AttributesPass:
+                    return _moduleStates[module].AttributesPassParseTree;
+                case ParsePass.CodePanePass:
+                    return _moduleStates[module].ParseTree;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(pass), pass, null);
+            }
+        }
+
+        public List<KeyValuePair<QualifiedModuleName, IParseTree>> AttributeParseTrees
+        {
+            get
+            {
+                var parseTrees = new List<KeyValuePair<QualifiedModuleName, IParseTree>>();
+                foreach(var state in _moduleStates)
+                {
+                    if(state.Value.AttributesPassParseTree != null)
+                    {
+                        parseTrees.Add(new KeyValuePair<QualifiedModuleName, IParseTree>(state.Key, state.Value.AttributesPassParseTree));
+                    }
+                }
+
+                return parseTrees;
+            }
         }
 
         public List<KeyValuePair<QualifiedModuleName, IParseTree>> ParseTrees
@@ -909,8 +926,7 @@ namespace Rubberduck.Parsing.VBA
                 {
                     if (state.Value.ParseTree != null)
                     {
-                        parseTrees.Add(new KeyValuePair<QualifiedModuleName, IParseTree>(state.Key,
-                            state.Value.ParseTree));
+                        parseTrees.Add(new KeyValuePair<QualifiedModuleName, IParseTree>(state.Key, state.Value.ParseTree));
                     }
                 }
 

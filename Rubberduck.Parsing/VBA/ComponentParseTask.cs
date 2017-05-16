@@ -58,7 +58,8 @@ namespace Rubberduck.Parsing.VBA
 
                 Logger.Trace($"ParseTaskID {_taskId} begins attributes pass.");
                 ITokenStream attributesTokenStream;
-                var attributes = _attributeParser.Parse(_component, token, out attributesTokenStream);
+                IParseTree attributesTree;
+                var attributes = _attributeParser.Parse(_component, token, out attributesTokenStream, out attributesTree);
                 Logger.Trace($"ParseTaskID {_taskId} finished attributes pass.");
 
                 var rewriter = new MemberAttributesRewriter(_exporter, _component.CodeModule, new TokenStreamRewriter(attributesTokenStream));
@@ -82,6 +83,7 @@ namespace Rubberduck.Parsing.VBA
                     completedHandler.Invoke(this, new ParseCompletionArgs
                     {
                         ParseTree = tree,
+                        AttributesTree = attributesTree,
                         Tokens = stream,
                         AttributesRewriter = rewriter,
                         Attributes = attributes,
@@ -171,6 +173,7 @@ namespace Rubberduck.Parsing.VBA
             public ITokenStream Tokens { get; internal set; }
             public IModuleRewriter AttributesRewriter { get; internal set; }
             public IParseTree ParseTree { get; internal set; }
+            public IParseTree AttributesTree { get; internal set; }
             public IDictionary<Tuple<string, DeclarationType>, Attributes> Attributes { get; internal set; }
             public IEnumerable<CommentNode> Comments { get; internal set; }
             public IEnumerable<IAnnotation> Annotations { get; internal set; }

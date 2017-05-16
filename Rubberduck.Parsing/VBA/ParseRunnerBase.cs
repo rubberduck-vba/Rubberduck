@@ -5,6 +5,7 @@ using Rubberduck.VBEditor;
 using System.Threading;
 using Rubberduck.Parsing.PreProcessing;
 using Antlr4.Runtime;
+using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Parsing.VBA
@@ -104,6 +105,7 @@ namespace Rubberduck.Parsing.VBA
                     {
                         _state.SetModuleAttributes(module, result.Attributes);
                         _state.AddParseTree(module, result.ParseTree);
+                        _state.AddParseTree(module, result.AttributesTree, ParsePass.AttributesPass);
                         _state.AddTokenStream(module, result.Tokens);
                         _state.SetModuleComments(module, result.Comments);
                         _state.SetModuleAnnotations(module, result.Annotations);

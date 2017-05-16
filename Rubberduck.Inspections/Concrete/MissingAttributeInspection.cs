@@ -19,7 +19,7 @@ namespace Rubberduck.Inspections.Concrete
         public MissingAttributeInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Error)
         {
-            Listener = new MissingMemberAttributeListener(state.DeclarationFinder);
+            Listener = new MissingMemberAttributeListener(state);
         }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
@@ -37,11 +37,11 @@ namespace Rubberduck.Inspections.Concrete
 
         public class MissingMemberAttributeListener : VBAParserBaseListener, IInspectionListener
         {
-            private readonly DeclarationFinder _finder;
+            private readonly RubberduckParserState _state;
 
-            public MissingMemberAttributeListener(DeclarationFinder finder)
+            public MissingMemberAttributeListener(RubberduckParserState state)
             {
-                _finder = finder;
+                _state = state;
             }
 
             private readonly List<QualifiedContext<ParserRuleContext>> _contexts =
@@ -61,7 +61,7 @@ namespace Rubberduck.Inspections.Concrete
 
             private void SetCurrentScope(string name)
             {
-                _currentScope = _finder
+                _currentScope = _state.DeclarationFinder
                     .Members(CurrentModuleName)
                     .Single(m => m.IdentifierName == name);
             }
@@ -99,7 +99,7 @@ namespace Rubberduck.Inspections.Concrete
                 if (_currentScope == null)
                 {
                     // module-level annotation
-                    var module = _finder.UserDeclarations(DeclarationType.Module).Single(m => m.QualifiedName.QualifiedModuleName == CurrentModuleName);
+                    var module = _state.DeclarationFinder.UserDeclarations(DeclarationType.Module).Single(m => m.QualifiedName.QualifiedModuleName.Equals(CurrentModuleName));
                     if (!module.Attributes.ContainsKey(name))
                     {
                         _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
@@ -108,7 +108,7 @@ namespace Rubberduck.Inspections.Concrete
                 else
                 {
                     // member-level annotation
-                    var member = _finder.Members(CurrentModuleName).Single(m => m.QualifiedName == _currentScope.QualifiedName);
+                    var member = _state.DeclarationFinder.Members(CurrentModuleName).Single(m => m.QualifiedName.Equals(_currentScope.QualifiedName));
                     if (!member.Attributes.ContainsKey(name))
                     {
                         _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));

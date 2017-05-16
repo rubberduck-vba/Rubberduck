@@ -21,10 +21,11 @@ namespace Rubberduck.Inspections.Concrete
         public MissingAnnotationInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Hint)
         {
+            Listener = new MissingAnnotationListener(state);
         }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
-        public override IInspectionListener Listener => new MissingAnnotationListener(State);
+        public override IInspectionListener Listener { get; }
         public override ParsePass Pass => ParsePass.AttributesPass;
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
@@ -69,7 +70,7 @@ namespace Rubberduck.Inspections.Concrete
 
             public void ClearContexts()
             {
-                _contexts.Clear();   
+                _contexts.Clear();
             }
 
             #region scoping
@@ -80,6 +81,17 @@ namespace Rubberduck.Inspections.Concrete
             {
                 var firstMember = context.moduleBodyElement().FirstOrDefault()?.GetChild(0);
                 _currentScope = firstMember as IAnnotatedContext;
+                _currentScopeDeclaration = _state.DeclarationFinder
+                    .UserDeclarations(DeclarationType.Procedure)
+                    .Where(declaration => declaration.QualifiedName.QualifiedModuleName.Equals(CurrentModuleName))
+                    .OrderBy(declaration => declaration.Selection)
+                    .FirstOrDefault();
+            }
+
+            public override void ExitModule(VBAParser.ModuleContext context)
+            {
+                _currentScope = null;
+                _currentScopeDeclaration = null;
             }
 
             public override void EnterModuleAttributes(VBAParser.ModuleAttributesContext context)
@@ -91,6 +103,8 @@ namespace Rubberduck.Inspections.Concrete
                     // we're at the top of the module.
                     // everything we pick up between here and the module body, is module-scoped:
                     _currentScope = context;
+                    _currentScopeDeclaration = _state.DeclarationFinder.UserDeclarations(DeclarationType.Module)
+                        .SingleOrDefault(d => d.QualifiedName.QualifiedModuleName.Equals(CurrentModuleName));
                 }
                 else
                 {

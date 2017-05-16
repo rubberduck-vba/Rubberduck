@@ -13,6 +13,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UI;
 using Rubberduck.UI.Inspections;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
@@ -66,19 +67,32 @@ namespace Rubberduck.Inspections
 
                 var allIssues = new ConcurrentBag<IInspectionResult>();
 
+                var parseTreeInspections = _inspections.OfType<IParseTreeInspection>().ToArray();
+
                 // Prepare ParseTreeWalker based inspections
-                WalkTrees(config.UserSettings.CodeInspectionSettings, state, _inspections.OfType<IParseTreeInspection>());
+                var passes = Enum.GetValues(typeof (ParsePass)).Cast<ParsePass>();
+                foreach (var parsePass in passes)
+                {
+                    WalkTrees(config.UserSettings.CodeInspectionSettings, state, parseTreeInspections.Where(i => i.Pass == parsePass), parsePass);
+                }
 
                 var inspections = _inspections.Where(inspection => inspection.Severity != CodeInspectionSeverity.DoNotShow)
                     .Select(inspection =>
                         Task.Run(() =>
                         {
                             token.ThrowIfCancellationRequested();
-                            var inspectionResults = inspection.GetInspectionResults();
-                            
-                            foreach (var inspectionResult in inspectionResults)
+                            try
                             {
-                                allIssues.Add(inspectionResult);
+                                var inspectionResults = inspection.GetInspectionResults();
+                            
+                                foreach (var inspectionResult in inspectionResults)
+                                {
+                                    allIssues.Add(inspectionResult);
+                                }
+                            }
+                            catch(Exception e)
+                            {
+                                LogManager.GetCurrentClassLogger().Warn(e);
                             }
                         }, token)).ToList();
 
@@ -103,18 +117,27 @@ namespace Rubberduck.Inspections
                 return results;
             }
 
-            private void WalkTrees(CodeInspectionSettings settings, RubberduckParserState state, IEnumerable<IParseTreeInspection> inspections)
+            private void WalkTrees(CodeInspectionSettings settings, RubberduckParserState state, IEnumerable<IParseTreeInspection> inspections, ParsePass pass)
             {
                 var listeners =
-                    inspections.Where(i => i.Pass == ParsePass.CodePanePass && i.Severity != CodeInspectionSeverity.DoNotShow && !IsDisabled(settings, i))
-                        .Select(inspection =>
-                        {
-                            inspection.Listener.ClearContexts();
-                            return inspection.Listener;
-                        })
+                    inspections.Where(i => i.Pass == pass && i.Severity != CodeInspectionSeverity.DoNotShow && !IsDisabled(settings, i))
+                        .Select(inspection => inspection.Listener)
                         .ToList();
 
-                foreach (var componentTreePair in state.ParseTrees)
+                List<KeyValuePair<QualifiedModuleName, IParseTree>> trees;
+                switch (pass)
+                {
+                    case ParsePass.AttributesPass:
+                        trees = state.AttributeParseTrees;
+                        break;
+                    case ParsePass.CodePanePass:
+                        trees = state.ParseTrees;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(pass), pass, null);
+                }
+
+                foreach (var componentTreePair in trees)
                 {
                     foreach (var listener in listeners)
                     {

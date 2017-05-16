@@ -30,7 +30,7 @@ namespace Rubberduck.Parsing.VBA
         /// <param name="component"></param>
         /// <param name="token"></param>
         /// <param name="stream"></param>
-        public IDictionary<Tuple<string, DeclarationType>, Attributes> Parse(IVBComponent component, CancellationToken token, out ITokenStream stream)
+        public IDictionary<Tuple<string, DeclarationType>, Attributes> Parse(IVBComponent component, CancellationToken token, out ITokenStream stream, out IParseTree tree)
         {
             token.ThrowIfCancellationRequested();
             var path = _exporter.Export(component);
@@ -38,6 +38,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 // a document component without any code wouldn't be exported (file would be empty anyway).
                 stream = null;
+                tree = null;
                 return new Dictionary<Tuple<string, DeclarationType>, Attributes>();
             }
             var code = File.ReadAllText(path);
@@ -64,7 +65,9 @@ namespace Rubberduck.Parsing.VBA
             // line numbers are offset due to module header and attributes
             // (these don't show up in the VBE, that's why we're parsing an exported file)
 
-            new VBAModuleParser().Parse(component.Name, tokens, new IParseTreeListener[] { listener }, new ExceptionErrorListener(), out stream);
+            tree = new VBAModuleParser().Parse(component.Name, tokens, new IParseTreeListener[] { listener }, new ExceptionErrorListener(), out stream);
+
+            token.ThrowIfCancellationRequested();
             return listener.Attributes;
         }
 
