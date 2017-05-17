@@ -151,7 +151,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Code quality issues.
+        ///   Looks up a localized string similar to Code Quality.
         /// </summary>
         public static string CodeQualityIssues {
             get {
@@ -691,7 +691,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Language opportunities.
+        ///   Looks up a localized string similar to Language Opportunities.
         /// </summary>
         public static string LanguageOpportunities {
             get {
@@ -1321,6 +1321,15 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Performance.
+        /// </summary>
+        public static string Performance {
+            get {
+                return ResourceManager.GetString("Performance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A procedure that only has one parameter passed by reference that is assigned a new value/reference before the procedure exits, is using a ByRef parameter as a return value: consider making it a function instead..
         /// </summary>
         public static string ProcedureCanBeWrittenAsFunctionInspectionMeta {
@@ -1524,6 +1533,15 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         public static string ReplaceCommentMarkerQuickFix {
             get {
                 return ResourceManager.GetString("ReplaceCommentMarkerQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck.
+        /// </summary>
+        public static string RubberduckOpportunities {
+            get {
+                return ResourceManager.GetString("RubberduckOpportunities", resourceCulture);
             }
         }
         

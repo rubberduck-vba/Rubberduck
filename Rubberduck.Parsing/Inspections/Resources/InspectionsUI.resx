@@ -124,7 +124,7 @@
     <value>ByVal parameter is assigned</value>
   </data>
   <data name="CodeQualityIssues" xml:space="preserve">
-    <value>Code quality issues</value>
+    <value>Code Quality</value>
   </data>
   <data name="ConstantNotUsedInspectionMeta" xml:space="preserve">
     <value>Rubberduck could not find any reference to constant. Consider removing the unused declaration.</value>
@@ -205,7 +205,7 @@
     <value>Move module-level variable '{0}' to a smaller scope.</value>
   </data>
   <data name="LanguageOpportunities" xml:space="preserve">
-    <value>Language opportunities</value>
+    <value>Language Opportunities</value>
   </data>
   <data name="MaintainabilityAndReadabilityIssues" xml:space="preserve">
     <value>Maintainability &amp; readability issues</value>
@@ -712,5 +712,13 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   </data>
   <data name="RemoveEmptyIfBlockQuickFix" xml:space="preserve">
     <value>Remove empty If block</value>
+  </data>
+  <data name="Performance" xml:space="preserve">
+    <value>Performance</value>
+    <comment>Inspections for performance tuning tips</comment>
+  </data>
+  <data name="RubberduckOpportunities" xml:space="preserve">
+    <value>Rubberduck</value>
+    <comment>Inspections specifically *about* a RD feature</comment>
   </data>
 </root>

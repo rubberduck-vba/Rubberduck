@@ -2,8 +2,10 @@
 {
     public enum CodeInspectionType
     {
+        RubberduckOpportunities,
         LanguageOpportunities,
         MaintainabilityAndReadabilityIssues,
-        CodeQualityIssues
+        CodeQualityIssues,
+        Performance,
     }
 }

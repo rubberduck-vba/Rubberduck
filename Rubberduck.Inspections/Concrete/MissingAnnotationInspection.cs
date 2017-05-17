@@ -24,7 +24,7 @@ namespace Rubberduck.Inspections.Concrete
             Listener = new MissingAnnotationListener(state);
         }
 
-        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
+        public override CodeInspectionType InspectionType => CodeInspectionType.RubberduckOpportunities;
         public override IInspectionListener Listener { get; }
         public override ParsePass Pass => ParsePass.AttributesPass;
 
@@ -32,9 +32,12 @@ namespace Rubberduck.Inspections.Concrete
         {
             return Listener.Contexts.Select(context =>
             {
+                var member = string.IsNullOrEmpty(context.MemberName.MemberName)
+                    ? context.ModuleName.Name
+                    : context.MemberName.MemberName;
+
                 var name = string.Format(InspectionsUI.MissingAnnotationInspectionResultFormat, 
-                    context.MemberName,
-                    ((VBAParser.AttributeStmtContext) context.Context).AnnotationType().ToString());
+                    member, ((VBAParser.AttributeStmtContext) context.Context).AnnotationType().ToString());
 
                 return new QualifiedContextInspectionResult(this, name, State, context);
             });
@@ -58,7 +61,8 @@ namespace Rubberduck.Inspections.Concrete
 
                 _members = new Lazy<IDictionary<string, Declaration>>(() => _state.DeclarationFinder
                     .Members(CurrentModuleName)
-                    .ToDictionary(m => m.IdentifierName, m => m));
+                    .GroupBy(m => m.IdentifierName)
+                    .ToDictionary(m => m.Key, m => m.First()));
             }
 
             private readonly List<QualifiedContext<ParserRuleContext>> _contexts =
