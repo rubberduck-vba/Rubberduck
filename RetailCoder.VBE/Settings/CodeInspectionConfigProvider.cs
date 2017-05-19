@@ -21,7 +21,6 @@ namespace Rubberduck.Settings
 
         public CodeInspectionSettings CreateDefaults()
         {
-            //This no longer sucks.
             return new CodeInspectionSettings(GetDefaultCodeInspections(), new WhitelistedIdentifierSetting[] {}, true);
         }
 
@@ -45,7 +44,7 @@ namespace Rubberduck.Settings
                 new CodeInspectionSetting("FunctionReturnValueNotUsedInspection", CodeInspectionType.CodeQualityIssues),
                 new CodeInspectionSetting("HostSpecificExpressionInspection", CodeInspectionType.LanguageOpportunities, CodeInspectionSeverity.Suggestion),
                 new CodeInspectionSetting("HungarianNotationInspection", CodeInspectionType.LanguageOpportunities, CodeInspectionSeverity.Hint),
-                new CodeInspectionSetting("IllegalAnnotationInspection", CodeInspectionType.RubberduckOpportunities),
+                new CodeInspectionSetting("IllegalAnnotationInspection", CodeInspectionType.RubberduckOpportunities, CodeInspectionSeverity.Error),
                 new CodeInspectionSetting("ImplicitActiveSheetReferenceInspection", CodeInspectionType.LanguageOpportunities, CodeInspectionSeverity.Hint),
                 new CodeInspectionSetting("ImplicitActiveWorkbookReferenceInspection", CodeInspectionType.LanguageOpportunities, CodeInspectionSeverity.Hint),
                 new CodeInspectionSetting("ImplicitByRefParameterInspection", CodeInspectionType.LanguageOpportunities, CodeInspectionSeverity.Hint),

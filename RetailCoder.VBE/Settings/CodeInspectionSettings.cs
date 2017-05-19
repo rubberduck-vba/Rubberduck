@@ -107,10 +107,8 @@ namespace Rubberduck.Settings
         }
 
         [XmlIgnore]
-        public string TypeLabel
-        {
-            get { return RubberduckUI.ResourceManager.GetString("CodeInspectionSettings_" + InspectionType, CultureInfo.CurrentUICulture); }
-        }
+        // ReSharper disable once UnusedMember.Global; used in string literal to define collection groupings
+        public string TypeLabel => RubberduckUI.ResourceManager.GetString("CodeInspectionSettings_" + InspectionType, CultureInfo.CurrentUICulture);
 
         [XmlIgnore]
         public string SeverityLabel
