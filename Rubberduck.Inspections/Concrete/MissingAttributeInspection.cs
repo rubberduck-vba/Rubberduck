@@ -40,21 +40,12 @@ namespace Rubberduck.Inspections.Concrete
         {
             private readonly RubberduckParserState _state;
 
-            private readonly Lazy<Declaration> _module;
-            private readonly Lazy<IDictionary<string, Declaration>> _members;
+            private Lazy<Declaration> _module;
+            private Lazy<IDictionary<string, Declaration>> _members;
 
             public MissingMemberAttributeListener(RubberduckParserState state)
             {
                 _state = state;
-                _module = new Lazy<Declaration>(() => _state.DeclarationFinder
-                   .UserDeclarations(DeclarationType.Module)
-                   .SingleOrDefault(m => m.QualifiedName.QualifiedModuleName.Equals(CurrentModuleName)));
-
-                _members = new Lazy<IDictionary<string, Declaration>>(() => _state.DeclarationFinder
-                    .Members(CurrentModuleName)
-                    .Where(m => !m.DeclarationType.HasFlag(DeclarationType.Module))
-                    .GroupBy(m => m.IdentifierName)
-                    .ToDictionary(m => m.Key, m => m.FirstOrDefault()));
             }
 
             private readonly List<QualifiedContext<ParserRuleContext>> _contexts =
@@ -83,6 +74,19 @@ namespace Rubberduck.Inspections.Concrete
                     .Where(declaration => declaration.QualifiedName.QualifiedModuleName.Equals(CurrentModuleName))
                     .OrderBy(declaration => declaration.Selection)
                     .FirstOrDefault();
+            }
+
+            public override void EnterModule(VBAParser.ModuleContext context)
+            {
+                _module = new Lazy<Declaration>(() => _state.DeclarationFinder
+                    .UserDeclarations(DeclarationType.Module)
+                    .SingleOrDefault(m => m.QualifiedName.QualifiedModuleName.Equals(CurrentModuleName)));
+
+                _members = new Lazy<IDictionary<string, Declaration>>(() => _state.DeclarationFinder
+                    .Members(CurrentModuleName)
+                    .Where(m => !m.DeclarationType.HasFlag(DeclarationType.Module))
+                    .GroupBy(m => m.IdentifierName)
+                    .ToDictionary(m => m.Key, m => m.FirstOrDefault()));
             }
 
             public override void ExitModule(VBAParser.ModuleContext context)
