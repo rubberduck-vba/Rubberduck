@@ -54,7 +54,7 @@ namespace Rubberduck.Inspections.Concrete
                     .Members(CurrentModuleName)
                     .Where(m => !m.DeclarationType.HasFlag(DeclarationType.Module))
                     .GroupBy(m => m.IdentifierName)
-                    .ToDictionary(m => m.Key, m => m.First()));
+                    .ToDictionary(m => m.Key, m => m.FirstOrDefault()));
             }
 
             private readonly List<QualifiedContext<ParserRuleContext>> _contexts =
@@ -90,31 +90,17 @@ namespace Rubberduck.Inspections.Concrete
                 _currentScopeDeclaration = null;
             }
 
-            public override void EnterModuleAttributes(VBAParser.ModuleAttributesContext context)
-            {
-                // note: using ModuleAttributesContext for module-scope
-
-                if(_currentScopeDeclaration == null)
-                {
-                    // we're at the top of the module.
-                    // everything we pick up between here and the module body, is module-scoped:
-                    _currentScopeDeclaration = _state.DeclarationFinder.UserDeclarations(DeclarationType.Module)
-                        .SingleOrDefault(d => d.QualifiedName.QualifiedModuleName.Equals(CurrentModuleName));
-                }
-                else
-                {
-                    // DO NOT re-assign _currentScope here.
-                    // we're at the end of the module and that attribute is actually scoped to the last procedure.
-                    Debug.Assert(_currentScopeDeclaration != null); // deliberate no-op
-                }
-            }
-
             public override void ExitModuleDeclarations(VBAParser.ModuleDeclarationsContext context)
             {
                 var firstMember = _members.Value.Values.OrderBy(d => d.Selection).FirstOrDefault();
                 if (firstMember != null)
                 {
                     _currentScopeDeclaration = firstMember;
+                }
+                else
+                {
+                    _currentScopeDeclaration = _state.DeclarationFinder.UserDeclarations(DeclarationType.Module)
+                        .SingleOrDefault(d => d.QualifiedName.QualifiedModuleName.Equals(CurrentModuleName));
                 }
             }
 
