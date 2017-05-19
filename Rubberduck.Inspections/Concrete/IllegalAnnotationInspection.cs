@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
@@ -20,11 +21,12 @@ namespace Rubberduck.Inspections.Concrete
         public IllegalAnnotationInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Error)
         {
-            Listener = new IllegalAttributeAnnotationsListener();
+            Listener = new IllegalAttributeAnnotationsListener(state);
         }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.RubberduckOpportunities;
         public override IInspectionListener Listener { get; }
+        public override ParsePass Pass => ParsePass.AttributesPass;
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
@@ -38,11 +40,26 @@ namespace Rubberduck.Inspections.Concrete
         {
             private readonly IDictionary<AnnotationType, int> _annotationCounts;
 
-            private static readonly AnnotationType[] AnnotationTypes = Enum.GetValues(typeof(AnnotationType)).Cast<AnnotationType>().ToArray(); 
+            private static readonly AnnotationType[] AnnotationTypes = Enum.GetValues(typeof(AnnotationType)).Cast<AnnotationType>().ToArray();
 
-            public IllegalAttributeAnnotationsListener()
+            private readonly RubberduckParserState _state;
+
+            private readonly Lazy<Declaration> _module;
+            private readonly Lazy<IDictionary<string, Declaration>> _members;
+
+            public IllegalAttributeAnnotationsListener(RubberduckParserState state)
             {
+                _state = state;
                 _annotationCounts = AnnotationTypes.ToDictionary(a => a, a => 0);
+
+                _module = new Lazy<Declaration>(() => _state.DeclarationFinder
+                    .UserDeclarations(DeclarationType.Module)
+                    .SingleOrDefault(m => m.QualifiedName.QualifiedModuleName.Equals(CurrentModuleName)));
+
+                _members = new Lazy<IDictionary<string, Declaration>>(() => _state.DeclarationFinder
+                    .Members(CurrentModuleName)
+                    .GroupBy(m => m.IdentifierName)
+                    .ToDictionary(m => m.Key, m => m.First()));
             }
 
             private readonly List<QualifiedContext<ParserRuleContext>> _contexts =
@@ -58,36 +75,71 @@ namespace Rubberduck.Inspections.Concrete
             }
 
             #region scoping
-            private string _currentScope;
+            private Declaration _currentScopeDeclaration;
+            private bool _hasMembers;
 
-            private void SetCurrentScope(string name)
+            private void SetCurrentScope(IAnnotatedContext context, string memberName = null)
             {
-                _currentScope = name;
+                _hasMembers = !string.IsNullOrEmpty(memberName);
+                _currentScopeDeclaration = _hasMembers ? _members.Value[memberName] : _module.Value;
+            }
+
+            public override void EnterModuleBody(VBAParser.ModuleBodyContext context)
+            {
+                _currentScopeDeclaration = _state.DeclarationFinder
+                    .UserDeclarations(DeclarationType.Procedure)
+                    .Where(declaration => declaration.QualifiedName.QualifiedModuleName.Equals(CurrentModuleName))
+                    .OrderBy(declaration => declaration.Selection)
+                    .FirstOrDefault();
+            }
+
+            public override void ExitModule(VBAParser.ModuleContext context)
+            {
+                _currentScopeDeclaration = null;
+            }
+
+            public override void EnterModuleAttributes(VBAParser.ModuleAttributesContext context)
+            {
+                // note: using ModuleAttributesContext for module-scope
+
+                if(_currentScopeDeclaration == null)
+                {
+                    // we're at the top of the module.
+                    // everything we pick up between here and the module body, is module-scoped:
+                    _currentScopeDeclaration = _state.DeclarationFinder.UserDeclarations(DeclarationType.Module)
+                        .SingleOrDefault(d => d.QualifiedName.QualifiedModuleName.Equals(CurrentModuleName));
+                }
+                else
+                {
+                    // DO NOT re-assign _currentScope here.
+                    // we're at the end of the module and that attribute is actually scoped to the last procedure.
+                    Debug.Assert(_currentScopeDeclaration != null); // deliberate no-op
+                }
             }
 
             public override void EnterSubStmt(VBAParser.SubStmtContext context)
             {
-                SetCurrentScope(Identifier.GetName(context.subroutineName()));
+                SetCurrentScope(context, Identifier.GetName(context.subroutineName()));
             }
 
             public override void EnterFunctionStmt(VBAParser.FunctionStmtContext context)
             {
-                SetCurrentScope(Identifier.GetName(context.functionName()));
+                SetCurrentScope(context, Identifier.GetName(context.functionName()));
             }
 
             public override void EnterPropertyGetStmt(VBAParser.PropertyGetStmtContext context)
             {
-                SetCurrentScope(Identifier.GetName(context.functionName()));
+                SetCurrentScope(context, Identifier.GetName(context.functionName()));
             }
 
             public override void EnterPropertyLetStmt(VBAParser.PropertyLetStmtContext context)
             {
-                SetCurrentScope(Identifier.GetName(context.subroutineName()));
+                SetCurrentScope(context, Identifier.GetName(context.subroutineName()));
             }
 
             public override void EnterPropertySetStmt(VBAParser.PropertySetStmtContext context)
             {
-                SetCurrentScope(Identifier.GetName(context.subroutineName()));
+                SetCurrentScope(context, Identifier.GetName(context.subroutineName()));
             }
             #endregion
 
@@ -98,10 +150,10 @@ namespace Rubberduck.Inspections.Concrete
                 _annotationCounts[annotationType]++;
 
                 var isPerModule = annotationType.HasFlag(AnnotationType.ModuleAnnotation);
-                var isMemberOnModule = _currentScope != null && isPerModule;
+                var isMemberOnModule = _currentScopeDeclaration != null && isPerModule;
 
                 var isPerMember = annotationType.HasFlag(AnnotationType.MemberAnnotation);
-                var isModuleOnMember = _currentScope == null && isPerMember;
+                var isModuleOnMember = _currentScopeDeclaration == null && isPerMember;
 
                 var isOnlyAllowedOnce = isPerModule || isPerMember;
 

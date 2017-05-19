@@ -53,7 +53,6 @@ namespace Rubberduck.Inspections.Concrete
             public MissingAnnotationListener(RubberduckParserState state)
             {
                 _state = state;
-                new VBAParserAnnotationFactory();
 
                 _module = new Lazy<Declaration>(() => _state.DeclarationFinder
                     .UserDeclarations(DeclarationType.Module)
