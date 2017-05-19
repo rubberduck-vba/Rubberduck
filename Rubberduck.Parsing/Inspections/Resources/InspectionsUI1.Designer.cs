@@ -691,24 +691,6 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Language Opportunities.
-        /// </summary>
-        public static string LanguageOpportunities {
-            get {
-                return ResourceManager.GetString("LanguageOpportunities", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Maintainability &amp; readability issues.
-        /// </summary>
-        public static string MaintainabilityAndReadabilityIssues {
-            get {
-                return ResourceManager.GetString("MaintainabilityAndReadabilityIssues", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Write variable on one line.
         /// </summary>
         public static string MakeSingleLineParameterQuickFix {
@@ -718,7 +700,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A member access is being used that is not declared on the object&apos;s interface. This is most likely an error. If the member access is using the object&apos;s extensible interface, consider using a non-extensible equivalent to allow compile time checks that will avoid the possibility of a run-time error 438..
+        ///   Looks up a localized string similar to A member access call is made against an extended interface that Rubberduck couldn&apos;t resolve, or the member couldn&apos;t be found. If VBA cannot resolve the type at run-time, error 438 will be raised. If an equivalent, non-extended interface that Rubberduck can resolve is available, consider using it instead..
         /// </summary>
         public static string MemberNotOnInterfaceInspectionMeta {
             get {
@@ -727,7 +709,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Member does not exist on interface.
+        ///   Looks up a localized string similar to Member not found.
         /// </summary>
         public static string MemberNotOnInterfaceInspectionName {
             get {
@@ -736,7 +718,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Member &apos;{0}&apos; is not declared on the interface for type &apos;{1}&apos;..
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; was not found on the compile-time interface for type &apos;{1}&apos;..
         /// </summary>
         public static string MemberNotOnInterfaceInspectionResultFormat {
             get {
@@ -1321,15 +1303,6 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Performance.
-        /// </summary>
-        public static string Performance {
-            get {
-                return ResourceManager.GetString("Performance", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to A procedure that only has one parameter passed by reference that is assigned a new value/reference before the procedure exits, is using a ByRef parameter as a return value: consider making it a function instead..
         /// </summary>
         public static string ProcedureCanBeWrittenAsFunctionInspectionMeta {
@@ -1447,6 +1420,33 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Being the default/implicit setting for this option, this instruction can be safely omitted..
+        /// </summary>
+        public static string RedundantOptionInspectionMeta {
+            get {
+                return ResourceManager.GetString("RedundantOptionInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Redundant module option.
+        /// </summary>
+        public static string RedundantOptionInspectionName {
+            get {
+                return ResourceManager.GetString("RedundantOptionInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; has no effect..
+        /// </summary>
+        public static string RedundantOptionInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("RedundantOptionInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Remove comment.
         /// </summary>
         public static string RemoveCommentQuickFix {
@@ -1533,15 +1533,6 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         public static string ReplaceCommentMarkerQuickFix {
             get {
                 return ResourceManager.GetString("ReplaceCommentMarkerQuickFix", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Rubberduck.
-        /// </summary>
-        public static string RubberduckOpportunities {
-            get {
-                return ResourceManager.GetString("RubberduckOpportunities", resourceCulture);
             }
         }
         

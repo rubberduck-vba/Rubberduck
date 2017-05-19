@@ -23,7 +23,7 @@ namespace RubberduckTests.Inspections
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new OptionBaseZeroInspection(state);
+            var inspection = new RedundantOptionInspection(state);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
@@ -40,7 +40,7 @@ namespace RubberduckTests.Inspections
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new OptionBaseZeroInspection(state);
+            var inspection = new RedundantOptionInspection(state);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
@@ -77,7 +77,7 @@ Option Base 0";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new OptionBaseZeroInspection(state);
+            var inspection = new RedundantOptionInspection(state);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
@@ -100,7 +100,7 @@ Base _
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new OptionBaseZeroInspection(state);
+            var inspection = new RedundantOptionInspection(state);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
@@ -120,7 +120,7 @@ Base _
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new OptionBaseZeroInspection(state);
+            var inspection = new RedundantOptionInspection(state);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
@@ -143,7 +143,7 @@ Base _
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new OptionBaseZeroInspection(state);
+            var inspection = new RedundantOptionInspection(state);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
@@ -155,7 +155,7 @@ Base _
         [TestCategory("Inspections")]
         public void InspectionType()
         {
-            var inspection = new OptionBaseZeroInspection(null);
+            var inspection = new RedundantOptionInspection(null);
             Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
         }
 
@@ -164,7 +164,7 @@ Base _
         public void InspectionName()
         {
             const string inspectionName = "OptionBaseZeroInspection";
-            var inspection = new OptionBaseZeroInspection(null);
+            var inspection = new RedundantOptionInspection(null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
         }

@@ -204,12 +204,6 @@
   <data name="MoveFieldCloserToUsageInspectionResultFormat" xml:space="preserve">
     <value>Move module-level variable '{0}' to a smaller scope.</value>
   </data>
-  <data name="LanguageOpportunities" xml:space="preserve">
-    <value>Language Opportunities</value>
-  </data>
-  <data name="MaintainabilityAndReadabilityIssues" xml:space="preserve">
-    <value>Maintainability &amp; readability issues</value>
-  </data>
   <data name="MultilineParameterInspectionMeta" xml:space="preserve">
     <value>Consider continuing long signatures between parameters. Splitting a parameter declaration across multiple lines arguably hurts readability.</value>
   </data>
@@ -616,13 +610,13 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>Add to whitelist</value>
   </data>
   <data name="MemberNotOnInterfaceInspectionMeta" xml:space="preserve">
-    <value>A member access is being used that is not declared on the object's interface. This is most likely an error. If the member access is using the object's extensible interface, consider using a non-extensible equivalent to allow compile time checks that will avoid the possibility of a run-time error 438.</value>
+    <value>A member access call is made against an extended interface that Rubberduck couldn't resolve, or the member couldn't be found. If VBA cannot resolve the type at run-time, error 438 will be raised. If an equivalent, non-extended interface that Rubberduck can resolve is available, consider using it instead.</value>
   </data>
   <data name="MemberNotOnInterfaceInspectionName" xml:space="preserve">
-    <value>Member does not exist on interface</value>
+    <value>Member not found</value>
   </data>
   <data name="MemberNotOnInterfaceInspectionResultFormat" xml:space="preserve">
-    <value>Member '{0}' is not declared on the interface for type '{1}'.</value>
+    <value>Member '{0}' was not found on the compile-time interface for type '{1}'.</value>
     <comment>{0} Member used, {1} type being accessed.</comment>
   </data>
   <data name="HostSpecificExpressionInspectionMeta" xml:space="preserve">
@@ -713,12 +707,14 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="RemoveEmptyIfBlockQuickFix" xml:space="preserve">
     <value>Remove empty If block</value>
   </data>
-  <data name="Performance" xml:space="preserve">
-    <value>Performance</value>
-    <comment>Inspections for performance tuning tips</comment>
+  <data name="RedundantOptionInspectionMeta" xml:space="preserve">
+    <value>Being the default/implicit setting for this option, this instruction can be safely omitted.</value>
   </data>
-  <data name="RubberduckOpportunities" xml:space="preserve">
-    <value>Rubberduck</value>
-    <comment>Inspections specifically *about* a RD feature</comment>
+  <data name="RedundantOptionInspectionName" xml:space="preserve">
+    <value>Redundant module option</value>
+  </data>
+  <data name="RedundantOptionInspectionResultFormat" xml:space="preserve">
+    <value>'{0}' has no effect.</value>
+    <comment>'{0}' the whole ModuleOptionContext text</comment>
   </data>
 </root>

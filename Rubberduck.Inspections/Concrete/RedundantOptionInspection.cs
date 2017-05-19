@@ -12,27 +12,27 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    public sealed class OptionBaseZeroInspection : ParseTreeInspectionBase
+    public sealed class RedundantOptionInspection : ParseTreeInspectionBase
     {
-        public OptionBaseZeroInspection(RubberduckParserState state)
+        public RedundantOptionInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Hint) { }
 
-        public override string Meta => InspectionsUI.OptionBaseZeroInspectionMeta;
-        public override string Description => InspectionsUI.OptionBaseZeroInspectionName;
-        public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
+        public override string Meta => InspectionsUI.RedundantOptionInspectionMeta;
+        public override string Description => InspectionsUI.RedundantOptionInspectionName;
+        public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
 
-        public override IInspectionListener Listener => new OptionBaseStatementListener();
+        public override IInspectionListener Listener => new RedundantModuleOptionListener();
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
             return Listener.Contexts.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName, context.Context.Start.Line))
                                    .Select(context => new QualifiedContextInspectionResult(this,
-                                                                           string.Format(InspectionsUI.OptionBaseZeroInspectionResultFormat, context.ModuleName.ComponentName),
+                                                                           string.Format(InspectionsUI.RedundantOptionInspectionResultFormat, context.Context.GetText()),
                                                                            State,
                                                                            context));
         }
 
-        public class OptionBaseStatementListener : VBAParserBaseListener, IInspectionListener
+        public class RedundantModuleOptionListener : VBAParserBaseListener, IInspectionListener
         {
             private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
             public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
@@ -47,6 +47,15 @@ namespace Rubberduck.Inspections.Concrete
             public override void ExitOptionBaseStmt(VBAParser.OptionBaseStmtContext context)
             {
                 if (context.numberLiteral()?.INTEGERLITERAL().Symbol.Text == "0")
+                {
+                    _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
+                }
+            }
+
+            public override void ExitOptionCompareStmt(VBAParser.OptionCompareStmtContext context)
+            {
+                // BINARY is the default, and DATABASE is specified by default + only valid in Access.
+                if (context.TEXT() == null && context.DATABASE() == null)
                 {
                     _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
                 }

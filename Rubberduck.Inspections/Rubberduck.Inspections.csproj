@@ -90,7 +90,7 @@
     <Compile Include="Concrete\ObsoleteLetStatementInspection.cs" />
     <Compile Include="Concrete\ObsoleteTypeHintInspection.cs" />
     <Compile Include="Concrete\OptionBaseInspection.cs" />
-    <Compile Include="Concrete\OptionBaseZeroInspection.cs" />
+    <Compile Include="Concrete\RedundantOptionInspection.cs" />
     <Compile Include="Concrete\OptionExplicitInspection.cs" />
     <Compile Include="Concrete\ParameterCanBeByValInspection.cs" />
     <Compile Include="Concrete\ParameterNotUsedInspection.cs" />
