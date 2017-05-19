@@ -73,7 +73,14 @@ namespace Rubberduck.Inspections
                 var passes = Enum.GetValues(typeof (ParsePass)).Cast<ParsePass>();
                 foreach (var parsePass in passes)
                 {
-                    WalkTrees(config.UserSettings.CodeInspectionSettings, state, parseTreeInspections.Where(i => i.Pass == parsePass), parsePass);
+                    try
+                    {
+                        WalkTrees(config.UserSettings.CodeInspectionSettings, state, parseTreeInspections.Where(i => i.Pass == parsePass), parsePass);
+                    }
+                    catch (Exception e)
+                    {
+                        LogManager.GetCurrentClassLogger().Warn(e);
+                    }
                 }
 
                 var inspections = _inspections.Where(inspection => inspection.Severity != CodeInspectionSeverity.DoNotShow)

@@ -108,6 +108,15 @@ namespace Rubberduck.Inspections.Concrete
                 }
             }
 
+            public override void ExitModuleDeclarations(VBAParser.ModuleDeclarationsContext context)
+            {
+                var firstMember = _members.Value.Values.OrderBy(d => d.Selection).FirstOrDefault();
+                if (firstMember != null)
+                {
+                    _currentScopeDeclaration = firstMember;
+                }
+            }
+
             public override void EnterSubStmt(VBAParser.SubStmtContext context)
             {
                 SetCurrentScope(context, Identifier.GetName(context.subroutineName()));
@@ -149,8 +158,8 @@ namespace Rubberduck.Inspections.Concrete
                 else
                 {
                     // member-level annotation
-                    var member = _state.DeclarationFinder.Members(CurrentModuleName).Single(m => m.QualifiedName.Equals(_currentScopeDeclaration.QualifiedName));
-                    if (!member.Attributes.ContainsKey(name))
+                    var member = _members.Value.Single(m => m.Key.Equals(_currentScopeDeclaration.QualifiedName.MemberName));
+                    if (!member.Value.Attributes.ContainsKey(name))
                     {
                         _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
                     }
