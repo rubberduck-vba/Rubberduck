@@ -28,7 +28,7 @@ namespace Rubberduck.Parsing.Annotations
         /// <returns>Returns <c>null</c> if no association is found.</returns>
         public static AnnotationType? AnnotationType(this VBAParser.AttributeStmtContext context)
         {
-            var name = context.attributeName().GetText();
+            var name = context.attributeName().Stop.Text;
             var value = context.attributeValue().FirstOrDefault()?.GetText();
 
             var key = AttributeAnnotationTypes.Keys

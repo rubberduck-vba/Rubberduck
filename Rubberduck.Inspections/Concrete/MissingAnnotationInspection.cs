@@ -53,7 +53,7 @@ namespace Rubberduck.Inspections.Concrete
             public MissingAnnotationListener(RubberduckParserState state)
             {
                 _state = state;
-                _annotations = new VBAParserAnnotationFactory();
+                new VBAParserAnnotationFactory();
 
                 _module = new Lazy<Declaration>(() => _state.DeclarationFinder
                     .UserDeclarations(DeclarationType.Module)
@@ -72,14 +72,12 @@ namespace Rubberduck.Inspections.Concrete
 
             public QualifiedModuleName CurrentModuleName { get; set; }
 
-            public void ClearContexts()
-            {
-                _contexts.Clear();
-            }
+            public void ClearContexts() => _contexts.Clear();
 
             #region scoping
             private IAnnotatedContext _currentScope;
             private Declaration _currentScopeDeclaration;
+            private bool _hasMembers;
 
             public override void EnterModuleBody(VBAParser.ModuleBodyContext context)
             {
@@ -117,9 +115,6 @@ namespace Rubberduck.Inspections.Concrete
                     Debug.Assert(_currentScope != null); // deliberate no-op
                 }
             }
-
-            private bool _hasMembers;
-            private IAnnotationFactory _annotations;
 
             private void SetCurrentScope(IAnnotatedContext context, string memberName = null)
             {
