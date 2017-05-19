@@ -1727,7 +1727,6 @@ End Sub
 
         [TestCategory("Parser")]
         [TestMethod]
-        [Ignore] // ref. https://github.com/rubberduck-vba/Rubberduck/issues/2888
         public void TestFunctionArgumentsOnContinuedLine_Multiple()
         {
             const string code = @"
@@ -1744,7 +1743,6 @@ End Sub
 
         [TestCategory("Parser")]
         [TestMethod]
-        [Ignore] // ref. https://github.com/rubberduck-vba/Rubberduck/issues/2888
         public void TestFunctionArgumentsOnContinuedLine_Single()
         {
             const string code = @"
@@ -1761,7 +1759,6 @@ End Sub
 
         [TestCategory("Parser")]
         [TestMethod]
-        [Ignore] // ref. https://github.com/rubberduck-vba/Rubberduck/issues/2888
         public void TestDefaultMemberAccessCallStmtOnFunctionReturnValue_FunctionArgumentsOnContinuedLine_Single()
         {
             const string code = @"
@@ -1778,7 +1775,6 @@ End Sub
 
         [TestCategory("Parser")]
         [TestMethod]
-        [Ignore] // ref. https://github.com/rubberduck-vba/Rubberduck/issues/2888
         public void TestDefaultMemberAccessCallStmtOnFunctionReturnValue_FunctionArgumentsOnContinuedLine_Multiple()
         {
             const string code = @"
@@ -1795,7 +1791,6 @@ End Sub
 
         [TestCategory("Parser")]
         [TestMethod]
-        [Ignore] // ref. https://github.com/rubberduck-vba/Rubberduck/issues/2888
         public void TestReDimWithLineContinuation()
         {
             const string code = @"

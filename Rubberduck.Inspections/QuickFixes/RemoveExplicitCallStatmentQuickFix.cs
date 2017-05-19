@@ -33,9 +33,9 @@ namespace Rubberduck.Inspections.QuickFixes
             rewriter.Remove(context.whiteSpace());
 
             // The CALL statement only has arguments if it's an index expression.
-            if (context.expression() is VBAParser.LExprContext && ((VBAParser.LExprContext)context.expression()).lExpression() is VBAParser.IndexExprContext)
+            if (context.lExpression() is VBAParser.IndexExprContext)
             {
-                var indexExpr = (VBAParser.IndexExprContext)((VBAParser.LExprContext)context.expression()).lExpression();
+                var indexExpr = (VBAParser.IndexExprContext)context.lExpression();
                 rewriter.Replace(indexExpr.LPAREN(), " ");
                 rewriter.Remove(indexExpr.RPAREN());
             }

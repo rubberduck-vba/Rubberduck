@@ -161,10 +161,14 @@ namespace Rubberduck.Parsing.Symbols
                 statementContext);
             if (boundExpression.Classification == ExpressionClassification.ResolutionFailed)
             {
-                var lexpr = expression as VBAParser.LExprContext ?? expression.GetChild<VBAParser.LExprContext>(0);
-                if (lexpr != null)
+                var lexpression = expression as VBAParser.LExpressionContext
+                                    ?? expression.GetChild<VBAParser.LExpressionContext>(0)
+                                    ?? (expression as VBAParser.LExprContext 
+                                        ?? expression.GetChild<VBAParser.LExprContext>(0))?.lExpression();
+
+                if (lexpression != null)
                 {
-                    _declarationFinder.AddUnboundContext(_currentParent, lexpr, withExpression);
+                    _declarationFinder.AddUnboundContext(_currentParent, lexpression, withExpression);
                 }
                 else
                 {
