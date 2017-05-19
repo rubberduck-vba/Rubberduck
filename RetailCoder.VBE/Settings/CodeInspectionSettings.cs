@@ -137,7 +137,11 @@ namespace Rubberduck.Settings
             //default constructor required for serialization
         }
 
-        public CodeInspectionSetting(string name, string description, CodeInspectionType type, CodeInspectionSeverity defaultSeverity, CodeInspectionSeverity severity)
+        public CodeInspectionSetting(string name, CodeInspectionType type, CodeInspectionSeverity defaultSeverity = CodeInspectionSeverity.Warning)
+            : this(name, string.Empty, type, defaultSeverity, defaultSeverity)
+        { }
+
+        public CodeInspectionSetting(string name, string description, CodeInspectionType type, CodeInspectionSeverity defaultSeverity = CodeInspectionSeverity.Warning, CodeInspectionSeverity severity = CodeInspectionSeverity.Warning)
         {
             Name = name;
             Description = description;
@@ -164,7 +168,7 @@ namespace Rubberduck.Settings
         {
             unchecked
             {
-                var hashCode = (Name != null ? Name.GetHashCode() : 0);
+                var hashCode = Name?.GetHashCode() ?? 0;
                 hashCode = (hashCode * 397) ^ (int) Severity;
                 hashCode = (hashCode * 397) ^ (int) InspectionType;
                 return hashCode;

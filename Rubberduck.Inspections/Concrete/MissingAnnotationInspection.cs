@@ -19,7 +19,7 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class MissingAnnotationInspection : ParseTreeInspectionBase
     {
         public MissingAnnotationInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Hint)
+            : base(state, CodeInspectionSeverity.Suggestion)
         {
             Listener = new MissingAnnotationListener(state);
         }

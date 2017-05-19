@@ -17,7 +17,7 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class MissingAttributeInspection : ParseTreeInspectionBase
     {
         public MissingAttributeInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Error)
+            : base(state)
         {
             Listener = new MissingMemberAttributeListener(state);
         }

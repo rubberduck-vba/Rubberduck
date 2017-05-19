@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
@@ -11,6 +12,7 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    [SuppressMessage("ReSharper", "LoopCanBeConvertedToQuery")]
     public sealed class UnassignedVariableUsageInspection : InspectionBase
     {
         public UnassignedVariableUsageInspection(RubberduckParserState state)
