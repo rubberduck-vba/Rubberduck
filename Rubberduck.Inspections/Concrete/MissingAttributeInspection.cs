@@ -52,6 +52,7 @@ namespace Rubberduck.Inspections.Concrete
 
                 _members = new Lazy<IDictionary<string, Declaration>>(() => _state.DeclarationFinder
                     .Members(CurrentModuleName)
+                    .Where(m => !m.DeclarationType.HasFlag(DeclarationType.Module))
                     .GroupBy(m => m.IdentifierName)
                     .ToDictionary(m => m.Key, m => m.First()));
             }

@@ -394,67 +394,6 @@ namespace Rubberduck.Parsing.Symbols
             ((ClassModuleDeclaration)_moduleDeclaration).AddSupertype(context.expression().GetText());
         }
 
-        public override void EnterOptionBaseStmt(VBAParser.OptionBaseStmtContext context)
-        {
-            AddDeclaration(CreateDeclaration(
-                context.GetText(),
-                string.Empty,
-                Accessibility.Implicit,
-                DeclarationType.ModuleOption,
-                context,
-                context.GetSelection(),
-                false,
-                null,
-                null));
-        }
-
-        public override void EnterOptionCompareStmt(VBAParser.OptionCompareStmtContext context)
-        {
-            AddDeclaration(CreateDeclaration(
-                context.GetText(),
-                string.Empty,
-                Accessibility.Implicit,
-                DeclarationType.ModuleOption,
-                context,
-                context.GetSelection(),
-                false,
-                null,
-                null));
-        }
-
-        public override void EnterOptionExplicitStmt(VBAParser.OptionExplicitStmtContext context)
-        {
-            AddDeclaration(CreateDeclaration(
-                context.GetText(),
-                string.Empty,
-                Accessibility.Implicit,
-                DeclarationType.ModuleOption,
-                context,
-                context.GetSelection(),
-                false,
-                null,
-                null));
-        }
-
-        public override void ExitOptionPrivateModuleStmt(VBAParser.OptionPrivateModuleStmtContext context)
-        {
-            if (_moduleDeclaration.DeclarationType == DeclarationType.ProceduralModule)
-            {
-                ((ProceduralModuleDeclaration)_moduleDeclaration).IsPrivateModule = true;
-            }
-            AddDeclaration(
-                CreateDeclaration(
-                    context.GetText(),
-                    string.Empty,
-                    Accessibility.Implicit,
-                    DeclarationType.ModuleOption,
-                    context,
-                    context.GetSelection(),
-                    false,
-                    null,
-                    null));
-        }
-
         public override void EnterSubStmt(VBAParser.SubStmtContext context)
         {
             var accessibility = GetProcedureAccessibility(context.visibility());
