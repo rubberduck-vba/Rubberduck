@@ -281,6 +281,19 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	public virtual void ExitModuleDeclarations([NotNull] VBAParser.ModuleDeclarationsContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.whitespaceIndexExpr"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterWhitespaceIndexExpr([NotNull] VBAParser.WhitespaceIndexExprContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.whitespaceIndexExpr"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitWhitespaceIndexExpr([NotNull] VBAParser.WhitespaceIndexExprContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.indexExpr"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

@@ -245,6 +245,19 @@ public interface IVBAParserListener : IParseTreeListener {
 	void ExitModuleDeclarations([NotNull] VBAParser.ModuleDeclarationsContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by the <c>whitespaceIndexExpr</c>
+	/// labeled alternative in <see cref="VBAParser.lExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterWhitespaceIndexExpr([NotNull] VBAParser.WhitespaceIndexExprContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>whitespaceIndexExpr</c>
+	/// labeled alternative in <see cref="VBAParser.lExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitWhitespaceIndexExpr([NotNull] VBAParser.WhitespaceIndexExprContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by the <c>indexExpr</c>
 	/// labeled alternative in <see cref="VBAParser.lExpression"/>.
 	/// </summary>

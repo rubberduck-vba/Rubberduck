@@ -369,39 +369,6 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void EmptyIfBlock_QuickFixRemovesSingleLineIf_NoWhiteSpace()
-        {
-            const string inputCode =
-@"Sub Foo()
-    If True Then Else(Bar)
-End Sub
-
-Sub Bar()
-End Sub";
-
-            const string expectedCode =
-@"Sub Foo()
-    If Not True Then (Bar)
-End Sub
-
-Sub Bar()
-End Sub";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new EmptyIfBlockInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-            new RemoveEmptyIfBlockQuickFix(state).Fix(inspectionResults.First());
-
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
         public void EmptyIfBlock_QuickFixRemovesLoneIf_WithComment()
         {
             const string inputCode =

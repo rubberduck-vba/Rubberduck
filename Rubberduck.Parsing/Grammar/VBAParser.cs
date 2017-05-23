@@ -10067,8 +10067,8 @@ public partial class VBAParser : Parser {
 		public WhiteSpaceContext whiteSpace() {
 			return GetRuleContext<WhiteSpaceContext>(0);
 		}
-		public ExpressionContext expression() {
-			return GetRuleContext<ExpressionContext>(0);
+		public LExpressionContext lExpression() {
+			return GetRuleContext<LExpressionContext>(0);
 		}
 		public ArgumentListContext argumentList() {
 			return GetRuleContext<ArgumentListContext>(0);
@@ -10105,7 +10105,7 @@ public partial class VBAParser : Parser {
 				{
 				State = 1796; Match(CALL);
 				State = 1797; whiteSpace();
-				State = 1798; expression(0);
+				State = 1798; lExpression(0);
 				}
 				break;
 			case ABS:
@@ -10144,7 +10144,6 @@ public partial class VBAParser : Parser {
 			case UBOUND:
 			case EXCLAMATIONPOINT:
 			case DOT:
-			case HASH:
 			case ACCESS:
 			case ADDRESSOF:
 			case ALIAS:
@@ -10162,7 +10161,6 @@ public partial class VBAParser : Parser {
 			case DATABASE:
 			case DATE:
 			case DOUBLE:
-			case EMPTY:
 			case END:
 			case EQV:
 			case ERROR:
@@ -10225,21 +10223,11 @@ public partial class VBAParser : Parser {
 			case WITHEVENTS:
 			case WRITE:
 			case XOR:
-			case LPAREN:
-			case MINUS:
 			case L_SQUARE_BRACKET:
-			case STRINGLITERAL:
-			case OCTLITERAL:
-			case HEXLITERAL:
-			case FLOATLITERAL:
-			case INTEGERLITERAL:
-			case DATELITERAL:
-			case WS:
 			case IDENTIFIER:
-			case LINE_CONTINUATION:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 1800; expression(0);
+				State = 1800; lExpression(0);
 				State = 1804;
 				switch ( Interpreter.AdaptivePredict(_input,226,_ctx) ) {
 				case 1:
@@ -17200,6 +17188,39 @@ public partial class VBAParser : Parser {
 			else return visitor.VisitChildren(this);
 		}
 	}
+	public partial class WhitespaceIndexExprContext : LExpressionContext {
+		public WhiteSpaceContext whiteSpace(int i) {
+			return GetRuleContext<WhiteSpaceContext>(i);
+		}
+		public ITerminalNode LPAREN() { return GetToken(VBAParser.LPAREN, 0); }
+		public MandatoryLineContinuationContext mandatoryLineContinuation() {
+			return GetRuleContext<MandatoryLineContinuationContext>(0);
+		}
+		public IReadOnlyList<WhiteSpaceContext> whiteSpace() {
+			return GetRuleContexts<WhiteSpaceContext>();
+		}
+		public ITerminalNode RPAREN() { return GetToken(VBAParser.RPAREN, 0); }
+		public LExpressionContext lExpression() {
+			return GetRuleContext<LExpressionContext>(0);
+		}
+		public ArgumentListContext argumentList() {
+			return GetRuleContext<ArgumentListContext>(0);
+		}
+		public WhitespaceIndexExprContext(LExpressionContext context) { CopyFrom(context); }
+		public override void EnterRule(IParseTreeListener listener) {
+			IVBAParserListener typedListener = listener as IVBAParserListener;
+			if (typedListener != null) typedListener.EnterWhitespaceIndexExpr(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			IVBAParserListener typedListener = listener as IVBAParserListener;
+			if (typedListener != null) typedListener.ExitWhitespaceIndexExpr(this);
+		}
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVBAParserVisitor<TResult> typedVisitor = visitor as IVBAParserVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitWhitespaceIndexExpr(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
 
 	[RuleVersion(0)]
 	public LExpressionContext lExpression() {
@@ -17276,22 +17297,22 @@ public partial class VBAParser : Parser {
 				break;
 			}
 			_ctx.stop = _input.Lt(-1);
-			State = 2594;
+			State = 2611;
 			_errHandler.Sync(this);
-			_alt = Interpreter.AdaptivePredict(_input,376,_ctx);
+			_alt = Interpreter.AdaptivePredict(_input,380,_ctx);
 			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) TriggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					State = 2592;
-					switch ( Interpreter.AdaptivePredict(_input,375,_ctx) ) {
+					State = 2609;
+					switch ( Interpreter.AdaptivePredict(_input,379,_ctx) ) {
 					case 1:
 						{
 						_localctx = new IndexExprContext(new LExpressionContext(_parentctx, _parentState));
 						PushNewRecursionContext(_localctx, _startState, RULE_lExpression);
 						State = 2562;
-						if (!(Precpred(_ctx, 7))) throw new FailedPredicateException(this, "Precpred(_ctx, 7)");
+						if (!(Precpred(_ctx, 8))) throw new FailedPredicateException(this, "Precpred(_ctx, 8)");
 						State = 2563; Match(LPAREN);
 						State = 2565;
 						switch ( Interpreter.AdaptivePredict(_input,368,_ctx) ) {
@@ -17326,7 +17347,7 @@ public partial class VBAParser : Parser {
 						_localctx = new MemberAccessExprContext(new LExpressionContext(_parentctx, _parentState));
 						PushNewRecursionContext(_localctx, _startState, RULE_lExpression);
 						State = 2574;
-						if (!(Precpred(_ctx, 6))) throw new FailedPredicateException(this, "Precpred(_ctx, 6)");
+						if (!(Precpred(_ctx, 7))) throw new FailedPredicateException(this, "Precpred(_ctx, 7)");
 						State = 2576;
 						_la = _input.La(1);
 						if (_la==LINE_CONTINUATION) {
@@ -17353,7 +17374,7 @@ public partial class VBAParser : Parser {
 						_localctx = new DictionaryAccessExprContext(new LExpressionContext(_parentctx, _parentState));
 						PushNewRecursionContext(_localctx, _startState, RULE_lExpression);
 						State = 2583;
-						if (!(Precpred(_ctx, 5))) throw new FailedPredicateException(this, "Precpred(_ctx, 5)");
+						if (!(Precpred(_ctx, 6))) throw new FailedPredicateException(this, "Precpred(_ctx, 6)");
 						State = 2585;
 						_la = _input.La(1);
 						if (_la==LINE_CONTINUATION) {
@@ -17374,12 +17395,56 @@ public partial class VBAParser : Parser {
 						State = 2591; unrestrictedIdentifier();
 						}
 						break;
+
+					case 4:
+						{
+						_localctx = new WhitespaceIndexExprContext(new LExpressionContext(_parentctx, _parentState));
+						PushNewRecursionContext(_localctx, _startState, RULE_lExpression);
+						State = 2592;
+						if (!(Precpred(_ctx, 1))) throw new FailedPredicateException(this, "Precpred(_ctx, 1)");
+						State = 2593; mandatoryLineContinuation();
+						State = 2595;
+						_la = _input.La(1);
+						if (_la==WS || _la==LINE_CONTINUATION) {
+							{
+							State = 2594; whiteSpace();
+							}
+						}
+
+						State = 2597; Match(LPAREN);
+						State = 2599;
+						switch ( Interpreter.AdaptivePredict(_input,376,_ctx) ) {
+						case 1:
+							{
+							State = 2598; whiteSpace();
+							}
+							break;
+						}
+						State = 2602;
+						switch ( Interpreter.AdaptivePredict(_input,377,_ctx) ) {
+						case 1:
+							{
+							State = 2601; argumentList();
+							}
+							break;
+						}
+						State = 2605;
+						_la = _input.La(1);
+						if (_la==WS || _la==LINE_CONTINUATION) {
+							{
+							State = 2604; whiteSpace();
+							}
+						}
+
+						State = 2607; Match(RPAREN);
+						}
+						break;
 					}
 					} 
 				}
-				State = 2596;
+				State = 2613;
 				_errHandler.Sync(this);
-				_alt = Interpreter.AdaptivePredict(_input,376,_ctx);
+				_alt = Interpreter.AdaptivePredict(_input,380,_ctx);
 			}
 			}
 		}
@@ -17433,69 +17498,69 @@ public partial class VBAParser : Parser {
 		EnterRule(_localctx, 392, RULE_builtInType);
 		int _la;
 		try {
-			State = 2618;
-			switch ( Interpreter.AdaptivePredict(_input,381,_ctx) ) {
+			State = 2635;
+			switch ( Interpreter.AdaptivePredict(_input,385,_ctx) ) {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 2597; baseType();
+				State = 2614; baseType();
 				}
 				break;
 
 			case 2:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 2598; Match(L_SQUARE_BRACKET);
-				State = 2600;
+				State = 2615; Match(L_SQUARE_BRACKET);
+				State = 2617;
 				_la = _input.La(1);
 				if (_la==WS || _la==LINE_CONTINUATION) {
 					{
-					State = 2599; whiteSpace();
+					State = 2616; whiteSpace();
 					}
 				}
 
-				State = 2602; baseType();
-				State = 2604;
+				State = 2619; baseType();
+				State = 2621;
 				_la = _input.La(1);
 				if (_la==WS || _la==LINE_CONTINUATION) {
 					{
-					State = 2603; whiteSpace();
+					State = 2620; whiteSpace();
 					}
 				}
 
-				State = 2606; Match(R_SQUARE_BRACKET);
+				State = 2623; Match(R_SQUARE_BRACKET);
 				}
 				break;
 
 			case 3:
 				EnterOuterAlt(_localctx, 3);
 				{
-				State = 2608; Match(OBJECT);
+				State = 2625; Match(OBJECT);
 				}
 				break;
 
 			case 4:
 				EnterOuterAlt(_localctx, 4);
 				{
-				State = 2609; Match(L_SQUARE_BRACKET);
-				State = 2611;
+				State = 2626; Match(L_SQUARE_BRACKET);
+				State = 2628;
 				_la = _input.La(1);
 				if (_la==WS || _la==LINE_CONTINUATION) {
 					{
-					State = 2610; whiteSpace();
+					State = 2627; whiteSpace();
 					}
 				}
 
-				State = 2613; Match(OBJECT);
-				State = 2615;
+				State = 2630; Match(OBJECT);
+				State = 2632;
 				_la = _input.La(1);
 				if (_la==WS || _la==LINE_CONTINUATION) {
 					{
-					State = 2614; whiteSpace();
+					State = 2631; whiteSpace();
 					}
 				}
 
-				State = 2617; Match(R_SQUARE_BRACKET);
+				State = 2634; Match(R_SQUARE_BRACKET);
 				}
 				break;
 			}
@@ -17557,57 +17622,57 @@ public partial class VBAParser : Parser {
 			int _alt;
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2639;
-			switch ( Interpreter.AdaptivePredict(_input,387,_ctx) ) {
+			State = 2656;
+			switch ( Interpreter.AdaptivePredict(_input,391,_ctx) ) {
 			case 1:
 				{
-				State = 2621;
-				switch ( Interpreter.AdaptivePredict(_input,382,_ctx) ) {
+				State = 2638;
+				switch ( Interpreter.AdaptivePredict(_input,386,_ctx) ) {
 				case 1:
 					{
-					State = 2620; whiteSpace();
+					State = 2637; whiteSpace();
 					}
 					break;
 				}
-				State = 2624;
-				switch ( Interpreter.AdaptivePredict(_input,383,_ctx) ) {
+				State = 2641;
+				switch ( Interpreter.AdaptivePredict(_input,387,_ctx) ) {
 				case 1:
 					{
-					State = 2623; argument();
+					State = 2640; argument();
 					}
 					break;
 				}
-				State = 2636;
+				State = 2653;
 				_errHandler.Sync(this);
-				_alt = Interpreter.AdaptivePredict(_input,386,_ctx);
+				_alt = Interpreter.AdaptivePredict(_input,390,_ctx);
 				while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
 					if ( _alt==1 ) {
 						{
 						{
-						State = 2627;
+						State = 2644;
 						_la = _input.La(1);
 						if (_la==WS || _la==LINE_CONTINUATION) {
 							{
-							State = 2626; whiteSpace();
+							State = 2643; whiteSpace();
 							}
 						}
 
-						State = 2629; Match(COMMA);
-						State = 2631;
-						switch ( Interpreter.AdaptivePredict(_input,385,_ctx) ) {
+						State = 2646; Match(COMMA);
+						State = 2648;
+						switch ( Interpreter.AdaptivePredict(_input,389,_ctx) ) {
 						case 1:
 							{
-							State = 2630; whiteSpace();
+							State = 2647; whiteSpace();
 							}
 							break;
 						}
-						State = 2633; argument();
+						State = 2650; argument();
 						}
 						} 
 					}
-					State = 2638;
+					State = 2655;
 					_errHandler.Sync(this);
-					_alt = Interpreter.AdaptivePredict(_input,386,_ctx);
+					_alt = Interpreter.AdaptivePredict(_input,390,_ctx);
 				}
 				}
 				break;
@@ -17656,7 +17721,7 @@ public partial class VBAParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2641; argument();
+			State = 2658; argument();
 			}
 		}
 		catch (RecognitionException re) {
@@ -17702,19 +17767,19 @@ public partial class VBAParser : Parser {
 		ArgumentContext _localctx = new ArgumentContext(_ctx, State);
 		EnterRule(_localctx, 398, RULE_argument);
 		try {
-			State = 2645;
-			switch ( Interpreter.AdaptivePredict(_input,388,_ctx) ) {
+			State = 2662;
+			switch ( Interpreter.AdaptivePredict(_input,392,_ctx) ) {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 2643; positionalArgument();
+				State = 2660; positionalArgument();
 				}
 				break;
 
 			case 2:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 2644; namedArgument();
+				State = 2661; namedArgument();
 				}
 				break;
 			}
@@ -17761,7 +17826,7 @@ public partial class VBAParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2647; argumentExpression();
+			State = 2664; argumentExpression();
 			}
 		}
 		catch (RecognitionException re) {
@@ -17817,25 +17882,25 @@ public partial class VBAParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2649; unrestrictedIdentifier();
-			State = 2651;
+			State = 2666; unrestrictedIdentifier();
+			State = 2668;
 			_la = _input.La(1);
 			if (_la==WS || _la==LINE_CONTINUATION) {
 				{
-				State = 2650; whiteSpace();
+				State = 2667; whiteSpace();
 				}
 			}
 
-			State = 2653; Match(ASSIGN);
-			State = 2655;
-			switch ( Interpreter.AdaptivePredict(_input,390,_ctx) ) {
+			State = 2670; Match(ASSIGN);
+			State = 2672;
+			switch ( Interpreter.AdaptivePredict(_input,394,_ctx) ) {
 			case 1:
 				{
-				State = 2654; whiteSpace();
+				State = 2671; whiteSpace();
 				}
 				break;
 			}
-			State = 2657; argumentExpression();
+			State = 2674; argumentExpression();
 			}
 		}
 		catch (RecognitionException re) {
@@ -17895,39 +17960,39 @@ public partial class VBAParser : Parser {
 		ArgumentExpressionContext _localctx = new ArgumentExpressionContext(_ctx, State);
 		EnterRule(_localctx, 404, RULE_argumentExpression);
 		try {
-			State = 2671;
-			switch ( Interpreter.AdaptivePredict(_input,392,_ctx) ) {
+			State = 2688;
+			switch ( Interpreter.AdaptivePredict(_input,396,_ctx) ) {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 2661;
-				switch ( Interpreter.AdaptivePredict(_input,391,_ctx) ) {
+				State = 2678;
+				switch ( Interpreter.AdaptivePredict(_input,395,_ctx) ) {
 				case 1:
 					{
-					State = 2659; Match(BYVAL);
-					State = 2660; whiteSpace();
+					State = 2676; Match(BYVAL);
+					State = 2677; whiteSpace();
 					}
 					break;
 				}
-				State = 2663; expression(0);
+				State = 2680; expression(0);
 				}
 				break;
 
 			case 2:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 2664; addressOfExpression();
+				State = 2681; addressOfExpression();
 				}
 				break;
 
 			case 3:
 				EnterOuterAlt(_localctx, 3);
 				{
-				State = 2665; lowerBoundArgumentExpression();
-				State = 2666; whiteSpace();
-				State = 2667; Match(TO);
-				State = 2668; whiteSpace();
-				State = 2669; upperBoundArgumentExpression();
+				State = 2682; lowerBoundArgumentExpression();
+				State = 2683; whiteSpace();
+				State = 2684; Match(TO);
+				State = 2685; whiteSpace();
+				State = 2686; upperBoundArgumentExpression();
 				}
 				break;
 			}
@@ -17974,7 +18039,7 @@ public partial class VBAParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2673; expression(0);
+			State = 2690; expression(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -18019,7 +18084,7 @@ public partial class VBAParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2675; expression(0);
+			State = 2692; expression(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -18068,9 +18133,9 @@ public partial class VBAParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2677; Match(ADDRESSOF);
-			State = 2678; whiteSpace();
-			State = 2679; expression(0);
+			State = 2694; Match(ADDRESSOF);
+			State = 2695; whiteSpace();
+			State = 2696; expression(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -18231,7 +18296,7 @@ public partial class VBAParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2681;
+			State = 2698;
 			_la = _input.La(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ABS) | (1L << ANY) | (1L << ARRAY) | (1L << B_CHAR) | (1L << CBOOL) | (1L << CBYTE) | (1L << CCUR) | (1L << CDATE) | (1L << CDBL) | (1L << CDEC) | (1L << CINT) | (1L << CLNG) | (1L << CLNGLNG) | (1L << CLNGPTR) | (1L << CSNG) | (1L << CSTR) | (1L << CURRENCY) | (1L << CVAR) | (1L << CVERR) | (1L << DEBUG) | (1L << DOEVENTS) | (1L << FIX) | (1L << INPUTB) | (1L << INT) | (1L << LBOUND) | (1L << LEN) | (1L << LENB) | (1L << LONGLONG) | (1L << LONGPTR) | (1L << MIDB) | (1L << PSET) | (1L << SGN) | (1L << UBOUND) | (1L << ACCESS) | (1L << ADDRESSOF) | (1L << ALIAS) | (1L << AND) | (1L << ATTRIBUTE) | (1L << APPEND) | (1L << BEGIN) | (1L << BINARY) | (1L << BOOLEAN) | (1L << BYVAL) | (1L << BYREF) | (1L << BYTE))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (CLASS - 64)) | (1L << (CLOSE - 64)) | (1L << (DATABASE - 64)) | (1L << (DATE - 64)) | (1L << (DOUBLE - 64)) | (1L << (END - 64)) | (1L << (EQV - 64)) | (1L << (ERROR - 64)) | (1L << (FALSE - 64)) | (1L << (GET - 64)) | (1L << (IMP - 64)) | (1L << (IN - 64)) | (1L << (INPUT - 64)) | (1L << (IS - 64)) | (1L << (INTEGER - 64)) | (1L << (LOCK - 64)) | (1L << (LONG - 64)))) != 0) || ((((_la - 128)) & ~0x3f) == 0 && ((1L << (_la - 128)) & ((1L << (LIB - 128)) | (1L << (LIKE - 128)) | (1L << (LINE_INPUT - 128)) | (1L << (LOCK_READ - 128)) | (1L << (LOCK_WRITE - 128)) | (1L << (LOCK_READ_WRITE - 128)) | (1L << (ME - 128)) | (1L << (MID - 128)) | (1L << (MOD - 128)) | (1L << (NAME - 128)) | (1L << (NEW - 128)) | (1L << (NOT - 128)) | (1L << (NOTHING - 128)) | (1L << (NULL - 128)) | (1L << (OBJECT - 128)) | (1L << (ON_ERROR - 128)) | (1L << (OPEN - 128)) | (1L << (OPTIONAL - 128)) | (1L << (OR - 128)) | (1L << (OUTPUT - 128)) | (1L << (PARAMARRAY - 128)) | (1L << (PRESERVE - 128)) | (1L << (PRINT - 128)) | (1L << (PTRSAFE - 128)) | (1L << (PUT - 128)) | (1L << (RANDOM - 128)) | (1L << (READ - 128)) | (1L << (READ_WRITE - 128)) | (1L << (REM - 128)) | (1L << (RESET - 128)) | (1L << (SEEK - 128)) | (1L << (SHARED - 128)) | (1L << (SINGLE - 128)) | (1L << (SPC - 128)) | (1L << (STEP - 128)) | (1L << (STRING - 128)) | (1L << (TAB - 128)) | (1L << (TEXT - 128)) | (1L << (THEN - 128)) | (1L << (TO - 128)) | (1L << (TRUE - 128)))) != 0) || ((((_la - 193)) & ~0x3f) == 0 && ((1L << (_la - 193)) & ((1L << (TYPEOF - 193)) | (1L << (UNLOCK - 193)) | (1L << (UNTIL - 193)) | (1L << (VARIANT - 193)) | (1L << (VERSION - 193)) | (1L << (WIDTH - 193)) | (1L << (WITHEVENTS - 193)) | (1L << (WRITE - 193)) | (1L << (XOR - 193)))) != 0)) ) {
 			_errHandler.RecoverInline(this);
@@ -18279,7 +18344,7 @@ public partial class VBAParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2683; Match(AS);
+			State = 2700; Match(AS);
 			}
 		}
 		catch (RecognitionException re) {
@@ -18384,7 +18449,7 @@ public partial class VBAParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2685;
+			State = 2702;
 			_la = _input.La(1);
 			if ( !(((((_la - 24)) & ~0x3f) == 0 && ((1L << (_la - 24)) & ((1L << (EXIT - 24)) | (1L << (OPTION - 24)) | (1L << (CALL - 24)) | (1L << (CASE - 24)) | (1L << (CONST - 24)) | (1L << (DECLARE - 24)) | (1L << (DEFBOOL - 24)) | (1L << (DEFBYTE - 24)) | (1L << (DEFDATE - 24)) | (1L << (DEFDBL - 24)) | (1L << (DEFCUR - 24)) | (1L << (DEFINT - 24)) | (1L << (DEFLNG - 24)) | (1L << (DEFLNGLNG - 24)) | (1L << (DEFLNGPTR - 24)) | (1L << (DEFOBJ - 24)) | (1L << (DEFSNG - 24)) | (1L << (DEFSTR - 24)) | (1L << (DEFVAR - 24)) | (1L << (DIM - 24)) | (1L << (DO - 24)) | (1L << (ELSE - 24)))) != 0) || ((((_la - 88)) & ~0x3f) == 0 && ((1L << (_la - 88)) & ((1L << (ELSEIF - 88)) | (1L << (END_SELECT - 88)) | (1L << (END_WITH - 88)) | (1L << (ENUM - 88)) | (1L << (ERASE - 88)) | (1L << (EVENT - 88)) | (1L << (EXIT_DO - 88)) | (1L << (EXIT_FOR - 88)) | (1L << (EXIT_FUNCTION - 88)) | (1L << (EXIT_PROPERTY - 88)) | (1L << (EXIT_SUB - 88)) | (1L << (FRIEND - 88)) | (1L << (FOR - 88)) | (1L << (FUNCTION - 88)) | (1L << (GLOBAL - 88)) | (1L << (GOSUB - 88)) | (1L << (GOTO - 88)) | (1L << (IF - 88)) | (1L << (IMPLEMENTS - 88)) | (1L << (LOOP - 88)) | (1L << (LET - 88)) | (1L << (LSET - 88)) | (1L << (NEXT - 88)) | (1L << (ON - 88)))) != 0) || ((((_la - 159)) & ~0x3f) == 0 && ((1L << (_la - 159)) & ((1L << (PRIVATE - 159)) | (1L << (PUBLIC - 159)) | (1L << (RAISEEVENT - 159)) | (1L << (REDIM - 159)) | (1L << (RESUME - 159)) | (1L << (RETURN - 159)) | (1L << (RSET - 159)) | (1L << (SELECT - 159)) | (1L << (SET - 159)) | (1L << (STATIC - 159)) | (1L << (STOP - 159)) | (1L << (SUB - 159)) | (1L << (TYPE - 159)) | (1L << (WEND - 159)) | (1L << (WHILE - 159)) | (1L << (WITH - 159)))) != 0)) ) {
 			_errHandler.RecoverInline(this);
@@ -18440,25 +18505,25 @@ public partial class VBAParser : Parser {
 		EnterRule(_localctx, 418, RULE_endOfLine);
 		int _la;
 		try {
-			State = 2698;
-			switch ( Interpreter.AdaptivePredict(_input,396,_ctx) ) {
+			State = 2715;
+			switch ( Interpreter.AdaptivePredict(_input,400,_ctx) ) {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 2688;
+				State = 2705;
 				_la = _input.La(1);
 				if (_la==WS || _la==LINE_CONTINUATION) {
 					{
-					State = 2687; whiteSpace();
+					State = 2704; whiteSpace();
 					}
 				}
 
-				State = 2690; Match(NEWLINE);
-				State = 2692;
-				switch ( Interpreter.AdaptivePredict(_input,394,_ctx) ) {
+				State = 2707; Match(NEWLINE);
+				State = 2709;
+				switch ( Interpreter.AdaptivePredict(_input,398,_ctx) ) {
 				case 1:
 					{
-					State = 2691; whiteSpace();
+					State = 2708; whiteSpace();
 					}
 					break;
 				}
@@ -18468,15 +18533,15 @@ public partial class VBAParser : Parser {
 			case 2:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 2695;
+				State = 2712;
 				_la = _input.La(1);
 				if (_la==WS || _la==LINE_CONTINUATION) {
 					{
-					State = 2694; whiteSpace();
+					State = 2711; whiteSpace();
 					}
 				}
 
-				State = 2697; commentOrAnnotation();
+				State = 2714; commentOrAnnotation();
 				}
 				break;
 			}
@@ -18537,43 +18602,43 @@ public partial class VBAParser : Parser {
 		int _la;
 		try {
 			int _alt;
-			State = 2716;
-			switch ( Interpreter.AdaptivePredict(_input,402,_ctx) ) {
+			State = 2733;
+			switch ( Interpreter.AdaptivePredict(_input,406,_ctx) ) {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 2708;
+				State = 2725;
 				_errHandler.Sync(this);
 				_alt = 1;
 				do {
 					switch (_alt) {
 					case 1:
 						{
-						State = 2708;
-						switch ( Interpreter.AdaptivePredict(_input,399,_ctx) ) {
+						State = 2725;
+						switch ( Interpreter.AdaptivePredict(_input,403,_ctx) ) {
 						case 1:
 							{
-							State = 2700; endOfLine();
+							State = 2717; endOfLine();
 							}
 							break;
 
 						case 2:
 							{
 							{
-							State = 2702;
+							State = 2719;
 							_la = _input.La(1);
 							if (_la==WS || _la==LINE_CONTINUATION) {
 								{
-								State = 2701; whiteSpace();
+								State = 2718; whiteSpace();
 								}
 							}
 
-							State = 2704; Match(COLON);
-							State = 2706;
-							switch ( Interpreter.AdaptivePredict(_input,398,_ctx) ) {
+							State = 2721; Match(COLON);
+							State = 2723;
+							switch ( Interpreter.AdaptivePredict(_input,402,_ctx) ) {
 							case 1:
 								{
-								State = 2705; whiteSpace();
+								State = 2722; whiteSpace();
 								}
 								break;
 							}
@@ -18586,9 +18651,9 @@ public partial class VBAParser : Parser {
 					default:
 						throw new NoViableAltException(this);
 					}
-					State = 2710;
+					State = 2727;
 					_errHandler.Sync(this);
-					_alt = Interpreter.AdaptivePredict(_input,400,_ctx);
+					_alt = Interpreter.AdaptivePredict(_input,404,_ctx);
 				} while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber );
 				}
 				break;
@@ -18596,15 +18661,15 @@ public partial class VBAParser : Parser {
 			case 2:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 2713;
+				State = 2730;
 				_la = _input.La(1);
 				if (_la==WS || _la==LINE_CONTINUATION) {
 					{
-					State = 2712; whiteSpace();
+					State = 2729; whiteSpace();
 					}
 				}
 
-				State = 2715; Match(Eof);
+				State = 2732; Match(Eof);
 				}
 				break;
 			}
@@ -18655,26 +18720,26 @@ public partial class VBAParser : Parser {
 		CommentOrAnnotationContext _localctx = new CommentOrAnnotationContext(_ctx, State);
 		EnterRule(_localctx, 422, RULE_commentOrAnnotation);
 		try {
-			State = 2721;
-			switch ( Interpreter.AdaptivePredict(_input,403,_ctx) ) {
+			State = 2738;
+			switch ( Interpreter.AdaptivePredict(_input,407,_ctx) ) {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 2718; annotationList();
+				State = 2735; annotationList();
 				}
 				break;
 
 			case 2:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 2719; remComment();
+				State = 2736; remComment();
 				}
 				break;
 
 			case 3:
 				EnterOuterAlt(_localctx, 3);
 				{
-				State = 2720; comment();
+				State = 2737; comment();
 				}
 				break;
 			}
@@ -18725,16 +18790,16 @@ public partial class VBAParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2723; Match(REM);
-			State = 2725;
-			switch ( Interpreter.AdaptivePredict(_input,404,_ctx) ) {
+			State = 2740; Match(REM);
+			State = 2742;
+			switch ( Interpreter.AdaptivePredict(_input,408,_ctx) ) {
 			case 1:
 				{
-				State = 2724; whiteSpace();
+				State = 2741; whiteSpace();
 				}
 				break;
 			}
-			State = 2727; commentBody();
+			State = 2744; commentBody();
 			}
 		}
 		catch (RecognitionException re) {
@@ -18780,8 +18845,8 @@ public partial class VBAParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2729; Match(SINGLEQUOTE);
-			State = 2730; commentBody();
+			State = 2746; Match(SINGLEQUOTE);
+			State = 2747; commentBody();
 			}
 		}
 		catch (RecognitionException re) {
@@ -18833,23 +18898,23 @@ public partial class VBAParser : Parser {
 			int _alt;
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2736;
+			State = 2753;
 			_errHandler.Sync(this);
-			_alt = Interpreter.AdaptivePredict(_input,406,_ctx);
+			_alt = Interpreter.AdaptivePredict(_input,410,_ctx);
 			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
 				if ( _alt==1 ) {
 					{
-					State = 2734;
-					switch ( Interpreter.AdaptivePredict(_input,405,_ctx) ) {
+					State = 2751;
+					switch ( Interpreter.AdaptivePredict(_input,409,_ctx) ) {
 					case 1:
 						{
-						State = 2732; Match(LINE_CONTINUATION);
+						State = 2749; Match(LINE_CONTINUATION);
 						}
 						break;
 
 					case 2:
 						{
-						State = 2733;
+						State = 2750;
 						_la = _input.La(1);
 						if ( _la <= 0 || (_la==NEWLINE) ) {
 						_errHandler.RecoverInline(this);
@@ -18860,9 +18925,9 @@ public partial class VBAParser : Parser {
 					}
 					} 
 				}
-				State = 2738;
+				State = 2755;
 				_errHandler.Sync(this);
-				_alt = Interpreter.AdaptivePredict(_input,406,_ctx);
+				_alt = Interpreter.AdaptivePredict(_input,410,_ctx);
 			}
 			}
 		}
@@ -18928,8 +18993,8 @@ public partial class VBAParser : Parser {
 			int _alt;
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2739; Match(SINGLEQUOTE);
-			State = 2745;
+			State = 2756; Match(SINGLEQUOTE);
+			State = 2762;
 			_errHandler.Sync(this);
 			_alt = 1;
 			do {
@@ -18937,13 +19002,13 @@ public partial class VBAParser : Parser {
 				case 1:
 					{
 					{
-					State = 2740; Match(AT);
-					State = 2741; annotation();
-					State = 2743;
-					switch ( Interpreter.AdaptivePredict(_input,407,_ctx) ) {
+					State = 2757; Match(AT);
+					State = 2758; annotation();
+					State = 2760;
+					switch ( Interpreter.AdaptivePredict(_input,411,_ctx) ) {
 					case 1:
 						{
-						State = 2742; whiteSpace();
+						State = 2759; whiteSpace();
 						}
 						break;
 					}
@@ -18953,24 +19018,24 @@ public partial class VBAParser : Parser {
 				default:
 					throw new NoViableAltException(this);
 				}
-				State = 2747;
+				State = 2764;
 				_errHandler.Sync(this);
-				_alt = Interpreter.AdaptivePredict(_input,408,_ctx);
+				_alt = Interpreter.AdaptivePredict(_input,412,_ctx);
 			} while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber );
-			State = 2754;
-			switch ( Interpreter.AdaptivePredict(_input,410,_ctx) ) {
+			State = 2771;
+			switch ( Interpreter.AdaptivePredict(_input,414,_ctx) ) {
 			case 1:
 				{
-				State = 2750;
+				State = 2767;
 				_la = _input.La(1);
 				if (_la==WS || _la==LINE_CONTINUATION) {
 					{
-					State = 2749; whiteSpace();
+					State = 2766; whiteSpace();
 					}
 				}
 
-				State = 2752; Match(COLON);
-				State = 2753; commentBody();
+				State = 2769; Match(COLON);
+				State = 2770; commentBody();
 				}
 				break;
 			}
@@ -19021,12 +19086,12 @@ public partial class VBAParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2756; annotationName();
-			State = 2758;
-			switch ( Interpreter.AdaptivePredict(_input,411,_ctx) ) {
+			State = 2773; annotationName();
+			State = 2775;
+			switch ( Interpreter.AdaptivePredict(_input,415,_ctx) ) {
 			case 1:
 				{
-				State = 2757; annotationArgList();
+				State = 2774; annotationArgList();
 				}
 				break;
 			}
@@ -19074,7 +19139,7 @@ public partial class VBAParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2760; unrestrictedIdentifier();
+			State = 2777; unrestrictedIdentifier();
 			}
 		}
 		catch (RecognitionException re) {
@@ -19134,22 +19199,22 @@ public partial class VBAParser : Parser {
 		int _la;
 		try {
 			int _alt;
-			State = 2822;
-			switch ( Interpreter.AdaptivePredict(_input,425,_ctx) ) {
+			State = 2839;
+			switch ( Interpreter.AdaptivePredict(_input,429,_ctx) ) {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 2762; whiteSpace();
-				State = 2763; annotationArg();
+				State = 2779; whiteSpace();
+				State = 2780; annotationArg();
 				}
 				break;
 
 			case 2:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 2765; whiteSpace();
-				State = 2766; annotationArg();
-				State = 2775;
+				State = 2782; whiteSpace();
+				State = 2783; annotationArg();
+				State = 2792;
 				_errHandler.Sync(this);
 				_alt = 1;
 				do {
@@ -19157,33 +19222,33 @@ public partial class VBAParser : Parser {
 					case 1:
 						{
 						{
-						State = 2768;
+						State = 2785;
 						_la = _input.La(1);
 						if (_la==WS || _la==LINE_CONTINUATION) {
 							{
-							State = 2767; whiteSpace();
+							State = 2784; whiteSpace();
 							}
 						}
 
-						State = 2770; Match(COMMA);
-						State = 2772;
-						switch ( Interpreter.AdaptivePredict(_input,413,_ctx) ) {
+						State = 2787; Match(COMMA);
+						State = 2789;
+						switch ( Interpreter.AdaptivePredict(_input,417,_ctx) ) {
 						case 1:
 							{
-							State = 2771; whiteSpace();
+							State = 2788; whiteSpace();
 							}
 							break;
 						}
-						State = 2774; annotationArg();
+						State = 2791; annotationArg();
 						}
 						}
 						break;
 					default:
 						throw new NoViableAltException(this);
 					}
-					State = 2777;
+					State = 2794;
 					_errHandler.Sync(this);
-					_alt = Interpreter.AdaptivePredict(_input,414,_ctx);
+					_alt = Interpreter.AdaptivePredict(_input,418,_ctx);
 				} while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber );
 				}
 				break;
@@ -19191,63 +19256,15 @@ public partial class VBAParser : Parser {
 			case 3:
 				EnterOuterAlt(_localctx, 3);
 				{
-				State = 2780;
+				State = 2797;
 				_la = _input.La(1);
 				if (_la==WS || _la==LINE_CONTINUATION) {
 					{
-					State = 2779; whiteSpace();
+					State = 2796; whiteSpace();
 					}
 				}
 
-				State = 2782; Match(LPAREN);
-				State = 2784;
-				_la = _input.La(1);
-				if (_la==WS || _la==LINE_CONTINUATION) {
-					{
-					State = 2783; whiteSpace();
-					}
-				}
-
-				State = 2786; Match(RPAREN);
-				}
-				break;
-
-			case 4:
-				EnterOuterAlt(_localctx, 4);
-				{
-				State = 2788;
-				_la = _input.La(1);
-				if (_la==WS || _la==LINE_CONTINUATION) {
-					{
-					State = 2787; whiteSpace();
-					}
-				}
-
-				State = 2790; Match(LPAREN);
-				State = 2792;
-				switch ( Interpreter.AdaptivePredict(_input,418,_ctx) ) {
-				case 1:
-					{
-					State = 2791; whiteSpace();
-					}
-					break;
-				}
-				State = 2794; annotationArg();
-				State = 2796;
-				_la = _input.La(1);
-				if (_la==WS || _la==LINE_CONTINUATION) {
-					{
-					State = 2795; whiteSpace();
-					}
-				}
-
-				State = 2798; Match(RPAREN);
-				}
-				break;
-
-			case 5:
-				EnterOuterAlt(_localctx, 5);
-				{
+				State = 2799; Match(LPAREN);
 				State = 2801;
 				_la = _input.La(1);
 				if (_la==WS || _la==LINE_CONTINUATION) {
@@ -19256,44 +19273,46 @@ public partial class VBAParser : Parser {
 					}
 				}
 
-				State = 2803; Match(LPAREN);
-				State = 2804; annotationArg();
-				State = 2813;
-				_errHandler.Sync(this);
-				_alt = 1;
-				do {
-					switch (_alt) {
-					case 1:
-						{
-						{
-						State = 2806;
-						_la = _input.La(1);
-						if (_la==WS || _la==LINE_CONTINUATION) {
-							{
-							State = 2805; whiteSpace();
-							}
-						}
+				State = 2803; Match(RPAREN);
+				}
+				break;
 
-						State = 2808; Match(COMMA);
-						State = 2810;
-						switch ( Interpreter.AdaptivePredict(_input,422,_ctx) ) {
-						case 1:
-							{
-							State = 2809; whiteSpace();
-							}
-							break;
-						}
-						State = 2812; annotationArg();
-						}
-						}
-						break;
-					default:
-						throw new NoViableAltException(this);
+			case 4:
+				EnterOuterAlt(_localctx, 4);
+				{
+				State = 2805;
+				_la = _input.La(1);
+				if (_la==WS || _la==LINE_CONTINUATION) {
+					{
+					State = 2804; whiteSpace();
 					}
-					State = 2815;
-					_errHandler.Sync(this);
-					_alt = Interpreter.AdaptivePredict(_input,423,_ctx);
-				} while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber );
+				}
+
+				State = 2807; Match(LPAREN);
+				State = 2809;
+				switch ( Interpreter.AdaptivePredict(_input,422,_ctx) ) {
+				case 1:
+					{
+					State = 2808; whiteSpace();
+					}
+					break;
+				}
+				State = 2811; annotationArg();
+				State = 2813;
+				_la = _input.La(1);
+				if (_la==WS || _la==LINE_CONTINUATION) {
+					{
+					State = 2812; whiteSpace();
+					}
+				}
+
+				State = 2815; Match(RPAREN);
+				}
+				break;
+
+			case 5:
+				EnterOuterAlt(_localctx, 5);
+				{
 				State = 2818;
 				_la = _input.La(1);
 				if (_la==WS || _la==LINE_CONTINUATION) {
@@ -19302,7 +19321,53 @@ public partial class VBAParser : Parser {
 					}
 				}
 
-				State = 2820; Match(RPAREN);
+				State = 2820; Match(LPAREN);
+				State = 2821; annotationArg();
+				State = 2830;
+				_errHandler.Sync(this);
+				_alt = 1;
+				do {
+					switch (_alt) {
+					case 1:
+						{
+						{
+						State = 2823;
+						_la = _input.La(1);
+						if (_la==WS || _la==LINE_CONTINUATION) {
+							{
+							State = 2822; whiteSpace();
+							}
+						}
+
+						State = 2825; Match(COMMA);
+						State = 2827;
+						switch ( Interpreter.AdaptivePredict(_input,426,_ctx) ) {
+						case 1:
+							{
+							State = 2826; whiteSpace();
+							}
+							break;
+						}
+						State = 2829; annotationArg();
+						}
+						}
+						break;
+					default:
+						throw new NoViableAltException(this);
+					}
+					State = 2832;
+					_errHandler.Sync(this);
+					_alt = Interpreter.AdaptivePredict(_input,427,_ctx);
+				} while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber );
+				State = 2835;
+				_la = _input.La(1);
+				if (_la==WS || _la==LINE_CONTINUATION) {
+					{
+					State = 2834; whiteSpace();
+					}
+				}
+
+				State = 2837; Match(RPAREN);
 				}
 				break;
 			}
@@ -19349,7 +19414,7 @@ public partial class VBAParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2824; expression(0);
+			State = 2841; expression(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -19393,23 +19458,25 @@ public partial class VBAParser : Parser {
 	public MandatoryLineContinuationContext mandatoryLineContinuation() {
 		MandatoryLineContinuationContext _localctx = new MandatoryLineContinuationContext(_ctx, State);
 		EnterRule(_localctx, 440, RULE_mandatoryLineContinuation);
-		int _la;
 		try {
+			int _alt;
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2826; Match(LINE_CONTINUATION);
-			State = 2830;
+			State = 2843; Match(LINE_CONTINUATION);
+			State = 2847;
 			_errHandler.Sync(this);
-			_la = _input.La(1);
-			while (_la==WS) {
-				{
-				{
-				State = 2827; Match(WS);
+			_alt = Interpreter.AdaptivePredict(_input,430,_ctx);
+			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber ) {
+				if ( _alt==1 ) {
+					{
+					{
+					State = 2844; Match(WS);
+					}
+					} 
 				}
-				}
-				State = 2832;
+				State = 2849;
 				_errHandler.Sync(this);
-				_la = _input.La(1);
+				_alt = Interpreter.AdaptivePredict(_input,430,_ctx);
 			}
 			}
 		}
@@ -19462,7 +19529,7 @@ public partial class VBAParser : Parser {
 			int _alt;
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 2834;
+			State = 2851;
 			_errHandler.Sync(this);
 			_alt = 1;
 			do {
@@ -19470,7 +19537,7 @@ public partial class VBAParser : Parser {
 				case 1:
 					{
 					{
-					State = 2833;
+					State = 2850;
 					_la = _input.La(1);
 					if ( !(_la==WS || _la==LINE_CONTINUATION) ) {
 					_errHandler.RecoverInline(this);
@@ -19482,9 +19549,9 @@ public partial class VBAParser : Parser {
 				default:
 					throw new NoViableAltException(this);
 				}
-				State = 2836;
+				State = 2853;
 				_errHandler.Sync(this);
-				_alt = Interpreter.AdaptivePredict(_input,427,_ctx);
+				_alt = Interpreter.AdaptivePredict(_input,431,_ctx);
 			} while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.InvalidAltNumber );
 			}
 		}
@@ -19555,11 +19622,13 @@ public partial class VBAParser : Parser {
 	}
 	private bool lExpression_sempred(LExpressionContext _localctx, int predIndex) {
 		switch (predIndex) {
-		case 16: return Precpred(_ctx, 6);
+		case 16: return Precpred(_ctx, 7);
 
-		case 17: return Precpred(_ctx, 5);
+		case 17: return Precpred(_ctx, 6);
 
-		case 15: return Precpred(_ctx, 7);
+		case 18: return Precpred(_ctx, 1);
+
+		case 15: return Precpred(_ctx, 8);
 		}
 		return true;
 	}
@@ -19571,7 +19640,7 @@ public partial class VBAParser : Parser {
 	}
 
 	public static readonly string _serializedATN =
-		"\x3\xAF6F\x8320\x479D\xB75C\x4880\x1605\x191C\xAB37\x3\xED\xB19\x4\x2"+
+		"\x3\xAF6F\x8320\x479D\xB75C\x4880\x1605\x191C\xAB37\x3\xED\xB2A\x4\x2"+
 		"\t\x2\x4\x3\t\x3\x4\x4\t\x4\x4\x5\t\x5\x4\x6\t\x6\x4\a\t\a\x4\b\t\b\x4"+
 		"\t\t\t\x4\n\t\n\x4\v\t\v\x4\f\t\f\x4\r\t\r\x4\xE\t\xE\x4\xF\t\xF\x4\x10"+
 		"\t\x10\x4\x11\t\x11\x4\x12\t\x12\x4\x13\t\x13\x4\x14\t\x14\x4\x15\t\x15"+
@@ -19802,47 +19871,49 @@ public partial class VBAParser : Parser {
 		"\x3\xC5\x3\xC5\x5\xC5\xA08\n\xC5\x3\xC5\x5\xC5\xA0B\n\xC5\x3\xC5\x5\xC5"+
 		"\xA0E\n\xC5\x3\xC5\x3\xC5\x3\xC5\x5\xC5\xA13\n\xC5\x3\xC5\x3\xC5\x5\xC5"+
 		"\xA17\n\xC5\x3\xC5\x3\xC5\x3\xC5\x5\xC5\xA1C\n\xC5\x3\xC5\x3\xC5\x5\xC5"+
-		"\xA20\n\xC5\x3\xC5\a\xC5\xA23\n\xC5\f\xC5\xE\xC5\xA26\v\xC5\x3\xC6\x3"+
-		"\xC6\x3\xC6\x5\xC6\xA2B\n\xC6\x3\xC6\x3\xC6\x5\xC6\xA2F\n\xC6\x3\xC6\x3"+
-		"\xC6\x3\xC6\x3\xC6\x3\xC6\x5\xC6\xA36\n\xC6\x3\xC6\x3\xC6\x5\xC6\xA3A"+
-		"\n\xC6\x3\xC6\x5\xC6\xA3D\n\xC6\x3\xC7\x5\xC7\xA40\n\xC7\x3\xC7\x5\xC7"+
-		"\xA43\n\xC7\x3\xC7\x5\xC7\xA46\n\xC7\x3\xC7\x3\xC7\x5\xC7\xA4A\n\xC7\x3"+
-		"\xC7\a\xC7\xA4D\n\xC7\f\xC7\xE\xC7\xA50\v\xC7\x5\xC7\xA52\n\xC7\x3\xC8"+
-		"\x3\xC8\x3\xC9\x3\xC9\x5\xC9\xA58\n\xC9\x3\xCA\x3\xCA\x3\xCB\x3\xCB\x5"+
-		"\xCB\xA5E\n\xCB\x3\xCB\x3\xCB\x5\xCB\xA62\n\xCB\x3\xCB\x3\xCB\x3\xCC\x3"+
-		"\xCC\x5\xCC\xA68\n\xCC\x3\xCC\x3\xCC\x3\xCC\x3\xCC\x3\xCC\x3\xCC\x3\xCC"+
-		"\x3\xCC\x5\xCC\xA72\n\xCC\x3\xCD\x3\xCD\x3\xCE\x3\xCE\x3\xCF\x3\xCF\x3"+
-		"\xCF\x3\xCF\x3\xD0\x3\xD0\x3\xD1\x3\xD1\x3\xD2\x3\xD2\x3\xD3\x5\xD3\xA83"+
-		"\n\xD3\x3\xD3\x3\xD3\x5\xD3\xA87\n\xD3\x3\xD3\x5\xD3\xA8A\n\xD3\x3\xD3"+
-		"\x5\xD3\xA8D\n\xD3\x3\xD4\x3\xD4\x5\xD4\xA91\n\xD4\x3\xD4\x3\xD4\x5\xD4"+
-		"\xA95\n\xD4\x6\xD4\xA97\n\xD4\r\xD4\xE\xD4\xA98\x3\xD4\x5\xD4\xA9C\n\xD4"+
-		"\x3\xD4\x5\xD4\xA9F\n\xD4\x3\xD5\x3\xD5\x3\xD5\x5\xD5\xAA4\n\xD5\x3\xD6"+
-		"\x3\xD6\x5\xD6\xAA8\n\xD6\x3\xD6\x3\xD6\x3\xD7\x3\xD7\x3\xD7\x3\xD8\x3"+
-		"\xD8\a\xD8\xAB1\n\xD8\f\xD8\xE\xD8\xAB4\v\xD8\x3\xD9\x3\xD9\x3\xD9\x3"+
-		"\xD9\x5\xD9\xABA\n\xD9\x6\xD9\xABC\n\xD9\r\xD9\xE\xD9\xABD\x3\xD9\x5\xD9"+
-		"\xAC1\n\xD9\x3\xD9\x3\xD9\x5\xD9\xAC5\n\xD9\x3\xDA\x3\xDA\x5\xDA\xAC9"+
-		"\n\xDA\x3\xDB\x3\xDB\x3\xDC\x3\xDC\x3\xDC\x3\xDC\x3\xDC\x3\xDC\x5\xDC"+
-		"\xAD3\n\xDC\x3\xDC\x3\xDC\x5\xDC\xAD7\n\xDC\x3\xDC\x6\xDC\xADA\n\xDC\r"+
-		"\xDC\xE\xDC\xADB\x3\xDC\x5\xDC\xADF\n\xDC\x3\xDC\x3\xDC\x5\xDC\xAE3\n"+
-		"\xDC\x3\xDC\x3\xDC\x5\xDC\xAE7\n\xDC\x3\xDC\x3\xDC\x5\xDC\xAEB\n\xDC\x3"+
-		"\xDC\x3\xDC\x5\xDC\xAEF\n\xDC\x3\xDC\x3\xDC\x3\xDC\x5\xDC\xAF4\n\xDC\x3"+
-		"\xDC\x3\xDC\x3\xDC\x5\xDC\xAF9\n\xDC\x3\xDC\x3\xDC\x5\xDC\xAFD\n\xDC\x3"+
-		"\xDC\x6\xDC\xB00\n\xDC\r\xDC\xE\xDC\xB01\x3\xDC\x5\xDC\xB05\n\xDC\x3\xDC"+
-		"\x3\xDC\x5\xDC\xB09\n\xDC\x3\xDD\x3\xDD\x3\xDE\x3\xDE\a\xDE\xB0F\n\xDE"+
-		"\f\xDE\xE\xDE\xB12\v\xDE\x3\xDF\x6\xDF\xB15\n\xDF\r\xDF\xE\xDF\xB16\x3"+
-		"\xDF\x2\x2\x4\x17C\x188\xE0\x2\x2\x4\x2\x6\x2\b\x2\n\x2\f\x2\xE\x2\x10"+
-		"\x2\x12\x2\x14\x2\x16\x2\x18\x2\x1A\x2\x1C\x2\x1E\x2 \x2\"\x2$\x2&\x2"+
-		"(\x2*\x2,\x2.\x2\x30\x2\x32\x2\x34\x2\x36\x2\x38\x2:\x2<\x2>\x2@\x2\x42"+
-		"\x2\x44\x2\x46\x2H\x2J\x2L\x2N\x2P\x2R\x2T\x2V\x2X\x2Z\x2\\\x2^\x2`\x2"+
-		"\x62\x2\x64\x2\x66\x2h\x2j\x2l\x2n\x2p\x2r\x2t\x2v\x2x\x2z\x2|\x2~\x2"+
-		"\x80\x2\x82\x2\x84\x2\x86\x2\x88\x2\x8A\x2\x8C\x2\x8E\x2\x90\x2\x92\x2"+
-		"\x94\x2\x96\x2\x98\x2\x9A\x2\x9C\x2\x9E\x2\xA0\x2\xA2\x2\xA4\x2\xA6\x2"+
-		"\xA8\x2\xAA\x2\xAC\x2\xAE\x2\xB0\x2\xB2\x2\xB4\x2\xB6\x2\xB8\x2\xBA\x2"+
-		"\xBC\x2\xBE\x2\xC0\x2\xC2\x2\xC4\x2\xC6\x2\xC8\x2\xCA\x2\xCC\x2\xCE\x2"+
-		"\xD0\x2\xD2\x2\xD4\x2\xD6\x2\xD8\x2\xDA\x2\xDC\x2\xDE\x2\xE0\x2\xE2\x2"+
-		"\xE4\x2\xE6\x2\xE8\x2\xEA\x2\xEC\x2\xEE\x2\xF0\x2\xF2\x2\xF4\x2\xF6\x2"+
-		"\xF8\x2\xFA\x2\xFC\x2\xFE\x2\x100\x2\x102\x2\x104\x2\x106\x2\x108\x2\x10A"+
-		"\x2\x10C\x2\x10E\x2\x110\x2\x112\x2\x114\x2\x116\x2\x118\x2\x11A\x2\x11C"+
+		"\xA20\n\xC5\x3\xC5\x3\xC5\x3\xC5\x3\xC5\x5\xC5\xA26\n\xC5\x3\xC5\x3\xC5"+
+		"\x5\xC5\xA2A\n\xC5\x3\xC5\x5\xC5\xA2D\n\xC5\x3\xC5\x5\xC5\xA30\n\xC5\x3"+
+		"\xC5\x3\xC5\a\xC5\xA34\n\xC5\f\xC5\xE\xC5\xA37\v\xC5\x3\xC6\x3\xC6\x3"+
+		"\xC6\x5\xC6\xA3C\n\xC6\x3\xC6\x3\xC6\x5\xC6\xA40\n\xC6\x3\xC6\x3\xC6\x3"+
+		"\xC6\x3\xC6\x3\xC6\x5\xC6\xA47\n\xC6\x3\xC6\x3\xC6\x5\xC6\xA4B\n\xC6\x3"+
+		"\xC6\x5\xC6\xA4E\n\xC6\x3\xC7\x5\xC7\xA51\n\xC7\x3\xC7\x5\xC7\xA54\n\xC7"+
+		"\x3\xC7\x5\xC7\xA57\n\xC7\x3\xC7\x3\xC7\x5\xC7\xA5B\n\xC7\x3\xC7\a\xC7"+
+		"\xA5E\n\xC7\f\xC7\xE\xC7\xA61\v\xC7\x5\xC7\xA63\n\xC7\x3\xC8\x3\xC8\x3"+
+		"\xC9\x3\xC9\x5\xC9\xA69\n\xC9\x3\xCA\x3\xCA\x3\xCB\x3\xCB\x5\xCB\xA6F"+
+		"\n\xCB\x3\xCB\x3\xCB\x5\xCB\xA73\n\xCB\x3\xCB\x3\xCB\x3\xCC\x3\xCC\x5"+
+		"\xCC\xA79\n\xCC\x3\xCC\x3\xCC\x3\xCC\x3\xCC\x3\xCC\x3\xCC\x3\xCC\x3\xCC"+
+		"\x5\xCC\xA83\n\xCC\x3\xCD\x3\xCD\x3\xCE\x3\xCE\x3\xCF\x3\xCF\x3\xCF\x3"+
+		"\xCF\x3\xD0\x3\xD0\x3\xD1\x3\xD1\x3\xD2\x3\xD2\x3\xD3\x5\xD3\xA94\n\xD3"+
+		"\x3\xD3\x3\xD3\x5\xD3\xA98\n\xD3\x3\xD3\x5\xD3\xA9B\n\xD3\x3\xD3\x5\xD3"+
+		"\xA9E\n\xD3\x3\xD4\x3\xD4\x5\xD4\xAA2\n\xD4\x3\xD4\x3\xD4\x5\xD4\xAA6"+
+		"\n\xD4\x6\xD4\xAA8\n\xD4\r\xD4\xE\xD4\xAA9\x3\xD4\x5\xD4\xAAD\n\xD4\x3"+
+		"\xD4\x5\xD4\xAB0\n\xD4\x3\xD5\x3\xD5\x3\xD5\x5\xD5\xAB5\n\xD5\x3\xD6\x3"+
+		"\xD6\x5\xD6\xAB9\n\xD6\x3\xD6\x3\xD6\x3\xD7\x3\xD7\x3\xD7\x3\xD8\x3\xD8"+
+		"\a\xD8\xAC2\n\xD8\f\xD8\xE\xD8\xAC5\v\xD8\x3\xD9\x3\xD9\x3\xD9\x3\xD9"+
+		"\x5\xD9\xACB\n\xD9\x6\xD9\xACD\n\xD9\r\xD9\xE\xD9\xACE\x3\xD9\x5\xD9\xAD2"+
+		"\n\xD9\x3\xD9\x3\xD9\x5\xD9\xAD6\n\xD9\x3\xDA\x3\xDA\x5\xDA\xADA\n\xDA"+
+		"\x3\xDB\x3\xDB\x3\xDC\x3\xDC\x3\xDC\x3\xDC\x3\xDC\x3\xDC\x5\xDC\xAE4\n"+
+		"\xDC\x3\xDC\x3\xDC\x5\xDC\xAE8\n\xDC\x3\xDC\x6\xDC\xAEB\n\xDC\r\xDC\xE"+
+		"\xDC\xAEC\x3\xDC\x5\xDC\xAF0\n\xDC\x3\xDC\x3\xDC\x5\xDC\xAF4\n\xDC\x3"+
+		"\xDC\x3\xDC\x5\xDC\xAF8\n\xDC\x3\xDC\x3\xDC\x5\xDC\xAFC\n\xDC\x3\xDC\x3"+
+		"\xDC\x5\xDC\xB00\n\xDC\x3\xDC\x3\xDC\x3\xDC\x5\xDC\xB05\n\xDC\x3\xDC\x3"+
+		"\xDC\x3\xDC\x5\xDC\xB0A\n\xDC\x3\xDC\x3\xDC\x5\xDC\xB0E\n\xDC\x3\xDC\x6"+
+		"\xDC\xB11\n\xDC\r\xDC\xE\xDC\xB12\x3\xDC\x5\xDC\xB16\n\xDC\x3\xDC\x3\xDC"+
+		"\x5\xDC\xB1A\n\xDC\x3\xDD\x3\xDD\x3\xDE\x3\xDE\a\xDE\xB20\n\xDE\f\xDE"+
+		"\xE\xDE\xB23\v\xDE\x3\xDF\x6\xDF\xB26\n\xDF\r\xDF\xE\xDF\xB27\x3\xDF\x2"+
+		"\x2\x4\x17C\x188\xE0\x2\x2\x4\x2\x6\x2\b\x2\n\x2\f\x2\xE\x2\x10\x2\x12"+
+		"\x2\x14\x2\x16\x2\x18\x2\x1A\x2\x1C\x2\x1E\x2 \x2\"\x2$\x2&\x2(\x2*\x2"+
+		",\x2.\x2\x30\x2\x32\x2\x34\x2\x36\x2\x38\x2:\x2<\x2>\x2@\x2\x42\x2\x44"+
+		"\x2\x46\x2H\x2J\x2L\x2N\x2P\x2R\x2T\x2V\x2X\x2Z\x2\\\x2^\x2`\x2\x62\x2"+
+		"\x64\x2\x66\x2h\x2j\x2l\x2n\x2p\x2r\x2t\x2v\x2x\x2z\x2|\x2~\x2\x80\x2"+
+		"\x82\x2\x84\x2\x86\x2\x88\x2\x8A\x2\x8C\x2\x8E\x2\x90\x2\x92\x2\x94\x2"+
+		"\x96\x2\x98\x2\x9A\x2\x9C\x2\x9E\x2\xA0\x2\xA2\x2\xA4\x2\xA6\x2\xA8\x2"+
+		"\xAA\x2\xAC\x2\xAE\x2\xB0\x2\xB2\x2\xB4\x2\xB6\x2\xB8\x2\xBA\x2\xBC\x2"+
+		"\xBE\x2\xC0\x2\xC2\x2\xC4\x2\xC6\x2\xC8\x2\xCA\x2\xCC\x2\xCE\x2\xD0\x2"+
+		"\xD2\x2\xD4\x2\xD6\x2\xD8\x2\xDA\x2\xDC\x2\xDE\x2\xE0\x2\xE2\x2\xE4\x2"+
+		"\xE6\x2\xE8\x2\xEA\x2\xEC\x2\xEE\x2\xF0\x2\xF2\x2\xF4\x2\xF6\x2\xF8\x2"+
+		"\xFA\x2\xFC\x2\xFE\x2\x100\x2\x102\x2\x104\x2\x106\x2\x108\x2\x10A\x2"+
+		"\x10C\x2\x10E\x2\x110\x2\x112\x2\x114\x2\x116\x2\x118\x2\x11A\x2\x11C"+
 		"\x2\x11E\x2\x120\x2\x122\x2\x124\x2\x126\x2\x128\x2\x12A\x2\x12C\x2\x12E"+
 		"\x2\x130\x2\x132\x2\x134\x2\x136\x2\x138\x2\x13A\x2\x13C\x2\x13E\x2\x140"+
 		"\x2\x142\x2\x144\x2\x146\x2\x148\x2\x14A\x2\x14C\x2\x14E\x2\x150\x2\x152"+
@@ -19865,7 +19936,7 @@ public partial class VBAParser : Parser {
 		"\xC3\xC7\xCA\xCA\xCC\xCE \x2\x1A\x1A$$@\x41\x44\x44GVYZ``\x63\x63\x65"+
 		"\x65gginprtwyy\x80\x81\x88\x88\x8D\x8D\x93\x93\xA1\xA1\xA6\xA6\xA9\xA9"+
 		"\xAC\xAC\xAF\xB1\xB3\xB4\xB8\xB8\xBA\xBA\xBC\xBC\xC2\xC2\xC8\xC9\xCB\xCB"+
-		"\x3\x2\xE6\xE6\x4\x2\xE9\xE9\xEC\xEC\xC4F\x2\x1BE\x3\x2\x2\x2\x4\x1C2"+
+		"\x3\x2\xE6\xE6\x4\x2\xE9\xE9\xEC\xEC\xC65\x2\x1BE\x3\x2\x2\x2\x4\x1C2"+
 		"\x3\x2\x2\x2\x6\x1D4\x3\x2\x2\x2\b\x1DF\x3\x2\x2\x2\n\x1F2\x3\x2\x2\x2"+
 		"\f\x20C\x3\x2\x2\x2\xE\x20F\x3\x2\x2\x2\x10\x227\x3\x2\x2\x2\x12\x229"+
 		"\x3\x2\x2\x2\x14\x230\x3\x2\x2\x2\x16\x23D\x3\x2\x2\x2\x18\x240\x3\x2"+
@@ -19923,15 +19994,15 @@ public partial class VBAParser : Parser {
 		"\x2\x2\x172\x933\x3\x2\x2\x2\x174\x935\x3\x2\x2\x2\x176\x939\x3\x2\x2"+
 		"\x2\x178\x945\x3\x2\x2\x2\x17A\x947\x3\x2\x2\x2\x17C\x96E\x3\x2\x2\x2"+
 		"\x17E\x9E8\x3\x2\x2\x2\x180\x9ED\x3\x2\x2\x2\x182\x9EF\x3\x2\x2\x2\x184"+
-		"\x9F1\x3\x2\x2\x2\x186\x9F3\x3\x2\x2\x2\x188\xA02\x3\x2\x2\x2\x18A\xA3C"+
-		"\x3\x2\x2\x2\x18C\xA51\x3\x2\x2\x2\x18E\xA53\x3\x2\x2\x2\x190\xA57\x3"+
-		"\x2\x2\x2\x192\xA59\x3\x2\x2\x2\x194\xA5B\x3\x2\x2\x2\x196\xA71\x3\x2"+
-		"\x2\x2\x198\xA73\x3\x2\x2\x2\x19A\xA75\x3\x2\x2\x2\x19C\xA77\x3\x2\x2"+
-		"\x2\x19E\xA7B\x3\x2\x2\x2\x1A0\xA7D\x3\x2\x2\x2\x1A2\xA7F\x3\x2\x2\x2"+
-		"\x1A4\xA8C\x3\x2\x2\x2\x1A6\xA9E\x3\x2\x2\x2\x1A8\xAA3\x3\x2\x2\x2\x1AA"+
-		"\xAA5\x3\x2\x2\x2\x1AC\xAAB\x3\x2\x2\x2\x1AE\xAB2\x3\x2\x2\x2\x1B0\xAB5"+
-		"\x3\x2\x2\x2\x1B2\xAC6\x3\x2\x2\x2\x1B4\xACA\x3\x2\x2\x2\x1B6\xB08\x3"+
-		"\x2\x2\x2\x1B8\xB0A\x3\x2\x2\x2\x1BA\xB0C\x3\x2\x2\x2\x1BC\xB14\x3\x2"+
+		"\x9F1\x3\x2\x2\x2\x186\x9F3\x3\x2\x2\x2\x188\xA02\x3\x2\x2\x2\x18A\xA4D"+
+		"\x3\x2\x2\x2\x18C\xA62\x3\x2\x2\x2\x18E\xA64\x3\x2\x2\x2\x190\xA68\x3"+
+		"\x2\x2\x2\x192\xA6A\x3\x2\x2\x2\x194\xA6C\x3\x2\x2\x2\x196\xA82\x3\x2"+
+		"\x2\x2\x198\xA84\x3\x2\x2\x2\x19A\xA86\x3\x2\x2\x2\x19C\xA88\x3\x2\x2"+
+		"\x2\x19E\xA8C\x3\x2\x2\x2\x1A0\xA8E\x3\x2\x2\x2\x1A2\xA90\x3\x2\x2\x2"+
+		"\x1A4\xA9D\x3\x2\x2\x2\x1A6\xAAF\x3\x2\x2\x2\x1A8\xAB4\x3\x2\x2\x2\x1AA"+
+		"\xAB6\x3\x2\x2\x2\x1AC\xABC\x3\x2\x2\x2\x1AE\xAC3\x3\x2\x2\x2\x1B0\xAC6"+
+		"\x3\x2\x2\x2\x1B2\xAD7\x3\x2\x2\x2\x1B4\xADB\x3\x2\x2\x2\x1B6\xB19\x3"+
+		"\x2\x2\x2\x1B8\xB1B\x3\x2\x2\x2\x1BA\xB1D\x3\x2\x2\x2\x1BC\xB25\x3\x2"+
 		"\x2\x2\x1BE\x1BF\x5\x4\x3\x2\x1BF\x1C0\a\x2\x2\x3\x1C0\x3\x3\x2\x2\x2"+
 		"\x1C1\x1C3\x5\x1A6\xD4\x2\x1C2\x1C1\x3\x2\x2\x2\x1C2\x1C3\x3\x2\x2\x2"+
 		"\x1C3\x1C4\x3\x2\x2\x2\x1C4\x1C6\x5\f\a\x2\x1C5\x1C7\x5\x6\x4\x2\x1C6"+
@@ -20454,8 +20525,8 @@ public partial class VBAParser : Parser {
 		"\x5\x17C\xBF\x2\x6FF\xF9\x3\x2\x2\x2\x700\x702\t\r\x2\x2\x701\x703\a\x31"+
 		"\x2\x2\x702\x701\x3\x2\x2\x2\x702\x703\x3\x2\x2\x2\x703\xFB\x3\x2\x2\x2"+
 		"\x704\x705\x5\x17C\xBF\x2\x705\xFD\x3\x2\x2\x2\x706\x707\a@\x2\x2\x707"+
-		"\x708\x5\x1BC\xDF\x2\x708\x709\x5\x17C\xBF\x2\x709\x711\x3\x2\x2\x2\x70A"+
-		"\x70E\x5\x17C\xBF\x2\x70B\x70C\x5\x1BC\xDF\x2\x70C\x70D\x5\x18C\xC7\x2"+
+		"\x708\x5\x1BC\xDF\x2\x708\x709\x5\x188\xC5\x2\x709\x711\x3\x2\x2\x2\x70A"+
+		"\x70E\x5\x188\xC5\x2\x70B\x70C\x5\x1BC\xDF\x2\x70C\x70D\x5\x18C\xC7\x2"+
 		"\x70D\x70F\x3\x2\x2\x2\x70E\x70B\x3\x2\x2\x2\x70E\x70F\x3\x2\x2\x2\x70F"+
 		"\x711\x3\x2\x2\x2\x710\x706\x3\x2\x2\x2\x710\x70A\x3\x2\x2\x2\x711\xFF"+
 		"\x3\x2\x2\x2\x712\x718\a\xAF\x2\x2\x713\x716\x5\x1BC\xDF\x2\x714\x717"+
@@ -20760,119 +20831,126 @@ public partial class VBAParser : Parser {
 		"\xAA\x2\x9FD\x9FF\a,\x2\x2\x9FE\xA00\x5\x1BA\xDE\x2\x9FF\x9FE\x3\x2\x2"+
 		"\x2\x9FF\xA00\x3\x2\x2\x2\xA00\xA01\x3\x2\x2\x2\xA01\xA03\x5\x152\xAA"+
 		"\x2\xA02\x9F5\x3\x2\x2\x2\xA02\x9F7\x3\x2\x2\x2\xA02\x9F8\x3\x2\x2\x2"+
-		"\xA02\x9FD\x3\x2\x2\x2\xA03\xA24\x3\x2\x2\x2\xA04\xA05\f\t\x2\x2\xA05"+
+		"\xA02\x9FD\x3\x2\x2\x2\xA03\xA35\x3\x2\x2\x2\xA04\xA05\f\n\x2\x2\xA05"+
 		"\xA07\a\xD6\x2\x2\xA06\xA08\x5\x1BC\xDF\x2\xA07\xA06\x3\x2\x2\x2\xA07"+
 		"\xA08\x3\x2\x2\x2\xA08\xA0A\x3\x2\x2\x2\xA09\xA0B\x5\x18C\xC7\x2\xA0A"+
 		"\xA09\x3\x2\x2\x2\xA0A\xA0B\x3\x2\x2\x2\xA0B\xA0D\x3\x2\x2\x2\xA0C\xA0E"+
 		"\x5\x1BC\xDF\x2\xA0D\xA0C\x3\x2\x2\x2\xA0D\xA0E\x3\x2\x2\x2\xA0E\xA0F"+
-		"\x3\x2\x2\x2\xA0F\xA23\a\xDD\x2\x2\xA10\xA12\f\b\x2\x2\xA11\xA13\x5\x1BA"+
+		"\x3\x2\x2\x2\xA0F\xA34\a\xDD\x2\x2\xA10\xA12\f\t\x2\x2\xA11\xA13\x5\x1BA"+
 		"\xDE\x2\xA12\xA11\x3\x2\x2\x2\xA12\xA13\x3\x2\x2\x2\xA13\xA14\x3\x2\x2"+
 		"\x2\xA14\xA16\a-\x2\x2\xA15\xA17\x5\x1BA\xDE\x2\xA16\xA15\x3\x2\x2\x2"+
-		"\xA16\xA17\x3\x2\x2\x2\xA17\xA18\x3\x2\x2\x2\xA18\xA23\x5\x152\xAA\x2"+
-		"\xA19\xA1B\f\a\x2\x2\xA1A\xA1C\x5\x1BA\xDE\x2\xA1B\xA1A\x3\x2\x2\x2\xA1B"+
+		"\xA16\xA17\x3\x2\x2\x2\xA17\xA18\x3\x2\x2\x2\xA18\xA34\x5\x152\xAA\x2"+
+		"\xA19\xA1B\f\b\x2\x2\xA1A\xA1C\x5\x1BA\xDE\x2\xA1B\xA1A\x3\x2\x2\x2\xA1B"+
 		"\xA1C\x3\x2\x2\x2\xA1C\xA1D\x3\x2\x2\x2\xA1D\xA1F\a,\x2\x2\xA1E\xA20\x5"+
 		"\x1BA\xDE\x2\xA1F\xA1E\x3\x2\x2\x2\xA1F\xA20\x3\x2\x2\x2\xA20\xA21\x3"+
-		"\x2\x2\x2\xA21\xA23\x5\x152\xAA\x2\xA22\xA04\x3\x2\x2\x2\xA22\xA10\x3"+
-		"\x2\x2\x2\xA22\xA19\x3\x2\x2\x2\xA23\xA26\x3\x2\x2\x2\xA24\xA22\x3\x2"+
-		"\x2\x2\xA24\xA25\x3\x2\x2\x2\xA25\x189\x3\x2\x2\x2\xA26\xA24\x3\x2\x2"+
-		"\x2\xA27\xA3D\x5\x162\xB2\x2\xA28\xA2A\a\xDE\x2\x2\xA29\xA2B\x5\x1BC\xDF"+
-		"\x2\xA2A\xA29\x3\x2\x2\x2\xA2A\xA2B\x3\x2\x2\x2\xA2B\xA2C\x3\x2\x2\x2"+
-		"\xA2C\xA2E\x5\x162\xB2\x2\xA2D\xA2F\x5\x1BC\xDF\x2\xA2E\xA2D\x3\x2\x2"+
-		"\x2\xA2E\xA2F\x3\x2\x2\x2\xA2F\xA30\x3\x2\x2\x2\xA30\xA31\a\xDF\x2\x2"+
-		"\xA31\xA3D\x3\x2\x2\x2\xA32\xA3D\a\x92\x2\x2\xA33\xA35\a\xDE\x2\x2\xA34"+
-		"\xA36\x5\x1BC\xDF\x2\xA35\xA34\x3\x2\x2\x2\xA35\xA36\x3\x2\x2\x2\xA36"+
-		"\xA37\x3\x2\x2\x2\xA37\xA39\a\x92\x2\x2\xA38\xA3A\x5\x1BC\xDF\x2\xA39"+
-		"\xA38\x3\x2\x2\x2\xA39\xA3A\x3\x2\x2\x2\xA3A\xA3B\x3\x2\x2\x2\xA3B\xA3D"+
-		"\a\xDF\x2\x2\xA3C\xA27\x3\x2\x2\x2\xA3C\xA28\x3\x2\x2\x2\xA3C\xA32\x3"+
-		"\x2\x2\x2\xA3C\xA33\x3\x2\x2\x2\xA3D\x18B\x3\x2\x2\x2\xA3E\xA40\x5\x1BC"+
-		"\xDF\x2\xA3F\xA3E\x3\x2\x2\x2\xA3F\xA40\x3\x2\x2\x2\xA40\xA42\x3\x2\x2"+
-		"\x2\xA41\xA43\x5\x190\xC9\x2\xA42\xA41\x3\x2\x2\x2\xA42\xA43\x3\x2\x2"+
-		"\x2\xA43\xA4E\x3\x2\x2\x2\xA44\xA46\x5\x1BC\xDF\x2\xA45\xA44\x3\x2\x2"+
-		"\x2\xA45\xA46\x3\x2\x2\x2\xA46\xA47\x3\x2\x2\x2\xA47\xA49\a)\x2\x2\xA48"+
-		"\xA4A\x5\x1BC\xDF\x2\xA49\xA48\x3\x2\x2\x2\xA49\xA4A\x3\x2\x2\x2\xA4A"+
-		"\xA4B\x3\x2\x2\x2\xA4B\xA4D\x5\x190\xC9\x2\xA4C\xA45\x3\x2\x2\x2\xA4D"+
-		"\xA50\x3\x2\x2\x2\xA4E\xA4C\x3\x2\x2\x2\xA4E\xA4F\x3\x2\x2\x2\xA4F\xA52"+
-		"\x3\x2\x2\x2\xA50\xA4E\x3\x2\x2\x2\xA51\xA3F\x3\x2\x2\x2\xA51\xA52\x3"+
-		"\x2\x2\x2\xA52\x18D\x3\x2\x2\x2\xA53\xA54\x5\x190\xC9\x2\xA54\x18F\x3"+
-		"\x2\x2\x2\xA55\xA58\x5\x192\xCA\x2\xA56\xA58\x5\x194\xCB\x2\xA57\xA55"+
-		"\x3\x2\x2\x2\xA57\xA56\x3\x2\x2\x2\xA58\x191\x3\x2\x2\x2\xA59\xA5A\x5"+
-		"\x196\xCC\x2\xA5A\x193\x3\x2\x2\x2\xA5B\xA5D\x5\x152\xAA\x2\xA5C\xA5E"+
-		"\x5\x1BC\xDF\x2\xA5D\xA5C\x3\x2\x2\x2\xA5D\xA5E\x3\x2\x2\x2\xA5E\xA5F"+
-		"\x3\x2\x2\x2\xA5F\xA61\a\xCF\x2\x2\xA60\xA62\x5\x1BC\xDF\x2\xA61\xA60"+
-		"\x3\x2\x2\x2\xA61\xA62\x3\x2\x2\x2\xA62\xA63\x3\x2\x2\x2\xA63\xA64\x5"+
-		"\x196\xCC\x2\xA64\x195\x3\x2\x2\x2\xA65\xA66\a=\x2\x2\xA66\xA68\x5\x1BC"+
-		"\xDF\x2\xA67\xA65\x3\x2\x2\x2\xA67\xA68\x3\x2\x2\x2\xA68\xA69\x3\x2\x2"+
-		"\x2\xA69\xA72\x5\x17C\xBF\x2\xA6A\xA72\x5\x19C\xCF\x2\xA6B\xA6C\x5\x198"+
-		"\xCD\x2\xA6C\xA6D\x5\x1BC\xDF\x2\xA6D\xA6E\a\xC0\x2\x2\xA6E\xA6F\x5\x1BC"+
-		"\xDF\x2\xA6F\xA70\x5\x19A\xCE\x2\xA70\xA72\x3\x2\x2\x2\xA71\xA67\x3\x2"+
-		"\x2\x2\xA71\xA6A\x3\x2\x2\x2\xA71\xA6B\x3\x2\x2\x2\xA72\x197\x3\x2\x2"+
-		"\x2\xA73\xA74\x5\x17C\xBF\x2\xA74\x199\x3\x2\x2\x2\xA75\xA76\x5\x17C\xBF"+
-		"\x2\xA76\x19B\x3\x2\x2\x2\xA77\xA78\a\x34\x2\x2\xA78\xA79\x5\x1BC\xDF"+
-		"\x2\xA79\xA7A\x5\x17C\xBF\x2\xA7A\x19D\x3\x2\x2\x2\xA7B\xA7C\t\x1A\x2"+
-		"\x2\xA7C\x19F\x3\x2\x2\x2\xA7D\xA7E\a\x39\x2\x2\xA7E\x1A1\x3\x2\x2\x2"+
-		"\xA7F\xA80\t\x1B\x2\x2\xA80\x1A3\x3\x2\x2\x2\xA81\xA83\x5\x1BC\xDF\x2"+
-		"\xA82\xA81\x3\x2\x2\x2\xA82\xA83\x3\x2\x2\x2\xA83\xA84\x3\x2\x2\x2\xA84"+
-		"\xA86\a\xE6\x2\x2\xA85\xA87\x5\x1BC\xDF\x2\xA86\xA85\x3\x2\x2\x2\xA86"+
-		"\xA87\x3\x2\x2\x2\xA87\xA8D\x3\x2\x2\x2\xA88\xA8A\x5\x1BC\xDF\x2\xA89"+
-		"\xA88\x3\x2\x2\x2\xA89\xA8A\x3\x2\x2\x2\xA8A\xA8B\x3\x2\x2\x2\xA8B\xA8D"+
-		"\x5\x1A8\xD5\x2\xA8C\xA82\x3\x2\x2\x2\xA8C\xA89\x3\x2\x2\x2\xA8D\x1A5"+
-		"\x3\x2\x2\x2\xA8E\xA97\x5\x1A4\xD3\x2\xA8F\xA91\x5\x1BC\xDF\x2\xA90\xA8F"+
-		"\x3\x2\x2\x2\xA90\xA91\x3\x2\x2\x2\xA91\xA92\x3\x2\x2\x2\xA92\xA94\a*"+
-		"\x2\x2\xA93\xA95\x5\x1BC\xDF\x2\xA94\xA93\x3\x2\x2\x2\xA94\xA95\x3\x2"+
-		"\x2\x2\xA95\xA97\x3\x2\x2\x2\xA96\xA8E\x3\x2\x2\x2\xA96\xA90\x3\x2\x2"+
-		"\x2\xA97\xA98\x3\x2\x2\x2\xA98\xA96\x3\x2\x2\x2\xA98\xA99\x3\x2\x2\x2"+
-		"\xA99\xA9F\x3\x2\x2\x2\xA9A\xA9C\x5\x1BC\xDF\x2\xA9B\xA9A\x3\x2\x2\x2"+
-		"\xA9B\xA9C\x3\x2\x2\x2\xA9C\xA9D\x3\x2\x2\x2\xA9D\xA9F\a\x2\x2\x3\xA9E"+
-		"\xA96\x3\x2\x2\x2\xA9E\xA9B\x3\x2\x2\x2\xA9F\x1A7\x3\x2\x2\x2\xAA0\xAA4"+
-		"\x5\x1B0\xD9\x2\xAA1\xAA4\x5\x1AA\xD6\x2\xAA2\xAA4\x5\x1AC\xD7\x2\xAA3"+
-		"\xAA0\x3\x2\x2\x2\xAA3\xAA1\x3\x2\x2\x2\xAA3\xAA2\x3\x2\x2\x2\xAA4\x1A9"+
-		"\x3\x2\x2\x2\xAA5\xAA7\a\xAD\x2\x2\xAA6\xAA8\x5\x1BC\xDF\x2\xAA7\xAA6"+
-		"\x3\x2\x2\x2\xAA7\xAA8\x3\x2\x2\x2\xAA8\xAA9\x3\x2\x2\x2\xAA9\xAAA\x5"+
-		"\x1AE\xD8\x2\xAAA\x1AB\x3\x2\x2\x2\xAAB\xAAC\a\xE7\x2\x2\xAAC\xAAD\x5"+
-		"\x1AE\xD8\x2\xAAD\x1AD\x3\x2\x2\x2\xAAE\xAB1\a\xEC\x2\x2\xAAF\xAB1\n\x1C"+
-		"\x2\x2\xAB0\xAAE\x3\x2\x2\x2\xAB0\xAAF\x3\x2\x2\x2\xAB1\xAB4\x3\x2\x2"+
-		"\x2\xAB2\xAB0\x3\x2\x2\x2\xAB2\xAB3\x3\x2\x2\x2\xAB3\x1AF\x3\x2\x2\x2"+
-		"\xAB4\xAB2\x3\x2\x2\x2\xAB5\xABB\a\xE7\x2\x2\xAB6\xAB7\a/\x2\x2\xAB7\xAB9"+
-		"\x5\x1B2\xDA\x2\xAB8\xABA\x5\x1BC\xDF\x2\xAB9\xAB8\x3\x2\x2\x2\xAB9\xABA"+
-		"\x3\x2\x2\x2\xABA\xABC\x3\x2\x2\x2\xABB\xAB6\x3\x2\x2\x2\xABC\xABD\x3"+
-		"\x2\x2\x2\xABD\xABB\x3\x2\x2\x2\xABD\xABE\x3\x2\x2\x2\xABE\xAC4\x3\x2"+
-		"\x2\x2\xABF\xAC1\x5\x1BC\xDF\x2\xAC0\xABF\x3\x2\x2\x2\xAC0\xAC1\x3\x2"+
-		"\x2\x2\xAC1\xAC2\x3\x2\x2\x2\xAC2\xAC3\a*\x2\x2\xAC3\xAC5\x5\x1AE\xD8"+
-		"\x2\xAC4\xAC0\x3\x2\x2\x2\xAC4\xAC5\x3\x2\x2\x2\xAC5\x1B1\x3\x2\x2\x2"+
-		"\xAC6\xAC8\x5\x1B4\xDB\x2\xAC7\xAC9\x5\x1B6\xDC\x2\xAC8\xAC7\x3\x2\x2"+
-		"\x2\xAC8\xAC9\x3\x2\x2\x2\xAC9\x1B3\x3\x2\x2\x2\xACA\xACB\x5\x152\xAA"+
-		"\x2\xACB\x1B5\x3\x2\x2\x2\xACC\xACD\x5\x1BC\xDF\x2\xACD\xACE\x5\x1B8\xDD"+
-		"\x2\xACE\xB09\x3\x2\x2\x2\xACF\xAD0\x5\x1BC\xDF\x2\xAD0\xAD9\x5\x1B8\xDD"+
-		"\x2\xAD1\xAD3\x5\x1BC\xDF\x2\xAD2\xAD1\x3\x2\x2\x2\xAD2\xAD3\x3\x2\x2"+
-		"\x2\xAD3\xAD4\x3\x2\x2\x2\xAD4\xAD6\a)\x2\x2\xAD5\xAD7\x5\x1BC\xDF\x2"+
-		"\xAD6\xAD5\x3\x2\x2\x2\xAD6\xAD7\x3\x2\x2\x2\xAD7\xAD8\x3\x2\x2\x2\xAD8"+
-		"\xADA\x5\x1B8\xDD\x2\xAD9\xAD2\x3\x2\x2\x2\xADA\xADB\x3\x2\x2\x2\xADB"+
-		"\xAD9\x3\x2\x2\x2\xADB\xADC\x3\x2\x2\x2\xADC\xB09\x3\x2\x2\x2\xADD\xADF"+
-		"\x5\x1BC\xDF\x2\xADE\xADD\x3\x2\x2\x2\xADE\xADF\x3\x2\x2\x2\xADF\xAE0"+
-		"\x3\x2\x2\x2\xAE0\xAE2\a\xD6\x2\x2\xAE1\xAE3\x5\x1BC\xDF\x2\xAE2\xAE1"+
-		"\x3\x2\x2\x2\xAE2\xAE3\x3\x2\x2\x2\xAE3\xAE4\x3\x2\x2\x2\xAE4\xB09\a\xDD"+
-		"\x2\x2\xAE5\xAE7\x5\x1BC\xDF\x2\xAE6\xAE5\x3\x2\x2\x2\xAE6\xAE7\x3\x2"+
-		"\x2\x2\xAE7\xAE8\x3\x2\x2\x2\xAE8\xAEA\a\xD6\x2\x2\xAE9\xAEB\x5\x1BC\xDF"+
-		"\x2\xAEA\xAE9\x3\x2\x2\x2\xAEA\xAEB\x3\x2\x2\x2\xAEB\xAEC\x3\x2\x2\x2"+
-		"\xAEC\xAEE\x5\x1B8\xDD\x2\xAED\xAEF\x5\x1BC\xDF\x2\xAEE\xAED\x3\x2\x2"+
-		"\x2\xAEE\xAEF\x3\x2\x2\x2\xAEF\xAF0\x3\x2\x2\x2\xAF0\xAF1\a\xDD\x2\x2"+
-		"\xAF1\xB09\x3\x2\x2\x2\xAF2\xAF4\x5\x1BC\xDF\x2\xAF3\xAF2\x3\x2\x2\x2"+
-		"\xAF3\xAF4\x3\x2\x2\x2\xAF4\xAF5\x3\x2\x2\x2\xAF5\xAF6\a\xD6\x2\x2\xAF6"+
-		"\xAFF\x5\x1B8\xDD\x2\xAF7\xAF9\x5\x1BC\xDF\x2\xAF8\xAF7\x3\x2\x2\x2\xAF8"+
-		"\xAF9\x3\x2\x2\x2\xAF9\xAFA\x3\x2\x2\x2\xAFA\xAFC\a)\x2\x2\xAFB\xAFD\x5"+
-		"\x1BC\xDF\x2\xAFC\xAFB\x3\x2\x2\x2\xAFC\xAFD\x3\x2\x2\x2\xAFD\xAFE\x3"+
-		"\x2\x2\x2\xAFE\xB00\x5\x1B8\xDD\x2\xAFF\xAF8\x3\x2\x2\x2\xB00\xB01\x3"+
-		"\x2\x2\x2\xB01\xAFF\x3\x2\x2\x2\xB01\xB02\x3\x2\x2\x2\xB02\xB04\x3\x2"+
-		"\x2\x2\xB03\xB05\x5\x1BC\xDF\x2\xB04\xB03\x3\x2\x2\x2\xB04\xB05\x3\x2"+
-		"\x2\x2\xB05\xB06\x3\x2\x2\x2\xB06\xB07\a\xDD\x2\x2\xB07\xB09\x3\x2\x2"+
-		"\x2\xB08\xACC\x3\x2\x2\x2\xB08\xACF\x3\x2\x2\x2\xB08\xADE\x3\x2\x2\x2"+
-		"\xB08\xAE6\x3\x2\x2\x2\xB08\xAF3\x3\x2\x2\x2\xB09\x1B7\x3\x2\x2\x2\xB0A"+
-		"\xB0B\x5\x17C\xBF\x2\xB0B\x1B9\x3\x2\x2\x2\xB0C\xB10\a\xEC\x2\x2\xB0D"+
-		"\xB0F\a\xE9\x2\x2\xB0E\xB0D\x3\x2\x2\x2\xB0F\xB12\x3\x2\x2\x2\xB10\xB0E"+
-		"\x3\x2\x2\x2\xB10\xB11\x3\x2\x2\x2\xB11\x1BB\x3\x2\x2\x2\xB12\xB10\x3"+
-		"\x2\x2\x2\xB13\xB15\t\x1D\x2\x2\xB14\xB13\x3\x2\x2\x2\xB15\xB16\x3\x2"+
-		"\x2\x2\xB16\xB14\x3\x2\x2\x2\xB16\xB17\x3\x2\x2\x2\xB17\x1BD\x3\x2\x2"+
-		"\x2\x1AE\x1C2\x1C6\x1CA\x1D2\x1D8\x1DB\x1E5\x1E7\x1ED\x1F6\x1FD\x203\x20C"+
+		"\x2\x2\x2\xA21\xA34\x5\x152\xAA\x2\xA22\xA23\f\x3\x2\x2\xA23\xA25\x5\x1BA"+
+		"\xDE\x2\xA24\xA26\x5\x1BC\xDF\x2\xA25\xA24\x3\x2\x2\x2\xA25\xA26\x3\x2"+
+		"\x2\x2\xA26\xA27\x3\x2\x2\x2\xA27\xA29\a\xD6\x2\x2\xA28\xA2A\x5\x1BC\xDF"+
+		"\x2\xA29\xA28\x3\x2\x2\x2\xA29\xA2A\x3\x2\x2\x2\xA2A\xA2C\x3\x2\x2\x2"+
+		"\xA2B\xA2D\x5\x18C\xC7\x2\xA2C\xA2B\x3\x2\x2\x2\xA2C\xA2D\x3\x2\x2\x2"+
+		"\xA2D\xA2F\x3\x2\x2\x2\xA2E\xA30\x5\x1BC\xDF\x2\xA2F\xA2E\x3\x2\x2\x2"+
+		"\xA2F\xA30\x3\x2\x2\x2\xA30\xA31\x3\x2\x2\x2\xA31\xA32\a\xDD\x2\x2\xA32"+
+		"\xA34\x3\x2\x2\x2\xA33\xA04\x3\x2\x2\x2\xA33\xA10\x3\x2\x2\x2\xA33\xA19"+
+		"\x3\x2\x2\x2\xA33\xA22\x3\x2\x2\x2\xA34\xA37\x3\x2\x2\x2\xA35\xA33\x3"+
+		"\x2\x2\x2\xA35\xA36\x3\x2\x2\x2\xA36\x189\x3\x2\x2\x2\xA37\xA35\x3\x2"+
+		"\x2\x2\xA38\xA4E\x5\x162\xB2\x2\xA39\xA3B\a\xDE\x2\x2\xA3A\xA3C\x5\x1BC"+
+		"\xDF\x2\xA3B\xA3A\x3\x2\x2\x2\xA3B\xA3C\x3\x2\x2\x2\xA3C\xA3D\x3\x2\x2"+
+		"\x2\xA3D\xA3F\x5\x162\xB2\x2\xA3E\xA40\x5\x1BC\xDF\x2\xA3F\xA3E\x3\x2"+
+		"\x2\x2\xA3F\xA40\x3\x2\x2\x2\xA40\xA41\x3\x2\x2\x2\xA41\xA42\a\xDF\x2"+
+		"\x2\xA42\xA4E\x3\x2\x2\x2\xA43\xA4E\a\x92\x2\x2\xA44\xA46\a\xDE\x2\x2"+
+		"\xA45\xA47\x5\x1BC\xDF\x2\xA46\xA45\x3\x2\x2\x2\xA46\xA47\x3\x2\x2\x2"+
+		"\xA47\xA48\x3\x2\x2\x2\xA48\xA4A\a\x92\x2\x2\xA49\xA4B\x5\x1BC\xDF\x2"+
+		"\xA4A\xA49\x3\x2\x2\x2\xA4A\xA4B\x3\x2\x2\x2\xA4B\xA4C\x3\x2\x2\x2\xA4C"+
+		"\xA4E\a\xDF\x2\x2\xA4D\xA38\x3\x2\x2\x2\xA4D\xA39\x3\x2\x2\x2\xA4D\xA43"+
+		"\x3\x2\x2\x2\xA4D\xA44\x3\x2\x2\x2\xA4E\x18B\x3\x2\x2\x2\xA4F\xA51\x5"+
+		"\x1BC\xDF\x2\xA50\xA4F\x3\x2\x2\x2\xA50\xA51\x3\x2\x2\x2\xA51\xA53\x3"+
+		"\x2\x2\x2\xA52\xA54\x5\x190\xC9\x2\xA53\xA52\x3\x2\x2\x2\xA53\xA54\x3"+
+		"\x2\x2\x2\xA54\xA5F\x3\x2\x2\x2\xA55\xA57\x5\x1BC\xDF\x2\xA56\xA55\x3"+
+		"\x2\x2\x2\xA56\xA57\x3\x2\x2\x2\xA57\xA58\x3\x2\x2\x2\xA58\xA5A\a)\x2"+
+		"\x2\xA59\xA5B\x5\x1BC\xDF\x2\xA5A\xA59\x3\x2\x2\x2\xA5A\xA5B\x3\x2\x2"+
+		"\x2\xA5B\xA5C\x3\x2\x2\x2\xA5C\xA5E\x5\x190\xC9\x2\xA5D\xA56\x3\x2\x2"+
+		"\x2\xA5E\xA61\x3\x2\x2\x2\xA5F\xA5D\x3\x2\x2\x2\xA5F\xA60\x3\x2\x2\x2"+
+		"\xA60\xA63\x3\x2\x2\x2\xA61\xA5F\x3\x2\x2\x2\xA62\xA50\x3\x2\x2\x2\xA62"+
+		"\xA63\x3\x2\x2\x2\xA63\x18D\x3\x2\x2\x2\xA64\xA65\x5\x190\xC9\x2\xA65"+
+		"\x18F\x3\x2\x2\x2\xA66\xA69\x5\x192\xCA\x2\xA67\xA69\x5\x194\xCB\x2\xA68"+
+		"\xA66\x3\x2\x2\x2\xA68\xA67\x3\x2\x2\x2\xA69\x191\x3\x2\x2\x2\xA6A\xA6B"+
+		"\x5\x196\xCC\x2\xA6B\x193\x3\x2\x2\x2\xA6C\xA6E\x5\x152\xAA\x2\xA6D\xA6F"+
+		"\x5\x1BC\xDF\x2\xA6E\xA6D\x3\x2\x2\x2\xA6E\xA6F\x3\x2\x2\x2\xA6F\xA70"+
+		"\x3\x2\x2\x2\xA70\xA72\a\xCF\x2\x2\xA71\xA73\x5\x1BC\xDF\x2\xA72\xA71"+
+		"\x3\x2\x2\x2\xA72\xA73\x3\x2\x2\x2\xA73\xA74\x3\x2\x2\x2\xA74\xA75\x5"+
+		"\x196\xCC\x2\xA75\x195\x3\x2\x2\x2\xA76\xA77\a=\x2\x2\xA77\xA79\x5\x1BC"+
+		"\xDF\x2\xA78\xA76\x3\x2\x2\x2\xA78\xA79\x3\x2\x2\x2\xA79\xA7A\x3\x2\x2"+
+		"\x2\xA7A\xA83\x5\x17C\xBF\x2\xA7B\xA83\x5\x19C\xCF\x2\xA7C\xA7D\x5\x198"+
+		"\xCD\x2\xA7D\xA7E\x5\x1BC\xDF\x2\xA7E\xA7F\a\xC0\x2\x2\xA7F\xA80\x5\x1BC"+
+		"\xDF\x2\xA80\xA81\x5\x19A\xCE\x2\xA81\xA83\x3\x2\x2\x2\xA82\xA78\x3\x2"+
+		"\x2\x2\xA82\xA7B\x3\x2\x2\x2\xA82\xA7C\x3\x2\x2\x2\xA83\x197\x3\x2\x2"+
+		"\x2\xA84\xA85\x5\x17C\xBF\x2\xA85\x199\x3\x2\x2\x2\xA86\xA87\x5\x17C\xBF"+
+		"\x2\xA87\x19B\x3\x2\x2\x2\xA88\xA89\a\x34\x2\x2\xA89\xA8A\x5\x1BC\xDF"+
+		"\x2\xA8A\xA8B\x5\x17C\xBF\x2\xA8B\x19D\x3\x2\x2\x2\xA8C\xA8D\t\x1A\x2"+
+		"\x2\xA8D\x19F\x3\x2\x2\x2\xA8E\xA8F\a\x39\x2\x2\xA8F\x1A1\x3\x2\x2\x2"+
+		"\xA90\xA91\t\x1B\x2\x2\xA91\x1A3\x3\x2\x2\x2\xA92\xA94\x5\x1BC\xDF\x2"+
+		"\xA93\xA92\x3\x2\x2\x2\xA93\xA94\x3\x2\x2\x2\xA94\xA95\x3\x2\x2\x2\xA95"+
+		"\xA97\a\xE6\x2\x2\xA96\xA98\x5\x1BC\xDF\x2\xA97\xA96\x3\x2\x2\x2\xA97"+
+		"\xA98\x3\x2\x2\x2\xA98\xA9E\x3\x2\x2\x2\xA99\xA9B\x5\x1BC\xDF\x2\xA9A"+
+		"\xA99\x3\x2\x2\x2\xA9A\xA9B\x3\x2\x2\x2\xA9B\xA9C\x3\x2\x2\x2\xA9C\xA9E"+
+		"\x5\x1A8\xD5\x2\xA9D\xA93\x3\x2\x2\x2\xA9D\xA9A\x3\x2\x2\x2\xA9E\x1A5"+
+		"\x3\x2\x2\x2\xA9F\xAA8\x5\x1A4\xD3\x2\xAA0\xAA2\x5\x1BC\xDF\x2\xAA1\xAA0"+
+		"\x3\x2\x2\x2\xAA1\xAA2\x3\x2\x2\x2\xAA2\xAA3\x3\x2\x2\x2\xAA3\xAA5\a*"+
+		"\x2\x2\xAA4\xAA6\x5\x1BC\xDF\x2\xAA5\xAA4\x3\x2\x2\x2\xAA5\xAA6\x3\x2"+
+		"\x2\x2\xAA6\xAA8\x3\x2\x2\x2\xAA7\xA9F\x3\x2\x2\x2\xAA7\xAA1\x3\x2\x2"+
+		"\x2\xAA8\xAA9\x3\x2\x2\x2\xAA9\xAA7\x3\x2\x2\x2\xAA9\xAAA\x3\x2\x2\x2"+
+		"\xAAA\xAB0\x3\x2\x2\x2\xAAB\xAAD\x5\x1BC\xDF\x2\xAAC\xAAB\x3\x2\x2\x2"+
+		"\xAAC\xAAD\x3\x2\x2\x2\xAAD\xAAE\x3\x2\x2\x2\xAAE\xAB0\a\x2\x2\x3\xAAF"+
+		"\xAA7\x3\x2\x2\x2\xAAF\xAAC\x3\x2\x2\x2\xAB0\x1A7\x3\x2\x2\x2\xAB1\xAB5"+
+		"\x5\x1B0\xD9\x2\xAB2\xAB5\x5\x1AA\xD6\x2\xAB3\xAB5\x5\x1AC\xD7\x2\xAB4"+
+		"\xAB1\x3\x2\x2\x2\xAB4\xAB2\x3\x2\x2\x2\xAB4\xAB3\x3\x2\x2\x2\xAB5\x1A9"+
+		"\x3\x2\x2\x2\xAB6\xAB8\a\xAD\x2\x2\xAB7\xAB9\x5\x1BC\xDF\x2\xAB8\xAB7"+
+		"\x3\x2\x2\x2\xAB8\xAB9\x3\x2\x2\x2\xAB9\xABA\x3\x2\x2\x2\xABA\xABB\x5"+
+		"\x1AE\xD8\x2\xABB\x1AB\x3\x2\x2\x2\xABC\xABD\a\xE7\x2\x2\xABD\xABE\x5"+
+		"\x1AE\xD8\x2\xABE\x1AD\x3\x2\x2\x2\xABF\xAC2\a\xEC\x2\x2\xAC0\xAC2\n\x1C"+
+		"\x2\x2\xAC1\xABF\x3\x2\x2\x2\xAC1\xAC0\x3\x2\x2\x2\xAC2\xAC5\x3\x2\x2"+
+		"\x2\xAC3\xAC1\x3\x2\x2\x2\xAC3\xAC4\x3\x2\x2\x2\xAC4\x1AF\x3\x2\x2\x2"+
+		"\xAC5\xAC3\x3\x2\x2\x2\xAC6\xACC\a\xE7\x2\x2\xAC7\xAC8\a/\x2\x2\xAC8\xACA"+
+		"\x5\x1B2\xDA\x2\xAC9\xACB\x5\x1BC\xDF\x2\xACA\xAC9\x3\x2\x2\x2\xACA\xACB"+
+		"\x3\x2\x2\x2\xACB\xACD\x3\x2\x2\x2\xACC\xAC7\x3\x2\x2\x2\xACD\xACE\x3"+
+		"\x2\x2\x2\xACE\xACC\x3\x2\x2\x2\xACE\xACF\x3\x2\x2\x2\xACF\xAD5\x3\x2"+
+		"\x2\x2\xAD0\xAD2\x5\x1BC\xDF\x2\xAD1\xAD0\x3\x2\x2\x2\xAD1\xAD2\x3\x2"+
+		"\x2\x2\xAD2\xAD3\x3\x2\x2\x2\xAD3\xAD4\a*\x2\x2\xAD4\xAD6\x5\x1AE\xD8"+
+		"\x2\xAD5\xAD1\x3\x2\x2\x2\xAD5\xAD6\x3\x2\x2\x2\xAD6\x1B1\x3\x2\x2\x2"+
+		"\xAD7\xAD9\x5\x1B4\xDB\x2\xAD8\xADA\x5\x1B6\xDC\x2\xAD9\xAD8\x3\x2\x2"+
+		"\x2\xAD9\xADA\x3\x2\x2\x2\xADA\x1B3\x3\x2\x2\x2\xADB\xADC\x5\x152\xAA"+
+		"\x2\xADC\x1B5\x3\x2\x2\x2\xADD\xADE\x5\x1BC\xDF\x2\xADE\xADF\x5\x1B8\xDD"+
+		"\x2\xADF\xB1A\x3\x2\x2\x2\xAE0\xAE1\x5\x1BC\xDF\x2\xAE1\xAEA\x5\x1B8\xDD"+
+		"\x2\xAE2\xAE4\x5\x1BC\xDF\x2\xAE3\xAE2\x3\x2\x2\x2\xAE3\xAE4\x3\x2\x2"+
+		"\x2\xAE4\xAE5\x3\x2\x2\x2\xAE5\xAE7\a)\x2\x2\xAE6\xAE8\x5\x1BC\xDF\x2"+
+		"\xAE7\xAE6\x3\x2\x2\x2\xAE7\xAE8\x3\x2\x2\x2\xAE8\xAE9\x3\x2\x2\x2\xAE9"+
+		"\xAEB\x5\x1B8\xDD\x2\xAEA\xAE3\x3\x2\x2\x2\xAEB\xAEC\x3\x2\x2\x2\xAEC"+
+		"\xAEA\x3\x2\x2\x2\xAEC\xAED\x3\x2\x2\x2\xAED\xB1A\x3\x2\x2\x2\xAEE\xAF0"+
+		"\x5\x1BC\xDF\x2\xAEF\xAEE\x3\x2\x2\x2\xAEF\xAF0\x3\x2\x2\x2\xAF0\xAF1"+
+		"\x3\x2\x2\x2\xAF1\xAF3\a\xD6\x2\x2\xAF2\xAF4\x5\x1BC\xDF\x2\xAF3\xAF2"+
+		"\x3\x2\x2\x2\xAF3\xAF4\x3\x2\x2\x2\xAF4\xAF5\x3\x2\x2\x2\xAF5\xB1A\a\xDD"+
+		"\x2\x2\xAF6\xAF8\x5\x1BC\xDF\x2\xAF7\xAF6\x3\x2\x2\x2\xAF7\xAF8\x3\x2"+
+		"\x2\x2\xAF8\xAF9\x3\x2\x2\x2\xAF9\xAFB\a\xD6\x2\x2\xAFA\xAFC\x5\x1BC\xDF"+
+		"\x2\xAFB\xAFA\x3\x2\x2\x2\xAFB\xAFC\x3\x2\x2\x2\xAFC\xAFD\x3\x2\x2\x2"+
+		"\xAFD\xAFF\x5\x1B8\xDD\x2\xAFE\xB00\x5\x1BC\xDF\x2\xAFF\xAFE\x3\x2\x2"+
+		"\x2\xAFF\xB00\x3\x2\x2\x2\xB00\xB01\x3\x2\x2\x2\xB01\xB02\a\xDD\x2\x2"+
+		"\xB02\xB1A\x3\x2\x2\x2\xB03\xB05\x5\x1BC\xDF\x2\xB04\xB03\x3\x2\x2\x2"+
+		"\xB04\xB05\x3\x2\x2\x2\xB05\xB06\x3\x2\x2\x2\xB06\xB07\a\xD6\x2\x2\xB07"+
+		"\xB10\x5\x1B8\xDD\x2\xB08\xB0A\x5\x1BC\xDF\x2\xB09\xB08\x3\x2\x2\x2\xB09"+
+		"\xB0A\x3\x2\x2\x2\xB0A\xB0B\x3\x2\x2\x2\xB0B\xB0D\a)\x2\x2\xB0C\xB0E\x5"+
+		"\x1BC\xDF\x2\xB0D\xB0C\x3\x2\x2\x2\xB0D\xB0E\x3\x2\x2\x2\xB0E\xB0F\x3"+
+		"\x2\x2\x2\xB0F\xB11\x5\x1B8\xDD\x2\xB10\xB09\x3\x2\x2\x2\xB11\xB12\x3"+
+		"\x2\x2\x2\xB12\xB10\x3\x2\x2\x2\xB12\xB13\x3\x2\x2\x2\xB13\xB15\x3\x2"+
+		"\x2\x2\xB14\xB16\x5\x1BC\xDF\x2\xB15\xB14\x3\x2\x2\x2\xB15\xB16\x3\x2"+
+		"\x2\x2\xB16\xB17\x3\x2\x2\x2\xB17\xB18\a\xDD\x2\x2\xB18\xB1A\x3\x2\x2"+
+		"\x2\xB19\xADD\x3\x2\x2\x2\xB19\xAE0\x3\x2\x2\x2\xB19\xAEF\x3\x2\x2\x2"+
+		"\xB19\xAF7\x3\x2\x2\x2\xB19\xB04\x3\x2\x2\x2\xB1A\x1B7\x3\x2\x2\x2\xB1B"+
+		"\xB1C\x5\x17C\xBF\x2\xB1C\x1B9\x3\x2\x2\x2\xB1D\xB21\a\xEC\x2\x2\xB1E"+
+		"\xB20\a\xE9\x2\x2\xB1F\xB1E\x3\x2\x2\x2\xB20\xB23\x3\x2\x2\x2\xB21\xB1F"+
+		"\x3\x2\x2\x2\xB21\xB22\x3\x2\x2\x2\xB22\x1BB\x3\x2\x2\x2\xB23\xB21\x3"+
+		"\x2\x2\x2\xB24\xB26\t\x1D\x2\x2\xB25\xB24\x3\x2\x2\x2\xB26\xB27\x3\x2"+
+		"\x2\x2\xB27\xB25\x3\x2\x2\x2\xB27\xB28\x3\x2\x2\x2\xB28\x1BD\x3\x2\x2"+
+		"\x2\x1B2\x1C2\x1C6\x1CA\x1D2\x1D8\x1DB\x1E5\x1E7\x1ED\x1F6\x1FD\x203\x20C"+
 		"\x213\x217\x21B\x21F\x224\x230\x23D\x240\x24D\x250\x257\x25F\x266\x26B"+
 		"\x26E\x271\x297\x2A7\x2AF\x2B4\x2B9\x2C2\x2D6\x2DA\x2E2\x2ED\x2F3\x2F7"+
 		"\x2FC\x303\x307\x311\x315\x318\x31E\x324\x32E\x332\x335\x33B\x33F\x349"+
@@ -20898,11 +20976,11 @@ public partial class VBAParser : Parser {
 		"\x918\x91E\x922\x928\x92D\x939\x93C\x940\x943\x954\x959\x95F\x963\x967"+
 		"\x96E\x972\x976\x97B\x97F\x984\x988\x98D\x991\x996\x99A\x99F\x9A3\x9A8"+
 		"\x9AC\x9B1\x9B5\x9BA\x9BE\x9C3\x9C7\x9CC\x9D0\x9D5\x9D9\x9DC\x9DE\x9E6"+
-		"\x9E8\x9ED\x9FA\x9FF\xA02\xA07\xA0A\xA0D\xA12\xA16\xA1B\xA1F\xA22\xA24"+
-		"\xA2A\xA2E\xA35\xA39\xA3C\xA3F\xA42\xA45\xA49\xA4E\xA51\xA57\xA5D\xA61"+
-		"\xA67\xA71\xA82\xA86\xA89\xA8C\xA90\xA94\xA96\xA98\xA9B\xA9E\xAA3\xAA7"+
-		"\xAB0\xAB2\xAB9\xABD\xAC0\xAC4\xAC8\xAD2\xAD6\xADB\xADE\xAE2\xAE6\xAEA"+
-		"\xAEE\xAF3\xAF8\xAFC\xB01\xB04\xB08\xB10\xB16";
+		"\x9E8\x9ED\x9FA\x9FF\xA02\xA07\xA0A\xA0D\xA12\xA16\xA1B\xA1F\xA25\xA29"+
+		"\xA2C\xA2F\xA33\xA35\xA3B\xA3F\xA46\xA4A\xA4D\xA50\xA53\xA56\xA5A\xA5F"+
+		"\xA62\xA68\xA6E\xA72\xA78\xA82\xA93\xA97\xA9A\xA9D\xAA1\xAA5\xAA7\xAA9"+
+		"\xAAC\xAAF\xAB4\xAB8\xAC1\xAC3\xACA\xACE\xAD1\xAD5\xAD9\xAE3\xAE7\xAEC"+
+		"\xAEF\xAF3\xAF7\xAFB\xAFF\xB04\xB09\xB0D\xB12\xB15\xB19\xB21\xB27";
 	public static readonly ATN _ATN =
 		new ATNDeserializer().Deserialize(_serializedATN.ToCharArray());
 }

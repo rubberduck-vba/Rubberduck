@@ -445,8 +445,8 @@ modeSpecifier :	(MID | MIDB) DOLLAR? ;
 integerExpression : expression;
 
 callStmt :
-    CALL whiteSpace expression
-    | expression (whiteSpace argumentList)?
+    CALL whiteSpace lExpression
+    | lExpression (whiteSpace argumentList)?
 ;
 
 resumeStmt : RESUME (whiteSpace (NEXT | expression))?;
@@ -626,6 +626,7 @@ lExpression :
     | identifier                                                                                                    # simpleNameExpr
     | DOT mandatoryLineContinuation? unrestrictedIdentifier                                                         # withMemberAccessExpr
     | EXCLAMATIONPOINT mandatoryLineContinuation? unrestrictedIdentifier                                            # withDictionaryAccessExpr
+	| lExpression mandatoryLineContinuation whiteSpace? LPAREN whiteSpace? argumentList? whiteSpace? RPAREN			# whitespaceIndexExpr
 ;
 
 // 3.3.5.3 Special Identifier Forms
