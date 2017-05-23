@@ -1,56 +1,27 @@
-﻿using Antlr4.Runtime;
-using Antlr4.Runtime.Tree;
-using Rubberduck.Parsing.Symbols;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading;
+using Antlr4.Runtime;
+using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.PreProcessing;
+using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
-namespace Rubberduck.Parsing.VBA
+namespace RubberduckTests.Mocks
 {
-    public class AttributeParser : IAttributeParser
+    public class TestAttributeParser : IAttributeParser
     {
-        private readonly IModuleExporter _exporter;
         private readonly Func<IVBAPreprocessor> _preprocessorFactory;
-
-        public AttributeParser(IModuleExporter exporter, Func<IVBAPreprocessor> preprocessorFactory)
+        public TestAttributeParser(Func<IVBAPreprocessor> preprocessorFactory)
         {
-            _exporter = exporter;
             _preprocessorFactory = preprocessorFactory;
         }
 
-        /// <summary>
-        /// Exports the specified component to a temporary file, loads, and then parses the exported file.
-        /// </summary>
-        /// <param name="component"></param>
-        /// <param name="token"></param>
-        /// <param name="stream"></param>
         public IDictionary<Tuple<string, DeclarationType>, Attributes> Parse(IVBComponent component, CancellationToken token, out ITokenStream stream, out IParseTree tree)
         {
-            token.ThrowIfCancellationRequested();
-            var path = _exporter.Export(component);
-            if (!File.Exists(path))
-            {
-                // a document component without any code wouldn't be exported (file would be empty anyway).
-                stream = null;
-                tree = null;
-                return new Dictionary<Tuple<string, DeclarationType>, Attributes>();
-            }
-            var code = File.ReadAllText(path);
-            try
-            {
-                File.Delete(path);
-            }
-            catch
-            {
-                // Meh.
-            }
-           
-            token.ThrowIfCancellationRequested();
-
+            var code = component.CodeModule.Content();
             var type = component.Type == ComponentType.StandardModule
                 ? DeclarationType.ProceduralModule
                 : DeclarationType.ClassModule;

@@ -341,6 +341,7 @@
     <Compile Include="Symbols\UnboundMemberDeclaration.cs" />
     <Compile Include="Syntax\SyntaxTree.cs" />
     <Compile Include="Syntax\TextSpan.cs" />
+    <Compile Include="VBA\AttributeListener.cs" />
     <Compile Include="VBA\AttributeParser.cs" />
     <Compile Include="VBA\Attributes.cs" />
     <Compile Include="VBA\BuiltInDeclarationLoader.cs" />

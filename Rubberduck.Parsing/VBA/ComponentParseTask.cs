@@ -62,7 +62,7 @@ namespace Rubberduck.Parsing.VBA
                 var attributes = _attributeParser.Parse(_component, token, out attributesTokenStream, out attributesTree);
                 Logger.Trace($"ParseTaskID {_taskId} finished attributes pass.");
 
-                var rewriter = new MemberAttributesRewriter(_exporter, _component.CodeModule, new TokenStreamRewriter(attributesTokenStream));
+                var rewriter = new MemberAttributesRewriter(_exporter, _component.CodeModule, new TokenStreamRewriter(attributesTokenStream ?? tokenStream));
 
                 // temporal coupling... comments must be acquired before we walk the parse tree for declarations
                 // otherwise none of the annotations get associated to their respective Declaration

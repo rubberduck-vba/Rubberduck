@@ -14,6 +14,7 @@ using System.Reflection;
 using System.Threading;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
+using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -37,13 +38,9 @@ namespace RubberduckTests.Mocks
 
         public static ParseCoordinator Create(IVBE vbe, RubberduckParserState state, string serializedDeclarationsPath = null)
         {
-            var attributeParser = new Mock<IAttributeParser>();
-            ITokenStream stream;
-            IParseTree tree;
-            attributeParser.Setup(m => m.Parse(It.IsAny<IVBComponent>(), It.IsAny<CancellationToken>(), out stream, out tree))
-                           .Returns(() => new Dictionary<Tuple<string, DeclarationType>, Attributes>());
+            var attributeParser = new TestAttributeParser(() => new Mock<IVBAPreprocessor>().Object);
             var exporter = new Mock<IModuleExporter>().Object;
-            return Create(vbe, state, attributeParser.Object, exporter, serializedDeclarationsPath);
+            return Create(vbe, state, attributeParser, exporter, serializedDeclarationsPath);
         }
 
         public static ParseCoordinator Create(IVBE vbe, RubberduckParserState state, IAttributeParser attributeParser, IModuleExporter exporter, string serializedDeclarationsPath = null)
@@ -148,6 +145,16 @@ namespace RubberduckTests.Mocks
             {
                 state.AddDeclaration(declaration);
             }
+        }
+
+        public static RubberduckParserState CreateAndParse(IVBE vbe, IInspectionListener listener)
+        {
+            var parser = Create(vbe, new RubberduckParserState(vbe));
+            parser.Parse(new CancellationTokenSource());
+            if(parser.State.Status >= ParserState.Error)
+            { Assert.Inconclusive("Parser Error"); }
+
+            return parser.State;
         }
     }
 }
