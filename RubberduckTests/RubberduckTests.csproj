@@ -97,6 +97,7 @@
     <Compile Include="Inspections\EmptyIfBlockInspectionTests.cs" />
     <Compile Include="Inspections\InspectionsHelper.cs" />
     <Compile Include="Inspections\MissingAnnotationInspectionTests.cs" />
+    <Compile Include="Inspections\MissingAttributeInspectionTests.cs" />
     <Compile Include="Inspections\ModuleScopeDimKeywordInspectionTests.cs" />
     <Compile Include="Inspections\HostSpecificExpressionInspectionTests.cs" />
     <Compile Include="Inspections\HungarianNotationInspectionTests.cs" />
