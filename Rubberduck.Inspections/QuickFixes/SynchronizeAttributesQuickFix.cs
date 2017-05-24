@@ -79,7 +79,7 @@ namespace Rubberduck.Inspections.QuickFixes
         private void Fix(QualifiedMemberName memberName, VBAParser.AnnotationContext context)
         {
             var annotationName = Identifier.GetName(context.annotationName().unrestrictedIdentifier());
-            var annotationType = (AnnotationType) Enum.Parse(typeof (AnnotationType), annotationName);
+            var annotationType = context.AnnotationType;
             var attributeName = annotationType.HasFlag(AnnotationType.MemberAnnotation) ? memberName.MemberName + "." : string.Empty
                 + _attributeNames[annotationName];
 
