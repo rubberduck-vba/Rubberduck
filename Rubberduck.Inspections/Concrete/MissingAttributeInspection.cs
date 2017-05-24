@@ -6,6 +6,7 @@ using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -36,124 +37,38 @@ namespace Rubberduck.Inspections.Concrete
             });
         }
 
-        public class MissingMemberAttributeListener : VBAParserBaseListener, IInspectionListener
+        public class MissingMemberAttributeListener : ParseTreeListeners.AttributeAnnotationListener
         {
-            private readonly RubberduckParserState _state;
-
-            private Lazy<Declaration> _module;
-            private Lazy<IDictionary<string, Declaration>> _members;
-
-            public MissingMemberAttributeListener(RubberduckParserState state)
-            {
-                _state = state;
-            }
-
-            private readonly List<QualifiedContext<ParserRuleContext>> _contexts =
-                new List<QualifiedContext<ParserRuleContext>>();
-
-            public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
-
-            public QualifiedModuleName CurrentModuleName { get; set; }
-
-            public void ClearContexts() => _contexts.Clear();
-
-            #region scoping
-            private Declaration _currentScopeDeclaration;
-            private bool _hasMembers;
-
-            private void SetCurrentScope(IAnnotatedContext context, string memberName = null)
-            {
-                _hasMembers = !string.IsNullOrEmpty(memberName);
-                _currentScopeDeclaration = _hasMembers ? _members.Value[memberName] : _module.Value;
-            }
-
-            public override void EnterModuleBody(VBAParser.ModuleBodyContext context)
-            {
-                _currentScopeDeclaration = _state.DeclarationFinder
-                    .UserDeclarations(DeclarationType.Procedure)
-                    .Where(declaration => declaration.QualifiedName.QualifiedModuleName.Equals(CurrentModuleName))
-                    .OrderBy(declaration => declaration.Selection)
-                    .FirstOrDefault();
-            }
-
-            public override void EnterModule(VBAParser.ModuleContext context)
-            {
-                _module = new Lazy<Declaration>(() => _state.DeclarationFinder
-                    .UserDeclarations(DeclarationType.Module)
-                    .SingleOrDefault(m => m.QualifiedName.QualifiedModuleName.Equals(CurrentModuleName)));
-
-                _members = new Lazy<IDictionary<string, Declaration>>(() => _state.DeclarationFinder
-                    .Members(CurrentModuleName)
-                    .Where(m => !m.DeclarationType.HasFlag(DeclarationType.Module))
-                    .GroupBy(m => m.IdentifierName)
-                    .ToDictionary(m => m.Key, m => m.FirstOrDefault()));
-            }
-
-            public override void ExitModule(VBAParser.ModuleContext context)
-            {
-                _currentScopeDeclaration = null;
-            }
-
-            public override void ExitModuleDeclarations(VBAParser.ModuleDeclarationsContext context)
-            {
-                var firstMember = _members.Value.Values.OrderBy(d => d.Selection).FirstOrDefault();
-                if (firstMember != null)
-                {
-                    _currentScopeDeclaration = firstMember;
-                }
-                else
-                {
-                    _currentScopeDeclaration = _state.DeclarationFinder.UserDeclarations(DeclarationType.Module)
-                        .SingleOrDefault(d => d.QualifiedName.QualifiedModuleName.Equals(CurrentModuleName));
-                }
-            }
-
-            public override void EnterSubStmt(VBAParser.SubStmtContext context)
-            {
-                SetCurrentScope(context, Identifier.GetName(context.subroutineName()));
-            }
-
-            public override void EnterFunctionStmt(VBAParser.FunctionStmtContext context)
-            {
-                SetCurrentScope(context, Identifier.GetName(context.functionName()));
-            }
-
-            public override void EnterPropertyGetStmt(VBAParser.PropertyGetStmtContext context)
-            {
-                SetCurrentScope(context, Identifier.GetName(context.functionName()));
-            }
-
-            public override void EnterPropertyLetStmt(VBAParser.PropertyLetStmtContext context)
-            {
-                SetCurrentScope(context, Identifier.GetName(context.subroutineName()));
-            }
-
-            public override void EnterPropertySetStmt(VBAParser.PropertySetStmtContext context)
-            {
-                SetCurrentScope(context, Identifier.GetName(context.subroutineName()));
-            }
-            #endregion
+            public MissingMemberAttributeListener(RubberduckParserState state) : base(state) { }
 
             public override void ExitAnnotation(VBAParser.AnnotationContext context)
             {
+                var isMemberAnnotation = context.AnnotationType.HasFlag(AnnotationType.MemberAnnotation);
+                var isModuleScope = CurrentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Module);
                 var name = context.annotationName().GetText();
-                if (_currentScopeDeclaration == null)
+
+                if (isModuleScope && !isMemberAnnotation)
                 {
                     // module-level annotation
-                    var module = _state.DeclarationFinder.UserDeclarations(DeclarationType.Module).Single(m => m.QualifiedName.QualifiedModuleName.Equals(CurrentModuleName));
+                    var module = State.DeclarationFinder.UserDeclarations(DeclarationType.Module).Single(m => m.QualifiedName.QualifiedModuleName.Equals(CurrentModuleName));
                     var attribute = module.Attributes.FirstOrDefault(a => a.Key == "VB_" + name);
                     if (!attribute.Equals(default(KeyValuePair<string,IEnumerable<string>>)) && attribute.Value.FirstOrDefault() == "False")
                     {
-                        _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
+                        AddContext(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
                     }
                 }
                 else
                 {
-                    // member-level annotation
-                    var member = _members.Value.Single(m => m.Key.Equals(_currentScopeDeclaration.QualifiedName.MemberName));
+                    // member-level annotation is above the context for the first member in the module..
+                    if (isModuleScope)
+                    {
+                        CurrentScopeDeclaration = FirstMember;
+                    }
+
+                    var member = Members.Value.Single(m => m.Key.Equals(CurrentScopeDeclaration.QualifiedName.MemberName));
                     if (!member.Value.Attributes.ContainsKey("VB_" + name))
                     {
-                        _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
+                        AddContext(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
                     }
                 }
             }

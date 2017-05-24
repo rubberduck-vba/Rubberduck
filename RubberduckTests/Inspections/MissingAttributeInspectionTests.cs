@@ -143,7 +143,7 @@ Attribute VB_Name = """ + testModuleName + @"""   ' (ignored)
 Attribute VB_GlobalNameSpace = False              ' (ignored)
 Attribute VB_Creatable = False                    ' (ignored)
 Attribute VB_PredeclaredId = False                ' Must be False
-Attribute VB_Exposed = True                       ' Must be False
+Attribute VB_Exposed = False                      ' Must be False
 Option Explicit
 '@Exposed
 ";
