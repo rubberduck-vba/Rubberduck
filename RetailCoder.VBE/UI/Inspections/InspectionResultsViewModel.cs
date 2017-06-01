@@ -260,7 +260,7 @@ namespace Rubberduck.UI.Inspections
         private bool _runInspectionsOnReparse;
         private void HandleStateChanged(object sender, EventArgs e)
         {
-            if(_state.Status == ParserState.Pending || _state.Status == ParserState.Error || _state.Status == ParserState.ResolverError)
+            if(!IsRefreshing && (_state.Status == ParserState.Pending || _state.Status == ParserState.Error || _state.Status == ParserState.ResolverError))
             {
                 IsBusy = false;
                 return;
