@@ -40,7 +40,7 @@ namespace Rubberduck.Inspections.Concrete
                                .Select(r => new IdentifierReferenceInspectionResult(this,
                                                                  string.Format(InspectionsUI.UnassignedVariableUsageInspectionResultFormat, r.IdentifierName),
                                                                  State,
-                                                                 r));
+                                                                 r)).ToList();
         }
 
         private bool DeclarationReferencesContainsReference(Declaration parentDeclaration, Declaration target)

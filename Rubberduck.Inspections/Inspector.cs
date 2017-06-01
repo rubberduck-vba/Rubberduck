@@ -126,10 +126,12 @@ namespace Rubberduck.Inspections
 
             private void WalkTrees(CodeInspectionSettings settings, RubberduckParserState state, IEnumerable<IParseTreeInspection> inspections, ParsePass pass)
             {
-                var listeners =
-                    inspections.Where(i => i.Pass == pass && i.Severity != CodeInspectionSeverity.DoNotShow && !IsDisabled(settings, i))
-                        .Select(inspection => inspection.Listener)
-                        .ToList();
+                var listeners = inspections
+                    .Where(i => i.Severity != CodeInspectionSeverity.DoNotShow
+                        && i.Pass == pass
+                        && !IsDisabled(settings, i))
+                    .Select(inspection => inspection.Listener)
+                    .ToList();
 
                 List<KeyValuePair<QualifiedModuleName, IParseTree>> trees;
                 switch (pass)
@@ -142,6 +144,11 @@ namespace Rubberduck.Inspections
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(pass), pass, null);
+                }
+
+                foreach (var listener in listeners)
+                {
+                    listener.ClearContexts();
                 }
 
                 foreach (var componentTreePair in trees)

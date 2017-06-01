@@ -34,12 +34,13 @@ namespace Rubberduck.Inspections.Concrete
                 .Where(declaration => ReturningMemberTypes.Contains(declaration.DeclarationType)
                     && !interfaceMembers.Contains(declaration)).ToList();
 
-            var unassigned = from function in functions
+            var unassigned = (from function in functions
                              let isUdt = IsReturningUserDefinedType(function)
                              let inScopeRefs = function.References.Where(r => r.ParentScoping.Equals(function))
                              where (!isUdt && (!inScopeRefs.Any(r => r.IsAssignment)))
                                 || (isUdt && !IsUserDefinedTypeAssigned(function))
-                             select function;
+                             select function)
+                             .ToList();
 
             return unassigned
                 .Select(issue =>
@@ -85,6 +86,13 @@ namespace Rubberduck.Inspections.Concrete
             }
 
             public override bool VisitLetStmt(VBAParser.LetStmtContext context)
+            {
+                var leftmost = context.lExpression().GetChild(0).GetText();
+                _result = _result || leftmost == _name;
+                return _result;
+            }
+
+            public override bool VisitSetStmt(VBAParser.SetStmtContext context)
             {
                 var leftmost = context.lExpression().GetChild(0).GetText();
                 _result = _result || leftmost == _name;
