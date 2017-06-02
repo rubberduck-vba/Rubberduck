@@ -1,4 +1,6 @@
-# Getting Started
+[back to readme.md](https://github.com/rubberduck-vba/Rubberduck/blob/readme-cleanup/README.md)
+
+## Getting Started
 
 <sub>[(installation instructions)](https://github.com/rubberduck-vba/Rubberduck/wiki/Installing)</sub>
 
