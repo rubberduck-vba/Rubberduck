@@ -1,3 +1,5 @@
+[back to readme.md](https://github.com/rubberduck-vba/Rubberduck/blob/readme-cleanup/README.md)
+
 ## What is Rubberduck?
 
 It's an add-in for the VBA IDE, the glorious *Visual Basic Editor* (VBE) - which hasn't seen an update in this century, but that's still in use everywhere around the world. Rubberduck wants to give its users access to features you would find in the VBE if it had kept up with the features of Visual Studio and other IDE's in the past, oh, *decade* or so.
