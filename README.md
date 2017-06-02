@@ -16,9 +16,9 @@ Branch     | Description | Build Status |
 
 ---
 
- * [Attributions](https://github.com/rubberduck-vba/Rubberduck/docs/Attributions.md)
- * [About](https://github.com/rubberduck-vba/Rubberduck/docs/About.md)
- * [Getting Started](https://github.com/rubberduck-vba/Rubberduck/docs/GettingStarted.md)
+ * [Attributions](https://github.com/rubberduck-vba/Rubberduck/blob/next/docs/Attributions.md)
+ * [About](https://github.com/rubberduck-vba/Rubberduck/blob/next/docs/About.md)
+ * [Getting Started](https://github.com/rubberduck-vba/Rubberduck/blob/next/docs/GettingStarted.md)
  * [Contributing](https://github.com/rubberduck-vba/Rubberduck/wiki/Contributing)
 
 ---
