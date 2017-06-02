@@ -1,3 +1,5 @@
+[back to readme.md](https://github.com/rubberduck-vba/Rubberduck/blob/readme-cleanup/README.md)
+
 ## Software & Libraries
 
 ### [Ninject](http://www.ninject.org)
