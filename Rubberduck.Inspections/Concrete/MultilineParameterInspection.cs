@@ -17,11 +17,14 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class MultilineParameterInspection : ParseTreeInspectionBase
     {
         public MultilineParameterInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Suggestion) { }
+            : base(state, CodeInspectionSeverity.Suggestion)
+        {
+            Listener = new ParameterListener();
+        }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
-        public override IInspectionListener Listener => new ParameterListener();
+        public override IInspectionListener Listener { get; }
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
@@ -37,7 +40,9 @@ namespace Rubberduck.Inspections.Concrete
 
         public class ParameterListener : VBAParserBaseListener, IInspectionListener
         {
-            private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
+            private readonly List<QualifiedContext<ParserRuleContext>> _contexts
+                = new List<QualifiedContext<ParserRuleContext>>();
+
             public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
 
             public QualifiedModuleName CurrentModuleName { get; set; }

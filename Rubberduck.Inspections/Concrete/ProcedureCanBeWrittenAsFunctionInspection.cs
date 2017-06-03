@@ -20,10 +20,13 @@ namespace Rubberduck.Inspections.Concrete
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public ProcedureCanBeWrittenAsFunctionInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Suggestion) { }
+            : base(state, CodeInspectionSeverity.Suggestion)
+        {
+            Listener = new SingleByRefParamArgListListener();
+        }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
-        public override IInspectionListener Listener => new SingleByRefParamArgListListener();
+        public override IInspectionListener Listener { get; }
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {

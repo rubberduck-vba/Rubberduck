@@ -61,14 +61,21 @@ namespace Rubberduck.Inspections
                 }
 
                 state.OnStatusMessageUpdate(RubberduckUI.CodeInspections_Inspecting);
+                var allIssues = new ConcurrentBag<IInspectionResult>();
 
                 var config = _configService.LoadConfiguration();
                 UpdateInspectionSeverity(config);
 
-                var allIssues = new ConcurrentBag<IInspectionResult>();
+                var parseTreeInspections = _inspections
+                    .Where(inspection => inspection.Severity != CodeInspectionSeverity.DoNotShow)
+                    .OfType<IParseTreeInspection>()
+                    .ToArray();
 
-                var parseTreeInspections = _inspections.OfType<IParseTreeInspection>().ToArray();
-
+                foreach(var listener in parseTreeInspections.Select(inspection => inspection.Listener))
+                {
+                    listener.ClearContexts();
+                }
+                
                 // Prepare ParseTreeWalker based inspections
                 var passes = Enum.GetValues(typeof (ParsePass)).Cast<ParsePass>();
                 foreach (var parsePass in passes)
@@ -133,6 +140,11 @@ namespace Rubberduck.Inspections
                     .Select(inspection => inspection.Listener)
                     .ToList();
 
+                if (!listeners.Any())
+                {
+                    return;
+                }
+
                 List<KeyValuePair<QualifiedModuleName, IParseTree>> trees;
                 switch (pass)
                 {
@@ -144,11 +156,6 @@ namespace Rubberduck.Inspections
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(pass), pass, null);
-                }
-
-                foreach (var listener in listeners)
-                {
-                    listener.ClearContexts();
                 }
 
                 foreach (var componentTreePair in trees)

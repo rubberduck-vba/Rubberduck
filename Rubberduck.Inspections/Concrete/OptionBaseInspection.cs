@@ -15,10 +15,13 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class OptionBaseInspection : ParseTreeInspectionBase
     {
         public OptionBaseInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Hint) { }
+            : base(state, CodeInspectionSeverity.Hint)
+        {
+            Listener = new OptionBaseStatementListener();
+        }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
-        public override IInspectionListener Listener => new OptionBaseStatementListener();
+        public override IInspectionListener Listener { get; }
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
