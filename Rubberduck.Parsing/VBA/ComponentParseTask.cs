@@ -56,11 +56,9 @@ namespace Rubberduck.Parsing.VBA
                 var tokenStream = RewriteAndPreprocess(token);
                 token.ThrowIfCancellationRequested();
 
-                Logger.Trace($"ParseTaskID {_taskId} begins attributes pass.");
-                ITokenStream attributesTokenStream;
                 IParseTree attributesTree;
-                var attributes = _attributeParser.Parse(_component, token, out attributesTokenStream, out attributesTree);
-                Logger.Trace($"ParseTaskID {_taskId} finished attributes pass.");
+                IDictionary<Tuple<string, DeclarationType>, Attributes> attributes;
+                var attributesTokenStream = RunAttributesPass(token, out attributesTree, out attributes);
 
                 var rewriter = new MemberAttributesRewriter(_exporter, _component.CodeModule, new TokenStreamRewriter(attributesTokenStream ?? tokenStream));
 
@@ -128,6 +126,17 @@ namespace Rubberduck.Parsing.VBA
                     Cause = exception
                 });
             }
+        }
+
+        private ITokenStream RunAttributesPass(CancellationToken token, out IParseTree attributesTree,
+            out IDictionary<Tuple<string, DeclarationType>, Attributes> attributes)
+        {
+            Logger.Trace($"ParseTaskID {_taskId} begins attributes pass.");
+            ITokenStream attributesTokenStream;
+            IParseTree attributesTree;
+            attributes = _attributeParser.Parse(_component, token, out attributesTokenStream, out attributesTree);
+            Logger.Trace($"ParseTaskID {_taskId} finished attributes pass.");
+            return attributesTokenStream;
         }
 
         private static string GetCode(ICodeModule module)
