@@ -125,7 +125,7 @@ End Sub";
         public void InspectionType()
         {
             var inspection = new ImplicitActiveWorkbookReferenceInspection(null);
-            Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
+            Assert.AreEqual(CodeInspectionType.LanguageOpportunities, inspection.InspectionType);
         }
 
         [TestMethod]

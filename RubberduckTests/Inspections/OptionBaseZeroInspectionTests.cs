@@ -156,14 +156,14 @@ Base _
         public void InspectionType()
         {
             var inspection = new RedundantOptionInspection(null);
-            Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
+            Assert.AreEqual(CodeInspectionType.LanguageOpportunities, inspection.InspectionType);
         }
 
         [TestMethod]
         [TestCategory("Inspections")]
         public void InspectionName()
         {
-            const string inspectionName = "OptionBaseZeroInspection";
+            const string inspectionName = "RedundantOptionInspection";
             var inspection = new RedundantOptionInspection(null);
 
             Assert.AreEqual(inspectionName, inspection.Name);

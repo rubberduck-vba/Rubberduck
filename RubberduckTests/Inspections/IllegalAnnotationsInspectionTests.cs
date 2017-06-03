@@ -78,7 +78,7 @@ End Sub";
         public void InspectionType()
         {
             var inspection = new IllegalAnnotationInspection(null);
-            Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
+            Assert.AreEqual(CodeInspectionType.RubberduckOpportunities, inspection.InspectionType);
         }
 
         [TestMethod]
