@@ -23,7 +23,8 @@ namespace Rubberduck.Parsing.VBA
             RubberduckParserState state,
             IParserStateManager parserStateManager,
             Func<IVBAPreprocessor> preprocessorFactory,
-            IAttributeParser attributeParser, IModuleExporter exporter)
+            IAttributeParser attributeParser, 
+            IModuleExporter exporter)
         {
             if (state == null)
             {
