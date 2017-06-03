@@ -26,7 +26,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
         public ICommandBarControls Parent { get; set; }
         public ICommandBarPopup Item { get; private set; }
 
-        public string Key => Item == null ? null : Item.Tag;
+        public string Key => Item?.Tag;
 
         public Func<string> Caption { get { return () => Key == null ? null : RubberduckUI.ResourceManager.GetString(Key, Settings.Settings.Culture); } }
 
@@ -62,10 +62,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
                 }
 
                 var childMenu = kvp.Key as ParentMenuItemBase;
-                if (childMenu != null)
-                {
-                    childMenu.Localize();
-                }
+                childMenu?.Localize();
             }
         }
 
