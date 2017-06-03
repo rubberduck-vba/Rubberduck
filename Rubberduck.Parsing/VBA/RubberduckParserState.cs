@@ -321,15 +321,16 @@ namespace Rubberduck.Parsing.VBA
 
         public event EventHandler<ParserStateEventArgs> StateChanged;
 
-        private int _stateChangedInvocations = 0;
+        private int _stateChangedInvocations;
         private void OnStateChanged(object requestor, ParserState state = ParserState.Pending)
         {
             _stateChangedInvocations++;
             HandleStateChanged(state);
 
             Logger.Info($"{nameof(RubberduckParserState)} ({_stateChangedInvocations}) is invoking {nameof(StateChanged)} ({Status})");
-             StateChanged?.Invoke(requestor, new ParserStateEventArgs(state));
+            StateChanged?.Invoke(requestor, new ParserStateEventArgs(state));
         }
+
         public event EventHandler<ParseProgressEventArgs> ModuleStateChanged;
 
         //Never spawn new threads changing module states in the handler! This will cause deadlocks. 
