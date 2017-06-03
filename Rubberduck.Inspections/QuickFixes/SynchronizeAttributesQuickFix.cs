@@ -57,7 +57,21 @@ namespace Rubberduck.Inspections.QuickFixes
             }
             else
             {
-                Debug.Assert(false, "bug: inspection result has a null membername");
+                var moduleName = result.QualifiedSelection.QualifiedName;
+
+                var attributeContext = context as VBAParser.AttributeStmtContext;
+                if(attributeContext != null)
+                {
+                    Fix(moduleName, attributeContext);
+                    return;
+                }
+
+                var annotationContext = context as VBAParser.AnnotationContext;
+                if(annotationContext != null)
+                {
+                    Fix(moduleName, annotationContext);
+                    return;
+                }
             }
         }
 
@@ -69,6 +83,16 @@ namespace Rubberduck.Inspections.QuickFixes
         private void Fix(QualifiedMemberName memberName, VBAParser.AttributeStmtContext context)
         {
 
+        }
+
+        private void Fix(QualifiedModuleName moduleName, VBAParser.AttributeStmtContext context)
+        {
+            
+        }
+
+        private void Fix(QualifiedModuleName moduleName, VBAParser.AnnotationContext context)
+        {
+            
         }
 
         /// <summary>
