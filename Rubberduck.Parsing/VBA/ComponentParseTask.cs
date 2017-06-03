@@ -133,7 +133,6 @@ namespace Rubberduck.Parsing.VBA
         {
             Logger.Trace($"ParseTaskID {_taskId} begins attributes pass.");
             ITokenStream attributesTokenStream;
-            IParseTree attributesTree;
             attributes = _attributeParser.Parse(_component, token, out attributesTokenStream, out attributesTree);
             Logger.Trace($"ParseTaskID {_taskId} finished attributes pass.");
             return attributesTokenStream;
