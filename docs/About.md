@@ -1,4 +1,4 @@
-[back to readme.md](https://github.com/rubberduck-vba/Rubberduck/blob/readme-cleanup/README.md)
+[back to readme.md](https://github.com/rubberduck-vba/Rubberduck/blob/next/README.md)
 
 ## What is Rubberduck?
 
