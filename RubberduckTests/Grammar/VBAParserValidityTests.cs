@@ -17,6 +17,7 @@ namespace RubberduckTests.Grammar
         [TestMethod]
         [TestCategory("LongRunning")]
         [TestCategory("Grammar")]
+        [TestCategory("Parser")]
         [DeploymentItem(@"Testfiles\")]
         public void TestParser()
         {
