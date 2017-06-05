@@ -42,14 +42,12 @@ namespace Rubberduck.Inspections.Concrete
             {
                 var isMemberAnnotation = context.AnnotationType.HasFlag(AnnotationType.MemberAnnotation);
                 var isModuleScope = CurrentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Module);
-                var name = context.annotationName().GetText();
 
                 if (isModuleScope && !isMemberAnnotation)
                 {
                     // module-level annotation
                     var module = State.DeclarationFinder.UserDeclarations(DeclarationType.Module).Single(m => m.QualifiedName.QualifiedModuleName.Equals(CurrentModuleName));
-                    var attribute = module.Attributes.FirstOrDefault(a => a.Key == "VB_" + name);
-                    if (!attribute.Equals(default(KeyValuePair<string,IEnumerable<string>>)) && attribute.Value.FirstOrDefault() == "False")
+                    if (!module.Attributes.HasAttributeFor(context.AnnotationType))
                     {
                         AddContext(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
                     }
@@ -63,7 +61,7 @@ namespace Rubberduck.Inspections.Concrete
                     }
 
                     var member = Members.Value.Single(m => m.Key.Equals(CurrentScopeDeclaration.QualifiedName.MemberName));
-                    if (!member.Value.Attributes.ContainsKey("VB_" + name))
+                    if (!member.Value.Attributes.HasAttributeFor(context.AnnotationType, member.Key))
                     {
                         AddContext(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
                     }

@@ -92,7 +92,13 @@ namespace Rubberduck.Inspections.QuickFixes
 
         private void Fix(QualifiedModuleName moduleName, VBAParser.AnnotationContext context)
         {
-            
+            var annotationName = Identifier.GetName(context.annotationName().unrestrictedIdentifier());
+            var annotationType = context.AnnotationType;
+            var attributeName = _attributeNames[annotationName];
+
+            var attributeInstruction = GetAttributeInstruction(context, attributeName, annotationType);
+
+            var rewriter = _state.GetAttributeRewriter(moduleName);
         }
 
         /// <summary>
@@ -102,10 +108,11 @@ namespace Rubberduck.Inspections.QuickFixes
         /// <param name="context"></param>
         private void Fix(QualifiedMemberName memberName, VBAParser.AnnotationContext context)
         {
+            Debug.Assert(context.AnnotationType.HasFlag(AnnotationType.MemberAnnotation));
+
             var annotationName = Identifier.GetName(context.annotationName().unrestrictedIdentifier());
             var annotationType = context.AnnotationType;
-            var attributeName = annotationType.HasFlag(AnnotationType.MemberAnnotation) ? memberName.MemberName + "." : string.Empty
-                + _attributeNames[annotationName];
+            var attributeName =  memberName.MemberName + "." + _attributeNames[annotationName];
 
             var attributeInstruction = GetAttributeInstruction(context, attributeName, annotationType);
             var insertPosition = FindInsertPosition(context);

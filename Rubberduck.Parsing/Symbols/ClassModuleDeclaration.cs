@@ -110,7 +110,14 @@ namespace Rubberduck.Parsing.Symbols
         }
 
         private bool? _isExtensible;
-        public bool IsExtensible => _isExtensible ?? (_isExtensible = HasAttribute("VB_Customizable")).Value;
+        public bool IsExtensible 
+        {
+            get
+            {
+                AttributeNode node;
+                return _isExtensible ?? (_isExtensible = Attributes.HasExtensibleAttribute(out node)).Value;
+            }
+        }
 
         private bool? _isExposed;
         /// <summary>
@@ -121,17 +128,8 @@ namespace Rubberduck.Parsing.Symbols
         {
             get
             {
-                if (_isExposed.HasValue)
-                {
-                    return _isExposed.Value;
-                }
-                if (!IsUserDefined)
-                {
-                    _isExposed = IsExposedForBuiltInModules;
-                    return _isExposed.Value;
-                }
-                _isExposed = HasAttribute("VB_Exposed");
-                return _isExposed.Value;
+                AttributeNode node;
+                return _isExposed ?? (_isExposed = (!IsUserDefined && IsExposedForBuiltInModules) || Attributes.HasExposedAttribute(out node)).Value;
             }
         }
 
@@ -142,28 +140,13 @@ namespace Rubberduck.Parsing.Symbols
 
         public bool IsControl { get; private set; }
 
-        private bool HasAttribute(string attributeName)
-        {
-            var hasAttribute = false;
-            IEnumerable<string> value;
-            if (Attributes.TryGetValue(attributeName, out value))
-            {
-                hasAttribute = value.Single() == "True";
-            }
-            return hasAttribute;
-        }             
-
         private bool? _isGlobal;
         public bool IsGlobalClassModule
         {
             get
             {
-                if (_isGlobal.HasValue)
-                {
-                    return _isGlobal.Value;
-                }
-                _isGlobal = HasAttribute("VB_GlobalNamespace") || IsGlobalFromSubtypes();
-                return _isGlobal.Value;
+                AttributeNode node;
+                return _isGlobal ?? (_isGlobal = Attributes.HasGlobalAttribute(out node) || IsGlobalFromSubtypes()).Value;
             }
         }
 
@@ -181,12 +164,8 @@ namespace Rubberduck.Parsing.Symbols
         {
             get
             {
-                if (_hasPredeclaredId.HasValue)
-                {
-                    return _hasPredeclaredId.Value;
-                }
-                _hasPredeclaredId = HasAttribute("VB_PredeclaredId");
-                return _hasPredeclaredId.Value;
+                AttributeNode node;
+                return _hasPredeclaredId ?? (_hasPredeclaredId = Attributes.HasPredeclaredIdAttribute(out node)).Value;
             }
         }
 

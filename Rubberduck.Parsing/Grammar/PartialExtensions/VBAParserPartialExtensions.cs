@@ -38,7 +38,7 @@ namespace Rubberduck.Parsing.Grammar
             {
                 foreach(var attribute in attributes)
                 {
-                    Attributes.Add(attribute.Key, attribute.Value);
+                    Attributes.Add(new AttributeNode(attribute.Name, attribute.Values));
                 }
             }
             #endregion
@@ -74,7 +74,7 @@ namespace Rubberduck.Parsing.Grammar
             {
                 foreach (var attribute in attributes)
                 {
-                    Attributes.Add(attribute.Key, attribute.Value);
+                    Attributes.Add(new AttributeNode(attribute.Name, attribute.Values));
                 }
             }
             #endregion
@@ -112,7 +112,7 @@ namespace Rubberduck.Parsing.Grammar
             {
                 foreach(var attribute in attributes)
                 {
-                    Attributes.Add(attribute.Key, attribute.Value);
+                    Attributes.Add(new AttributeNode(attribute.Name, attribute.Values));
                 }
             }
             #endregion
@@ -150,7 +150,7 @@ namespace Rubberduck.Parsing.Grammar
             {
                 foreach(var attribute in attributes)
                 {
-                    Attributes.Add(attribute.Key, attribute.Value);
+                    Attributes.Add(new AttributeNode(attribute.Name, attribute.Values));
                 }
             }
             #endregion
@@ -202,7 +202,7 @@ namespace Rubberduck.Parsing.Grammar
             {
                 foreach(var attribute in attributes)
                 {
-                    Attributes.Add(attribute.Key, attribute.Value);
+                    Attributes.Add(new AttributeNode(attribute.Name, attribute.Values));
                 }
             }
             #endregion
@@ -238,7 +238,7 @@ namespace Rubberduck.Parsing.Grammar
             {
                 foreach(var attribute in attributes)
                 {
-                    Attributes.Add(attribute.Key, attribute.Value);
+                    Attributes.Add(new AttributeNode(attribute.Name, attribute.Values));
                 }
             }
             #endregion
@@ -274,7 +274,7 @@ namespace Rubberduck.Parsing.Grammar
             {
                 foreach(var attribute in attributes)
                 {
-                    Attributes.Add(attribute.Key, attribute.Value);
+                    Attributes.Add(new AttributeNode(attribute.Name, attribute.Values));
                 }
             }
             #endregion
@@ -310,7 +310,7 @@ namespace Rubberduck.Parsing.Grammar
             {
                 foreach(var attribute in attributes)
                 {
-                    Attributes.Add(attribute.Key, attribute.Value);
+                    Attributes.Add(new AttributeNode(attribute.Name, attribute.Values));
                 }
             }
             #endregion
@@ -346,7 +346,7 @@ namespace Rubberduck.Parsing.Grammar
             {
                 foreach(var attribute in attributes)
                 {
-                    Attributes.Add(attribute.Key, attribute.Value);
+                    Attributes.Add(new AttributeNode(attribute.Name, attribute.Values));
                 }
             }
             #endregion

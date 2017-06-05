@@ -120,41 +120,19 @@ namespace Rubberduck.Parsing.VBA
 
         public override void ExitAttributeStmt(VBAParser.AttributeStmtContext context)
         {
-            // We assume attributes can either be simple names (VB_Name) or, if they are inside procedures, member access expressions
-            // (e.g. Foo.VB_UserMemId = 0)
-            var expr = context.attributeName().lExpression();
-            var exprContext = expr as VBAParser.SimpleNameExprContext;
-            var name = exprContext != null
-                ? exprContext.identifier().GetText()
-                : GetAttributeNameWithoutProcedureName((VBAParser.MemberAccessExprContext)expr);
-
             var values = context.attributeValue().Select(e => e.GetText().Replace("\"", string.Empty)).ToList();
-            IEnumerable<string> existingValues;
-            if(_currentScopeAttributes.TryGetValue(name, out existingValues))
-            {
-                values.InsertRange(0, existingValues);
-            }
-            _currentScopeAttributes[name] = values;
-        }
 
-        private static string GetAttributeNameWithoutProcedureName(VBAParser.MemberAccessExprContext expr)
-        {
-            var name = expr.unrestrictedIdentifier().GetText();
-            // The simple name expression represents the procedure's name.
-            // We don't want that one though so we simply ignore it.
-            if(expr.lExpression() is VBAParser.SimpleNameExprContext)
+            var attribute = _currentScopeAttributes
+                .SingleOrDefault(a => a.Name.Equals(context.attributeName().GetText(), StringComparison.OrdinalIgnoreCase));
+            if (attribute != null)
             {
-                return name;
+                foreach(var value in values.Where(v => !attribute.HasValue(v)))
+                {
+                    attribute.AddValue(value);
+                }
             }
-            return $"{GetAttributeNameWithoutProcedureName((VBAParser.MemberAccessExprContext)expr.lExpression())}.{name}";
-        }
 
-        public override void ExitModuleConfigElement(VBAParser.ModuleConfigElementContext context)
-        {
-            var name = context.unrestrictedIdentifier().GetText();
-            var literal = context.expression();
-            var values = new[] { literal == null ? string.Empty : literal.GetText() };
-            _currentScopeAttributes.Add(name, values);
+            _currentScopeAttributes.Add(new AttributeNode(context.attributeName().GetText(), values));
         }
     }
 }
