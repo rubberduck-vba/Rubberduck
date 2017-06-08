@@ -194,13 +194,15 @@ namespace Rubberduck.Parsing.Symbols
 
         public Declaration DefaultMember { get; internal set; }
 
-        public IReadOnlyList<string> SupertypeNames => _supertypeNames;
+        //This is just convenience for the resolver to split gathering the names of the supertypes and resolving them.
+        //todo: Find a cleaner solution for this.
+        public IEnumerable<string> SupertypeNames => _supertypeNames;
 
-        public IReadOnlyList<Declaration> Supertypes => _supertypes.ToList();
+        public IEnumerable<Declaration> Supertypes => _supertypes;
 
-        public IReadOnlyList<Declaration> Subtypes => _subtypes.ToList();
+        public IEnumerable<Declaration> Subtypes => _subtypes;
 
-        public void AddSupertype(string supertypeName)
+        public void AddSupertypeName(string supertypeName)
         {
             _supertypeNames.Add(supertypeName);
         }
@@ -212,7 +214,25 @@ namespace Rubberduck.Parsing.Symbols
 
         public void AddSubtype(Declaration subtype)
         {
+            InvalidateCachedIsGlobal();
             _subtypes.Add(subtype);
+        }
+
+        private void InvalidateCachedIsGlobal()
+        {
+            if (_isGlobal.HasValue)
+            {
+                InvalidateCachedIsGlobalForSupertypes();    //If it is not set, it has no influence on the state of the supertypes.
+                _isGlobal = null;
+            }
+        }
+
+        private void InvalidateCachedIsGlobalForSupertypes()
+        {
+            foreach(var supertype in Supertypes)
+            {
+                (supertype as ClassModuleDeclaration)?.InvalidateCachedIsGlobal();
+            }
         }
     }
 }

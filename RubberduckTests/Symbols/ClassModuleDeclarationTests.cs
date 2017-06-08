@@ -103,7 +103,7 @@ namespace RubberduckTests.Symbols
             var projectDeclaration = GetTestProject("testProject");
             var classModule = GetTestClassModule(projectDeclaration, "testClass", true, null);
             var supertypeName = "testSupertypeName";
-            classModule.AddSupertype(supertypeName);
+            classModule.AddSupertypeName(supertypeName);
 
             Assert.IsTrue(classModule.SupertypeNames.First().Equals(supertypeName));
         }
@@ -129,7 +129,7 @@ namespace RubberduckTests.Symbols
             var projectDeclaration = GetTestProject("testProject");
             var classModule = GetTestClassModule(projectDeclaration, "testClass", true, null);
             var supertypeName = "testSupertypeName";
-            classModule.AddSupertype(supertypeName);
+            classModule.AddSupertypeName(supertypeName);
 
             Assert.IsFalse(classModule.Supertypes.Any());
         }
@@ -274,23 +274,6 @@ namespace RubberduckTests.Symbols
 
         [TestCategory("Resolver")]
         [TestMethod]
-        public void ClassModulesDoNotBecomeAGlobalClassIfASubtypeBelowInTheHiearchyIsAddedThatIsAGlobalClassAfterIsAGlobalClassHasAlreadyBeenCalled()
-        {
-            var projectDeclaration = GetTestProject("testProject");
-            var classAttributes = new Attributes();
-            classAttributes.AddGlobalClassAttribute();
-            var subsubtype = GetTestClassModule(projectDeclaration, "testSubSubtype", true, classAttributes);
-            var subtype = GetTestClassModule(projectDeclaration, "testSubtype", true, null);
-            subtype.AddSubtype(subsubtype);
-            var classModule = GetTestClassModule(projectDeclaration, "testClass", true, null);
-            var dummy = classModule.IsGlobalClassModule;
-            classModule.AddSubtype(subtype);
-
-            Assert.IsFalse(classModule.IsGlobalClassModule);
-        }
-
-        [TestCategory("Resolver")]
-        [TestMethod]
         public void ClassModulesBecomeAGlobalClassIfASubtypeBelowInTheHiearchyIsAddedThatIsAGlobalClassAfterIsAGlobalClassHasAlreadyBeenCalled()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -306,23 +289,6 @@ namespace RubberduckTests.Symbols
             subtype.AddSupertype(classModule);
 
             Assert.IsTrue(classModule.IsGlobalClassModule);
-        }
-
-        [TestCategory("Resolver")]
-        [TestMethod]
-        public void ClassModulesDoNotBecomeAGlobalClassIfBelowInTheHierarchyASubtypeIsAddedThatIsAGlobalClassAfterIsAGlobalClassHasAlreadyBeenCalled()
-        {
-            var projectDeclaration = GetTestProject("testProject");
-            var classAttributes = new Attributes();
-            classAttributes.AddGlobalClassAttribute();
-            var subsubtype = GetTestClassModule(projectDeclaration, "testSubSubtype", true, classAttributes);
-            var subtype = GetTestClassModule(projectDeclaration, "testSubtype", true, null);
-            var classModule = GetTestClassModule(projectDeclaration, "testClass", true, null);
-            classModule.AddSubtype(subtype);
-            var dummy = classModule.IsGlobalClassModule;
-            subtype.AddSubtype(subsubtype);
-
-            Assert.IsFalse(classModule.IsGlobalClassModule);
         }
 
 
