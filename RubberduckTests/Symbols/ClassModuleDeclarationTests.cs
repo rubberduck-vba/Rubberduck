@@ -289,6 +289,24 @@ namespace RubberduckTests.Symbols
             Assert.IsFalse(classModule.IsGlobalClassModule);
         }
 
+        [TestCategory("Resolver")]
+        [TestMethod]
+        public void ClassModulesBecomeAGlobalClassIfASubtypeBelowInTheHiearchyIsAddedThatIsAGlobalClassAfterIsAGlobalClassHasAlreadyBeenCalled()
+        {
+            var projectDeclaration = GetTestProject("testProject");
+            var classAttributes = new Attributes();
+            classAttributes.AddGlobalClassAttribute();
+            var subsubtype = GetTestClassModule(projectDeclaration, "testSubSubtype", true, classAttributes);
+            var subtype = GetTestClassModule(projectDeclaration, "testSubtype", true, null);
+            subtype.AddSubtype(subsubtype);
+            subsubtype.AddSupertype(subtype);
+            var classModule = GetTestClassModule(projectDeclaration, "testClass", true, null);
+            var dummy = classModule.IsGlobalClassModule;
+            classModule.AddSubtype(subtype);
+            subtype.AddSupertype(classModule);
+
+            Assert.IsTrue(classModule.IsGlobalClassModule);
+        }
 
         [TestCategory("Resolver")]
         [TestMethod]
@@ -305,6 +323,26 @@ namespace RubberduckTests.Symbols
             subtype.AddSubtype(subsubtype);
 
             Assert.IsFalse(classModule.IsGlobalClassModule);
+        }
+
+
+        [TestCategory("Resolver")]
+        [TestMethod]
+        public void ClassModulesBecomeAGlobalClassIfBelowInTheHierarchyASubtypeIsAddedThatIsAGlobalClassAfterIsAGlobalClassHasAlreadyBeenCalled()
+        {
+            var projectDeclaration = GetTestProject("testProject");
+            var classAttributes = new Attributes();
+            classAttributes.AddGlobalClassAttribute();
+            var subsubtype = GetTestClassModule(projectDeclaration, "testSubSubtype", true, classAttributes);
+            var subtype = GetTestClassModule(projectDeclaration, "testSubtype", true, null);
+            var classModule = GetTestClassModule(projectDeclaration, "testClass", true, null);
+            classModule.AddSubtype(subtype);
+            subtype.AddSupertype(classModule);
+            var dummy = classModule.IsGlobalClassModule;
+            subtype.AddSubtype(subsubtype);
+            subsubtype.AddSupertype(subtype);
+
+            Assert.IsTrue(classModule.IsGlobalClassModule);
         }
 
 
