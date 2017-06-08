@@ -50,12 +50,12 @@ namespace RubberduckTests.Symbols
 
         [TestCategory("Resolver")]
         [TestMethod]
-        public void AddSubtypeAddsClassToSubtypes()
+        public void AddSupertypeAddsClassToSubtypesOfSupertype()
         {
             var projectDeclaration = GetTestProject("testProject");
             var classModule = GetTestClassModule(projectDeclaration, "testClass", true, null);
             var subtype = GetTestClassModule(projectDeclaration, "testSubtype", true, null);
-            classModule.AddSubtype(subtype);
+            subtype.AddSupertype(classModule);
 
             Assert.IsTrue(classModule.Subtypes.First().Equals(subtype));
         }
@@ -264,9 +264,9 @@ namespace RubberduckTests.Symbols
             classAttributes.AddGlobalClassAttribute();
             var subsubtype = GetTestClassModule(projectDeclaration, "testSubSubtype", true, classAttributes);
             var subtype = GetTestClassModule(projectDeclaration, "testSubtype", true, null);
-            subtype.AddSubtype(subsubtype);
+            subsubtype.AddSupertype(subtype);
             var classModule = GetTestClassModule(projectDeclaration, "testClass", true, null);
-            classModule.AddSubtype(subtype);
+            subtype.AddSupertype(classModule);
 
             Assert.IsTrue(classModule.IsGlobalClassModule);
         }
@@ -281,11 +281,9 @@ namespace RubberduckTests.Symbols
             classAttributes.AddGlobalClassAttribute();
             var subsubtype = GetTestClassModule(projectDeclaration, "testSubSubtype", true, classAttributes);
             var subtype = GetTestClassModule(projectDeclaration, "testSubtype", true, null);
-            subtype.AddSubtype(subsubtype);
             subsubtype.AddSupertype(subtype);
             var classModule = GetTestClassModule(projectDeclaration, "testClass", true, null);
             var dummy = classModule.IsGlobalClassModule;
-            classModule.AddSubtype(subtype);
             subtype.AddSupertype(classModule);
 
             Assert.IsTrue(classModule.IsGlobalClassModule);
@@ -302,10 +300,8 @@ namespace RubberduckTests.Symbols
             var subsubtype = GetTestClassModule(projectDeclaration, "testSubSubtype", true, classAttributes);
             var subtype = GetTestClassModule(projectDeclaration, "testSubtype", true, null);
             var classModule = GetTestClassModule(projectDeclaration, "testClass", true, null);
-            classModule.AddSubtype(subtype);
             subtype.AddSupertype(classModule);
             var dummy = classModule.IsGlobalClassModule;
-            subtype.AddSubtype(subsubtype);
             subsubtype.AddSupertype(subtype);
 
             Assert.IsTrue(classModule.IsGlobalClassModule);

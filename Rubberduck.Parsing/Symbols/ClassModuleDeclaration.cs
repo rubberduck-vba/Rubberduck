@@ -209,10 +209,11 @@ namespace Rubberduck.Parsing.Symbols
 
         public void AddSupertype(Declaration supertype)
         {
+            (supertype as ClassModuleDeclaration)?.AddSubtype(this);
             _supertypes.Add(supertype);
         }
 
-        public void AddSubtype(Declaration subtype)
+        private void AddSubtype(Declaration subtype)
         {
             InvalidateCachedIsGlobal();
             _subtypes.Add(subtype);
