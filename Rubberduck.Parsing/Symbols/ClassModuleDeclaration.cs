@@ -2,6 +2,7 @@
 using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,6 +13,10 @@ namespace Rubberduck.Parsing.Symbols
         private readonly List<string> _supertypeNames;
         private readonly HashSet<Declaration> _supertypes;
         private readonly HashSet<Declaration> _subtypes;
+
+        private Lazy<bool> _isExtensible;
+        private Lazy<bool> _isExposed;
+        private Lazy<bool> _hasPredeclaredId;
 
         public ClassModuleDeclaration(
                   QualifiedMemberName qualifiedName,
@@ -40,14 +45,20 @@ namespace Rubberduck.Parsing.Symbols
                   annotations,
                   attributes)
         {
-            if (hasDefaultInstanceVariable)
-            {
-                _hasPredeclaredId = true;
-            }
             _supertypeNames = new List<string>();
             _supertypes = new HashSet<Declaration>();
             _subtypes = new HashSet<Declaration>();
             IsControl = isControl;
+            _isExtensible = new Lazy<bool>(() => IsExtensibleToCache());
+            _isExposed = new Lazy<bool>(() => IsExposedToCache());
+            if (hasDefaultInstanceVariable)
+            {
+                _hasPredeclaredId = new Lazy<bool>(() => true);
+            }
+            else
+            {
+                _hasPredeclaredId = new Lazy<bool>(() => HasPredeclaredIdToCache());
+            }
         }
 
         // skip IDispatch.. just about everything implements it and RD doesn't need to care about it; don't care about IUnknown either
@@ -80,6 +91,9 @@ namespace Rubberduck.Parsing.Symbols
             _supertypes = new HashSet<Declaration>();
             _subtypes = new HashSet<Declaration>();
             IsControl = coClass.IsControl;
+            _isExtensible = new Lazy<bool>(() => IsExtensibleToCache());
+            _isExposed = new Lazy<bool>(() => IsExposedToCache());
+            _hasPredeclaredId = new Lazy<bool>(() => HasPredeclaredIdToCache());
         }
 
         public ClassModuleDeclaration(ComInterface @interface, Declaration parent, QualifiedModuleName module,
@@ -109,30 +123,26 @@ namespace Rubberduck.Parsing.Symbols
             return classModule?.DefaultMember != null;
         }
 
-        private bool? _isExtensible;
-        public bool IsExtensible => _isExtensible ?? (_isExtensible = HasAttribute("VB_Customizable")).Value;
+        public bool IsExtensible => _isExtensible.Value;
 
-        private bool? _isExposed;
+        private bool IsExtensibleToCache()
+        {
+            return HasAttribute("VB_Customizable");
+        }
+
         /// <summary>
         /// Gets an attribute value indicating whether a class is exposed to other projects.
         /// If this value is false, any public types and members cannot be accessed from outside the project they're declared in.
         /// </summary>
-        public bool IsExposed
+        public bool IsExposed => _isExposed.Value;
+
+        private bool IsExposedToCache()
         {
-            get
+            if (!IsUserDefined)
             {
-                if (_isExposed.HasValue)
-                {
-                    return _isExposed.Value;
-                }
-                if (!IsUserDefined)
-                {
-                    _isExposed = IsExposedForBuiltInModules;
-                    return _isExposed.Value;
-                }
-                _isExposed = HasAttribute("VB_Exposed");
-                return _isExposed.Value;
+                return IsExposedForBuiltInModules;
             }
+            return HasAttribute("VB_Exposed");
         }
 
         // TODO: This should only be a boolean in VBA ('Private' (false) and 'PublicNotCreatable' (true)) . For VB6 it will also need to support
@@ -154,16 +164,20 @@ namespace Rubberduck.Parsing.Symbols
         }             
 
         private bool? _isGlobal;
+        private readonly object _isGlobalSyncObject = new object();
         public bool IsGlobalClassModule
         {
             get
             {
-                if (_isGlobal.HasValue)
+                lock (_isGlobalSyncObject)
                 {
+                    if (_isGlobal.HasValue)
+                    {
+                        return _isGlobal.Value;
+                    }
+                    _isGlobal = HasAttribute("VB_GlobalNamespace") || IsGlobalFromSubtypes();
                     return _isGlobal.Value;
                 }
-                _isGlobal = HasAttribute("VB_GlobalNamespace") || IsGlobalFromSubtypes();
-                return _isGlobal.Value;
             }
         }
 
@@ -172,22 +186,15 @@ namespace Rubberduck.Parsing.Symbols
             return Subtypes.Any(subtype => subtype is ClassModuleDeclaration && ((ClassModuleDeclaration)subtype).IsGlobalClassModule);
         }
 
-        private bool? _hasPredeclaredId;
         /// <summary>
         /// Gets an attribute value indicating whether a class has a predeclared ID.
         /// Such classes can be treated as "static classes", or as far as resolving is concerned, as standard modules.
         /// </summary>
-        public bool HasPredeclaredId
+        public bool HasPredeclaredId => _hasPredeclaredId.Value;
+
+        private bool HasPredeclaredIdToCache()
         {
-            get
-            {
-                if (_hasPredeclaredId.HasValue)
-                {
-                    return _hasPredeclaredId.Value;
-                }
-                _hasPredeclaredId = HasAttribute("VB_PredeclaredId");
-                return _hasPredeclaredId.Value;
-            }
+            return HasAttribute("VB_PredeclaredId");
         }
 
         public bool HasDefaultInstanceVariable => HasPredeclaredId || IsGlobalClassModule;
@@ -221,10 +228,13 @@ namespace Rubberduck.Parsing.Symbols
 
         private void InvalidateCachedIsGlobal()
         {
-            if (_isGlobal.HasValue)
+            lock (_isGlobalSyncObject)
             {
-                InvalidateCachedIsGlobalForSupertypes();    //If it is not set, it has no influence on the state of the supertypes.
-                _isGlobal = null;
+                if (_isGlobal.HasValue)
+                {
+                    InvalidateCachedIsGlobalForSupertypes();    //If it is not set, it has no influence on the state of the supertypes.
+                    _isGlobal = null;
+                }
             }
         }
 
