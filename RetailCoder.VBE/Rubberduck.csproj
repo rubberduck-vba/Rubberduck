@@ -346,10 +346,12 @@
     <Compile Include="Inspections\HungarianNotationInspection.cs" />
     <Compile Include="Inspections\ImplicitDefaultMemberAssignmentInspection.cs" />
     <Compile Include="Inspections\MemberNotOnInterfaceInspection.cs" />
+    <Compile Include="Inspections\ObsoleteByRefModifierInspection.cs" />
     <Compile Include="Inspections\OptionBaseZeroInspection.cs" />
     <Compile Include="Inspections\QuickFixes\AddIdentifierToWhiteListQuickFix.cs" />
     <Compile Include="Inspections\QuickFixes\ApplicationWorksheetFunctionQuickFix.cs" />
     <Compile Include="Inspections\QuickFixes\AssignedByValParameterMakeLocalCopyQuickFix.cs" />
+    <Compile Include="Inspections\QuickFixes\RemoveExplicitByRefModifierQuickFix.cs" />
     <Compile Include="Inspections\Resources\InspectionsUI.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -405,6 +407,7 @@
     <Compile Include="Inspections\QuickFixes\SplitMultipleDeclarationsQuickFix.cs" />
     <Compile Include="Inspections\QuickFixes\RemoveUnusedDeclarationQuickFix.cs" />
     <Compile Include="Inspections\QuickFixes\PassParameterByReferenceQuickFix.cs" />
+    <Compile Include="Inspections\Results\ObsoleteByRefModifierInspectionResult.cs" />
     <Compile Include="Inspections\Results\OptionBaseZeroInspectionResult.cs" />
     <Compile Include="Inspections\QuickFixes\RemoveOptionBaseStatementQuickFix.cs" />
     <Compile Include="Inspections\UndeclaredVariableInspection.cs" />

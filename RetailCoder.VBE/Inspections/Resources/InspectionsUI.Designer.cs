@@ -907,6 +907,42 @@ namespace Rubberduck.Inspections.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to By default, all parameters are passed by reference, so it is not necessary to include the ByRef modifier declaration.
+        /// </summary>
+        public static string ObsoleteByRefModifierInspectionMeta {
+            get {
+                return ResourceManager.GetString("ObsoleteByRefModifierInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Obsolete ByRef modifier.
+        /// </summary>
+        public static string ObsoleteByRefModifierInspectionName {
+            get {
+                return ResourceManager.GetString("ObsoleteByRefModifierInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Parameter &apos;{0}&apos; has an obsolete ByRef modifier.
+        /// </summary>
+        public static string ObsoleteByRefModifierInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("ObsoleteByRefModifierInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove obsolete ByRef modifier.
+        /// </summary>
+        public static string ObsoleteByRefModifierQuickFix {
+            get {
+                return ResourceManager.GetString("ObsoleteByRefModifierQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The &apos;Call&apos; statement is no longer required to call procedures, and only exists in the language to support legacy code that required it; it can be safely rewritten to an implicit call..
         /// </summary>
         public static string ObsoleteCallStatementInspectionMeta {
