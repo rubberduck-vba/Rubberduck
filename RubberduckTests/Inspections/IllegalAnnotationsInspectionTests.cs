@@ -33,6 +33,26 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
+        public void GivenLegalModuleAnnotation_NoResult()
+        {
+            const string inputCode =@"
+Option Explicit
+'@PredeclaredId
+";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new IllegalAnnotationInspection(state);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            Assert.IsFalse(inspectionResults.Any());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void SingleFolderAnnotation_NoResult()
         {
             const string inputCode =
