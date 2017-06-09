@@ -44,7 +44,7 @@ namespace Rubberduck.Parsing.Rewriter
 
             var components = component.Collection;
             components.Remove(component);
-            components.Import(file);
+            components.ImportSourceFile(file);
         }
     }
 }

@@ -21,6 +21,8 @@ namespace Rubberduck.Inspections.Concrete
             Listener = new MissingMemberAttributeListener(state);
         }
 
+        public override ParsePass Pass => ParsePass.AttributesPass;
+
         public override CodeInspectionType InspectionType => CodeInspectionType.RubberduckOpportunities;
         public override IInspectionListener Listener { get; }
 
