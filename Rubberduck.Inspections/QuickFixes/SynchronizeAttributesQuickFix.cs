@@ -90,29 +90,55 @@ namespace Rubberduck.Inspections.QuickFixes
             
         }
 
+        private static readonly IDictionary<AnnotationType, Action<RubberduckParserState, QualifiedModuleName>> 
+            AttributeFixActions = new Dictionary<AnnotationType, Action<RubberduckParserState, QualifiedModuleName>>
+            {
+                [AnnotationType.PredeclaredId] = FixPredeclaredIdAttribute,
+                [AnnotationType.Exposed] = FixExposedAttribute,
+            }; 
+
         private void Fix(QualifiedModuleName moduleName, VBAParser.AnnotationContext context)
         {
-            var attributes = _state.GetModuleAttributes(moduleName);
-            var rewriter = _state.GetAttributeRewriter(moduleName);
+            AttributeFixActions[context.AnnotationType].Invoke(_state, moduleName);
+        }
 
-            if(context.AnnotationType == AnnotationType.PredeclaredId)
+        private static void FixPredeclaredIdAttribute(RubberduckParserState state, QualifiedModuleName moduleName)
+        {
+            var attributes = state.GetModuleAttributes(moduleName);
+            var rewriter = state.GetAttributeRewriter(moduleName);
+            foreach (var attribute in attributes.Values)
             {
-                foreach (var attribute in attributes.Values)
+                var predeclaredIdAttribute = attribute.PredeclaredIdAttribute;
+                if (predeclaredIdAttribute == null)
                 {
-                    var predeclaredIdAttribute = attribute.PredeclaredIdAttribute;
-                    if (predeclaredIdAttribute == null)
-                    {
-                        continue;
-                    }
-
-                    var valueToken = predeclaredIdAttribute.Context.attributeValue().Single().Start;
-                    Debug.Assert(valueToken.Text == "False");
-
-                    rewriter.Replace(valueToken, "True");
+                    continue;
                 }
+
+                var valueToken = predeclaredIdAttribute.Context.attributeValue().Single().Start;
+                Debug.Assert(valueToken.Text == "False");
+
+                rewriter.Replace(valueToken, "True");
             }
         }
 
+        private static void FixExposedAttribute(RubberduckParserState state, QualifiedModuleName moduleName)
+        {
+            var attributes = state.GetModuleAttributes(moduleName);
+            var rewriter = state.GetAttributeRewriter(moduleName);
+            foreach(var attribute in attributes.Values)
+            {
+                var exposedAttribute = attribute.ExposedAttribute;
+                if(exposedAttribute == null)
+                {
+                    continue;
+                }
+
+                var valueToken = exposedAttribute.Context.attributeValue().Single().Start;
+                Debug.Assert(valueToken.Text == "False");
+
+                rewriter.Replace(valueToken, "True");
+            }
+        }
         /// <summary>
         /// Adds an attribute to match given annotation.
         /// </summary>

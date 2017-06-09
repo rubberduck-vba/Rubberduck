@@ -170,6 +170,14 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
+        public AttributeNode ExposedAttribute
+        {
+            get
+            {
+                return this.SingleOrDefault(a => a.Name.Equals("VB_Exposed", StringComparison.OrdinalIgnoreCase));
+            }
+        }
+
         public bool HasPredeclaredIdAttribute(out AttributeNode attribute)
         {
             attribute = this.SingleOrDefault(a => a.Name.Equals("VB_PredeclaredId", StringComparison.OrdinalIgnoreCase) && a.HasValue("True"));
