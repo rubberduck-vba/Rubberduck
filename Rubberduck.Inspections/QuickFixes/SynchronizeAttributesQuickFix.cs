@@ -92,13 +92,25 @@ namespace Rubberduck.Inspections.QuickFixes
 
         private void Fix(QualifiedModuleName moduleName, VBAParser.AnnotationContext context)
         {
-            var annotationName = Identifier.GetName(context.annotationName().unrestrictedIdentifier());
-            var annotationType = context.AnnotationType;
-            var attributeName = _attributeNames[annotationName];
-
-            var attributeInstruction = GetAttributeInstruction(context, attributeName, annotationType);
-
+            var attributes = _state.GetModuleAttributes(moduleName);
             var rewriter = _state.GetAttributeRewriter(moduleName);
+
+            if(context.AnnotationType == AnnotationType.PredeclaredId)
+            {
+                foreach (var attribute in attributes.Values)
+                {
+                    var predeclaredIdAttribute = attribute.PredeclaredIdAttribute;
+                    if (predeclaredIdAttribute == null)
+                    {
+                        continue;
+                    }
+
+                    var valueToken = predeclaredIdAttribute.Context.attributeValue().Single().Start;
+                    Debug.Assert(valueToken.Text == "False");
+
+                    rewriter.Replace(valueToken, "True");
+                }
+            }
         }
 
         /// <summary>

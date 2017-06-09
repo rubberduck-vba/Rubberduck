@@ -66,7 +66,7 @@ namespace Rubberduck.Parsing.VBA
 
         public override int GetHashCode()
         {
-            return _name.GetHashCode();
+            return Name.GetHashCode();
         }
     }
 
@@ -160,6 +160,14 @@ namespace Rubberduck.Parsing.VBA
         public void AddPredeclaredIdTypeAttribute()
         {
             Add(new AttributeNode("VB_PredeclaredId", new[] {"True"}));
+        }
+
+        public AttributeNode PredeclaredIdAttribute
+        {
+            get
+            {
+                return this.SingleOrDefault(a => a.Name.Equals("VB_PredeclaredId", StringComparison.OrdinalIgnoreCase));
+            }
         }
 
         public bool HasPredeclaredIdAttribute(out AttributeNode attribute)

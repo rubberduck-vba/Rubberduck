@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
+using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 
@@ -132,7 +133,7 @@ namespace Rubberduck.Parsing.VBA
                 }
             }
 
-            _currentScopeAttributes.Add(new AttributeNode(context.attributeName().GetText(), values));
+            _currentScopeAttributes.Add(new AttributeNode(context));
         }
     }
 }
