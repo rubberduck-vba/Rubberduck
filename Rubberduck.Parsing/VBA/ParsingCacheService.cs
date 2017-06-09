@@ -11,11 +11,13 @@ namespace Rubberduck.Parsing.VBA
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly IModuleToModuleReferenceManager _moduleToModuleReferenceManager;
         private readonly IReferenceRemover _referenceRemover;
+        private readonly ISupertypeClearer _supertypeClearer;
 
         public ParsingCacheService(
             IDeclarationFinderProvider declarationFinderProvider,
             IModuleToModuleReferenceManager moduleToModuleReferenceManager,
-            IReferenceRemover referenceRemover)
+            IReferenceRemover referenceRemover,
+            ISupertypeClearer supertypeClearer)
         {
             if(declarationFinderProvider == null)
             {
@@ -29,9 +31,14 @@ namespace Rubberduck.Parsing.VBA
             {
                 throw new ArgumentNullException(nameof(referenceRemover));
             }
+            if (supertypeClearer == null)
+            {
+                throw new ArgumentNullException(nameof(supertypeClearer));
+            }
             _declarationFinderProvider = declarationFinderProvider;
             _moduleToModuleReferenceManager = moduleToModuleReferenceManager;
             _referenceRemover = referenceRemover;
+            _supertypeClearer = supertypeClearer;
         }
 
         public DeclarationFinder DeclarationFinder => _declarationFinderProvider.DeclarationFinder;
@@ -59,6 +66,16 @@ namespace Rubberduck.Parsing.VBA
         public void ClearModuleToModuleReferencesToModule(QualifiedModuleName referencedModule)
         {
             _moduleToModuleReferenceManager.ClearModuleToModuleReferencesToModule(referencedModule);
+        }
+
+        public void ClearSupertypes(IEnumerable<QualifiedModuleName> modules)
+        {
+            _supertypeClearer.ClearSupertypes(modules);
+        }
+
+        public void ClearSupertypes(QualifiedModuleName module)
+        {
+            _supertypeClearer.ClearSupertypes(module);
         }
 
         public IReadOnlyCollection<QualifiedModuleName> ModulesReferencedBy(QualifiedModuleName referencingModule)

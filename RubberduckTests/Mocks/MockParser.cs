@@ -48,6 +48,7 @@ namespace RubberduckTests.Mocks
             Func<IVBAPreprocessor> preprocessorFactory = () => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture));
             var projectManager = new SynchronousProjectManager(state, vbe);
             var moduleToModuleReferenceManager = new ModuleToModuleReferenceManager();
+            var supertypeClearer = new SynchronousSupertypeClearer(state); 
             var parserStateManager = new SynchronousParserStateManager(state);
             var referenceRemover = new SynchronousReferenceRemover(state, moduleToModuleReferenceManager);
             var comSynchronizer = new SynchronousCOMReferenceSynchronizer(
@@ -87,7 +88,8 @@ namespace RubberduckTests.Mocks
             var parsingCacheService = new ParsingCacheService(
                 state,
                 moduleToModuleReferenceManager,
-                referenceRemover 
+                referenceRemover,
+                supertypeClearer
                 );
 
             return new ParseCoordinator(
