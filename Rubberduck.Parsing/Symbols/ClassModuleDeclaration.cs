@@ -3,6 +3,7 @@ using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,7 +13,7 @@ namespace Rubberduck.Parsing.Symbols
     {
         private readonly List<string> _supertypeNames;
         private readonly HashSet<Declaration> _supertypes;
-        private readonly HashSet<Declaration> _subtypes;
+        private readonly ConcurrentDictionary<Declaration, byte> _subtypes;
 
         private Lazy<bool> _isExtensible;
         private Lazy<bool> _isExposed;
@@ -47,7 +48,7 @@ namespace Rubberduck.Parsing.Symbols
         {
             _supertypeNames = new List<string>();
             _supertypes = new HashSet<Declaration>();
-            _subtypes = new HashSet<Declaration>();
+            _subtypes = new ConcurrentDictionary<Declaration, byte>();
             IsControl = isControl;
             _isExtensible = new Lazy<bool>(() => IsExtensibleToCache());
             _isExposed = new Lazy<bool>(() => IsExposedToCache());
@@ -89,7 +90,7 @@ namespace Rubberduck.Parsing.Symbols
                     .Select(i => i.Name)
                     .ToList();
             _supertypes = new HashSet<Declaration>();
-            _subtypes = new HashSet<Declaration>();
+            _subtypes = new ConcurrentDictionary<Declaration, byte>();
             IsControl = coClass.IsControl;
             _isExtensible = new Lazy<bool>(() => IsExtensibleToCache());
             _isExposed = new Lazy<bool>(() => IsExposedToCache());
@@ -207,7 +208,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public IEnumerable<Declaration> Supertypes => _supertypes;
 
-        public IEnumerable<Declaration> Subtypes => _subtypes;
+        public IEnumerable<Declaration> Subtypes => _subtypes.Keys;
 
         public void AddSupertypeName(string supertypeName)
         {
@@ -220,10 +221,27 @@ namespace Rubberduck.Parsing.Symbols
             _supertypes.Add(supertype);
         }
 
+        public void ClearSupertypes()
+        {
+            foreach (var supertype in _supertypes)
+            {
+                (supertype as ClassModuleDeclaration)?.RemoveSubtype(this);
+            }
+            _supertypeNames.Clear();
+            _supertypes.Clear();
+        }
+
         private void AddSubtype(Declaration subtype)
         {
             InvalidateCachedIsGlobal();
-            _subtypes.Add(subtype);
+            _subtypes.AddOrUpdate(subtype, 1, (key,value) => value);
+        }
+
+        private void RemoveSubtype(Declaration subtype)
+        {
+            InvalidateCachedIsGlobal();
+            byte dummy;
+            _subtypes.TryRemove(subtype, out dummy);
         }
 
         private void InvalidateCachedIsGlobal()
@@ -232,7 +250,7 @@ namespace Rubberduck.Parsing.Symbols
             {
                 if (_isGlobal.HasValue)
                 {
-                    InvalidateCachedIsGlobalForSupertypes();    //If it is not set, it has no influence on the state of the supertypes.
+                    InvalidateCachedIsGlobalForSupertypes();    //If _isGlobal is not set, it has no influence on the state of the supertypes.
                     _isGlobal = null;
                 }
             }
