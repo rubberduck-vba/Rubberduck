@@ -84,14 +84,18 @@ namespace RubberduckTests.Mocks
                 declarationResolveRunner,
                 referenceResolveRunner
                 );
+            var parsingCacheService = new ParsingCacheService(
+                state,
+                moduleToModuleReferenceManager,
+                referenceRemover 
+                );
 
-            return new ParseCoordinator( 
+            return new ParseCoordinator(
                 state,
                 parsingStageService,
+                parsingCacheService,
                 projectManager,
-                moduleToModuleReferenceManager,
                 parserStateManager,
-                referenceRemover,
                 true);
         }
 

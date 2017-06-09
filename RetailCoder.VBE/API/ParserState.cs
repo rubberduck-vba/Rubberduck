@@ -104,14 +104,19 @@ namespace Rubberduck.API
                 declarationResolveRunner,
                 referenceResolveRunner  
                 );
+            var parsingCacheService = new ParsingCacheService(
+                _state,
+                moduleToModuleReferenceManager,
+                referenceRemover 
+                );
 
             _parser = new ParseCoordinator(
                 _state,
                 parsingStageService,
+                parsingCacheService,
                 projectManager,
-                moduleToModuleReferenceManager,
-                parserStateManager,
-                referenceRemover);
+                parserStateManager
+                );
         }
 
         /// <summary>
