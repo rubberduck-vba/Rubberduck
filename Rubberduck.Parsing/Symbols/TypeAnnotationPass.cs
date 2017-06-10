@@ -2,6 +2,8 @@ using NLog;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Binding;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
@@ -29,7 +31,7 @@ namespace Rubberduck.Parsing.Symbols
             _expressionParser = expressionParser;
         }
 
-        public void Execute()
+        public void Execute(IReadOnlyCollection<QualifiedModuleName> modules)
         {
             var stopwatch = Stopwatch.StartNew();
             foreach (var declaration in _declarationFinder.FindDeclarationsWithNonBaseAsType())

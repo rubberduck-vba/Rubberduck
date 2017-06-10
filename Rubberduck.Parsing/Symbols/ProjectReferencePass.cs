@@ -1,3 +1,5 @@
+using Rubberduck.VBEditor;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Rubberduck.Parsing.Symbols
@@ -11,7 +13,7 @@ namespace Rubberduck.Parsing.Symbols
             _declarationFinder = declarationFinder;
         }
 
-        public void Execute()
+        public void Execute(IReadOnlyCollection<QualifiedModuleName> modules)
         {
             var projects = _declarationFinder.Projects.Cast<ProjectDeclaration>().ToList();
             var allReferences = projects.Where(p => p.IsUserDefined).SelectMany(p => p.ProjectReferences).ToList();
