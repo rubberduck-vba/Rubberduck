@@ -176,10 +176,14 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private void ExecuteCommonParseActivities(IReadOnlyCollection<QualifiedModuleName> toParse, IReadOnlyCollection<QualifiedModuleName> toReresolveReferences, CancellationToken token)
+        private void ExecuteCommonParseActivities(IReadOnlyCollection<QualifiedModuleName> toParse, IReadOnlyCollection<QualifiedModuleName> toReresolveReferencesInput, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
-            
+
+            var toReresolveReferences = new HashSet<QualifiedModuleName>();
+            toReresolveReferences.UnionWith(toReresolveReferencesInput);
+            token.ThrowIfCancellationRequested();
+
             _parserStateManager.SetModuleStates(toParse, ParserState.Pending, token);
             token.ThrowIfCancellationRequested();
 
@@ -187,8 +191,11 @@ namespace Rubberduck.Parsing.VBA
             token.ThrowIfCancellationRequested();
 
             _parsingStageService.SyncComReferences(State.Projects, token);
-            if (_parsingStageService.LastSyncOfCOMReferencesLoadedReferences || _parsingStageService.LastSyncOfCOMReferencesUnloadedReferences)
+            if (_parsingStageService.LastSyncOfCOMReferencesLoadedReferences || _parsingStageService.COMReferencesUnloadedUnloadedInLastSync.Any())
             {
+                var unloadedReferences = _parsingStageService.COMReferencesUnloadedUnloadedInLastSync;
+                toReresolveReferences.UnionWith(_parsingCacheService.ModulesReferencingAny(unloadedReferences));
+                ClearModuleToModuleReferences(unloadedReferences);
                 RefreshDeclarationFinder();
             }
             token.ThrowIfCancellationRequested();
@@ -203,7 +210,7 @@ namespace Rubberduck.Parsing.VBA
             IReadOnlyCollection<QualifiedModuleName> toResolveReferences;
             if (!toParse.Any())
             {
-                toResolveReferences = toReresolveReferences;
+                toResolveReferences = toReresolveReferences.AsReadOnly();
             }
             else
             {
@@ -270,6 +277,15 @@ namespace Rubberduck.Parsing.VBA
             token.ThrowIfCancellationRequested();
         }
 
+        private void ClearModuleToModuleReferences(IEnumerable<QualifiedModuleName> modules)
+        {
+            foreach (var module in modules)
+            {
+                _parsingCacheService.ClearModuleToModuleReferencesToModule(module);
+                _parsingCacheService.ClearModuleToModuleReferencesFromModule(module);
+            }
+        }
+
         private void PerformPreParseCleanup(IReadOnlyCollection<QualifiedModuleName> toResolveReferences, CancellationToken token)
         {
             _parsingCacheService.ClearSupertypes(toResolveReferences);
@@ -283,7 +299,7 @@ namespace Rubberduck.Parsing.VBA
             _parsingCacheService.RefreshDeclarationFinder();
         }
 
-        private IReadOnlyCollection<QualifiedModuleName> ModulesForWhichToResolveReferences(IReadOnlyCollection<QualifiedModuleName> modulesToParse, IReadOnlyCollection<QualifiedModuleName> toReresolveReferences)
+        private IReadOnlyCollection<QualifiedModuleName> ModulesForWhichToResolveReferences(IReadOnlyCollection<QualifiedModuleName> modulesToParse, IEnumerable<QualifiedModuleName> toReresolveReferences)
         {
             var toResolveReferences = modulesToParse.ToHashSet();
             toResolveReferences.UnionWith(_parsingCacheService.ModulesReferencingAny(modulesToParse));
@@ -366,12 +382,16 @@ namespace Rubberduck.Parsing.VBA
             {
                 _parsingCacheService.RemoveReferencesBy(removedModules, token);
                 _parsingCacheService.ClearSupertypes(removedModules);
-                foreach (var module in removedModules)
-                {
-                    _parsingCacheService.ClearModuleToModuleReferencesFromModule(module);
-                    _parsingCacheService.ClearModuleToModuleReferencesToModule(module);
-                    State.ClearStateCache(module);
-                }
+                ClearModuleToModuleReferences(removedModules);
+                ClearStateCache(removedModules);
+            }
+        }
+
+        private void ClearStateCache(IEnumerable<QualifiedModuleName> modules)
+        {
+            foreach (var module in modules)
+            {
+                State.ClearStateCache(module);
             }
         }
 
