@@ -33,12 +33,14 @@ namespace Rubberduck.Parsing.Symbols
 
         public void Execute(IReadOnlyCollection<QualifiedModuleName> modules)
         {
-            var stopwatch = Stopwatch.StartNew();
-            foreach (var declaration in _declarationFinder.FindDeclarationsWithNonBaseAsType())
+            var toDetermineAsTypeDeclaration = _declarationFinder
+                                                .FindDeclarationsWithNonBaseAsType()
+                                                .Where(decl => decl.AsTypeDeclaration == null 
+                                                        || modules.Contains(decl.QualifiedName.QualifiedModuleName));
+            foreach (var declaration in toDetermineAsTypeDeclaration)
             {
                 AnnotateType(declaration);
             }
-            stopwatch.Stop();
         }
 
         private void AnnotateType(Declaration declaration)

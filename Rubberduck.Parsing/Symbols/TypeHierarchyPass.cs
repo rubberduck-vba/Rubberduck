@@ -32,9 +32,9 @@ namespace Rubberduck.Parsing.Symbols
 
         public void Execute(IReadOnlyCollection<QualifiedModuleName> modules)
         {
-            var toRelsolveSupertypesFor = _declarationFinder.
-                                            UserDeclarations(DeclarationType.ClassModule).      //Built-in classes get their supertypes added directly.
-                                            Where(decl => modules.Contains(decl.QualifiedName.QualifiedModuleName));
+            var toRelsolveSupertypesFor = _declarationFinder
+                                            .UserDeclarations(DeclarationType.ClassModule)      //Built-in classes get their supertypes added directly.
+                                            .Where(decl => modules.Contains(decl.QualifiedName.QualifiedModuleName));
             foreach (var declaration in toRelsolveSupertypesFor)
             {
                 AddImplementedInterface(declaration);
