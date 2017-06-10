@@ -51,6 +51,20 @@ namespace RubberduckTests.Symbols
 
 
         [TestMethod]
+        public void ClearProjectsReferencesClearsTheProjectReferences()
+        {
+            var projectDeclaration = GetTestProject("testProject");
+            var projectId = "test";
+            var priority = 12;
+            projectDeclaration.AddProjectReference(projectId, priority);
+            projectDeclaration.ClearProjectReferences();
+            var projectReferences = projectDeclaration.ProjectReferences;
+
+            Assert.IsFalse(projectReferences.Any());
+        }
+
+
+        [TestMethod]
         public void ProjectsReferencesIgnoresReferencesWithTheSameIDAsOneAlreadyPresent()
         {
             var projectDeclaration = GetTestProject("testProject");
