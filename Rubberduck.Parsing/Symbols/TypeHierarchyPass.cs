@@ -52,7 +52,6 @@ namespace Rubberduck.Parsing.Symbols
                 if (implementedInterface.Classification != ExpressionClassification.ResolutionFailed)
                 {
                     classModule.AddSupertype(implementedInterface.ReferencedDeclaration);
-                    ((ClassModuleDeclaration)implementedInterface.ReferencedDeclaration).AddSubtype(classModule);
                 }
                 else
                 {
