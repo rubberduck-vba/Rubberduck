@@ -99,17 +99,20 @@ namespace RubberduckTests.Symbols
             Assert.IsFalse(classModule.Supertypes.Any());
         }
 
+        //The reasoning behind this is that the names of the supertypes only depend on the module itself.
+        //So, the module itself has to be changed to change them. That in turn would mean a reparse and discarding the module declaration. 
         [TestCategory("Resolver")]
         [TestMethod]
-        public void ClearSupertypeRemovesAllSupertypesNames()
+        public void ClearSupertypeDoesNotRemoveSupertypesNames()
         {
             var projectDeclaration = GetTestProject("testProject");
             var classModule = GetTestClassModule(projectDeclaration, "testClass", true, null);
             classModule.AddSupertypeName("testSupertype1");
             classModule.AddSupertypeName("testSupertype2");
             classModule.ClearSupertypes();
+            var supertypeNameCount = classModule.SupertypeNames.Count();
 
-            Assert.IsFalse(classModule.SupertypeNames.Any());
+            Assert.AreEqual(2, supertypeNameCount);
         }
 
         [TestCategory("Resolver")]

@@ -227,7 +227,6 @@ namespace Rubberduck.Parsing.Symbols
             {
                 (supertype as ClassModuleDeclaration)?.RemoveSubtype(this);
             }
-            _supertypeNames.Clear();
             _supertypes.Clear();
         }
 

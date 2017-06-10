@@ -210,8 +210,7 @@ namespace Rubberduck.Parsing.VBA
                 toResolveReferences = ModulesForWhichToResolveReferences(toParse, toReresolveReferences);
                 token.ThrowIfCancellationRequested();
 
-                //This is purely a security measure. In the success path the reference resolver removes the old references. 
-                PerformPreParseCleanup(toParse, token);
+                PerformPreParseCleanup(toResolveReferences, token);
                 token.ThrowIfCancellationRequested();
 
                 _parserStateManager.SetModuleStates(toParse, ParserState.Parsing, token);
@@ -244,7 +243,7 @@ namespace Rubberduck.Parsing.VBA
             }
 
             //Explicitly setting the overall state here guarantees that the handlers attached 
-            //to the state change to ResolvedDeclarations always run, provided there is no error.
+            //to the state change to ResolvedDeclarations always run, provided there is no error. 
             State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
 
             if (token.IsCancellationRequested || State.Status >= ParserState.Error)
@@ -271,9 +270,12 @@ namespace Rubberduck.Parsing.VBA
             token.ThrowIfCancellationRequested();
         }
 
-        private void PerformPreParseCleanup(IReadOnlyCollection<QualifiedModuleName> toParse, CancellationToken token)
+        private void PerformPreParseCleanup(IReadOnlyCollection<QualifiedModuleName> toResolveReferences, CancellationToken token)
         {
-            _parsingCacheService.RemoveReferencesBy(toParse, token);
+            _parsingCacheService.ClearSupertypes(toResolveReferences);
+            //This is purely a security measure. In the success path, the reference remover removes the referernces.
+            _parsingCacheService.RemoveReferencesBy(toResolveReferences, token);
+
         }
 
         private void RefreshDeclarationFinder()
@@ -331,7 +333,7 @@ namespace Rubberduck.Parsing.VBA
         {
             token.ThrowIfCancellationRequested();
 
-            _parserStateManager.SetStatusAndFireStateChanged(requestor, ParserState.ResolvedDeclarations, token);
+            _parserStateManager.SetStatusAndFireStateChanged(requestor, ParserState.Pending, token);
             token.ThrowIfCancellationRequested();
 
             _projectManager.RefreshProjects();
@@ -363,6 +365,7 @@ namespace Rubberduck.Parsing.VBA
             if (removedModules.Any())
             {
                 _parsingCacheService.RemoveReferencesBy(removedModules, token);
+                _parsingCacheService.ClearSupertypes(removedModules);
                 foreach (var module in removedModules)
                 {
                     _parsingCacheService.ClearModuleToModuleReferencesFromModule(module);
