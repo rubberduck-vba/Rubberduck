@@ -44,7 +44,7 @@ namespace Rubberduck.Parsing.VBA
                     if (customDeclarations.Any())
                     {
                         LastLoadOfBuiltInDeclarationsLoadedDeclarations = true;
-                        foreach (var declaration in customDeclarationLoader.Load())
+                        foreach (var declaration in customDeclarations)
                         {
                             _state.AddDeclaration(declaration);
                         }
