@@ -72,7 +72,7 @@ namespace Rubberduck.Parsing.VBA
             PerformPreResolveCleanup(_toResolve.AsReadOnly(), token);
             token.ThrowIfCancellationRequested();
 
-            ExecuteCompilationPasses();
+            ExecuteCompilationPasses(_toResolve.AsReadOnly());
             token.ThrowIfCancellationRequested();
 
             var parseTreesToResolve = _state.ParseTrees.Where(kvp => _toResolve.Contains(kvp.Key)).ToList();
@@ -97,7 +97,7 @@ namespace Rubberduck.Parsing.VBA
             _moduleToModuleReferenceManager.ClearModuleToModuleReferencesToModule(toResolve);
         }
 
-        private void ExecuteCompilationPasses()
+        private void ExecuteCompilationPasses(IReadOnlyCollection<QualifiedModuleName> modules)
         {
             var passes = new List<ICompilationPass>
                 {
@@ -106,7 +106,7 @@ namespace Rubberduck.Parsing.VBA
                     new TypeHierarchyPass(_state.DeclarationFinder, new VBAExpressionParser()),
                     new TypeAnnotationPass(_state.DeclarationFinder, new VBAExpressionParser())
                 };
-            passes.ForEach(p => p.Execute());
+            passes.ForEach(p => p.Execute(modules));
         }
 
         protected void ResolveReferences(DeclarationFinder finder, QualifiedModuleName module, IParseTree tree, CancellationToken token)

@@ -255,7 +255,6 @@ namespace Rubberduck.Parsing.Symbols
         public IEnumerable<Declaration> FindDeclarationsWithNonBaseAsType()
         {
             return _nonBaseAsType.Value;
-
         }
  
         public IEnumerable<Declaration> FindEventHandlers()
