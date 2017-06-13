@@ -64,6 +64,7 @@ namespace Rubberduck.Parsing.Symbols
         private readonly IDictionary<QualifiedSelection, List<Declaration>> _declarationsBySelection;
         private readonly IDictionary<QualifiedSelection, List<IdentifierReference>> _referencesBySelection;
 
+        private readonly Lazy<IDictionary<DeclarationType, List<Declaration>>> _builtInDeclarationsByType;
         private readonly Lazy<IDictionary<Declaration, List<Declaration>>> _handlersByWithEventsField;
         private readonly Lazy<IDictionary<VBAParser.ImplementsStmtContext, List<Declaration>>> _membersByImplementsContext;
         private readonly Lazy<IDictionary<Declaration, List<Declaration>>> _interfaceMembers;
@@ -121,9 +122,15 @@ namespace Rubberduck.Parsing.Symbols
                 .GroupBy(declaration => declaration.DeclarationType)
                 .ToDictionary();
 
-            _eventHandlers = new Lazy<List<Declaration>>(() => FindEventHandlers(declarations), true);
-            _projects = new Lazy<List<Declaration>>(() => declarations.Where(d => d.DeclarationType == DeclarationType.Project).ToList(), true);
-            _classes = new Lazy<List<Declaration>>(() => declarations.Where(d => d.DeclarationType == DeclarationType.ClassModule).ToList(), true);
+            _builtInDeclarationsByType = new Lazy<IDictionary<DeclarationType, List<Declaration>>>(() =>
+                declarations
+                    .Where(declaration => !declaration.IsUserDefined)
+                    .GroupBy(declaration => declaration.DeclarationType)
+                    .ToDictionary()
+                , true);
+            _eventHandlers = new Lazy<List<Declaration>>(() => FindAllEventHandlers(), true);
+            _projects = new Lazy<List<Declaration>>(() => DeclarationsWithType(DeclarationType.Project).ToList(), true);
+            _classes = new Lazy<List<Declaration>>(() => DeclarationsWithType(DeclarationType.ClassModule).ToList(), true);
 
             var withEventsFields = UserDeclarations(DeclarationType.Variable).Where(item => item.IsWithEvents).ToArray();
             var events = withEventsFields.Select(field =>
@@ -262,6 +269,11 @@ namespace Rubberduck.Parsing.Symbols
 
         public IEnumerable<Declaration> FreshUndeclared => _newUndeclared.AllValues();
 
+        //This does not need a lock because enumerators over a ConcurrentBag uses a snapshot.    
+        public IEnumerable<UnboundMemberDeclaration> FreshUnresolvedMemberDeclarations => _newUnresolved.ToList();
+
+        public IEnumerable<UnboundMemberDeclaration> UnresolvedMemberDeclarations => _unresolved;
+
         public IEnumerable<Declaration> Members(Declaration module)
         {
             return Members(module.QualifiedName.QualifiedModuleName);
@@ -280,10 +292,7 @@ namespace Rubberduck.Parsing.Symbols
             return Members(module).SingleOrDefault(member => member.DeclarationType.HasFlag(DeclarationType.Module));
         }
 
-        public IReadOnlyCollection<QualifiedModuleName> AllModules()
-        {
-            return _declarations.Keys.ToList();
-        }
+        public IReadOnlyCollection<QualifiedModuleName> AllModules => _declarations.Keys.AsReadOnly();
 
         public IEnumerable<Declaration> FindDeclarationsWithNonBaseAsType()
         {
@@ -301,24 +310,26 @@ namespace Rubberduck.Parsing.Symbols
         public IEnumerable<Declaration> UserDeclarations(DeclarationType type)
         {
             List<Declaration> result;
-            if (!_userDeclarationsByType.TryGetValue(type, out result))
-            {
-                result = _userDeclarationsByType
-                            .Where(item => item.Key.HasFlag(type))
-                            .SelectMany(item => item.Value)
-                            .ToList();
-            }
-            return result;
+            return _userDeclarationsByType.TryGetValue(type, out result)
+                ? result
+                : _userDeclarationsByType
+                    .Where(item => item.Key.HasFlag(type))
+                    .SelectMany(item => item.Value);
         }
 
-        public IEnumerable<UnboundMemberDeclaration> FreshUnresolvedMemberDeclarations()
+        public IEnumerable<Declaration> BuiltInDeclarations(DeclarationType type)
         {
-            return _newUnresolved.ToList(); //This does not need a lock because enumerators over a ConcurrentBag uses a snapshot.           
+            List<Declaration> result;
+            return _builtInDeclarationsByType.Value.TryGetValue(type, out result)
+                ? result
+                : _builtInDeclarationsByType.Value
+                    .Where(item => item.Key.HasFlag(type))
+                    .SelectMany(item => item.Value);
         }
 
-        public IEnumerable<UnboundMemberDeclaration> UnresolvedMemberDeclarations()
+        public IEnumerable<Declaration> DeclarationsWithType(DeclarationType type)
         {
-            return _unresolved;
+            return BuiltInDeclarations(type).Concat(UserDeclarations(type));
         }
 
         public IEnumerable<Declaration> FindHandlersForWithEventsField(Declaration field)
@@ -344,7 +355,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public IEnumerable<Declaration> FindAllInterfaceImplementingMembers()
         {
-            return _membersByImplementsContext.Value.SelectMany(item => item.Value);
+            return _membersByImplementsContext.Value.AllValues();
         }
 
         public Declaration FindParameter(Declaration procedure, string parameterName)
@@ -381,10 +392,10 @@ namespace Rubberduck.Parsing.Symbols
         {
             Debug.Assert(module != null);
 
-            var members = _declarations[module.QualifiedName.QualifiedModuleName];
+            var members = Members(module.QualifiedName.QualifiedModuleName);
             return members == null 
                 ? Enumerable.Empty<Declaration>() 
-                : members.Where(declaration => declaration.DeclarationType == DeclarationType.Event).ToList();
+                : members.Where(declaration => declaration.DeclarationType == DeclarationType.Event);
         }
 
         public Declaration FindEvent(Declaration module, string eventName)
@@ -792,59 +803,47 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
-        private IEnumerable<Declaration> FindFormControlHandlers(IReadOnlyList<Declaration> declarations)
+        private IEnumerable<Declaration> FindAllFormControlHandlers()
         {
-            var controls = declarations
-                .Where(declaration => declaration.DeclarationType == DeclarationType.Control);
-            var handlerNames = declarations
-                .Where(declaration => !declaration.IsUserDefined && declaration.DeclarationType == DeclarationType.Event)
-                .SelectMany(e => controls.Select(c => c.IdentifierName + "_" + e.IdentifierName));
-            if (!_userDeclarationsByType.ContainsKey(DeclarationType.Procedure))
-            {
-                return Enumerable.Empty<Declaration>();
-            }
-            var handlers = _userDeclarationsByType[DeclarationType.Procedure]
+            var controls = DeclarationsWithType(DeclarationType.Control);
+            var handlerNames = BuiltInDeclarations(DeclarationType.Event)
+                .SelectMany(e => controls.Select(c => c.IdentifierName + "_" + e.IdentifierName))
+                .ToHashSet();
+            var handlers = UserDeclarations(DeclarationType.Procedure)
                 .Where(procedure => handlerNames.Contains(procedure.IdentifierName));
             return handlers;
         }
 
-        private List<Declaration> FindEventHandlers(IEnumerable<Declaration> declarations)
+        private List<Declaration> FindAllEventHandlers()
         {
-            var declarationList = declarations.ToList();
+            var handlerNames = BuiltInDeclarations(DeclarationType.Event)
+                .SelectMany(e =>
+                {
+                    var parentModuleSubtypes = ((ClassModuleDeclaration)e.ParentDeclaration).Subtypes;
+                    return parentModuleSubtypes.Any()
+                        ? parentModuleSubtypes.Select(v => v.IdentifierName + "_" + e.IdentifierName)
+                        : new[] { e.ParentDeclaration.IdentifierName + "_" + e.IdentifierName };
+                })
+                .ToHashSet();
 
-            var handlerNames = declarationList
-                                .Where(declaration => !declaration.IsUserDefined 
-                                                        && declaration.DeclarationType == DeclarationType.Event)
-                                .SelectMany(e =>
-                                {
-                                    var parentModuleSubtypes = ((ClassModuleDeclaration)e.ParentDeclaration).Subtypes;
-                                    return parentModuleSubtypes.Any()
-                                        ? parentModuleSubtypes.Select(v => v.IdentifierName + "_" + e.IdentifierName)
-                                        : new[] { e.ParentDeclaration.IdentifierName + "_" + e.IdentifierName };
-                                })
-                                .ToHashSet();
-
-            var handlers = declarationList.Where(item =>
+            var handlers = DeclarationsWithType(DeclarationType.Procedure)
+                .Where(item =>
                 // class module built-in events
-                (item.DeclarationType == DeclarationType.Procedure &&
-                 item.ParentDeclaration.DeclarationType == DeclarationType.ClassModule && (
+                (item.ParentDeclaration.DeclarationType == DeclarationType.ClassModule && (
                      item.IdentifierName.Equals("Class_Initialize", StringComparison.InvariantCultureIgnoreCase) ||
                      item.IdentifierName.Equals("Class_Terminate", StringComparison.InvariantCultureIgnoreCase))) ||
                 // standard module built-in handlers (Excel specific):
                 (_hostApp != null &&
                  _hostApp.ApplicationName.Equals("Excel", StringComparison.InvariantCultureIgnoreCase) &&
-                 item.DeclarationType == DeclarationType.Procedure &&
                  item.ParentDeclaration.DeclarationType == DeclarationType.ProceduralModule && (
                      item.IdentifierName.Equals("auto_open", StringComparison.InvariantCultureIgnoreCase) ||
-                     item.IdentifierName.Equals("auto_close", StringComparison.InvariantCultureIgnoreCase))) ||
-                // user handlers:
-                (item.IsUserDefined &&
-                 item.DeclarationType == DeclarationType.Procedure &&
-                 handlerNames.Contains(item.IdentifierName))
+                     item.IdentifierName.Equals("auto_close", StringComparison.InvariantCultureIgnoreCase))))
+                .Concat(
+                    UserDeclarations(DeclarationType.Procedure)
+                        .Where(item => handlerNames.Contains(item.IdentifierName))
                 )
                 .Concat(_handlersByWithEventsField.Value.AllValues())
-                .Concat(FindFormControlHandlers(declarationList));
-
+                .Concat(FindAllFormControlHandlers());
             return handlers.ToList();
         }
 
