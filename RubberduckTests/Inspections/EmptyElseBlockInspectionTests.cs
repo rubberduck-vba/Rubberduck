@@ -13,6 +13,26 @@ namespace RubberduckTests.Inspections
     {
         [TestMethod]
         [TestCategory("Inspections")]
+        public void InspectionType()
+        {
+            var inspection = new EmptyElseBlockInspection(null);
+            var expectedInspection = CodeInspectionType.CodeQualityIssues;
+
+            Assert.AreEqual(expectedInspection, inspection.InspectionType);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void InspectionName()
+        {
+            const string expectedName = nameof(EmptyElseBlockInspection);
+            var inspection = new EmptyElseBlockInspection(null);
+
+            Assert.AreEqual(expectedName, inspection.Name);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void EmptyElseBlock_DoesntFireOnEmptyIfBlock()
         {
             const string inputcode =
@@ -34,27 +54,7 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void InspectionType()
-        {
-            var inspection = new EmptyElseBlockInspection(null);
-            var expectedInspection = CodeInspectionType.CodeQualityIssues;
-
-            Assert.AreEqual(expectedInspection, inspection.InspectionType);
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void InspectionName()
-        {
-            const string expectedName = nameof(EmptyElseBlockInspection);
-            var inspection = new EmptyElseBlockInspection(null);
-
-            Assert.AreEqual(expectedName, inspection.Name);
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void EmptyElseBlock_FiresOnEmptyIfBlock_EmptyElseBlock()
+        public void EmptyElseBlock_HasNoContent()
         {
             const string inputcode =
 @"Sub Foo()
@@ -77,7 +77,7 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void EmptyElseBlock_FiresOnEmptyElseBlock_HasQuoteComment()
+        public void EmptyElseBlock_HasQuoteComment()
         {
             const string inputCode =
 @"Sub Foo()
@@ -100,7 +100,7 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void EmptyElseBlock_FiresOnEmptyElseBlock_HasRemComment()
+        public void EmptyElseBlock_HasRemComment()
         {
             const string inputCode =
 @"Sub Foo()
@@ -124,7 +124,7 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void EmptyElseBlock_FiresOnEmptyElseBlock_HasVariableDeclaration()
+        public void EmptyElseBlock_HasVariableDeclaration()
         {
             const string inputCode =
 @"Sub Foo()
@@ -148,7 +148,7 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void EmptyElseBlock_FiresOnEmptyElseBlock_HasConstDeclaration()
+        public void EmptyElseBlock_HasConstDeclaration()
         {
             const string inputCode =
 @"Sub Foo()
@@ -172,7 +172,7 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void EmptyElseBlock_FiresOnEmptyElseBlock_HasWhitespace()
+        public void EmptyElseBlock_HasWhitespace()
         {
             const string inputcode =
 @"Sub Foo()
@@ -197,7 +197,7 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void EmptyElseBlock_ElseBlockHasDeclarationStatement()
+        public void EmptyElseBlock_HasDeclarationStatement()
         {
             const string inputCode =
 @"Sub Foo()
@@ -221,7 +221,7 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void EmptyElseBlock_ElseBlockHasExecutableStatement()
+        public void EmptyElseBlock_HasExecutableStatement()
         {
             const string inputCode =
 @"Sub Foo()
