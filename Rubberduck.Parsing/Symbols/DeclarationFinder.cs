@@ -242,6 +242,11 @@ namespace Rubberduck.Parsing.Symbols
                     : Enumerable.Empty<Declaration>();
         }
 
+        public Declaration ModuleDeclaration(QualifiedModuleName module)
+        {
+            return Members(module).FirstOrDefault(member => member.DeclarationType.HasFlag(DeclarationType.Module));
+        }
+
         public IReadOnlyCollection<QualifiedModuleName> AllModules()
         {
             return _declarations.Keys.ToList();
@@ -250,7 +255,6 @@ namespace Rubberduck.Parsing.Symbols
         public IEnumerable<Declaration> FindDeclarationsWithNonBaseAsType()
         {
             return _nonBaseAsType.Value;
-
         }
  
         public IEnumerable<Declaration> FindEventHandlers()

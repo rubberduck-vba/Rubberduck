@@ -336,6 +336,12 @@
     <Compile Include="VBA\Attributes.cs" />
     <Compile Include="VBA\BuiltInDeclarationLoader.cs" />
     <Compile Include="PreProcessing\TokensValue.cs" />
+    <Compile Include="VBA\SupertypeClearer.cs" />
+    <Compile Include="VBA\SynchronousSupertypeClearer.cs" />
+    <Compile Include="VBA\SupertypeClearerBase.cs" />
+    <Compile Include="VBA\ISupertypeClearer.cs" />
+    <Compile Include="VBA\ParsingCacheService.cs" />
+    <Compile Include="VBA\IParsingCacheService.cs" />
     <Compile Include="VBA\SimpleVBAModuleTokenStreamProvider.cs" />
     <Compile Include="VBA\ICommonTokenStreamProvider.cs" />
     <Compile Include="VBA\ModuleToModuleReferenceManager.cs" />
