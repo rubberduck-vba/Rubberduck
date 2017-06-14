@@ -751,7 +751,13 @@ namespace Rubberduck.Parsing.Symbols
 
         public Declaration FindMemberReferencedProjectInGlobalClassModule(Declaration callingProject, Declaration callingModule, Declaration callingParent, string memberName, DeclarationType memberType)
         {
-            var memberMatches = FindAllInReferencedProjectByPriority(callingProject, memberName, p => p.DeclarationType.HasFlag(memberType) && (Declaration.GetModuleParent(p) == null || Declaration.GetModuleParent(p).DeclarationType == DeclarationType.ClassModule) && ((ClassModuleDeclaration)Declaration.GetModuleParent(p)).IsGlobalClassModule);
+            var memberMatches = FindAllInReferencedProjectByPriority(
+                callingProject, 
+                memberName, 
+                p => p.DeclarationType.HasFlag(memberType) 
+                    && (Declaration.GetModuleParent(p) == null 
+                        || Declaration.GetModuleParent(p).DeclarationType == DeclarationType.ClassModule) 
+                    && ((ClassModuleDeclaration)Declaration.GetModuleParent(p)).IsGlobalClassModule);
             var accessibleMembers = memberMatches.Where(m => AccessibilityCheck.IsMemberAccessible(callingProject, callingModule, callingParent, m));
             var match = accessibleMembers.FirstOrDefault();
             return match;
@@ -759,7 +765,12 @@ namespace Rubberduck.Parsing.Symbols
 
         public Declaration FindMemberReferencedProjectInModule(Declaration callingProject, Declaration callingModule, Declaration callingParent, Declaration memberModule, string memberName, DeclarationType memberType)
         {
-            var memberMatches = FindAllInReferencedProjectByPriority(callingProject, memberName, p => p.DeclarationType.HasFlag(memberType) && memberModule.Equals(Declaration.GetModuleParent(p)));
+            var memberMatches = FindAllInReferencedProjectByPriority(
+                callingProject, 
+                memberName, 
+                p => p.DeclarationType.HasFlag(memberType) 
+                    && memberModule.Equals(Declaration.GetModuleParent(p)
+                ));
             var accessibleMembers = memberMatches.Where(m => AccessibilityCheck.IsMemberAccessible(callingProject, callingModule, callingParent, m));
             var match = accessibleMembers.FirstOrDefault();
             if (match != null)
@@ -775,7 +786,12 @@ namespace Rubberduck.Parsing.Symbols
 
         public Declaration FindMemberReferencedProject(Declaration callingProject, Declaration callingModule, Declaration callingParent, Declaration referencedProject, string memberName, DeclarationType memberType)
         {
-            var memberMatches = FindAllInReferencedProjectByPriority(callingProject, memberName, p => p.DeclarationType.HasFlag(memberType) && referencedProject.Equals(Declaration.GetProjectParent(p)));
+            var memberMatches = FindAllInReferencedProjectByPriority(
+                callingProject, 
+                memberName, 
+                p => p.DeclarationType.HasFlag(memberType) 
+                    && referencedProject.Equals(Declaration.GetProjectParent(p)
+                ));
             return memberMatches.FirstOrDefault(m => 
                     AccessibilityCheck.IsMemberAccessible(callingProject, callingModule, callingParent, m));
         }
@@ -788,7 +804,7 @@ namespace Rubberduck.Parsing.Symbols
         private IEnumerable<Declaration> FindAllInReferencedProjectByPriority(Declaration enclosingProject, string name, Func<Declaration, bool> predicate)
         {
             var interprojectMatches = MatchName(name).Where(predicate).ToList();
-            var projectReferences = ((ProjectDeclaration)enclosingProject).ProjectReferences.ToList();
+            var projectReferences = ((ProjectDeclaration)enclosingProject).ProjectReferences;
             if (interprojectMatches.Count == 0)
             {
                 yield break;
@@ -850,16 +866,40 @@ namespace Rubberduck.Parsing.Symbols
 
         public IEnumerable<Declaration> GetAccessibleDeclarations(Declaration target)
         {
-            if (target == null) { return Enumerable.Empty<Declaration>(); }
+            if (target == null)
+            {
+                return Enumerable.Empty<Declaration>();
+            }
 
             return _declarations.AllValues()
-                .Where(callee => AccessibilityCheck.IsAccessible(Declaration.GetProjectParent(target)
-                        , Declaration.GetModuleParent(target), target.ParentDeclaration, callee)).ToList();
+                .Where(callee => AccessibilityCheck.IsAccessible(
+                    Declaration.GetProjectParent(target),
+                    Declaration.GetModuleParent(target), 
+                    target.ParentDeclaration, 
+                    callee));
+        }
+
+        public IEnumerable<Declaration> GetAccessibleUserDeclarations(Declaration target)
+        {
+            if (target == null)
+            {
+                return Enumerable.Empty<Declaration>();
+            }
+
+            return _userDeclarationsByType.AllValues()
+                .Where(callee => AccessibilityCheck.IsAccessible(
+                    Declaration.GetProjectParent(target),
+                    Declaration.GetModuleParent(target),
+                    target.ParentDeclaration,
+                    callee));
         }
 
         public IEnumerable<Declaration> GetDeclarationsWithIdentifiersToAvoid(Declaration target)
         {
-            if (target == null) { return Enumerable.Empty<Declaration>(); }
+            if (target == null)
+            {
+                return Enumerable.Empty<Declaration>();
+            }
 
             List<Declaration> declarationsToAvoid = GetNameCollisionDeclarations(target).ToList();
 
@@ -870,23 +910,25 @@ namespace Rubberduck.Parsing.Symbols
 
         private IEnumerable<Declaration> GetNameCollisionDeclarations(Declaration declaration)
         {
-            if (declaration == null) { return Enumerable.Empty<Declaration>(); }
+            if (declaration == null)
+            {
+                return Enumerable.Empty<Declaration>();
+            }
 
             //Filter accessible declarations to those that would result in name collisions or hiding
-            var declarationsToAvoid = GetAccessibleDeclarations(declaration).Where(candidate =>
-                                        candidate.IsUserDefined
-                                        && (IsAccessibleInOtherProcedureModule(candidate,declaration)
+            var declarationsToAvoid = GetAccessibleUserDeclarations(declaration).Where(candidate =>
+                                        (IsAccessibleInOtherProcedureModule(candidate,declaration)
                                         || candidate.DeclarationType == DeclarationType.Project
-                                        || ModuleDeclarationTypes.Contains(candidate.DeclarationType)
+                                        || candidate.DeclarationType.HasFlag(DeclarationType.Module)
                                         || IsDeclarationInSameProcedureScope(candidate, declaration)
-                                        )).ToList();
+                                        )).ToHashSet();
 
             //Add local variables when the target is a method or property
-            if(MethodDeclarationTypes.Contains(declaration.DeclarationType))
+            if(IsSubroutineOrProperty(declaration))
             {
                 var localVariableDeclarations = _declarations.AllValues()
                     .Where(dec => declaration == dec.ParentDeclaration);
-                declarationsToAvoid.AddRange(localVariableDeclarations);
+                declarationsToAvoid.UnionWith(localVariableDeclarations);
             }
 
             return declarationsToAvoid;
@@ -894,12 +936,12 @@ namespace Rubberduck.Parsing.Symbols
 
         private IEnumerable<Declaration> GetNameCollisionDeclarations(IEnumerable<IdentifierReference> references)
         {
-            var declarationsToAvoid = new List<Declaration>();
+            var declarationsToAvoid = new HashSet<Declaration>();
             foreach (var reference in references)
             {
                 if (!UsesScopeResolution(reference.Context.Parent))
                 {
-                    declarationsToAvoid.AddRange(GetNameCollisionDeclarations(reference.ParentNonScoping));
+                    declarationsToAvoid.UnionWith(GetNameCollisionDeclarations(reference.ParentNonScoping));
                 }
             }
             return declarationsToAvoid;
@@ -930,20 +972,11 @@ namespace Rubberduck.Parsing.Symbols
             return candidateDeclaration.ParentScope == scopingDeclaration.ParentScope;
         }
 
-        private static readonly DeclarationType[] MethodDeclarationTypes =
+        private static bool IsSubroutineOrProperty(Declaration declaration)
         {
-            DeclarationType.PropertyGet,
-            DeclarationType.PropertySet,
-            DeclarationType.PropertyLet,
-            DeclarationType.Procedure,
-            DeclarationType.Function
-        };
-
-        private static readonly DeclarationType[] ModuleDeclarationTypes =
-        {
-            DeclarationType.ClassModule,
-            DeclarationType.ProceduralModule,
-            DeclarationType.UserForm
-        };
+            return declaration.DeclarationType.HasFlag(DeclarationType.Property)
+                || declaration.DeclarationType == DeclarationType.Function
+                || declaration.DeclarationType == DeclarationType.Procedure;
+        }
     }
 }
