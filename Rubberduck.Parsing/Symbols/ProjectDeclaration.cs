@@ -71,6 +71,11 @@ namespace Rubberduck.Parsing.Symbols
             _projectReferences.Add(new ProjectReference(referencedProjectId, priority));
         }
 
+        public void ClearProjectReferences()
+        {
+            _projectReferences.Clear();
+        }
+
         private string _displayName;
         /// <summary>
         /// WARNING: This property has side effects. It changes the ActiveVBProject, which causes a flicker in the VBE.
