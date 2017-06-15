@@ -6,7 +6,7 @@ using Rubberduck.VBEditor.Application;
 
 namespace Rubberduck.Parsing.Symbols
 {
-    class ConcurrentlyConstructedDeclarationFinder : DeclarationFinder
+    public class ConcurrentlyConstructedDeclarationFinder : DeclarationFinder
     {
         private const int _maxDegreeOfConstructionParallelism = -1;
 
