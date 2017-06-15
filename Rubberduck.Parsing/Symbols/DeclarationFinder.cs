@@ -93,7 +93,7 @@ namespace Rubberduck.Parsing.Symbols
             _newUnresolved = new ConcurrentBag<UnboundMemberDeclaration>(new List<UnboundMemberDeclaration>());
 
             _annotationService = new AnnotationService(this);
-            
+
             _unresolved = unresolvedMemberDeclarations.ToList();
 
             _annotations = annotations
@@ -128,80 +128,6 @@ namespace Rubberduck.Parsing.Symbols
                     .GroupBy(declaration => declaration.DeclarationType)
                     .ToDictionary()
                 , true);
-            _eventHandlers = new Lazy<List<Declaration>>(() => FindAllEventHandlers(), true);
-            _projects = new Lazy<List<Declaration>>(() => DeclarationsWithType(DeclarationType.Project).ToList(), true);
-            _classes = new Lazy<List<Declaration>>(() => DeclarationsWithType(DeclarationType.ClassModule).ToList(), true);
-
-            var withEventsFields = UserDeclarations(DeclarationType.Variable).Where(item => item.IsWithEvents).ToArray();
-            var events = withEventsFields.Select(field =>
-                new
-                {
-                    WithEventsField = field,
-                    AvailableEvents = FindEvents(field.AsTypeDeclaration).ToArray()
-                });
-
-            _handlersByWithEventsField = new Lazy<IDictionary<Declaration, List<Declaration>>>(() =>
-                events.Select(item =>
-                    new
-                    {
-                        item.WithEventsField,
-                        Handlers = item.AvailableEvents.SelectMany(evnt =>
-                            Members(item.WithEventsField.ParentDeclaration.QualifiedName.QualifiedModuleName)
-                                .Where(member => member.DeclarationType == DeclarationType.Procedure
-                                                && member.IdentifierName == item.WithEventsField.IdentifierName + "_" + evnt.IdentifierName))
-                    })
-                    .ToDictionary(item => item.WithEventsField, item => item.Handlers.ToList())
-                , true);
-
-            var implementsInstructions = UserDeclarations(DeclarationType.ClassModule)
-                .SelectMany(cls => cls.References
-                    .Where(reference => ParserRuleContextHelper.HasParent<VBAParser.ImplementsStmtContext>(reference.Context))
-                    .Select(reference => 
-                        new
-                        {
-                            IdentifierReference = reference,
-                            Context = ParserRuleContextHelper.GetParent<VBAParser.ImplementsStmtContext>(reference.Context)
-                        }
-                    )
-                );
-
-            var interfaceModules = implementsInstructions.Select(item => item.IdentifierReference.Declaration).Distinct();
-
-            var interfaceMembers = interfaceModules.Select(item => 
-                new
-                {
-                    InterfaceModule = item,
-                    InterfaceMembers = Members(item.QualifiedName.QualifiedModuleName)
-                        .Where(member => member.DeclarationType.HasFlag(DeclarationType.Member))
-                });
-
-            _interfaceMembers = new Lazy<IDictionary<Declaration, List<Declaration>>>(() =>
-                    interfaceMembers.ToDictionary(
-                                        item => item.InterfaceModule,
-                                        item => item.InterfaceMembers.ToList()
-                     )
-                , true);
-
-            var implementingNames = new Lazy<IEnumerable<string>>(() => 
-                implementsInstructions.SelectMany(item =>
-                    Members(item.IdentifierReference.Declaration.QualifiedName.QualifiedModuleName)
-                        .Where(member => member.DeclarationType.HasFlag(DeclarationType.Member))
-                        .Select(member => item.IdentifierReference.Declaration.IdentifierName + "_" + member.IdentifierName)
-                 ), true);
-
-            var implementableMembers = implementsInstructions.Select(item =>
-                new
-                {
-                    item.Context,
-                    Members = Members(item.IdentifierReference.QualifiedModuleName)
-                        .Where(implementingTypeMember => implementingNames.Value.Contains(implementingTypeMember.IdentifierName))
-                        .ToList()
-                });
-
-            _membersByImplementsContext = new Lazy<IDictionary<VBAParser.ImplementsStmtContext, List<Declaration>>>(() =>
-                implementableMembers
-                    .ToDictionary(item => item.Context, item => item.Members),
-                true);
 
             _nonBaseAsType = new Lazy<List<Declaration>>(() =>
                 _declarations
@@ -212,6 +138,102 @@ namespace Rubberduck.Parsing.Symbols
                                     && d.DeclarationType != DeclarationType.ProceduralModule)
                     .ToList()
                 , true);
+
+            //Temporal coupling: the initializers of the lazy collections below use the collections above.
+            _eventHandlers = new Lazy<List<Declaration>>(() => FindAllEventHandlers(), true);
+            _projects = new Lazy<List<Declaration>>(() => DeclarationsWithType(DeclarationType.Project).ToList(), true);
+            _classes = new Lazy<List<Declaration>>(() => DeclarationsWithType(DeclarationType.ClassModule).ToList(), true);
+            _handlersByWithEventsField = new Lazy<IDictionary<Declaration, List<Declaration>>>(() => FindAllHandlersByWithEventField(), true);
+            _interfaceMembers = new Lazy<IDictionary<Declaration, List<Declaration>>>(() => FindAllIinterfaceMembersByModule(), true);
+            _membersByImplementsContext = new Lazy<IDictionary<VBAParser.ImplementsStmtContext, List<Declaration>>>(() =>
+                FindAllImplementingMembersByImplementsContext(),
+                true);      
+        }
+
+        private IDictionary<VBAParser.ImplementsStmtContext, List<Declaration>> FindAllImplementingMembersByImplementsContext()
+        {
+            var implementsInstructions = UserDeclarations(DeclarationType.ClassModule)
+                .SelectMany(cls => cls.References
+                    .Where(reference => ParserRuleContextHelper.HasParent<VBAParser.ImplementsStmtContext>(reference.Context))
+                    .Select(reference =>
+                        new
+                        {
+                            IdentifierReference = reference,
+                            Context = ParserRuleContextHelper.GetParent<VBAParser.ImplementsStmtContext>(reference.Context)
+                        }
+                    )
+                ).ToList();
+
+            var implementingNames = implementsInstructions.SelectMany(item =>
+                    Members(item.IdentifierReference.Declaration.QualifiedName.QualifiedModuleName)
+                        .Where(member => member.DeclarationType.HasFlag(DeclarationType.Member))
+                        .Select(member => item.IdentifierReference.Declaration.IdentifierName + "_" + member.IdentifierName)
+                        )
+                    .ToHashSet();
+
+            var implementableMembers = implementsInstructions.Select(item =>
+                new
+                {
+                    item.Context,
+                    Members = Members(item.IdentifierReference.QualifiedModuleName)
+                        .Where(implementingTypeMember => implementingNames.Contains(implementingTypeMember.IdentifierName))
+                        .ToList()
+                });
+
+            return implementableMembers.ToDictionary(item => item.Context, item => item.Members);
+        }
+
+        private IDictionary<Declaration, List<Declaration>> FindAllIinterfaceMembersByModule()
+        {
+            var implementsInstructions = UserDeclarations(DeclarationType.ClassModule)
+                .SelectMany(cls => cls.References
+                    .Where(reference => ParserRuleContextHelper.HasParent<VBAParser.ImplementsStmtContext>(reference.Context))
+                    .Select(reference =>
+                        new
+                        {
+                            IdentifierReference = reference,
+                            Context = ParserRuleContextHelper.GetParent<VBAParser.ImplementsStmtContext>(reference.Context)
+                        }
+                    )
+                );
+
+            var interfaceModules = implementsInstructions.Select(item => item.IdentifierReference.Declaration).Distinct();
+
+            var interfaceMembers = interfaceModules.Select(item =>
+                new
+                {
+                    InterfaceModule = item,
+                    InterfaceMembers = Members(item.QualifiedName.QualifiedModuleName)
+                        .Where(member => member.DeclarationType.HasFlag(DeclarationType.Member))
+                });
+
+            return interfaceMembers.ToDictionary(
+                        item => item.InterfaceModule,
+                        item => item.InterfaceMembers.ToList()
+                     );
+        }
+
+        private IDictionary<Declaration, List<Declaration>> FindAllHandlersByWithEventField()
+        {
+            var withEventsFields = UserDeclarations(DeclarationType.Variable).Where(item => item.IsWithEvents);
+            var events = withEventsFields.Select(field =>
+                new
+                {
+                    WithEventsField = field,
+                    AvailableEvents = FindEvents(field.AsTypeDeclaration).ToArray()
+                });
+
+            var handlersByWithEventsField = events.Select(item =>
+                    new
+                    {
+                        item.WithEventsField,
+                        Handlers = item.AvailableEvents.SelectMany(evnt =>
+                            Members(item.WithEventsField.ParentDeclaration.QualifiedName.QualifiedModuleName)
+                                .Where(member => member.DeclarationType == DeclarationType.Procedure
+                                                && member.IdentifierName == item.WithEventsField.IdentifierName + "_" + evnt.IdentifierName))
+                    })
+                    .ToDictionary(item => item.WithEventsField, item => item.Handlers.ToList());
+            return handlersByWithEventsField;
         }
 
         public Declaration FindSelectedDeclaration(ICodePane activeCodePane)
