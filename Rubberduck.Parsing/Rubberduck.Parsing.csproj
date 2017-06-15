@@ -190,7 +190,7 @@
     <Compile Include="PreProcessing\VBAPreprocessorVisitor.cs" />
     <Compile Include="SymbolList.cs" />
     <Compile Include="Symbols\AliasDeclaration.cs" />
-    <Compile Include="Symbols\SynchronouslyConstructedDeclarationFinderFactory.cs" />
+    <Compile Include="Symbols\DeclarationFinderFactory.cs" />
     <Compile Include="Symbols\ConcurrentlyConstructedDeclarationFinderFactory.cs" />
     <Compile Include="Symbols\ConcurrentlyConstructedDeclarationFinder.cs" />
     <Compile Include="Symbols\DeclarationLoaders\SpecialFormDeclarations.cs" />

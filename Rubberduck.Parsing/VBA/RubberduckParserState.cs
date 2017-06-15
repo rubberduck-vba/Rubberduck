@@ -64,31 +64,43 @@ namespace Rubberduck.Parsing.VBA
 
         public DeclarationFinder DeclarationFinder { get; private set; }
 
-        internal void RefreshFinder(IHostApplication host)
-        {
-            DeclarationFinder = new DeclarationFinder(AllDeclarations, AllAnnotations, AllUnresolvedMemberDeclarations, host);
-        }
-
-        public void RefreshDeclarationFinder()
-        {
-            RefreshFinder(_hostApp);
-        }
-
         private readonly IVBE _vbe;
         private readonly IHostApplication _hostApp;
+        private readonly IDeclarationFinderFactory _declarationFinderFactory;
 
-        public RubberduckParserState(IVBE vbe)
+        public RubberduckParserState(IVBE vbe, IDeclarationFinderFactory declarationFinderFactory)
         {
+            if(vbe == null)
+            {
+                throw new ArgumentNullException(nameof(vbe));
+            }
+            if (declarationFinderFactory == null)
+            {
+                throw new ArgumentNullException(nameof(declarationFinderFactory));
+            }
+
+            _vbe = vbe;
+            _declarationFinderFactory = declarationFinderFactory;
+
             var values = Enum.GetValues(typeof(ParserState));
             foreach (var value in values)
             {
                 States.Add((ParserState)value);
             }
 
-            _vbe = vbe;
             _hostApp = _vbe.HostApplication();
             AddEventHandlers();
             IsEnabled = true;
+            RefreshFinder(_hostApp);
+        }
+
+        private void RefreshFinder(IHostApplication host)
+        {
+            DeclarationFinder = _declarationFinderFactory.Create(AllDeclarations, AllAnnotations, AllUnresolvedMemberDeclarations, host);
+        }
+
+        public void RefreshDeclarationFinder()
+        {
             RefreshFinder(_hostApp);
         }
 

@@ -110,6 +110,7 @@
     <Compile Include="Parsing\Coordination\StandAloneModuleToModuleReferenceManagerTests.cs" />
     <Compile Include="PostProcessing\ModuleRewriterTests.cs" />
     <Compile Include="SmartIndenter\VerticalSpacingTests.cs" />
+    <Compile Include="SourceControl\SynchrounouslyConstructedDeclarationFinderFactory.cs" />
     <Compile Include="Symbols\AccessibilityCheckTests.cs" />
     <Compile Include="Symbols\ClassModuleDeclarationTests.cs" />
     <Compile Include="Symbols\DeclarationFinderTests.cs" />

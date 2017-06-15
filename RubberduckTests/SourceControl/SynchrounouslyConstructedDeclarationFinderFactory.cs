@@ -1,10 +1,11 @@
 ﻿using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor.Application;
 using System.Collections.Generic;
 
-namespace Rubberduck.Parsing.Symbols
+namespace RubberduckTests.SourceControl
 {
-    public class SynchronouslyConstructedDeclarationFinderFactory : IDeclarationFinderFactory 
+    internal class SynchrounouslyConstructedDeclarationFinderFactory : IDeclarationFinderFactory
     {
         public DeclarationFinder Create(IReadOnlyList<Declaration> declarations, IEnumerable<IAnnotation> annotations, IReadOnlyList<UnboundMemberDeclaration> unresolvedMemberDeclarations, IHostApplication hostApp)
         {
