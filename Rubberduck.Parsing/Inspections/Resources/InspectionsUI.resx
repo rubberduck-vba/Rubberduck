@@ -680,4 +680,16 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="RemoveEmptyIfBlockQuickFix" xml:space="preserve">
     <value>Remove empty If block</value>
   </data>
+  <data name="RedundantByRefModifierInspectionMeta" xml:space="preserve">
+    <value>By default, all parameters are passed by reference, so it is not necessary to include the ByRef modifier declaration</value>
+  </data>
+  <data name="RedundantByRefModifierInspectionName" xml:space="preserve">
+    <value>Redundant ByRef modifier</value>
+  </data>
+  <data name="RedundantByRefModifierInspectionResultFormat" xml:space="preserve">
+    <value>Parameter '{0}' has a redundant ByRef modifier</value>
+  </data>
+  <data name="RedundantByRefModifierQuickFix" xml:space="preserve">
+    <value>Remove redundant ByRef modifier</value>
+  </data>
 </root>

@@ -1357,6 +1357,42 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to By default, all parameters are passed by reference, so it is not necessary to include the ByRef modifier declaration.
+        /// </summary>
+        public static string RedundantByRefModifierInspectionMeta {
+            get {
+                return ResourceManager.GetString("RedundantByRefModifierInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Redundant ByRef modifier.
+        /// </summary>
+        public static string RedundantByRefModifierInspectionName {
+            get {
+                return ResourceManager.GetString("RedundantByRefModifierInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Parameter &apos;{0}&apos; has a redundant ByRef modifier.
+        /// </summary>
+        public static string RedundantByRefModifierInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("RedundantByRefModifierInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove redundant ByRef modifier.
+        /// </summary>
+        public static string RedundantByRefModifierQuickFix {
+            get {
+                return ResourceManager.GetString("RedundantByRefModifierQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Remove comment.
         /// </summary>
         public static string RemoveCommentQuickFix {
