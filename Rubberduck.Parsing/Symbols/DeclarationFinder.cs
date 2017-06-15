@@ -53,25 +53,25 @@ namespace Rubberduck.Parsing.Symbols
 
         private readonly IHostApplication _hostApp;
         private readonly AnnotationService _annotationService;
-        private readonly IDictionary<string, List<Declaration>> _declarationsByName;
-        private readonly IDictionary<QualifiedModuleName, List<Declaration>> _declarations;
-        private readonly ConcurrentDictionary<QualifiedMemberName, ConcurrentBag<Declaration>> _newUndeclared;
-        private readonly ConcurrentBag<UnboundMemberDeclaration> _newUnresolved;
-        private readonly List<UnboundMemberDeclaration> _unresolved;
-        private readonly IDictionary<QualifiedModuleName, List<IAnnotation>> _annotations;
-        private readonly IDictionary<Declaration, List<Declaration>> _parametersByParent;
-        private readonly IDictionary<DeclarationType, List<Declaration>> _userDeclarationsByType;
-        private readonly IDictionary<QualifiedSelection, List<Declaration>> _declarationsBySelection;
-        private readonly IDictionary<QualifiedSelection, List<IdentifierReference>> _referencesBySelection;
+        private IDictionary<string, List<Declaration>> _declarationsByName;
+        private IDictionary<QualifiedModuleName, List<Declaration>> _declarations;
+        private ConcurrentDictionary<QualifiedMemberName, ConcurrentBag<Declaration>> _newUndeclared;
+        private ConcurrentBag<UnboundMemberDeclaration> _newUnresolved;
+        private List<UnboundMemberDeclaration> _unresolved;
+        private IDictionary<QualifiedModuleName, List<IAnnotation>> _annotations;
+        private IDictionary<Declaration, List<Declaration>> _parametersByParent;
+        private IDictionary<DeclarationType, List<Declaration>> _userDeclarationsByType;
+        private IDictionary<QualifiedSelection, List<Declaration>> _declarationsBySelection;
+        private IDictionary<QualifiedSelection, List<IdentifierReference>> _referencesBySelection;
 
-        private readonly Lazy<IDictionary<DeclarationType, List<Declaration>>> _builtInDeclarationsByType;
-        private readonly Lazy<IDictionary<Declaration, List<Declaration>>> _handlersByWithEventsField;
-        private readonly Lazy<IDictionary<VBAParser.ImplementsStmtContext, List<Declaration>>> _membersByImplementsContext;
-        private readonly Lazy<IDictionary<Declaration, List<Declaration>>> _interfaceMembers;
-        private readonly Lazy<List<Declaration>> _nonBaseAsType;
-        private readonly Lazy<List<Declaration>> _eventHandlers;
-        private readonly Lazy<List<Declaration>> _projects;
-        private readonly Lazy<List<Declaration>> _classes;
+        private Lazy<IDictionary<DeclarationType, List<Declaration>>> _builtInDeclarationsByType;
+        private Lazy<IDictionary<Declaration, List<Declaration>>> _handlersByWithEventsField;
+        private Lazy<IDictionary<VBAParser.ImplementsStmtContext, List<Declaration>>> _membersByImplementsContext;
+        private Lazy<IDictionary<Declaration, List<Declaration>>> _interfaceMembers;
+        private Lazy<List<Declaration>> _nonBaseAsType;
+        private Lazy<List<Declaration>> _eventHandlers;
+        private Lazy<List<Declaration>> _projects;
+        private Lazy<List<Declaration>> _classes;
         
         private readonly object threadLock = new object();
 
@@ -94,36 +94,74 @@ namespace Rubberduck.Parsing.Symbols
 
             _annotationService = new AnnotationService(this);
 
-            _unresolved = unresolvedMemberDeclarations.ToList();
+            var collectionConstructionActions = CollectionConstructionActions(declarations, annotations, unresolvedMemberDeclarations);
+            ExecuteCollectionConstructionActions(collectionConstructionActions);
 
-            _annotations = annotations
-                .GroupBy(node => node.QualifiedSelection.QualifiedName)
-                .ToDictionary();
-            _declarations = declarations
-                .GroupBy(item => item.QualifiedName.QualifiedModuleName)
-                .ToDictionary();
-            _declarationsByName = declarations
-                .GroupBy(declaration => declaration.IdentifierName.ToLowerInvariant())
-                .ToDictionary();
-            _declarationsBySelection = declarations
-                .Where(declaration => declaration.IsUserDefined)
-                .GroupBy(GetGroupingKey)
-                .ToDictionary();
-            _referencesBySelection = declarations
-                .SelectMany(declaration => declaration.References)
-                .GroupBy(reference => new QualifiedSelection(reference.QualifiedModuleName, reference.Selection))
-                .ToDictionary();
-            _parametersByParent = declarations
-                .Where(declaration => declaration.DeclarationType == DeclarationType.Parameter)
-                .GroupBy(declaration => declaration.ParentDeclaration)
-                .ToDictionary();
-            _userDeclarationsByType = declarations
-                .Where(declaration => declaration.IsUserDefined)
-                .GroupBy(declaration => declaration.DeclarationType)
-                .ToDictionary();
+            //Temporal coupling: the initializers of the lazy collections use the regular collections filled above.
+            InitializeLazyCollections();
+        }
 
+        protected virtual void ExecuteCollectionConstructionActions(List<Action> collectionConstructionActions)
+        {
+            collectionConstructionActions.ForEach(action => action.Invoke());
+        }
+
+        private List<Action> CollectionConstructionActions(IReadOnlyList<Declaration> declarations, IEnumerable<IAnnotation> annotations, IReadOnlyList<UnboundMemberDeclaration> unresolvedMemberDeclarations)
+        {
+            var actions = new List<Action>();
+
+            actions.Add(() => 
+                _unresolved = unresolvedMemberDeclarations
+                    .ToList()
+                );
+            actions.Add(() =>
+                _annotations = annotations
+                    .GroupBy(node => node.QualifiedSelection.QualifiedName)
+                    .ToDictionary()
+                );
+            actions.Add(() => 
+                _declarations = declarations
+                    .GroupBy(item => item.QualifiedName.QualifiedModuleName)
+                    .ToDictionary()
+                );
+            actions.Add(() => 
+                _declarationsByName = declarations
+                    .GroupBy(declaration => declaration.IdentifierName.ToLowerInvariant())
+                    .ToDictionary()
+                );
+            actions.Add(() =>
+                _declarationsBySelection = declarations
+                    .Where(declaration => declaration.IsUserDefined)
+                    .GroupBy(GetGroupingKey)
+                    .ToDictionary()
+                );
+            actions.Add(() => 
+                _referencesBySelection = declarations
+                    .SelectMany(declaration => declaration.References)
+                    .GroupBy(reference => new QualifiedSelection(reference.QualifiedModuleName, reference.Selection))
+                    .ToDictionary()
+                );
+            actions.Add(() =>
+                _parametersByParent = declarations
+                    .Where(declaration => declaration.DeclarationType == DeclarationType.Parameter)
+                    .GroupBy(declaration => declaration.ParentDeclaration)
+                    .ToDictionary()
+                );
+            actions.Add(() =>
+                _userDeclarationsByType = declarations
+                    .Where(declaration => declaration.IsUserDefined)
+                    .GroupBy(declaration => declaration.DeclarationType)
+                    .ToDictionary()
+                );
+
+            return actions;
+        }
+
+        private void InitializeLazyCollections()
+        {
             _builtInDeclarationsByType = new Lazy<IDictionary<DeclarationType, List<Declaration>>>(() =>
-                declarations
+                _declarations
+                    .AllValues()
                     .Where(declaration => !declaration.IsUserDefined)
                     .GroupBy(declaration => declaration.DeclarationType)
                     .ToDictionary()
@@ -139,7 +177,6 @@ namespace Rubberduck.Parsing.Symbols
                     .ToList()
                 , true);
 
-            //Temporal coupling: the initializers of the lazy collections below use the collections above.
             _eventHandlers = new Lazy<List<Declaration>>(() => FindAllEventHandlers(), true);
             _projects = new Lazy<List<Declaration>>(() => DeclarationsWithType(DeclarationType.Project).ToList(), true);
             _classes = new Lazy<List<Declaration>>(() => DeclarationsWithType(DeclarationType.ClassModule).ToList(), true);
@@ -147,7 +184,7 @@ namespace Rubberduck.Parsing.Symbols
             _interfaceMembers = new Lazy<IDictionary<Declaration, List<Declaration>>>(() => FindAllIinterfaceMembersByModule(), true);
             _membersByImplementsContext = new Lazy<IDictionary<VBAParser.ImplementsStmtContext, List<Declaration>>>(() =>
                 FindAllImplementingMembersByImplementsContext(),
-                true);      
+                true);
         }
 
         private IDictionary<VBAParser.ImplementsStmtContext, List<Declaration>> FindAllImplementingMembersByImplementsContext()
