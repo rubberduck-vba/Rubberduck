@@ -14,6 +14,7 @@ namespace RubberduckTests.PreProcessing
     {
         [TestMethod]
         [DeploymentItem(@"Testfiles\")]
+        [TestCategory("Preprocessor")]
         public void TestPreprocessor()
         {
             foreach (var testfile in GetTestFiles())

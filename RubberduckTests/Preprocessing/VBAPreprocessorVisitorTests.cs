@@ -28,6 +28,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestName()
         {
             string code = @"
@@ -47,6 +48,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestMinusUnaryOperator()
         {
             string code = @"
@@ -71,6 +73,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestNotUnaryOperator()
         {
             string code = @"
@@ -91,6 +94,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestPlusOperator()
         {
             string code = @"
@@ -115,6 +119,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestMinusOperator()
         {
             string code = @"
@@ -137,6 +142,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestIntFunction()
         {
             string code = @"
@@ -157,6 +163,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestFixFunction()
         {
             string code = @"
@@ -177,6 +184,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestAbsFunction()
         {
             string code = @"
@@ -197,6 +205,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestSgnFunction()
         {
             string code = @"
@@ -217,6 +226,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestLenFunction()
         {
             string code = @"
@@ -233,6 +243,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestLenBFunction()
         {
             string code = @"
@@ -249,6 +260,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestCBoolFunction()
         {
             string code = @"
@@ -287,6 +299,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestCByteFunction()
         {
             string code = @"
@@ -315,6 +328,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestCAnyNumberFunction()
         {
             // Same implementation for all.
@@ -336,6 +350,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestCDateFunction()
         {
             string code = @"
@@ -360,6 +375,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestCStrFunction()
         {
             string code = @"
@@ -382,6 +398,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestCVariantFunction()
         {
             string code = @"
@@ -420,6 +437,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestLikeOperator()
         {
             string code = @"
@@ -454,6 +472,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestIsOperator()
         {
             string code = @"
@@ -466,6 +485,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestImpOperator()
         {
             string code = @"
@@ -494,6 +514,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestEqvOperator()
         {
             string code = @"
@@ -518,6 +539,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestXorOperator()
         {
             string code = @"
@@ -542,6 +564,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestOrOperator()
         {
             string code = @"
@@ -566,6 +589,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestAndOperator()
         {
             string code = @"
@@ -594,6 +618,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestGeqOperator()
         {
             string code = @"
@@ -642,6 +667,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestGtOperator()
         {
             string code = @"
@@ -690,6 +716,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestLeqOperator()
         {
             string code = @"
@@ -738,6 +765,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestLtOperator()
         {
             string code = @"
@@ -786,6 +814,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestEqOperator()
         {
             string code = @"
@@ -824,6 +853,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestNeqOperator()
         {
             string code = @"
@@ -862,6 +892,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestConcatOperator()
         {
             string code = @"
@@ -886,6 +917,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestPowOperator()
         {
             string code = @"
@@ -906,6 +938,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestModOperator()
         {
             string code = @"
@@ -926,6 +959,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestIntDivOperator()
         {
             string code = @"
@@ -952,6 +986,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestMultOperator()
         {
             string code = @"
@@ -970,6 +1005,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestDivOperator()
         {
             string code = @"
@@ -988,6 +1024,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestStringLiteral()
         {
             string code = @"
@@ -1000,6 +1037,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestNumberLiteral()
         {
             string code = @"
@@ -1014,6 +1052,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestDateLiteral()
         {
             string code = @"
@@ -1051,6 +1090,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestKeywordLiterals()
         {
             string code = @"
@@ -1069,6 +1109,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestComplexExpressions()
         {
             string code = @"
@@ -1083,6 +1124,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestOperatorPrecedence()
         {
             string code = @"
@@ -1093,6 +1135,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestLocaleJapanese()
         {
             string code = @"
@@ -1110,8 +1153,10 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestLocaleGerman()
         {
+            // FIXME shouldn't this be 82,5235?
             string code = @"
 #Const a = 82.5235
 ";
@@ -1121,6 +1166,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestPreprocessingLiveDeadCode()
         {
             string code = @"
@@ -1163,6 +1209,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestPreprocessingLiveDeadCodeTokensDoNotGetRemoved()
         {
             string code = @"
@@ -1206,6 +1253,7 @@ namespace RubberduckTests.PreProcessing
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestPreprocessingNoConditionalCompilation()
         {
             string code = @"
@@ -1228,6 +1276,7 @@ End Sub
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestLogicalLinesHasConditionalCompilationKeywords()
         {
             string code = @"
@@ -1248,6 +1297,7 @@ End Sub
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestPtrSafeKeywordAsConstant()
         {
             string code = @"
@@ -1272,6 +1322,7 @@ End Sub
         }
 
         [TestMethod]
+        [TestCategory("Preprocessor")]
         public void TestIgnoresComment()
         {
             string code = @"
