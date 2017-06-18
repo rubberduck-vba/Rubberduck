@@ -17,6 +17,7 @@ using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
+using System.Linq;
 
 // ReSharper disable LoopCanBeConvertedToQuery
 
@@ -1018,6 +1019,7 @@ namespace Rubberduck.Parsing.VBA
         {
             var projectName = reference.Name;
             var key = new QualifiedModuleName(projectName, reference.FullPath, projectName);
+            ClearAsTypeDeclarationPointingToReference(key);
             ModuleState moduleState;
             if (_moduleStates.TryRemove(key, out moduleState))
             {
@@ -1025,11 +1027,23 @@ namespace Rubberduck.Parsing.VBA
                 {
                     moduleState.Dispose();
                 }
-
+            }
+            else
+            {             
                 Logger.Warn("Could not remove declarations for removed reference '{0}' ({1}).", reference.Name, QualifiedModuleName.GetProjectId(reference));
             }
         }
-
+        
+        private void ClearAsTypeDeclarationPointingToReference(QualifiedModuleName referencedProject)
+        {
+            var toClearAsTypeDeclaration = DeclarationFinder
+                                            .FindDeclarationsWithNonBaseAsType()
+                                            .Where(decl => decl.QualifiedName.QualifiedModuleName == referencedProject);
+            foreach(var declaration in toClearAsTypeDeclaration)
+            {
+                declaration.AsTypeDeclaration = null;
+            }
+        }
 
         private bool _isDisposed;
 
