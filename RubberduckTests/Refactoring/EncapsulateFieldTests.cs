@@ -11,6 +11,8 @@ using Rubberduck.UI.Refactorings;
 using Rubberduck.UI.Refactorings.EncapsulateField;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.Parsing.VBA;
+using System.Threading;
 
 namespace RubberduckTests.Refactoring
 {
@@ -984,17 +986,15 @@ End Sub";
             const string inputCode =
 @"Private fizz As Variant";
             var selection = new Selection(1, 15, 1, 15);
-
-            var builder = new MockVbeBuilder();
+            
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
             if (state.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldDialog>();
-            view.SetupProperty(v => v.MustImplementLetSetterType, true);
+            var view = new Mock<IRefactoringDialog<EncapsulateFieldViewModel>>();
+            view.SetupProperty(v => v.ViewModel.IsLetSelected, true);
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, state, view.Object);
@@ -1014,17 +1014,15 @@ End Sub";
             const string inputCode =
 @"Private fizz As Variant";
             var selection = new Selection(1, 15, 1, 15);
-
-            var builder = new MockVbeBuilder();
+            
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
             if (state.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldDialog>();
-            view.SetupProperty(v => v.MustImplementSetSetterType, true);
+            var view = new Mock<IRefactoringDialog<EncapsulateFieldViewModel>>();
+            view.SetupProperty(v => v.ViewModel.IsSetSelected, true);
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, state, view.Object);
@@ -1047,19 +1045,18 @@ End Sub";
 
             var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
             if (state.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldDialog>();
-            view.SetupProperty(v => v.CanImplementLetSetterType, true);
+            var view = new Mock<IRefactoringDialog<EncapsulateFieldViewModel>>();
+            view.SetupProperty(v => v.ViewModel.CanHaveLet, true);
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, state, view.Object);
             factory.Create().Show();
 
-            Assert.AreEqual(true, view.Object.CanImplementLetSetterType);
+            Assert.AreEqual(true, view.Object.ViewModel.CanHaveLet);
         }
 
         [TestMethod]
@@ -1075,19 +1072,18 @@ End Sub";
 
             var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
             if (state.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldDialog>();
-            view.SetupProperty(v => v.CanImplementSetSetterType, true);
+            var view = new Mock<IRefactoringDialog<EncapsulateFieldViewModel>>();
+            view.SetupProperty(v => v.ViewModel.CanHaveSet, true);
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, state, view.Object);
             factory.Create().Show();
 
-            Assert.AreEqual(false, view.Object.CanImplementSetSetterType);
+            Assert.AreEqual(false, view.Object.ViewModel.CanHaveSet);
         }
 
         [TestMethod]
@@ -1103,19 +1099,18 @@ End Sub";
 
             var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
             if (state.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldDialog>();
-            view.SetupProperty(v => v.CanImplementSetSetterType, true);
+            var view = new Mock<IRefactoringDialog<EncapsulateFieldViewModel>>();
+            view.SetupProperty(v => v.ViewModel.CanHaveSet, true);
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, state, view.Object);
             factory.Create().Show();
 
-            Assert.AreEqual(true, view.Object.CanImplementSetSetterType);
+            Assert.AreEqual(true, view.Object.ViewModel.CanHaveSet);
         }
 
         [TestMethod]
@@ -1131,19 +1126,18 @@ End Sub";
 
             var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
             if (state.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldDialog>();
-            view.SetupProperty(v => v.CanImplementLetSetterType, true);
+            var view = new Mock<IRefactoringDialog<EncapsulateFieldViewModel>>();
+            view.SetupProperty(v => v.ViewModel.CanHaveLet, true);
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, state, view.Object);
             factory.Create().Show();
 
-            Assert.AreEqual(false, view.Object.CanImplementLetSetterType);
+            Assert.AreEqual(false, view.Object.ViewModel.CanHaveLet);
         }
 
         [TestMethod]
@@ -1159,19 +1153,18 @@ End Sub";
 
             var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
             if (state.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldDialog>();
-            view.SetupProperty(v => v.CanImplementLetSetterType, true);
+            var view = new Mock<IRefactoringDialog<EncapsulateFieldViewModel>>();
+            view.SetupProperty(v => v.ViewModel.CanHaveLet, true);
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, state, view.Object);
             factory.Create().Show();
 
-            Assert.AreEqual(true, view.Object.CanImplementLetSetterType);
+            Assert.AreEqual(true, view.Object.ViewModel.CanHaveLet);
         }
 
         [TestMethod]
@@ -1187,19 +1180,18 @@ End Sub";
 
             var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
             if (state.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldDialog>();
-            view.SetupProperty(v => v.CanImplementSetSetterType, true);
+            var view = new Mock<IRefactoringDialog<EncapsulateFieldViewModel>>();
+            view.SetupProperty(v => v.ViewModel.CanHaveLet, true);
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, state, view.Object);
             factory.Create().Show();
 
-            Assert.AreEqual(true, view.Object.CanImplementSetSetterType);
+            Assert.AreEqual(true, view.Object.ViewModel.CanHaveLet);
         }
 
         [TestMethod]
@@ -1218,19 +1210,18 @@ End Sub";
 
             var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
             if (state.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldDialog>();
-            view.SetupProperty(v => v.MustImplementLetSetterType, false);
+            var view = new Mock<IRefactoringDialog<EncapsulateFieldViewModel>>();
+            view.SetupProperty(v => v.ViewModel.IsLetSelected, false);
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, state, view.Object);
             factory.Create().Show();
 
-            Assert.AreEqual(true, view.Object.MustImplementLetSetterType);
+            Assert.AreEqual(true, view.Object.ViewModel.IsLetSelected);
         }
 
         [TestMethod]
@@ -1249,19 +1240,18 @@ End Sub";
 
             var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
             if (state.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldDialog>();
-            view.SetupProperty(v => v.MustImplementSetSetterType, false);
+            var view = new Mock<IRefactoringDialog<EncapsulateFieldViewModel>>();
+            view.SetupProperty(v => v.ViewModel.IsSetSelected, false);
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, state, view.Object);
             factory.Create().Show();
 
-            Assert.AreEqual(true, view.Object.MustImplementSetSetterType);
+            Assert.AreEqual(true, view.Object.ViewModel.IsSetSelected);
         }
 
         [TestMethod]
@@ -1280,19 +1270,18 @@ End Sub";
 
             var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
             if (state.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldDialog>();
-            view.SetupProperty(v => v.MustImplementLetSetterType, false);
+            var view = new Mock<IRefactoringDialog<EncapsulateFieldViewModel>>();
+            view.SetupProperty(v => v.ViewModel.IsLetSelected, false);
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, state, view.Object);
             factory.Create().Show();
 
-            Assert.AreEqual(true, view.Object.MustImplementLetSetterType);
+            Assert.AreEqual(true, view.Object.ViewModel.IsLetSelected);
         }
 
         [TestMethod]
@@ -1311,19 +1300,18 @@ End Sub";
 
             var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
             if (state.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldDialog>();
-            view.SetupProperty(v => v.MustImplementSetSetterType, false);
+            var view = new Mock<IRefactoringDialog<EncapsulateFieldViewModel>>();
+            view.SetupProperty(v => v.ViewModel.IsSetSelected, false);
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, state, view.Object);
             factory.Create().Show();
 
-            Assert.AreEqual(true, view.Object.MustImplementSetSetterType);
+            Assert.AreEqual(true, view.Object.ViewModel.IsSetSelected);
         }
 
 
@@ -1340,13 +1328,12 @@ End Sub";
 
             var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
             if (state.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldDialog>();
+            var view = new Mock<IRefactoringDialog<EncapsulateFieldViewModel>>();
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, state, view.Object);
@@ -1369,13 +1356,12 @@ End Sub";
 
             var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
             if (state.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldDialog>();
+            var view = new Mock<IRefactoringDialog<EncapsulateFieldViewModel>>();
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, state, view.Object);
@@ -1398,13 +1384,12 @@ End Sub";
 
             var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-            parser.Parse(new CancellationTokenSource());
             if (state.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            var view = new Mock<IEncapsulateFieldDialog>();
+            var view = new Mock<IRefactoringDialog<EncapsulateFieldViewModel>>();
             view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
 
             var factory = new EncapsulateFieldPresenterFactory(vbe.Object, state, view.Object);
