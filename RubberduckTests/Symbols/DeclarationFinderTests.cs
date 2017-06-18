@@ -614,6 +614,7 @@ End Sub
 
 
         [TestMethod]
+        [TestCategory("Resolver")]
         [Ignore] // ref. https://github.com/rubberduck-vba/Rubberduck/issues/2330
         public void FiendishlyAmbiguousNameSelectsSmallestScopedDeclaration()
         {
@@ -643,6 +644,7 @@ End Sub
         }
 
         [TestMethod]
+        [TestCategory("Resolver")]
         [Ignore] // bug: this test should pass... it's not all that evil
         public void AmbiguousNameSelectsSmallestScopedDeclaration()
         {
