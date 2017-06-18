@@ -886,7 +886,7 @@ namespace Rubberduck.Parsing.VBA
 
         public void AddTokenStream(QualifiedModuleName module, ITokenStream stream)
         {
-            _moduleStates[module].SetTokenStream(stream);
+            _moduleStates[module].SetTokenStream(module.Component.CodeModule, stream);
         }
 
         public void AddParseTree(QualifiedModuleName module, IParseTree parseTree)
@@ -949,14 +949,21 @@ namespace Rubberduck.Parsing.VBA
 
         public IModuleRewriter GetRewriter(QualifiedModuleName qualifiedModuleName)
         {
-            var rewriter = _moduleStates[qualifiedModuleName].Rewriter;
-            return new ModuleRewriter(qualifiedModuleName.Component.CodeModule, rewriter);
+            return _moduleStates[qualifiedModuleName].Rewriter;
         }
 
         public IModuleRewriter GetRewriter(Declaration declaration)
         {
             var qualifiedModuleName = declaration.QualifiedSelection.QualifiedName;
             return GetRewriter(qualifiedModuleName);
+        }
+
+        public void RewriteAllRewriters()
+        {
+            foreach (var moduleState in _moduleStates.Where(m => m.Key.Component != null))
+            {
+                moduleState.Value.Rewriter.Rewrite();
+            }
         }
 
         /// <summary>
