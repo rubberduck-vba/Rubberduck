@@ -80,6 +80,7 @@ End Sub
 
         [TestMethod]
         [DeploymentItem(@"TestFiles\")]
+        [TestCategory("Inspections")]
         public void ImplicitActiveSheetReference_IgnoreQuickFixWorks()
         {
             const string inputCode =
