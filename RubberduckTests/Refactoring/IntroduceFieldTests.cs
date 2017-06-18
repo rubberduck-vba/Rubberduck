@@ -296,6 +296,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Introduce Field")]
         public void IntroduceFieldRefactoring_MultipleVariablesInStatement_OnOneLine_MoveFirst()
         {
             //Input
