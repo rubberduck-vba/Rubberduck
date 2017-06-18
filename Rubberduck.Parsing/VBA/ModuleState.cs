@@ -5,7 +5,9 @@ using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.PostProcessing;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -14,7 +16,7 @@ namespace Rubberduck.Parsing.VBA
         public ConcurrentDictionary<Declaration, byte> Declarations { get; private set; }
         public ConcurrentDictionary<UnboundMemberDeclaration, byte> UnresolvedMemberDeclarations { get; private set; }
         public ITokenStream TokenStream { get; private set; }
-        public TokenStreamRewriter Rewriter { get; private set; }
+        public IModuleRewriter Rewriter { get; private set; }
         public IParseTree ParseTree { get; private set; }
         public ParserState State { get; private set; }
         public int ModuleContentHashCode { get; private set; }
@@ -98,10 +100,10 @@ namespace Rubberduck.Parsing.VBA
             IsNew = true;
         }
 
-        public ModuleState SetTokenStream(ITokenStream tokenStream)
+        public ModuleState SetTokenStream(ICodeModule module, ITokenStream tokenStream)
         {
             TokenStream = tokenStream;
-            Rewriter = new TokenStreamRewriter(tokenStream);
+            Rewriter = new ModuleRewriter(module, new TokenStreamRewriter(tokenStream));
             return this;
         }
 

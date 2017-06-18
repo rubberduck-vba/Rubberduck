@@ -52,7 +52,7 @@ namespace Rubberduck.Inspections
             }
 
             fix.Fix(result);
-            _state.GetRewriter(result.QualifiedSelection.QualifiedName).Rewrite();
+            _state.RewriteAllRewriters();
             _state.OnParseRequested(this);
         }
 
@@ -78,7 +78,7 @@ namespace Rubberduck.Inspections
 
             if (filteredResults.Any())
             {
-                _state.GetRewriter(filteredResults.First().QualifiedSelection.QualifiedName).Rewrite();
+                _state.RewriteAllRewriters();
                 _state.OnParseRequested(this);
             }
         }
@@ -102,7 +102,7 @@ namespace Rubberduck.Inspections
 
             if (filteredResults.Any())
             {
-                _state.GetRewriter(filteredResults.First().QualifiedSelection.QualifiedName).Rewrite();
+                _state.RewriteAllRewriters();
                 _state.OnParseRequested(this);
             }
         }
@@ -127,12 +127,7 @@ namespace Rubberduck.Inspections
 
             if (filteredResults.Any())
             {
-                var modules = filteredResults.Select(s => s.QualifiedSelection.QualifiedName).Distinct();
-                foreach (var module in modules)
-                {
-                    _state.GetRewriter(module).Rewrite();
-                }
-
+                _state.RewriteAllRewriters();
                 _state.OnParseRequested(this);
             }
         }
@@ -153,12 +148,7 @@ namespace Rubberduck.Inspections
 
             if (filteredResults.Any())
             {
-                var modules = filteredResults.Select(s => s.QualifiedSelection.QualifiedName).Distinct();
-                foreach (var module in modules)
-                {
-                    _state.GetRewriter(module).Rewrite();
-                }
-
+                _state.RewriteAllRewriters();
                 _state.OnParseRequested(this);
             }
         }

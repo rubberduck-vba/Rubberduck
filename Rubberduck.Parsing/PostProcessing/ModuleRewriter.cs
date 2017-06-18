@@ -14,6 +14,7 @@ namespace Rubberduck.Parsing.PostProcessing
     {
         private readonly ICodeModule _module;
         private readonly TokenStreamRewriter _rewriter;
+        private bool _isDirty = false;
 
         public ITokenStream TokenStream => _rewriter.TokenStream;
 
@@ -25,9 +26,12 @@ namespace Rubberduck.Parsing.PostProcessing
 
         public void Rewrite()
         {
-            _module.Clear();
-            var content = _rewriter.GetText();
-            _module.InsertLines(1, content);
+            if (_isDirty)
+            {
+                _module.Clear();
+                var content = _rewriter.GetText();
+                _module.InsertLines(1, content);
+            }
         }
 
         private static readonly IDictionary<Type, IRewriterInfoFinder> Finders =
@@ -41,11 +45,13 @@ namespace Rubberduck.Parsing.PostProcessing
 
         public void Remove(Declaration target)
         {
+            _isDirty = true;
             Remove(target.Context);
         }
 
         public void Remove(ParserRuleContext target)
         {
+            _isDirty = true;
             IRewriterInfoFinder finder;
             var info = Finders.TryGetValue(target.GetType(), out finder)
                 ? finder.GetRewriterInfo(target)
@@ -57,51 +63,61 @@ namespace Rubberduck.Parsing.PostProcessing
 
         public void Remove(ITerminalNode target)
         {
+            _isDirty = true;
             _rewriter.Delete(target.Symbol.TokenIndex);
         }
 
         public void Remove(IToken target)
         {
+            _isDirty = true;
             _rewriter.Delete(target);
         }
 
         public void RemoveRange(int start, int stop)
         {
+            _isDirty = true;
             _rewriter.Delete(start, stop);
         }
 
         public void Replace(Declaration target, string content)
         {
+            _isDirty = true;
             _rewriter.Replace(target.Context.Start.TokenIndex, target.Context.Stop.TokenIndex, content);
         }
 
         public void Replace(ParserRuleContext target, string content)
         {
+            _isDirty = true;
             _rewriter.Replace(target.Start.TokenIndex, target.Stop.TokenIndex, content);
         }
 
         public void Replace(IToken token, string content)
         {
+            _isDirty = true;
             _rewriter.Replace(token, content);
         }
 
         public void Replace(ITerminalNode target, string content)
         {
+            _isDirty = true;
             _rewriter.Replace(target.Symbol.TokenIndex, content);
         }
 
         public void Replace(Interval tokenInterval, string content)
         {
+            _isDirty = true;
             _rewriter.Replace(tokenInterval.a, tokenInterval.b, content);
         }
 
         public void InsertBefore(int tokenIndex, string content)
         {
+            _isDirty = true;
             _rewriter.InsertBefore(tokenIndex, content);
         }
 
         public void InsertAfter(int tokenIndex, string content)
         {
+            _isDirty = true;
             _rewriter.InsertAfter(tokenIndex, content);
         }
 
