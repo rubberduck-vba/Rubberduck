@@ -12,6 +12,7 @@ namespace RubberduckTests
     public class ConfigurationTests
     {
         [TestMethod]
+        [TestCategory("Settings")]
         public void GetDefaultTodoMarkersTest()
         {
             var settings = new ToDoListSettings();
@@ -23,6 +24,7 @@ namespace RubberduckTests
         }
 
         [TestMethod]
+        [TestCategory("Settings")]
         public void DefaultCodeInspectionsIsAsSpecified()
         {
             var inspection = new Mock<IInspection>();
@@ -39,6 +41,7 @@ namespace RubberduckTests
         }
 
         [TestMethod]
+        [TestCategory("Settings")]
         public void ToStringIsAsExpected()
         {
             var expected = "FixMe:";
