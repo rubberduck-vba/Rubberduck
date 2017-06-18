@@ -242,10 +242,19 @@ namespace Rubberduck.Parsing.Symbols
                     : Enumerable.Empty<Declaration>();
         }
 
+        public Declaration ModuleDeclaration(QualifiedModuleName module)
+        {
+            return Members(module).FirstOrDefault(member => member.DeclarationType.HasFlag(DeclarationType.Module));
+        }
+
+        public IReadOnlyCollection<QualifiedModuleName> AllModules()
+        {
+            return _declarations.Keys.ToList();
+        }
+
         public IEnumerable<Declaration> FindDeclarationsWithNonBaseAsType()
         {
             return _nonBaseAsType.Value;
-
         }
  
         public IEnumerable<Declaration> FindEventHandlers()
@@ -611,22 +620,20 @@ namespace Rubberduck.Parsing.Symbols
             return undeclaredLocal;
         }
 
-        public void AddUnboundContext(Declaration parentDeclaration, VBAParser.LExprContext context, IBoundExpression withExpression)
+        public void AddUnboundContext(Declaration parentDeclaration, VBAParser.LExpressionContext context, IBoundExpression withExpression)
         {
             
             //The only forms we care about right now are MemberAccessExprContext or WithMemberAccessExprContext.
-            var access = (ParserRuleContext)context.GetChild<VBAParser.MemberAccessExprContext>(0)
-                         ?? context.GetChild<VBAParser.WithMemberAccessExprContext>(0);
-            if (access == null)
+            if (!(context is VBAParser.MemberAccessExprContext) && !(context is VBAParser.WithMemberAccessExprContext))
             {
                 return;
             }
 
-            var identifier = access.GetChild<VBAParser.UnrestrictedIdentifierContext>(0);
+            var identifier = context.GetChild<VBAParser.UnrestrictedIdentifierContext>(0);
             var annotations = _annotationService.FindAnnotations(parentDeclaration.QualifiedName.QualifiedModuleName, context.Start.Line);
 
             var declaration = new UnboundMemberDeclaration(parentDeclaration, identifier,
-                (access is VBAParser.MemberAccessExprContext) ? (ParserRuleContext)access.children[0] : withExpression.Context, 
+                (context is VBAParser.MemberAccessExprContext) ? (ParserRuleContext)context.children[0] : withExpression.Context, 
                 annotations);
 
             _newUnresolved.Add(declaration);

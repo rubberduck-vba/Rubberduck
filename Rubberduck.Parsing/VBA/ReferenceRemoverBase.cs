@@ -39,8 +39,8 @@ namespace Rubberduck.Parsing.VBA
             {
                 return;
             }
-            var referencedModulesNeedingReferenceRemoval = _moduleToModuleReferenceManager.ModulesReferencedByAny(modules);
-            RemoveReferencesByFromTargetModules(modules, referencedModulesNeedingReferenceRemoval, token);
+            var modulesNeedingReferenceRemoval = _moduleToModuleReferenceManager.ModulesReferencedByAny(modules);
+            RemoveReferencesByFromTargetModules(modules, modulesNeedingReferenceRemoval, token);
         }
 
         protected void RemoveReferencesByFromTargetModule(IReadOnlyCollection<QualifiedModuleName> referencingModules, QualifiedModuleName targetModule)

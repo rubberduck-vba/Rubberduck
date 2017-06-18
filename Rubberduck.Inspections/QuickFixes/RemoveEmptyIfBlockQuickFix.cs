@@ -38,7 +38,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
             if (BlockHasDeclaration(context.block()))
             {
-                rewriter.InsertBefore(context.Start.TokenIndex, context.block().GetText());
+                rewriter.InsertBefore(context.Start.TokenIndex, AdjustedBlockText(context.block()));
             }
 
             if (elseIfBlock != null)
@@ -86,7 +86,7 @@ namespace Rubberduck.Inspections.QuickFixes
         {
             if (BlockHasDeclaration(context.block()))
             {
-                rewriter.InsertBefore(((VBAParser.IfStmtContext)context.Parent).Start.TokenIndex, context.block().GetText());
+                rewriter.InsertBefore(((VBAParser.IfStmtContext)context.Parent).Start.TokenIndex, AdjustedBlockText(context.block()));
             }
 
             rewriter.Remove(context);
@@ -159,8 +159,22 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
+        private string AdjustedBlockText(VBAParser.BlockContext blockContext)
+        {
+            var blockText = blockContext.GetText();
+            if (FirstBlockStmntHasLabel(blockContext))
+            {
+                blockText = Environment.NewLine + blockText;
+            }
+
+            return blockText;
+        }
+
         private bool BlockHasDeclaration(VBAParser.BlockContext block)
-            => block.children?.Any(s => s is VBAParser.BlockStmtContext) ?? false;
+            => block.blockStmt()?.Any() ?? false;
+
+        private bool FirstBlockStmntHasLabel(VBAParser.BlockContext block)
+            => block.blockStmt()?.FirstOrDefault()?.statementLabelDefinition() != null;
 
         public string Description(IInspectionResult result)
         {

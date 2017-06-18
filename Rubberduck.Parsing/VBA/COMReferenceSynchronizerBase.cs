@@ -19,6 +19,7 @@ namespace Rubberduck.Parsing.VBA
         protected readonly RubberduckParserState _state;
         protected readonly IParserStateManager _parserStateManager;
         private readonly string _serializedDeclarationsPath;
+        private readonly List<QualifiedModuleName> _unloadedCOMReferences;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -38,11 +39,12 @@ namespace Rubberduck.Parsing.VBA
             _parserStateManager = parserStateManager;
             _serializedDeclarationsPath = serializedDeclarationsPath
                 ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck", "declarations");
+            _unloadedCOMReferences = new List<QualifiedModuleName>();
         }
 
 
         public bool LastSyncOfCOMReferencesLoadedReferences { get; private set; }
-        public bool LastSyncOfCOMReferencesUnloadedReferences { get; private set; }
+        public IEnumerable<QualifiedModuleName> COMReferencesUnloadedUnloadedInLastSync => _unloadedCOMReferences;
 
         private readonly HashSet<ReferencePriorityMap> _projectReferences = new HashSet<ReferencePriorityMap>();
         public IReadOnlyCollection<ReferencePriorityMap> ProjectReferences
@@ -60,7 +62,7 @@ namespace Rubberduck.Parsing.VBA
         public void SyncComReferences(IReadOnlyList<IVBProject> projects, CancellationToken token)
         {
             LastSyncOfCOMReferencesLoadedReferences = false;
-            LastSyncOfCOMReferencesUnloadedReferences = false;
+            _unloadedCOMReferences.Clear();
 
             var unmapped = new ConcurrentBag<IReference>();
 
@@ -80,7 +82,6 @@ namespace Rubberduck.Parsing.VBA
 
             if (unmapped.Any())
             {
-                LastSyncOfCOMReferencesUnloadedReferences = true;
                 foreach (var reference in unmapped)
                 {
                     UnloadComReference(reference, projects);
@@ -247,9 +248,18 @@ namespace Rubberduck.Parsing.VBA
             map.Remove(referencedProjectId);
             if (map.Count == 0)
             {
+                AddUnloadedReferenceToUnloadedReferences(reference);
                 _projectReferences.Remove(map);
                 _state.RemoveBuiltInDeclarations(reference);
             }
         }
+
+        private void AddUnloadedReferenceToUnloadedReferences(IReference reference)
+        {
+            var projectName = reference.Name;
+            var projectQMN = new QualifiedModuleName(projectName, reference.FullPath, projectName);
+            _unloadedCOMReferences.Add(projectQMN);
+        }
+
     }
 }

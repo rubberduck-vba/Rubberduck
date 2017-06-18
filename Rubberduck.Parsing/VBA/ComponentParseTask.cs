@@ -123,64 +123,23 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private static string[] GetSanitizedCode(ICodeModule module)
+        private static string GetCode(ICodeModule module)
         {
             var lines = module.CountOfLines;
             if (lines == 0)
             {
-                return new string[] { };
+                return string.Empty;
             }
 
-            var code = module.GetLines(1, lines).Replace("\r", string.Empty).Split('\n');
+            var codeLines = module.GetLines(1, lines);
+            var code = string.Concat(codeLines);
 
-            StripLineNumbers(code);
             return code;
-        }
-
-        private static void StripLineNumbers(string[] lines)
-        {
-            var continuing = false;
-            for (var line = 0; line < lines.Length; line++)
-            {
-                var code = lines[line];
-                int? lineNumber;
-                if (!continuing && HasNumberedLine(code, out lineNumber))
-                {
-                    var lineNumberLength = lineNumber.ToString().Length;
-                    if (lines[line].Length > lineNumberLength)
-                    {
-                        // replace line number with as many spaces as characters taken, to avoid shifting the tokens
-                        lines[line] = new string(' ', lineNumberLength) + code.Substring(lineNumber.ToString().Length + 1);
-                    }
-                }
-
-                continuing = code.EndsWith(" _");
-            }
-        }
-
-        private static bool HasNumberedLine(string codeLine, out int? lineNumber)
-        {
-            lineNumber = null;
-
-            if (string.IsNullOrWhiteSpace(codeLine.Trim()))
-            {
-                return false;
-            }
-
-            int line;
-            var firstToken = codeLine.TrimStart().Split(' ')[0];
-            if (int.TryParse(firstToken, out line))
-            {
-                lineNumber = line;
-                return true;
-            }
-
-            return false;
         }
 
         private CommonTokenStream RewriteAndPreprocess(CancellationToken token)
         {
-            var code = _rewriter == null ? string.Join(Environment.NewLine, GetSanitizedCode(_component.CodeModule)) : _rewriter.GetText();
+            var code = _rewriter == null ? string.Join(Environment.NewLine, GetCode(_component.CodeModule)) : _rewriter.GetText();
             var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();
             var tokens = tokenStreamProvider.Tokens(code);
             _preprocessor.PreprocessTokenStream(_component.Name, tokens, token);

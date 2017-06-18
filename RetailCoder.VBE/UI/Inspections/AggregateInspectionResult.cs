@@ -1,4 +1,6 @@
-﻿using Antlr4.Runtime;
+﻿using System;
+using System.Collections.Generic;
+using Antlr4.Runtime;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
@@ -6,7 +8,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.UI.Inspections
 {
-    public class AggregateInspectionResult: IInspectionResult
+    public class AggregateInspectionResult : IInspectionResult
     {
         private readonly IInspectionResult _result;
         private readonly int _count;
@@ -26,6 +28,8 @@ namespace Rubberduck.UI.Inspections
         public Declaration Target => _result.Target;
 
         public ParserRuleContext Context => _result.Context;
+
+        public IDictionary<string, string> Properties { get { throw new NotImplementedException(); } }
 
         public int CompareTo(IInspectionResult other)
         {

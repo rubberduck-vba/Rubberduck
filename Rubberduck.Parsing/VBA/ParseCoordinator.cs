@@ -19,19 +19,17 @@ namespace Rubberduck.Parsing.VBA
 
         private readonly IParsingStageService _parsingStageService;
         private readonly IProjectManager _projectManager;
-        private readonly IModuleToModuleReferenceManager _moduleToModuleReferenceManager;
+        private readonly IParsingCacheService _parsingCacheService;
         private readonly IParserStateManager _parserStateManager;
-        private readonly IReferenceRemover _referenceRemover;
 
         private readonly bool _isTestScope;
 
         public ParseCoordinator(
             RubberduckParserState state,
             IParsingStageService parsingStageService,
+            IParsingCacheService parsingCacheService,
             IProjectManager projectManager,
-            IModuleToModuleReferenceManager moduleToModuleReferenceManager,
             IParserStateManager parserStateManager,
-            IReferenceRemover referenceRemover,
             bool isTestScope = false)
         {
             if (state == null)
@@ -46,25 +44,20 @@ namespace Rubberduck.Parsing.VBA
             {
                 throw new ArgumentNullException(nameof(parsingStageService));
             }
-            if (moduleToModuleReferenceManager == null)
+            if (parsingCacheService == null)
             {
-                throw new ArgumentNullException(nameof(moduleToModuleReferenceManager));
+                throw new ArgumentNullException(nameof(parsingCacheService));
             }
             if (parserStateManager == null)
             {
                 throw new ArgumentNullException(nameof(parserStateManager));
             }
-            if (referenceRemover == null)
-            {
-                throw new ArgumentNullException(nameof(referenceRemover));
-            }
 
             _state = state;
             _parsingStageService = parsingStageService;
             _projectManager = projectManager;
-            _moduleToModuleReferenceManager = moduleToModuleReferenceManager;
+            _parsingCacheService = parsingCacheService;
             _parserStateManager = parserStateManager;
-            _referenceRemover = referenceRemover;
             _isTestScope = isTestScope;
 
             state.ParseRequest += ReparseRequested;
@@ -178,15 +171,19 @@ namespace Rubberduck.Parsing.VBA
             foreach (var tree in State.ParseTrees)
             {
                 State.ClearStateCache(tree.Key);    // handle potentially removed components without crashing
-                _moduleToModuleReferenceManager.ClearModuleToModuleReferencesFromModule(tree.Key);
-                _moduleToModuleReferenceManager.ClearModuleToModuleReferencesToModule(tree.Key);
+                _parsingCacheService.ClearModuleToModuleReferencesFromModule(tree.Key);
+                _parsingCacheService.ClearModuleToModuleReferencesToModule(tree.Key);
             }
         }
 
-        private void ExecuteCommonParseActivities(IReadOnlyCollection<QualifiedModuleName> toParse, IReadOnlyCollection<QualifiedModuleName> toReresolveReferences, CancellationToken token)
+        private void ExecuteCommonParseActivities(IReadOnlyCollection<QualifiedModuleName> toParse, IReadOnlyCollection<QualifiedModuleName> toReresolveReferencesInput, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
-            
+
+            var toReresolveReferences = new HashSet<QualifiedModuleName>();
+            toReresolveReferences.UnionWith(toReresolveReferencesInput);
+            token.ThrowIfCancellationRequested();
+
             _parserStateManager.SetModuleStates(toParse, ParserState.Pending, token);
             token.ThrowIfCancellationRequested();
 
@@ -194,8 +191,11 @@ namespace Rubberduck.Parsing.VBA
             token.ThrowIfCancellationRequested();
 
             _parsingStageService.SyncComReferences(State.Projects, token);
-            if (_parsingStageService.LastSyncOfCOMReferencesLoadedReferences || _parsingStageService.LastSyncOfCOMReferencesUnloadedReferences)
+            if (_parsingStageService.LastSyncOfCOMReferencesLoadedReferences || _parsingStageService.COMReferencesUnloadedUnloadedInLastSync.Any())
             {
+                var unloadedReferences = _parsingStageService.COMReferencesUnloadedUnloadedInLastSync;
+                toReresolveReferences.UnionWith(_parsingCacheService.ModulesReferencingAny(unloadedReferences));
+                ClearModuleToModuleReferences(unloadedReferences);
                 RefreshDeclarationFinder();
             }
             token.ThrowIfCancellationRequested();
@@ -210,15 +210,14 @@ namespace Rubberduck.Parsing.VBA
             IReadOnlyCollection<QualifiedModuleName> toResolveReferences;
             if (!toParse.Any())
             {
-                toResolveReferences = toReresolveReferences;
+                toResolveReferences = toReresolveReferences.AsReadOnly();
             }
             else
             {
                 toResolveReferences = ModulesForWhichToResolveReferences(toParse, toReresolveReferences);
                 token.ThrowIfCancellationRequested();
 
-                //This is purely a security measure. In the success path the reference resolver removes the old references. 
-                _referenceRemover.RemoveReferencesBy(toParse, token);   
+                PerformPreParseCleanup(toResolveReferences, token);
                 token.ThrowIfCancellationRequested();
 
                 _parserStateManager.SetModuleStates(toParse, ParserState.Parsing, token);
@@ -251,7 +250,7 @@ namespace Rubberduck.Parsing.VBA
             }
 
             //Explicitly setting the overall state here guarantees that the handlers attached 
-            //to the state change to ResolvedDeclarations always run, provided there is no error.
+            //to the state change to ResolvedDeclarations always run, provided there is no error. 
             State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
 
             if (token.IsCancellationRequested || State.Status >= ParserState.Error)
@@ -278,15 +277,32 @@ namespace Rubberduck.Parsing.VBA
             token.ThrowIfCancellationRequested();
         }
 
-        private void RefreshDeclarationFinder()
+        private void ClearModuleToModuleReferences(IEnumerable<QualifiedModuleName> modules)
         {
-            State.RefreshDeclarationFinder();
+            foreach (var module in modules)
+            {
+                _parsingCacheService.ClearModuleToModuleReferencesToModule(module);
+                _parsingCacheService.ClearModuleToModuleReferencesFromModule(module);
+            }
         }
 
-        private IReadOnlyCollection<QualifiedModuleName> ModulesForWhichToResolveReferences(IReadOnlyCollection<QualifiedModuleName> modulesToParse, IReadOnlyCollection<QualifiedModuleName> toReresolveReferences)
+        private void PerformPreParseCleanup(IReadOnlyCollection<QualifiedModuleName> toResolveReferences, CancellationToken token)
+        {
+            _parsingCacheService.ClearSupertypes(toResolveReferences);
+            //This is purely a security measure. In the success path, the reference remover removes the referernces.
+            _parsingCacheService.RemoveReferencesBy(toResolveReferences, token);
+
+        }
+
+        private void RefreshDeclarationFinder()
+        {
+            _parsingCacheService.RefreshDeclarationFinder();
+        }
+
+        private IReadOnlyCollection<QualifiedModuleName> ModulesForWhichToResolveReferences(IReadOnlyCollection<QualifiedModuleName> modulesToParse, IEnumerable<QualifiedModuleName> toReresolveReferences)
         {
             var toResolveReferences = modulesToParse.ToHashSet();
-            toResolveReferences.UnionWith(_moduleToModuleReferenceManager.ModulesReferencingAny(modulesToParse));
+            toResolveReferences.UnionWith(_parsingCacheService.ModulesReferencingAny(modulesToParse));
             toResolveReferences.UnionWith(toReresolveReferences);
             return toResolveReferences.AsReadOnly();
         }
@@ -333,7 +349,7 @@ namespace Rubberduck.Parsing.VBA
         {
             token.ThrowIfCancellationRequested();
 
-            _parserStateManager.SetStatusAndFireStateChanged(requestor, ParserState.ResolvedDeclarations, token);
+            _parserStateManager.SetStatusAndFireStateChanged(requestor, ParserState.Pending, token);
             token.ThrowIfCancellationRequested();
 
             _projectManager.RefreshProjects();
@@ -345,7 +361,7 @@ namespace Rubberduck.Parsing.VBA
             var removedModules = RemovedModules(modules);
             token.ThrowIfCancellationRequested();
 
-            var toReResolveReferences = _moduleToModuleReferenceManager.ModulesReferencingAny(removedModules);
+            var toReResolveReferences = _parsingCacheService.ModulesReferencingAny(removedModules);
             token.ThrowIfCancellationRequested();
 
             CleanUpRemovedComponents(removedModules, token);
@@ -364,13 +380,18 @@ namespace Rubberduck.Parsing.VBA
         {
             if (removedModules.Any())
             {
-                _referenceRemover.RemoveReferencesBy(removedModules, token);
-                foreach (var module in removedModules)
-                {
-                    _moduleToModuleReferenceManager.ClearModuleToModuleReferencesFromModule(module);
-                    _moduleToModuleReferenceManager.ClearModuleToModuleReferencesToModule(module);
-                    State.ClearStateCache(module);
-                }
+                _parsingCacheService.RemoveReferencesBy(removedModules, token);
+                _parsingCacheService.ClearSupertypes(removedModules);
+                ClearModuleToModuleReferences(removedModules);
+                ClearStateCache(removedModules);
+            }
+        }
+
+        private void ClearStateCache(IEnumerable<QualifiedModuleName> modules)
+        {
+            foreach (var module in modules)
+            {
+                State.ClearStateCache(module);
             }
         }
 

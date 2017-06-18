@@ -46,7 +46,7 @@ namespace Rubberduck.Parsing.VBA
         {
             try
             {
-                foreach(var module in _state.ParseTrees.Select(kvp => kvp.Key))
+                foreach(var module in finder.AllModules())
                 {
                     AddModuleToModuleReferences(finder, module);
                 }
