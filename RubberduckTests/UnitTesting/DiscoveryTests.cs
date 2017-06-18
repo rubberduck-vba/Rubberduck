@@ -13,6 +13,7 @@ namespace RubberduckTests.UnitTesting
     public class DiscoveryTests
     {
         [TestMethod]
+        [TestCategory("Unit Testing")]
         public void Discovery_DiscoversAnnotatedTestMethods()
         {
             var testMethods = @"'@TestMethod
@@ -33,6 +34,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Unit Testing")]
         public void Discovery_IgnoresNonAnnotatedTestMethods()
         {
             var testMethods = @"Public Sub TestMethod1()
@@ -52,6 +54,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Unit Testing")]
         public void Discovery_IgnoresAnnotatedTestMethodsNotInTestModule()
         {
             var testMethods = @"'@TestMethod
@@ -72,6 +75,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Unit Testing")]
         public void Discovery_DiscoversAnnotatedTestMethodsInGivenTestModule()
         {
             var testMethods = @"'@TestMethod
@@ -96,6 +100,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Unit Testing")]
         public void Discovery_DiscoversAnnotatedTestInitInGivenTestModule()
         {
             var builder = new MockVbeBuilder();
@@ -120,6 +125,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Unit Testing")]
         public void Discovery_DiscoversAnnotatedTestCleanupInGivenTestModule()
         {
             var builder = new MockVbeBuilder();
@@ -144,6 +150,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Unit Testing")]
         public void Discovery_IgnoresNonAnnotatedTestInitInGivenTestModule()
         {
             var builder = new MockVbeBuilder();
@@ -164,6 +171,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Unit Testing")]
         public void Discovery_IgnoresNonAnnotatedTestCleanupInGivenTestModule()
         {
             var builder = new MockVbeBuilder();
@@ -184,6 +192,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Unit Testing")]
         public void Discovery_IgnoresNonAnnotatedTestInitInGivenNonTestModule()
         {
             var builder = new MockVbeBuilder();
@@ -204,6 +213,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Unit Testing")]
         public void Discovery_IgnoresNonAnnotatedTestCleanupInGivenNonTestModule()
         {
             var builder = new MockVbeBuilder();
@@ -224,6 +234,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Unit Testing")]
         public void Discovery_DiscoversAnnotatedModuleInitInGivenTestModule()
         {
             var builder = new MockVbeBuilder();
@@ -248,6 +259,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Unit Testing")]
         public void Discovery_DiscoversAnnotatedModuleCleanupInGivenTestModule()
         {
             var builder = new MockVbeBuilder();
@@ -272,6 +284,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Unit Testing")]
         public void Discovery_IgnoresNonAnnotatedModuleInitInGivenTestModule()
         {
             var builder = new MockVbeBuilder();
@@ -292,6 +305,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Unit Testing")]
         public void Discovery_IgnoresNonAnnotatedModuleCleanupInGivenTestModule()
         {
             var builder = new MockVbeBuilder();
@@ -312,6 +326,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Unit Testing")]
         public void Discovery_IgnoresNonAnnotatedModuleInitInGivenNonTestModule()
         {
             var builder = new MockVbeBuilder();
@@ -332,6 +347,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Unit Testing")]
         public void Discovery_IgnoresNonAnnotatedModuleCleanupInGivenNonTestModule()
         {
             var builder = new MockVbeBuilder();
