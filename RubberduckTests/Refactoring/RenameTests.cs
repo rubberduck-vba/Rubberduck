@@ -54,7 +54,8 @@ End Sub";
             var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, msgbox.Object, state);
             refactoring.Refactor(qualifiedSelection);
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            var rewriter = state.GetRewriter(component);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
         }
 
         [TestMethod]
@@ -94,7 +95,8 @@ End Sub";
             var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, msgbox.Object, state);
             refactoring.Refactor(qualifiedSelection);
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            var rewriter = state.GetRewriter(component);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
         }
 
         [TestMethod]

@@ -52,11 +52,13 @@ namespace Rubberduck.UI.Inspections
             _clipboard = clipboard;
             _configService = configService;
             _operatingSystem = operatingSystem;
-            RefreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), 
-                o => {
-                        IsBusy = true;
-                        reparseCommand.Execute(o); 
-                     },
+            RefreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(),
+                o =>
+                {
+                    IsRefreshing = true;
+                    IsBusy = true;
+                    reparseCommand.Execute(o);
+                },
                 o => !IsBusy && reparseCommand.CanExecute(o));
 
             DisableInspectionCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteDisableInspectionCommand);
@@ -87,6 +89,11 @@ namespace Rubberduck.UI.Inspections
 
             _state.StateChanged += HandleStateChanged;
         }
+
+        /// <summary>
+        /// Gets/sets a flag indicating whether the parser state changes are a result of our RefreshCommand.
+        /// </summary>
+        private bool IsRefreshing { get; set; }
 
         private void _configService_SettingsChanged(object sender, ConfigurationChangedEventArgs e)
         {            
@@ -253,19 +260,18 @@ namespace Rubberduck.UI.Inspections
         private bool _runInspectionsOnReparse;
         private void HandleStateChanged(object sender, EventArgs e)
         {
-            if (_state.Status == ParserState.Pending || _state.Status == ParserState.Error || _state.Status == ParserState.ResolverError)
+            if(!IsRefreshing && (_state.Status == ParserState.Pending || _state.Status == ParserState.Error || _state.Status == ParserState.ResolverError))
             {
                 IsBusy = false;
                 return;
             }
 
-            if (_state.Status != ParserState.Ready)
+            if(_state.Status != ParserState.Ready)
             {
-                IsBusy = true;
                 return;
             }
 
-            if (sender == this || _runInspectionsOnReparse)
+            if (_runInspectionsOnReparse || IsRefreshing)
             {
                 RefreshInspections();
             }
@@ -300,6 +306,7 @@ namespace Rubberduck.UI.Inspections
                 Results = new ObservableCollection<IInspectionResult>(results);
 
                 IsBusy = false;
+                IsRefreshing = false;
                 SelectedItem = null;
             });
 

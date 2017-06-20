@@ -10,8 +10,8 @@ namespace Rubberduck.UI.Command.MenuItems
         {
         }
 
-        public override string Key { get { return "RefactorMenu_Rename"; } }
-        public override int DisplayOrder { get { return (int)RefactoringsMenuItemDisplayOrder.RenameIdentifier; } }
+        public override string Key => "RefactorMenu_Rename";
+        public override int DisplayOrder => (int)RefactoringsMenuItemDisplayOrder.RenameIdentifier;
 
         public override bool EvaluateCanExecute(RubberduckParserState state)
         {

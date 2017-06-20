@@ -9,7 +9,7 @@
          Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_Branches}"
          Name="SourceControlBranchesTab"
          d:DesignHeight="450" d:DesignWidth="300"
-         d:DataContext="{d:DesignInstance {x:Type sourceControl:BranchesViewViewModel}, IsDesignTimeCreatable=False}">
+         d:DataContext="{d:DesignInstance {x:Type sourceControl:BranchesPanelViewModel}, IsDesignTimeCreatable=False}">
     <TabItem.Resources>
         <BitmapImage x:Key="NewBranchImage" UriSource="../../Resources/arrow-branch-090.png" />
         <BitmapImage x:Key="MergeBranchImage" UriSource="../../Resources/arrow-merge-090.png" />

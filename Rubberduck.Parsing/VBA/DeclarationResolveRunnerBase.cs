@@ -49,8 +49,6 @@ namespace Rubberduck.Parsing.VBA
 
         protected void ResolveDeclarations(QualifiedModuleName module, IParseTree tree, CancellationToken token)
         {
-            if (module == null) { return; }
-
             var stopwatch = Stopwatch.StartNew();
             try
             {

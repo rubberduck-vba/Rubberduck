@@ -13,7 +13,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    public sealed class MultipleDeclarationsInspection : InspectionBase, IParseTreeInspection
+    public sealed class MultipleDeclarationsInspection : ParseTreeInspectionBase
     {
         public MultipleDeclarationsInspection(RubberduckParserState state)
             : base(state) { }
@@ -30,7 +30,7 @@ namespace Rubberduck.Inspections.Concrete
                                                         context));
         }
 
-        public IInspectionListener Listener { get; } = new ParameterListListener();
+        public override IInspectionListener Listener { get; } = new ParameterListListener();
 
         public class ParameterListListener : VBAParserBaseListener, IInspectionListener
         {

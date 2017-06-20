@@ -13,7 +13,7 @@ namespace Rubberduck.Inspections.Concrete
         public ImplicitActiveSheetReferenceInspection(RubberduckParserState state)
             : base(state) { }
 
-        public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
+        public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
 
         private static readonly string[] Targets = 
         {

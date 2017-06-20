@@ -160,6 +160,7 @@ namespace Rubberduck.Parsing.Symbols
                 }
 
                 annotations.Add(annotation);
+
             }
 
             return annotations;
@@ -391,67 +392,6 @@ namespace Rubberduck.Parsing.Symbols
         {
             // The expression will be later resolved to the actual declaration. Have to split the work up because we have to gather/create all declarations first.
             ((ClassModuleDeclaration)_moduleDeclaration).AddSupertypeName(context.expression().GetText());
-        }
-
-        public override void EnterOptionBaseStmt(VBAParser.OptionBaseStmtContext context)
-        {
-            AddDeclaration(CreateDeclaration(
-                context.GetText(),
-                string.Empty,
-                Accessibility.Implicit,
-                DeclarationType.ModuleOption,
-                context,
-                context.GetSelection(),
-                false,
-                null,
-                null));
-        }
-
-        public override void EnterOptionCompareStmt(VBAParser.OptionCompareStmtContext context)
-        {
-            AddDeclaration(CreateDeclaration(
-                context.GetText(),
-                string.Empty,
-                Accessibility.Implicit,
-                DeclarationType.ModuleOption,
-                context,
-                context.GetSelection(),
-                false,
-                null,
-                null));
-        }
-
-        public override void EnterOptionExplicitStmt(VBAParser.OptionExplicitStmtContext context)
-        {
-            AddDeclaration(CreateDeclaration(
-                context.GetText(),
-                string.Empty,
-                Accessibility.Implicit,
-                DeclarationType.ModuleOption,
-                context,
-                context.GetSelection(),
-                false,
-                null,
-                null));
-        }
-
-        public override void ExitOptionPrivateModuleStmt(VBAParser.OptionPrivateModuleStmtContext context)
-        {
-            if (_moduleDeclaration.DeclarationType == DeclarationType.ProceduralModule)
-            {
-                ((ProceduralModuleDeclaration)_moduleDeclaration).IsPrivateModule = true;
-            }
-            AddDeclaration(
-                CreateDeclaration(
-                    context.GetText(),
-                    string.Empty,
-                    Accessibility.Implicit,
-                    DeclarationType.ModuleOption,
-                    context,
-                    context.GetSelection(),
-                    false,
-                    null,
-                    null));
         }
 
         public override void EnterSubStmt(VBAParser.SubStmtContext context)

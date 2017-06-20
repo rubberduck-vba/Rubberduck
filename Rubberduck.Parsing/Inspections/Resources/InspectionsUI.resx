@@ -124,7 +124,7 @@
     <value>ByVal parameter is assigned</value>
   </data>
   <data name="CodeQualityIssues" xml:space="preserve">
-    <value>Code quality issues</value>
+    <value>Code Quality</value>
   </data>
   <data name="ConstantNotUsedInspectionMeta" xml:space="preserve">
     <value>Rubberduck could not find any reference to constant. Consider removing the unused declaration.</value>
@@ -203,12 +203,6 @@
   </data>
   <data name="MoveFieldCloserToUsageInspectionResultFormat" xml:space="preserve">
     <value>Move module-level variable '{0}' to a smaller scope.</value>
-  </data>
-  <data name="LanguageOpportunities" xml:space="preserve">
-    <value>Language opportunities</value>
-  </data>
-  <data name="MaintainabilityAndReadabilityIssues" xml:space="preserve">
-    <value>Maintainability &amp; readability issues</value>
   </data>
   <data name="MultilineParameterInspectionMeta" xml:space="preserve">
     <value>Consider continuing long signatures between parameters. Splitting a parameter declaration across multiple lines arguably hurts readability.</value>
@@ -616,13 +610,13 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>Add to whitelist</value>
   </data>
   <data name="MemberNotOnInterfaceInspectionMeta" xml:space="preserve">
-    <value>A member access is being used that is not declared on the object's interface. This is most likely an error. If the member access is using the object's extensible interface, consider using a non-extensible equivalent to allow compile time checks that will avoid the possibility of a run-time error 438.</value>
+    <value>A member access call is made against an extended interface that Rubberduck couldn't resolve, or the member couldn't be found. If VBA cannot resolve the type at run-time, error 438 will be raised. If an equivalent, non-extended interface that Rubberduck can resolve is available, consider using it instead.</value>
   </data>
   <data name="MemberNotOnInterfaceInspectionName" xml:space="preserve">
-    <value>Member does not exist on interface</value>
+    <value>Member not found</value>
   </data>
   <data name="MemberNotOnInterfaceInspectionResultFormat" xml:space="preserve">
-    <value>Member '{0}' is not declared on the interface for type '{1}'.</value>
+    <value>Member '{0}' was not found on the compile-time interface for type '{1}'.</value>
     <comment>{0} Member used, {1} type being accessed.</comment>
   </data>
   <data name="HostSpecificExpressionInspectionMeta" xml:space="preserve">
@@ -668,6 +662,39 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="QuickFix_ThisProcedure" xml:space="preserve">
     <value>Fix all occurrences in procedure</value>
   </data>
+  <data name="IllegalAnnotationInspectionMeta" xml:space="preserve">
+    <value>An annotation meant to be specified at module level cannot be used to annotate members; annotations meant to be annotate members cannot be used at module level; module and member annotations should only be specified once.</value>
+  </data>
+  <data name="IllegalAnnotationInspectionName" xml:space="preserve">
+    <value>Illegal annotation</value>
+  </data>
+  <data name="IllegalAnnotationInspectionResultFormat" xml:space="preserve">
+    <value>Annotation '{0}' is illegal in this context.</value>
+    <comment>{0} annotation name</comment>
+  </data>
+  <data name="MissingAnnotationInspectionMeta" xml:space="preserve">
+    <value>Module and member attributes are not displayed in the VBE. By adding an annotation, you make these attributes more explicit, and Rubberduck can keep annotations and attributes synchronized.</value>
+  </data>
+  <data name="MissingAnnotationInspectionName" xml:space="preserve">
+    <value>Missing annotation</value>
+  </data>
+  <data name="MissingAnnotationInspectionResultFormat" xml:space="preserve">
+    <value>Module or member '{0}' has a '{1}' attribute, but no corresponding annotation.</value>
+    <comment>{0} module/member; {1} specified attribute</comment>
+  </data>
+  <data name="MissingAttributeInspectionMeta" xml:space="preserve">
+    <value>A Rubberduck annotation is specified for a module or member, but the corresponding attribute isn't present. Module needs to be synchronized.</value>
+  </data>
+  <data name="MissingAttributeInspectionName" xml:space="preserve">
+    <value>Missing attribute</value>
+  </data>
+  <data name="MissingAttributeInspectionResultFormat" xml:space="preserve">
+    <value>Module or member '{0}' has a '{1}' annotation, but no corresponding attribute.</value>
+    <comment>{0} module/member; {1} specified annotation</comment>
+  </data>
+  <data name="SynchronizeAttributesQuickFix" xml:space="preserve">
+    <value>Synchronize attributes/annotations in module</value>
+  </data>
   <data name="EmptyIfBlockInspectionMeta" xml:space="preserve">
     <value>An If block should have executable statements</value>
   </data>
@@ -679,5 +706,15 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   </data>
   <data name="RemoveEmptyIfBlockQuickFix" xml:space="preserve">
     <value>Remove empty If block</value>
+  </data>
+  <data name="RedundantOptionInspectionMeta" xml:space="preserve">
+    <value>Being the default/implicit setting for this option, this instruction can be safely omitted.</value>
+  </data>
+  <data name="RedundantOptionInspectionName" xml:space="preserve">
+    <value>Redundant module option</value>
+  </data>
+  <data name="RedundantOptionInspectionResultFormat" xml:space="preserve">
+    <value>'{0}' has no effect.</value>
+    <comment>'{0}' the whole ModuleOptionContext text</comment>
   </data>
 </root>

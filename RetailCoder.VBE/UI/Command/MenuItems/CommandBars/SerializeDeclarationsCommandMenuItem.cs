@@ -15,7 +15,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
         }
 
         public override Func<string> Caption { get { return () => "Serialize"; } }
-        public override string Key { get { return "SerializeDeclarations"; } }
+        public override string Key => "SerializeDeclarations";
     }
 
     public class SerializeDeclarationsCommand : CommandBase
@@ -30,7 +30,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             _service = service;
         }
 
-        protected override bool CanExecuteImpl(object parameter)
+        protected override bool EvaluateCanExecute(object parameter)
         {
             return _state.Status == ParserState.Ready;
         }
@@ -38,7 +38,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
         private static readonly string BasePath =
             Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck");
 
-        protected override void ExecuteImpl(object parameter)
+        protected override void OnExecute(object parameter)
         {
             var path = Path.Combine(BasePath, "Declarations");
             if (!Directory.Exists(path)) { Directory.CreateDirectory(path); }

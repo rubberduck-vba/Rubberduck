@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
@@ -11,6 +12,7 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    [SuppressMessage("ReSharper", "LoopCanBeConvertedToQuery")]
     public sealed class UnassignedVariableUsageInspection : InspectionBase
     {
         public UnassignedVariableUsageInspection(RubberduckParserState state)
@@ -38,7 +40,7 @@ namespace Rubberduck.Inspections.Concrete
                                .Select(r => new IdentifierReferenceInspectionResult(this,
                                                                  string.Format(InspectionsUI.UnassignedVariableUsageInspectionResultFormat, r.IdentifierName),
                                                                  State,
-                                                                 r));
+                                                                 r)).ToList();
         }
 
         private bool DeclarationReferencesContainsReference(Declaration parentDeclaration, Declaration target)

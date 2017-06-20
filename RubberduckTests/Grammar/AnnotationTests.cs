@@ -105,5 +105,12 @@ namespace RubberduckTests.Grammar
             var annotation = new InterfaceAnnotation(new QualifiedSelection(), null);
             Assert.AreEqual(AnnotationType.Interface, annotation.AnnotationType);
         }
+
+        [TestMethod]
+        public void DescriptionAnnotation_TypeIsDescription()
+        {
+            var annotation = new DescriptionAnnotation(new QualifiedSelection(), null);
+            Assert.AreEqual(AnnotationType.Description, annotation.AnnotationType);
+        }
     }
 }

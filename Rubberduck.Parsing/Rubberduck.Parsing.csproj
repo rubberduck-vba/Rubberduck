@@ -62,9 +62,15 @@
     <Compile Include="Annotations\AnnotationListener.cs" />
     <Compile Include="Annotations\AnnotationService.cs" />
     <Compile Include="Annotations\AnnotationType.cs" />
+    <Compile Include="Annotations\AttributeExtensions.cs" />
+    <Compile Include="Annotations\DefaultMemberAnnotation.cs" />
+    <Compile Include="Annotations\DescriptionAnnotation.cs" />
+    <Compile Include="Annotations\EnumeratorMemberAnnotation.cs" />
+    <Compile Include="Annotations\ExposedModuleAnnotation.cs" />
     <Compile Include="Annotations\FolderAnnotation.cs" />
     <Compile Include="Annotations\IAnnotation.cs" />
     <Compile Include="Annotations\IAnnotationFactory.cs" />
+    <Compile Include="Annotations\IAttributeAnnotation.cs" />
     <Compile Include="Annotations\IgnoreAnnotation.cs" />
     <Compile Include="Annotations\IgnoreModuleAnnotation.cs" />
     <Compile Include="Annotations\InterfaceAnnotation.cs" />
@@ -73,6 +79,7 @@
     <Compile Include="Annotations\ModuleInitializeAnnotation.cs" />
     <Compile Include="Annotations\IgnoreTestAnnotation.cs" />
     <Compile Include="Annotations\NoIndentAnnotation.cs" />
+    <Compile Include="Annotations\PredeclaredIdAnnotation.cs" />
     <Compile Include="Annotations\TestCleanupAnnotation.cs" />
     <Compile Include="Annotations\TestInitializeAnnotation.cs" />
     <Compile Include="Annotations\TestMethodAnnotation.cs" />
@@ -124,13 +131,14 @@
     <Compile Include="ComReflection\ComVariant.cs" />
     <Compile Include="Emitter.cs" />
     <Compile Include="Grammar\Annotations.cs" />
-    <Compile Include="Grammar\IIdentifier.cs" />
+    <Compile Include="Grammar\PartialExtensions\IIdentifierContext.cs" />
+    <Compile Include="Grammar\PartialExtensions\IAnnotatedContext.cs" />
     <Compile Include="Grammar\Tokens.cs" />
     <Compile Include="Grammar\VBALexer.cs" />
     <Compile Include="Grammar\VBAParser.cs" />
     <Compile Include="Grammar\VBAParserBaseListener.cs" />
     <Compile Include="Grammar\VBAParserBaseVisitor.cs" />
-    <Compile Include="Grammar\VBAParserIdentifierContext.cs" />
+    <Compile Include="Grammar\PartialExtensions\VBAParserPartialExtensions.cs" />
     <Compile Include="Grammar\VBAParserListener.cs" />
     <Compile Include="Grammar\VBAParserVisitor.cs" />
     <Compile Include="Inspections\Abstract\IInpsectionListener.cs" />
@@ -148,25 +156,26 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Inspections\Resources\InspectionsUI.Designer.cs">
-      <DependentUpon>InspectionsUI.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <Compile Include="Inspections\Resources\InspectionsUI.fr.Designer.cs">
       <DependentUpon>InspectionsUI.fr.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="PostProcessing\RewriterInfo\ConstantRewriterInfoFinder.cs" />
-    <Compile Include="PostProcessing\RewriterInfo\DefaultRewriterInfoFinder.cs" />
-    <Compile Include="PostProcessing\RewriterInfo\IRewriterInfoFinder.cs" />
-    <Compile Include="PostProcessing\ModuleRewriter.cs" />
-    <Compile Include="PostProcessing\RewriterInfo\ArgumentRewriterInfoFinder.cs" />
-    <Compile Include="PostProcessing\RewriterInfo\ParameterRewriterInfoFinder.cs" />
-    <Compile Include="PostProcessing\RewriterInfo\RewriterInfo.cs" />
-    <Compile Include="PostProcessing\RewriterInfo\RewriterInfoFinderBase.cs" />
-    <Compile Include="PostProcessing\RewriterInfo\VariableRewriterInfoFinder.cs" />
+    <Compile Include="Inspections\Resources\InspectionsUI1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>InspectionsUI.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Rewriter\MemberAttributesRewriter.cs" />
+    <Compile Include="Rewriter\RewriterInfo\ConstantRewriterInfoFinder.cs" />
+    <Compile Include="Rewriter\RewriterInfo\DefaultRewriterInfoFinder.cs" />
+    <Compile Include="Rewriter\RewriterInfo\IRewriterInfoFinder.cs" />
+    <Compile Include="Rewriter\ModuleRewriter.cs" />
+    <Compile Include="Rewriter\RewriterInfo\ArgumentRewriterInfoFinder.cs" />
+    <Compile Include="Rewriter\RewriterInfo\ParameterRewriterInfoFinder.cs" />
+    <Compile Include="Rewriter\RewriterInfo\RewriterInfo.cs" />
+    <Compile Include="Rewriter\RewriterInfo\RewriterInfoFinderBase.cs" />
+    <Compile Include="Rewriter\RewriterInfo\VariableRewriterInfoFinder.cs" />
     <Compile Include="PreProcessing\ConditionalCompilationIfExpression.cs" />
     <Compile Include="PreProcessing\ConditionalCompilationConstantExpression.cs" />
     <Compile Include="PreProcessing\IVBAPreprocessor.cs" />
@@ -186,7 +195,7 @@
     <Compile Include="ComReflection\ComMember.cs" />
     <Compile Include="ComReflection\ComModule.cs" />
     <Compile Include="ComReflection\ComProject.cs" />
-    <Compile Include="PostProcessing\IModuleRewriter.cs" />
+    <Compile Include="Rewriter\IModuleRewriter.cs" />
     <Compile Include="PreProcessing\VBAPreprocessorVisitor.cs" />
     <Compile Include="SymbolList.cs" />
     <Compile Include="Symbols\AliasDeclaration.cs" />
@@ -332,6 +341,7 @@
     <Compile Include="Symbols\UnboundMemberDeclaration.cs" />
     <Compile Include="Syntax\SyntaxTree.cs" />
     <Compile Include="Syntax\TextSpan.cs" />
+    <Compile Include="VBA\AttributeListener.cs" />
     <Compile Include="VBA\AttributeParser.cs" />
     <Compile Include="VBA\Attributes.cs" />
     <Compile Include="VBA\BuiltInDeclarationLoader.cs" />
@@ -440,8 +450,8 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Inspections\Resources\InspectionsUI.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>InspectionsUI.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>InspectionsUI1.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="ParsingText.de.resx" />
     <EmbeddedResource Include="ParsingText.fr.resx" />

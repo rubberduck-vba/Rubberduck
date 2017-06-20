@@ -12,14 +12,16 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    public sealed class ObsoleteCommentSyntaxInspection : InspectionBase, IParseTreeInspection
+    public sealed class ObsoleteCommentSyntaxInspection : ParseTreeInspectionBase
     {
-        public ObsoleteCommentSyntaxInspection(RubberduckParserState state) : base(state, CodeInspectionSeverity.Suggestion) { }
+        public ObsoleteCommentSyntaxInspection(RubberduckParserState state)
+            : base(state, CodeInspectionSeverity.Suggestion)
+        {
+            Listener = new ObsoleteCommentSyntaxListener();
+        }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
-
-        public IInspectionListener Listener { get; } =
-            new ObsoleteCommentSyntaxListener();
+        public override IInspectionListener Listener { get; }
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {

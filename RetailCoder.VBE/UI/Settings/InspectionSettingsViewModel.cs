@@ -22,10 +22,7 @@ namespace Rubberduck.UI.Settings
 
             RunInspectionsOnSuccessfulParse = config.UserSettings.CodeInspectionSettings.RunInspectionsOnSuccessfulParse;
 
-            if (InspectionSettings.GroupDescriptions != null)
-            {
-                InspectionSettings.GroupDescriptions.Add(new PropertyGroupDescription("TypeLabel"));
-            }
+            InspectionSettings.GroupDescriptions?.Add(new PropertyGroupDescription("TypeLabel"));
             ExportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ExportSettings());
             ImportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ImportSettings());
         }

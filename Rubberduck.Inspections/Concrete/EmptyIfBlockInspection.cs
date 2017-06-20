@@ -14,14 +14,14 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    internal class EmptyIfBlockInspection : InspectionBase, IParseTreeInspection
+    internal class EmptyIfBlockInspection : ParseTreeInspectionBase
     {
         public EmptyIfBlockInspection(RubberduckParserState state)
             : base(state) { }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
-        public IInspectionListener Listener { get; } =
+        public override IInspectionListener Listener { get; } =
             new EmptyStringLiteralListener();
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
