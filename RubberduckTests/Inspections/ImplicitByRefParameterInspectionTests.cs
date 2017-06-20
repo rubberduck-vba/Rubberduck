@@ -337,7 +337,7 @@ End Sub";
         public void InspectionType()
         {
             var inspection = new ImplicitByRefParameterInspection(null);
-            Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
+            Assert.AreEqual(CodeInspectionType.LanguageOpportunities, inspection.InspectionType);
         }
 
         [TestMethod]

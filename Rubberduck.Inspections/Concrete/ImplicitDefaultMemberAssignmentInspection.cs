@@ -38,6 +38,6 @@ namespace Rubberduck.Inspections.Concrete
                                                                                   reference));
         }
 
-        public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
+        public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
     }
 }

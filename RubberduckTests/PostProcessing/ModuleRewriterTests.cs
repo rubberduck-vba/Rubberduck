@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Antlr4.Runtime;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Rubberduck.Parsing.PostProcessing;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -26,7 +27,12 @@ namespace RubberduckTests.PostProcessing
             var rewriter = new TokenStreamRewriter(new CommonTokenStream(new ListTokenSource(new List<IToken>())));
             var sut = new ModuleRewriter(module.Object, rewriter);
 
+            if (!sut.IsDirty)
+            {
+                sut.InsertBefore(0, "foo");
+            }
             sut.Rewrite();
+
             module.Verify(m => m.Clear());
         }
 

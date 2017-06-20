@@ -2,7 +2,7 @@
 
 namespace Rubberduck.UI.Refactorings
 {
-    public partial class ExtractInterfaceDialog : Form, IRefactoringDialog<ExtractInterfaceViewModel>
+    public sealed partial class ExtractInterfaceDialog : Form, IRefactoringDialog<ExtractInterfaceViewModel>
     {
         public ExtractInterfaceViewModel ViewModel { get; }
 

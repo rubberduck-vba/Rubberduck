@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.PostProcessing;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.ImplementInterface;
 using Rubberduck.UI;

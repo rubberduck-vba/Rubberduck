@@ -37,7 +37,7 @@ namespace Rubberduck.UI.Command
             _process = process;
         }
 
-        protected override async void ExecuteImpl(object parameter)
+        protected override async void OnExecute(object parameter)
         {
             Logger.Info("Executing version check.");
             await _versionCheck

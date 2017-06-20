@@ -5,7 +5,7 @@ using System.Windows.Forms;
 using Antlr4.Runtime;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.PostProcessing;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;

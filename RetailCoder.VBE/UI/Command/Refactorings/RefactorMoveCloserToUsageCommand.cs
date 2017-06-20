@@ -25,7 +25,7 @@ namespace Rubberduck.UI.Command.Refactorings
             get { return RubberduckHotkey.RefactorMoveCloserToUsage; }
         }
 
-        protected override bool CanExecuteImpl(object parameter)
+        protected override bool EvaluateCanExecute(object parameter)
         {
             if (Vbe.ActiveCodePane == null || _state.Status != ParserState.Ready)
             {
@@ -38,7 +38,7 @@ namespace Rubberduck.UI.Command.Refactorings
                 && target.References.Any();
         }
 
-        protected override void ExecuteImpl(object parameter)
+        protected override void OnExecute(object parameter)
         {
             var pane = Vbe.ActiveCodePane;
             var module = pane.CodeModule;

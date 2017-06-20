@@ -29,7 +29,7 @@ namespace Rubberduck.UI.Command.Refactorings
             DeclarationType.ProceduralModule, 
         };
 
-        protected override bool CanExecuteImpl(object parameter)
+        protected override bool EvaluateCanExecute(object parameter)
         {
             var selection = Vbe.ActiveCodePane.GetQualifiedSelection();
             if (!selection.HasValue)
@@ -51,7 +51,7 @@ namespace Rubberduck.UI.Command.Refactorings
             return interfaceClass != null && hasMembers;
         }
 
-        protected override void ExecuteImpl(object parameter)
+        protected override void OnExecute(object parameter)
         {
             if (Vbe.ActiveCodePane == null)
             {

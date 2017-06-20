@@ -26,7 +26,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void ProviderCommitIsCalledOnCommit()
         {
-            var vm = new ChangesViewViewModel
+            var vm = new ChangesPanelViewModel
             {
                 Provider = _provider.Object,
                 IncludedChanges =
@@ -45,7 +45,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void ProviderStagesBeforeCommit()
         {
-            var vm = new ChangesViewViewModel
+            var vm = new ChangesPanelViewModel
             {
                 Provider = _provider.Object,
                 IncludedChanges =
@@ -65,7 +65,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void ProviderCommits_NotificationOnSuccess()
         {
-            var vm = new ChangesViewViewModel
+            var vm = new ChangesPanelViewModel
             {
                 Provider = _provider.Object,
                 CommitAction = CommitAction.Commit,
@@ -104,7 +104,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void ProviderCommitsAndPushes()
         {
-            var vm = new ChangesViewViewModel
+            var vm = new ChangesPanelViewModel
             {
                 Provider = _provider.Object,
                 CommitAction = CommitAction.CommitAndPush,
@@ -125,7 +125,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void ProviderCommitsAndSyncs()
         {
-            var vm = new ChangesViewViewModel
+            var vm = new ChangesPanelViewModel
             {
                 Provider = _provider.Object,
                 CommitAction = CommitAction.CommitAndSync,
@@ -156,7 +156,7 @@ namespace RubberduckTests.SourceControl
                         new FileStatusEntry(@"C:\path\to\untracked.frx", FileStatus.Untracked)
                     };
 
-            var vm = new ChangesViewViewModel
+            var vm = new ChangesPanelViewModel
             {
                 Provider = _provider.Object,
                 CommitAction = CommitAction.CommitAndSync
@@ -173,7 +173,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void CommitEnabledAfterActionSelectedAndMessageEntered()
         {
-            var vm = new ChangesViewViewModel
+            var vm = new ChangesPanelViewModel
             {
                 Provider = _provider.Object,
                 CommitMessage = "Test Message",
@@ -192,7 +192,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void RefreshChangesAfterCommit()
         {
-            var vm = new ChangesViewViewModel
+            var vm = new ChangesPanelViewModel
             {
                 Provider = _provider.Object,
                 CommitMessage = "Test Message",
@@ -216,7 +216,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void ExcludedIsNotClearedAfterRefresh()
         {
-            var vm = new ChangesViewViewModel
+            var vm = new ChangesPanelViewModel
             {
                 Provider = _provider.Object,
                 CommitMessage = "Test Message",
@@ -248,7 +248,7 @@ namespace RubberduckTests.SourceControl
                         new FileStatusEntry(@"C:\path\to\untracked.frx", FileStatus.Untracked)
                     };
 
-            var vm = new ChangesViewViewModel
+            var vm = new ChangesPanelViewModel
             {
                 Provider = _provider.Object,
                 CommitAction = CommitAction.CommitAndSync
@@ -264,7 +264,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void ChangesPresenter_WhenCommitFails_ActionFailedEventIsRaised()
         {
-            var vm = new ChangesViewViewModel
+            var vm = new ChangesPanelViewModel
             {
                 Provider = _provider.Object,
                 CommitMessage = "Test Message",
@@ -304,7 +304,7 @@ namespace RubberduckTests.SourceControl
                         new FileStatusEntry(@"C:\path\to\untracked.frx", FileStatus.Untracked)
                     };
 
-            var vm = new ChangesViewViewModel
+            var vm = new ChangesPanelViewModel
             {
                 Provider = _provider.Object
             };
@@ -334,7 +334,7 @@ namespace RubberduckTests.SourceControl
 
             _provider.Setup(git => git.Status()).Returns(fileStatusEntries);
 
-            var vm = new ChangesViewViewModel
+            var vm = new ChangesPanelViewModel
             {
                 Provider = _provider.Object
             };
@@ -358,7 +358,7 @@ namespace RubberduckTests.SourceControl
                     };
 
             _provider.Setup(git => git.Status()).Returns(fileStatusEntries);
-            var vm = new ChangesViewViewModel
+            var vm = new ChangesPanelViewModel
             {
                 Provider = _provider.Object,
                 CommitAction = CommitAction.CommitAndSync
@@ -386,7 +386,7 @@ namespace RubberduckTests.SourceControl
                         new FileStatusEntry(@"C:\path\to\untracked.frx", FileStatus.Untracked)
                     };
 
-            var vm = new ChangesViewViewModel
+            var vm = new ChangesPanelViewModel
             {
                 Provider = _provider.Object
             };

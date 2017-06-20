@@ -13,7 +13,7 @@ namespace Rubberduck.Inspections.QuickFixes
         private readonly RubberduckParserState _state;
         private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
         {
-            typeof(OptionBaseZeroInspection)
+            typeof(RedundantOptionInspection)
         };
 
         public RemoveOptionBaseStatementQuickFix(RubberduckParserState state)

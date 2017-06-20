@@ -9,7 +9,7 @@ namespace Rubberduck.UI.Command.MenuItems
         {
         }
 
-        public override string Key { get { return "RubberduckMenu_RegexSearchReplace"; } }
-        public override int DisplayOrder { get { return (int)NavigationMenuItemDisplayOrder.RegexSearchReplace; } }
+        public override string Key => "RubberduckMenu_RegexSearchReplace";
+        public override int DisplayOrder => (int)NavigationMenuItemDisplayOrder.RegexSearchReplace;
     }
 }

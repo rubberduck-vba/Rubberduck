@@ -12,7 +12,7 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class MoveFieldCloserToUsageInspection : InspectionBase
     {
         public MoveFieldCloserToUsageInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Suggestion) { }
+            : base(state, CodeInspectionSeverity.Hint) { }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 

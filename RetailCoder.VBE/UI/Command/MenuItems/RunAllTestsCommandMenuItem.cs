@@ -12,10 +12,10 @@ namespace Rubberduck.UI.Command.MenuItems
         {
         }
 
-        public override string Key { get { return "TestMenu_RunAllTests"; } }
-        public override int DisplayOrder { get { return (int)UnitTestingMenuItemDisplayOrder.RunAllTests; } }
-        public override Image Image { get { return Resources.AllLoadedTests; } }
-        public override Image Mask { get { return Resources.AllLoadedTestsMask; } }
+        public override string Key => "TestMenu_RunAllTests";
+        public override int DisplayOrder => (int)UnitTestingMenuItemDisplayOrder.RunAllTests;
+        public override Image Image => Resources.AllLoadedTests;
+        public override Image Mask => Resources.AllLoadedTestsMask;
 
         public override bool EvaluateCanExecute(RubberduckParserState state)
         {

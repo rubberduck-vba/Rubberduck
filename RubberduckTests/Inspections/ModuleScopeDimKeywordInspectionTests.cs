@@ -244,7 +244,7 @@ Dim foo";
         public void InspectionType()
         {
             var inspection = new ModuleScopeDimKeywordInspection(null);
-            Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
+            Assert.AreEqual(CodeInspectionType.LanguageOpportunities, inspection.InspectionType);
         }
 
         [TestMethod]

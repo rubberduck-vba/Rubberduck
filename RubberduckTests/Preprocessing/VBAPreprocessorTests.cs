@@ -28,7 +28,7 @@ namespace RubberduckTests.PreProcessing
 
         private void AssertParseResult(string filename, string originalCode, string materializedParseTree)
         {
-            Assert.AreEqual(originalCode, materializedParseTree, string.Format("{0} mismatch detected.", filename));
+            Assert.AreEqual(originalCode, materializedParseTree, $"{filename} mismatch detected.");
         }
 
         private IEnumerable<Tuple<string, string, string>> GetTestFiles()

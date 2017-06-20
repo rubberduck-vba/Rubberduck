@@ -7,7 +7,7 @@
          mc:Ignorable="d"
          Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_UnsyncedCommits}"
          d:DesignHeight="450" d:DesignWidth="300"
-         d:DataContext="{d:DesignInstance {x:Type sourceControl:UnsyncedCommitsViewViewModel}, IsDesignTimeCreatable=false}">
+         d:DataContext="{d:DesignInstance {x:Type sourceControl:UnsyncedCommitsPanelViewModel}, IsDesignTimeCreatable=false}">
     <TabItem.Resources>
         <BitmapImage x:Key="FetchCommitsImage" UriSource="../../Resources/arrow-step.png" />
         <BitmapImage x:Key="PullCommitsImage" UriSource="../../Resources/drive-download.png" />
