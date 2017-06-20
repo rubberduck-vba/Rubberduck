@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Antlr4.Runtime;
@@ -11,7 +12,8 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Annotations;
 using NLog;
-using Rubberduck.Parsing.PostProcessing;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -332,7 +334,7 @@ namespace Rubberduck.Parsing.VBA
 
         public event EventHandler<ParserStateEventArgs> StateChanged;
 
-        private int _stateChangedInvocations = 0;
+        private int _stateChangedInvocations;
         private void OnStateChanged(object requestor, ParserState state = ParserState.Pending)
         {
             _stateChangedInvocations++;
@@ -341,6 +343,7 @@ namespace Rubberduck.Parsing.VBA
             Logger.Info($"{nameof(RubberduckParserState)} ({_stateChangedInvocations}) is invoking {nameof(StateChanged)} ({Status})");
             StateChanged?.Invoke(requestor, new ParserStateEventArgs(state));
         }
+
         public event EventHandler<ParseProgressEventArgs> ModuleStateChanged;
 
         //Never spawn new threads changing module states in the handler! This will cause deadlocks. 
@@ -633,7 +636,7 @@ namespace Rubberduck.Parsing.VBA
                 return result.Annotations;
             }
 
-            return new List<IAnnotation>();
+            return Enumerable.Empty<IAnnotation>();
         }
 
         public void SetModuleAnnotations(QualifiedModuleName module, IEnumerable<IAnnotation> annotations)
@@ -649,13 +652,8 @@ namespace Rubberduck.Parsing.VBA
             get
             {
                 var declarations = new List<Declaration>();
-                foreach (var state in _moduleStates.Values)
+                foreach (var state in _moduleStates.Values.Where(state => state.Declarations != null))
                 {
-                    if (state.Declarations == null)
-                    {
-                        continue;
-                    }
-
                     declarations.AddRange(state.Declarations.Keys);
                 }
 
@@ -671,13 +669,8 @@ namespace Rubberduck.Parsing.VBA
             get
             {
                 var declarations = new List<UnboundMemberDeclaration>();
-                foreach (var state in _moduleStates.Values)
+                foreach (var state in _moduleStates.Values.Where(state => state.UnresolvedMemberDeclarations != null))
                 {
-                    if (state.UnresolvedMemberDeclarations == null)
-                    {
-                        continue;
-                    }
-
                     declarations.AddRange(state.UnresolvedMemberDeclarations.Keys);
                 }
 
@@ -724,7 +717,7 @@ namespace Rubberduck.Parsing.VBA
             _allUserDeclarations = declarations;
         }
 
-        internal IDictionary<Tuple<string, DeclarationType>, Attributes> GetModuleAttributes(QualifiedModuleName module)
+        public IDictionary<Tuple<string, DeclarationType>, Attributes> GetModuleAttributes(QualifiedModuleName module)
         {
             return _moduleStates[module].ModuleAttributes;
         }
@@ -886,11 +879,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 ModuleState moduleState = null;
                 success = success && (!_moduleStates.ContainsKey(key) || _moduleStates.TryRemove(key, out moduleState));
-
-                if (moduleState != null)
-                {
-                    moduleState.Dispose();
-                }
+                moduleState?.Dispose();
             }
 
             return success;
@@ -901,16 +890,41 @@ namespace Rubberduck.Parsing.VBA
             _moduleStates[module].SetTokenStream(stream);
         }
 
-        public void AddParseTree(QualifiedModuleName module, IParseTree parseTree)
+        public void AddParseTree(QualifiedModuleName module, IParseTree parseTree, ParsePass pass = ParsePass.CodePanePass)
         {
             var key = module;
-            _moduleStates[key].SetParseTree(parseTree);
+            _moduleStates[key].SetParseTree(parseTree, pass);
             _moduleStates[key].SetModuleContentHashCode(key.ContentHashCode);
         }
 
-        public IParseTree GetParseTree(QualifiedModuleName module)
+        public IParseTree GetParseTree(QualifiedModuleName module, ParsePass pass = ParsePass.CodePanePass)
         {
-            return _moduleStates[module].ParseTree;
+            switch (pass)
+            {
+                case ParsePass.AttributesPass:
+                    return _moduleStates[module].AttributesPassParseTree;
+                case ParsePass.CodePanePass:
+                    return _moduleStates[module].ParseTree;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(pass), pass, null);
+            }
+        }
+
+        public List<KeyValuePair<QualifiedModuleName, IParseTree>> AttributeParseTrees
+        {
+            get
+            {
+                var parseTrees = new List<KeyValuePair<QualifiedModuleName, IParseTree>>();
+                foreach(var state in _moduleStates)
+                {
+                    if(state.Value.AttributesPassParseTree != null)
+                    {
+                        parseTrees.Add(new KeyValuePair<QualifiedModuleName, IParseTree>(state.Key, state.Value.AttributesPassParseTree));
+                    }
+                }
+
+                return parseTrees;
+            }
         }
 
         public List<KeyValuePair<QualifiedModuleName, IParseTree>> ParseTrees
@@ -922,8 +936,7 @@ namespace Rubberduck.Parsing.VBA
                 {
                     if (state.Value.ParseTree != null)
                     {
-                        parseTrees.Add(new KeyValuePair<QualifiedModuleName, IParseTree>(state.Key,
-                            state.Value.ParseTree));
+                        parseTrees.Add(new KeyValuePair<QualifiedModuleName, IParseTree>(state.Key, state.Value.ParseTree));
                     }
                 }
 
@@ -961,7 +974,7 @@ namespace Rubberduck.Parsing.VBA
 
         public IModuleRewriter GetRewriter(QualifiedModuleName qualifiedModuleName)
         {
-            var rewriter = _moduleStates[qualifiedModuleName].Rewriter;
+            var rewriter = _moduleStates[qualifiedModuleName].ModuleRewriter;
             return new ModuleRewriter(qualifiedModuleName.Component.CodeModule, rewriter);
         }
 
@@ -969,6 +982,11 @@ namespace Rubberduck.Parsing.VBA
         {
             var qualifiedModuleName = declaration.QualifiedSelection.QualifiedName;
             return GetRewriter(qualifiedModuleName);
+        }
+
+        public IModuleRewriter GetAttributeRewriter(QualifiedModuleName qualifiedModuleName)
+        {
+            return _moduleStates[qualifiedModuleName].AttributesRewriter;
         }
 
         /// <summary>
@@ -1035,13 +1053,7 @@ namespace Rubberduck.Parsing.VBA
             ModuleState moduleState;
             if (_moduleStates.TryRemove(key, out moduleState))
             {
-                if (moduleState != null)
-                {
-                    moduleState.Dispose();
-                }
-            }
-            else
-            {             
+                moduleState?.Dispose();
                 Logger.Warn("Could not remove declarations for removed reference '{0}' ({1}).", reference.Name, QualifiedModuleName.GetProjectId(reference));
             }
         }
@@ -1055,6 +1067,14 @@ namespace Rubberduck.Parsing.VBA
             {
                 declaration.AsTypeDeclaration = null;
             }
+        }
+
+
+        public void AddAttributesRewriter(QualifiedModuleName module, IModuleRewriter attributesRewriter)
+        {
+            var key = module;
+            _moduleStates[key].SetAttributesRewriter(attributesRewriter);
+            _moduleStates[key].SetModuleContentHashCode(key.ContentHashCode);
         }
 
         private bool _isDisposed;
@@ -1071,11 +1091,7 @@ namespace Rubberduck.Parsing.VBA
                 item.Value.Dispose();
             }
 
-            if (CoClasses != null)
-            {
-                CoClasses.Clear();
-            }
-
+            CoClasses?.Clear();
             RemoveEventHandlers();
 
             _moduleStates.Clear();

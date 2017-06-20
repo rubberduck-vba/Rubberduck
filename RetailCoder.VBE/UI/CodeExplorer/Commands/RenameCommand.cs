@@ -26,12 +26,12 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _msgBox = msgBox;
         }
 
-        protected override bool CanExecuteImpl(object parameter)
+        protected override bool EvaluateCanExecute(object parameter)
         {
             return _state.Status == ParserState.Ready && parameter is ICodeExplorerDeclarationViewModel;
         }
 
-        protected override void ExecuteImpl(object parameter)
+        protected override void OnExecute(object parameter)
         {
             var factory = new RenamePresenterFactory(_vbe, _view, _state);
             var refactoring = new RenameRefactoring(_vbe, factory, _msgBox, _state);

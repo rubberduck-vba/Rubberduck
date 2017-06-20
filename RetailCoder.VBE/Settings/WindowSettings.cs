@@ -52,7 +52,7 @@ namespace Rubberduck.Settings
             {
                 return CodeExplorerVisibleOnStartup;
             }
-            if (candidate is CodeInspectionsDockablePresenter)
+            if (candidate is InspectionResultsDockablePresenter)
             {
                 return CodeInspectionsVisibleOnStartup;
             }

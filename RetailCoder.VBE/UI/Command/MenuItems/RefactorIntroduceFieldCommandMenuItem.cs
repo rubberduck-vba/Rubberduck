@@ -12,11 +12,11 @@ namespace Rubberduck.UI.Command.MenuItems
         {
         }
 
-        public override string Key { get { return "RefactorMenu_IntroduceField"; } }
-        public override int DisplayOrder { get { return (int)RefactoringsMenuItemDisplayOrder.IntroduceField; } }
+        public override string Key => "RefactorMenu_IntroduceField";
+        public override int DisplayOrder => (int)RefactoringsMenuItemDisplayOrder.IntroduceField;
 
-        public override Image Image { get { return Resources.AddVariable; } }
-        public override Image Mask { get { return Resources.AddVariableMask; } }
+        public override Image Image => Resources.AddVariable;
+        public override Image Mask => Resources.AddVariableMask;
 
 
         public override bool EvaluateCanExecute(RubberduckParserState state)

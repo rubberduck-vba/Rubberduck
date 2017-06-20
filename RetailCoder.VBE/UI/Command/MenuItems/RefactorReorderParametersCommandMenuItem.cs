@@ -11,10 +11,10 @@ namespace Rubberduck.UI.Command.MenuItems
         {
         }
 
-        public override string Key { get { return "RefactorMenu_ReorderParameters"; } }
-        public override int DisplayOrder { get { return (int)RefactoringsMenuItemDisplayOrder.ReorderParameters; } }
-        public override Image Image { get { return Resources.ReorderParameters; } }
-        public override Image Mask { get { return Resources.ReorderParametersMask; } }
+        public override string Key => "RefactorMenu_ReorderParameters";
+        public override int DisplayOrder => (int)RefactoringsMenuItemDisplayOrder.ReorderParameters;
+        public override Image Image => Resources.ReorderParameters;
+        public override Image Mask => Resources.ReorderParametersMask;
 
         public override bool EvaluateCanExecute(RubberduckParserState state)
         {

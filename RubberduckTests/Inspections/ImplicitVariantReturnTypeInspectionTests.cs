@@ -322,7 +322,7 @@ End Function";
         public void InspectionType()
         {
             var inspection = new ImplicitVariantReturnTypeInspection(null);
-            Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
+            Assert.AreEqual(CodeInspectionType.LanguageOpportunities, inspection.InspectionType);
         }
 
         [TestMethod]

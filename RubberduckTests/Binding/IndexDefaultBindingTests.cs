@@ -18,6 +18,7 @@ namespace RubberduckTests.Binding
         private const string TEST_CLASS_NAME = "TestClass";
         private const string REFERENCED_PROJECT_FILEPATH = @"C:\Temp\ReferencedProjectA";
 
+        [TestCategory("Binding")]
         [TestMethod]
         public void RecursiveDefaultMember()
         {
@@ -56,6 +57,7 @@ End Property
             Assert.AreEqual(1, declaration.References.Count());
         }
 
+        [TestCategory("Binding")]
         [TestMethod]
         public void NormalPropertyFunctionSubroutine()
         {

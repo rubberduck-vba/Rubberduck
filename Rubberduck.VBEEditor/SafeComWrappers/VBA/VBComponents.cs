@@ -14,7 +14,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
     public class VBComponents : SafeComWrapper<VB.VBComponents>, IVBComponents
     {
         private static readonly Guid VBComponentsEventsGuid = new Guid("0002E116-0000-0000-C000-000000000046");
-        private static object _lockObject = new object();
+        private static readonly object Locker = new object();
         private static VB.VBComponents _components;
 
         private enum ComponentEventDispId
@@ -35,29 +35,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             }
         }
 
-        public int Count
-        {
-            get { return IsWrappingNullReference ? 0 : Target.Count; }
-        }
-
-        public IVBProject Parent
-        {
-            get { return new VBProject(IsWrappingNullReference ? null : Target.Parent); }
-        }
-
-        public IVBE VBE
-        {
-            get { return new VBE(IsWrappingNullReference ? null : Target.VBE); }
-        }
-
-        public IVBComponent this[object index]
-        {
-            get { return new VBComponent(IsWrappingNullReference ? null : Target.Item(index)); }
-        }
+        public int Count => IsWrappingNullReference ? 0 : Target.Count;
+        public IVBProject Parent => new VBProject(IsWrappingNullReference ? null : Target.Parent);
+        public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
+        public IVBComponent this[object index] => new VBComponent(IsWrappingNullReference ? null : Target.Item(index));
 
         public void Remove(IVBComponent item)
         {
-            if (item != null && item.Target != null && !IsWrappingNullReference)
+            if (item?.Target != null && !IsWrappingNullReference && item.Type != ComponentType.Document)
             {
                 Target.Remove((VB.VBComponent)item.Target);
             }
@@ -96,18 +81,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 ? (IEnumerator) new List<IEnumerable>().GetEnumerator()
                 : ((IEnumerable<IVBComponent>) this).GetEnumerator();
         }
-
-        //public override void Release(bool final = false)
-        //{
-        //    if (!IsWrappingNullReference)
-        //    {                
-        //        for (var i = 1; i <= Count; i++)
-        //        {
-        //            this[i].Release();
-        //        }
-        //        base.Release(final);
-        //    }
-        //}
 
         public override bool Equals(ISafeComWrapper<VB.VBComponents> other)
         {
@@ -169,13 +142,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             }
         }
 
-        /// <summary>
-        /// Safely removes the specified VbComponent from the collection.
-        /// </summary>
-        /// <remarks>
-        /// UserForms, Class modules, and Standard modules are completely removed from the project.
-        /// Since Document type components can't be removed through the VBE, all code in its CodeModule are deleted instead.
-        /// </remarks>
         public void RemoveSafely(IVBComponent component)
         {
             switch (component.Type)
@@ -198,7 +164,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         private static void AttachEvents(VB.VBComponents components)
         {
-            lock (_lockObject)
+            lock (Locker)
             {
                 if (_components == null)
                 {
@@ -221,7 +187,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         internal static void DetatchEvents()
         {
-            lock (_lockObject)
+            lock (Locker)
             {
                 if (_components != null)
                 {

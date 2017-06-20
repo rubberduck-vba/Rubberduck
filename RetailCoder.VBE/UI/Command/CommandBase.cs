@@ -15,24 +15,18 @@ namespace Rubberduck.UI.Command
 
         protected CommandBase(ILogger logger)
         {
-            _logger = logger;
+            Logger = logger;
         }
 
-        private readonly ILogger _logger;
-        protected virtual ILogger Logger { get { return _logger; } }
-
-        protected virtual bool CanExecuteImpl(object parameter)
-        {
-            return true;
-        }
-
-        protected abstract void ExecuteImpl(object parameter);
+        protected ILogger Logger { get; }
+        protected virtual bool EvaluateCanExecute(object parameter) => true;
+        protected abstract void OnExecute(object parameter);
 
         public bool CanExecute(object parameter)
         {
             try
             {
-                return CanExecuteImpl(parameter);
+                return EvaluateCanExecute(parameter);
             }
             catch (Exception exception)
             {
@@ -51,7 +45,7 @@ namespace Rubberduck.UI.Command
         {
             try
             {
-                ExecuteImpl(parameter);
+                OnExecute(parameter);
             }
             catch (Exception exception)
             {
@@ -64,9 +58,9 @@ namespace Rubberduck.UI.Command
             }
         }
 
-        public virtual string ShortcutText { get; set; }
+        public string ShortcutText { get; set; }
         
-        public virtual RubberduckHotkey Hotkey { get { return RubberduckHotkey.None; } }
+        public virtual RubberduckHotkey Hotkey => RubberduckHotkey.None;
 
         public event EventHandler CanExecuteChanged
         {

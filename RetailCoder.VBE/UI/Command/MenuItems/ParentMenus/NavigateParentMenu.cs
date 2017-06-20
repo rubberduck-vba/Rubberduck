@@ -9,7 +9,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
         {
         }
 
-        public override int DisplayOrder { get { return (int)RubberduckMenuItemDisplayOrder.Navigate; } }
+        public override int DisplayOrder => (int)RubberduckMenuItemDisplayOrder.Navigate;
     }
 
     public enum NavigationMenuItemDisplayOrder

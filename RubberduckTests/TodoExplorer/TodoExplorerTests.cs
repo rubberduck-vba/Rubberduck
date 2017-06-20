@@ -15,6 +15,7 @@ namespace RubberduckTests.TodoExplorer
     public class TodoExplorerTests
     {
         [TestMethod]
+        [TestCategory("Annotations")]
         public void PicksUpComments()
         {
             var content =
@@ -41,6 +42,7 @@ namespace RubberduckTests.TodoExplorer
         }
 
         [TestMethod]
+        [TestCategory("Annotations")]
         public void PicksUpComments_StrangeCasing()
         {
             var content =
@@ -68,6 +70,7 @@ namespace RubberduckTests.TodoExplorer
         }
 
         [TestMethod]
+        [TestCategory("Annotations")]
         public void RemoveRemovesComment()
         {
             var input =

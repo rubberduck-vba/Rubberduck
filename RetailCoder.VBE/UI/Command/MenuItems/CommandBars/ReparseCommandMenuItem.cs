@@ -25,10 +25,10 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
         }
         public override Func<string> ToolTipText { get { return () => _tooltip; } }
 
-        public override ButtonStyle ButtonStyle { get { return ButtonStyle.IconAndCaption; } }
-        public override string Key { get { return "HotkeyDescription_ParseAll"; } }
-        public override Image Image { get { return Resources.arrow_circle_double; } }
-        public override Image Mask { get { return Resources.arrow_circle_double_mask; } }
-        public override int DisplayOrder { get { return (int)RubberduckCommandBarItemDisplayOrder.RequestReparse; } }
+        public override ButtonStyle ButtonStyle => ButtonStyle.IconAndCaption;
+        public override string Key => "HotkeyDescription_ParseAll";
+        public override Image Image => Resources.arrow_circle_double;
+        public override Image Mask => Resources.arrow_circle_double_mask;
+        public override int DisplayOrder => (int)RubberduckCommandBarItemDisplayOrder.RequestReparse;
     }
 }

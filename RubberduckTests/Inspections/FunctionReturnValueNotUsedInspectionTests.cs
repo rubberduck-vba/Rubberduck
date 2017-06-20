@@ -13,6 +13,8 @@ namespace RubberduckTests.Inspections
     public class FunctionReturnValueNotUsedInspectionTests
     {
         [TestMethod]
+        [TestCategory("Inspections")]
+        [TestCategory("Unused Value")]
         public void FunctionReturnValueNotUsed_ReturnsResult_ExplicitCallWithoutAssignment()
         {
             const string inputCode =
@@ -33,6 +35,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
+        [TestCategory("Unused Value")]
         public void FunctionReturnValueNotUsed_ReturnsResult_CallWithoutAssignment()
         {
             const string inputCode =
@@ -53,6 +57,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
+        [TestCategory("Unused Value")]
         public void FunctionReturnValueNotUsed_ReturnsResult_AddressOf()
         {
             const string inputCode =
@@ -73,6 +79,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
+        [TestCategory("Unused Value")]
         public void FunctionReturnValueNotUsed_ReturnsResult_NoReturnValueAssignment()
         {
             const string inputCode =
@@ -92,6 +100,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
+        [TestCategory("Unused Value")]
         public void FunctionReturnValueNotUsed_Ignored_DoesNotReturnResult_AddressOf()
         {
             const string inputCode =
@@ -113,6 +123,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
+        [TestCategory("Unused Value")]
         public void FunctionReturnValueNotUsed_DoesNotReturnResult_MultipleConsecutiveCalls()
         {
             const string inputCode =
@@ -134,6 +146,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
+        [TestCategory("Unused Value")]
         public void FunctionReturnValueNotUsed_DoesNotReturnResult_IfStatement()
         {
             const string inputCode =
@@ -156,6 +170,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
+        [TestCategory("Unused Value")]
         public void FunctionReturnValueNotUsed_DoesNotReturnResult_ForEachStatement()
         {
             const string inputCode =
@@ -180,6 +196,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
+        [TestCategory("Unused Value")]
         public void FunctionReturnValueNotUsed_DoesNotReturnResult_WhileStatement()
         {
             const string inputCode =
@@ -204,6 +222,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
+        [TestCategory("Unused Value")]
         public void FunctionReturnValueNotUsed_DoesNotReturnResult_DoUntilStatement()
         {
             const string inputCode =
@@ -228,6 +248,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
+        [TestCategory("Unused Value")]
         public void FunctionReturnValueNotUsed_DoesNotReturnResult_ReturnValueAssignment()
         {
             const string inputCode =
@@ -249,6 +271,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
+        [TestCategory("Unused Value")]
         public void FunctionReturnValueNotUsed_DoesNotReturnResult_RecursiveFunction()
         {
             const string inputCode =
@@ -271,6 +295,8 @@ End Function";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
+        [TestCategory("Unused Value")]
         public void FunctionReturnValueNotUsed_DoesNotReturnResult_ArgumentFunctionCall()
         {
             const string inputCode =
@@ -294,6 +320,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
+        [TestCategory("Unused Value")]
         public void FunctionReturnValueNotUsed_DoesNotReturnResult_IgnoresBuiltInFunctions()
         {
             const string inputCode =
@@ -313,6 +341,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
+        [TestCategory("Unused Value")]
         public void GivenInterfaceImplementationMember_ReturnsNoResult()
         {
             const string interfaceCode =
@@ -350,6 +380,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
+        [TestCategory("Unused Value")]
         public void FunctionReturnValueNotUsed_ReturnsResult_InterfaceMember()
         {
             const string interfaceCode =
@@ -386,6 +418,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
+        [TestCategory("Unused Value")]
         public void FunctionReturnValueNotUsed_QuickFixWorks_NoInterface()
         {
             const string inputCode =
@@ -419,6 +453,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
+        [TestCategory("Unused Value")]
         public void FunctionReturnValueNotUsed_QuickFixWorks_NoInterface_ManyBodyStatements()
         {
             const string inputCode =
@@ -455,6 +491,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
+        [TestCategory("Unused Value")]
         public void FunctionReturnValueNotUsed_QuickFixWorks_Interface()
         {
             const string inputInterfaceCode =
@@ -505,6 +543,8 @@ End Function";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
+        [TestCategory("Unused Value")]
         public void FunctionReturnValueNotUsed_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -536,6 +576,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
+        [TestCategory("Unused Value")]
         public void InspectionType()
         {
             var inspection = new FunctionReturnValueNotUsedInspection(null);
@@ -543,6 +585,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
+        [TestCategory("Unused Value")]
         public void InspectionName()
         {
             const string inspectionName = "FunctionReturnValueNotUsedInspection";

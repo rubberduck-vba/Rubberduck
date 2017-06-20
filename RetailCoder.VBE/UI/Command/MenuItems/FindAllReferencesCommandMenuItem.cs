@@ -10,8 +10,8 @@ using Rubberduck.UI.Command.MenuItems.ParentMenus;
             {
             }
 
-            public override string Key { get { return "ContextMenu_FindAllReferences"; } }
-            public override int DisplayOrder { get { return (int)CodePaneContextMenuItemDisplayOrder.FindAllReferences; } }
+            public override string Key => "ContextMenu_FindAllReferences";
+            public override int DisplayOrder => (int)CodePaneContextMenuItemDisplayOrder.FindAllReferences;
 
             public override bool EvaluateCanExecute(RubberduckParserState state)
             {

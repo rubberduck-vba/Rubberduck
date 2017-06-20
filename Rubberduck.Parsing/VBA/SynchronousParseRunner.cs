@@ -13,11 +13,13 @@ namespace Rubberduck.Parsing.VBA
             RubberduckParserState state,
             IParserStateManager parserStateManager,
             Func<IVBAPreprocessor> preprocessorFactory,
-            IAttributeParser attributeParser) 
+            IAttributeParser attributeParser,
+            IModuleExporter exporter) 
         :base(state, 
             parserStateManager, 
             preprocessorFactory, 
-            attributeParser)
+            attributeParser,
+            exporter)
         { }
 
 
@@ -43,7 +45,7 @@ namespace Rubberduck.Parsing.VBA
             }
             catch (Exception)
             {
-                _parserStateManager.SetStatusAndFireStateChanged(this, ParserState.Error, token);
+                StateManager.SetStatusAndFireStateChanged(this, ParserState.Error, token);
                 throw;
             }
         }
