@@ -69,7 +69,7 @@ namespace Rubberduck.Inspections.Concrete
             private Declaration _currentScopeDeclaration;
             private bool _hasMembers;
 
-            private void SetCurrentScope(IAnnotatedContext context, string memberName = null)
+            private void SetCurrentScope(string memberName = null)
             {
                 _hasMembers = !string.IsNullOrEmpty(memberName);
                 _currentScopeDeclaration = _hasMembers ? _members.Value[memberName] : _module.Value;
@@ -122,27 +122,27 @@ namespace Rubberduck.Inspections.Concrete
 
             public override void EnterSubStmt(VBAParser.SubStmtContext context)
             {
-                SetCurrentScope(context, Identifier.GetName(context.subroutineName()));
+                SetCurrentScope(Identifier.GetName(context.subroutineName()));
             }
 
             public override void EnterFunctionStmt(VBAParser.FunctionStmtContext context)
             {
-                SetCurrentScope(context, Identifier.GetName(context.functionName()));
+                SetCurrentScope(Identifier.GetName(context.functionName()));
             }
 
             public override void EnterPropertyGetStmt(VBAParser.PropertyGetStmtContext context)
             {
-                SetCurrentScope(context, Identifier.GetName(context.functionName()));
+                SetCurrentScope(Identifier.GetName(context.functionName()));
             }
 
             public override void EnterPropertyLetStmt(VBAParser.PropertyLetStmtContext context)
             {
-                SetCurrentScope(context, Identifier.GetName(context.subroutineName()));
+                SetCurrentScope(Identifier.GetName(context.subroutineName()));
             }
 
             public override void EnterPropertySetStmt(VBAParser.PropertySetStmtContext context)
             {
-                SetCurrentScope(context, Identifier.GetName(context.subroutineName()));
+                SetCurrentScope(Identifier.GetName(context.subroutineName()));
             }
             #endregion
 
@@ -153,7 +153,7 @@ namespace Rubberduck.Inspections.Concrete
                 _annotationCounts[annotationType]++;
 
                 var isPerModule = annotationType.HasFlag(AnnotationType.ModuleAnnotation);
-                var isMemberOnModule = _currentScopeDeclaration != null && isPerModule;
+                var isMemberOnModule = !_currentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Module) && isPerModule;
 
                 var isPerMember = annotationType.HasFlag(AnnotationType.MemberAnnotation);
                 var isModuleOnMember = _currentScopeDeclaration == null && isPerMember;
