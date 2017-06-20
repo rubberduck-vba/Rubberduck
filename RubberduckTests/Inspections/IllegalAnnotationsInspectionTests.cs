@@ -77,7 +77,8 @@ End Sub";
         public void MultipleFolderAnnotations_ReturnsResult()
         {
             const string inputCode =
-@"'@Folder ""Foo.Bar""
+@"Option Explicit
+'@Folder ""Foo.Bar""
 '@Folder ""Biz.Buz""
 Public Sub Foo()
 End Sub";

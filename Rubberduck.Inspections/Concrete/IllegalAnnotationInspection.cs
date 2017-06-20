@@ -160,7 +160,7 @@ namespace Rubberduck.Inspections.Concrete
 
                 var isOnlyAllowedOnce = isPerModule || isPerMember;
 
-                if (isOnlyAllowedOnce && _annotationCounts[annotationType] > 1 || isModuleOnMember || isMemberOnModule)
+                if ((isOnlyAllowedOnce && _annotationCounts[annotationType] > 1) || isModuleOnMember || isMemberOnModule)
                 {
                     _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
                 }
