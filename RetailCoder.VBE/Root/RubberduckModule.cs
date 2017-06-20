@@ -106,9 +106,11 @@ namespace Rubberduck.Root
             Rebind<IBuiltInDeclarationLoader>().To<BuiltInDeclarationLoader>().InSingletonScope();
             Rebind<IDeclarationResolveRunner>().To<DeclarationResolveRunner>().InSingletonScope();
             Rebind<IModuleToModuleReferenceManager>().To<ModuleToModuleReferenceManager>().InSingletonScope();
+            Rebind<ISupertypeClearer>().To<SupertypeClearer>().InSingletonScope();
             Rebind<IParserStateManager>().To<ParserStateManager>().InSingletonScope();
             Rebind<IParseRunner>().To<ParseRunner>().InSingletonScope();
             Rebind<IParsingStageService>().To<ParsingStageService>().InSingletonScope();
+            Rebind<IParsingCacheService>().To<ParsingCacheService>().InSingletonScope();
             Rebind<IProjectManager>().To<ProjectManager>().InSingletonScope();
             Rebind<IReferenceRemover>().To<ReferenceRemover>().InSingletonScope();
             Rebind<IReferenceResolveRunner>().To<ReferenceResolveRunner>().InSingletonScope();

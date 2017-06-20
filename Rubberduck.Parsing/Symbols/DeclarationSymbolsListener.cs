@@ -391,7 +391,7 @@ namespace Rubberduck.Parsing.Symbols
         public override void EnterImplementsStmt(VBAParser.ImplementsStmtContext context)
         {
             // The expression will be later resolved to the actual declaration. Have to split the work up because we have to gather/create all declarations first.
-            ((ClassModuleDeclaration)_moduleDeclaration).AddSupertype(context.expression().GetText());
+            ((ClassModuleDeclaration)_moduleDeclaration).AddSupertypeName(context.expression().GetText());
         }
 
         public override void EnterSubStmt(VBAParser.SubStmtContext context)

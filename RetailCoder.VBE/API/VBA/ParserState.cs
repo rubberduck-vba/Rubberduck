@@ -73,6 +73,7 @@ namespace Rubberduck.API.VBA
             var moduleToModuleReferenceManager = new ModuleToModuleReferenceManager();
             var parserStateManager = new ParserStateManager(_state);
             var referenceRemover = new ReferenceRemover(_state, moduleToModuleReferenceManager);
+            var supertypeClearer = new SupertypeClearer(_state);
             var comSynchronizer = new COMReferenceSynchronizer(_state, parserStateManager);
             var builtInDeclarationLoader = new BuiltInDeclarationLoader(
                 _state,
@@ -107,14 +108,20 @@ namespace Rubberduck.API.VBA
                 declarationResolveRunner,
                 referenceResolveRunner  
                 );
+            var parsingCacheService = new ParsingCacheService(
+                _state,
+                moduleToModuleReferenceManager,
+                referenceRemover,
+                supertypeClearer
+                );
 
             _parser = new ParseCoordinator(
                 _state,
                 parsingStageService,
+                parsingCacheService,
                 projectManager,
-                moduleToModuleReferenceManager,
-                parserStateManager,
-                referenceRemover);
+                parserStateManager
+                );
         }
 
         /// <summary>
