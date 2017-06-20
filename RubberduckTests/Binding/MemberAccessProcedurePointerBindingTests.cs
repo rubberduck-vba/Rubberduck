@@ -17,6 +17,7 @@ namespace RubberduckTests.Binding
         private const string BINDING_TARGET_NAME = "BindingTarget";
         private const string TEST_CLASS_NAME = "TestClass";       
 
+            [TestCategory("Binding")]
             [TestMethod]
             public void ProceduralModuleWithAccessibleMember()
             {

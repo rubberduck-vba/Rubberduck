@@ -14,6 +14,7 @@ namespace RubberduckTests.UnitTesting
     public class ViewModelTests
     {
         [TestMethod]
+        [TestCategory("Unit Testing")]
         public void UIDiscoversAnnotatedTestMethods()
         {
             var testMethods = @"'@TestMethod
@@ -37,6 +38,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Unit Testing")]
         public void UIRemovesRemovedTestMethods()
         {
             var testMethods = @"'@TestMethod
@@ -68,6 +70,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Unit Testing")]
         public void UISetsProgressBarColor_LimeGreenForSuccess()
         {
             var testMethods = @"'@TestMethod
@@ -94,6 +97,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Unit Testing")]
         public void UISetsProgressBarColor_RedForFailure()
         {
             var testMethods = @"'@TestMethod
@@ -119,6 +123,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Unit Testing")]
         public void UISetsProgressBarColor_GoldForInconclusive()
         {
             var testMethods = @"'@TestMethod
@@ -144,6 +149,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Unit Testing")]
         public void UISetsProgressBarColor_RedForFailure_IncludesNonFailingTests()
         {
             var testMethods = @"'@TestMethod
@@ -188,6 +194,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Unit Testing")]
         public void UISetsProgressBarColor_GoldForInconclusive_IncludesNonFailingAndNonInconclusiveTests()
         {
             var testMethods = @"'@TestMethod
@@ -226,6 +233,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Unit Testing")]
         public void UISetsProgressBarColor_LimeGreenForSuccess_IncludesIgnoredTests()
         {
             var testMethods = @"'@TestMethod
@@ -258,6 +266,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Unit Testing")]
         public void AddingExecutedTestUpdatesExecutedCount()
         {
             var testMethods = @"'@TestMethod
@@ -285,6 +294,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Unit Testing")]
         public void AddingExecutedTestUpdatesLastRun()
         {
             var testMethods = @"'@TestMethod
@@ -312,6 +322,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Unit Testing")]
         public void ClearLastRun()
         {
             var testMethods = @"'@TestMethod

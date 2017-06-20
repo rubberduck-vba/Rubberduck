@@ -9,6 +9,7 @@ namespace RubberduckTests.Symbols
     public class ProjectDeclarationTests
     {
         [TestMethod]
+        [TestCategory("Resolver")]
         public void ProjectsHaveDeclarationTypeProject()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -29,6 +30,7 @@ namespace RubberduckTests.Symbols
 
 
         [TestMethod]
+        [TestCategory("Resolver")]
         public void ByDefaultProjectsReferenceNoOtherProjects()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -38,6 +40,7 @@ namespace RubberduckTests.Symbols
 
 
         [TestMethod]
+        [TestCategory("Resolver")]
         public void ProjectsReferencesReturnsTheReferencesAddedViaAddProjectReference()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -51,6 +54,7 @@ namespace RubberduckTests.Symbols
 
 
         [TestMethod]
+        [TestCategory("Resolver")]
         public void ClearProjectsReferencesClearsTheProjectReferences()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -65,6 +69,7 @@ namespace RubberduckTests.Symbols
 
 
         [TestMethod]
+        [TestCategory("Resolver")]
         public void ProjectsReferencesIgnoresReferencesWithTheSameIDAsOneAlreadyPresent()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -80,6 +85,7 @@ namespace RubberduckTests.Symbols
 
 
         [TestMethod]
+        [TestCategory("Resolver")]
         public void ProjectsReferencesReturnsTheReferencesInOrderOfAscendingPriority()
         {
             var projectDeclaration = GetTestProject("testProject");

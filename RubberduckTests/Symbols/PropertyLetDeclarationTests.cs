@@ -10,6 +10,7 @@ namespace RubberduckTests.Symbols
     public class PropertyLetDeclarationTests
     {
         [TestMethod]
+        [TestCategory("Resolver")]
         public void PropertyLetsHaveDeclarationTypePropertyLet()
         {
             var propertyLet = GetTestPropertyLet("test", null);
@@ -30,6 +31,7 @@ namespace RubberduckTests.Symbols
 
 
         [TestMethod]
+        [TestCategory("Resolver")]
         public void ByDefaultPropertyLetsDoNotHaveParameters()
         {
             var propertyLet = GetTestPropertyLet("test", null);
@@ -39,6 +41,7 @@ namespace RubberduckTests.Symbols
 
 
         [TestMethod]
+        [TestCategory("Resolver")]
         public void ParametersReturnsTheParametersAddedViaAddParameters()
         {
             var propertyLet = GetTestPropertyLet("test", null);
@@ -57,6 +60,7 @@ namespace RubberduckTests.Symbols
 
 
         [TestMethod]
+        [TestCategory("Resolver")]
         public void ByDefaultPropertyLetsAreNotDefaultMembers()
         {
             var propertyLet = GetTestPropertyLet("test", null);
@@ -66,6 +70,7 @@ namespace RubberduckTests.Symbols
 
 
         [TestMethod]
+        [TestCategory("Resolver")]
         public void PropertyLetsAreDefaultMembersIfTheyHaveTheDefaultMemberAttribute()
         {
             var attributes = new Attributes();

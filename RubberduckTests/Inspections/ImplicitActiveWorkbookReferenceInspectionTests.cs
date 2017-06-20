@@ -81,6 +81,7 @@ End Sub";
 
         [TestMethod]
         [DeploymentItem(@"TestFiles\")]
+        [TestCategory("Inspections")]
         public void ImplicitActiveWorkbookReference_IgnoreQuickFixWorks()
         {
             const string inputCode =

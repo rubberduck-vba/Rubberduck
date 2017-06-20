@@ -17,6 +17,8 @@ namespace RubberduckTests.Refactoring
     public class ExtractInterfaceTests
     {
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Extract Interface")]
         public void ExtractInterfaceRefactoring_ImplementProc()
         {
             //Input
@@ -69,6 +71,8 @@ End Sub
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Extract Interface")]
         public void ExtractInterfaceRefactoring_ImplementProcAndFuncAndPropGetSetLet()
         {
             //Input
@@ -174,6 +178,8 @@ End Property
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Extract Interface")]
         public void ExtractInterfaceRefactoring_ImplementProcAndFunc_IgnoreProperties()
         {
             //Input
@@ -261,6 +267,8 @@ End Function
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Extract Interface")]
         public void ExtractInterfaceRefactoring_IgnoresField()
         {
             //Input
@@ -281,6 +289,8 @@ End Function
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Extract Interface")]
         public void ExtractInterfaceRefactoring_NullPresenter_NoChanges()
         {
             //Input
@@ -310,6 +320,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Extract Interface")]
         public void ExtractInterfaceRefactoring_NullModel_NoChanges()
         {
             //Input
@@ -342,6 +354,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Extract Interface")]
         public void ExtractInterfaceRefactoring_PassTargetIn()
         {
             //Input
@@ -391,6 +405,8 @@ End Sub
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Extract Interface")]
         public void Presenter_Reject_ReturnsNull()
         {
             //Input
@@ -420,6 +436,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Extract Interface")]
         public void Presenter_NullTarget_ReturnsNull()
         {
             //Input
@@ -444,6 +462,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Extract Interface")]
         public void Factory_NoMembersInTarget_ReturnsNull()
         {
             //Input
@@ -462,6 +482,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Extract Interface")]
         public void Factory_NullSelectionNullReturnsNullPresenter()
         {
             //Input
