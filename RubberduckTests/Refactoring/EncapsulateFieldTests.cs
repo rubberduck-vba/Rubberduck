@@ -1045,6 +1045,7 @@ End Sub";
 
             var builder = new MockVbeBuilder();
             IVBComponent component;
+
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
 
@@ -1072,6 +1073,7 @@ End Sub";
 
             var builder = new MockVbeBuilder();
             IVBComponent component;
+
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
 
@@ -1099,6 +1101,7 @@ End Sub";
 
             var builder = new MockVbeBuilder();
             IVBComponent component;
+
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
 
@@ -1126,6 +1129,7 @@ End Sub";
 
             var builder = new MockVbeBuilder();
             IVBComponent component;
+
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
 
@@ -1153,6 +1157,7 @@ End Sub";
 
             var builder = new MockVbeBuilder();
             IVBComponent component;
+
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
 
@@ -1180,6 +1185,7 @@ End Sub";
 
             var builder = new MockVbeBuilder();
             IVBComponent component;
+
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
 
@@ -1210,6 +1216,7 @@ End Sub";
 
             var builder = new MockVbeBuilder();
             IVBComponent component;
+
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
 
@@ -1240,6 +1247,7 @@ End Sub";
 
             var builder = new MockVbeBuilder();
             IVBComponent component;
+
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
 
@@ -1270,6 +1278,7 @@ End Sub";
 
             var builder = new MockVbeBuilder();
             IVBComponent component;
+
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
 
@@ -1300,6 +1309,7 @@ End Sub";
 
             var builder = new MockVbeBuilder();
             IVBComponent component;
+
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
 
@@ -1328,6 +1338,7 @@ End Sub";
 
             var builder = new MockVbeBuilder();
             IVBComponent component;
+
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
 
@@ -1356,6 +1367,7 @@ End Sub";
 
             var builder = new MockVbeBuilder();
             IVBComponent component;
+
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
 
@@ -1384,6 +1396,7 @@ End Sub";
 
             var builder = new MockVbeBuilder();
             IVBComponent component;
+
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
 

@@ -9,6 +9,7 @@ using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.Parsing.Symbols.DeclarationLoaders;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command.MenuItems;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.API.VBA
@@ -62,7 +63,8 @@ namespace Rubberduck.API.VBA
             }
 
             _vbe = new VBE(vbe);
-            _state = new RubberduckParserState(null);
+            var declarationFinderFactory = new ConcurrentlyConstructedDeclarationFinderFactory();
+            _state = new RubberduckParserState(null, declarationFinderFactory);
             _state.StateChanged += _state_StateChanged;
 
             var exporter = new ModuleExporter();

@@ -28,7 +28,7 @@ namespace RubberduckTests.Mocks
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             qualifiedModuleName = new QualifiedModuleName(component);
-            var parser = Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = Create(vbe.Object);
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -36,9 +36,16 @@ namespace RubberduckTests.Mocks
 
         }
 
+        public static ParseCoordinator Create(IVBE vbe, string serializedDeclarationsPath = null)
+        {
+            var declarationFinderFactory = new DeclarationFinderFactory();
+            var state = new RubberduckParserState(vbe, declarationFinderFactory);
+            return Create(vbe, state, serializedDeclarationsPath);
+        }
+
         public static ParseCoordinator Create(IVBE vbe, RubberduckParserState state, string serializedDeclarationsPath = null)
         {
-            var attributeParser = new TestAttributeParser(() => new Mock<IVBAPreprocessor>().Object);
+            var attributeParser = new TestAttributeParser(() => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture)));
             var exporter = new Mock<IModuleExporter>().Object;
             return Create(vbe, state, attributeParser, exporter, serializedDeclarationsPath);
         }
@@ -106,7 +113,7 @@ namespace RubberduckTests.Mocks
 
         public static RubberduckParserState CreateAndParse(IVBE vbe, string serializedDeclarationsPath = null)
         {
-            var parser = Create(vbe, new RubberduckParserState(vbe));
+            var parser = Create(vbe);
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -155,7 +162,7 @@ namespace RubberduckTests.Mocks
 
         public static RubberduckParserState CreateAndParse(IVBE vbe, IInspectionListener listener)
         {
-            var parser = Create(vbe, new RubberduckParserState(vbe));
+            var parser = Create(vbe);
             parser.Parse(new CancellationTokenSource());
             if(parser.State.Status >= ParserState.Error)
             { Assert.Inconclusive("Parser Error"); }

@@ -199,6 +199,9 @@
     <Compile Include="PreProcessing\VBAPreprocessorVisitor.cs" />
     <Compile Include="SymbolList.cs" />
     <Compile Include="Symbols\AliasDeclaration.cs" />
+    <Compile Include="Symbols\DeclarationFinderFactory.cs" />
+    <Compile Include="Symbols\ConcurrentlyConstructedDeclarationFinderFactory.cs" />
+    <Compile Include="Symbols\ConcurrentlyConstructedDeclarationFinder.cs" />
     <Compile Include="Symbols\DeclarationLoaders\SpecialFormDeclarations.cs" />
     <Compile Include="Symbols\CommentNode.cs" />
     <Compile Include="ComReflection\ComParameter.cs" />
@@ -297,6 +300,7 @@
     <Compile Include="Symbols\CallStatement.cs" />
     <Compile Include="Symbols\ExternalProcedureDeclaration.cs" />
     <Compile Include="Symbols\ICompilationPass.cs" />
+    <Compile Include="Symbols\IDeclarationFinderFactory.cs" />
     <Compile Include="Symbols\ParserRuleContextHelper.cs" />
     <Compile Include="Symbols\BoundExpressionVisitor.cs" />
     <Compile Include="Symbols\ClassModuleDeclaration.cs" />

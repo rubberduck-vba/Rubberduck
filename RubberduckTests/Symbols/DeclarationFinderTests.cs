@@ -634,7 +634,7 @@ End Sub
                 .MockVbeBuilder()
                 .Build();
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object);
             parser.Parse(new CancellationTokenSource());
 
             var expected = parser.State.AllDeclarations.Single(item => item.DeclarationType == DeclarationType.Variable);
@@ -664,7 +664,7 @@ End Sub
                 .MockVbeBuilder()
                 .Build();
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object);
             parser.Parse(new CancellationTokenSource());
 
             var expected = parser.State.AllDeclarations.Single(item => item.DeclarationType == DeclarationType.Variable);

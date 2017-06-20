@@ -40,6 +40,7 @@ using Rubberduck.UI.Refactorings.Rename;
 using Rubberduck.UnitTesting;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.PreProcessing;
+using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Root
 {
@@ -100,6 +101,8 @@ namespace Rubberduck.Root
             Rebind<IIndenter>().To<Indenter>().InSingletonScope();
             Rebind<IIndenterSettings>().To<IndenterSettings>();
             Bind<Func<IIndenterSettings>>().ToMethod(t => () => KernelInstance.Get<IGeneralConfigService>().LoadConfiguration().UserSettings.IndenterSettings);
+
+            Rebind<DeclarationFinder>().To<ConcurrentlyConstructedDeclarationFinder>().InCallScope();
 
             BindCustomDeclarationLoadersToParser();
             Rebind<ICOMReferenceSynchronizer, IProjectReferencesProvider>().To<COMReferenceSynchronizer>().InSingletonScope().WithConstructorArgument("serializedDeclarationsPath", (string)null);
@@ -237,7 +240,9 @@ namespace Rubberduck.Root
                 .Where(type => type.Namespace != null
                             && !type.Namespace.StartsWith("Rubberduck.VBEditor.SafeComWrappers")
                             && !type.Name.Equals("SelectionChangeService")
-                            && !type.Name.EndsWith("Factory") && !type.Name.EndsWith("ConfigProvider") && !type.GetInterfaces().Contains(typeof(IInspection)))
+                            && !type.Name.EndsWith("Factory") 
+                            && !type.Name.EndsWith("ConfigProvider") 
+                            && !type.GetInterfaces().Contains(typeof(IInspection)))
                 .BindDefaultInterface()
                 .Configure(binding => binding.InCallScope())); // TransientScope wouldn't dispose disposables
         }

@@ -33,7 +33,7 @@ End Sub";
             var vbe = builder.AddProject(project).Build();
 
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object);
             parser.State.AddTestLibrary("Excel.1.8.xml");
 
             parser.Parse(new CancellationTokenSource());
@@ -67,7 +67,7 @@ End Sub";
             var vbe = builder.AddProject(project).Build();
 
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object);
             parser.State.AddTestLibrary("Excel.1.8.xml");
 
             parser.Parse(new CancellationTokenSource());
@@ -108,7 +108,7 @@ End Sub";
             var vbe = builder.AddProject(project).Build();
 
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object);
             parser.State.AddTestLibrary("Excel.1.8.xml");
 
             parser.Parse(new CancellationTokenSource());
