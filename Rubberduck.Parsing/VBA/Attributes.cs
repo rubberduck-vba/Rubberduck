@@ -80,7 +80,11 @@ namespace Rubberduck.Parsing.VBA
     {
         public bool HasAttributeFor(AnnotationType annotationType, string memberName = null)
         {
-            Debug.Assert(annotationType.HasFlag(AnnotationType.Attribute));
+            if (!annotationType.HasFlag(AnnotationType.Attribute))
+            {
+                return false;
+            }
+
             var name = "VB_" + annotationType;
 
             if (annotationType.HasFlag(AnnotationType.MemberAnnotation))
