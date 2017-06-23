@@ -42,7 +42,14 @@ namespace Rubberduck.Inspections.Concrete
 
             public override void ExitAnnotation(VBAParser.AnnotationContext context)
             {
-                var isMemberAnnotation = context.AnnotationType.HasFlag(AnnotationType.MemberAnnotation);
+                var annotationType = context.AnnotationType;
+
+                if (!annotationType.HasFlag(AnnotationType.Attribute))
+                {
+                    return;
+                }
+
+                var isMemberAnnotation = annotationType.HasFlag(AnnotationType.MemberAnnotation);
                 var isModuleScope = CurrentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Module);
 
                 if (isModuleScope && !isMemberAnnotation)
