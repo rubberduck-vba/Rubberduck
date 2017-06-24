@@ -19,17 +19,10 @@ namespace Rubberduck.Inspections.Concrete
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
             // we're creating a public field for every control on a form, needs to be ignored.
-            var msForms = State.DeclarationFinder.FindProject("MSForms");
-            Declaration control = null;
-            if (msForms != null)
-            {
-                control = State.DeclarationFinder.FindClassModule("Control", msForms, true);
-            }
-
             var fields = State.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
                 .Where(item => !IsIgnoringInspectionResultFor(item, AnnotationName)
                                && item.Accessibility == Accessibility.Public
-                               && (control == null || !Equals(item.AsTypeDeclaration, control)))
+                               && (item.DeclarationType != DeclarationType.Control))
                 .ToList();
 
             return fields

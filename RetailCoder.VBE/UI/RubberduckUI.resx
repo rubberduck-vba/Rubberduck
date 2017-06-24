@@ -2082,4 +2082,10 @@ Would you like to import them to Rubberduck?</value>
   <data name="RenameDialog_PropertyRenameError" xml:space="preserve">
     <value>Could not rename Property {0}.</value>
   </data>
+  <data name="CodeInspectionSettings_Performance" xml:space="preserve">
+    <value>Performance</value>
+  </data>
+  <data name="CodeInspectionSettings_RubberduckOpportunities" xml:space="preserve">
+    <value>Rubberduck Opportunities</value>
+  </data>
 </root>

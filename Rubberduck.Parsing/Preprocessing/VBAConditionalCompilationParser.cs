@@ -8,15 +8,9 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from C:\Dev\Rubberduck\Rubberduck.Parsing\Preprocessing\VBAConditionalCompilationParser.g4 by ANTLR 4.3
+// Generated from H:\Repositories\Rubberduck\Rubberduck.Parsing\PreProcessing\VBAConditionalCompilationParser.g4 by ANTLR 4.3
 
 // Unreachable code detected
-
-using System.Collections.Generic;
-using Antlr4.Runtime;
-using Antlr4.Runtime.Atn;
-using Antlr4.Runtime.Tree;
-
 #pragma warning disable 0162
 // The variable '...' is assigned but its value is never used
 #pragma warning disable 0219
@@ -24,7 +18,14 @@ using Antlr4.Runtime.Tree;
 #pragma warning disable 1591
 
 namespace Rubberduck.Parsing.PreProcessing {
-    [System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.3")]
+using Antlr4.Runtime;
+using Antlr4.Runtime.Atn;
+using Antlr4.Runtime.Misc;
+using Antlr4.Runtime.Tree;
+using System.Collections.Generic;
+using DFA = Antlr4.Runtime.Dfa.DFA;
+
+[System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.3")]
 [System.CLSCompliant(false)]
 public partial class VBAConditionalCompilationParser : Parser {
 	public const int

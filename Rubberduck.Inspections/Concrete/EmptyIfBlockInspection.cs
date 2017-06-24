@@ -14,14 +14,14 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    internal class EmptyIfBlockInspection : InspectionBase, IParseTreeInspection
+    internal class EmptyIfBlockInspection : ParseTreeInspectionBase
     {
         public EmptyIfBlockInspection(RubberduckParserState state)
             : base(state) { }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
-        public IInspectionListener Listener { get; } =
+        public override IInspectionListener Listener { get; } =
             new EmptyStringLiteralListener();
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
@@ -78,11 +78,19 @@ namespace Rubberduck.Inspections.Concrete
                 {
                     if (child is VBAParser.BlockStmtContext)
                     {
-                        Debug.Assert(child.ChildCount == 1);
+                        var blockStmt = (VBAParser.BlockStmtContext)child;
+                        var mainBlockStmt = blockStmt.mainBlockStmt();
+
+                        if(mainBlockStmt == null)
+                        {
+                            continue;   //We have a lone line lable, which is not executable.
+                        }
+
+                        Debug.Assert(mainBlockStmt.ChildCount == 1);
 
                         // exclude variables and consts because they are not executable statements
-                        if (child.GetChild(0) is VBAParser.VariableStmtContext ||
-                            child.GetChild(0) is VBAParser.ConstStmtContext)
+                        if (mainBlockStmt.GetChild(0) is VBAParser.VariableStmtContext ||
+                            mainBlockStmt.GetChild(0) is VBAParser.ConstStmtContext)
                         {
                             continue;
                         }

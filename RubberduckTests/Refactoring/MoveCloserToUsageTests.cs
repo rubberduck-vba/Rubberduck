@@ -16,6 +16,8 @@ namespace RubberduckTests.Refactoring
     public class MoveCloserToUsageTests
     {
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Move Closer")]
         public void MoveCloserToUsageRefactoring_Field()
         {
             //Input
@@ -47,6 +49,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Move Closer")]
         public void MoveCloserToUsageRefactoring_Field_MultipleLines()
         {
             //Input
@@ -81,6 +85,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Move Closer")]
         public void MoveCloserToUsageRefactoring_FieldInOtherClass()
         {
             //Input
@@ -127,6 +133,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Move Closer")]
         public void MoveCloserToUsageRefactoring_Variable()
         {
             //Input
@@ -160,6 +168,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Move Closer")]
         public void MoveCloserToUsageRefactoring_Variable_MultipleLines()
         {
             //Input
@@ -196,6 +206,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Move Closer")]
         public void MoveCloserToUsageRefactoring_MultipleFields_MoveSecond()
         {
             //Input
@@ -233,6 +245,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Move Closer")]
         public void MoveCloserToUsageRefactoring_MultipleFieldsOneStatement_MoveFirst()
         {
             //Input
@@ -270,6 +284,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Move Closer")]
         public void MoveCloserToUsageRefactoring_MultipleFieldsOneStatement_MoveSecond()
         {
             //Input
@@ -307,6 +323,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Move Closer")]
         public void MoveCloserToUsageRefactoring_MultipleFieldsOneStatement_MoveLast()
         {
             //Input
@@ -344,6 +362,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Move Closer")]
         public void MoveCloserToUsageRefactoring_MultipleVariablesOneStatement_MoveFirst()
         {
             //Input
@@ -383,6 +403,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Move Closer")]
         public void MoveCloserToUsageRefactoring_MultipleVariablesOneStatement_MoveSecond()
         {
             //Input
@@ -422,6 +444,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Move Closer")]
         public void MoveCloserToUsageRefactoring_MultipleVariablesOneStatement_MoveLast()
         {
             //Input
@@ -461,6 +485,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Move Closer")]
         public void MoveCloserToUsageRefactoring_NoReferences()
         {
             //Input
@@ -492,6 +518,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Move Closer")]
         public void MoveCloserToUsageRefactoring_ReferencedInMultipleProcedures()
         {
             //Input
@@ -526,6 +554,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Move Closer")]
         public void MoveCloserToUsageRefactoring_ReferenceIsNotBeginningOfStatement_Assignment()
         {
             //Input
@@ -556,6 +586,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Move Closer")]
         public void MoveCloserToUsageRefactoring_ReferenceIsNotBeginningOfStatement_PassAsParam()
         {
             //Input
@@ -590,6 +622,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Move Closer")]
         public void MoveCloserToUsageRefactoring_ReferenceIsNotBeginningOfStatement_PassAsParam_ReferenceIsNotFirstLine()
         {
             //Input
@@ -628,6 +662,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Move Closer")]
         public void MoveCloserToUsageRefactoring_ReferenceIsSeparatedWithColon()
         {
             //Input
@@ -658,6 +694,8 @@ Private Sub Baz(ByVal bat As Boolean, ByVal bas As Boolean, ByVal bac As Boolean
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Move Closer")]
         public void MoveCloserToUsageRefactoring_WorksWithNamedParameters()
         {
             //Input
@@ -699,6 +737,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Move Closer")]
         public void MoveCloserToUsageRefactoring_WorksWithNamedParametersAndStatementSeparaters()
         {
             //Input
@@ -734,6 +774,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Move Closer")]
         public void IntroduceFieldRefactoring_PassInTarget_Nonvariable()
         {
             //Input
@@ -762,6 +804,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Move Closer")]
         public void IntroduceFieldRefactoring_InvalidSelection()
         {
             //Input

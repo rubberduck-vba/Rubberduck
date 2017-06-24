@@ -9,6 +9,7 @@ namespace RubberduckTests.Symbols
     public class ProceduralModuleDeclarationTests
     {
         [TestMethod]
+        [TestCategory("Resolver")]
         public void ProceduralModulesHaveDeclarationTypeProceduralModule()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -36,6 +37,7 @@ namespace RubberduckTests.Symbols
 
 
         [TestMethod]
+        [TestCategory("Resolver")]
         public void ByDefaultProceduralModulesAreNotPrivate()
         {
             var projectDeclaration = GetTestProject("testProject");

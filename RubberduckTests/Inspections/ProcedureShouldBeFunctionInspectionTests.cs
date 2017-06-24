@@ -457,6 +457,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "ProcedureCanBeWrittenAsFunctionInspection";

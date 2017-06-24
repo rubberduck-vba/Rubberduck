@@ -111,6 +111,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void UnassignedVariableUsage_NoResultIfNoReferences()
         {
             const string inputCode =

@@ -35,6 +35,12 @@ namespace Rubberduck.Parsing.Symbols
             return GetName(nameContext, out tokenInterval);
         }
 
+        public static string GetName(VBAParser.ConstSubStmtContext context, out Interval tokenInterval)
+        {
+            var nameContext = context.identifier();
+            return GetName(nameContext, out tokenInterval);
+        }
+
         public static string GetName(VBAParser.PropertyGetStmtContext context, out Interval tokenInterval)
         {
             var nameContext = context.functionName();

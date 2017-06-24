@@ -34,129 +34,165 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<IQuickFix> QuickFixes(IInspectionResult result)
         {
-            return _quickFixes.ContainsKey(result.Inspection.GetType())
-                ? _quickFixes[result.Inspection.GetType()]
-                : Enumerable.Empty<IQuickFix>();
+            if (!_quickFixes.ContainsKey(result.Inspection.GetType()))
+            {
+                return Enumerable.Empty<IQuickFix>();
+            }
+
+            return _quickFixes[result.Inspection.GetType()].Where(fix =>
+            {
+                string value;
+                if (!result.Properties.TryGetValue("DisableFixes", out value)) { return true; }
+
+                if (value.Split(',').Contains(fix.GetType().Name))
+                {
+                    return false;
+                }
+
+                return true;
+            });
         }
 
-        private bool CanFix(IQuickFix fix, Type inspection)
+        private bool CanFix(IQuickFix fix, IInspectionResult result)
         {
-            return _quickFixes.ContainsKey(inspection) && _quickFixes[inspection].Contains(fix);
+            return QuickFixes(result).Contains(fix);
         }
 
         public void Fix(IQuickFix fix, IInspectionResult result)
         {
-            if (!CanFix(fix, result.Inspection.GetType()))
+            if (!CanFix(fix, result))
             {
-                throw new ArgumentException("Fix does not support this inspection.", nameof(result));
+                return;
             }
 
             fix.Fix(result);
-            _state.RewriteAllRewriters();
+            RewriteFor(result);
             _state.OnParseRequested(this);
         }
 
-        public void FixInProcedure(IQuickFix fix, QualifiedMemberName? qualifiedMember, Type inspectionType,
-            IEnumerable<IInspectionResult> results)
+        private void RewriteFor(IInspectionResult result)
         {
-            if (!CanFix(fix, inspectionType))
+            var inspection = result.Inspection as IParseTreeInspection;
+            if (inspection != null)
             {
-                throw new ArgumentException("Fix does not support this inspection.", nameof(inspectionType));
+                switch (inspection.Pass)
+                {
+                    case ParsePass.AttributesPass:
+                        _state.GetAttributeRewriter(result.QualifiedSelection.QualifiedName).Rewrite();
+                        _state.ClearStateCache(result.QualifiedSelection.QualifiedName);
+                        break;
+                    case ParsePass.CodePanePass:
+                        _state.GetRewriter(result.QualifiedSelection.QualifiedName).Rewrite();
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
             }
+            else
+            {
+                _state.GetRewriter(result.QualifiedSelection.QualifiedName).Rewrite();
+            }
+        }
 
+        public void FixInProcedure(IQuickFix fix, QualifiedMemberName? qualifiedMember, Type inspectionType, IEnumerable<IInspectionResult> results)
+        {
             Debug.Assert(qualifiedMember.HasValue, "Null qualified member.");
 
-            var filteredResults = results
-                .Where(result => result.Inspection.GetType() == inspectionType
-                                 && result.QualifiedMemberName == qualifiedMember)
-                .ToList();
+            var filteredResults = results.Where(result => result.Inspection.GetType() == inspectionType && result.QualifiedMemberName == qualifiedMember).ToList();
 
             foreach (var result in filteredResults)
             {
+                if (!CanFix(fix, result))
+                {
+                    continue;
+                }
+
                 fix.Fix(result);
             }
 
             if (filteredResults.Any())
             {
-                _state.RewriteAllRewriters();
+                _state.GetRewriter(filteredResults.First().QualifiedSelection.QualifiedName).Rewrite();
                 _state.OnParseRequested(this);
             }
         }
 
         public void FixInModule(IQuickFix fix, QualifiedSelection selection, Type inspectionType, IEnumerable<IInspectionResult> results)
         {
-            if (!CanFix(fix, inspectionType))
-            {
-                throw new ArgumentException("Fix does not support this inspection.", nameof(inspectionType));
-            }
-
-            var filteredResults = results
-                .Where(result => result.Inspection.GetType() == inspectionType
-                              && result.QualifiedSelection.QualifiedName == selection.QualifiedName)
-                .ToList();
+            var filteredResults = results.Where(result => result.Inspection.GetType() == inspectionType && result.QualifiedSelection.QualifiedName == selection.QualifiedName).ToList();
 
             foreach (var result in filteredResults)
             {
+                if (!CanFix(fix, result))
+                {
+                    continue;
+                }
+
                 fix.Fix(result);
             }
 
             if (filteredResults.Any())
             {
-                _state.RewriteAllRewriters();
+                RewriteFor(filteredResults.First());
                 _state.OnParseRequested(this);
             }
         }
 
-        public void FixInProject(IQuickFix fix, QualifiedSelection selection, Type inspectionType,
-            IEnumerable<IInspectionResult> results)
+        public void FixInProject(IQuickFix fix, QualifiedSelection selection, Type inspectionType, IEnumerable<IInspectionResult> results)
         {
-            if (!CanFix(fix, inspectionType))
-            {
-                throw new ArgumentException("Fix does not support this inspection.", nameof(inspectionType));
-            }
-
-            var filteredResults = results
-                .Where(result => result.Inspection.GetType() == inspectionType
-                              && result.QualifiedSelection.QualifiedName.ProjectId == selection.QualifiedName.ProjectId)
-                .ToList();
+            var filteredResults = results.Where(result => result.Inspection.GetType() == inspectionType && result.QualifiedSelection.QualifiedName.ProjectId == selection.QualifiedName.ProjectId).ToList();
 
             foreach (var result in filteredResults)
             {
+                if (!CanFix(fix, result))
+                {
+                    continue;
+                }
+
                 fix.Fix(result);
             }
 
             if (filteredResults.Any())
             {
-                _state.RewriteAllRewriters();
+                var modules = filteredResults.GroupBy(s => s.QualifiedSelection.QualifiedName);
+                foreach (var module in modules)
+                {
+                    RewriteFor(module.First());
+                }
+
                 _state.OnParseRequested(this);
             }
         }
 
         public void FixAll(IQuickFix fix, Type inspectionType, IEnumerable<IInspectionResult> results)
         {
-            if (!CanFix(fix, inspectionType))
-            {
-                throw new ArgumentException("Fix does not support this inspection.", nameof(inspectionType));
-            }
-
-            var filteredResults = results.Where(result => result.Inspection.GetType() == inspectionType);
+            var filteredResults = results.Where(result => result.Inspection.GetType() == inspectionType).ToArray();
 
             foreach (var result in filteredResults)
             {
+                if (!CanFix(fix, result))
+                {
+                    continue;
+                }
+
                 fix.Fix(result);
             }
 
             if (filteredResults.Any())
             {
-                _state.RewriteAllRewriters();
+                var modules = filteredResults.GroupBy(s => s.QualifiedSelection.QualifiedName);
+                foreach (var module in modules)
+                {
+                    RewriteFor(module.First());
+                }
+
                 _state.OnParseRequested(this);
             }
         }
 
         public bool HasQuickFixes(IInspectionResult inspectionResult)
         {
-            return _quickFixes.ContainsKey(inspectionResult.Inspection.GetType()) &&
-                   _quickFixes[inspectionResult.Inspection.GetType()].Any();
+            return _quickFixes.ContainsKey(inspectionResult.Inspection.GetType()) && _quickFixes[inspectionResult.Inspection.GetType()].Any();
         }
     }
 }

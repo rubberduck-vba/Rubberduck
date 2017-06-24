@@ -12,6 +12,9 @@ using Rubberduck.VBEditor;
 using System.Globalization;
 using System.Reflection;
 using System.Threading;
+using Antlr4.Runtime;
+using Antlr4.Runtime.Tree;
+using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -25,7 +28,7 @@ namespace RubberduckTests.Mocks
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             qualifiedModuleName = new QualifiedModuleName(component);
-            var parser = Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = Create(vbe.Object);
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -33,21 +36,28 @@ namespace RubberduckTests.Mocks
 
         }
 
-        public static ParseCoordinator Create(IVBE vbe, RubberduckParserState state, string serializedDeclarationsPath = null)
+        public static ParseCoordinator Create(IVBE vbe, string serializedDeclarationsPath = null)
         {
-            var attributeParser = new Mock<IAttributeParser>();
-            attributeParser.Setup(m => m.Parse(It.IsAny<IVBComponent>(), It.IsAny<CancellationToken>()))
-                           .Returns(() => new Dictionary<Tuple<string, DeclarationType>, Attributes>());
-            return Create(vbe, state, attributeParser.Object, serializedDeclarationsPath);
+            var declarationFinderFactory = new DeclarationFinderFactory();
+            var state = new RubberduckParserState(vbe, declarationFinderFactory);
+            return Create(vbe, state, serializedDeclarationsPath);
         }
 
-        public static ParseCoordinator Create(IVBE vbe, RubberduckParserState state, IAttributeParser attributeParser, string serializedDeclarationsPath = null)
+        public static ParseCoordinator Create(IVBE vbe, RubberduckParserState state, string serializedDeclarationsPath = null)
+        {
+            var attributeParser = new TestAttributeParser(() => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture)));
+            var exporter = new Mock<IModuleExporter>().Object;
+            return Create(vbe, state, attributeParser, exporter, serializedDeclarationsPath);
+        }
+
+        public static ParseCoordinator Create(IVBE vbe, RubberduckParserState state, IAttributeParser attributeParser, IModuleExporter exporter, string serializedDeclarationsPath = null)
         {
             var path = serializedDeclarationsPath ??
                        Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(typeof(MockParser)).Location), "TestFiles", "Resolver");
             Func<IVBAPreprocessor> preprocessorFactory = () => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture));
             var projectManager = new SynchronousProjectManager(state, vbe);
             var moduleToModuleReferenceManager = new ModuleToModuleReferenceManager();
+            var supertypeClearer = new SynchronousSupertypeClearer(state); 
             var parserStateManager = new SynchronousParserStateManager(state);
             var referenceRemover = new SynchronousReferenceRemover(state, moduleToModuleReferenceManager);
             var comSynchronizer = new SynchronousCOMReferenceSynchronizer(
@@ -67,7 +77,8 @@ namespace RubberduckTests.Mocks
                 state,
                 parserStateManager,
                 preprocessorFactory,
-                attributeParser);
+                attributeParser,
+                exporter);
             var declarationResolveRunner = new SynchronousDeclarationResolveRunner(
                 state, 
                 parserStateManager, 
@@ -84,20 +95,25 @@ namespace RubberduckTests.Mocks
                 declarationResolveRunner,
                 referenceResolveRunner
                 );
+            var parsingCacheService = new ParsingCacheService(
+                state,
+                moduleToModuleReferenceManager,
+                referenceRemover,
+                supertypeClearer
+                );
 
-            return new ParseCoordinator( 
+            return new ParseCoordinator(
                 state,
                 parsingStageService,
+                parsingCacheService,
                 projectManager,
-                moduleToModuleReferenceManager,
                 parserStateManager,
-                referenceRemover,
                 true);
         }
 
         public static RubberduckParserState CreateAndParse(IVBE vbe, string serializedDeclarationsPath = null)
         {
-            var parser = Create(vbe, new RubberduckParserState(vbe));
+            var parser = Create(vbe);
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -142,6 +158,16 @@ namespace RubberduckTests.Mocks
             {
                 state.AddDeclaration(declaration);
             }
+        }
+
+        public static RubberduckParserState CreateAndParse(IVBE vbe, IInspectionListener listener)
+        {
+            var parser = Create(vbe);
+            parser.Parse(new CancellationTokenSource());
+            if(parser.State.Status >= ParserState.Error)
+            { Assert.Inconclusive("Parser Error"); }
+
+            return parser.State;
         }
     }
 }

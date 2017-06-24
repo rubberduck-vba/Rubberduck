@@ -50,12 +50,12 @@ namespace RubberduckTests.Symbols
 
         [TestCategory("Resolver")]
         [TestMethod]
-        public void AddSubtypeAddsClassToSubtypes()
+        public void AddSupertypeAddsClassToSubtypesOfSupertype()
         {
             var projectDeclaration = GetTestProject("testProject");
             var classModule = GetTestClassModule(projectDeclaration, "testClass", true, null);
             var subtype = GetTestClassModule(projectDeclaration, "testSubtype", true, null);
-            classModule.AddSubtype(subtype);
+            subtype.AddSupertype(classModule);
 
             Assert.IsTrue(classModule.Subtypes.First().Equals(subtype));
         }
@@ -74,7 +74,7 @@ namespace RubberduckTests.Symbols
 
         [TestCategory("Resolver")]
         [TestMethod]
-        public void AddSupertypeForDeclarationsAddsClassToSupertypes()
+        public void AddSupertypeAddsClassToSupertypes()
         {
             var projectDeclaration = GetTestProject("testProject");
             var classModule = GetTestClassModule(projectDeclaration, "testClass", true, null);
@@ -84,6 +84,74 @@ namespace RubberduckTests.Symbols
             Assert.IsTrue(classModule.Supertypes.First().Equals(supertype));
         }
 
+        [TestCategory("Resolver")]
+        [TestMethod]
+        public void ClearSupertypeRemovesAllSupertypes()
+        {
+            var projectDeclaration = GetTestProject("testProject");
+            var classModule = GetTestClassModule(projectDeclaration, "testClass", true, null);
+            var supertype1 = GetTestClassModule(projectDeclaration, "testSupertype1", true, null);
+            var supertype2 = GetTestClassModule(projectDeclaration, "testSupertype2", true, null);
+            classModule.AddSupertype(supertype1);
+            classModule.AddSupertype(supertype2);
+            classModule.ClearSupertypes();
+
+            Assert.IsFalse(classModule.Supertypes.Any());
+        }
+
+        //The reasoning behind this is that the names of the supertypes only depend on the module itself.
+        //So, the module itself has to be changed to change them. That in turn would mean a reparse and discarding the module declaration. 
+        [TestCategory("Resolver")]
+        [TestMethod]
+        public void ClearSupertypeDoesNotRemoveSupertypesNames()
+        {
+            var projectDeclaration = GetTestProject("testProject");
+            var classModule = GetTestClassModule(projectDeclaration, "testClass", true, null);
+            classModule.AddSupertypeName("testSupertype1");
+            classModule.AddSupertypeName("testSupertype2");
+            classModule.ClearSupertypes();
+            var supertypeNameCount = classModule.SupertypeNames.Count();
+
+            Assert.AreEqual(2, supertypeNameCount);
+        }
+
+        [TestCategory("Resolver")]
+        [TestMethod]
+        public void ClearSupertypeRemovesAllSupertypesRemovesTheClassFromTheSubtypesOfTheSupertypes()
+        {
+            var projectDeclaration = GetTestProject("testProject");
+            var classModule = GetTestClassModule(projectDeclaration, "testClass", true, null);
+            var supertype1 = GetTestClassModule(projectDeclaration, "testSupertype1", true, null);
+            var supertype2 = GetTestClassModule(projectDeclaration, "testSupertype2", true, null);
+            var otherClass = GetTestClassModule(projectDeclaration, "otherTestClass", true, null);
+            classModule.AddSupertype(supertype1);
+            classModule.AddSupertype(supertype2);
+            otherClass.AddSupertype(supertype1);
+            otherClass.AddSupertype(supertype2);
+            classModule.ClearSupertypes();
+
+            Assert.IsFalse(supertype1.Subtypes.Any(subtype => subtype.Equals(classModule)));
+            Assert.IsFalse(supertype2.Subtypes.Any(subtype => subtype.Equals(classModule)));
+        }
+
+        [TestCategory("Resolver")]
+        [TestMethod]
+        public void ClearSupertypeRemovesAllSupertypesDoesNotRemoveOtherSubtypesFromTheSupertypes()
+        {
+            var projectDeclaration = GetTestProject("testProject");
+            var classModule = GetTestClassModule(projectDeclaration, "testClass", true, null);
+            var supertype1 = GetTestClassModule(projectDeclaration, "testSupertype1", true, null);
+            var supertype2 = GetTestClassModule(projectDeclaration, "testSupertype2", true, null);
+            var otherClass = GetTestClassModule(projectDeclaration, "otherTestClass", true, null);
+            classModule.AddSupertype(supertype1);
+            classModule.AddSupertype(supertype2);
+            otherClass.AddSupertype(supertype1);
+            otherClass.AddSupertype(supertype2);
+            classModule.ClearSupertypes();
+
+            Assert.IsTrue(supertype1.Subtypes.Any(subtype => subtype.Equals(otherClass)));
+            Assert.IsTrue(supertype2.Subtypes.Any(subtype => subtype.Equals(otherClass)));
+        }
 
         [TestCategory("Resolver")]
         [TestMethod]
@@ -98,12 +166,12 @@ namespace RubberduckTests.Symbols
 
         [TestCategory("Resolver")]
         [TestMethod]
-        public void AddSupertypeForStringsAddsTypenameToSupertypeNames()
+        public void AddSupertypeNameAddsTypenameToSupertypeNames()
         {
             var projectDeclaration = GetTestProject("testProject");
             var classModule = GetTestClassModule(projectDeclaration, "testClass", true, null);
             var supertypeName = "testSupertypeName";
-            classModule.AddSupertype(supertypeName);
+            classModule.AddSupertypeName(supertypeName);
 
             Assert.IsTrue(classModule.SupertypeNames.First().Equals(supertypeName));
         }
@@ -111,7 +179,7 @@ namespace RubberduckTests.Symbols
 
         [TestCategory("Resolver")]
         [TestMethod]
-        public void AddSupertypeForDeclarationsHasNoEffectOnSupertypeNames()
+        public void AddSupertypeHasNoEffectOnSupertypeNames()
         {
             var projectDeclaration = GetTestProject("testProject");
             var classModule = GetTestClassModule(projectDeclaration, "testClass", true, null);
@@ -124,12 +192,12 @@ namespace RubberduckTests.Symbols
 
         [TestCategory("Resolver")]
         [TestMethod]
-        public void AddSupertypeForStringsHasNoEffectsOnSupertypes()
+        public void AddSupertypeNameHasNoEffectsOnSupertypes()
         {
             var projectDeclaration = GetTestProject("testProject");
             var classModule = GetTestClassModule(projectDeclaration, "testClass", true, null);
             var supertypeName = "testSupertypeName";
-            classModule.AddSupertype(supertypeName);
+            classModule.AddSupertypeName(supertypeName);
 
             Assert.IsFalse(classModule.Supertypes.Any());
         }
@@ -264,9 +332,9 @@ namespace RubberduckTests.Symbols
             classAttributes.AddGlobalClassAttribute();
             var subsubtype = GetTestClassModule(projectDeclaration, "testSubSubtype", true, classAttributes);
             var subtype = GetTestClassModule(projectDeclaration, "testSubtype", true, null);
-            subtype.AddSubtype(subsubtype);
+            subsubtype.AddSupertype(subtype);
             var classModule = GetTestClassModule(projectDeclaration, "testClass", true, null);
-            classModule.AddSubtype(subtype);
+            subtype.AddSupertype(classModule);
 
             Assert.IsTrue(classModule.IsGlobalClassModule);
         }
@@ -274,25 +342,25 @@ namespace RubberduckTests.Symbols
 
         [TestCategory("Resolver")]
         [TestMethod]
-        public void ClassModulesDoNotBecomeAGlobalClassIfASubtypeBelowInTheHiearchyIsAddedThatIsAGlobalClassAfterIsAGlobalClassHasAlreadyBeenCalled()
+        public void ClassModulesBecomeAGlobalClassIfASubtypeBelowInTheHiearchyIsAddedThatIsAGlobalClassAfterIsAGlobalClassHasAlreadyBeenCalled()
         {
             var projectDeclaration = GetTestProject("testProject");
             var classAttributes = new Attributes();
             classAttributes.AddGlobalClassAttribute();
             var subsubtype = GetTestClassModule(projectDeclaration, "testSubSubtype", true, classAttributes);
             var subtype = GetTestClassModule(projectDeclaration, "testSubtype", true, null);
-            subtype.AddSubtype(subsubtype);
+            subsubtype.AddSupertype(subtype);
             var classModule = GetTestClassModule(projectDeclaration, "testClass", true, null);
             var dummy = classModule.IsGlobalClassModule;
-            classModule.AddSubtype(subtype);
+            subtype.AddSupertype(classModule);
 
-            Assert.IsFalse(classModule.IsGlobalClassModule);
+            Assert.IsTrue(classModule.IsGlobalClassModule);
         }
 
 
         [TestCategory("Resolver")]
         [TestMethod]
-        public void ClassModulesDoNotBecomeAGlobalClassIfBelowInTheHierarchyASubtypeIsAddedThatIsAGlobalClassAfterIsAGlobalClassHasAlreadyBeenCalled()
+        public void ClassModulesBecomeAGlobalClassIfBelowInTheHierarchyASubtypeIsAddedThatIsAGlobalClassAfterIsAGlobalClassHasAlreadyBeenCalled()
         {
             var projectDeclaration = GetTestProject("testProject");
             var classAttributes = new Attributes();
@@ -300,11 +368,11 @@ namespace RubberduckTests.Symbols
             var subsubtype = GetTestClassModule(projectDeclaration, "testSubSubtype", true, classAttributes);
             var subtype = GetTestClassModule(projectDeclaration, "testSubtype", true, null);
             var classModule = GetTestClassModule(projectDeclaration, "testClass", true, null);
-            classModule.AddSubtype(subtype);
+            subtype.AddSupertype(classModule);
             var dummy = classModule.IsGlobalClassModule;
-            subtype.AddSubtype(subsubtype);
+            subsubtype.AddSupertype(subtype);
 
-            Assert.IsFalse(classModule.IsGlobalClassModule);
+            Assert.IsTrue(classModule.IsGlobalClassModule);
         }
 
 

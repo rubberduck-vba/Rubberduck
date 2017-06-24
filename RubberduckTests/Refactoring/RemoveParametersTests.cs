@@ -18,6 +18,8 @@ namespace RubberduckTests.Refactoring
     public class RemoveParametersTests
     {
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Remove Parameters")]
         public void RemoveParametersRefactoring_RemoveBothParams()
         {
             //Input
@@ -51,6 +53,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Remove Parameters")]
         public void RemoveParametersRefactoring_RemoveOnlyParam()
         {
             //Input
@@ -84,6 +88,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Remove Parameters")]
         public void RemoveParametersRefactoring_RemoveFirstParam()
         {
             //Input
@@ -117,6 +123,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Remove Parameters")]
         public void RemoveParametersRefactoring_RemoveSecondParam()
         {
             //Input
@@ -150,6 +158,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Remove Parameters")]
         public void RemoveParametersRefactoring_RemoveNamedParam()
         {
             //Input
@@ -193,6 +203,8 @@ End Sub
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Remove Parameters")]
         public void RemoveParametersRefactoring_CallerArgNameContainsOtherArgName()
         {
             //Input
@@ -236,6 +248,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Remove Parameters")]
         public void RemoveParametersRefactoring_RemoveLastFromFunction()
         {
             //Input
@@ -269,6 +283,8 @@ End Function";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Remove Parameters")]
         public void RemoveParametersRefactoring_RemoveAllFromFunction()
         {
             //Input
@@ -302,6 +318,8 @@ End Function";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Remove Parameters")]
         public void RemoveParametersRefactoring_RemoveAllFromFunction_UpdateCallReferences()
         {
             //Input
@@ -345,6 +363,8 @@ End Sub
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Remove Parameters")]
         public void RemoveParametersRefactoring_ParentIdentifierContainsParameterName()
         {
             //Input
@@ -388,6 +408,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Remove Parameters")]
         public void RemoveParametersRefactoring_RemoveFromGetter()
         {
             //Input
@@ -421,6 +443,8 @@ End Property";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Remove Parameters")]
         public void RemoveParametersRefactoring_QuickFix()
         {
             //Input
@@ -456,6 +480,8 @@ End Property";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Remove Parameters")]
         public void RemoveParametersRefactoring_RemoveFirstParamFromSetter()
         {
             //Input
@@ -489,6 +515,8 @@ End Property";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Remove Parameters")]
         public void RemoveParametersRefactoring_ClientReferencesAreUpdated_FirstParam()
         {
             //Input
@@ -532,6 +560,8 @@ End Sub
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Remove Parameters")]
         public void RemoveParametersRefactoring_ClientReferencesAreUpdated_FirstParam_ParensAroundCall()
         {
             //Input
@@ -583,6 +613,8 @@ End Function";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Remove Parameters")]
         public void RemoveParametersRefactoring_ClientReferencesAreUpdated_LastParam()
         {
             //Input
@@ -626,6 +658,8 @@ End Sub
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Remove Parameters")]
         public void RemoveParametersRefactoring_ClientReferencesAreUpdated_ParamArray()
         {
             //Input
@@ -681,6 +715,8 @@ End Sub
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Remove Parameters")]
         public void RemoveParametersRefactoring_RemoveLastParamFromSetter_NotAllowed()
         {
             //Input
@@ -701,6 +737,8 @@ End Property";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Remove Parameters")]
         public void RemoveParametersRefactoring_RemoveLastParamFromLetter_NotAllowed()
         {
             //Input
@@ -721,6 +759,8 @@ End Property";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Remove Parameters")]
         public void RemoveParametersRefactoring_RemoveFirstParamFromGetterAndSetter()
         {
             //Input
@@ -760,6 +800,8 @@ End Property";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Remove Parameters")]
         public void RemoveParametersRefactoring_RemoveFirstParamFromGetterAndLetter()
         {
             //Input
@@ -799,6 +841,8 @@ End Property";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Remove Parameters")]
         public void RemoveParametersRefactoring_SignatureContainsOptionalParam()
         {
             //Input
@@ -840,6 +884,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Remove Parameters")]
         public void RemoveParametersRefactoring_RemoveOptionalParam()
         {
             //Input
@@ -883,6 +929,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Remove Parameters")]
         public void RemoveParametersRefactoring_SignatureOnMultipleLines()
         {
             //Input
@@ -919,6 +967,8 @@ End Sub";   // note: VBE removes excess spaces
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Remove Parameters")]
         public void RemoveParametersRefactoring_SignatureOnMultipleLines_RemoveSecond()
         {
             //Input
@@ -955,6 +1005,8 @@ End Sub";   // note: VBE removes excess spaces
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Remove Parameters")]
         public void RemoveParametersRefactoring_SignatureOnMultipleLines_RemoveLast()
         {
             //Input
@@ -991,6 +1043,8 @@ End Sub";   // note: VBE removes excess spaces
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Remove Parameters")]
         public void RemoveParametersRefactoring_PassTargetIn()
         {
             //Input
@@ -1027,6 +1081,8 @@ End Sub";   // note: VBE removes excess spaces
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Remove Parameters")]
         public void RemoveParametersRefactoring_CallOnMultipleLines()
         {
             //Input
@@ -1077,6 +1133,8 @@ End Sub
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Remove Parameters")]
         public void RemoveParametersRefactoring_LastInterfaceParamRemoved()
         {
             //Input
@@ -1129,6 +1187,8 @@ End Sub";   // note: IDE removes excess spaces
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Remove Parameters")]
         public void RemoveParametersRefactoring_LastInterfaceParamRemoved_ImplementationParamsHaveDifferentNames()
         {
             //Input
@@ -1181,6 +1241,8 @@ End Sub";   // note: IDE removes excess spaces
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Remove Parameters")]
         public void RemoveParametersRefactoring_LastInterfaceParamRemoved_ImplementationParamsHaveDifferentNames_TwoImplementations()
         {
             //Input
@@ -1246,6 +1308,8 @@ End Sub";   // note: IDE removes excess spaces
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Remove Parameters")]
         public void RemoveParametersRefactoring_LastEventParamRemoved()
         {
             //Input
@@ -1298,6 +1362,8 @@ End Sub";   // note: IDE removes excess spaces
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Remove Parameters")]
         public void ReorderParametersRefactoring_LastEventParamRemoved_EventImplementationSelected()
         {
             //Input
@@ -1350,6 +1416,8 @@ End Sub";   // note: IDE removes excess spaces
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Remove Parameters")]
         public void RemoveParametersRefactoring_LastEventParamRemoved_ParamsHaveDifferentNames()
         {
             //Input
@@ -1402,6 +1470,8 @@ End Sub";   // note: IDE removes excess spaces
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Remove Parameters")]
         public void RemoveParametersRefactoring_LastEventParamRemoved_ParamsHaveDifferentNames_TwoHandlers()
         {
             //Input
@@ -1467,6 +1537,8 @@ End Sub";   // note: IDE removes excess spaces
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Remove Parameters")]
         public void RemoveParametersRefactoring_LastInterfaceParamsRemoved_AcceptPrompt()
         {
             //Input
@@ -1524,6 +1596,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Remove Parameters")]
         public void RemoveParametersRefactoring_LastInterfaceParamRemoved_RejectPrompt()
         {
             //Input
@@ -1558,6 +1632,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Remove Parameters")]
         public void RemoveParams_RefactorDeclaration_FailsInvalidTarget()
         {
             //Input
@@ -1595,6 +1671,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Remove Parameters")]
         public void RemoveParams_PresenterIsNull()
         {
             //Input
@@ -1615,6 +1693,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Remove Parameters")]
         public void RemoveParams_ModelIsNull()
         {
             //Input
@@ -1642,6 +1722,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Remove Parameters")]
         public void Presenter_Accept_AutoMarksSingleParamAsRemoved()
         {
             //Input
@@ -1667,6 +1749,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Remove Parameters")]
         public void Presenter_ParameterlessTargetReturnsNullModel()
         {
             //Input
@@ -1694,6 +1778,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Remove Parameters")]
         public void Factory_NullSelectionNullReturnsNullPresenter()
         {
             //Input

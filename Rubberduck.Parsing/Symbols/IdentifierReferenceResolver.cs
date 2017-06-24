@@ -161,17 +161,19 @@ namespace Rubberduck.Parsing.Symbols
                 statementContext);
             if (boundExpression.Classification == ExpressionClassification.ResolutionFailed)
             {
-                var lexpr = expression as VBAParser.LExprContext ?? expression.GetChild<VBAParser.LExprContext>(0);
-                if (lexpr != null)
+                var lexpression = expression as VBAParser.LExpressionContext
+                                    ?? expression.GetChild<VBAParser.LExpressionContext>(0)
+                                    ?? (expression as VBAParser.LExprContext 
+                                        ?? expression.GetChild<VBAParser.LExprContext>(0))?.lExpression();
+
+                if (lexpression != null)
                 {
-                    _declarationFinder.AddUnboundContext(_currentParent, lexpr, withExpression);
+                    _declarationFinder.AddUnboundContext(_currentParent, lexpression, withExpression);
                 }
                 else
                 {
                     Logger.Warn(
-                        string.Format(
-                            "Default Context: Failed to resolve {0}. Binding as much as we can.",
-                            expression.GetText()));
+                        $"Default Context: Failed to resolve {expression.GetText()}. Binding as much as we can.");
                 }
             }
 
@@ -182,7 +184,7 @@ namespace Rubberduck.Parsing.Symbols
             {
                 var module = boundExpression.ReferencedDeclaration.AsTypeDeclaration;
                 var members = _declarationFinder.Members(module);
-                hasDefaultMember = members.Any(m => m.Attributes.Any(kvp => kvp.Key == m.IdentifierName + ".VB_UserMemId" && kvp.Value.FirstOrDefault() == "0"));
+                hasDefaultMember = members.Any(m => m.Attributes.Any(a => a.Name == $"{m.IdentifierName}.VB_UserMemId" && a.Values.SingleOrDefault() == "0"));
             }
             _boundExpressionVisitor.AddIdentifierReferences(boundExpression, _qualifiedModuleName, _currentScope, _currentParent, !hasDefaultMember && isAssignmentTarget, hasExplicitLetStatement);
         }
@@ -316,7 +318,7 @@ namespace Rubberduck.Parsing.Symbols
 
         private void ResolveListOrLabel(VBAParser.ListOrLabelContext listOrLabel)
         {
-            if (listOrLabel == null || listOrLabel.lineNumberLabel() == null)
+            if (listOrLabel?.lineNumberLabel() == null)
             {
                 return;
             }

@@ -33,7 +33,7 @@ End Sub";
             var vbe = builder.AddProject(project).Build();
 
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object);
             parser.State.AddTestLibrary("Excel.1.8.xml");
 
             parser.Parse(new CancellationTokenSource());
@@ -67,7 +67,7 @@ End Sub";
             var vbe = builder.AddProject(project).Build();
 
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object);
             parser.State.AddTestLibrary("Excel.1.8.xml");
 
             parser.Parse(new CancellationTokenSource());
@@ -81,6 +81,7 @@ End Sub";
 
         [TestMethod]
         [DeploymentItem(@"TestFiles\")]
+        [TestCategory("Inspections")]
         public void ImplicitActiveWorkbookReference_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -107,7 +108,7 @@ End Sub";
             var vbe = builder.AddProject(project).Build();
 
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object);
             parser.State.AddTestLibrary("Excel.1.8.xml");
 
             parser.Parse(new CancellationTokenSource());
@@ -125,7 +126,7 @@ End Sub";
         public void InspectionType()
         {
             var inspection = new ImplicitActiveWorkbookReferenceInspection(null);
-            Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
+            Assert.AreEqual(CodeInspectionType.LanguageOpportunities, inspection.InspectionType);
         }
 
         [TestMethod]

@@ -229,7 +229,7 @@ End Function";
 
             var vbe = builder.AddProject(project).Build();
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object);
             parser.State.AddTestLibrary("Scripting.1.0.xml");
 
             parser.Parse(new CancellationTokenSource());

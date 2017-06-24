@@ -66,11 +66,11 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public bool LastSyncOfCOMReferencesUnloadedReferences
+        public IEnumerable<QualifiedModuleName> COMReferencesUnloadedUnloadedInLastSync
         {
             get
             {
-                return _comSynchronizer.LastSyncOfCOMReferencesUnloadedReferences;
+                return _comSynchronizer.COMReferencesUnloadedUnloadedInLastSync;
             }
         }
 

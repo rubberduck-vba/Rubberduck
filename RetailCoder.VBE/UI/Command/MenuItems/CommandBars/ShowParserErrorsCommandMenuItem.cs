@@ -24,13 +24,13 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
         }
         public override Func<string> ToolTipText { get { return () => _tooltip; } }
 
-        public override bool IsVisible { get { return false; } }
-        public override bool HiddenWhenDisabled { get { return true; } }
-        public override ButtonStyle ButtonStyle { get { return ButtonStyle.Icon; } }
+        public override bool IsVisible => false;
+        public override bool HiddenWhenDisabled => true;
+        public override ButtonStyle ButtonStyle => ButtonStyle.Icon;
 
-        public override string Key { get { return string.Empty; } }
-        public override Image Image { get { return Resources.cross_circle; } }
-        public override Image Mask { get { return Resources.circle_mask; } }
-        public override int DisplayOrder { get { return (int)RubberduckCommandBarItemDisplayOrder.ShowErrors; } }
+        public override string Key => string.Empty;
+        public override Image Image => Resources.cross_circle;
+        public override Image Mask => Resources.circle_mask;
+        public override int DisplayOrder => (int)RubberduckCommandBarItemDisplayOrder.ShowErrors;
     }
 }

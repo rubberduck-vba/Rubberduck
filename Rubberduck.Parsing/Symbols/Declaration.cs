@@ -195,7 +195,10 @@ namespace Rubberduck.Parsing.Symbols
                 null,
                 Selection.Home,
                 false,
-                null) { }
+                null,
+                false,
+                null,
+                new Attributes()) { }
 
         public Declaration(ComField field, Declaration parent, QualifiedModuleName module)
             : this(
@@ -211,7 +214,10 @@ namespace Rubberduck.Parsing.Symbols
                 null,
                 Selection.Home,
                 false,
-                null) { }
+                null,
+                false,
+                null,
+                new Attributes()) { }
 
         private string FolderFromAnnotations()
             {
@@ -280,7 +286,7 @@ namespace Rubberduck.Parsing.Symbols
         public IEnumerable<IAnnotation> Annotations => _annotations ?? new List<IAnnotation>();
 
         private readonly Attributes _attributes;
-        public IReadOnlyDictionary<string, IEnumerable<string>> Attributes => _attributes;
+        public Attributes Attributes => _attributes;
 
         /// <summary>
         /// Gets an attribute value that contains the docstring for a member.
@@ -289,16 +295,17 @@ namespace Rubberduck.Parsing.Symbols
         {
             get
             {
-                IEnumerable<string> value;
-                if (_attributes.TryGetValue($"{IdentifierName}.VB_Description", out value))
+                var memberAttribute = _attributes.SingleOrDefault(a => a.Name == $"{IdentifierName}.VB_Description");
+                if (memberAttribute != null)
                 {
-                    return value.Single();
-                }
-                if(_attributes.TryGetValue("VB_Description", out value))
-                {
-                    return value.Single();
+                    return memberAttribute.Values.SingleOrDefault() ?? string.Empty;
                 }
 
+                var moduleAttribute = _attributes.SingleOrDefault(a => a.Name == "VB_Description");
+                if (moduleAttribute != null)
+                {
+                    return moduleAttribute.Values.SingleOrDefault() ?? string.Empty;
+                }
 
                 return string.Empty;
             }
@@ -308,19 +315,7 @@ namespace Rubberduck.Parsing.Symbols
         /// Gets an attribute value indicating whether a member is an enumerator provider.
         /// Types with such a member support For Each iteration.
         /// </summary>
-        public bool IsEnumeratorMember
-        {
-            get
-            {
-                IEnumerable<string> value;
-                if (_attributes.TryGetValue("VB_UserMemId", out value))
-                {
-                    return value.Single() == "-4";
-                }
-
-                return false;
-            }
-        }
+        public bool IsEnumeratorMember => _attributes.Any(a => a.Name.EndsWith("VB_UserMemId") && a.Values.Contains("-4"));
 
         public void AddReference(
             QualifiedModuleName module,

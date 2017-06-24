@@ -131,12 +131,12 @@ namespace Rubberduck.UI.Command
             }
         }
 
-        protected override bool CanExecuteImpl(object parameter)
+        protected override bool EvaluateCanExecute(object parameter)
         {
             return !GetProject().IsWrappingNullReference && _vbe.HostSupportsUnitTests();
         }
 
-        protected override void ExecuteImpl(object parameter)
+        protected override void OnExecute(object parameter)
         {
             var project = parameter as IVBProject ?? GetProject();
             if (project.IsWrappingNullReference)

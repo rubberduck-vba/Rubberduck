@@ -18,6 +18,7 @@ namespace RubberduckTests.Binding
         private const string TEST_CLASS_NAME = "TestClass";
         private static readonly string ReferencedProjectFilepath = string.Empty; // must be an empty string
 
+        [TestCategory("Binding")]
         [TestMethod]
         public void EnclosingModuleComesBeforeEnclosingProject()
         {
@@ -35,6 +36,7 @@ namespace RubberduckTests.Binding
             Assert.AreEqual(1, declaration.References.Count());
         }
 
+        [TestCategory("Binding")]
         [TestMethod]
         public void EnclosingProjectComesBeforeOtherModuleInEnclosingProject()
         {
@@ -53,6 +55,7 @@ namespace RubberduckTests.Binding
             Assert.AreEqual(1, declaration.References.Count());
         }
 
+        [TestCategory("Binding")]
         [TestMethod]
         public void OtherModuleInEnclosingProjectComesBeforeReferencedProjectModule()
         {
@@ -79,6 +82,7 @@ namespace RubberduckTests.Binding
             Assert.AreEqual(1, declaration.References.Count());
         }
 
+        [TestCategory("Binding")]
         [TestMethod]
         public void ReferencedProjectModuleComesBeforeReferencedProjectType()
         {
@@ -104,6 +108,7 @@ namespace RubberduckTests.Binding
             Assert.AreEqual(1, declaration.References.Count());
         }
 
+        [TestCategory("Binding")]
         [TestMethod]
         public void ReferencedProjectType()
         {
@@ -134,7 +139,7 @@ namespace RubberduckTests.Binding
 
         private static RubberduckParserState Parse(Mock<IVBE> vbe)
         {
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object);
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status != ParserState.Ready)
             {

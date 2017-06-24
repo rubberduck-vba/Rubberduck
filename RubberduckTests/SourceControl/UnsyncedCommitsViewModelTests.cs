@@ -36,7 +36,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void UnsyncedPresenter_AfterRefresh_ViewBranchIsCurrentBranch()
         {
-            var vm = new UnsyncedCommitsViewViewModel
+            var vm = new UnsyncedCommitsPanelViewModel
             {
                 Provider = _provider.Object
             };
@@ -48,7 +48,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void UnsyncedPresenter_AfterRefresh_IncomingCommitsAreDisplayed()
         {
-            var vm = new UnsyncedCommitsViewViewModel
+            var vm = new UnsyncedCommitsPanelViewModel
             {
                 Provider = _provider.Object
             };
@@ -60,7 +60,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void UnsyncedPresenter_AfterRefresh_OutgoingCommitsAreDisplayed()
         {
-            var vm = new UnsyncedCommitsViewViewModel
+            var vm = new UnsyncedCommitsPanelViewModel
             {
                 Provider = _provider.Object
             };
@@ -72,7 +72,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void UnsyncedPresenter_OnFetch_ProviderFetches()
         {
-            var vm = new UnsyncedCommitsViewViewModel
+            var vm = new UnsyncedCommitsPanelViewModel
             {
                 Provider = _provider.Object
             };
@@ -86,7 +86,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void UnsyncedPresenter_AfterFetch_IncomingCommitsRefreshes()
         {
-            var vm = new UnsyncedCommitsViewViewModel
+            var vm = new UnsyncedCommitsPanelViewModel
             {
                 Provider = _provider.Object
             };
@@ -103,7 +103,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void UnsyncedPresenter_OnPull_ProviderPulls()
         {
-            var vm = new UnsyncedCommitsViewViewModel
+            var vm = new UnsyncedCommitsPanelViewModel
             {
                 Provider = _provider.Object
             };
@@ -117,7 +117,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void UnsyncedPresenter_OnPush_ProviderPushes()
         {
-            var vm = new UnsyncedCommitsViewViewModel
+            var vm = new UnsyncedCommitsPanelViewModel
             {
                 Provider = _provider.Object
             };
@@ -131,7 +131,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void UnsyncedPresenter_OnSync_ProviderPullsThenPushes()
         {
-            var vm = new UnsyncedCommitsViewViewModel
+            var vm = new UnsyncedCommitsPanelViewModel
             {
                 Provider = _provider.Object
             };
@@ -147,7 +147,7 @@ namespace RubberduckTests.SourceControl
         public void UnsyncedPresenter_WhenFetchFails_ActionFailedEventIsRaised()
         {
             var wasRaised = false;
-            var vm = new UnsyncedCommitsViewViewModel
+            var vm = new UnsyncedCommitsPanelViewModel
             {
                 Provider = _provider.Object
             };
@@ -170,7 +170,7 @@ namespace RubberduckTests.SourceControl
         public void UnsyncedPresenter_WhenPushFails_ActionFailedEventIsRaised()
         {
             var wasRaised = false;
-            var vm = new UnsyncedCommitsViewViewModel
+            var vm = new UnsyncedCommitsPanelViewModel
             {
                 Provider = _provider.Object
             };
@@ -193,7 +193,7 @@ namespace RubberduckTests.SourceControl
         public void UnsyncedPresenter_WhenPullFails_ActionFailedEventIsRaised()
         {
             var wasRaised = false;
-            var vm = new UnsyncedCommitsViewViewModel
+            var vm = new UnsyncedCommitsPanelViewModel
             {
                 Provider = _provider.Object
             };
@@ -216,7 +216,7 @@ namespace RubberduckTests.SourceControl
         public void UnsyncedPresenter_WhenSyncFails_ActionFailedEventIsRaised()
         {
             var wasRaised = false;
-            var vm = new UnsyncedCommitsViewViewModel
+            var vm = new UnsyncedCommitsPanelViewModel
             {
                 Provider = _provider.Object
             };

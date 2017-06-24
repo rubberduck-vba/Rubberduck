@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Antlr4.Runtime;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Rubberduck.Parsing.PostProcessing;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -27,7 +28,12 @@ namespace RubberduckTests.PostProcessing
             var sut = new ModuleRewriter(module.Object, rewriter);
             sut.InsertAfter(0, "test");
 
+            if (!sut.IsDirty)
+            {
+                sut.InsertBefore(0, "foo");
+            }
             sut.Rewrite();
+
             module.Verify(m => m.Clear());
         }
 
@@ -53,7 +59,7 @@ namespace RubberduckTests.PostProcessing
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
 
-            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+            var parser = MockParser.Create(vbe);
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status != ParserState.Ready)
             {
@@ -77,7 +83,7 @@ Private foo As String
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+            var parser = MockParser.Create(vbe);
             
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status != ParserState.Ready)
@@ -109,7 +115,7 @@ Private Const foo As String = ""Something""
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+            var parser = MockParser.Create(vbe);
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status != ParserState.Ready)
@@ -145,7 +151,7 @@ End Sub
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+            var parser = MockParser.Create(vbe);
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status != ParserState.Ready)
@@ -181,7 +187,7 @@ End Sub
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+            var parser = MockParser.Create(vbe);
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status != ParserState.Ready)
@@ -199,7 +205,8 @@ End Sub
             var rewriter = parser.State.GetRewriter(target);
             rewriter.Remove(target);
 
-            Assert.AreEqual(expected, rewriter.GetText());
+            var rewrittenCode = rewriter.GetText();
+            Assert.AreEqual(expected, rewrittenCode);
         }
 
         [TestMethod]
@@ -216,7 +223,7 @@ End Sub
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+            var parser = MockParser.Create(vbe);
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status != ParserState.Ready)
@@ -249,7 +256,7 @@ Public Event SomeEvent(ByVal foo As Long)
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+            var parser = MockParser.Create(vbe);
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status != ParserState.Ready)
@@ -282,7 +289,7 @@ Declare PtrSafe Function Foo Lib ""Z"" Alias ""Y"" (ByVal bar As Long) As Long
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+            var parser = MockParser.Create(vbe);
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status != ParserState.Ready)
@@ -319,7 +326,7 @@ End Sub
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+            var parser = MockParser.Create(vbe);
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status != ParserState.Ready)
@@ -356,7 +363,7 @@ End Sub
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+            var parser = MockParser.Create(vbe);
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status != ParserState.Ready)
@@ -391,7 +398,7 @@ End Sub
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+            var parser = MockParser.Create(vbe);
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status != ParserState.Ready)
@@ -428,7 +435,7 @@ End Sub
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+            var parser = MockParser.Create(vbe);
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status != ParserState.Ready)
@@ -463,7 +470,7 @@ End Sub
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+            var parser = MockParser.Create(vbe);
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status != ParserState.Ready)
@@ -500,7 +507,7 @@ End Sub
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+            var parser = MockParser.Create(vbe);
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status != ParserState.Ready)
@@ -534,7 +541,7 @@ Private foo _
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+            var parser = MockParser.Create(vbe);
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status != ParserState.Ready)
@@ -568,7 +575,7 @@ Private Const foo _
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+            var parser = MockParser.Create(vbe);
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status != ParserState.Ready)
@@ -601,7 +608,7 @@ Private bar As Long
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+            var parser = MockParser.Create(vbe);
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status != ParserState.Ready)
@@ -634,7 +641,7 @@ Private Const bar As Long = 42
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+            var parser = MockParser.Create(vbe);
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status != ParserState.Ready)
@@ -667,7 +674,7 @@ Private foo As String
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+            var parser = MockParser.Create(vbe);
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status != ParserState.Ready)
@@ -700,7 +707,7 @@ Private Const foo As String = ""Something""
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+            var parser = MockParser.Create(vbe);
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status != ParserState.Ready)
@@ -733,7 +740,7 @@ Private foo As String, buzz As Integer
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+            var parser = MockParser.Create(vbe);
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status != ParserState.Ready)
@@ -766,7 +773,7 @@ Private Const foo As String = ""Something"", buzz As Integer = 12
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+            var parser = MockParser.Create(vbe);
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status != ParserState.Ready)
@@ -802,7 +809,7 @@ Private foo As String, _
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+            var parser = MockParser.Create(vbe);
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status != ParserState.Ready)
@@ -841,7 +848,7 @@ Private Const foo _
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+            var parser = MockParser.Create(vbe);
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status != ParserState.Ready)

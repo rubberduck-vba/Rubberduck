@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Annotations;
-using Rubberduck.Parsing.PostProcessing;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -16,8 +17,10 @@ namespace Rubberduck.Parsing.VBA
         public ConcurrentDictionary<Declaration, byte> Declarations { get; private set; }
         public ConcurrentDictionary<UnboundMemberDeclaration, byte> UnresolvedMemberDeclarations { get; private set; }
         public ITokenStream TokenStream { get; private set; }
-        public IModuleRewriter Rewriter { get; private set; }
+        public TokenStreamRewriter ModuleRewriter { get; private set; }
+        public IModuleRewriter AttributesRewriter { get; private set; }
         public IParseTree ParseTree { get; private set; }
+        public IParseTree AttributesPassParseTree { get; private set; }
         public ParserState State { get; private set; }
         public int ModuleContentHashCode { get; private set; }
         public List<CommentNode> Comments { get; private set; }
@@ -34,15 +37,6 @@ namespace Rubberduck.Parsing.VBA
             TokenStream = null;
             ParseTree = null;
 
-            if (declarations.Any() && declarations.ElementAt(0).Key.QualifiedName.QualifiedModuleName.Component != null)
-            {
-                State = ParserState.Pending;
-            }
-            else
-            {
-                State = ParserState.Pending;
-            }
-
             ModuleContentHashCode = 0;
             Comments = new List<CommentNode>();
             Annotations = new List<IAnnotation>();
@@ -50,6 +44,7 @@ namespace Rubberduck.Parsing.VBA
             ModuleAttributes = new Dictionary<Tuple<string, DeclarationType>, Attributes>();
 
             IsNew = true;
+            State = ParserState.Pending;
         }
 
         public ModuleState(ParserState state)
@@ -100,16 +95,26 @@ namespace Rubberduck.Parsing.VBA
             IsNew = true;
         }
 
-        public ModuleState SetTokenStream(ICodeModule module, ITokenStream tokenStream)
+        public ModuleState SetTokenStream(ITokenStream tokenStream)
         {
             TokenStream = tokenStream;
-            Rewriter = new ModuleRewriter(module, new TokenStreamRewriter(tokenStream));
+            ModuleRewriter = new TokenStreamRewriter(tokenStream);
             return this;
         }
 
-        public ModuleState SetParseTree(IParseTree parseTree)
+        public ModuleState SetParseTree(IParseTree parseTree, ParsePass pass)
         {
-            ParseTree = parseTree;
+            switch (pass)
+            {
+                case ParsePass.AttributesPass:
+                    AttributesPassParseTree = parseTree;
+                    break;
+                case ParsePass.CodePanePass:
+                    ParseTree = parseTree;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(pass), pass, null);
+            }
             return this;
         }
 
@@ -150,8 +155,14 @@ namespace Rubberduck.Parsing.VBA
             return this;
         }
 
+        public ModuleState SetAttributesRewriter(IModuleRewriter rewriter)
+        {
+            AttributesRewriter = rewriter;
+            return this;
+        }
 
         private bool _isDisposed;
+
         public void Dispose()
         {
             if (_isDisposed)
@@ -159,25 +170,10 @@ namespace Rubberduck.Parsing.VBA
                 return;
             }
 
-            if (Declarations != null)
-            {
-                Declarations.Clear();
-            }
-
-            if (Comments != null)
-            {
-                Comments.Clear();
-            }
-
-            if (Annotations != null)
-            {
-                Annotations.Clear();
-            }
-
-            if (ModuleAttributes != null)
-            {
-                ModuleAttributes.Clear();
-            }
+            Declarations?.Clear();
+            Comments?.Clear();
+            Annotations?.Clear();
+            ModuleAttributes?.Clear();
 
             _isDisposed = true;
         }

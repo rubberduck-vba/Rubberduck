@@ -32,12 +32,12 @@ namespace Rubberduck.UI.Command
 
         private static readonly ParserState[] AllowedRunStates = { ParserState.ResolvedDeclarations, ParserState.ResolvingReferences, ParserState.Ready };
 
-        protected override bool CanExecuteImpl(object parameter)
+        protected override bool EvaluateCanExecute(object parameter)
         {
             return _vbe.IsInDesignMode && AllowedRunStates.Contains(_state.Status);
         }
 
-        protected override void ExecuteImpl(object parameter)
+        protected override void OnExecute(object parameter)
         {
             EnsureRubberduckIsReferencedForEarlyBoundTests();
 

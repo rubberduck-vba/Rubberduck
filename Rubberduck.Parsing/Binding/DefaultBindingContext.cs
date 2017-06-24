@@ -44,18 +44,18 @@ namespace Rubberduck.Parsing.Binding
             // which requires us to use an IndexDefaultBinding.
             if (expression.CALL() == null)
             {
-                dynamic lexpr = expression.expression();
+                dynamic lexpr = expression.lExpression();
                 var lexprBinding = Visit(module, parent, lexpr, withBlockVariable, StatementResolutionContext.Undefined);
                 var argList = VisitArgumentList(module, parent, expression.argumentList(), withBlockVariable, StatementResolutionContext.Undefined);
                 SetLeftMatch(lexprBinding, argList.Arguments.Count);
-                return new IndexDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression.expression(), lexprBinding, argList);
+                return new IndexDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression.lExpression(), lexprBinding, argList);
             }
             else
             {
-                var lexprBinding = Visit(module, parent, (dynamic)expression.expression(), withBlockVariable, StatementResolutionContext.Undefined);
+                var lexprBinding = Visit(module, parent, (dynamic)expression.lExpression(), withBlockVariable, StatementResolutionContext.Undefined);
                 if (!(lexprBinding is IndexDefaultBinding))
                 {
-                    return new IndexDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression.expression(), lexprBinding, new ArgumentList());
+                    return new IndexDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression.lExpression(), lexprBinding, new ArgumentList());
                 }
                 else
                 {

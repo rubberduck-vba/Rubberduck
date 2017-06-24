@@ -20,6 +20,8 @@ namespace RubberduckTests.Refactoring
     public class RenameTests
     {
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
         public void RenameRefactoring_RenameSub()
         {
             //Input
@@ -52,10 +54,13 @@ End Sub";
             var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, msgbox.Object, state);
             refactoring.Refactor(qualifiedSelection);
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            var rewriter = state.GetRewriter(component);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
         public void RenameRefactoring_RenameVariable()
         {
             //Input
@@ -90,10 +95,13 @@ End Sub";
             var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, msgbox.Object, state);
             refactoring.Refactor(qualifiedSelection);
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            var rewriter = state.GetRewriter(component);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
         public void RenameRefactoring_RenameParameter()
         {
             //Input
@@ -131,6 +139,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
         public void RenameRefactoring_RenameParameter_DoesNotAlterPrecompilerDirectives()
         {
             //Input
@@ -184,6 +194,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
         public void RenameRefactoring_RenameMulitlinedParameter()
         {
             //Input
@@ -223,6 +235,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
         public void RenameRefactoring_RenameSub_UpdatesReferences()
         {
             //Input
@@ -270,6 +284,8 @@ End Sub
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
         public void RenameRefactoring_RenameVariable_UpdatesReferences()
         {
             //Input
@@ -311,6 +327,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
         public void RenameRefactoring_RenameParameter_UpdatesReferences()
         {
             //Input
@@ -350,6 +368,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
         public void RenameRefactoring_RenameFirstPropertyParameter_UpdatesAllRelatedParameters()
         {
             //Input
@@ -411,6 +431,8 @@ End Property";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
         public void RenameRefactoring_RenameLastPropertyParameter_UpdatesAllRelatedParameters()
         {
             //Input
@@ -468,6 +490,8 @@ End Property";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
         public void RenameRefactoring_RenameLastPropertyParameter_UpdatesRelatedParametersWithSameName()
         {
             //Input
@@ -525,6 +549,8 @@ End Property";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
         public void RenameRefactoring_RenameGetterAndSetter()
         {
             //Input
@@ -568,6 +594,8 @@ End Property";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
         public void RenameRefactoring_RenameGetterAndLetter()
         {
             //Input
@@ -611,6 +639,8 @@ End Property";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
         public void RenameRefactoring_RenameFunction()
         {
             //Input
@@ -650,6 +680,8 @@ End Function";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
         public void RenameRefactoring_RenameFunction_UpdatesReferences()
         {
             //Input
@@ -701,6 +733,8 @@ End Sub
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
         public void RenameRefactoring_RefactorWithDeclaration()
         {
             //Input
@@ -738,6 +772,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
         public void RenameRefactoring_RenameInterface()
         {
             //Input
@@ -799,6 +835,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
         public void RenameRefactoring_RenameInterfaceReferences()
         {
             const string inputCode1 =
@@ -875,6 +913,8 @@ End Sub"
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
         public void RenameRefactoring_RenameInterfaceFromImplementation()
         {
             const string inputCode1 =
@@ -954,6 +994,8 @@ End Sub"
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
         public void RenameRefactoring_RenameInterfaceNoImplementers()
         {
             const string inputCode1 =
@@ -982,6 +1024,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
         public void RenameRefactoring_RenameInterfaceFromReference()
         {
             const string inputCode1 =
@@ -1060,6 +1104,8 @@ End Sub"
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
         public void RenameRefactoring_RenameControl()
         {
             const string inputCode1 =
@@ -1108,6 +1154,8 @@ End Sub
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
         public void RenameRefactoring_RenameControlRenameInReference()
         {
             const string inputCode1 =
@@ -1160,6 +1208,8 @@ End Sub
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
         public void RenameRefactoring_RenameControlFromEventReference()
         {
             const string inputCode1 =
@@ -1210,6 +1260,8 @@ End Sub
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
         public void RenameRefactoring_RenameControlFromChangeEventHandler()
         {
             const string inputCode1 =
@@ -1253,6 +1305,8 @@ End Sub
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
         public void RenameRefactoring_RenameInterfaceReferencesWithinScope()
         {
             const string inputCode1 =
@@ -1332,6 +1386,8 @@ End Sub"
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
         public void RenameRefactoring_RenameEventWithReferences()
         {
             const string inputCode1 =
@@ -1401,6 +1457,8 @@ End Sub
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
         public void RenameRefactoring_RenameModuleFromReference()
         {
             const string inputCode1 =
@@ -1455,6 +1513,8 @@ End Sub
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
         public void RenameRefactoring_RenameEventFromUsage()
         {
             const string inputCode1 =
@@ -1524,6 +1584,8 @@ End Sub
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
         public void RenameRefactoring_RenameEventFromImplementer()
         {
             //CEventClass
@@ -1595,6 +1657,8 @@ End Sub
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
         public void RenameRefactoring_RenameControlEventName_AcceptPrompt()
         {
             const string inputCode1 =
@@ -1619,6 +1683,8 @@ End Sub
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
         public void RenameRefactoring_CheckAllRefactorCallPaths()
         {
             const string inputCode1 =
@@ -1653,6 +1719,8 @@ End Sub
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
         public void RenameRefactoring_RenameControlNameFromEvent_AcceptPrompt()
         {
             const string inputCode1 =
@@ -1686,6 +1754,8 @@ End Sub
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
         public void RenameRefactoring_RenameEvent()
         {
             //Input
@@ -1743,6 +1813,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
         public void RenameRefactoring_InterfaceRenamed_AcceptPrompt()
         {
             //Input
@@ -1804,6 +1876,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
         public void RenameRefactoring_InterfaceRenamed_RejectPrompt()
         {
             //Input
@@ -1858,6 +1932,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
         public void Rename_PresenterIsNull()
         {
             //Input
@@ -1885,6 +1961,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
         public void Presenter_TargetIsNull()
         {
             //Input
@@ -1911,6 +1989,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
         public void Factory_SelectionIsNull()
         {
             //Input
@@ -1935,6 +2015,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
         public void RenameRefactoring_RenameProject()
         {
             const string oldName = "TestProject1";
@@ -1967,6 +2049,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
         public void RenameRefactoring_RenameSub_ConflictingNames_Reject()
         {
             //Input
@@ -2008,6 +2092,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
         public void RenameRefactoring_RenameSub_ConflictingNames_Accept()
         {
             //Input
@@ -2049,6 +2135,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
         public void RenameRefactoring_RenameCodeModule()
         {
             const string newName = "RenameModule";

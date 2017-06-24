@@ -136,6 +136,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void UnassignedVariable_VariableOnMultipleLines_QuickFixWorks()
         {
             const string inputCode =
@@ -161,6 +162,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void UnassignedVariable_MultipleVariablesOnSingleLine_QuickFixWorks()
         {
             const string inputCode =
@@ -186,6 +188,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void UnassignedVariable_MultipleVariablesOnMultipleLines_QuickFixWorks()
         {
             const string inputCode =

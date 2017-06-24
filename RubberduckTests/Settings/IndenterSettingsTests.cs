@@ -330,6 +330,7 @@ namespace RubberduckTests.Settings
         }
 
         [TestMethod]
+        [TestCategory("Settings")]
         public void LinesBetweenProceduresIsSetInCtor()
         {
             var defaultConfig = GetDefaultConfig();

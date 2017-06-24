@@ -160,6 +160,7 @@ namespace Rubberduck.Parsing.Symbols
                 }
 
                 annotations.Add(annotation);
+
             }
 
             return annotations;
@@ -390,68 +391,7 @@ namespace Rubberduck.Parsing.Symbols
         public override void EnterImplementsStmt(VBAParser.ImplementsStmtContext context)
         {
             // The expression will be later resolved to the actual declaration. Have to split the work up because we have to gather/create all declarations first.
-            ((ClassModuleDeclaration)_moduleDeclaration).AddSupertype(context.expression().GetText());
-        }
-
-        public override void EnterOptionBaseStmt(VBAParser.OptionBaseStmtContext context)
-        {
-            AddDeclaration(CreateDeclaration(
-                context.GetText(),
-                string.Empty,
-                Accessibility.Implicit,
-                DeclarationType.ModuleOption,
-                context,
-                context.GetSelection(),
-                false,
-                null,
-                null));
-        }
-
-        public override void EnterOptionCompareStmt(VBAParser.OptionCompareStmtContext context)
-        {
-            AddDeclaration(CreateDeclaration(
-                context.GetText(),
-                string.Empty,
-                Accessibility.Implicit,
-                DeclarationType.ModuleOption,
-                context,
-                context.GetSelection(),
-                false,
-                null,
-                null));
-        }
-
-        public override void EnterOptionExplicitStmt(VBAParser.OptionExplicitStmtContext context)
-        {
-            AddDeclaration(CreateDeclaration(
-                context.GetText(),
-                string.Empty,
-                Accessibility.Implicit,
-                DeclarationType.ModuleOption,
-                context,
-                context.GetSelection(),
-                false,
-                null,
-                null));
-        }
-
-        public override void ExitOptionPrivateModuleStmt(VBAParser.OptionPrivateModuleStmtContext context)
-        {
-            if (_moduleDeclaration.DeclarationType == DeclarationType.ProceduralModule)
-            {
-                ((ProceduralModuleDeclaration)_moduleDeclaration).IsPrivateModule = true;
-            }
-            AddDeclaration(
-                CreateDeclaration(
-                    context.GetText(),
-                    string.Empty,
-                    Accessibility.Implicit,
-                    DeclarationType.ModuleOption,
-                    context,
-                    context.GetSelection(),
-                    false,
-                    null,
-                    null));
+            ((ClassModuleDeclaration)_moduleDeclaration).AddSupertypeName(context.expression().GetText());
         }
 
         public override void EnterSubStmt(VBAParser.SubStmtContext context)
@@ -707,15 +647,29 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
+
         public override void EnterStatementLabelDefinition(VBAParser.StatementLabelDefinitionContext context)
         {
-            var statementText = context.identifierStatementLabel() != null
-                ? context.identifierStatementLabel().unrestrictedIdentifier().GetText()
-                : context.lineNumberLabel().numberLiteral().GetText();
+            if (context.combinedLabels() != null)
+            {
+                var combinedLabel = context.combinedLabels();
+                AddIdentifierStatementLabelDeclaration(combinedLabel.identifierStatementLabel());
+                AddLineNumberLabelDeclaration(combinedLabel.lineNumberLabel());
+            }
+            else if (context.identifierStatementLabel() != null) 
+            {
+                AddIdentifierStatementLabelDeclaration(context.identifierStatementLabel());
+            }
+            else
+            {
+                AddLineNumberLabelDeclaration(context.standaloneLineNumberLabel().lineNumberLabel());
+            }
+        }
 
-            var statementSelection = context.identifierStatementLabel() != null
-                ? context.identifierStatementLabel().unrestrictedIdentifier().GetSelection()
-                : context.lineNumberLabel().numberLiteral().GetSelection();
+        private void AddIdentifierStatementLabelDeclaration(VBAParser.IdentifierStatementLabelContext context)
+        {
+            var statementText = context.unrestrictedIdentifier().GetText();
+            var statementSelection = context.unrestrictedIdentifier().GetSelection();
 
             AddDeclaration(
                 CreateDeclaration(
@@ -725,7 +679,25 @@ namespace Rubberduck.Parsing.Symbols
                     DeclarationType.LineLabel,
                     context,
                     statementSelection,
-                    true,
+                    false,
+                    null,
+                    null));
+        }
+
+        private void AddLineNumberLabelDeclaration(VBAParser.LineNumberLabelContext context)
+        {
+            var statementText = context.numberLiteral().GetText();
+            var statementSelection = context.numberLiteral().GetSelection();
+
+            AddDeclaration(
+                CreateDeclaration(
+                    statementText,
+                    null,
+                    Accessibility.Private,
+                    DeclarationType.LineLabel,
+                    context,
+                    statementSelection,
+                    false,
                     null,
                     null));
         }

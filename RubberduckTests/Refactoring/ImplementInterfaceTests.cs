@@ -10,6 +10,8 @@ namespace RubberduckTests.Refactoring
     public class ImplementInterfaceTests
     {
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Implement Interface")]
         public void ImplementInterface_Procedure()
         {
             //Input
@@ -49,6 +51,8 @@ End Sub
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Implement Interface")]
         public void ImplementInterface_Procedure_ClassHasOtherProcedure()
         {
             //Input
@@ -94,6 +98,8 @@ End Sub
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Implement Interface")]
         public void ImplementInterface_Procedure_WithParams()
         {
             //Input
@@ -133,6 +139,8 @@ End Sub
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Implement Interface")]
         public void ImplementInterface_Function()
         {
             //Input
@@ -172,6 +180,8 @@ End Function
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Implement Interface")]
         public void ImplementInterface_Function_WithImplicitType()
         {
             //Input
@@ -211,6 +221,8 @@ End Function
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Implement Interface")]
         public void ImplementInterface_Function_WithParam()
         {
             //Input
@@ -250,6 +262,8 @@ End Function
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Implement Interface")]
         public void ImplementInterface_PropertyGet()
         {
             //Input
@@ -289,6 +303,8 @@ End Property
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Implement Interface")]
         public void ImplementInterface_PropertyGet_WithImplicitType()
         {
             //Input
@@ -328,6 +344,8 @@ End Property
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Implement Interface")]
         public void ImplementInterface_PropertyGet_WithParam()
         {
             //Input
@@ -367,6 +385,8 @@ End Property
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Implement Interface")]
         public void ImplementInterface_PropertyLet()
         {
             //Input
@@ -406,6 +426,8 @@ End Property
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Implement Interface")]
         public void ImplementInterface_PropertyLet_WithParam()
         {
             //Input
@@ -445,6 +467,8 @@ End Property
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Implement Interface")]
         public void ImplementInterface_PropertySet()
         {
             //Input
@@ -484,6 +508,8 @@ End Property
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Implement Interface")]
         public void ImplementInterface_PropertySet_WithParam()
         {
             //Input
@@ -523,6 +549,8 @@ End Property
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Implement Interface")]
         public void ImplementInterface_PropertySet_AllTypes()
         {
             //Input
@@ -583,6 +611,8 @@ End Property
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Implement Interface")]
         public void CreatesMethodStubForAllProcedureKinds()
         {
             //Input
@@ -650,6 +680,8 @@ End Property
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Implement Interface")]
         public void ImplementsInterfaceInDocumentModule()
         {
             const string interfaceCode = @"Option Explicit
@@ -685,7 +717,9 @@ End Sub
             Assert.AreEqual(expectedCode, rewriter.GetText());
         }
  
-            [TestMethod]
+        [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Implement Interface")]
         public void ImplementsInterfaceInUserFormModule()
         {
             const string interfaceCode = @"Option Explicit

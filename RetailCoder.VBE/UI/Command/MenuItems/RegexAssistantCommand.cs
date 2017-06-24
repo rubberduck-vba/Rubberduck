@@ -14,7 +14,7 @@ namespace Rubberduck.UI.Command.MenuItems
         {
         }
 
-        protected override void ExecuteImpl(object parameter)
+        protected override void OnExecute(object parameter)
         {
             using (var window = new RegexAssistantDialog())
             {

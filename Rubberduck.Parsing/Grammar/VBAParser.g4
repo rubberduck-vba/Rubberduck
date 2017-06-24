@@ -93,9 +93,13 @@ moduleBodyElement :
 
 block : (blockStmt endOfStatement)*;
 
-blockStmt :
-    statementLabelDefinition
-    | fileStmt
+blockStmt : 
+    statementLabelDefinition whiteSpace? mainBlockStmt?
+    | mainBlockStmt 
+;
+
+mainBlockStmt :
+    fileStmt
     | attributeStmt
     | constStmt
     | doLoopStmt
@@ -441,8 +445,8 @@ modeSpecifier :	(MID | MIDB) DOLLAR? ;
 integerExpression : expression;
 
 callStmt :
-    CALL whiteSpace expression
-    | expression (whiteSpace argumentList)?
+    CALL whiteSpace lExpression
+    | lExpression (whiteSpace argumentList)?
 ;
 
 resumeStmt : RESUME (whiteSpace (NEXT | expression))?;
@@ -558,9 +562,14 @@ complexType :
 
 fieldLength : MULT whiteSpace? (numberLiteral | identifierValue);
 
-statementLabelDefinition : identifierStatementLabel | lineNumberLabel;
-identifierStatementLabel : unrestrictedIdentifier whiteSpace? COLON;
-lineNumberLabel : numberLiteral whiteSpace? COLON?;
+//Statement labels can only appear at the start of a line.
+statementLabelDefinition : {_input.La(-1) == NEWLINE}? (combinedLabels | identifierStatementLabel | standaloneLineNumberLabel);
+identifierStatementLabel : unrestrictedIdentifier whiteSpace? COLON; 
+standaloneLineNumberLabel : 
+	lineNumberLabel whiteSpace? COLON
+	| lineNumberLabel;
+combinedLabels : lineNumberLabel whiteSpace identifierStatementLabel;
+lineNumberLabel : numberLiteral;
 
 numberLiteral : HEXLITERAL | OCTLITERAL | FLOATLITERAL | INTEGERLITERAL;
 
@@ -617,6 +626,7 @@ lExpression :
     | identifier                                                                                                    # simpleNameExpr
     | DOT mandatoryLineContinuation? unrestrictedIdentifier                                                         # withMemberAccessExpr
     | EXCLAMATIONPOINT mandatoryLineContinuation? unrestrictedIdentifier                                            # withDictionaryAccessExpr
+	| lExpression mandatoryLineContinuation whiteSpace? LPAREN whiteSpace? argumentList? whiteSpace? RPAREN			# whitespaceIndexExpr
 ;
 
 // 3.3.5.3 Special Identifier Forms

@@ -14,7 +14,7 @@ namespace Rubberduck.UI.Command
     {
         public NavigateCommand() : base(LogManager.GetCurrentClassLogger()) { }
 
-        protected override void ExecuteImpl(object parameter)
+        protected override void OnExecute(object parameter)
         {
             var param = parameter as NavigateCodeEventArgs;
             if (param == null || param.QualifiedName.Component == null)
