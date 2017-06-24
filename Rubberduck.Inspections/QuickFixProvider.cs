@@ -65,30 +65,6 @@ namespace Rubberduck.Inspections
             _state.OnParseRequested(this);
         }
 
-        private void RewriteFor(IInspectionResult result)
-        {
-            var inspection = result.Inspection as IParseTreeInspection;
-            if (inspection != null)
-            {
-                switch (inspection.Pass)
-                {
-                    case ParsePass.AttributesPass:
-                        _state.GetAttributeRewriter(result.QualifiedSelection.QualifiedName).Rewrite();
-                        _state.ClearStateCache(result.QualifiedSelection.QualifiedName);
-                        break;
-                    case ParsePass.CodePanePass:
-                        _state.GetRewriter(result.QualifiedSelection.QualifiedName).Rewrite();
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            }
-            else
-            {
-                _state.GetRewriter(result.QualifiedSelection.QualifiedName).Rewrite();
-            }
-        }
-
         public void FixInProcedure(IQuickFix fix, QualifiedMemberName? qualifiedMember, Type inspectionType, IEnumerable<IInspectionResult> results)
         {
             Debug.Assert(qualifiedMember.HasValue, "Null qualified member.");
