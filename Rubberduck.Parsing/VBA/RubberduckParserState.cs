@@ -19,7 +19,6 @@ using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
-using System.Linq;
 
 // ReSharper disable LoopCanBeConvertedToQuery
 
@@ -887,7 +886,7 @@ namespace Rubberduck.Parsing.VBA
 
         public void AddTokenStream(QualifiedModuleName module, ITokenStream stream)
         {
-            _moduleStates[module].SetTokenStream(stream);
+            _moduleStates[module].SetTokenStream(module.Component.CodeModule, stream);
         }
 
         public void AddParseTree(QualifiedModuleName module, IParseTree parseTree, ParsePass pass = ParsePass.CodePanePass)
@@ -974,8 +973,7 @@ namespace Rubberduck.Parsing.VBA
 
         public IModuleRewriter GetRewriter(QualifiedModuleName qualifiedModuleName)
         {
-            var rewriter = _moduleStates[qualifiedModuleName].ModuleRewriter;
-            return new ModuleRewriter(qualifiedModuleName.Component.CodeModule, rewriter);
+            return _moduleStates[qualifiedModuleName].ModuleRewriter;
         }
 
         public IModuleRewriter GetRewriter(Declaration declaration)
@@ -987,6 +985,14 @@ namespace Rubberduck.Parsing.VBA
         public IModuleRewriter GetAttributeRewriter(QualifiedModuleName qualifiedModuleName)
         {
             return _moduleStates[qualifiedModuleName].AttributesRewriter;
+        }
+
+        public void RewriteAllModules()
+        {
+            foreach (var module in _moduleStates.Where(s => s.Key.Component != null))
+            {
+                module.Value.ModuleRewriter.Rewrite();
+            }
         }
 
         /// <summary>

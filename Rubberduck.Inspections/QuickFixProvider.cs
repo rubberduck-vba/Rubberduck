@@ -44,12 +44,7 @@ namespace Rubberduck.Inspections
                 string value;
                 if (!result.Properties.TryGetValue("DisableFixes", out value)) { return true; }
 
-                if (value.Split(',').Contains(fix.GetType().Name))
-                {
-                    return false;
-                }
-
-                return true;
+                return !value.Split(',').Contains(fix.GetType().Name);
             });
         }
 
@@ -66,7 +61,7 @@ namespace Rubberduck.Inspections
             }
 
             fix.Fix(result);
-            RewriteFor(result);
+            _state.RewriteAllModules();
             _state.OnParseRequested(this);
         }
 
@@ -112,7 +107,7 @@ namespace Rubberduck.Inspections
 
             if (filteredResults.Any())
             {
-                _state.GetRewriter(filteredResults.First().QualifiedSelection.QualifiedName).Rewrite();
+                _state.RewriteAllModules();
                 _state.OnParseRequested(this);
             }
         }
@@ -133,7 +128,7 @@ namespace Rubberduck.Inspections
 
             if (filteredResults.Any())
             {
-                RewriteFor(filteredResults.First());
+                _state.RewriteAllModules();
                 _state.OnParseRequested(this);
             }
         }
@@ -154,12 +149,7 @@ namespace Rubberduck.Inspections
 
             if (filteredResults.Any())
             {
-                var modules = filteredResults.GroupBy(s => s.QualifiedSelection.QualifiedName);
-                foreach (var module in modules)
-                {
-                    RewriteFor(module.First());
-                }
-
+                _state.RewriteAllModules();
                 _state.OnParseRequested(this);
             }
         }
@@ -180,12 +170,7 @@ namespace Rubberduck.Inspections
 
             if (filteredResults.Any())
             {
-                var modules = filteredResults.GroupBy(s => s.QualifiedSelection.QualifiedName);
-                foreach (var module in modules)
-                {
-                    RewriteFor(module.First());
-                }
-
+                _state.RewriteAllModules();
                 _state.OnParseRequested(this);
             }
         }

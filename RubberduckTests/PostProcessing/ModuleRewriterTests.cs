@@ -42,6 +42,7 @@ namespace RubberduckTests.PostProcessing
         public void RewriteDoesNotRewriteIfNotDirty()
         {
             var module = new Mock<ICodeModule>();
+            module.Setup(m => m.Content()).Returns(string.Empty);
             module.Setup(m => m.Clear());
 
             var rewriter = new TokenStreamRewriter(new CommonTokenStream(new ListTokenSource(new List<IToken>())));
