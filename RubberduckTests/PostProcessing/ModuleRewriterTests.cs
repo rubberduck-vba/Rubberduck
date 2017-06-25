@@ -26,6 +26,7 @@ namespace RubberduckTests.PostProcessing
 
             var rewriter = new TokenStreamRewriter(new CommonTokenStream(new ListTokenSource(new List<IToken>())));
             var sut = new ModuleRewriter(module.Object, rewriter);
+            sut.InsertAfter(0, "test");
 
             if (!sut.IsDirty)
             {
@@ -34,6 +35,21 @@ namespace RubberduckTests.PostProcessing
             sut.Rewrite();
 
             module.Verify(m => m.Clear());
+        }
+
+        [TestMethod]
+        [TestCategory("TokenStreamRewriter")]
+        public void RewriteDoesNotRewriteIfNotDirty()
+        {
+            var module = new Mock<ICodeModule>();
+            module.Setup(m => m.Content()).Returns(string.Empty);
+            module.Setup(m => m.Clear());
+
+            var rewriter = new TokenStreamRewriter(new CommonTokenStream(new ListTokenSource(new List<IToken>())));
+            var sut = new ModuleRewriter(module.Object, rewriter);
+
+            sut.Rewrite();
+            module.Verify(m => m.Clear(), Times.Never);
         }
 
         [TestMethod]

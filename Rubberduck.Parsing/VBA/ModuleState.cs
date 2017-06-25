@@ -9,6 +9,7 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -17,7 +18,7 @@ namespace Rubberduck.Parsing.VBA
         public ConcurrentDictionary<Declaration, byte> Declarations { get; private set; }
         public ConcurrentDictionary<UnboundMemberDeclaration, byte> UnresolvedMemberDeclarations { get; private set; }
         public ITokenStream TokenStream { get; private set; }
-        public TokenStreamRewriter ModuleRewriter { get; private set; }
+        public IModuleRewriter ModuleRewriter { get; private set; }
         public IModuleRewriter AttributesRewriter { get; private set; }
         public IParseTree ParseTree { get; private set; }
         public IParseTree AttributesPassParseTree { get; private set; }
@@ -95,10 +96,11 @@ namespace Rubberduck.Parsing.VBA
             IsNew = true;
         }
 
-        public ModuleState SetTokenStream(ITokenStream tokenStream)
+        public ModuleState SetTokenStream(ICodeModule module, ITokenStream tokenStream)
         {
             TokenStream = tokenStream;
-            ModuleRewriter = new TokenStreamRewriter(tokenStream);
+            var tokenStreamRewriter = new TokenStreamRewriter(tokenStream);
+            ModuleRewriter = new ModuleRewriter(module, tokenStreamRewriter);
             return this;
         }
 

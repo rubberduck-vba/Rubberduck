@@ -44,12 +44,7 @@ namespace Rubberduck.Inspections
                 string value;
                 if (!result.Properties.TryGetValue("DisableFixes", out value)) { return true; }
 
-                if (value.Split(',').Contains(fix.GetType().Name))
-                {
-                    return false;
-                }
-
-                return true;
+                return !value.Split(',').Contains(fix.GetType().Name);
             });
         }
 
@@ -66,32 +61,8 @@ namespace Rubberduck.Inspections
             }
 
             fix.Fix(result);
-            RewriteFor(result);
+            _state.RewriteAllModules();
             _state.OnParseRequested(this);
-        }
-
-        private void RewriteFor(IInspectionResult result)
-        {
-            var inspection = result.Inspection as IParseTreeInspection;
-            if (inspection != null)
-            {
-                switch (inspection.Pass)
-                {
-                    case ParsePass.AttributesPass:
-                        _state.GetAttributeRewriter(result.QualifiedSelection.QualifiedName).Rewrite();
-                        _state.ClearStateCache(result.QualifiedSelection.QualifiedName);
-                        break;
-                    case ParsePass.CodePanePass:
-                        _state.GetRewriter(result.QualifiedSelection.QualifiedName).Rewrite();
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            }
-            else
-            {
-                _state.GetRewriter(result.QualifiedSelection.QualifiedName).Rewrite();
-            }
         }
 
         public void FixInProcedure(IQuickFix fix, QualifiedMemberName? qualifiedMember, Type inspectionType, IEnumerable<IInspectionResult> results)
@@ -112,7 +83,7 @@ namespace Rubberduck.Inspections
 
             if (filteredResults.Any())
             {
-                _state.GetRewriter(filteredResults.First().QualifiedSelection.QualifiedName).Rewrite();
+                _state.RewriteAllModules();
                 _state.OnParseRequested(this);
             }
         }
@@ -133,7 +104,7 @@ namespace Rubberduck.Inspections
 
             if (filteredResults.Any())
             {
-                RewriteFor(filteredResults.First());
+                _state.RewriteAllModules();
                 _state.OnParseRequested(this);
             }
         }
@@ -154,12 +125,7 @@ namespace Rubberduck.Inspections
 
             if (filteredResults.Any())
             {
-                var modules = filteredResults.GroupBy(s => s.QualifiedSelection.QualifiedName);
-                foreach (var module in modules)
-                {
-                    RewriteFor(module.First());
-                }
-
+                _state.RewriteAllModules();
                 _state.OnParseRequested(this);
             }
         }
@@ -180,12 +146,7 @@ namespace Rubberduck.Inspections
 
             if (filteredResults.Any())
             {
-                var modules = filteredResults.GroupBy(s => s.QualifiedSelection.QualifiedName);
-                foreach (var module in modules)
-                {
-                    RewriteFor(module.First());
-                }
-
+                _state.RewriteAllModules();
                 _state.OnParseRequested(this);
             }
         }
