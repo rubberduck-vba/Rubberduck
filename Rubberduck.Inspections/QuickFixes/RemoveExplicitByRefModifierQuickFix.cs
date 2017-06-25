@@ -6,7 +6,7 @@ using Rubberduck.Common;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.Parsing.PostProcessing;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
@@ -40,8 +40,8 @@ namespace Rubberduck.Inspections.QuickFixes
 
             if (matchingInterfaceMemberContext != null)
             {
-                var interfaceParameterName = GetParameterIdentifierName(context);
-                
+                var interfaceParameterIndex = GetParameterIndex(context);
+
                 var implementationMembers =
                     _state.AllUserDeclarations.FindInterfaceImplementationMembers(interfaceMembers.First(
                         member => member.Context == matchingInterfaceMemberContext)).ToHashSet();
@@ -55,9 +55,9 @@ namespace Rubberduck.Inspections.QuickFixes
                 foreach (var parameter in parameters)
                 {
                     var parameterContext = (VBAParser.ArgContext) parameter.Context;
-                    var parameterName = GetParameterIdentifierName(parameterContext);
+                    var parameterIndex = GetParameterIndex(parameterContext);
 
-                    if (parameterName == interfaceParameterName)
+                    if (parameterIndex == interfaceParameterIndex)
                     {
                         RemoveByRefIdentifier(_state.GetRewriter(parameter), parameterContext);
                     }
@@ -74,25 +74,18 @@ namespace Rubberduck.Inspections.QuickFixes
         public bool CanFixInModule => true;
         public bool CanFixInProject => true;
 
+        private static int GetParameterIndex(VBAParser.ArgContext context)
+        {
+            return Array.IndexOf(((VBAParser.ArgListContext)context.Parent).arg().ToArray(), context);
+        }
+
         private static void RemoveByRefIdentifier(IModuleRewriter rewriter, VBAParser.ArgContext context)
         {
             if (context.BYREF() != null)
             {
                 rewriter.Remove(context.BYREF());
                 rewriter.Remove(context.whiteSpace().First());
-                // DO WYWALENIA!
-                rewriter.Rewrite();
             }
-        }
-
-        private static string GetParameterIdentifierName(VBAParser.ArgContext context)
-        {
-            var identifier = context.unrestrictedIdentifier().identifier();
-            var identifierName = identifier.untypedIdentifier() != null
-                    ? identifier.untypedIdentifier().identifierValue().GetText()
-                    : identifier.typedIdentifier().untypedIdentifier().identifierValue().GetText();
-
-            return identifierName;
         }
     }
 }

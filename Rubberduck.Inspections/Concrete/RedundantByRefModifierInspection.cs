@@ -13,7 +13,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    public sealed class RedundantByRefModifierInspection : InspectionBase, IParseTreeInspection
+    public sealed class RedundantByRefModifierInspection : ParseTreeInspectionBase
     {
         public RedundantByRefModifierInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Hint)
@@ -22,7 +22,7 @@ namespace Rubberduck.Inspections.Concrete
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
-        public IInspectionListener Listener { get; } = new RedundantByRefModifierListener();
+        public override IInspectionListener Listener { get; } = new RedundantByRefModifierListener();
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {

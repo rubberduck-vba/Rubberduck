@@ -412,6 +412,53 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
+        public void ObsoleteByRefModifier_QuickFixWorks_InterfaceImplementationDiffrentParameterName()
+        {
+            const string inputCode1 =
+@"Sub Foo(ByRef arg1 As Integer)
+End Sub";
+
+            const string inputCode2 =
+@"Implements IClass1
+
+Sub IClass1_Foo(ByRef arg2 As Integer)
+End Sub";
+
+            const string expectedCode1 =
+@"Sub Foo(arg1 As Integer)
+End Sub";
+
+            const string expectedCode2 =
+@"Implements IClass1
+
+Sub IClass1_Foo(arg2 As Integer)
+End Sub";
+
+            var builder = new MockVbeBuilder();
+            var vbe = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
+                .AddComponent("Class1", ComponentType.ClassModule, inputCode2)
+                .MockVbeBuilder()
+                .Build();
+
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new RedundantByRefModifierInspection(state);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            new RemoveExplicitByRefModifierQuickFix(state).Fix(inspectionResults.First());
+
+            var project = vbe.Object.VBProjects[0];
+            var interfaceComponent = project.VBComponents[0];
+            var implementationComponent = project.VBComponents[1];
+
+            Assert.AreEqual(expectedCode1, state.GetRewriter(interfaceComponent).GetText(), "Wrong code in interface");
+            Assert.AreEqual(expectedCode2, state.GetRewriter(implementationComponent).GetText(), "Wrong code in implementation");
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteByRefModifier_QuickFixWorks_InterfaceImplementationWithMultipleParameters()
         {
             const string inputCode1 =
