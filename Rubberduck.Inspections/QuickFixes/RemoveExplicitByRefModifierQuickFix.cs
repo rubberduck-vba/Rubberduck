@@ -40,9 +40,11 @@ namespace Rubberduck.Inspections.QuickFixes
 
             if (matchingInterfaceMemberContext != null)
             {
+                var interfaceParameterName = GetParameterIdentifierName(context);
+                
                 var implementationMembers =
                     _state.AllUserDeclarations.FindInterfaceImplementationMembers(interfaceMembers.First(
-                        member => member.Context == matchingInterfaceMemberContext)).ToArray();
+                        member => member.Context == matchingInterfaceMemberContext)).ToHashSet();
 
                 var parameters =
                     _state.DeclarationFinder.UserDeclarations(DeclarationType.Parameter)
@@ -52,7 +54,13 @@ namespace Rubberduck.Inspections.QuickFixes
 
                 foreach (var parameter in parameters)
                 {
-                    RemoveByRefIdentifier(_state.GetRewriter(parameter), (VBAParser.ArgContext) parameter.Context);
+                    var parameterContext = (VBAParser.ArgContext) parameter.Context;
+                    var parameterName = GetParameterIdentifierName(parameterContext);
+
+                    if (parameterName == interfaceParameterName)
+                    {
+                        RemoveByRefIdentifier(_state.GetRewriter(parameter), parameterContext);
+                    }
                 }
             }
         }
@@ -68,9 +76,23 @@ namespace Rubberduck.Inspections.QuickFixes
 
         private static void RemoveByRefIdentifier(IModuleRewriter rewriter, VBAParser.ArgContext context)
         {
-            rewriter.Remove(context.BYREF());
-            rewriter.Remove(context.whiteSpace().First());
-            rewriter.Rewrite();
+            if (context.BYREF() != null)
+            {
+                rewriter.Remove(context.BYREF());
+                rewriter.Remove(context.whiteSpace().First());
+                // DO WYWALENIA!
+                rewriter.Rewrite();
+            }
+        }
+
+        private static string GetParameterIdentifierName(VBAParser.ArgContext context)
+        {
+            var identifier = context.unrestrictedIdentifier().identifier();
+            var identifierName = identifier.untypedIdentifier() != null
+                    ? identifier.untypedIdentifier().identifierValue().GetText()
+                    : identifier.typedIdentifier().untypedIdentifier().identifierValue().GetText();
+
+            return identifierName;
         }
     }
 }

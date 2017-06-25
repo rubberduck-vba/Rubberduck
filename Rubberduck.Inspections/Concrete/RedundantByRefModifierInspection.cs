@@ -26,8 +26,8 @@ namespace Rubberduck.Inspections.Concrete
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
-            var builtInEventHandlerContexts = State.DeclarationFinder.FindEventHandlers().Select(handler => handler.Context);
-            var interfaceImplementationMemberContexts = UserDeclarations.FindInterfaceImplementationMembers().Select(member => member.Context);
+            var builtInEventHandlerContexts = State.DeclarationFinder.FindEventHandlers().Select(handler => handler.Context).ToHashSet();
+            var interfaceImplementationMemberContexts = UserDeclarations.FindInterfaceImplementationMembers().Select(member => member.Context).ToHashSet();
 
             var issues = Listener.Contexts.Where(context =>
                 !IsIgnoringInspectionResultFor(context.ModuleName, context.Context.Start.Line) &&
@@ -47,7 +47,6 @@ namespace Rubberduck.Inspections.Concrete
                             : identifier.typedIdentifier().untypedIdentifier().identifierValue().GetText()),
                     State, issue);
             });
-
         }
 
         public class RedundantByRefModifierListener : VBAParserBaseListener, IInspectionListener

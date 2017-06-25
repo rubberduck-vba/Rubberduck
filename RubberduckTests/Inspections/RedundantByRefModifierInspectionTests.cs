@@ -3,6 +3,7 @@ using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -424,13 +425,13 @@ Sub IClass1_Foo(ByRef arg1 As Integer, ByRef arg2 as Integer)
 End Sub";
 
             const string expectedCode1 =
-@"Sub Foo(arg1 As Integer, arg2 as Integer)
+@"Sub Foo(arg1 As Integer, ByRef arg2 as Integer)
 End Sub";
 
             const string expectedCode2 =
 @"Implements IClass1
 
-Sub IClass1_Foo(arg1 As Integer, arg2 as Integer)
+Sub IClass1_Foo(arg1 As Integer, ByRef arg2 as Integer)
 End Sub";
 
             var builder = new MockVbeBuilder();
@@ -446,10 +447,14 @@ End Sub";
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            foreach (var result in inspectionResults)
-            {
-                new RemoveExplicitByRefModifierQuickFix(state).Fix(result);
-            }
+            new RemoveExplicitByRefModifierQuickFix(state).Fix(
+                inspectionResults.First(
+                    result =>
+                        ((VBAParser.ArgContext) result.Context).unrestrictedIdentifier()
+                        .identifier()
+                        .untypedIdentifier()
+                        .identifierValue()
+                        .GetText() == "arg1"));
 
             var project = vbe.Object.VBProjects[0];
             var interfaceComponent = project.VBComponents[0];
