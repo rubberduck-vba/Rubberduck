@@ -13,14 +13,17 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    public sealed class OptionExplicitInspection : InspectionBase, IParseTreeInspection
+    public sealed class OptionExplicitInspection : ParseTreeInspectionBase
     {
         public OptionExplicitInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Error) { }
+            : base(state, CodeInspectionSeverity.Error)
+        {
+            Listener = new MissingOptionExplicitListener();
+        }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
-        public IInspectionListener Listener { get; } = new MissingOptionExplicitListener();
+        public override IInspectionListener Listener { get; }
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {

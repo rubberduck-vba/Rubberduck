@@ -156,10 +156,10 @@ namespace Rubberduck.Parsing.Symbols
         private bool HasAttribute(string attributeName)
         {
             var hasAttribute = false;
-            IEnumerable<string> value;
-            if (Attributes.TryGetValue(attributeName, out value))
+            var attribute = Attributes.FirstOrDefault(a => a.Name == attributeName);
+            if (attribute != null)
             {
-                hasAttribute = value.Single() == "True";
+                hasAttribute = attribute.Values.Single() == "True";
             }
             return hasAttribute;
         }             

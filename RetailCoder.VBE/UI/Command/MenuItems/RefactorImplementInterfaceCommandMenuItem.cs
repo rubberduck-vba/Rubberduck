@@ -12,10 +12,10 @@ namespace Rubberduck.UI.Command.MenuItems
         {
         }
 
-        public override string Key { get { return "RefactorMenu_ImplementInterface"; } }
-        public override int DisplayOrder { get { return (int)RefactoringsMenuItemDisplayOrder.ImplementInterface; } }
-        public override Image Image { get { return Resources.ImplementInterface; } }
-        public override Image Mask { get { return Resources.ImplementInterfaceMask; } }
+        public override string Key => "RefactorMenu_ImplementInterface";
+        public override int DisplayOrder => (int)RefactoringsMenuItemDisplayOrder.ImplementInterface;
+        public override Image Image => Resources.ImplementInterface;
+        public override Image Mask => Resources.ImplementInterfaceMask;
 
         public override bool EvaluateCanExecute(RubberduckParserState state)
         {

@@ -36,7 +36,8 @@ End Sub
         public class WhenClassifyingDeclarations : ExtractMethodParameterClassificationTests
         {
 
-            [TestMethod] 
+            [TestMethod]
+            [TestCategory("Extract Method")]
             public void shouldUseEachRuleInRulesCollectionToCheckEachReference()
             {
                 QualifiedModuleName qualifiedModuleName;
@@ -67,6 +68,7 @@ End Sub
         {
 
             [TestMethod]
+            [TestCategory("Extract Method")]
             public void shouldIncludeByValParams()
             {
 
@@ -94,6 +96,7 @@ End Sub
             }
 
             [TestMethod]
+            [TestCategory("Extract Method")]
             public void shouldIncludeByRefParams()
             {
 

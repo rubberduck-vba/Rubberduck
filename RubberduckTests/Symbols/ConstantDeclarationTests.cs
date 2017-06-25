@@ -8,6 +8,7 @@ namespace RubberduckTests.Symbols
     public class ConstantDeclarationTests
     {
         [TestMethod]
+        [TestCategory("Resolver")]
         public void ExpressionReturnsTheContructorInjectedValue()
         {
             var value = "testtest";

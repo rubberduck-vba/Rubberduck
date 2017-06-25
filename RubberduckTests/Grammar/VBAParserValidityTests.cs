@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor;
+using Rubberduck.Parsing.Symbols;
 
 namespace RubberduckTests.Grammar
 {
@@ -17,6 +18,7 @@ namespace RubberduckTests.Grammar
         [TestMethod]
         [TestCategory("LongRunning")]
         [TestCategory("Grammar")]
+        [TestCategory("Parser")]
         [DeploymentItem(@"Testfiles\")]
         public void TestParser()
         {
@@ -43,7 +45,7 @@ namespace RubberduckTests.Grammar
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(code, out component);
 
-            var state = new RubberduckParserState(vbe.Object);
+            var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error: " + filename); }

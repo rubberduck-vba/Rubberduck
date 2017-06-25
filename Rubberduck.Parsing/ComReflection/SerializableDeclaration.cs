@@ -152,7 +152,7 @@ namespace Rubberduck.Parsing.ComReflection
             IdentifierName = declaration.IdentifierName;
 
             Attributes = declaration.Attributes
-                .Select(a => new SerializableMemberAttribute(a.Key, a.Value))
+                .Select(a => new SerializableMemberAttribute(a.Name, a.Values))
                 .ToList();
 
             ParentScope = declaration.ParentScope;
@@ -193,8 +193,8 @@ namespace Rubberduck.Parsing.ComReflection
         public string ProjectPath { get; set; }
         public string ComponentName { get; set; }
 
-        public QualifiedModuleName QualifiedModuleName { get { return new QualifiedModuleName(ProjectName, ProjectPath, ComponentName); } }
-        public QualifiedMemberName QualifiedMemberName { get { return new QualifiedMemberName(QualifiedModuleName, MemberName); } }
+        public QualifiedModuleName QualifiedModuleName => new QualifiedModuleName(ProjectName, ProjectPath, ComponentName);
+        public QualifiedMemberName QualifiedMemberName => new QualifiedMemberName(QualifiedModuleName, MemberName);
 
         public string ParentScope { get; set; }
         public string AsTypeName { get; set; }
@@ -218,7 +218,7 @@ namespace Rubberduck.Parsing.ComReflection
             var attributes = new Attributes();
             foreach (var attribute in Attributes)
             {
-                attributes.Add(attribute.Name, attribute.Values);
+                attributes.Add(new AttributeNode(attribute.Name, attribute.Values));
             }
 
             switch (DeclarationType)

@@ -21,7 +21,7 @@ namespace Rubberduck.UI.Command.Refactorings
             _msgBox = msgBox;
         }
 
-        protected override bool CanExecuteImpl(object parameter)
+        protected override bool EvaluateCanExecute(object parameter)
         {
             var pane = Vbe.ActiveCodePane;
             {
@@ -46,7 +46,7 @@ namespace Rubberduck.UI.Command.Refactorings
             }
         }
 
-        protected override void ExecuteImpl(object parameter)
+        protected override void OnExecute(object parameter)
         {
             var pane = Vbe.ActiveCodePane;
             {

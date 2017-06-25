@@ -11,6 +11,7 @@ namespace RubberduckTests.Inspections
     public class IgnoreOnceQuickFixTests
     {
         [TestMethod]
+        [TestCategory("Inspections")]
         public void AnnotationListFollowedByCommentAddsAnnotationCorrectly()
         {
             const string inputCode = @"

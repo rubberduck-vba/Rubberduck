@@ -22,7 +22,7 @@ namespace RubberduckTests.Inspections
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object);
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -43,7 +43,7 @@ namespace RubberduckTests.Inspections
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object);
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }

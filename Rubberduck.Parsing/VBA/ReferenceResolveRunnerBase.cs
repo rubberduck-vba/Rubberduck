@@ -170,7 +170,7 @@ namespace Rubberduck.Parsing.VBA
 
         private void AddNewUnresolvedMemberDeclarations()
         {
-            var unresolved = _state.DeclarationFinder.FreshUnresolvedMemberDeclarations();
+            var unresolved = _state.DeclarationFinder.FreshUnresolvedMemberDeclarations;
             foreach (var declaration in unresolved)
             {
                 _state.AddUnresolvedMemberDeclaration(declaration);

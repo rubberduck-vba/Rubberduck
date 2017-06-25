@@ -10,7 +10,7 @@
          mc:Ignorable="d"
          Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_Changes}"
          d:DesignHeight="500" d:DesignWidth="300"
-         d:DataContext="{d:DesignInstance {x:Type sourceControl:ChangesViewViewModel}, IsDesignTimeCreatable=False}">
+         d:DataContext="{d:DesignInstance {x:Type sourceControl:ChangesPanelViewModel}, IsDesignTimeCreatable=False}">
     <TabItem.Resources>
         <BitmapImage x:Key="CheckImage" UriSource="../../Resources/tick.png" />
         <BitmapImage x:Key="UndoImage" UriSource="../../Resources/arrow-circle-left.png" />

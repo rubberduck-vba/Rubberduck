@@ -28,12 +28,12 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _openFileDialog.CheckFileExists = true;
         }
 
-        protected override bool CanExecuteImpl(object parameter)
+        protected override bool EvaluateCanExecute(object parameter)
         {
             return parameter != null || _vbe.VBProjects.Count == 1 || _vbe.ActiveVBProject != null;
         }
 
-        protected override void ExecuteImpl(object parameter)
+        protected override void OnExecute(object parameter)
         {
             var project = GetNodeProject((CodeExplorerItemViewModel)parameter);
             if (project == null)

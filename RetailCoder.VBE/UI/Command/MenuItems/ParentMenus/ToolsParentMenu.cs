@@ -9,15 +9,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
         {
         }
 
-        public override int DisplayOrder
-        {
-            get
-            {
-                return (int)RubberduckMenuItemDisplayOrder.Tools;
-            }
-        }
-        
-         
+        public override int DisplayOrder => (int)RubberduckMenuItemDisplayOrder.Tools;
     }
 
     public enum ToolsMenuItemDisplayOrder

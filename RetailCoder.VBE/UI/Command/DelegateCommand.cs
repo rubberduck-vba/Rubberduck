@@ -16,12 +16,12 @@ namespace Rubberduck.UI.Command
             _execute = execute;
         }
 
-        protected override bool CanExecuteImpl(object parameter)
+        protected override bool EvaluateCanExecute(object parameter)
         {
             return _canExecute == null || _canExecute.Invoke(parameter);
         }
 
-        protected override void ExecuteImpl(object parameter)
+        protected override void OnExecute(object parameter)
         {
             _execute.Invoke(parameter);
         }

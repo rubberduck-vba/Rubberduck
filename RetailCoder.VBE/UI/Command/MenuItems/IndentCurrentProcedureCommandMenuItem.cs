@@ -8,7 +8,7 @@ namespace Rubberduck.UI.Command.MenuItems
         {
         }
 
-        public override string Key { get { return "IndentCurrentProcedure"; } }
-        public override int DisplayOrder  { get { return (int)SmartIndenterMenuItemDisplayOrder.CurrentProcedure; } }
+        public override string Key => "IndentCurrentProcedure";
+        public override int DisplayOrder => (int)SmartIndenterMenuItemDisplayOrder.CurrentProcedure;
     }
 }
