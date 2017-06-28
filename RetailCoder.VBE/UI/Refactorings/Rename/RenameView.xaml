@@ -29,14 +29,12 @@
             <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=NameLabelText}"
                        VerticalAlignment="Top"
                        Margin="0,0,5,0" />
-            <TextBox x.Name="InputTextBox"
-                     Grid.Column="1"
+            <TextBox Grid.Column="1"
                      Text="{Binding NewName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      Height="22"
                      VerticalAlignment="Top"
                      VerticalContentAlignment="Center"
-                     HorizontalAlignment="Stretch"
-                     isFocused="True"/>
+                     HorizontalAlignment="Stretch"/>
             <Image Grid.Column="1"
                    Source="../../../Resources/cross-circle.png"
                    Height="16"
