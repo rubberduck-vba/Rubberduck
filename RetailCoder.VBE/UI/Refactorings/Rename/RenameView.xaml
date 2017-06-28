@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:converters="clr-namespace:Rubberduck.UI.Converters"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="300"
+             FocusManager.FocusedElement="{Binding ElementName=InputTextBox}">
     <UserControl.Resources>
         <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
     </UserControl.Resources>
@@ -28,12 +29,14 @@
             <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=NameLabelText}"
                        VerticalAlignment="Top"
                        Margin="0,0,5,0" />
-            <TextBox Grid.Column="1"
+            <TextBox x.Name="InputTextBox"
+                     Grid.Column="1"
                      Text="{Binding NewName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      Height="22"
                      VerticalAlignment="Top"
                      VerticalContentAlignment="Center"
-                     HorizontalAlignment="Stretch" />
+                     HorizontalAlignment="Stretch"
+                     isFocused="True"/>
             <Image Grid.Column="1"
                    Source="../../../Resources/cross-circle.png"
                    Height="16"
@@ -55,12 +58,14 @@
                         Margin="5,0"
                         Padding="10,0"
                         IsEnabled="{Binding IsValidName}"
+                        IsDefault="True"
                         Command="{Binding OkButtonCommand}" />
                 <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CancelButtonText}"
                         Grid.Column="1"
                         Height="20"
                         Margin="5,0"
                         Padding="10,0"
+                        IsCancel="True"
                         Command="{Binding CancelButtonCommand}">
                 </Button>
             </Grid>
