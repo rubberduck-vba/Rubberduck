@@ -5,8 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:converters="clr-namespace:Rubberduck.UI.Converters"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300"
-             FocusManager.FocusedElement="{Binding ElementName=InputTextBox}">
+             d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
     </UserControl.Resources>
