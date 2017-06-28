@@ -33,7 +33,7 @@
                      Height="22"
                      VerticalAlignment="Top"
                      VerticalContentAlignment="Center"
-                     HorizontalAlignment="Stretch"/>
+                     HorizontalAlignment="Stretch" />
             <Image Grid.Column="1"
                    Source="../../../Resources/cross-circle.png"
                    Height="16"
