@@ -14,6 +14,55 @@ namespace RubberduckTests.Inspections
     public class SynchronizeAttributesQuickFixTests
     {
         [TestMethod]
+        public void AddsMissingDescriptionAnnotation()
+        {
+            const string testModuleName = "Test";
+            const string inputCode = @"
+VERSION 1.0 CLASS
+BEGIN
+  MultiUse = -1  'True
+END
+Attribute VB_Name = """ + testModuleName + @"""   ' (ignored)
+Option Explicit
+
+Sub DoSomething()
+Attribute DoSomething.VB_Description = ""Does something""
+End Sub";
+            const string expectedCode = @"
+VERSION 1.0 CLASS
+BEGIN
+  MultiUse = -1  'True
+END
+Attribute VB_Name = """ + testModuleName + @"""   ' (ignored)
+Option Explicit
+
+'@Description(""Does something"")
+Sub DoSomething()
+Attribute DoSomething.VB_Description = ""Does something""
+End Sub";
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out component);
+
+            var state = MockParser.CreateAndParse(vbe.Object);
+            var inspection = new MissingAnnotationInspection(state);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var result = inspector.FindIssuesAsync(state, CancellationToken.None).Result?.SingleOrDefault();
+            if(result?.Context.GetType() != typeof(VBAParser.AttributeStmtContext))
+            {
+                Assert.Inconclusive("Inspection failed to return a result.");
+            }
+
+            var fix = new SynchronizeAttributesQuickFix(state);
+            fix.Fix(result);
+
+            var rewriter = state.GetAttributeRewriter(result.QualifiedSelection.QualifiedName);
+            var actual = rewriter.GetText();
+
+            Assert.AreEqual(expectedCode, actual);
+
+        }
+
+        [TestMethod]
         public void AddsMissingPredeclaredIdAttribute()
         {
             const string testModuleName = "Test";

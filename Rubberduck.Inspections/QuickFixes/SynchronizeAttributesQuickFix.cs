@@ -82,7 +82,38 @@ namespace Rubberduck.Inspections.QuickFixes
         /// <param name="context"></param>
         private void Fix(QualifiedMemberName memberName, VBAParser.AttributeStmtContext context)
         {
+            if (context.AnnotationType() == AnnotationType.Description)
+            {
+                FixMemberDescriptionAnnotation(_state, memberName);
+            }
+        }
 
+        private static void FixMemberDescriptionAnnotation(RubberduckParserState state, QualifiedMemberName memberName)
+        {
+            var moduleName = memberName.QualifiedModuleName;
+            var rewriter = state.GetRewriter(moduleName);
+
+            var attributes = state
+                .GetModuleAttributes(moduleName)
+                .Where(a => a.Key.Item1.StartsWith(memberName.MemberName)
+                         && a.Key.Item2.HasFlag(DeclarationType.Member))
+                .ToArray();
+
+            Debug.Assert(attributes.Length == 1, "Member has too many attributes");
+            var attribute = attributes.SingleOrDefault();
+
+            AttributeNode node;
+            if (!attribute.Value.HasMemberDescriptionAttribute(memberName.MemberName, out node))
+            {
+                return;
+            }
+
+            var value = node.Context.attributeValue().SingleOrDefault()?.GetText() ?? string.Empty;
+            var member = state.DeclarationFinder.Members(memberName.QualifiedModuleName)
+                .First(m => m.IdentifierName == memberName.MemberName);
+
+            var insertAt = member.Context.Start;
+            rewriter.InsertBefore(insertAt.TokenIndex, $"'@Description(\"{value}\")\n");
         }
 
         private void Fix(QualifiedModuleName moduleName, VBAParser.AttributeStmtContext context)
@@ -139,6 +170,8 @@ namespace Rubberduck.Inspections.QuickFixes
                 rewriter.Replace(valueToken, "True");
             }
         }
+
+        
         /// <summary>
         /// Adds an attribute to match given annotation.
         /// </summary>
