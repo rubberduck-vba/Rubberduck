@@ -6,7 +6,7 @@
         {
             InitializeComponent();
 
-            Loaded +=
+            Loaded += (o, e) =>
                 {
                     RenameTextBox.Focus();
                     RenameTextBox.SelectAll();
