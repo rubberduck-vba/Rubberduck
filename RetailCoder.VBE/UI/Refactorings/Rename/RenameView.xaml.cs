@@ -6,7 +6,7 @@
         {
             InitializeComponent();
 
-            base.Loaded += delegate
+            Loaded +=
                 {
                     RenameTextBox.Focus();
                     RenameTextBox.SelectAll();
