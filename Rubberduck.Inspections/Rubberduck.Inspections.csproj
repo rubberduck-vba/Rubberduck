@@ -76,6 +76,7 @@
     <Compile Include="Concrete\MissingAnnotationInspection.cs" />
     <Compile Include="Concrete\MissingAttributeInspection.cs" />
     <Compile Include="Abstract\InspectionResultBase.cs" />
+    <Compile Include="Concrete\RedundantByRefModifierInspection.cs" />
     <Compile Include="Inspector.cs" />
     <Compile Include="Concrete\MemberNotOnInterfaceInspection.cs" />
     <Compile Include="Concrete\MissingAnnotationArgumentInspection.cs" />
@@ -119,6 +120,7 @@
     <Compile Include="QuickFixes\RemoveExplicitCallStatmentQuickFix.cs" />
     <Compile Include="QuickFixes\RemoveExplicitLetStatementQuickFix.cs" />
     <Compile Include="QuickFixes\RemoveOptionBaseStatementQuickFix.cs" />
+    <Compile Include="QuickFixes\RemoveExplicitByRefModifierQuickFix.cs" />
     <Compile Include="QuickFixes\RemoveTypeHintsQuickFix.cs" />
     <Compile Include="QuickFixes\RemoveUnassignedIdentifierQuickFix.cs" />
     <Compile Include="QuickFixes\RemoveUnassignedVariableUsageQuickFix.cs" />
