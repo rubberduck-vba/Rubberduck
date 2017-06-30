@@ -365,7 +365,7 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ObsoleteByRefModifier_QuickFixWorks_InterfaceImplementation()
+        public void RedundantByRefModifier_QuickFixWorks_InterfaceImplementation()
         {
             const string inputCode1 =
 @"Sub Foo(ByRef arg1 As Integer)
@@ -412,7 +412,7 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ObsoleteByRefModifier_QuickFixWorks_InterfaceImplementationDiffrentParameterName()
+        public void RedundantByRefModifier_QuickFixWorks_InterfaceImplementationDiffrentParameterName()
         {
             const string inputCode1 =
 @"Sub Foo(ByRef arg1 As Integer)
@@ -459,7 +459,7 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ObsoleteByRefModifier_QuickFixWorks_InterfaceImplementationWithMultipleParameters()
+        public void RedundantByRefModifier_QuickFixWorks_InterfaceImplementationWithMultipleParameters()
         {
             const string inputCode1 =
 @"Sub Foo(ByRef arg1 As Integer, ByRef arg2 as Integer)
