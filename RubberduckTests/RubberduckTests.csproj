@@ -157,7 +157,7 @@
     <Compile Include="Inspections\UseMeaningfulNameInspectionTests.cs" />
     <Compile Include="Inspections\DefaultProjectNameInspectionTests.cs" />
     <Compile Include="Inspections\EmptyStringLiteralInspectionTests.cs" />
-    <Compile Include="Inspections\ImplicitByRefParameterInspectionTests.cs" />
+    <Compile Include="Inspections\ImplicitByRefModifierInspectionTests.cs" />
     <Compile Include="Inspections\ImplicitPublicMemberInspectionTests.cs" />
     <Compile Include="Inspections\ImplicitVariantReturnTypeInspectionTests.cs" />
     <Compile Include="Inspections\MultilineParameterInspectionTests.cs" />

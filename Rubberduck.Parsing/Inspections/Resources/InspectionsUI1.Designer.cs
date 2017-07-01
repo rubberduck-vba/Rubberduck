@@ -522,36 +522,36 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Parameters are passed by reference unless specified otherwise, which can be confusing and bug-prone. Prefer passing parameters by value, and specify ByRef explicitly when passing parameters by reference..
         /// </summary>
-        public static string ImplicitByRefParameterInspectionMeta {
+        public static string ImplicitByRefModifierInspectionMeta {
             get {
-                return ResourceManager.GetString("ImplicitByRefParameterInspectionMeta", resourceCulture);
+                return ResourceManager.GetString("ImplicitByRefModifierInspectionMeta", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Implicit ByRef parameter.
         /// </summary>
-        public static string ImplicitByRefParameterInspectionName {
+        public static string ImplicitByRefModifierInspectionName {
             get {
-                return ResourceManager.GetString("ImplicitByRefParameterInspectionName", resourceCulture);
+                return ResourceManager.GetString("ImplicitByRefModifierInspectionName", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Parameter &apos;{0}&apos; is implicitly passed by reference.
         /// </summary>
-        public static string ImplicitByRefParameterInspectionResultFormat {
+        public static string ImplicitByRefModifierInspectionResultFormat {
             get {
-                return ResourceManager.GetString("ImplicitByRefParameterInspectionResultFormat", resourceCulture);
+                return ResourceManager.GetString("ImplicitByRefModifierInspectionResultFormat", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Pass parameter by reference explicitly.
         /// </summary>
-        public static string ImplicitByRefParameterQuickFix {
+        public static string ImplicitByRefModifierQuickFix {
             get {
-                return ResourceManager.GetString("ImplicitByRefParameterQuickFix", resourceCulture);
+                return ResourceManager.GetString("ImplicitByRefModifierQuickFix", resourceCulture);
             }
         }
         
@@ -1420,33 +1420,6 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Being the default/implicit setting for this option, this instruction can be safely omitted..
-        /// </summary>
-        public static string RedundantOptionInspectionMeta {
-            get {
-                return ResourceManager.GetString("RedundantOptionInspectionMeta", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Redundant module option.
-        /// </summary>
-        public static string RedundantOptionInspectionName {
-            get {
-                return ResourceManager.GetString("RedundantOptionInspectionName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; has no effect..
-        /// </summary>
-        public static string RedundantOptionInspectionResultFormat {
-            get {
-                return ResourceManager.GetString("RedundantOptionInspectionResultFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to By default, all parameters are passed by reference, so it is not necessary to include the ByRef modifier declaration.
         /// </summary>
         public static string RedundantByRefModifierInspectionMeta {
@@ -1479,6 +1452,33 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         public static string RedundantByRefModifierQuickFix {
             get {
                 return ResourceManager.GetString("RedundantByRefModifierQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Being the default/implicit setting for this option, this instruction can be safely omitted..
+        /// </summary>
+        public static string RedundantOptionInspectionMeta {
+            get {
+                return ResourceManager.GetString("RedundantOptionInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Redundant module option.
+        /// </summary>
+        public static string RedundantOptionInspectionName {
+            get {
+                return ResourceManager.GetString("RedundantOptionInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; has no effect..
+        /// </summary>
+        public static string RedundantOptionInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("RedundantOptionInspectionResultFormat", resourceCulture);
             }
         }
         
