@@ -69,7 +69,7 @@
     <Compile Include="Concrete\IllegalAnnotationInspection.cs" />
     <Compile Include="Concrete\ImplicitActiveSheetReferenceInspection.cs" />
     <Compile Include="Concrete\ImplicitActiveWorkbookReferenceInspection.cs" />
-    <Compile Include="Concrete\ImplicitByRefParameterInspection.cs" />
+    <Compile Include="Concrete\ImplicitByRefModifierInspection.cs" />
     <Compile Include="Concrete\ImplicitDefaultMemberAssignmentInspection.cs" />
     <Compile Include="Concrete\ImplicitPublicMemberInspection.cs" />
     <Compile Include="Concrete\ImplicitVariantReturnTypeInspection.cs" />
@@ -103,7 +103,7 @@
     <Compile Include="QuickFixes\ApplicationWorksheetFunctionQuickFix.cs" />
     <Compile Include="QuickFixes\AssignedByValParameterMakeLocalCopyQuickFix.cs" />
     <Compile Include="QuickFixes\ChangeDimToPrivateQuickFix.cs" />
-    <Compile Include="QuickFixes\ChangeParameterByRefByValQuickFix.cs" />
+    <Compile Include="QuickFixes\SpecifyExplicitByRefModifierQuickFix.cs" />
     <Compile Include="QuickFixes\ChangeProcedureToFunctionQuickFix.cs" />
     <Compile Include="QuickFixes\ConvertToProcedureQuickFix.cs" />
     <Compile Include="QuickFixes\DeclareAsExplicitVariantQuickFix.cs" />
