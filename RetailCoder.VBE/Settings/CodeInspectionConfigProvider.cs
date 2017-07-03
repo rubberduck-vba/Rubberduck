@@ -51,6 +51,7 @@ namespace Rubberduck.Settings
                 new CodeInspectionSetting("ImplicitDefaultMemberAssignmentInspection", CodeInspectionType.LanguageOpportunities, CodeInspectionSeverity.Hint),
                 new CodeInspectionSetting("ImplicitPublicMemberInspection", CodeInspectionType.LanguageOpportunities, CodeInspectionSeverity.Suggestion),
                 new CodeInspectionSetting("ImplicitVariantReturnTypeInspection", CodeInspectionType.LanguageOpportunities, CodeInspectionSeverity.Suggestion),
+                new CodeInspectionSetting("LineLabelNotUsedInspection", CodeInspectionType.CodeQualityIssues, CodeInspectionSeverity.Warning),
                 new CodeInspectionSetting("MemberNotOnInterfaceInspection", CodeInspectionType.CodeQualityIssues),
                 new CodeInspectionSetting("MissingAnnotationArgumentInspection", CodeInspectionType.RubberduckOpportunities, CodeInspectionSeverity.Error),
                 new CodeInspectionSetting("MissingAnnotationInspection", CodeInspectionType.RubberduckOpportunities, CodeInspectionSeverity.Suggestion),

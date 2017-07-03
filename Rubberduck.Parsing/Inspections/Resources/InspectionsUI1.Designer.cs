@@ -691,6 +691,33 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Line label is not used.
+        /// </summary>
+        public static string LineLabelNotUsedInspectionMeta {
+            get {
+                return ResourceManager.GetString("LineLabelNotUsedInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Line label is not used.
+        /// </summary>
+        public static string LineLabelNotUsedInspectionName {
+            get {
+                return ResourceManager.GetString("LineLabelNotUsedInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Line label &apos;{0}&apos; is not used.
+        /// </summary>
+        public static string LineLabelNotUsedInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("LineLabelNotUsedInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Write variable on one line.
         /// </summary>
         public static string MakeSingleLineParameterQuickFix {
