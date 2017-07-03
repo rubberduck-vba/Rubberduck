@@ -729,4 +729,14 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="RedundantByRefModifierQuickFix" xml:space="preserve">
     <value>Remove redundant ByRef modifier</value>
   </data>
+  <data name="LineLabelNotUsedInspectionMeta" xml:space="preserve">
+    <value>Rubberduck could not find a corresponding Resume or GoTo statement for a line label.  Consider removing it.</value>
+  </data>
+  <data name="LineLabelNotUsedInspectionName" xml:space="preserve">
+    <value>Line label is not referred to</value>
+  </data>
+  <data name="LineLabelNotUsedInspectionResultFormat" xml:space="preserve">
+    <value>Line label '{0}' is not used</value>
+    <comment>{0} line label name</comment>
+  </data>
 </root>
