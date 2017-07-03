@@ -158,75 +158,88 @@ End Sub";
         }
 
         [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void VariableNotUsed_DoesNotReturnsResult_UsedInNameStatement()
-//        {
-//            const string inputCode =
-//@"Sub Foo()
-//    Dim var1 As String
-//    Name ""foo"" As var1
-//End Sub";
+        [TestCategory("Inspections")]
+        public void LabelNotUsed_QuickFixWorks()
+        {
+            const string inputCode =
+@"Sub Foo()
+label1:
+End Sub";
 
-//            IVBComponent component;
-//            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-//            var state = MockParser.CreateAndParse(vbe.Object);
+            const string expectedCode =
+@"Sub Foo()
 
-//            var inspection = new LineLabelNotUsedInspection(state);
-//            var inspectionResults = inspection.GetInspectionResults();
+End Sub";
 
-//            Assert.IsFalse(inspectionResults.Any());
-//        }
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void UnassignedVariable_QuickFixWorks()
-//        {
-//            const string inputCode =
-//@"Sub Foo()
-//Dim var1 As String
-//End Sub";
+            var inspection = new LineLabelNotUsedInspection(state);
+            new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
-//            const string expectedCode =
-//@"Sub Foo()
-//End Sub";
+            var rewriter = state.GetRewriter(component);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
+        }
 
-//            IVBComponent component;
-//            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-//            var state = MockParser.CreateAndParse(vbe.Object);
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void LabelNotUsed_QuickFixWorks_MultipleLabels()
+        {
+            const string inputCode =
+@"Sub Foo()
+label1:
+dim var1 as variant
+label2:
+goto label1:
+End Sub";
 
-//            var inspection = new LineLabelNotUsedInspection(state);
-//            new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults().First());
+            const string expectedCode =
+@"Sub Foo()
+label1:
+dim var1 as variant
 
-//            var rewriter = state.GetRewriter(component);
-//            Assert.AreEqual(expectedCode, rewriter.GetText());
-//        }
+goto label1:
+End Sub"; ;
 
-//        [TestMethod]
-//        [TestCategory("Inspections")]
-//        public void UnassignedVariable_IgnoreQuickFixWorks()
-//        {
-//            const string inputCode =
-//@"Sub Foo()
-//Dim var1 As String
-//End Sub";
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
 
-//            const string expectedCode =
-//@"Sub Foo()
-//'@Ignore VariableNotUsed
-//Dim var1 As String
-//End Sub";
+            var inspection = new LineLabelNotUsedInspection(state);
+            new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
-//            IVBComponent component;
-//            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-//            var state = MockParser.CreateAndParse(vbe.Object);
+            var rewriter = state.GetRewriter(component);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
+        }
 
-//            var inspection = new LineLabelNotUsedInspection(state);
-//            new IgnoreOnceQuickFix(state, new[] {inspection}).Fix(inspection.GetInspectionResults().First());
+        [TestMethod]
 
-//            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-//        }
+        [TestCategory("Inspections")]
+        public void LabelNotUsed_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+@"Sub Foo()
+label1:
+End Sub";
 
-//        [TestMethod]
+            const string expectedCode =
+@"Sub Foo()
+'@Ignore LineLabelNotUsed
+label1:
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new LineLabelNotUsedInspection(state);
+            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspection.GetInspectionResults().First());
+
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+        }
+
+        [TestMethod]
         [TestCategory("Inspections")]
         public void InspectionType()
         {
