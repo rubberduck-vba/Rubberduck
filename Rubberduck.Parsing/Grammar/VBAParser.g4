@@ -350,6 +350,7 @@ functionStmt :
     (visibility whiteSpace)? (STATIC whiteSpace)? FUNCTION whiteSpace? functionName (whiteSpace? argList)? (whiteSpace? asTypeClause)? endOfStatement
     block
     END_FUNCTION
+	(endOfStatement+ attributeStmt)*
 ;
 functionName : identifier;
 
@@ -406,18 +407,21 @@ propertyGetStmt :
     (visibility whiteSpace)? (STATIC whiteSpace)? PROPERTY_GET whiteSpace functionName (whiteSpace? argList)? (whiteSpace asTypeClause)? endOfStatement 
     block 
     END_PROPERTY
+	(endOfStatement+ attributeStmt)*
 ;
 
 propertySetStmt : 
     (visibility whiteSpace)? (STATIC whiteSpace)? PROPERTY_SET whiteSpace subroutineName (whiteSpace? argList)? endOfStatement 
     block 
     END_PROPERTY
+	(endOfStatement+ attributeStmt)*
 ;
 
 propertyLetStmt : 
     (visibility whiteSpace)? (STATIC whiteSpace)? PROPERTY_LET whiteSpace subroutineName (whiteSpace? argList)? endOfStatement 
     block 
     END_PROPERTY
+	(endOfStatement+ attributeStmt)*
 ;
 
 // 5.4.2.20 RaiseEvent Statement
@@ -486,6 +490,7 @@ subStmt :
     (visibility whiteSpace)? (STATIC whiteSpace)? SUB whiteSpace? subroutineName (whiteSpace? argList)? endOfStatement
     block 
     END_SUB
+	(endOfStatement+ attributeStmt)*
 ;
 subroutineName : identifier;
 
