@@ -110,6 +110,7 @@
     <Compile Include="Inspections\SynchronizeAttributesQuickFixTests.cs" />
     <Compile Include="Inspections\RedundantByRefModifierInspectionTests.cs" />
     <Compile Include="Inspections\UndeclaredVariableInspectionTests.cs" />
+    <Compile Include="Inspections\LineLabelNotUsedInspectionTests.cs" />
     <Compile Include="Mocks\TestAttributeParser.cs" />
     <Compile Include="Parsing\Coordination\IModuleToModuleReferenceManagerTestBase.cs" />
     <Compile Include="Parsing\Coordination\StandAloneModuleToModuleReferenceManagerTests.cs" />
