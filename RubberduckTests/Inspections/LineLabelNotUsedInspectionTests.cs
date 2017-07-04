@@ -52,7 +52,7 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void LabelUsed_DoesNotReturnResult()
+        public void GivenGoToStatement_LabelUsed_YieldsNoResult()
         {
             const string inputCode =
 @"Sub Foo()
@@ -72,7 +72,7 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void LabelUsed_GoToBeforeLabel_DoesNotReturnResult()
+        public void GivenGoToStatement_GoToBeforeLabel_LabelUsed_YieldsNoResult()
         {
             const string inputCode =
 @"Sub Foo()
@@ -92,7 +92,7 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void LabelUsed_MultipleLabels_DoesNotReturnResult()
+        public void GivenMultipleGoToStatements_BothLabelsUsed_YieldsNoResult()
         {
             const string inputCode =
 @"Sub Foo()
@@ -114,7 +114,7 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void LabelNotUsed_ReturnsResult_MultipleLabels_SomeAssigned()
+        public void LabelNotUsed_ReturnsResult_WithUsedLabelThatDoesNotReturnResult()
         {
             const string inputCode =
 @"Sub Foo()
