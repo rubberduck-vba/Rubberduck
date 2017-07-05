@@ -522,36 +522,36 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Parameters are passed by reference unless specified otherwise, which can be confusing and bug-prone. Prefer passing parameters by value, and specify ByRef explicitly when passing parameters by reference..
         /// </summary>
-        public static string ImplicitByRefParameterInspectionMeta {
+        public static string ImplicitByRefModifierInspectionMeta {
             get {
-                return ResourceManager.GetString("ImplicitByRefParameterInspectionMeta", resourceCulture);
+                return ResourceManager.GetString("ImplicitByRefModifierInspectionMeta", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Implicit ByRef parameter.
         /// </summary>
-        public static string ImplicitByRefParameterInspectionName {
+        public static string ImplicitByRefModifierInspectionName {
             get {
-                return ResourceManager.GetString("ImplicitByRefParameterInspectionName", resourceCulture);
+                return ResourceManager.GetString("ImplicitByRefModifierInspectionName", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Parameter &apos;{0}&apos; is implicitly passed by reference.
         /// </summary>
-        public static string ImplicitByRefParameterInspectionResultFormat {
+        public static string ImplicitByRefModifierInspectionResultFormat {
             get {
-                return ResourceManager.GetString("ImplicitByRefParameterInspectionResultFormat", resourceCulture);
+                return ResourceManager.GetString("ImplicitByRefModifierInspectionResultFormat", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Pass parameter by reference explicitly.
         /// </summary>
-        public static string ImplicitByRefParameterQuickFix {
+        public static string ImplicitByRefModifierQuickFix {
             get {
-                return ResourceManager.GetString("ImplicitByRefParameterQuickFix", resourceCulture);
+                return ResourceManager.GetString("ImplicitByRefModifierQuickFix", resourceCulture);
             }
         }
         
@@ -687,6 +687,33 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         public static string InvalidContextTypeInspectionFix {
             get {
                 return ResourceManager.GetString("InvalidContextTypeInspectionFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck could not find a corresponding Resume or GoTo statement for a line label.  Consider removing it..
+        /// </summary>
+        public static string LineLabelNotUsedInspectionMeta {
+            get {
+                return ResourceManager.GetString("LineLabelNotUsedInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Line label is not referred to.
+        /// </summary>
+        public static string LineLabelNotUsedInspectionName {
+            get {
+                return ResourceManager.GetString("LineLabelNotUsedInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Line label &apos;{0}&apos; is not used.
+        /// </summary>
+        public static string LineLabelNotUsedInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("LineLabelNotUsedInspectionResultFormat", resourceCulture);
             }
         }
         
@@ -1416,6 +1443,42 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         public static string QuickFixUseTypedFunction_ {
             get {
                 return ResourceManager.GetString("QuickFixUseTypedFunction_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to By default, all parameters are passed by reference, so it is not necessary to include the ByRef modifier declaration.
+        /// </summary>
+        public static string RedundantByRefModifierInspectionMeta {
+            get {
+                return ResourceManager.GetString("RedundantByRefModifierInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Redundant ByRef modifier.
+        /// </summary>
+        public static string RedundantByRefModifierInspectionName {
+            get {
+                return ResourceManager.GetString("RedundantByRefModifierInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Parameter &apos;{0}&apos; has a redundant ByRef modifier.
+        /// </summary>
+        public static string RedundantByRefModifierInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("RedundantByRefModifierInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove redundant ByRef modifier.
+        /// </summary>
+        public static string RedundantByRefModifierQuickFix {
+            get {
+                return ResourceManager.GetString("RedundantByRefModifierQuickFix", resourceCulture);
             }
         }
         

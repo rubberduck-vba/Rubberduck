@@ -61,6 +61,7 @@ namespace RubberduckTests.Inspections
                 typeof(ParameterNotUsedInspection).Name,
                 typeof(ProcedureNotUsedInspection).Name,
                 typeof(VariableNotUsedInspection).Name,
+                typeof(LineLabelNotUsedInspection).Name,
                 typeof(UseMeaningfulNameInspection).Name,
                 typeof(HungarianNotationInspection).Name
             };

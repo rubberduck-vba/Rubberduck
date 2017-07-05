@@ -18,7 +18,8 @@ namespace Rubberduck.Inspections.QuickFixes
         {
             typeof(ConstantNotUsedInspection),
             typeof(ProcedureNotUsedInspection),
-            typeof(VariableNotUsedInspection)
+            typeof(VariableNotUsedInspection),
+            typeof(LineLabelNotUsedInspection)
         };
 
         public RemoveUnusedDeclarationQuickFix(RubberduckParserState state)

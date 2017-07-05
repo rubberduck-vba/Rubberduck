@@ -91,7 +91,7 @@ namespace Rubberduck.Parsing.VBA
             }
             catch (COMException exception)
             {
-                Logger.Error(exception, $"Exception thrown in thread {Thread.CurrentThread.ManagedThreadId}, ParseTaskID {_taskId}.");
+                Logger.Error(exception, $"Exception thrown in thread {Thread.CurrentThread.ManagedThreadId} while parsing module {_qualifiedName.Name}, ParseTaskID {_taskId}.");
                 var failedHandler = ParseFailure;
                 failedHandler?.Invoke(this, new ParseFailureArgs
                 {
@@ -119,7 +119,7 @@ namespace Rubberduck.Parsing.VBA
             }
             catch (Exception exception)
             {
-                Logger.Error(exception, $"Exception thrown in thread {Thread.CurrentThread.ManagedThreadId}, ParseTaskID {_taskId}.");
+                Logger.Error(exception, $"Exception thrown in thread {Thread.CurrentThread.ManagedThreadId} while parsing module {_qualifiedName.Name}, ParseTaskID {_taskId}.");
                 var failedHandler = ParseFailure;
                 failedHandler?.Invoke(this, new ParseFailureArgs
                 {

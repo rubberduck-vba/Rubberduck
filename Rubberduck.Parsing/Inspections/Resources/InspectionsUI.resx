@@ -177,10 +177,10 @@
   <data name="ImplicitActiveWorkbookReferenceInspectionName" xml:space="preserve">
     <value>Implicit reference to ActiveWorkbook</value>
   </data>
-  <data name="ImplicitByRefParameterInspectionMeta" xml:space="preserve">
+  <data name="ImplicitByRefModifierInspectionMeta" xml:space="preserve">
     <value>Parameters are passed by reference unless specified otherwise, which can be confusing and bug-prone. Prefer passing parameters by value, and specify ByRef explicitly when passing parameters by reference.</value>
   </data>
-  <data name="ImplicitByRefParameterInspectionName" xml:space="preserve">
+  <data name="ImplicitByRefModifierInspectionName" xml:space="preserve">
     <value>Implicit ByRef parameter</value>
   </data>
   <data name="ImplicitPublicMemberInspectionMeta" xml:space="preserve">
@@ -378,7 +378,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="IdentifierNotUsedInspectionResultFormat" xml:space="preserve">
     <value>{0} '{1}' is not used</value>
   </data>
-  <data name="ImplicitByRefParameterInspectionResultFormat" xml:space="preserve">
+  <data name="ImplicitByRefModifierInspectionResultFormat" xml:space="preserve">
     <value>Parameter '{0}' is implicitly passed by reference</value>
   </data>
   <data name="ImplicitPublicMemberInspectionResultFormat" xml:space="preserve">
@@ -417,7 +417,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="DeclareAsExplicitVariantQuickFix" xml:space="preserve">
     <value>Declare as explicit Variant</value>
   </data>
-  <data name="ImplicitByRefParameterQuickFix" xml:space="preserve">
+  <data name="ImplicitByRefModifierQuickFix" xml:space="preserve">
     <value>Pass parameter by reference explicitly</value>
   </data>
   <data name="Inspections_Declaration" xml:space="preserve">
@@ -716,5 +716,27 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="RedundantOptionInspectionResultFormat" xml:space="preserve">
     <value>'{0}' has no effect.</value>
     <comment>'{0}' the whole ModuleOptionContext text</comment>
+  </data>
+  <data name="RedundantByRefModifierInspectionMeta" xml:space="preserve">
+    <value>By default, all parameters are passed by reference, so it is not necessary to include the ByRef modifier declaration</value>
+  </data>
+  <data name="RedundantByRefModifierInspectionName" xml:space="preserve">
+    <value>Redundant ByRef modifier</value>
+  </data>
+  <data name="RedundantByRefModifierInspectionResultFormat" xml:space="preserve">
+    <value>Parameter '{0}' has a redundant ByRef modifier</value>
+  </data>
+  <data name="RedundantByRefModifierQuickFix" xml:space="preserve">
+    <value>Remove redundant ByRef modifier</value>
+  </data>
+  <data name="LineLabelNotUsedInspectionMeta" xml:space="preserve">
+    <value>Rubberduck could not find a corresponding Resume or GoTo statement for a line label.  Consider removing it.</value>
+  </data>
+  <data name="LineLabelNotUsedInspectionName" xml:space="preserve">
+    <value>Line label is not referred to</value>
+  </data>
+  <data name="LineLabelNotUsedInspectionResultFormat" xml:space="preserve">
+    <value>Line label '{0}' is not used</value>
+    <comment>{0} line label name</comment>
   </data>
 </root>
