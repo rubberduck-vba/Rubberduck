@@ -2593,5 +2593,105 @@ End Sub
 
             Assert.IsTrue(call.IsAssignment, "LHS member call on object is not flagging member reference as assignment target.");
         }
+
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
+        [TestMethod]
+        public void AttributeFollowingSubGetsAssignedToSub()
+        {
+            var code = @"
+Public Sub Foo(): End Sub
+Attribute Foo.VB_Description = ""Foo description""
+
+Public Sub Bar()
+End Sub
+";
+            var state = Resolve(code);
+            var declaration = state.DeclarationFinder.MatchName("Foo").Single(item => item.DeclarationType == DeclarationType.Procedure);
+
+            var expectedDescription = "Foo description";
+            var actualDescription = declaration.DescriptionString;
+            Assert.AreEqual(expectedDescription, actualDescription);
+        }
+
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
+        [TestMethod]
+        public void AttributeFollowingFunctionGetsAssignedToFunction()
+        {
+            var code = @"
+Public Function Foo(): End Function
+Attribute Foo.VB_Description = ""Foo description""
+
+Public Sub Bar()
+End Sub
+";
+            var state = Resolve(code);
+            var declaration = state.DeclarationFinder.MatchName("Foo").Single(item => item.DeclarationType == DeclarationType.Function);
+
+            var expectedDescription = "Foo description";
+            var actualDescription = declaration.DescriptionString;
+            Assert.AreEqual(expectedDescription, actualDescription);
+        }
+
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
+        [TestMethod]
+        public void AttributeFollowingPropertyGetGetsAssignedToPropertyGet()
+        {
+            var code = @"
+Public Property Get Foo(): End Property
+Attribute Foo.VB_Description = ""Foo description""
+
+Public Sub Bar()
+End Sub
+";
+            var state = Resolve(code);
+            var declaration = state.DeclarationFinder.MatchName("Foo").Single(item => item.DeclarationType == DeclarationType.PropertyGet);
+
+            var expectedDescription = "Foo description";
+            var actualDescription = declaration.DescriptionString;
+            Assert.AreEqual(expectedDescription, actualDescription);
+        }
+
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
+        [TestMethod]
+        public void AttributeFollowingPropertyLetGetsAssignedToPropertyLet()
+        {
+            var code = @"
+Public Property Let Foo(): End Property
+Attribute Foo.VB_Description = ""Foo description""
+
+Public Sub Bar()
+End Sub
+";
+            var state = Resolve(code);
+            var declaration = state.DeclarationFinder.MatchName("Foo").Single(item => item.DeclarationType == DeclarationType.PropertyLet);
+
+            var expectedDescription = "Foo description";
+            var actualDescription = declaration.DescriptionString;
+            Assert.AreEqual(expectedDescription, actualDescription);
+        }
+
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
+        [TestMethod]
+        public void AttributeFollowingPropertySetGetsAssignedToPropertySet()
+        {
+            var code = @"
+Public Property Set Foo(): End Property
+Attribute Foo.VB_Description = ""Foo description""
+
+Public Sub Bar()
+End Sub
+";
+            var state = Resolve(code);
+            var declaration = state.DeclarationFinder.MatchName("Foo").Single(item => item.DeclarationType == DeclarationType.PropertySet);
+
+            var expectedDescription = "Foo description";
+            var actualDescription = declaration.DescriptionString;
+            Assert.AreEqual(expectedDescription, actualDescription);
+        }
     }
 }
