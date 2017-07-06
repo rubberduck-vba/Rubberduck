@@ -108,17 +108,17 @@ namespace Rubberduck.Settings
 
         [XmlIgnore]
         // ReSharper disable once UnusedMember.Global; used in string literal to define collection groupings
-        public string TypeLabel => RubberduckUI.ResourceManager.GetString("CodeInspectionSettings_" + InspectionType, CultureInfo.CurrentUICulture);
+        public string TypeLabel => InspectionsUI.ResourceManager.GetString("CodeInspectionSettings_" + InspectionType, CultureInfo.CurrentUICulture);
 
         [XmlIgnore]
         public string SeverityLabel
         {
-            get { return RubberduckUI.ResourceManager.GetString("CodeInspectionSeverity_" + Severity, CultureInfo.CurrentUICulture); }
+            get { return InspectionsUI.ResourceManager.GetString("CodeInspectionSeverity_" + Severity, CultureInfo.CurrentUICulture); }
             set
             {
                 foreach (var severity in Enum.GetValues(typeof (CodeInspectionSeverity)))
                 {
-                    if (value == RubberduckUI.ResourceManager.GetString("CodeInspectionSeverity_" + severity, CultureInfo.CurrentUICulture))
+                    if (value == InspectionsUI.ResourceManager.GetString("CodeInspectionSeverity_" + severity, CultureInfo.CurrentUICulture))
                     {
                         Severity = (CodeInspectionSeverity)severity;
                         return;

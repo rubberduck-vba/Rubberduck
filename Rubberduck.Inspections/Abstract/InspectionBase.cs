@@ -64,7 +64,7 @@ namespace Rubberduck.Inspections.Abstract
         /// Gets a localized string representing the type of inspection.
         /// <see cref="InspectionType"/>
         /// </summary>
-        public virtual string InspectionTypeName => InspectionsUI.ResourceManager.GetString(InspectionType.ToString(), CultureInfo.CurrentUICulture);
+        public virtual string InspectionTypeName => InspectionsUI.ResourceManager.GetString("CodeInspectionSettings_" + InspectionType.ToString(), CultureInfo.CurrentUICulture);
 
         /// <summary>
         /// Gets a string representing the text that must be present in an 
