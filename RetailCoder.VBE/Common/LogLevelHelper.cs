@@ -10,6 +10,10 @@ namespace Rubberduck.Common
     {
         private static readonly Lazy<IEnumerable<LogLevel>> _logLevels = new Lazy<IEnumerable<LogLevel>>(GetLogLevels);
 
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private static string DebugInfo;
+        private static bool LogHeaderWritten;
+
         public static IEnumerable<LogLevel> LogLevels
         {
             get
@@ -39,8 +43,15 @@ namespace Rubberduck.Common
             return GetLogLevels().Max(lvl => lvl.Ordinal);
         }
 
+        public static void SetDebugInfo(String value)
+        {
+            DebugInfo = value;
+            LogHeaderWritten = false;
+        }
+
         public static void SetMinimumLogLevel(LogLevel minimumLogLevel)
         {
+            Logger.Log(LogLevel.Info, "Minimum log level changing to " + minimumLogLevel.Name);
             var loggingRules = LogManager.Configuration.LoggingRules;
             foreach (var loggingRule in loggingRules)
             {
@@ -64,6 +75,11 @@ namespace Rubberduck.Common
                 }
             }
             LogManager.ReconfigExistingLoggers();
+            if (LogHeaderWritten == false)
+            {
+                Logger.Log(minimumLogLevel, DebugInfo);
+                LogHeaderWritten = true;
+            }
         }
 
         private static void ClearLogLevels(LoggingRule loggingRule)
