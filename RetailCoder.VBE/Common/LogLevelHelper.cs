@@ -51,7 +51,10 @@ namespace Rubberduck.Common
 
         public static void SetMinimumLogLevel(LogLevel minimumLogLevel)
         {
-            Logger.Log(LogLevel.Info, "Minimum log level changing to " + minimumLogLevel.Name);
+            if (LogHeaderWritten == true)
+            {
+                Logger.Log(LogLevel.Info, "Minimum log level changing to " + minimumLogLevel.Name);
+            }
             var loggingRules = LogManager.Configuration.LoggingRules;
             foreach (var loggingRule in loggingRules)
             {
