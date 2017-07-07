@@ -77,19 +77,41 @@ namespace Rubberduck.Settings
         public string Name { get; set; }
 
         [XmlIgnore]
-        public string Description { get; set; } // not serialized because culture-dependent
+        private string _description;
+        [XmlIgnore]
+        public string Description
+        {
+            get
+            {
+                if (_description == null)
+                {
+                    _description = InspectionsUI.ResourceManager.GetString(Name + "InspectionName");
+                }
+                return _description;
+            }
+            set
+            {
+                _description = value;
+            }
+        }// not serialized because culture-dependent
 
         [XmlIgnore]
         public string LocalizedName
         {
             get
             {
-                return InspectionsUI.ResourceManager.GetString(Name + "Name", CultureInfo.CurrentUICulture);
+                return InspectionsUI.ResourceManager.GetString(Name + "InspectionName", CultureInfo.CurrentUICulture);
             }
         } // not serialized because culture-dependent
 
         [XmlIgnore]
-        public string AnnotationName { get; set; }
+        public string AnnotationName
+        {
+            get
+            {
+                return Name.Replace("Inspection", String.Empty);
+            }
+        }
 
         [XmlIgnore]
         public CodeInspectionSeverity DefaultSeverity { get; private set; }
@@ -102,7 +124,7 @@ namespace Rubberduck.Settings
         {
             get
             {
-                return InspectionsUI.ResourceManager.GetString(Name + "Meta", CultureInfo.CurrentUICulture);
+                return InspectionsUI.ResourceManager.GetString(Name + "InspectionMeta", CultureInfo.CurrentUICulture);
             }
         }
 
@@ -116,7 +138,7 @@ namespace Rubberduck.Settings
             get { return InspectionsUI.ResourceManager.GetString("CodeInspectionSeverity_" + Severity, CultureInfo.CurrentUICulture); }
             set
             {
-                foreach (var severity in Enum.GetValues(typeof (CodeInspectionSeverity)))
+                foreach (var severity in Enum.GetValues(typeof(CodeInspectionSeverity)))
                 {
                     if (value == InspectionsUI.ResourceManager.GetString("CodeInspectionSeverity_" + severity, CultureInfo.CurrentUICulture))
                     {
@@ -167,8 +189,8 @@ namespace Rubberduck.Settings
             unchecked
             {
                 var hashCode = Name?.GetHashCode() ?? 0;
-                hashCode = (hashCode * 397) ^ (int) Severity;
-                hashCode = (hashCode * 397) ^ (int) InspectionType;
+                hashCode = (hashCode * 397) ^ (int)Severity;
+                hashCode = (hashCode * 397) ^ (int)InspectionType;
                 return hashCode;
             }
         }

@@ -54,7 +54,6 @@ namespace Rubberduck.UI.Settings
         }
 
         private bool _runInspectionsOnSuccessfulParse;
-
         public bool RunInspectionsOnSuccessfulParse
         {
             get { return _runInspectionsOnSuccessfulParse; }
