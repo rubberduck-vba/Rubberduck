@@ -689,4 +689,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="EmptyElseBlockInspectionName" xml:space="preserve">
     <value>Empty Else block</value>
   </data>
+  <data name="RemoveEmptyElseBlockQuickFix" xml:space="preserve">
+    <value>Remove empty Else block</value>
+  </data>
 </root>

@@ -1393,6 +1393,15 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Remove empty Else block.
+        /// </summary>
+        public static string RemoveEmptyElseBlockQuickFix {
+            get {
+                return ResourceManager.GetString("RemoveEmptyElseBlockQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Remove empty If block.
         /// </summary>
         public static string RemoveEmptyIfBlockQuickFix {

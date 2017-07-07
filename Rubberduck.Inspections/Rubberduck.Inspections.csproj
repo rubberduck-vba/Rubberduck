@@ -109,6 +109,7 @@
     <Compile Include="QuickFixes\PassParameterByReferenceQuickFix.cs" />
     <Compile Include="QuickFixes\PassParameterByValueQuickFix.cs" />
     <Compile Include="QuickFixes\RemoveCommentQuickFix.cs" />
+    <Compile Include="QuickFixes\RemoveEmptyElseBlockQuickFix.cs" />
     <Compile Include="QuickFixes\RemoveEmptyIfBlockQuickFix.cs" />
     <Compile Include="QuickFixes\RemoveExplicitCallStatmentQuickFix.cs" />
     <Compile Include="QuickFixes\RemoveExplicitLetStatementQuickFix.cs" />
