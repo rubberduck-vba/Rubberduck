@@ -3358,29 +3358,11 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not rename Control {0}..
-        /// </summary>
-        public static string RenameDialog_ControlRenameError {
-            get {
-                return ResourceManager.GetString("RenameDialog_ControlRenameError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Coult not rename {0}..
         /// </summary>
         public static string RenameDialog_DefaultRenameError {
             get {
                 return ResourceManager.GetString("RenameDialog_DefaultRenameError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Could not rename Event Handler {0}..
-        /// </summary>
-        public static string RenameDialog_EventRenameError {
-            get {
-                return ResourceManager.GetString("RenameDialog_EventRenameError", resourceCulture);
             }
         }
         
@@ -3399,24 +3381,6 @@ namespace Rubberduck.UI {
         public static string RenameDialog_InterfaceRenameError {
             get {
                 return ResourceManager.GetString("RenameDialog_InterfaceRenameError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Could not rename module..
-        /// </summary>
-        public static string RenameDialog_ModuleRenameError {
-            get {
-                return ResourceManager.GetString("RenameDialog_ModuleRenameError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Could not rename project..
-        /// </summary>
-        public static string RenameDialog_ProjectRenameError {
-            get {
-                return ResourceManager.GetString("RenameDialog_ProjectRenameError", resourceCulture);
             }
         }
         

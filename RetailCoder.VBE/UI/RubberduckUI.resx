@@ -181,9 +181,6 @@
     <value>Please specify new name for {0} '{1}'.</value>
     <comment>0: DeclarationType; 1: IdentifierName</comment>
   </data>
-  <data name="RenameDialog_ModuleRenameError" xml:space="preserve">
-    <value>Could not rename module.</value>
-  </data>
   <data name="RenameDialog_TitleText" xml:space="preserve">
     <value>Rename identifier</value>
   </data>
@@ -204,9 +201,6 @@
   </data>
   <data name="SettingsInstructions_TodoSettings" xml:space="preserve">
     <value>Configure markers to be recognized in comments.</value>
-  </data>
-  <data name="RenameDialog_ProjectRenameError" xml:space="preserve">
-    <value>Could not rename project.</value>
   </data>
   <data name="DeclarationType_LineLabel" xml:space="preserve">
     <value>line label</value>
@@ -2064,14 +2058,8 @@ Would you like to import them to Rubberduck?</value>
   <data name="RefactorRename_TargetNotUserDefinedError" xml:space="preserve">
     <value>Identifier {0} cannot be renamed.</value>
   </data>
-  <data name="RenameDialog_ControlRenameError" xml:space="preserve">
-    <value>Could not rename Control {0}.</value>
-  </data>
   <data name="RenameDialog_DefaultRenameError" xml:space="preserve">
     <value>Coult not rename {0}.</value>
-  </data>
-  <data name="RenameDialog_EventRenameError" xml:space="preserve">
-    <value>Could not rename Event Handler {0}.</value>
   </data>
   <data name="RenameDialog_InterfaceRenameError" xml:space="preserve">
     <value>Could not rename Interface Member {0}.</value>
