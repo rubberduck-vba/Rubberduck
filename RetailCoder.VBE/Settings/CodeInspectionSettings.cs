@@ -27,13 +27,13 @@ namespace Rubberduck.Settings
 
         public bool RunInspectionsOnSuccessfulParse { get; set; }
 
-        public CodeInspectionSettings() : this(new HashSet<CodeInspectionSetting>(), new WhitelistedIdentifierSetting[] {}, true)
+        public CodeInspectionSettings() : this(Enumerable.Empty<CodeInspectionSetting>(), new WhitelistedIdentifierSetting[] { }, true)
         {
         }
 
-        public CodeInspectionSettings(HashSet<CodeInspectionSetting> inspections, WhitelistedIdentifierSetting[] whitelistedNames, bool runInspectionsOnParse)
+        public CodeInspectionSettings(IEnumerable<CodeInspectionSetting> inspections, WhitelistedIdentifierSetting[] whitelistedNames, bool runInspectionsOnParse)
         {
-            CodeInspections = inspections;
+            CodeInspections = new HashSet<CodeInspectionSetting>(inspections);
             WhitelistedIdentifiers = whitelistedNames;
             RunInspectionsOnSuccessfulParse = runInspectionsOnParse;
         }
