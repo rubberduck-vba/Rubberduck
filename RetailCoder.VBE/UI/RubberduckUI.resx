@@ -2076,16 +2076,22 @@ Would you like to import them to Rubberduck?</value>
   <data name="RenameDialog_InterfaceRenameError" xml:space="preserve">
     <value>Could not rename Interface Member {0}.</value>
   </data>
-  <data name="RenameDialog_PropertyParameterRenameError" xml:space="preserve">
-    <value>Could not rename Parameter {0} for Property {1}.</value>
-  </data>
-  <data name="RenameDialog_PropertyRenameError" xml:space="preserve">
-    <value>Could not rename Property {0}.</value>
+  <data name="RenameDialog_BuiltInNameError" xml:space="preserve">
+    <value>{0} {1} cannot be changed.</value>
+    <comment>0: DeclarationType; 1: IdentifierName</comment>
   </data>
   <data name="CodeInspectionSettings_Performance" xml:space="preserve">
     <value>Performance</value>
   </data>
   <data name="CodeInspectionSettings_RubberduckOpportunities" xml:space="preserve">
     <value>Rubberduck Opportunities</value>
+  </data>
+  <data name="RenamePresenter_TargetIsControlEventHandler" xml:space="preserve">
+    <value>Method {0} is an EventHandler for control '{1}'.  Only the control can be renamed.  Rename '{1}'?</value>
+    <comment>0: Selected target Identifier; 1: Control Name</comment>
+  </data>
+  <data name="RenamePresenter_TargetIsEventHandlerImplementation" xml:space="preserve">
+    <value>Method '{0}' is an implementation of event '{1}.{2}'.  Rename event '{2}'?</value>
+    <comment>0: Selected target Identifier; 1: Event Parent; 2: Event name</comment>
   </data>
 </root>

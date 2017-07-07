@@ -3330,6 +3330,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} {1} cannot be changed..
+        /// </summary>
+        public static string RenameDialog_BuiltInNameError {
+            get {
+                return ResourceManager.GetString("RenameDialog_BuiltInNameError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rubberduck - Rename.
         /// </summary>
         public static string RenameDialog_Caption {
@@ -3412,29 +3421,29 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not rename Parameter {0} for Property {1}..
-        /// </summary>
-        public static string RenameDialog_PropertyParameterRenameError {
-            get {
-                return ResourceManager.GetString("RenameDialog_PropertyParameterRenameError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Could not rename Property {0}..
-        /// </summary>
-        public static string RenameDialog_PropertyRenameError {
-            get {
-                return ResourceManager.GetString("RenameDialog_PropertyRenameError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Rename identifier.
         /// </summary>
         public static string RenameDialog_TitleText {
             get {
                 return ResourceManager.GetString("RenameDialog_TitleText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Method {0} is an EventHandler for control &apos;{1}&apos;.  Only the control can be renamed.  Rename &apos;{1}&apos;?.
+        /// </summary>
+        public static string RenamePresenter_TargetIsControlEventHandler {
+            get {
+                return ResourceManager.GetString("RenamePresenter_TargetIsControlEventHandler", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Method &apos;{0}&apos; is an implementation of event &apos;{1}.{2}&apos;.  Rename event &apos;{2}&apos;?.
+        /// </summary>
+        public static string RenamePresenter_TargetIsEventHandlerImplementation {
+            get {
+                return ResourceManager.GetString("RenamePresenter_TargetIsEventHandlerImplementation", resourceCulture);
             }
         }
         
