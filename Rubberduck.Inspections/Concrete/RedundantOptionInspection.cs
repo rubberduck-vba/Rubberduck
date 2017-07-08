@@ -30,7 +30,7 @@ namespace Rubberduck.Inspections.Concrete
         {
             return Listener.Contexts.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName, context.Context.Start.Line))
                                    .Select(context => new QualifiedContextInspectionResult(this,
-                                                                           string.Format(InspectionsUI.RedundantOptionInspectionResultFormat, context.Context.GetText()),
+                                                                           string.Format(InspectionsUI.RedundantOptionInspectionResultFormat, context.ModuleName.ComponentName, context.Context.GetText()),
                                                                            State,
                                                                            context));
         }
@@ -55,7 +55,7 @@ namespace Rubberduck.Inspections.Concrete
                 }
             }
 
-            public override void ExitOptionCompareStmt(VBAParser.OptionCompareStmtContext context)
+            public override void ExitOptionCompareStmt(VBAParser.OptionCompareStmtContext context) 
             {
                 // BINARY is the default, and DATABASE is specified by default + only valid in Access.
                 if (context.TEXT() == null && context.DATABASE() == null)

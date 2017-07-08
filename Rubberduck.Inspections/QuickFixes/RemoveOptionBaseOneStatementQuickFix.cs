@@ -8,15 +8,15 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public sealed class RemoveOptionBaseStatementQuickFix : IQuickFix
+    public sealed class RemoveOptionBaseOneStatementQuickFix : IQuickFix
     {
         private readonly RubberduckParserState _state;
         private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
         {
-            typeof(RedundantOptionInspection)
+            typeof(OptionBaseOneInspection)
         };
 
-        public RemoveOptionBaseStatementQuickFix(RubberduckParserState state)
+        public RemoveOptionBaseOneStatementQuickFix(RubberduckParserState state)
         {
             _state = state;
         }
@@ -31,11 +31,11 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public string Description(IInspectionResult result)
         {
-            return InspectionsUI.RemoveOptionBaseStatementQuickFix;
+            return InspectionsUI.RemoveOptionBaseOneStatementQuickFix;
         }
 
         public bool CanFixInProcedure => false;
-        public bool CanFixInModule => false;
-        public bool CanFixInProject => false;
+        public bool CanFixInModule => true;
+        public bool CanFixInProject => true;
     }
 }

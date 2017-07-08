@@ -104,7 +104,8 @@
     <Compile Include="Inspections\IgnoreOnceQuickFixTests.cs" />
     <Compile Include="Inspections\ImplicitActiveWorkbookReferenceInspectionTests.cs" />
     <Compile Include="Inspections\MemberNotOnInterfaceInspectionTests.cs" />
-    <Compile Include="Inspections\OptionBaseZeroInspectionTests.cs" />
+    <Compile Include="Inspections\OptionBaseOneInspectionTests.cs" />
+    <Compile Include="Inspections\RedundantOptionInspectionTests.cs" />
     <Compile Include="Inspections\PassParameterByReferenceQuickFixTests.cs" />
     <Compile Include="Inspections\QuickFixProviderTests.cs" />
     <Compile Include="Inspections\SynchronizeAttributesQuickFixTests.cs" />
@@ -153,7 +154,6 @@
     <Compile Include="Inspections\AssignedByValParameterInspectionTests.cs" />
     <Compile Include="Inspections\ConstantNotUsedInspectionTests.cs" />
     <Compile Include="Inspections\ObsoleteTypeHintInspectionTests.cs" />
-    <Compile Include="Inspections\OptionBaseInspectionTests.cs" />
     <Compile Include="Inspections\ProcedureShouldBeFunctionInspectionTests.cs" />
     <Compile Include="Inspections\UseMeaningfulNameInspectionTests.cs" />
     <Compile Include="Inspections\DefaultProjectNameInspectionTests.cs" />
