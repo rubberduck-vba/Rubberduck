@@ -71,11 +71,30 @@ End Function";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void NonReturningFunction_DoesNotReturnResult()
+        public void NonReturningFunction_DoesNotReturnResult_Let()
         {
             const string inputCode =
 @"Function Foo() As Boolean
     Foo = True
+End Function";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new NonReturningFunctionInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void NonReturningFunction_DoesNotReturnResult_Set()
+        {
+            const string inputCode =
+@"Function Foo() As Collection
+    Set Foo = new Collection
 End Function";
 
             IVBComponent component;
