@@ -1170,27 +1170,54 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Arrays are typically zero-based. This option changes the default lower boundary for implicitly-sized arrays, which can introduce off-by-one errors if one isn&apos;t cautious..
         /// </summary>
-        public static string OptionBaseOneInspectionMeta {
+        public static string OptionBaseInspectionMeta {
             get {
-                return ResourceManager.GetString("OptionBaseOneInspectionMeta", resourceCulture);
+                return ResourceManager.GetString("OptionBaseInspectionMeta", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to &apos;Option Base 1&apos; is specified.
         /// </summary>
-        public static string OptionBaseOneInspectionName {
+        public static string OptionBaseInspectionName {
             get {
-                return ResourceManager.GetString("OptionBaseOneInspectionName", resourceCulture);
+                return ResourceManager.GetString("OptionBaseInspectionName", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Component &apos;{0}&apos; uses &apos;Option Base 1&apos;.
         /// </summary>
-        public static string OptionBaseOneInspectionResultFormat {
+        public static string OptionBaseInspectionResultFormat {
             get {
-                return ResourceManager.GetString("OptionBaseOneInspectionResultFormat", resourceCulture);
+                return ResourceManager.GetString("OptionBaseInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This is the default setting, it does not need to be specified..
+        /// </summary>
+        public static string OptionBaseZeroInspectionMeta {
+            get {
+                return ResourceManager.GetString("OptionBaseZeroInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;Option Base 0&apos; is redundant.
+        /// </summary>
+        public static string OptionBaseZeroInspectionName {
+            get {
+                return ResourceManager.GetString("OptionBaseZeroInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Component &apos;{0}&apos; uses &apos;Option Base 0&apos;.
+        /// </summary>
+        public static string OptionBaseZeroInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("OptionBaseZeroInspectionResultFormat", resourceCulture);
             }
         }
         
@@ -1474,20 +1501,11 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Component &apos;{0}&apos; uses &apos;{1}&apos;.
+        ///   Looks up a localized string similar to &apos;{0}&apos; has no effect..
         /// </summary>
         public static string RedundantOptionInspectionResultFormat {
             get {
                 return ResourceManager.GetString("RedundantOptionInspectionResultFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Remove redundant &apos;{0}&apos;.
-        /// </summary>
-        public static string RedundantOptionQuickFix {
-            get {
-                return ResourceManager.GetString("RedundantOptionQuickFix", resourceCulture);
             }
         }
         
@@ -1519,11 +1537,11 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Remove &apos;Option Base 1&apos; statement.
+        ///   Looks up a localized string similar to Remove &apos;Option Base&apos; statement.
         /// </summary>
-        public static string RemoveOptionBaseOneStatementQuickFix {
+        public static string RemoveOptionBaseStatementQuickFix {
             get {
-                return ResourceManager.GetString("RemoveOptionBaseOneStatementQuickFix", resourceCulture);
+                return ResourceManager.GetString("RemoveOptionBaseStatementQuickFix", resourceCulture);
             }
         }
         

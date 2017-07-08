@@ -261,10 +261,10 @@
   <data name="ObsoleteTypeHintInspectionName" xml:space="preserve">
     <value>Type hint usage</value>
   </data>
-  <data name="OptionBaseOneInspectionMeta" xml:space="preserve">
+  <data name="OptionBaseInspectionMeta" xml:space="preserve">
     <value>Arrays are typically zero-based. This option changes the default lower boundary for implicitly-sized arrays, which can introduce off-by-one errors if one isn't cautious.</value>
   </data>
-  <data name="OptionBaseOneInspectionName" xml:space="preserve">
+  <data name="OptionBaseInspectionName" xml:space="preserve">
     <value>'Option Base 1' is specified</value>
   </data>
   <data name="OptionExplicitInspectionMeta" xml:space="preserve">
@@ -541,9 +541,8 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="ObsoleteTypeHintInspectionResultFormat" xml:space="preserve">
     <value>{0} of {1} '{2}' uses an obsolete type hint</value>
   </data>
-  <data name="OptionBaseOneInspectionResultFormat" xml:space="preserve">
+  <data name="OptionBaseInspectionResultFormat" xml:space="preserve">
     <value>Component '{0}' uses 'Option Base 1'</value>
-    <comment>{0} Component name</comment>
   </data>
   <data name="UntypedFunctionUsageInspectionResultFormat" xml:space="preserve">
     <value>Replace function `{0}` with existing typed function</value>
@@ -645,8 +644,17 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="AssignedByValParameterMakeLocalCopyQuickFix" xml:space="preserve">
     <value>Create and use a local copy of the parameter</value>
   </data>
-  <data name="RemoveOptionBaseOneStatementQuickFix" xml:space="preserve">
-    <value>Remove 'Option Base 1' statement</value>
+  <data name="OptionBaseZeroInspectionMeta" xml:space="preserve">
+    <value>This is the default setting, it does not need to be specified.</value>
+  </data>
+  <data name="OptionBaseZeroInspectionName" xml:space="preserve">
+    <value>'Option Base 0' is redundant</value>
+  </data>
+  <data name="OptionBaseZeroInspectionResultFormat" xml:space="preserve">
+    <value>Component '{0}' uses 'Option Base 0'</value>
+  </data>
+  <data name="RemoveOptionBaseStatementQuickFix" xml:space="preserve">
+    <value>Remove 'Option Base' statement</value>
   </data>
   <data name="QuickFix_All" xml:space="preserve">
     <value>Fix all occurences</value>
@@ -706,8 +714,8 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>Redundant module option</value>
   </data>
   <data name="RedundantOptionInspectionResultFormat" xml:space="preserve">
-    <value>Component '{0}' uses '{1}'</value>
-    <comment>{0} Component name, {1} the whole ModuleOptionContext text</comment>
+    <value>'{0}' has no effect.</value>
+    <comment>'{0}' the whole ModuleOptionContext text</comment>
   </data>
   <data name="RedundantByRefModifierInspectionMeta" xml:space="preserve">
     <value>By default, all parameters are passed by reference, so it is not necessary to include the ByRef modifier declaration</value>
@@ -730,9 +738,5 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="LineLabelNotUsedInspectionResultFormat" xml:space="preserve">
     <value>Line label '{0}' is not used</value>
     <comment>{0} line label name</comment>
-  </data>
-  <data name="RedundantOptionQuickFix" xml:space="preserve">
-    <value>Remove redundant '{0}'</value>
-    <comment>{0} the whole ModuleOptionContext text</comment>
   </data>
 </root>

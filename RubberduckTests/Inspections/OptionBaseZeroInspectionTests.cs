@@ -1,46 +1,29 @@
 using System.Linq;
-using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using RubberduckTests.Mocks;
+using System.Threading;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
     [TestClass]
-    public class OptionBaseOneInspectionTests
+    public class OptionBaseZeroInspectionTests
     {
         [TestMethod]
         [TestCategory("Inspections")]
-        public void OptionBaseOneNotAlreadySpecified_DoesNotReturnResult()
+        public void OptionBaseZeroStatement_ReturnsResult()
         {
-            const string inputCode = @"";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new OptionBaseOneInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-            Assert.IsFalse(inspectionResults.Any());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void OptionBaseOneStatement_ReturnsResult()
-        {
-            const string inputCode = @"Option Base 1";
+            const string inputCode =
+@"Option Base 0";
             
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new OptionBaseOneInspection(state);
+            var inspection = new RedundantOptionInspection(state);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
@@ -49,67 +32,67 @@ namespace RubberduckTests.Inspections
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void OptionBaseZeroStatement_DoesNotReturnResult()
-        {
-            var inputCode = @"Option Base 0";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new OptionBaseOneInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-            Assert.IsFalse(inspectionResults.Any());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void OptionBaseOneStatement_Ignored_DoesNotReturnResult()
-        {
-            var inputCode =
-@"'@Ignore OptionBaseOne
-Option Base 1";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new OptionBaseOneInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-            Assert.IsFalse(inspectionResults.Any());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void OptionBaseOneStatement_QuickFixWorks_RemoveStatement()
+        public void OptionBaseOneStatement_NoResult()
         {
             var inputCode = "Option Base 1";
+            
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new RedundantOptionInspection(state);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            Assert.IsFalse(inspectionResults.Any());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void OptionBaseZeroStatement_Ignored_DoesNotReturnResult()
+        {
+            var inputCode =
+@"'@Ignore OptionBaseZero
+Option Base 0";
+            
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new ObsoleteCallStatementInspection(state);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            Assert.IsFalse(inspectionResults.Any());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void OptionBaseZeroStatement_QuickFixWorks_RemoveStatement()
+        {
+            var inputCode = "Option Base 0";
             var expectedCode = string.Empty;
             
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new OptionBaseOneInspection(state);
+            var inspection = new RedundantOptionInspection(state);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new RemoveOptionBaseOneStatementQuickFix(state).Fix(inspectionResults.First());
+            new RemoveOptionBaseStatementQuickFix(state).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void OptionBaseOneStatement_QuickFixWorks_RemoveStatement_MultipleLines()
+        public void OptionBaseZeroStatement_QuickFixWorks_RemoveStatement_MultipleLines()
         {
             var inputCode =
 @"Option _
 Base _
-1";
+0";
 
             var expectedCode = string.Empty;
             
@@ -117,111 +100,71 @@ Base _
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new OptionBaseOneInspection(state);
+            var inspection = new RedundantOptionInspection(state);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new RemoveOptionBaseOneStatementQuickFix(state).Fix(inspectionResults.First());
+            new RemoveOptionBaseStatementQuickFix(state).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void OptionBaseOneStatement_QuickFixWorks_RemoveStatement_InstructionSeparator()
+        public void OptionBaseZeroStatement_QuickFixWorks_RemoveStatement_InstructionSeparator()
         {
-            var inputCode = "Option Explicit: Option Base 1: Option Base 0";
+            var inputCode = "Option Explicit: Option Base 0: Option Base 1";
 
-            var expectedCode = "Option Explicit: : Option Base 0";
+            var expectedCode = "Option Explicit: : Option Base 1";
             
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new OptionBaseOneInspection(state);
+            var inspection = new RedundantOptionInspection(state);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new RemoveOptionBaseOneStatementQuickFix(state).Fix(inspectionResults.First());
+            new RemoveOptionBaseStatementQuickFix(state).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void OptionBaseOneStatement_QuickFixWorks_RemoveStatement_InstructionSeparatorAndMultipleLines()
+        public void OptionBaseZeroStatement_QuickFixWorks_RemoveStatement_InstructionSeparatorAndMultipleLines()
         {
             var inputCode =
 @"Option Explicit: Option _
 Base _
-1: Option Base 0";
+0: Option Base 1";
 
-            var expectedCode = "Option Explicit: : Option Base 0";
+            var expectedCode = "Option Explicit: : Option Base 1";
             
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new OptionBaseOneInspection(state);
+            var inspection = new RedundantOptionInspection(state);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new RemoveOptionBaseOneStatementQuickFix(state).Fix(inspectionResults.First());
+            new RemoveOptionBaseStatementQuickFix(state).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
-
         [TestMethod]
         [TestCategory("Inspections")]
-        public void OptionBaseOneAndOptionCompareBinaryStatement_ReturnsResults()
+        public void InspectionType()
         {
-            const string inputCode = 
-@"Option Base 1
-Option Compare Binary";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new OptionBaseOneInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-            Assert.AreEqual(1, inspectionResults.Count());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void OptionCompareOneStatement_Ignored_OptionCompareBinary_NotIgnored_ReturnsPartialResult()
-        {
-            var inputCode =
-@"'@Ignore OptionBaseOne
-Option Base 1
-Option Compare Binary";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new OptionBaseOneInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-            Assert.AreEqual(0, inspectionResults.Count());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void OptionBaseOneInspectionType()
-        {
-            var inspection = new OptionBaseOneInspection(null);
+            var inspection = new RedundantOptionInspection(null);
             Assert.AreEqual(CodeInspectionType.LanguageOpportunities, inspection.InspectionType);
         }
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void OptionBaseOneInspectionName()
+        public void InspectionName()
         {
-            const string inspectionName = "OptionBaseOneInspection";
-            var inspection = new OptionBaseOneInspection(null);
+            const string inspectionName = "RedundantOptionInspection";
+            var inspection = new RedundantOptionInspection(null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
         }
