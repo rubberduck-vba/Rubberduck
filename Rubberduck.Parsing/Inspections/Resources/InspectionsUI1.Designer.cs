@@ -1375,7 +1375,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fix all occurences.
+        ///   Looks up a localized string similar to Fix all occurrences.
         /// </summary>
         public static string QuickFix_All {
             get {
