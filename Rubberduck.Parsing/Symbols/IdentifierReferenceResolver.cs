@@ -150,7 +150,8 @@ namespace Rubberduck.Parsing.Symbols
             ParserRuleContext expression,
             StatementResolutionContext statementContext = StatementResolutionContext.Undefined,
             bool isAssignmentTarget = false,
-            bool hasExplicitLetStatement = false)
+            bool hasExplicitLetStatement = false,
+            bool isSetAssignment = false)
         {
             var withExpression = GetInnerMostWithExpression();
             var boundExpression = _bindingService.ResolveDefault(
@@ -186,7 +187,7 @@ namespace Rubberduck.Parsing.Symbols
                 var members = _declarationFinder.Members(module);
                 hasDefaultMember = members.Any(m => m.Attributes.Any(a => a.Name == $"{m.IdentifierName}.VB_UserMemId" && a.Values.SingleOrDefault() == "0"));
             }
-            _boundExpressionVisitor.AddIdentifierReferences(boundExpression, _qualifiedModuleName, _currentScope, _currentParent, !hasDefaultMember && isAssignmentTarget, hasExplicitLetStatement);
+            _boundExpressionVisitor.AddIdentifierReferences(boundExpression, _qualifiedModuleName, _currentScope, _currentParent, (!hasDefaultMember || isSetAssignment) && isAssignmentTarget, hasExplicitLetStatement);
         }
 
         private void ResolveType(ParserRuleContext expression)
@@ -356,7 +357,8 @@ namespace Rubberduck.Parsing.Symbols
                 context.lExpression(),
                 StatementResolutionContext.LetStatement,
                 true,
-                letStatement != null);
+                letStatement != null,
+                false);
             ResolveDefault(context.expression());
         }
 
@@ -366,7 +368,8 @@ namespace Rubberduck.Parsing.Symbols
                 context.lExpression(),
                 StatementResolutionContext.SetStatement,
                 true,
-                false);
+                false,
+                true);
             ResolveDefault(context.expression());
         }
 

@@ -1870,6 +1870,81 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//raiseEventStmt", matches => matches.Count == 1);
         }
 
+        [TestCategory("Parser")]
+        [TestMethod]
+        public void TestAttributeAfterSub()
+        {
+            const string code = @"
+Public Sub Foo(): End Sub
+Attribute Foo.VB_Description = ""Foo description""
+
+Public Sub Bar()
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//attributeStmt", matches => matches.Count == 1);
+        }
+
+        [TestCategory("Parser")]
+        [TestMethod]
+        public void TestAttributeAfterFunction()
+        {
+            const string code = @"
+Public Function Foo(): End Function
+Attribute Foo.VB_Description = ""Foo description""
+
+Public Sub Bar()
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//attributeStmt", matches => matches.Count == 1);
+        }
+
+        [TestCategory("Parser")]
+        [TestMethod]
+        public void TestAttributeAfterPropertyGet()
+        {
+            const string code = @"
+Public Property Get Foo(): End Property
+Attribute Foo.VB_Description = ""Foo description""
+
+Public Sub Bar()
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//attributeStmt", matches => matches.Count == 1);
+        }
+
+        [TestCategory("Parser")]
+        [TestMethod]
+        public void TestAttributeAfterPropertyLet()
+        {
+            const string code = @"
+Public Property Let Foo(): End Property
+Attribute Foo.VB_Description = ""Foo description""
+
+Public Sub Bar()
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//attributeStmt", matches => matches.Count == 1);
+        }
+
+        [TestCategory("Parser")]
+        [TestMethod]
+        public void TestAttributeAfterPropertySet()
+        {
+            const string code = @"
+Public Property Set Foo(): End Property
+Attribute Foo.VB_Description = ""Foo description""
+
+Public Sub Bar()
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//attributeStmt", matches => matches.Count == 1);
+        }
+
         private Tuple<VBAParser, ParserRuleContext> Parse(string code)
         {
             var stream = new AntlrInputStream(code);

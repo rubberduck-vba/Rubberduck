@@ -295,21 +295,40 @@ namespace Rubberduck.Parsing.Symbols
         {
             get
             {
+                string literalDescription;
+
                 var memberAttribute = _attributes.SingleOrDefault(a => a.Name == $"{IdentifierName}.VB_Description");
                 if (memberAttribute != null)
                 {
-                    return memberAttribute.Values.SingleOrDefault() ?? string.Empty;
+                    literalDescription = memberAttribute.Values.SingleOrDefault() ?? string.Empty;
+                    return CorrectlyFormatedDescription(literalDescription);
                 }
 
                 var moduleAttribute = _attributes.SingleOrDefault(a => a.Name == "VB_Description");
                 if (moduleAttribute != null)
                 {
-                    return moduleAttribute.Values.SingleOrDefault() ?? string.Empty;
+                    literalDescription = moduleAttribute.Values.SingleOrDefault() ?? string.Empty;
+                    return CorrectlyFormatedDescription(literalDescription);
                 }
 
                 return string.Empty;
             }
         }
+
+        private static string CorrectlyFormatedDescription(string literalDescription)
+        {
+            if (string.IsNullOrEmpty(literalDescription) 
+                || literalDescription.Length < 2 
+                || literalDescription[0] != '"'
+                || literalDescription[literalDescription.Length -1] != '"')
+            {
+                return literalDescription;
+            }
+
+            var text = literalDescription.Substring(1, literalDescription.Length - 2);
+            return text.Replace("\"\"", "\"");
+        }
+
 
         /// <summary>
         /// Gets an attribute value indicating whether a member is an enumerator provider.

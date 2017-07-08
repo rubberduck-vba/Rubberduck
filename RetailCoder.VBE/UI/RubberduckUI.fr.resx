@@ -1804,7 +1804,7 @@ End Sub</value>
     <value>Expression</value>
   </data>
   <data name="ParserState_ResolvingDeclarations" xml:space="preserve">
-    <value>Résolusion des déclarations...</value>
+    <value>Résolution des déclarations...</value>
   </data>
   <data name="SourceControl_FileStatus_Added" xml:space="preserve">
     <value>Ajouté</value>
