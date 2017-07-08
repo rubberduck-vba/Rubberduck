@@ -431,12 +431,13 @@ namespace Rubberduck.Parsing.Symbols
                 return;
             }
             var name = Identifier.GetName(identifier);
-
-            var asTypeClause = context.asTypeClause();
-            var asTypeName = asTypeClause == null
-                ? Tokens.Variant
-                : asTypeClause.type().GetText();
             var typeHint = Identifier.GetTypeHintValue(identifier);
+            var asTypeClause = context.asTypeClause();
+            var asTypeName = typeHint == null
+                ? asTypeClause == null
+                    ? Tokens.Variant
+                    : asTypeClause.type().GetText()
+                : SymbolList.TypeHintToTypeName[typeHint];
             var isArray = asTypeName.EndsWith("()");
             var declaration = CreateDeclaration(
                 name,
@@ -462,11 +463,13 @@ namespace Rubberduck.Parsing.Symbols
             var accessibility = GetProcedureAccessibility(context.visibility());
             var identifier = context.functionName().identifier();
             var name = Identifier.GetName(identifier);
-            var asTypeClause = context.asTypeClause();
-            var asTypeName = asTypeClause == null
-                ? Tokens.Variant
-                : asTypeClause.type().GetText();
             var typeHint = Identifier.GetTypeHintValue(identifier);
+            var asTypeClause = context.asTypeClause();
+            var asTypeName = typeHint == null
+                ? asTypeClause == null
+                    ? Tokens.Variant
+                    : asTypeClause.type().GetText()
+                : SymbolList.TypeHintToTypeName[typeHint];
             var isArray = asTypeClause != null && asTypeClause.type().LPAREN() != null;
             var declaration = CreateDeclaration(
                 name,
