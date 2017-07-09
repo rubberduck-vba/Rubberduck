@@ -447,7 +447,7 @@ namespace Rubberduck.Refactorings.Rename
         {
             RequestParseAfterRename = false;
             var projects = _model.VBE.VBProjects;
-            var project = projects.SingleOrDefault(p => p.HelpFile == _model.Target.ProjectId);
+            var project = projects.SingleOrDefault(p => p.ProjectId == _model.Target.ProjectId);
 
             if (project != null)
             {
