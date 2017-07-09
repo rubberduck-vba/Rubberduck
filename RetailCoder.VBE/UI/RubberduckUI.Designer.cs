@@ -139,7 +139,7 @@ namespace Rubberduck.UI {
                 return ResourceManager.GetString("AboutWindow_GeneralThanks", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Special Thanks.
         /// </summary>
@@ -148,7 +148,7 @@ namespace Rubberduck.UI {
                 return ResourceManager.GetString("AboutWindow_SpecialThanksLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Add.
         /// </summary>
@@ -1295,7 +1295,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Library procedure.
+        ///   Looks up a localized string similar to library procedure.
         /// </summary>
         public static string DeclarationType_LibraryProcedure {
             get {
