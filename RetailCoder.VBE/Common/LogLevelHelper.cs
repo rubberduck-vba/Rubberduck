@@ -11,7 +11,7 @@ namespace Rubberduck.Common
         private static readonly Lazy<IEnumerable<LogLevel>> _logLevels = new Lazy<IEnumerable<LogLevel>>(GetLogLevels);
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        private static string DebugInfo;
+        private static string LogHeader;
         private static bool LogHeaderWritten;
 
         public static IEnumerable<LogLevel> LogLevels
@@ -45,15 +45,21 @@ namespace Rubberduck.Common
 
         public static void SetDebugInfo(String value)
         {
-            DebugInfo = value;
+            LogHeader = value;
             LogHeaderWritten = false;
         }
 
         public static void SetMinimumLogLevel(LogLevel minimumLogLevel)
         {
+            if (LogManager.GlobalThreshold == minimumLogLevel) 
+            {
+                return;
+            }
             if (LogHeaderWritten == true)
             {
-                Logger.Log(LogLevel.Info, "Minimum log level changing to " + minimumLogLevel.Name);
+                Logger.Log(LogLevel.Info, "Minimum log level changing from " + 
+                    LogManager.GlobalThreshold.Name +
+                    " to " + minimumLogLevel.Name);
             }
             var loggingRules = LogManager.Configuration.LoggingRules;
             foreach (var loggingRule in loggingRules)
@@ -63,6 +69,7 @@ namespace Rubberduck.Common
             if (minimumLogLevel == LogLevel.Off)
             {
                 LogManager.DisableLogging();
+                LogManager.GlobalThreshold = minimumLogLevel;
                 LogManager.ReconfigExistingLoggers();
                 return;
             }
@@ -77,10 +84,11 @@ namespace Rubberduck.Common
                     }
                 }
             }
+            LogManager.GlobalThreshold = minimumLogLevel;
             LogManager.ReconfigExistingLoggers();
             if (LogHeaderWritten == false)
             {
-                Logger.Log(minimumLogLevel, DebugInfo);
+                Logger.Log(minimumLogLevel, LogHeader);
                 LogHeaderWritten = true;
             }
         }
