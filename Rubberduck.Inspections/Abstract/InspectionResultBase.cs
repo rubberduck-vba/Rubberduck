@@ -23,7 +23,7 @@ namespace Rubberduck.Inspections.Abstract
             Dictionary<string, string> properties)
         {
             Inspection = inspection;
-            Description = description.Capitalize();
+            Description = description?.Capitalize();
             QualifiedName = qualifiedName;
             Context = context;
             Target = target;

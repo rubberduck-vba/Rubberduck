@@ -5,7 +5,6 @@ using System.Linq;
 using System.Xml.Serialization;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.UI;
 
 namespace Rubberduck.Settings
 {
@@ -109,7 +108,7 @@ namespace Rubberduck.Settings
         {
             get
             {
-                return Name.Replace("Inspection", String.Empty);
+                return Name.Replace("Inspection", string.Empty);
             }
         }
 

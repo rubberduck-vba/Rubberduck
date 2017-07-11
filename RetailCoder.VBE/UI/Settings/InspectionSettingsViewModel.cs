@@ -127,14 +127,10 @@ namespace Rubberduck.UI.Settings
 
         private void TransferSettingsToView(CodeInspectionSettings toLoad)
         {
-            InspectionSettings = new ListCollectionView(
-                toLoad.CodeInspections.ToList());
-
-            if (InspectionSettings.GroupDescriptions != null)
-            {
-                InspectionSettings.GroupDescriptions.Add(new PropertyGroupDescription("TypeLabel"));
-            }
-
+            InspectionSettings = new ListCollectionView(toLoad.CodeInspections.ToList());
+            
+            InspectionSettings.GroupDescriptions?.Add(new PropertyGroupDescription("TypeLabel"));
+            
             WhitelistedIdentifierSettings = new ObservableCollection<WhitelistedIdentifierSetting>();
             RunInspectionsOnSuccessfulParse = true;
         }
