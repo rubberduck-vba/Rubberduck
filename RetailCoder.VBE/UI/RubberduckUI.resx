@@ -2011,7 +2011,7 @@ Would you like to import them to Rubberduck?</value>
     <comment>{0} = parameter name, {1} = number of invokes, {2} = optional user supplied message (always last)</comment>
   </data>
   <data name="Assert_VerifyParameterNonNumeric" xml:space="preserve">
-    <value>Parameter {0} was not a numeric value on invocatoin {1}. {2}</value>
+    <value>Parameter {0} was not a numeric value on invocation {1}. {2}</value>
     <comment>{0} = parameter name, {1} = invocation under test, {2} = optional user supplied message (always last)</comment>
   </data>
   <data name="Assert_VerifyParameterNotPassed" xml:space="preserve">
