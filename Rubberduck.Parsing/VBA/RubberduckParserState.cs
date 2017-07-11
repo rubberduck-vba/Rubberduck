@@ -765,20 +765,20 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private void ClearStateCache(string projectId, bool notifyStateChanged = false)
+        public void ClearStateCache(string projectId, bool notifyStateChanged = false)
         {
             try
             {
-                foreach (var moduleState in _moduleStates)
+                foreach (var moduleState in _moduleStates.Where(moduleState => moduleState.Key.ProjectId == projectId))
                 {
-                    if (moduleState.Key.ProjectId == projectId && moduleState.Key.Component != null)
+                    if (moduleState.Key.Component != null)
                     {
                         while (!ClearStateCache(moduleState.Key.Component))
                         {
                             // until Hell freezes over?
                         }
                     }
-                    else if (moduleState.Key.ProjectId == projectId && moduleState.Key.Component == null)
+                    else if (moduleState.Key.Component == null)
                     {
                         // store project module name
                         var qualifiedModuleName = moduleState.Key;
@@ -790,8 +790,9 @@ namespace Rubberduck.Parsing.VBA
                     }
                 }
             }
-            catch (COMException)
+            catch (COMException exception)
             {
+                Logger.Error(exception, $"Unexpected COMException while clearing the project with projectId {projectId}. Clearing all modules.");
                 _moduleStates.Clear();
             }
 

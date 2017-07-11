@@ -7,6 +7,7 @@ using Rubberduck.VBEditor;
 using System.Diagnostics;
 using System.Linq;
 using NLog;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -366,10 +367,17 @@ namespace Rubberduck.Parsing.VBA
             var removedModules = RemovedModules(modules);
             token.ThrowIfCancellationRequested();
 
+            var removedProjects = RemovedProjects(_projectManager.Projects);
+            token.ThrowIfCancellationRequested();
+
             var toReResolveReferences = _parsingCacheService.ModulesReferencingAny(removedModules);
             token.ThrowIfCancellationRequested();
 
             CleanUpRemovedComponents(removedModules, token);
+            token.ThrowIfCancellationRequested();
+
+            //This must come after the component cleanup because of cache invalidation.
+            CleanUpRemovedProjects(removedProjects);
             token.ThrowIfCancellationRequested();
 
             var toParse = modules.Where(module => State.IsNewOrModified(module)).ToHashSet();
@@ -400,12 +408,34 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
+        private void CleanUpRemovedProjects(IReadOnlyCollection<Tuple<string,string>> removedProjects)
+        {
+            var removedProjectIds = removedProjects.Select(removedProject => removedProject.Item1);
+            ClearStateCache(removedProjectIds);
+        }
+
+        private void ClearStateCache(IEnumerable<string> projectIds)
+        {
+            foreach (var projectId in projectIds)
+            {
+                State.ClearStateCache(projectId);
+            }
+        }
+
         private IReadOnlyCollection<QualifiedModuleName> RemovedModules(IReadOnlyCollection<QualifiedModuleName> modules)
         {
             var modulesWithModuleDeclarations = State.DeclarationFinder.UserDeclarations(DeclarationType.Module).Select(declaration => declaration.QualifiedName.QualifiedModuleName);
             var currentlyExistingModules = modules.ToHashSet();
             var removedModuledecalrations = modulesWithModuleDeclarations.Where(module => !currentlyExistingModules.Contains(module));
             return removedModuledecalrations.ToHashSet().AsReadOnly();
+        }
+
+        private IReadOnlyCollection<Tuple<string,string>> RemovedProjects(IReadOnlyCollection<IVBProject> projects)
+        {
+            var projectsWithProjectDeclarations = State.DeclarationFinder.UserDeclarations(DeclarationType.Project).Select(declaration => new Tuple<string,string>(declaration.ProjectId, declaration.ProjectName));
+            var currentlyExistingProjects = projects.Select(project => new Tuple<string, string>(project.ProjectId, project.Name)).ToHashSet();
+            var removedProjects = projectsWithProjectDeclarations.Where(project => !currentlyExistingProjects.Contains(project));
+            return removedProjects.ToHashSet().AsReadOnly();
         }
 
 
