@@ -376,6 +376,8 @@ namespace Rubberduck.Parsing.Symbols
                     .SelectMany(item => item.Value);
         }
 
+        public IEnumerable<Declaration> AllUserDeclarations => _userDeclarationsByType.AllValues();
+
         public IEnumerable<Declaration> BuiltInDeclarations(DeclarationType type)
         {
             List<Declaration> result;
@@ -385,6 +387,8 @@ namespace Rubberduck.Parsing.Symbols
                     .Where(item => item.Key.HasFlag(type))
                     .SelectMany(item => item.Value);
         }
+
+        public IEnumerable<Declaration> AllBuiltInDeclarations => _builtInDeclarationsByType.Value.AllValues();
 
         public IEnumerable<Declaration> DeclarationsWithType(DeclarationType type)
         {

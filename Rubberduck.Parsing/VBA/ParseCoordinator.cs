@@ -241,13 +241,18 @@ namespace Rubberduck.Parsing.VBA
                 token.ThrowIfCancellationRequested();
 
                 _parsingStageService.ResolveDeclarations(toParse, token);
-                RefreshDeclarationFinder();
             }
 
             if (token.IsCancellationRequested || State.Status >= ParserState.Error)
             {
                 throw new OperationCanceledException(token);
             }
+
+            //We need to refresh the DeclarationFinder before the handlers for ResolvedDeclarations run no matter 
+            //whether we parsed or resolved something because modules not referenced by any remeining module might
+            //have been removed. E.g. the CodeExplorer needs this update. 
+            RefreshDeclarationFinder();
+            token.ThrowIfCancellationRequested();
 
             //Explicitly setting the overall state here guarantees that the handlers attached 
             //to the state change to ResolvedDeclarations always run, provided there is no error. 
