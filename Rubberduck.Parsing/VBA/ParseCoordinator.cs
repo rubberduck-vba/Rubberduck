@@ -135,7 +135,7 @@ namespace Rubberduck.Parsing.VBA
             try
             {
                 Monitor.Enter(_parsingRunSyncObject, ref lockTaken);
-                ParseInternalInternal(token);
+                ParseAllInternal(this, token);
             }
             catch (OperationCanceledException)
             {
@@ -147,35 +147,6 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private void ParseInternalInternal(CancellationToken token)
-        {
-            token.ThrowIfCancellationRequested();
-
-            _parserStateManager.SetStatusAndFireStateChanged(this, ParserState.Pending, token);
-            token.ThrowIfCancellationRequested();
-
-            _projectManager.RefreshProjects();
-            token.ThrowIfCancellationRequested();
-
-            var modules = _projectManager.AllModules();
-            token.ThrowIfCancellationRequested();
-
-            // tests do not fire events when components are removed--clear components
-            ClearComponentsForTests();
-            token.ThrowIfCancellationRequested();
-
-            ExecuteCommonParseActivities(modules, new List<QualifiedModuleName>(), token);
-        }
-
-        private void ClearComponentsForTests()
-        {
-            foreach (var tree in State.ParseTrees)
-            {
-                State.ClearStateCache(tree.Key);    // handle potentially removed components without crashing
-                _parsingCacheService.ClearModuleToModuleReferencesFromModule(tree.Key);
-                _parsingCacheService.ClearModuleToModuleReferencesToModule(tree.Key);
-            }
-        }
 
         private void ExecuteCommonParseActivities(IReadOnlyCollection<QualifiedModuleName> toParse, IReadOnlyCollection<QualifiedModuleName> toReresolveReferencesInput, CancellationToken token)
         {
