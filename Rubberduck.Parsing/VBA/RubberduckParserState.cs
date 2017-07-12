@@ -140,7 +140,6 @@ namespace Rubberduck.Parsing.VBA
             if (!e.Project.VBE.IsInDesignMode) { return; }
 
             Logger.Debug("Project '{0}' was added.", e.ProjectId);
-            RefreshProjects(_vbe); // note side-effect: assigns ProjectId/HelpFile
             OnParseRequested(sender);
         }
 
@@ -149,7 +148,6 @@ namespace Rubberduck.Parsing.VBA
             if (!e.Project.VBE.IsInDesignMode) { return; }
             
             Debug.Assert(e.ProjectId != null);
-            RemoveProject(e.ProjectId, true);
             OnParseRequested(sender);
         }
 
@@ -163,9 +161,6 @@ namespace Rubberduck.Parsing.VBA
             }
 
             Logger.Debug("Project {0} was renamed.", e.ProjectId);
-
-            RemoveProject(e.ProjectId);
-            RefreshProjects(e.Project.VBE);
 
             OnParseRequested(sender);
         }
@@ -207,6 +202,18 @@ namespace Rubberduck.Parsing.VBA
 
             Logger.Debug("Component '{0}' was renamed to '{1}'.", e.OldName, e.Component.Name);
 
+            //todo: Find out for which situation this drastic (and problematic) cache invalidation has been introduced.
+            if (ComponentIsWorksheet(e))
+            {
+                RemoveProject(e.ProjectId);
+                Logger.Debug("Project '{0}' was removed.", e.Component.Name);
+            }
+
+            OnParseRequested(sender);
+        }
+
+        private bool ComponentIsWorksheet(ComponentRenamedEventArgs e)
+        {
             var componentIsWorksheet = false;
             foreach (var declaration in AllUserDeclarations)
             {
@@ -214,7 +221,7 @@ namespace Rubberduck.Parsing.VBA
                     declaration.DeclarationType == DeclarationType.ClassModule &&
                     declaration.IdentifierName == e.OldName)
                 {
-                    foreach (var superType in ((ClassModuleDeclaration) declaration).Supertypes)
+                    foreach (var superType in ((ClassModuleDeclaration)declaration).Supertypes)
                     {
                         if (superType.IdentifierName == "Worksheet")
                         {
@@ -227,19 +234,7 @@ namespace Rubberduck.Parsing.VBA
                 }
             }
 
-            if (componentIsWorksheet)
-            {
-                RemoveProject(e.ProjectId);
-                Logger.Debug("Project '{0}' was removed.", e.Component.Name);
-
-                RefreshProjects(e.Project.VBE);
-            }
-            else
-            {
-                RemoveRenamedComponent(e.ProjectId, e.OldName);
-            }
-
-            OnParseRequested(sender);
+            return componentIsWorksheet;
         }
 
         public void OnStatusMessageUpdate(string message)
@@ -765,20 +760,20 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private void ClearStateCache(string projectId, bool notifyStateChanged = false)
+        public void ClearStateCache(string projectId, bool notifyStateChanged = false)
         {
             try
             {
-                foreach (var moduleState in _moduleStates)
+                foreach (var moduleState in _moduleStates.Where(moduleState => moduleState.Key.ProjectId == projectId))
                 {
-                    if (moduleState.Key.ProjectId == projectId && moduleState.Key.Component != null)
+                    if (moduleState.Key.Component != null)
                     {
                         while (!ClearStateCache(moduleState.Key.Component))
                         {
                             // until Hell freezes over?
                         }
                     }
-                    else if (moduleState.Key.ProjectId == projectId && moduleState.Key.Component == null)
+                    else if (moduleState.Key.Component == null)
                     {
                         // store project module name
                         var qualifiedModuleName = moduleState.Key;
@@ -790,8 +785,9 @@ namespace Rubberduck.Parsing.VBA
                     }
                 }
             }
-            catch (COMException)
+            catch (COMException exception)
             {
+                Logger.Error(exception, $"Unexpected COMException while clearing the project with projectId {projectId}. Clearing all modules.");
                 _moduleStates.Clear();
             }
 
@@ -841,28 +837,6 @@ namespace Rubberduck.Parsing.VBA
             var success = RemoveKeysFromCollections(keys);
 
             if (notifyStateChanged)
-            {
-                OnStateChanged(this, ParserState.ResolvedDeclarations);   // trigger test explorer and code explorer updates
-                OnStateChanged(this, ParserState.Ready);   // trigger find all references &c. updates
-            }
-
-            return success;
-        }
-
-        private bool RemoveRenamedComponent(string projectId, string oldComponentName)
-        {
-            var keys = new List<QualifiedModuleName>();
-            foreach (var key in _moduleStates.Keys)
-            {
-                if (key.ComponentName == oldComponentName && key.ProjectId == projectId)
-                {
-                    keys.Add(key);
-                }
-            }
-
-            var success = keys.Count != 0 && RemoveKeysFromCollections(keys);
-
-            if (success)
             {
                 OnStateChanged(this, ParserState.ResolvedDeclarations);   // trigger test explorer and code explorer updates
                 OnStateChanged(this, ParserState.Ready);   // trigger find all references &c. updates

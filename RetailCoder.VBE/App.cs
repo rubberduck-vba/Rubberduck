@@ -110,14 +110,15 @@ namespace Rubberduck
         {
             EnsureLogFolderPathExists();
             EnsureTempPathExists();
-            LogRubberduckSart();
             LoadConfig();
+
+            LogRubberduckStart();
+            UpdateLoggingLevel();
+            
             CheckForLegacyIndenterSettings();
             _appMenus.Initialize();
             _hooks.HookHotkeys(); // need to hook hotkeys before we localize menus, to correctly display ShortcutTexts
             _appMenus.Localize();
-
-            UpdateLoggingLevel();
 
             if (_config.UserSettings.GeneralSettings.CheckVersion)
             {
@@ -185,19 +186,19 @@ namespace Rubberduck
             }
         }
 
-        private void LogRubberduckSart()
+        public void LogRubberduckStart()
         {
             var version = _version.CurrentVersion;
             GlobalDiagnosticsContext.Set("RubberduckVersion", version.ToString());
             var headers = new List<string>
             {
-                string.Format("Rubberduck version {0} loading:", version),
+                string.Format("\r\n\tRubberduck version {0} loading:", version),
                 string.Format("\tOperating System: {0} {1}", Environment.OSVersion.VersionString, Environment.Is64BitOperatingSystem ? "x64" : "x86"),
                 string.Format("\tHost Product: {0} {1}", Application.ProductName, Environment.Is64BitProcess ? "x64" : "x86"),
                 string.Format("\tHost Version: {0}", Application.ProductVersion),
                 string.Format("\tHost Executable: {0}", Path.GetFileName(Application.ExecutablePath)),
             };
-            Logger.Log(LogLevel.Info, string.Join(Environment.NewLine, headers));
+            LogLevelHelper.SetDebugInfo(string.Join(Environment.NewLine, headers));
         }
 
         private bool _disposed;
