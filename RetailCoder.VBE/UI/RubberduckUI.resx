@@ -1470,7 +1470,7 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
     <value>By marker</value>
   </data>
   <data name="DeclarationType_LibraryProcedure" xml:space="preserve">
-    <value>Library procedure</value>
+    <value>library procedure</value>
   </data>
   <data name="CodeExplorer_ShowSignaturesToolTip" xml:space="preserve">
     <value>Toggle signatures</value>
