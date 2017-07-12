@@ -139,7 +139,7 @@ namespace Rubberduck.UI {
                 return ResourceManager.GetString("AboutWindow_GeneralThanks", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Special Thanks.
         /// </summary>
@@ -148,7 +148,7 @@ namespace Rubberduck.UI {
                 return ResourceManager.GetString("AboutWindow_SpecialThanksLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Add.
         /// </summary>
@@ -980,38 +980,11 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Code Quality Issues.
-        /// </summary>
-        public static string CodeInspectionSettings_CodeQualityIssues {
-            get {
-                return ResourceManager.GetString("CodeInspectionSettings_CodeQualityIssues", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Inspection Severities.
         /// </summary>
         public static string CodeInspectionSettings_InspectionSeveritySettingsLabel {
             get {
                 return ResourceManager.GetString("CodeInspectionSettings_InspectionSeveritySettingsLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Language Opportunities.
-        /// </summary>
-        public static string CodeInspectionSettings_LanguageOpportunities {
-            get {
-                return ResourceManager.GetString("CodeInspectionSettings_LanguageOpportunities", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Maintainability and Readability Issues.
-        /// </summary>
-        public static string CodeInspectionSettings_MaintainabilityAndReadabilityIssues {
-            get {
-                return ResourceManager.GetString("CodeInspectionSettings_MaintainabilityAndReadabilityIssues", resourceCulture);
             }
         }
         
@@ -1034,24 +1007,6 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Performance.
-        /// </summary>
-        public static string CodeInspectionSettings_Performance {
-            get {
-                return ResourceManager.GetString("CodeInspectionSettings_Performance", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Rubberduck Opportunities.
-        /// </summary>
-        public static string CodeInspectionSettings_RubberduckOpportunities {
-            get {
-                return ResourceManager.GetString("CodeInspectionSettings_RubberduckOpportunities", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to These identifiers will be ignored by the &apos;Use meaningful names&apos; inspection.
         /// </summary>
         public static string CodeInspectionSettings_WhitelistedIdentifiersDescription {
@@ -1066,51 +1021,6 @@ namespace Rubberduck.UI {
         public static string CodeInspectionSettings_WhitelistedIdentifiersLabel {
             get {
                 return ResourceManager.GetString("CodeInspectionSettings_WhitelistedIdentifiersLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Do Not Show.
-        /// </summary>
-        public static string CodeInspectionSeverity_DoNotShow {
-            get {
-                return ResourceManager.GetString("CodeInspectionSeverity_DoNotShow", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Error.
-        /// </summary>
-        public static string CodeInspectionSeverity_Error {
-            get {
-                return ResourceManager.GetString("CodeInspectionSeverity_Error", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hint.
-        /// </summary>
-        public static string CodeInspectionSeverity_Hint {
-            get {
-                return ResourceManager.GetString("CodeInspectionSeverity_Hint", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Suggestion.
-        /// </summary>
-        public static string CodeInspectionSeverity_Suggestion {
-            get {
-                return ResourceManager.GetString("CodeInspectionSeverity_Suggestion", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Warning.
-        /// </summary>
-        public static string CodeInspectionSeverity_Warning {
-            get {
-                return ResourceManager.GetString("CodeInspectionSeverity_Warning", resourceCulture);
             }
         }
         
@@ -1295,7 +1205,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Library procedure.
+        ///   Looks up a localized string similar to library procedure.
         /// </summary>
         public static string DeclarationType_LibraryProcedure {
             get {

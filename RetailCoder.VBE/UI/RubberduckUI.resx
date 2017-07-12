@@ -663,15 +663,6 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="TodoSettings_TokenListLabel" xml:space="preserve">
     <value>Token List:</value>
   </data>
-  <data name="CodeInspectionSettings_CodeQualityIssues" xml:space="preserve">
-    <value>Code Quality Issues</value>
-  </data>
-  <data name="CodeInspectionSettings_LanguageOpportunities" xml:space="preserve">
-    <value>Language Opportunities</value>
-  </data>
-  <data name="CodeInspectionSettings_MaintainabilityAndReadabilityIssues" xml:space="preserve">
-    <value>Maintainability and Readability Issues</value>
-  </data>
   <data name="Navigation" xml:space="preserve">
     <value>Navigation</value>
   </data>
@@ -858,21 +849,6 @@ Are you sure you want to proceed with this rename?</value>
   </data>
   <data name="SourceControl_MergeFormTitle" xml:space="preserve">
     <value>Merge branches</value>
-  </data>
-  <data name="CodeInspectionSeverity_DoNotShow" xml:space="preserve">
-    <value>Do Not Show</value>
-  </data>
-  <data name="CodeInspectionSeverity_Error" xml:space="preserve">
-    <value>Error</value>
-  </data>
-  <data name="CodeInspectionSeverity_Hint" xml:space="preserve">
-    <value>Hint</value>
-  </data>
-  <data name="CodeInspectionSeverity_Suggestion" xml:space="preserve">
-    <value>Suggestion</value>
-  </data>
-  <data name="CodeInspectionSeverity_Warning" xml:space="preserve">
-    <value>Warning</value>
   </data>
   <data name="SourceControl_NoRepoFound" xml:space="preserve">
     <value>No repository found.</value>
@@ -1494,7 +1470,7 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
     <value>By marker</value>
   </data>
   <data name="DeclarationType_LibraryProcedure" xml:space="preserve">
-    <value>Library procedure</value>
+    <value>library procedure</value>
   </data>
   <data name="CodeExplorer_ShowSignaturesToolTip" xml:space="preserve">
     <value>Toggle signatures</value>
@@ -1762,9 +1738,6 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   </data>
   <data name="CodeInspectionSettings_WhitelistedIdentifiersLabel" xml:space="preserve">
     <value>Whitelisted Identifiers</value>
-  </data>
-  <data name="CodeInspectionSettings_InspectionSeveritySettingsLabel" xml:space="preserve">
-    <value>Inspection Severities</value>
   </data>
   <data name="CodeInspectionSettings_WhitelistedIdentifiersDescription" xml:space="preserve">
     <value>These identifiers will be ignored by the 'Use meaningful names' inspection</value>
@@ -2038,7 +2011,7 @@ Would you like to import them to Rubberduck?</value>
     <comment>{0} = parameter name, {1} = number of invokes, {2} = optional user supplied message (always last)</comment>
   </data>
   <data name="Assert_VerifyParameterNonNumeric" xml:space="preserve">
-    <value>Parameter {0} was not a numeric value on invocatoin {1}. {2}</value>
+    <value>Parameter {0} was not a numeric value on invocation {1}. {2}</value>
     <comment>{0} = parameter name, {1} = invocation under test, {2} = optional user supplied message (always last)</comment>
   </data>
   <data name="Assert_VerifyParameterNotPassed" xml:space="preserve">
@@ -2068,11 +2041,8 @@ Would you like to import them to Rubberduck?</value>
     <value>{0} {1} cannot be changed.</value>
     <comment>0: DeclarationType; 1: IdentifierName</comment>
   </data>
-  <data name="CodeInspectionSettings_Performance" xml:space="preserve">
-    <value>Performance</value>
-  </data>
-  <data name="CodeInspectionSettings_RubberduckOpportunities" xml:space="preserve">
-    <value>Rubberduck Opportunities</value>
+  <data name="CodeInspectionSettings_InspectionSeveritySettingsLabel" xml:space="preserve">
+    <value>Inspection Severities</value>
   </data>
   <data name="RenamePresenter_TargetIsControlEventHandler" xml:space="preserve">
     <value>Method {0} is an EventHandler for control '{1}'.  Only the control can be renamed.  Rename '{1}'?</value>
