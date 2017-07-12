@@ -663,4 +663,118 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
   <data name="RemoveOptionBaseStatementQuickFix">
     <value>'Option Base'-Anweisung entfernen</value>
   </data>
+  <data name="SynchronizeAttributesQuickFix">
+    <value>Attribute/Annotationen im Modul synchronisieren</value>
+  </data>
+  <data name="CodeInspectionSettings_RubberduckOpportunities">
+    <value>Optimalere Ausnutzung von Rubberduck</value>
+  </data>
+  <data name="LineLabelNotUsedInspectionName">
+    <value>Zeilenbezeichnung wird nicht referenziert</value>
+  </data>
+  <data name="EmptyIfBlockInspectionName">
+    <value>Leerer If-Block</value>
+  </data>
+  <data name="MissingAnnotationInspectionMeta">
+    <value>Modul- und Elementattribute werden von der VBE nicht angezeigt. Durch das hinzufügen einer Annotation werden diese Attribute explizit. Außerdem kann Rubberduck die Annotationen und Attribute synchronisieren.</value>
+  </data>
+  <data name="IllegalAnnotationInspectionMeta">
+    <value>Eine Annotation für die Modulebene kann nicht verwendet werden, um Elemente zu Annotieren; Eine Annotation für Elemente kann auf Modulebene nicht verwendet werden; Modul- und Elementannotationen sollten nur einmal spezifiziert werden.</value>
+  </data>
+  <data name="CodeInspectionSettings_Performance">
+    <value>Performanz</value>
+  </data>
+  <data name="RedundantByRefModifierQuickFix">
+    <value>Redundante ByRef-Markierung entfernen</value>
+  </data>
+  <data name="RedundantByRefModifierInspectionName">
+    <value>Redundante ByRef-Markierung</value>
+  </data>
+  <data name="CodeInspectionSeverity_DoNotShow">
+    <value>Nicht Anzeigen</value>
+  </data>
+  <data name="ImplicitByRefModifierInspectionResultFormat">
+    <value>Der Parameter '{0}' wird implizit als Referenz übergeben.</value>
+  </data>
+  <data name="RedundantOptionInspectionMeta">
+    <value>Da dies die Standardeinstellung für diese Option ist, kann die Anweisung ohne Nebeneffekte entfernt werden.</value>
+  </data>
+  <data name="ImplicitByRefModifierInspectionName">
+    <value>Implizite Referenzübergabe</value>
+  </data>
+  <data name="CodeInspectionSettings_MaintainabilityAndReadabilityIssues">
+    <value>Wartbarkeits- und Leserlichkeitsprobleme</value>
+  </data>
+  <data name="LineLabelNotUsedInspectionResultFormat">
+    <value>Die Zeilenbezeichnung '{0}' wird nicht verwendet</value>
+  </data>
+  <data name="CodeInspectionSeverity_Warning">
+    <value>Warnung</value>
+  </data>
+  <data name="RedundantByRefModifierInspectionResultFormat">
+    <value>Der Parameter '{0}' hat eine redundanten ByRef-Markierung</value>
+  </data>
+  <data name="MissingAnnotationInspectionName">
+    <value>Fehlende Annotation</value>
+  </data>
+  <data name="RedundantByRefModifierInspectionMeta">
+    <value>Alle Parameter werden, falls nicht anders spezifiziert als Referenz übergeben. Es ist also nicht nötig, die ByRef-Markierung zu verwenden.</value>
+  </data>
+  <data name="IllegalAnnotationInspectionName">
+    <value>Illegale Annotation</value>
+  </data>
+  <data name="RemoveEmptyIfBlockQuickFix">
+    <value>Leeren If-Block entfernen</value>
+  </data>
+  <data name="ImplicitByRefModifierInspectionMeta">
+    <value>Parameter werden, falls nicht anders spezifiziert, als Referenz übergeben. Dies kann verwirrend sein und Bugs hervorrufen. Bevorzugen Sie die Übergabe von Parametern als Werten und spezifizieren Sie eine Referenzübergabe explizit als ByRef.</value>
+  </data>
+  <data name="ImplicitByRefModifierQuickFix">
+    <value>Parameter explizit als Referenz übergeben.</value>
+  </data>
+  <data name="MissingAttributeInspectionMeta">
+    <value>Eine Rubberduck-Annotation wurde für ein Modul oder Element festgelegt, aber das zugehörige Attribut fehlt. Das Modul sollte synchronisiert werden.</value>
+  </data>
+  <data name="CodeInspectionSeverity_Hint">
+    <value>Tipp</value>
+  </data>
+  <data name="EmptyIfBlockInspectionMeta">
+    <value>Ein If-Block sollte ausführbare Anweisungen haben</value>
+  </data>
+  <data name="EmptyIfBlockInspectionResultFormat">
+    <value>If-Block hat keine ausführbaren Anweisungen</value>
+  </data>
+  <data name="CodeInspectionSettings_LanguageOpportunities">
+    <value>Optimalere Ausnutzung der Sprache</value>
+  </data>
+  <data name="CodeInspectionSeverity_Suggestion">
+    <value>Vorschlag</value>
+  </data>
+  <data name="LineLabelNotUsedInspectionMeta">
+    <value>Rubberduck konnte keine Resume oder GoTo Anweisung zu einer Zeilenbezeichnung finden. Erwägen Sie eine Entfernung der Bezeichnung.</value>
+  </data>
+  <data name="MissingAttributeInspectionName">
+    <value>Fehlendes Attribut</value>
+  </data>
+  <data name="RedundantOptionInspectionName">
+    <value>Redundante Moduloption</value>
+  </data>
+  <data name="CodeInspectionSettings_CodeQualityIssues">
+    <value>Codequalitätsprobleme</value>
+  </data>
+  <data name="IllegalAnnotationInspectionResultFormat">
+    <value>Die Annotation '{0}' ist in diesem Kontext nicht erlaubt.</value>
+  </data>
+  <data name="RedundantOptionInspectionResultFormat">
+    <value>'{0}' hat keine Auswirkung.</value>
+  </data>
+  <data name="CodeInspectionSeverity_Error">
+    <value>Fehler</value>
+  </data>
+  <data name="MissingAnnotationInspectionResultFormat">
+    <value>Modul oder Element '{0}' hat ein '{1}' Attribut, aber keine zugehörige Annotation.</value>
+  </data>
+  <data name="MissingAttributeInspectionResultFormat">
+    <value>Modul oder Element '{0}' hat eine '{1}' Annotation, aber das zugehörige Attribut fehlt.</value>
+  </data>
 </root>
