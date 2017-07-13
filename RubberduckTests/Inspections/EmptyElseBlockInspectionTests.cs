@@ -247,11 +247,11 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void EmptyElseBlock_QuickFixRemovesElse_InvertsIf_SimpleCondition()
+        public void EmptyElseBlock_QuickFixRemovesElse()
         {
             const string inputCode =
 @"Sub Foo()
-    If Not True Then
+    If True Then
     Else
     End If
 End Sub";
@@ -259,7 +259,6 @@ End Sub";
             const string expectedCode =
 @"Sub Foo()
     If True Then
-
     End If
 End Sub";
 
@@ -274,6 +273,7 @@ End Sub";
             new RemoveEmptyElseBlockQuickFix(state).Fix(actualResults.First());
 
             string actualRewrite = state.GetRewriter(component).GetText();
+
             Assert.AreEqual(expectedCode, actualRewrite);
         }
     }

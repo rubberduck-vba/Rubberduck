@@ -14,13 +14,13 @@ using Antlr4.Runtime.Misc;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    internal class EmptyElseBlockInspection : InspectionBase, IParseTreeInspection
+    internal class EmptyElseBlockInspection : ParseTreeInspectionBase
     {
         public EmptyElseBlockInspection(RubberduckParserState state) : base(state, CodeInspectionSeverity.Suggestion) { }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
-        public IInspectionListener Listener { get; } = new EmptyElseBlockListener();
+        public override IInspectionListener Listener { get; } = new EmptyElseBlockListener();
         
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
