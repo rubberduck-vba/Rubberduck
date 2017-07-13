@@ -34,7 +34,7 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object);
 
             GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
 
@@ -63,7 +63,7 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object);
 
             GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
 
@@ -95,7 +95,7 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object);
 
             GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
 
@@ -132,7 +132,7 @@ End Sub";
             var vbe = builder.AddProject(project).Build();
 
             var component = project.Object.VBComponents[0];
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object);
 
             GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
 
@@ -172,7 +172,7 @@ End Sub";
             var vbe = builder.AddProject(project).Build();
 
             var component = project.Object.VBComponents[0];
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object);
 
             GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
 

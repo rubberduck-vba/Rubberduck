@@ -21,7 +21,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _clipboard = new ClipboardWriter();
         }
 
-        protected override void ExecuteImpl(object parameter)
+        protected override void OnExecute(object parameter)
         {
                 const string XML_SPREADSHEET_DATA_FORMAT = "XML Spreadsheet";
 

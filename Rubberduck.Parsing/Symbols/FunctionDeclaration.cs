@@ -6,6 +6,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -82,18 +83,6 @@ namespace Rubberduck.Parsing.Symbols
         /// If this value is true, any reference to an instance of the class it's the default member of,
         /// should count as a member call to this member.
         /// </summary>
-        public bool IsDefaultMember
-        {
-            get
-            {
-                IEnumerable<string> value;
-                if (Attributes.TryGetValue(IdentifierName + ".VB_UserMemId", out value))
-                {
-                    return value.Single() == "0";
-                }
-
-                return false;
-            }
-        }
+        public bool IsDefaultMember => Attributes.Any(a => a.Name == $"{IdentifierName}.VB_UserMemId" && a.Values.Single() == "0");
     }
 }

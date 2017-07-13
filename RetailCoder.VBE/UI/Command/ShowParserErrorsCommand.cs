@@ -74,7 +74,7 @@ namespace Rubberduck.UI.Command
             }
         }
 
-        protected override void ExecuteImpl(object parameter)
+        protected override void OnExecute(object parameter)
         {
             if (_viewModel == null)
             {

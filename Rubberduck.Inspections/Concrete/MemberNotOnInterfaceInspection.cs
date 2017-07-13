@@ -18,7 +18,7 @@ namespace Rubberduck.Inspections.Concrete
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
-            var unresolved = State.DeclarationFinder.UnresolvedMemberDeclarations().Where(decl => !IsIgnoringInspectionResultFor(decl, AnnotationName)).ToList();
+            var unresolved = State.DeclarationFinder.UnresolvedMemberDeclarations.Where(decl => !IsIgnoringInspectionResultFor(decl, AnnotationName)).ToList();
 
             var targets = Declarations.Where(decl => decl.AsTypeDeclaration != null &&
                                                      !decl.AsTypeDeclaration.IsUserDefined &&

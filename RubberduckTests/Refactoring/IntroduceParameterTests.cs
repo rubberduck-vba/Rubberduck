@@ -16,6 +16,8 @@ namespace RubberduckTests.Refactoring
     public class IntroduceParameterTests
     {
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Introduce Parameter")]
         public void IntroduceParameterRefactoring_NoParamsInList_Sub()
         {
             //Input
@@ -44,6 +46,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Introduce Parameter")]
         public void IntroduceParameterRefactoring_NoParamsInList_Function()
         {
             //Input
@@ -74,6 +78,8 @@ End Function";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Introduce Parameter")]
         public void IntroduceParameterRefactoring_OneParamInList()
         {
             //Input
@@ -102,6 +108,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Introduce Parameter")]
         public void IntroduceParameterRefactoring_OneParamInList_MultipleLines()
         {
             //Input
@@ -133,6 +141,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Introduce Parameter")]
         public void IntroduceParameterRefactoring_MultipleParamsOnMultipleLines()
         {
             //Input
@@ -163,6 +173,8 @@ End Sub";   // note: the VBE removes extra spaces
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Introduce Parameter")]
         public void IntroduceParameterRefactoring_MultipleVariablesInStatement_MoveFirst()
         {
             //Input
@@ -197,6 +209,8 @@ End Sub";   // note: the VBE removes extra spaces
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Introduce Parameter")]
         public void IntroduceParameterRefactoring_MultipleVariablesInStatement_MoveSecond()
         {
             //Input
@@ -230,6 +244,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Introduce Parameter")]
         public void IntroduceParameterRefactoring_MultipleVariablesInStatement_MoveLast()
         {
             //Input
@@ -262,6 +278,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Introduce Parameter")]
         public void IntroduceParameterRefactoring_MultipleVariablesInStatement_OnOneLine_MoveFirst()
         {
             //Input
@@ -292,6 +310,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Introduce Parameter")]
         public void IntroduceParameterRefactoring_DisplaysInvalidSelectionAndDoesNothingForField()
         {
             //Input
@@ -322,6 +342,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Introduce Parameter")]
         public void IntroduceParameterRefactoring_DisplaysInvalidSelectionAndDoesNothingForInvalidSelection()
         {
             //Input
@@ -352,6 +374,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Introduce Parameter")]
         public void IntroduceParameterRefactoring_Properties_GetAndLet()
         {
             //Input
@@ -387,6 +411,8 @@ End Property";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Introduce Parameter")]
         public void IntroduceParameterRefactoring_Properties_GetAndSet()
         {
             //Input
@@ -422,6 +448,8 @@ End Property";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Introduce Parameter")]
         public void IntroduceParameterRefactoring_ImplementsInterface()
         {
             //Input
@@ -475,6 +503,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Introduce Parameter")]
         public void IntroduceParameterRefactoring_ImplementsInterface_MultipleInterfaceImplementations()
         {
             //Input
@@ -546,6 +576,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Introduce Parameter")]
         public void IntroduceParameterRefactoring_ImplementsInterface_Reject()
         {
             //Input
@@ -589,6 +621,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Introduce Parameter")]
         public void IntroduceParameterRefactoring_PassInTarget()
         {
             //Input
@@ -616,6 +650,8 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Introduce Parameter")]
         public void IntroduceParameterRefactoring_PassInTarget_Nonvariable()
         {
             //Input

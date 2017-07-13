@@ -44,12 +44,7 @@ namespace Rubberduck.Inspections
                 string value;
                 if (!result.Properties.TryGetValue("DisableFixes", out value)) { return true; }
 
-                if (value.Split(',').Contains(fix.GetType().Name))
-                {
-                    return false;
-                }
-
-                return true;
+                return !value.Split(',').Contains(fix.GetType().Name);
             });
         }
 
@@ -66,19 +61,15 @@ namespace Rubberduck.Inspections
             }
 
             fix.Fix(result);
-            _state.GetRewriter(result.QualifiedSelection.QualifiedName).Rewrite();
+            _state.RewriteAllModules();
             _state.OnParseRequested(this);
         }
 
-        public void FixInProcedure(IQuickFix fix, QualifiedMemberName? qualifiedMember, Type inspectionType,
-            IEnumerable<IInspectionResult> results)
+        public void FixInProcedure(IQuickFix fix, QualifiedMemberName? qualifiedMember, Type inspectionType, IEnumerable<IInspectionResult> results)
         {
             Debug.Assert(qualifiedMember.HasValue, "Null qualified member.");
 
-            var filteredResults = results
-                .Where(result => result.Inspection.GetType() == inspectionType
-                                 && result.QualifiedMemberName == qualifiedMember)
-                .ToList();
+            var filteredResults = results.Where(result => result.Inspection.GetType() == inspectionType && result.QualifiedMemberName == qualifiedMember).ToList();
 
             foreach (var result in filteredResults)
             {
@@ -92,17 +83,14 @@ namespace Rubberduck.Inspections
 
             if (filteredResults.Any())
             {
-                _state.GetRewriter(filteredResults.First().QualifiedSelection.QualifiedName).Rewrite();
+                _state.RewriteAllModules();
                 _state.OnParseRequested(this);
             }
         }
 
         public void FixInModule(IQuickFix fix, QualifiedSelection selection, Type inspectionType, IEnumerable<IInspectionResult> results)
         {
-            var filteredResults = results
-                .Where(result => result.Inspection.GetType() == inspectionType
-                              && result.QualifiedSelection.QualifiedName == selection.QualifiedName)
-                .ToList();
+            var filteredResults = results.Where(result => result.Inspection.GetType() == inspectionType && result.QualifiedSelection.QualifiedName == selection.QualifiedName).ToList();
 
             foreach (var result in filteredResults)
             {
@@ -116,18 +104,14 @@ namespace Rubberduck.Inspections
 
             if (filteredResults.Any())
             {
-                _state.GetRewriter(filteredResults.First().QualifiedSelection.QualifiedName).Rewrite();
+                _state.RewriteAllModules();
                 _state.OnParseRequested(this);
             }
         }
 
-        public void FixInProject(IQuickFix fix, QualifiedSelection selection, Type inspectionType,
-            IEnumerable<IInspectionResult> results)
+        public void FixInProject(IQuickFix fix, QualifiedSelection selection, Type inspectionType, IEnumerable<IInspectionResult> results)
         {
-            var filteredResults = results
-                .Where(result => result.Inspection.GetType() == inspectionType
-                              && result.QualifiedSelection.QualifiedName.ProjectId == selection.QualifiedName.ProjectId)
-                .ToList();
+            var filteredResults = results.Where(result => result.Inspection.GetType() == inspectionType && result.QualifiedSelection.QualifiedName.ProjectId == selection.QualifiedName.ProjectId).ToList();
 
             foreach (var result in filteredResults)
             {
@@ -141,19 +125,14 @@ namespace Rubberduck.Inspections
 
             if (filteredResults.Any())
             {
-                var modules = filteredResults.Select(s => s.QualifiedSelection.QualifiedName).Distinct();
-                foreach (var module in modules)
-                {
-                    _state.GetRewriter(module).Rewrite();
-                }
-
+                _state.RewriteAllModules();
                 _state.OnParseRequested(this);
             }
         }
 
         public void FixAll(IQuickFix fix, Type inspectionType, IEnumerable<IInspectionResult> results)
         {
-            var filteredResults = results.Where(result => result.Inspection.GetType() == inspectionType);
+            var filteredResults = results.Where(result => result.Inspection.GetType() == inspectionType).ToArray();
 
             foreach (var result in filteredResults)
             {
@@ -167,20 +146,14 @@ namespace Rubberduck.Inspections
 
             if (filteredResults.Any())
             {
-                var modules = filteredResults.Select(s => s.QualifiedSelection.QualifiedName).Distinct();
-                foreach (var module in modules)
-                {
-                    _state.GetRewriter(module).Rewrite();
-                }
-
+                _state.RewriteAllModules();
                 _state.OnParseRequested(this);
             }
         }
 
         public bool HasQuickFixes(IInspectionResult inspectionResult)
         {
-            return _quickFixes.ContainsKey(inspectionResult.Inspection.GetType()) &&
-                   _quickFixes[inspectionResult.Inspection.GetType()].Any();
+            return _quickFixes.ContainsKey(inspectionResult.Inspection.GetType()) && _quickFixes[inspectionResult.Inspection.GetType()].Any();
         }
     }
 }

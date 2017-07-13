@@ -12,7 +12,7 @@ namespace Rubberduck.UI.Command
     {
         public AboutCommand() : base(LogManager.GetCurrentClassLogger()) { }
 
-        protected override void ExecuteImpl(object parameter)
+        protected override void OnExecute(object parameter)
         {
             using (var window = new AboutDialog())
             {

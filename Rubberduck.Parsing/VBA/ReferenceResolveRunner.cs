@@ -57,7 +57,7 @@ namespace Rubberduck.Parsing.VBA
                 MaxDegreeOfParallelism = _maxDegreeOfReferenceResolverParallelism
             };
 
-            var allModules = finder.AllModules();
+            var allModules = finder.AllModules;
 
             try
             {

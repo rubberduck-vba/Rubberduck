@@ -116,7 +116,7 @@ namespace Rubberduck.Parsing.Symbols
 
                 if (superType != null)
                 {
-                    ((ClassModuleDeclaration) _moduleDeclaration).AddSupertype(superType);
+                    ((ClassModuleDeclaration)_moduleDeclaration).AddSupertype(superType);
                 }
             }
             SetCurrentScope();
@@ -160,6 +160,7 @@ namespace Rubberduck.Parsing.Symbols
                 }
 
                 annotations.Add(annotation);
+
             }
 
             return annotations;
@@ -391,67 +392,6 @@ namespace Rubberduck.Parsing.Symbols
         {
             // The expression will be later resolved to the actual declaration. Have to split the work up because we have to gather/create all declarations first.
             ((ClassModuleDeclaration)_moduleDeclaration).AddSupertypeName(context.expression().GetText());
-        }
-
-        public override void EnterOptionBaseStmt(VBAParser.OptionBaseStmtContext context)
-        {
-            AddDeclaration(CreateDeclaration(
-                context.GetText(),
-                string.Empty,
-                Accessibility.Implicit,
-                DeclarationType.ModuleOption,
-                context,
-                context.GetSelection(),
-                false,
-                null,
-                null));
-        }
-
-        public override void EnterOptionCompareStmt(VBAParser.OptionCompareStmtContext context)
-        {
-            AddDeclaration(CreateDeclaration(
-                context.GetText(),
-                string.Empty,
-                Accessibility.Implicit,
-                DeclarationType.ModuleOption,
-                context,
-                context.GetSelection(),
-                false,
-                null,
-                null));
-        }
-
-        public override void EnterOptionExplicitStmt(VBAParser.OptionExplicitStmtContext context)
-        {
-            AddDeclaration(CreateDeclaration(
-                context.GetText(),
-                string.Empty,
-                Accessibility.Implicit,
-                DeclarationType.ModuleOption,
-                context,
-                context.GetSelection(),
-                false,
-                null,
-                null));
-        }
-
-        public override void ExitOptionPrivateModuleStmt(VBAParser.OptionPrivateModuleStmtContext context)
-        {
-            if (_moduleDeclaration.DeclarationType == DeclarationType.ProceduralModule)
-            {
-                ((ProceduralModuleDeclaration)_moduleDeclaration).IsPrivateModule = true;
-            }
-            AddDeclaration(
-                CreateDeclaration(
-                    context.GetText(),
-                    string.Empty,
-                    Accessibility.Implicit,
-                    DeclarationType.ModuleOption,
-                    context,
-                    context.GetSelection(),
-                    false,
-                    null,
-                    null));
         }
 
         public override void EnterSubStmt(VBAParser.SubStmtContext context)
@@ -686,12 +626,14 @@ namespace Rubberduck.Parsing.Symbols
             var args = context.arg();
             foreach (var argContext in args)
             {
-                var asTypeClause = argContext.asTypeClause();
-                var asTypeName = asTypeClause == null
-                    ? Tokens.Variant
-                    : asTypeClause.type().GetText();
                 var identifier = argContext.unrestrictedIdentifier();
                 string typeHint = Identifier.GetTypeHintValue(identifier);
+                var asTypeClause = argContext.asTypeClause();
+                var asTypeName = typeHint == null
+                    ? asTypeClause == null
+                        ? Tokens.Variant
+                        : asTypeClause.type().GetText()
+                    : SymbolList.TypeHintToTypeName[typeHint];
                 bool isArray = argContext.LPAREN() != null;
                 AddDeclaration(
                     CreateDeclaration(
@@ -716,7 +658,7 @@ namespace Rubberduck.Parsing.Symbols
                 AddIdentifierStatementLabelDeclaration(combinedLabel.identifierStatementLabel());
                 AddLineNumberLabelDeclaration(combinedLabel.lineNumberLabel());
             }
-            else if (context.identifierStatementLabel() != null) 
+            else if (context.identifierStatementLabel() != null)
             {
                 AddIdentifierStatementLabelDeclaration(context.identifierStatementLabel());
             }
@@ -774,9 +716,11 @@ namespace Rubberduck.Parsing.Symbols
             var name = Identifier.GetName(identifier);
             var typeHint = Identifier.GetTypeHintValue(identifier);
             var asTypeClause = context.asTypeClause();
-            var asTypeName = asTypeClause == null
-                ? Tokens.Variant
-                : asTypeClause.type().GetText();
+            var asTypeName = typeHint == null
+                ? asTypeClause == null
+                    ? Tokens.Variant
+                    : asTypeClause.type().GetText()
+                : SymbolList.TypeHintToTypeName[typeHint];
             var withEvents = parent.WITHEVENTS() != null;
             var isAutoObject = asTypeClause != null && asTypeClause.NEW() != null;
             bool isArray = context.LPAREN() != null;
@@ -800,15 +744,17 @@ namespace Rubberduck.Parsing.Symbols
             var parent = (VBAParser.ConstStmtContext)context.Parent;
             var accessibility = GetMemberAccessibility(parent.visibility());
 
-            var asTypeClause = context.asTypeClause();
-            var asTypeName = asTypeClause == null
-                ? Tokens.Variant
-                : asTypeClause.type().GetText();
             var identifier = context.identifier();
             var typeHint = Identifier.GetTypeHintValue(identifier);
+            var asTypeClause = context.asTypeClause();
+            var asTypeName = typeHint == null
+                ? asTypeClause == null
+                    ? Tokens.Variant
+                    : asTypeClause.type().GetText()
+                : SymbolList.TypeHintToTypeName[typeHint];
             var name = Identifier.GetName(identifier);
             var value = context.expression().GetText();
-            var constStmt = (VBAParser.ConstStmtContext) context.Parent;
+            var constStmt = (VBAParser.ConstStmtContext)context.Parent;
 
             var declaration = new ConstantDeclaration(
                 new QualifiedMemberName(_qualifiedName, name),

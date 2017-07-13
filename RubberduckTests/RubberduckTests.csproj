@@ -97,6 +97,8 @@
     <Compile Include="Inspections\EmptyElseBlockInspectionTests.cs" />
     <Compile Include="Inspections\EmptyIfBlockInspectionTests.cs" />
     <Compile Include="Inspections\InspectionsHelper.cs" />
+    <Compile Include="Inspections\MissingAnnotationInspectionTests.cs" />
+    <Compile Include="Inspections\MissingAttributeInspectionTests.cs" />
     <Compile Include="Inspections\ModuleScopeDimKeywordInspectionTests.cs" />
     <Compile Include="Inspections\HostSpecificExpressionInspectionTests.cs" />
     <Compile Include="Inspections\HungarianNotationInspectionTests.cs" />
@@ -106,11 +108,16 @@
     <Compile Include="Inspections\OptionBaseZeroInspectionTests.cs" />
     <Compile Include="Inspections\PassParameterByReferenceQuickFixTests.cs" />
     <Compile Include="Inspections\QuickFixProviderTests.cs" />
+    <Compile Include="Inspections\SynchronizeAttributesQuickFixTests.cs" />
+    <Compile Include="Inspections\RedundantByRefModifierInspectionTests.cs" />
     <Compile Include="Inspections\UndeclaredVariableInspectionTests.cs" />
+    <Compile Include="Inspections\LineLabelNotUsedInspectionTests.cs" />
+    <Compile Include="Mocks\TestAttributeParser.cs" />
     <Compile Include="Parsing\Coordination\IModuleToModuleReferenceManagerTestBase.cs" />
     <Compile Include="Parsing\Coordination\StandAloneModuleToModuleReferenceManagerTests.cs" />
     <Compile Include="PostProcessing\ModuleRewriterTests.cs" />
     <Compile Include="SmartIndenter\VerticalSpacingTests.cs" />
+    <Compile Include="SourceControl\SynchrounouslyConstructedDeclarationFinderFactory.cs" />
     <Compile Include="Symbols\AccessibilityCheckTests.cs" />
     <Compile Include="Symbols\ClassModuleDeclarationTests.cs" />
     <Compile Include="Symbols\DeclarationFinderTests.cs" />
@@ -135,7 +142,7 @@
     <Compile Include="Inspections\FunctionReturnValueNotUsedInspectionTests.cs" />
     <Compile Include="Inspections\GeneralInspectionTests.cs" />
     <Compile Include="Inspections\ImplicitActiveSheetReferenceInspectionTests.cs" />
-    <Compile Include="Inspections\MultipleFolderAnnotationsInspectionTests.cs" />
+    <Compile Include="Inspections\IllegalAnnotationsInspectionTests.cs" />
     <Compile Include="Inspections\ObjectVariableNotSetInspectionTests.cs" />
     <Compile Include="Inspections\MalformedAnnotationInspectionTests.cs" />
     <Compile Include="Inspections\SelfAssignedDeclarationInspectionTests.cs" />
@@ -152,7 +159,7 @@
     <Compile Include="Inspections\UseMeaningfulNameInspectionTests.cs" />
     <Compile Include="Inspections\DefaultProjectNameInspectionTests.cs" />
     <Compile Include="Inspections\EmptyStringLiteralInspectionTests.cs" />
-    <Compile Include="Inspections\ImplicitByRefParameterInspectionTests.cs" />
+    <Compile Include="Inspections\ImplicitByRefModifierInspectionTests.cs" />
     <Compile Include="Inspections\ImplicitPublicMemberInspectionTests.cs" />
     <Compile Include="Inspections\ImplicitVariantReturnTypeInspectionTests.cs" />
     <Compile Include="Inspections\MultilineParameterInspectionTests.cs" />

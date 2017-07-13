@@ -150,7 +150,8 @@ namespace Rubberduck.Parsing.Symbols
             ParserRuleContext expression,
             StatementResolutionContext statementContext = StatementResolutionContext.Undefined,
             bool isAssignmentTarget = false,
-            bool hasExplicitLetStatement = false)
+            bool hasExplicitLetStatement = false,
+            bool isSetAssignment = false)
         {
             var withExpression = GetInnerMostWithExpression();
             var boundExpression = _bindingService.ResolveDefault(
@@ -173,9 +174,7 @@ namespace Rubberduck.Parsing.Symbols
                 else
                 {
                     Logger.Warn(
-                        string.Format(
-                            "Default Context: Failed to resolve {0}. Binding as much as we can.",
-                            expression.GetText()));
+                        $"Default Context: Failed to resolve {expression.GetText()}. Binding as much as we can.");
                 }
             }
 
@@ -186,9 +185,9 @@ namespace Rubberduck.Parsing.Symbols
             {
                 var module = boundExpression.ReferencedDeclaration.AsTypeDeclaration;
                 var members = _declarationFinder.Members(module);
-                hasDefaultMember = members.Any(m => m.Attributes.Any(kvp => kvp.Key == m.IdentifierName + ".VB_UserMemId" && kvp.Value.FirstOrDefault() == "0"));
+                hasDefaultMember = members.Any(m => m.Attributes.Any(a => a.Name == $"{m.IdentifierName}.VB_UserMemId" && a.Values.SingleOrDefault() == "0"));
             }
-            _boundExpressionVisitor.AddIdentifierReferences(boundExpression, _qualifiedModuleName, _currentScope, _currentParent, !hasDefaultMember && isAssignmentTarget, hasExplicitLetStatement);
+            _boundExpressionVisitor.AddIdentifierReferences(boundExpression, _qualifiedModuleName, _currentScope, _currentParent, (!hasDefaultMember || isSetAssignment) && isAssignmentTarget, hasExplicitLetStatement);
         }
 
         private void ResolveType(ParserRuleContext expression)
@@ -320,7 +319,7 @@ namespace Rubberduck.Parsing.Symbols
 
         private void ResolveListOrLabel(VBAParser.ListOrLabelContext listOrLabel)
         {
-            if (listOrLabel == null || listOrLabel.lineNumberLabel() == null)
+            if (listOrLabel?.lineNumberLabel() == null)
             {
                 return;
             }
@@ -358,7 +357,8 @@ namespace Rubberduck.Parsing.Symbols
                 context.lExpression(),
                 StatementResolutionContext.LetStatement,
                 true,
-                letStatement != null);
+                letStatement != null,
+                false);
             ResolveDefault(context.expression());
         }
 
@@ -368,7 +368,8 @@ namespace Rubberduck.Parsing.Symbols
                 context.lExpression(),
                 StatementResolutionContext.SetStatement,
                 true,
-                false);
+                false,
+                true);
             ResolveDefault(context.expression());
         }
 

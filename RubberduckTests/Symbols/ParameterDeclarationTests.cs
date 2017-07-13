@@ -8,6 +8,7 @@ namespace RubberduckTests.Symbols
     public class ParameterDeclarationTests
     {
         [TestMethod]
+        [TestCategory("Resolver")]
         public void ParametersHaveDeclarationTypeParameter()
         {
             var paramter = GetTestParameter("testParam", false, false, false);
@@ -28,6 +29,7 @@ namespace RubberduckTests.Symbols
 
 
         [TestMethod]
+        [TestCategory("Resolver")]
         public void ParametersHaveImpliciteAccessibility()
         {
             var paramter = GetTestParameter("testParam", false, false, false);
@@ -37,6 +39,7 @@ namespace RubberduckTests.Symbols
 
 
         [TestMethod]
+        [TestCategory("Resolver")]
         public void IsParamArrayCanBeSetPublicly()
         {
             var paramter = GetTestParameter("testParam", false, false, false);

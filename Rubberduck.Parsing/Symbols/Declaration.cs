@@ -286,7 +286,7 @@ namespace Rubberduck.Parsing.Symbols
         public IEnumerable<IAnnotation> Annotations => _annotations ?? new List<IAnnotation>();
 
         private readonly Attributes _attributes;
-        public IReadOnlyDictionary<string, IEnumerable<string>> Attributes => _attributes;
+        public Attributes Attributes => _attributes;
 
         /// <summary>
         /// Gets an attribute value that contains the docstring for a member.
@@ -295,38 +295,46 @@ namespace Rubberduck.Parsing.Symbols
         {
             get
             {
-                IEnumerable<string> value;
-                if (_attributes.TryGetValue($"{IdentifierName}.VB_Description", out value))
+                string literalDescription;
+
+                var memberAttribute = _attributes.SingleOrDefault(a => a.Name == $"{IdentifierName}.VB_Description");
+                if (memberAttribute != null)
                 {
-                    return value.Single();
-                }
-                if(_attributes.TryGetValue("VB_Description", out value))
-                {
-                    return value.Single();
+                    literalDescription = memberAttribute.Values.SingleOrDefault() ?? string.Empty;
+                    return CorrectlyFormatedDescription(literalDescription);
                 }
 
+                var moduleAttribute = _attributes.SingleOrDefault(a => a.Name == "VB_Description");
+                if (moduleAttribute != null)
+                {
+                    literalDescription = moduleAttribute.Values.SingleOrDefault() ?? string.Empty;
+                    return CorrectlyFormatedDescription(literalDescription);
+                }
 
                 return string.Empty;
             }
         }
 
+        private static string CorrectlyFormatedDescription(string literalDescription)
+        {
+            if (string.IsNullOrEmpty(literalDescription) 
+                || literalDescription.Length < 2 
+                || literalDescription[0] != '"'
+                || literalDescription[literalDescription.Length -1] != '"')
+            {
+                return literalDescription;
+            }
+
+            var text = literalDescription.Substring(1, literalDescription.Length - 2);
+            return text.Replace("\"\"", "\"");
+        }
+
+
         /// <summary>
         /// Gets an attribute value indicating whether a member is an enumerator provider.
         /// Types with such a member support For Each iteration.
         /// </summary>
-        public bool IsEnumeratorMember
-        {
-            get
-            {
-                IEnumerable<string> value;
-                if (_attributes.TryGetValue("VB_UserMemId", out value))
-                {
-                    return value.Single() == "-4";
-                }
-
-                return false;
-            }
-        }
+        public bool IsEnumeratorMember => _attributes.Any(a => a.Name.EndsWith("VB_UserMemId") && a.Values.Contains("-4"));
 
         public void AddReference(
             QualifiedModuleName module,

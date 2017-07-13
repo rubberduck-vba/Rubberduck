@@ -16,11 +16,13 @@ namespace Rubberduck.Parsing.VBA
             RubberduckParserState state, 
             IParserStateManager parserStateManager, 
             Func<IVBAPreprocessor> preprocessorFactory, 
-            IAttributeParser attributeParser) 
+            IAttributeParser attributeParser,
+            IModuleExporter exporter) 
         :base(state, 
             parserStateManager, 
             preprocessorFactory, 
-            attributeParser)
+            attributeParser, 
+            exporter)
         { }
 
         public override void ParseModules(IReadOnlyCollection<QualifiedModuleName> modules, CancellationToken token)
@@ -52,7 +54,7 @@ namespace Rubberduck.Parsing.VBA
                 {
                     throw exception.InnerException ?? exception; //This eliminates the stack trace, but for the cancellation, this is irrelevant.
                 }
-                _parserStateManager.SetStatusAndFireStateChanged(this, ParserState.Error, token);
+                StateManager.SetStatusAndFireStateChanged(this, ParserState.Error, token);
                 throw;
             }
         }

@@ -1034,6 +1034,24 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Performance.
+        /// </summary>
+        public static string CodeInspectionSettings_Performance {
+            get {
+                return ResourceManager.GetString("CodeInspectionSettings_Performance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck Opportunities.
+        /// </summary>
+        public static string CodeInspectionSettings_RubberduckOpportunities {
+            get {
+                return ResourceManager.GetString("CodeInspectionSettings_RubberduckOpportunities", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to These identifiers will be ignored by the &apos;Use meaningful names&apos; inspection.
         /// </summary>
         public static string CodeInspectionSettings_WhitelistedIdentifiersDescription {

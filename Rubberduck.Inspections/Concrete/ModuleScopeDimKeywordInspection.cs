@@ -13,14 +13,14 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    public sealed class ModuleScopeDimKeywordInspection : InspectionBase, IParseTreeInspection
+    public sealed class ModuleScopeDimKeywordInspection : ParseTreeInspectionBase
     {
         public ModuleScopeDimKeywordInspection(RubberduckParserState state) 
             : base(state, CodeInspectionSeverity.Suggestion) { }
 
-        public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
+        public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
 
-        public IInspectionListener Listener { get; } = new ModuleScopedDimListener();
+        public override IInspectionListener Listener { get; } = new ModuleScopedDimListener();
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {

@@ -20,7 +20,7 @@ namespace Rubberduck.UI.Command
             get { return RubberduckHotkey.TestExplorer; }
         }
 
-        protected override void ExecuteImpl(object parameter)
+        protected override void OnExecute(object parameter)
         {
             _presenter.Show();
         }

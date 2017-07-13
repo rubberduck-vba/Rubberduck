@@ -614,6 +614,7 @@ End Sub
 
 
         [TestMethod]
+        [TestCategory("Resolver")]
         [Ignore] // ref. https://github.com/rubberduck-vba/Rubberduck/issues/2330
         public void FiendishlyAmbiguousNameSelectsSmallestScopedDeclaration()
         {
@@ -633,7 +634,7 @@ End Sub
                 .MockVbeBuilder()
                 .Build();
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object);
             parser.Parse(new CancellationTokenSource());
 
             var expected = parser.State.AllDeclarations.Single(item => item.DeclarationType == DeclarationType.Variable);
@@ -643,6 +644,7 @@ End Sub
         }
 
         [TestMethod]
+        [TestCategory("Resolver")]
         [Ignore] // bug: this test should pass... it's not all that evil
         public void AmbiguousNameSelectsSmallestScopedDeclaration()
         {
@@ -662,7 +664,7 @@ End Sub
                 .MockVbeBuilder()
                 .Build();
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object);
             parser.Parse(new CancellationTokenSource());
 
             var expected = parser.State.AllDeclarations.Single(item => item.DeclarationType == DeclarationType.Variable);

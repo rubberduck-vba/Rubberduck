@@ -13,6 +13,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UI;
 using Rubberduck.UI.Inspections;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
@@ -60,25 +61,52 @@ namespace Rubberduck.Inspections
                 }
 
                 state.OnStatusMessageUpdate(RubberduckUI.CodeInspections_Inspecting);
+                var allIssues = new ConcurrentBag<IInspectionResult>();
 
                 var config = _configService.LoadConfiguration();
                 UpdateInspectionSeverity(config);
 
-                var allIssues = new ConcurrentBag<IInspectionResult>();
+                var parseTreeInspections = _inspections
+                    .Where(inspection => inspection.Severity != CodeInspectionSeverity.DoNotShow)
+                    .OfType<IParseTreeInspection>()
+                    .ToArray();
 
+                foreach(var listener in parseTreeInspections.Select(inspection => inspection.Listener))
+                {
+                    listener.ClearContexts();
+                }
+                
                 // Prepare ParseTreeWalker based inspections
-                WalkTrees(config.UserSettings.CodeInspectionSettings, state, _inspections.OfType<IParseTreeInspection>());
+                var passes = Enum.GetValues(typeof (ParsePass)).Cast<ParsePass>();
+                foreach (var parsePass in passes)
+                {
+                    try
+                    {
+                        WalkTrees(config.UserSettings.CodeInspectionSettings, state, parseTreeInspections.Where(i => i.Pass == parsePass), parsePass);
+                    }
+                    catch (Exception e)
+                    {
+                        LogManager.GetCurrentClassLogger().Warn(e);
+                    }
+                }
 
                 var inspections = _inspections.Where(inspection => inspection.Severity != CodeInspectionSeverity.DoNotShow)
                     .Select(inspection =>
                         Task.Run(() =>
                         {
                             token.ThrowIfCancellationRequested();
-                            var inspectionResults = inspection.GetInspectionResults();
-                            
-                            foreach (var inspectionResult in inspectionResults)
+                            try
                             {
-                                allIssues.Add(inspectionResult);
+                                var inspectionResults = inspection.GetInspectionResults();
+                            
+                                foreach (var inspectionResult in inspectionResults)
+                                {
+                                    allIssues.Add(inspectionResult);
+                                }
+                            }
+                            catch(Exception e)
+                            {
+                                LogManager.GetCurrentClassLogger().Warn(e);
                             }
                         }, token)).ToList();
 
@@ -103,18 +131,34 @@ namespace Rubberduck.Inspections
                 return results;
             }
 
-            private void WalkTrees(CodeInspectionSettings settings, RubberduckParserState state, IEnumerable<IParseTreeInspection> inspections)
+            private void WalkTrees(CodeInspectionSettings settings, RubberduckParserState state, IEnumerable<IParseTreeInspection> inspections, ParsePass pass)
             {
-                var listeners =
-                    inspections.Where(i => i.Severity != CodeInspectionSeverity.DoNotShow && !IsDisabled(settings, i))
-                        .Select(inspection =>
-                        {
-                            inspection.Listener.ClearContexts();
-                            return inspection.Listener;
-                        })
-                        .ToList();
+                var listeners = inspections
+                    .Where(i => i.Severity != CodeInspectionSeverity.DoNotShow
+                        && i.Pass == pass
+                        && !IsDisabled(settings, i))
+                    .Select(inspection => inspection.Listener)
+                    .ToList();
 
-                foreach (var componentTreePair in state.ParseTrees)
+                if (!listeners.Any())
+                {
+                    return;
+                }
+
+                List<KeyValuePair<QualifiedModuleName, IParseTree>> trees;
+                switch (pass)
+                {
+                    case ParsePass.AttributesPass:
+                        trees = state.AttributeParseTrees;
+                        break;
+                    case ParsePass.CodePanePass:
+                        trees = state.ParseTrees;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(pass), pass, null);
+                }
+
+                foreach (var componentTreePair in trees)
                 {
                     foreach (var listener in listeners)
                     {

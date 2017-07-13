@@ -7,7 +7,7 @@
          mc:Ignorable="d"
          Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControl_Settings}"
          d:DesignHeight="300" d:DesignWidth="300"
-         d:DataContext="{d:DesignInstance {x:Type sourceControl:SettingsViewViewModel}, IsDesignTimeCreatable=False}">
+         d:DataContext="{d:DesignInstance {x:Type sourceControl:SettingsPanelViewModel}, IsDesignTimeCreatable=False}">
     <Grid>
         <ScrollViewer VerticalScrollBarVisibility="Auto">
             <StackPanel Margin="5"

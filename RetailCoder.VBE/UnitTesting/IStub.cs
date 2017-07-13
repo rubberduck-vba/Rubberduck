@@ -16,12 +16,19 @@ namespace Rubberduck.UnitTesting
     public interface IStub
     {
         [DispId(1)]
+        [Description("Gets an interface for verifying invocations performed during the test.")]
         IVerify Verify { get; }
+
         [DispId(2)]
+        [Description("Configures the stub such as an invocation assigns the specified value to the specified ByRef argument.")]
         void AssignsByRef(string Parameter, object Value);
+
         [DispId(3)]
+        [Description("Configures the stub such as an invocation raises the specified run-time eror.")]
         void RaisesError(int Number = 0, string Description = "");
+
         [DispId(4)]
+        [Description("Gets/sets a value that determines whether execution is handled by Rubberduck.")]
         bool PassThrough { get; set; }
     }
 }

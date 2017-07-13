@@ -16,7 +16,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _vbe = vbe;
         }
 
-        protected override bool CanExecuteImpl(object parameter)
+        protected override bool EvaluateCanExecute(object parameter)
         {
             try
             {
@@ -31,7 +31,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             }
         }
 
-        protected override void ExecuteImpl(object parameter)
+        protected override void OnExecute(object parameter)
         {
             const int openProjectPropertiesId = 2578;
 

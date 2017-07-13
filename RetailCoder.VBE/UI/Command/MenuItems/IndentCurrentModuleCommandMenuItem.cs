@@ -9,7 +9,7 @@ namespace Rubberduck.UI.Command.MenuItems
         {
         }
 
-        public override string Key { get { return "IndentCurrentModule"; } }
-        public override int DisplayOrder { get { return (int)SmartIndenterMenuItemDisplayOrder.CurrentModule; } }
+        public override string Key => "IndentCurrentModule";
+        public override int DisplayOrder => (int)SmartIndenterMenuItemDisplayOrder.CurrentModule;
     }
 }

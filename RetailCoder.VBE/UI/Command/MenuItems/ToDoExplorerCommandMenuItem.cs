@@ -9,7 +9,7 @@ namespace Rubberduck.UI.Command.MenuItems
         {
         }
 
-        public override string Key { get { return "ToolsMenu_TodoItems"; } }
-        public override int DisplayOrder { get { return (int)ToolsMenuItemDisplayOrder.ToDoExplorer; } }
+        public override string Key => "ToolsMenu_TodoItems";
+        public override int DisplayOrder => (int)ToolsMenuItemDisplayOrder.ToDoExplorer;
     }
 }

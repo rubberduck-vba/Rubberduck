@@ -12,12 +12,12 @@ namespace Rubberduck.UI.Command.MenuItems
         {
         }
 
-        public override string Key { get { return "RefactorMenu_IntroduceParameter"; } }
-        public override int DisplayOrder { get { return (int)RefactoringsMenuItemDisplayOrder.IntroduceParameter; } }
-        public override bool BeginGroup { get { return true; } }
+        public override string Key => "RefactorMenu_IntroduceParameter";
+        public override int DisplayOrder => (int)RefactoringsMenuItemDisplayOrder.IntroduceParameter;
+        public override bool BeginGroup => true;
 
-        public override Image Image { get { return Resources.PromoteLocal; } }
-        public override Image Mask { get { return Resources.PromoteLocalMask; } }
+        public override Image Image => Resources.PromoteLocal;
+        public override Image Mask => Resources.PromoteLocalMask;
 
         public override bool EvaluateCanExecute(RubberduckParserState state)
         {

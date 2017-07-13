@@ -9,6 +9,7 @@ namespace RubberduckTests.Symbols
     public class ExternalProcedureDeclarationTests
     {
         [TestMethod]
+        [TestCategory("Resolver")]
         public void ByDefaultExternalProceduresDoNotHaveParameters()
         {
             var externalProcedure = GetTestExternalProcedure("testProcedure");
@@ -29,6 +30,7 @@ namespace RubberduckTests.Symbols
 
 
         [TestMethod]
+        [TestCategory("Resolver")]
         public void ParametersReturnsTheParametersAddedViaAddParameters()
         {
             var externalProcedure = GetTestExternalProcedure("testProcedure");
