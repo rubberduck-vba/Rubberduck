@@ -739,4 +739,16 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>Line label '{0}' is not used</value>
     <comment>{0} line label name</comment>
   </data>
+  <data name="IntegerDataTypeInspectionMeta" xml:space="preserve">
+    <value>The maximum value of a 16-bit signed integer is 32,767 - using a 32-bit (Long) integer data type where possible can help prevent 'Overflow' run-time errors, and is better handled by modern CPUs.</value>
+  </data>
+  <data name="IntegerDataTypeInspectionName" xml:space="preserve">
+    <value>Use of 16-bit integer type</value>
+  </data>
+  <data name="IntegerDataTypeInspectionResultFormat" xml:space="preserve">
+    <value>{0} '{1}' is declared as Integer</value>
+  </data>
+  <data name="IntegerDataTypeQuickFix" xml:space="preserve">
+    <value>Change declaration type to Long</value>
+  </data>
 </root>

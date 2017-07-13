@@ -96,6 +96,7 @@
     <Compile Include="Inspections\AssignedByValParameterMakeLocalCopyQuickFixTests.cs" />
     <Compile Include="Inspections\EmptyIfBlockInspectionTests.cs" />
     <Compile Include="Inspections\InspectionsHelper.cs" />
+    <Compile Include="Inspections\IntegerDataTypeInspectionTests.cs" />
     <Compile Include="Inspections\MissingAnnotationInspectionTests.cs" />
     <Compile Include="Inspections\MissingAttributeInspectionTests.cs" />
     <Compile Include="Inspections\ModuleScopeDimKeywordInspectionTests.cs" />
