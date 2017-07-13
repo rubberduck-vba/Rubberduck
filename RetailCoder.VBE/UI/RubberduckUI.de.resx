@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -1214,7 +1214,11 @@ Wollen Sie trotzdem fortfahren?</value>
   <data name="AboutWindow_AttributionList" xml:space="preserve">
     <value>Parsing ermöglicht durch ANTLR
 GitHub Integration ermöglicht durch LibGit2Sharp
-Fugue Icons von Yusuke Kamiyamane</value>
+Syntaxhervorhebung ermöglicht durch AvalonEdit
+Native Hooks ermöglicht durch EasyHook
+Fugue Icons von Yusuke Kamiyamane
+IDE Icons von SharpDevelop
+WPF Lokalisierungsunterstützung von Grant Frisken</value>
   </data>
   <data name="SearchResults_Caption" xml:space="preserve">
     <value>Suchergebnis</value>
@@ -1836,7 +1840,7 @@ End Sub</value>
     <value>Einstellungen für Inspektionen laden</value>
   </data>
   <data name="SettingsCaption_ExportSettings" xml:space="preserve">
-    <value>Export</value>
+    <value>Exportieren</value>
   </data>
   <data name="DialogCaption_SaveIndenterSettings" xml:space="preserve">
     <value>Einstellungen für Einrückung speichern</value>
@@ -1848,7 +1852,7 @@ End Sub</value>
     <value>Allgemeine Einstellungen Laden</value>
   </data>
   <data name="SettingsCaption_ImportSettings" xml:space="preserve">
-    <value>Import</value>
+    <value>Importieren</value>
   </data>
   <data name="SmartIndenter_LegacySettingPrompt" xml:space="preserve">
     <value>Einstellungen für Smart Indenter wurden in der Registry gefunden.
@@ -1897,30 +1901,135 @@ Möchten sie die Einstellungen in Rubberduck importieren?</value>
     <value>Fenstereinstellungen</value>
   </data>
   <data name="AssignedByValDialog_NewNameAlreadyUsedFormat" xml:space="preserve">
-    <value />
+    <value>'{0}' ist in diesem Kontext bereits verfügbar.</value>
   </data>
   <data name="AssignedByValDialog_ReservedKeywordFormat" xml:space="preserve">
-    <value />
+    <value>'{0}' ist ein reserviertes Schlüsselwort.</value>
   </data>
   <data name="RenameDialog_AmbiguousSelection" xml:space="preserve">
-    <value />
+    <value>Bitte stellen Sie zur Umbenennung sicher, dass genau ein Control-Objekt ausgewählt ist.</value>
   </data>
   <data name="ContextMultipleControlsSelection" xml:space="preserve">
-    <value />
+    <value>Mehrere Schaltflächen</value>
   </data>
   <data name="AssignedByValDialog_InvalidCharacters" xml:space="preserve">
-    <value />
+    <value>Variablennamen können keine Sonderzeichen außer Unterstrich enthalten.</value>
   </data>
   <data name="AssignedByValDialog_IsByValIdentifierFormat" xml:space="preserve">
-    <value />
+    <value>Die lokale Variable kann nicht das gleiche wie der '{0}' Parameter, den sie ersetzt sein.</value>
   </data>
   <data name="AssignedByValDialog_QuestionableEntryFormat" xml:space="preserve">
-    <value />
+    <value>Der Name '{0}' wird die "Sinnige Namen verwenden"-Inspektion auslösen. Überlegen Sie, einen anderen Namen zu wählen.</value>
   </data>
   <data name="ConfirmRemoveAssignmentWithUnusedDeclaration" xml:space="preserve">
-    <value />
+    <value>Variable '{0}' ist zugewiesen. Zuweisung(en) entfernen?</value>
   </data>
   <data name="AssignedByValDialog_DoesNotStartWithLetter" xml:space="preserve">
-    <value />
+    <value>Variablennamen müssen mit einem Buchstaben beginnen.</value>
+  </data>
+  <data name="RenameDialog_ControlRenameError">
+    <value>Konnte Control-Objekt {0} nicht umbenennen.</value>
+  </data>
+  <data name="RenameDialog_InterfaceRenameError">
+    <value>Konnte Interfacemitglied {0} nicht umbenennen.</value>
+  </data>
+  <data name="Assert_NeitherParameterIsArray">
+    <value>Weder [Erwartet] noch [Tatsächlich] ist ein Array.</value>
+  </data>
+  <data name="Assert_UnexpectedArrayFormat">
+    <value>[Erwartet] und [Tatsächlich] sind Arrays. Erwägen Sie eine Benutzung von {0}.</value>
+  </data>
+  <data name="Assert_ReferenceValueMismatch">
+    <value>[Erwartet] ist ein Referenztyp und [Tatsächlich] ist ein Werttyp.</value>
+  </data>
+  <data name="Assert_GenericException">
+    <value>Unerwarteter Fehler beim Ausführen der Tests.</value>
+  </data>
+  <data name="Assert_UBoundMismatchFormat">
+    <value>Dimension {0}: Erwarteter UBound-Wert {1}; Tatsächlicher UBound-Wert {2}. {3}</value>
+  </data>
+  <data name="Assert_FailedMessageFormat">
+    <value>{0} Prüfung fehlgeschlagen. {1}</value>
+  </data>
+  <data name="Assert_UnexpectedNullArraysFormat">
+    <value>[Erwartet] und [Tatsächlich] sind Nothing. Erwägen Sie eine Benutzung von {0}.</value>
+  </data>
+  <data name="Assert_UnexpectedValueComparisonFormat">
+    <value>[Erwartet] und [Tatsächlich] sind Werttypen. Erwägen Sie eine Benutzung von {0}.</value>
+  </data>
+  <data name="Assert_ComException">
+    <value>Unerwarteter Fehler in der COM Schnittstelle bei der Ausführung der Tests.</value>
+  </data>
+  <data name="TestExplorer_RunInconclusiveTests">
+    <value>Nicht aussagekräftige Tests</value>
+  </data>
+  <data name="Assert_UnexpectedReferenceComparisonFormat">
+    <value>[Erwartet] und [Tatsächlich] sind Referenztypen. Erwägen Sie eine Benutzung von {0}.</value>
+  </data>
+  <data name="RefactorRename_TargetNotUserDefinedError">
+    <value>Bezeichner {0} kann nicht umbenannt werden.</value>
+  </data>
+  <data name="Assert_EasterEggIVerifyPassed">
+    <value>I verifizier au.</value>
+  </data>
+  <data name="RefactorRename_TargetNotDefinedError">
+    <value>Kann gewähltes Ziel für Umbenennung nicht erkennen.</value>
+  </data>
+  <data name="RenameDialog_PropertyRenameError">
+    <value>Konnte Eigenschaft {0} nicht umbenennen.</value>
+  </data>
+  <data name="Assert_InvalidFakePassThrough">
+    <value>Aufgesetztes IFake-Objekt {0} ist nicht valide. PassThrough muss False sein.</value>
+  </data>
+  <data name="Assert_EasterEggAssertClassPassed">
+    <value>OK. Rubberduck hat etwas geprüft. Und jetzt?</value>
+  </data>
+  <data name="Assert_DimensionMismatchFormat">
+    <value>Gesuchter Wert hat {0} Dimensionen; Tatsächlicher Wert hat {1} Dimensionen. {2}</value>
+  </data>
+  <data name="Assert_VerifyParameterNonNumeric">
+    <value>Parameter {0} hatte beim Aufruf keinen numerischen Wert {1}. {2}</value>
+  </data>
+  <data name="RenameDialog_EventRenameError">
+    <value>Konnte Event Handler {0} nicht umbenennen.</value>
+  </data>
+  <data name="Assert_VerifyNoInvocationFormat">
+    <value>Kein passender Aufruf für Parameter {0}; Nur {1} Aufrufe. {2}</value>
+  </data>
+  <data name="Assert_VerifyInternalErrorMessage">
+    <value>Rubberduck konnte das Ergebnis des Aufrufs nicht verarbeiten.</value>
+  </data>
+  <data name="Assert_VerifyParameterNotPassed">
+    <value>Parameter {0} wurde beim Aufruf nicht übergeben {1}. {2}</value>
+  </data>
+  <data name="Assert_ParameterIsNotArrayFormat">
+    <value>{0} ist kein Array.</value>
+  </data>
+  <data name="Assert_MismatchedTypes">
+    <value>[Erwartet] und [Tatsächlich] Werte sind von verschiedenem Typ.</value>
+  </data>
+  <data name="Assert_LBoundMismatchFormat">
+    <value>Dimension {0}: Erwarteter LBound-Wert {1}; Tatsächlicher LBound-Wert {2}. {3}</value>
+  </data>
+  <data name="Assert_NotImplemented">
+    <value>Nicht implementiert.</value>
+  </data>
+  <data name="Assert_ValueReferenceMismatch">
+    <value>[Erwartet] ist ein Werttyp und [Tatsächlich] ist ein Referenztyp.</value>
+  </data>
+  <data name="Assert_ParameterResultFormat">
+    <value>Erwartet: {0}; Tatsächlich: {1}. {2}</value>
+  </data>
+  <data name="RenameDialog_DefaultRenameError">
+    <value>Konnte {0} nicht umbenennen.</value>
+  </data>
+  <data name="Assert_EasterEggIFakePassed">
+    <value>Erwartet: Stacküberlauf?; Tatsächlich: Schutzbedingung.</value>
+  </data>
+  <data name="RenameDialog_PropertyParameterRenameError">
+    <value>Konnte Parameter {0} für Eigenschaft {1} nicht umbenennen.</value>
+  </data>
+  <data name="Preview">
+    <value>Vorschau</value>
   </data>
 </root>

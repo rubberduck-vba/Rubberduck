@@ -254,7 +254,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 return;
             }
 
-            var userDeclarations = _state.AllUserDeclarations
+            var userDeclarations = _state.DeclarationFinder.AllUserDeclarations
                 .GroupBy(declaration => declaration.ProjectId)
                 .ToList();
 
