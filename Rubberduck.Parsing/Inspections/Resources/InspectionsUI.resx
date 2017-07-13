@@ -123,9 +123,6 @@
   <data name="AssignedByValParameterInspectionName" xml:space="preserve">
     <value>ByVal parameter is assigned</value>
   </data>
-  <data name="CodeQualityIssues" xml:space="preserve">
-    <value>Code Quality</value>
-  </data>
   <data name="ConstantNotUsedInspectionMeta" xml:space="preserve">
     <value>Rubberduck could not find any reference to constant. Consider removing the unused declaration.</value>
   </data>
@@ -738,6 +735,36 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="LineLabelNotUsedInspectionResultFormat" xml:space="preserve">
     <value>Line label '{0}' is not used</value>
     <comment>{0} line label name</comment>
+  </data>
+  <data name="CodeInspectionSettings_CodeQualityIssues" xml:space="preserve">
+    <value>Code Quality Issues</value>
+  </data>
+  <data name="CodeInspectionSettings_LanguageOpportunities" xml:space="preserve">
+    <value>Language Opportunities</value>
+  </data>
+  <data name="CodeInspectionSettings_MaintainabilityAndReadabilityIssues" xml:space="preserve">
+    <value>Maintainability and Readability Issues</value>
+  </data>
+  <data name="CodeInspectionSettings_Performance" xml:space="preserve">
+    <value>Performance</value>
+  </data>
+  <data name="CodeInspectionSettings_RubberduckOpportunities" xml:space="preserve">
+    <value>Rubberduck Opportunities</value>
+  </data>
+  <data name="CodeInspectionSeverity_DoNotShow" xml:space="preserve">
+    <value>Do Not Show</value>
+  </data>
+  <data name="CodeInspectionSeverity_Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="CodeInspectionSeverity_Hint" xml:space="preserve">
+    <value>Hint</value>
+  </data>
+  <data name="CodeInspectionSeverity_Suggestion" xml:space="preserve">
+    <value>Suggestion</value>
+  </data>
+  <data name="CodeInspectionSeverity_Warning" xml:space="preserve">
+    <value>Warning</value>
   </data>
   <data name="EmptyElseBlockInspectionResultFormat" xml:space="preserve">
     <value>Else block has no executable statements</value>

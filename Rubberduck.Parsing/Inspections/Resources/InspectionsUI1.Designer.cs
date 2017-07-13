@@ -151,11 +151,92 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Code Quality.
+        ///   Looks up a localized string similar to Code Quality Issues.
         /// </summary>
-        public static string CodeQualityIssues {
+        public static string CodeInspectionSettings_CodeQualityIssues {
             get {
-                return ResourceManager.GetString("CodeQualityIssues", resourceCulture);
+                return ResourceManager.GetString("CodeInspectionSettings_CodeQualityIssues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Language Opportunities.
+        /// </summary>
+        public static string CodeInspectionSettings_LanguageOpportunities {
+            get {
+                return ResourceManager.GetString("CodeInspectionSettings_LanguageOpportunities", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Maintainability and Readability Issues.
+        /// </summary>
+        public static string CodeInspectionSettings_MaintainabilityAndReadabilityIssues {
+            get {
+                return ResourceManager.GetString("CodeInspectionSettings_MaintainabilityAndReadabilityIssues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Performance.
+        /// </summary>
+        public static string CodeInspectionSettings_Performance {
+            get {
+                return ResourceManager.GetString("CodeInspectionSettings_Performance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck Opportunities.
+        /// </summary>
+        public static string CodeInspectionSettings_RubberduckOpportunities {
+            get {
+                return ResourceManager.GetString("CodeInspectionSettings_RubberduckOpportunities", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do Not Show.
+        /// </summary>
+        public static string CodeInspectionSeverity_DoNotShow {
+            get {
+                return ResourceManager.GetString("CodeInspectionSeverity_DoNotShow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        public static string CodeInspectionSeverity_Error {
+            get {
+                return ResourceManager.GetString("CodeInspectionSeverity_Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hint.
+        /// </summary>
+        public static string CodeInspectionSeverity_Hint {
+            get {
+                return ResourceManager.GetString("CodeInspectionSeverity_Hint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Suggestion.
+        /// </summary>
+        public static string CodeInspectionSeverity_Suggestion {
+            get {
+                return ResourceManager.GetString("CodeInspectionSeverity_Suggestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warning.
+        /// </summary>
+        public static string CodeInspectionSeverity_Warning {
+            get {
+                return ResourceManager.GetString("CodeInspectionSeverity_Warning", resourceCulture);
             }
         }
         
