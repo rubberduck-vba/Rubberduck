@@ -139,7 +139,7 @@ namespace Rubberduck.UI {
                 return ResourceManager.GetString("AboutWindow_GeneralThanks", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Special Thanks.
         /// </summary>
@@ -148,7 +148,7 @@ namespace Rubberduck.UI {
                 return ResourceManager.GetString("AboutWindow_SpecialThanksLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Add.
         /// </summary>
@@ -980,38 +980,11 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Code Quality Issues.
-        /// </summary>
-        public static string CodeInspectionSettings_CodeQualityIssues {
-            get {
-                return ResourceManager.GetString("CodeInspectionSettings_CodeQualityIssues", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Inspection Severities.
         /// </summary>
         public static string CodeInspectionSettings_InspectionSeveritySettingsLabel {
             get {
                 return ResourceManager.GetString("CodeInspectionSettings_InspectionSeveritySettingsLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Language Opportunities.
-        /// </summary>
-        public static string CodeInspectionSettings_LanguageOpportunities {
-            get {
-                return ResourceManager.GetString("CodeInspectionSettings_LanguageOpportunities", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Maintainability and Readability Issues.
-        /// </summary>
-        public static string CodeInspectionSettings_MaintainabilityAndReadabilityIssues {
-            get {
-                return ResourceManager.GetString("CodeInspectionSettings_MaintainabilityAndReadabilityIssues", resourceCulture);
             }
         }
         
@@ -1034,24 +1007,6 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Performance.
-        /// </summary>
-        public static string CodeInspectionSettings_Performance {
-            get {
-                return ResourceManager.GetString("CodeInspectionSettings_Performance", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Rubberduck Opportunities.
-        /// </summary>
-        public static string CodeInspectionSettings_RubberduckOpportunities {
-            get {
-                return ResourceManager.GetString("CodeInspectionSettings_RubberduckOpportunities", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to These identifiers will be ignored by the &apos;Use meaningful names&apos; inspection.
         /// </summary>
         public static string CodeInspectionSettings_WhitelistedIdentifiersDescription {
@@ -1066,51 +1021,6 @@ namespace Rubberduck.UI {
         public static string CodeInspectionSettings_WhitelistedIdentifiersLabel {
             get {
                 return ResourceManager.GetString("CodeInspectionSettings_WhitelistedIdentifiersLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Do Not Show.
-        /// </summary>
-        public static string CodeInspectionSeverity_DoNotShow {
-            get {
-                return ResourceManager.GetString("CodeInspectionSeverity_DoNotShow", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Error.
-        /// </summary>
-        public static string CodeInspectionSeverity_Error {
-            get {
-                return ResourceManager.GetString("CodeInspectionSeverity_Error", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hint.
-        /// </summary>
-        public static string CodeInspectionSeverity_Hint {
-            get {
-                return ResourceManager.GetString("CodeInspectionSeverity_Hint", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Suggestion.
-        /// </summary>
-        public static string CodeInspectionSeverity_Suggestion {
-            get {
-                return ResourceManager.GetString("CodeInspectionSeverity_Suggestion", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Warning.
-        /// </summary>
-        public static string CodeInspectionSeverity_Warning {
-            get {
-                return ResourceManager.GetString("CodeInspectionSeverity_Warning", resourceCulture);
             }
         }
         
@@ -1295,7 +1205,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Library procedure.
+        ///   Looks up a localized string similar to library procedure.
         /// </summary>
         public static string DeclarationType_LibraryProcedure {
             get {
@@ -3330,6 +3240,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} {1} cannot be changed..
+        /// </summary>
+        public static string RenameDialog_BuiltInNameError {
+            get {
+                return ResourceManager.GetString("RenameDialog_BuiltInNameError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rubberduck - Rename.
         /// </summary>
         public static string RenameDialog_Caption {
@@ -3349,29 +3268,11 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not rename Control {0}..
-        /// </summary>
-        public static string RenameDialog_ControlRenameError {
-            get {
-                return ResourceManager.GetString("RenameDialog_ControlRenameError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Coult not rename {0}..
         /// </summary>
         public static string RenameDialog_DefaultRenameError {
             get {
                 return ResourceManager.GetString("RenameDialog_DefaultRenameError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Could not rename Event Handler {0}..
-        /// </summary>
-        public static string RenameDialog_EventRenameError {
-            get {
-                return ResourceManager.GetString("RenameDialog_EventRenameError", resourceCulture);
             }
         }
         
@@ -3394,47 +3295,29 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not rename module..
-        /// </summary>
-        public static string RenameDialog_ModuleRenameError {
-            get {
-                return ResourceManager.GetString("RenameDialog_ModuleRenameError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Could not rename project..
-        /// </summary>
-        public static string RenameDialog_ProjectRenameError {
-            get {
-                return ResourceManager.GetString("RenameDialog_ProjectRenameError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Could not rename Parameter {0} for Property {1}..
-        /// </summary>
-        public static string RenameDialog_PropertyParameterRenameError {
-            get {
-                return ResourceManager.GetString("RenameDialog_PropertyParameterRenameError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Could not rename Property {0}..
-        /// </summary>
-        public static string RenameDialog_PropertyRenameError {
-            get {
-                return ResourceManager.GetString("RenameDialog_PropertyRenameError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Rename identifier.
         /// </summary>
         public static string RenameDialog_TitleText {
             get {
                 return ResourceManager.GetString("RenameDialog_TitleText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Method {0} is an EventHandler for control &apos;{1}&apos;.  Only the control can be renamed.  Rename &apos;{1}&apos;?.
+        /// </summary>
+        public static string RenamePresenter_TargetIsControlEventHandler {
+            get {
+                return ResourceManager.GetString("RenamePresenter_TargetIsControlEventHandler", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Method &apos;{0}&apos; is an implementation of event &apos;{1}.{2}&apos;.  Rename event &apos;{2}&apos;?.
+        /// </summary>
+        public static string RenamePresenter_TargetIsEventHandlerImplementation {
+            get {
+                return ResourceManager.GetString("RenamePresenter_TargetIsEventHandlerImplementation", resourceCulture);
             }
         }
         
