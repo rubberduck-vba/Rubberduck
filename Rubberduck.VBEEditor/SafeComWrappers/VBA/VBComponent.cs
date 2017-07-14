@@ -113,6 +113,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             var legitEmptyLineCount = visibleCode.TakeWhile(string.IsNullOrWhiteSpace).Count();
 
             var tempFile = ExportToTempFile();
+            var tempFilePath = Directory.GetParent(tempFile).FullName;
             var contents = File.ReadAllLines(tempFile);
             var nonAttributeLines = contents.TakeWhile(line => !line.StartsWith("Attribute")).Count();
             var attributeLines = contents.Skip(nonAttributeLines).TakeWhile(line => line.StartsWith("Attribute")).Count();
@@ -130,6 +131,22 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                                .ToArray();
             }
             File.WriteAllLines(path, code);
+
+            // LINQ hates this search, therefore, iterate the long way
+            foreach (string line in contents)
+            {
+                if (line.Contains("OleObjectBlob"))
+                {
+                    var resourceFileName = line.Trim().Split(new Char[] { '"' }).ElementAt(1);
+                    var tempName = Path.GetFileName(tempFile);
+                    var destPath = Directory.GetParent(path).FullName;
+                    if (File.Exists(Path.Combine(tempFilePath, tempFile)) && !destPath.Equals(tempFilePath))
+                    {
+                        File.Copy(Path.Combine(tempFilePath, tempName), Path.Combine(destPath, resourceFileName));
+                    }
+                    break;
+                }
+            }
         }
 
         private void ExportDocumentModule(string path)
