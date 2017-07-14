@@ -142,7 +142,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                     var destPath = Directory.GetParent(path).FullName;
                     if (File.Exists(Path.Combine(tempFilePath, tempFile)) && !destPath.Equals(tempFilePath))
                     {
-                        File.Copy(Path.Combine(tempFilePath, tempName), Path.Combine(destPath, resourceFileName));
+                        File.Copy(Path.Combine(tempFilePath, tempName), Path.Combine(destPath, resourceFileName), overwrite:true);
                     }
                     break;
                 }
