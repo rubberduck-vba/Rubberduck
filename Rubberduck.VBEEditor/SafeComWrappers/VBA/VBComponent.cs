@@ -137,24 +137,24 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             {
                 if (line.Contains("OleObjectBlob"))
                 {
-                    var resourceFileName = line.Trim().Split(new Char[] { '"' })[1];
+                    var binaryFileName = line.Trim().Split(new Char[] { '"' })[1];
                     var tempName = Path.GetFileName(tempFile);
                     var destPath = Directory.GetParent(path).FullName;
-                    if (File.Exists(Path.Combine(tempFilePath, resourceFileName)) && !destPath.Equals(tempFilePath))
+                    if (File.Exists(Path.Combine(tempFilePath, binaryFileName)) && !destPath.Equals(tempFilePath))
                     {
-                        System.Diagnostics.Debug.WriteLine(Path.Combine(destPath, resourceFileName));
-                        if (File.Exists(Path.Combine(destPath, resourceFileName)))
+                        System.Diagnostics.Debug.WriteLine(Path.Combine(destPath, binaryFileName));
+                        if (File.Exists(Path.Combine(destPath, binaryFileName)))
                         {
                             try
                             {
-                                File.Delete(Path.Combine(destPath, resourceFileName));
+                                File.Delete(Path.Combine(destPath, binaryFileName));
                             }
                             catch (Exception)
                             {
                                 // Meh?
                             }
                         }
-                        File.Copy(Path.Combine(tempFilePath, resourceFileName), Path.Combine(destPath, resourceFileName));
+                        File.Copy(Path.Combine(tempFilePath, binaryFileName), Path.Combine(destPath, binaryFileName));
                     }
                     break;
                 }

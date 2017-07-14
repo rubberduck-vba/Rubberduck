@@ -116,8 +116,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 }
                 catch
                 {
-                    var temp = Add(ComponentType.ClassModule);
-                    temp.Name = name;
+                    throw new IndexOutOfRangeException(string.Format("Could not find document component named '{0}'.  Try adding a document component with the same name and try again.", name));
                 }
 
                 var component = this[name];
