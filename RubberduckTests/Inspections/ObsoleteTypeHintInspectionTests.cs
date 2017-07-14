@@ -189,6 +189,26 @@ End Function";
 
         [TestMethod]
         [TestCategory("Inspections")]
+        public void ObsoleteTypeHint_ConstantReturnsResult()
+        {
+            const string inputCode =
+@"Public Function Foo() As Boolean
+    Const buzz$ = 0
+    Foo = True
+End Function";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new ObsoleteTypeHintInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void ObsoleteTypeHint_StringValueDoesNotReturnsResult()
         {
             const string inputCode =
@@ -502,6 +522,36 @@ End Sub";
             const string expectedCode =
 @"Public Sub Foo()
     Dim buzz As String
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new ObsoleteTypeHintInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            var fix = new RemoveTypeHintsQuickFix(state);
+            foreach (var result in inspectionResults)
+            {
+                fix.Fix(result);
+            }
+
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ObsoleteTypeHint_QuickFixWorks_Constant_StringTypeHint()
+        {
+            const string inputCode =
+@"Public Sub Foo()
+    Const buzz$ = """"
+End Sub";
+
+            const string expectedCode =
+@"Public Sub Foo()
+    Const buzz As String = """"
 End Sub";
 
             IVBComponent component;

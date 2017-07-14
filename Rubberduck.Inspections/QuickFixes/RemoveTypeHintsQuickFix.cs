@@ -42,6 +42,10 @@ namespace Rubberduck.Inspections.QuickFixes
                         var variableContext = (VBAParser.VariableSubStmtContext) result.Target.Context;
                         rewriter.InsertAfter(variableContext.identifier().Stop.TokenIndex, asTypeClause);
                         break;
+                    case DeclarationType.Constant:
+                        var constantContext = (VBAParser.ConstSubStmtContext) result.Target.Context;
+                        rewriter.InsertAfter(constantContext.identifier().Stop.TokenIndex, asTypeClause);
+                        break;
                     case DeclarationType.Parameter:
                         var parameterContext = (VBAParser.ArgContext)result.Target.Context;
                         rewriter.InsertAfter(parameterContext.unrestrictedIdentifier().Stop.TokenIndex, asTypeClause);

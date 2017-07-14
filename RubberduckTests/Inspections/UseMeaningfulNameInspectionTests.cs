@@ -198,7 +198,7 @@ End Sub";
         {
             var settings = new Mock<IPersistanceService<CodeInspectionSettings>>();
             settings.Setup(s => s.Load(It.IsAny<CodeInspectionSettings>()))
-                .Returns(new CodeInspectionSettings(null, new[]
+                .Returns(new CodeInspectionSettings(Enumerable.Empty<CodeInspectionSetting>(), new[]
                 {
                     new WhitelistedIdentifierSetting("sss"),
                     new WhitelistedIdentifierSetting("oRange")
