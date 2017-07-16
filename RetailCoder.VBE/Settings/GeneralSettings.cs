@@ -15,6 +15,7 @@ namespace Rubberduck.Settings
         int AutoSavePeriod { get; set; }
         //char Delimiter { get; set; }
         int MinimumLogLevel { get; set; }
+        bool SourceControlEnabled { get; set; }
     }
 
     [XmlType(AnonymousType = true)]
@@ -49,6 +50,8 @@ namespace Rubberduck.Settings
             }
         }
 
+        public bool SourceControlEnabled { get; set; }
+
         public GeneralSettings()
         {
             Language = new DisplayLanguageSetting("en-US");
@@ -59,6 +62,7 @@ namespace Rubberduck.Settings
             AutoSavePeriod = 10;
             //Delimiter = '.';
             MinimumLogLevel = LogLevel.Off.Ordinal;
+            SourceControlEnabled = false;
         }
 
         public bool Equals(GeneralSettings other)
@@ -71,7 +75,8 @@ namespace Rubberduck.Settings
                    AutoSaveEnabled == other.AutoSaveEnabled &&
                    AutoSavePeriod == other.AutoSavePeriod &&
                    //Delimiter.Equals(other.Delimiter) &&
-                   MinimumLogLevel == other.MinimumLogLevel;
+                   MinimumLogLevel == other.MinimumLogLevel &&
+                   SourceControlEnabled == other.SourceControlEnabled;
         }
     }
 }

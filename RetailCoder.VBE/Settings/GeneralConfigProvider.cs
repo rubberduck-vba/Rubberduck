@@ -68,5 +68,15 @@ namespace Rubberduck.Settings
                 handler(this, e);
             }
         }
+
+        public event EventHandler SourceControlEnabledChanged;
+        protected virtual void OnSourceControlEnabledChanged(EventArgs e)
+        {
+            var handler = SourceControlEnabledChanged;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
     }
 }

@@ -600,7 +600,20 @@ namespace Rubberduck.Root
                 KernelInstance.Get<ToDoExplorerCommandMenuItem>()
             };
 
-            return new ToolsParentMenu(items);
+            var itemsSCDisabled = new IMenuItem[]
+            {
+                KernelInstance.Get<RegexAssistantCommandMenuItem>(),
+                KernelInstance.Get<ToDoExplorerCommandMenuItem>()
+            };
+
+            if (KernelInstance.Get<IGeneralConfigService>().LoadConfiguration().UserSettings.GeneralSettings.SourceControlEnabled == false)
+            {
+                return new ToolsParentMenu(itemsSCDisabled);
+            }
+            else
+            {
+                return new ToolsParentMenu(items);
+            }
         }
 
         private IEnumerable<IMenuItem> GetFormDesignerContextMenuItems()

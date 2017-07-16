@@ -139,7 +139,7 @@ namespace Rubberduck.UI {
                 return ResourceManager.GetString("AboutWindow_GeneralThanks", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Special Thanks.
         /// </summary>
@@ -148,7 +148,7 @@ namespace Rubberduck.UI {
                 return ResourceManager.GetString("AboutWindow_SpecialThanksLabel", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Add.
         /// </summary>
@@ -402,7 +402,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Parameter {0} was not a numeric value on invocatoin {1}. {2}.
+        ///   Looks up a localized string similar to Parameter {0} was not a numeric value on invocation {1}. {2}.
         /// </summary>
         public static string Assert_VerifyParameterNonNumeric {
             get {
@@ -1727,11 +1727,38 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enable Source Control.  (Restart Rubberduck to take effect.).
+        /// </summary>
+        public static string GeneralSettings_EnableSourceControl {
+            get {
+                return ResourceManager.GetString("GeneralSettings_EnableSourceControl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Source Control is Experimental and is known to be troublesome.  Use at your own risk!.
+        /// </summary>
+        public static string GeneralSettings_EnableSourceControlWarning {
+            get {
+                return ResourceManager.GetString("GeneralSettings_EnableSourceControlWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error.
         /// </summary>
         public static string GeneralSettings_ErrorLogLevel {
             get {
                 return ResourceManager.GetString("GeneralSettings_ErrorLogLevel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Experimental Features:.
+        /// </summary>
+        public static string GeneralSettings_ExperimentalFeatures {
+            get {
+                return ResourceManager.GetString("GeneralSettings_ExperimentalFeatures", resourceCulture);
             }
         }
         

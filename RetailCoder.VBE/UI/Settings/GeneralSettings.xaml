@@ -14,6 +14,7 @@
         <converters:DelimiterValueToTextConverter x:Key="DelimiterValueToText" />
         <converters:DelimiterToTextConverter x:Key="DelimiterToText" />
         <converters:HotkeyDisplayConverter x:Key="HotkeyDisplay" />
+        <BooleanToVisibilityConverter x:Key="boolToVis" />
 
         <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
             <GradientStop Color="#FFD9F4FF" Offset="0"/>
@@ -215,6 +216,13 @@
                             </DataGridTemplateColumn>
                         </DataGrid.Columns>
                     </DataGrid>
+
+                    <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_ExperimentalFeatures}" FontWeight="SemiBold" />
+                    <Label x:Name="SC_Warning" Margin="20,-5,0,0" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_EnableSourceControlWarning}"
+                           FontWeight="Bold" Foreground="Red" Visibility="{Binding SourceControlEnabled, Converter={StaticResource boolToVis}}" />
+                    <CheckBox x:Name="SC_Checkbox" Margin="5,0,0,5" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_EnableSourceControl}"
+                           IsChecked="{Binding SourceControlEnabled}" />
+
                 </StackPanel>
             </Grid>
         </ScrollViewer>
