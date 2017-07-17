@@ -19,5 +19,8 @@ notifications:
 install:
   - cinst innosetup
   
+after_build:
+  - iscc /q "Installer Build Script.iss"
+  
 artifacts:
   - path: C:\projects\rubberduck\RetailCoder.VBE\bin\Release\Installers\*.exe
