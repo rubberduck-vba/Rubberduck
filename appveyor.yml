@@ -19,7 +19,7 @@ notifications:
 install:
   - cinst innosetup
   
-after_build:
+after_test:
   - iscc /q "Installer Build Script.iss"
   
 artifacts:
