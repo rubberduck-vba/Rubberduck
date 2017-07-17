@@ -15,6 +15,9 @@ notifications:
   on_build_success: true
   on_build_failure: true
   on_build_status_changed: true
+
+install:
+  - cinst innosetup
   
 artifacts:
 - path: bin\release\Installers\*.exe
