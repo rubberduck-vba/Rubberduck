@@ -8,10 +8,22 @@ init:
   - git config --global core.autocrlf true
 
 notifications:
-- provider: Webhook
-  url: http://stats.zomis.net:8081/hooks/appveyor?roomId=14929
-  headers:
-    X-Duga-Event: duga42
-  on_build_success: true
-  on_build_failure: true
-  on_build_status_changed: true
+  - provider: Webhook
+    url: http://stats.zomis.net:8081/hooks/appveyor?roomId=14929
+    headers:
+      X-Duga-Event: duga42
+    on_build_success: true
+    on_build_failure: true
+    on_build_status_changed: true
+
+install:
+  - cinst innosetup
+  
+after_build:
+  - iscc /q "Installer Build Script.iss"
+  
+artifacts:
+  - path: RetailCoder.VBE\bin\Release\Installers\*.exe
+
+hosts:
+  api.nuget.org: 93.184.221.200
