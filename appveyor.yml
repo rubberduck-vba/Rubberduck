@@ -20,4 +20,4 @@ install:
   - cinst innosetup
   
 artifacts:
-- path: C:\projects\rubberduck\RetailCoder.VBE\bin\release\Installers\*.exe
+- path: C:\projects\rubberduck\RetailCoder.VBE\bin\Release\Installers\*.exe
