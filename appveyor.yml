@@ -20,4 +20,4 @@ install:
   - cinst innosetup
   
 artifacts:
-- path: bin\release\Installers\*.exe
+- path: C:\Rubberduck\bin\Release\Installers\*.exe
