@@ -97,20 +97,12 @@ namespace Rubberduck.Parsing.VBA
 
         private void RefreshFinder(IHostApplication host)
         {
-            DeclarationFinder = _declarationFinderFactory.Create(AllDeclarations, AllAnnotations, AllUnresolvedMemberDeclarations, host);
+            DeclarationFinder = _declarationFinderFactory.Create(AllDeclarationsFromModuleStates, AllAnnotations, AllUnresolvedMemberDeclarationsFromModulestates, host);
         }
 
         public void RefreshDeclarationFinder()
         {
             RefreshFinder(_hostApp);
-        }
-
-        private void HandleStateChanged(ParserState state)
-        {
-            if (state == ParserState.ResolvedDeclarations || state == ParserState.Ready)
-            {
-                RefreshUserDeclarationsList();
-            }
         }
 
         #region Event Handling
@@ -155,7 +147,7 @@ namespace Rubberduck.Parsing.VBA
         {
             if (!e.Project.VBE.IsInDesignMode) { return; }
 
-            if (AllDeclarations.Count == 0)
+            if (!ThereAreDeclarations())
             {
                 return;
             }
@@ -169,7 +161,7 @@ namespace Rubberduck.Parsing.VBA
         {
             if (!e.Project.VBE.IsInDesignMode) { return; }
 
-            if (AllDeclarations.Count == 0)
+            if (!ThereAreDeclarations())
             {
                 return;
             }
@@ -182,7 +174,7 @@ namespace Rubberduck.Parsing.VBA
         {
             if (!e.Project.VBE.IsInDesignMode) { return; }
 
-            if (AllDeclarations.Count == 0)
+            if (!ThereAreDeclarations())
             {
                 return;
             }
@@ -195,7 +187,7 @@ namespace Rubberduck.Parsing.VBA
         {
             if (!e.Project.VBE.IsInDesignMode) { return; }
 
-            if (AllDeclarations.Count == 0)
+            if (!ThereAreDeclarations())
             {
                 return;
             }
@@ -331,8 +323,7 @@ namespace Rubberduck.Parsing.VBA
         private int _stateChangedInvocations;
         private void OnStateChanged(object requestor, ParserState state = ParserState.Pending)
         {
-            _stateChangedInvocations++;
-            HandleStateChanged(state);
+            Interlocked.Increment(ref _stateChangedInvocations);
 
             Logger.Info($"{nameof(RubberduckParserState)} ({_stateChangedInvocations}) is invoking {nameof(StateChanged)} ({Status})");
             StateChanged?.Invoke(requestor, new ParserStateEventArgs(state));
@@ -361,7 +352,7 @@ namespace Rubberduck.Parsing.VBA
 
         public void SetModuleState(QualifiedModuleName module, ParserState state, SyntaxErrorException parserError = null, bool evaluateOverallState = true)
         {
-            if (AllUserDeclarations.Count > 0)
+            if (AllUserDeclarations.Any())
             {
                 var projectId = module.ProjectId;
                 IVBProject project = GetProject(projectId);
@@ -641,7 +632,12 @@ namespace Rubberduck.Parsing.VBA
         /// <summary>
         /// Gets a copy of the collected declarations, including the built-in ones.
         /// </summary>
-        public IReadOnlyList<Declaration> AllDeclarations
+        public IEnumerable<Declaration> AllDeclarations => DeclarationFinder.AllDeclarations;
+
+        /// <summary>
+        /// Gets a copy of the collected declarations directly from the module states, including the built-in ones. (Used for refreshing the DeclarationFinder.)
+        /// </summary>
+        private IReadOnlyList<Declaration> AllDeclarationsFromModuleStates
         {
             get
             {
@@ -655,10 +651,15 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
+        private bool ThereAreDeclarations()
+        {
+            return _moduleStates.Values.Where(state => state.Declarations != null && state.Declarations.Keys.Any()).Any();
+        }
+
         /// <summary>
-        /// Gets a copy of the unresolved member declarations.
+        /// Gets a copy of the unresolved member declarations directly from the module states. (Used for refreshing the DeclarationFinder.)
         /// </summary>
-        public IReadOnlyList<UnboundMemberDeclaration> AllUnresolvedMemberDeclarations
+        private IReadOnlyList<UnboundMemberDeclaration> AllUnresolvedMemberDeclarationsFromModulestates
         {
             get
             {
@@ -675,41 +676,10 @@ namespace Rubberduck.Parsing.VBA
         private readonly ConcurrentBag<SerializableProject> _builtInDeclarationTrees = new ConcurrentBag<SerializableProject>();
         public IProducerConsumerCollection<SerializableProject> BuiltInDeclarationTrees { get { return _builtInDeclarationTrees; } }
 
-        private IReadOnlyList<Declaration> _allUserDeclarations = new List<Declaration>();
-
         /// <summary>
         /// Gets a copy of the collected declarations, excluding the built-in ones.
         /// </summary>
-        public IReadOnlyList<Declaration> AllUserDeclarations => _allUserDeclarations;
-
-        private void RefreshUserDeclarationsList()
-        {
-            var declarations = new List<Declaration>();
-            foreach (var state in _moduleStates.Values)
-            {
-                if (state.Declarations == null)
-                {
-                    continue;
-                }
-
-                var hasBuiltInDeclaration = false;
-                foreach (var declaration in state.Declarations.Keys)
-                {
-                    if (!declaration.IsUserDefined)
-                    {
-                        hasBuiltInDeclaration = true;
-                        break;
-                    }
-                }
-
-                if (!hasBuiltInDeclaration)
-                {
-                    declarations.AddRange(state.Declarations.Keys);
-                }
-            }
-
-            _allUserDeclarations = declarations;
-        }
+        public IEnumerable<Declaration> AllUserDeclarations => DeclarationFinder.AllUserDeclarations;
 
         public IDictionary<Tuple<string, DeclarationType>, Attributes> GetModuleAttributes(QualifiedModuleName module)
         {
@@ -795,26 +765,6 @@ namespace Rubberduck.Parsing.VBA
             {
                 OnStateChanged(this, ParserState.ResolvedDeclarations);   // trigger test explorer and code explorer updates
                 OnStateChanged(this, ParserState.Ready);   // trigger find all references &c. updates
-            }
-        }
-
-        public void ClearBuiltInReferences()
-        {
-            foreach (var declaration in AllDeclarations)
-            {
-                if (declaration.IsUserDefined)
-                {
-                    continue;
-                }
-                declaration.ClearReferences();
-            }
-        }
-
-        public void ClearAllReferences()
-        {
-            foreach (var declaration in AllDeclarations)
-            {
-                declaration.ClearReferences();
             }
         }
 
