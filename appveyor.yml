@@ -20,7 +20,7 @@ install:
   - cinst innosetup
   
 after_build:
-  - iscc /q "\Installer Build Script.iss"
+  - iscc /q "..\Installer Build Script.iss"
   
 artifacts:
   - path: RetailCoder.VBE\bin\Release\Installers\*.exe
