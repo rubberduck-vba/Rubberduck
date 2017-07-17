@@ -353,6 +353,8 @@ namespace Rubberduck.Parsing.Symbols
 
         public IReadOnlyCollection<QualifiedModuleName> AllModules => _declarations.Keys.AsReadOnly();
 
+        public IEnumerable<Declaration> AllDeclarations => _declarations.AllValues();
+
         public IEnumerable<Declaration> FindDeclarationsWithNonBaseAsType()
         {
             return _nonBaseAsType.Value;
