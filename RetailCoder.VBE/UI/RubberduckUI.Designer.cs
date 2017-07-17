@@ -1727,20 +1727,11 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable Source Control.  (Restart Rubberduck to take effect.).
+        ///   Looks up a localized string similar to Enable Source Control. Requires a restart to take effect..
         /// </summary>
         public static string GeneralSettings_EnableSourceControl {
             get {
                 return ResourceManager.GetString("GeneralSettings_EnableSourceControl", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Source Control is Experimental and is known to be troublesome.  Use at your own risk!.
-        /// </summary>
-        public static string GeneralSettings_EnableSourceControlWarning {
-            get {
-                return ResourceManager.GetString("GeneralSettings_EnableSourceControlWarning", resourceCulture);
             }
         }
         
@@ -1759,6 +1750,15 @@ namespace Rubberduck.UI {
         public static string GeneralSettings_ExperimentalFeatures {
             get {
                 return ResourceManager.GetString("GeneralSettings_ExperimentalFeatures", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only enable these if you know what you&apos;re doing. Enabling and/or using features from this section may result in things breaking unexpectedly and irrevocable data loss..
+        /// </summary>
+        public static string GeneralSettings_ExperimentalFeaturesWarning {
+            get {
+                return ResourceManager.GetString("GeneralSettings_ExperimentalFeaturesWarning", resourceCulture);
             }
         }
         
