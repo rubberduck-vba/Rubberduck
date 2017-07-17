@@ -166,7 +166,9 @@ namespace Rubberduck.Parsing.VBA
             if (_parsingStageService.LastSyncOfCOMReferencesLoadedReferences || _parsingStageService.COMReferencesUnloadedUnloadedInLastSync.Any())
             {
                 var unloadedReferences = _parsingStageService.COMReferencesUnloadedUnloadedInLastSync;
-                toReresolveReferences.UnionWith(_parsingCacheService.ModulesReferencingAny(unloadedReferences));
+                var additionalModulesToBeReresolved = OtherModulesReferencingAnyNotToBeParsed(unloadedReferences.ToHashSet().AsReadOnly(), toParse);
+                toReresolveReferences.UnionWith(additionalModulesToBeReresolved);
+                _parserStateManager.SetModuleStates(additionalModulesToBeReresolved, ParserState.ResolvingReferences, token);
                 ClearModuleToModuleReferences(unloadedReferences);
                 RefreshDeclarationFinder();
             }
@@ -335,6 +337,12 @@ namespace Rubberduck.Parsing.VBA
             var modules = _projectManager.AllModules();
             token.ThrowIfCancellationRequested();
 
+            var toParse = modules.Where(module => State.IsNewOrModified(module)).ToHashSet();
+            token.ThrowIfCancellationRequested();
+
+            toParse.UnionWith(modules.Where(module => _parserStateManager.GetModuleState(module) != ParserState.Ready));
+            token.ThrowIfCancellationRequested();
+
             var removedModules = RemovedModules(modules);
             token.ThrowIfCancellationRequested();
 
@@ -344,7 +352,10 @@ namespace Rubberduck.Parsing.VBA
             removedModules.UnionWith(ModulesInProjects(removedProjects));
             token.ThrowIfCancellationRequested();
 
-            var toReResolveReferences = OtherModulesReferencingAny(removedModules.AsReadOnly());
+            var toReResolveReferences = OtherModulesReferencingAnyNotToBeParsed(removedModules.AsReadOnly(), toParse.AsReadOnly());
+            token.ThrowIfCancellationRequested();
+
+            _parserStateManager.SetModuleStates(toReResolveReferences, ParserState.ResolvingReferences, token);
             token.ThrowIfCancellationRequested();
 
             CleanUpRemovedComponents(removedModules.AsReadOnly(), token);
@@ -354,19 +365,13 @@ namespace Rubberduck.Parsing.VBA
             CleanUpRemovedProjects(removedProjects);
             token.ThrowIfCancellationRequested();
 
-            var toParse = modules.Where(module => State.IsNewOrModified(module)).ToHashSet();
-            token.ThrowIfCancellationRequested();
-
-            toParse.UnionWith(modules.Where(module => _parserStateManager.GetModuleState(module) != ParserState.Ready));
-            token.ThrowIfCancellationRequested();
-
             ExecuteCommonParseActivities(toParse.AsReadOnly(), toReResolveReferences, token);
         }
 
-        private IReadOnlyCollection<QualifiedModuleName> OtherModulesReferencingAny(IReadOnlyCollection<QualifiedModuleName> removedModules)
+        private IReadOnlyCollection<QualifiedModuleName> OtherModulesReferencingAnyNotToBeParsed(IReadOnlyCollection<QualifiedModuleName> removedModules, IReadOnlyCollection<QualifiedModuleName> toParse)
         {
             return _parsingCacheService.ModulesReferencingAny(removedModules)
-                        .Where(qmn => !removedModules.Contains(qmn))
+                        .Where(qmn => !removedModules.Contains(qmn) && !toParse.Contains(qmn))
                         .ToHashSet().AsReadOnly();
         }
 
