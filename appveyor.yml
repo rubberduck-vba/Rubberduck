@@ -15,6 +15,8 @@ build:
 artifacts:
 - path: Installers\*.exe
   name: Rubberduck
+hosts:
+  api.nuget.org: 93.184.221.200
 before_deploy:
 - ps: 
 deploy:
@@ -35,6 +37,3 @@ notifications:
   on_build_success: true
   on_build_failure: true
   on_build_status_changed: false
-
-hosts:
-- api.nuget.org: 93.184.221.200
