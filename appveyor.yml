@@ -31,7 +31,7 @@ deploy:
   auth_token:
     secure: oh0SRnZVt0ABeWqFr7ut5TZkxFJjHmS/DZnJnp2HErQTCmX3O8RASJH3ZiYl11gz
   artifact: Installers\*.exe
-  draft: false
+  draft: true
   prerelease: true
   on:
     branch: next
