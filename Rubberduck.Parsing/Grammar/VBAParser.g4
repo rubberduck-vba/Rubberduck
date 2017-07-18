@@ -661,6 +661,7 @@ argumentExpression :
     | addressOfExpression
     // Special case for redim statements. The resolver doesn't have to deal with this because it is "picked apart" in the redim statement.
     | lowerBoundArgumentExpression whiteSpace TO whiteSpace upperBoundArgumentExpression
+	|
 ;
 
 lowerBoundArgumentExpression : expression;
