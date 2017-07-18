@@ -21,6 +21,8 @@ hosts:
   api.nuget.org: 93.184.221.200
 after_test:
 - iscc /q "Installer Build Script.iss"  
+before_package:
+- cmd: copy Rubberduck.Inspections\bin\Release\Rubberduck.Inspections.dll RetailCoder.VBE\bin\Release\Rubberduck.Inspections.dll
 before_deploy:
 - ps: 
 deploy:
