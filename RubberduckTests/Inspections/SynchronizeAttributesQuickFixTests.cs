@@ -13,6 +13,7 @@ namespace RubberduckTests.Inspections
     [TestClass]
     public class SynchronizeAttributesQuickFixTests
     {
+        [Ignore] // todo: implement
         [TestMethod]
         public void AddsMissingDescriptionAnnotation()
         {
