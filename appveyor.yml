@@ -13,12 +13,14 @@ init:
 before_build:
 - ps: choco install innosetup
 build:
-  verbosity: minimal
+  verbosity: normal
 artifacts:
 - path: Installers\*.exe
   name: Rubberduck
 hosts:
   api.nuget.org: 93.184.221.200
+after_test:
+- iscc /q "Installer Build Script.iss"  
 before_deploy:
 - ps: 
 deploy:
