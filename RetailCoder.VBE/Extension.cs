@@ -52,7 +52,7 @@ namespace Rubberduck
         {
             try
             {
-                if (Application is VBE)
+                if (Application is Microsoft.Vbe.Interop.VBE)
                 {
                     var vbe = (VBE) Application;                  
                     _ide = new VBEditor.SafeComWrappers.VBA.VBE(vbe);
