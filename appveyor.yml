@@ -2,7 +2,6 @@ version: 2.1.{build}
 branches:
   only:
   - next
-  - master
 image: Visual Studio 2015
 configuration: Release
 platform: Any CPU
@@ -15,7 +14,7 @@ before_build:
 build:
   verbosity: normal
 artifacts:
-- path: Installers\*.exe
+- path: Installers\Rubberduck.Setup.exe
   name: Rubberduck
 hosts:
   api.nuget.org: 93.184.221.200
@@ -30,7 +29,7 @@ deploy:
   description: (AppVeyor build)
   auth_token:
     secure: oh0SRnZVt0ABeWqFr7ut5TZkxFJjHmS/DZnJnp2HErQTCmX3O8RASJH3ZiYl11gz
-  artifact: Installers\*.exe
+  artifact: Installers\Rubberduck.Setup.exe
   draft: true
   prerelease: true
   on:
