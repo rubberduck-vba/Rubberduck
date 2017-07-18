@@ -37,8 +37,8 @@ Name: "English"; MessagesFile: "compiler:Default.isl"
 
 [Files]
 ; Install the correct bitness binaries.
-Source: "{#BuildDir}\NativeBinaries\amd64\*"; DestDir: "{app}"; Flags: ignoreversion; Excludes: "{#AddinDLL}"; Check: Is64BitOfficeInstalled
-Source: "{#BuildDir}\NativeBinaries\x86\*"; DestDir: "{app}"; Flags: ignoreversion; Excludes: "{#AddinDLL}"; Check: Is32BitOfficeInstalled
+;Source: "{#BuildDir}\NativeBinaries\amd64\*"; DestDir: "{app}"; Flags: ignoreversion; Excludes: "{#AddinDLL}"; Check: Is64BitOfficeInstalled
+;Source: "{#BuildDir}\NativeBinaries\x86\*"; DestDir: "{app}"; Flags: ignoreversion; Excludes: "{#AddinDLL}"; Check: Is32BitOfficeInstalled
 
 Source: "{#BuildDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs; Excludes: "{#AddinDLL},\NativeBinaries"
 Source: "{#BuildDir}\{#AddinDLL}"; DestDir: "{app}"; Flags: ignoreversion; AfterInstall: RegisterAddin
