@@ -12,27 +12,30 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    public sealed class OptionBaseInspection : ParseTreeInspectionBase
+    public sealed class OptionBaseOneInspection : ParseTreeInspectionBase
     {
-        public OptionBaseInspection(RubberduckParserState state)
+        public OptionBaseOneInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Hint)
         {
-            Listener = new OptionBaseStatementListener();
+            Listener = new OptionBaseOneListener();
         }
 
-        public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
+        public override string Meta => InspectionsUI.OptionBaseOneInspectionMeta;
+        public override string Description => InspectionsUI.OptionBaseOneInspectionName;
+        public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
+
         public override IInspectionListener Listener { get; }
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
             return Listener.Contexts.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName, context.Context.Start.Line))
                 .Select(context => new QualifiedContextInspectionResult(this,
-                                                        string.Format(InspectionsUI.OptionBaseInspectionResultFormat, context.ModuleName.ComponentName),
+                                                        string.Format(InspectionsUI.OptionBaseOneInspectionResultFormat, context.ModuleName.ComponentName),
                                                         State,
                                                         context));
         }
 
-        public class OptionBaseStatementListener : VBAParserBaseListener, IInspectionListener
+        public class OptionBaseOneListener : VBAParserBaseListener, IInspectionListener
         {
             private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
             public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
