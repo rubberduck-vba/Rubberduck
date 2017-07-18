@@ -51,7 +51,7 @@ namespace Rubberduck.Common
 
         public static void SetMinimumLogLevel(LogLevel minimumLogLevel)
         {
-            if (LogManager.GlobalThreshold == minimumLogLevel) 
+            if (LogManager.GlobalThreshold == minimumLogLevel && LogHeaderWritten == true)
             {
                 return;
             }
@@ -69,7 +69,7 @@ namespace Rubberduck.Common
             if (minimumLogLevel == LogLevel.Off)
             {
                 LogManager.DisableLogging();
-                LogManager.GlobalThreshold = minimumLogLevel;
+                LogManager.GlobalThreshold = LogLevel.Off;
                 LogManager.ReconfigExistingLoggers();
                 return;
             }
