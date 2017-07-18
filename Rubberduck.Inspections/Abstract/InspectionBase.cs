@@ -32,7 +32,7 @@ namespace Rubberduck.Inspections.Abstract
         /// <summary>
         /// Gets a localized string representing a short name/description for the inspection.
         /// </summary>
-        public virtual string Description => InspectionsUI.ResourceManager.GetString(Name + "InspectionName", CultureInfo.CurrentUICulture);
+        public virtual string Description => InspectionsUI.ResourceManager.GetString(Name + "Name", CultureInfo.CurrentUICulture);
 
         /// <summary>
         /// Gets the type of inspection; used for regrouping inspections.
@@ -58,7 +58,7 @@ namespace Rubberduck.Inspections.Abstract
         /// <summary>
         /// Meta-information about why an inspection exists.
         /// </summary>
-        public virtual string Meta => InspectionsUI.ResourceManager.GetString(Name + "InspectionMeta", CultureInfo.CurrentUICulture);
+        public virtual string Meta => InspectionsUI.ResourceManager.GetString(Name + "Meta", CultureInfo.CurrentUICulture);
 
         /// <summary>
         /// Gets a localized string representing the type of inspection.
