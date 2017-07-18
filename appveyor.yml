@@ -1,6 +1,7 @@
 version: 2.1.{build}
 branches:
   only:
+  - master
   - next
 image: Visual Studio 2015
 configuration: Release
@@ -26,14 +27,25 @@ deploy:
 - provider: GitHub
   tag: Rubberduck v$(appveyor_build_version)
   release: Rubberduck v$(appveyor_build_version)
-  description: (AppVeyor build)
+  description: (AppVeyor build on [next])
+  auth_token:
+    secure: oh0SRnZVt0ABeWqFr7ut5TZkxFJjHmS/DZnJnp2HErQTCmX3O8RASJH3ZiYl11gz
+  artifact: Installers\Rubberduck.Setup.exe
+  draft: false
+  prerelease: true
+  on:
+    branch: next
+- provider: GitHub
+  tag: Rubberduck v$(appveyor_build_version)
+  release: Rubberduck v$(appveyor_build_version)
+  description: (AppVeyor build on [master])
   auth_token:
     secure: oh0SRnZVt0ABeWqFr7ut5TZkxFJjHmS/DZnJnp2HErQTCmX3O8RASJH3ZiYl11gz
   artifact: Installers\Rubberduck.Setup.exe
   draft: true
-  prerelease: true
+  prerelease: false
   on:
-    branch: next
+    branch: master
 notifications:
 - provider: Webhook
   url: http://stats.zomis.net/GithubHookSEChatService/hooks/github/payload?roomId=14929
