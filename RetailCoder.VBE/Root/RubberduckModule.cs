@@ -593,14 +593,19 @@ namespace Rubberduck.Root
 
         private IMenuItem GetToolsParentMenu()
         {
-            var items = new IMenuItem[]
+            var items = new List<IMenuItem> ()
             {
-                KernelInstance.Get<SourceControlCommandMenuItem>(),
                 KernelInstance.Get<RegexAssistantCommandMenuItem>(),
                 KernelInstance.Get<ToDoExplorerCommandMenuItem>()
             };
 
-            return new ToolsParentMenu(items);
+
+            if (KernelInstance.Get<IGeneralConfigService>().LoadConfiguration().UserSettings.GeneralSettings.SourceControlEnabled == true)
+            {
+                items.Add(KernelInstance.Get<SourceControlCommandMenuItem>());
+            }
+            
+            return new ToolsParentMenu(items.ToArray());
         }
 
         private IEnumerable<IMenuItem> GetFormDesignerContextMenuItems()

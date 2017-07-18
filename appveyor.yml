@@ -1,17 +1,57 @@
-version: 2.0.{build}-{branch}
-build:
-  verbosity: normal
-
+version: 2.1.{build}
+branches:
+  only:
+  - master
+  - next
+skip_tags: true
+image: Visual Studio 2015
 configuration: Release
-
+platform: Any CPU
+install:
+- cmd: set PATH=C:\Program Files (x86)\MSBuild\14.0\Bin;%PATH%
 init:
   - git config --global core.autocrlf true
-
+before_build:
+- ps: choco install innosetup
+build:
+  verbosity: normal
+artifacts:
+- path: Installers\Rubberduck.Setup.exe
+  name: Rubberduck
+hosts:
+  api.nuget.org: 93.184.221.200
+after_test:
+- iscc /q "Installer Build Script.iss"  
+before_package:
+- cmd: copy Rubberduck.Inspections\bin\Release\Rubberduck.Inspections.dll RetailCoder.VBE\bin\Release\Rubberduck.Inspections.dll
+before_deploy:
+- ps: 
+deploy:
+- provider: GitHub
+  tag: Rubberduck v$(appveyor_build_version)
+  release: Rubberduck v$(appveyor_build_version)
+  description: (AppVeyor build on [next])
+  auth_token:
+    secure: oh0SRnZVt0ABeWqFr7ut5TZkxFJjHmS/DZnJnp2HErQTCmX3O8RASJH3ZiYl11gz
+  artifact: Installers\Rubberduck.Setup.exe
+  draft: false
+  prerelease: true
+  on:
+    branch: next
+- provider: GitHub
+  tag: Rubberduck v$(appveyor_build_version)
+  release: Rubberduck v$(appveyor_build_version)
+  description: (AppVeyor build on [master])
+  auth_token:
+    secure: oh0SRnZVt0ABeWqFr7ut5TZkxFJjHmS/DZnJnp2HErQTCmX3O8RASJH3ZiYl11gz
+  artifact: Installers\Rubberduck.Setup.exe
+  draft: true
+  prerelease: false
+  on:
+    branch: master
 notifications:
 - provider: Webhook
-  url: http://stats.zomis.net:8081/hooks/appveyor?roomId=14929
-  headers:
-    X-Duga-Event: duga42
+  url: http://stats.zomis.net/GithubHookSEChatService/hooks/github/payload?roomId=14929
   on_build_success: true
   on_build_failure: true
-  on_build_status_changed: true
+  on_build_status_changed: false

@@ -754,6 +754,42 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The maximum value of a 16-bit signed integer is 32,767 - using a 32-bit (Long) integer data type where possible can help prevent &apos;Overflow&apos; run-time errors, and is better handled by modern CPUs..
+        /// </summary>
+        public static string IntegerDataTypeInspectionMeta {
+            get {
+                return ResourceManager.GetString("IntegerDataTypeInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use of 16-bit integer type.
+        /// </summary>
+        public static string IntegerDataTypeInspectionName {
+            get {
+                return ResourceManager.GetString("IntegerDataTypeInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} &apos;{1}&apos; is declared as Integer.
+        /// </summary>
+        public static string IntegerDataTypeInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("IntegerDataTypeInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change declaration type to Long.
+        /// </summary>
+        public static string IntegerDataTypeQuickFix {
+            get {
+                return ResourceManager.GetString("IntegerDataTypeQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Introduce local variable.
         /// </summary>
         public static string IntroduceLocalVariableQuickFix {
