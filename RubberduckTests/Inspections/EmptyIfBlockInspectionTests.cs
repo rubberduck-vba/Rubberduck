@@ -7,7 +7,7 @@ using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
-namespace RubberduckTests.Inspections
+namespace RubberduckTests.Inspections   
 {
     [TestClass]
     public class EmptyIfBlockInspectionTests
