@@ -30,7 +30,7 @@ deploy:
 - provider: GitHub
   tag: Rubberduck v$(appveyor_build_version)
   release: Rubberduck v$(appveyor_build_version)
-  description: (AppVeyor build on [next])
+  description: AppVeyor build on [next] - https://ci.appveyor.com/project/retailcoder/rubberduck/build/$(appveyor_build_version)
   auth_token:
     secure: oh0SRnZVt0ABeWqFr7ut5TZkxFJjHmS/DZnJnp2HErQTCmX3O8RASJH3ZiYl11gz
   artifact: Installers\Rubberduck.Setup.exe
@@ -41,7 +41,7 @@ deploy:
 - provider: GitHub
   tag: Rubberduck v$(appveyor_build_version)
   release: Rubberduck v$(appveyor_build_version)
-  description: (AppVeyor build on [master])
+  description: AppVeyor build on [master] - https://ci.appveyor.com/project/retailcoder/rubberduck/build/$(appveyor_build_version)
   auth_token:
     secure: oh0SRnZVt0ABeWqFr7ut5TZkxFJjHmS/DZnJnp2HErQTCmX3O8RASJH3ZiYl11gz
   artifact: Installers\Rubberduck.Setup.exe
