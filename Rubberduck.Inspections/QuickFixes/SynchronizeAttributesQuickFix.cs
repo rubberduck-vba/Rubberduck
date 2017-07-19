@@ -97,6 +97,10 @@ namespace Rubberduck.Inspections.QuickFixes
             {
                 FixMemberDescriptionAnnotation(_state, memberName);
             }
+            else
+            {
+                AddMemberAnnotation(_state, memberName, context.AnnotationType());
+            }
         }
 
         private static void FixMemberDescriptionAnnotation(RubberduckParserState state, QualifiedMemberName memberName)
@@ -125,6 +129,33 @@ namespace Rubberduck.Inspections.QuickFixes
 
             var insertAt = member.Context.Start;
             rewriter.InsertBefore(insertAt.TokenIndex, $"'@Description({value})\r\n");
+        }
+
+        private static void AddMemberAnnotation(RubberduckParserState state, QualifiedMemberName memberName, AnnotationType annotationType)
+        {
+            var moduleName = memberName.QualifiedModuleName;
+            var rewriter = state.GetRewriter(moduleName);
+
+            var attributes = state
+                .GetModuleAttributes(moduleName)
+                .Where(a => a.Key.Item1.StartsWith(memberName.MemberName)
+                         && a.Key.Item2.HasFlag(DeclarationType.Member))
+                .ToArray();
+
+            Debug.Assert(attributes.Length == 1, "Member has too many attributes");
+            var attribute = attributes.SingleOrDefault();
+
+            AttributeNode node;
+            if(!attribute.Value.HasMemberDescriptionAttribute(memberName.MemberName, out node))
+            {
+                return;
+            }
+
+            var member = state.DeclarationFinder.Members(memberName.QualifiedModuleName)
+                .First(m => m.IdentifierName == memberName.MemberName);
+
+            var insertAt = member.Context.Start;
+            rewriter.InsertBefore(insertAt.TokenIndex, $"'@{annotationType}\r\n");
         }
 
         private void Fix(QualifiedModuleName moduleName, VBAParser.AttributeStmtContext context)
