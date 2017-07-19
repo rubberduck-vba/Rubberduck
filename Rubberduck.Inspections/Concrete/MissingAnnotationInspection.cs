@@ -51,8 +51,16 @@ namespace Rubberduck.Inspections.Concrete
                 var type = context.AnnotationType();
                 if (type != null && (annotations?.All(a => a.AnnotationType != type) ?? false))
                 {
-                    // attribute is mapped to an annotation, but current scope doesn't have that annotation:
-                    AddContext(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
+                    if (type.Value.HasFlag(AnnotationType.ModuleAnnotation))
+                    {
+                        // attribute is mapped to an annotation, but current scope doesn't have that annotation:
+                        AddContext(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
+                    }
+
+                    if(type.Value.HasFlag(AnnotationType.MemberAnnotation))
+                    {
+                        AddContext(new QualifiedContext<ParserRuleContext>(CurrentScopeDeclaration.QualifiedName, context));
+                    }
                 }
             }
         }

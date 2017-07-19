@@ -13,7 +13,54 @@ namespace RubberduckTests.Inspections
     [TestClass]
     public class SynchronizeAttributesQuickFixTests
     {
-        [Ignore] // todo: implement
+        [TestMethod]
+        public void AddsMissingPredeclaredIdAnnotation()
+        {
+            const string testModuleName = "Test";
+            const string inputCode = @"
+VERSION 1.0 CLASS
+BEGIN
+  MultiUse = -1  'True
+END
+Attribute VB_Name = """ + testModuleName + @"""   ' (ignored)
+Attribute VB_PredeclaredId = True
+Option Explicit
+
+Sub DoSomething()
+End Sub";
+            const string expectedCode = @"
+VERSION 1.0 CLASS
+BEGIN
+  MultiUse = -1  'True
+END
+Attribute VB_Name = """ + testModuleName + @"""   ' (ignored)
+Attribute VB_PredeclaredId = True
+'@PredeclaredId
+Option Explicit
+
+Sub DoSomething()
+End Sub";
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out component);
+
+            var state = MockParser.CreateAndParse(vbe.Object);
+            var inspection = new MissingAnnotationInspection(state);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var result = inspector.FindIssuesAsync(state, CancellationToken.None).Result?.SingleOrDefault();
+            if(result?.Context.GetType() != typeof(VBAParser.AttributeStmtContext))
+            {
+                Assert.Inconclusive("Inspection failed to return a result.");
+            }
+
+            var fix = new SynchronizeAttributesQuickFix(state);
+            fix.Fix(result);
+
+            var rewriter = state.GetRewriter(result.QualifiedSelection.QualifiedName);
+            var actual = rewriter.GetText();
+
+            Assert.AreEqual(expectedCode, actual);
+        }
+
         [TestMethod]
         public void AddsMissingDescriptionAnnotation()
         {
@@ -56,11 +103,106 @@ End Sub";
             var fix = new SynchronizeAttributesQuickFix(state);
             fix.Fix(result);
 
-            var rewriter = state.GetAttributeRewriter(result.QualifiedSelection.QualifiedName);
+            var rewriter = state.GetRewriter(result.QualifiedSelection.QualifiedName);
             var actual = rewriter.GetText();
 
             Assert.AreEqual(expectedCode, actual);
+        }
 
+        [TestMethod]
+        public void AddsDefaultMemberAnnotation()
+        {
+            const string testModuleName = "Test";
+            const string inputCode = @"
+VERSION 1.0 CLASS
+BEGIN
+  MultiUse = -1  'True
+END
+Attribute VB_Name = """ + testModuleName + @"""   ' (ignored)
+Option Explicit
+
+Sub DoSomething()
+Attribute DoSomething.VB_UserMemId = 0
+End Sub";
+            const string expectedCode = @"
+VERSION 1.0 CLASS
+BEGIN
+  MultiUse = -1  'True
+END
+Attribute VB_Name = """ + testModuleName + @"""   ' (ignored)
+Option Explicit
+
+'@DefaultMember
+Sub DoSomething()
+Attribute DoSomething.VB_UserMemId = 0
+End Sub";
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out component);
+
+            var state = MockParser.CreateAndParse(vbe.Object);
+            var inspection = new MissingAnnotationInspection(state);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var result = inspector.FindIssuesAsync(state, CancellationToken.None).Result?.SingleOrDefault();
+            if(result?.Context.GetType() != typeof(VBAParser.AttributeStmtContext))
+            {
+                Assert.Inconclusive("Inspection failed to return a result.");
+            }
+
+            var fix = new SynchronizeAttributesQuickFix(state);
+            fix.Fix(result);
+
+            var rewriter = state.GetRewriter(result.QualifiedSelection.QualifiedName);
+            var actual = rewriter.GetText();
+
+            Assert.AreEqual(expectedCode, actual);
+        }
+
+        [TestMethod]
+        public void AddsEnumeratorMemberAnnotation()
+        {
+            const string testModuleName = "Test";
+            const string inputCode = @"
+VERSION 1.0 CLASS
+BEGIN
+  MultiUse = -1  'True
+END
+Attribute VB_Name = """ + testModuleName + @"""   ' (ignored)
+Option Explicit
+
+Public Property Get NewEnum() As IUnknown
+Attribute NewEnum.VB_UserMemId = -4
+End Property";
+            const string expectedCode = @"
+VERSION 1.0 CLASS
+BEGIN
+  MultiUse = -1  'True
+END
+Attribute VB_Name = """ + testModuleName + @"""   ' (ignored)
+Option Explicit
+
+'@Enumerator
+Public Property Get NewEnum() As IUnknown
+Attribute NewEnum.VB_UserMemId = -4
+End Property";
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out component);
+
+            var state = MockParser.CreateAndParse(vbe.Object);
+            var inspection = new MissingAnnotationInspection(state);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var result = inspector.FindIssuesAsync(state, CancellationToken.None).Result?.SingleOrDefault();
+            if(result?.Context.GetType() != typeof(VBAParser.AttributeStmtContext))
+            {
+                Assert.Inconclusive("Inspection failed to return a result.");
+            }
+
+            var fix = new SynchronizeAttributesQuickFix(state);
+            fix.Fix(result);
+
+            var rewriter = state.GetRewriter(result.QualifiedSelection.QualifiedName);
+            var actual = rewriter.GetText();
+
+            Assert.AreEqual(expectedCode, actual);
         }
 
         [TestMethod]
