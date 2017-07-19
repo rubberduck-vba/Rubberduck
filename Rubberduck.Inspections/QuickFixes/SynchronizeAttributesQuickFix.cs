@@ -99,6 +99,8 @@ namespace Rubberduck.Inspections.QuickFixes
             }
             else
             {
+                // only '@Description member annotation is parameterized, so AnnotationType.ToString() works:
+                Debug.Assert(context.AnnotationType().HasValue);
                 AddMemberAnnotation(_state, memberName, context.AnnotationType());
             }
         }
@@ -147,7 +149,13 @@ namespace Rubberduck.Inspections.QuickFixes
 
         private void Fix(QualifiedModuleName moduleName, VBAParser.AttributeStmtContext context)
         {
-            
+            var annotationType = context.AnnotationType();
+            Debug.Assert(annotationType.HasValue);
+
+            var annotation = $"'@{annotationType}\r\n";
+
+            var rewriter = _state.GetRewriter(moduleName);
+            rewriter.InsertAfter(((VBAParser.ModuleAttributesContext)context.Parent).Stop.TokenIndex, annotation);
         }
 
         private static readonly IDictionary<AnnotationType, Action<RubberduckParserState, QualifiedModuleName>> 
