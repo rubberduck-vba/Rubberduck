@@ -53,20 +53,21 @@ namespace Rubberduck.Settings
         protected virtual void OnLanguageChanged(EventArgs e)
         {
             var handler = LanguageChanged;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
+            LanguageChanged?.Invoke(this, e);
         }
 
         public event EventHandler AutoSaveSettingsChanged;
         protected virtual void OnAutoSaveSettingsChanged(EventArgs e)
         {
             var handler = AutoSaveSettingsChanged;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
+            AutoSaveSettingsChanged?.Invoke(this, e);
+        }
+
+        public event EventHandler SourceControlEnabledChanged;
+        protected virtual void OnSourceControlEnabledChanged(EventArgs e)
+        {
+            var handler = SourceControlEnabledChanged;
+            SourceControlEnabledChanged?.Invoke(this, e);
         }
     }
 }

@@ -84,7 +84,7 @@ namespace Rubberduck.Settings
             {
                 if (_description == null)
                 {
-                    _description = InspectionsUI.ResourceManager.GetString(Name + "InspectionName");
+                    _description = InspectionsUI.ResourceManager.GetString(Name + "Name");
                 }
                 return _description;
             }
@@ -99,7 +99,7 @@ namespace Rubberduck.Settings
         {
             get
             {
-                return InspectionsUI.ResourceManager.GetString(Name + "InspectionName", CultureInfo.CurrentUICulture);
+                return InspectionsUI.ResourceManager.GetString(Name + "Name", CultureInfo.CurrentUICulture);
             }
         } // not serialized because culture-dependent
 
@@ -123,7 +123,7 @@ namespace Rubberduck.Settings
         {
             get
             {
-                return InspectionsUI.ResourceManager.GetString(Name + "InspectionMeta", CultureInfo.CurrentUICulture);
+                return InspectionsUI.ResourceManager.GetString(Name + "Meta", CultureInfo.CurrentUICulture);
             }
         }
 
