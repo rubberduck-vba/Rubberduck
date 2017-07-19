@@ -131,8 +131,10 @@ namespace Rubberduck.Inspections.QuickFixes
             rewriter.InsertBefore(insertAt.TokenIndex, $"'@Description({value})\r\n");
         }
 
-        private static void AddMemberAnnotation(RubberduckParserState state, QualifiedMemberName memberName, AnnotationType annotationType)
+        private static void AddMemberAnnotation(RubberduckParserState state, QualifiedMemberName memberName, AnnotationType? annotationType)
         {
+            Debug.Assert(annotationType.HasValue);
+
             var moduleName = memberName.QualifiedModuleName;
             var rewriter = state.GetRewriter(moduleName);
 
