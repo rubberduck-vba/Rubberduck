@@ -37,41 +37,52 @@ namespace Rubberduck.Inspections.QuickFixes
         public void Fix(IInspectionResult result)
         {
             var context = result.Context;
-            if (result.QualifiedMemberName != null)
+            if (result.QualifiedMemberName?.MemberName != null)
             {
-                var memberName = result.QualifiedMemberName.Value;
-
-                var attributeContext = context as VBAParser.AttributeStmtContext;
-                if (attributeContext != null)
-                {
-                    Fix(memberName, attributeContext);
-                    return;
-                }
-
-                var annotationContext = context as VBAParser.AnnotationContext;
-                if (annotationContext != null)
-                {
-                    Fix(memberName, annotationContext);
-                    return;
-                }
+                FixMember(result, context);
             }
             else
             {
-                var moduleName = result.QualifiedSelection.QualifiedName;
+                FixModule(result, context);
+            }
+        }
 
-                var attributeContext = context as VBAParser.AttributeStmtContext;
-                if(attributeContext != null)
-                {
-                    Fix(moduleName, attributeContext);
-                    return;
-                }
+        private void FixModule(IInspectionResult result, ParserRuleContext context)
+        {
+            var moduleName = result.QualifiedSelection.QualifiedName;
 
-                var annotationContext = context as VBAParser.AnnotationContext;
-                if(annotationContext != null)
-                {
-                    Fix(moduleName, annotationContext);
-                    return;
-                }
+            var attributeContext = context as VBAParser.AttributeStmtContext;
+            if (attributeContext != null)
+            {
+                Fix(moduleName, attributeContext);
+                return;
+            }
+
+            var annotationContext = context as VBAParser.AnnotationContext;
+            if (annotationContext != null)
+            {
+                Fix(moduleName, annotationContext);
+                return;
+            }
+        }
+
+        private void FixMember(IInspectionResult result, ParserRuleContext context)
+        {
+            Debug.Assert(result.QualifiedMemberName.HasValue);
+            var memberName = result.QualifiedMemberName.Value;
+
+            var attributeContext = context as VBAParser.AttributeStmtContext;
+            if (attributeContext != null)
+            {
+                Fix(memberName, attributeContext);
+                return;
+            }
+
+            var annotationContext = context as VBAParser.AnnotationContext;
+            if (annotationContext != null)
+            {
+                Fix(memberName, annotationContext);
+                return;
             }
         }
 
@@ -108,12 +119,12 @@ namespace Rubberduck.Inspections.QuickFixes
                 return;
             }
 
-            var value = node.Context.attributeValue().SingleOrDefault()?.GetText() ?? string.Empty;
+            var value = node.Context.attributeValue().SingleOrDefault()?.GetText() ?? "\"\"";
             var member = state.DeclarationFinder.Members(memberName.QualifiedModuleName)
                 .First(m => m.IdentifierName == memberName.MemberName);
 
             var insertAt = member.Context.Start;
-            rewriter.InsertBefore(insertAt.TokenIndex, $"'@Description(\"{value}\")\n");
+            rewriter.InsertBefore(insertAt.TokenIndex, $"'@Description({value})\r\n");
         }
 
         private void Fix(QualifiedModuleName moduleName, VBAParser.AttributeStmtContext context)

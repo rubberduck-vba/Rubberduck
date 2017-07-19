@@ -42,6 +42,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.SmartIndenter", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RubberduckTests", "RubberduckTests\RubberduckTests.csproj", "{ADADE971-75E3-40C4-8C19-AB7409372F2E}"
 	ProjectSection(ProjectDependencies) = postProject
+		{AC4F1D22-D74B-45FF-AB0C-CC2A104FE023} = {AC4F1D22-D74B-45FF-AB0C-CC2A104FE023}
 		{40CC03E3-756C-4674-AF07-384115DEAEE2} = {40CC03E3-756C-4674-AF07-384115DEAEE2}
 	EndProjectSection
 EndProject

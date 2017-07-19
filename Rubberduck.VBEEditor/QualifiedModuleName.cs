@@ -116,7 +116,7 @@ namespace Rubberduck.VBEditor
 
         public override int GetHashCode()
         {
-            return HashCode.Compute(_projectId, _componentName ?? string.Empty);
+            return HashCode.Compute(_projectId ?? string.Empty, _componentName ?? string.Empty);
         }
 
         public override bool Equals(object obj)

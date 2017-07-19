@@ -13,7 +13,6 @@ namespace RubberduckTests.Inspections
     [TestClass]
     public class SynchronizeAttributesQuickFixTests
     {
-        [Ignore] // todo: implement
         [TestMethod]
         public void AddsMissingDescriptionAnnotation()
         {
@@ -56,7 +55,7 @@ End Sub";
             var fix = new SynchronizeAttributesQuickFix(state);
             fix.Fix(result);
 
-            var rewriter = state.GetAttributeRewriter(result.QualifiedSelection.QualifiedName);
+            var rewriter = state.GetRewriter(result.QualifiedSelection.QualifiedName);
             var actual = rewriter.GetText();
 
             Assert.AreEqual(expectedCode, actual);
