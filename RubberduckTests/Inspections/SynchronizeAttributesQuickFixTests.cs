@@ -123,7 +123,7 @@ Option Explicit
 
 Public Property Get NewEnum() As IUnknown
 Attribute NewEnum.VB_UserMemId = -4
-End Sub";
+End Property";
             const string expectedCode = @"
 VERSION 1.0 CLASS
 BEGIN
@@ -135,7 +135,7 @@ Option Explicit
 '@Enumerator
 Public Property Get NewEnum() As IUnknown
 Attribute NewEnum.VB_UserMemId = -4
-End Sub";
+End Property";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out component);
 
