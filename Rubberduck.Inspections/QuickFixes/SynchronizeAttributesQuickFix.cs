@@ -138,21 +138,6 @@ namespace Rubberduck.Inspections.QuickFixes
             var moduleName = memberName.QualifiedModuleName;
             var rewriter = state.GetRewriter(moduleName);
 
-            var attributes = state
-                .GetModuleAttributes(moduleName)
-                .Where(a => a.Key.Item1.StartsWith(memberName.MemberName)
-                         && a.Key.Item2.HasFlag(DeclarationType.Member))
-                .ToArray();
-
-            Debug.Assert(attributes.Length == 1, "Member has too many attributes");
-            var attribute = attributes.SingleOrDefault();
-
-            AttributeNode node;
-            if(!attribute.Value.HasMemberDescriptionAttribute(memberName.MemberName, out node))
-            {
-                return;
-            }
-
             var member = state.DeclarationFinder.Members(memberName.QualifiedModuleName)
                 .First(m => m.IdentifierName == memberName.MemberName);
 
