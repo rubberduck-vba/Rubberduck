@@ -56,7 +56,7 @@ namespace Rubberduck.Parsing.VBA
 
                 Logger.Debug("Creating declarations for module {0}.", module.Name);
 
-                var declarationsListener = new DeclarationSymbolsListener(_state, module, module.ComponentType, _state.GetModuleAnnotations(module), _state.GetModuleAttributes(module), projectDeclaration);
+                var declarationsListener = new DeclarationSymbolsListener(_state, module, _state.GetModuleAnnotations(module), _state.GetModuleAttributes(module), projectDeclaration);
                 ParseTreeWalker.Default.Walk(declarationsListener, tree);
                 foreach (var createdDeclaration in declarationsListener.CreatedDeclarations)
                 {
