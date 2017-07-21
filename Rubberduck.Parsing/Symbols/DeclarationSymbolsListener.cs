@@ -64,12 +64,6 @@ namespace Rubberduck.Parsing.Symbols
             {
                 bool hasDefaultInstanceVariable = componentType != ComponentType.ClassModule && componentType != ComponentType.StandardModule;
 
-                Declaration superType = null;
-                if (componentType == ComponentType.Document)
-                {
-                    superType = SupertypeForDocument(_qualifiedModuleName, state);
-                }
-
                 _moduleDeclaration = new ClassModuleDeclaration(
                     _qualifiedModuleName.QualifyMemberName(_qualifiedModuleName.ComponentName),
                     projectDeclaration,
@@ -78,58 +72,16 @@ namespace Rubberduck.Parsing.Symbols
                     FindAnnotations(),
                     moduleAttributes,
                     hasDefaultInstanceVariable: hasDefaultInstanceVariable);
-
-                if (superType != null)
-                {
-                    ((ClassModuleDeclaration)_moduleDeclaration).AddSupertype(superType);
-                }
             }
 
             SetCurrentScope();
             AddDeclaration(_moduleDeclaration);
 
             var component = _qualifiedModuleName.Component;
-            if (componentType == ComponentType.UserForm || component.HasDesigner)
+            if (component != null && (componentType == ComponentType.UserForm || component.HasDesigner))
             {
                 DeclareControlsAsMembers(component);
             }
-        }
-
-        private Declaration SupertypeForDocument(QualifiedModuleName qualifiedModuleName, RubberduckParserState state)
-        {
-            Declaration superType = null;
-            foreach (var coclass in state.CoClasses)
-            {
-                try
-                {
-                    if (qualifiedModuleName.Component == null ||
-                        coclass.Key.Count != qualifiedModuleName.Component.Properties.Count)
-                    {
-                        continue;
-                    }
-
-                    var allNamesMatch = true;
-                    for (var i = 0; i < coclass.Key.Count; i++)
-                    {
-                        if (coclass.Key[i] != qualifiedModuleName.Component.Properties[i + 1].Name)
-                        {
-                            allNamesMatch = false;
-                            break;
-                        }
-                    }
-
-                    if (allNamesMatch)
-                    {
-                        superType = coclass.Value;
-                        break;
-                    }
-                }
-                catch (COMException)
-                {
-                }
-            }
-
-            return superType;
         }
 
         private IEnumerable<IAnnotation> FindAnnotations()
