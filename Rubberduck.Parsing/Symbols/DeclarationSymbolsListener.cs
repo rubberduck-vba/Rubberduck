@@ -34,8 +34,7 @@ namespace Rubberduck.Parsing.Symbols
             IEnumerable<IAnnotation> annotations,
             IDictionary<Tuple<string, DeclarationType>, 
             Attributes> attributes,
-            Declaration projectDeclaration, 
-            string asTypeName = null)
+            Declaration projectDeclaration)
         {
             _qualifiedModuleName = qualifiedModuleName;
             _annotations = annotations;
@@ -68,7 +67,7 @@ namespace Rubberduck.Parsing.Symbols
                 Declaration superType = null;
                 if (componentType == ComponentType.Document)
                 {
-                    superType = SupertypeForDocument(_qualifiedModuleName, asTypeName, state);
+                    superType = SupertypeForDocument(_qualifiedModuleName, state);
                 }
 
                 _moduleDeclaration = new ClassModuleDeclaration(
@@ -96,44 +95,37 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
-        private Declaration SupertypeForDocument(QualifiedModuleName qualifiedModuleName, string asTypeName, RubberduckParserState state)
+        private Declaration SupertypeForDocument(QualifiedModuleName qualifiedModuleName, RubberduckParserState state)
         {
             Declaration superType = null;
-            if (!string.IsNullOrEmpty(asTypeName))
+            foreach (var coclass in state.CoClasses)
             {
-                superType = state.CoClasses.FirstOrDefault(cls => cls.Value.IdentifierName == asTypeName).Value;
-            }
-            else
-            {
-                foreach (var coclass in state.CoClasses)
+                try
                 {
-                    try
+                    if (qualifiedModuleName.Component == null ||
+                        coclass.Key.Count != qualifiedModuleName.Component.Properties.Count)
                     {
-                        if (qualifiedModuleName.Component == null ||
-                            coclass.Key.Count != qualifiedModuleName.Component.Properties.Count)
-                        {
-                            continue;
-                        }
+                        continue;
+                    }
 
-                        var allNamesMatch = true;
-                        for (var i = 0; i < coclass.Key.Count; i++)
+                    var allNamesMatch = true;
+                    for (var i = 0; i < coclass.Key.Count; i++)
+                    {
+                        if (coclass.Key[i] != qualifiedModuleName.Component.Properties[i + 1].Name)
                         {
-                            if (coclass.Key[i] != qualifiedModuleName.Component.Properties[i + 1].Name)
-                            {
-                                allNamesMatch = false;
-                                break;
-                            }
-                        }
-
-                        if (allNamesMatch)
-                        {
-                            superType = coclass.Value;
+                            allNamesMatch = false;
                             break;
                         }
                     }
-                    catch (COMException)
+
+                    if (allNamesMatch)
                     {
+                        superType = coclass.Value;
+                        break;
                     }
+                }
+                catch (COMException)
+                {
                 }
             }
 
