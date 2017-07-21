@@ -461,7 +461,7 @@ namespace Rubberduck.Parsing.VBA
                 return ParserState.ResolverError;
             }
 
-            // intermediate states are toggled when *any* module has them.
+            //The lowest state wins.
             var result = ParserState.None;
             foreach (var item in moduleStates)
             {
@@ -469,23 +469,6 @@ namespace Rubberduck.Parsing.VBA
                 {
                     result = item;
                 }
-            }
-
-            if (stateCounts[(int)ParserState.Pending] > 0)
-            {
-                result = ParserState.Pending;
-            }
-            if (stateCounts[(int)ParserState.Parsing] > 0)
-            {
-                result = ParserState.Parsing;
-            }
-            if (stateCounts[(int)ParserState.ResolvingDeclarations] > 0)
-            {
-                result = ParserState.ResolvingDeclarations;
-            }
-            if (stateCounts[(int)ParserState.ResolvingReferences] > 0)
-            {
-                result = ParserState.ResolvingReferences;
             }
 
             if (result == ParserState.Ready)
