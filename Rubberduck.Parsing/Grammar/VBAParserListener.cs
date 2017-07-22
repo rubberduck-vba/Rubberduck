@@ -429,6 +429,17 @@ public interface IVBAParserListener : IParseTreeListener {
 	void ExitAnnotationName([NotNull] VBAParser.AnnotationNameContext context);
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.missingArgument"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterMissingArgument([NotNull] VBAParser.MissingArgumentContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.missingArgument"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitMissingArgument([NotNull] VBAParser.MissingArgumentContext context);
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.constSubStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

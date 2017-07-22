@@ -651,17 +651,18 @@ requiredArgument : argument;
 argument :
     positionalArgument
     | namedArgument
+	| missingArgument
 ;
 
 positionalArgument : argumentExpression;
 namedArgument : unrestrictedIdentifier whiteSpace? ASSIGN whiteSpace? argumentExpression;
+missingArgument : ;
 
 argumentExpression :
     (BYVAL whiteSpace)? expression
     | addressOfExpression
     // Special case for redim statements. The resolver doesn't have to deal with this because it is "picked apart" in the redim statement.
     | lowerBoundArgumentExpression whiteSpace TO whiteSpace upperBoundArgumentExpression
-	|
 ;
 
 lowerBoundArgumentExpression : expression;
