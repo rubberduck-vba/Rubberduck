@@ -52,18 +52,11 @@ namespace Rubberduck.Parsing.VBA
             var stopwatch = Stopwatch.StartNew();
             try
             {
-                var project = module.Component.Collection.Parent;
-                var projectQualifiedName = new QualifiedModuleName(project);
-                Declaration projectDeclaration;
-                if (!_projectDeclarations.TryGetValue(projectQualifiedName.ProjectId, out projectDeclaration))
-                {
-                    projectDeclaration = CreateProjectDeclaration(projectQualifiedName, project);
-                    _projectDeclarations.AddOrUpdate(projectQualifiedName.ProjectId, projectDeclaration, (s, c) => projectDeclaration);
-                    _state.AddDeclaration(projectDeclaration);
-                }
+                var projectDeclaration = GetOrCreateProjectDeclaration(module);
+
                 Logger.Debug("Creating declarations for module {0}.", module.Name);
 
-                var declarationsListener = new DeclarationSymbolsListener(_state, module, module.ComponentType, _state.GetModuleAnnotations(module), _state.GetModuleAttributes(module), projectDeclaration);
+                var declarationsListener = new DeclarationSymbolsListener(_state, module, _state.GetModuleAnnotations(module), _state.GetModuleAttributes(module), projectDeclaration);
                 ParseTreeWalker.Default.Walk(declarationsListener, tree);
                 foreach (var createdDeclaration in declarationsListener.CreatedDeclarations)
                 {
@@ -79,12 +72,52 @@ namespace Rubberduck.Parsing.VBA
             Logger.Debug("{0}ms to resolve declarations for component {1}", stopwatch.ElapsedMilliseconds, module.Name);
         }
 
-        private Declaration CreateProjectDeclaration(QualifiedModuleName projectQualifiedName, IVBProject project)
+        private Declaration GetOrCreateProjectDeclaration(QualifiedModuleName module)
         {
-            var qualifiedName = projectQualifiedName.QualifyMemberName(project.Name);
-            var projectId = qualifiedName.QualifiedModuleName.ProjectId;
-            var projectDeclaration = new ProjectDeclaration(qualifiedName, project.Name, true, project);
+            Declaration projectDeclaration;
+            if (!_projectDeclarations.TryGetValue(module.ProjectId, out projectDeclaration))
+            {
+                var project = module.Component.Collection.Parent;
+                projectDeclaration = CreateProjectDeclaration(project);
 
+                if (projectDeclaration.ProjectId != module.ProjectId)
+                {
+                    Logger.Error($"Inconsistent projectId between QualifiedModuleName {module} (projectID {module.ProjectId}) and its project (projectId {projectDeclaration.ProjectId})");
+                    throw new ArgumentException($"Inconsistent projectID on {nameof(module)}");
+                }
+
+                _projectDeclarations.AddOrUpdate(module.ProjectId, projectDeclaration, (s, c) => projectDeclaration);
+                _state.AddDeclaration(projectDeclaration);
+            }
+
+            return projectDeclaration;
+        }
+
+        private Declaration CreateProjectDeclaration(IVBProject project)
+        {
+            var qualifiedModuleName = new QualifiedModuleName(project);
+            var qualifiedName = qualifiedModuleName.QualifyMemberName(project.Name);
+            var projectId = qualifiedModuleName.ProjectId;
+            var projectDeclaration = new ProjectDeclaration(qualifiedName, qualifiedName.MemberName, true, project);
+            var references = ProjectReferences(projectId);
+
+            AddReferences(projectDeclaration, references);
+
+            return projectDeclaration;
+        }
+
+        private static void AddReferences(ProjectDeclaration projectDeclaration, List<ReferencePriorityMap> references)
+        {
+            var projectId = projectDeclaration.ProjectId;
+            foreach (var reference in references)
+            {
+                int priority = reference[projectId];
+                projectDeclaration.AddProjectReference(reference.ReferencedProjectId, priority);
+            }
+        }
+
+        private List<ReferencePriorityMap> ProjectReferences(string projectId)
+        {
             var references = new List<ReferencePriorityMap>();
             foreach (var item in _projectReferencesProvider.ProjectReferences)
             {
@@ -94,12 +127,7 @@ namespace Rubberduck.Parsing.VBA
                 }
             }
 
-            foreach (var reference in references)
-            {
-                int priority = reference[projectId];
-                projectDeclaration.AddProjectReference(reference.ReferencedProjectId, priority);
-            }
-            return projectDeclaration;
+            return references;
         }
     }
 }

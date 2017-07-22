@@ -7,6 +7,8 @@ using Rubberduck.Parsing.Symbols;
 using Antlr4.Runtime.Tree;
 using System.Diagnostics;
 using NLog;
+using Rubberduck.VBEditor.SafeComWrappers;
+using System.Runtime.InteropServices;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -75,6 +77,9 @@ namespace Rubberduck.Parsing.VBA
             ExecuteCompilationPasses(_toResolve.AsReadOnly());
             token.ThrowIfCancellationRequested();
 
+            AddSupertypesForDocumentModules(_toResolve.AsReadOnly(), _state);
+            token.ThrowIfCancellationRequested();
+
             var parseTreesToResolve = _state.ParseTrees.Where(kvp => _toResolve.Contains(kvp.Key)).ToList();
             token.ThrowIfCancellationRequested();
 
@@ -107,6 +112,66 @@ namespace Rubberduck.Parsing.VBA
                     new TypeAnnotationPass(_state.DeclarationFinder, new VBAExpressionParser())
                 };
             passes.ForEach(p => p.Execute(modules));
+        }
+
+        private void AddSupertypesForDocumentModules(IReadOnlyCollection<QualifiedModuleName> modules, RubberduckParserState state)
+        {
+            var allClassModuleDeclarations = state.DeclarationFinder.UserDeclarations(DeclarationType.ClassModule);
+            var documentModuleDeclarations = allClassModuleDeclarations.Where(declaration =>
+                                                                                declaration.QualifiedName.QualifiedModuleName.ComponentType == ComponentType.Document
+                                                                                && modules.Contains(declaration.QualifiedName.QualifiedModuleName));
+
+            foreach (var documentDeclaration in documentModuleDeclarations)
+            {
+                var documentSupertype = SupertypeForDocument(documentDeclaration.QualifiedName.QualifiedModuleName, documentDeclaration.AsTypeName, state);
+                if (documentSupertype != null)
+                {
+                    ((ClassModuleDeclaration)documentDeclaration).AddSupertype(documentSupertype);
+                }
+            }
+        }
+
+        private Declaration SupertypeForDocument(QualifiedModuleName module, string asTypeName, RubberduckParserState state)
+        {
+            if(module.ComponentType != ComponentType.Document || module.Component?.Properties == null)
+            {
+                return null;
+            }
+
+            var documentPropertyCount = module.Component.Properties.Count;
+
+            Declaration superType = null;
+            foreach (var coclass in state.CoClasses)
+            {
+                try
+                {
+                    if (coclass.Key.Count != documentPropertyCount)
+                    {
+                        continue;
+                    }
+
+                    var allNamesMatch = true;
+                    for (var i = 0; i < coclass.Key.Count; i++)
+                    {
+                        if (coclass.Key[i] != module.Component.Properties[i + 1].Name)
+                        {
+                            allNamesMatch = false;
+                            break;
+                        }
+                    }
+
+                    if (allNamesMatch)
+                    {
+                        superType = coclass.Value;
+                        break;
+                    }
+                }
+                catch (COMException)
+                {
+                }
+            }
+
+            return superType;
         }
 
         protected void ResolveReferences(DeclarationFinder finder, QualifiedModuleName module, IParseTree tree, CancellationToken token)
