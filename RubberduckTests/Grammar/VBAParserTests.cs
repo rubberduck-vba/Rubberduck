@@ -1791,7 +1791,7 @@ End Sub
 
         [TestCategory("Parser")]
         [TestMethod]
-        public void LeftOutOptionalArgumentsDoCount()
+        public void LeftOutOptionalArgumentsAreCountedAsMissingArguments()
         {
             const string code = @"
 Public Sub Test()
@@ -1804,7 +1804,7 @@ Public Function Foo(a, Optional b, Optional c) As Long
 End Function
 ";
             var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//argumentExpression", matches => matches.Count == 3);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//missingArgument", matches => matches.Count == 1);
             AssertTree(parseResult.Item1, parseResult.Item2, "//argumentList", matches => matches.Count == 1);
         }
 

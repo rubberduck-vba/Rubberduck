@@ -489,6 +489,19 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	public virtual void ExitAnnotationName([NotNull] VBAParser.AnnotationNameContext context) { }
 
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.missingArgument"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterMissingArgument([NotNull] VBAParser.MissingArgumentContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.missingArgument"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitMissingArgument([NotNull] VBAParser.MissingArgumentContext context) { }
+
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.constSubStmt"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
