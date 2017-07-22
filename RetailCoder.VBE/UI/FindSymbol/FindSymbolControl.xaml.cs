@@ -37,7 +37,7 @@ namespace Rubberduck.UI.FindSymbol
 
         private void UIElement_OnPreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter && ViewModel.CanExecute())
+            if (e.Key == Key.Enter && ViewModel.CanExecute()) 
             {
                 ViewModel.Execute();
                 e.Handled = true;

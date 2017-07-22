@@ -766,6 +766,18 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="CodeInspectionSeverity_Warning" xml:space="preserve">
     <value>Warning</value>
   </data>
+  <data name="EmptyElseBlockInspectionResultFormat" xml:space="preserve">
+    <value>Else block has no executable statements</value>
+  </data>
+  <data name="EmptyElseBlockInspectionMeta" xml:space="preserve">
+    <value>An Else block should have executable statements</value>
+  </data>
+  <data name="EmptyElseBlockInspectionName" xml:space="preserve">
+    <value>Empty Else block</value>
+  </data>
+  <data name="RemoveEmptyElseBlockQuickFix" xml:space="preserve">
+    <value>Remove empty Else block</value>
+  </data>
   <data name="IntegerDataTypeInspectionMeta" xml:space="preserve">
     <value>The maximum value of a 16-bit signed integer is 32,767 - using a 32-bit (Long) integer data type where possible can help prevent 'Overflow' run-time errors, and is better handled by modern CPUs.</value>
   </data>

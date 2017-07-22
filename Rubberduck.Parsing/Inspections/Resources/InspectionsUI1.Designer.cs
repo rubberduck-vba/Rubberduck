@@ -313,6 +313,33 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An Else block should have executable statements.
+        /// </summary>
+        public static string EmptyElseBlockInspectionMeta {
+            get {
+                return ResourceManager.GetString("EmptyElseBlockInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Empty Else block.
+        /// </summary>
+        public static string EmptyElseBlockInspectionName {
+            get {
+                return ResourceManager.GetString("EmptyElseBlockInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Else block has no executable statements.
+        /// </summary>
+        public static string EmptyElseBlockInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("EmptyElseBlockInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An If block should have executable statements.
         /// </summary>
         public static string EmptyIfBlockInspectionMeta {
@@ -1632,6 +1659,15 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         public static string RemoveCommentQuickFix {
             get {
                 return ResourceManager.GetString("RemoveCommentQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove empty Else block.
+        /// </summary>
+        public static string RemoveEmptyElseBlockQuickFix {
+            get {
+                return ResourceManager.GetString("RemoveEmptyElseBlockQuickFix", resourceCulture);
             }
         }
         

@@ -60,6 +60,13 @@ namespace Rubberduck.UI.FindSymbol
                 return;
             }
 
+            var results = GetSearchResultCollectionOfString(value);
+
+            MatchResults = new ObservableCollection<SearchResult>(results);
+        }
+
+        private IEnumerable<SearchResult> GetSearchResultCollectionOfString(string value)
+        {
             var lower = value.ToLowerInvariant();
             var results = _declarations
                 .Where(declaration => !ExcludedTypes.Contains(declaration.DeclarationType)
@@ -67,7 +74,7 @@ namespace Rubberduck.UI.FindSymbol
                 .OrderBy(declaration => declaration.IdentifierName.ToLowerInvariant())
                 .Select(declaration => new SearchResult(declaration, _cache[declaration]));
 
-            MatchResults = new ObservableCollection<SearchResult>(results);
+            return results;
         }
 
         private string _searchString;
@@ -76,6 +83,10 @@ namespace Rubberduck.UI.FindSymbol
             get { return _searchString; }
             set
             {
+                //Adding SelectedItem.set() will allow pasting to work?
+                SearchResult firstResult = GetSearchResultCollectionOfString(value).FirstOrDefault();
+                SelectedItem = firstResult;
+
                 if (_searchString != value)
                 {
                     _searchString = value;
