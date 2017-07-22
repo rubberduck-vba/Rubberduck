@@ -17,7 +17,7 @@ namespace Rubberduck.Inspections.Results
                  context.Context,
                  null,
                  new QualifiedSelection(context.ModuleName, context.Context.GetSelection()),
-                 GetQualifiedMemberName(state, context),
+                 context.MemberName,
                  properties)
         {
         }

@@ -283,6 +283,13 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	Result VisitAnnotationName([NotNull] VBAParser.AnnotationNameContext context);
 
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.missingArgument"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitMissingArgument([NotNull] VBAParser.MissingArgumentContext context);
+
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="VBAParser.constSubStmt"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

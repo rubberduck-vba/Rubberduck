@@ -637,7 +637,7 @@ End Sub
             var parser = MockParser.Create(vbe.Object);
             parser.Parse(new CancellationTokenSource());
 
-            var expected = parser.State.AllDeclarations.Single(item => item.DeclarationType == DeclarationType.Variable);
+            var expected = parser.State.DeclarationFinder.DeclarationsWithType(DeclarationType.Variable).Single();
             var actual = parser.State.DeclarationFinder.FindSelectedDeclaration(vbe.Object.ActiveCodePane);
 
             Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected.DeclarationType, actual.DeclarationType);
@@ -667,7 +667,7 @@ End Sub
             var parser = MockParser.Create(vbe.Object);
             parser.Parse(new CancellationTokenSource());
 
-            var expected = parser.State.AllDeclarations.Single(item => item.DeclarationType == DeclarationType.Variable);
+            var expected = parser.State.DeclarationFinder.DeclarationsWithType(DeclarationType.Variable).Single();
             var actual = parser.State.DeclarationFinder.FindSelectedDeclaration(vbe.Object.ActiveCodePane);
 
             Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected.DeclarationType, actual.DeclarationType);

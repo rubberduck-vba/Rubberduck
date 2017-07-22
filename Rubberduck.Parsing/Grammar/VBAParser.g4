@@ -651,10 +651,12 @@ requiredArgument : argument;
 argument :
     positionalArgument
     | namedArgument
+	| missingArgument
 ;
 
 positionalArgument : argumentExpression;
 namedArgument : unrestrictedIdentifier whiteSpace? ASSIGN whiteSpace? argumentExpression;
+missingArgument : ;
 
 argumentExpression :
     (BYVAL whiteSpace)? expression

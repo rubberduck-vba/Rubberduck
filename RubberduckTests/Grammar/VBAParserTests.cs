@@ -1791,6 +1791,25 @@ End Sub
 
         [TestCategory("Parser")]
         [TestMethod]
+        public void LeftOutOptionalArgumentsAreCountedAsMissingArguments()
+        {
+            const string code = @"
+Public Sub Test()
+    Dim x As Long
+    x = Foo(1, , 5)
+End Sub
+
+Public Function Foo(a, Optional b, Optional c) As Long
+    Foo = 42
+End Function
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//missingArgument", matches => matches.Count == 1);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//argumentList", matches => matches.Count == 1);
+        }
+
+        [TestCategory("Parser")]
+        [TestMethod]
         public void TestReDimWithLineContinuation()
         {
             const string code = @"

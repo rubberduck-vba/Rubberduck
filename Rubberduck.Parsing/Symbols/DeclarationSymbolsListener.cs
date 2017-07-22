@@ -15,7 +15,7 @@ namespace Rubberduck.Parsing.Symbols
 {
     public class DeclarationSymbolsListener : VBAParserBaseListener
     {
-        private readonly QualifiedModuleName _qualifiedName;
+        private readonly QualifiedModuleName _qualifiedModuleName;
         private readonly Declaration _moduleDeclaration;
 
         private string _currentScope;
@@ -30,21 +30,22 @@ namespace Rubberduck.Parsing.Symbols
 
         public DeclarationSymbolsListener(
             RubberduckParserState state,
-            QualifiedModuleName qualifiedName,
-            ComponentType type,
+            QualifiedModuleName qualifiedModuleName,
             IEnumerable<IAnnotation> annotations,
-            IDictionary<Tuple<string, DeclarationType>, Attributes> attributes,
-            Declaration projectDeclaration, string asTypeName = null)
+            IDictionary<Tuple<string, DeclarationType>, 
+            Attributes> attributes,
+            Declaration projectDeclaration)
         {
-            _qualifiedName = qualifiedName;
+            _qualifiedModuleName = qualifiedModuleName;
             _annotations = annotations;
             _attributes = attributes;
 
-            var declarationType = type == ComponentType.StandardModule
+            var componentType = _qualifiedModuleName.ComponentType;
+            var declarationType = componentType == ComponentType.StandardModule
                 ? DeclarationType.ProceduralModule
                 : DeclarationType.ClassModule;
 
-            var key = Tuple.Create(_qualifiedName.ComponentName, declarationType);
+            var key = Tuple.Create(_qualifiedModuleName.ComponentName, declarationType);
             var moduleAttributes = attributes.ContainsKey(key)
                 ? attributes[key]
                 : new Attributes();
@@ -52,77 +53,32 @@ namespace Rubberduck.Parsing.Symbols
             if (declarationType == DeclarationType.ProceduralModule)
             {
                 _moduleDeclaration = new ProceduralModuleDeclaration(
-                    _qualifiedName.QualifyMemberName(_qualifiedName.ComponentName),
+                    _qualifiedModuleName.QualifyMemberName(_qualifiedModuleName.ComponentName),
                     projectDeclaration,
-                    _qualifiedName.ComponentName,
+                    _qualifiedModuleName.ComponentName,
                     true,
                     FindAnnotations(),
                     moduleAttributes);
             }
             else
             {
-                bool hasDefaultInstanceVariable = type != ComponentType.ClassModule && type != ComponentType.StandardModule;
-
-                Declaration superType = null;
-                if (type == ComponentType.Document)
-                {
-                    if (!string.IsNullOrEmpty(asTypeName))
-                    {
-                        superType = state.CoClasses.FirstOrDefault(cls => cls.Value.IdentifierName == asTypeName).Value;
-                    }
-                    else
-                    {
-                        foreach (var coclass in state.CoClasses)
-                        {
-                            try
-                            {
-                                if (_qualifiedName.Component == null ||
-                                    coclass.Key.Count != _qualifiedName.Component.Properties.Count)
-                                {
-                                    continue;
-                                }
-
-                                var allNamesMatch = true;
-                                for (var i = 0; i < coclass.Key.Count; i++)
-                                {
-                                    if (coclass.Key[i] != _qualifiedName.Component.Properties[i + 1].Name)
-                                    {
-                                        allNamesMatch = false;
-                                        break;
-                                    }
-                                }
-
-                                if (allNamesMatch)
-                                {
-                                    superType = coclass.Value;
-                                    break;
-                                }
-                            }
-                            catch (COMException)
-                            {
-                            }
-                        }
-                    }
-                }
+                bool hasDefaultInstanceVariable = componentType != ComponentType.ClassModule && componentType != ComponentType.StandardModule;
 
                 _moduleDeclaration = new ClassModuleDeclaration(
-                    _qualifiedName.QualifyMemberName(_qualifiedName.ComponentName),
+                    _qualifiedModuleName.QualifyMemberName(_qualifiedModuleName.ComponentName),
                     projectDeclaration,
-                    _qualifiedName.ComponentName,
+                    _qualifiedModuleName.ComponentName,
                     true,
                     FindAnnotations(),
                     moduleAttributes,
                     hasDefaultInstanceVariable: hasDefaultInstanceVariable);
-
-                if (superType != null)
-                {
-                    ((ClassModuleDeclaration)_moduleDeclaration).AddSupertype(superType);
-                }
             }
+
             SetCurrentScope();
             AddDeclaration(_moduleDeclaration);
-            var component = _moduleDeclaration.QualifiedName.QualifiedModuleName.Component;
-            if (component.Type == ComponentType.UserForm || component.HasDesigner)
+
+            var component = _qualifiedModuleName.Component;
+            if (component != null && (componentType == ComponentType.UserForm || component.HasDesigner))
             {
                 DeclareControlsAsMembers(component);
             }
@@ -134,8 +90,8 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return null;
             }
-            var lastDeclarationsSectionLine = _qualifiedName.Component.CodeModule.CountOfDeclarationLines;
-            var annotations = _annotations.Where(annotation => annotation.QualifiedSelection.QualifiedName.Equals(_qualifiedName)
+            var lastDeclarationsSectionLine = _qualifiedModuleName.Component.CodeModule.CountOfDeclarationLines;
+            var annotations = _annotations.Where(annotation => annotation.QualifiedSelection.QualifiedName.Equals(_qualifiedModuleName)
                 && annotation.QualifiedSelection.Selection.EndLine <= lastDeclarationsSectionLine);
             return annotations.ToList();
         }
@@ -181,7 +137,7 @@ namespace Rubberduck.Parsing.Symbols
                 var typeName = control.TypeName();
                 // The as type declaration should be TextBox, CheckBox, etc. depending on the type.
                 var declaration = new Declaration(
-                    _qualifiedName.QualifyMemberName(control.Name),
+                    _qualifiedModuleName.QualifyMemberName(control.Name),
                     _parentDeclaration,
                     _currentScopeDeclaration,
                     string.IsNullOrEmpty(typeName) ? "Control" : typeName,
@@ -221,7 +177,7 @@ namespace Rubberduck.Parsing.Symbols
                 var isByRef = argContext.BYREF() != null || argContext.BYVAL() == null;
                 var isParamArray = argContext.PARAMARRAY() != null;
                 result = new ParameterDeclaration(
-                    new QualifiedMemberName(_qualifiedName, identifierName),
+                    new QualifiedMemberName(_qualifiedModuleName, identifierName),
                     _parentDeclaration,
                     context,
                     selection,
@@ -249,12 +205,12 @@ namespace Rubberduck.Parsing.Symbols
                 var annotations = FindAnnotations(selection.StartLine);
                 if (declarationType == DeclarationType.Procedure)
                 {
-                    result = new SubroutineDeclaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, _currentScopeDeclaration, asTypeName, accessibility, context, selection, true, annotations, attributes);
+                    result = new SubroutineDeclaration(new QualifiedMemberName(_qualifiedModuleName, identifierName), _parentDeclaration, _currentScopeDeclaration, asTypeName, accessibility, context, selection, true, annotations, attributes);
                 }
                 else if (declarationType == DeclarationType.Function)
                 {
                     result = new FunctionDeclaration(
-                        new QualifiedMemberName(_qualifiedName, identifierName),
+                        new QualifiedMemberName(_qualifiedModuleName, identifierName),
                         _parentDeclaration,
                         _currentScopeDeclaration,
                         asTypeName,
@@ -271,7 +227,7 @@ namespace Rubberduck.Parsing.Symbols
                 else if (declarationType == DeclarationType.Event)
                 {
                     result = new EventDeclaration(
-                        new QualifiedMemberName(_qualifiedName, identifierName),
+                        new QualifiedMemberName(_qualifiedModuleName, identifierName),
                         _parentDeclaration,
                         _currentScopeDeclaration,
                         asTypeName,
@@ -287,12 +243,12 @@ namespace Rubberduck.Parsing.Symbols
                 }
                 else if (declarationType == DeclarationType.LibraryProcedure || declarationType == DeclarationType.LibraryFunction)
                 {
-                    result = new ExternalProcedureDeclaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, _currentScopeDeclaration, declarationType, asTypeName, asTypeContext, accessibility, context, selection, true, annotations);
+                    result = new ExternalProcedureDeclaration(new QualifiedMemberName(_qualifiedModuleName, identifierName), _parentDeclaration, _currentScopeDeclaration, declarationType, asTypeName, asTypeContext, accessibility, context, selection, true, annotations);
                 }
                 else if (declarationType == DeclarationType.PropertyGet)
                 {
                     result = new PropertyGetDeclaration(
-                        new QualifiedMemberName(_qualifiedName, identifierName),
+                        new QualifiedMemberName(_qualifiedModuleName, identifierName),
                         _parentDeclaration,
                         _currentScopeDeclaration,
                         asTypeName,
@@ -308,16 +264,16 @@ namespace Rubberduck.Parsing.Symbols
                 }
                 else if (declarationType == DeclarationType.PropertySet)
                 {
-                    result = new PropertySetDeclaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, _currentScopeDeclaration, asTypeName, accessibility, context, selection, true, annotations, attributes);
+                    result = new PropertySetDeclaration(new QualifiedMemberName(_qualifiedModuleName, identifierName), _parentDeclaration, _currentScopeDeclaration, asTypeName, accessibility, context, selection, true, annotations, attributes);
                 }
                 else if (declarationType == DeclarationType.PropertyLet)
                 {
-                    result = new PropertyLetDeclaration(new QualifiedMemberName(_qualifiedName, identifierName), _parentDeclaration, _currentScopeDeclaration, asTypeName, accessibility, context, selection, true, annotations, attributes);
+                    result = new PropertyLetDeclaration(new QualifiedMemberName(_qualifiedModuleName, identifierName), _parentDeclaration, _currentScopeDeclaration, asTypeName, accessibility, context, selection, true, annotations, attributes);
                 }
                 else
                 {
                     result = new Declaration(
-                        new QualifiedMemberName(_qualifiedName, identifierName),
+                        new QualifiedMemberName(_qualifiedModuleName, identifierName),
                         _parentDeclaration,
                         _currentScopeDeclaration,
                         asTypeName,
@@ -371,7 +327,7 @@ namespace Rubberduck.Parsing.Symbols
         /// </summary>
         private void SetCurrentScope()
         {
-            _currentScope = _qualifiedName.ToString();
+            _currentScope = _qualifiedModuleName.ToString();
             _currentScopeDeclaration = _moduleDeclaration;
             _parentDeclaration = _moduleDeclaration;
         }
@@ -383,7 +339,7 @@ namespace Rubberduck.Parsing.Symbols
         /// <param name="name">The name of the member owning the current scope.</param>
         private void SetCurrentScope(Declaration procedureDeclaration, string name)
         {
-            _currentScope = _qualifiedName + "." + name;
+            _currentScope = _qualifiedModuleName + "." + name;
             _currentScopeDeclaration = procedureDeclaration;
             _parentDeclaration = procedureDeclaration;
         }
@@ -760,7 +716,7 @@ namespace Rubberduck.Parsing.Symbols
             var constStmt = (VBAParser.ConstStmtContext)context.Parent;
 
             var declaration = new ConstantDeclaration(
-                new QualifiedMemberName(_qualifiedName, name),
+                new QualifiedMemberName(_qualifiedModuleName, name),
                 _parentDeclaration,
                 _currentScope,
                 asTypeName,

@@ -36,7 +36,7 @@ namespace Rubberduck.Parsing.Annotations
         [AttributeAnnotation("VB_Description")]
         Description = 1 << 13 | Attribute | MemberAnnotation,
         [AttributeAnnotation("VB_UserMemId", "0")]
-        DefaultMember = 1 << 14 | Attribute | ModuleAnnotation,
+        DefaultMember = 1 << 14 | Attribute | MemberAnnotation,
         [AttributeAnnotation("VB_UserMemId", "-4")]
         Enumerator = 1 << 15 | Attribute | MemberAnnotation,
         [AttributeAnnotation("VB_PredeclaredId", "True")]

@@ -67,7 +67,7 @@ namespace Rubberduck.Parsing
         where TContext : ParserRuleContext
     {
         public QualifiedContext(QualifiedMemberName memberName, TContext context)
-            : this(memberName.QualifiedModuleName, context)
+            : base(memberName, context)
         {
         }
 
@@ -76,6 +76,6 @@ namespace Rubberduck.Parsing
         {
         }
 
-        public new TContext Context { get { return base.Context as TContext; } }
+        public new TContext Context => base.Context as TContext;
     }
 }
