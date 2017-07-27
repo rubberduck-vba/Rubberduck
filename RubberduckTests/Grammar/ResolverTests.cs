@@ -175,6 +175,35 @@ End Function
         [TestCategory("Grammar")]
         [TestCategory("Resolver")]
         [TestMethod]
+        public void FunctionCallWithParensOnNextContinuedLine_IsReferenceToFunctionDeclaration()
+        {
+            var code = @"
+Public Sub DoSomething()
+    Bar Foo _
+  ()
+End Sub
+
+Public Sub Bar()
+End Sub
+
+Private Function Foo() As String
+    Foo = 42
+End Function
+";
+            var state = Resolve(code);
+
+            var declaration = state.DeclarationFinder
+                                .UserDeclarations(DeclarationType.Function)
+                                .Single(item => item.IdentifierName == "Foo");
+
+            var reference = declaration.References.SingleOrDefault(item => !item.IsAssignment);
+            Assert.IsNotNull(reference);
+            Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
+        }
+
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
+        [TestMethod]
         public void LocalVariableCall_IsReferenceToVariableDeclaration()
         {
             var code = @"
