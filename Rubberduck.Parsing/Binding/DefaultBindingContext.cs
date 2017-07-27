@@ -139,6 +139,15 @@ namespace Rubberduck.Parsing.Binding
             return new IndexDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, lExpressionBinding, argumentListBinding);
         }
 
+        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.WhitespaceIndexExprContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
+        {
+            dynamic lExpression = expression.lExpression();
+            var lExpressionBinding = Visit(module, parent, lExpression, withBlockVariable, StatementResolutionContext.Undefined);
+            var argumentListBinding = VisitArgumentList(module, parent, expression.argumentList(), withBlockVariable, StatementResolutionContext.Undefined);
+            SetLeftMatch(lExpressionBinding, argumentListBinding.Arguments.Count);
+            return new IndexDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, lExpressionBinding, argumentListBinding);
+        }
+
         private ArgumentList VisitArgumentList(Declaration module, Declaration parent, VBAParser.ArgumentListContext argumentList, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
         {
             var convertedList = new ArgumentList();
