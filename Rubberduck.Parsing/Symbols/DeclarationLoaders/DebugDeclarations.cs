@@ -128,7 +128,7 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 false, 
                 null,
                 false,
-                null,
+                new List<IAnnotation>(),
                 new Attributes());
         }
 
@@ -142,8 +142,8 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 Accessibility.Global, 
                 null, 
                 Selection.Home, 
-                false, 
-                null, 
+                false,
+                new List<IAnnotation>(), 
                 new Attributes());
         }
 
@@ -156,8 +156,8 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 null, 
                 Accessibility.Global, 
                 null, Selection.Home, 
-                false, 
-                null, 
+                false,
+                new List<IAnnotation>(), 
                 new Attributes());
         }
     }
