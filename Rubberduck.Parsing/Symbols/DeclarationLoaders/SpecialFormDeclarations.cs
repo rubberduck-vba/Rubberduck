@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
+using Rubberduck.Parsing.Annotations;
 
 namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
 {
@@ -91,7 +92,7 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 Selection.Home,
                 false,
                 false,
-                null,
+                new List<IAnnotation>(),
                 new Attributes());
         }
 
@@ -129,7 +130,7 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 Selection.Home,
                 false,
                 false,
-                null,
+                new List<IAnnotation>(),
                 new Attributes());
         }
     }
