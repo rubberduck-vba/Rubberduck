@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:codeExplorer="clr-namespace:Rubberduck.Navigation.CodeExplorer"
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
              xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
@@ -738,15 +739,17 @@
             </ToolBar>
         </ToolBarTray>
 
-        <controls:SelectableTreeView x:Name="ProjectTree"
+        <TreeView x:Name="ProjectTree"
                   Grid.Row="1"
                   Background="White"
                   ItemContainerStyle="{StaticResource ShinyTreeView}"
                   HorizontalContentAlignment="Stretch"
                   Style="{StaticResource CodeExplorerTreeViewStyle}" BorderThickness="0,1"
-                  VirtualizingPanel.IsVirtualizing="False"
-                  SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
-        </controls:SelectableTreeView>
+                  VirtualizingPanel.IsVirtualizing="False">
+            <i:Interaction.Behaviors>
+                <controls:BindableSelectedItemBehavior SelectedItem="{Binding SelectedItem, Mode=TwoWay}" />
+            </i:Interaction.Behaviors>
+        </TreeView>
 
         <controls:BusyIndicator Grid.Row="1" Width="120" Height="120" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
 
