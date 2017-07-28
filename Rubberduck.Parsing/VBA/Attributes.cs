@@ -89,13 +89,13 @@ namespace Rubberduck.Parsing.VBA
 
             if (annotationType.HasFlag(AnnotationType.MemberAnnotation))
             {
-                Debug.Assert(memberName != null);
+                //Debug.Assert(memberName != null);
                 return this.Any(a => a.Name.Equals($"{memberName}{name}", StringComparison.OrdinalIgnoreCase));
             }
 
             if (annotationType.HasFlag(AnnotationType.ModuleAnnotation))
             {
-                Debug.Assert(memberName == null);
+                //Debug.Assert(memberName == null);
                 return this
                     .Any(a => a.Name.Equals(name, StringComparison.OrdinalIgnoreCase)
                            && a.Values.Any(v => v.Equals("True", StringComparison.OrdinalIgnoreCase)));

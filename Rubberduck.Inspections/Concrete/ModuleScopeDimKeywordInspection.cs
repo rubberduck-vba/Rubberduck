@@ -30,7 +30,6 @@ namespace Rubberduck.Inspections.Concrete
                         .Select(r => new QualifiedContext<ParserRuleContext>(result.ModuleName, r)))
                 .Select(result => new QualifiedContextInspectionResult(this,
                                                        string.Format(InspectionsUI.ModuleScopeDimKeywordInspectionResultFormat, ((VBAParser.VariableSubStmtContext)result.Context).identifier().GetText()),
-                                                       State,
                                                        result));
         }
 

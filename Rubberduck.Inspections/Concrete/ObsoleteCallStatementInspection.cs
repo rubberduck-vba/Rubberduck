@@ -45,7 +45,6 @@ namespace Rubberduck.Inspections.Concrete
                 {
                     results.Add(new QualifiedContextInspectionResult(this,
                                                      InspectionsUI.ObsoleteCallStatementInspectionResultFormat,
-                                                     State,
                                                      context));
                 }
             }

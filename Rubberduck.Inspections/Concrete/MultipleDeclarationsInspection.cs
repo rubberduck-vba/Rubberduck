@@ -26,7 +26,6 @@ namespace Rubberduck.Inspections.Concrete
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))
                 .Select(context => new QualifiedContextInspectionResult(this,
                                                         InspectionsUI.MultipleDeclarationsInspectionResultFormat,
-                                                        State,
                                                         context));
         }
 

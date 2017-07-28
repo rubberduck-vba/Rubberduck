@@ -34,7 +34,6 @@ namespace Rubberduck.Inspections.Concrete
                                                   string.Format(context.Context.GetSelection().LineCount > 3
                                                         ? RubberduckUI.EasterEgg_Continuator
                                                         : InspectionsUI.MultilineParameterInspectionResultFormat, ((VBAParser.ArgContext)context.Context).unrestrictedIdentifier().ToString()),
-                                                  State,
                                                   context));
         }
 

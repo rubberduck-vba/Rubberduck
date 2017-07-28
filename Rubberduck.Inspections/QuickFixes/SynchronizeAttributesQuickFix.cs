@@ -37,6 +37,7 @@ namespace Rubberduck.Inspections.QuickFixes
         public void Fix(IInspectionResult result)
         {
             var context = result.Context;
+            // bug: this needs to assume member name is null for module-level stuff...
             if (result.QualifiedMemberName?.MemberName != null)
             {
                 FixMember(result, context);
@@ -86,11 +87,6 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
-        /// <summary>
-        /// Adds an annotation to match given attribute.
-        /// </summary>
-        /// <param name="memberName"></param>
-        /// <param name="context"></param>
         private void Fix(QualifiedMemberName memberName, VBAParser.AttributeStmtContext context)
         {
             if (context.AnnotationType() == AnnotationType.Description)

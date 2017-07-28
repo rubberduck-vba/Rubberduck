@@ -6,15 +6,15 @@ namespace Rubberduck.Parsing
     public class QualifiedContext
     {
         public QualifiedContext(QualifiedMemberName memberName, ParserRuleContext context)
-            : this(memberName.QualifiedModuleName, context)
         {
             _memberName = memberName;
+            _moduleName = memberName.QualifiedModuleName;
+            _context = context;
         }
 
         public QualifiedContext(QualifiedModuleName moduleName, ParserRuleContext context)
+            : this(moduleName.QualifyMemberName(moduleName.Name), context)
         {
-            _moduleName = moduleName;
-            _context = context;
         }
 
         private readonly QualifiedMemberName _memberName;

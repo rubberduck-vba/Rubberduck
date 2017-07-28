@@ -32,8 +32,7 @@ namespace Rubberduck.Inspections.Concrete
         {
             return Listener.Contexts.Select(context => 
                 new QualifiedContextInspectionResult(this, 
-                string.Format(InspectionsUI.IllegalAnnotationInspectionResultFormat, ((VBAParser.AnnotationContext)context.Context).annotationName().GetText()), 
-                State, context));
+                string.Format(InspectionsUI.IllegalAnnotationInspectionResultFormat, ((VBAParser.AnnotationContext)context.Context).annotationName().GetText()), context));
         }
 
         public class IllegalAttributeAnnotationsListener : VBAParserBaseListener, IInspectionListener
@@ -63,6 +62,11 @@ namespace Rubberduck.Inspections.Concrete
             public void ClearContexts()
             {
                 _contexts.Clear();
+                var keys = _annotationCounts.Keys.ToList();
+                foreach (var key in keys)
+                {
+                    _annotationCounts[key] = 0;
+                }
             }
 
             #region scoping

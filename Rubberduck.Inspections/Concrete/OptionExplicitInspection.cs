@@ -29,7 +29,6 @@ namespace Rubberduck.Inspections.Concrete
         {
             return Listener.Contexts.Select(context => new QualifiedContextInspectionResult(this,
                                                                       string.Format(InspectionsUI.OptionExplicitInspectionResultFormat, context.ModuleName.ComponentName),
-                                                                      State,
                                                                       context));
         }
 
