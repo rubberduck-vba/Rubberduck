@@ -514,6 +514,34 @@ End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ObjectVariableNotSet_LSetOnUDT_ReturnsNoResult()
+        {
+
+            var expectResultCount = 0;
+            var input =
+                @"
+Type TFoo
+  CountryCode As String * 2
+  SecurityNumber As String * 8
+End Type
+
+Type TBar
+  ISIN As String * 10
+End Type
+
+Sub Test()
+
+  Dim foo As TFoo
+  Dim bar As TBar
+
+  bar.ISIN = ""DE12345678""
+  LSet foo = bar
+End Sub";
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+        }
+
         private void AssertInputCodeYieldsExpectedInspectionResultCount(string inputCode, int expected)
         {
             IVBComponent component;

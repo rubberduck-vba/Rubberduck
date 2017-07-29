@@ -124,8 +124,7 @@ namespace Rubberduck.Inspections
             //If the RHS is the identifierName of one of the 'interesting' declarations, we need to use 'Set'
             //unless the 'interesting' declaration is also a Variant
             var rhsIdentifier = GetRHSIdentifierExpressionText(letStmtContext);
-            return variantAndObjectDeclarations
-                   .Where(dec => dec.IdentifierName == rhsIdentifier && dec.AsTypeName != Tokens.Variant).Any();
+            return variantAndObjectDeclarations.Any(dec => dec.IdentifierName == rhsIdentifier && dec.AsTypeName != Tokens.Variant);
         }
 
         private static bool IsLetAssignment(IdentifierReference reference)
