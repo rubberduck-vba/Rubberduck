@@ -63,8 +63,10 @@ namespace Rubberduck.Inspections
             if (declaration.AsTypeDeclaration != null)
             {
                 return declaration.AsTypeDeclaration.DeclarationType == DeclarationType.UserDefinedType
-                    && (((IsVariableOrParameter(declaration) && !declaration.IsSelfAssigned)
-                        || (IsMemberWithReturnType(declaration)  && declaration.IsTypeSpecified)));
+                        && (((IsVariableOrParameter(declaration) 
+                                && !declaration.IsSelfAssigned)
+                            || (IsMemberWithReturnType(declaration)  
+                                && declaration.IsTypeSpecified)));
             }
             return false;
         }
@@ -98,12 +100,30 @@ namespace Rubberduck.Inspections
             //Variants can be assigned with or without 'Set' depending...
             var letStmtContext = ParserRuleContextHelper.GetParent<VBAParser.LetStmtContext>(objectOrVariantRef.Context);
 
-            //definitely needs to use "Set".  e.g., 'Variant myVar = new Collection'
+            //A potential error is only possible for let statements: rset, lset and other type specific assignments are always let assignments; 
+            //assignemts in for each loop statements are do not require the set keyword.
+            if(letStmtContext == null)
+            {
+                return false;
+            }
+
+            //You can only new up objects.
             if (RHSUsesNew(letStmtContext)) { return true; }
+
+            if (RHSIsLiteral(letStmtContext))
+            {
+                if(RHSIsObjectLiteral(letStmtContext))
+                {
+                    return true;
+                }
+                //All literals but the object literal potentially do not need a set assignment.
+                //We cannot get more information from the RHS and do not want false positives.
+                return false;
+            }
 
             //If the RHS is the identifierName of one of the 'interesting' declarations, we need to use 'Set'
             //unless the 'interesting' declaration is also a Variant
-            var rhsIdentifier = GetRHSIdentifier(letStmtContext);
+            var rhsIdentifier = GetRHSIdentifierExpressionText(letStmtContext);
             return variantAndObjectDeclarations
                    .Where(dec => dec.IdentifierName == rhsIdentifier && dec.AsTypeName != Tokens.Variant).Any();
         }
@@ -120,32 +140,27 @@ namespace Rubberduck.Inspections
             return (reference.IsAssignment && setStmtContext != null && setStmtContext.SET() != null);
         }
 
-        private static string GetRHSIdentifier(VBAParser.LetStmtContext letStmtContext)
+        private static string GetRHSIdentifierExpressionText(VBAParser.LetStmtContext letStmtContext)
         {
-            for (var idx = 0; idx < letStmtContext.ChildCount; idx++)
-            {
-                var child = letStmtContext.GetChild(idx);
-                if ((child is VBAParser.LiteralExprContext)
-                    || (child is VBAParser.LExprContext))
-                {
-                    return child.GetText();
-                }
-            }
-            return string.Empty;
+            var expression = letStmtContext.expression();
+            return expression != null && expression is VBAParser.LExprContext ? expression.GetText() : string.Empty;
         }
 
         private static bool RHSUsesNew(VBAParser.LetStmtContext letStmtContext)
         {
-            for (var idx = 0; idx < letStmtContext.ChildCount; idx++)
-            {
-                var child = letStmtContext.GetChild(idx);
-                if ((child is VBAParser.NewExprContext)
-                    || (child is VBAParser.CtNewExprContext))
-                {
-                    return true;
-                }
-            }
-            return false;
+            var expression = letStmtContext.expression();
+            return (expression is VBAParser.NewExprContext);
+        }
+
+        private static bool RHSIsLiteral(VBAParser.LetStmtContext letStmtContext)
+        {
+            return letStmtContext.expression() is VBAParser.LiteralExprContext;                   
+        }
+
+        private static bool RHSIsObjectLiteral(VBAParser.LetStmtContext letStmtContext)
+        {
+            var rhsAsLiteralExpr = letStmtContext.expression() as VBAParser.LiteralExprContext;
+            return rhsAsLiteralExpr?.literalExpression()?.literalIdentifier()?.objectLiteralIdentifier() != null;
         }
     }
 }

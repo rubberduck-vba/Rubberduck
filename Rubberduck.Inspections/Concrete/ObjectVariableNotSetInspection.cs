@@ -23,8 +23,9 @@ namespace Rubberduck.Inspections.Concrete
                 VariableRequiresSetAssignmentEvaluator.GetDeclarationsPotentiallyRequiringSetAssignment(State.AllUserDeclarations);
 
             var candidateReferencesRequiringSetAssignment = 
-                allInterestingDeclarations.SelectMany(dec => dec.References)
-                    .Where(dec => !IsIgnoringInspectionResultFor(dec, AnnotationName))
+                allInterestingDeclarations
+                    .SelectMany(dec => dec.References)
+                    .Where(reference => !IsIgnoringInspectionResultFor(reference, AnnotationName))                    
                     .Where(reference => reference.IsAssignment);
 
             var referencesRequiringSetAssignment = candidateReferencesRequiringSetAssignment                  
