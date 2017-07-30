@@ -66,6 +66,8 @@ namespace Rubberduck.Navigation.CodeExplorer
                 RemoveCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRemoveComand, _externalRemoveCommand.CanExecute);
             }
 
+            ExportAllCommand = commands.OfType<ExportAllCommand>().SingleOrDefault();
+
             PrintCommand = commands.OfType<PrintCommand>().SingleOrDefault();
 
             CommitCommand = commands.OfType<CommitCommand>().SingleOrDefault();
@@ -464,6 +466,8 @@ namespace Rubberduck.Navigation.CodeExplorer
         public CommandBase ImportCommand { get; }
         public CommandBase ExportCommand { get; }
         public CommandBase RemoveCommand { get; }
+
+        public CommandBase ExportAllCommand { get; }
 
         public CommandBase PrintCommand { get; }
 

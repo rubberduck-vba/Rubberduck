@@ -391,6 +391,7 @@
     <Compile Include="UI\CodeExplorer\Commands\CommitCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddUserFormCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CopyResultsCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\ExportAllCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\OpenProjectPropertiesCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\RenameCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\FindAllReferencesCommand.cs" />
