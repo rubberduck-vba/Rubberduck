@@ -588,7 +588,7 @@ visibility : PRIVATE | PUBLIC | FRIEND | GLOBAL;
 expression :
     // Literal Expression has to come before lExpression, otherwise it'll be classified as simple name expression instead.	
 	whiteSpace? LPAREN whiteSpace? expression whiteSpace? RPAREN                                    # parenthesizedExpr
-	|literalExpression                                                                              # literalExpr
+	| literalExpression                                                                             # literalExpr
 	| lExpression                                                                                   # lExpr
 	| builtInType                                                                                   # builtInTypeExpr
 	| TYPEOF whiteSpace expression                                                                  # typeofexpr        // To make the grammar SLL, the type-of-is-expression is actually the child of an IS relational op.
