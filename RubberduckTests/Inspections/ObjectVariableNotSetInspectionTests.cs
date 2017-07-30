@@ -424,18 +424,120 @@ End Sub";
         public void ObjectVariableNotSet_FunctionReturnNotSet_ReturnsResult()
         {
 
-            var expectResultCount = 0;
+            var expectResultCount = 1;
             var input =
 @"
-Enum TestEnum
-    EnumOne
-    EnumTwo
-    EnumThree
-End Enum
+Private Function Test() As Collection
+    Test = new Collection
+End Function";
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+        }
 
-Private Sub TestEnum()
-    Dim enumVariable As TestEnum
-    enumVariable = EnumThree
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ObjectVariableNotSet_ObjectLiteral_ReturnsResult()
+        {
+
+            var expectResultCount = 1;
+            var input =
+    @"
+Private Sub Test()
+    Dim bar As Variant
+    bar = Nothing
+End Sub";
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ObjectVariableNotSet_NonObjectLiteral_ReturnsNoResult()
+        {
+
+            var expectResultCount = 0;
+            var input =
+    @"
+Private Sub Test()
+    Dim bar As Variant
+    bar = Null
+    bar = Empty
+    bar = ""aaa""
+    bar = 5
+End Sub";
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ObjectVariableNotSet_ForEach_ReturnsNoResult()
+        {
+
+            var expectResultCount = 0;
+            var input =
+    @"
+Private Sub Test()
+    Dim bar As Variant
+    For Each foo In bar
+    Next
+End Sub";
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ObjectVariableNotSet_RSet_ReturnsNoResult()
+        {
+
+            var expectResultCount = 0;
+            var input =
+    @"
+Private Sub Test()
+    Dim foo As Variant
+    Dim bar As Variant
+    RSet foo = bar
+End Sub";
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ObjectVariableNotSet_LSet_ReturnsNoResult()
+        {
+
+            var expectResultCount = 0;
+            var input =
+    @"
+Private Sub Test()
+    Dim foo As Variant
+    Dim bar As Variant
+    LSet foo = bar
+End Sub";
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ObjectVariableNotSet_LSetOnUDT_ReturnsNoResult()
+        {
+
+            var expectResultCount = 0;
+            var input =
+                @"
+Type TFoo
+  CountryCode As String * 2
+  SecurityNumber As String * 8
+End Type
+
+Type TBar
+  ISIN As String * 10
+End Type
+
+Sub Test()
+
+  Dim foo As TFoo
+  Dim bar As TBar
+
+  bar.ISIN = ""DE12345678""
+  LSet foo = bar
 End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
