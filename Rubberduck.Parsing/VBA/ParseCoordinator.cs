@@ -13,9 +13,8 @@ namespace Rubberduck.Parsing.VBA
 {
     public class ParseCoordinator : IParseCoordinator
     {
-        public RubberduckParserState State { get { return _state; } }
+        public RubberduckParserState State { get; }
 
-        private readonly RubberduckParserState _state;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private readonly IParsingStageService _parsingStageService;
@@ -54,7 +53,7 @@ namespace Rubberduck.Parsing.VBA
                 throw new ArgumentNullException(nameof(parserStateManager));
             }
 
-            _state = state;
+            State = state;
             _parsingStageService = parsingStageService;
             _projectManager = projectManager;
             _parsingCacheService = parsingCacheService;

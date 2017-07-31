@@ -636,7 +636,7 @@ namespace Rubberduck.Parsing.VBA
 
         private bool ThereAreDeclarations()
         {
-            return _moduleStates.Values.Where(state => state.Declarations != null && state.Declarations.Keys.Any()).Any();
+            return _moduleStates.Values.Any(state => state.Declarations != null && state.Declarations.Keys.Any());
         }
 
         /// <summary>
