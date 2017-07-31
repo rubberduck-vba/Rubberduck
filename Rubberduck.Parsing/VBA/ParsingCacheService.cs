@@ -90,7 +90,7 @@ namespace Rubberduck.Parsing.VBA
 
         public IReadOnlyCollection<QualifiedModuleName> ModulesReferencing(QualifiedModuleName referencedModule)
         {
-            throw new NotImplementedException();
+            return _moduleToModuleReferenceManager.ModulesReferencing(referencedModule);
         }
 
         public IReadOnlyCollection<QualifiedModuleName> ModulesReferencingAny(IEnumerable<QualifiedModuleName> referencedModules)
