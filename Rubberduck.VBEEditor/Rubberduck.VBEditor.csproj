@@ -151,6 +151,7 @@
     <Compile Include="SafeComWrappers\Office.Core\CommandBarButton.cs" />
     <Compile Include="SafeComWrappers\Office.Core\CommandBarButtonClickEventArgs.cs" />
     <Compile Include="SafeComWrappers\Office.Core\CommandBarControl.cs" />
+    <Compile Include="SafeComWrappers\Office.Core\CommandBarControlCaptionGuard.cs" />
     <Compile Include="SafeComWrappers\Office.Core\CommandBarControls.cs" />
     <Compile Include="SafeComWrappers\Office.Core\CommandBarPopup.cs" />
     <Compile Include="SafeComWrappers\Office.Core\CommandBarPosition.cs" />
