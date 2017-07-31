@@ -5366,6 +5366,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Export All....
+        /// </summary>
+        public static string ToolsMenu_ExportAll {
+            get {
+                return ResourceManager.GetString("ToolsMenu_ExportAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Regex &amp;Assistant.
         /// </summary>
         public static string ToolsMenu_RegexAssistant {
