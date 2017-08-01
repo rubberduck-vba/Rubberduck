@@ -23,6 +23,8 @@ namespace RubberduckTests.Commands
     {
         private Mock<IFolderBrowserFactory> _folderBrowserFactory;
         private Mock<IFolderBrowser> _folderBrowser;
+        //private Mock<IVBE> _vbe;
+        private const string _path = @"C:\Users\Rubberduck\Desktop\ExportAll";
 
         [TestInitialize]
         public void Initalize()
@@ -38,6 +40,7 @@ namespace RubberduckTests.Commands
         public void ExportAllModule()
         {
             var builder = new MockVbeBuilder();
+         
             var projectMock = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Module1", ComponentType.StandardModule, "")
                 .AddComponent("ClassModule1", ComponentType.ClassModule, "")
@@ -46,9 +49,14 @@ namespace RubberduckTests.Commands
 
             var project = projectMock.Build();
             var vbe = builder.AddProject(project).Build();
-            //var component = projectMock.MockComponents;
-            _folderBrowser.Object.SelectedPath = @"C:\Users\Rubberduck\Desktop\ExportAll\";
-            _folderBrowser.Setup(o => o.ShowDialog()).Returns(DialogResult.OK);
+
+            var mockFolderBrowserFactory = new Mock<IFolderBrowserFactory>();
+            var mockFolderBrowser = new Mock<IFolderBrowser>();
+
+            mockFolderBrowser.Setup(m => m.SelectedPath).Returns(_path);
+            mockFolderBrowserFactory.Setup(m => m.CreateFolderBrowser(_path)).Returns(mockFolderBrowser.Object);
+
+            project.Setup(m => m.ExportSourceFiles(It.IsAny<string>()));
 
             var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
             //var commands = new List<CommandBase>
@@ -56,17 +64,15 @@ namespace RubberduckTests.Commands
             //    new ExportAllCommand(vbe.Object, folderBrowser.Object)
             //};
 
-            var ExportAllCommand = new ExportAllCommand(vbe.Object, _folderBrowser.Object);
-            //var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands);
+            var ExportAllCommand = new ExportAllCommand(vbe.Object, mockFolderBrowserFactory.Object);
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
-            //vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
             ExportAllCommand.Execute(project.Object);
 
-            project.Verify(c => c.ExportSourceFiles(@"C:\Users\Rubberduck\Desktop\ExportAll\"), Times.Once);
+            project.Verify(m => m.ExportSourceFiles(It.IsAny<string>()), Times.Once);
         }
 
         //[TestCategory("Commands")]

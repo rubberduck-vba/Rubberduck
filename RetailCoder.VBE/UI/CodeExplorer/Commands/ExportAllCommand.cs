@@ -26,11 +26,11 @@ namespace Rubberduck.UI.Command
         //    { ComponentType.UserForm, ".frm" }
         //};
 
-        public ExportAllCommand(IVBE vbe, IFolderBrowser folderBrowser) : base(LogManager.GetCurrentClassLogger())
+        public ExportAllCommand(IVBE vbe, IFolderBrowserFactory folderBrowserFactory) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
             _filePath = vbe.ActiveVBProject.FileName;
-            _folderBrowser = folderBrowser.CreateFolderBrowser("Select a directory to Export Project as Source Files...", true, @"c:\");
+            _folderBrowser = folderBrowserFactory.CreateFolderBrowser("Select a directory to Export Project as Source Files...", true, @"c:\");
             //_folderBrowserDialog.OverwritePrompt = true;
         }
 
