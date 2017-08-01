@@ -88,6 +88,7 @@
     <Compile Include="Binding\SimpleNameDefaultBindingTests.cs" />
     <Compile Include="Binding\SimpleNameTypeBindingTests.cs" />
     <Compile Include="CodeExplorer\CodeExplorerTests.cs" />
+    <Compile Include="Commands\ExportAllCommandTests.cs" />
     <Compile Include="Commands\RefactorCommandTests.cs" />
     <Compile Include="Commands\IndentCommandTests.cs" />
     <Compile Include="Commands\UnitTestCommandTests.cs" />

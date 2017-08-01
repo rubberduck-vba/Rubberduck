@@ -7,13 +7,17 @@ using NLog;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.UI.CodeExplorer.Commands;
+using Rubberduck.UI.CodeExplorer;
 
-namespace Rubberduck.UI.CodeExplorer.Commands
+namespace Rubberduck.UI.Command
 {
-    [CodeExplorerCommand]
     public class ExportAllCommand : CommandBase, IDisposable
     {
+        private readonly IVBE _vbe;
         private readonly IFolderBrowser _folderBrowser;
+        private readonly string _filePath;
         //private readonly Dictionary<ComponentType, string> _exportableFileExtensions = new Dictionary<ComponentType, string>
         //{
         //    { ComponentType.StandardModule, ".bas" },
@@ -22,9 +26,11 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         //    { ComponentType.UserForm, ".frm" }
         //};
 
-        public ExportAllCommand(IFolderBrowserFactory folderBrowserFactory) : base(LogManager.GetCurrentClassLogger())
+        public ExportAllCommand(IVBE vbe, IFolderBrowser folderBrowser) : base(LogManager.GetCurrentClassLogger())
         {
-            _folderBrowser = folderBrowserFactory.CreateFolderBrowser("description", true, @"c:\");
+            _vbe = vbe;
+            _filePath = vbe.ActiveVBProject.FileName;
+            _folderBrowser = folderBrowser.CreateFolderBrowser("Select a directory to Export Project as Source Files...", true, @"c:\");
             //_folderBrowserDialog.OverwritePrompt = true;
         }
 
@@ -46,14 +52,15 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             //    // thrown when the component reference is stale
             //    return false;
             //}
-            return true;
+            return !_vbe.ActiveVBProject.IsWrappingNullReference && _vbe.ActiveVBProject.Protection != ProjectProtection.Locked;
         }
 
         protected override void OnExecute(object parameter)
         {
-            var node = (CodeExplorerComponentViewModel)parameter;
+            //var node = (CodeExplorerComponentViewModel)parameter;
             //var component = node.Declaration.QualifiedName.QualifiedModuleName.Component;
-            var project = node.Declaration.Project;
+            //var project = _vbe.ActiveVBProject;
+            var project = (IVBProject)parameter;
 
             //string ext;
             //_exportableFileExtensions.TryGetValue(component.Type, out ext);
