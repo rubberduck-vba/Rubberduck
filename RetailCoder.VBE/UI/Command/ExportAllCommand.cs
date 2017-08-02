@@ -15,16 +15,18 @@ using Rubberduck.UI.CodeExplorer;
 
 namespace Rubberduck.UI.Command
 {
-    public class ExportAllCommand : CommandBase, IDisposable
+    public class ExportAllCommand : CommandBase/*, IDisposable*/
     {
         private readonly IVBE _vbe;
-        private IFolderBrowser _folderBrowser;
+        private readonly IFolderBrowserFactory _factory;
+        //private IFolderBrowser _folderBrowser;
         private readonly string _filePath;
 
         public ExportAllCommand(IVBE vbe, IFolderBrowserFactory folderBrowserFactory) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
-            _folderBrowser = folderBrowserFactory.CreateFolderBrowser("Select a directory to Export Project as Source Files...", true);
+            _factory = folderBrowserFactory;
+            //_folderBrowser = folderBrowserFactory.CreateFolderBrowser("Select a directory to Export Project as Source Files...", true);
         }
 
         protected override bool EvaluateCanExecute(object parameter)
@@ -54,29 +56,33 @@ namespace Rubberduck.UI.Command
             var project = _vbe.ActiveVBProject;
             //var project = (IVBProject)parameter;
 
+            using (var _folderBrowser = _factory.CreateFolderBrowser("Select a folder"))
+            {
+                _folderBrowser.ShowNewFolderButton = false;  // test to see if the dialog changes when shown
+                _folderBrowser.Description = "asdf";  // test to see if the dialog changes when shown
+                _folderBrowser.RootFolder = Path.GetDirectoryName(_vbe.ActiveVBProject.FileName);
 
-            var filePath = Path.GetDirectoryName(_vbe.ActiveVBProject.FileName);
-            _folderBrowser.ShowNewFolderButton = false;  // test to see if the dialog changes when shown
-            _folderBrowser.Description = "asdf";  // test to see if the dialog changes when shown
-            _folderBrowser.RootFolder = filePath;
+                var result = _folderBrowser.ShowDialog();
+
+                if (result == DialogResult.OK)
+                {
+                    project.ExportSourceFiles(_folderBrowser.SelectedPath);
+                }
+            }
+
 
             //_folderBrowserDialog.FileName = component.Name + ext;
             //_folderBrowser.RootFolder = project.FileName;
 
-            var result = _folderBrowser.ShowDialog();
 
-            if (result == DialogResult.OK)
-            {
-                project.ExportSourceFiles(_folderBrowser.SelectedPath);
-            }
         }
 
-        public void Dispose()
-        {
-            if (_folderBrowser != null)
-            {
-                _folderBrowser.Dispose();
-            }
-        }
+        //public void Dispose()
+        //{
+        //    if (_folderBrowser != null)
+        //    {
+        //        _folderBrowser.Dispose();
+        //    }
+        //}
     }
 }
