@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Data.Common;
+using System.IO;
 using System.Windows.Forms;
 using NLog;
 using Rubberduck.Navigation.CodeExplorer;
@@ -16,22 +18,13 @@ namespace Rubberduck.UI.Command
     public class ExportAllCommand : CommandBase, IDisposable
     {
         private readonly IVBE _vbe;
-        private readonly IFolderBrowser _folderBrowser;
+        private IFolderBrowser _folderBrowser;
         private readonly string _filePath;
-        //private readonly Dictionary<ComponentType, string> _exportableFileExtensions = new Dictionary<ComponentType, string>
-        //{
-        //    { ComponentType.StandardModule, ".bas" },
-        //    { ComponentType.ClassModule, ".cls" },
-        //    { ComponentType.Document, ".cls" },
-        //    { ComponentType.UserForm, ".frm" }
-        //};
 
         public ExportAllCommand(IVBE vbe, IFolderBrowserFactory folderBrowserFactory) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
-            _filePath = vbe.ActiveVBProject.FileName;
-            _folderBrowser = folderBrowserFactory.CreateFolderBrowser("Select a directory to Export Project as Source Files...", true, @"c:\");
-            //_folderBrowserDialog.OverwritePrompt = true;
+            _folderBrowser = folderBrowserFactory.CreateFolderBrowser("Select a directory to Export Project as Source Files...", true);
         }
 
         protected override bool EvaluateCanExecute(object parameter)
@@ -57,17 +50,19 @@ namespace Rubberduck.UI.Command
 
         protected override void OnExecute(object parameter)
         {
-            //var node = (CodeExplorerComponentViewModel)parameter;
-            //var component = node.Declaration.QualifiedName.QualifiedModuleName.Component;
-            //var project = _vbe.ActiveVBProject;
-            var project = (IVBProject)parameter;
 
-            //string ext;
-            //_exportableFileExtensions.TryGetValue(component.Type, out ext);
+            var project = _vbe.ActiveVBProject;
+            //var project = (IVBProject)parameter;
+
+
+            var filePath = Path.GetDirectoryName(_vbe.ActiveVBProject.FileName);
+            _folderBrowser.ShowNewFolderButton = false;  // test to see if the dialog changes when shown
+            _folderBrowser.Description = "asdf";  // test to see if the dialog changes when shown
+            _folderBrowser.RootFolder = filePath;
 
             //_folderBrowserDialog.FileName = component.Name + ext;
             //_folderBrowser.RootFolder = project.FileName;
-            _folderBrowser.RootFolder = @"C:\";
+
             var result = _folderBrowser.ShowDialog();
 
             if (result == DialogResult.OK)
