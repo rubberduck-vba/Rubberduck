@@ -15,6 +15,45 @@ namespace RubberduckTests.Grammar
     {
         [TestCategory("Parser")]
         [TestMethod]
+        public void ParsesWithLineNumbers_EndSub()
+        {
+            var code = @"
+Sub DoSomething()
+10 End Sub
+";
+            var result = Parse(code);
+            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition");
+            AssertTree(result.Item1, result.Item2, "//subStmt");
+        }
+
+        [TestCategory("Parser")]
+        [TestMethod]
+        public void ParsesWithLineNumbers_EndFunction()
+        {
+            var code = @"
+Function DoSomething()
+10 End Function
+";
+            var result = Parse(code);
+            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition");
+            AssertTree(result.Item1, result.Item2, "//functionStmt");
+        }
+
+        [TestCategory("Parser")]
+        [TestMethod]
+        public void ParsesWithLineNumbers_EndProperty()
+        {
+            var code = @"
+Property Get DoSomething()
+10 End Property
+";
+            var result = Parse(code);
+            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition");
+            AssertTree(result.Item1, result.Item2, "//propertyGetStmt");
+        }
+
+        [TestCategory("Parser")]
+        [TestMethod]
         public void ParsesWithLineNumbers_IfStmt()
         {
             var code = @"
@@ -110,6 +149,38 @@ End Sub
             var result = Parse(code);
             AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", matches => matches.Count == 3);
             AssertTree(result.Item1, result.Item2, "//doLoopStmt");
+        }
+
+        [TestCategory("Parser")]
+        [TestMethod]
+        public void ParsesWithLineNumbers_WithBlock()
+        {
+            var code = @"
+Sub DoSomething()
+10 With New Collection
+20     Debug.Print 42
+30 End With
+End Sub
+";
+            var result = Parse(code);
+            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", matches => matches.Count == 3);
+            AssertTree(result.Item1, result.Item2, "//withStmt");
+        }
+
+        [TestCategory("Parser")]
+        [TestMethod]
+        public void ParsesWithLineNumbers_WhileLoop()
+        {
+            var code = @"
+Sub DoSomething()
+10 While False
+20     Debug.Print 42
+30 Wend
+End Sub
+";
+            var result = Parse(code);
+            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", matches => matches.Count == 3);
+            AssertTree(result.Item1, result.Item2, "//whileWendStmt");
         }
 
         [TestCategory("Parser")]

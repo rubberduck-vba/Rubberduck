@@ -349,7 +349,7 @@ forNextStmt :
 functionStmt :
     (visibility whiteSpace)? (STATIC whiteSpace)? FUNCTION whiteSpace? functionName (whiteSpace? argList)? (whiteSpace? asTypeClause)? endOfStatement
     block
-    END_FUNCTION
+    statementLabelDefinition? whiteSpace? END_FUNCTION
 	(endOfLine attributeStmt)*
 ;
 functionName : identifier;
@@ -406,21 +406,21 @@ onGoSubStmt : ON whiteSpace expression whiteSpace GOSUB whiteSpace expression (w
 propertyGetStmt : 
     (visibility whiteSpace)? (STATIC whiteSpace)? PROPERTY_GET whiteSpace functionName (whiteSpace? argList)? (whiteSpace asTypeClause)? endOfStatement 
     block 
-    END_PROPERTY
+    statementLabelDefinition? whiteSpace? END_PROPERTY
 	(endOfLine attributeStmt)*
 ;
 
 propertySetStmt : 
     (visibility whiteSpace)? (STATIC whiteSpace)? PROPERTY_SET whiteSpace subroutineName (whiteSpace? argList)? endOfStatement 
     block 
-    END_PROPERTY
+    statementLabelDefinition? whiteSpace? END_PROPERTY
 	(endOfLine attributeStmt)*
 ;
 
 propertyLetStmt : 
     (visibility whiteSpace)? (STATIC whiteSpace)? PROPERTY_LET whiteSpace subroutineName (whiteSpace? argList)? endOfStatement 
     block 
-    END_PROPERTY
+    statementLabelDefinition? whiteSpace? END_PROPERTY
 	(endOfLine attributeStmt)*
 ;
 
@@ -489,7 +489,7 @@ setStmt : SET whiteSpace lExpression whiteSpace? EQ whiteSpace? expression;
 subStmt : 
     (visibility whiteSpace)? (STATIC whiteSpace)? SUB whiteSpace? subroutineName (whiteSpace? argList)? endOfStatement
     block 
-    END_SUB
+    statementLabelDefinition? whiteSpace? END_SUB
 	(endOfLine attributeStmt)*
 ;
 subroutineName : identifier;
