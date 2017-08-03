@@ -303,15 +303,15 @@ lastLetter : unrestrictedIdentifier;
 doLoopStmt :
     DO endOfStatement 
     block
-    LOOP
+    statementLabelDefinition? whiteSpace? LOOP
     |
     DO whiteSpace (WHILE | UNTIL) whiteSpace expression endOfStatement
     block
-    LOOP
+    statementLabelDefinition? whiteSpace? LOOP
     | 
     DO endOfStatement
     block
-    LOOP whiteSpace (WHILE | UNTIL) whiteSpace expression
+    statementLabelDefinition? whiteSpace? LOOP whiteSpace (WHILE | UNTIL) whiteSpace expression
 ;
 
 enumerationStmt: 
@@ -336,14 +336,14 @@ exitStmt : EXIT_DO | EXIT_FOR | EXIT_FUNCTION | EXIT_PROPERTY | EXIT_SUB;
 forEachStmt : 
     FOR whiteSpace EACH whiteSpace expression whiteSpace IN whiteSpace expression endOfStatement
     block
-    NEXT (whiteSpace expression)?
+    statementLabelDefinition? whiteSpace? NEXT (whiteSpace expression)?
 ;
 
 // expression EQ expression refactored to expression to allow SLL
 forNextStmt : 
     FOR whiteSpace expression whiteSpace TO whiteSpace expression (whiteSpace STEP whiteSpace expression)? endOfStatement 
     block
-    NEXT (whiteSpace expression)?
+    statementLabelDefinition? whiteSpace? NEXT (whiteSpace expression)?
 ; 
 
 functionStmt :
@@ -362,11 +362,11 @@ goToStmt : GOTO whiteSpace expression;
 ifStmt :
      IF whiteSpace booleanExpression whiteSpace THEN endOfStatement
      block
-     elseIfBlock*
-     elseBlock?
-     END_IF
+     (statementLabelDefinition? whiteSpace? elseIfBlock)*
+     (statementLabelDefinition? whiteSpace? elseBlock?)
+     statementLabelDefinition? whiteSpace? END_IF
 ;
-elseIfBlock :
+elseIfBlock : 
      ELSEIF whiteSpace booleanExpression whiteSpace THEN endOfStatement block
      | ELSEIF whiteSpace booleanExpression whiteSpace THEN whiteSpace? block
 ;
@@ -467,9 +467,9 @@ nameStmt : NAME whiteSpace expression whiteSpace AS whiteSpace expression;
 // 5.4.2.10 Select Case Statement
 selectCaseStmt :
     SELECT whiteSpace? CASE whiteSpace? selectExpression endOfStatement
-    caseClause*
-    caseElseClause?
-    END_SELECT
+    (statementLabelDefinition? whiteSpace? caseClause)*
+    statementLabelDefinition? whiteSpace? caseElseClause?
+    statementLabelDefinition? whiteSpace? END_SELECT
 ;
 selectExpression : expression;
 caseClause :
@@ -520,13 +520,13 @@ variableSubStmt : identifier (whiteSpace? LPAREN whiteSpace? (subscripts whiteSp
 whileWendStmt : 
     WHILE whiteSpace expression endOfStatement 
     block
-    WEND
+    statementLabelDefinition? whiteSpace? WEND
 ;
 
 withStmt :
     WITH whiteSpace expression endOfStatement 
     block 
-    END_WITH
+    statementLabelDefinition? whiteSpace? END_WITH
 ;
 
 // Special forms with special syntax, only available in a report.
