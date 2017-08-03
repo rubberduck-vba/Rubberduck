@@ -30,7 +30,6 @@ namespace Rubberduck.Inspections.Concrete
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))
                 .Select(result => new QualifiedContextInspectionResult(this,
                                                        InspectionsUI.EmptyIfBlockInspectionResultFormat,
-                                                       State,
                                                        result));
         }
 

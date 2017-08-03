@@ -36,7 +36,7 @@ namespace Rubberduck.Inspections.Concrete
                 var name = string.Format(InspectionsUI.MissingAnnotationInspectionResultFormat, 
                     member, ((VBAParser.AttributeStmtContext) context.Context).AnnotationType().ToString());
 
-                return new QualifiedContextInspectionResult(this, name, State, context);
+                return new QualifiedContextInspectionResult(this, name, context);
             });
         }
 

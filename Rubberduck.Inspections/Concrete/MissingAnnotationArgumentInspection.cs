@@ -34,7 +34,6 @@ namespace Rubberduck.Inspections.Concrete
                     select new QualifiedContextInspectionResult(this,
                                                 string.Format(InspectionsUI.MissingAnnotationArgumentInspectionResultFormat,
                                                               ((VBAParser.AnnotationContext)result.Context).annotationName().GetText()),
-                                                State,
                                                 result));
         }
 

@@ -30,9 +30,9 @@ namespace Rubberduck.Inspections.Concrete
         {
             return Listener.Contexts.Select(context =>
             {
-                var name = string.Format(InspectionsUI.MissingAttributeInspectionResultFormat, context.MemberName,
+                var name = string.Format(InspectionsUI.MissingAttributeInspectionResultFormat, context.MemberName.MemberName,
                     ((VBAParser.AnnotationContext) context.Context).annotationName().GetText());
-                return new QualifiedContextInspectionResult(this, name, State, context);
+                return new QualifiedContextInspectionResult(this, name, context);
             });
         }
 
@@ -61,7 +61,7 @@ namespace Rubberduck.Inspections.Concrete
                         AddContext(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
                     }
                 }
-                else
+                else if (isMemberAnnotation)
                 {
                     // member-level annotation is above the context for the first member in the module..
                     if (isModuleScope)
@@ -74,6 +74,10 @@ namespace Rubberduck.Inspections.Concrete
                     {
                         AddContext(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
                     }
+                }
+                else
+                {
+                    // annotation is illegal. ignore.
                 }
             }
         }
