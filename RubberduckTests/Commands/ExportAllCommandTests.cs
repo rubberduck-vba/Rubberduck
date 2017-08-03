@@ -34,14 +34,20 @@ namespace RubberduckTests.Commands
                 .AddComponent("UserForm1", ComponentType.UserForm, "");
 
             var project = projectMock.Build();
+            project.Setup(m => m.SaveAs(@"C:\Project.xlsm")).Returns(project.Object);
+
+            project.Object.SaveAs(@"C:\Users\Rubberduck\Documents\Subfolder\Project.xlsm");
+            var result = project.Object.IsSaved;
+           
             var vbe = builder.AddProject(project).Build();
-
-            var mockFolderBrowserFactory = new Mock<IFolderBrowserFactory>();
+            vbe.Setup(m => m.ActiveVBProject.SaveAs(@"C:\Users\Rubberduck\Documents\Subfolder\Project.xlsm"));
+            //project.Object.FileName = @"C:\Users\Rubberduck\Documents\Subfolder\Project.xlsm";
             var mockFolderBrowser = new Mock<IFolderBrowser>();
-
             mockFolderBrowser.Setup(m => m.SelectedPath).Returns(_path);
             mockFolderBrowser.Setup(m => m.ShowDialog()).Returns(DialogResult.OK);
-            mockFolderBrowserFactory.Setup(m => m.CreateFolderBrowser(It.IsAny<string>(), true, It.IsAny<string>())).Returns(mockFolderBrowser.Object);
+
+            var mockFolderBrowserFactory = new Mock<IFolderBrowserFactory>();
+            mockFolderBrowserFactory.Setup(m => m.CreateFolderBrowser(It.IsAny<string>(), true, @"C:\Users\Rubberduck\Documents\Subfolder\Project.xlsm")).Returns(mockFolderBrowser.Object);
             project.Setup(m => m.ExportSourceFiles(_path));
 
             var ExportAllCommand = new ExportAllCommand(vbe.Object, mockFolderBrowserFactory.Object);

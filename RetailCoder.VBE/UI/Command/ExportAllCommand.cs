@@ -19,49 +19,35 @@ namespace Rubberduck.UI.Command
     {
         private readonly IVBE _vbe;
         private readonly IFolderBrowserFactory _factory;
-        //private IFolderBrowser _folderBrowser;
-        private readonly string _filePath;
 
         public ExportAllCommand(IVBE vbe, IFolderBrowserFactory folderBrowserFactory) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
             _factory = folderBrowserFactory;
-            //_folderBrowser = folderBrowserFactory.CreateFolderBrowser("Select a directory to Export Project as Source Files...", true);
         }
 
         protected override bool EvaluateCanExecute(object parameter)
         {
-            //if (!(parameter is CodeExplorerComponentViewModel))
-            //{
-            //    return false;
-            //}
-
-            //try
-            //{
-            //    var node = (CodeExplorerComponentViewModel)parameter;
-            //    var componentType = node.Declaration.QualifiedName.QualifiedModuleName.ComponentType;
-            //    return _exportableFileExtensions.Select(s => s.Key).Contains(componentType);
-            //}
-            //catch (COMException)
-            //{
-            //    // thrown when the component reference is stale
-            //    return false;
-            //}
-            return !_vbe.ActiveVBProject.IsWrappingNullReference && _vbe.ActiveVBProject.Protection != ProjectProtection.Locked;
+            return !_vbe.ActiveVBProject.IsWrappingNullReference && _vbe.ActiveVBProject.Protection != ProjectProtection.Locked; // & _vbe.ActiveVBProject.VBComponents.Count > 0;
         }
 
         protected override void OnExecute(object parameter)
         {
 
             var project = _vbe.ActiveVBProject;
-            //var project = (IVBProject)parameter;
 
-            using (var _folderBrowser = _factory.CreateFolderBrowser("Select a folder"))
+            var desc = "Choose a folder to export the source of " + _vbe.ActiveVBProject.Name + " to:";
+
+            // If .GetDirectoryName is passed an empty string for a RootFolder, 
+            // it defaults to the Documents library (Win 7+) or equivalent.
+            var path = string.Empty;
+            if (!string.IsNullOrWhiteSpace(_vbe.ActiveVBProject.FileName))
             {
-                _folderBrowser.ShowNewFolderButton = false;  // test to see if the dialog changes when shown
-                _folderBrowser.Description = "asdf";  // test to see if the dialog changes when shown
-                _folderBrowser.RootFolder = Path.GetDirectoryName(_vbe.ActiveVBProject.FileName);
-
+                path = Path.GetDirectoryName(_vbe.ActiveVBProject.FileName);
+            }
+            
+            using (var _folderBrowser = _factory.CreateFolderBrowser(desc, true, ""))
+            {
                 var result = _folderBrowser.ShowDialog();
 
                 if (result == DialogResult.OK)
@@ -69,20 +55,6 @@ namespace Rubberduck.UI.Command
                     project.ExportSourceFiles(_folderBrowser.SelectedPath);
                 }
             }
-
-
-            //_folderBrowserDialog.FileName = component.Name + ext;
-            //_folderBrowser.RootFolder = project.FileName;
-
-
         }
-
-        //public void Dispose()
-        //{
-        //    if (_folderBrowser != null)
-        //    {
-        //        _folderBrowser.Dispose();
-        //    }
-        //}
     }
 }
