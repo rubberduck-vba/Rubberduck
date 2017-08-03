@@ -22,7 +22,7 @@ Sub DoSomething()
 10 If True Then Debug.Print 42
 End Sub
 ";
-            var result = Parse(code, PredictionMode.Sll);
+            var result = Parse(code);
             AssertTree(result.Item1, result.Item2, "//statementLabelDefinition");
             AssertTree(result.Item1, result.Item2, "//singleLineIfStmt");
         }
@@ -40,7 +40,7 @@ Sub DoSomething()
 30 End If
 End Sub
 ";
-            var result = Parse(code, PredictionMode.Sll);
+            var result = Parse(code);
             AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", matches => matches.Count == 5);
             AssertTree(result.Item1, result.Item2, "//elseBlock");
         }
@@ -59,7 +59,7 @@ Sub DoSomething()
 40 End Select
 End Sub
 ";
-            var result = Parse(code, PredictionMode.Sll);
+            var result = Parse(code);
             AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", matches => matches.Count == 6);
             AssertTree(result.Item1, result.Item2, "//caseClause", matches => matches.Count == 2);
         }
@@ -75,7 +75,7 @@ Sub DoSomething()
 30 Next
 End Sub
 ";
-            var result = Parse(code, PredictionMode.Sll);
+            var result = Parse(code);
             AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", matches => matches.Count == 3);
             AssertTree(result.Item1, result.Item2, "//forNextStmt");
         }
@@ -91,7 +91,7 @@ Sub DoSomething()
 30 Next
 End Sub
 ";
-            var result = Parse(code, PredictionMode.Sll);
+            var result = Parse(code);
             AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", matches => matches.Count == 3);
             AssertTree(result.Item1, result.Item2, "//forEachStmt");
         }
@@ -107,7 +107,7 @@ Sub DoSomething()
 30 Loop While False
 End Sub
 ";
-            var result = Parse(code, PredictionMode.Sll);
+            var result = Parse(code);
             AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", matches => matches.Count == 3);
             AssertTree(result.Item1, result.Item2, "//doLoopStmt");
         }
