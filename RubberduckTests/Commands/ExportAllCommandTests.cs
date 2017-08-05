@@ -1,19 +1,9 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Rubberduck.Navigation.CodeExplorer;
-using Rubberduck.Navigation.Folders;
-using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
-using Rubberduck.SmartIndenter;
 using Rubberduck.UI;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
-using RubberduckTests.CodeExplorer;
-using RubberduckTests.Binding;
-using System.Collections.Generic;
-using System.Threading;
 using System.Windows.Forms;
 
 namespace RubberduckTests.Commands
@@ -41,7 +31,7 @@ namespace RubberduckTests.Commands
             var project = projectMock.Build();
             project.SetupGet(m => m.IsSaved).Returns(true);
             project.SetupGet(m => m.FileName).Returns(_projectFullPath);
-            
+
             var vbe = builder.AddProject(project).Build();
 
             var mockFolderBrowser = new Mock<IFolderBrowser>();
@@ -99,24 +89,29 @@ namespace RubberduckTests.Commands
         {
             var builder = new MockVbeBuilder();
 
-            var projectMock = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+            var projectMock1 = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Module1", ComponentType.StandardModule, "")
                 .AddComponent("ClassModule1", ComponentType.ClassModule, "")
                 .AddComponent("Document1", ComponentType.Document, "")
                 .AddComponent("UserForm1", ComponentType.UserForm, "");
 
-            var project1 = projectMock.Build();
-            var project2 = projectMock.Build();
+            var projectMock2 = builder.ProjectBuilder("TestProject2", ProjectProtection.Unprotected)
+                .AddComponent("Module1", ComponentType.StandardModule, "")
+                .AddComponent("ClassModule1", ComponentType.ClassModule, "")
+                .AddComponent("Document1", ComponentType.Document, "")
+                .AddComponent("UserForm1", ComponentType.UserForm, "");
+
+            var project1 = projectMock1.Build();
+            var project2 = projectMock2.Build();
             project1.SetupGet(m => m.IsSaved).Returns(true);
             project1.SetupGet(m => m.FileName).Returns(_projectFullPath);
             project2.SetupGet(m => m.IsSaved).Returns(true);
-            project2.SetupGet(m => m.FileName).Returns(_projectFullPath);
+            project2.SetupGet(m => m.FileName).Returns(_projectFullPath2);
 
             var vbe = builder
                 .AddProject(project1)
                 .AddProject(project2)
                 .Build();
-            // project2 added last, will be active project
 
             var mockFolderBrowser = new Mock<IFolderBrowser>();
             mockFolderBrowser.Setup(m => m.SelectedPath).Returns(_path);
@@ -130,13 +125,60 @@ namespace RubberduckTests.Commands
 
             ExportAllCommand.Execute(null);
 
-            project1.Verify(m => m.ExportSourceFiles(_path), Times.Once);
+            // project2 added last, will be active project
+            project1.Verify(m => m.ExportSourceFiles(_path), Times.Never);
             project2.Verify(m => m.ExportSourceFiles(_path), Times.Once);
         }
 
         [TestCategory("Commands")]
         [TestMethod]
         public void ExportAllCommand_FromCodeBrowserContextMenu_MultipleProjects_ExpectExecution()
+        {
+            var builder = new MockVbeBuilder();
+
+            var projectMock1 = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Module1", ComponentType.StandardModule, "")
+                .AddComponent("ClassModule1", ComponentType.ClassModule, "")
+                .AddComponent("Document1", ComponentType.Document, "")
+                .AddComponent("UserForm1", ComponentType.UserForm, "");
+
+            var projectMock2 = builder.ProjectBuilder("TestProject2", ProjectProtection.Unprotected)
+                .AddComponent("Module1", ComponentType.StandardModule, "")
+                .AddComponent("ClassModule1", ComponentType.ClassModule, "")
+                .AddComponent("Document1", ComponentType.Document, "")
+                .AddComponent("UserForm1", ComponentType.UserForm, "");
+
+            var project1 = projectMock1.Build();
+            var project2 = projectMock2.Build();
+            project1.SetupGet(m => m.IsSaved).Returns(true);
+            project1.SetupGet(m => m.FileName).Returns(_projectFullPath);
+            project2.SetupGet(m => m.IsSaved).Returns(true);
+            project2.SetupGet(m => m.FileName).Returns(_projectFullPath2);
+
+            var vbe = builder
+                .AddProject(project1)
+                .AddProject(project2)
+                .Build();
+
+            var mockFolderBrowser = new Mock<IFolderBrowser>();
+            mockFolderBrowser.Setup(m => m.SelectedPath).Returns(_path);
+            mockFolderBrowser.Setup(m => m.ShowDialog()).Returns(DialogResult.OK);
+
+            var mockFolderBrowserFactory = new Mock<IFolderBrowserFactory>();
+            mockFolderBrowserFactory.Setup(m => m.CreateFolderBrowser(It.IsAny<string>(), true, _projectPath)).Returns(mockFolderBrowser.Object);
+            project1.Setup(m => m.ExportSourceFiles(_path));
+
+            var ExportAllCommand = new ExportAllCommand(vbe.Object, mockFolderBrowserFactory.Object);
+
+            ExportAllCommand.Execute(project1.Object);
+
+            project1.Verify(m => m.ExportSourceFiles(_path), Times.Once);
+            project2.Verify(c => c.ExportSourceFiles(_path), Times.Never);
+        }
+
+        [TestCategory("Commands")]
+        [TestMethod]
+        public void ExportAllCommand_FromToolsMenu_SingleProject_BrowserCanceled_ExpectNoExecution()
         {
             var builder = new MockVbeBuilder();
 
@@ -154,7 +196,7 @@ namespace RubberduckTests.Commands
 
             var mockFolderBrowser = new Mock<IFolderBrowser>();
             mockFolderBrowser.Setup(m => m.SelectedPath).Returns(_path);
-            mockFolderBrowser.Setup(m => m.ShowDialog()).Returns(DialogResult.OK);
+            mockFolderBrowser.Setup(m => m.ShowDialog()).Returns(DialogResult.Cancel);
 
             var mockFolderBrowserFactory = new Mock<IFolderBrowserFactory>();
             mockFolderBrowserFactory.Setup(m => m.CreateFolderBrowser(It.IsAny<string>(), true, _projectPath)).Returns(mockFolderBrowser.Object);
@@ -162,14 +204,14 @@ namespace RubberduckTests.Commands
 
             var ExportAllCommand = new ExportAllCommand(vbe.Object, mockFolderBrowserFactory.Object);
 
-            ExportAllCommand.Execute(project.Object);
+            ExportAllCommand.Execute(null);
 
-            //project1.Verify(m => m.ExportSourceFiles(_path), Times.Never);
-            //project2.Verify(m => m.ExportSourceFiles(_path), Times.Once);
+            project.Verify(m => m.ExportSourceFiles(_path), Times.Never);
         }
+
         [TestCategory("Commands")]
         [TestMethod]
-        public void ExportAllCommand_SingleProject_BrowserCanceled_ExpectNoExecution()
+        public void ExportAllCommand_FromCodeBrowserContextMenu_SingleProject_BrowserCanceled_ExpectNoExecution()
         {
             var builder = new MockVbeBuilder();
 
@@ -180,15 +222,17 @@ namespace RubberduckTests.Commands
                 .AddComponent("UserForm1", ComponentType.UserForm, "");
 
             var project = projectMock.Build();
+            project.SetupGet(m => m.IsSaved).Returns(true);
+            project.SetupGet(m => m.FileName).Returns(_projectFullPath);
+
             var vbe = builder.AddProject(project).Build();
 
-            var mockFolderBrowserFactory = new Mock<IFolderBrowserFactory>();
             var mockFolderBrowser = new Mock<IFolderBrowser>();
-
             mockFolderBrowser.Setup(m => m.SelectedPath).Returns(_path);
             mockFolderBrowser.Setup(m => m.ShowDialog()).Returns(DialogResult.Cancel);
-            mockFolderBrowserFactory.Setup(m => m.CreateFolderBrowser(It.IsAny<string>(), true, It.IsAny<string>())).Returns(mockFolderBrowser.Object);
 
+            var mockFolderBrowserFactory = new Mock<IFolderBrowserFactory>();
+            mockFolderBrowserFactory.Setup(m => m.CreateFolderBrowser(It.IsAny<string>(), true, _projectPath)).Returns(mockFolderBrowser.Object);
             project.Setup(m => m.ExportSourceFiles(_path));
 
             var ExportAllCommand = new ExportAllCommand(vbe.Object, mockFolderBrowserFactory.Object);
@@ -198,9 +242,10 @@ namespace RubberduckTests.Commands
             project.Verify(m => m.ExportSourceFiles(_path), Times.Never);
         }
 
+
         [TestCategory("Commands")]
         [TestMethod]
-        public void ExportAllCommand_MultipleProjects_ExpectExecution()
+        public void ExportAllCommand_FromToolsMenu_MultipleProjects_BrowserCanceled_ExpectNoExecution()
         {
             var builder = new MockVbeBuilder();
 
@@ -210,7 +255,7 @@ namespace RubberduckTests.Commands
                 .AddComponent("Document1", ComponentType.Document, "")
                 .AddComponent("UserForm1", ComponentType.UserForm, "");
 
-            var projectMock2 = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+            var projectMock2 = builder.ProjectBuilder("TestProject2", ProjectProtection.Unprotected)
                 .AddComponent("Module1", ComponentType.StandardModule, "")
                 .AddComponent("ClassModule1", ComponentType.ClassModule, "")
                 .AddComponent("Document1", ComponentType.Document, "")
@@ -218,25 +263,78 @@ namespace RubberduckTests.Commands
 
             var project1 = projectMock1.Build();
             var project2 = projectMock2.Build();
-            var vbe = builder.AddProject(project1).Build();
-            vbe = builder.AddProject(project2).Build();
+            project1.SetupGet(m => m.IsSaved).Returns(true);
+            project1.SetupGet(m => m.FileName).Returns(_projectFullPath);
+            project2.SetupGet(m => m.IsSaved).Returns(true);
+            project2.SetupGet(m => m.FileName).Returns(_projectFullPath2);
+
+            var vbe = builder
+                .AddProject(project1)
+                .AddProject(project2)
+                .Build();
+
+            var mockFolderBrowser = new Mock<IFolderBrowser>();
+            mockFolderBrowser.Setup(m => m.SelectedPath).Returns(_path);
+            mockFolderBrowser.Setup(m => m.ShowDialog()).Returns(DialogResult.Cancel);
 
             var mockFolderBrowserFactory = new Mock<IFolderBrowserFactory>();
-            var mockFolderBrowser = new Mock<IFolderBrowser>();
-
-            mockFolderBrowser.Setup(m => m.SelectedPath).Returns(_path);
-            mockFolderBrowser.Setup(m => m.ShowDialog()).Returns(DialogResult.OK);
-            mockFolderBrowserFactory.Setup(m => m.CreateFolderBrowser(It.IsAny<string>(), true, It.IsAny<string>())).Returns(mockFolderBrowser.Object);
-
-            // Can't seem to activate project1 in the mock VBE, but the second project will be active
+            mockFolderBrowserFactory.Setup(m => m.CreateFolderBrowser(It.IsAny<string>(), true, _projectPath)).Returns(mockFolderBrowser.Object);
             project2.Setup(m => m.ExportSourceFiles(_path));
 
             var ExportAllCommand = new ExportAllCommand(vbe.Object, mockFolderBrowserFactory.Object);
 
-            ExportAllCommand.Execute(project2.Object);
+            ExportAllCommand.Execute(null);
+
+            // project2 added last, will be active project
+            project1.Verify(m => m.ExportSourceFiles(_path), Times.Never);
+            project2.Verify(m => m.ExportSourceFiles(_path), Times.Never);
+        }
+
+        [TestCategory("Commands")]
+        [TestMethod]
+        public void ExportAllCommand_FromCodeBrowserContextMenu_MultipleProjects_BrowserCanceled_ExpectNoExecution()
+        {
+            var builder = new MockVbeBuilder();
+
+            var projectMock1 = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Module1", ComponentType.StandardModule, "")
+                .AddComponent("ClassModule1", ComponentType.ClassModule, "")
+                .AddComponent("Document1", ComponentType.Document, "")
+                .AddComponent("UserForm1", ComponentType.UserForm, "");
+
+            var projectMock2 = builder.ProjectBuilder("TestProject2", ProjectProtection.Unprotected)
+                .AddComponent("Module1", ComponentType.StandardModule, "")
+                .AddComponent("ClassModule1", ComponentType.ClassModule, "")
+                .AddComponent("Document1", ComponentType.Document, "")
+                .AddComponent("UserForm1", ComponentType.UserForm, "");
+
+            var project1 = projectMock1.Build();
+            var project2 = projectMock2.Build();
+            project1.SetupGet(m => m.IsSaved).Returns(true);
+            project1.SetupGet(m => m.FileName).Returns(_projectFullPath);
+            project2.SetupGet(m => m.IsSaved).Returns(true);
+            project2.SetupGet(m => m.FileName).Returns(_projectFullPath2);
+
+            var vbe = builder
+                .AddProject(project1)
+                .AddProject(project2)
+                .Build();
+
+            var mockFolderBrowser = new Mock<IFolderBrowser>();
+            mockFolderBrowser.Setup(m => m.SelectedPath).Returns(_path);
+            mockFolderBrowser.Setup(m => m.ShowDialog()).Returns(DialogResult.Cancel);
+
+            var mockFolderBrowserFactory = new Mock<IFolderBrowserFactory>();
+            mockFolderBrowserFactory.Setup(m => m.CreateFolderBrowser(It.IsAny<string>(), true, _projectPath)).Returns(mockFolderBrowser.Object);
+            project1.Setup(m => m.ExportSourceFiles(_path));
+
+            var ExportAllCommand = new ExportAllCommand(vbe.Object, mockFolderBrowserFactory.Object);
+
+            ExportAllCommand.Execute(project1.Object);
 
             project1.Verify(m => m.ExportSourceFiles(_path), Times.Never);
-            project2.Verify(m => m.ExportSourceFiles(_path), Times.Once);
+            project2.Verify(c => c.ExportSourceFiles(_path), Times.Never);
         }
+
     }
 }

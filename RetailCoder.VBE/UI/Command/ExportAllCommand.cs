@@ -1,21 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Data.Common;
 using System.IO;
 using System.Windows.Forms;
 using NLog;
-using Rubberduck.Navigation.CodeExplorer;
-using Rubberduck.UI.Command;
-using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.UI.CodeExplorer.Commands;
-using Rubberduck.UI.CodeExplorer;
 
 namespace Rubberduck.UI.Command
 {
-    public class ExportAllCommand : CommandBase/*, IDisposable*/
+    public class ExportAllCommand : CommandBase 
     {
         private readonly IVBE _vbe;
         private IFolderBrowserFactory _factory;
@@ -28,7 +18,7 @@ namespace Rubberduck.UI.Command
 
         protected override bool EvaluateCanExecute(object parameter)
         {
-            return !_vbe.ActiveVBProject.IsWrappingNullReference /*&& _vbe.ActiveVBProject.Protection != ProjectProtection.Locked*/ && _vbe.ActiveVBProject.VBComponents.Count > 0;
+            return !_vbe.ActiveVBProject.IsWrappingNullReference && _vbe.ActiveVBProject.VBComponents.Count > 0;
         }
 
         protected override void OnExecute(object parameter)
