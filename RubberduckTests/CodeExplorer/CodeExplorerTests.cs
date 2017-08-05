@@ -327,7 +327,7 @@ namespace RubberduckTests.CodeExplorer
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
-            vm.ExportCommand.Execute(null);
+            vm.ExportCommand.Execute(vm.SelectedItem);
 
             component.Verify(c => c.Export("C:\\Users\\Rubberduck\\Desktop\\StdModule1.bas"), Times.Never);
         }
