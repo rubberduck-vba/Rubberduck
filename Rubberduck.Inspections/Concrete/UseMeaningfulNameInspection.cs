@@ -11,6 +11,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI;
+using static Rubberduck.Parsing.Grammar.VBAParser;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -44,6 +45,7 @@ namespace Rubberduck.Inspections.Concrete
             var issues = UserDeclarations
                             .Where(declaration => !string.IsNullOrEmpty(declaration.IdentifierName) &&
                                 !IgnoreDeclarationTypes.Contains(declaration.DeclarationType) &&
+                                !(declaration.Context is LineNumberLabelContext) &&
                                 (declaration.ParentDeclaration == null || 
                                     !IgnoreDeclarationTypes.Contains(declaration.ParentDeclaration.DeclarationType) &&
                                     !handlers.Contains(declaration.ParentDeclaration)) &&
