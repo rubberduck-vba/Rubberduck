@@ -96,6 +96,16 @@ namespace Rubberduck.Parsing.Symbols
             _withBlockExpressions.Pop();
         }
 
+        public void Resolve(VBAParser.ArgDefaultValueContext context)
+        {
+            var expression = context.expression();
+            if (expression == null)
+            {
+                return;
+            }
+            ResolveDefault(expression);
+        }
+
         public void Resolve(VBAParser.ArrayDimContext context)
         {
             if (context.boundsList() == null)

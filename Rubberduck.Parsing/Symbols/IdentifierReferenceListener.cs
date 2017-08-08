@@ -104,6 +104,11 @@ namespace Rubberduck.Parsing.Symbols
             SetCurrentScope();
         }
 
+        public override void EnterArgDefaultValue(VBAParser.ArgDefaultValueContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
         public override void EnterArrayDim(VBAParser.ArrayDimContext context)
         {
             _resolver.Resolve(context);
