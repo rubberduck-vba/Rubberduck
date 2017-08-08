@@ -9,7 +9,6 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Parsing.Grammar;
 using static Rubberduck.Parsing.Grammar.VBAParser;
 
 namespace Rubberduck.Inspections.Concrete
@@ -22,11 +21,13 @@ namespace Rubberduck.Inspections.Concrete
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
-            var declarations = State.DeclarationFinder.UserDeclarations(DeclarationType.LineLabel)
+            var labels = State.DeclarationFinder.UserDeclarations(DeclarationType.LineLabel);
+            var declarations = labels
                 .Where(declaration =>
                     !declaration.IsWithEvents
+                    && declaration.Context is IdentifierStatementLabelContext
                     && !IsIgnoringInspectionResultFor(declaration, AnnotationName)
-                    && declaration.References.All(reference => reference.IsAssignment));
+                    && (!declaration.References.Any() || declaration.References.All(reference => reference.IsAssignment)));
 
             return declarations.Select(issue => 
                 new DeclarationInspectionResult(this,

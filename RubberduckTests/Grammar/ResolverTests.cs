@@ -104,6 +104,23 @@ End Function
             Assert.AreEqual(1, declaration.References.Count(item => item.IsAssignment));
         }
 
+        [TestCategory("Resolver")]
+        [TestMethod]
+        public void OptionalParameterDefaultConstValue_IsReferenceToDeclaredConst()
+        {
+            var code = @"
+Public Const Foo As Long = 42
+Public Sub DoSomething(Optional ByVal bar As Long = Foo)
+End Sub
+";
+            var state = Resolve(code);
+
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Constant && item.IdentifierName == "Foo");
+
+            Assert.AreEqual(1, declaration.References.Count());
+        }
+
         [TestCategory("Grammar")]
         [TestCategory("Resolver")]
         [TestMethod]
