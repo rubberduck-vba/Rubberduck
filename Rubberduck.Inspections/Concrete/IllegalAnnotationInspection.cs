@@ -13,6 +13,7 @@ using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -156,15 +157,18 @@ namespace Rubberduck.Inspections.Concrete
                 var annotationType = (AnnotationType) Enum.Parse(typeof (AnnotationType), name);
                 _annotationCounts[annotationType]++;
 
-                var isPerModule = annotationType.HasFlag(AnnotationType.ModuleAnnotation);
-                var isMemberOnModule = !_currentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Module) && isPerModule;
+                var isMemberAnnotation = annotationType.HasFlag(AnnotationType.MemberAnnotation);
+                var isModuleAnnotatedForMemberAnnotation = isMemberAnnotation
+                    && (_currentScopeDeclaration?.DeclarationType.HasFlag(DeclarationType.Module) ?? false);
 
-                var isPerMember = annotationType.HasFlag(AnnotationType.MemberAnnotation);
-                var isModuleOnMember = _currentScopeDeclaration == null && isPerMember;
+                var isModuleAnnotation = annotationType.HasFlag(AnnotationType.ModuleAnnotation);
+                var isMemberAnnotatedForModuleAnnotation = isModuleAnnotation 
+                    && (_currentScopeDeclaration?.DeclarationType.HasFlag(DeclarationType.Member) ?? false);
 
-                var isOnlyAllowedOnce = isPerModule || isPerMember;
-
-                if ((isOnlyAllowedOnce && _annotationCounts[annotationType] > 1) || isModuleOnMember || isMemberOnModule)
+                var isIllegal = isModuleAnnotation && _annotationCounts[annotationType] > 1
+                                || isMemberAnnotatedForModuleAnnotation
+                                || isModuleAnnotatedForMemberAnnotation;
+                if (isIllegal)
                 {
                     _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
                 }

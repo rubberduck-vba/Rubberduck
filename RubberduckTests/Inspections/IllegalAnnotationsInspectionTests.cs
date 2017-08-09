@@ -96,6 +96,86 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
+        public void CorrectTestModuleAnnotation_NoResult()
+        {
+            const string inputCode = @"
+Option Explicit
+Option Private Module
+
+'@TestModule
+'@Folder(""Tests"")
+
+Private Assert As Object
+Private Fakes As Object
+
+Public Sub Test1()
+End Sub
+";
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new IllegalAnnotationInspection(state);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            Assert.IsFalse(inspectionResults.Any());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void IllegalTestModuleAnnotation_OneResult()
+        {
+            const string inputCode = @"
+Option Explicit
+Option Private Module
+
+Public Sub Test1()
+End Sub
+
+'@TestModule
+Public Sub Test2()
+End Sub
+";
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new IllegalAnnotationInspection(state);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void IllegalModuleAnnotationOnTopMostMember_OneResult()
+        {
+            const string inputCode = @"
+Option Explicit
+Option Private Module
+
+'@TestModule
+Public Sub Test1()
+End Sub
+
+Public Sub Test2()
+End Sub
+";
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new IllegalAnnotationInspection(state);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionType()
         {
             var inspection = new IllegalAnnotationInspection(null);
