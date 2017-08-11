@@ -150,7 +150,7 @@ End Sub
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void IllegalModuleAnnotationOnTopMostMember_OneResult()
+        public void ModuleAnnotationOnTopMostMember_NoResult()
         {
             const string inputCode = @"
 Option Explicit
@@ -171,7 +171,7 @@ End Sub
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.AreEqual(1, inspectionResults.Count());
+            Assert.IsFalse(inspectionResults.Any());
         }
 
         [TestMethod]
