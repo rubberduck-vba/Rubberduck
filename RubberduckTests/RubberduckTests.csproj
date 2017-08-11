@@ -109,6 +109,7 @@
     <Compile Include="Inspections\OptionBaseZeroInspectionTests.cs" />
     <Compile Include="Inspections\PassParameterByReferenceQuickFixTests.cs" />
     <Compile Include="Inspections\QuickFixProviderTests.cs" />
+    <Compile Include="Inspections\ShadowedDeclarationInspectionTests.cs" />
     <Compile Include="Inspections\SynchronizeAttributesQuickFixTests.cs" />
     <Compile Include="Inspections\RedundantByRefModifierInspectionTests.cs" />
     <Compile Include="Inspections\UndeclaredVariableInspectionTests.cs" />
