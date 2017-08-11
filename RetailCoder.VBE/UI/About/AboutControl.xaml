@@ -37,13 +37,19 @@
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
                     Margin="5,0,0,5" Height="316" Width="175">
-            <Image Source="{StaticResource Ducky}" Stretch="UniformToFill" Height="292" />
-            <TextBlock HorizontalAlignment="Center" Margin="0,5,0,0">
+            <Image Source="{StaticResource Ducky}" Stretch="UniformToFill" Height="250" />
+            <TextBlock HorizontalAlignment="Center" Margin="0,30,0,0">
                 <Hyperlink Name="WebpageHyperlink"
                            NavigateUri="http://rubberduckvba.com/"
                            FontWeight="Bold"
                            Command="{Binding UriCommand}"
                            CommandParameter="{Binding ElementName=WebpageHyperlink, Path=NavigateUri}">rubberduckvba.com</Hyperlink>
+            </TextBlock>
+            <TextBlock HorizontalAlignment="Center" Margin="0">
+                <Hyperlink Name="GoFundMeHyperlink"
+                           NavigateUri="http://gofundme.com/rubberduckvba/"
+                           Command="{Binding UriCommand}"
+                           CommandParameter="{Binding ElementName=WebpageHyperlink, Path=NavigateUri}">gofundme.com/rubberduckvba</Hyperlink>
             </TextBlock>
         </StackPanel>
         <StackPanel Grid.Column="1"
@@ -81,10 +87,13 @@ Stack Overflow
                     <TextBlock FontSize="10"
                                xml:space="preserve">Abraham Hosch
 Andrew Jackson
+Andrew Zschetzsche
 Andrin Meier
+Brandon Barney
+Brian Zenger
 Bruno Costa
-BZngr
 Carlos J. Quintero (MZ-Tools)
+Clemens Lieb
 @Comintern
 @daFreeMan
 @Duga SE chat bot
@@ -98,6 +107,7 @@ Max Dörner
 Michal Krzych
 @mjolka
 Philip Wales
+Radosław Kapka
 Rob Bovey (Smart Indenter)
 Ross McLean
 Ross Knudsen
@@ -118,7 +128,7 @@ Stephen Bullen (Smart Indenter)
                 <!-- Circle logos created with Ai->XAML Export Plug-In Version 0.2 (PC/64) -->
                 <!-- By Mike Swanson (http://blog.mikeswanson.com/)           -->
 
-                <StackPanel Margin="2,0,20,0" HorizontalAlignment="Center">
+                <StackPanel Margin="2,5,10,0" HorizontalAlignment="Center">
                     <TextBlock TextAlignment="Center" HorizontalAlignment="Center">
                     <Hyperlink Name="GitHubUrl"
                                NavigateUri="https://github.com/rubberduck-vba/Rubberduck"
@@ -136,9 +146,9 @@ Stephen Bullen (Smart Indenter)
                         </Viewbox>
                     </Hyperlink>
                     </TextBlock>
-                    <TextBlock Text="GitHub" FontSize="9" TextAlignment="Center" />
+                    <!--<TextBlock Text="GitHub" FontSize="9" TextAlignment="Center" />-->
                 </StackPanel>
-                <StackPanel Margin="25,0,0,0" HorizontalAlignment="Center">
+                <StackPanel Margin="25,5,0,0" HorizontalAlignment="Center">
                     <TextBlock TextAlignment="Center" HorizontalAlignment="Center">
                     <Hyperlink Name="TwitterUrl"
                                NavigateUri="http://www.twitter.com/rubberduckvba"
@@ -156,7 +166,7 @@ Stephen Bullen (Smart Indenter)
                         </Viewbox>
                     </Hyperlink>
                     </TextBlock>
-                    <TextBlock Text="Twitter" FontSize="9" TextAlignment="Center" />
+                    <!--<TextBlock Text="Twitter" FontSize="9" TextAlignment="Center" />-->
                 </StackPanel>
             </StackPanel>
         </Border>
