@@ -37,13 +37,19 @@
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
                     Margin="5,0,0,5" Height="316" Width="175">
-            <Image Source="{StaticResource Ducky}" Stretch="UniformToFill" Height="292" />
-            <TextBlock HorizontalAlignment="Center" Margin="0,5,0,0">
+            <Image Source="{StaticResource Ducky}" Stretch="UniformToFill" Height="255" />
+            <TextBlock HorizontalAlignment="Center" Margin="0,30,0,0">
                 <Hyperlink Name="WebpageHyperlink"
                            NavigateUri="http://rubberduckvba.com/"
                            FontWeight="Bold"
                            Command="{Binding UriCommand}"
                            CommandParameter="{Binding ElementName=WebpageHyperlink, Path=NavigateUri}">rubberduckvba.com</Hyperlink>
+            </TextBlock>
+            <TextBlock HorizontalAlignment="Center" Margin="0">
+                <Hyperlink Name="GoFundMeHyperlink"
+                           NavigateUri="http://gofundme.com/rubberduckvba/"
+                           Command="{Binding UriCommand}"
+                           CommandParameter="{Binding ElementName=WebpageHyperlink, Path=NavigateUri}">gofundme.com/rubberduckvba</Hyperlink>
             </TextBlock>
         </StackPanel>
         <StackPanel Grid.Column="1"
