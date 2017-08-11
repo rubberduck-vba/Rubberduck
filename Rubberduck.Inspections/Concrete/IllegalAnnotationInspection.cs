@@ -13,6 +13,7 @@ using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -59,9 +60,12 @@ namespace Rubberduck.Inspections.Concrete
 
             public QualifiedModuleName CurrentModuleName { get; set; }
 
+            private bool _isFirstMemberProcessed = false;
+
             public void ClearContexts()
             {
                 _contexts.Clear();
+                _isFirstMemberProcessed = false;
                 var keys = _annotationCounts.Keys.ToList();
                 foreach (var key in keys)
                 {
@@ -76,6 +80,7 @@ namespace Rubberduck.Inspections.Concrete
             private void SetCurrentScope(string memberName = null)
             {
                 _hasMembers = !string.IsNullOrEmpty(memberName);
+                _isFirstMemberProcessed = _hasMembers;
                 _currentScopeDeclaration = _hasMembers ? _members.Value[memberName] : _module.Value;
             }
 
@@ -156,15 +161,23 @@ namespace Rubberduck.Inspections.Concrete
                 var annotationType = (AnnotationType) Enum.Parse(typeof (AnnotationType), name);
                 _annotationCounts[annotationType]++;
 
-                var isPerModule = annotationType.HasFlag(AnnotationType.ModuleAnnotation);
-                var isMemberOnModule = !_currentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Module) && isPerModule;
+                var moduleHasMembers = _members.Value.Any();
 
-                var isPerMember = annotationType.HasFlag(AnnotationType.MemberAnnotation);
-                var isModuleOnMember = _currentScopeDeclaration == null && isPerMember;
+                var isMemberAnnotation = annotationType.HasFlag(AnnotationType.MemberAnnotation);
+                var isModuleAnnotation = annotationType.HasFlag(AnnotationType.ModuleAnnotation);
 
-                var isOnlyAllowedOnce = isPerModule || isPerMember;
+                var isModuleAnnotatedForMemberAnnotation = isMemberAnnotation
+                    && (_currentScopeDeclaration?.DeclarationType.HasFlag(DeclarationType.Module) ?? false);
 
-                if ((isOnlyAllowedOnce && _annotationCounts[annotationType] > 1) || isModuleOnMember || isMemberOnModule)
+                var isMemberAnnotatedForModuleAnnotation = isModuleAnnotation 
+                    && (_currentScopeDeclaration?.DeclarationType.HasFlag(DeclarationType.Member) ?? false);
+
+                var isIllegal = !(isMemberAnnotation && moduleHasMembers && !_isFirstMemberProcessed) &&
+                                (isModuleAnnotation && _annotationCounts[annotationType] > 1
+                                 || isMemberAnnotatedForModuleAnnotation
+                                 || isModuleAnnotatedForMemberAnnotation);
+
+                if (isIllegal)
                 {
                     _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
                 }
