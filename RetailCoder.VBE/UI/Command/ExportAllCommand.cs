@@ -2,6 +2,7 @@ using System.IO;
 using System.Windows.Forms;
 using NLog;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.Navigation.CodeExplorer;
 
 namespace Rubberduck.UI.Command
 {
@@ -18,20 +19,37 @@ namespace Rubberduck.UI.Command
 
         protected override bool EvaluateCanExecute(object parameter)
         {
-            return !_vbe.ActiveVBProject.IsWrappingNullReference && _vbe.ActiveVBProject.VBComponents.Count > 0;
+            if (parameter == null)
+            {
+                return Evaluate(_vbe.ActiveVBProject);
+            }
+            else if (parameter is CodeExplorerProjectViewModel)
+            {
+                var node = (CodeExplorerProjectViewModel)parameter;
+                return Evaluate((IVBProject)node.Declaration.Project);
+            }
+            else if (parameter is IVBProject)
+            {
+                return Evaluate((IVBProject)parameter);
+            }
+            else { return false; }
+        }
+
+        private bool Evaluate(IVBProject project)
+        {
+            return !project.IsWrappingNullReference && project.VBComponents.Count > 0;
         }
 
         protected override void OnExecute(object parameter)
         {
             IVBProject project;
-            if (parameter == null)
+            if (parameter == null) { project = (_vbe.ActiveVBProject); }
+            else if (parameter is CodeExplorerProjectViewModel)
             {
-                project = _vbe.ActiveVBProject;
+                CodeExplorerProjectViewModel projectVM = (CodeExplorerProjectViewModel)parameter;
+                project = projectVM.Declaration.Project;
             }
-            else
-            {
-                project = (IVBProject)parameter;
-            }
+            else { project = (IVBProject)parameter; } // for unit test in ExportAllCommand.cs
 
             var desc = "Choose a folder to export the source of " + project.Name + " to:";
 
@@ -42,7 +60,7 @@ namespace Rubberduck.UI.Command
             {
                 path = Path.GetDirectoryName(project.FileName);
             }
-            
+
             using (var _folderBrowser = _factory.CreateFolderBrowser(desc, true, path))
             {
                 var result = _folderBrowser.ShowDialog();

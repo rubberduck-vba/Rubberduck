@@ -60,6 +60,9 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             ImportCommand = commands.OfType<ImportCommand>().SingleOrDefault();
             ExportCommand = commands.OfType<ExportCommand>().SingleOrDefault();
+            ExportAllCommand = commands.OfType<Rubberduck.UI.Command.ExportAllCommand>().SingleOrDefault();
+            _exportCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _exportCommandExecute, _exportCommandCanExecute);
+
             _externalRemoveCommand = commands.OfType<RemoveCommand>().SingleOrDefault();
             if (_externalRemoveCommand != null)
             {
@@ -463,13 +466,16 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public CommandBase ImportCommand { get; }
         public CommandBase ExportCommand { get; }
+        public CommandBase ExportAllCommand { get; }
+        public DelegateCommand _exportCommand { get; private set; }
+
         public CommandBase RemoveCommand { get; }
 
         public CommandBase PrintCommand { get; }
 
         public CommandBase CommitCommand { get; }
         public CommandBase UndoCommand { get; }
-
+        
         private readonly CommandBase _externalRemoveCommand;
 
         // this is a special case--we have to reset SelectedItem to prevent a crash
@@ -480,6 +486,22 @@ namespace Rubberduck.Navigation.CodeExplorer
                 && p.QualifiedSelection.Value.QualifiedName.ProjectId == node.Declaration.ProjectId);
 
             _externalRemoveCommand.Execute(param);
+        }
+
+        private bool _exportCommandCanExecute(object param)
+        {
+            if (param == null) { return false; }
+            else if (param is CodeExplorerProjectViewModel) { return ExportAllCommand.CanExecute(param); }
+            else if (param is CodeExplorerComponentViewModel) { return ExportCommand.CanExecute(param); }
+            else { return false; }
+        }
+
+        private void _exportCommandExecute(object param)
+        {
+            if (param == null) { return; }
+            else if (param is CodeExplorerProjectViewModel) { ExportAllCommand.Execute(param); }
+            else if (param is CodeExplorerComponentViewModel) { ExportCommand.Execute(param); }
+            else { return; }
         }
 
         public void Dispose()
