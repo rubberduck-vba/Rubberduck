@@ -149,6 +149,7 @@
     <Compile Include="Inspections\Abstract\IInspector.cs" />
     <Compile Include="Inspections\Abstract\IParseTreeInspection.cs" />
     <Compile Include="Inspections\Abstract\IQuickFix.cs" />
+    <Compile Include="Inspections\CannotAnnotateAttribute.cs" />
     <Compile Include="Inspections\RequiredLibraryAttribute.cs" />
     <Compile Include="Inspections\Resources\CodeInspectionSeverity.cs" />
     <Compile Include="Inspections\Resources\CodeInspectionType.cs" />

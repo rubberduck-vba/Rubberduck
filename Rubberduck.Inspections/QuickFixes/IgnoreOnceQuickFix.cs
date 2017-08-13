@@ -5,6 +5,7 @@ using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
@@ -19,7 +20,7 @@ namespace Rubberduck.Inspections.QuickFixes
         public IgnoreOnceQuickFix(RubberduckParserState state, IEnumerable<IInspection> inspections)
         {
             _state = state;
-            _supportedInspections.UnionWith(inspections.Select(i => i.GetType().BaseType));
+            _supportedInspections.UnionWith(inspections.Where(i => i.Type.CustomAttributes.All(a => a.AttributeType != typeof(CannotAnnotateAttribute))).Select(i => i.Type));
         }
 
         public IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();

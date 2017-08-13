@@ -24,6 +24,9 @@ namespace Rubberduck.Inspections.Abstract
             Name = GetType().Name;
         }
 
+        /// <summary>
+        /// Gets the type of the inspection class. GetType() returns an interceptor proxy type.
+        /// </summary>
         public abstract Type Type { get; }
 
         /// <summary>
