@@ -61,7 +61,7 @@ namespace Rubberduck.Inspections.Concrete
 
             public QualifiedModuleName CurrentModuleName { get; set; }
 
-            private bool _isFirstMemberProcessed = false;
+            private bool _isFirstMemberProcessed;
 
             public void ClearContexts()
             {
