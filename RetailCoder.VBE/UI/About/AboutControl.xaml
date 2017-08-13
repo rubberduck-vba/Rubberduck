@@ -49,7 +49,7 @@
                 <Hyperlink Name="GoFundMeHyperlink"
                            NavigateUri="http://gofundme.com/rubberduckvba/"
                            Command="{Binding UriCommand}"
-                           CommandParameter="{Binding ElementName=WebpageHyperlink, Path=NavigateUri}">gofundme.com/rubberduckvba</Hyperlink>
+                           CommandParameter="{Binding ElementName=GoFundMeHyperlink, Path=NavigateUri}">gofundme.com/rubberduckvba</Hyperlink>
             </TextBlock>
         </StackPanel>
         <StackPanel Grid.Column="1"
