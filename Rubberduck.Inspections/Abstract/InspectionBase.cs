@@ -25,6 +25,11 @@ namespace Rubberduck.Inspections.Abstract
         }
 
         /// <summary>
+        /// Gets the type of the inspection class. GetType() returns an interceptor proxy type.
+        /// </summary>
+        public abstract Type Type { get; }
+
+        /// <summary>
         /// Gets a value the severity level to reset to, the "factory default" setting.
         /// </summary>
         public CodeInspectionSeverity DefaultSeverity => _defaultSeverity;

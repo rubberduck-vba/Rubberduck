@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
@@ -19,6 +20,8 @@ namespace Rubberduck.Inspections.Concrete
         {
             Listener = new RedundantModuleOptionListener();
         }
+
+        public override Type Type => typeof(RedundantOptionInspection);
 
         public override string Meta => InspectionsUI.RedundantOptionInspectionMeta;
         public override string Description => InspectionsUI.RedundantOptionInspectionName;

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Rubberduck.Common;
@@ -25,6 +26,8 @@ namespace Rubberduck.Inspections.Concrete
             _settings = settings;
         }
 
+        public override Type Type => typeof(UseMeaningfulNameInspection);
+
         public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
         private static readonly DeclarationType[] IgnoreDeclarationTypes = 
@@ -50,15 +53,17 @@ namespace Rubberduck.Inspections.Concrete
                                     !IgnoreDeclarationTypes.Contains(declaration.ParentDeclaration.DeclarationType) &&
                                     !handlers.Contains(declaration.ParentDeclaration)) &&
                                 !whitelistedNames.Contains(declaration.IdentifierName) &&
-                                !VariableNameValidator.IsMeaningfulName(declaration.IdentifierName))
-                            .Select(issue => new DeclarationInspectionResult(this,
-                                                                  string.Format(InspectionsUI.IdentifierNameInspectionResultFormat,
-                                                                                RubberduckUI.ResourceManager.GetString("DeclarationType_" + issue.DeclarationType, CultureInfo.CurrentUICulture),
-                                                                                issue.IdentifierName),
-                                                                  issue))
-                            .ToList();
+                                !VariableNameValidator.IsMeaningfulName(declaration.IdentifierName));
 
-            return issues;
+            return (from issue in issues
+                    let props = issue.DeclarationType.HasFlag(DeclarationType.Module) ||
+                                issue.DeclarationType.HasFlag(DeclarationType.Project)
+                        ? new Dictionary<string, string> {{"DisableFixes", "IgnoreOnceQuickFix"}} : null
+                    select new DeclarationInspectionResult(this,
+                        string.Format(InspectionsUI.IdentifierNameInspectionResultFormat,
+                            RubberduckUI.ResourceManager.GetString("DeclarationType_" + issue.DeclarationType,
+                                CultureInfo.CurrentUICulture), issue.IdentifierName), issue, properties: props))
+                .ToList();
         }
     }
 }

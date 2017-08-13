@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
@@ -17,6 +18,8 @@ namespace Rubberduck.Inspections.Concrete
     internal class EmptyElseBlockInspection : ParseTreeInspectionBase
     {
         public EmptyElseBlockInspection(RubberduckParserState state) : base(state, CodeInspectionSeverity.Suggestion) { }
+
+        public override Type Type => typeof(EmptyElseBlockInspection);
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 

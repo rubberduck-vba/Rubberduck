@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Rubberduck.Common;
@@ -18,6 +19,8 @@ namespace Rubberduck.Inspections.Concrete
         public IntegerDataTypeInspection(RubberduckParserState state) : base(state, CodeInspectionSeverity.Hint)
         {
         }
+
+        public override Type Type => typeof(IntegerDataTypeInspection);
 
         public override CodeInspectionType InspectionType { get; } = CodeInspectionType.CodeQualityIssues;
 

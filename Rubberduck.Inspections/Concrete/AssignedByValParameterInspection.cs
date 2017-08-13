@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
@@ -16,6 +17,8 @@ namespace Rubberduck.Inspections.Concrete
         {
             Severity = DefaultSeverity;
         }
+
+        public override Type Type => typeof(AssignedByValParameterInspection);
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
