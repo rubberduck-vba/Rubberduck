@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
+using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
@@ -10,10 +12,13 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    [RequiredLibrary("Excel")]
     public class ApplicationWorksheetFunctionInspection : InspectionBase
     {
         public ApplicationWorksheetFunctionInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Suggestion) { }
+
+        public override Type Type => typeof(ApplicationWorksheetFunctionInspection);
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 

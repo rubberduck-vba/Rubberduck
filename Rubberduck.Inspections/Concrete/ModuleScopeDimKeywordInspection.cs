@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
@@ -17,6 +18,8 @@ namespace Rubberduck.Inspections.Concrete
     {
         public ModuleScopeDimKeywordInspection(RubberduckParserState state) 
             : base(state, CodeInspectionSeverity.Suggestion) { }
+
+        public override Type Type => typeof(ModuleScopeDimKeywordInspection);
 
         public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
 

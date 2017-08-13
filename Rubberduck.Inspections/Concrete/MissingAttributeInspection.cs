@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
@@ -20,6 +21,8 @@ namespace Rubberduck.Inspections.Concrete
         {
             Listener = new MissingMemberAttributeListener(state);
         }
+
+        public override Type Type => typeof(MissingAttributeInspection);
 
         public override ParsePass Pass => ParsePass.AttributesPass;
 

@@ -19,7 +19,7 @@ namespace Rubberduck.Inspections.QuickFixes
         public IgnoreOnceQuickFix(RubberduckParserState state, IEnumerable<IInspection> inspections)
         {
             _state = state;
-            _supportedInspections.UnionWith(inspections.Select(i => i.GetType()));
+            _supportedInspections.UnionWith(inspections.Select(i => i.GetType().BaseType));
         }
 
         public IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Rubberduck.Common;
@@ -24,6 +25,8 @@ namespace Rubberduck.Inspections.Concrete
         {
             _settings = settings;
         }
+
+        public override Type Type => typeof(UseMeaningfulNameInspection);
 
         public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 

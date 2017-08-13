@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Common;
@@ -14,6 +15,8 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class ProcedureNotUsedInspection : InspectionBase
     {
         public ProcedureNotUsedInspection(RubberduckParserState state) : base(state) { }
+
+        public override Type Type => typeof(ProcedureNotUsedInspection);
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 

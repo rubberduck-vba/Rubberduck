@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Common;
@@ -15,6 +16,8 @@ namespace Rubberduck.Inspections.Concrete
     {
         public NonReturningFunctionInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Error) { }
+
+        public override Type Type => typeof(NonReturningFunctionInspection);
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 

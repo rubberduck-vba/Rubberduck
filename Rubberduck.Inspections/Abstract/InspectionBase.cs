@@ -24,6 +24,8 @@ namespace Rubberduck.Inspections.Abstract
             Name = GetType().Name;
         }
 
+        public abstract Type Type { get; }
+
         /// <summary>
         /// Gets a value the severity level to reset to, the "factory default" setting.
         /// </summary>

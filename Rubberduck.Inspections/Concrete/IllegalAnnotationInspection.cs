@@ -13,7 +13,6 @@ using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -24,6 +23,8 @@ namespace Rubberduck.Inspections.Concrete
         {
             Listener = new IllegalAttributeAnnotationsListener(state);
         }
+
+        public override Type Type => typeof(IllegalAnnotationInspection);
 
         public override CodeInspectionType InspectionType => CodeInspectionType.RubberduckOpportunities;
         public override IInspectionListener Listener { get; }
