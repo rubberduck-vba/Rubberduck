@@ -45,7 +45,8 @@ namespace Rubberduck.Inspections
                 if (!result.Properties.TryGetValue("DisableFixes", out value)) { return true; }
 
                 return !value.Split(',').Contains(fix.GetType().Name);
-            });
+            })
+            .OrderBy(fix => fix.SupportedInspections.Count); // most specific fixes first; keeps "ignore once" last
         }
 
         private bool CanFix(IQuickFix fix, IInspectionResult result)
