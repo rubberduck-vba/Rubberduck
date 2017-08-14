@@ -264,7 +264,7 @@ namespace RubberduckTests.CodeExplorer
 
         [TestCategory("Code Explorer")]
         [TestMethod]
-        public void ExportModule()
+        public void ExportModule_ExpectExecution()
         {
             var builder = new MockVbeBuilder();
             var projectMock = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
@@ -285,6 +285,7 @@ namespace RubberduckTests.CodeExplorer
                 new ExportCommand(saveFileDialog.Object)
             };
 
+
             var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands);
 
             var parser = MockParser.Create(vbe.Object, state);
@@ -292,14 +293,14 @@ namespace RubberduckTests.CodeExplorer
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
-            vm.ExportCommand.Execute(vm.SelectedItem);
+            vm._exportCommand.Execute(vm.SelectedItem);
 
             component.Verify(c => c.Export("C:\\Users\\Rubberduck\\Desktop\\StdModule1.bas"), Times.Once);
         }
 
         [TestCategory("Code Explorer")]
         [TestMethod]
-        public void ExportModule_Cancel()
+        public void ExportModule_CancelPressed_ExpectNoExecution()
         {
             var builder = new MockVbeBuilder();
             var projectMock = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
@@ -327,9 +328,197 @@ namespace RubberduckTests.CodeExplorer
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
-            vm.ExportCommand.Execute(vm.SelectedItem);
+            vm._exportCommand.Execute(vm.SelectedItem);
 
             component.Verify(c => c.Export("C:\\Users\\Rubberduck\\Desktop\\StdModule1.bas"), Times.Never);
+        }
+
+        [TestCategory("Commands")]
+        [TestMethod]
+        public void ExportProject_TestCanExecute_ExpectTrue()
+        {
+            var builder = new MockVbeBuilder();
+
+            var projectMock = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Module1", ComponentType.StandardModule, "");
+
+            var project = projectMock.Build();
+
+            var vbe = builder.AddProject(project).Build();
+
+
+            var component1 = project.Object.VBComponents[0];
+            var module1 = component1.CodeModule;
+
+            var mockFolderBrowser = new Mock<IFolderBrowser>();
+            var mockFolderBrowserFactory = new Mock<IFolderBrowserFactory>();
+
+            var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
+            var commands = new List<CommandBase>
+            {
+                new ExportAllCommand(vbe.Object, mockFolderBrowserFactory.Object)
+            };
+
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands);
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            project.SetupGet(m => m.VBComponents.Count).Returns(1);
+            vm.SelectedItem = vm.Projects.First();
+
+            Assert.IsTrue(vm.ExportAllCommand.CanExecute(vm.SelectedItem));
+        }
+
+        //[TestCategory("Commands")]
+        //[TestMethod]
+        //public void ExportProject_TestCanExecute_EmptyProjectExpectFalse()
+        //{
+        //    var builder = new MockVbeBuilder();
+
+        //    var projectMock = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+        //        .AddComponent("Module1", ComponentType.StandardModule, "");
+
+        //    var project = projectMock.Build();
+
+        //    var vbe = builder.AddProject(project).Build();
+
+        //    var component1 = project.Object.VBComponents[0];
+        //    var module1 = component1.CodeModule;
+
+        //    var mockFolderBrowser = new Mock<IFolderBrowser>();
+        //    var mockFolderBrowserFactory = new Mock<IFolderBrowserFactory>();
+
+        //    var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
+        //    var commands = new List<CommandBase>
+        //    {
+        //        new ExportAllCommand(vbe.Object, mockFolderBrowserFactory.Object)
+        //    };
+
+        //    var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands);
+
+        //    // Parse once with a VBComponent to generate a Project declaration
+        //    var parser = MockParser.Create(vbe.Object, state);
+        //    parser.Parse(new CancellationTokenSource());
+        //    if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+        //    project.Object.VBComponents.Remove(component1);
+
+        //    //projectMock.RemoveComponent((project.Object.VBComponents[0]);
+        //    project.SetupGet(m => m.VBComponents.Count).Returns(0);
+
+        //    // Parse again to get Project declaration without any child components
+        //    parser.Parse(new CancellationTokenSource());
+        //    if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+        //    vm.SelectedItem = vm.Projects.First();
+
+        //    Assert.IsTrue(vm.ExportAllCommand.CanExecute(vm.SelectedItem));
+        //}
+
+        [TestCategory("Commands")]
+        [TestMethod]
+        public void ExportProject_TestExecute_OKPressed_ExpectExecution()
+        {
+            string path = @"C:\Users\Rubberduck\Desktop\ExportAll";
+            string projectPath = @"C:\Users\Rubberduck\Documents\Subfolder";
+            string projectFullPath = @"C:\Users\Rubberduck\Documents\Subfolder\Project.xlsm";
+
+            var builder = new MockVbeBuilder();
+
+            var projectMock = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Module1", ComponentType.StandardModule, "")
+                .AddComponent("ClassModule1", ComponentType.ClassModule, "")
+                .AddComponent("Document1", ComponentType.Document, "")
+                .AddComponent("UserForm1", ComponentType.UserForm, "");
+
+            var project = projectMock.Build();
+            project.SetupGet(m => m.IsSaved).Returns(true);
+            project.SetupGet(m => m.FileName).Returns(projectFullPath);
+
+            var vbe = builder.AddProject(project).Build();
+
+            var component1 = project.Object.VBComponents[0];
+            var module1 = component1.CodeModule;
+            var component2 = project.Object.VBComponents[1];
+            var module2 = component2.CodeModule;
+
+            var mockFolderBrowser = new Mock<IFolderBrowser>();
+            mockFolderBrowser.Setup(m => m.SelectedPath).Returns(path);
+            mockFolderBrowser.Setup(m => m.ShowDialog()).Returns(DialogResult.OK);
+
+            var mockFolderBrowserFactory = new Mock<IFolderBrowserFactory>();
+            mockFolderBrowserFactory.Setup(m => m.CreateFolderBrowser(It.IsAny<string>(), true, projectPath)).Returns(mockFolderBrowser.Object);
+
+            var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
+            var commands = new List<CommandBase>
+            {
+                new ExportAllCommand(null, mockFolderBrowserFactory.Object)
+            };
+
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands);
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            vm.SelectedItem = vm.Projects.First();
+            vm.ExportAllCommand.Execute(vm.SelectedItem);
+
+            project.Verify(m => m.ExportSourceFiles(path), Times.Once);
+        }
+
+        [TestCategory("Commands")]
+        [TestMethod]
+        public void ExportProject_TestExecute_CancelPressed_ExpectExecution()
+        {
+            string path = @"C:\Users\Rubberduck\Desktop\ExportAll";
+            string projectPath = @"C:\Users\Rubberduck\Documents\Subfolder";
+            string projectFullPath = @"C:\Users\Rubberduck\Documents\Subfolder\Project.xlsm";
+
+            var builder = new MockVbeBuilder();
+
+            var projectMock = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Module1", ComponentType.StandardModule, "")
+                .AddComponent("ClassModule1", ComponentType.ClassModule, "")
+                .AddComponent("Document1", ComponentType.Document, "")
+                .AddComponent("UserForm1", ComponentType.UserForm, "");
+
+            var project = projectMock.Build();
+            project.SetupGet(m => m.IsSaved).Returns(true);
+            project.SetupGet(m => m.FileName).Returns(projectFullPath);
+
+            var vbe = builder.AddProject(project).Build();
+
+            var component1 = project.Object.VBComponents[0];
+            var module1 = component1.CodeModule;
+            var component2 = project.Object.VBComponents[1];
+            var module2 = component2.CodeModule;
+
+            var mockFolderBrowser = new Mock<IFolderBrowser>();
+            mockFolderBrowser.Setup(m => m.SelectedPath).Returns(path);
+            mockFolderBrowser.Setup(m => m.ShowDialog()).Returns(DialogResult.Cancel);
+
+            var mockFolderBrowserFactory = new Mock<IFolderBrowserFactory>();
+            mockFolderBrowserFactory.Setup(m => m.CreateFolderBrowser(It.IsAny<string>(), true, projectPath)).Returns(mockFolderBrowser.Object);
+
+            var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
+            var commands = new List<CommandBase>
+            {
+                new ExportAllCommand(null, mockFolderBrowserFactory.Object)
+            };
+
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands);
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            vm.SelectedItem = vm.Projects.First();
+            vm.ExportAllCommand.Execute(vm.SelectedItem);
+
+            project.Verify(m => m.ExportSourceFiles(path), Times.Never);
         }
 
         [TestCategory("Code Explorer")]

@@ -9,7 +9,7 @@ namespace Rubberduck.UI.Command.MenuItems
         {
         }
 
-        public override string Key => "ToolsMenu_ExportAll";
+        public override string Key => "ToolsMenu_ExportProject";
 
         public override int DisplayOrder => (int)ToolsMenuItemDisplayOrder.ExportAll;
 

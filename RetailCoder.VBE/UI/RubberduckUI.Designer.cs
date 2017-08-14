@@ -5366,11 +5366,11 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Export All....
+        ///   Looks up a localized string similar to Export Active Project....
         /// </summary>
-        public static string ToolsMenu_ExportAll {
+        public static string ToolsMenu_ExportProject {
             get {
-                return ResourceManager.GetString("ToolsMenu_ExportAll", resourceCulture);
+                return ResourceManager.GetString("ToolsMenu_ExportProject", resourceCulture);
             }
         }
         

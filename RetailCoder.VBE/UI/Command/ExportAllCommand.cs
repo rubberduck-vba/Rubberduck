@@ -3,9 +3,11 @@ using System.Windows.Forms;
 using NLog;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.Navigation.CodeExplorer;
+using Rubberduck.UI.CodeExplorer.Commands;
 
 namespace Rubberduck.UI.Command
 {
+    [CodeExplorerCommand]
     public class ExportAllCommand : CommandBase 
     {
         private readonly IVBE _vbe;
