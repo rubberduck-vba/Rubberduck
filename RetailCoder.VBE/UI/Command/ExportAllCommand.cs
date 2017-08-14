@@ -21,38 +21,27 @@ namespace Rubberduck.UI.Command
 
         protected override bool EvaluateCanExecute(object parameter)
         {
-            if (parameter == null)
-            {
-                return Evaluate(_vbe.ActiveVBProject);
-            }
-            else if (parameter is CodeExplorerProjectViewModel)
-            {
-                var node = (CodeExplorerProjectViewModel)parameter;
-                return Evaluate((IVBProject)node.Declaration.Project);
-            }
-            else if (parameter is IVBProject)
-            {
-                return Evaluate((IVBProject)parameter);
-            }
-            else { return false; }
+            var projectNode = parameter as CodeExplorerProjectViewModel;
+
+            var project = parameter as IVBProject;
+
+            return Evaluate(projectNode?.Declaration.Project ?? project ?? _vbe.ActiveVBProject);
+
         }
 
         private bool Evaluate(IVBProject project)
         {
-            return !project.IsWrappingNullReference && project.VBComponents.Count > 0;
+            return project != null && !project.IsWrappingNullReference && project.VBComponents.Count > 0;
         }
 
         protected override void OnExecute(object parameter)
         {
-            IVBProject project;
-            if (parameter == null) { project = (_vbe.ActiveVBProject); }
-            else if (parameter is CodeExplorerProjectViewModel)
-            {
-                CodeExplorerProjectViewModel projectVM = (CodeExplorerProjectViewModel)parameter;
-                project = projectVM.Declaration.Project;
-            }
-            else { project = (IVBProject)parameter; } // for unit test in ExportAllCommand.cs
+            var projectNode = parameter as CodeExplorerProjectViewModel;
 
+            var vbproject = parameter as IVBProject;
+
+            IVBProject project = projectNode?.Declaration.Project ?? vbproject ?? _vbe.ActiveVBProject;
+            
             var desc = string.Format(RubberduckUI.ExportAllCommand_SaveAsDialog, project.Name);
 
             // If .GetDirectoryName is passed an empty string for a RootFolder, 

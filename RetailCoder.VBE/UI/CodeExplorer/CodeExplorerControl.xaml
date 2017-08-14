@@ -424,7 +424,7 @@
                                   Command="{Binding ImportCommand}"
                                   CommandParameter="{Binding SelectedItem}" />
                         <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_Export}"
-                                  Command="{Binding _exportCommand}"
+                                  Command="{Binding ExportCommand}"
                                   CommandParameter="{Binding SelectedItem}" />
                         <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_Remove}"
                                   Command="{Binding RemoveCommand}"

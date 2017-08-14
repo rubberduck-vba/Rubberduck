@@ -469,7 +469,6 @@ namespace Rubberduck.Navigation.CodeExplorer
         private CommandBase _exportCommand { get; }
         private CommandBase _exportAllCommand { get; }
 
-
         public CommandBase RemoveCommand { get; }
 
         public CommandBase PrintCommand { get; }
