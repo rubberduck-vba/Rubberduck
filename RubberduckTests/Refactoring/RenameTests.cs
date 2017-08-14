@@ -1673,6 +1673,122 @@ End Sub";
         }
 
         #endregion
+        #region Rename Enumeration Tests
+
+        [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
+        public void RenameRefactoring_RenameEnumeration()
+        {
+            var tdo = new RenameTestsDataObject(selection: "FruitType", newName: "Fruits");
+            var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
+            {
+                Input =
+@"Option Explicit
+
+Public Enum Frui|tType
+    Apple = 1
+    Orange = 2
+    Plum = 3
+End Enum
+
+Sub DoSomething()
+    MsgBox CStr(FruitType.Apple)
+End Sub",
+                Expected =
+@"Option Explicit
+
+Public Enum Fruits
+    Apple = 1
+    Orange = 2
+    Plum = 3
+End Enum
+
+Sub DoSomething()
+    MsgBox CStr(Fruits.Apple)
+End Sub"
+            };
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput);
+
+            tdo.MsgBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()), Times.Never);
+        }
+
+        [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
+        public void RenameRefactoring_RenameEnumerationMember()
+        {
+            var tdo = new RenameTestsDataObject(selection: "Apple", newName: "CranApple");
+            var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
+            {
+                Input =
+@"Option Explicit
+
+Public Enum FruitType
+    App|le = 1
+    Orange = 2
+    Plum = 3
+End Enum
+
+Sub DoSomething()
+    MsgBox CStr(Apple)
+End Sub",
+                Expected =
+@"Option Explicit
+
+Public Enum FruitType
+    CranApple = 1
+    Orange = 2
+    Plum = 3
+End Enum
+
+Sub DoSomething()
+    MsgBox CStr(CranApple)
+End Sub"
+            };
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput);
+
+            tdo.MsgBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()), Times.Never);
+        }
+
+        #endregion
+        #region Rename Label Tests
+        [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
+        public void RenameRefactoring_RenameLabel()
+        {
+            var tdo = new RenameTestsDataObject(selection: "EH", newName: "ErrorHandler");
+            var inputOutput1 = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
+            {
+                Input =
+@"Option Explicit
+
+Sub DoSomething()
+    On Error goto EH
+    Dim check As Double
+    check = 1/0
+    Exit Sub
+E|H:
+    MsgBox ""We had an error""
+End Sub",
+                Expected =
+@"Option Explicit
+
+Sub DoSomething()
+    On Error goto ErrorHandler
+    Dim check As Double
+    check = 1/0
+    Exit Sub
+ErrorHandler:
+    MsgBox ""We had an error""
+End Sub"
+            };
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput1);
+
+            tdo.MsgBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()), Times.Never);
+        }
+        #endregion
         #region Other Tests
 
         [TestMethod]

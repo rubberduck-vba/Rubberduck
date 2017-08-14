@@ -108,6 +108,54 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
+        public static string GetName(VBAParser.EnumerationStmtContext context, out Interval tokenInterval)
+        {
+            var nameContext = context.identifier();
+            tokenInterval = Interval.Of(nameContext.Start.TokenIndex, nameContext.Stop.TokenIndex);
+            return GetName(context);
+        }
+
+        public static string GetName(VBAParser.EnumerationStmtContext context)
+        {
+            return GetName(context.identifier());
+        }
+
+        public static string GetName(VBAParser.EnumerationStmt_ConstantContext context, out Interval tokenInterval)
+        {
+            var nameContext = context.identifier();
+            tokenInterval = Interval.Of(nameContext.Start.TokenIndex, nameContext.Stop.TokenIndex);
+            return GetName(context);
+        }
+
+        public static string GetName(VBAParser.EnumerationStmt_ConstantContext context)
+        {
+            return GetName(context.identifier());
+        }
+
+        public static string GetName(VBAParser.IdentifierStatementLabelContext context, out Interval tokenInterval)
+        {
+            var nameContext = context.unrestrictedIdentifier();
+            tokenInterval = Interval.Of(nameContext.Start.TokenIndex, nameContext.Stop.TokenIndex);
+            return GetName(context);
+        }
+
+        public static string GetName(VBAParser.IdentifierStatementLabelContext context)
+        {
+            return GetName(context.unrestrictedIdentifier());
+        }
+
+        public static string GetName(VBAParser.SimpleNameExprContext context, out Interval tokenInterval)
+        {
+            var nameContext = context.identifier();
+            tokenInterval = Interval.Of(nameContext.Start.TokenIndex, nameContext.Stop.TokenIndex);
+            return GetName(context);
+        }
+
+        public static string GetName(VBAParser.SimpleNameExprContext context)
+        {
+            return GetName(context.identifier());
+        }
+
         public static string GetName(VBAParser.IdentifierContext context, out Interval tokenInterval)
         {
             tokenInterval = Interval.Of(context.Start.TokenIndex, context.Stop.TokenIndex);

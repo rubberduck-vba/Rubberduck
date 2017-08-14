@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Common;
@@ -16,9 +17,11 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class RedundantByRefModifierInspection : ParseTreeInspectionBase
     {
         public RedundantByRefModifierInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Hint)
+            : base(state, CodeInspectionSeverity.DoNotShow)
         {
         }
+
+        public override Type Type => typeof(RedundantByRefModifierInspection);
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
@@ -44,8 +47,7 @@ namespace Rubberduck.Inspections.Concrete
                     string.Format(InspectionsUI.RedundantByRefModifierInspectionResultFormat,
                         identifier.untypedIdentifier() != null
                             ? identifier.untypedIdentifier().identifierValue().GetText()
-                            : identifier.typedIdentifier().untypedIdentifier().identifierValue().GetText()),
-                    State, issue);
+                            : identifier.typedIdentifier().untypedIdentifier().identifierValue().GetText()), issue);
             });
         }
 

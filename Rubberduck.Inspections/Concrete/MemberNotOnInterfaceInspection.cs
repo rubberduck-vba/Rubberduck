@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
@@ -13,6 +14,8 @@ namespace Rubberduck.Inspections.Concrete
     {
         public MemberNotOnInterfaceInspection(RubberduckParserState state)
             : base(state) { }
+
+        public override Type Type => typeof(MemberNotOnInterfaceInspection);
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 

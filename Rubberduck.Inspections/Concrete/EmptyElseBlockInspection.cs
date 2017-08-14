@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
@@ -18,6 +19,8 @@ namespace Rubberduck.Inspections.Concrete
     {
         public EmptyElseBlockInspection(RubberduckParserState state) : base(state, CodeInspectionSeverity.Suggestion) { }
 
+        public override Type Type => typeof(EmptyElseBlockInspection);
+
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
         public override IInspectionListener Listener { get; } = new EmptyElseBlockListener();
@@ -28,7 +31,6 @@ namespace Rubberduck.Inspections.Concrete
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))
                 .Select(result => new QualifiedContextInspectionResult(this,
                                                         InspectionsUI.EmptyElseBlockInspectionResultFormat,
-                                                        State,
                                                         result));
         }
 

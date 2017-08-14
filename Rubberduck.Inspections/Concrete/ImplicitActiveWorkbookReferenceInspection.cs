@@ -1,17 +1,22 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
+using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    [RequiredLibrary("Excel")]
     public sealed class ImplicitActiveWorkbookReferenceInspection : InspectionBase
     {
         public ImplicitActiveWorkbookReferenceInspection(RubberduckParserState state)
             : base(state) { }
+
+        public override Type Type => typeof(ImplicitActiveWorkbookReferenceInspection);
 
         public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
 

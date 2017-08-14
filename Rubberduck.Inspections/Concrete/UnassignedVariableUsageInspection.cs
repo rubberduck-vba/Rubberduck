@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -17,6 +18,8 @@ namespace Rubberduck.Inspections.Concrete
     {
         public UnassignedVariableUsageInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Error) { }
+
+        public override Type Type => typeof(UnassignedVariableUsageInspection);
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
