@@ -59,9 +59,9 @@ namespace Rubberduck.Navigation.CodeExplorer
             ExpandAllSubnodesCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteExpandNodes);
 
             ImportCommand = commands.OfType<ImportCommand>().SingleOrDefault();
-            ExportCommand = commands.OfType<ExportCommand>().SingleOrDefault();
-            ExportAllCommand = commands.OfType<Rubberduck.UI.Command.ExportAllCommand>().SingleOrDefault();
-            _exportCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _exportCommandExecute, _exportCommandCanExecute);
+            _exportCommand = commands.OfType<ExportCommand>().SingleOrDefault();
+            _exportAllCommand = commands.OfType<Rubberduck.UI.Command.ExportAllCommand>().SingleOrDefault();
+            ExportCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExportCommandExecute, ExportCommandCanExecute);
 
             _externalRemoveCommand = commands.OfType<RemoveCommand>().SingleOrDefault();
             if (_externalRemoveCommand != null)
@@ -465,9 +465,10 @@ namespace Rubberduck.Navigation.CodeExplorer
         public CommandBase ExpandAllSubnodesCommand { get; }
 
         public CommandBase ImportCommand { get; }
-        public CommandBase ExportCommand { get; }
-        public CommandBase ExportAllCommand { get; }
-        public DelegateCommand _exportCommand { get; private set; }
+        public DelegateCommand ExportCommand { get; }
+        private CommandBase _exportCommand { get; }
+        private CommandBase _exportAllCommand { get; }
+
 
         public CommandBase RemoveCommand { get; }
 
@@ -488,19 +489,19 @@ namespace Rubberduck.Navigation.CodeExplorer
             _externalRemoveCommand.Execute(param);
         }
 
-        private bool _exportCommandCanExecute(object param)
+        private bool ExportCommandCanExecute(object param)
         {
             if (param == null) { return false; }
-            else if (param is CodeExplorerProjectViewModel) { return ExportAllCommand.CanExecute(param); }
-            else if (param is CodeExplorerComponentViewModel) { return ExportCommand.CanExecute(param); }
+            else if (param is CodeExplorerProjectViewModel) { return _exportAllCommand.CanExecute(param); }
+            else if (param is CodeExplorerComponentViewModel) { return _exportCommand.CanExecute(param); }
             else { return false; }
         }
 
-        private void _exportCommandExecute(object param)
+        private void ExportCommandExecute(object param)
         {
             if (param == null) { return; }
-            else if (param is CodeExplorerProjectViewModel) { ExportAllCommand.Execute(param); }
-            else if (param is CodeExplorerComponentViewModel) { ExportCommand.Execute(param); }
+            else if (param is CodeExplorerProjectViewModel) { _exportAllCommand.Execute(param); }
+            else if (param is CodeExplorerComponentViewModel) { _exportCommand.Execute(param); }
             else { return; }
         }
 

@@ -53,7 +53,7 @@ namespace Rubberduck.UI.Command
             }
             else { project = (IVBProject)parameter; } // for unit test in ExportAllCommand.cs
 
-            var desc = "Choose a folder to export the source of " + project.Name + " to:";
+            var desc = string.Format(RubberduckUI.ExportAllCommand_SaveAsDialog, project.Name);
 
             // If .GetDirectoryName is passed an empty string for a RootFolder, 
             // it defaults to the Documents library (Win 7+) or equivalent.

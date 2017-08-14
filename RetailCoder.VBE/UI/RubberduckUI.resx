@@ -2064,4 +2064,8 @@ Would you like to import them to Rubberduck?</value>
   <data name="ToolsMenu_ExportProject" xml:space="preserve">
     <value>Export Active Project...</value>
   </data>
+  <data name="ExportAllCommand_SaveAsDialog" xml:space="preserve">
+    <value>Choose a folder to export the source of {0} to:</value>
+    <comment>{0} VBProject.Name</comment>
+  </data>
 </root>

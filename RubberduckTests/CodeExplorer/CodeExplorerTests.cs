@@ -293,7 +293,7 @@ namespace RubberduckTests.CodeExplorer
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
-            vm._exportCommand.Execute(vm.SelectedItem);
+            vm.ExportCommand.Execute(vm.SelectedItem);
 
             component.Verify(c => c.Export("C:\\Users\\Rubberduck\\Desktop\\StdModule1.bas"), Times.Once);
         }
@@ -328,7 +328,7 @@ namespace RubberduckTests.CodeExplorer
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
-            vm._exportCommand.Execute(vm.SelectedItem);
+            vm.ExportCommand.Execute(vm.SelectedItem);
 
             component.Verify(c => c.Export("C:\\Users\\Rubberduck\\Desktop\\StdModule1.bas"), Times.Never);
         }
@@ -368,7 +368,7 @@ namespace RubberduckTests.CodeExplorer
             project.SetupGet(m => m.VBComponents.Count).Returns(1);
             vm.SelectedItem = vm.Projects.First();
 
-            Assert.IsTrue(vm.ExportAllCommand.CanExecute(vm.SelectedItem));
+            Assert.IsTrue(vm.ExportCommand.CanExecute(vm.SelectedItem));
         }
 
         //[TestCategory("Commands")]
@@ -414,7 +414,7 @@ namespace RubberduckTests.CodeExplorer
 
         //    vm.SelectedItem = vm.Projects.First();
 
-        //    Assert.IsTrue(vm.ExportAllCommand.CanExecute(vm.SelectedItem));
+        //    Assert.IsTrue(vm.ExportCommand.CanExecute(vm.SelectedItem));
         //}
 
         [TestCategory("Commands")]
@@ -464,7 +464,7 @@ namespace RubberduckTests.CodeExplorer
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             vm.SelectedItem = vm.Projects.First();
-            vm.ExportAllCommand.Execute(vm.SelectedItem);
+            vm.ExportCommand.Execute(vm.SelectedItem);
 
             project.Verify(m => m.ExportSourceFiles(path), Times.Once);
         }
@@ -516,7 +516,7 @@ namespace RubberduckTests.CodeExplorer
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             vm.SelectedItem = vm.Projects.First();
-            vm.ExportAllCommand.Execute(vm.SelectedItem);
+            vm.ExportCommand.Execute(vm.SelectedItem);
 
             project.Verify(m => m.ExportSourceFiles(path), Times.Never);
         }
