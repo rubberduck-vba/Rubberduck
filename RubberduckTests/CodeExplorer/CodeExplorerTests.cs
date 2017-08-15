@@ -371,52 +371,6 @@ namespace RubberduckTests.CodeExplorer
             Assert.IsTrue(vm.ExportCommand.CanExecute(vm.SelectedItem));
         }
 
-        //[TestCategory("Commands")]
-        //[TestMethod]
-        //public void ExportProject_TestCanExecute_EmptyProjectExpectFalse()
-        //{
-        //    var builder = new MockVbeBuilder();
-
-        //    var projectMock = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-        //        .AddComponent("Module1", ComponentType.StandardModule, "");
-
-        //    var project = projectMock.Build();
-
-        //    var vbe = builder.AddProject(project).Build();
-
-        //    var component1 = project.Object.VBComponents[0];
-        //    var module1 = component1.CodeModule;
-
-        //    var mockFolderBrowser = new Mock<IFolderBrowser>();
-        //    var mockFolderBrowserFactory = new Mock<IFolderBrowserFactory>();
-
-        //    var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
-        //    var commands = new List<CommandBase>
-        //    {
-        //        new ExportAllCommand(vbe.Object, mockFolderBrowserFactory.Object)
-        //    };
-
-        //    var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands);
-
-        //    // Parse once with a VBComponent to generate a Project declaration
-        //    var parser = MockParser.Create(vbe.Object, state);
-        //    parser.Parse(new CancellationTokenSource());
-        //    if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-        //    project.Object.VBComponents.Remove(component1);
-
-        //    //projectMock.RemoveComponent((project.Object.VBComponents[0]);
-        //    project.SetupGet(m => m.VBComponents.Count).Returns(0);
-
-        //    // Parse again to get Project declaration without any child components
-        //    parser.Parse(new CancellationTokenSource());
-        //    if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-        //    vm.SelectedItem = vm.Projects.First();
-
-        //    Assert.IsTrue(vm.ExportCommand.CanExecute(vm.SelectedItem));
-        //}
-
         [TestCategory("Commands")]
         [TestMethod]
         public void ExportProject_TestExecute_OKPressed_ExpectExecution()
