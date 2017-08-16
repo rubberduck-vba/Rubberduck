@@ -13,6 +13,37 @@ namespace RubberduckTests.Inspections
     {
         [TestMethod]
         [TestCategory("Inspections")]
+        public void LabelNotUsed_EdgeCaseIssue3226()
+        {
+            const string inputCode = @"
+Sub foo()
+
+100           'line-number
+200:          'line-number with instruction spearator
+300 Beep      'Line-number and instruction
+400: Beep     'Line-number with instruction separator and instruction
+
+bar:         'line-label
+buzz: Beep   'Line-label and instruction
+50 fizz:     'line-number and line-label
+10 foo: Beep 'Line number and line-label (that matches procedure name) and instruction
+20 boo: Beep 'Line number and line-label and instruction
+
+End Sub
+";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new LineLabelNotUsedInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(5, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void LabelNotUsed_ReturnsResult()
         {
             const string inputCode =

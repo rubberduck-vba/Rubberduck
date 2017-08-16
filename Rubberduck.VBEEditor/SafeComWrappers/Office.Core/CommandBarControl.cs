@@ -25,7 +25,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
         public string Caption
         {
             get { return IsWrappingNullReference ? string.Empty : Target.Caption; }
-            set { if (!IsWrappingNullReference) Target.Caption = value; }
+            set { if (!IsWrappingNullReference) Target.Caption = CommandBarControlCaptionGuard.ApplyGuard(value); }
         }
 
         public string DescriptionText

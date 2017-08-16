@@ -34,18 +34,19 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<IQuickFix> QuickFixes(IInspectionResult result)
         {
-            if (!_quickFixes.ContainsKey(result.Inspection.GetType()))
+            if (!_quickFixes.ContainsKey(result.Inspection.Type))
             {
                 return Enumerable.Empty<IQuickFix>();
             }
 
-            return _quickFixes[result.Inspection.GetType()].Where(fix =>
+            return _quickFixes[result.Inspection.Type].Where(fix =>
             {
                 string value;
                 if (!result.Properties.TryGetValue("DisableFixes", out value)) { return true; }
 
                 return !value.Split(',').Contains(fix.GetType().Name);
-            });
+            })
+            .OrderBy(fix => fix.SupportedInspections.Count); // most specific fixes first; keeps "ignore once" last
         }
 
         private bool CanFix(IQuickFix fix, IInspectionResult result)

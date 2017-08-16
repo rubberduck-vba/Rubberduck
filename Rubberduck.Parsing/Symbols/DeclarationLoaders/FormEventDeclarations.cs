@@ -159,14 +159,9 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
             return new ParameterDeclaration(
                 new QualifiedMemberName(userFormQueryCloseEvent.QualifiedName.QualifiedModuleName, "Cancel"),
                 userFormQueryCloseEvent,
-                null,
-                new Selection(),
                 "Integer",
                 null,
                 string.Empty,
-                false,
-                true,
-                false,
                 false,
                 true);
         }
@@ -176,14 +171,9 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
             return new ParameterDeclaration(
                 new QualifiedMemberName(userFormQueryCloseEvent.QualifiedName.QualifiedModuleName, "CloseMode"),
                 userFormQueryCloseEvent,
-                null,
-                new Selection(),
                 "Integer",
                 null,
                 string.Empty,
-                false,
-                true,
-                false,
                 false,
                 true);
         }

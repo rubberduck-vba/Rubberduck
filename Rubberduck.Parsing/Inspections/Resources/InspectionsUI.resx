@@ -352,13 +352,13 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <comment>{0} Property name</comment>
   </data>
   <data name="SelfAssignedDeclarationInspectionResultFormat" xml:space="preserve">
-    <value>Object reference '{0}' is self-assigned</value>
+    <value>Object reference '{0}' is auto-instantiated</value>
   </data>
   <data name="SelfAssignedDeclarationInspectionMeta" xml:space="preserve">
-    <value>A self-assigned object variable declaration at procedure scope changes how nulling the reference works, which can lead to unexpected behavior.</value>
+    <value>An auto-instantiated object variable declaration at procedure scope changes how nulling the reference works, which can lead to unexpected behavior.</value>
   </data>
   <data name="SelfAssignedDeclarationInspectionName" xml:space="preserve">
-    <value>Object variable reference is self-assigned</value>
+    <value>Object variable reference is auto-instantiated</value>
   </data>
   <data name="FunctionReturnValueNotUsedInspectionName" xml:space="preserve">
     <value>Function return value is never used</value>

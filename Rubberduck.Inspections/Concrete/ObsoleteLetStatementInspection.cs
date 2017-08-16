@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
@@ -20,13 +21,15 @@ namespace Rubberduck.Inspections.Concrete
             Listener = new ObsoleteLetStatementListener();
         }
 
+        public override Type Type => typeof(ObsoleteLetStatementInspection);
+
         public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
         public override IInspectionListener Listener { get; }
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
             return Listener.Contexts.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName, context.Context.Start.Line))
-                .Select(context => new QualifiedContextInspectionResult(this, InspectionsUI.ObsoleteLetStatementInspectionResultFormat, State, context));
+                .Select(context => new QualifiedContextInspectionResult(this, InspectionsUI.ObsoleteLetStatementInspectionResultFormat, context));
         }
 
         public class ObsoleteLetStatementListener : VBAParserBaseListener, IInspectionListener

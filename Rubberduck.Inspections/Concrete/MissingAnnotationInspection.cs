@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -21,6 +22,8 @@ namespace Rubberduck.Inspections.Concrete
             Listener = new MissingAnnotationListener(state);
         }
 
+        public override Type Type => typeof(MissingAnnotationInspection);
+
         public override CodeInspectionType InspectionType => CodeInspectionType.RubberduckOpportunities;
         public override IInspectionListener Listener { get; }
         public override ParsePass Pass => ParsePass.AttributesPass;
@@ -36,7 +39,7 @@ namespace Rubberduck.Inspections.Concrete
                 var name = string.Format(InspectionsUI.MissingAnnotationInspectionResultFormat, 
                     member, ((VBAParser.AttributeStmtContext) context.Context).AnnotationType().ToString());
 
-                return new QualifiedContextInspectionResult(this, name, State, context);
+                return new QualifiedContextInspectionResult(this, name, context);
             });
         }
 

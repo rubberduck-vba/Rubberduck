@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
@@ -22,6 +23,8 @@ namespace Rubberduck.Inspections.Concrete
             Listener = new ParameterListener();
         }
 
+        public override Type Type => typeof(MultilineParameterInspection);
+
         public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
         public override IInspectionListener Listener { get; }
@@ -34,7 +37,6 @@ namespace Rubberduck.Inspections.Concrete
                                                   string.Format(context.Context.GetSelection().LineCount > 3
                                                         ? RubberduckUI.EasterEgg_Continuator
                                                         : InspectionsUI.MultilineParameterInspectionResultFormat, ((VBAParser.ArgContext)context.Context).unrestrictedIdentifier().ToString()),
-                                                  State,
                                                   context));
         }
 
