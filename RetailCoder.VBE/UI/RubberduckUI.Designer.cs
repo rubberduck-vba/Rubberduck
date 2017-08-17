@@ -627,6 +627,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Export Project....
+        /// </summary>
+        public static string CodeExplorer_ExportAll {
+            get {
+                return ResourceManager.GetString("CodeExplorer_ExportAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Find All Implementations....
         /// </summary>
         public static string CodeExplorer_FindAllImplementationsText {

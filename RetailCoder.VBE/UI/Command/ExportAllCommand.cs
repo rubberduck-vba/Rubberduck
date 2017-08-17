@@ -21,6 +21,11 @@ namespace Rubberduck.UI.Command
 
         protected override bool EvaluateCanExecute(object parameter)
         {
+            if (!(parameter is CodeExplorerProjectViewModel) && parameter is CodeExplorerItemViewModel)
+            {
+                return false;
+            }
+
             var projectNode = parameter as CodeExplorerProjectViewModel;
 
             var project = parameter as IVBProject;

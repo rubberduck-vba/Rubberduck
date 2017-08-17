@@ -274,8 +274,8 @@
             <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
             <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
             <Setter Property="HorizontalAlignment" Value="Left" />
-            <EventSetter Event="PreviewMouseRightButtonDown" Handler="OnPreviewMouseRightButtonDown" />
             <EventSetter Event="MouseDoubleClick" Handler="TreeView_OnMouseDoubleClick" />
+            <EventSetter Event="MouseRightButtonDown" Handler="TreeView_OnMouseRightButtonDown" />
             <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
                     <Setter Property="BorderBrush" Value="#adc6e5"/>
@@ -425,7 +425,12 @@
                                   CommandParameter="{Binding SelectedItem}" />
                         <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_Export}"
                                   Command="{Binding ExportCommand}"
-                                  CommandParameter="{Binding SelectedItem}" />
+                                  CommandParameter="{Binding SelectedItem}"
+                                  Visibility="{Binding ExportVisibility}" />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_ExportAll}"
+                                  Command="{Binding ExportAllCommand}"
+                                  CommandParameter="{Binding SelectedItem}" 
+                                  Visibility="{Binding ExportAllVisibility}" />
                         <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_Remove}"
                                   Command="{Binding RemoveCommand}"
                                   CommandParameter="{Binding SelectedItem}" />

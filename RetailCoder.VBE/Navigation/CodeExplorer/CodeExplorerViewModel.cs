@@ -16,6 +16,7 @@ using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using System.Windows;
 
 // ReSharper disable CanBeReplacedWithTryCastAndCheckForNull
 
@@ -59,10 +60,9 @@ namespace Rubberduck.Navigation.CodeExplorer
             ExpandAllSubnodesCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteExpandNodes);
 
             ImportCommand = commands.OfType<ImportCommand>().SingleOrDefault();
-            _exportCommand = commands.OfType<ExportCommand>().SingleOrDefault();
-            _exportAllCommand = commands.OfType<Rubberduck.UI.Command.ExportAllCommand>().SingleOrDefault();
-            ExportCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExportCommandExecute, ExportCommandCanExecute);
-
+            ExportCommand = commands.OfType<ExportCommand>().SingleOrDefault();
+            ExportAllCommand = commands.OfType<Rubberduck.UI.Command.ExportAllCommand>().SingleOrDefault();
+            
             _externalRemoveCommand = commands.OfType<RemoveCommand>().SingleOrDefault();
             if (_externalRemoveCommand != null)
             {
@@ -102,8 +102,10 @@ namespace Rubberduck.Navigation.CodeExplorer
                 OnPropertyChanged("CanExecuteIndenterCommand");
                 OnPropertyChanged("CanExecuteRenameCommand");
                 OnPropertyChanged("CanExecuteFindAllReferencesCommand");
+                OnPropertyChanged("CanExecuteExportAllCommand");
                 OnPropertyChanged("PanelTitle");
                 OnPropertyChanged("Description");
+
                 // ReSharper restore ExplicitCallerInfoArgument
             }
         }
@@ -465,9 +467,8 @@ namespace Rubberduck.Navigation.CodeExplorer
         public CommandBase ExpandAllSubnodesCommand { get; }
 
         public CommandBase ImportCommand { get; }
-        public DelegateCommand ExportCommand { get; }
-        private CommandBase _exportCommand { get; }
-        private CommandBase _exportAllCommand { get; }
+        public CommandBase ExportCommand { get; }
+        public CommandBase ExportAllCommand { get; }
 
         public CommandBase RemoveCommand { get; }
 
@@ -488,20 +489,26 @@ namespace Rubberduck.Navigation.CodeExplorer
             _externalRemoveCommand.Execute(param);
         }
 
-        private bool ExportCommandCanExecute(object param)
+        private bool CanExecuteExportAllCommand => ExportAllCommand.CanExecute(SelectedItem);
+
+        public Visibility ExportVisibility
         {
-            if (param == null) { return false; }
-            else if (param is CodeExplorerProjectViewModel) { return _exportAllCommand.CanExecute(param); }
-            else if (param is CodeExplorerComponentViewModel) { return _exportCommand.CanExecute(param); }
-            else { return false; }
+            get
+            {
+                if (CanExecuteExportAllCommand == false)
+                { return Visibility.Visible; }
+                else { return Visibility.Collapsed; }
+            }
         }
 
-        private void ExportCommandExecute(object param)
+        public Visibility ExportAllVisibility
         {
-            if (param == null) { return; }
-            else if (param is CodeExplorerProjectViewModel) { _exportAllCommand.Execute(param); }
-            else if (param is CodeExplorerComponentViewModel) { _exportCommand.Execute(param); }
-            else { return; }
+            get
+            {
+                if (CanExecuteExportAllCommand == true)
+                { return Visibility.Visible; }
+                else { return Visibility.Collapsed; }
+            }
         }
 
         public void Dispose()

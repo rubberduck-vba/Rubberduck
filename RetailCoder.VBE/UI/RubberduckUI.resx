@@ -2068,4 +2068,7 @@ Would you like to import them to Rubberduck?</value>
     <value>Choose a folder to export the source of {0} to:</value>
     <comment>{0} VBProject.Name</comment>
   </data>
+  <data name="CodeExplorer_ExportAll" xml:space="preserve">
+    <value>Export Project...</value>
+  </data>
 </root>
