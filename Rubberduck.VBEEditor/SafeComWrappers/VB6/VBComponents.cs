@@ -13,10 +13,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 {
     public class VBComponents : SafeComWrapper<VB.VBComponents>, IVBComponents
     {
-        //TODO - This is currently the VBA Guid, and it need to be updated when VB6 support is added.
-        private static readonly Guid VBComponentsEventsGuid = new Guid("0002E116-0000-0000-C000-000000000046");
+        private static readonly Guid VBComponentsEventsGuid = new Guid("0002E193-0000-0000-C000-000000000046");
 
-        //TODO - These *should* be the same, but this should be verified.
         private enum ComponentEventDispId
         {
             ItemAdded = 1,
