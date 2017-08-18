@@ -16,6 +16,7 @@ using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using System.Windows;
 
 // ReSharper disable CanBeReplacedWithTryCastAndCheckForNull
 
@@ -60,6 +61,8 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             ImportCommand = commands.OfType<ImportCommand>().SingleOrDefault();
             ExportCommand = commands.OfType<ExportCommand>().SingleOrDefault();
+            ExportAllCommand = commands.OfType<Rubberduck.UI.Command.ExportAllCommand>().SingleOrDefault();
+            
             _externalRemoveCommand = commands.OfType<RemoveCommand>().SingleOrDefault();
             if (_externalRemoveCommand != null)
             {
@@ -99,8 +102,10 @@ namespace Rubberduck.Navigation.CodeExplorer
                 OnPropertyChanged("CanExecuteIndenterCommand");
                 OnPropertyChanged("CanExecuteRenameCommand");
                 OnPropertyChanged("CanExecuteFindAllReferencesCommand");
+                OnPropertyChanged("CanExecuteExportAllCommand");
                 OnPropertyChanged("PanelTitle");
                 OnPropertyChanged("Description");
+
                 // ReSharper restore ExplicitCallerInfoArgument
             }
         }
@@ -463,13 +468,15 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public CommandBase ImportCommand { get; }
         public CommandBase ExportCommand { get; }
+        public CommandBase ExportAllCommand { get; }
+
         public CommandBase RemoveCommand { get; }
 
         public CommandBase PrintCommand { get; }
 
         public CommandBase CommitCommand { get; }
         public CommandBase UndoCommand { get; }
-
+        
         private readonly CommandBase _externalRemoveCommand;
 
         // this is a special case--we have to reset SelectedItem to prevent a crash
@@ -480,6 +487,28 @@ namespace Rubberduck.Navigation.CodeExplorer
                 && p.QualifiedSelection.Value.QualifiedName.ProjectId == node.Declaration.ProjectId);
 
             _externalRemoveCommand.Execute(param);
+        }
+
+        private bool CanExecuteExportAllCommand => ExportAllCommand.CanExecute(SelectedItem);
+
+        public Visibility ExportVisibility
+        {
+            get
+            {
+                if (CanExecuteExportAllCommand == false)
+                { return Visibility.Visible; }
+                else { return Visibility.Collapsed; }
+            }
+        }
+
+        public Visibility ExportAllVisibility
+        {
+            get
+            {
+                if (CanExecuteExportAllCommand == true)
+                { return Visibility.Visible; }
+                else { return Visibility.Collapsed; }
+            }
         }
 
         public void Dispose()

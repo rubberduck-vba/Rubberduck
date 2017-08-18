@@ -596,7 +596,8 @@ namespace Rubberduck.Root
             var items = new List<IMenuItem> ()
             {
                 KernelInstance.Get<RegexAssistantCommandMenuItem>(),
-                KernelInstance.Get<ToDoExplorerCommandMenuItem>()
+                KernelInstance.Get<ToDoExplorerCommandMenuItem>(),
+                KernelInstance.Get<ExportAllCommandMenuItem>()
             };
 
 

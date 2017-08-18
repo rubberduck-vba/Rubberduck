@@ -627,6 +627,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Export Project....
+        /// </summary>
+        public static string CodeExplorer_ExportAll {
+            get {
+                return ResourceManager.GetString("CodeExplorer_ExportAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Find All Implementations....
         /// </summary>
         public static string CodeExplorer_FindAllImplementationsText {
@@ -1547,6 +1556,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Choose a folder to export the source of {0} to:.
+        /// </summary>
+        public static string ExportAllCommand_SaveAsDialog {
+            get {
+                return ResourceManager.GetString("ExportAllCommand_SaveAsDialog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rubberduck - Extract Interface.
         /// </summary>
         public static string ExtractInterface_Caption {
@@ -2011,6 +2029,15 @@ namespace Rubberduck.UI {
         public static string HotkeyDescription_CodeExplorer {
             get {
                 return ResourceManager.GetString("HotkeyDescription_CodeExplorer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export Active Project.
+        /// </summary>
+        public static string HotkeyDescription_ExportActiveProject {
+            get {
+                return ResourceManager.GetString("HotkeyDescription_ExportActiveProject", resourceCulture);
             }
         }
         
@@ -5362,6 +5389,15 @@ namespace Rubberduck.UI {
         public static string ToolsMenu {
             get {
                 return ResourceManager.GetString("ToolsMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export Active Project....
+        /// </summary>
+        public static string ToolsMenu_ExportProject {
+            get {
+                return ResourceManager.GetString("ToolsMenu_ExportProject", resourceCulture);
             }
         }
         
