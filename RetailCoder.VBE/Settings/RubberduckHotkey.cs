@@ -14,6 +14,7 @@ namespace Rubberduck.Settings
         RefactorRename,
         RefactorExtractMethod,
         RefactorEncapsulateField,
-        SourceControl
+        SourceControl,
+        ExportActiveProject
     }
 }

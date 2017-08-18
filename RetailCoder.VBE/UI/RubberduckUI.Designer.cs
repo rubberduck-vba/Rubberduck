@@ -2033,6 +2033,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Export Active Project.
+        /// </summary>
+        public static string HotkeyDescription_ExportActiveProject {
+            get {
+                return ResourceManager.GetString("HotkeyDescription_ExportActiveProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Find symbol.
         /// </summary>
         public static string HotkeyDescription_FindSymbol {
