@@ -6,12 +6,183 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Parsing.Grammar;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace RubberduckTests.Grammar
 {
     [TestClass]
     public class VBAParserTests
     {
+        [TestCategory("Parser")]
+        [TestMethod]
+        public void ParsesWithLineNumbers_EndSub()
+        {
+            var code = @"
+Sub DoSomething()
+10 End Sub
+";
+            var result = Parse(code);
+            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition");
+            AssertTree(result.Item1, result.Item2, "//subStmt");
+        }
+
+        [TestCategory("Parser")]
+        [TestMethod]
+        public void ParsesWithLineNumbers_EndFunction()
+        {
+            var code = @"
+Function DoSomething()
+10 End Function
+";
+            var result = Parse(code);
+            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition");
+            AssertTree(result.Item1, result.Item2, "//functionStmt");
+        }
+
+        [TestCategory("Parser")]
+        [TestMethod]
+        public void ParsesWithLineNumbers_EndProperty()
+        {
+            var code = @"
+Property Get DoSomething()
+10 End Property
+";
+            var result = Parse(code);
+            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition");
+            AssertTree(result.Item1, result.Item2, "//propertyGetStmt");
+        }
+
+        [TestCategory("Parser")]
+        [TestMethod]
+        public void ParsesWithLineNumbers_IfStmt()
+        {
+            var code = @"
+Sub DoSomething()
+10 If True Then Debug.Print 42
+End Sub
+";
+            var result = Parse(code);
+            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition");
+            AssertTree(result.Item1, result.Item2, "//singleLineIfStmt");
+        }
+
+        [TestCategory("Parser")]
+        [TestMethod]
+        public void ParsesWithLineNumbers_ElseStmt()
+        {
+            var code = @"
+Sub DoSomething()
+10 If True Then
+11     Debug.Print 42
+20 Else
+21     Debug.Print 42
+30 End If
+End Sub
+";
+            var result = Parse(code);
+            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", matches => matches.Count == 5);
+            AssertTree(result.Item1, result.Item2, "//elseBlock");
+        }
+
+        [TestCategory("Parser")]
+        [TestMethod]
+        public void ParsesWithLineNumbers_SelectCaseStmt()
+        {
+            var code = @"
+Sub DoSomething()
+10 Select Case False
+20 Case True
+21     Debug.Print 42
+30 Case False
+31     Debug.Print 42
+40 End Select
+End Sub
+";
+            var result = Parse(code);
+            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", matches => matches.Count == 6);
+            AssertTree(result.Item1, result.Item2, "//caseClause", matches => matches.Count == 2);
+        }
+
+        [TestCategory("Parser")]
+        [TestMethod]
+        public void ParsesWithLineNumbers_ForNextLoop()
+        {
+            var code = @"
+Sub DoSomething()
+10 For i = 1 To 10
+20     Debug.Print 42
+30 Next
+End Sub
+";
+            var result = Parse(code);
+            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", matches => matches.Count == 3);
+            AssertTree(result.Item1, result.Item2, "//forNextStmt");
+        }
+
+        [TestCategory("Parser")]
+        [TestMethod]
+        public void ParsesWithLineNumbers_ForEachLoop()
+        {
+            var code = @"
+Sub DoSomething()
+10 For Each foo In bar
+20     Debug.Print 42
+30 Next
+End Sub
+";
+            var result = Parse(code);
+            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", matches => matches.Count == 3);
+            AssertTree(result.Item1, result.Item2, "//forEachStmt");
+        }
+
+        [TestCategory("Parser")]
+        [TestMethod]
+        public void ParsesWithLineNumbers_DoLoop()
+        {
+            var code = @"
+Sub DoSomething()
+10 Do
+20     Debug.Print 42
+30 Loop While False
+End Sub
+";
+            var result = Parse(code);
+            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", matches => matches.Count == 3);
+            AssertTree(result.Item1, result.Item2, "//doLoopStmt");
+        }
+
+        [TestCategory("Parser")]
+        [TestMethod]
+        public void ParsesWithLineNumbers_WithBlock()
+        {
+            var code = @"
+Sub DoSomething()
+10 With New Collection
+20     Debug.Print 42
+30 End With
+End Sub
+";
+            var result = Parse(code);
+            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", matches => matches.Count == 3);
+            AssertTree(result.Item1, result.Item2, "//withStmt");
+        }
+
+        [TestCategory("Parser")]
+        [TestMethod]
+        public void ParsesWithLineNumbers_WhileLoop()
+        {
+            var code = @"
+Sub DoSomething()
+10 While False
+20     Debug.Print 42
+30 Wend
+End Sub
+";
+            var result = Parse(code);
+            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", matches => matches.Count == 3);
+            AssertTree(result.Item1, result.Item2, "//whileWendStmt");
+        }
+
         [TestCategory("Parser")]
         [TestMethod]
         public void TestParsesEmptyForm()
@@ -1964,7 +2135,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//attributeStmt", matches => matches.Count == 1);
         }
 
-        private Tuple<VBAParser, ParserRuleContext> Parse(string code)
+        private Tuple<VBAParser, ParserRuleContext> Parse(string code, PredictionMode predictionMode = null)
         {
             var stream = new AntlrInputStream(code);
             var lexer = new VBALexer(stream);
@@ -1973,9 +2144,24 @@ End Sub
             // Don't remove this line otherwise we won't get notified of parser failures.
             parser.ErrorHandler = new BailErrorStrategy();
             //parser.AddErrorListener(new ExceptionErrorListener());
-            // If SLL fails we want to get notified ASAP so we can fix it, that's why we don't retry using LL.
-            parser.Interpreter.PredictionMode = PredictionMode.Sll;
-            var tree = parser.startRule();
+            parser.Interpreter.PredictionMode = predictionMode ?? PredictionMode.Sll;
+            ParserRuleContext tree = null;
+            try
+            {
+                tree = parser.startRule();
+            }
+            catch (Exception exception)
+            {
+                if (predictionMode == null || predictionMode == PredictionMode.Ll)
+                {
+                    // If SLL fails we want to get notified ASAP so we can fix it, that's why we don't retry using LL.
+                    // If LL mode fails, we're done.
+                    throw;
+                }
+
+                Debug.WriteLine(exception, "SLL Parser Exception");
+                return Parse(code, PredictionMode.Ll);
+            }
             return Tuple.Create<VBAParser, ParserRuleContext>(parser, tree);
         }
 
@@ -1988,7 +2174,7 @@ End Sub
         {
             var matches = new XPath(parser, xpath).Evaluate(root);
             var actual = matches.Count;
-            Assert.IsTrue(assertion(matches), string.Format("{0} matches found.", actual));
+            Assert.IsTrue(assertion(matches), $"{actual} matches found.");
         }
     }
 }

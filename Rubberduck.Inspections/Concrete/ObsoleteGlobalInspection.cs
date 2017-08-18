@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Common;
@@ -14,6 +15,8 @@ namespace Rubberduck.Inspections.Concrete
     {
         public ObsoleteGlobalInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Suggestion) { }
+
+        public override Type Type => typeof(ObsoleteGlobalInspection);
 
         public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
 

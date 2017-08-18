@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
@@ -14,6 +15,8 @@ namespace Rubberduck.Inspections.Concrete
     {
         public ObjectVariableNotSetInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Error) {  }
+
+        public override Type Type => typeof(ObjectVariableNotSetInspection);
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 

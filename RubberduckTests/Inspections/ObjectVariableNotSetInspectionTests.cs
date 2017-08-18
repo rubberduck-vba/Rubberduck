@@ -31,6 +31,57 @@ End Sub
 
         [TestMethod]
         [TestCategory("Inspections")]
+        public void ObjectVariableNotSet_GivenPropertyLet_ReturnsNoResult()
+        {
+            var expectResultCount = 0;
+            var input =
+                @"
+Public Property Let Foo() As String
+End Property
+
+Private Sub DoSomething()
+    Foo = 42
+End Sub
+";
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ObjectVariableNotSet_GivenPropertySet_ReturnsResult()
+        {
+            var expectResultCount = 1;
+            var input =
+                @"
+Public Property Set Foo() As Object
+End Property
+
+Private Sub DoSomething()
+    Foo = New Object
+End Sub
+";
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ObjectVariableNotSet_GivenPropertySet_ReturnsNoResult()
+        {
+            var expectResultCount = 0;
+            var input =
+                @"
+Public Property Set Foo() As Object
+End Property
+
+Private Sub DoSomething()
+    Set Foo = New Object
+End Sub
+";
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void ObjectVariableNotSet_GivenIndexerObjectAccess_ReturnsResult()
         {
             var expectResultCount = 1;

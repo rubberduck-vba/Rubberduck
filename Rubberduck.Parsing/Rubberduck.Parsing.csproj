@@ -149,6 +149,8 @@
     <Compile Include="Inspections\Abstract\IInspector.cs" />
     <Compile Include="Inspections\Abstract\IParseTreeInspection.cs" />
     <Compile Include="Inspections\Abstract\IQuickFix.cs" />
+    <Compile Include="Inspections\CannotAnnotateAttribute.cs" />
+    <Compile Include="Inspections\RequiredLibraryAttribute.cs" />
     <Compile Include="Inspections\Resources\CodeInspectionSeverity.cs" />
     <Compile Include="Inspections\Resources\CodeInspectionType.cs" />
     <Compile Include="Inspections\Resources\InspectionsUI.de.Designer.cs">
@@ -343,8 +345,6 @@
     <Compile Include="Symbols\ConstantDeclaration.cs" />
     <Compile Include="ComReflection\XmlPersistableDeclarations.cs" />
     <Compile Include="Symbols\UnboundMemberDeclaration.cs" />
-    <Compile Include="Syntax\SyntaxTree.cs" />
-    <Compile Include="Syntax\TextSpan.cs" />
     <Compile Include="VBA\AttributeListener.cs" />
     <Compile Include="VBA\AttributeParser.cs" />
     <Compile Include="VBA\Attributes.cs" />

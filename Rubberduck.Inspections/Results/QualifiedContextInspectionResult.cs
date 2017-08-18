@@ -3,14 +3,13 @@ using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Results
 {
     class QualifiedContextInspectionResult : InspectionResultBase
     {
-        public QualifiedContextInspectionResult(IInspection inspection, string description, RubberduckParserState state, QualifiedContext context, Dictionary<string, string> properties = null) :
+        public QualifiedContextInspectionResult(IInspection inspection, string description, QualifiedContext context, Dictionary<string, string> properties = null) :
             base(inspection,
                  description,
                  context.ModuleName,
@@ -20,12 +19,6 @@ namespace Rubberduck.Inspections.Results
                  context.MemberName,
                  properties)
         {
-        }
-
-        private static QualifiedMemberName? GetQualifiedMemberName(RubberduckParserState state, QualifiedContext context)
-        {
-            var members = state.DeclarationFinder.Members(context.ModuleName);
-            return members.SingleOrDefault(m => m.Selection.Contains(context.Context.GetSelection()))?.QualifiedName;
         }
     }
 }

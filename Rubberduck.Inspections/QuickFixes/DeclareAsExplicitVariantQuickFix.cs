@@ -29,7 +29,8 @@ namespace Rubberduck.Inspections.QuickFixes
         {
             var rewriter = _state.GetRewriter(result.Target);
 
-            ParserRuleContext identifierNode = result.Context is VBAParser.VariableSubStmtContext
+            ParserRuleContext identifierNode =
+                result.Context is VBAParser.VariableSubStmtContext || result.Context is VBAParser.ConstSubStmtContext
                 ? result.Context.children[0]
                 : ((dynamic) result.Context).unrestrictedIdentifier();
             rewriter.InsertAfter(identifierNode.Stop.TokenIndex, " As Variant");
