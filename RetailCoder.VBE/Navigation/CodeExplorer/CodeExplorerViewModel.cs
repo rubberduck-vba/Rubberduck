@@ -106,6 +106,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 OnPropertyChanged("ExportAllVisibility");
                 OnPropertyChanged("PanelTitle");
                 OnPropertyChanged("Description");
+
                 // ReSharper restore ExplicitCallerInfoArgument
             }
         }
