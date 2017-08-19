@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
 using Microsoft.CSharp.RuntimeBinder;
 using Rubberduck.VBEditor.SafeComWrappers.MSForms;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
@@ -149,6 +150,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
                     _hasPictureProperty = true;
                 }
                 catch (RuntimeBinderException)
+                {
+                    _hasPictureProperty = false;
+                }
+
+                catch (COMException)
                 {
                     _hasPictureProperty = false;
                 }
