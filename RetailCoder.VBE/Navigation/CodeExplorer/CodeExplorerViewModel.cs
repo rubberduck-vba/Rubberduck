@@ -102,10 +102,10 @@ namespace Rubberduck.Navigation.CodeExplorer
                 OnPropertyChanged("CanExecuteIndenterCommand");
                 OnPropertyChanged("CanExecuteRenameCommand");
                 OnPropertyChanged("CanExecuteFindAllReferencesCommand");
-                OnPropertyChanged("CanExecuteExportAllCommand");
+                OnPropertyChanged("ExportVisibility");
+                OnPropertyChanged("ExportAllVisibility");
                 OnPropertyChanged("PanelTitle");
                 OnPropertyChanged("Description");
-
                 // ReSharper restore ExplicitCallerInfoArgument
             }
         }
