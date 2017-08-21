@@ -140,12 +140,6 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
 
             RemoveCommandBar();
         }
-
-        private void RemoveCommandBar()
-        {
-            RemoveChildren();
-            Item.Delete();
-        }
     }
 
     public enum RubberduckCommandBarItemDisplayOrder

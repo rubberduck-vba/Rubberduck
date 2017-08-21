@@ -77,8 +77,7 @@ namespace Rubberduck
         {
             foreach (var menu in _menus.Where(menu => menu.Item != null))
             {
-                menu.RemoveChildren();
-                menu.Item.Delete();
+                menu.RemoveMenu();
             }
         }
     }

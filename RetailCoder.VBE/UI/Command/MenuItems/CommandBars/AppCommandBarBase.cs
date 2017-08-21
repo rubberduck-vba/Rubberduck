@@ -109,9 +109,18 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
 
         public ICommandBars Parent { get; set; }
         public ICommandBar Item { get; private set; }
-        public void RemoveChildren()
+
+        public void RemoveCommandBar()
         {
-            Logger.Debug("Removing child controls from commandbar.");
+            Logger.Debug("Removing commandbar.");
+            RemoveChildren();
+            Item?.Delete();
+            Item = null;
+            Parent = null;
+        }
+
+        private void RemoveChildren()
+        {
             if (Parent == null || Parent.IsWrappingNullReference)
             {
                 return;
@@ -132,6 +141,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             {
                 Logger.Error(exception, "Error removing child controls from commandbar.");
             }
+            _items.Clear();
         }
 
         // note: HAAAAACK!!!
