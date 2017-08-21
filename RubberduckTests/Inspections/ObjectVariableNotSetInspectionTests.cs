@@ -36,7 +36,7 @@ End Sub
             var expectResultCount = 0;
             var input =
                 @"
-Public Property Let Foo() As String
+Public Property Let Foo(rhs As String)
 End Property
 
 Private Sub DoSomething()
@@ -48,12 +48,12 @@ End Sub
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ObjectVariableNotSet_GivenPropertySet_ReturnsResult()
+        public void ObjectVariableNotSet_GivenPropertySet_WithoutSet_ReturnsResult()
         {
             var expectResultCount = 1;
             var input =
                 @"
-Public Property Set Foo() As Object
+Public Property Set Foo(rhs As Object)
 End Property
 
 Private Sub DoSomething()
@@ -65,12 +65,12 @@ End Sub
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ObjectVariableNotSet_GivenPropertySet_ReturnsNoResult()
+        public void ObjectVariableNotSet_GivenPropertySet_WithSet_ReturnsNoResult()
         {
             var expectResultCount = 0;
             var input =
                 @"
-Public Property Set Foo() As Object
+Public Property Set Foo(rhs As Object)
 End Property
 
 Private Sub DoSomething()
