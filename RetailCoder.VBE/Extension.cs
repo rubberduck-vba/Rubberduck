@@ -243,6 +243,16 @@ namespace Rubberduck
                 _kernel = null;
             }
 
+            Debug.WriteLine("Extension: Initiating garbage collection.");
+
+            GC.Collect();
+
+            Debug.WriteLine("Extension: Initiated garbage collection.");
+
+            GC.WaitForPendingFinalizers();
+
+            Debug.WriteLine("Extension: Finalizers have run.");
+
             _isInitialized = false;
         }
 
