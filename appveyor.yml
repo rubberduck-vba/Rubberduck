@@ -1,4 +1,4 @@
-version: 2.1.{build}
+version: 2.1.0.{build}
 branches:
   only:
   - master
@@ -15,6 +15,10 @@ before_build:
 - ps: choco install innosetup
 build:
   verbosity: normal
+assembly_info:
+  patch: true
+  file: RetailCoder.VBE\Properties\AssemblyInfo.cs
+  assembly_version: '{version}'
 artifacts:
 - path: Installers\Rubberduck.Setup.exe
   name: Rubberduck
@@ -29,11 +33,11 @@ before_deploy:
 deploy:
 - provider: GitHub
   tag: Rubberduck v$(appveyor_build_version)
-  release: Rubberduck v$(appveyor_build_version)
+  release: Rubberduck v$(appveyor_build_version)-prerelease
   description: AppVeyor build on [next] - https://ci.appveyor.com/project/retailcoder/rubberduck/build/$(appveyor_build_version)
   auth_token:
     secure: oh0SRnZVt0ABeWqFr7ut5TZkxFJjHmS/DZnJnp2HErQTCmX3O8RASJH3ZiYl11gz
-  artifact: Installers\Rubberduck.Setup.exe
+  artifact: Installers\Rubberduck.Setup.$(appveyor_build_version)-prerelease.exe
   draft: false
   prerelease: true
   on:

@@ -30,12 +30,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 
         public ICommandBarControl Add(ControlType type)
         {
-            return new CommandBarControl(IsWrappingNullReference ? null : Target.Add(type, Temporary:true));
+            return new CommandBarControl(IsWrappingNullReference ? null : Target.Add(type, Temporary: CommandBarControl.AddCommandBarControlsTemporarily));
         }
 
         public ICommandBarControl Add(ControlType type, int before)
         {
-            return new CommandBarControl(IsWrappingNullReference ? null : Target.Add(type, Before: before, Temporary: true));
+            return new CommandBarControl(IsWrappingNullReference ? null : Target.Add(type, Before: before, Temporary: CommandBarControl.AddCommandBarControlsTemporarily));
         }
 
         IEnumerator<ICommandBarControl> IEnumerable<ICommandBarControl>.GetEnumerator()
