@@ -31,21 +31,27 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
         {
             add
             {
-                ((Microsoft.Office.Core.CommandBarButton)Target).Click += Target_Click;
+                if (_clickHandler == null)
+                {
+                    ((Microsoft.Office.Core.CommandBarButton)Target).Click += Target_Click;
+                }
                 _clickHandler += value;
                 System.Diagnostics.Debug.WriteLine("Added handler for: {0} '{1}' (tag: {2}, hashcode:{3})", Parent.Name, Target.Caption, Tag, Target.GetHashCode());
             }
             remove
             {
+                _clickHandler -= value;
                 try
                 {
-                    ((Microsoft.Office.Core.CommandBarButton)Target).Click -= Target_Click;
+                    if (_clickHandler == null)
+                    {
+                        ((Microsoft.Office.Core.CommandBarButton)Target).Click -= Target_Click;
+                    }
                 }
                 catch
                 {
                     // he's gone, dave.
                 }
-                _clickHandler -= value;
                 System.Diagnostics.Debug.WriteLine("Removed handler for: {0} '{1}' (tag: {2}, hashcode:{3})", Parent.GetType().Name, Target.Caption, Tag, Target.GetHashCode());
             }
         }

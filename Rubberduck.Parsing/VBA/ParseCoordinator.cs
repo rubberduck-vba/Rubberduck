@@ -320,7 +320,7 @@ namespace Rubberduck.Parsing.VBA
                 if (watch != null && watch.IsRunning) watch.Stop();
                 if (lockTaken) Monitor.Exit(_parsingRunSyncObject);
             }
-            if (watch != null) Logger.Debug("Parsing run finished after {0}s. (thread {1}).", watch.Elapsed.Seconds, Thread.CurrentThread.ManagedThreadId);
+            if (watch != null) Logger.Debug("Parsing run finished after {0}s. (thread {1}).", watch.Elapsed.TotalSeconds, Thread.CurrentThread.ManagedThreadId);
         }
 
         private void ParseAllInternal(object requestor, CancellationToken token)
