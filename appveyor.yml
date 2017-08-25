@@ -24,11 +24,10 @@ artifacts:
 hosts:
   api.nuget.org: 93.184.221.200
 after_test:
-- iscc /q "Installer Build Script.iss"  
+- iscc /q "Installer Build Script.iss" 
+- cmd: move Installers\Rubberduck.Setup.exe Installers\Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%.exe
 before_package:
 - cmd: copy Rubberduck.Inspections\bin\Release\Rubberduck.Inspections.dll RetailCoder.VBE\bin\Release\Rubberduck.Inspections.dll
-before_deploy:
-- cmd: move Installers\Rubberduck.Setup.exe Installers\Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%.exe
 deploy:
 - provider: GitHub
   tag: Rubberduck v$(appveyor_build_version)
