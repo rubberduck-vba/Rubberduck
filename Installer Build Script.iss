@@ -25,7 +25,7 @@ DefaultGroupName=Rubberduck
 AllowNoIcons=yes
 LicenseFile={#License}
 OutputDir={#OutputDirectory}
-OutputBaseFilename=Rubberduck.Setup.{#AppVersion}
+OutputBaseFilename=Rubberduck.Setup
 Compression=lzma
 SolidCompression=yes
 
