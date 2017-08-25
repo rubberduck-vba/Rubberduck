@@ -28,7 +28,7 @@ after_test:
 before_package:
 - cmd: copy Rubberduck.Inspections\bin\Release\Rubberduck.Inspections.dll RetailCoder.VBE\bin\Release\Rubberduck.Inspections.dll
 before_deploy:
-- cmd: move Installers\Rubberduck.Setup.exe Installers\Rubberduck.Setup.'{version}'.exe
+- cmd: move Installers\Rubberduck.Setup.exe Installers\Rubberduck.Setup.%APPVEYOR_VERSION_NUMBER%.exe
 deploy:
 - provider: GitHub
   tag: Rubberduck v$(appveyor_build_version)
@@ -66,4 +66,4 @@ for:
       - next
   version: 2.1.0.{build}
   before_deploy:
-  - cmd: move Installers\Rubberduck.Setup.exe Installers\Rubberduck.Setup.'{version}'-prerelease.exe
+  - cmd: move Installers\Rubberduck.Setup.exe Installers\Rubberduck.Setup.%APPVEYOR_VERSION_NUMBER%-prerelease.exe
