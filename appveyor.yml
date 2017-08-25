@@ -4,10 +4,10 @@ for:
   branches:
     only:
       - next
-  version: 2.1.0.{build}-pre
+  version: 2.1.0.{build}
   after_test:
   - cmd: iscc /q "Installer Build Script.iss" 
-  - cmd: move Installers\Rubberduck.Setup.exe Installers\Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%-prerelease.exe
+  - cmd: move Installers\Rubberduck.Setup.exe Installers\Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%-pre.exe
 branches:
   only:
   - master
@@ -52,11 +52,11 @@ deploy:
     branch: master
 - provider: GitHub
   tag: Rubberduck v$(appveyor_build_version)
-  release: Rubberduck v$(appveyor_build_version)-prerelease
+  release: Rubberduck v$(appveyor_build_version)-pre
   description: AppVeyor build on [next] - https://ci.appveyor.com/project/retailcoder/rubberduck/build/$(appveyor_build_version)
   auth_token:
     secure: q25pAS4Vn4g8SeziwconRT8SLcy6FBaxiv27s7GNjXzE4hE26ZDhCJp+573FbeUa
-  artifact: Installers\Rubberduck.Setup.$(appveyor_build_version)-prerelease.exe
+  artifact: Installers\Rubberduck.Setup.$(appveyor_build_version)-pre.exe
   draft: false
   prerelease: true
   on:
