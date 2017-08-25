@@ -1,3 +1,13 @@
+version: 2.1.0
+for:
+-
+  branches:
+    only:
+      - next
+  version: 2.1.0.{build}
+  after_test:
+  - cmd: iscc /q "Installer Build Script.iss" 
+  - cmd: move Installers\Rubberduck.Setup.exe Installers\Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%-prerelease.exe
 branches:
   only:
   - master
@@ -57,14 +67,3 @@ notifications:
   on_build_success: true
   on_build_failure: true
   on_build_status_changed: false
-version: 2.1.0
-for:
--
-  branches:
-    only:
-      - next
-  version: 2.1.0.{build}
-  after_test:
-  - cmd: iscc /q "Installer Build Script.iss" 
-  - cmd: move Installers\Rubberduck.Setup.exe Installers\Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%-prerelease.exe
-  - cmd: dir Installers
