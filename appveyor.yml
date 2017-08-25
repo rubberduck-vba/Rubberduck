@@ -55,7 +55,7 @@ deploy:
   release: Rubberduck v$(appveyor_build_version)-pre
   description: AppVeyor build on [next] - https://ci.appveyor.com/project/retailcoder/rubberduck/build/$(appveyor_build_version)
   auth_token:
-    secure: q25pAS4Vn4g8SeziwconRT8SLcy6FBaxiv27s7GNjXzE4hE26ZDhCJp+573FbeUa
+    secure: oh0SRnZVt0ABeWqFr7ut5TZkxFJjHmS/DZnJnp2HErQTCmX3O8RASJH3ZiYl11gz
   artifact: Installers\Rubberduck.Setup.$(appveyor_build_version)-pre.exe
   draft: false
   prerelease: true
