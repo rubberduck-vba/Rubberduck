@@ -66,5 +66,7 @@ for:
       - next
   version: 2.1.0.{build}
   before_deploy:
+  - cmd: dir Installers
   - cmd: move Installers\Rubberduck.Setup.exe Installers\Rubberduck.Setup.%APPVEYOR_VERSION_NUMBER%-prerelease.exe
+  - cmd: dir Installers
   - cmd: echo %appveyor_build_version%
