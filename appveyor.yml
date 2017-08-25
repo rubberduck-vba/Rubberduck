@@ -64,6 +64,7 @@ for:
     only:
       - next
   version: 2.1.0.{build}
-  before_deploy:
+  after_test:
+  - cmd: iscc /q "Installer Build Script.iss" 
   - cmd: move Installers\Rubberduck.Setup.exe Installers\Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%-prerelease.exe
   - cmd: dir Installers
