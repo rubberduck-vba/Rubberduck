@@ -1,4 +1,3 @@
-version: 2.1.0.{build}
 branches:
   only:
   - master
@@ -29,7 +28,7 @@ after_test:
 before_package:
 - cmd: copy Rubberduck.Inspections\bin\Release\Rubberduck.Inspections.dll RetailCoder.VBE\bin\Release\Rubberduck.Inspections.dll
 before_deploy:
-- ps: 
+- cmd: move Installers\Rubberduck.Setup.exe Installers\Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%.exe
 deploy:
 - provider: GitHub
   tag: Rubberduck v$(appveyor_build_version)
@@ -37,7 +36,7 @@ deploy:
   description: AppVeyor build on [next] - https://ci.appveyor.com/project/retailcoder/rubberduck/build/$(appveyor_build_version)
   auth_token:
     secure: oh0SRnZVt0ABeWqFr7ut5TZkxFJjHmS/DZnJnp2HErQTCmX3O8RASJH3ZiYl11gz
-  artifact: Installers\Rubberduck.Setup.$(appveyor_build_version)-prerelease.exe
+  artifact: Installers\Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%-prerelease.exe
   draft: false
   prerelease: true
   on:
@@ -48,7 +47,7 @@ deploy:
   description: AppVeyor build on [master] - https://ci.appveyor.com/project/retailcoder/rubberduck/build/$(appveyor_build_version)
   auth_token:
     secure: oh0SRnZVt0ABeWqFr7ut5TZkxFJjHmS/DZnJnp2HErQTCmX3O8RASJH3ZiYl11gz
-  artifact: Installers\Rubberduck.Setup.exe
+  artifact: Installers\Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%.exe
   draft: true
   prerelease: false
   on:
@@ -59,3 +58,13 @@ notifications:
   on_build_success: true
   on_build_failure: true
   on_build_status_changed: false
+version: 2.1.0
+for:
+-
+  branches:
+    only:
+      - next
+  version: 2.1.0.{build}
+  before_deploy:
+  - cmd: move Installers\Rubberduck.Setup.exe Installers\Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%-prerelease.exe
+  - cmd: dir Installers
