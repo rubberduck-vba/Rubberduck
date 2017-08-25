@@ -18,16 +18,16 @@ assembly_info:
   patch: true
   file: RetailCoder.VBE\Properties\AssemblyInfo.cs
   assembly_version: '{version}'
-artifacts:
-- path: Installers\*.exe
-  name: Rubberduck
 hosts:
   api.nuget.org: 93.184.221.200
+before_package:
+- cmd: copy Rubberduck.Inspections\bin\Release\Rubberduck.Inspections.dll RetailCoder.VBE\bin\Release\Rubberduck.Inspections.dll
 after_test:
 - iscc /q "Installer Build Script.iss" 
 - cmd: move Installers\Rubberduck.Setup.exe Installers\Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%.exe
-before_package:
-- cmd: copy Rubberduck.Inspections\bin\Release\Rubberduck.Inspections.dll RetailCoder.VBE\bin\Release\Rubberduck.Inspections.dll
+artifacts:
+- path: Installers\Rubberduck.Setup.*.exe
+  name: Rubberduck
 deploy:
 - provider: GitHub
   tag: Rubberduck v$(appveyor_build_version)
