@@ -109,9 +109,18 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
 
         public ICommandBars Parent { get; set; }
         public ICommandBar Item { get; private set; }
-        public void RemoveChildren()
+
+        public void RemoveCommandBar()
         {
-            Logger.Debug("Removing child controls from commandbar.");
+            Logger.Debug("Removing commandbar.");
+            RemoveChildren();
+            Item?.Delete();
+            Item = null;
+            Parent = null;
+        }
+
+        private void RemoveChildren()
+        {
             if (Parent == null || Parent.IsWrappingNullReference)
             {
                 return;
@@ -119,31 +128,20 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
 
             try
             {
-                foreach (var child in _items.Values.Select(item => item as CommandBarButton).Where(child => child != null))
+                foreach (var button in _items.Values.Select(item => item as ICommandBarButton).Where(child => child != null))
                 {
-                    var button = Parent.FindControl(child.Id);
-                    if (button is ICommandBarButton && !button.IsWrappingNullReference)
+                    if (!button.IsWrappingNullReference)
                     {
-                        (button as ICommandBarButton).Click -= child_Click;
+                        button.Click -= child_Click;
                     }
                     button.Delete();
                 }
             }
             catch (COMException exception)
             {
-                /*
-Application: EXCEL.EXE
-Framework Version: v4.0.30319
-Description: The process was terminated due to an unhandled exception.
-Exception Info: System.Runtime.InteropServices.COMException
-   at Microsoft.Office.Core.CommandBarControl.get_Parent()
-   at Rubberduck.VBEditor.SafeComWrappers.Office.Core.CommandBarControl.get_Parent()
-   at Rubberduck.VBEditor.SafeComWrappers.Office.Core.CommandBarButton.remove_Click(System.EventHandler`1<Rubberduck.VBEditor.SafeComWrappers.Office.Core.CommandBarButtonClickEventArgs>)
-   at Rubberduck.UI.Command.MenuItems.CommandBars.AppCommandBarBase.RemoveChildren()
-   at Rubberduck.UI.Command.MenuItems.CommandBars.RubberduckCommandBar.Dispose()
-                */
                 Logger.Error(exception, "Error removing child controls from commandbar.");
             }
+            _items.Clear();
         }
 
         // note: HAAAAACK!!!

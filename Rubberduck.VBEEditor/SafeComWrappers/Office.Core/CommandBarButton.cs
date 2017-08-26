@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
 using Microsoft.CSharp.RuntimeBinder;
 using Rubberduck.VBEditor.SafeComWrappers.MSForms;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
@@ -30,21 +31,27 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
         {
             add
             {
-                ((Microsoft.Office.Core.CommandBarButton)Target).Click += Target_Click;
+                if (_clickHandler == null)
+                {
+                    ((Microsoft.Office.Core.CommandBarButton)Target).Click += Target_Click;
+                }
                 _clickHandler += value;
                 System.Diagnostics.Debug.WriteLine("Added handler for: {0} '{1}' (tag: {2}, hashcode:{3})", Parent.Name, Target.Caption, Tag, Target.GetHashCode());
             }
             remove
             {
+                _clickHandler -= value;
                 try
                 {
-                    ((Microsoft.Office.Core.CommandBarButton)Target).Click -= Target_Click;
+                    if (_clickHandler == null)
+                    {
+                        ((Microsoft.Office.Core.CommandBarButton)Target).Click -= Target_Click;
+                    }
                 }
                 catch
                 {
                     // he's gone, dave.
                 }
-                _clickHandler -= value;
                 System.Diagnostics.Debug.WriteLine("Removed handler for: {0} '{1}' (tag: {2}, hashcode:{3})", Parent.GetType().Name, Target.Caption, Tag, Target.GetHashCode());
             }
         }
@@ -149,6 +156,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
                     _hasPictureProperty = true;
                 }
                 catch (RuntimeBinderException)
+                {
+                    _hasPictureProperty = false;
+                }
+
+                catch (COMException)
                 {
                     _hasPictureProperty = false;
                 }

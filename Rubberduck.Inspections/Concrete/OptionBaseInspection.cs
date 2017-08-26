@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
@@ -19,6 +20,8 @@ namespace Rubberduck.Inspections.Concrete
         {
             Listener = new OptionBaseStatementListener();
         }
+
+        public override Type Type => typeof(OptionBaseInspection);
 
         public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
         public override IInspectionListener Listener { get; }
