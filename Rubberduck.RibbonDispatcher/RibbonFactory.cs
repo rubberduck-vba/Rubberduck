@@ -18,7 +18,7 @@ namespace Rubberduck.RibbonDispatcher
     [ComVisible(true)][CLSCompliant(true)]
     public class RibbonFactory {
         internal RibbonFactory(IRibbonUI ribbonUI) {
-            RibbonUI   = ribbonUI;
+            _ribbonUI   = ribbonUI;
 
             _controls  = new Dictionary<string,IRibbonCommon>();
             _buttons   = new Dictionary<string,IRibbonButton>();
@@ -26,9 +26,9 @@ namespace Rubberduck.RibbonDispatcher
             _dropDowns = new Dictionary<string,IRibbonDropDown>();
         }
 
-        private IRibbonUI    RibbonUI    { get; }
+        private readonly IRibbonUI _ribbonUI;
 
-        private void PropertyChanged(object sender, ChangedControlEventArgs e) => RibbonUI.InvalidateControl(e.ControlId);
+        private void PropertyChanged(object sender, ChangedControlEventArgs e) => _ribbonUI.InvalidateControl(e.ControlId);
 
         private T Add<T>(T ctrl) where T:IRibbonCommon {
             _controls.Add(ctrl.Id, ctrl);
@@ -42,7 +42,7 @@ namespace Rubberduck.RibbonDispatcher
 
         public IReadOnlyDictionary<string,IRibbonCommon>     Controls  => new ReadOnlyDictionary<string,IRibbonCommon>(_controls);
         private IDictionary<string,IRibbonCommon>           _controls  { get; }
-        [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed")]
+        [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         public IRibbonCommon NewRibbonGroup(
             string          id,
             LanguageStrings strings=null, 
@@ -53,7 +53,7 @@ namespace Rubberduck.RibbonDispatcher
 
         public IReadOnlyDictionary<string,IRibbonButton>     Buttons   => new ReadOnlyDictionary<string,IRibbonButton>(_buttons);
         private IDictionary<string,IRibbonButton>           _buttons   { get; }
-        [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed")]
+        [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         public IRibbonButton NewRibbonButton(
             string          id,
             LanguageStrings strings=null, 
@@ -64,7 +64,7 @@ namespace Rubberduck.RibbonDispatcher
 
         public IReadOnlyDictionary<string,IRibbonToggle>     Toggles   => new ReadOnlyDictionary<string,IRibbonToggle>(_toggles);
         private IDictionary<string,IRibbonToggle>           _toggles   { get; }
-        [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed")]
+        [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         public IRibbonToggle NewRibbonToggle(
             string          id,
             LanguageStrings strings=null, 
@@ -75,7 +75,7 @@ namespace Rubberduck.RibbonDispatcher
 
         public IReadOnlyDictionary<string,IRibbonDropDown>   DropDowns => new ReadOnlyDictionary<string,IRibbonDropDown>(_dropDowns);
         private IDictionary<string,IRibbonDropDown>         _dropDowns { get; }
-        [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed")]
+        [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         public IRibbonDropDown NewRibbonDropDown(
             string          id,
             LanguageStrings strings=null, 
@@ -84,7 +84,7 @@ namespace Rubberduck.RibbonDispatcher
             ControlSize     size   =RibbonControlSizeLarge
         ) => Add(new RibbonDropDown(id, strings, visible, enabled, size));
 
-        [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed")]
+        [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         public LanguageStrings NewLanguageControlRibbonText(
             string label,
             string screenTip      = null,
