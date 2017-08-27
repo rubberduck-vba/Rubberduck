@@ -86,9 +86,10 @@
     <Compile Include="Abstract\IRibbonDropdown.cs" />
     <Compile Include="Abstract\IRibbonTextLanguageControl.cs" />
     <Compile Include="Abstract\IRibbonToggle.cs" />
+    <Compile Include="Concrete\RibbonGroup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Concrete\RibbonButton.cs" />
-    <Compile Include="Concrete\RibbonCommon.cs" />
+    <Compile Include="Abstract\RibbonCommon.cs" />
     <Compile Include="Concrete\RibbonDropdown.cs" />
     <Compile Include="RibbonFactory.cs" />
     <Compile Include="Concrete\RibbonText.cs" />

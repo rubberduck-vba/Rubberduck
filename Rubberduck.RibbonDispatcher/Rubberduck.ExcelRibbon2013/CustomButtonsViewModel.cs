@@ -13,7 +13,7 @@ namespace Rubberduck.RibbonDispatcher.Excel2013 {
         [SuppressMessage("Microsoft.Globalization", "CA1300:SpecifyMessageBoxOptions")]
         [SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "System.Windows.Forms.MessageBox.Show(System.String,System.String,System.Windows.Forms.MessageBoxButtons)")]
         public CustomButtonsViewModel(RibbonFactory factory) {
-            Group   = factory.NewRibbonCommon("CustomButtonsGroup",factory.NewLanguageControlRibbonText("Custom Apps", null, null, null),false);
+            Group   = factory.NewRibbonGroup("CustomButtonsGroup",factory.NewLanguageControlRibbonText("Custom Apps", null, null, null),false);
 
             Button1 = factory.NewRibbonButton("AppLaunchButton1",factory.NewLanguageControlRibbonText("Button #1", null, null, null));
             Button1.Clicked += (s,e) => MessageBox.Show("Pressed Custom Button #1 pressed.", (s as IRibbonCommon)?.Id??"", MessageBoxButtons.OK);
