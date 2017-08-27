@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Collections.Immutable;
+using System.Collections.ObjectModel;
 using Microsoft.Office.Core;
 
 namespace RubberDuck.RibbonDispatcher {
@@ -35,7 +35,7 @@ namespace RubberDuck.RibbonDispatcher {
             return ctrl;
         }
 
-        public IReadOnlyDictionary<string,IRibbonCommon>     Controls  => _Controls.ToImmutableDictionary();       
+        public IReadOnlyDictionary<string,IRibbonCommon>     Controls  => new ReadOnlyDictionary<string,IRibbonCommon>(_Controls);
         private IDictionary<string,IRibbonCommon>           _Controls  { get; }
         public IRibbonCommon NewRibbonCommon(
             string          id,
@@ -45,7 +45,7 @@ namespace RubberDuck.RibbonDispatcher {
             ControlSize     size   =RibbonControlSizeLarge
         ) => Add(new RibbonCommon(id, strings, visible, enabled, size));
 
-        public IReadOnlyDictionary<string,IRibbonButton>     Buttons   => _Buttons.ToImmutableDictionary();
+        public IReadOnlyDictionary<string,IRibbonButton>     Buttons   => new ReadOnlyDictionary<string,IRibbonButton>(_Buttons);
         private IDictionary<string,IRibbonButton>           _Buttons   { get; }
         public IRibbonButton NewRibbonButton(
             string          id,
@@ -55,7 +55,7 @@ namespace RubberDuck.RibbonDispatcher {
             ControlSize     size   =RibbonControlSizeLarge
         ) => Add(new RibbonButton(id, strings, visible, enabled, size));
 
-        public IReadOnlyDictionary<string,IRibbonToggle>     Toggles   => _Toggles.ToImmutableDictionary();
+        public IReadOnlyDictionary<string,IRibbonToggle>     Toggles   => new ReadOnlyDictionary<string,IRibbonToggle>(_Toggles);
         private IDictionary<string,IRibbonToggle>           _Toggles   { get; }
         public IRibbonToggle NewRibbonToggle(
             string          id,
@@ -65,7 +65,7 @@ namespace RubberDuck.RibbonDispatcher {
             ControlSize     size   =RibbonControlSizeLarge
         ) => Add(new RibbonToggle(id, strings, visible, enabled, size));
 
-        public IReadOnlyDictionary<string,IRibbonDropDown>   DropDowns => _DropDowns.ToImmutableDictionary();
+        public IReadOnlyDictionary<string,IRibbonDropDown>   DropDowns => new ReadOnlyDictionary<string,IRibbonDropDown>(_DropDowns);
         private IDictionary<string,IRibbonDropDown>         _DropDowns { get; }
         public IRibbonDropDown NewRibbonDropDown(
             string          id,

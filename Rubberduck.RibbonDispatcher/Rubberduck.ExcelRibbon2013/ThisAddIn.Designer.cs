@@ -9,9 +9,7 @@
 //------------------------------------------------------------------------------
 
 #pragma warning disable 414
-
-namespace RubberDuck.RibbonDispatcher {
-    
+namespace RubberDuck.RibbonDispatcher {    
     
     /// 
     [Microsoft.VisualStudio.Tools.Applications.Runtime.StartupObjectAttribute(0)]
