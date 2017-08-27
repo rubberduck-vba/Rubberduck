@@ -5,7 +5,9 @@ using System.Runtime.InteropServices;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Office.Core;
 
-namespace RubberDuck.RibbonDispatcher {
+using Rubberduck.RibbonDispatcher.Abstract;
+
+namespace Rubberduck.RibbonDispatcher.Excel2013 {
     [ComVisible(true)][CLSCompliant(true)]
     public class CustomAppRibbonViewModel : AbstractRibbon, IRibbonExtensibility {
 

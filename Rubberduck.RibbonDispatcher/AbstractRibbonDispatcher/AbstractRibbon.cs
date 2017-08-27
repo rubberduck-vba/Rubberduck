@@ -3,10 +3,19 @@ using System.Runtime.InteropServices;
 using stdole;
 using Microsoft.Office.Core;
 
-namespace RubberDuck.RibbonDispatcher {
+namespace Rubberduck.RibbonDispatcher.Abstract {
+    using System.Collections.Generic;
     using static RibbonControlSize;
     using static System.Globalization.CultureInfo;
 
+    /// <summary>(All) the callbacks for the Fluent Ribbon.</summary>
+    /// <remarks>
+    /// The callback names are chosen to be identical to the corresponding xml tag in
+    /// the Ribbon schema, except for:
+    ///  - PascalCase instead of camelCase; and
+    ///  - In some instances, a disambiguating usage suffix such as OnActionToggle(,)
+    ///    instead of a plain OnAction(,).
+    /// </remarks>
     [ComVisible(true)][CLSCompliant(true)]
     public abstract class AbstractRibbon {
         protected AbstractRibbon() : base() {;}
@@ -14,13 +23,12 @@ namespace RubberDuck.RibbonDispatcher {
         public virtual void OnRibbonLoad(IRibbonUI ribbonUI) {
             RibbonFactory         = new RibbonFactory(ribbonUI);
         }
-        protected RibbonFactory     RibbonFactory    { get; set; }    // A property because might be exposed in future
+        protected RibbonFactory     RibbonFactory    { get; private set; }    // A property because might be exposed in future
 
-        #region Ribbon Callbacks
-        public IRibbonCommon     Controls(string controlId)              => RibbonFactory.Controls .TryGetValue(controlId,out var ctrl) ? ctrl : null;
-        public IRibbonButton     Buttons(string controlId)               => RibbonFactory.Buttons  .TryGetValue(controlId,out var ctrl) ? ctrl : null;
-        public IRibbonToggle     Toggles(string controlId)               => RibbonFactory.Toggles  .TryGetValue(controlId,out var ctrl) ? ctrl : null;
-        public IRibbonDropDown   DropDowns(string controlId)             => RibbonFactory.DropDowns.TryGetValue(controlId,out var ctrl) ? ctrl : null;
+        public IRibbonCommon     Controls(string controlId)              => GetValueOrNull(RibbonFactory.Controls, controlId);
+        public IRibbonButton     Buttons(string controlId)               => GetValueOrNull(RibbonFactory.Buttons,  controlId);
+        public IRibbonToggle     Toggles(string controlId)               => GetValueOrNull(RibbonFactory.Toggles,  controlId);
+        public IRibbonDropDown   DropDowns(string controlId)             => GetValueOrNull(RibbonFactory.DropDowns,controlId);
 
         // All controls (almost) including Groups
         public string            GetDescription(IRibbonControl control)  => Controls(control?.Id)?.Description??Unknown(control);
@@ -42,7 +50,13 @@ namespace RubberDuck.RibbonDispatcher {
         // Toggle Controls: checkBoxes & toggleButtons
         public bool GetPressed(IRibbonControl control)                   => Toggles(control?.Id)?.IsPressed   ??false;
         public void OnActionToggle(IRibbonControl control, bool pressed) => Toggles(control?.Id)?.OnAction(pressed);
-        #endregion
+
+        private TValue GetValueOrNull<TValue>(IReadOnlyDictionary<string,TValue> dictionary, string key)
+        {
+            TValue ctrl;
+            dictionary.TryGetValue(key, out ctrl);
+            return ctrl;
+        }
 
         private string Unknown(IRibbonControl control) {
             return string.Format(InvariantCulture, $"Unknown control '{control?.Id??""}'");

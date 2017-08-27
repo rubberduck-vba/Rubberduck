@@ -7,7 +7,9 @@ using Excel = Microsoft.Office.Interop.Excel;
 using Office = Microsoft.Office.Core;
 using Microsoft.Office.Tools.Excel;
 
-namespace RubberDuck.RibbonDispatcher {
+using Rubberduck.RibbonDispatcher.Abstract;
+
+namespace Rubberduck.RibbonDispatcher.Excel2013 {
     using Office = Microsoft.Office.Core;
 
     public partial class ThisAddIn

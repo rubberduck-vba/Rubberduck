@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Office.Core;
 
-namespace RubberDuck.RibbonDispatcher {
+namespace Rubberduck.RibbonDispatcher.Abstract {
     public class RibbonTextLanguageControl : IRibbonTextLanguageControl {
         public RibbonTextLanguageControl(
             string label,
@@ -11,11 +11,12 @@ namespace RubberDuck.RibbonDispatcher {
             string alternateLabel,
             string description
         ) {
-            Label           = label     ?? throw new ArgumentNullException(nameof(label)); 
-            ScreenTip       = screenTip ?? Label; 
-            SuperTip        = superTip  ?? "SuperTip text for " + Label; 
-            KeyTip          = keyTip    ?? "";
-            AlternateLabel  = alternateLabel ?? Label; 
+            if (label == null) throw new ArgumentNullException(nameof(label)); 
+            Label           = label; 
+            ScreenTip       = screenTip     ?? Label; 
+            SuperTip        = superTip      ?? "SuperTip text for " + Label; 
+            KeyTip          = keyTip        ?? "";
+            AlternateLabel  = alternateLabel?? Label; 
             Description     = description   ?? "Description for " + Label;
         }
         public string Label             { get; }

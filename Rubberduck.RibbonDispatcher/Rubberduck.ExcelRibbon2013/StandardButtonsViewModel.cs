@@ -1,8 +1,9 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
 using System.Windows.Forms;
+using Rubberduck.RibbonDispatcher.Abstract;
 
-namespace RubberDuck.RibbonDispatcher {
+namespace Rubberduck.RibbonDispatcher.Excel2013 {
     using System;
 
     internal class StandardButtonsViewModel {

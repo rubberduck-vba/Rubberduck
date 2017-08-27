@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace RubberDuck.RibbonDispatcher {
+namespace Rubberduck.RibbonDispatcher.Abstract {
     using ClickedEventHandler = EventHandler<ClickedEventArgs>;
     [ComVisible(true)][CLSCompliant(true)]
     public interface IRibbonToggle {

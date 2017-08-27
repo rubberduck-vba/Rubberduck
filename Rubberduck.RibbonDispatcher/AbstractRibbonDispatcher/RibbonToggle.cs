@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Office.Core;
 
-namespace RubberDuck.RibbonDispatcher {
+namespace Rubberduck.RibbonDispatcher.Abstract {
     using LanguageStrings     = IRibbonTextLanguageControl;
 
     using ClickedEventHandler = EventHandler<ClickedEventArgs>;
