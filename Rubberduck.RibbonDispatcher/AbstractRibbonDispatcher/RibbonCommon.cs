@@ -8,12 +8,12 @@ namespace RubberDuck.RibbonDispatcher {
     using ChangedEventHandler = EventHandler<ChangedControlEventArgs>;
 
     public class RibbonCommon : IRibbonCommon {
-        internal RibbonCommon(string id, bool visible, bool enabled, ControlSize size) {
+        internal RibbonCommon(string id, LanguageStrings strings, bool visible, bool enabled, ControlSize size) {
             Id               = id;
+            _languageStrings = strings;
             _visible         = visible;
             _enabled         = enabled;
             _size            = size;
-            _languageStrings = null;
         }
 
         public event ChangedEventHandler Changed;

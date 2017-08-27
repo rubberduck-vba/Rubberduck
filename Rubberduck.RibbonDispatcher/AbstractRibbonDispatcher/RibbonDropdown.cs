@@ -2,10 +2,12 @@
 using Microsoft.Office.Core;
 
 namespace RubberDuck.RibbonDispatcher {
+    using LanguageStrings     = IRibbonTextLanguageControl;
+
     using SelectionMadeEventHandler = EventHandler<SelectionMadeEventArgs>;
     public class RibbonDropDown : RibbonCommon, IRibbonDropDown {
-        internal RibbonDropDown(string id, bool visible, bool enabled, RibbonControlSize size)
-            : base(id, visible, enabled, size){
+        internal RibbonDropDown(string id, LanguageStrings strings, bool visible, bool enabled, RibbonControlSize size)
+            : base(id, strings, visible, enabled, size){
         }
 
         public event SelectionMadeEventHandler Clicked;
