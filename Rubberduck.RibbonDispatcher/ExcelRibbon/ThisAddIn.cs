@@ -15,7 +15,10 @@ namespace RubberDuck.RibbonDispatcher {
         private void ThisAddIn_Shutdown(object sender, EventArgs e) {
         }
 
-        protected override Office.IRibbonExtensibility CreateRibbonExtensibilityObject() => new CustomAppRibbon();
+        CustomAppRibbonViewModel _customAppRibbonViewModel;
+
+        protected override Office.IRibbonExtensibility CreateRibbonExtensibilityObject() 
+            => _customAppRibbonViewModel = new CustomAppRibbonViewModel();
 
         #region VSTO generated code
 

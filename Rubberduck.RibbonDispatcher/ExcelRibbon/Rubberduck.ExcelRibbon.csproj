@@ -182,7 +182,7 @@
     can be found.
   -->
   <ItemGroup>
-    <Compile Include="CustomButtonsModel.cs" />
+    <Compile Include="CustomButtonsViewModel.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -206,8 +206,8 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="CustomAppRibbon.cs" />
-    <Compile Include="StandardButtonsModel.cs" />
+    <Compile Include="CustomAppRibbonViewModel.cs" />
+    <Compile Include="StandardButtonsViewModel.cs" />
     <Compile Include="ThisAddIn.cs">
       <SubType>Code</SubType>
     </Compile>

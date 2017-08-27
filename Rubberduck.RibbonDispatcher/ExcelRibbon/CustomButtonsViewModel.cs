@@ -7,10 +7,10 @@ using Microsoft.Office.Core;
 namespace RubberDuck.RibbonDispatcher {
     using static RibbonControlSize;
 
-    internal class CustomButtonsModel {
+    internal class CustomButtonsViewModel {
         [SuppressMessage("Microsoft.Globalization", "CA1300:SpecifyMessageBoxOptions")]
         [SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "System.Windows.Forms.MessageBox.Show(System.String,System.String,System.Windows.Forms.MessageBoxButtons)")]
-        public CustomButtonsModel(RibbonFactory factory) {
+        public CustomButtonsViewModel(RibbonFactory factory) {
             Group   = factory.NewRibbonCommon("CustomButtonsGroup",factory.NewLanguageControlRibbonText("Custom Apps", null, null, null),false);
 
             Button1 = factory.NewRibbonButton("AppLaunchButton1",factory.NewLanguageControlRibbonText("Button #1", null, null, null));

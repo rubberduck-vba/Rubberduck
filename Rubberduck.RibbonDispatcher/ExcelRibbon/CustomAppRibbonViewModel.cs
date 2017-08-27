@@ -7,9 +7,9 @@ using Microsoft.Office.Core;
 
 namespace RubberDuck.RibbonDispatcher {
     [ComVisible(true)][CLSCompliant(true)]
-    public class CustomAppRibbon : AbstractRibbon, IRibbonExtensibility {
+    public class CustomAppRibbonViewModel : AbstractRibbon, IRibbonExtensibility {
 
-        public CustomAppRibbon() : base() {;}
+        public CustomAppRibbonViewModel() : base() {;}
 
         public string GetCustomUI(string RibbonID) => GetResourceText("RubberDuck.RibbonSupport.CustomAppRibbon.xml");
 
@@ -19,12 +19,12 @@ namespace RubberDuck.RibbonDispatcher {
         public override void OnRibbonLoad(IRibbonUI ribbonUI) {
             base.OnRibbonLoad(ribbonUI);
 
-            _standardButtonsGroup = new StandardButtonsModel(RibbonFactory, (s,e) => _customButtonsGroup.SetVisible(e.IsPressed));
-            _customButtonsGroup   = new CustomButtonsModel(RibbonFactory);
+            _standardButtonsViewModel = new StandardButtonsViewModel(RibbonFactory, (s,e) => _customButtonsViewModel.SetVisible(e.IsPressed));
+            _customButtonsViewModel   = new CustomButtonsViewModel(RibbonFactory);
         }
 
-        StandardButtonsModel     _standardButtonsGroup;
-        CustomButtonsModel       _customButtonsGroup;
+        StandardButtonsViewModel     _standardButtonsViewModel;
+        CustomButtonsViewModel       _customButtonsViewModel;
 
         #region Helpers
 

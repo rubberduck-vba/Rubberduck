@@ -5,10 +5,10 @@ using System.Windows.Forms;
 namespace RubberDuck.RibbonDispatcher {
     using System;
 
-    internal class StandardButtonsModel {
+    internal class StandardButtonsViewModel {
         [SuppressMessage("Microsoft.Globalization", "CA1300:SpecifyMessageBoxOptions")]
         [SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "System.Windows.Forms.MessageBox.Show(System.String,System.String,System.Windows.Forms.MessageBoxButtons)")]
-        public StandardButtonsModel(RibbonFactory factory,  EventHandler<ClickedEventArgs> showAdvancedAction) {
+        public StandardButtonsViewModel(RibbonFactory factory,  EventHandler<ClickedEventArgs> showAdvancedAction) {
             Group   = factory.NewRibbonCommon("StandardButtonsGroup",
                     factory.NewLanguageControlRibbonText("Standard Buttons", null, null, null));
 
