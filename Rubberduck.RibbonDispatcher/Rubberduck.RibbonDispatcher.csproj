@@ -95,7 +95,7 @@
     <Compile Include="Concrete\RibbonText.cs" />
     <Compile Include="Concrete\RibbonTextLanguageControl.cs" />
     <Compile Include="Concrete\RibbonToggle.cs" />
-    <Compile Include="Concrete\RibbonUIEventArgs.cs" />
+    <Compile Include="RibbonUIEventArgs.cs" />
     <Compile Include="SelectionMadeEventArgs.cs" />
   </ItemGroup>
   <ItemGroup>
