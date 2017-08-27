@@ -97,7 +97,7 @@ End Property";
             {
                 [ProjectName] = 0, [ProceduralModuleName] = 0, [ClassModuleName] = 0, [UserFormName] = 0, [DocumentName] = 0, [ProcedureName] = 1, [FunctionName] = 1,
                 [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [ConstantName] = 1,
-                [EnumerationName] = 0, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 1
+                [EnumerationName] = 0, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
@@ -128,7 +128,7 @@ End Property";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
                 [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [ConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 1
+                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
@@ -221,7 +221,7 @@ End Property";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
                 [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [ConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 1
+                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             // Public
@@ -281,7 +281,7 @@ End Sub";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
                 [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [ConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 1
+                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             // Public
@@ -341,7 +341,7 @@ End Function";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
                 [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [ConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 1
+                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             // Public
@@ -401,7 +401,7 @@ End Property";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
                 [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [ConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 1
+                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             // Public
@@ -461,7 +461,7 @@ End Property";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
                 [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [ConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 1
+                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             // Public
@@ -556,7 +556,7 @@ End Sub";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
                 [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [ConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 1
+                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             // Global
@@ -634,7 +634,7 @@ End Sub";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
                 [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [ConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 1
+                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             // Global
@@ -712,7 +712,7 @@ End Sub";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
                 [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [ConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 1
+                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             // Public
@@ -774,7 +774,7 @@ End Enum";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
                 [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [ConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 1
+                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             // Public
@@ -836,7 +836,7 @@ End Enum";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
                 [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [ConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 1
+                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             // Public
@@ -934,7 +934,7 @@ End Type";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
                 [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [ConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 1
+                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             // Public
@@ -990,7 +990,7 @@ End Type";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
                 [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [ConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 1
+                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             // Public
