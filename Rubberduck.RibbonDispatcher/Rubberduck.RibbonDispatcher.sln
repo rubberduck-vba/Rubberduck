@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26823.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.RibbonDispatcher", "RibbonDispatcher\Rubberduck.RibbonDispatcher.csproj", "{D49F9861-4FB1-4882-860F-4CFF59F99E54}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.ExcelRibbon", "ExcelRibbon\Rubberduck.ExcelRibbon.csproj", "{D49F9861-4FB1-4882-860F-4CFF59F99E54}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
