@@ -2,11 +2,12 @@
 
 using Microsoft.Office.Tools.Excel;
 
-using System.Windows.Forms;
+using System.Runtime.InteropServices;
 
 namespace RubberDuck.RibbonDispatcher {
     using Office = Microsoft.Office.Core;
 
+    [ComVisible(false)]
     public partial class ThisAddIn {
         private void ThisAddIn_Startup(object sender, EventArgs e) {
         }

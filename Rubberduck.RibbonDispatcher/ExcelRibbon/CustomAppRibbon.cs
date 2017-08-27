@@ -2,6 +2,7 @@
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Office.Core;
 
 namespace RubberDuck.RibbonDispatcher {
@@ -12,6 +13,8 @@ namespace RubberDuck.RibbonDispatcher {
 
         public string GetCustomUI(string RibbonID) => GetResourceText("RubberDuck.RibbonSupport.CustomAppRibbon.xml");
 
+        [SuppressMessage("Microsoft.Design", "CA1061:DoNotHideBaseClassMethods", 
+            Justification = "This is simply how the Ribbon design works to share the Callback methods between multiple Office products & documents.")]
         [CLSCompliant(false)]
         public override void OnRibbonLoad(IRibbonUI ribbonUI) {
             base.OnRibbonLoad(ribbonUI);
