@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- When debugging, remember to check: Options -> Advanced -> General -> Show_Add-In_user_interface_errors. -->
+<mso:customUI xmlns:mso="http://schemas.microsoft.com/office/2009/07/customui" onLoad="OnRibbonLoad">
+  <mso:ribbon>
+    <mso:tabs>
+      <mso:tab id="TabRubberDuck" label="Rubber Duck">
+        <mso:group id="StandardButtonsGroup" getLabel="getLabel" getKeytip="getKeytip" getVisible="getVisible">
+          <mso:button id="MyButton1" onAction="onAction" imageMso="RefreshAll"
+                      getLabel="getLabel" getVisible="getVisible" getEnabled="getEnabled" getSize="getSize"
+                      getKeytip="getKeytip" getScreentip="getScreentip" getSupertip="getSupertip"
+                     />
+          <mso:button id="MyButton2" onAction="onAction" imageMso="Refresh"
+                      getLabel="getLabel" getVisible="getVisible" getEnabled="getEnabled" getSize="getSize"
+                      getKeytip="getKeytip" getScreentip="getScreentip" getSupertip="getSupertip"
+                     />
+          <mso:toggleButton id="ShowAdvancedToggle" 
+                      onAction="onActionToggle"  getPressed="getPressed"
+                      getLabel="getLabel" getVisible="getVisible" 
+                      getKeytip="getKeytip" getScreentip="getScreentip" getSupertip="getSupertip"                     
+                     />
+        </mso:group>
+        <mso:group id="CustomButtonsGroup" getLabel="getLabel" getKeytip="getKeytip" getVisible="getVisible">
+          <mso:checkBox id="SizeToggle" onAction="onActionToggle" 
+                      getLabel="getLabel" getVisible="getVisible"   getPressed="getPressed"
+                      getKeytip="getKeytip" getScreentip="getScreentip" getSupertip="getSupertip"                    
+                     />
+          <mso:box id="CustomButtonsBox" boxStyle="horizontal" visible="true" >            
+            <mso:button id="AppLaunchButton1" onAction="onAction" imageMso="RefreshAll"
+                        getLabel="getLabel" getVisible="getVisible" getEnabled="getEnabled" getSize="getSize"
+                        getKeytip="getKeytip" getScreentip="getScreentip" getSupertip="getSupertip"
+                       />
+            <mso:button id="AppLaunchButton2" onAction="onAction" imageMso="Refresh"
+                        getLabel="getLabel" getVisible="getVisible" getEnabled="getEnabled" getSize="getSize"
+                        getKeytip="getKeytip" getScreentip="getScreentip" getSupertip="getSupertip"
+                       />
+            <mso:button id="AppLaunchButton3" onAction="onAction" imageMso="MacroPlay"
+                        getLabel="getLabel" getVisible="getVisible" getEnabled="getEnabled" getSize="getSize"
+                        getKeytip="getKeytip" getScreentip="getScreentip" getSupertip="getSupertip"
+                       />
+          </mso:box>
+        </mso:group>
+        <mso:group id="AnotherGroup" getLabel="getLabel" getKeytip="getKeytip" getVisible="getVisible">
+            <mso:button id="UnknownButton" onAction="onAction" imageMso="MacroPlay"
+                        getLabel="getLabel" getVisible="getVisible" getEnabled="getEnabled" getSize="getSize"
+                        getKeytip="getKeytip" getScreentip="getScreentip" getSupertip="getSupertip"
+                       />
+        </mso:group>
+      </mso:tab>
+      <!--
+      -->
+    </mso:tabs>
+  </mso:ribbon>
+</mso:customUI>
+
