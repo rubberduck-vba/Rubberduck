@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace Rubberduck.RibbonDispatcher.Abstract {
+using Rubberduck.RibbonDispatcher;
+
+namespace Rubberduck.RibbonDispatcher.Abstract
+{
     [ComVisible(true)][CLSCompliant(true)]
     public interface IRibbonButton {
         event EventHandler Clicked;

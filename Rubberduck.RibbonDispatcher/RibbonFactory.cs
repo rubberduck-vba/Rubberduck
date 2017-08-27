@@ -1,8 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Office.Core;
 
-namespace Rubberduck.RibbonDispatcher.Abstract {
+using Rubberduck.RibbonDispatcher.Abstract;
+using Rubberduck.RibbonDispatcher.Concrete;
+
+namespace Rubberduck.RibbonDispatcher
+{
     using System;
     using static RibbonControlSize;
     using System.Runtime.InteropServices;
@@ -37,6 +42,7 @@ namespace Rubberduck.RibbonDispatcher.Abstract {
 
         public IReadOnlyDictionary<string,IRibbonCommon>     Controls  => new ReadOnlyDictionary<string,IRibbonCommon>(_controls);
         private IDictionary<string,IRibbonCommon>           _controls  { get; }
+        [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed")]
         public IRibbonCommon NewRibbonCommon(
             string          id,
             LanguageStrings strings=null, 
@@ -47,6 +53,7 @@ namespace Rubberduck.RibbonDispatcher.Abstract {
 
         public IReadOnlyDictionary<string,IRibbonButton>     Buttons   => new ReadOnlyDictionary<string,IRibbonButton>(_buttons);
         private IDictionary<string,IRibbonButton>           _buttons   { get; }
+        [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed")]
         public IRibbonButton NewRibbonButton(
             string          id,
             LanguageStrings strings=null, 
@@ -57,6 +64,7 @@ namespace Rubberduck.RibbonDispatcher.Abstract {
 
         public IReadOnlyDictionary<string,IRibbonToggle>     Toggles   => new ReadOnlyDictionary<string,IRibbonToggle>(_toggles);
         private IDictionary<string,IRibbonToggle>           _toggles   { get; }
+        [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed")]
         public IRibbonToggle NewRibbonToggle(
             string          id,
             LanguageStrings strings=null, 
@@ -67,6 +75,7 @@ namespace Rubberduck.RibbonDispatcher.Abstract {
 
         public IReadOnlyDictionary<string,IRibbonDropDown>   DropDowns => new ReadOnlyDictionary<string,IRibbonDropDown>(_dropDowns);
         private IDictionary<string,IRibbonDropDown>         _dropDowns { get; }
+        [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed")]
         public IRibbonDropDown NewRibbonDropDown(
             string          id,
             LanguageStrings strings=null, 
@@ -75,6 +84,7 @@ namespace Rubberduck.RibbonDispatcher.Abstract {
             ControlSize     size   =RibbonControlSizeLarge
         ) => Add(new RibbonDropDown(id, strings, visible, enabled, size));
 
+        [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed")]
         public LanguageStrings NewLanguageControlRibbonText(
             string label,
             string screenTip      = null,

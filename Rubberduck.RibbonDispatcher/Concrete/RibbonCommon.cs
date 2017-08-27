@@ -2,7 +2,11 @@
 using stdole;
 using Microsoft.Office.Core;
 
-namespace Rubberduck.RibbonDispatcher.Abstract {
+using Rubberduck.RibbonDispatcher;
+using Rubberduck.RibbonDispatcher.Abstract;
+
+namespace Rubberduck.RibbonDispatcher.Concrete
+{
     using ControlSize         = RibbonControlSize;
     using LanguageStrings     = IRibbonTextLanguageControl;
     using ChangedEventHandler = EventHandler<ChangedControlEventArgs>;

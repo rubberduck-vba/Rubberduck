@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AbstractRibbonDispatcher
+namespace Rubberduck.RibbonDispatcher
 {
     public class ClickedEventArgs : EventArgs
     {

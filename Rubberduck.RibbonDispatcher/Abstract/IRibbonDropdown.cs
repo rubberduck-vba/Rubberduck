@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace Rubberduck.RibbonDispatcher.Abstract {
+using Rubberduck.RibbonDispatcher;
+
+namespace Rubberduck.RibbonDispatcher.Abstract
+{
     using SelectionMadeEventHandler = EventHandler<SelectionMadeEventArgs>;
 
     [ComVisible(true)][CLSCompliant(true)]
