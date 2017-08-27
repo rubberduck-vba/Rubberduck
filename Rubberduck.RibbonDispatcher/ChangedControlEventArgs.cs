@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AbstractRibbonDispatcher
+namespace Rubberduck.RibbonDispatcher
 {
     public class ChangedControlEventArgs : EventArgs {
         public ChangedControlEventArgs(string controlId) { ControlId = controlId; }

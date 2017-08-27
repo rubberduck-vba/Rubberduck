@@ -2,7 +2,11 @@
 
 using Microsoft.Office.Core;
 
-namespace Rubberduck.RibbonDispatcher.Abstract {
+using Rubberduck.RibbonDispatcher;
+using Rubberduck.RibbonDispatcher.Abstract;
+
+namespace Rubberduck.RibbonDispatcher.Concrete
+{
     public class RibbonUIEventArgs : EventArgs {
         public RibbonUIEventArgs(IRibbonUI ribbonUI) {
             RibbonUI = ribbonUI;

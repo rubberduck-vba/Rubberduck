@@ -1,7 +1,11 @@
 ﻿using System;
 using Microsoft.Office.Core;
 
-namespace Rubberduck.RibbonDispatcher.Abstract {
+using Rubberduck.RibbonDispatcher;
+using Rubberduck.RibbonDispatcher.Abstract;
+
+namespace Rubberduck.RibbonDispatcher.Concrete
+{
     using LanguageStrings     = IRibbonTextLanguageControl;
 
     public class RibbonButton : RibbonCommon, IRibbonButton {

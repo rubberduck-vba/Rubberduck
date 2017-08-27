@@ -22,6 +22,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,6 +32,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Office.Tools, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -78,27 +80,25 @@
     <Compile Include="AbstractRibbon.cs" />
     <Compile Include="ChangedControlEventArgs.cs" />
     <Compile Include="ClickedEventArgs.cs" />
-    <Compile Include="Interfaces.cs" />
-    <Compile Include="IRibbonButton.cs" />
-    <Compile Include="IRibbonCommon.cs" />
-    <Compile Include="IRibbonDropdown.cs" />
-    <Compile Include="IRibbonTextLanguageControl.cs" />
-    <Compile Include="IRibbonToggle.cs" />
+    <Compile Include="Abstract\Interfaces.cs" />
+    <Compile Include="Abstract\IRibbonButton.cs" />
+    <Compile Include="Abstract\IRibbonCommon.cs" />
+    <Compile Include="Abstract\IRibbonDropdown.cs" />
+    <Compile Include="Abstract\IRibbonTextLanguageControl.cs" />
+    <Compile Include="Abstract\IRibbonToggle.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RibbonButton.cs" />
-    <Compile Include="RibbonCommon.cs" />
-    <Compile Include="RibbonDropdown.cs" />
+    <Compile Include="Concrete\RibbonButton.cs" />
+    <Compile Include="Concrete\RibbonCommon.cs" />
+    <Compile Include="Concrete\RibbonDropdown.cs" />
     <Compile Include="RibbonFactory.cs" />
-    <Compile Include="RibbonText.cs" />
-    <Compile Include="RibbonTextLanguageControl.cs" />
-    <Compile Include="RibbonToggle.cs" />
-    <Compile Include="RibbonUIEventArgs.cs" />
+    <Compile Include="Concrete\RibbonText.cs" />
+    <Compile Include="Concrete\RibbonTextLanguageControl.cs" />
+    <Compile Include="Concrete\RibbonToggle.cs" />
+    <Compile Include="Concrete\RibbonUIEventArgs.cs" />
     <Compile Include="SelectionMadeEventArgs.cs" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="..\CustomDictionary.xml">
-      <Link>CustomDictionary.xml</Link>
-    </CodeAnalysisDictionary>
+    <CodeAnalysisDictionary Include="CustomDictionary.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

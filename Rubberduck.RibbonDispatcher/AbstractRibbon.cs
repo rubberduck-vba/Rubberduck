@@ -3,7 +3,10 @@ using System.Runtime.InteropServices;
 using stdole;
 using Microsoft.Office.Core;
 
-namespace Rubberduck.RibbonDispatcher.Abstract {
+using Rubberduck.RibbonDispatcher.Abstract;
+
+namespace Rubberduck.RibbonDispatcher
+{
     using System.Collections.Generic;
     using static RibbonControlSize;
     using static System.Globalization.CultureInfo;
@@ -17,9 +20,7 @@ namespace Rubberduck.RibbonDispatcher.Abstract {
     ///    instead of a plain OnAction(,).
     /// </remarks>
     [ComVisible(true)][CLSCompliant(true)]
-    public abstract class AbstractRibbon {
-        protected AbstractRibbon() : base() {;}
-        
+    public abstract class AbstractRibbon {        
         public virtual void OnRibbonLoad(IRibbonUI ribbonUI) {
             RibbonFactory         = new RibbonFactory(ribbonUI);
         }
@@ -51,14 +52,15 @@ namespace Rubberduck.RibbonDispatcher.Abstract {
         public bool GetPressed(IRibbonControl control)                   => Toggles(control?.Id)?.IsPressed   ??false;
         public void OnActionToggle(IRibbonControl control, bool pressed) => Toggles(control?.Id)?.OnAction(pressed);
 
-        private TValue GetValueOrNull<TValue>(IReadOnlyDictionary<string,TValue> dictionary, string key)
+        private static TValue GetValueOrNull<TValue>(IReadOnlyDictionary<string,TValue> dictionary, string key)
         {
             TValue ctrl;
             dictionary.TryGetValue(key, out ctrl);
             return ctrl;
         }
 
-        private string Unknown(IRibbonControl control) {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.String.Format(System.String,System.Object)")]
+        private static string Unknown(IRibbonControl control) {
             return string.Format(InvariantCulture, $"Unknown control '{control?.Id??""}'");
         }
     }

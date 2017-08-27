@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 
+using Rubberduck.RibbonDispatcher;
+
 // I have left these three collected together for now, until I complete the design and implementation
 // of their concrete classes - as a convenience and reminder.
 namespace Rubberduck.RibbonDispatcher.Abstract
