@@ -43,13 +43,13 @@ namespace Rubberduck.RibbonDispatcher
         public IReadOnlyDictionary<string,IRibbonCommon>     Controls  => new ReadOnlyDictionary<string,IRibbonCommon>(_controls);
         private IDictionary<string,IRibbonCommon>           _controls  { get; }
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed")]
-        public IRibbonCommon NewRibbonCommon(
+        public IRibbonCommon NewRibbonGroup(
             string          id,
             LanguageStrings strings=null, 
             bool            visible=true,
             bool            enabled=true,
             ControlSize     size   =RibbonControlSizeLarge
-        ) => Add(new RibbonCommon(id, strings, visible, enabled, size));
+        ) => Add(new RibbonGroup(id, strings, visible, enabled, size));
 
         public IReadOnlyDictionary<string,IRibbonButton>     Buttons   => new ReadOnlyDictionary<string,IRibbonButton>(_buttons);
         private IDictionary<string,IRibbonButton>           _buttons   { get; }

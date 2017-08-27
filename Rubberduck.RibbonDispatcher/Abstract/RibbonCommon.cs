@@ -5,14 +5,14 @@ using Microsoft.Office.Core;
 using Rubberduck.RibbonDispatcher;
 using Rubberduck.RibbonDispatcher.Abstract;
 
-namespace Rubberduck.RibbonDispatcher.Concrete
+namespace Rubberduck.RibbonDispatcher.Abstract
 {
     using ControlSize         = RibbonControlSize;
     using LanguageStrings     = IRibbonTextLanguageControl;
     using ChangedEventHandler = EventHandler<ChangedControlEventArgs>;
 
-    public class RibbonCommon : IRibbonCommon {
-        internal RibbonCommon(string id, LanguageStrings strings, bool visible, bool enabled, ControlSize size) {
+    public abstract class RibbonCommon : IRibbonCommon {
+        protected RibbonCommon(string id, LanguageStrings strings, bool visible, bool enabled, ControlSize size) {
             Id               = id;
             _languageStrings = strings;
             _visible         = visible;
@@ -46,4 +46,5 @@ namespace Rubberduck.RibbonDispatcher.Concrete
 
         private LanguageStrings _languageStrings;
     }
+
 }
