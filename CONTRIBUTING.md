@@ -19,7 +19,7 @@ Yet the following guidelines apply in no particular order:
 
 ### Bug Reports
 
-The development team is always more or less happy to hear about bugs. Reported bugs are an opportunity to make Rubberduck better.
+The development team is always happy to hear about bugs. Reported bugs and other issues are opportunities to make Rubberduck even better.
 
 Before you report your bug, please check the [GitHub Issues](https://github.com/rubberduck-vba/Rubberduck/issues).
 The team spends quite some time to label the issues nicely so that you can find already known problems.
@@ -32,12 +32,14 @@ To enable the fastest response possible, please include the following informatio
 - Screenshots?
 - ...
 
+When posting a CLR/JIT stack trace, please avoid cluttering the issue with the "loaded assemblies" part; that (very) long list of loaded DLL's isn't relevant.
+
 ### Suggesting Enhancements
 
 The team is always happy to hear your ideas. Please do make sure you checked, whether someone else already requested something similar.
 The label [enhancement] will be a good guide.
 
-Do note that some things are just **too large** or **too complex** for Rubberduck to effectively support.
+Do note that despite the rather large scope of Rubberduck, some things are just **too large** or **too complex** for Rubberduck to effectively support.
 Please don't be discouraged if your idea gets declined, your feedback is very valuable.
 
 As with Bug Reports the more exact you define what's your gripe, the quicker we can get back to you.
@@ -53,11 +55,11 @@ Everybody is welcome to improve and expand the wiki.
 So you want to get your hands dirty and fix that obnoxious bug in the last release?
 Well **great**, we like seeing new faces in the fray :)
 Or you just want to find something that you can contribute to to learn C#? Or ...
-Well whatever your motivation is, we recommend taking a look at issues that are labeled [\[up-for-grabs\]](https://github.com/rubberduck-vba/Rubberduck/issues?q=is%3Aissue+is%3Aopen+label%3Aup-for-grabs)
+Well whatever your motivation is, we recommend taking a look at issues that are labeled [\[up-for-grabs\]](https://github.com/rubberduck-vba/Rubberduck/issues?q=is%3Aissue+is%3Aopen+label%3Aup-for-grabs).
 
 Our Ducky has come quite the long way and is intimidatingly large for a first-time (or even long-time) contributor.
 To make it easier to find something you can do, all issues with that label are additionally labelled with a difficulty.
-That difficulty is a best-guess by the dev-team how complex or evil an issue will be.
+That difficulty level is a best-guess by the dev-team how complex or evil an issue will be.
 
 If you're new to C#, we recommend you start with \[difficulty-01-duckling\]. The next step \[difficulty-02-ducky\] requires some knowledge about C#, but not so much about how Rubberduck works
 
@@ -82,6 +84,10 @@ N.B.: The rules of the Stack Exchange Network apply to everything you say in tha
 Rubberduck is Localized in multiple languages.
 All these translations have been provided by volunteers.
 We welcome both new translations as well as improvements to current translations very much.
+
+The resource files are RESX/XML files easily editable in any text editor, but comparing resource keys across languages/translations is much easier done with @Vogel612's [Translation Helper](https://github.com/Vogel612/TranslationHelper) tool, which automatically adds missing keys and highlights entries that need a new translation.
+
+If you contribute a translation for a brand new previously unsupported language, keep in touch with the dev team so that new resource keys can be translated when a new release is coming up; abandoned languages/translations will end up getting dropped.
 
 ## What comes out of it for me?
 
