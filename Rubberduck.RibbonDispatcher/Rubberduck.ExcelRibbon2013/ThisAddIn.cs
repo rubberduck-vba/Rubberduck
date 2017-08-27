@@ -1,18 +1,23 @@
 ﻿using System;
-
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Xml.Linq;
+using Excel = Microsoft.Office.Interop.Excel;
+using Office = Microsoft.Office.Core;
 using Microsoft.Office.Tools.Excel;
-
-using System.Runtime.InteropServices;
 
 namespace RubberDuck.RibbonDispatcher {
     using Office = Microsoft.Office.Core;
 
-    [ComVisible(false)]
-    public partial class ThisAddIn {
-        private void ThisAddIn_Startup(object sender, EventArgs e) {
+    public partial class ThisAddIn
+    {
+        private void ThisAddIn_Startup(object sender, System.EventArgs e)
+        {
         }
 
-        private void ThisAddIn_Shutdown(object sender, EventArgs e) {
+        private void ThisAddIn_Shutdown(object sender, System.EventArgs e)
+        {
         }
 
         CustomAppRibbonViewModel _customAppRibbonViewModel;
@@ -28,8 +33,8 @@ namespace RubberDuck.RibbonDispatcher {
         /// </summary>
         private void InternalStartup()
         {
-            this.Startup += new EventHandler(ThisAddIn_Startup);
-            this.Shutdown += new EventHandler(ThisAddIn_Shutdown);
+            this.Startup += new System.EventHandler(ThisAddIn_Startup);
+            this.Shutdown += new System.EventHandler(ThisAddIn_Shutdown);
         }
         
         #endregion

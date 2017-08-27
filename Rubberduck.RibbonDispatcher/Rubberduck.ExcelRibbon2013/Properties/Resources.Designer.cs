@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace RubberDuck.RibbonDispatcherSupport.Properties {
+namespace Rubberduck.ExcelRibbon2013.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace RubberDuck.RibbonDispatcherSupport.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("RubberDuck.RibbonSupport.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Rubberduck.ExcelRibbon2013.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -57,22 +57,6 @@ namespace RubberDuck.RibbonDispatcherSupport.Properties {
             }
             set {
                 resourceCulture = value;
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-        ///&lt;!-- When debugging, remember to check: Options -&gt; Advanced -&gt; General -&gt; Show_Add-In_user_interface_errors. --&gt;
-        ///&lt;mso:customUI xmlns:mso=&quot;http://schemas.microsoft.com/office/2009/07/customui&quot; onLoad=&quot;Ribbon_Load&quot;&gt;
-        ///  &lt;mso:ribbon&gt;
-        ///    &lt;mso:tabs&gt;
-        ///      &lt;mso:tab id=&quot;TabRubberDuck&quot; label=&quot;Rubber Duck&quot;&gt;
-        ///        &lt;mso:group id=&quot;StandardButtonsGroup&quot; getLabel=&quot;getLabel&quot; getKeytip=&quot;getKeytip&quot; &gt;
-        ///          &lt;mso:button id=&quot;MyButton1&quot; label=&quot;Button #1&quot; onAction=&quot;OnAction&quot; get [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string CustomAppRibbon {
-            get {
-                return ResourceManager.GetString("CustomAppRibbon", resourceCulture);
             }
         }
     }

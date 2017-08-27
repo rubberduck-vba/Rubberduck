@@ -1,5 +1,5 @@
-﻿using System.Resources;
-using System;
+﻿using System;
+using System.Resources;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -8,12 +8,12 @@ using System.Security;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("RubberDuckRibbon")]
-[assembly: AssemblyDescription("Multi-Lingual MVVMDispatcher for EXCEL Fluent Ribbon customizations")]
+[assembly: AssemblyTitle("Rubberduck.ExcelRibbon2013")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("RubberDuckRibbon")]
-[assembly: AssemblyCopyright("Copyright ©  2017 by Pieter Geerkens")]
+[assembly: AssemblyProduct("Rubberduck.ExcelRibbon2013")]
+[assembly: AssemblyCopyright("Copyright ©  2017 Pieter Geerkens")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -24,7 +24,7 @@ using System.Security;
 [assembly: CLSCompliant(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("fa9406df-ad5f-4e5d-83d8-8483b16ae1cb")]
+[assembly: Guid("183bab88-74bc-470d-8445-90bedd894b33")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -39,4 +39,3 @@ using System.Security;
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
 [assembly: NeutralResourcesLanguage("EN-ca")]
-
