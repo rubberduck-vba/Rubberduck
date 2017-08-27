@@ -527,7 +527,7 @@ End Property";
             foreach (var result in declarationResults)
             {
                 var referencedModuleCode =
-$@"Public Sub S({result.Key} As String)
+$@"Public Sub Qux({result.Key} As String)
 End Sub";
 
                 var builder = new MockVbeBuilder();
@@ -1052,7 +1052,7 @@ End Type";
             foreach (var result in declarationResults)
             {
                 var referencedModuleCode =
-$@"Public Sub S
+$@"Public Sub Qux()
     {result.Key}:
 End Sub";
 
