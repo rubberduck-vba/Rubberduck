@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using Microsoft.Office.Core;
 
-namespace RubberDuck.RibbonDispatcher {
+namespace Rubberduck.RibbonDispatcher.Abstract {
     using System;
     using static RibbonControlSize;
     using System.Runtime.InteropServices;
@@ -15,10 +15,10 @@ namespace RubberDuck.RibbonDispatcher {
         internal RibbonFactory(IRibbonUI ribbonUI) {
             RibbonUI   = ribbonUI;
 
-            _Controls  = new Dictionary<string,IRibbonCommon>();
-            _Buttons   = new Dictionary<string,IRibbonButton>();
-            _Toggles   = new Dictionary<string,IRibbonToggle>();
-            _DropDowns = new Dictionary<string,IRibbonDropDown>();
+            _controls  = new Dictionary<string,IRibbonCommon>();
+            _buttons   = new Dictionary<string,IRibbonButton>();
+            _toggles   = new Dictionary<string,IRibbonToggle>();
+            _dropDowns = new Dictionary<string,IRibbonDropDown>();
         }
 
         private IRibbonUI    RibbonUI    { get; }
@@ -26,17 +26,17 @@ namespace RubberDuck.RibbonDispatcher {
         private void PropertyChanged(object sender, ChangedControlEventArgs e) => RibbonUI.InvalidateControl(e.ControlId);
 
         private T Add<T>(T ctrl) where T:IRibbonCommon {
-            _Controls.Add(ctrl.Id, ctrl);
-            if (ctrl is IRibbonButton     button) _Buttons  .Add(ctrl.Id, button);
-            if (ctrl is IRibbonToggle     toggle) _Toggles  .Add(ctrl.Id, toggle);
-            if (ctrl is IRibbonDropDown dropDown) _DropDowns.Add(ctrl.Id, dropDown);
+            _controls.Add(ctrl.Id, ctrl);
+            var button   = ctrl as IRibbonButton;   if (button   != null) _buttons  .Add(ctrl.Id, button);
+            var toggle   = ctrl as IRibbonToggle;   if (toggle   != null) _toggles  .Add(ctrl.Id, toggle);
+            var dropDown = ctrl as IRibbonDropDown; if (dropDown != null) _dropDowns.Add(ctrl.Id, dropDown);
 
             ctrl.Changed += PropertyChanged;
             return ctrl;
         }
 
-        public IReadOnlyDictionary<string,IRibbonCommon>     Controls  => new ReadOnlyDictionary<string,IRibbonCommon>(_Controls);
-        private IDictionary<string,IRibbonCommon>           _Controls  { get; }
+        public IReadOnlyDictionary<string,IRibbonCommon>     Controls  => new ReadOnlyDictionary<string,IRibbonCommon>(_controls);
+        private IDictionary<string,IRibbonCommon>           _controls  { get; }
         public IRibbonCommon NewRibbonCommon(
             string          id,
             LanguageStrings strings=null, 
@@ -45,8 +45,8 @@ namespace RubberDuck.RibbonDispatcher {
             ControlSize     size   =RibbonControlSizeLarge
         ) => Add(new RibbonCommon(id, strings, visible, enabled, size));
 
-        public IReadOnlyDictionary<string,IRibbonButton>     Buttons   => new ReadOnlyDictionary<string,IRibbonButton>(_Buttons);
-        private IDictionary<string,IRibbonButton>           _Buttons   { get; }
+        public IReadOnlyDictionary<string,IRibbonButton>     Buttons   => new ReadOnlyDictionary<string,IRibbonButton>(_buttons);
+        private IDictionary<string,IRibbonButton>           _buttons   { get; }
         public IRibbonButton NewRibbonButton(
             string          id,
             LanguageStrings strings=null, 
@@ -55,8 +55,8 @@ namespace RubberDuck.RibbonDispatcher {
             ControlSize     size   =RibbonControlSizeLarge
         ) => Add(new RibbonButton(id, strings, visible, enabled, size));
 
-        public IReadOnlyDictionary<string,IRibbonToggle>     Toggles   => new ReadOnlyDictionary<string,IRibbonToggle>(_Toggles);
-        private IDictionary<string,IRibbonToggle>           _Toggles   { get; }
+        public IReadOnlyDictionary<string,IRibbonToggle>     Toggles   => new ReadOnlyDictionary<string,IRibbonToggle>(_toggles);
+        private IDictionary<string,IRibbonToggle>           _toggles   { get; }
         public IRibbonToggle NewRibbonToggle(
             string          id,
             LanguageStrings strings=null, 
@@ -65,8 +65,8 @@ namespace RubberDuck.RibbonDispatcher {
             ControlSize     size   =RibbonControlSizeLarge
         ) => Add(new RibbonToggle(id, strings, visible, enabled, size));
 
-        public IReadOnlyDictionary<string,IRibbonDropDown>   DropDowns => new ReadOnlyDictionary<string,IRibbonDropDown>(_DropDowns);
-        private IDictionary<string,IRibbonDropDown>         _DropDowns { get; }
+        public IReadOnlyDictionary<string,IRibbonDropDown>   DropDowns => new ReadOnlyDictionary<string,IRibbonDropDown>(_dropDowns);
+        private IDictionary<string,IRibbonDropDown>         _dropDowns { get; }
         public IRibbonDropDown NewRibbonDropDown(
             string          id,
             LanguageStrings strings=null, 

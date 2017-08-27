@@ -9,7 +9,7 @@
 //------------------------------------------------------------------------------
 
 #pragma warning disable 414
-namespace RubberDuck.RibbonDispatcher {    
+namespace Rubberduck.RibbonDispatcher.Excel2013 {
     
     /// 
     [Microsoft.VisualStudio.Tools.Applications.Runtime.StartupObjectAttribute(0)]

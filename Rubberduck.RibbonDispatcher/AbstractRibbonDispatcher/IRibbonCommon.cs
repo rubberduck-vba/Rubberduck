@@ -4,7 +4,7 @@ using stdole;
 using Microsoft.Office.Core;
 using System.Runtime.InteropServices;
 
-namespace RubberDuck.RibbonDispatcher {
+namespace Rubberduck.RibbonDispatcher.Abstract {
     using ControlSize         = RibbonControlSize;
     using ChangedEventHandler = EventHandler<ChangedControlEventArgs>;
 

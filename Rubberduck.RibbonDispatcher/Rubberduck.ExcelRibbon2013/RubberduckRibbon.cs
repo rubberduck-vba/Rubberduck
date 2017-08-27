@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text;
 using Office = Microsoft.Office.Core;
 
 // TODO:  Follow these steps to enable the Ribbon (XML) item:
@@ -26,7 +23,7 @@ using Office = Microsoft.Office.Core;
 // For more information, see the Ribbon XML documentation in the Visual Studio Tools for Office Help.
 
 
-namespace Rubberduck.ExcelRibbon2013
+namespace Rubberduck.RibbonDispatcher.Excel2013
 {
     [ComVisible(true)]
     public class RubberduckRibbon:Office.IRibbonExtensibility

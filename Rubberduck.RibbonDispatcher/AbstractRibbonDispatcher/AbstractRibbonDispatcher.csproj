@@ -76,6 +76,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AbstractRibbon.cs" />
+    <Compile Include="ChangedControlEventArgs.cs" />
+    <Compile Include="ClickedEventArgs.cs" />
     <Compile Include="Interfaces.cs" />
     <Compile Include="IRibbonButton.cs" />
     <Compile Include="IRibbonCommon.cs" />
@@ -91,6 +93,7 @@
     <Compile Include="RibbonTextLanguageControl.cs" />
     <Compile Include="RibbonToggle.cs" />
     <Compile Include="RibbonUIEventArgs.cs" />
+    <Compile Include="SelectionMadeEventArgs.cs" />
   </ItemGroup>
   <ItemGroup>
     <CodeAnalysisDictionary Include="..\CustomDictionary.xml">

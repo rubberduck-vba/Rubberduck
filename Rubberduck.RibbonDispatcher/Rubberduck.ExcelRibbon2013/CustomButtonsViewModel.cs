@@ -4,7 +4,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.Windows.Forms;
 using Microsoft.Office.Core;
 
-namespace RubberDuck.RibbonDispatcher {
+using Rubberduck.RibbonDispatcher.Abstract;
+
+namespace Rubberduck.RibbonDispatcher.Excel2013 {
     using static RibbonControlSize;
 
     internal class CustomButtonsViewModel {
