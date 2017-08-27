@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Antlr4.Runtime;
@@ -18,6 +19,8 @@ namespace Rubberduck.Inspections.Concrete
     {
         public EmptyIfBlockInspection(RubberduckParserState state)
             : base(state) { }
+
+        public override Type Type => typeof(EmptyIfBlockInspection);
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 

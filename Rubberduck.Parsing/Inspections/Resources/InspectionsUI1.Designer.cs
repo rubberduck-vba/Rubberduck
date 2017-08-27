@@ -1753,7 +1753,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A self-assigned object variable declaration at procedure scope changes how nulling the reference works, which can lead to unexpected behavior..
+        ///   Looks up a localized string similar to An auto-instantiated object variable declaration at procedure scope changes how nulling the reference works, which can lead to unexpected behavior..
         /// </summary>
         public static string SelfAssignedDeclarationInspectionMeta {
             get {
@@ -1762,7 +1762,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Object variable reference is self-assigned.
+        ///   Looks up a localized string similar to Object variable reference is auto-instantiated.
         /// </summary>
         public static string SelfAssignedDeclarationInspectionName {
             get {
@@ -1771,7 +1771,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Object reference &apos;{0}&apos; is self-assigned.
+        ///   Looks up a localized string similar to Object reference &apos;{0}&apos; is auto-instantiated.
         /// </summary>
         public static string SelfAssignedDeclarationInspectionResultFormat {
             get {

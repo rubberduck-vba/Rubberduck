@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
@@ -16,6 +17,8 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class LineLabelNotUsedInspection : InspectionBase
     {
         public LineLabelNotUsedInspection(RubberduckParserState state) : base(state) { }
+
+        public override Type Type => typeof(LineLabelNotUsedInspection);
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 

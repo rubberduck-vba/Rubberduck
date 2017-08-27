@@ -38,6 +38,8 @@ namespace Rubberduck.Inspections
 
         private static bool MayRequireAssignmentUsingSet(Declaration declaration)
         {
+            if (declaration.DeclarationType == DeclarationType.PropertyLet) { return false; }
+
             if (declaration.AsTypeName == Tokens.Variant) { return true; }
 
             if (declaration.IsArray) { return false; }

@@ -6,6 +6,6 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
     {
         ICommandBars Parent { get; set; }
         ICommandBar Item { get; }
-        void RemoveChildren();
+        void RemoveCommandBar();
     }
 }

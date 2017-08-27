@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
@@ -19,6 +20,8 @@ namespace Rubberduck.Inspections.Concrete
         {
             Listener = new ObsoleteCommentSyntaxListener();
         }
+
+        public override Type Type => typeof(ObsoleteCommentSyntaxInspection);
 
         public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
         public override IInspectionListener Listener { get; }

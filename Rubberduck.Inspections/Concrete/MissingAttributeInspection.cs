@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
@@ -6,6 +7,7 @@ using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
@@ -13,6 +15,7 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    [CannotAnnotate]
     public sealed class MissingAttributeInspection : ParseTreeInspectionBase
     {
         public MissingAttributeInspection(RubberduckParserState state)
@@ -20,6 +23,8 @@ namespace Rubberduck.Inspections.Concrete
         {
             Listener = new MissingMemberAttributeListener(state);
         }
+
+        public override Type Type => typeof(MissingAttributeInspection);
 
         public override ParsePass Pass => ParsePass.AttributesPass;
 
