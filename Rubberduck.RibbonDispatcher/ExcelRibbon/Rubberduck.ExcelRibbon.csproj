@@ -182,7 +182,6 @@
     can be found.
   -->
   <ItemGroup>
-    <Compile Include="RibbonViewModel\AbstractRibbon.cs" />
     <Compile Include="CustomButtonsModel.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -208,20 +207,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="CustomAppRibbon.cs" />
-    <Compile Include="RibbonViewModel\Interfaces.cs" />
-    <Compile Include="RibbonViewModel\IRibbonButton.cs" />
-    <Compile Include="RibbonViewModel\IRibbonCommon.cs" />
-    <Compile Include="RibbonViewModel\IRibbonDropdown.cs" />
-    <Compile Include="RibbonViewModel\IRibbonTextLanguageControl.cs" />
-    <Compile Include="RibbonViewModel\IRibbonToggle.cs" />
-    <Compile Include="RibbonViewModel\RibbonButton.cs" />
-    <Compile Include="RibbonViewModel\RibbonCommon.cs" />
-    <Compile Include="RibbonViewModel\RibbonDropdown.cs" />
-    <Compile Include="RibbonViewModel\RibbonFactory.cs" />
-    <Compile Include="RibbonViewModel\RibbonText.cs" />
-    <Compile Include="RibbonViewModel\RibbonTextLanguageControl.cs" />
-    <Compile Include="RibbonViewModel\RibbonToggle.cs" />
-    <Compile Include="RibbonViewModel\RibbonUIEventArgs.cs" />
     <Compile Include="StandardButtonsModel.cs" />
     <Compile Include="ThisAddIn.cs">
       <SubType>Code</SubType>
@@ -243,6 +228,13 @@
   <ItemGroup>
     <CodeAnalysisDictionary Include="CustomDictionary.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AbstractRibbonDispatcher\AbstractRibbonDispatcher.csproj">
+      <Project>{43b8b201-6fd9-4d77-bbe8-a0741872c38a}</Project>
+      <Name>AbstractRibbonDispatcher</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

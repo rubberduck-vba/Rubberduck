@@ -7,8 +7,6 @@ namespace RubberDuck.RibbonDispatcher {
     using static RibbonControlSize;
     using static System.Globalization.CultureInfo;
 
-    // --------------------------------------------------------------------------------------------------------
-    //  vvv  This really should be in a separate assembly, but Excel croaks on that for an unknown reason.  vvv
     [ComVisible(true)][CLSCompliant(true)]
     public abstract class AbstractRibbon {
         protected AbstractRibbon() : base() {;}
@@ -50,6 +48,4 @@ namespace RubberDuck.RibbonDispatcher {
             return string.Format(InvariantCulture, $"Unknown control '{control?.Id??""}'");
         }
     }
-    //  ^^^  This really should be in a separate assembly, but Excel croaks on that for an unknown reason.  ^^^
-    // --------------------------------------------------------------------------------------------------------
 }
