@@ -537,6 +537,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add Module.
+        /// </summary>
+        public static string CodeExplorer_AddModule {
+            get {
+                return ResourceManager.GetString("CodeExplorer_AddModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Standard module (.bas).
         /// </summary>
         public static string CodeExplorer_AddStdModuleText {

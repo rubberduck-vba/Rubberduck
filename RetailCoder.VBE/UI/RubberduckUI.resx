@@ -2080,4 +2080,7 @@ Would you like to import them to Rubberduck?</value>
   <data name="CodeExplorer_OpenDesigner" xml:space="preserve">
     <value>Open Designer</value>
   </data>
+  <data name="CodeExplorer_AddModule" xml:space="preserve">
+    <value>Add Module</value>
+  </data>
 </root>
