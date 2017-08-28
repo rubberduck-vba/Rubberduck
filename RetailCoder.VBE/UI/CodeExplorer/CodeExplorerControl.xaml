@@ -309,7 +309,6 @@
         <Style x:Key="TreeViewItemStyle" TargetType="TextBlock">
             <Setter Property="Text" Value="{Binding Name}" />
             <Setter Property="FontSize" Value="10" />
-            <Setter Property="MaxWidth" Value="200" />
             <Setter Property="Margin" Value="2,0,2,0" />
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="ToolTip" Value="{Binding Name}" />
@@ -320,7 +319,6 @@
         <Style x:Key="TreeViewItemStyleWithSignatures" TargetType="TextBlock">
             <Setter Property="Text" Value="{Binding NameWithSignature}" />
             <Setter Property="FontSize" Value="10" />
-            <Setter Property="MaxWidth" Value="200" />
             <Setter Property="Margin" Value="2,0,2,0" />
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="ToolTip" Value="{Binding NameWithSignature}" />
