@@ -55,6 +55,31 @@ End Sub";
             Assert.AreEqual(expectedCode, parser.State.GetRewriter(component).GetText());
         }
 
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void AssignedByValParameter_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+@"Public Sub Foo(ByVal arg1 As String)
+    Let arg1 = ""test""
+End Sub";
+
+            const string expectedCode =
+@"'@Ignore AssignedByValParameter
+Public Sub Foo(ByVal arg1 As String)
+    Let arg1 = ""test""
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var state = MockParser.CreateAndParse(vbe.Object);
+            var inspection = new AssignedByValParameterInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+        }
 
     }
 }
