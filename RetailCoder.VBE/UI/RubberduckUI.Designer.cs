@@ -1576,9 +1576,9 @@ namespace Rubberduck.UI {
         /// <summary>
         ///   Looks up a localized string similar to Choose a folder to export the source of {0} to:.
         /// </summary>
-        public static string ExportAllCommand_SaveAsDialog {
+        public static string ExportAllCommand_SaveAsDialog_Title {
             get {
-                return ResourceManager.GetString("ExportAllCommand_SaveAsDialog", resourceCulture);
+                return ResourceManager.GetString("ExportAllCommand_SaveAsDialog_Title", resourceCulture);
             }
         }
         
