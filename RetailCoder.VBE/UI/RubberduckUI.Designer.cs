@@ -699,6 +699,24 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Open.
+        /// </summary>
+        public static string CodeExplorer_Open {
+            get {
+                return ResourceManager.GetString("CodeExplorer_Open", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open Designer.
+        /// </summary>
+        public static string CodeExplorer_OpenDesigner {
+            get {
+                return ResourceManager.GetString("CodeExplorer_OpenDesigner", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Project properties.
         /// </summary>
         public static string CodeExplorer_OpenProjectProperties {

@@ -359,17 +359,25 @@
             <Setter Property="ContextMenu">
                 <Setter.Value>
                     <ContextMenu DataContext="{Binding DataContext, Source={x:Reference CodeExplorer}}">
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_Open}"
+                                  FontWeight="Bold"
+                                  Command="{Binding OpenCommand}"
+                                  CommandParameter="{Binding SelectedItem}" />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_OpenDesigner}"
+                                  Command="{Binding OpenDesignerCommand}"
+                                  CommandParameter="{Binding SelectedItem}"
+                                  Visibility="{Binding Path=IsEnabled, RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibility}}">
+                            <MenuItem.Icon>
+                                <Image Height="16" Source="../../Resources/Custom/PNG/ProjectForm.png" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator />
                         <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Refresh}"
                                   Command="{Binding RefreshCommand}">
                             <MenuItem.Icon>
                                 <Image Source="{StaticResource RefreshImage}" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Navigate}"
-                                  FontWeight="Bold"
-                                  Command="{Binding NavigateCommand}"
-                                  CommandParameter="{Binding SelectedItem}" />
-                        <Separator />
                         <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Rename}"
                                   Command="{Binding RenameCommand}"
                                   CommandParameter="{Binding SelectedItem}" />

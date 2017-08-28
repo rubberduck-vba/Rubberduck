@@ -2074,4 +2074,10 @@ Would you like to import them to Rubberduck?</value>
   <data name="HotkeyDescription_ExportActiveProject" xml:space="preserve">
     <value>Export Active Project</value>
   </data>
+  <data name="CodeExplorer_Open" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="CodeExplorer_OpenDesigner" xml:space="preserve">
+    <value>Open Designer</value>
+  </data>
 </root>

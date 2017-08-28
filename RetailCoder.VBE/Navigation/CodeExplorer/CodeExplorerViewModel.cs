@@ -40,15 +40,15 @@ namespace Rubberduck.Navigation.CodeExplorer
                 reparseCommand == null ? (Action<object>)(o => { }) :
                 o => reparseCommand.Execute(o),
                 o => !IsBusy && reparseCommand != null && reparseCommand.CanExecute(o));
-            
-            NavigateCommand = commands.OfType<UI.CodeExplorer.Commands.NavigateCommand>().SingleOrDefault();
+
+            OpenCommand = commands.OfType<UI.CodeExplorer.Commands.OpenCommand>().SingleOrDefault();
+            OpenDesignerCommand = commands.OfType<OpenDesignerCommand>().SingleOrDefault();
 
             AddTestModuleCommand = commands.OfType<UI.CodeExplorer.Commands.AddTestModuleCommand>().SingleOrDefault();
             AddStdModuleCommand = commands.OfType<AddStdModuleCommand>().SingleOrDefault();
             AddClassModuleCommand = commands.OfType<AddClassModuleCommand>().SingleOrDefault();
             AddUserFormCommand = commands.OfType<AddUserFormCommand>().SingleOrDefault();
 
-            OpenDesignerCommand = commands.OfType<OpenDesignerCommand>().SingleOrDefault();
             OpenProjectPropertiesCommand = commands.OfType<OpenProjectPropertiesCommand>().SingleOrDefault();
             RenameCommand = commands.OfType<RenameCommand>().SingleOrDefault();
             IndenterCommand = commands.OfType<IndentCommand>().SingleOrDefault();
@@ -447,7 +447,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public CommandBase RefreshCommand { get; }
 
-        public CommandBase NavigateCommand { get; }
+        public CommandBase OpenCommand { get; }
 
         public CommandBase AddTestModuleCommand { get; }
         public CommandBase AddStdModuleCommand { get; }
