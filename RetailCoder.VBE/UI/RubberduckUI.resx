@@ -2080,6 +2080,15 @@ Would you like to import them to Rubberduck?</value>
   <data name="CodeExplorer_OpenDesigner" xml:space="preserve">
     <value>Open Designer</value>
   </data>
+  <data name="ImportCommand_OpenDialog_Filter_AllFiles" xml:space="preserve">
+    <value>All Files</value>
+  </data>
+  <data name="ImportCommand_OpenDialog_Filter_VBFiles" xml:space="preserve">
+    <value>VB Files</value>
+  </data>
+  <data name="ImportCommand_OpenDialog_Title" xml:space="preserve">
+    <value>Import Source Files</value>
+  </data>
   <data name="CodeExplorer_AddModule" xml:space="preserve">
     <value>Add Module</value>
   </data>
