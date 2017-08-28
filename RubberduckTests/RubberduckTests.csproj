@@ -122,6 +122,7 @@
     <Compile Include="QuickFixes\ApplicationWorksheetFunctionQuickFixTests.cs" />
     <Compile Include="QuickFixes\IgnoreOnceQuickFixTests.cs" />
     <Compile Include="QuickFixes\RemoveEmptyElseBlockQuickFixTests.cs" />
+    <Compile Include="QuickFixes\RemoveEmptyIfBlockQuickFixTests.cs" />
     <Compile Include="QuickFixes\RemoveUnusedDeclarationQuickFixTests.cs" />
     <Compile Include="SmartIndenter\VerticalSpacingTests.cs" />
     <Compile Include="SourceControl\SynchrounouslyConstructedDeclarationFinderFactory.cs" />
