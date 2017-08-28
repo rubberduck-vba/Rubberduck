@@ -119,6 +119,8 @@
     <Compile Include="Parsing\Coordination\IModuleToModuleReferenceManagerTestBase.cs" />
     <Compile Include="Parsing\Coordination\StandAloneModuleToModuleReferenceManagerTests.cs" />
     <Compile Include="PostProcessing\ModuleRewriterTests.cs" />
+    <Compile Include="QuickFixes\ApplicationWorksheetFunctionQuickFixTests.cs" />
+    <Compile Include="QuickFixes\IgnoreOnceQuickFixTests.cs" />
     <Compile Include="SmartIndenter\VerticalSpacingTests.cs" />
     <Compile Include="SourceControl\SynchrounouslyConstructedDeclarationFinderFactory.cs" />
     <Compile Include="Symbols\AccessibilityCheckTests.cs" />
