@@ -35,7 +35,8 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         protected override void OnExecute(object parameter)
         {
-            var project = GetNodeProject((CodeExplorerItemViewModel)parameter);
+            var project = GetNodeProject(parameter as CodeExplorerItemViewModel) ?? _vbe.ActiveVBProject;
+
             if (project == null)
             {
                 if (_vbe.VBProjects.Count == 1)
@@ -67,6 +68,11 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         private IVBProject GetNodeProject(CodeExplorerItemViewModel parameter)
         {
+            if (parameter == null)
+            {
+                return null;
+            }
+
             if (parameter is ICodeExplorerDeclarationViewModel)
             {
                 return parameter.GetSelectedDeclaration().Project;
