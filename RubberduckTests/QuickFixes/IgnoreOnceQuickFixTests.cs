@@ -7,6 +7,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using RubberduckTests.Inspections;
 
 namespace RubberduckTests.QuickFixes
 {
@@ -108,5 +109,34 @@ End Sub";
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
+
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void EmptyStringLiteral_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+@"Public Sub Foo(ByRef arg1 As String)
+    arg1 = """"
+End Sub";
+
+            const string expectedCode =
+@"Public Sub Foo(ByRef arg1 As String)
+'@Ignore EmptyStringLiteral
+    arg1 = """"
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new EmptyStringLiteralInspection(state);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+        }
+
+
     }
 }
