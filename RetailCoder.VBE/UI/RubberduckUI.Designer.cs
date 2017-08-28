@@ -528,7 +528,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User form (.frm).
+        ///   Looks up a localized string similar to UserForm (.frm).
         /// </summary>
         public static string CodeExplorer_AddFormText {
             get {

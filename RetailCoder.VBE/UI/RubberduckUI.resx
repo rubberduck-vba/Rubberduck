@@ -503,7 +503,7 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
     <value>Class module (.cls)</value>
   </data>
   <data name="CodeExplorer_AddFormText" xml:space="preserve">
-    <value>User form (.frm)</value>
+    <value>UserForm (.frm)</value>
     <comment>TC</comment>
   </data>
   <data name="CodeExplorer_AddStdModuleText" xml:space="preserve">
