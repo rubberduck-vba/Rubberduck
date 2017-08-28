@@ -2186,6 +2186,33 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All Files.
+        /// </summary>
+        public static string ImportCommand_OpenDialog_Filter_AllFiles {
+            get {
+                return ResourceManager.GetString("ImportCommand_OpenDialog_Filter_AllFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to VB Files.
+        /// </summary>
+        public static string ImportCommand_OpenDialog_Filter_VBFiles {
+            get {
+                return ResourceManager.GetString("ImportCommand_OpenDialog_Filter_VBFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import Source Files.
+        /// </summary>
+        public static string ImportCommand_OpenDialog_Title {
+            get {
+                return ResourceManager.GetString("ImportCommand_OpenDialog_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Current &amp;Module.
         /// </summary>
         public static string IndentCurrentModule {

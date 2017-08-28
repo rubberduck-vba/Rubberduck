@@ -22,10 +22,11 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _openFileDialog.AddExtension = true;
             _openFileDialog.AutoUpgradeEnabled = true;
             _openFileDialog.CheckFileExists = true;
+            _openFileDialog.CheckPathExists = true;
             _openFileDialog.Multiselect = true;
             _openFileDialog.ShowHelp = false;   // we don't want 1996's file picker.
-            _openFileDialog.Filter = @"VB Files|*.cls;*.bas;*.frm";
-            _openFileDialog.CheckFileExists = true;
+            _openFileDialog.Filter = string.Concat(RubberduckUI.ImportCommand_OpenDialog_Filter_VBFiles, @" (*.cls, *.bas, *.frm, *.doccls)|*.cls; *.bas; *.frm; *.doccls|", RubberduckUI.ImportCommand_OpenDialog_Filter_AllFiles, @" (*.*)|*.*");
+            _openFileDialog.Title = RubberduckUI.ImportCommand_OpenDialog_Title;
         }
 
         protected override bool EvaluateCanExecute(object parameter)
