@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using Microsoft.Office.Core;
 
-using Rubberduck.RibbonDispatcher;
 using Rubberduck.RibbonDispatcher.Abstract;
 
 namespace Rubberduck.RibbonDispatcher.Concrete
 {
-    [ComVisible(true)][CLSCompliant(true)]
+    [ComVisible(true)]
+    [CLSCompliant(true)]
     public class RibbonText {
         public RibbonText() { ; }
 

@@ -1,9 +1,5 @@
 ﻿using System;
-
 using Microsoft.Office.Core;
-
-using Rubberduck.RibbonDispatcher;
-using Rubberduck.RibbonDispatcher.Abstract;
 
 namespace Rubberduck.RibbonDispatcher
 {

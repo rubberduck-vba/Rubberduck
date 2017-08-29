@@ -1,19 +1,14 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-using Rubberduck.RibbonDispatcher;
-
 namespace Rubberduck.RibbonDispatcher.Abstract
 {
-    [ComVisible(true)][CLSCompliant(true)]
-    public interface IRibbonButton {
+    [ComVisible(true)]
+    [CLSCompliant(true)]
+    [InterfaceType(ComInterfaceType.InterfaceIsDual)]
+    public interface IRibbonButton : IRibbonCommon {
         event EventHandler Clicked;
 
-        bool ShowLabel { get; set; }
-        bool ShowImage { get; set; }
-
         void OnAction();
-
-        IRibbonCommon AsRibbonControl { get; }
     }
 }
