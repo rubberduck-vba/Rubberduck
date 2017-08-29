@@ -1342,7 +1342,7 @@ End Function
 
         [TestCategory("Code Explorer")]
         [TestMethod]
-        public void CompareByType_ReturnsFunctionAboveSub()
+        public void CompareByType_SubsAndFunctionsReturnsEqual()
         {
             var inputCode =
 @"Public Function Foo() As Boolean
@@ -1364,7 +1364,7 @@ End Sub
             var functionNode = vm.Projects.First().Items.First().Items.First().Items.Single(s => s.Name == "Foo");
             var subNode = vm.Projects.First().Items.First().Items.First().Items.Single(s => s.Name == "Bar");
 
-            Assert.AreEqual(-1, new CompareByType().Compare(functionNode, subNode));
+            Assert.AreEqual(0, new CompareByType().Compare(functionNode, subNode));
         }
 
         [TestCategory("Code Explorer")]
