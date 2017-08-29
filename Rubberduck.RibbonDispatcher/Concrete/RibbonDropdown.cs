@@ -1,14 +1,14 @@
 ﻿using System;
+
 using Microsoft.Office.Core;
 
-using Rubberduck.RibbonDispatcher;
 using Rubberduck.RibbonDispatcher.Abstract;
 
 namespace Rubberduck.RibbonDispatcher.Concrete
 {
-    using LanguageStrings     = IRibbonTextLanguageControl;
-
+    using LanguageStrings           = IRibbonTextLanguageControl;
     using SelectionMadeEventHandler = EventHandler<SelectionMadeEventArgs>;
+
     public class RibbonDropDown : RibbonCommon, IRibbonDropDown {
         internal RibbonDropDown(string id, LanguageStrings strings, bool visible, bool enabled, RibbonControlSize size)
             : base(id, strings, visible, enabled, size){

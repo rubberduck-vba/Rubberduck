@@ -5,9 +5,7 @@
     </Unrecognized>
     <Recognized>
       <Word>mso</Word>
-      <Word>nd</Word> <!-- for use in "2nd" -->
       <Word>Rubberduck</Word>
-      <!-- for use in "2nd" -->
     </Recognized>
     <Deprecated>
       <Term PreferredAlternate=""></Term>
@@ -22,7 +20,6 @@
   <Acronyms>
     <CasingExceptions>
       <Acronym></Acronym>
-      <Acronym>nd</Acronym> <!-- for use in "2nd" -->
     </CasingExceptions>
   </Acronyms>
 </Dictionary>
