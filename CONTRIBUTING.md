@@ -79,6 +79,8 @@ Other than that, you can also open an issue with the label \[support\], but it m
 In that room the core team talks about the duck and whatever else comes up.
 N.B.: The rules of the Stack Exchange Network apply to everything you say in that room. But basically those are the same rules as those in the [CoC](#Code_of_Conduct).
 
+Whether you create an issue or a pull request, please avoid using `[` square brackets `]` in the title, and try to be as descriptive (but succinct) as possible. Square brackets in titles confuse our chat-bot, and end up rendering in weird broken ways in SE chat. Avoid riddles, bad puns and other would-be funny (or NSFW) titles that don't really describe the issue or PR.
+
 ### Translations
 
 Rubberduck is Localized in multiple languages.
@@ -92,6 +94,5 @@ If you contribute a translation for a brand new previously unsupported language,
 ## What comes out of it for me?
 
 Well ... the eternal gratitude of all Rubberduck users for one :wink:
-Aside from that, all Contributors are explicitly listed by name in the "About Rubberduck" window.
-In addition to that, there is some [Contributor-only Rubberduck swag](https://gofundme.com/rubberduckvba), that can be sent to you
-at the discretion of @retailcoder
+Aside from that, all contributors are explicitly listed by name (or alias) in the "About Rubberduck" window.
+In addition to that, there is some [Contributor-only Rubberduck swag](https://gofundme.com/rubberduckvba), that can be sent to you, at the discretion of @retailcoder.. while supplies last.
