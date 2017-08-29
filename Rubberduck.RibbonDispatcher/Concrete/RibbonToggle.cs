@@ -26,7 +26,8 @@ namespace Rubberduck.RibbonDispatcher.Concrete
 
         public void OnAction(bool isPressed) {
             Clicked?.Invoke(this,new ClickedEventArgs(isPressed));
-            UseAlternateLabel = IsPressed = isPressed;
+            IsPressed         = isPressed;
+            UseAlternateLabel = isPressed;
             OnChanged();
         }
 
