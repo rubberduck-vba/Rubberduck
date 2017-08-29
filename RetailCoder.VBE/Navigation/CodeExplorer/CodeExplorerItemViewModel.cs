@@ -32,17 +32,17 @@ namespace Rubberduck.Navigation.CodeExplorer
         private static readonly Dictionary<DeclarationType, int> SortOrder = new Dictionary<DeclarationType, int>
         {
             {DeclarationType.LibraryFunction, 0},
-            {DeclarationType.LibraryProcedure, 1},
-            {DeclarationType.UserDefinedType, 2},
-            {DeclarationType.Enumeration, 3},
-            {DeclarationType.Event, 4},
-            {DeclarationType.Constant, 5},
-            {DeclarationType.Variable, 6},
-            {DeclarationType.PropertyGet, 7},
-            {DeclarationType.PropertyLet, 8},
-            {DeclarationType.PropertySet, 9},
-            {DeclarationType.Function, 10},
-            {DeclarationType.Procedure, 11}
+            {DeclarationType.LibraryProcedure, 0},
+            {DeclarationType.UserDefinedType, 1},
+            {DeclarationType.Enumeration, 2},
+            {DeclarationType.Event, 3},
+            {DeclarationType.Constant, 4},
+            {DeclarationType.Variable, 5},
+            {DeclarationType.PropertyGet, 6},
+            {DeclarationType.PropertyLet, 7},
+            {DeclarationType.PropertySet, 8},
+            {DeclarationType.Function, 9},
+            {DeclarationType.Procedure, 9}
         };
 
         public override int Compare(CodeExplorerItemViewModel x, CodeExplorerItemViewModel y)
@@ -69,17 +69,19 @@ namespace Rubberduck.Navigation.CodeExplorer
                 if (SortOrder.TryGetValue(xNode.Declaration.DeclarationType, out xValue) &&
                     SortOrder.TryGetValue(yNode.Declaration.DeclarationType, out yValue))
                 {
-                    return xValue < yValue ? -1 : 1;
+                    if (xValue != yValue)
+                    { return xValue < yValue ? -1 : 1; }
                 }
-
-                return xNode.Declaration.DeclarationType < yNode.Declaration.DeclarationType ? -1 : 1;
             }
 
-            if (xNode.Declaration.Accessibility != yNode.Declaration.Accessibility)
+            var xNodeAcc = xNode.Declaration.Accessibility == Accessibility.Implicit ? Accessibility.Public : xNode.Declaration.Accessibility;
+            var yNodeAcc = yNode.Declaration.Accessibility == Accessibility.Implicit ? Accessibility.Public : yNode.Declaration.Accessibility;
+
+            if (xNodeAcc != yNodeAcc)
             {
-                return xNode.Declaration.Accessibility < yNode.Declaration.Accessibility ? -1 : 1;
+                return xNodeAcc < yNodeAcc ? -1 : 1;
             }
-            
+
             if (x.ExpandedIcon != y.ExpandedIcon)
             {
                 // ReSharper disable PossibleInvalidOperationException - this will have a component
@@ -121,12 +123,12 @@ namespace Rubberduck.Navigation.CodeExplorer
                 return x.QualifiedSelection.HasValue ? -1 : 1;
             }
 
-            if (x.QualifiedSelection.Value.Selection == y.QualifiedSelection.Value.Selection)
+            if (x.QualifiedSelection.Value.Selection.StartLine == y.QualifiedSelection.Value.Selection.StartLine)
             {
                 return 0;
             }
 
-            return x.QualifiedSelection.Value.Selection < y.QualifiedSelection.Value.Selection ? -1 : 1;
+            return x.QualifiedSelection.Value.Selection.StartLine < y.QualifiedSelection.Value.Selection.StartLine ? -1 : 1;
         }
     }
 
