@@ -8,6 +8,14 @@ for:
   after_test:
   - cmd: iscc /q "Installer Build Script.iss" 
   - cmd: move Installers\Rubberduck.Setup.exe Installers\Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%-pre.exe
+skip_commits:
+  files:
+  - docs/*
+  - '**/*.md'
+  - '**/*.yml'
+  - '**/.*'
+  - license
+  - License.rtf
 branches:
   only:
   - master
