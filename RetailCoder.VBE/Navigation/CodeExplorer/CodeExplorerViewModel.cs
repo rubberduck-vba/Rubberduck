@@ -9,6 +9,7 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Settings;
 using Rubberduck.UI;
 using Rubberduck.UI.CodeExplorer.Commands;
 using Rubberduck.UI.Command;
@@ -26,13 +27,16 @@ namespace Rubberduck.Navigation.CodeExplorer
     {
         private readonly FolderHelper _folderHelper;
         private readonly RubberduckParserState _state;
+        private readonly IGeneralConfigService _configLoader;
+        private bool _sourceControlEnabled;
 
-        public CodeExplorerViewModel(FolderHelper folderHelper, RubberduckParserState state, List<CommandBase> commands)
+        public CodeExplorerViewModel(FolderHelper folderHelper, RubberduckParserState state, List<CommandBase> commands, IGeneralConfigService configLoader)
         {
             _folderHelper = folderHelper;
             _state = state;
             _state.StateChanged += HandleStateChanged;
             _state.ModuleStateChanged += ParserState_ModuleStateChanged;
+            _sourceControlEnabled = configLoader.LoadConfiguration().UserSettings.GeneralSettings.SourceControlEnabled;
 
             var reparseCommand = commands.OfType<ReparseCommand>().SingleOrDefault();
 
@@ -510,6 +514,11 @@ namespace Rubberduck.Navigation.CodeExplorer
                 { return Visibility.Visible; }
                 else { return Visibility.Collapsed; }
             }
+        }
+
+        public bool IsSourceControlEnabled
+        {
+            get { return _sourceControlEnabled; }
         }
 
         public void Dispose()
