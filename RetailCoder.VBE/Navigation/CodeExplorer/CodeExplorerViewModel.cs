@@ -27,7 +27,6 @@ namespace Rubberduck.Navigation.CodeExplorer
     {
         private readonly FolderHelper _folderHelper;
         private readonly RubberduckParserState _state;
-        private readonly IGeneralConfigService _configLoader;
         private bool _sourceControlEnabled;
 
         public CodeExplorerViewModel(FolderHelper folderHelper, RubberduckParserState state, List<CommandBase> commands, IGeneralConfigService configLoader)
