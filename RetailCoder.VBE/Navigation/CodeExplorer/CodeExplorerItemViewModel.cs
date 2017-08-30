@@ -128,7 +128,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 return 0;
             }
 
-            return x.QualifiedSelection.Value.Selection.StartLine > y.QualifiedSelection.Value.Selection.StartLine ? 1 : -1;
+            return x.QualifiedSelection.Value.Selection.StartLine < y.QualifiedSelection.Value.Selection.StartLine ? -1 : 1;
         }
     }
 
