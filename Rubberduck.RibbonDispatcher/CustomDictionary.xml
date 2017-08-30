@@ -4,7 +4,12 @@
       <Word>knokker</Word>
     </Unrecognized>
     <Recognized>
-      <Word>mso</Word>
+      <!-- I solemnly promise to not abuse these, on pain of having my priviletg to use 'i' revoked. -->
+      <Word>a</Word><Word>b</Word><Word>c</Word><Word>d</Word><Word>e</Word><Word>f</Word>
+      <Word>g</Word><Word>h</Word><Word>i</Word><Word>j</Word><Word>k</Word><Word>l</Word>
+      <Word>m</Word><Word>n</Word><Word>o</Word><Word>p</Word><Word>q</Word><Word>r</Word>
+      <Word>s</Word><Word>t</Word><Word>u</Word><Word>v</Word><Word>w</Word><Word>x</Word>
+      <Word>y</Word><Word>z</Word>
       <Word>Rubberduck</Word>
     </Recognized>
     <Deprecated>
