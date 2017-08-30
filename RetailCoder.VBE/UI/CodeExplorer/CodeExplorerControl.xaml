@@ -708,7 +708,22 @@
             <RowDefinition Height="Auto" MinHeight="48"/>
         </Grid.RowDefinitions>
 
-        <Border Grid.Row="0" Grid.RowSpan="3" Background="#FFEEF5FD" />
+        <Border Grid.Row="0" Grid.RowSpan="3" Background="#FFEEF5FD">
+            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="WrapWithOverflow" TextAlignment="Center"
+                       Visibility="{Binding MessageVisibility}" MinWidth="200">
+                <Run FontWeight="Bold" Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_EmptyViewMessage_Title}"/><LineBreak/><Run/>
+                <LineBreak/>
+                <Button Command="{Binding RefreshCommand}" BorderThickness="0" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
+                    <Image Height="16" Source="../../Resources/arrow-circle-double.png" ClipToBounds="True" />
+                    <Button.ToolTip>
+                        <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Refresh}" />
+                    </Button.ToolTip>
+                </Button>
+                <Hyperlink Command="{Binding RefreshCommand}"><Run Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Refresh}"/></Hyperlink>
+                <Run Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_EmptyViewMessage_Line1}"/><LineBreak/>
+                <Run Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_EmptyViewMessage_Line2}"/>
+            </TextBlock>
+        </Border>
 
         <ToolBarTray Grid.Row="0" IsLocked="True">
             <ToolBar Style="{DynamicResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}">
@@ -842,7 +857,8 @@
                   ItemContainerStyle="{StaticResource ShinyTreeView}"
                   HorizontalContentAlignment="Stretch"
                   Style="{StaticResource CodeExplorerTreeViewStyle}" BorderThickness="0,1"
-                  VirtualizingPanel.IsVirtualizing="False">
+                  VirtualizingPanel.IsVirtualizing="False"
+                  Visibility="{Binding Path=TreeViewVisibility}">
             <i:Interaction.Behaviors>
                 <controls:BindableSelectedItemBehavior SelectedItem="{Binding SelectedItem, Mode=TwoWay}" />
             </i:Interaction.Behaviors>

@@ -180,6 +180,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             {
                 _isBusy = value;
                 OnPropertyChanged();
+                OnPropertyChanged("EmptyViewMessageVisibility");
             }
         }
 
@@ -247,6 +248,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 _projects = new ObservableCollection<CodeExplorerItemViewModel>(value.OrderBy(o => o.NameWithSignature));
                 
                 OnPropertyChanged();
+                OnPropertyChanged("TreeViewVisibility");
             }
         }
 
@@ -257,7 +259,8 @@ namespace Rubberduck.Navigation.CodeExplorer
                 Projects = new ObservableCollection<CodeExplorerItemViewModel>();
             }
 
-            IsBusy = _state.Status != ParserState.Pending && _state.Status < ParserState.ResolvedDeclarations;
+            IsBusy = _state.Status != ParserState.Pending && _state.Status <= ParserState.ResolvedDeclarations;
+
             if (e.State != ParserState.ResolvedDeclarations)
             {
                 return;
@@ -518,6 +521,25 @@ namespace Rubberduck.Navigation.CodeExplorer
         public bool IsSourceControlEnabled
         {
             get { return _sourceControlEnabled; }
+        }
+
+        public Visibility TreeViewVisibility
+        {
+            get
+            {
+                if (Projects == null || Projects.Count == 0)
+                { return Visibility.Collapsed; }
+                else
+                { return Visibility.Visible; }
+            }
+        }
+
+        public Visibility EmptyViewMessageVisibility
+        {
+            get
+            {
+                return _isBusy ? Visibility.Hidden : Visibility.Visible;
+            }
         }
 
         public void Dispose()
