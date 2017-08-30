@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace Rubberduck.RibbonDispatcher.Abstract {
+using Rubberduck.RibbonDispatcher.Abstract;
+
+namespace Rubberduck.RibbonDispatcher.Concrete {
     internal static class RibbonCommonExtensions {
         public static TValue GetOrDefault<TValue>(this IReadOnlyDictionary<string, TValue> dictionary, string key)
             where TValue : IRibbonCommon {

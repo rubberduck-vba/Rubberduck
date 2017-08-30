@@ -35,6 +35,8 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <LangVersion>6</LangVersion>
+    <RegisterForComInterop>true</RegisterForComInterop>
+    <DocumentationFile>bin\Release\Rubberduck.RibbonDispatcher.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Office, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
@@ -57,10 +59,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Abstract\AbstractRibbonDispatcher.cs" />
-    <Compile Include="Abstract\RibbonCommonExtensions.cs" />
-    <Compile Include="ChangedControlEventArgs.cs" />
-    <Compile Include="ClickedEventArgs.cs" />
+    <Compile Include="Abstract\IClickedEventArgs.cs" />
+    <Compile Include="Abstract\IControlChangedEventArgs.cs" />
+    <Compile Include="Abstract\ISelectionMadeEventArgs.cs" />
+    <Compile Include="Abstract\IToggledEventArgs.cs" />
+    <Compile Include="EventHandlers\ClickedEventArgs.cs" />
+    <Compile Include="Concrete\AbstractRibbonDispatcher.cs" />
+    <Compile Include="EventHandlers\EventHandlerDelegates.cs" />
+    <Compile Include="Abstract\MyRibbonControlSize.cs" />
+    <Compile Include="Concrete\RibbonCommonExtensions.cs" />
+    <Compile Include="EventHandlers\ControlChangedEventArgs.cs" />
+    <Compile Include="EventHandlers\ToggledEventArgs.cs" />
     <Compile Include="Abstract\IRibbonButton.cs" />
     <Compile Include="Abstract\IRibbonCommon.cs" />
     <Compile Include="Abstract\IRibbonDropdown.cs" />
@@ -73,11 +82,10 @@
     <Compile Include="Abstract\RibbonCommon.cs" />
     <Compile Include="Concrete\RibbonDropdown.cs" />
     <Compile Include="RibbonFactory.cs" />
-    <Compile Include="Concrete\RibbonText.cs" />
     <Compile Include="Concrete\RibbonTextLanguageControl.cs" />
     <Compile Include="Concrete\RibbonToggle.cs" />
-    <Compile Include="RibbonUIEventArgs.cs" />
-    <Compile Include="SelectionMadeEventArgs.cs" />
+    <Compile Include="EventHandlers\RibbonUIEventArgs.cs" />
+    <Compile Include="EventHandlers\SelectionMadeEventArgs.cs" />
   </ItemGroup>
   <ItemGroup>
     <CodeAnalysisDictionary Include="CustomDictionary.xml" />

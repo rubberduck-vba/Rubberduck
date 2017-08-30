@@ -8,14 +8,13 @@ using Microsoft.Office.Core;
 
 using Rubberduck.RibbonDispatcher.Abstract;
 using Rubberduck.RibbonDispatcher.Concrete;
+using Rubberduck.RibbonDispatcher.EventHandlers;
 
 namespace Rubberduck.RibbonDispatcher
 {
-    using static RibbonControlSize;
+    using static MyRibbonControlSize;
 
-    using ControlSize         = RibbonControlSize;
     using LanguageStrings     = IRibbonTextLanguageControl;
-    using ClickedEventHandler = EventHandler<ClickedEventArgs>;
 
     /// <summary>TODO</summary>
     /// <remarks>
@@ -38,7 +37,7 @@ namespace Rubberduck.RibbonDispatcher
 
         private readonly IRibbonUI _ribbonUI;
 
-        private void PropertyChanged(object sender, ChangedControlEventArgs e) => _ribbonUI.InvalidateControl(e.ControlId);
+        private void PropertyChanged(object sender, IControlChangedEventArgs e) => _ribbonUI.InvalidateControl(e.ControlId);
 
         private T Add<T>(T ctrl) where T:IRibbonCommon {
             _controls.Add(ctrl.Id, ctrl);
@@ -50,56 +49,65 @@ namespace Rubberduck.RibbonDispatcher
             return ctrl;
         }
 
+        /// <summary>TODO</summary>
         public IReadOnlyDictionary<string,IRibbonCommon>     Controls  => new ReadOnlyDictionary<string,IRibbonCommon>(_controls);
         private IDictionary<string,IRibbonCommon>           _controls  { get; }
+        /// <summary>TODO</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         public IRibbonCommon NewRibbonGroup(
-            string          id,
-            LanguageStrings strings = null, 
-            bool            visible = true,
-            bool            enabled = true,
-            ControlSize     size    = RibbonControlSizeLarge
+            string              id,
+            LanguageStrings     strings = null, 
+            bool                visible = true,
+            bool                enabled = true,
+            MyRibbonControlSize size    = Large
         ) => Add(new RibbonGroup(id, strings, visible, enabled, size));
 
+        /// <summary>TODO</summary>
         public IReadOnlyDictionary<string,IRibbonButton>     Buttons   => new ReadOnlyDictionary<string,IRibbonButton>(_buttons);
         private IDictionary<string,IRibbonButton>           _buttons   { get; }
+        /// <summary>TODO</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         public IRibbonButton NewRibbonButton(
-            string          id,
-            LanguageStrings strings   = null, 
-            bool            visible   = true,
-            bool            enabled   = true,
-            ControlSize     size      = RibbonControlSizeLarge,
-            bool            showImage = false,
-            bool            showLabel = true,
-            EventHandler    onClickedAction = null
+            string              id,
+            LanguageStrings     strings   = null, 
+            bool                visible   = true,
+            bool                enabled   = true,
+            MyRibbonControlSize size      = Large,
+            bool                showImage = false,
+            bool                showLabel = true,
+            EventHandler        onClickedAction = null
         ) => Add(new RibbonButton(id, strings, visible, enabled, size, showImage, showLabel, onClickedAction));
 
+        /// <summary>TODO</summary>
         public IReadOnlyDictionary<string,IRibbonToggle>     Toggles   => new ReadOnlyDictionary<string,IRibbonToggle>(_toggles);
         private IDictionary<string,IRibbonToggle>           _toggles   { get; }
+        /// <summary>TODO</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         public IRibbonToggle NewRibbonToggle(
-            string          id,
-            LanguageStrings strings   = null, 
-            bool            visible   = true,
-            bool            enabled   = true,
-            ControlSize     size      = RibbonControlSizeLarge,
-            bool            showImage = false,
-            bool            showLabel = true,
-            ClickedEventHandler onClickedAction = null
+            string              id,
+            LanguageStrings     strings   = null, 
+            bool                visible   = true,
+            bool                enabled   = true,
+            MyRibbonControlSize size      = Large,
+            bool                showImage = false,
+            bool                showLabel = true,
+            ToggledEventHandler onClickedAction = null
         ) => Add(new RibbonToggle(id, strings, visible, enabled, size, showImage, showLabel, onClickedAction));
 
+        /// <summary>TODO</summary>
         public IReadOnlyDictionary<string,IRibbonDropDown>   DropDowns => new ReadOnlyDictionary<string,IRibbonDropDown>(_dropDowns);
         private IDictionary<string,IRibbonDropDown>         _dropDowns { get; }
+        /// <summary>TODO</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         public IRibbonDropDown NewRibbonDropDown(
-            string          id,
-            LanguageStrings strings = null, 
-            bool            visible = true,
-            bool            enabled = true,
-            ControlSize     size    = RibbonControlSizeLarge
+            string              id,
+            LanguageStrings     strings = null, 
+            bool                visible = true,
+            bool                enabled = true,
+            MyRibbonControlSize size    = Large
         ) => Add(new RibbonDropDown(id, strings, visible, enabled, size));
 
+        /// <summary>TODO</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         public static LanguageStrings NewLanguageControlRibbonText(
             string label,
@@ -109,6 +117,32 @@ namespace Rubberduck.RibbonDispatcher
             string alternateLabel = null,
             string description    = null
         ) => new RibbonTextLanguageControl(label, screenTip, superTip, keyTip, alternateLabel, description);
+    }
 
+    /// <summary>TODO</summary>
+    public interface IMain {
+        /// <summary>TODO</summary>
+        IRibbonViewModel NewRibbonViewModel(IRibbonUI ribbonUI);
+    }
+
+    /// <summary>TODO</summary>
+    public class Main : IMain {
+        /// <summary>TODO</summary>
+        public Main() { }
+        /// <inheritdoc/>
+        public IRibbonViewModel NewRibbonViewModel(IRibbonUI ribbonUI) => new RibbonViewModel(ribbonUI);
+    }
+
+    /// <summary>TODO</summary>
+    public interface IRibbonViewModel {
+
+    }
+
+    /// <summary>TODO</summary>
+    public class RibbonViewModel : AbstractRibbonDispatcher, IRibbonViewModel {
+        /// <summary>TODO</summary>
+        public RibbonViewModel(IRibbonUI ribbonUI) : base() {
+            InitializeRibbonFactory(ribbonUI);
+        }
     }
 }
