@@ -729,7 +729,17 @@
             <ToolBar Style="{DynamicResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}">
 
                 <Button Command="{Binding RefreshCommand}">
-                    <Image Height="16" Source="../../Resources/arrow-circle-double.png" />
+                    <Image Height="16" Source="../../Resources/arrow-circle-double.png">
+                        <Image.Style>
+                            <Style TargetType="Image">
+                                <Style.Triggers>
+                                    <Trigger Property="IsEnabled"  Value="False">
+                                        <Setter Property="Opacity" Value="0.3" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                    </Image>
                     <Button.ToolTip>
                         <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Refresh}" />
                     </Button.ToolTip>
@@ -818,7 +828,7 @@
                             <Style TargetType="Image">
                                 <Style.Triggers>
                                     <Trigger Property="IsEnabled" Value="False">
-                                        <Setter Property="Opacity" Value="0.5" />
+                                        <Setter Property="Opacity" Value="0.3" />
                                     </Trigger>
                                 </Style.Triggers>
                             </Style>
@@ -837,7 +847,7 @@
                             <Style TargetType="Image">
                                 <Style.Triggers>
                                     <Trigger Property="IsEnabled" Value="False">
-                                        <Setter Property="Opacity" Value="0.5" />
+                                        <Setter Property="Opacity" Value="0.3" />
                                     </Trigger>
                                 </Style.Triggers>
                             </Style>
@@ -871,7 +881,7 @@
         <Border Grid.Row="3" BorderThickness="0,1,0,0" BorderBrush="DimGray">
 
             <ScrollViewer Background="WhiteSmoke" VerticalScrollBarVisibility="Auto">
-                <WrapPanel Orientation="Vertical" MinHeight="48" Background="WhiteSmoke">
+                <WrapPanel Orientation="Vertical" MinHeight="70" Background="WhiteSmoke">
 
                     <Grid Margin="4" HorizontalAlignment="Stretch">
                         <Grid.ColumnDefinitions>
