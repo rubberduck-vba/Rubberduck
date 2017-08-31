@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -63,6 +64,11 @@ namespace Rubberduck.VBEditor.Application
         public string ApplicationName
         {
             get { return _applicationName; }
+        }
+
+        public virtual IEnumerable GetDocumentControls()
+        {
+            return Enumerable.Empty<object>();
         }
 
         public abstract void Run(dynamic declaration);

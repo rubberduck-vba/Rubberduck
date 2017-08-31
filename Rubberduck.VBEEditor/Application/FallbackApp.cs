@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Diagnostics;
+using System.Linq;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
@@ -52,6 +54,10 @@ namespace Rubberduck.VBEditor.Application
         }
 
         public string ApplicationName { get { return "(unknown)"; } }
+        public IEnumerable GetDocumentControls()
+        {
+            return Enumerable.Empty<object>();
+        }
 
         public void Dispose()
         {

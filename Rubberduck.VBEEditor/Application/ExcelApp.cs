@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections;
 using Path = System.IO.Path;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace Rubberduck.VBEditor.Application
 {
-    public class ExcelApp : HostApplicationBase<Microsoft.Office.Interop.Excel.Application>
+    public class ExcelApp : HostApplicationBase<Excel.Application>
     {
         public const int MaxPossibleLengthOfProcedureName = 255;
 
@@ -86,6 +88,12 @@ namespace Rubberduck.VBEditor.Application
                 default:
                     throw new ArgumentException("Too many arguments.");
             }
+        }
+
+        public override IEnumerable GetDocumentControls()
+        {
+            // todo: return worksheet-embedded shapes/controls
+            return base.GetDocumentControls();
         }
 
         protected virtual string GenerateMethodCall(dynamic declaration)
