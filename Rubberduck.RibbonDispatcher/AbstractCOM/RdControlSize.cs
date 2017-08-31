@@ -1,0 +1,24 @@
+﻿////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                Copyright (c) 2017 Pieter Geerkens                              //
+////////////////////////////////////////////////////////////////////////////////////////////////////
+using System;
+using System.Runtime.InteropServices;
+using Office = Microsoft.Office.Core;
+
+namespace Rubberduck.RibbonDispatcher.AbstractCOM {
+    /// <summary>COM-visible alias for the OFFICE enumeration <see cref="Office.RibbonControlSize"/>.</summary>
+    /// <remarks>
+    /// This enumeration exists because COM Interop claims that (though it should)
+    /// it doesn't know about the OFFICE enumeration {RibbonControlSize}.
+    /// </remarks>
+    [Serializable]
+    [ComVisible(true)]
+    [Guid("844043EF-6B1B-471D-BC67-BD2CB3A8E7E4")]
+    [CLSCompliant(true)]
+    public enum RdControlSize {
+        /// <summary>TODO</summary>
+        rdRegular = Office.RibbonControlSize.RibbonControlSizeRegular,
+        /// <summary>TODO</summary>
+        rdLarge   = Office.RibbonControlSize.RibbonControlSizeLarge
+    }
+}
