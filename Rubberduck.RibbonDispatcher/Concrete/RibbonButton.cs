@@ -21,21 +21,15 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     public class RibbonButton : RibbonCommon, IRibbonButton,
         ISizeableMixin, IActionableMixin, IImageableMixin {
         internal RibbonButton(string itemId, IResourceManager mgr, bool visible, bool enabled, RdControlSize size,
-                string imageMso, bool showImage, bool showLabel)
-            : this(itemId, mgr, visible, enabled, size, new ImageObject(imageMso), showImage, showLabel) { }
-        internal RibbonButton(string itemId, IResourceManager mgr, bool visible, bool enabled, RdControlSize size,
-                IPictureDisp image, bool showImage, bool showLabel)
-            : this(itemId, mgr, visible, enabled, size, new ImageObject(image), showImage, showLabel) { }
-        private RibbonButton(string itemId, IResourceManager mgr, bool visible, bool enabled, RdControlSize size,
                 ImageObject image, bool showImage, bool showLabel) : base(itemId, mgr, visible, enabled) {
             this.SetSize(size, null);
-            _image     = image;
-            _showImage = showImage;
-            _showLabel = showLabel;
+            this.SetImage(image, null);
+            this.SetShowImage(showImage, null);
+            this.SetShowLabel(showLabel, null);
         }
 
-        #region ISizeableMixin
-        /// <summary>Sets ofr gets the preferred {RdControlSize} for the control.</summary>
+        #region Publish ISizeableMixin to class default interface
+        /// <summary>Gets or sets the preferred {RdControlSize} for the control.</summary>
         public RdControlSize Size {
             get => this.GetSize();
             set => this.SetSize(value, OnChanged);
@@ -54,27 +48,24 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         }
         #endregion
 
-        #region IImageableDecoration
+        #region Publish IImageableMixin to class default interface
         /// <inheritdoc/>
-        public object Image => _image.Image;
-        private ImageObject _image;
-        /// <inheritdoc/>
-        public bool ShowLabel {
-            get => _showLabel;
-            set { _showLabel = value; OnChanged(); }
-        }
-        private bool _showLabel;
-        /// <inheritdoc/>
+        public object Image => this.GetImage();
+        /// <summary>Gets or sets whether the image for this control should be displayed when its size is {rdRegular}.</summary>
         public bool ShowImage {
-            get => _showImage && Image != null;
-            set { _showImage = value; OnChanged(); }
+            get => this.GetShowImage();
+            set => this.SetShowImage(value, OnChanged);
         }
-        private bool _showImage;
+        /// <summary>Gets or sets whether the label for this control should be displayed when its size is {rdRegular}.</summary>
+        public bool ShowLabel {
+            get => this.GetShowLabel();
+            set => this.SetShowLabel(value, OnChanged);
+        }
 
-        /// <inheritdoc/>
-        public void SetImage(IPictureDisp Image) { _image = new ImageObject(Image);    OnChanged(); }
-        /// <inheritdoc/>
-        public void SetImageMso(string ImageMso) { _image = new ImageObject(ImageMso); OnChanged(); }
+        /// <summary>Sets the displayable image for this control to the provided {IPictureDisp}</summary>
+        public void SetImageDisp(IPictureDisp Image) => this.SetImage(Image, OnChanged);
+        /// <summary>Sets the displayable image for this control to the named ImageMso image</summary>
+        public void SetImageMso(string ImageMso)     => this.SetImage(ImageMso, OnChanged);
         #endregion
     }
 }

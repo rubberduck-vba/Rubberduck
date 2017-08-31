@@ -19,7 +19,7 @@ namespace Rubberduck.RibbonDispatcher {
         public const int Image              = 11;
         public const int ShowImage          = 12;
         public const int ShowLabel          = 13;
-        public const int SetImage           = 14;
+        public const int SetImageDisp           = 14;
         public const int SetImageMso        = 15;
 
         // IActionItem

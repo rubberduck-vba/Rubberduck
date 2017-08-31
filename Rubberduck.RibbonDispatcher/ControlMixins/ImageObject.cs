@@ -4,7 +4,7 @@
 using stdole;
 using System;
 
-namespace Rubberduck.RibbonDispatcher.Concrete {
+namespace Rubberduck.RibbonDispatcher.ControlMixins {
     /// <summary>TODO</summary>
     [Serializable]
     internal class ImageObject {

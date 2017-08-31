@@ -49,7 +49,7 @@ namespace Rubberduck.RibbonDispatcher.AbstractCOM {
         bool          IsPressed     { get; }
         /// <summary>TODO</summary>
         [DispId(DispIds.OnActionToggle)]
-        void          OnActionToggle(bool isPressed);
+        void          OnActionToggle(bool IsPressed);
 
         /// <summary>TODO</summary>
         [DispId(DispIds.Image)]
@@ -61,10 +61,10 @@ namespace Rubberduck.RibbonDispatcher.AbstractCOM {
         [DispId(DispIds.ShowLabel)]
         bool          ShowLabel     { get; set; }
         /// <summary>TODO</summary>
-        [DispId(DispIds.SetImage)]
-        void          SetImage(IPictureDisp image);
+        [DispId(DispIds.SetImageDisp)]
+        void          SetImageDisp(IPictureDisp Image);
         /// <summary>TODO</summary>
         [DispId(DispIds.SetImageMso)]
-        void          SetImageMso(string imageMso);
+        void          SetImageMso(string ImageMso);
     }
 }

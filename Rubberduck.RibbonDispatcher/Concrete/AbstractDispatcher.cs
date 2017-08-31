@@ -80,17 +80,17 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
 
         /// <inheritdoc/>
         public RdControlSize GetSize(IRibbonControl Control)
-            => Sizeables(Control?.Id)?.Size ?? RdControlSize.rdLarge;
+            => Sizeables(Control?.Id)?.GetSize() ?? RdControlSize.rdLarge;
 
         /// <inheritdoc/>
         public object GetImage(IRibbonControl Control)
-            => Imageables(Control?.Id)?.Image ?? "MacroSecurity";
+            => Imageables(Control?.Id)?.GetImage().Image ?? "MacroSecurity";
         /// <inheritdoc/>
         public bool   GetShowImage(IRibbonControl Control)
-            => Imageables(Control?.Id)?.ShowImage ?? true;
+            => Imageables(Control?.Id)?.GetShowImage() ?? true;
         /// <inheritdoc/>
         public bool   GetShowLabel(IRibbonControl Control)
-            => Imageables(Control?.Id)?.ShowLabel ?? true;
+            => Imageables(Control?.Id)?.GetShowLabel() ?? true;
 
         /// <inheritdoc/>
         public bool   GetPressed(IRibbonControl Control)

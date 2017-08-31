@@ -70,6 +70,7 @@
     <Compile Include="AbstractCOM\IResourceManager.cs" />
     <Compile Include="AbstractCOM\ISelectableItem.cs" />
     <Compile Include="Concrete\SelectableItem.cs" />
+    <Compile Include="ControlMixins\Imageable.cs" />
     <Compile Include="ControlMixins\ISizeableMixin.cs" />
     <Compile Include="ControlMixins\Sizeable.cs" />
     <Compile Include="DispIds.cs" />
@@ -87,7 +88,7 @@
     <Compile Include="AbstractCOM\IToggledEvents.cs" />
     <Compile Include="ControlMixins\IToggleableMixin.cs" />
     <Compile Include="AbstractCOM\IAbstractDispatcher.cs" />
-    <Compile Include="Concrete\ImageObject.cs" />
+    <Compile Include="ControlMixins\ImageObject.cs" />
     <Compile Include="Concrete\RibbonCheckBox.cs" />
     <Compile Include="EventHandlers\ClickedEventArgs.cs" />
     <Compile Include="Concrete\AbstractDispatcher.cs" />

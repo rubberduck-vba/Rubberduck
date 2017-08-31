@@ -1,7 +1,4 @@
-﻿////////////////////////////////////////////////////////////////////////////////////////////////////
-//                                Copyright (c) 2017 Pieter Geerkens                              //
-////////////////////////////////////////////////////////////////////////////////////////////////////
-using System;
+﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using stdole;
@@ -24,21 +21,15 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     public class RibbonToggleButton : RibbonCommon, IRibbonToggleButton,
         ISizeableMixin, IToggleableMixin, IImageableMixin {
         internal RibbonToggleButton(string itemId, IResourceManager mgr, bool visible, bool enabled, RdControlSize size,
-                string imageMso, bool showImage, bool showLabel)
-            : this(itemId, mgr, visible, enabled, size, new ImageObject(imageMso), showImage, showLabel) { }
-        internal RibbonToggleButton(string itemId, IResourceManager mgr, bool visible, bool enabled, RdControlSize size,
-                IPictureDisp image, bool showImage, bool showLabel)
-            : this(itemId, mgr, visible, enabled, size, new ImageObject(image), showImage, showLabel) { }
-        private RibbonToggleButton(string itemId, IResourceManager mgr, bool visible, bool enabled, RdControlSize size,
                 ImageObject image, bool showImage, bool showLabel) : base(itemId, mgr, visible, enabled) {
             this.SetSize(size, null);
-            _image = image;
-            _showImage = showImage;
-            _showLabel = showLabel;
+            this.SetImage(image, null);
+            this.SetShowImage(showImage, null);
+            this.SetShowLabel(showLabel, null);
         }
 
-        #region ISizeableMixin
-        /// <summary>Sets ofr gets the preferred {RdControlSize} for the control.</summary>
+        #region Publish ISizeableMixin to class default interface
+        /// <summary>Gets or sets the preferred {RdControlSize} for the control.</summary>
         public RdControlSize Size {
             get => this.GetSize();
             set => this.SetSize(value, OnChanged);
@@ -57,35 +48,31 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
                                        : LanguageStrings?.Label??Id;
 
         /// <summary>TODO</summary>
-        public void OnActionToggle(bool isPressed) {
-            IsPressed = isPressed;
-            Toggled?.Invoke(this, new ToggledEventArgs(isPressed));
+        public void OnActionToggle(bool IsPressed) {
+            this.IsPressed = IsPressed;
+            Toggled?.Invoke(this, new ToggledEventArgs(IsPressed));
             OnChanged();
         }
         #endregion
 
-        #region IImageableDecoration
+        #region Publish IImageableMixin to class default interface
         /// <inheritdoc/>
-        public object Image => _image.Image;
-        private ImageObject _image;
-        /// <inheritdoc/>
-        public bool ShowLabel {
-            get => _showLabel;
-            set { _showLabel = value; OnChanged(); }
-        }
-        private bool _showLabel;
-        /// <inheritdoc/>
+        public object Image => this.GetImage();
+        /// <summary>Gets or sets whether the image for this control should be displayed when its size is {rdRegular}.</summary>
         public bool ShowImage {
-            get => _showImage && Image != null;
-            set { _showImage = value; OnChanged(); }
+            get => this.GetShowImage();
+            set => this.SetShowImage(value, OnChanged);
         }
-        private bool _showImage;
+        /// <summary>Gets or sets whether the label for this control should be displayed when its size is {rdRegular}.</summary>
+        public bool ShowLabel {
+            get => this.GetShowLabel();
+            set => this.SetShowLabel(value, OnChanged);
+        }
 
-        /// <inheritdoc/>
-        public void SetImage(IPictureDisp image) { _image = new ImageObject(image);    OnChanged(); }
-        /// <inheritdoc/>
-        public void SetImageMso(string imageMso) { _image = new ImageObject(imageMso); OnChanged(); }
+        /// <summary>Sets the displayable image for this control to the provided {IPictureDisp}</summary>
+        public void SetImageDisp(IPictureDisp Image) => this.SetImage(Image, OnChanged);
+        /// <summary>Sets the displayable image for this control to the named ImageMso image</summary>
+        public void SetImageMso(string ImageMso)     => this.SetImage(ImageMso, OnChanged);
         #endregion
     }
-
 }
