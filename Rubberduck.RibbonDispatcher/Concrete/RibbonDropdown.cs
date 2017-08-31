@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.InteropServices;
-using stdole;
 
 using Rubberduck.RibbonDispatcher.ControlMixins;
 using Rubberduck.RibbonDispatcher.AbstractCOM;
@@ -14,7 +13,7 @@ using Rubberduck.RibbonDispatcher.AbstractCOM;
 namespace Rubberduck.RibbonDispatcher.Concrete {
     /// <summary>Returns a new Ribbon DropDownViewModel instance.</summary>
     [SuppressMessage("Microsoft.Interoperability", "CA1409:ComVisibleTypesShouldBeCreatable",
-      Justification = "Publc, Non-Creatable class with exported Events.")]
+      Justification = "Publc, Non-Creatable, class with exported Events.")]
     [Serializable]
     [CLSCompliant(true)]
     [ComVisible(true)]
@@ -33,7 +32,6 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         private IList<ISelectableItem>  _items  = new List<ISelectableItem>();
 
         /// <summary>TODO</summary>
-        [DispId(DispIds.SelectedItemId)]
         public string   SelectedItemId {
             get => _items[_selectedItemIndex].Id;
             set { _selectedItemIndex = _items.IndexOf(_items.FirstOrDefault(t => t.Id==value));
@@ -41,54 +39,44 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
                 }
         }
         /// <summary>TODO</summary>
-        [DispId(DispIds.SelectedItemIndex)]
         public int      SelectedItemIndex {
             get => _selectedItemIndex;
             set => OnActionDropDown(SelectedItemId, value);
         }
         /// <summary>Call back for OnAction events from the drop-down ribbon elements.</summary>
-        [DispId(DispIds.OnActionDropDown)]
-        public void OnActionDropDown(string selectedId, int selectedIndex) {
-            _selectedItemIndex = selectedIndex;
-            SelectionMade?.Invoke(selectedId, selectedIndex);
+        public void OnActionDropDown(string SelectedId, int SelectedIndex) {
+            _selectedItemIndex = SelectedIndex;
+            SelectionMade?.Invoke(SelectedId, SelectedIndex);
             OnChanged();
         }
 
         /// <summary>Returns this RibbonDropDown with a new {SelectableItem} in its list.</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification = "Matches COM usage.")]
-        public IRibbonDropDown AddItem(ISelectableItem selectableItem) {
-            _items.Add(selectableItem);
+        public IRibbonDropDown AddItem(ISelectableItem SelectableItem) {
+            _items.Add(SelectableItem);
             return this;
         }
 
         /// <summary>TODO</summary>
-        public ISelectableItem this[int itemIndex] => _items[itemIndex];
+        public ISelectableItem this[int ItemIndex] => _items[ItemIndex];
         /// <summary>TODO</summary>
-        public ISelectableItem this[string itemId] => ( from i in _items where i.Id == itemId select i ).FirstOrDefault();
+        public ISelectableItem this[string ItemId] => ( from i in _items where i.Id == ItemId select i ).FirstOrDefault();
 
         /// <summary>Call back for ItemCount events from the drop-down ribbon elements.</summary>
-        [DispId(DispIds.ItemCount)]
         public int      ItemCount                => _items?.Count ?? -1;
         /// <summary>Call back for GetItemID events from the drop-down ribbon elements.</summary>
-        [DispId(DispIds.ItemId)]
-        public string   ItemId(int index)        => _items[index].Id;
+        public string   ItemId(int Index)        => _items[Index].Id;
         /// <summary>Call back for GetItemLabel events from the drop-down ribbon elements.</summary>
-        [DispId(DispIds.ItemLabel)]
-        public string   ItemLabel(int index)     => _items[index].Label;
+        public string   ItemLabel(int Index)     => _items[Index].Label;
         /// <summary>Call back for GetItemScreenTip events from the drop-down ribbon elements.</summary>
-        [DispId(DispIds.ItemScreenTip)]
-        public string   ItemScreenTip(int index) => _items[index].ScreenTip;
+        public string   ItemScreenTip(int Index) => _items[Index].ScreenTip;
         /// <summary>Call back for GetItemSuperTip events from the drop-down ribbon elements.</summary>
-        [DispId(DispIds.ItemSuperTip)]
-        public string   ItemSuperTip(int index)  => _items[index].SuperTip;
+        public string   ItemSuperTip(int Index)  => _items[Index].SuperTip;
         /// <summary>Call back for GetItemLabel events from the drop-down ribbon elements.</summary>
-        [DispId(DispIds.ItemImage)]
-        public object   ItemImage(int index)     => "MacroSecurity";
+        public object   ItemImage(int Index)     => "MacroSecurity";
         /// <summary>Call back for GetItemScreenTip events from the drop-down ribbon elements.</summary>
-        [DispId(DispIds.ItemShowImage)]
-        public bool     ItemShowImage(int index) => _items[index].ShowImage;
+        public bool     ItemShowImage(int Index) => _items[Index].ShowImage;
         /// <summary>Call back for GetItemSuperTip events from the drop-down ribbon elements.</summary>
-        [DispId(DispIds.ItemShowLabel)]
-        public bool     ItemShowLabel(int index) => _items[index].ShowImage;
+        public bool     ItemShowLabel(int Index) => _items[Index].ShowImage;
     }
 }

@@ -7,13 +7,13 @@ using Rubberduck.RibbonDispatcher.AbstractCOM;
 
 namespace Rubberduck.RibbonDispatcher.Concrete {
     /// <summary>TODO</summary>
+    [SuppressMessage("Microsoft.Interoperability", "CA1409:ComVisibleTypesShouldBeCreatable",
+        Justification = "Publc, Non-Creatable, class with exported Events.")]
     [Serializable]
     [CLSCompliant(true)]
     [ComVisible(true)]
     [ClassInterface(ClassInterfaceType.None)]
     [ComSourceInterfaces(typeof(IToggledEvents))]
-    [SuppressMessage("Microsoft.Interoperability", "CA1409:ComVisibleTypesShouldBeCreatable",
-        Justification = "Publc, Non-Creatable class with exported Events.")]
     [ComDefaultInterface(typeof(IRibbonCheckBox))]
     [Guid(RubberduckGuid.RibbonCheckBox)]
     public class RibbonCheckBox : RibbonCommon, IRibbonCheckBox, IToggleableMixin {

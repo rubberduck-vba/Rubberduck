@@ -22,9 +22,14 @@ namespace Rubberduck.RibbonDispatcher {
     /// values" usages are (believed to be) the only means of implementing functionality equivalent
     /// to "overrides" in a COM-compatible way.
     /// </remarks>
+    [SuppressMessage("Microsoft.Interoperability", "CA1409:ComVisibleTypesShouldBeCreatable",
+       Justification = "Publc, Non-Creatable, class with exported Events.")]
     [Serializable]
     [CLSCompliant(true)]
+    [ComVisible(true)]
+    [ClassInterface(ClassInterfaceType.None)]
     [ComDefaultInterface(typeof(IRibbonFactory))]
+    [Guid(RubberduckGuid.RibbonFactory)]
     public class RibbonFactory : IRibbonFactory {
         internal RibbonFactory(IRibbonUI RibbonUI, IResourceManager ResourceManager) {
             _ribbonUI        = RibbonUI;
@@ -78,13 +83,13 @@ namespace Rubberduck.RibbonDispatcher {
         }
 
         /// <summary>TODO</summary>
-        public void Invalidate()                            => _ribbonUI.Invalidate();
+        internal void Invalidate()                            => _ribbonUI.Invalidate();
         /// <summary>TODO</summary>
-        public void InvalidateControl(string ControlId)     => _ribbonUI.InvalidateControl(ControlId);
+        internal void InvalidateControl(string ControlId)     => _ribbonUI.InvalidateControl(ControlId);
         /// <summary>TODO</summary>
-        public void InvalidateControlMso(string ControlId)  => _ribbonUI.InvalidateControlMso(ControlId);
+        internal void InvalidateControlMso(string ControlId)  => _ribbonUI.InvalidateControlMso(ControlId);
         /// <summary>TODO</summary>
-        public void ActivateTab(string ControlId)           => _ribbonUI.ActivateTab(ControlId);
+        internal void ActivateTab(string ControlId)           => _ribbonUI.ActivateTab(ControlId);
 
         /// <summary>Returns a new Ribbon Group ViewModel instance.</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]

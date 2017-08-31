@@ -20,32 +20,32 @@ namespace Rubberduck.RibbonDispatcher.ControlMixins {
         int    SelectedItemIndex   { get; }
         /// <summary>Call back for OnAction events from the drop-down ribbon elements.</summary>
         [DispId(DispIds.OnActionDropDown)]
-        void   OnActionDropDown(string selectedId, int selectedIndex);
+        void   OnActionDropDown(string SelectedId, int SelectedIndex);
 
         /// <summary>Call back for ItemCount events from the drop-down ribbon elements.</summary>
         [DispId(DispIds.ItemCount)]
         int    ItemCount           { get; }
         /// <summary>Call back for GetItemID events from the drop-down ribbon elements.</summary>
         [DispId(DispIds.ItemId)]
-        string ItemId(int index);
+        string ItemId(int Index);
         /// <summary>Call back for GetItemLabel events from the drop-down ribbon elements.</summary>
         [DispId(DispIds.ItemLabel)]
-        string ItemLabel(int index);
+        string ItemLabel(int Index);
         /// <summary>Call back for GetItemScreenTip events from the drop-down ribbon elements.</summary>
         [DispId(DispIds.ItemScreenTip)]
-        string ItemScreenTip(int index);
+        string ItemScreenTip(int Index);
         /// <summary>Call back for GetItemSuperTip events from the drop-down ribbon elements.</summary>
         [DispId(DispIds.ItemSuperTip)]
-        string ItemSuperTip(int index);
+        string ItemSuperTip(int Index);
 
         /// <summary>Call back for GetItemSuperTip events from the drop-down ribbon elements.</summary>
         [DispId(DispIds.ItemImage)]
-        object ItemImage(int index);
+        object ItemImage(int Index);
         /// <summary>Call back for GetItemSuperTip events from the drop-down ribbon elements.</summary>
         [DispId(DispIds.ItemShowImage)]
-        bool   ItemShowImage(int index);
+        bool   ItemShowImage(int Index);
         /// <summary>Call back for GetItemSuperTip events from the drop-down ribbon elements.</summary>
         [DispId(DispIds.ItemShowLabel)]
-        bool   ItemShowLabel(int index);
+        bool   ItemShowLabel(int Index);
     }
 }

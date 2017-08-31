@@ -3,8 +3,7 @@ using System.Runtime.InteropServices;
 using stdole;
 
 namespace Rubberduck.RibbonDispatcher.AbstractCOM {
-    /// <summary>The total interface (required to be) exposed externally by RibbonButton objects; 
-    /// composition of IRibbonCommon, IActionItem &amp; IImageableItem</summary>
+    /// <summary>The total interface (required to be) exposed externally by RibbonButton objects.</summary>
     [ComVisible(true)]
     [CLSCompliant(true)]
     [InterfaceType(ComInterfaceType.InterfaceIsDual)]
@@ -44,8 +43,8 @@ namespace Rubberduck.RibbonDispatcher.AbstractCOM {
         RdControlSize Size        { get; set; }
 
         /// <summary>TODO</summary>
-        [DispId(DispIds.OnAction)]
-        void          OnAction();
+        [DispId(DispIds.OnClicked)]
+        void OnClicked();
 
         /// <summary>TODO</summary>
         [DispId(DispIds.Image)]

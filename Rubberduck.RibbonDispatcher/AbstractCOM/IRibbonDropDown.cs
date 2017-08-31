@@ -4,7 +4,6 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
-using stdole;
 
 namespace Rubberduck.RibbonDispatcher.AbstractCOM {
     /// <summary>The total interface (required to be) exposed externally by RibbonDropDown objects; 
@@ -34,7 +33,7 @@ namespace Rubberduck.RibbonDispatcher.AbstractCOM {
         string        SuperTip      { get; }
         /// <summary>Sets the Label, KeyTip, ScreenTip and SuperTip for this control from the supplied values.</summary>
         [DispId(DispIds.SetLanguageStrings)]
-        void          SetLanguageStrings(IRibbonTextLanguageControl languageStrings);
+        void          SetLanguageStrings(IRibbonTextLanguageControl LanguageStrings);
 
         /// <summary>TODO</summary>
         [DispId(DispIds.IsEnabled)]
@@ -51,34 +50,34 @@ namespace Rubberduck.RibbonDispatcher.AbstractCOM {
         int         SelectedItemIndex   { get; set; }
         /// <summary>Call back for OnAction events from the drop-down ribbon elements.</summary>
         [DispId(DispIds.OnActionDropDown)]
-        void        OnActionDropDown(string selectedId, int selectedIndex);
+        void        OnActionDropDown(string SelectedId, int SelectedIndex);
 
         /// <summary>Returns this RibbonDropDown with a new {SelectableItem} in its list.</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification = "Matches COM usage.")]
         [DispId(DispIds.AddItem)]
-        IRibbonDropDown AddItem(ISelectableItem selectableItem);
+        IRibbonDropDown AddItem(ISelectableItem SelectableItem);
 
         /// <summary>Call back for ItemCount events from the drop-down ribbon elements.</summary>
         [DispId(DispIds.ItemCount)]
         int         ItemCount           { get; }
         /// <summary>Call back for GetItemID events from the drop-down ribbon elements.</summary>
         [DispId(DispIds.ItemId)]
-        string      ItemId(int index);
+        string      ItemId(int Index);
         /// <summary>Call back for GetItemLabel events from the drop-down ribbon elements.</summary>
         [DispId(DispIds.ItemLabel)]
-        string      ItemLabel(int index);
+        string      ItemLabel(int Index);
         /// <summary>Call back for GetItemScreenTip events from the drop-down ribbon elements.</summary>
         [DispId(DispIds.ItemScreenTip)]
-        string      ItemScreenTip(int index);
+        string      ItemScreenTip(int Index);
         /// <summary>Call back for GetItemSuperTip events from the drop-down ribbon elements.</summary>
         [DispId(DispIds.ItemSuperTip)]
-        string      ItemSuperTip(int index);
+        string      ItemSuperTip(int Index);
 
         /// <summary>Call back for GetItemSuperTip events from the drop-down ribbon elements.</summary>
         [DispId(DispIds.ItemShowImage)]
-        bool        ItemShowImage(int index);
+        bool        ItemShowImage(int Index);
         /// <summary>Call back for GetItemSuperTip events from the drop-down ribbon elements.</summary>
         [DispId(DispIds.ItemShowLabel)]
-        bool        ItemShowLabel(int index);
+        bool        ItemShowLabel(int Index);
     }
 }

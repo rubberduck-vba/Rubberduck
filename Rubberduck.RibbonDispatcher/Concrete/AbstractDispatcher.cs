@@ -43,6 +43,15 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         /// <inheritdoc/>
         public IRibbonFactory RibbonFactory => _ribbonFactory; private RibbonFactory _ribbonFactory;
 
+        /// <summary>TODO</summary>
+        public void Invalidate()                            => _ribbonFactory.Invalidate();
+        /// <summary>TODO</summary>
+        public void InvalidateControl(string ControlId)     => _ribbonFactory.InvalidateControl(ControlId);
+        /// <summary>TODO</summary>
+        public void InvalidateControlMso(string ControlId)  => _ribbonFactory.InvalidateControlMso(ControlId);
+        /// <summary>TODO</summary>
+        public void ActivateTab(string ControlId)           => _ribbonFactory.ActivateTab(ControlId);
+
         /// <summary>All of the defined controls.</summary>
         private IRibbonCommon    Controls    (string controlId) => _ribbonFactory.Controls.GetOrDefault(controlId);
         /// <summary>All of the defined controls implementing the {ISizeableDecorator} interface.</summary>
@@ -100,7 +109,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
             => Toggleables(Control?.Id)?.OnActionToggle(Pressed);
 
         /// <inheritdoc/>
-        public void   OnAction(IRibbonControl Control) => Actionables(Control?.Id)?.OnAction();
+        public void   OnAction(IRibbonControl Control) => Actionables(Control?.Id)?.Clicked();
 
         /// <inheritdoc/>
         public string GetSelectedItemId(IRibbonControl Control)

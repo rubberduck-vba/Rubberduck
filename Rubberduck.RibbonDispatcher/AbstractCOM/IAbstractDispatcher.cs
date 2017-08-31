@@ -15,6 +15,19 @@ namespace Rubberduck.RibbonDispatcher.AbstractCOM {
         IRibbonFactory RibbonFactory { get; }
 
         /// <summary>TODO</summary>
+        [DispId(DispIds.Invalidate)]
+        void Invalidate();
+        /// <summary>TODO</summary>
+        [DispId(DispIds.InvalidateControl)]
+        void InvalidateControl(string ControlId);
+        /// <summary>TODO</summary>
+        [DispId(DispIds.InvalidateControlMso)]
+        void InvalidateControlMso(string ControlId);
+        /// <summary>TODO</summary>
+        [DispId(DispIds.ActivateTab)]
+        void ActivateTab(string ControlId);
+
+        /// <summary>TODO</summary>
         [DispId(DispIds.LoadImage)]
         object LoadImage(string imageId);
 

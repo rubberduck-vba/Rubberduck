@@ -30,7 +30,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>CODE_ANALYSIS;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>Rubberduck.RibbonDispatcher.ruleset</CodeAnalysisRuleSet>
@@ -70,11 +70,12 @@
   <ItemGroup>
     <Compile Include="AbstractCOM\IResourceManager.cs" />
     <Compile Include="AbstractCOM\ISelectableItem.cs" />
+    <Compile Include="ComEventsTest.cs" />
     <Compile Include="Concrete\SelectableItem.cs" />
     <Compile Include="ControlMixins\ClickableMixin.cs" />
-    <Compile Include="ControlMixins\Imageable.cs" />
+    <Compile Include="ControlMixins\ImageableMixin.cs" />
     <Compile Include="ControlMixins\ISizeableMixin.cs" />
-    <Compile Include="ControlMixins\Sizeable.cs" />
+    <Compile Include="ControlMixins\SizeableMixin.cs" />
     <Compile Include="ControlMixins\ToggleableMixin.cs" />
     <Compile Include="DispIds.cs" />
     <Compile Include="ControlMixins\IClickableMixin.cs" />
@@ -124,6 +125,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <AdditionalFiles Include="BareRibbon V0.5.xlsm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </AdditionalFiles>
     <None Include="CustomDictionary.xsd">
       <SubType>Designer</SubType>
     </None>

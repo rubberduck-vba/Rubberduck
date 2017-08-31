@@ -1,7 +1,4 @@
-﻿////////////////////////////////////////////////////////////////////////////////////////////////////
-//                                Copyright (c) 2017 Pieter Geerkens                              //
-////////////////////////////////////////////////////////////////////////////////////////////////////
-using System;
+﻿using System;
 using System.Runtime.InteropServices;
 using stdole;
 
@@ -40,6 +37,7 @@ namespace Rubberduck.RibbonDispatcher.AbstractCOM {
         /// <summary>TODO</summary>
         [DispId(DispIds.IsVisible)]
         bool          IsVisible     { get; set; }
+
         /// <summary>TODO</summary>
         [DispId(DispIds.Size)]
         RdControlSize Size          { get; set; }
@@ -47,6 +45,9 @@ namespace Rubberduck.RibbonDispatcher.AbstractCOM {
         /// <summary>TODO</summary>
         [DispId(DispIds.IsPressed)]
         bool          IsPressed     { get; }
+        /// <summary>TODO</summary>
+        [DispId(DispIds.OnToggled)]
+        void          OnToggled(bool IsPressed);
 
         /// <summary>TODO</summary>
         [DispId(DispIds.Image)]

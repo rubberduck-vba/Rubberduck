@@ -27,13 +27,14 @@ namespace Rubberduck
 
         // Ribbon Dispatcher Guids:
         private const string RibbonDispatcherGuidspace = "-43F1-3B33-B105-9B8188A6F040";
-        public const string IClickedEvents           = "69E19400" + RibbonDispatcherGuidspace;
+        public const string IClickedEvents              = "69E19400" + RibbonDispatcherGuidspace;
         public const string IClickedEventArgs           = "69E19401" + RibbonDispatcherGuidspace;
         public const string IToggledEvents              = "69E19402" + RibbonDispatcherGuidspace;
         public const string IToggledEventArgs           = "69E19403" + RibbonDispatcherGuidspace;
         public const string ISelectedEvents             = "69E19404" + RibbonDispatcherGuidspace;
         public const string ISelectedEventArgs          = "69E19405" + RibbonDispatcherGuidspace;
 
+        public const string RdControlSize               = "69E19407" + RibbonDispatcherGuidspace;
         public const string Typelib                     = "69E19408" + RibbonDispatcherGuidspace;
         public const string IResourceManager            = "69E19409" + RibbonDispatcherGuidspace;
         public const string IAbstractDispatcher         = "69E1940A" + RibbonDispatcherGuidspace;
@@ -41,7 +42,7 @@ namespace Rubberduck
         public const string IMain                       = "69E1940C" + RibbonDispatcherGuidspace;
         public const string Main                        = "69E1940D" + RibbonDispatcherGuidspace;
         public const string IRibbonFactory              = "69E1940E" + RibbonDispatcherGuidspace;
-        public const string RdControlSize               = "69E1940F" + RibbonDispatcherGuidspace;
+        public const string RibbonFactory               = "69E1940F" + RibbonDispatcherGuidspace;
         public const string IRibbonViewModel            = "69E19410" + RibbonDispatcherGuidspace;
         public const string RibbonViewModel             = "69E19411" + RibbonDispatcherGuidspace;
         public const string IRibbonCommon               = "69E19412" + RibbonDispatcherGuidspace;

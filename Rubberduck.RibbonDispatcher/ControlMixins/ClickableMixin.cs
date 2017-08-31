@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 
 namespace Rubberduck.RibbonDispatcher.ControlMixins {
     /// <summary>TODO</summary>
@@ -7,6 +6,6 @@ namespace Rubberduck.RibbonDispatcher.ControlMixins {
     public delegate void ClickedEventHandler();
 
     internal static class ClickableMixin {
-        public static void OnAction(this IClickableMixin mixin, Action clicked) => clicked?.Invoke();
+        public static void Clicked(this IClickableMixin mixin) => mixin.OnClicked();
     }
 }

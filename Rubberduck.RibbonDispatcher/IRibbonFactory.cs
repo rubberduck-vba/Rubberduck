@@ -15,19 +15,6 @@ namespace Rubberduck.RibbonDispatcher {
     [InterfaceType(ComInterfaceType.InterfaceIsDual)]
     [Guid(RubberduckGuid.IRibbonFactory)]
     public interface IRibbonFactory {
-        /// <summary>TODO</summary>
-        [DispId(1)]
-        void Invalidate();
-        /// <summary>TODO</summary>
-        [DispId(2)]
-        void InvalidateControl(string ControlId);
-        /// <summary>TODO</summary>
-        [DispId(3)]
-        void InvalidateControlMso(string ControlId);
-        /// <summary>TODO</summary>
-        [DispId(4)]
-        void ActivateTab(string ControlId);
-
         /// <summary>Returns a new Ribbon Group ViewModel instance.</summary>
         [DispId(11)]
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]

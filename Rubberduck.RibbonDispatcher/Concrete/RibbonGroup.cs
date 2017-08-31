@@ -10,7 +10,7 @@ using Rubberduck.RibbonDispatcher.AbstractCOM;
 namespace Rubberduck.RibbonDispatcher.Concrete {
     /// <summary>TODO</summary>
     [SuppressMessage("Microsoft.Interoperability", "CA1409:ComVisibleTypesShouldBeCreatable",
-       Justification = "Publc, Non-Creatable class.")]
+       Justification = "Publc, Non-Creatable, class.")]
     [Serializable]
     [CLSCompliant(true)]
     [ComVisible(true)]

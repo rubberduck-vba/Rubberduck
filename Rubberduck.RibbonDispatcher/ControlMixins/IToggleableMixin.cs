@@ -1,5 +1,5 @@
-﻿using Rubberduck.RibbonDispatcher.AbstractCOM;
-using System;
+﻿using System;
+using Rubberduck.RibbonDispatcher.AbstractCOM;
 
 namespace Rubberduck.RibbonDispatcher.ControlMixins {
     /// <summary>The interface for controls that can be toggled.</summary>
