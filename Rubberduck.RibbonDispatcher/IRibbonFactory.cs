@@ -38,8 +38,7 @@ namespace Rubberduck.RibbonDispatcher {
         RibbonGroup NewRibbonGroup(
             string              id,
             bool                visible = true,
-            bool                enabled = true,
-            RdControlSize       size    = rdLarge
+            bool                enabled = true
         );
 
         /// <summary>Returns a new Ribbon ActionButton ViewModel instance that uses a custom image (or none).</summary>
@@ -103,7 +102,6 @@ namespace Rubberduck.RibbonDispatcher {
             string              id,
             bool                visible         = true,
             bool                enabled         = true,
-            RdControlSize       size            = rdLarge,
             ToggledEventHandler onToggledAction = null
         );
 
@@ -114,7 +112,6 @@ namespace Rubberduck.RibbonDispatcher {
             string              id,
             bool                visible = true,
             bool                enabled = true,
-            RdControlSize       size    = rdLarge,
             SelectionMadeEventHandler onSelectionMade = null,
             ISelectableItem[]   items   = null
         );

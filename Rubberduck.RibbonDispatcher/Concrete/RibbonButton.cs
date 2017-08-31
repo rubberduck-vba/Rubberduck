@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 using System.Diagnostics.CodeAnalysis;
 using stdole;
 
-using Rubberduck.RibbonDispatcher.Abstract;
+using Rubberduck.RibbonDispatcher.ControlDecorators;
 using Rubberduck.RibbonDispatcher.AbstractCOM;
 
 namespace Rubberduck.RibbonDispatcher.Concrete {
@@ -21,10 +21,12 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         Justification = "Publc, Non-Creatable class with exported Events.")]
     [ComDefaultInterface(typeof(IRibbonButton))]
     [Guid(RubberduckGuid.RibbonButton)]
-    public class RibbonButton : RibbonCommon, IRibbonButton, IActionItem, IImageableItem {
+    public class RibbonButton : RibbonCommon, IRibbonButton,
+        ISizeableDecorator, IActionableDecorator, IImageableDecorator {
         internal RibbonButton(string id, ResourceManager mgr, bool visible, bool enabled, RdControlSize size,
                 string imageMso, bool showImage, bool showLabel, EventHandler onClickedAction)
-            : base(id, mgr, visible, enabled, size){
+            : base(id, mgr, visible, enabled) {
+            _size      = size;
             _image     = new ImageObject(imageMso);
             _showImage = showImage;
             _showLabel = showLabel;
@@ -32,19 +34,31 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         }
         internal RibbonButton(string id, ResourceManager mgr, bool visible, bool enabled, RdControlSize size,
                 IPictureDisp image, bool showImage, bool showLabel, EventHandler onClickedAction)
-            : base(id, mgr, visible, enabled, size){
+            : base(id, mgr, visible, enabled) {
+            _size      = size;
             _image     = new ImageObject(image);
             _showImage = showImage;
             _showLabel = showLabel;
             if (onClickedAction != null) Clicked += onClickedAction;
         }
 
+        #region ISizeableDecoration
+        /// <inheritdoc/>
+        public RdControlSize Size {
+            get { return _size; }
+            set { _size = value; OnChanged(); }
+        }
+        private RdControlSize _size;
+        #endregion
+
+        #region IActionableDecoration
         /// <inheritdoc/>
         public event EventHandler Clicked;
         /// <inheritdoc/>
         public void OnAction() => Clicked?.Invoke(this, null);
+        #endregion
 
-        #region IImageableItem implementation
+        #region IImageableDecoration
         /// <inheritdoc/>
         public object Image => _image.Image;
         private ImageObject _image;

@@ -8,7 +8,7 @@ using System.Linq;
 using System.Resources;
 using System.Runtime.InteropServices;
 
-using Rubberduck.RibbonDispatcher.Abstract;
+using Rubberduck.RibbonDispatcher.ControlDecorators;
 using Rubberduck.RibbonDispatcher.AbstractCOM;
 using Rubberduck.RibbonDispatcher.EventHandlers;
 
@@ -23,10 +23,10 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [ComSourceInterfaces(typeof(ISelectionMadeEvents))]
     [ComDefaultInterface(typeof(IRibbonDropDown))]
     [Guid(RubberduckGuid.RibbonDropDown)]
-    public class RibbonDropDown : RibbonCommon, IRibbonDropDown, IDropDownItem {
-        internal RibbonDropDown(string id, ResourceManager mgr, bool visible, bool enabled, RdControlSize size,
+    public class RibbonDropDown : RibbonCommon, IRibbonDropDown, ISelectableDecorator {
+        internal RibbonDropDown(string id, ResourceManager mgr, bool visible, bool enabled,
                 SelectionMadeEventHandler onSelectionMade, ISelectableItem[] items = null)
-            : base(id, mgr, visible, enabled, size){
+            : base(id, mgr, visible, enabled){
             if(onSelectionMade != null) SelectionMade += onSelectionMade;
             _items = items?.ToList()?.AsReadOnly();
         }

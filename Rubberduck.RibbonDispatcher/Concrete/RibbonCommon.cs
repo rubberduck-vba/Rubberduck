@@ -6,7 +6,7 @@ using System.Globalization;
 using System.Resources;
 using System.Runtime.InteropServices;
 
-using Rubberduck.RibbonDispatcher.Abstract;
+using Rubberduck.RibbonDispatcher.ControlDecorators;
 using Rubberduck.RibbonDispatcher.AbstractCOM;
 using LanguageStrings = Rubberduck.RibbonDispatcher.AbstractCOM.IRibbonTextLanguageControl;
 
@@ -22,14 +22,13 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     public abstract class RibbonCommon : IRibbonCommon {
         /// <summary>TODO</summary>
         protected RibbonCommon(string id, ResourceManager resourceManager)
-            : this(id, resourceManager, true, true, RdControlSize.rdRegular) {;}
+            : this(id, resourceManager, true, true) {;}
         /// <summary>TODO</summary>
-        protected RibbonCommon(string id, ResourceManager resourceManager, bool visible, bool enabled, RdControlSize size) {
+        protected RibbonCommon(string id, ResourceManager resourceManager, bool visible, bool enabled) {
             Id               = id;
             LanguageStrings  = GetLanguageStrings(id, resourceManager);
             _visible         = visible;
             _enabled         = enabled;
-            _size            = size;
         }
 
         /// <summary>TODO</summary>
@@ -59,13 +58,6 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         private bool _enabled;
 
         /// <inheritdoc/>
-        public RdControlSize Size {
-            get { return _size; }
-            set { _size = value; OnChanged(); }
-        }
-        private RdControlSize _size;
-
-        /// <inheritdoc/>
         public bool IsVisible {
             get { return _visible; }
             set { _visible = value; OnChanged(); }
@@ -83,12 +75,12 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
 
         private static LanguageStrings GetLanguageStrings(string controlId, ResourceManager mgr)
             => new RibbonTextLanguageControl(
-                    mgr.GetCurrentUItString(Invariant($"{controlId ?? ""}_Label"))          ?? controlId,
-                    mgr.GetCurrentUItString(Invariant($"{controlId ?? ""}_ScreenTip"))      ?? controlId + " SuperTip",
-                    mgr.GetCurrentUItString(Invariant($"{controlId ?? ""}_SuperTip"))       ?? controlId + " ScreenTip",
-                    mgr.GetCurrentUItString(Invariant($"{controlId ?? ""}_KeyTip"))         ?? controlId,
-                    mgr.GetCurrentUItString(Invariant($"{controlId ?? ""}_AlternateLabel")) ?? "",
-                    mgr.GetCurrentUItString(Invariant($"{controlId ?? ""}_Description"))    ?? controlId + " Description");
+                    mgr.GetCurrentUIString(Invariant($"{controlId ?? ""}_Label"))          ?? controlId,
+                    mgr.GetCurrentUIString(Invariant($"{controlId ?? ""}_ScreenTip"))      ?? controlId + " SuperTip",
+                    mgr.GetCurrentUIString(Invariant($"{controlId ?? ""}_SuperTip"))       ?? controlId + " ScreenTip",
+                    mgr.GetCurrentUIString(Invariant($"{controlId ?? ""}_KeyTip"))         ?? controlId,
+                    mgr.GetCurrentUIString(Invariant($"{controlId ?? ""}_AlternateLabel")) ?? "",
+                    mgr.GetCurrentUIString(Invariant($"{controlId ?? ""}_Description"))    ?? controlId + " Description");
         /// <summary>TODO</summary>
         private static string Invariant(string formattable) => String.Format(formattable, CultureInfo.InvariantCulture);
     }

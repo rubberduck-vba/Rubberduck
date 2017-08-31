@@ -5,13 +5,13 @@ using System;
 using System.Runtime.InteropServices;
 using stdole;
 
-namespace Rubberduck.RibbonDispatcher.Abstract {
-    /// <summary>TODO</summary>
+namespace Rubberduck.RibbonDispatcher.ControlDecorators {
+    /// <summary>The interface for controls that can display an Image.</summary>
     [CLSCompliant(true)]
-    public interface IImageableItem {
+    public interface IImageableDecorator {
         /// <summary>TODO</summary>
         [DispId(DispIds.Image)]
-        object Image     { get; }
+        object  Image     { get; }
         /// <summary>Returns or set whether to show the control's image; ignored by Large controls.</summary>
         [DispId(DispIds.ShowImage)]
         bool    ShowImage { get; set; }
@@ -21,9 +21,9 @@ namespace Rubberduck.RibbonDispatcher.Abstract {
 
         /// <summary>TODO</summary>
         [DispId(DispIds.SetImage)]
-        void SetImage(IPictureDisp image);
+        void    SetImage(IPictureDisp image);
         /// <summary>TODO</summary>
         [DispId(DispIds.SetImageMso)]
-        void SetImageMso(string imageMso);
+        void    SetImageMso(string imageMso);
     }
 }

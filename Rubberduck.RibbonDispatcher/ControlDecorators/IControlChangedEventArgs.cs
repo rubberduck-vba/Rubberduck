@@ -5,7 +5,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Rubberduck.RibbonDispatcher.Abstract {
+namespace Rubberduck.RibbonDispatcher.ControlDecorators {
     /// <summary>TODO</summary>
     [SuppressMessage("Microsoft.Naming", "CA1711:IdentifiersShouldNotHaveIncorrectSuffix", Justification = "Necessary for COM Interop.")]
     [CLSCompliant(true)]

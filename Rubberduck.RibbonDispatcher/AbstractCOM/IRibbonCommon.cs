@@ -39,8 +39,5 @@ namespace Rubberduck.RibbonDispatcher.AbstractCOM {
         /// <summary>TODO</summary>
         [DispId(DispIds.IsVisible)]
         bool   IsVisible   { get; set; }
-        /// <summary>TODO</summary>
-        [DispId(DispIds.Size)]
-        RdControlSize Size { get; set; }
     }
 }

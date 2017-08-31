@@ -4,10 +4,10 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Rubberduck.RibbonDispatcher.Abstract {
+namespace Rubberduck.RibbonDispatcher.ControlDecorators {
     /// <summary>The total interface (required to be) exposed externally by RibbonButton objects.</summary>
     [CLSCompliant(true)]
-    public interface IActionItem {
+    public interface IActionableDecorator {
         /// <summary>TODO</summary>
         [DispId(DispIds.OnAction)]
         void OnAction();

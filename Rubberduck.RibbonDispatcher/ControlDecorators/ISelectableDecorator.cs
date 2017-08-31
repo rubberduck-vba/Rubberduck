@@ -4,35 +4,35 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Rubberduck.RibbonDispatcher.Abstract {
+namespace Rubberduck.RibbonDispatcher.ControlDecorators {
     /// <summary>TODO</summary>
     [CLSCompliant(true)]
-    public interface IDropDownItem {
+    public interface ISelectableDecorator {
         /// <summary>TODO</summary>
         [DispId(DispIds.SelectedItemId)]
-        string  SelectedItemId      { get; }
+        string SelectedItemId      { get; }
         /// <summary>TODO</summary>
         [DispId(DispIds.SelectedItemId)]
-        int     SelectedItemIndex   { get; }
+        int    SelectedItemIndex   { get; }
         /// <summary>Call back for OnAction events from the drop-down ribbon elements.</summary>
         [DispId(DispIds.OnActionDropDown)]
-        void OnActionDropDown(string selectedId, int selectedIndex);
+        void   OnActionDropDown(string selectedId, int selectedIndex);
 
         /// <summary>Call back for ItemCount events from the drop-down ribbon elements.</summary>
         [DispId(DispIds.ItemCount)]
-        int     ItemCount           { get; }
+        int    ItemCount           { get; }
         /// <summary>Call back for GetItemID events from the drop-down ribbon elements.</summary>
         [DispId(DispIds.ItemId)]
-        string  ItemId(int index);
+        string ItemId(int index);
         /// <summary>Call back for GetItemLabel events from the drop-down ribbon elements.</summary>
         [DispId(DispIds.ItemLabel)]
-        string  ItemLabel(int index);
+        string ItemLabel(int index);
         /// <summary>Call back for GetItemScreenTip events from the drop-down ribbon elements.</summary>
         [DispId(DispIds.ItemScreenTip)]
-        string  ItemScreenTip(int index);
+        string ItemScreenTip(int index);
         /// <summary>Call back for GetItemSuperTip events from the drop-down ribbon elements.</summary>
         [DispId(DispIds.ItemSuperTip)]
-        string  ItemSuperTip(int index);
+        string ItemSuperTip(int index);
 
         /// <summary>Call back for GetItemSuperTip events from the drop-down ribbon elements.</summary>
         [DispId(DispIds.ItemImage)]

@@ -2,7 +2,6 @@
 //                                Copyright (c) 2017 Pieter Geerkens                              //
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Globalization;
@@ -12,15 +11,9 @@ using stdole;
 
 namespace Rubberduck.RibbonDispatcher {
     /// <summary>TODO</summary>
-    public static class MiscellaneousExtensions {
+    public static class ResourceManagerExtensions {
         /// <summary>TODO</summary>
-        public static TValue GetOrDefault<TValue>(this IReadOnlyDictionary<string, TValue> dictionary, string key) {
-            if (dictionary == null) return default(TValue);
-            TValue ctrl;
-            return dictionary.TryGetValue(key??"", out ctrl) ? ctrl : default(TValue);
-        }
-        /// <summary>TODO</summary>
-        public static string GetCurrentUItString(this ResourceManager resourceManager, string name)
+        public static string GetCurrentUIString(this ResourceManager resourceManager, string name)
             => resourceManager?.GetString(name, CultureInfo.CurrentUICulture) ?? "";
 
         /// <summary>TODO</summary>

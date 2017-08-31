@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 
 using Microsoft.Office.Core;
 
-using Rubberduck.RibbonDispatcher.Abstract;
+using Rubberduck.RibbonDispatcher.ControlDecorators;
 using Rubberduck.RibbonDispatcher.AbstractCOM;
 
 namespace Rubberduck.RibbonDispatcher.Concrete {
@@ -42,15 +42,17 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         public  IRibbonFactory RibbonFactory => _ribbonFactory; private RibbonFactory _ribbonFactory;
 
         /// <summary>TODO</summary>
-        private IRibbonCommon  Controls   (string controlId) => _ribbonFactory.Controls.GetOrDefault(controlId);
+        private IRibbonCommon        Controls    (string controlId) => _ribbonFactory.Controls.GetOrDefault(controlId);
         /// <summary>TODO</summary>
-        private IActionItem    Actions    (string controlId) => _ribbonFactory.Buttons.GetOrDefault(controlId);
+        private ISizeableDecorator   Sizeables   (string controlId) => _ribbonFactory.Sizeables.GetOrDefault(controlId);
         /// <summary>TODO</summary>
-        private IToggleItem    Toggles    (string controlId) => _ribbonFactory.Toggles.GetOrDefault(controlId);
+        private IActionableDecorator Actionables (string controlId) => _ribbonFactory.Buttons.GetOrDefault(controlId);
         /// <summary>TODO</summary>
-        private IDropDownItem  DropDowns  (string controlId) => _ribbonFactory.DropDowns.GetOrDefault(controlId);
+        private IToggleableDecorator Toggleables (string controlId) => _ribbonFactory.Toggles.GetOrDefault(controlId);
         /// <summary>TODO</summary>
-        private IImageableItem Imageables (string controlId) => _ribbonFactory.Imageables.GetOrDefault(controlId);
+        private ISelectableDecorator DropDowns   (string controlId) => _ribbonFactory.DropDowns.GetOrDefault(controlId);
+        /// <summary>TODO</summary>
+        private IImageableDecorator  Imageables  (string controlId) => _ribbonFactory.Imageables.GetOrDefault(controlId);
 
         /// <inheritdoc/>
         public string GetDescription(IRibbonControl control)
@@ -76,7 +78,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
 
         /// <inheritdoc/>
         public RdControlSize GetSize(IRibbonControl control)
-            => Controls(control?.Id)?.Size ?? RdControlSize.rdLarge;
+            => Sizeables(control?.Id)?.Size ?? RdControlSize.rdLarge;
 
         /// <inheritdoc/>
         public object GetImage(IRibbonControl control)
@@ -90,13 +92,13 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
 
         /// <inheritdoc/>
         public bool   GetPressed(IRibbonControl control)
-            => Toggles(control?.Id)?.IsPressed ?? false;
+            => Toggleables(control?.Id)?.IsPressed ?? false;
         /// <inheritdoc/>
         public void   OnActionToggle(IRibbonControl control, bool pressed)
-            => Toggles(control?.Id)?.OnActionToggle(pressed);
+            => Toggleables(control?.Id)?.OnActionToggle(pressed);
 
         /// <inheritdoc/>
-        public void   OnAction(IRibbonControl control) => Actions(control?.Id)?.OnAction();
+        public void   OnAction(IRibbonControl control) => Actionables(control?.Id)?.OnAction();
 
         /// <inheritdoc/>
         public string GetSelectedItemId(IRibbonControl control)

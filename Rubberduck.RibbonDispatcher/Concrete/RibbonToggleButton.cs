@@ -7,7 +7,7 @@ using System.Resources;
 using System.Runtime.InteropServices;
 using stdole;
 
-using Rubberduck.RibbonDispatcher.Abstract;
+using Rubberduck.RibbonDispatcher.ControlDecorators;
 using Rubberduck.RibbonDispatcher.AbstractCOM;
 using Rubberduck.RibbonDispatcher.EventHandlers;
 
@@ -22,10 +22,12 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [ComSourceInterfaces(typeof(IToggledEvents))]
     [ComDefaultInterface(typeof(IRibbonToggleButton))]
     [Guid(RubberduckGuid.RibbonToggleButton)]
-    public class RibbonToggleButton : RibbonCommon, IRibbonToggleButton, IToggleItem, IImageableItem {
+    public class RibbonToggleButton : RibbonCommon, IRibbonToggleButton,
+        ISizeableDecorator, IToggleableDecorator, IImageableDecorator {
         internal RibbonToggleButton(string id, ResourceManager mgr, bool visible, bool enabled, RdControlSize size,
                 string imageMso, bool showImage, bool showLabel, ToggledEventHandler onToggledAction)
-            : base(id, mgr, visible, enabled, size) {
+            : base(id, mgr, visible, enabled) {
+            _size      = size;
             _image     = new ImageObject(imageMso);
             _showImage = showImage;
             _showLabel = showLabel;
@@ -33,15 +35,33 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         }
         internal RibbonToggleButton(string id, ResourceManager mgr, bool visible, bool enabled, RdControlSize size,
                 IPictureDisp image, bool showImage, bool showLabel, ToggledEventHandler onToggledAction)
-            : base(id, mgr, visible, enabled, size) {
+            : base(id, mgr, visible, enabled) {
+            _size      = size;
             _image     = new ImageObject(image);
             _showImage = showImage;
             _showLabel = showLabel;
             if (onToggledAction != null) Toggled += onToggledAction;
         }
 
+        #region ISizeableDecoration
+        /// <inheritdoc/>
+        public RdControlSize Size {
+            get { return _size; }
+            set { _size = value; OnChanged(); }
+        }
+        private RdControlSize _size;
+        #endregion
+
+        #region IToggleableDecoration
         /// <summary>TODO</summary>
         public event ToggledEventHandler Toggled;
+
+        /// <summary>TODO</summary>
+        public bool       IsPressed   { get; private set; }
+        /// <summary>TODO</summary>
+        public new string Label       => IsPressed && ! String.IsNullOrEmpty(LanguageStrings?.AlternateLabel)
+                                       ? LanguageStrings?.AlternateLabel??Id 
+                                       : LanguageStrings?.Label??Id;
 
         /// <summary>TODO</summary>
         public void OnActionToggle(bool isPressed) {
@@ -49,15 +69,9 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
             Toggled?.Invoke(this, new ToggledEventArgs(isPressed));
             OnChanged();
         }
+        #endregion
 
-        /// <summary>TODO</summary>
-        public bool       IsPressed { get; private set; }
-        /// <summary>TODO</summary>
-        public new string Label       => IsPressed && ! String.IsNullOrEmpty(LanguageStrings?.AlternateLabel ?? "")
-                                       ? LanguageStrings?.AlternateLabel??Id 
-                                       : LanguageStrings?.Label??Id;
-
-        #region IImageableItem implementation
+        #region IImageableDecoration
         /// <inheritdoc/>
         public object Image => _image.Image;
         private ImageObject _image;
