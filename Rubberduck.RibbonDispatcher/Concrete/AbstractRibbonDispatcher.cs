@@ -14,6 +14,7 @@ using stdole;
 using Microsoft.Office.Core;
 
 using Rubberduck.RibbonDispatcher.Abstract;
+using Rubberduck.RibbonDispatcher.AbstractCOM;
 
 namespace Rubberduck.RibbonDispatcher.Concrete {
 
@@ -41,51 +42,50 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
             => RibbonFactory = new RibbonFactory(ribbonUI, resourceManager);
 
         /// <summary>TODO</summary>
-        public RibbonFactory       RibbonFactory { get; private set; }
+        public RibbonFactory   RibbonFactory { get; private set; }
 
         /// <summary>TODO</summary>
-        public IRibbonCommon       Controls     (string controlId) => RibbonFactory.Controls.GetOrDefault(controlId);
+        private IRibbonCommon  Controls   (string controlId) => RibbonFactory.Controls.GetOrDefault(controlId);
         /// <summary>TODO</summary>
-        public IActionItem         Actions      (string controlId) => RibbonFactory.Buttons.GetOrDefault(controlId);
+        private IActionItem    Actions    (string controlId) => RibbonFactory.Buttons.GetOrDefault(controlId);
         /// <summary>TODO</summary>
-        public IToggleItem         Toggles      (string controlId) => RibbonFactory.Toggles.GetOrDefault(controlId);
+        private IToggleItem    Toggles    (string controlId) => RibbonFactory.Toggles.GetOrDefault(controlId);
         /// <summary>TODO</summary>
-        public IRibbonDropDown     DropDowns    (string controlId) => RibbonFactory.DropDowns.GetOrDefault(controlId);
+        private IDropDownItem  DropDowns  (string controlId) => RibbonFactory.DropDowns.GetOrDefault(controlId);
         /// <summary>TODO</summary>
-        public IImageableItem      Imageables   (string controlId) => RibbonFactory.Imageables.GetOrDefault(controlId);
+        private IImageableItem Imageables (string controlId) => RibbonFactory.Imageables.GetOrDefault(controlId);
 
         /// <summary>Call back for GetDescription events from ribbon elements.</summary>
-        public string              GetDescription (IRibbonControl control) => Controls(control?.Id)?.Description ?? Unknown(control);
-        /// <summary>Call back for GetKeyTip events from ribbon elements.</summary>
-        public string              GetKeyTip      (IRibbonControl control) => Controls(control?.Id)?.KeyTip      ?? "??";
-        /// <summary>Call back for GetLabel events from ribbon elements.</summary>
-        public string              GetLabel       (IRibbonControl control) => Controls(control?.Id)?.Label       ?? Unknown(control);
-        /// <summary>Call back for GetScreenTip events from ribbon elements.</summary>
-        public string              GetScreenTip   (IRibbonControl control) => Controls(control?.Id)?.ScreenTip   ?? Unknown(control);
-        /// <summary>Call back for GetSuperTip events from ribbon elements.</summary>
-        public string              GetSuperTip    (IRibbonControl control) => Controls(control?.Id)?.SuperTip    ?? Unknown(control);
-
+        public string          GetDescription(IRibbonControl control) => Controls(control?.Id)?.Description ?? Unknown(control);
         /// <summary>Call back for GetEnabled events from ribbon elements.</summary>
-        public bool                GetEnabled     (IRibbonControl control) => Controls(control?.Id)?.IsEnabled   ?? false;
+        public bool            GetEnabled    (IRibbonControl control) => Controls(control?.Id)?.IsEnabled   ?? false;
+        /// <summary>Call back for GetKeyTip events from ribbon elements.</summary>
+        public string          GetKeyTip     (IRibbonControl control) => Controls(control?.Id)?.KeyTip      ?? "??";
+        /// <summary>Call back for GetLabel events from ribbon elements.</summary>
+        public string          GetLabel      (IRibbonControl control) => Controls(control?.Id)?.Label       ?? Unknown(control);
+        /// <summary>Call back for GetScreenTip events from ribbon elements.</summary>
+        public string          GetScreenTip  (IRibbonControl control) => Controls(control?.Id)?.ScreenTip   ?? Unknown(control);
         /// <summary>Call back for GetSize events from ribbon elements.</summary>
-        public MyRibbonControlSize GetSize        (IRibbonControl control) => Controls(control?.Id)?.Size        ?? MyRibbonControlSize.Large;
+        public RdControlSize   GetSize       (IRibbonControl control) => Controls(control?.Id)?.Size        ?? RdControlSize.rdLarge;
+        /// <summary>Call back for GetSuperTip events from ribbon elements.</summary>
+        public string          GetSuperTip   (IRibbonControl control) => Controls(control?.Id)?.SuperTip    ?? Unknown(control);
         /// <summary>Call back for GetVisible events from ribbon elements.</summary>
-        public bool                GetVisible     (IRibbonControl control) => Controls(control?.Id)?.IsVisible   ?? true;
+        public bool            GetVisible    (IRibbonControl control) => Controls(control?.Id)?.IsVisible   ?? true;
 
         /// <summary>Call back for GetImage events from ribbon elements.</summary>
-        public object              GetImage       (IRibbonControl control) => Imageables(control?.Id)?.Image;
+        public object          GetImage      (IRibbonControl control) => Imageables(control?.Id)?.Image     ?? "MacroSecurity";
         /// <summary>Call back for GetShowImage events from ribbon elements.</summary>
-        public bool                GetShowImage   (IRibbonControl control) => Imageables(control?.Id)?.ShowImage ?? false;
-        /// <summary>Call back for GetShowLabel events from ribbon elements.</summary>
-        public bool                GetShowLabel   (IRibbonControl control) => Imageables(control?.Id)?.ShowLabel ?? true;
-
-        /// <summary>Call back for OnAction events from the button ribbon elements.</summary>
-        public void OnAction(IRibbonControl control)                       => Actions(control?.Id)?.OnAction();
+        public bool            GetShowImage  (IRibbonControl control) => Imageables(control?.Id)?.ShowImage ?? true;
+        /// <summary>Call back for GetShowLabe l events from ribbon elements.</summary>
+        public bool            GetShowLabel  (IRibbonControl control) => Imageables(control?.Id)?.ShowLabel ?? true;
 
         /// <summary>Call back for GetPressed events from the checkBox and toggleButton ribbon elements.</summary>
-        public bool GetPressed(IRibbonControl control)                     => Toggles(control?.Id)?.IsPressed    ?? false;
+        public bool            GetPressed    (IRibbonControl control) => Toggles(control?.Id)?.IsPressed    ?? false;
         /// <summary>Call back for OnAction events from the checkBox and toggleButton ribbon elements.</summary>
-        public void OnActionToggle(IRibbonControl control, bool pressed)   => Toggles(control?.Id)?.OnAction(pressed);
+        public void OnActionToggle(IRibbonControl control, bool pressed) => Toggles(control?.Id)?.OnAction(pressed);
+
+        /// <summary>Call back for OnAction events from the button ribbon elements.</summary>
+        public void OnAction(IRibbonControl control) => Actions(control?.Id)?.OnAction();
 
 
         private static string Unknown(IRibbonControl control) 
@@ -111,7 +111,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
 
         [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
         internal class PictureConverter : AxHost {
-            internal PictureConverter() : base(String.Empty) { }
+            private PictureConverter() : base(String.Empty) { }
 
             public static IPictureDisp ImageToPictureDisp(Image image) => GetIPictureDispFromPicture(image) as IPictureDisp;
 

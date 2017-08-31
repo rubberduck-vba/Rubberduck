@@ -12,10 +12,11 @@
       <Word>u</Word><Word>v</Word><Word>w</Word><Word>x</Word><Word>y</Word>
       <Word>z</Word>
       
-      <Word>disp</Word>     <!-- Inherited usage in IPictureDisp retained for consistency -->
+      <Word>disp</Word>       <!-- Inherited usage in IPictureDisp retained for consistency -->
       <Word>imageable</Word>
       <Word>imageables</Word>
-      <Word>mso</Word>      <!-- Inherited usage from Fluent Ribbon interface spec. -->
+      <Word>mso</Word>        <!-- Inherited usage from Fluent Ribbon interface spec. -->
+      <Word>rd</Word>         <!-- Prefix for Rubberduck enum types. -->
       <Word>Rubberduck</Word>
     </Recognized>
     <Deprecated>
@@ -30,7 +31,8 @@
   </Words>
   <Acronyms>
     <CasingExceptions>
-      <Acronym></Acronym>
-    </CasingExceptions>
+      <Acronym>COM</Acronym>
+      <Acronym>rd</Acronym>       <!-- Prefix for Rubberduck enum constants. -->
+   </CasingExceptions>
   </Acronyms>
 </Dictionary>

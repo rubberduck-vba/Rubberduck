@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 using System;
 
-using Rubberduck.RibbonDispatcher.Abstract;
+using Rubberduck.RibbonDispatcher.AbstractCOM;
 
 namespace Rubberduck.RibbonDispatcher.EventHandlers {
     /// <summary>TODO</summary>

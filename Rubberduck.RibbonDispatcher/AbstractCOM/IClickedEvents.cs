@@ -4,11 +4,14 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Rubberduck.RibbonDispatcher.Abstract {
-    /// <summary>The total interface (required to be) exposed externally by RibbonButton objects.</summary>
+namespace Rubberduck.RibbonDispatcher.AbstractCOM {
+    /// <summary>TODO</summary>
     [ComVisible(true)]
-    [Guid("EBC076A1-922E-46B7-91D4-A18DF10ABC70")]
+    [Guid("09B49B8B-145A-435D-BE62-17B605D3931A")]
     [CLSCompliant(true)]
-    [InterfaceType(ComInterfaceType.InterfaceIsDual)]
-    public interface IRibbonButton : IRibbonCommon, IActionItem, IImageableItem { }
+    [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
+    public interface IClickedEvents {
+        /// <summary>TODO</summary>
+        void Clicked(object sender, EventArgs e);
+    }
 }

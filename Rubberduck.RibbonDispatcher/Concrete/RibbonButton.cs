@@ -4,18 +4,23 @@
 using System;
 using System.Resources;
 using System.Runtime.InteropServices;
-
-using Rubberduck.RibbonDispatcher.Abstract;
+using System.Diagnostics.CodeAnalysis;
 using stdole;
 
+using Rubberduck.RibbonDispatcher.Abstract;
+using Rubberduck.RibbonDispatcher.AbstractCOM;
+
 namespace Rubberduck.RibbonDispatcher.Concrete {
-    /// <summary>TODO</summary>
+    /// <summary>The ViewModel for Ribbon Button objects.</summary>
     [Serializable]
     [CLSCompliant(true)]
+    [ComVisible(true)]
     [ClassInterface(ClassInterfaceType.None)]
     [ComSourceInterfaces(typeof(IClickedEvents))]
+    [SuppressMessage("Microsoft.Interoperability", "CA1409:ComVisibleTypesShouldBeCreatable",
+        Justification = "Publc, Non-Creatable class with exported Events.")]
     public class RibbonButton : RibbonCommon, IRibbonButton {
-        internal RibbonButton(string id, ResourceManager mgr, bool visible, bool enabled, MyRibbonControlSize size,
+        internal RibbonButton(string id, ResourceManager mgr, bool visible, bool enabled, RdControlSize size,
                 string imageMso, bool showImage, bool showLabel, EventHandler onClickedAction)
             : base(id, mgr, visible, enabled, size){
             _image     = new ImageObject(imageMso);
@@ -23,7 +28,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
             _showLabel = showLabel;
             if (onClickedAction != null) Clicked += onClickedAction;
         }
-        internal RibbonButton(string id, ResourceManager mgr, bool visible, bool enabled, MyRibbonControlSize size,
+        internal RibbonButton(string id, ResourceManager mgr, bool visible, bool enabled, RdControlSize size,
                 IPictureDisp image, bool showImage, bool showLabel, EventHandler onClickedAction)
             : base(id, mgr, visible, enabled, size){
             _image     = new ImageObject(image);
@@ -37,7 +42,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         /// <inheritdoc/>
         public void OnAction() => Clicked?.Invoke(this, null);
 
-        #region IRibbonImageable implementation
+        #region IImageableItem implementation
         /// <inheritdoc/>
         public object Image => _image.Image;
         private ImageObject _image;

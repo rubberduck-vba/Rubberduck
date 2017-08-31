@@ -4,19 +4,24 @@
 using System;
 using System.Resources;
 using System.Runtime.InteropServices;
-
-using Rubberduck.RibbonDispatcher.Abstract;
-using Rubberduck.RibbonDispatcher.EventHandlers;
+using System.Diagnostics.CodeAnalysis;
 using stdole;
 
+using Rubberduck.RibbonDispatcher.Abstract;
+using Rubberduck.RibbonDispatcher.AbstractCOM;
+using Rubberduck.RibbonDispatcher.EventHandlers;
+
 namespace Rubberduck.RibbonDispatcher.Concrete {
-    /// <summary>TODO</summary>
+    /// <summary>The ViewModel for Ribbon ToggleButton objects.</summary>
+    [SuppressMessage("Microsoft.Interoperability", "CA1409:ComVisibleTypesShouldBeCreatable",
+       Justification = "Publc, Non-Creatable class with exported Events.")]
     [Serializable]
     [CLSCompliant(true)]
+    [ComVisible(true)]
     [ClassInterface(ClassInterfaceType.None)]
     [ComSourceInterfaces(typeof(IToggledEvents))]
-    public class RibbonToggle : RibbonCommon, IRibbonToggle {
-        internal RibbonToggle(string id, ResourceManager mgr, bool visible, bool enabled, MyRibbonControlSize size,
+    public class RibbonToggleButton : RibbonCommon, IRibbonToggleButton {
+        internal RibbonToggleButton(string id, ResourceManager mgr, bool visible, bool enabled, RdControlSize size,
                 string imageMso, bool showImage, bool showLabel, ToggledEventHandler onToggledAction)
             : base(id, mgr, visible, enabled, size) {
             _image     = new ImageObject(imageMso);
@@ -24,7 +29,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
             _showLabel = showLabel;
             if (onToggledAction != null) Toggled += onToggledAction;
         }
-        internal RibbonToggle(string id, ResourceManager mgr, bool visible, bool enabled, MyRibbonControlSize size,
+        internal RibbonToggleButton(string id, ResourceManager mgr, bool visible, bool enabled, RdControlSize size,
                 IPictureDisp image, bool showImage, bool showLabel, ToggledEventHandler onToggledAction)
             : base(id, mgr, visible, enabled, size) {
             _image     = new ImageObject(image);
@@ -50,7 +55,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
                                        ? LanguageStrings?.AlternateLabel??Id 
                                        : LanguageStrings?.Label??Id;
 
-        #region IRibbonImageable implementation
+        #region IImageableItem implementation
         /// <inheritdoc/>
         public object Image => _image.Image;
         private ImageObject _image;

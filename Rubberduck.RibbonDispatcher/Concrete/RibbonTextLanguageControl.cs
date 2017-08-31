@@ -4,7 +4,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-using Rubberduck.RibbonDispatcher.Abstract;
+using Rubberduck.RibbonDispatcher.AbstractCOM;
 
 namespace Rubberduck.RibbonDispatcher.Concrete
 {
