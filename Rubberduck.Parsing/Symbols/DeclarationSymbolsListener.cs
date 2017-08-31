@@ -133,11 +133,22 @@ namespace Rubberduck.Parsing.Symbols
         private void DeclareControlsAsMembers(IVBComponent form)
         {
             if (form.Controls == null) { return; }
-            var msFormsLib = _state.DeclarationFinder.FindProject("MSForms");
 
+            var libraryQualifier = string.Empty;
+            if (_qualifiedModuleName.ComponentType == ComponentType.UserForm)
+            {
+                var msFormsLib = _state.DeclarationFinder.FindProject("MSForms");
+                //Debug.Assert(msFormsLib != null);
+                if (msFormsLib != null)
+                {
+                    // given a UserForm component, MSForms reference is in use and cannot be removed.
+                    libraryQualifier = "MSForms.";
+                }
+            }
+            
             foreach (var control in form.Controls)
             {
-                var typeName = control.TypeName();
+                var typeName = $"{libraryQualifier}{control.TypeName()}";
                 // The as type declaration should be TextBox, CheckBox, etc. depending on the type.
                 var declaration = new Declaration(
                     _qualifiedModuleName.QualifyMemberName(control.Name),
@@ -154,11 +165,6 @@ namespace Rubberduck.Parsing.Symbols
                     false,
                     null,
                     true);
-
-                if (msFormsLib != null)
-                {
-                    declaration.AsTypeDeclaration = _state.DeclarationFinder.FindClassModule(typeName, msFormsLib, true);
-                }
 
                 AddDeclaration(declaration);
             }
