@@ -135,7 +135,7 @@ namespace Rubberduck.Parsing.Symbols
             if (form.Controls == null) { return; }
 
             var libraryQualifier = string.Empty;
-            if (form.ComponentType == ComponentType.UserForm)
+            if (_qualifiedModuleName.ComponentType == ComponentType.UserForm)
             {
                 var msFormsLib = _state.DeclarationFinder.FindProject("MSForms");
                 //Debug.Assert(msFormsLib != null);
