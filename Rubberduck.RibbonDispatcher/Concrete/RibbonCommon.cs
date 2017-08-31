@@ -17,18 +17,12 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [ClassInterface(ClassInterfaceType.None)]
     public abstract class RibbonCommon : IRibbonCommon {
         /// <summary>TODO</summary>
-        protected RibbonCommon(string id, ResourceManager mgr, bool visible, bool enabled, MyRibbonControlSize size)
-            : this(id, mgr, visible, enabled, size, false, true) {;}
-        /// <summary>TODO</summary>
-        protected RibbonCommon(string id, ResourceManager mgr, bool visible, bool enabled, MyRibbonControlSize size,
-                bool showImage, bool showLabel) {
+        protected RibbonCommon(string id, ResourceManager resourceManager, bool visible, bool enabled, MyRibbonControlSize size) {
             Id               = id;
-            LanguageStrings  = GetLanguageStrings(id, mgr);
+            LanguageStrings  = GetLanguageStrings(id, resourceManager);
             _visible         = visible;
             _enabled         = enabled;
             _size            = size;
-            _showImage       = showImage;
-            _showLabel       = showLabel;
         }
 
         /// <summary>TODO</summary>
@@ -79,19 +73,6 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         private bool _visible;
 
         /// <inheritdoc/>
-        public bool ShowLabel {
-            get { return _showLabel; }
-            set { _showLabel = value; OnChanged(); }
-        }
-        private bool _showLabel;
-        /// <inheritdoc/>
-        public bool ShowImage {
-            get { return _showImage; }
-            set { _showImage = value; OnChanged(); }
-        }
-        private bool _showImage;
-
-        /// <inheritdoc/>
         public void SetLanguageStrings(LanguageStrings languageStrings) {
             LanguageStrings = languageStrings;
             OnChanged();
@@ -102,21 +83,23 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
 
         private static LanguageStrings GetLanguageStrings(string controlId, ResourceManager mgr)
             => new RibbonTextLanguageControl(
-                    mgr.GetCurrentUItString($"{controlId ?? ""}_Label")          ?? controlId,
-                    mgr.GetCurrentUItString($"{controlId ?? ""}_ScreenTip")      ?? controlId + " SuperTip",
-                    mgr.GetCurrentUItString($"{controlId ?? ""}_SuperTip")       ?? controlId + " ScreenTip",
-                    mgr.GetCurrentUItString($"{controlId ?? ""}_KeyTip")         ?? controlId,
-                    mgr.GetCurrentUItString($"{controlId ?? ""}_AlternateLabel") ?? "",
-                    mgr.GetCurrentUItString($"{controlId ?? ""}_Description")    ?? controlId + " Description");
+                    mgr.GetCurrentUItString(Invariant($"{controlId ?? ""}_Label"))          ?? controlId,
+                    mgr.GetCurrentUItString(Invariant($"{controlId ?? ""}_ScreenTip"))      ?? controlId + " SuperTip",
+                    mgr.GetCurrentUItString(Invariant($"{controlId ?? ""}_SuperTip"))       ?? controlId + " ScreenTip",
+                    mgr.GetCurrentUItString(Invariant($"{controlId ?? ""}_KeyTip"))         ?? controlId,
+                    mgr.GetCurrentUItString(Invariant($"{controlId ?? ""}_AlternateLabel")) ?? "",
+                    mgr.GetCurrentUItString(Invariant($"{controlId ?? ""}_Description"))    ?? controlId + " Description");
+        /// <summary>TODO</summary>
+        public static string Invariant(string formattable) => String.Format(formattable, CultureInfo.InvariantCulture);
     }
 
     /// <summary>TODO</summary>
     public static partial class ResourceManagerExtensions {
         /// <summary>TODO</summary>
         public static string GetCurrentUItString(this ResourceManager resourceManager, string name)
-            => resourceManager.GetString(name, CultureInfo.CurrentUICulture);
+            => resourceManager?.GetString(name, CultureInfo.CurrentUICulture) ?? "";
         /// <summary>TODO</summary>
         public static string GetInvariantString(this ResourceManager resourceManager, string name)
-            => resourceManager.GetString(name, CultureInfo.InvariantCulture);
+            => resourceManager?.GetString(name, CultureInfo.InvariantCulture) ?? "";
     }
 }

@@ -33,14 +33,9 @@ namespace Rubberduck.RibbonDispatcher.Abstract
         /// <summary>TODO</summary>
         IPictureDisp      Image             { get; set; }
         /// <summary>TODO</summary>
-        MyRibbonControlSize Size               { get; set; }
+        MyRibbonControlSize Size            { get; set; }
         /// <summary>TODO</summary>
-        bool              IsVisible          { get; set; }
-
-        /// <summary>TODO</summary>
-        bool              ShowLabel          { get; set; }
-        /// <summary>TODO</summary>
-        bool              ShowImage         { get; set; }
+        bool              IsVisible         { get; set; }
 
         /// <summary>TODO</summary>
         void SetLanguageStrings(IRibbonTextLanguageControl languageStrings);

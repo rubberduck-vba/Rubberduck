@@ -13,9 +13,24 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     public class RibbonButton : RibbonCommon, IRibbonButton {
         internal RibbonButton(string id, ResourceManager mgr, bool visible, bool enabled, MyRibbonControlSize size,
                 bool showImage, bool showLabel, EventHandler onClickedAction)
-            : base(id, mgr, visible, enabled, size, showImage, showLabel){
+            : base(id, mgr, visible, enabled, size){
+            _showImage = showImage;
+            _showLabel = showLabel;
             if (onClickedAction != null) Clicked += onClickedAction;
         }
+
+        /// <inheritdoc/>
+        public bool ShowLabel {
+            get { return _showLabel; }
+            set { _showLabel = value; OnChanged(); }
+        }
+        private bool _showLabel;
+        /// <inheritdoc/>
+        public bool ShowImage {
+            get { return _showImage; }
+            set { _showImage = value; OnChanged(); }
+        }
+        private bool _showImage;
 
         /// <inheritdoc/>
         public event EventHandler Clicked;

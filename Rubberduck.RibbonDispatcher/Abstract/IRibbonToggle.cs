@@ -8,14 +8,19 @@ namespace Rubberduck.RibbonDispatcher.Abstract {
     [Guid("D03E9DE1-F37D-40D6-89D6-A6B76A608D97")]
     [CLSCompliant(true)]
     [InterfaceType(ComInterfaceType.InterfaceIsDual)]
-    public interface IRibbonToggle : IRibbonCommon {
-        /// <summary>TODO</summary>
-        bool IsPressed         { get; }
-        /// <summary>TODO</summary>
-        bool UseAlternateLabel { get; }
+    public interface IRibbonToggle : IRibbonCheckBox {
+    }
 
+    /// <summary>TODO</summary>
+    [ComVisible(true)]
+    [Guid("42D56042-3FE9-4F1F-AD49-3ED0EE6CC987")]
+    [CLSCompliant(true)]
+    [InterfaceType(ComInterfaceType.InterfaceIsDual)]
+    public interface IRibbonImageable {
         /// <summary>TODO</summary>
-        void OnAction(bool isPressed);
+        bool ShowImage { get; }
+        /// <summary>TODO</summary>
+        bool ShowLabel { get; }
     }
 
     /// <summary>TODO</summary>

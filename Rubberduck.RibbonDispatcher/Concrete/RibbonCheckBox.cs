@@ -11,12 +11,10 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [CLSCompliant(true)]
     [ClassInterface(ClassInterfaceType.None)]
     [ComSourceInterfaces(typeof(IToggledEvents))]
-    public class RibbonToggle : RibbonCommon, IRibbonToggle {
-        internal RibbonToggle(string id, ResourceManager mgr, bool visible, bool enabled, MyRibbonControlSize size,
-                bool showImage, bool showLabel, ToggledEventHandler onToggledAction)
+    public class RibbonCheckBox : RibbonCommon, IRibbonToggle {
+        internal RibbonCheckBox(string id, ResourceManager mgr, bool visible, bool enabled, MyRibbonControlSize size,
+                ToggledEventHandler onToggledAction)
             : base(id, mgr, visible, enabled, size) {
-            _showImage = showImage;
-            _showLabel = showLabel;
             if (onToggledAction != null) Toggled += onToggledAction;
         }
 
@@ -24,29 +22,19 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         public event ToggledEventHandler Toggled;
 
         /// <summary>TODO</summary>
-        public new string Label       => IsPressed && ! String.IsNullOrEmpty(LanguageStrings?.AlternateLabel ?? "")
-                                       ? LanguageStrings?.AlternateLabel??Id 
-                                       : LanguageStrings?.Label??Id;
+        public new string Label       => UseAlternateLabel ? LanguageStrings?.AlternateLabel??Id 
+                                                           : LanguageStrings?.Label??Id;
         /// <summary>TODO</summary>
         public bool IsPressed         { get; private set; }
 
         /// <summary>TODO</summary>
-        public bool ShowLabel {
-            get { return _showLabel; }
-            set { _showLabel = value; OnChanged(); }
-        }
-        private bool _showLabel;
-        /// <inheritdoc/>
-        public bool ShowImage {
-            get { return _showImage; }
-            set { _showImage = value; OnChanged(); }
-        }
-        private bool _showImage;
+        public bool UseAlternateLabel { get; private set; }
 
         /// <summary>TODO</summary>
         public void OnAction(bool isPressed) {
             Toggled?.Invoke(this,new ToggledEventArgs(isPressed));
             IsPressed         = isPressed;
+            UseAlternateLabel = isPressed && !String.IsNullOrEmpty(LanguageStrings?.AlternateLabel??"");
             OnChanged();
         }
 
