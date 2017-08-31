@@ -15,6 +15,7 @@ namespace Rubberduck.Parsing.Symbols
 {
     public class DeclarationSymbolsListener : VBAParserBaseListener
     {
+        private readonly RubberduckParserState _state;
         private readonly QualifiedModuleName _qualifiedModuleName;
         private readonly Declaration _moduleDeclaration;
 
@@ -26,7 +27,7 @@ namespace Rubberduck.Parsing.Symbols
         private readonly IDictionary<Tuple<string, DeclarationType>, Attributes> _attributes;
 
         private readonly List<Declaration> _createdDeclarations = new List<Declaration>();
-        public IReadOnlyList<Declaration> CreatedDeclarations { get { return _createdDeclarations; } }
+        public IReadOnlyList<Declaration> CreatedDeclarations => _createdDeclarations;
 
         public DeclarationSymbolsListener(
             RubberduckParserState state,
@@ -36,6 +37,7 @@ namespace Rubberduck.Parsing.Symbols
             Attributes> attributes,
             Declaration projectDeclaration)
         {
+            _state = state;
             _qualifiedModuleName = qualifiedModuleName;
             _annotations = annotations;
             _attributes = attributes;
@@ -131,6 +133,7 @@ namespace Rubberduck.Parsing.Symbols
         private void DeclareControlsAsMembers(IVBComponent form)
         {
             if (form.Controls == null) { return; }
+            var msFormsLib = _state.DeclarationFinder.FindProject("MSForms");
 
             foreach (var control in form.Controls)
             {
@@ -151,6 +154,12 @@ namespace Rubberduck.Parsing.Symbols
                     false,
                     null,
                     true);
+
+                if (msFormsLib != null)
+                {
+                    declaration.AsTypeDeclaration = _state.DeclarationFinder.FindClassModule(typeName, msFormsLib, true);
+                }
+
                 AddDeclaration(declaration);
             }
         }
