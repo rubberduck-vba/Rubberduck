@@ -134,9 +134,21 @@ namespace Rubberduck.Parsing.Symbols
         {
             if (form.Controls == null) { return; }
 
+            var libraryQualifier = string.Empty;
+            if (form.ComponentType == ComponentType.UserForm)
+            {
+                var msFormsLib = _state.DeclarationFinder.FindProject("MSForms");
+                //Debug.Assert(msFormsLib != null);
+                if (msFormsLib != null)
+                {
+                    // given a UserForm component, MSForms reference is in use and cannot be removed.
+                    libraryQualifier = "MSForms.";
+                }
+            }
+            
             foreach (var control in form.Controls)
             {
-                var typeName = $"MSForms.{control.TypeName()}";
+                var typeName = $"{libraryQualifier}{control.TypeName()}";
                 // The as type declaration should be TextBox, CheckBox, etc. depending on the type.
                 var declaration = new Declaration(
                     _qualifiedModuleName.QualifyMemberName(control.Name),
