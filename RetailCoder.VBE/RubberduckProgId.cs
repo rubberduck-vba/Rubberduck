@@ -14,5 +14,7 @@
         public const string AssertClassProgId = BaseNamespace + "AssertClass";
         public const string PermissiveAssertClassProgId = BaseNamespace + "PermissiveAssertClass";
         public const string FakesProviderProgId = BaseNamespace + "FakesProvider";
+
+        public const string RibbonDispatcherProgId = BaseNamespace + "RibbonDispatcher";
     }
 }
