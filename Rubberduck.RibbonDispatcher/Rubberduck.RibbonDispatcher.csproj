@@ -24,6 +24,7 @@
     <CodeAnalysisRuleSet>Rubberduck.RibbonDispatcher.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <LangVersion>7.1</LangVersion>
+    <RegisterForComInterop>true</RegisterForComInterop>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -39,7 +40,7 @@
     <DocumentationFile>bin\Release\Rubberduck.RibbonDispatcher.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>Temporary.snk</AssemblyOriginatorKeyFile>

@@ -9,7 +9,7 @@ namespace Rubberduck.RibbonDispatcher.AbstractCOM {
     [Guid(RubberduckGuid.IClickedEvents)]
     public interface IClickedEvents {
         /// <summary>TODO</summary>
-        [DispId(DispIds.Clicked)]
+    //    [DispId(DispIds.Clicked)]
         void Clicked();
     }
 }

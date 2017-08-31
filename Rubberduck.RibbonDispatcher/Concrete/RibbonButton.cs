@@ -38,6 +38,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         #region Publish IActionableDecoration to class default interface
         /// <summary>The Clicked event source for COM clients</summary>
         public event ClickedEventHandler Clicked;
+
         /// <summary>The callback from the Ribbon Dispatcher to initiate Clicked events on this control.</summary>
         public void OnAction() => this.OnAction(() => Clicked?.Invoke());
         #endregion

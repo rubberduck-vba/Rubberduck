@@ -1,7 +1,4 @@
-﻿////////////////////////////////////////////////////////////////////////////////////////////////////
-//                                Copyright (c) 2017 Pieter Geerkens                              //
-////////////////////////////////////////////////////////////////////////////////////////////////////
-using System;
+﻿using System;
 using System.Runtime.InteropServices;
 using System.Diagnostics.CodeAnalysis;
 
@@ -34,7 +31,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         public override string Label     => this.GetLabel();
 
         /// <summary>TODO</summary>
-        public void OnActionToggle(bool IsPressed) => this.OnActionToggled(IsPressed, b => Toggled?.Invoke(b));
+        public void OnToggled(bool IsPressed) => Toggled?.Invoke(IsPressed);
         /// <summary>TODO</summary>
         IRibbonTextLanguageControl IToggleableMixin.LanguageStrings => LanguageStrings;
         #endregion

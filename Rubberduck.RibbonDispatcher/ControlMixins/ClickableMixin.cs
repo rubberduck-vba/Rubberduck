@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 
 namespace Rubberduck.RibbonDispatcher.ControlMixins {
     /// <summary>TODO</summary>

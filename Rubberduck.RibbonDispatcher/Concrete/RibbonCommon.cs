@@ -16,9 +16,6 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [Guid(RubberduckGuid.RibbonCommon)]
     public abstract class RibbonCommon : IRibbonCommon {
         /// <summary>TODO</summary>
-        protected RibbonCommon(string itemId, IResourceManager resourceManager)
-            : this(itemId, resourceManager, true, true) {;}
-        /// <summary>TODO</summary>
         protected RibbonCommon(string itemId, IResourceManager resourceManager, bool visible, bool enabled) {
             Id               = itemId;
             LanguageStrings  = GetLanguageStrings(itemId, resourceManager);

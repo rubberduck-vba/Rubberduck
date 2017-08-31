@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.InteropServices;
+using stdole;
 
 using Rubberduck.RibbonDispatcher.ControlMixins;
 using Rubberduck.RibbonDispatcher.AbstractCOM;
@@ -22,29 +23,28 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [ComDefaultInterface(typeof(IRibbonDropDown))]
     [Guid(RubberduckGuid.RibbonDropDown)]
     public class RibbonDropDown : RibbonCommon, IRibbonDropDown, ISelectableMixin {
-        internal RibbonDropDown(string itemId, IResourceManager mgr, bool visible, bool enabled,
-                ISelectableItem[] items = null) : base(itemId, mgr, visible, enabled)
-            => _items = items?.ToList()?.AsReadOnly();
+        internal RibbonDropDown(string itemId, IResourceManager mgr, bool visible, bool enabled)
+            : base(itemId, mgr, visible, enabled) {}
 
         /// <summary>TODO</summary>
         public event SelectedEventHandler SelectionMade;
 
-        private int                             _selectedItemIndex;
-        private IReadOnlyList<ISelectableItem>  _items;
+        private int                     _selectedItemIndex;
+        private IList<ISelectableItem>  _items  = new List<ISelectableItem>();
 
         /// <summary>TODO</summary>
         [DispId(DispIds.SelectedItemId)]
-        public string      SelectedItemId {
+        public string   SelectedItemId {
             get => _items[_selectedItemIndex].Id;
-            set { _selectedItemIndex = _items.Where((t,i) => t.Id == value).Select((t,i)=>i).FirstOrDefault();
-                  OnChanged();
+            set { _selectedItemIndex = _items.IndexOf(_items.FirstOrDefault(t => t.Id==value));
+                  OnActionDropDown(value, _selectedItemIndex);
                 }
         }
         /// <summary>TODO</summary>
         [DispId(DispIds.SelectedItemIndex)]
-        public int         SelectedItemIndex {
+        public int      SelectedItemIndex {
             get => _selectedItemIndex;
-            set { _selectedItemIndex = value; OnChanged(); }
+            set => OnActionDropDown(SelectedItemId, value);
         }
         /// <summary>Call back for OnAction events from the drop-down ribbon elements.</summary>
         [DispId(DispIds.OnActionDropDown)]
@@ -52,6 +52,13 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
             _selectedItemIndex = selectedIndex;
             SelectionMade?.Invoke(selectedId, selectedIndex);
             OnChanged();
+        }
+
+        /// <summary>Returns this RibbonDropDown with a new {SelectableItem} in its list.</summary>
+        [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification = "Matches COM usage.")]
+        public IRibbonDropDown AddItem(ISelectableItem selectableItem) {
+            _items.Add(selectableItem);
+            return this;
         }
 
         /// <summary>TODO</summary>

@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace Rubberduck.RibbonDispatcher.ControlMixins {
-    /// <summary>The interface for controls that can display an Image.</summary>
+    /// <summary>The interface for controls that are Imageable.</summary>
     [CLSCompliant(true)]
     public interface IImageableMixin {
     }

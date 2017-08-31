@@ -12,7 +12,7 @@ namespace Rubberduck.RibbonDispatcher.ControlMixins {
 
         private sealed class Fields {
             public Fields() {}
-            public bool         IsPressed { get; set; } = false;
+            public bool IsPressed { get; set; } = false;
         }
 
         public   static bool   GetPressed(this IToggleableMixin mixin)     => _table.GetOrCreateValue(mixin).IsPressed;
@@ -24,9 +24,10 @@ namespace Rubberduck.RibbonDispatcher.ControlMixins {
             => fields.IsPressed && ! string.IsNullOrEmpty(mixin.AlternateLabel()) ? mixin.AlternateLabel()
                                                                                   : mixin.Label();
 
-        public static void OnActionToggled(this IToggleableMixin mixin, bool isPressed, Action<bool> toggled) {
+        public static void OnActionToggle(this IToggleableMixin mixin, bool isPressed) {
             _table.GetOrCreateValue(mixin).IsPressed = isPressed;
-            toggled?.Invoke(isPressed);
+            mixin.OnToggled(isPressed);
+            mixin.OnChanged();
         }
     }
 }

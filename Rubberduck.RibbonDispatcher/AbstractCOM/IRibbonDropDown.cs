@@ -2,7 +2,9 @@
 //                                Copyright (c) 2017 Pieter Geerkens                              //
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
+using stdole;
 
 namespace Rubberduck.RibbonDispatcher.AbstractCOM {
     /// <summary>The total interface (required to be) exposed externally by RibbonDropDown objects; 
@@ -50,6 +52,11 @@ namespace Rubberduck.RibbonDispatcher.AbstractCOM {
         /// <summary>Call back for OnAction events from the drop-down ribbon elements.</summary>
         [DispId(DispIds.OnActionDropDown)]
         void        OnActionDropDown(string selectedId, int selectedIndex);
+
+        /// <summary>Returns this RibbonDropDown with a new {SelectableItem} in its list.</summary>
+        [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification = "Matches COM usage.")]
+        [DispId(DispIds.AddItem)]
+        IRibbonDropDown AddItem(ISelectableItem selectableItem);
 
         /// <summary>Call back for ItemCount events from the drop-down ribbon elements.</summary>
         [DispId(DispIds.ItemCount)]

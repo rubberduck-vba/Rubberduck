@@ -19,7 +19,7 @@ namespace Rubberduck.RibbonDispatcher {
         public const int Image              = 11;
         public const int ShowImage          = 12;
         public const int ShowLabel          = 13;
-        public const int SetImageDisp           = 14;
+        public const int SetImageDisp       = 14;
         public const int SetImageMso        = 15;
 
         // IActionItem
@@ -34,18 +34,21 @@ namespace Rubberduck.RibbonDispatcher {
         public const int SelectedItemIndex  = 20;
         public const int OnActionDropDown   = 21;
 
-        public const int ItemCount          = 22;
-        public const int ItemId             = 23;
-        public const int ItemLabel          = 24;
-        public const int ItemScreenTip      = 25;
-        public const int ItemSuperTip       = 26;
-        public const int ItemImage          = 27;
-        public const int ItemShowLabel      = 28;
-        public const int ItemShowImage      = 29;
+        public const int AddItem            = 22;
+        public const int AddItemMso         = 23;
 
-        public const int LoadImage          = 30;
+        public const int ItemCount          = 24;
+        public const int ItemId             = 25;
+        public const int ItemLabel          = 26;
+        public const int ItemScreenTip      = 27;
+        public const int ItemSuperTip       = 28;
+        public const int ItemImage          = 29;
+        public const int ItemShowLabel      = 30;
+        public const int ItemShowImage      = 31;
+
+        public const int LoadImage          = 32;
 
         // COM Events
-        public const int Clicked         = 31;
+        public const int Clicked            = 33;
     }
 }

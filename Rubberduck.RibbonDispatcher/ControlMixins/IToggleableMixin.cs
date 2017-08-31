@@ -2,10 +2,15 @@
 using System;
 
 namespace Rubberduck.RibbonDispatcher.ControlMixins {
-    /// <summary>The total interface (required to be) exposed externally by RibbonButton objects.</summary>
+    /// <summary>The interface for controls that can be toggled.</summary>
     [CLSCompliant(true)]
     internal interface IToggleableMixin {
-        void OnActionToggle(bool Pressed);
+        /// <summary>TODO</summary>
+        void OnChanged();
+
+        /// <summary>TODO</summary>
+        void OnToggled(bool IsPressed);
+            
         /// <summary>TODO</summary>
         IRibbonTextLanguageControl LanguageStrings { get; }
     }
