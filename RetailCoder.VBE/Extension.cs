@@ -261,12 +261,12 @@ namespace Rubberduck
                 }
 
                 _isInitialized = false;
-                _logger.Log(LogLevel.Trace, "Shutdown completed. Quack!");
+                _logger.Log(LogLevel.Info, "No exceptions were thrown.");
             }
             catch (Exception e)
             {
                 _logger.Error(e);
-                _logger.Log(LogLevel.Debug, "Exception is swallowed.");
+                _logger.Log(LogLevel.Warn, "Exception is swallowed.");
                 //throw; // <<~ uncomment to crash the process
             }
             finally
