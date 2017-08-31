@@ -11,6 +11,7 @@ namespace Rubberduck.RibbonDispatcher.EventHandlers {
     [Serializable]
     [CLSCompliant(true)]
     [ClassInterface(ClassInterfaceType.None)]
+    [ComDefaultInterface(typeof(IToggledEventArgs))]
     public class ToggledEventArgs : EventArgs, IToggledEventArgs {
         /// <summary>TODO</summary>
         public ToggledEventArgs(bool isPressed) { IsPressed = isPressed; }

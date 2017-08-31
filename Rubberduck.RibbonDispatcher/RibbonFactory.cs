@@ -16,6 +16,7 @@ using Rubberduck.RibbonDispatcher.Concrete;
 using Rubberduck.RibbonDispatcher.EventHandlers;
 
 namespace Rubberduck.RibbonDispatcher {
+    using System.Runtime.InteropServices;
     using static RdControlSize;
 
     /// <summary>TODO</summary>
@@ -26,7 +27,9 @@ namespace Rubberduck.RibbonDispatcher {
     /// values" usages are (believed to be) the only means of implementing functionality equivalent
     /// to "overrides" in a COM-compatible way.
     /// </remarks>
+    [Serializable]
     [CLSCompliant(true)]
+    [ComDefaultInterface(typeof(IRibbonFactory))]
     public class RibbonFactory : IRibbonFactory {
         internal RibbonFactory(IRibbonUI ribbonUI, ResourceManager resourceManager) {
             _ribbonUI        = ribbonUI;

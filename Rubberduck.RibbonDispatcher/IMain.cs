@@ -12,11 +12,12 @@ using Rubberduck.RibbonDispatcher.AbstractCOM;
 namespace Rubberduck.RibbonDispatcher {
     /// <summary>TODO</summary>
     [ComVisible(true)]
-    [Guid("DF52F97E-8828-4585-834B-33DDFB5B9B82")]
     [CLSCompliant(true)]
     [InterfaceType(ComInterfaceType.InterfaceIsDual)]
+    [Guid(RubberduckGuid.IMain)]
     public interface IMain {
         /// <summary>TODO</summary>
+        [DispId(1)]
         IAbstractDispatcher NewRibbonViewModel(IRibbonUI ribbonUI, ResourceManager resourceManager);
     }
 }

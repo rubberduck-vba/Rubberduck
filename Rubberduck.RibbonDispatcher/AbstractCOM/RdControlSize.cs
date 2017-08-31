@@ -13,12 +13,14 @@ namespace Rubberduck.RibbonDispatcher.AbstractCOM {
     /// </remarks>
     [Serializable]
     [ComVisible(true)]
-    [Guid("844043EF-6B1B-471D-BC67-BD2CB3A8E7E4")]
     [CLSCompliant(true)]
+    [Guid(RubberduckGuid.RdControlSize)]
     public enum RdControlSize {
         /// <summary>TODO</summary>
+        [DispId(1)]
         rdRegular = Office.RibbonControlSize.RibbonControlSizeRegular,
         /// <summary>TODO</summary>
-        rdLarge   = Office.RibbonControlSize.RibbonControlSizeLarge
+        [DispId(2)]
+        rdLarge = Office.RibbonControlSize.RibbonControlSizeLarge
     }
 }

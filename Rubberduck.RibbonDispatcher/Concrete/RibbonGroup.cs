@@ -13,6 +13,8 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [Serializable]
     [CLSCompliant(true)]
     [ClassInterface(ClassInterfaceType.None)]
+    [ComDefaultInterface(typeof(IRibbonGroup))]
+    [Guid(RubberduckGuid.RibbonGroup)]
     public class RibbonGroup : RibbonCommon, IRibbonGroup
     {
         internal RibbonGroup(string id, ResourceManager mgr, bool visible, bool enabled, RdControlSize size)

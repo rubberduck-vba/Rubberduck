@@ -10,63 +10,63 @@ namespace Rubberduck.RibbonDispatcher.AbstractCOM {
     /// <summary>The total interface (required to be) exposed externally by RibbonDropDown objects; 
     /// composition of IRibbonCommon, IDropDownItem &amp; IImageableItem</summary>
     [ComVisible(true)]
-    [Guid("7660882A-351B-4518-AFD3-8CA1E3EFE9D8")]
     [CLSCompliant(true)]
     [InterfaceType(ComInterfaceType.InterfaceIsDual)]
+    [Guid(RubberduckGuid.IRibbonDropDown)]
     public interface IRibbonDropDown : IRibbonCommon, IDropDownItem, IImageableItem {
         /// <summary>Returns the unique (within this ribbon) identifier for this control.</summary>
-        [DispId( 1)]
-        new string      Id              { get; }
+        [DispId(DispIds.Id)]
+        new string        Id          { get; }
         /// <summary>Only applicable for Menu Items.</summary>
-        [DispId( 2)]
-        new string      Description     { get; }
-        /// <summary>Returns the KeyTip for this control.</summary>
-        [DispId( 3)]
-        new string      KeyTip          { get; }
+        [DispId(DispIds.Description)]
+        new string        Description { get; }
         /// <summary>TODO</summary>
-        [DispId( 4)]
-        new string      Label           { get; }
+        [DispId(DispIds.KeyTip)]
+        new string        KeyTip      { get; }
         /// <summary>TODO</summary>
-        [DispId( 5)]
-        new string      ScreenTip       { get; }
+        [DispId(DispIds.Label)]
+        new string        Label       { get; }
         /// <summary>TODO</summary>
-        [DispId( 6)]
-        new string      SuperTip        { get; }
+        [DispId(DispIds.ScreenTip)]
+        new string        ScreenTip   { get; }
         /// <summary>TODO</summary>
-        [DispId( 7)]
-        new void        SetLanguageStrings(IRibbonTextLanguageControl languageStrings);
+        [DispId(DispIds.SuperTip)]
+        new string        SuperTip    { get; }
+        /// <summary>Sets the Label, KeyTip, ScreenTip and SuperTip for this control from the supplied values.</summary>
+        [DispId(DispIds.SetLanguageStrings)]
+        new void          SetLanguageStrings(IRibbonTextLanguageControl languageStrings);
 
         /// <summary>TODO</summary>
-        [DispId( 8)]
-        new bool        IsEnabled       { get; set; }
+        [DispId(DispIds.IsEnabled)]
+        new bool          IsEnabled   { get; set; }
         /// <summary>TODO</summary>
-        [DispId( 9)]
-        new bool        IsVisible       { get; set; }
+        [DispId(DispIds.IsVisible)]
+        new bool          IsVisible   { get; set; }
         /// <summary>TODO</summary>
-        [DispId(10)]
-        new RdControlSize Size            { get; set; }
+        [DispId(DispIds.Size)]
+        new RdControlSize Size        { get; set; }
 
         /// <summary>TODO</summary>
-        [DispId(24)]
+        [DispId(DispIds.SelectedItemId)]
         new string      SelectedItemId  { get; set; }
         /// <summary>TODO</summary>
-        [DispId(25)]
+        [DispId(DispIds.OnActionDropDown)]
         new void        OnActionDropDown(string itemId);
 
         /// <summary>TODO</summary>
-        [DispId(31)]
-        new object      Image       { get; }
+        [DispId(DispIds.Image)]
+        new object        Image       { get; }
         /// <summary>Returns or set whether to show the control's image; ignored by Large controls.</summary>
-        [DispId(32)]
-        new bool        ShowImage   { get; set; }
+        [DispId(DispIds.ShowImage)]
+        new bool          ShowImage   { get; set; }
         /// <summary>Returns or set whether to show the control's label; ignored by Large controls.</summary>
-        [DispId(33)]
-        new bool        ShowLabel   { get; set; }
+        [DispId(DispIds.ShowLabel)]
+        new bool          ShowLabel   { get; set; }
         /// <summary>TODO</summary>
-        [DispId(34)]
-        new void        SetImage(IPictureDisp image);
+        [DispId(DispIds.SetImage)]
+        new void          SetImage(IPictureDisp image);
         /// <summary>TODO</summary>
-        [DispId(35)]
-        new void        SetImageMso(string imageMso);
+        [DispId(DispIds.SetImageMso)]
+        new void          SetImageMso(string imageMso);
     }
 }

@@ -19,6 +19,8 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [ComSourceInterfaces(typeof(IToggledEvents))]
     [SuppressMessage("Microsoft.Interoperability", "CA1409:ComVisibleTypesShouldBeCreatable",
         Justification = "Publc, Non-Creatable class with exported Events.")]
+    [ComDefaultInterface(typeof(IRibbonCheckBox))]
+    [Guid(RubberduckGuid.RibbonCheckBox)]
     public class RibbonCheckBox : RibbonCommon, IRibbonCheckBox {
         internal RibbonCheckBox(string id, ResourceManager mgr, bool visible, bool enabled, RdControlSize size,
                 ToggledEventHandler onToggledAction)
@@ -39,7 +41,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         public bool UseAlternateLabel { get; private set; }
 
         /// <summary>TODO</summary>
-        public void OnAction(bool isPressed) {
+        public void OnActionToggle(bool isPressed) {
             Toggled?.Invoke(this,new ToggledEventArgs(isPressed));
             IsPressed         = isPressed;
             UseAlternateLabel = isPressed && !String.IsNullOrEmpty(LanguageStrings?.AlternateLabel??"");

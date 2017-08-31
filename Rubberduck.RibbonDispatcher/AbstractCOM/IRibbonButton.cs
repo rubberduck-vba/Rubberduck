@@ -11,60 +11,60 @@ namespace Rubberduck.RibbonDispatcher.AbstractCOM {
     /// <summary>The total interface (required to be) exposed externally by RibbonButton objects; 
     /// composition of IRibbonCommon, IActionItem &amp; IImageableItem</summary>
     [ComVisible(true)]
-    [Guid("EBC076A1-922E-46B7-91D4-A18DF10ABC70")]
     [CLSCompliant(true)]
     [InterfaceType(ComInterfaceType.InterfaceIsDual)]
+    [Guid(RubberduckGuid.IRibbonButton)]
     public interface IRibbonButton : IRibbonCommon, IActionItem, IImageableItem {
         /// <summary>Returns the unique (within this ribbon) identifier for this control.</summary>
-        [DispId( 1)]
+        [DispId(DispIds.Id)]
         new string        Id          { get; }
         /// <summary>Only applicable for Menu Items.</summary>
-        [DispId( 2)]
+        [DispId(DispIds.Description)]
         new string        Description { get; }
         /// <summary>TODO</summary>
-        [DispId( 3)]
+        [DispId(DispIds.KeyTip)]
         new string        KeyTip      { get; }
         /// <summary>TODO</summary>
-        [DispId( 4)]
+        [DispId(DispIds.Label)]
         new string        Label       { get; }
         /// <summary>TODO</summary>
-        [DispId( 5)]
+        [DispId(DispIds.ScreenTip)]
         new string        ScreenTip   { get; }
         /// <summary>TODO</summary>
-        [DispId( 6)]
+        [DispId(DispIds.SuperTip)]
         new string        SuperTip    { get; }
         /// <summary>Sets the Label, KeyTip, ScreenTip and SuperTip for this control from the supplied values.</summary>
-        [DispId( 7)]
+        [DispId(DispIds.SetLanguageStrings)]
         new void          SetLanguageStrings(IRibbonTextLanguageControl languageStrings);
 
         /// <summary>TODO</summary>
-        [DispId( 8)]
+        [DispId(DispIds.IsEnabled)]
         new bool          IsEnabled   { get; set; }
         /// <summary>TODO</summary>
-        [DispId( 9)]
+        [DispId(DispIds.IsVisible)]
         new bool          IsVisible   { get; set; }
         /// <summary>TODO</summary>
-        [DispId(10)]
+        [DispId(DispIds.Size)]
         new RdControlSize Size        { get; set; }
 
         /// <summary>TODO</summary>
-        [DispId(21)]
+        [DispId(DispIds.OnAction)]
         new void          OnAction();
 
         /// <summary>TODO</summary>
-        [DispId(31)]
+        [DispId(DispIds.Image)]
         new object        Image       { get; }
         /// <summary>Returns or set whether to show the control's image; ignored by Large controls.</summary>
-        [DispId(32)]
+        [DispId(DispIds.ShowImage)]
         new bool          ShowImage   { get; set; }
         /// <summary>Returns or set whether to show the control's label; ignored by Large controls.</summary>
-        [DispId(33)]
+        [DispId(DispIds.ShowLabel)]
         new bool          ShowLabel   { get; set; }
         /// <summary>TODO</summary>
-        [DispId(34)]
+        [DispId(DispIds.SetImage)]
         new void          SetImage(IPictureDisp image);
         /// <summary>TODO</summary>
-        [DispId(35)]
+        [DispId(DispIds.SetImageMso)]
         new void          SetImageMso(string imageMso);
     }
 }

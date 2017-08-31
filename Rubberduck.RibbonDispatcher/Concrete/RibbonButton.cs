@@ -7,7 +7,6 @@ using System.Runtime.InteropServices;
 using System.Diagnostics.CodeAnalysis;
 using stdole;
 
-using Rubberduck.RibbonDispatcher.Abstract;
 using Rubberduck.RibbonDispatcher.AbstractCOM;
 
 namespace Rubberduck.RibbonDispatcher.Concrete {
@@ -19,6 +18,8 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [ComSourceInterfaces(typeof(IClickedEvents))]
     [SuppressMessage("Microsoft.Interoperability", "CA1409:ComVisibleTypesShouldBeCreatable",
         Justification = "Publc, Non-Creatable class with exported Events.")]
+    [ComDefaultInterface(typeof(IRibbonButton))]
+    [Guid(RubberduckGuid.RibbonButton)]
     public class RibbonButton : RibbonCommon, IRibbonButton {
         internal RibbonButton(string id, ResourceManager mgr, bool visible, bool enabled, RdControlSize size,
                 string imageMso, bool showImage, bool showLabel, EventHandler onClickedAction)

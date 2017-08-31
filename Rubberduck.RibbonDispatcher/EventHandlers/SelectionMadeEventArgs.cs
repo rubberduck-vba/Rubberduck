@@ -11,6 +11,7 @@ namespace Rubberduck.RibbonDispatcher.EventHandlers {
     [Serializable]
     [CLSCompliant(true)]
     [ClassInterface(ClassInterfaceType.None)]
+    [ComDefaultInterface(typeof(ISelectionMadeEventArgs))]
     public class SelectionMadeEventArgs : EventArgs, ISelectionMadeEventArgs {
         /// <summary>TODO</summary>
         public SelectionMadeEventArgs(string itemId) { ItemId = itemId; }

@@ -14,11 +14,25 @@ namespace Rubberduck.RibbonDispatcher {
     using static RdControlSize;
     /// <summary>TODO</summary>
     [ComVisible(true)]
-    [Guid("ACF7C6E9-8314-484F-B81C-9B926E0731AC")]
     [CLSCompliant(true)]
     [InterfaceType(ComInterfaceType.InterfaceIsDual)]
+    [Guid(RubberduckGuid.IRibbonFactory)]
     public interface IRibbonFactory {
+        /// <summary>TODO</summary>
+        [DispId(1)]
+        void Invalidate();
+        /// <summary>TODO</summary>
+        [DispId(2)]
+        void InvalidateControl(string controlId);
+        /// <summary>TODO</summary>
+        [DispId(3)]
+        void InvalidateControlMso(string controlId);
+        /// <summary>TODO</summary>
+        [DispId(4)]
+        void ActivateTab(string controlId);
+
         /// <summary>Returns a new Ribbon Group ViewModel instance.</summary>
+        [DispId(11)]
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         RibbonGroup NewRibbonGroup(
             string              id,
@@ -29,6 +43,7 @@ namespace Rubberduck.RibbonDispatcher {
 
         /// <summary>Returns a new Ribbon ActionButton ViewModel instance.</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
+        [DispId(12)]
         RibbonButton NewRibbonButton(
             string              id,
             bool                visible         = true,
@@ -41,6 +56,7 @@ namespace Rubberduck.RibbonDispatcher {
         );
         /// <summary>Returns a new Ribbon ActionButton ViewModel instance.</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
+        [DispId(13)]
         RibbonButton NewRibbonButtonMso(
             string              id,
             bool                visible         = true,
@@ -54,6 +70,7 @@ namespace Rubberduck.RibbonDispatcher {
 
         /// <summary>Returns a new Ribbon ToggleButton ViewModel instance.</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
+        [DispId(14)]
         RibbonToggleButton NewRibbonToggle(
             string              id,
             bool                visible         = true,
@@ -66,6 +83,7 @@ namespace Rubberduck.RibbonDispatcher {
         );
         /// <summary>Returns a new Ribbon ToggleButton ViewModel instance.</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
+        [DispId(15)]
         RibbonToggleButton NewRibbonToggleMso(
             string              id,
             bool                visible         = true,
@@ -79,6 +97,7 @@ namespace Rubberduck.RibbonDispatcher {
 
         /// <summary>Returns a new Ribbon CheckBox ViewModel instance.</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
+        [DispId(16)]
         RibbonCheckBox NewRibbonCheckBox(
             string              id,
             bool                visible         = true,
@@ -89,20 +108,12 @@ namespace Rubberduck.RibbonDispatcher {
 
         /// <summary>Returns a new Ribbon DropDownViewModel instance.</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
+        [DispId(17)]
         RibbonDropDown NewRibbonDropDown(
             string              id,
             bool                visible = true,
             bool                enabled = true,
             RdControlSize       size    = rdLarge
         );
-
-        /// <summary>TODO</summary>
-        void Invalidate();
-        /// <summary>TODO</summary>
-        void InvalidateControl(string controlId);
-        /// <summary>TODO</summary>
-        void InvalidateControlMso(string controlId);
-        /// <summary>TODO</summary>
-        void ActivateTab(string controlId);
     }
 }

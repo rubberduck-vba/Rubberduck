@@ -12,6 +12,8 @@ namespace Rubberduck.RibbonDispatcher.Concrete
     [Serializable]
     [CLSCompliant(true)]
     [ClassInterface(ClassInterfaceType.None)]
+    [ComDefaultInterface(typeof(IRibbonTextLanguageControl))]
+    [Guid(RubberduckGuid.RibbonTextLanguageControl)]
     public class RibbonTextLanguageControl : IRibbonTextLanguageControl {
         /// <summary>TODO</summary>
         public RibbonTextLanguageControl(

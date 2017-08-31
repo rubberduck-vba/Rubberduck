@@ -2,13 +2,19 @@
 //                                Copyright (c) 2017 Pieter Geerkens                              //
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 using System;
+using System.Runtime.InteropServices;
 
-using Rubberduck.RibbonDispatcher.AbstractCOM;
-
-namespace Rubberduck.RibbonDispatcher.EventHandlers {
+namespace Rubberduck.RibbonDispatcher.Abstract {
     /// <summary>TODO</summary>
     [CLSCompliant(true)]
-    public class ControlChangedEventArgs : EventArgs, IControlChangedEventArgs {
+    internal delegate void ChangedEventHandler(object sender, ControlChangedEventArgs e);
+
+    /// <summary>TODO</summary>
+    [Serializable]
+    [CLSCompliant(true)]
+    [ClassInterface(ClassInterfaceType.None)]
+    [ComDefaultInterface(typeof(IControlChangedEventArgs))]
+    internal class ControlChangedEventArgs : EventArgs, IControlChangedEventArgs {
         /// <summary>TODO</summary>
         public ControlChangedEventArgs(string controlId) { ControlId = controlId; }
         /// <summary>TODO</summary>
