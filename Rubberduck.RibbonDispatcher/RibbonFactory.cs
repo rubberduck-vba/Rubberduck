@@ -39,14 +39,14 @@ namespace Rubberduck.RibbonDispatcher {
             _imageables      = new Dictionary<string, IImageableMixin>();
         }
 
-        private  readonly IRibbonUI                                  _ribbonUI;
-        internal readonly IResourceManager                           _resourceManager;
-        private  readonly IDictionary<string, IRibbonCommon>         _controls;
-        private  readonly IDictionary<string, ISizeableMixin>    _sizeables;
-        private  readonly IDictionary<string, IActionableMixin>  _actionables;
-        private  readonly IDictionary<string, ISelectableDecorator>  _selectables;
-        private  readonly IDictionary<string, IImageableMixin>   _imageables;
-        private  readonly IDictionary<string, IToggleableMixin>  _toggleables;
+        private  readonly IRibbonUI                                 _ribbonUI;
+        internal readonly IResourceManager                          _resourceManager;
+        private  readonly IDictionary<string, IRibbonCommon>        _controls;
+        private  readonly IDictionary<string, ISizeableMixin>       _sizeables;
+        private  readonly IDictionary<string, IActionableMixin>     _actionables;
+        private  readonly IDictionary<string, ISelectableDecorator> _selectables;
+        private  readonly IDictionary<string, IImageableMixin>      _imageables;
+        private  readonly IDictionary<string, IToggleableMixin>     _toggleables;
 
         internal object LoadImage(string imageId) => _resourceManager.LoadImage(imageId);
 

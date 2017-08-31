@@ -31,17 +31,17 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         internal event ChangedEventHandler Changed;
 
         /// <inheritdoc/>
-        public string Id          { get; }
+        public         string Id          { get; }
         /// <inheritdoc/>
-        public string Description => LanguageStrings?.Description ?? "";
+        public virtual string Description => LanguageStrings?.Description ?? "";
         /// <inheritdoc/>
-        public string KeyTip      => LanguageStrings?.KeyTip ?? "";
+        public virtual string KeyTip      => LanguageStrings?.KeyTip ?? "";
         /// <inheritdoc/>
-        public string Label       => LanguageStrings?.Label ?? Id;
+        public virtual string Label       => LanguageStrings?.Label ?? Id;
         /// <inheritdoc/>
-        public string ScreenTip   => LanguageStrings?.ScreenTip ?? Id;
+        public virtual string ScreenTip   => LanguageStrings?.ScreenTip ?? Id;
         /// <inheritdoc/>
-        public string SuperTip    => LanguageStrings?.SuperTip ?? "";
+        public virtual string SuperTip    => LanguageStrings?.SuperTip ?? "";
 
         /// <inheritdoc/>
         protected LanguageStrings LanguageStrings { get; private set; }

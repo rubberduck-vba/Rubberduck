@@ -27,7 +27,7 @@ namespace Rubberduck
 
         // Ribbon Dispatcher Guids:
         private const string RibbonDispatcherGuidspace = "-43F1-3B33-B105-9B8188A6F040";
-        public const string IClickedComEvents           = "69E19400" + RibbonDispatcherGuidspace;
+        public const string IClickedEvents           = "69E19400" + RibbonDispatcherGuidspace;
         public const string IClickedEventArgs           = "69E19401" + RibbonDispatcherGuidspace;
         public const string IToggledEvents              = "69E19402" + RibbonDispatcherGuidspace;
         public const string IToggledEventArgs           = "69E19403" + RibbonDispatcherGuidspace;

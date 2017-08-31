@@ -94,7 +94,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
 
         /// <inheritdoc/>
         public bool   GetPressed(IRibbonControl Control)
-            => Toggleables(Control?.Id)?.IsPressed ?? false;
+            => Toggleables(Control?.Id)?.GetPressed() ?? false;
         /// <inheritdoc/>
         public void   OnActionToggle(IRibbonControl Control, bool Pressed)
             => Toggleables(Control?.Id)?.OnActionToggle(Pressed);

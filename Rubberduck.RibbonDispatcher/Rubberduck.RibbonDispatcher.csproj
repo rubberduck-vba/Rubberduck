@@ -73,6 +73,7 @@
     <Compile Include="ControlMixins\Imageable.cs" />
     <Compile Include="ControlMixins\ISizeableMixin.cs" />
     <Compile Include="ControlMixins\Sizeable.cs" />
+    <Compile Include="ControlMixins\Toggleable.cs" />
     <Compile Include="DispIds.cs" />
     <Compile Include="ControlMixins\IActionableMixin.cs" />
     <Compile Include="EventHandlers\IClickedEventArgs.cs" />

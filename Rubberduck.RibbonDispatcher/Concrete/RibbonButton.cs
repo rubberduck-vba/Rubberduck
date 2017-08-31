@@ -13,7 +13,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [CLSCompliant(true)]
     [ComVisible(true)]
     [ClassInterface(ClassInterfaceType.None)]
-    [ComSourceInterfaces(typeof(IClickedComEvents))]
+    [ComSourceInterfaces(typeof(IClickedEvents))]
     [SuppressMessage("Microsoft.Interoperability", "CA1409:ComVisibleTypesShouldBeCreatable",
         Justification = "Publc, Non-Creatable class with exported Events.")]
     [ComDefaultInterface(typeof(IRibbonButton))]
@@ -37,15 +37,10 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         #endregion
 
         #region IActionableDecoration
-        /// <summary>The Clicked event source for DOT NET clients</summary>
-        public event EventHandler<EventArgs> Clicked;
         /// <summary>The Clicked event source for COM clients</summary>
-        public event ClickedComEventHandler ComClicked;
+        public event ClickedEventHandler Clicked;
         /// <summary>The callback from the Ribbon Dispatcher to initiate Clicked events on this control.</summary>
-        public void OnAction() {
-            Clicked?.Invoke(this, EventArgs.Empty);
-            ComClicked?.Invoke();
-        }
+        public void OnAction() => Clicked?.Invoke();
         #endregion
 
         #region Publish IImageableMixin to class default interface

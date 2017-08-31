@@ -13,6 +13,6 @@ namespace Rubberduck.RibbonDispatcher.AbstractCOM {
     public interface IToggledEvents {
         /// <summary>TODO</summary>
         [DispId(1)]
-        void Toggled(object sender, IToggledEventArgs e);
+        void Toggled(bool IsPressed);
     }
 }

@@ -46,6 +46,6 @@ namespace Rubberduck.RibbonDispatcher.AbstractCOM {
         bool        IsPressed       { get; }
         /// <summary>TODO</summary>
         [DispId(DispIds.OnActionToggle)]
-        void        OnActionToggle(bool isPressed);
+        void        OnActionToggle(bool IsPressed);
     }
 }

@@ -46,6 +46,6 @@ namespace Rubberduck.RibbonDispatcher {
         public const int LoadImage          = 30;
 
         // COM Events
-        public const int ComCLicked         = 31;
+        public const int Clicked         = 31;
     }
 }

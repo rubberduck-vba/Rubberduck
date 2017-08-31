@@ -6,20 +6,13 @@ using System.Runtime.InteropServices;
 
 namespace Rubberduck.RibbonDispatcher.AbstractCOM {
     /// <summary>TODO</summary>
-    [CLSCompliant(true)]
-    public interface IClickedEvents {
-        /// <summary>TODO</summary>
-        void Clicked(object sender, EventArgs e);
-    }
-
-    /// <summary>TODO</summary>
     [ComVisible(true)]
     [CLSCompliant(true)]
     [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
-    [Guid(RubberduckGuid.IClickedComEvents)]
-    public interface IClickedComEvents {
+    [Guid(RubberduckGuid.IClickedEvents)]
+    public interface IClickedEvents {
         /// <summary>TODO</summary>
-        [DispId(DispIds.ComCLicked)]
-        void ComClicked();
+        [DispId(DispIds.Clicked)]
+        void Clicked();
     }
 }

@@ -1,19 +1,12 @@
-﻿////////////////////////////////////////////////////////////////////////////////////////////////////
-//                                Copyright (c) 2017 Pieter Geerkens                              //
-////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿using Rubberduck.RibbonDispatcher.AbstractCOM;
 using System;
-using System.Runtime.InteropServices;
 
 namespace Rubberduck.RibbonDispatcher.ControlMixins {
     /// <summary>The total interface (required to be) exposed externally by RibbonButton objects.</summary>
     [CLSCompliant(true)]
-    public interface IToggleableMixin {
+    internal interface IToggleableMixin {
+        void OnActionToggle(bool Pressed);
         /// <summary>TODO</summary>
-        [DispId(DispIds.IsPressed)]
-        bool IsPressed { get; }
-
-        /// <summary>TODO</summary>
-        [DispId(DispIds.OnActionToggle)]
-        void OnActionToggle(bool isPressed);
+        IRibbonTextLanguageControl LanguageStrings { get; }
     }
 }
