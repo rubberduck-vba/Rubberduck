@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Globalization;
 using System.Reflection;
@@ -36,7 +37,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         protected void           InitializeRibbonFactory(IRibbonUI ribbonUI, ResourceManager resourceManager) 
             => RibbonFactory = new RibbonFactory(ribbonUI, resourceManager);
         /// <summary>TODO</summary>
-        protected RibbonFactory    RibbonFactory  { get; private set; }
+        public RibbonFactory       RibbonFactory { get; private set; }
 
         /// <summary>TODO</summary>
         public IRibbonCommon       Controls     (string controlId) => RibbonFactory.Controls.GetOrDefault(controlId);
@@ -62,16 +63,17 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
 
         /// <summary>Call back for GetEnabled events from ribbon elements.</summary>
         public bool                GetEnabled     (IRibbonControl control) => Controls(control?.Id)?.IsEnabled   ?? false;
-        /// <summary>Call back for GetImage events from ribbon elements.</summary>
-        public IPictureDisp        GetImage       (IRibbonControl control) => Controls(control?.Id)?.Image;
-        /// <summary>Call back for GetShowImage events from ribbon elements.</summary>
-        public bool                GetShowImage   (IRibbonControl control) => Imageables(control?.Id)?.ShowImage ?? false;
-        /// <summary>Call back for GetShowLabel events from ribbon elements.</summary>
-        public bool                GetShowLabel   (IRibbonControl control) => Imageables(control?.Id)?.ShowLabel ?? true;
         /// <summary>Call back for GetSize events from ribbon elements.</summary>
         public MyRibbonControlSize GetSize        (IRibbonControl control) => Controls(control?.Id)?.Size        ?? MyRibbonControlSize.Large;
         /// <summary>Call back for GetVisible events from ribbon elements.</summary>
         public bool                GetVisible     (IRibbonControl control) => Controls(control?.Id)?.IsVisible   ?? true;
+
+        /// <summary>Call back for GetImage events from ribbon elements.</summary>
+        public IPictureDisp        GetImage       (IRibbonControl control) => Imageables(control?.Id)?.Image;
+        /// <summary>Call back for GetShowImage events from ribbon elements.</summary>
+        public bool                GetShowImage   (IRibbonControl control) => Imageables(control?.Id)?.ShowImage ?? false;
+        /// <summary>Call back for GetShowLabel events from ribbon elements.</summary>
+        public bool                GetShowLabel   (IRibbonControl control) => Imageables(control?.Id)?.ShowLabel ?? true;
 
         /// <summary>Call back for OnAction events from the button ribbon elements.</summary>
         public void OnAction(IRibbonControl control)                       => Buttons(control?.Id)?.OnAction();
@@ -84,30 +86,31 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         private static string Unknown(IRibbonControl control) 
             => string.Format(CultureInfo.InvariantCulture, $"Unknown control '{control?.Id??""}'");
 
-        ///// <summary>TODO</summary>
-        //internal static ResourceManager GetResourceManager()
-        //    => GetResourceManager("RubberDuck.RibbonSupport.Properties.Resources");
         /// <summary>TODO</summary>
-        /// <param name="resourceSetName"></param>
-        internal static ResourceManager GetResourceManager(string resourceSetName) 
+        protected static ResourceManager GetResourceManager(string resourceSetName) 
             => new ResourceManager(resourceSetName, Assembly.GetExecutingAssembly());
 
-        private static IPictureDisp GetResourceImage(string resourceName) {
-            var rm = GetResourceManager("RubberDuck.RibbonSupport.Properties.Resources");
-            rm.IgnoreCase = true;
-            using (var stream = rm.GetStream(resourceName,CultureInfo.InvariantCulture)) {
-                    if (stream != null) return PictureConverter.ImageToPictureDisp(Image.FromStream(stream));
-                }
-            return null;
+        /// <summary>TODO</summary>
+        protected static IPictureDisp GetResourceImage(string imageName, ResourceManager resourceManager) {
+            using (var image = resourceManager?.GetObject(imageName, CultureInfo.InvariantCulture) as Image) {
+                return (image == null) ? null : PictureConverter.ImageToPictureDisp(image);
+            }
         }
+
+        /// <summary>TODO</summary>
+        protected static IPictureDisp GetResourceIcon(string iconName, ResourceManager resourceManager) {
+            using (var icon = resourceManager?.GetObject(iconName, CultureInfo.InvariantCulture) as Icon) {
+                return icon == null ? null : PictureConverter.IconToPictureDisp(icon);
+            }
+        }
+
+        [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
         internal class PictureConverter : AxHost {
-            private PictureConverter() : base(String.Empty) { }
+            internal PictureConverter() : base(String.Empty) { }
 
-            static public IPictureDisp ImageToPictureDisp(Image image)   => (IPictureDisp) GetIPictureDispFromPicture(image);
+            public static IPictureDisp ImageToPictureDisp(Image image) => GetIPictureDispFromPicture(image) as IPictureDisp;
 
-            static public IPictureDisp IconToPictureDisp(Icon icon)      => ImageToPictureDisp(icon.ToBitmap());
-
-            static public Image PictureDispToImage(IPictureDisp picture) => GetPictureFromIPicture(picture);
+            public static IPictureDisp IconToPictureDisp(Icon icon)    => ImageToPictureDisp(icon.ToBitmap());
         }
     }
 }

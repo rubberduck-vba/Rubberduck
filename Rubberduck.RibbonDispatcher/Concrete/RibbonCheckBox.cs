@@ -37,9 +37,6 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
             UseAlternateLabel = isPressed && !String.IsNullOrEmpty(LanguageStrings?.AlternateLabel??"");
             OnChanged();
         }
-
-        /// <summary>TODO</summary>
-        public IRibbonCommon AsRibbonControl => this;
    }
 
 }

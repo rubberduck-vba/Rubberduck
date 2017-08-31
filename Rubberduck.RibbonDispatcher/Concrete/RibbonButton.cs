@@ -10,7 +10,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [CLSCompliant(true)]
     [ClassInterface(ClassInterfaceType.None)]
     [ComSourceInterfaces(typeof(IClickedEvents))]
-    public class RibbonButton : RibbonCommon, IRibbonButton {
+    public class RibbonButton : RibbonCommon, IRibbonButton, IRibbonImageable {
         internal RibbonButton(string id, ResourceManager mgr, bool visible, bool enabled, MyRibbonControlSize size,
                 bool showImage, bool showLabel, EventHandler onClickedAction)
             : base(id, mgr, visible, enabled, size){
@@ -37,8 +37,5 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
 
         /// <inheritdoc/>
         public void OnAction() => Clicked?.Invoke(this,null);
-
-        /// <inheritdoc/>
-        public IRibbonCommon AsRibbonControl => this;
   }
 }

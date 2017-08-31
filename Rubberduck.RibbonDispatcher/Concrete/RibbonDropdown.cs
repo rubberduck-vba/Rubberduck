@@ -6,9 +6,7 @@ using Rubberduck.RibbonDispatcher.Abstract;
 using Rubberduck.RibbonDispatcher.EventHandlers;
 
 namespace Rubberduck.RibbonDispatcher.Concrete {
-    using LanguageStrings           = IRibbonTextLanguageControl;
-
-    /// <summary>TODO</summary>
+    /// <summary>Returns a new Ribbon DropDownViewModel instance.</summary>
     [Serializable]
     [CLSCompliant(true)]
     [ClassInterface(ClassInterfaceType.None)]
