@@ -15,4 +15,14 @@ namespace Rubberduck.RibbonDispatcher.AbstractCOM {
         [DispId(2)]
         object LoadImage(string name);
     }
+    /// <summary>TODO</summary>
+    [ComVisible(true)]
+    [CLSCompliant(true)]
+    [InterfaceType(ComInterfaceType.InterfaceIsDual)]
+    [Guid(RubberduckGuid.IRibbonWorkbook)]
+    public interface IRibbonWorkbook {
+        /// <summary>TODO</summary>
+        [DispId(1)]
+        RibbonViewModel ViewModel { get; }
+    }
 }

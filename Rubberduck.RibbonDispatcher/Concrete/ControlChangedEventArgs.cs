@@ -1,8 +1,7 @@
-﻿////////////////////////////////////////////////////////////////////////////////////////////////////
-//                                Copyright (c) 2017 Pieter Geerkens                              //
-////////////////////////////////////////////////////////////////////////////////////////////////////
-using System;
+﻿using System;
 using System.Runtime.InteropServices;
+
+using Rubberduck.RibbonDispatcher.AbstractCOM;
 
 namespace Rubberduck.RibbonDispatcher.Concrete {
     /// <summary>TODO</summary>

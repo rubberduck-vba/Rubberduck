@@ -70,7 +70,8 @@
   <ItemGroup>
     <Compile Include="AbstractCOM\IResourceManager.cs" />
     <Compile Include="AbstractCOM\ISelectableItem.cs" />
-    <Compile Include="ComEventsTest.cs" />
+    <Compile Include="Concrete\ControlStrings.cs" />
+    <Compile Include="AbstractCOM\IControlStrings.cs" />
     <Compile Include="Concrete\SelectableItem.cs" />
     <Compile Include="ControlMixins\ClickableMixin.cs" />
     <Compile Include="ControlMixins\ImageableMixin.cs" />
@@ -80,7 +81,7 @@
     <Compile Include="DispIds.cs" />
     <Compile Include="ControlMixins\IClickableMixin.cs" />
     <Compile Include="AbstractCOM\IClickedEvents.cs" />
-    <Compile Include="Concrete\IControlChangedEventArgs.cs" />
+    <Compile Include="AbstractCOM\IControlChangedEventArgs.cs" />
     <Compile Include="AbstractCOM\IRibbonCheckBox.cs" />
     <Compile Include="ControlMixins\IImageableMixin.cs" />
     <Compile Include="AbstractCOM\IRibbonGroup.cs" />
@@ -125,13 +126,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <AdditionalFiles Include="BareRibbon V0.5.xlsm">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </AdditionalFiles>
     <None Include="CustomDictionary.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Rubberduck.RibbonDispatcher.ruleset" />
+    <None Include="Sample Ribbons\BareRibbon V0.6.5.xlsm.zip" />
+    <None Include="Sample Ribbons\RibbonLibrary.xlsm.zip" />
     <None Include="Temporary.snk" />
   </ItemGroup>
   <ItemGroup />

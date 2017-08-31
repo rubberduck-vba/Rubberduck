@@ -33,7 +33,7 @@ namespace Rubberduck
         public const string IToggledEventArgs           = "69E19403" + RibbonDispatcherGuidspace;
         public const string ISelectedEvents             = "69E19404" + RibbonDispatcherGuidspace;
         public const string ISelectedEventArgs          = "69E19405" + RibbonDispatcherGuidspace;
-
+        public const string IRibbonWorkbook             = "69E19406" + RibbonDispatcherGuidspace;
         public const string RdControlSize               = "69E19407" + RibbonDispatcherGuidspace;
         public const string Typelib                     = "69E19408" + RibbonDispatcherGuidspace;
         public const string IResourceManager            = "69E19409" + RibbonDispatcherGuidspace;
@@ -61,5 +61,7 @@ namespace Rubberduck
         public const string RibbonToggleButton          = "69E1941F" + RibbonDispatcherGuidspace;
         public const string ISelectableItem             = "69E19420" + RibbonDispatcherGuidspace;
         public const string SelectableItem              = "69E19421" + RibbonDispatcherGuidspace;
+        public const string IControlStrings             = "69E19422" + RibbonDispatcherGuidspace;
+        public const string ControlStrings              = "69E19423" + RibbonDispatcherGuidspace;
     }
 }
