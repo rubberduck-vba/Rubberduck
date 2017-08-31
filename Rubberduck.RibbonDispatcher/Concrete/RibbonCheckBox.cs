@@ -47,5 +47,4 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         }
         #endregion
    }
-
 }

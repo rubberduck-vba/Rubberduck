@@ -1,4 +1,3 @@
-﻿
 namespace Rubberduck.RibbonDispatcher {
     internal static class DispIds {
         public const int RibbonFactory      =  1;   // No conflict with "Id" below as only in disjoint interfaces.
