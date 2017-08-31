@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using stdole;
 
-using Rubberduck.RibbonDispatcher.ControlDecorators;
+using Rubberduck.RibbonDispatcher.ControlMixins;
 using Rubberduck.RibbonDispatcher.AbstractCOM;
 using Rubberduck.RibbonDispatcher.EventHandlers;
 
@@ -22,7 +22,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [ComDefaultInterface(typeof(IRibbonToggleButton))]
     [Guid(RubberduckGuid.RibbonToggleButton)]
     public class RibbonToggleButton : RibbonCommon, IRibbonToggleButton,
-        ISizeableMixin, IToggleableDecorator, IImageableDecorator {
+        ISizeableMixin, IToggleableMixin, IImageableMixin {
         internal RibbonToggleButton(string itemId, IResourceManager mgr, bool visible, bool enabled, RdControlSize size,
                 string imageMso, bool showImage, bool showLabel)
             : this(itemId, mgr, visible, enabled, size, new ImageObject(imageMso), showImage, showLabel) { }

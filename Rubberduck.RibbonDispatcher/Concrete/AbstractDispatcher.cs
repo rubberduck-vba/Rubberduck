@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 using Microsoft.Office.Core;
 
-using Rubberduck.RibbonDispatcher.ControlDecorators;
+using Rubberduck.RibbonDispatcher.ControlMixins;
 using Rubberduck.RibbonDispatcher.AbstractCOM;
 
 namespace Rubberduck.RibbonDispatcher.Concrete {
@@ -38,9 +38,6 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
             => _ribbonFactory = new RibbonFactory(RibbonUI, ResourceManager);
 
         /// <summary>TODO</summary>
-     //   public abstract void OnRibbonLoad(IRibbonUI RibbonUI);
-
-        /// <summary>TODO</summary>
         public object LoadImage(string imageId) => _ribbonFactory.LoadImage(imageId);
 
         /// <inheritdoc/>
@@ -51,13 +48,13 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         /// <summary>All of the defined controls implementing the {ISizeableDecorator} interface.</summary>
         private ISizeableMixin   Sizeables   (string controlId) => _ribbonFactory.Sizeables.GetOrDefault(controlId);
         /// <summary>All of the defined controls implementing the {IActionableDecorator} interface.</summary>
-        private IActionableDecorator Actionables (string controlId) => _ribbonFactory.Actionables.GetOrDefault(controlId);
+        private IActionableMixin Actionables (string controlId) => _ribbonFactory.Actionables.GetOrDefault(controlId);
         /// <summary>All of the defined controls implementing the {IToggleableDecorator} interface.</summary>
-        private IToggleableDecorator Toggleables (string controlId) => _ribbonFactory.Toggleables.GetOrDefault(controlId);
+        private IToggleableMixin Toggleables (string controlId) => _ribbonFactory.Toggleables.GetOrDefault(controlId);
         /// <summary>All of the defined controls implementing the {ISelectableDecorator} interface.</summary>
         private ISelectableDecorator Selectables (string controlId) => _ribbonFactory.Selectables.GetOrDefault(controlId);
         /// <summary>All of the defined controls implementing the {IImageableDecorator} interface.</summary>
-        private IImageableDecorator  Imageables  (string controlId) => _ribbonFactory.Imageables.GetOrDefault(controlId);
+        private IImageableMixin  Imageables  (string controlId) => _ribbonFactory.Imageables.GetOrDefault(controlId);
 
         /// <inheritdoc/>
         public string GetDescription(IRibbonControl Control)

@@ -4,7 +4,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Rubberduck.RibbonDispatcher.ControlDecorators {
+namespace Rubberduck.RibbonDispatcher.ControlMixins {
     /// <summary>TODO</summary>
     [CLSCompliant(true)]
     public interface ISelectableDecorator {

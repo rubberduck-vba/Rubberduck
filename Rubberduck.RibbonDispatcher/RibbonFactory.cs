@@ -6,7 +6,7 @@ using stdole;
 
 using Microsoft.Office.Core;
 
-using Rubberduck.RibbonDispatcher.ControlDecorators;
+using Rubberduck.RibbonDispatcher.ControlMixins;
 using Rubberduck.RibbonDispatcher.AbstractCOM;
 using Rubberduck.RibbonDispatcher.Concrete;
 using Rubberduck.RibbonDispatcher.EventHandlers;
@@ -33,20 +33,20 @@ namespace Rubberduck.RibbonDispatcher {
 
             _controls        = new Dictionary<string, IRibbonCommon>();
             _sizeables       = new Dictionary<string, ISizeableMixin>();
-            _actionables     = new Dictionary<string, IActionableDecorator>();
-            _toggleables     = new Dictionary<string, IToggleableDecorator>();
+            _actionables     = new Dictionary<string, IActionableMixin>();
+            _toggleables     = new Dictionary<string, IToggleableMixin>();
             _selectables     = new Dictionary<string, ISelectableDecorator>();
-            _imageables      = new Dictionary<string, IImageableDecorator>();
+            _imageables      = new Dictionary<string, IImageableMixin>();
         }
 
         private  readonly IRibbonUI                                  _ribbonUI;
         internal readonly IResourceManager                           _resourceManager;
         private  readonly IDictionary<string, IRibbonCommon>         _controls;
         private  readonly IDictionary<string, ISizeableMixin>    _sizeables;
-        private  readonly IDictionary<string, IActionableDecorator>  _actionables;
+        private  readonly IDictionary<string, IActionableMixin>  _actionables;
         private  readonly IDictionary<string, ISelectableDecorator>  _selectables;
-        private  readonly IDictionary<string, IImageableDecorator>   _imageables;
-        private  readonly IDictionary<string, IToggleableDecorator>  _toggleables;
+        private  readonly IDictionary<string, IImageableMixin>   _imageables;
+        private  readonly IDictionary<string, IToggleableMixin>  _toggleables;
 
         internal object LoadImage(string imageId) => _resourceManager.LoadImage(imageId);
 
@@ -55,24 +55,24 @@ namespace Rubberduck.RibbonDispatcher {
         /// <summary>Returns a readonly collection of all Ribbon (Action) Buttons in this Ribbon ViewModel.</summary>
         internal IReadOnlyDictionary<string, ISizeableMixin>   Sizeables   => new ReadOnlyDictionary<string, ISizeableMixin>(_sizeables);
         /// <summary>Returns a readonly collection of all Ribbon (Action) Buttons in this Ribbon ViewModel.</summary>
-        internal IReadOnlyDictionary<string, IActionableDecorator> Actionables => new ReadOnlyDictionary<string, IActionableDecorator>(_actionables);
+        internal IReadOnlyDictionary<string, IActionableMixin> Actionables => new ReadOnlyDictionary<string, IActionableMixin>(_actionables);
         /// <summary>Returns a readonly collection of all Ribbon DropDowns in this Ribbon ViewModel.</summary>
         internal IReadOnlyDictionary<string, ISelectableDecorator> Selectables => new ReadOnlyDictionary<string, ISelectableDecorator>(_selectables);
         /// <summary>Returns a readonly collection of all Ribbon Imageable Controls in this Ribbon ViewModel.</summary>
-        internal IReadOnlyDictionary<string, IImageableDecorator>  Imageables  => new ReadOnlyDictionary<string, IImageableDecorator>(_imageables);
+        internal IReadOnlyDictionary<string, IImageableMixin>  Imageables  => new ReadOnlyDictionary<string, IImageableMixin>(_imageables);
         /// <summary>Returns a readonly collection of all Ribbon Toggle Buttons in this Ribbon ViewModel.</summary>
-        internal IReadOnlyDictionary<string, IToggleableDecorator> Toggleables => new ReadOnlyDictionary<string, IToggleableDecorator>(_toggleables);
+        internal IReadOnlyDictionary<string, IToggleableMixin> Toggleables => new ReadOnlyDictionary<string, IToggleableMixin>(_toggleables);
 
         private void PropertyChanged(object sender, IControlChangedEventArgs e) => _ribbonUI.InvalidateControl(e.ControlId);
 
         private T Add<T>(T ctrl) where T:RibbonCommon {
             _controls.Add(ctrl.Id, ctrl);
 
-            _actionables.AddNotNull(ctrl.Id, ctrl as IActionableDecorator);
+            _actionables.AddNotNull(ctrl.Id, ctrl as IActionableMixin);
             _sizeables.AddNotNull(ctrl.Id, ctrl as ISizeableMixin);
             _selectables.AddNotNull(ctrl.Id, ctrl as ISelectableDecorator);
-            _imageables.AddNotNull(ctrl.Id, ctrl as IImageableDecorator);
-            _toggleables.AddNotNull(ctrl.Id, ctrl as IToggleableDecorator);
+            _imageables.AddNotNull(ctrl.Id, ctrl as IImageableMixin);
+            _toggleables.AddNotNull(ctrl.Id, ctrl as IToggleableMixin);
 
             ctrl.Changed += PropertyChanged;
             return ctrl;

@@ -5,10 +5,10 @@ using System;
 using System.Runtime.InteropServices;
 using stdole;
 
-namespace Rubberduck.RibbonDispatcher.ControlDecorators {
+namespace Rubberduck.RibbonDispatcher.ControlMixins {
     /// <summary>The interface for controls that can display an Image.</summary>
     [CLSCompliant(true)]
-    public interface IImageableDecorator {
+    public interface IImageableMixin {
         /// <summary>TODO</summary>
         [DispId(DispIds.Image)]
         object  Image     { get; }

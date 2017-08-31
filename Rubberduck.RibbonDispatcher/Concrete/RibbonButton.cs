@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using System.Diagnostics.CodeAnalysis;
 using stdole;
 
-using Rubberduck.RibbonDispatcher.ControlDecorators;
+using Rubberduck.RibbonDispatcher.ControlMixins;
 using Rubberduck.RibbonDispatcher.AbstractCOM;
 using Rubberduck.RibbonDispatcher.EventHandlers;
 
@@ -19,7 +19,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [ComDefaultInterface(typeof(IRibbonButton))]
     [Guid(RubberduckGuid.RibbonButton)]
     public class RibbonButton : RibbonCommon, IRibbonButton,
-        ISizeableMixin, IActionableDecorator, IImageableDecorator {
+        ISizeableMixin, IActionableMixin, IImageableMixin {
         internal RibbonButton(string itemId, IResourceManager mgr, bool visible, bool enabled, RdControlSize size,
                 string imageMso, bool showImage, bool showLabel)
             : this(itemId, mgr, visible, enabled, size, new ImageObject(imageMso), showImage, showLabel) { }

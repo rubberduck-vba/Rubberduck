@@ -5,7 +5,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Diagnostics.CodeAnalysis;
 
-using Rubberduck.RibbonDispatcher.ControlDecorators;
+using Rubberduck.RibbonDispatcher.ControlMixins;
 using Rubberduck.RibbonDispatcher.AbstractCOM;
 using Rubberduck.RibbonDispatcher.EventHandlers;
 
@@ -20,7 +20,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         Justification = "Publc, Non-Creatable class with exported Events.")]
     [ComDefaultInterface(typeof(IRibbonCheckBox))]
     [Guid(RubberduckGuid.RibbonCheckBox)]
-    public class RibbonCheckBox : RibbonCommon, IRibbonCheckBox, IToggleableDecorator {
+    public class RibbonCheckBox : RibbonCommon, IRibbonCheckBox, IToggleableMixin {
         internal RibbonCheckBox(string itemId, IResourceManager mgr, bool visible, bool enabled)
             : base(itemId, mgr, visible, enabled) {
         }

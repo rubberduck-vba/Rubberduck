@@ -2,7 +2,7 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace Rubberduck.RibbonDispatcher.ControlDecorators {
+namespace Rubberduck.RibbonDispatcher.ControlMixins {
     /// <summary>The mixin implementation for Sizeable ribbon controls.</summary>
     public static class Sizeable {
         static ConditionalWeakTable<ISizeableMixin,Fields> _table = new ConditionalWeakTable<ISizeableMixin, Fields>();

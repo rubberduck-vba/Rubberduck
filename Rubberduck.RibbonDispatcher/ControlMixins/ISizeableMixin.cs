@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 using Rubberduck.RibbonDispatcher.AbstractCOM;
 
-namespace Rubberduck.RibbonDispatcher.ControlDecorators {
+namespace Rubberduck.RibbonDispatcher.ControlMixins {
     /// <summary>The interface for controls that can be sized.</summary>
     [CLSCompliant(true)]
     public interface ISizeableMixin {
