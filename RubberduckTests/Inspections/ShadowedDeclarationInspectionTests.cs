@@ -1107,6 +1107,30 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
+        public void ShadowedDeclaration_DoesNotReturnResult_DeclarationsInsideOptionPrivateModule()
+        {
+            var referencedModuleCode = $"Option Private Module\n\n{moduleCode}";
+
+            var builder = new MockVbeBuilder();
+            var referencedProject = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected)
+                // Module name matters, because it can be shadowed without 'Option Private Module' statement
+                .AddComponent(ProceduralModuleName, ComponentType.StandardModule, referencedModuleCode)
+                .Build();
+            builder.AddProject(referencedProject);
+            var userProject = CreateUserProject(builder).AddReference("Foo", "").Build();
+            builder.AddProject(userProject);
+
+            var vbe = builder.Build();
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new ShadowedDeclarationInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void ShadowedDeclaration_DoesNotReturnResult_DeclarationsInsideClassModule()
         {
             var builder = new MockVbeBuilder();

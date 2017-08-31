@@ -19,6 +19,19 @@ namespace Rubberduck.Inspections.Concrete
 {
     public sealed class ShadowedDeclarationInspection : InspectionBase
     {
+        private class OptionPrivateModuleListener : VBAParserBaseListener
+        {
+            public List<VBAParser.ModuleContext> OptionPrivateModules { get; } = new List<VBAParser.ModuleContext>();
+
+            public override void EnterModule(VBAParser.ModuleContext context)
+            {
+                if (context.FindChildren<VBAParser.OptionPrivateModuleStmtContext>().Any())
+                {
+                    OptionPrivateModules.Add(context);
+                }
+            }
+        }
+
         public ShadowedDeclarationInspection(RubberduckParserState state) : base(state)
         {
         }
@@ -29,6 +42,14 @@ namespace Rubberduck.Inspections.Concrete
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
+            var listener = new OptionPrivateModuleListener();
+            var moduleDeclarations = State.DeclarationFinder.AllModules.Where(m => m.ComponentType == ComponentType.StandardModule);
+
+            foreach (var module in moduleDeclarations)
+            {
+                ParseTreeWalker.Default.Walk(listener, State.GetParseTree(module));
+            }
+
             var builtInEventHandlers = State.DeclarationFinder.FindEventHandlers().ToHashSet();
 
             var issues = new List<IInspectionResult>();
@@ -49,7 +70,8 @@ namespace Rubberduck.Inspections.Concrete
                     var shadowedDeclaration = State.AllDeclarations.FirstOrDefault(d =>
                         referencedProjectIds.Contains(d.ProjectId) &&
                         string.Equals(d.IdentifierName, declaration.IdentifierName, StringComparison.OrdinalIgnoreCase) &&
-                        DeclarationCanBeShadowed(d, declaration));
+                        DeclarationCanBeShadowed(d, declaration) &&
+                        !DeclarationIsInsideOptionPrivateModule(d, listener));
 
                     if (shadowedDeclaration != null)
                     {
@@ -141,6 +163,22 @@ namespace Rubberduck.Inspections.Concrete
                    originalDeclaration.DeclarationType == DeclarationType.Project ||
                    // Enumeration member can be shadowed only when enclosing enumeration has public accessibility
                    (originalDeclaration.DeclarationType == DeclarationType.EnumerationMember && originalDeclaration.ParentDeclaration.Accessibility == Accessibility.Public);
+        }
+
+        private static bool DeclarationIsInsideOptionPrivateModule(Declaration declaration, OptionPrivateModuleListener listener)
+        {
+            if (declaration.QualifiedName.QualifiedModuleName.ComponentType != ComponentType.StandardModule)
+            {
+                return false;
+            }
+
+            var moduleDeclaration = declaration as ProceduralModuleDeclaration;
+            if (moduleDeclaration != null)
+            {
+                return moduleDeclaration.IsPrivateModule;
+            }
+
+            return listener.OptionPrivateModules.Any(moduleContext => ParserRuleContextHelper.HasParent(declaration.Context, moduleContext));
         }
 
         // Dictionary values represent all declaration types that can shadow the declaration type of the key
