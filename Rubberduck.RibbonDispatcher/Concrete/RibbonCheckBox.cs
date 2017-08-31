@@ -11,7 +11,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [CLSCompliant(true)]
     [ClassInterface(ClassInterfaceType.None)]
     [ComSourceInterfaces(typeof(IToggledEvents))]
-    public class RibbonCheckBox : RibbonCommon, IRibbonToggle {
+    public class RibbonCheckBox : RibbonCommon, IRibbonCheckBox {
         internal RibbonCheckBox(string id, ResourceManager mgr, bool visible, bool enabled, MyRibbonControlSize size,
                 ToggledEventHandler onToggledAction)
             : base(id, mgr, visible, enabled, size) {

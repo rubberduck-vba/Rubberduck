@@ -11,7 +11,7 @@ namespace Rubberduck.RibbonDispatcher.Abstract {
         /// <summary>TODO</summary>
         string            Id                { get; }
 
-        /// <summary>TODO</summary>
+        /// <summary>Only applicable for Menu Items.</summary>
         string            Description       { get; }
         /// <summary>TODO</summary>
         string            KeyTip            { get; }

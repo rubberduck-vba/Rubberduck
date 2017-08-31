@@ -12,6 +12,7 @@ using Rubberduck.RibbonDispatcher.Concrete;
 using Rubberduck.RibbonDispatcher.EventHandlers;
 
 namespace Rubberduck.RibbonDispatcher {
+    using stdole;
     using static MyRibbonControlSize;
 
     /// <summary>TODO</summary>
@@ -27,32 +28,32 @@ namespace Rubberduck.RibbonDispatcher {
     public class RibbonFactory {
         internal RibbonFactory(IRibbonUI ribbonUI, ResourceManager resourceManager) {
             _ribbonUI        = ribbonUI;
-            _controls        = new Dictionary<string,IRibbonCommon>();
-            _buttons         = new Dictionary<string,IRibbonButton>();
-            _toggles         = new Dictionary<string,IRibbonToggle>();
-            _dropDowns       = new Dictionary<string,IRibbonDropDown>();
-            _imageables      = new Dictionary<string,IRibbonImageable>();
+            _controls        = new Dictionary<string, IRibbonCommon>();
+            _buttons         = new Dictionary<string, IActionItem>();
+            _toggles         = new Dictionary<string, IToggleItem>();
+            _dropDowns       = new Dictionary<string, IRibbonDropDown>();
+            _imageables      = new Dictionary<string, IImageableItem>();
             _resourceManager = resourceManager;
         }
 
         private readonly IRibbonUI                              _ribbonUI;
         private readonly ResourceManager                        _resourceManager;
         private readonly IDictionary<string, IRibbonCommon>     _controls;
-        private readonly IDictionary<string, IRibbonButton>     _buttons;
+        private readonly IDictionary<string, IActionItem>       _buttons;
         private readonly IDictionary<string, IRibbonDropDown>   _dropDowns;
-        private readonly IDictionary<string, IRibbonImageable>  _imageables;
-        private readonly IDictionary<string, IRibbonToggle>     _toggles;
+        private readonly IDictionary<string, IImageableItem>    _imageables;
+        private readonly IDictionary<string, IToggleItem>       _toggles;
 
         /// <summary>Returns a readonly collection of all Ribbon Controls in this Ribbon ViewModel.</summary>
         public IReadOnlyDictionary<string, IRibbonCommon>    Controls   => new ReadOnlyDictionary<string, IRibbonCommon>(_controls);
         /// <summary>Returns a readonly collection of all Ribbon (Action) Buttons in this Ribbon ViewModel.</summary>
-        public IReadOnlyDictionary<string, IRibbonButton>    Buttons    => new ReadOnlyDictionary<string, IRibbonButton>(_buttons);
+        public IReadOnlyDictionary<string, IActionItem>      Buttons    => new ReadOnlyDictionary<string, IActionItem>(_buttons);
         /// <summary>Returns a readonly collection of all Ribbon DropDowns in this Ribbon ViewModel.</summary>
         public IReadOnlyDictionary<string, IRibbonDropDown>  DropDowns  => new ReadOnlyDictionary<string, IRibbonDropDown>(_dropDowns);
         /// <summary>Returns a readonly collection of all Ribbon Imageable Controls in this Ribbon ViewModel.</summary>
-        public IReadOnlyDictionary<string, IRibbonImageable> Imageables => new ReadOnlyDictionary<string, IRibbonImageable>(_imageables);
+        public IReadOnlyDictionary<string, IImageableItem>   Imageables => new ReadOnlyDictionary<string, IImageableItem>(_imageables);
         /// <summary>Returns a readonly collection of all Ribbon Toggle Buttons in this Ribbon ViewModel.</summary>
-        public IReadOnlyDictionary<string, IRibbonToggle>    Toggles    => new ReadOnlyDictionary<string, IRibbonToggle>(_toggles);
+        public IReadOnlyDictionary<string, IToggleItem>      Toggles    => new ReadOnlyDictionary<string, IToggleItem>(_toggles);
 
 
         private void PropertyChanged(object sender, IControlChangedEventArgs e) => _ribbonUI.InvalidateControl(e.ControlId);
@@ -61,8 +62,8 @@ namespace Rubberduck.RibbonDispatcher {
             _controls.Add(ctrl.Id, ctrl);
             var button    = ctrl as IRibbonButton;    if (button    != null) _buttons   .Add(ctrl.Id, button);
             var dropDown  = ctrl as IRibbonDropDown;  if (dropDown  != null) _dropDowns .Add(ctrl.Id, dropDown);
-            var imageable = ctrl as IRibbonImageable; if (imageable != null) _imageables.Add(ctrl.Id, imageable);
-            var toggle    = ctrl as IRibbonToggle;    if (toggle    != null) _toggles   .Add(ctrl.Id, toggle);
+            var imageable = ctrl as IImageableItem; if (imageable != null) _imageables.Add(ctrl.Id, imageable);
+            var toggle    = ctrl as IToggleItem;      if (toggle    != null) _toggles   .Add(ctrl.Id, toggle);
 
             ctrl.Changed += PropertyChanged;
             return ctrl;
@@ -84,10 +85,23 @@ namespace Rubberduck.RibbonDispatcher {
             bool                visible         = true,
             bool                enabled         = true,
             MyRibbonControlSize size            = Large,
+            string              imageMso        = "Unknown",
             bool                showImage       = false,
             bool                showLabel       = true,
             EventHandler        onClickedAction = null
-        ) => Add(new RibbonButton(id, _resourceManager, visible, enabled, size, showImage, showLabel, onClickedAction));
+        ) => Add(new RibbonButton(id, _resourceManager, visible, enabled, size, imageMso, showImage, showLabel, onClickedAction));
+        /// <summary>Returns a new Ribbon ActionButton ViewModel instance.</summary>
+        [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
+        public IRibbonButton NewRibbonButton(
+            string              id,
+            bool                visible         = true,
+            bool                enabled         = true,
+            MyRibbonControlSize size            = Large,
+            IPictureDisp        image           = null,
+            bool                showImage       = false,
+            bool                showLabel       = true,
+            EventHandler        onClickedAction = null
+        ) => Add(new RibbonButton(id, _resourceManager, visible, enabled, size, image, showImage, showLabel, onClickedAction));
 
         /// <summary>Returns a new Ribbon ToggleButton ViewModel instance.</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
@@ -96,15 +110,27 @@ namespace Rubberduck.RibbonDispatcher {
             bool                visible         = true,
             bool                enabled         = true,
             MyRibbonControlSize size            = Large,
+            string              imageMso        = "Unknown",
             bool                showImage       = false,
             bool                showLabel       = true,
             ToggledEventHandler onToggledAction = null
-        ) => Add(new RibbonToggle(id, _resourceManager, visible, enabled, size, showImage, showLabel, onToggledAction));
-
+        ) => Add(new RibbonToggle(id, _resourceManager, visible, enabled, size, imageMso, showImage, showLabel, onToggledAction));
+        /// <summary>Returns a new Ribbon ToggleButton ViewModel instance.</summary>
+        [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
+        public IRibbonToggle NewRibbonToggle(
+            string              id,
+            bool                visible         = true,
+            bool                enabled         = true,
+            MyRibbonControlSize size            = Large,
+            IPictureDisp        image           = null,
+            bool                showImage       = false,
+            bool                showLabel       = true,
+            ToggledEventHandler onToggledAction = null
+        ) => Add(new RibbonToggle(id, _resourceManager, visible, enabled, size, image, showImage, showLabel, onToggledAction));
 
         /// <summary>Returns a new Ribbon CheckBox ViewModel instance.</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
-        public IRibbonToggle NewRibbonCheckBox(
+        public IRibbonCheckBox NewRibbonCheckBox(
             string              id,
             bool                visible         = true,
             bool                enabled         = true,
@@ -131,7 +157,7 @@ namespace Rubberduck.RibbonDispatcher {
         public void ActivateTab(string controlId)           => _ribbonUI.ActivateTab(controlId);
    }
 
-    #region WorkInProgress
+    #region WorkInProgress for VBA Excel Add-Ins
     /// <summary>TODO</summary>
     public interface IMain {
         /// <summary>TODO</summary>

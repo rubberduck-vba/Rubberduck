@@ -8,11 +8,6 @@ namespace Rubberduck.RibbonDispatcher.Abstract {
     [Guid("3472EE69-B8D7-44FB-8753-735D9E5D26F1")]
     [CLSCompliant(true)]
     [InterfaceType(ComInterfaceType.InterfaceIsDual)]
-    public interface IRibbonCheckBox : IRibbonCommon {
-        /// <summary>TODO</summary>
-        bool IsPressed         { get; }
-
-        /// <summary>TODO</summary>
-        void OnAction(bool isPressed);
+    public interface IRibbonCheckBox : IRibbonCommon, IToggleItem {
     }
 }

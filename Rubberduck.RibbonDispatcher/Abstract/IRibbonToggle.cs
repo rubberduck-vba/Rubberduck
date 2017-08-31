@@ -7,6 +7,5 @@ namespace Rubberduck.RibbonDispatcher.Abstract {
     [Guid("D03E9DE1-F37D-40D6-89D6-A6B76A608D97")]
     [CLSCompliant(true)]
     [InterfaceType(ComInterfaceType.InterfaceIsDual)]
-    public interface IRibbonToggle : IRibbonCheckBox {
-    }
+    public interface IRibbonToggle : IRibbonCommon, IToggleItem, IImageableItem { }
 }
