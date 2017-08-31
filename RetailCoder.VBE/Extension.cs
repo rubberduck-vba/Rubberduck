@@ -19,10 +19,10 @@ using NLog;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor.Events;
-using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.WindowsApi;
 using User32 = Rubberduck.Common.WinAPI.User32;
+using Windows = Rubberduck.VBEditor.SafeComWrappers.VBA.Windows;
 
 namespace Rubberduck
 {
@@ -204,56 +204,83 @@ namespace Rubberduck
 
         private void Startup()
         {
-            var currentDomain = AppDomain.CurrentDomain;
-            currentDomain.AssemblyResolve += LoadFromSameFolder;
+            try
+            {
+                var currentDomain = AppDomain.CurrentDomain;
+                currentDomain.UnhandledException += HandlAppDomainException;
+                currentDomain.AssemblyResolve += LoadFromSameFolder;
 
-            _kernel = new StandardKernel(new NinjectSettings {LoadExtensions = true}, new FuncModule(), new DynamicProxyModule());
-            _kernel.Load(new RubberduckModule(_ide, _addin));
+                _kernel = new StandardKernel(new NinjectSettings {LoadExtensions = true}, new FuncModule(), new DynamicProxyModule());
+                _kernel.Load(new RubberduckModule(_ide, _addin));
 
-            _app = _kernel.Get<App>();
-            _app.Startup();
+                _app = _kernel.Get<App>();
+                _app.Startup();
 
-            _isInitialized = true;
+                _isInitialized = true;
+
+            }
+            catch (Exception e)
+            {
+                _logger.Log(LogLevel.Fatal, e, "Startup sequence threw an unexpected exception.");
+                //throw; // <<~ uncomment to crash the process
+            }
+        }
+
+        private void HandlAppDomainException(object sender, UnhandledExceptionEventArgs e)
+        {
+            _logger.Log(LogLevel.Fatal, e);
         }
 
         private void ShutdownAddIn()
         {
-            Debug.WriteLine("Extension unhooking VBENativeServices events.");
-            VBENativeServices.UnhookEvents();
-
             var currentDomain = AppDomain.CurrentDomain;
-            currentDomain.AssemblyResolve -= LoadFromSameFolder;
-            Debug.WriteLine("Extension broadcasting shutdown.");
-            User32.EnumChildWindows(_ide.MainWindow.Handle(), EnumCallback, new IntPtr(0));
-
-            Debug.WriteLine("Extension calling ReleaseDockableHosts.");
-            VBEditor.SafeComWrappers.VBA.Windows.ReleaseDockableHosts();
-
-            if (_app != null)
+            try
             {
-                Debug.WriteLine("Extension calling App.Shutdown.");
-                _app.Shutdown();
-                _app = null;
-            }
+                _logger.Log(LogLevel.Info, "Rubberduck is shutting down.");
+                _logger.Log(LogLevel.Trace, "Unhooking VBENativeServices events...");
+                VBENativeServices.UnhookEvents();
 
-            if (_kernel != null)
+                _logger.Log(LogLevel.Trace, "Broadcasting shutdown...");
+                User32.EnumChildWindows(_ide.MainWindow.Handle(), EnumCallback, new IntPtr(0));
+
+                _logger.Log(LogLevel.Trace, "Releasing dockable hosts...");
+                Windows.ReleaseDockableHosts();
+
+                if (_app != null)
+                {
+                    _logger.Log(LogLevel.Trace, "Initiating App.Shutdown...");
+                    _app.Shutdown();
+                    _app = null;
+                }
+
+                if (_kernel != null)
+                {
+                    _logger.Log(LogLevel.Trace, "Disposing IoC container...");
+                    _kernel.Dispose();
+                    _kernel = null;
+                }
+
+                _isInitialized = false;
+                _logger.Log(LogLevel.Info, "No exceptions were thrown.");
+            }
+            catch (Exception e)
             {
-                Debug.WriteLine("Extension calling Kernel.Dispose.");
-                _kernel.Dispose();
-                _kernel = null;
+                _logger.Error(e);
+                _logger.Log(LogLevel.Warn, "Exception is swallowed.");
+                //throw; // <<~ uncomment to crash the process
             }
-
-            Debug.WriteLine("Extension: Initiating garbage collection.");
-
-            GC.Collect();
-
-            Debug.WriteLine("Extension: Initiated garbage collection.");
-
-            GC.WaitForPendingFinalizers();
-
-            Debug.WriteLine("Extension: Finalizers have run.");
-
-            _isInitialized = false;
+            finally
+            {
+                _logger.Log(LogLevel.Trace, "Unregistering AppDomain handlers....");
+                currentDomain.AssemblyResolve -= LoadFromSameFolder;
+                currentDomain.UnhandledException -= HandlAppDomainException;
+                _logger.Log(LogLevel.Trace, "Done. Initiating garbage collection...");
+                GC.Collect();
+                _logger.Log(LogLevel.Trace, "Done. Waiting for pending finalizers...");
+                GC.WaitForPendingFinalizers();
+                _logger.Log(LogLevel.Trace, "Done. Shutdown completed. Quack!");
+                _isInitialized = false;
+            }
         }
 
         private static int EnumCallback(IntPtr hwnd, IntPtr lparam)
