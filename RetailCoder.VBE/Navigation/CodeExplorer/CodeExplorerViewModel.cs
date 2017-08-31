@@ -527,10 +527,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             get
             {
-                if (Projects == null || Projects.Count == 0)
-                { return Visibility.Collapsed; }
-                else
-                { return Visibility.Visible; }
+                return Projects == null || Projects.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
             }
         }
 
