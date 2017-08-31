@@ -3,6 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Resources;
 using System.Runtime.InteropServices;
@@ -13,13 +14,16 @@ using Rubberduck.RibbonDispatcher.EventHandlers;
 
 namespace Rubberduck.RibbonDispatcher.Concrete {
     /// <summary>Returns a new Ribbon DropDownViewModel instance.</summary>
+    [SuppressMessage("Microsoft.Interoperability", "CA1409:ComVisibleTypesShouldBeCreatable",
+      Justification = "Publc, Non-Creatable class with exported Events.")]
     [Serializable]
     [CLSCompliant(true)]
+    [ComVisible(true)]
     [ClassInterface(ClassInterfaceType.None)]
     [ComSourceInterfaces(typeof(ISelectionMadeEvents))]
     [ComDefaultInterface(typeof(IRibbonDropDown))]
     [Guid(RubberduckGuid.RibbonDropDown)]
-    public class RibbonDropDown : RibbonCommon, IRibbonDropDown {
+    public class RibbonDropDown : RibbonCommon, IRibbonDropDown, IDropDownItem {
         internal RibbonDropDown(string id, ResourceManager mgr, bool visible, bool enabled, RdControlSize size,
                 SelectionMadeEventHandler onSelectionMade, ISelectableItem[] items = null)
             : base(id, mgr, visible, enabled, size){
@@ -77,7 +81,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         public string   ItemSuperTip(int index)  => _items[index].SuperTip;
         /// <summary>Call back for GetItemLabel events from the drop-down ribbon elements.</summary>
         [DispId(DispIds.ItemImage)]
-        public object   ItemImage(int index)     => "MacroSecurity"; // _items[index].Label;
+        public object   ItemImage(int index)     => "MacroSecurity";
         /// <summary>Call back for GetItemScreenTip events from the drop-down ribbon elements.</summary>
         [DispId(DispIds.ItemShowImage)]
         public bool     ItemShowImage(int index) => _items[index].ShowImage;

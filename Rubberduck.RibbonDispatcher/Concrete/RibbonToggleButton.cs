@@ -2,9 +2,9 @@
 //                                Copyright (c) 2017 Pieter Geerkens                              //
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Resources;
 using System.Runtime.InteropServices;
-using System.Diagnostics.CodeAnalysis;
 using stdole;
 
 using Rubberduck.RibbonDispatcher.Abstract;
@@ -22,7 +22,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [ComSourceInterfaces(typeof(IToggledEvents))]
     [ComDefaultInterface(typeof(IRibbonToggleButton))]
     [Guid(RubberduckGuid.RibbonToggleButton)]
-    public class RibbonToggleButton : RibbonCommon, IRibbonToggleButton {
+    public class RibbonToggleButton : RibbonCommon, IRibbonToggleButton, IToggleItem, IImageableItem {
         internal RibbonToggleButton(string id, ResourceManager mgr, bool visible, bool enabled, RdControlSize size,
                 string imageMso, bool showImage, bool showLabel, ToggledEventHandler onToggledAction)
             : base(id, mgr, visible, enabled, size) {

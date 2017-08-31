@@ -21,7 +21,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         Justification = "Publc, Non-Creatable class with exported Events.")]
     [ComDefaultInterface(typeof(IRibbonCheckBox))]
     [Guid(RubberduckGuid.RibbonCheckBox)]
-    public class RibbonCheckBox : RibbonCommon, IRibbonCheckBox {
+    public class RibbonCheckBox : RibbonCommon, IRibbonCheckBox, IToggleItem {
         internal RibbonCheckBox(string id, ResourceManager mgr, bool visible, bool enabled, RdControlSize size,
                 ToggledEventHandler onToggledAction)
             : base(id, mgr, visible, enabled, size) {
