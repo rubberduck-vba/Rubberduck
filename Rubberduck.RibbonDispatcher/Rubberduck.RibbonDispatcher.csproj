@@ -61,15 +61,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Abstract\IActionItem.cs" />
     <Compile Include="Abstract\IClickedEventArgs.cs" />
     <Compile Include="Abstract\IClickedEvents.cs" />
     <Compile Include="Abstract\IControlChangedEventArgs.cs" />
     <Compile Include="Abstract\IRibbonCheckBox.cs" />
-    <Compile Include="Abstract\IRibbonImageable.cs" />
+    <Compile Include="Abstract\IImageableItem.cs" />
     <Compile Include="Abstract\ISelectionMadeEventArgs.cs" />
     <Compile Include="Abstract\ISelectionMadeEvents.cs" />
     <Compile Include="Abstract\IToggledEventArgs.cs" />
     <Compile Include="Abstract\IToggledEvents.cs" />
+    <Compile Include="Abstract\IToggleItem.cs" />
+    <Compile Include="Concrete\ImageObject.cs" />
     <Compile Include="Concrete\RibbonCheckBox.cs" />
     <Compile Include="EventHandlers\ClickedEventArgs.cs" />
     <Compile Include="Concrete\AbstractRibbonDispatcher.cs" />

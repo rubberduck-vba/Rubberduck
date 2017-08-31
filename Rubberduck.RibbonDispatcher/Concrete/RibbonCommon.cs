@@ -2,8 +2,6 @@
 using System.Resources;
 using System.Runtime.InteropServices;
 
-using stdole;
-
 using Rubberduck.RibbonDispatcher.Abstract;
 using Rubberduck.RibbonDispatcher.EventHandlers;
 using System.Globalization;
@@ -50,13 +48,6 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
             set { _enabled = value; OnChanged(); }
         }
         private bool _enabled;
-
-        /// <inheritdoc/>
-        public IPictureDisp Image {
-            get { return _image; }
-            set { _image = value; OnChanged(); }
-        }
-        private IPictureDisp _image;
 
         /// <inheritdoc/>
         public MyRibbonControlSize Size {

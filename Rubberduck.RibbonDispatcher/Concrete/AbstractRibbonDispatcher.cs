@@ -34,21 +34,22 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [CLSCompliant(true)]
     public abstract class AbstractRibbonDispatcher {
         /// <summary>TODO</summary>
-        protected void           InitializeRibbonFactory(IRibbonUI ribbonUI, ResourceManager resourceManager) 
+        protected void InitializeRibbonFactory(IRibbonUI ribbonUI, ResourceManager resourceManager) 
             => RibbonFactory = new RibbonFactory(ribbonUI, resourceManager);
+
         /// <summary>TODO</summary>
         public RibbonFactory       RibbonFactory { get; private set; }
 
         /// <summary>TODO</summary>
         public IRibbonCommon       Controls     (string controlId) => RibbonFactory.Controls.GetOrDefault(controlId);
         /// <summary>TODO</summary>
-        public IRibbonButton       Buttons      (string controlId) => RibbonFactory.Buttons.GetOrDefault(controlId);
+        public IActionItem         Actions      (string controlId) => RibbonFactory.Buttons.GetOrDefault(controlId);
         /// <summary>TODO</summary>
-        public IRibbonToggle       Toggles      (string controlId) => RibbonFactory.Toggles.GetOrDefault(controlId);
+        public IToggleItem         Toggles      (string controlId) => RibbonFactory.Toggles.GetOrDefault(controlId);
         /// <summary>TODO</summary>
         public IRibbonDropDown     DropDowns    (string controlId) => RibbonFactory.DropDowns.GetOrDefault(controlId);
         /// <summary>TODO</summary>
-        public IRibbonImageable    Imageables   (string controlId) => RibbonFactory.Imageables.GetOrDefault(controlId);
+        public IImageableItem      Imageables   (string controlId) => RibbonFactory.Imageables.GetOrDefault(controlId);
 
         /// <summary>Call back for GetDescription events from ribbon elements.</summary>
         public string              GetDescription (IRibbonControl control) => Controls(control?.Id)?.Description ?? Unknown(control);
@@ -69,19 +70,20 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         public bool                GetVisible     (IRibbonControl control) => Controls(control?.Id)?.IsVisible   ?? true;
 
         /// <summary>Call back for GetImage events from ribbon elements.</summary>
-        public IPictureDisp        GetImage       (IRibbonControl control) => Imageables(control?.Id)?.Image;
+        public object              GetImage       (IRibbonControl control) => Imageables(control?.Id)?.Image;
         /// <summary>Call back for GetShowImage events from ribbon elements.</summary>
         public bool                GetShowImage   (IRibbonControl control) => Imageables(control?.Id)?.ShowImage ?? false;
         /// <summary>Call back for GetShowLabel events from ribbon elements.</summary>
         public bool                GetShowLabel   (IRibbonControl control) => Imageables(control?.Id)?.ShowLabel ?? true;
 
         /// <summary>Call back for OnAction events from the button ribbon elements.</summary>
-        public void OnAction(IRibbonControl control)                       => Buttons(control?.Id)?.OnAction();
+        public void OnAction(IRibbonControl control)                       => Actions(control?.Id)?.OnAction();
 
         /// <summary>Call back for GetPressed events from the checkBox and toggleButton ribbon elements.</summary>
         public bool GetPressed(IRibbonControl control)                     => Toggles(control?.Id)?.IsPressed    ?? false;
         /// <summary>Call back for OnAction events from the checkBox and toggleButton ribbon elements.</summary>
         public void OnActionToggle(IRibbonControl control, bool pressed)   => Toggles(control?.Id)?.OnAction(pressed);
+
 
         private static string Unknown(IRibbonControl control) 
             => string.Format(CultureInfo.InvariantCulture, $"Unknown control '{control?.Id??""}'");
@@ -91,14 +93,14 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
             => new ResourceManager(resourceSetName, Assembly.GetExecutingAssembly());
 
         /// <summary>TODO</summary>
-        protected static IPictureDisp GetResourceImage(string imageName, ResourceManager resourceManager) {
+        protected static IPictureDisp    GetResourceImage(string imageName, ResourceManager resourceManager) {
             using (var image = resourceManager?.GetObject(imageName, CultureInfo.InvariantCulture) as Image) {
                 return (image == null) ? null : PictureConverter.ImageToPictureDisp(image);
             }
         }
 
         /// <summary>TODO</summary>
-        protected static IPictureDisp GetResourceIcon(string iconName, ResourceManager resourceManager) {
+        protected static IPictureDisp    GetResourceIcon(string iconName, ResourceManager resourceManager) {
             using (var icon = resourceManager?.GetObject(iconName, CultureInfo.InvariantCulture) as Icon) {
                 return icon == null ? null : PictureConverter.IconToPictureDisp(icon);
             }
