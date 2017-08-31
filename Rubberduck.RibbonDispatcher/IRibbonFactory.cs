@@ -1,7 +1,4 @@
-﻿////////////////////////////////////////////////////////////////////////////////////////////////////
-//                                Copyright (c) 2017 Pieter Geerkens                              //
-////////////////////////////////////////////////////////////////////////////////////////////////////
-using System;
+﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using stdole;
@@ -24,106 +21,104 @@ namespace Rubberduck.RibbonDispatcher {
         void Invalidate();
         /// <summary>TODO</summary>
         [DispId(2)]
-        void InvalidateControl(string controlId);
+        void InvalidateControl(string ControlId);
         /// <summary>TODO</summary>
         [DispId(3)]
-        void InvalidateControlMso(string controlId);
+        void InvalidateControlMso(string ControlId);
         /// <summary>TODO</summary>
         [DispId(4)]
-        void ActivateTab(string controlId);
+        void ActivateTab(string ControlId);
 
         /// <summary>Returns a new Ribbon Group ViewModel instance.</summary>
         [DispId(11)]
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         RibbonGroup NewRibbonGroup(
-            string              itemId,
-            bool                visible = true,
-            bool                enabled = true
+            string              ItemId,
+            bool                Visible = true,
+            bool                Enabled = true
         );
 
-        /// <summary>Returns a new Ribbon ActionButton ViewModel instance that uses a custom image (or none).</summary>
+        /// <summary>Returns a new Ribbon ActionButton ViewModel instance that uses a custom Image (or none).</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         [DispId(12)]
         RibbonButton NewRibbonButton(
-            string              itemId,
-            bool                visible         = true,
-            bool                enabled         = true,
-            RdControlSize       size            = rdLarge,
-            IPictureDisp        image           = null,
-            bool                showImage       = false,
-            bool                showLabel       = true,
-            EventHandler        onClickedAction = null
+            string              ItemId,
+            bool                Visible         = true,
+            bool                Enabled         = true,
+            RdControlSize       Size            = rdLarge,
+            IPictureDisp        Image           = null,
+            bool                ShowImage       = false,
+            bool                ShowLabel       = true
         );
-        /// <summary>Returns a new Ribbon ActionButton ViewModel instance that uses an Office built-in image.</summary>
+        /// <summary>Returns a new Ribbon ActionButton ViewModel instance that uses an Office built-in Image.</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         [DispId(13)]
         RibbonButton NewRibbonButtonMso(
-            string              itemId,
-            bool                visible         = true,
-            bool                enabled         = true,
-            RdControlSize       size            = rdLarge,
-            string              imageMso        = "MacroSecurity",  // This one get's peope's attention ;-)
-            bool                showImage       = false,
-            bool                showLabel       = true,
-            EventHandler        onClickedAction = null
+            string              ItemId,
+            bool                Visible         = true,
+            bool                Enabled         = true,
+            RdControlSize       Size            = rdLarge,
+            string              ImageMso        = "MacroSecurity",  // This one get's peope's attention ;-)
+            bool                ShowImage       = false,
+            bool                ShowLabel       = true
         );
 
-        /// <summary>Returns a new Ribbon ToggleButton ViewModel instance that uses a custom image (or none).</summary>
+        /// <summary>Returns a new Ribbon ToggleButton ViewModel instance that uses a custom Image (or none).</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         [DispId(14)]
         RibbonToggleButton NewRibbonToggle(
-            string              itemId,
-            bool                visible         = true,
-            bool                enabled         = true,
-            RdControlSize       size            = rdLarge,
-            IPictureDisp        image           = null,
-            bool                showImage       = false,
-            bool                showLabel       = true,
-            ToggledEventHandler onToggledAction = null
+            string              ItemId,
+            bool                Visible         = true,
+            bool                Enabled         = true,
+            RdControlSize       Size            = rdLarge,
+            IPictureDisp        Image           = null,
+            bool                ShowImage       = false,
+            bool                ShowLabel       = true,
+            ToggledEventHandler OnToggledAction = null
         );
-        /// <summary>Returns a new Ribbon ToggleButton ViewModel instance that uses an Office built-in image.</summary>
+        /// <summary>Returns a new Ribbon ToggleButton ViewModel instance that uses an Office built-in Image.</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         [DispId(15)]
         RibbonToggleButton NewRibbonToggleMso(
-            string              itemId,
-            bool                visible         = true,
-            bool                enabled         = true,
-            RdControlSize       size            = rdLarge,
-            string              imageMso        = "MacroSecurity",  // This one get's peope's attention ;-)
-            bool                showImage       = false,
-            bool                showLabel       = true,
-            ToggledEventHandler onToggledAction = null
+            string              ItemId,
+            bool                Visible         = true,
+            bool                Enabled         = true,
+            RdControlSize       Size            = rdLarge,
+            string              ImageMso        = "MacroSecurity",  // This one get's peope's attention ;-)
+            bool                ShowImage       = false,
+            bool                ShowLabel       = true,
+            ToggledEventHandler OnToggledAction = null
         );
 
         /// <summary>Returns a new Ribbon CheckBox ViewModel instance.</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         [DispId(16)]
         RibbonCheckBox NewRibbonCheckBox(
-            string              itemId,
-            bool                visible         = true,
-            bool                enabled         = true,
-            ToggledEventHandler onToggledAction = null
+            string              ItemId,
+            bool                Visible         = true,
+            bool                Enabled         = true,
+            ToggledEventHandler OnToggledAction = null
         );
 
         /// <summary>Returns a new Ribbon DropDownViewModel instance.</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         [DispId(17)]
         RibbonDropDown NewRibbonDropDown(
-            string              itemId,
-            bool                visible = true,
-            bool                enabled = true,
-            SelectedEventHandler onSelectionMade = null,
-            ISelectableItem[]   items   = null
+            string               ItemId,
+            bool                 Visible    = true,
+            bool                 Enabled    = true,
+            SelectedEventHandler OnSelected = null,
+            ISelectableItem[]    Items      = null
         );
 
         /// <summary>Returns a new Ribbon DropDownViewModel instance.</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification = "Matches COM usage.")]
         [DispId(18)]
-        SelectableItem NewSelectableItem(string itemId, IPictureDisp image = null);
+        SelectableItem NewSelectableItem(string ItemId, IPictureDisp Image = null);
 
         /// <summary>Returns a new Ribbon DropDownViewModel instance.</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification = "Matches COM usage.")]
         [DispId(19)]
-        SelectableItem NewSelectableItemMso(string itemId, string imageMso = "MacroSecurity");
+        SelectableItem NewSelectableItemMso(string ItemId, string ImageMso = "MacroSecurity");
     }
 }

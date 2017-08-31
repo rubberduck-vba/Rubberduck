@@ -1,7 +1,4 @@
-﻿////////////////////////////////////////////////////////////////////////////////////////////////////
-//                                Copyright (c) 2017 Pieter Geerkens                              //
-////////////////////////////////////////////////////////////////////////////////////////////////////
-using System;
+﻿using System;
 using System.Runtime.InteropServices;
 using stdole;
 
@@ -60,9 +57,9 @@ namespace Rubberduck.RibbonDispatcher.AbstractCOM {
         bool          ShowLabel   { get; set; }
         /// <summary>TODO</summary>
         [DispId(DispIds.SetImage)]
-        void          SetImage(IPictureDisp image);
+        void          SetImage(IPictureDisp Image);
         /// <summary>TODO</summary>
         [DispId(DispIds.SetImageMso)]
-        void          SetImageMso(string imageMso);
+        void          SetImageMso(string ImageMso);
     }
 }

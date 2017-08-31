@@ -28,9 +28,10 @@ namespace Rubberduck.RibbonDispatcher {
     [CLSCompliant(true)]
     [ComDefaultInterface(typeof(IRibbonFactory))]
     public class RibbonFactory : IRibbonFactory {
-        internal RibbonFactory(IRibbonUI ribbonUI, ResourceManager resourceManager) {
-            _ribbonUI        = ribbonUI;
-            _resourceManager = resourceManager;
+        internal RibbonFactory(IRibbonUI RibbonUI, ResourceManager ResourceManager) {
+            _ribbonUI        = RibbonUI;
+            _resourceManager = ResourceManager;
+
             _controls        = new Dictionary<string, IRibbonCommon>();
             _sizeables       = new Dictionary<string, ISizeableDecorator>();
             _actionables     = new Dictionary<string, IActionableDecorator>();
@@ -49,17 +50,17 @@ namespace Rubberduck.RibbonDispatcher {
         private readonly IDictionary<string, IToggleableDecorator>  _toggleables;
 
         /// <summary>Returns a readonly collection of all Ribbon Controls in this Ribbon ViewModel.</summary>
-        public IReadOnlyDictionary<string, IRibbonCommon>        Controls    => new ReadOnlyDictionary<string, IRibbonCommon>(_controls);
+        internal IReadOnlyDictionary<string, IRibbonCommon>        Controls    => new ReadOnlyDictionary<string, IRibbonCommon>(_controls);
         /// <summary>Returns a readonly collection of all Ribbon (Action) Buttons in this Ribbon ViewModel.</summary>
-        public IReadOnlyDictionary<string, ISizeableDecorator>   Sizeables   => new ReadOnlyDictionary<string, ISizeableDecorator>(_sizeables);
+        internal IReadOnlyDictionary<string, ISizeableDecorator>   Sizeables   => new ReadOnlyDictionary<string, ISizeableDecorator>(_sizeables);
         /// <summary>Returns a readonly collection of all Ribbon (Action) Buttons in this Ribbon ViewModel.</summary>
-        public IReadOnlyDictionary<string, IActionableDecorator> Actionables => new ReadOnlyDictionary<string, IActionableDecorator>(_actionables);
+        internal IReadOnlyDictionary<string, IActionableDecorator> Actionables => new ReadOnlyDictionary<string, IActionableDecorator>(_actionables);
         /// <summary>Returns a readonly collection of all Ribbon DropDowns in this Ribbon ViewModel.</summary>
-        public IReadOnlyDictionary<string, ISelectableDecorator> Selectables => new ReadOnlyDictionary<string, ISelectableDecorator>(_selectables);
+        internal IReadOnlyDictionary<string, ISelectableDecorator> Selectables => new ReadOnlyDictionary<string, ISelectableDecorator>(_selectables);
         /// <summary>Returns a readonly collection of all Ribbon Imageable Controls in this Ribbon ViewModel.</summary>
-        public IReadOnlyDictionary<string, IImageableDecorator>  Imageables  => new ReadOnlyDictionary<string, IImageableDecorator>(_imageables);
+        internal IReadOnlyDictionary<string, IImageableDecorator>  Imageables  => new ReadOnlyDictionary<string, IImageableDecorator>(_imageables);
         /// <summary>Returns a readonly collection of all Ribbon Toggle Buttons in this Ribbon ViewModel.</summary>
-        public IReadOnlyDictionary<string, IToggleableDecorator> Toggleables => new ReadOnlyDictionary<string, IToggleableDecorator>(_toggleables);
+        internal IReadOnlyDictionary<string, IToggleableDecorator> Toggleables => new ReadOnlyDictionary<string, IToggleableDecorator>(_toggleables);
 
         private void PropertyChanged(object sender, IControlChangedEventArgs e) => _ribbonUI.InvalidateControl(e.ControlId);
 
@@ -79,97 +80,95 @@ namespace Rubberduck.RibbonDispatcher {
         /// <summary>TODO</summary>
         public void Invalidate()                            => _ribbonUI.Invalidate();
         /// <summary>TODO</summary>
-        public void InvalidateControl(string controlId)     => _ribbonUI.InvalidateControl(controlId);
+        public void InvalidateControl(string ControlId)     => _ribbonUI.InvalidateControl(ControlId);
         /// <summary>TODO</summary>
-        public void InvalidateControlMso(string controlId)  => _ribbonUI.InvalidateControlMso(controlId);
+        public void InvalidateControlMso(string ControlId)  => _ribbonUI.InvalidateControlMso(ControlId);
         /// <summary>TODO</summary>
-        public void ActivateTab(string controlId)           => _ribbonUI.ActivateTab(controlId);
+        public void ActivateTab(string ControlId)           => _ribbonUI.ActivateTab(ControlId);
 
         /// <summary>Returns a new Ribbon Group ViewModel instance.</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         public RibbonGroup NewRibbonGroup(
-            string              itemId,
-            bool                visible         = true,
-            bool                enabled         = true
-        ) => Add(new RibbonGroup(itemId, _resourceManager, visible, enabled));
+            string              ItemId,
+            bool                Visible         = true,
+            bool                Enabled         = true
+        ) => Add(new RibbonGroup(ItemId, _resourceManager, Visible, Enabled));
 
         /// <summary>Returns a new Ribbon ActionButton ViewModel instance.</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         public RibbonButton NewRibbonButton(
-            string              itemId,
-            bool                visible         = true,
-            bool                enabled         = true,
-            RdControlSize       size            = rdLarge,
-            IPictureDisp        image           = null,
-            bool                showImage       = true,
-            bool                showLabel       = true,
-            EventHandler        onClickedAction = null
-        ) => Add(new RibbonButton(itemId, _resourceManager, visible, enabled, size, image, showImage, showLabel, onClickedAction));
+            string              ItemId,
+            bool                Visible         = true,
+            bool                Enabled         = true,
+            RdControlSize       Size            = rdLarge,
+            IPictureDisp        Image           = null,
+            bool                ShowImage       = true,
+            bool                ShowLabel       = true
+        ) => Add(new RibbonButton(ItemId, _resourceManager, Visible, Enabled, Size, Image, ShowImage, ShowLabel));
         /// <summary>Returns a new Ribbon ActionButton ViewModel instance.</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         public RibbonButton NewRibbonButtonMso(
-            string              itemId,
-            bool                visible         = true,
-            bool                enabled         = true,
-            RdControlSize       size            = rdLarge,
-            string              imageMso        = "Unknown",
-            bool                showImage       = true,
-            bool                showLabel       = true,
-            EventHandler        onClickedAction = null
-        ) => Add(new RibbonButton(itemId, _resourceManager, visible, enabled, size, imageMso, showImage, showLabel, onClickedAction));
+            string              ItemId,
+            bool                Visible         = true,
+            bool                Enabled         = true,
+            RdControlSize       Size            = rdLarge,
+            string              ImageMso        = "Unknown",
+            bool                ShowImage       = true,
+            bool                ShowLabel       = true
+        ) => Add(new RibbonButton(ItemId, _resourceManager, Visible, Enabled, Size, ImageMso, ShowImage, ShowLabel));
 
         /// <summary>Returns a new Ribbon ToggleButton ViewModel instance.</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         public RibbonToggleButton NewRibbonToggle(
-            string              itemId,
-            bool                visible         = true,
-            bool                enabled         = true,
-            RdControlSize       size            = rdLarge,
-            IPictureDisp        image           = null,
-            bool                showImage       = true,
-            bool                showLabel       = true,
-            ToggledEventHandler onToggledAction = null
-        ) => Add(new RibbonToggleButton(itemId, _resourceManager, visible, enabled, size, image, showImage, showLabel, onToggledAction));
+            string              ItemId,
+            bool                Visible         = true,
+            bool                Enabled         = true,
+            RdControlSize       Size            = rdLarge,
+            IPictureDisp        Image           = null,
+            bool                ShowImage       = true,
+            bool                ShowLabel       = true,
+            ToggledEventHandler OnToggledAction = null
+        ) => Add(new RibbonToggleButton(ItemId, _resourceManager, Visible, Enabled, Size, Image, ShowImage, ShowLabel, OnToggledAction));
         /// <summary>Returns a new Ribbon ToggleButton ViewModel instance.</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         public RibbonToggleButton NewRibbonToggleMso(
-            string              itemId,
-            bool                visible         = true,
-            bool                enabled         = true,
-            RdControlSize       size            = rdLarge,
-            string              imageMso        = "Unknown",
-            bool                showImage       = true,
-            bool                showLabel       = true,
-            ToggledEventHandler onToggledAction = null
-        ) => Add(new RibbonToggleButton(itemId, _resourceManager, visible, enabled, size, imageMso, showImage, showLabel, onToggledAction));
+            string              ItemId,
+            bool                Visible         = true,
+            bool                Enabled         = true,
+            RdControlSize       Size            = rdLarge,
+            string              ImageMso        = "Unknown",
+            bool                ShowImage       = true,
+            bool                ShowLabel       = true,
+            ToggledEventHandler OnToggledAction = null
+        ) => Add(new RibbonToggleButton(ItemId, _resourceManager, Visible, Enabled, Size, ImageMso, ShowImage, ShowLabel, OnToggledAction));
 
         /// <summary>Returns a new Ribbon CheckBox ViewModel instance.</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         public RibbonCheckBox NewRibbonCheckBox(
-            string              itemId,
-            bool                visible         = true,
-            bool                enabled         = true,
-            ToggledEventHandler onToggledAction = null
-        ) => Add(new RibbonCheckBox(itemId, _resourceManager, visible, enabled, onToggledAction));
+            string              ItemId,
+            bool                Visible         = true,
+            bool                Enabled         = true,
+            ToggledEventHandler OnToggledAction = null
+        ) => Add(new RibbonCheckBox(ItemId, _resourceManager, Visible, Enabled, OnToggledAction));
 
         /// <summary>Returns a new Ribbon DropDownViewModel instance.</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         public RibbonDropDown NewRibbonDropDown(
-            string               itemId,
-            bool                 visible         = true,
-            bool                 enabled         = true,
-            SelectedEventHandler onSelectionMade = null,
-            ISelectableItem[]    items           = null
-        ) => Add(new RibbonDropDown(itemId, _resourceManager, visible, enabled, onSelectionMade, items));
+            string               ItemId,
+            bool                 Visible    = true,
+            bool                 Enabled    = true,
+            SelectedEventHandler OnSelected = null,
+            ISelectableItem[]    Items      = null
+        ) => Add(new RibbonDropDown(ItemId, _resourceManager, Visible, Enabled, OnSelected, Items));
 
         /// <inheritdoc/>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification = "Matches COM usage.")]
-        public SelectableItem NewSelectableItem(string itemId, IPictureDisp image = null)
-            => new SelectableItem(itemId, _resourceManager, image);
+        public SelectableItem NewSelectableItem(string ItemId, IPictureDisp Image = null)
+            => new SelectableItem(ItemId, _resourceManager, Image);
 
         /// <inheritdoc/>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification = "Matches COM usage.")]
-        public SelectableItem NewSelectableItemMso(string itemId, string imageMso = "MacroSecurity")
-            => new SelectableItem(itemId, _resourceManager, imageMso);
+        public SelectableItem NewSelectableItemMso(string ItemId, string ImageMso = "MacroSecurity")
+            => new SelectableItem(ItemId, _resourceManager, ImageMso);
     }
 }

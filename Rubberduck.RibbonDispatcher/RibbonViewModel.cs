@@ -25,7 +25,7 @@ namespace Rubberduck.RibbonDispatcher {
     [Guid(RubberduckGuid.RibbonViewModel)]
     public sealed class RibbonViewModel : AbstractDispatcher, IRibbonViewModel {
         /// <summary>TODO</summary>
-        public RibbonViewModel(IRibbonUI RibbonUI, ResourceManager ResourceManager) : base() 
+        internal RibbonViewModel(IRibbonUI RibbonUI, ResourceManager ResourceManager) : base() 
             => InitializeRibbonFactory(RibbonUI, ResourceManager);
     }
 }

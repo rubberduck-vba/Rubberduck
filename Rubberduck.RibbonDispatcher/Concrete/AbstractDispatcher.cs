@@ -32,9 +32,9 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [Serializable]
     [ComVisible(true)]
     [CLSCompliant(true)]
-    [ComDefaultInterface(typeof(IAbstractDispatcher))]
+    [ComDefaultInterface(typeof(IRibbonViewModel))]
     [Guid(RubberduckGuid.AbstractDispatcher)]
-    public abstract class AbstractDispatcher : IAbstractDispatcher {
+    public abstract class AbstractDispatcher : IRibbonViewModel {
         /// <summary>TODO</summary>
         protected void InitializeRibbonFactory(IRibbonUI RibbonUI, ResourceManager ResourceManager) 
             => _ribbonFactory = new RibbonFactory(RibbonUI, ResourceManager);

@@ -4,17 +4,22 @@
 using System;
 using System.Runtime.InteropServices;
 
-using Rubberduck.RibbonDispatcher.EventHandlers;
-
 namespace Rubberduck.RibbonDispatcher.AbstractCOM {
+    /// <summary>TODO</summary>
+    [CLSCompliant(true)]
+    public interface IClickedEvents {
+        /// <summary>TODO</summary>
+        void Clicked(object sender, EventArgs e);
+    }
+
     /// <summary>TODO</summary>
     [ComVisible(true)]
     [CLSCompliant(true)]
     [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
-    [Guid(RubberduckGuid.IClickedEvents)]
-    public interface IClickedEvents {
+    [Guid(RubberduckGuid.IClickedComEvents)]
+    public interface IClickedComEvents {
         /// <summary>TODO</summary>
         [DispId(1)]
-        void Clicked(object sender, IClickedEventArgs e);
+        void ComClicked(string ControlId);
     }
 }

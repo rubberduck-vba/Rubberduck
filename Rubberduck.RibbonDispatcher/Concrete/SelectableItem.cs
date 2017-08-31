@@ -13,15 +13,13 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [ComDefaultInterface(typeof(ISelectableItem))]
     public class SelectableItem : RibbonCommon, ISelectableItem {
         /// <summary>TODO</summary>
-        public SelectableItem(string itemId, ResourceManager resourceManager, IPictureDisp image) 
-            : base(itemId, resourceManager, true, true) {
-            _image = new ImageObject(image);
-        }
+        public SelectableItem(string ItemId, ResourceManager ResourceManager, IPictureDisp Image) 
+            : base(ItemId, ResourceManager, true, true)
+            => _image = new ImageObject(Image);
         /// <summary>TODO</summary>
-        public SelectableItem(string itemId, ResourceManager resourceManager, string imageMso)
-            : base(itemId, resourceManager, true, true) {
-            _image = new ImageObject(imageMso);
-        }
+        public SelectableItem(string ItemId, ResourceManager ResourceManager, string ImageMso)
+            : base(ItemId, ResourceManager, true, true)
+            => _image = new ImageObject(ImageMso);
 
         #region IImageableItem implementation
         /// <inheritdoc/>
@@ -29,21 +27,21 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         private ImageObject _image;
         /// <inheritdoc/>
         public bool ShowLabel {
-            get { return _showLabel; }
+            get => _showLabel;
             set { _showLabel = value; OnChanged(); }
         }
         private bool _showLabel;
         /// <inheritdoc/>
         public bool ShowImage {
-            get { return _showImage && Image != null; }
+            get => _showImage && Image != null;
             set { _showImage = value; OnChanged(); }
         }
         private bool _showImage;
 
         /// <inheritdoc/>
-        public void SetImage(IPictureDisp image) { _image = new ImageObject(image);    OnChanged(); }
+        public void SetImage(IPictureDisp Image) { _image = new ImageObject(Image);    OnChanged(); }
         /// <inheritdoc/>
-        public void SetImageMso(string imageMso) { _image = new ImageObject(imageMso); OnChanged(); }
+        public void SetImageMso(string ImageMso) { _image = new ImageObject(ImageMso); OnChanged(); }
         #endregion
     }
 }

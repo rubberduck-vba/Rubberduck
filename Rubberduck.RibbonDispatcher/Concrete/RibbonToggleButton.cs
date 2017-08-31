@@ -46,7 +46,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         #region ISizeableDecoration
         /// <inheritdoc/>
         public RdControlSize Size {
-            get { return _size; }
+            get => _size;
             set { _size = value; OnChanged(); }
         }
         private RdControlSize _size;
@@ -59,7 +59,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         /// <summary>TODO</summary>
         public bool       IsPressed   { get; private set; }
         /// <summary>TODO</summary>
-        public new string Label       => IsPressed && ! String.IsNullOrEmpty(LanguageStrings?.AlternateLabel)
+        public new string Label       => IsPressed && ! string.IsNullOrEmpty(LanguageStrings?.AlternateLabel)
                                        ? LanguageStrings?.AlternateLabel??Id 
                                        : LanguageStrings?.Label??Id;
 
@@ -77,19 +77,19 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         private ImageObject _image;
         /// <inheritdoc/>
         public bool ShowLabel {
-            get { return _showLabel; }
+            get => _showLabel;
             set { _showLabel = value; OnChanged(); }
         }
         private bool _showLabel;
         /// <inheritdoc/>
         public bool ShowImage {
-            get { return _showImage && Image != null; }
+            get => _showImage && Image != null;
             set { _showImage = value; OnChanged(); }
         }
         private bool _showImage;
 
         /// <inheritdoc/>
-        public void SetImage(IPictureDisp image) { _image = new ImageObject(image);     OnChanged(); }
+        public void SetImage(IPictureDisp image) { _image = new ImageObject(image);    OnChanged(); }
         /// <inheritdoc/>
         public void SetImageMso(string imageMso) { _image = new ImageObject(imageMso); OnChanged(); }
         #endregion

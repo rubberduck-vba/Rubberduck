@@ -1,7 +1,4 @@
-﻿////////////////////////////////////////////////////////////////////////////////////////////////////
-//                                Copyright (c) 2017 Pieter Geerkens                              //
-////////////////////////////////////////////////////////////////////////////////////////////////////
-using System;
+﻿using System;
 using System.Resources;
 using System.Runtime.InteropServices;
 using System.Diagnostics.CodeAnalysis;
@@ -9,6 +6,7 @@ using stdole;
 
 using Rubberduck.RibbonDispatcher.ControlDecorators;
 using Rubberduck.RibbonDispatcher.AbstractCOM;
+using Rubberduck.RibbonDispatcher.EventHandlers;
 
 namespace Rubberduck.RibbonDispatcher.Concrete {
     /// <summary>The ViewModel for Ribbon Button objects.</summary>
@@ -16,7 +14,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [CLSCompliant(true)]
     [ComVisible(true)]
     [ClassInterface(ClassInterfaceType.None)]
-    [ComSourceInterfaces(typeof(IClickedEvents))]
+    [ComSourceInterfaces(typeof(IClickedComEvents))]
     [SuppressMessage("Microsoft.Interoperability", "CA1409:ComVisibleTypesShouldBeCreatable",
         Justification = "Publc, Non-Creatable class with exported Events.")]
     [ComDefaultInterface(typeof(IRibbonButton))]
@@ -24,38 +22,41 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     public class RibbonButton : RibbonCommon, IRibbonButton,
         ISizeableDecorator, IActionableDecorator, IImageableDecorator {
         internal RibbonButton(string itemId, ResourceManager mgr, bool visible, bool enabled, RdControlSize size,
-                string imageMso, bool showImage, bool showLabel, EventHandler onClickedAction)
+                string imageMso, bool showImage, bool showLabel)
             : base(itemId, mgr, visible, enabled) {
             _size      = size;
             _image     = new ImageObject(imageMso);
             _showImage = showImage;
             _showLabel = showLabel;
-            if (onClickedAction != null) Clicked += onClickedAction;
         }
         internal RibbonButton(string itemId, ResourceManager mgr, bool visible, bool enabled, RdControlSize size,
-                IPictureDisp image, bool showImage, bool showLabel, EventHandler onClickedAction)
+                IPictureDisp image, bool showImage, bool showLabel)
             : base(itemId, mgr, visible, enabled) {
             _size      = size;
             _image     = new ImageObject(image);
             _showImage = showImage;
             _showLabel = showLabel;
-            if (onClickedAction != null) Clicked += onClickedAction;
         }
 
         #region ISizeableDecoration
         /// <inheritdoc/>
         public RdControlSize Size {
-            get { return _size; }
+            get => _size;
             set { _size = value; OnChanged(); }
         }
         private RdControlSize _size;
         #endregion
 
         #region IActionableDecoration
-        /// <inheritdoc/>
-        public event EventHandler Clicked;
-        /// <inheritdoc/>
-        public void OnAction() => Clicked?.Invoke(this, null);
+        /// <summary>The Clicked event source for DOT NET clients</summary>
+        public event EventHandler<ClickedEventArgs> Clicked;
+        /// <summary>The Clicked event source for COM clients</summary>
+        public event ClickedComEventHandler ComClicked;
+        /// <summary>The callback from the Ribbon Dispatcher to initiate Clicked events on this control.</summary>
+        public void OnAction() {
+            Clicked?.Invoke(this, new ClickedEventArgs(Id));
+            ComClicked?.Invoke(Id);
+        }
         #endregion
 
         #region IImageableDecoration
@@ -64,21 +65,21 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         private ImageObject _image;
         /// <inheritdoc/>
         public bool ShowLabel {
-            get { return _showLabel; }
+            get => _showLabel;
             set { _showLabel = value; OnChanged(); }
         }
         private bool _showLabel;
         /// <inheritdoc/>
         public bool ShowImage {
-            get { return _showImage && Image != null; }
+            get => _showImage && Image != null;
             set { _showImage = value; OnChanged(); }
         }
         private bool _showImage;
 
         /// <inheritdoc/>
-        public void SetImage(IPictureDisp image) { _image = new ImageObject(image);    OnChanged(); }
+        public void SetImage(IPictureDisp Image) { _image = new ImageObject(Image);    OnChanged(); }
         /// <inheritdoc/>
-        public void SetImageMso(string imageMso) { _image = new ImageObject(imageMso); OnChanged(); }
+        public void SetImageMso(string ImageMso) { _image = new ImageObject(ImageMso); OnChanged(); }
         #endregion
     }
 }
