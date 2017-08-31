@@ -180,7 +180,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             {
                 _isBusy = value;
                 OnPropertyChanged();
-                OnPropertyChanged("EmptyViewMessageVisibility");
+                OnPropertyChanged("EmptyTreeMessageVisibility");
             }
         }
 
@@ -534,7 +534,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        public Visibility EmptyViewMessageVisibility
+        public Visibility EmptyTreeMessageVisibility
         {
             get
             {

@@ -710,7 +710,7 @@
 
         <Border Grid.Row="0" Grid.RowSpan="3" Background="#FFEEF5FD">
             <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="WrapWithOverflow" TextAlignment="Center"
-                       Visibility="{Binding MessageVisibility}" MinWidth="200">
+                       Visibility="{Binding EmptyTreeMessageVisibility}" MinWidth="200">
                 <Run FontWeight="Bold" Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_EmptyViewMessage_Title}"/><LineBreak/><Run/>
                 <LineBreak/>
                 <Button Command="{Binding RefreshCommand}" BorderThickness="0" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
