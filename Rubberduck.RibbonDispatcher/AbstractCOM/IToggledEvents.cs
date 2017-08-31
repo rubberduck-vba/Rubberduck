@@ -4,20 +4,14 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Rubberduck.RibbonDispatcher.Abstract
-{
-
+namespace Rubberduck.RibbonDispatcher.AbstractCOM {
     /// <summary>TODO</summary>
     [ComVisible(true)]
-    [Guid("7660882A-351B-4518-AFD3-8CA1E3EFE9D8")]
+    [Guid("4BD0C027-BD10-4942-B9FA-96A29AB07FE8")]
     [CLSCompliant(true)]
-    [InterfaceType(ComInterfaceType.InterfaceIsDual)]
-    public interface IRibbonDropDown : IRibbonCommon
-    {
+    [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
+    public interface IToggledEvents {
         /// <summary>TODO</summary>
-        string SelectedItemId  { get; set; }
-
-        /// <summary>TODO</summary>
-        void   OnAction(string itemId);
+        void Toggled(object sender, IToggledEventArgs e);
     }
 }

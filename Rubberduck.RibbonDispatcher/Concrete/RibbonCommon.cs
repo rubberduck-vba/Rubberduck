@@ -2,23 +2,25 @@
 //                                Copyright (c) 2017 Pieter Geerkens                              //
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 using System;
+using System.Globalization;
 using System.Resources;
 using System.Runtime.InteropServices;
 
 using Rubberduck.RibbonDispatcher.Abstract;
+using Rubberduck.RibbonDispatcher.AbstractCOM;
 using Rubberduck.RibbonDispatcher.EventHandlers;
-using System.Globalization;
+using LanguageStrings = Rubberduck.RibbonDispatcher.AbstractCOM.IRibbonTextLanguageControl;
 
 namespace Rubberduck.RibbonDispatcher.Concrete {
-    using LanguageStrings     = IRibbonTextLanguageControl;
 
     /// <summary>TODO</summary>
     [Serializable]
     [CLSCompliant(true)]
+    [ComVisible(true)]
     [ClassInterface(ClassInterfaceType.None)]
     public abstract class RibbonCommon : IRibbonCommon {
         /// <summary>TODO</summary>
-        protected RibbonCommon(string id, ResourceManager resourceManager, bool visible, bool enabled, MyRibbonControlSize size) {
+        protected RibbonCommon(string id, ResourceManager resourceManager, bool visible, bool enabled, RdControlSize size) {
             Id               = id;
             LanguageStrings  = GetLanguageStrings(id, resourceManager);
             _visible         = visible;
@@ -53,11 +55,11 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         private bool _enabled;
 
         /// <inheritdoc/>
-        public MyRibbonControlSize Size {
+        public RdControlSize Size {
             get { return _size; }
             set { _size = value; OnChanged(); }
         }
-        private MyRibbonControlSize _size;
+        private RdControlSize _size;
 
         /// <inheritdoc/>
         public bool IsVisible {
@@ -84,7 +86,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
                     mgr.GetCurrentUItString(Invariant($"{controlId ?? ""}_AlternateLabel")) ?? "",
                     mgr.GetCurrentUItString(Invariant($"{controlId ?? ""}_Description"))    ?? controlId + " Description");
         /// <summary>TODO</summary>
-        public static string Invariant(string formattable) => String.Format(formattable, CultureInfo.InvariantCulture);
+        private static string Invariant(string formattable) => String.Format(formattable, CultureInfo.InvariantCulture);
     }
 
     /// <summary>TODO</summary>

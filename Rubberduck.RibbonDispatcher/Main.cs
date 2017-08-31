@@ -5,17 +5,23 @@ using System;
 using System.Resources;
 using System.Runtime.InteropServices;
 
-using Rubberduck.RibbonDispatcher.Abstract;
+using Microsoft.Office.Core;
+
 using Rubberduck.RibbonDispatcher.AbstractCOM;
 
-namespace Rubberduck.RibbonDispatcher.Concrete {
+namespace Rubberduck.RibbonDispatcher {
+
     /// <summary>TODO</summary>
     [Serializable]
+    [ComVisible(true)]
+   // [Guid("DF52F97E-8828-4585-834B-33DDFB5B9B82")]
     [CLSCompliant(true)]
     [ClassInterface(ClassInterfaceType.None)]
-    public class RibbonGroup : RibbonCommon, IRibbonGroup
-    {
-        internal RibbonGroup(string id, ResourceManager mgr, bool visible, bool enabled, RdControlSize size)
-            : base(id, mgr, visible, enabled, size) {; }
+    public class Main : IMain {
+        /// <summary>TODO</summary>
+        public Main() { }
+        /// <inheritdoc/>
+        public IAbstractDispatcher NewRibbonViewModel(IRibbonUI ribbonUI, ResourceManager resourceManager)
+            => new RibbonViewModel(ribbonUI, resourceManager);
     }
 }

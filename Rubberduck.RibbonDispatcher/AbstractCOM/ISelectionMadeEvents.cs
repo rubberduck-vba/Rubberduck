@@ -3,17 +3,15 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 using System;
 using System.Runtime.InteropServices;
-using System.Diagnostics.CodeAnalysis;
 
-namespace Rubberduck.RibbonDispatcher.Abstract {
+namespace Rubberduck.RibbonDispatcher.AbstractCOM {
     /// <summary>TODO</summary>
-    [SuppressMessage("Microsoft.Naming", "CA1711:IdentifiersShouldNotHaveIncorrectSuffix", Justification = "Necessary for COM Interop.")]
     [ComVisible(true)]
-    [Guid("A4BDC07D-5A0C-4B98-BA46-46374ABDAF5C")]
+    [Guid("3AD5B841-BA7F-4CFA-9A60-8124B802BF46")]
     [CLSCompliant(true)]
-    [InterfaceType(ComInterfaceType.InterfaceIsDual)]
-    public interface IToggledEventArgs {
+    [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
+    public interface ISelectionMadeEvents {
         /// <summary>TODO</summary>
-        bool IsPressed { get; }
+        void SelectionMade(object sender, ISelectionMadeEventArgs e);
     }
 }

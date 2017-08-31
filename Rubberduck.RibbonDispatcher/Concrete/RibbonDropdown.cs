@@ -4,8 +4,10 @@
 using System;
 using System.Resources;
 using System.Runtime.InteropServices;
+using stdole;
 
 using Rubberduck.RibbonDispatcher.Abstract;
+using Rubberduck.RibbonDispatcher.AbstractCOM;
 using Rubberduck.RibbonDispatcher.EventHandlers;
 
 namespace Rubberduck.RibbonDispatcher.Concrete {
@@ -15,7 +17,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [ClassInterface(ClassInterfaceType.None)]
     [ComSourceInterfaces(typeof(ISelectionMadeEvents))]
     public class RibbonDropDown : RibbonCommon, IRibbonDropDown {
-        internal RibbonDropDown(string id, ResourceManager mgr, bool visible, bool enabled, MyRibbonControlSize size)
+        internal RibbonDropDown(string id, ResourceManager mgr, bool visible, bool enabled, RdControlSize size)
             : base(id, mgr, visible, enabled, size){
         }
 
@@ -26,9 +28,32 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         public string SelectedItemId { get; set; }
 
         /// <summary>TODO</summary>
-        public void OnAction(string itemId) => SelectionMade?.Invoke(this, new SelectionMadeEventArgs(itemId));
+        public void OnActionDropDown(string itemId) => SelectionMade?.Invoke(this, new SelectionMadeEventArgs(itemId));
 
         /// <summary>TODO</summary>
         public IRibbonCommon AsRibbonControl => this;
+
+        #region IImageableItem implementation
+        /// <inheritdoc/>
+        public object Image => _image.Image;
+        private ImageObject _image;
+        /// <inheritdoc/>
+        public bool ShowLabel {
+            get { return _showLabel; }
+            set { _showLabel = value; OnChanged(); }
+        }
+        private bool _showLabel;
+        /// <inheritdoc/>
+        public bool ShowImage {
+            get { return _showImage && Image != null; }
+            set { _showImage = value; OnChanged(); }
+        }
+        private bool _showImage;
+
+        /// <inheritdoc/>
+        public void SetImage(IPictureDisp image) { _image = new ImageObject(image);    OnChanged(); }
+        /// <inheritdoc/>
+        public void SetImageMso(string imageMso) { _image = new ImageObject(imageMso); OnChanged(); }
+        #endregion
     }
 }
