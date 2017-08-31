@@ -4,14 +4,12 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Rubberduck.RibbonDispatcher.EventHandlers {
-    /// <summary>Event parameters for a Clicked event.</summary>
+namespace Rubberduck.RibbonDispatcher.ControlMixins {
+    /// <summary>The total interface (required to be) exposed externally by RibbonButton objects.</summary>
     [CLSCompliant(true)]
-    public class ClickedEventArgs : EventArgs {
-        /// <summary>Returns a new {ClickedEventArgs} instance.</summary>
-        public ClickedEventArgs(string controlId) => ControlId = controlId;
-
-        /// <inheritdoc/>
-        public string ControlId { get; }
+    public interface IClickableMixin {
+        /// <summary>TODO</summary>
+        [DispId(DispIds.OnAction)]
+        void OnAction();
     }
 }

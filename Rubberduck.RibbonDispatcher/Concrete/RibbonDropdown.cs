@@ -9,7 +9,6 @@ using System.Runtime.InteropServices;
 
 using Rubberduck.RibbonDispatcher.ControlMixins;
 using Rubberduck.RibbonDispatcher.AbstractCOM;
-using Rubberduck.RibbonDispatcher.EventHandlers;
 
 namespace Rubberduck.RibbonDispatcher.Concrete {
     /// <summary>Returns a new Ribbon DropDownViewModel instance.</summary>
@@ -22,7 +21,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [ComSourceInterfaces(typeof(ISelectionMadeEvents))]
     [ComDefaultInterface(typeof(IRibbonDropDown))]
     [Guid(RubberduckGuid.RibbonDropDown)]
-    public class RibbonDropDown : RibbonCommon, IRibbonDropDown, ISelectableDecorator {
+    public class RibbonDropDown : RibbonCommon, IRibbonDropDown, ISelectableMixin {
         internal RibbonDropDown(string itemId, IResourceManager mgr, bool visible, bool enabled,
                 ISelectableItem[] items = null) : base(itemId, mgr, visible, enabled)
             => _items = items?.ToList()?.AsReadOnly();
@@ -51,7 +50,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         [DispId(DispIds.OnActionDropDown)]
         public void OnActionDropDown(string selectedId, int selectedIndex) {
             _selectedItemIndex = selectedIndex;
-            SelectionMade?.Invoke(this, new SelectedEventArgs(selectedId, selectedIndex));
+            SelectionMade?.Invoke(selectedId, selectedIndex);
             OnChanged();
         }
 

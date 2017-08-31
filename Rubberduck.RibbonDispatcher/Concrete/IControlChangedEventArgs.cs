@@ -3,19 +3,16 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 using System;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
-using Rubberduck.RibbonDispatcher.AbstractCOM;
-
-namespace Rubberduck.RibbonDispatcher.EventHandlers {
+namespace Rubberduck.RibbonDispatcher.Concrete {
     /// <summary>TODO</summary>
-    [Serializable]
+    [SuppressMessage("Microsoft.Naming", "CA1711:IdentifiersShouldNotHaveIncorrectSuffix", Justification = "Necessary for COM Interop.")]
     [CLSCompliant(true)]
-    [ClassInterface(ClassInterfaceType.None)]
-    [ComDefaultInterface(typeof(IToggledEventArgs))]
-    public class ToggledEventArgs : EventArgs, IToggledEventArgs {
+    [InterfaceType(ComInterfaceType.InterfaceIsDual)]
+    internal interface IControlChangedEventArgs {
         /// <summary>TODO</summary>
-        public ToggledEventArgs(bool isPressed) => IsPressed = isPressed;
-        /// <summary>TODO</summary>
-        public bool IsPressed   { get; }
+        [DispId(DispIds.ControlId)]
+        string ControlId { get; }
     }
 }

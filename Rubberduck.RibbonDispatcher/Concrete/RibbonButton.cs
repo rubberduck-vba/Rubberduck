@@ -5,7 +5,6 @@ using stdole;
 
 using Rubberduck.RibbonDispatcher.ControlMixins;
 using Rubberduck.RibbonDispatcher.AbstractCOM;
-using Rubberduck.RibbonDispatcher.EventHandlers;
 
 namespace Rubberduck.RibbonDispatcher.Concrete {
     /// <summary>The ViewModel for Ribbon Button objects.</summary>
@@ -19,7 +18,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [ComDefaultInterface(typeof(IRibbonButton))]
     [Guid(RubberduckGuid.RibbonButton)]
     public class RibbonButton : RibbonCommon, IRibbonButton,
-        ISizeableMixin, IActionableMixin, IImageableMixin {
+        ISizeableMixin, IClickableMixin, IImageableMixin {
         internal RibbonButton(string itemId, IResourceManager mgr, bool visible, bool enabled, RdControlSize size,
                 ImageObject image, bool showImage, bool showLabel) : base(itemId, mgr, visible, enabled) {
             this.SetSize(size, null);
@@ -36,11 +35,11 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         }
         #endregion
 
-        #region IActionableDecoration
+        #region Publish IActionableDecoration to class default interface
         /// <summary>The Clicked event source for COM clients</summary>
         public event ClickedEventHandler Clicked;
         /// <summary>The callback from the Ribbon Dispatcher to initiate Clicked events on this control.</summary>
-        public void OnAction() => Clicked?.Invoke();
+        public void OnAction() => this.OnAction(() => Clicked?.Invoke());
         #endregion
 
         #region Publish IImageableMixin to class default interface

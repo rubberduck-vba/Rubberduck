@@ -2,8 +2,12 @@
 using System.Runtime.CompilerServices;
 
 namespace Rubberduck.RibbonDispatcher.ControlMixins {
+    /// <summary>TODO</summary>
+    [CLSCompliant(true)]
+    public delegate void ToggledEventHandler(bool IsPressed);
+
     /// <summary>The mixin implementation for IToggleable ribbon controls.</summary>
-    internal static class Toggleable {
+    internal static class ToggleableMixin {
         static ConditionalWeakTable<IToggleableMixin, Fields> _table = new ConditionalWeakTable<IToggleableMixin, Fields>();
 
         private sealed class Fields {

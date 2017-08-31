@@ -7,7 +7,6 @@ using System.Diagnostics.CodeAnalysis;
 
 using Rubberduck.RibbonDispatcher.ControlMixins;
 using Rubberduck.RibbonDispatcher.AbstractCOM;
-using Rubberduck.RibbonDispatcher.EventHandlers;
 
 namespace Rubberduck.RibbonDispatcher.Concrete {
     /// <summary>TODO</summary>

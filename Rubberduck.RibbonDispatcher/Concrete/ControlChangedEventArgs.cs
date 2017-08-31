@@ -4,7 +4,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Rubberduck.RibbonDispatcher.EventHandlers {
+namespace Rubberduck.RibbonDispatcher.Concrete {
     /// <summary>TODO</summary>
     [CLSCompliant(true)]
     internal delegate void ChangedEventHandler(object sender, ControlChangedEventArgs e);

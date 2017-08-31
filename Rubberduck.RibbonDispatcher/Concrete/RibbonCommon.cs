@@ -3,7 +3,6 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 
 using Rubberduck.RibbonDispatcher.AbstractCOM;
-using Rubberduck.RibbonDispatcher.EventHandlers;
 using LanguageStrings = Rubberduck.RibbonDispatcher.AbstractCOM.IRibbonTextLanguageControl;
 
 namespace Rubberduck.RibbonDispatcher.Concrete {

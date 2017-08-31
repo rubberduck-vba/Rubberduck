@@ -70,34 +70,29 @@
     <Compile Include="AbstractCOM\IResourceManager.cs" />
     <Compile Include="AbstractCOM\ISelectableItem.cs" />
     <Compile Include="Concrete\SelectableItem.cs" />
+    <Compile Include="ControlMixins\ClickableMixin.cs" />
     <Compile Include="ControlMixins\Imageable.cs" />
     <Compile Include="ControlMixins\ISizeableMixin.cs" />
     <Compile Include="ControlMixins\Sizeable.cs" />
-    <Compile Include="ControlMixins\Toggleable.cs" />
+    <Compile Include="ControlMixins\ToggleableMixin.cs" />
     <Compile Include="DispIds.cs" />
-    <Compile Include="ControlMixins\IActionableMixin.cs" />
-    <Compile Include="EventHandlers\IClickedEventArgs.cs" />
+    <Compile Include="ControlMixins\IClickableMixin.cs" />
     <Compile Include="AbstractCOM\IClickedEvents.cs" />
-    <Compile Include="EventHandlers\IControlChangedEventArgs.cs" />
+    <Compile Include="Concrete\IControlChangedEventArgs.cs" />
     <Compile Include="AbstractCOM\IRibbonCheckBox.cs" />
     <Compile Include="ControlMixins\IImageableMixin.cs" />
     <Compile Include="AbstractCOM\IRibbonGroup.cs" />
     <Compile Include="AbstractCOM\IRibbonDropDown.cs" />
-    <Compile Include="EventHandlers\ISelectedEventArgs.cs" />
     <Compile Include="AbstractCOM\ISelectionMadeEvents.cs" />
-    <Compile Include="EventHandlers\IToggledEventArgs.cs" />
     <Compile Include="AbstractCOM\IToggledEvents.cs" />
     <Compile Include="ControlMixins\IToggleableMixin.cs" />
     <Compile Include="AbstractCOM\IAbstractDispatcher.cs" />
     <Compile Include="ControlMixins\ImageObject.cs" />
     <Compile Include="Concrete\RibbonCheckBox.cs" />
-    <Compile Include="EventHandlers\ClickedEventArgs.cs" />
     <Compile Include="Concrete\AbstractDispatcher.cs" />
-    <Compile Include="EventHandlers\EventHandlerDelegates.cs" />
     <Compile Include="AbstractCOM\RdControlSize.cs" />
     <Compile Include="DictionaryExtensions.cs" />
-    <Compile Include="EventHandlers\ControlChangedEventArgs.cs" />
-    <Compile Include="EventHandlers\ToggledEventArgs.cs" />
+    <Compile Include="Concrete\ControlChangedEventArgs.cs" />
     <Compile Include="AbstractCOM\IRibbonButton.cs" />
     <Compile Include="AbstractCOM\IRibbonCommon.cs" />
     <Compile Include="ControlMixins\ISelectableMixin.cs" />
@@ -116,7 +111,6 @@
     <Compile Include="RibbonFactory.cs" />
     <Compile Include="Concrete\RibbonTextLanguageControl.cs" />
     <Compile Include="Concrete\RibbonToggleButton.cs" />
-    <Compile Include="EventHandlers\SelectedEventArgs.cs" />
     <Compile Include="RibbonViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -135,5 +129,6 @@
     <None Include="Rubberduck.RibbonDispatcher.ruleset" />
     <None Include="Temporary.snk" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

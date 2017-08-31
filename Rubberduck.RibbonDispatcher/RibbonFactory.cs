@@ -9,7 +9,6 @@ using Microsoft.Office.Core;
 using Rubberduck.RibbonDispatcher.ControlMixins;
 using Rubberduck.RibbonDispatcher.AbstractCOM;
 using Rubberduck.RibbonDispatcher.Concrete;
-using Rubberduck.RibbonDispatcher.EventHandlers;
 
 namespace Rubberduck.RibbonDispatcher {
     using System.Runtime.InteropServices;
@@ -33,31 +32,31 @@ namespace Rubberduck.RibbonDispatcher {
 
             _controls        = new Dictionary<string, IRibbonCommon>();
             _sizeables       = new Dictionary<string, ISizeableMixin>();
-            _actionables     = new Dictionary<string, IActionableMixin>();
+            _actionables     = new Dictionary<string, IClickableMixin>();
             _toggleables     = new Dictionary<string, IToggleableMixin>();
-            _selectables     = new Dictionary<string, ISelectableDecorator>();
+            _selectables     = new Dictionary<string, ISelectableMixin>();
             _imageables      = new Dictionary<string, IImageableMixin>();
         }
 
-        private  readonly IRibbonUI                                 _ribbonUI;
-        internal readonly IResourceManager                          _resourceManager;
-        private  readonly IDictionary<string, IRibbonCommon>        _controls;
-        private  readonly IDictionary<string, ISizeableMixin>       _sizeables;
-        private  readonly IDictionary<string, IActionableMixin>     _actionables;
-        private  readonly IDictionary<string, ISelectableDecorator> _selectables;
-        private  readonly IDictionary<string, IImageableMixin>      _imageables;
-        private  readonly IDictionary<string, IToggleableMixin>     _toggleables;
+        private  readonly IRibbonUI                             _ribbonUI;
+        internal readonly IResourceManager                      _resourceManager;
+        private  readonly IDictionary<string, IRibbonCommon>    _controls;
+        private  readonly IDictionary<string, ISizeableMixin>   _sizeables;
+        private  readonly IDictionary<string, IClickableMixin> _actionables;
+        private  readonly IDictionary<string, ISelectableMixin> _selectables;
+        private  readonly IDictionary<string, IImageableMixin>  _imageables;
+        private  readonly IDictionary<string, IToggleableMixin> _toggleables;
 
         internal object LoadImage(string imageId) => _resourceManager.LoadImage(imageId);
 
         /// <summary>Returns a readonly collection of all Ribbon Controls in this Ribbon ViewModel.</summary>
-        internal IReadOnlyDictionary<string, IRibbonCommon>        Controls    => new ReadOnlyDictionary<string, IRibbonCommon>(_controls);
+        internal IReadOnlyDictionary<string, IRibbonCommon>    Controls    => new ReadOnlyDictionary<string, IRibbonCommon>(_controls);
         /// <summary>Returns a readonly collection of all Ribbon (Action) Buttons in this Ribbon ViewModel.</summary>
         internal IReadOnlyDictionary<string, ISizeableMixin>   Sizeables   => new ReadOnlyDictionary<string, ISizeableMixin>(_sizeables);
         /// <summary>Returns a readonly collection of all Ribbon (Action) Buttons in this Ribbon ViewModel.</summary>
-        internal IReadOnlyDictionary<string, IActionableMixin> Actionables => new ReadOnlyDictionary<string, IActionableMixin>(_actionables);
+        internal IReadOnlyDictionary<string, IClickableMixin> Actionables => new ReadOnlyDictionary<string, IClickableMixin>(_actionables);
         /// <summary>Returns a readonly collection of all Ribbon DropDowns in this Ribbon ViewModel.</summary>
-        internal IReadOnlyDictionary<string, ISelectableDecorator> Selectables => new ReadOnlyDictionary<string, ISelectableDecorator>(_selectables);
+        internal IReadOnlyDictionary<string, ISelectableMixin> Selectables => new ReadOnlyDictionary<string, ISelectableMixin>(_selectables);
         /// <summary>Returns a readonly collection of all Ribbon Imageable Controls in this Ribbon ViewModel.</summary>
         internal IReadOnlyDictionary<string, IImageableMixin>  Imageables  => new ReadOnlyDictionary<string, IImageableMixin>(_imageables);
         /// <summary>Returns a readonly collection of all Ribbon Toggle Buttons in this Ribbon ViewModel.</summary>
@@ -68,9 +67,9 @@ namespace Rubberduck.RibbonDispatcher {
         private T Add<T>(T ctrl) where T:RibbonCommon {
             _controls.Add(ctrl.Id, ctrl);
 
-            _actionables.AddNotNull(ctrl.Id, ctrl as IActionableMixin);
+            _actionables.AddNotNull(ctrl.Id, ctrl as IClickableMixin);
             _sizeables.AddNotNull(ctrl.Id, ctrl as ISizeableMixin);
-            _selectables.AddNotNull(ctrl.Id, ctrl as ISelectableDecorator);
+            _selectables.AddNotNull(ctrl.Id, ctrl as ISelectableMixin);
             _imageables.AddNotNull(ctrl.Id, ctrl as IImageableMixin);
             _toggleables.AddNotNull(ctrl.Id, ctrl as IToggleableMixin);
 

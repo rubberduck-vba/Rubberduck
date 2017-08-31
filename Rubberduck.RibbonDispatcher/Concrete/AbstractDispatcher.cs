@@ -44,15 +44,15 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         public IRibbonFactory RibbonFactory => _ribbonFactory; private RibbonFactory _ribbonFactory;
 
         /// <summary>All of the defined controls.</summary>
-        private IRibbonCommon        Controls    (string controlId) => _ribbonFactory.Controls.GetOrDefault(controlId);
+        private IRibbonCommon    Controls    (string controlId) => _ribbonFactory.Controls.GetOrDefault(controlId);
         /// <summary>All of the defined controls implementing the {ISizeableDecorator} interface.</summary>
         private ISizeableMixin   Sizeables   (string controlId) => _ribbonFactory.Sizeables.GetOrDefault(controlId);
         /// <summary>All of the defined controls implementing the {IActionableDecorator} interface.</summary>
-        private IActionableMixin Actionables (string controlId) => _ribbonFactory.Actionables.GetOrDefault(controlId);
+        private IClickableMixin Actionables (string controlId) => _ribbonFactory.Actionables.GetOrDefault(controlId);
         /// <summary>All of the defined controls implementing the {IToggleableDecorator} interface.</summary>
         private IToggleableMixin Toggleables (string controlId) => _ribbonFactory.Toggleables.GetOrDefault(controlId);
         /// <summary>All of the defined controls implementing the {ISelectableDecorator} interface.</summary>
-        private ISelectableDecorator Selectables (string controlId) => _ribbonFactory.Selectables.GetOrDefault(controlId);
+        private ISelectableMixin Selectables (string controlId) => _ribbonFactory.Selectables.GetOrDefault(controlId);
         /// <summary>All of the defined controls implementing the {IImageableDecorator} interface.</summary>
         private IImageableMixin  Imageables  (string controlId) => _ribbonFactory.Imageables.GetOrDefault(controlId);
 

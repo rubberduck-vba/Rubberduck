@@ -10,6 +10,6 @@ namespace Rubberduck.RibbonDispatcher.AbstractCOM {
     public interface ISelectionMadeEvents {
         /// <summary>TODO</summary>
         [DispId(1)]
-        void SelectionMade(object sender, ISelectedEventArgs e);
+        void SelectionMade(string itemId, int itemIndex);
     }
 }

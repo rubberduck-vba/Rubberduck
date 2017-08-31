@@ -7,7 +7,11 @@ using System.Runtime.InteropServices;
 namespace Rubberduck.RibbonDispatcher.ControlMixins {
     /// <summary>TODO</summary>
     [CLSCompliant(true)]
-    public interface ISelectableDecorator {
+    public delegate void SelectedEventHandler(string ItemId, int ItemIndex);
+
+    /// <summary>TODO</summary>
+    [CLSCompliant(true)]
+    public interface ISelectableMixin {
         /// <summary>TODO</summary>
         [DispId(DispIds.SelectedItemId)]
         string SelectedItemId      { get; }
