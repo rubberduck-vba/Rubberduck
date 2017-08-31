@@ -34,26 +34,27 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     /// </remarks>
     [Serializable]
     [ComVisible(true)]
-    [Guid("2B43D4D0-A674-40CD-B465-FA715DEB74E9")]
     [CLSCompliant(true)]
-    public abstract class AbstractRibbonDispatcher {
+    [ComDefaultInterface(typeof(IAbstractDispatcher))]
+    [Guid(RubberduckGuid.AbstractDispatcher)]
+    public abstract class AbstractDispatcher : IAbstractDispatcher {
         /// <summary>TODO</summary>
         protected void InitializeRibbonFactory(IRibbonUI ribbonUI, ResourceManager resourceManager) 
-            => RibbonFactory = new RibbonFactory(ribbonUI, resourceManager);
+            => _ribbonFactory = new RibbonFactory(ribbonUI, resourceManager);
 
         /// <summary>TODO</summary>
-        public RibbonFactory   RibbonFactory { get; private set; }
+        public IRibbonFactory  RibbonFactory => _ribbonFactory; private RibbonFactory _ribbonFactory;
 
         /// <summary>TODO</summary>
-        private IRibbonCommon  Controls   (string controlId) => RibbonFactory.Controls.GetOrDefault(controlId);
+        private IRibbonCommon  Controls   (string controlId) => _ribbonFactory.Controls.GetOrDefault(controlId);
         /// <summary>TODO</summary>
-        private IActionItem    Actions    (string controlId) => RibbonFactory.Buttons.GetOrDefault(controlId);
+        private IActionItem    Actions    (string controlId) => _ribbonFactory.Buttons.GetOrDefault(controlId);
         /// <summary>TODO</summary>
-        private IToggleItem    Toggles    (string controlId) => RibbonFactory.Toggles.GetOrDefault(controlId);
+        private IToggleItem    Toggles    (string controlId) => _ribbonFactory.Toggles.GetOrDefault(controlId);
         /// <summary>TODO</summary>
-        private IDropDownItem  DropDowns  (string controlId) => RibbonFactory.DropDowns.GetOrDefault(controlId);
+        private IDropDownItem  DropDowns  (string controlId) => _ribbonFactory.DropDowns.GetOrDefault(controlId);
         /// <summary>TODO</summary>
-        private IImageableItem Imageables (string controlId) => RibbonFactory.Imageables.GetOrDefault(controlId);
+        private IImageableItem Imageables (string controlId) => _ribbonFactory.Imageables.GetOrDefault(controlId);
 
         /// <summary>Call back for GetDescription events from ribbon elements.</summary>
         public string          GetDescription(IRibbonControl control) => Controls(control?.Id)?.Description ?? Unknown(control);
@@ -82,7 +83,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         /// <summary>Call back for GetPressed events from the checkBox and toggleButton ribbon elements.</summary>
         public bool            GetPressed    (IRibbonControl control) => Toggles(control?.Id)?.IsPressed    ?? false;
         /// <summary>Call back for OnAction events from the checkBox and toggleButton ribbon elements.</summary>
-        public void OnActionToggle(IRibbonControl control, bool pressed) => Toggles(control?.Id)?.OnAction(pressed);
+        public void OnActionToggle(IRibbonControl control, bool pressed) => Toggles(control?.Id)?.OnActionToggle(pressed);
 
         /// <summary>Call back for OnAction events from the button ribbon elements.</summary>
         public void OnAction(IRibbonControl control) => Actions(control?.Id)?.OnAction();

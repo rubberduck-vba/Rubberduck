@@ -12,10 +12,8 @@ using Rubberduck.RibbonDispatcher.Concrete;
 namespace Rubberduck.RibbonDispatcher {
     /// <summary>TODO</summary>
     [Serializable]
-    //[ComVisible(true)]
-    //[Guid("A3444644-112E-4971-8D84-A7C177DF0A42")]
     [CLSCompliant(true)]
-    internal class RibbonViewModel : AbstractRibbonDispatcher, IAbstractDispatcher {
+    internal class RibbonViewModel : AbstractDispatcher, IAbstractDispatcher {
         /// <summary>TODO</summary>
         public RibbonViewModel(IRibbonUI ribbonUI, ResourceManager resourceManager) : base() {
             InitializeRibbonFactory(ribbonUI, resourceManager);

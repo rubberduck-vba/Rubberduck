@@ -10,46 +10,63 @@ using Rubberduck.RibbonDispatcher.Abstract;
 namespace Rubberduck.RibbonDispatcher.AbstractCOM {
     /// <summary>TODO</summary>
     [ComVisible(true)]
-    [Guid("D03E9DE1-F37D-40D6-89D6-A6B76A608D97")]
     [CLSCompliant(true)]
     [InterfaceType(ComInterfaceType.InterfaceIsDual)]
+    [Guid(RubberduckGuid.IRibbonToggleButton)]
     public interface IRibbonToggleButton : IRibbonCommon, IToggleItem, IImageableItem {
-        /// <summary>TODO</summary>
-        new string        Id          { get; }
+        /// <summary>Returns the unique (within this ribbon) identifier for this control.</summary>
+        [DispId(DispIds.Id)]
+        new string        Id            { get; }
         /// <summary>Only applicable for Menu Items.</summary>
-        new string        Description { get; }
+        [DispId(DispIds.Description)]
+        new string        Description   { get; }
         /// <summary>TODO</summary>
-        new string        KeyTip      { get; }
+        [DispId(DispIds.KeyTip)]
+        new string        KeyTip        { get; }
         /// <summary>TODO</summary>
-        new string        Label       { get; }
+        [DispId(DispIds.Label)]
+        new string        Label         { get; }
         /// <summary>TODO</summary>
-        new string        ScreenTip   { get; }
+        [DispId(DispIds.ScreenTip)]
+        new string        ScreenTip     { get; }
         /// <summary>TODO</summary>
-        new string        SuperTip    { get; }
- 
+        [DispId(DispIds.SuperTip)]
+        new string        SuperTip      { get; }
+        /// <summary>Sets the Label, KeyTip, ScreenTip and SuperTip for this control from the supplied values.</summary>
+        [DispId(DispIds.SetLanguageStrings)]
+        new void          SetLanguageStrings(IRibbonTextLanguageControl languageStrings);
+
         /// <summary>TODO</summary>
-        new object        Image       { get; }
+        [DispId(DispIds.IsEnabled)]
+        new bool          IsEnabled     { get; set; }
         /// <summary>TODO</summary>
-        new bool          IsEnabled   { get; set; }
+        [DispId(DispIds.IsVisible)]
+        new bool          IsVisible     { get; set; }
         /// <summary>TODO</summary>
-        new bool          IsPressed   { get; }
+        [DispId(DispIds.Size)]
+        new RdControlSize Size          { get; set; }
+
         /// <summary>TODO</summary>
-        new bool          IsVisible   { get; set; }
+        [DispId(DispIds.IsPressed)]
+        new bool          IsPressed     { get; }
+        /// <summary>TODO</summary>
+        [DispId(DispIds.OnActionToggle)]
+        new void          OnActionToggle(bool isPressed);
+
+        /// <summary>TODO</summary>
+        [DispId(DispIds.Image)]
+        new object        Image         { get; }
         /// <summary>Returns or set whether to show the control's image; ignored by Large controls.</summary>
-        new bool          ShowImage   { get; set; }
+        [DispId(DispIds.ShowImage)]
+        new bool          ShowImage     { get; set; }
         /// <summary>Returns or set whether to show the control's label; ignored by Large controls.</summary>
-        new bool          ShowLabel   { get; set; }
+        [DispId(DispIds.ShowLabel)]
+        new bool          ShowLabel     { get; set; }
         /// <summary>TODO</summary>
-        new RdControlSize Size        { get; set; }
-
+        [DispId(DispIds.SetImage)]
+        new void          SetImage(IPictureDisp image);
         /// <summary>TODO</summary>
-        new void OnAction(bool isPressed);
-
-        /// <summary>TODO</summary>
-        new void SetLanguageStrings(IRibbonTextLanguageControl languageStrings);
-        /// <summary>TODO</summary>
-        new void SetImage(IPictureDisp image);
-        /// <summary>TODO</summary>
-        new void SetImageMso(string imageMso);
+        [DispId(DispIds.SetImageMso)]
+        new void          SetImageMso(string imageMso);
     }
 }

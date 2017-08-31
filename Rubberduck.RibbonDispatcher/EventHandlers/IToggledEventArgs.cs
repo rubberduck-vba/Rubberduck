@@ -3,19 +3,17 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 using System;
 using System.Runtime.InteropServices;
-using Microsoft.Office.Core;
+using System.Diagnostics.CodeAnalysis;
 
-namespace Rubberduck.RibbonDispatcher.EventHandlers {
+namespace Rubberduck.RibbonDispatcher.AbstractCOM {
     /// <summary>TODO</summary>
-    [Serializable]
+    [SuppressMessage("Microsoft.Naming", "CA1711:IdentifiersShouldNotHaveIncorrectSuffix", Justification = "Necessary for COM Interop.")]
+    [ComVisible(true)]
     [CLSCompliant(true)]
-    [ClassInterface(ClassInterfaceType.None)]
-    public class RibbonUIEventArgs : EventArgs {
+    [InterfaceType(ComInterfaceType.InterfaceIsDual)]
+    [Guid(RubberduckGuid.IToggledEventArgs)]
+    public interface IToggledEventArgs {
         /// <summary>TODO</summary>
-        public RibbonUIEventArgs(IRibbonUI ribbonUI) {
-            RibbonUI = ribbonUI;
-        }
-        /// <summary>TODO</summary>
-        public IRibbonUI RibbonUI {get;}
+        bool IsPressed { get; }
     }
 }

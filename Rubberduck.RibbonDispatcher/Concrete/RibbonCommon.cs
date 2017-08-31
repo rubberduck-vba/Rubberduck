@@ -18,6 +18,8 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [CLSCompliant(true)]
     [ComVisible(true)]
     [ClassInterface(ClassInterfaceType.None)]
+    [ComDefaultInterface(typeof(IRibbonCommon))]
+    [Guid(RubberduckGuid.RibbonCommon)]
     public abstract class RibbonCommon : IRibbonCommon {
         /// <summary>TODO</summary>
         protected RibbonCommon(string id, ResourceManager resourceManager, bool visible, bool enabled, RdControlSize size) {
@@ -29,7 +31,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         }
 
         /// <summary>TODO</summary>
-        public event ChangedEventHandler Changed;
+        internal event ChangedEventHandler Changed;
 
         /// <inheritdoc/>
         public string Id          { get; }

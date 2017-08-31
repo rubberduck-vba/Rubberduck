@@ -20,6 +20,8 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [ComVisible(true)]
     [ClassInterface(ClassInterfaceType.None)]
     [ComSourceInterfaces(typeof(IToggledEvents))]
+    [ComDefaultInterface(typeof(IRibbonToggleButton))]
+    [Guid(RubberduckGuid.RibbonToggleButton)]
     public class RibbonToggleButton : RibbonCommon, IRibbonToggleButton {
         internal RibbonToggleButton(string id, ResourceManager mgr, bool visible, bool enabled, RdControlSize size,
                 string imageMso, bool showImage, bool showLabel, ToggledEventHandler onToggledAction)
@@ -42,7 +44,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         public event ToggledEventHandler Toggled;
 
         /// <summary>TODO</summary>
-        public void OnAction(bool isPressed) {
+        public void OnActionToggle(bool isPressed) {
             Toggled?.Invoke(this, new ToggledEventArgs(isPressed));
             IsPressed = isPressed;
             OnChanged();

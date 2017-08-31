@@ -6,7 +6,6 @@ using System.Resources;
 using System.Runtime.InteropServices;
 using stdole;
 
-using Rubberduck.RibbonDispatcher.Abstract;
 using Rubberduck.RibbonDispatcher.AbstractCOM;
 using Rubberduck.RibbonDispatcher.EventHandlers;
 
@@ -16,6 +15,8 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [CLSCompliant(true)]
     [ClassInterface(ClassInterfaceType.None)]
     [ComSourceInterfaces(typeof(ISelectionMadeEvents))]
+    [ComDefaultInterface(typeof(IRibbonDropDown))]
+    [Guid(RubberduckGuid.RibbonDropDown)]
     public class RibbonDropDown : RibbonCommon, IRibbonDropDown {
         internal RibbonDropDown(string id, ResourceManager mgr, bool visible, bool enabled, RdControlSize size)
             : base(id, mgr, visible, enabled, size){

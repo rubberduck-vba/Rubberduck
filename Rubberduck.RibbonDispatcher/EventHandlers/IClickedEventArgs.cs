@@ -5,15 +5,16 @@ using System;
 using System.Runtime.InteropServices;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Rubberduck.RibbonDispatcher.AbstractCOM {
+namespace Rubberduck.RibbonDispatcher.EventHandlers {
     /// <summary>TODO</summary>
     [SuppressMessage("Microsoft.Naming", "CA1711:IdentifiersShouldNotHaveIncorrectSuffix", Justification = "Necessary for COM Interop.")]
     [ComVisible(true)]
-    [Guid("B65A7D8F-B46A-45F7-A628-9CB4B84F7EEB")]
     [CLSCompliant(true)]
     [InterfaceType(ComInterfaceType.InterfaceIsDual)]
-    public interface ISelectionMadeEventArgs {
+    [Guid(RubberduckGuid.IClickedEventArgs)]
+    public interface IClickedEventArgs {
         /// <summary>TODO</summary>
-        string ItemId { get; }
+        [DispId(DispIds.ControlId)]
+        int ControlId { get; }
     }
 }

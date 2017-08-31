@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 using System.Collections.Generic;
 
-namespace Rubberduck.RibbonDispatcher.Concrete {
+namespace Rubberduck.RibbonDispatcher {
     internal static class RibbonCommonExtensions {
         public static TValue GetOrDefault<TValue>(this IReadOnlyDictionary<string, TValue> dictionary, string key) {
             TValue ctrl;

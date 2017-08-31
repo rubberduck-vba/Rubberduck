@@ -4,15 +4,17 @@
 using System;
 using System.Runtime.InteropServices;
 
-using Rubberduck.RibbonDispatcher.AbstractCOM;
-
 namespace Rubberduck.RibbonDispatcher.EventHandlers {
-    /// <summary>TODO</summary>
+    /// <summary>Event parameters for a Clicked event.</summary>
     [Serializable]
     [CLSCompliant(true)]
     [ClassInterface(ClassInterfaceType.None)]
+    [ComDefaultInterface(typeof(IClickedEventArgs))]
     public class ClickedEventArgs : EventArgs, IClickedEventArgs {
-        /// <summary>TODO</summary>
-        public ClickedEventArgs() { ; }
+        /// <summary>Returns a new {ClickedEventArgs} instance.</summary>
+        public ClickedEventArgs(int controlId) { ControlId = controlId; }
+
+        /// <inheritdoc/>
+        public int ControlId { get; }
     }
 }

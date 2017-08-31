@@ -2,16 +2,18 @@
 //                                Copyright (c) 2017 Pieter Geerkens                              //
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 using System;
+using System.Runtime.InteropServices;
 
 namespace Rubberduck.RibbonDispatcher.Abstract {
     /// <summary>TODO</summary>
     [CLSCompliant(true)]
     public interface IDropDownItem {
         /// <summary>TODO</summary>
-        string  SelectedItemId      { get; set; }
+        [DispId(DispIds.SelectedItemId)]
+        string SelectedItemId      { get; set; }
+
         /// <summary>TODO</summary>
-        void    OnActionDropDown(string itemId);
+        [DispId(DispIds.OnActionDropDown)]
+        void OnActionDropDown(string itemId);
     }
-}
-namespace Rubberduck.RibbonDispatcher.AbstractCOM {
 }

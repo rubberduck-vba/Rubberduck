@@ -61,28 +61,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DispIds.cs" />
     <Compile Include="Abstract\IActionItem.cs" />
-    <Compile Include="AbstractCOM\IClickedEventArgs.cs" />
+    <Compile Include="EventHandlers\IClickedEventArgs.cs" />
     <Compile Include="AbstractCOM\IClickedEvents.cs" />
-    <Compile Include="AbstractCOM\IControlChangedEventArgs.cs" />
+    <Compile Include="Abstract\IControlChangedEventArgs.cs" />
     <Compile Include="AbstractCOM\IRibbonCheckBox.cs" />
     <Compile Include="Abstract\IImageableItem.cs" />
     <Compile Include="AbstractCOM\IRibbonGroup.cs" />
     <Compile Include="AbstractCOM\IRibbonDropDown.cs" />
-    <Compile Include="AbstractCOM\ISelectionMadeEventArgs.cs" />
+    <Compile Include="EventHandlers\ISelectionMadeEventArgs.cs" />
     <Compile Include="AbstractCOM\ISelectionMadeEvents.cs" />
-    <Compile Include="AbstractCOM\IToggledEventArgs.cs" />
+    <Compile Include="EventHandlers\IToggledEventArgs.cs" />
     <Compile Include="AbstractCOM\IToggledEvents.cs" />
     <Compile Include="Abstract\IToggleItem.cs" />
     <Compile Include="AbstractCOM\IAbstractDispatcher.cs" />
     <Compile Include="Concrete\ImageObject.cs" />
     <Compile Include="Concrete\RibbonCheckBox.cs" />
     <Compile Include="EventHandlers\ClickedEventArgs.cs" />
-    <Compile Include="Concrete\AbstractRibbonDispatcher.cs" />
+    <Compile Include="Concrete\AbstractDispatcher.cs" />
     <Compile Include="EventHandlers\EventHandlerDelegates.cs" />
     <Compile Include="AbstractCOM\RdControlSize.cs" />
-    <Compile Include="Concrete\RibbonCommonExtensions.cs" />
-    <Compile Include="EventHandlers\ControlChangedEventArgs.cs" />
+    <Compile Include="RibbonCommonExtensions.cs" />
+    <Compile Include="Abstract\ControlChangedEventArgs.cs" />
     <Compile Include="EventHandlers\ToggledEventArgs.cs" />
     <Compile Include="AbstractCOM\IRibbonButton.cs" />
     <Compile Include="AbstractCOM\IRibbonCommon.cs" />
@@ -101,12 +102,17 @@
     <Compile Include="RibbonFactory.cs" />
     <Compile Include="Concrete\RibbonTextLanguageControl.cs" />
     <Compile Include="Concrete\RibbonToggleButton.cs" />
-    <Compile Include="EventHandlers\RibbonUIEventArgs.cs" />
     <Compile Include="EventHandlers\SelectionMadeEventArgs.cs" />
     <Compile Include="RibbonViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <CodeAnalysisDictionary Include="CustomDictionary.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RetailCoder.VBE\Rubberduck.csproj">
+      <Project>{20589de8-432e-4359-9232-69eb070b7185}</Project>
+      <Name>Rubberduck</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

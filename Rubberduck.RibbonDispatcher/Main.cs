@@ -14,9 +14,10 @@ namespace Rubberduck.RibbonDispatcher {
     /// <summary>TODO</summary>
     [Serializable]
     [ComVisible(true)]
-   // [Guid("DF52F97E-8828-4585-834B-33DDFB5B9B82")]
     [CLSCompliant(true)]
     [ClassInterface(ClassInterfaceType.None)]
+    [ComDefaultInterface(typeof(IMain))]
+    [Guid(RubberduckGuid.Main)]
     public class Main : IMain {
         /// <summary>TODO</summary>
         public Main() { }
