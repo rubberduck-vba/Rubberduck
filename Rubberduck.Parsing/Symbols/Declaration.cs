@@ -445,7 +445,7 @@ namespace Rubberduck.Parsing.Symbols
         private Declaration _asTypeDeclaration;
         public Declaration AsTypeDeclaration
         {
-            get => _asTypeDeclaration;
+            get { return _asTypeDeclaration; }
             internal set
             {
                 _asTypeDeclaration = value;
