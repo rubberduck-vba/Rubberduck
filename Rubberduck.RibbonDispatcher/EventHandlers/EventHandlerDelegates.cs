@@ -16,5 +16,5 @@ namespace Rubberduck.RibbonDispatcher.EventHandlers {
     public delegate void SelectedEventHandler(object sender, SelectedEventArgs e);
 
     /// <summary>TODO</summary>
-    public delegate void ClickedComEventHandler(string ControlId);
+    public delegate void ClickedComEventHandler();
 }

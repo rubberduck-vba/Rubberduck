@@ -73,8 +73,7 @@ namespace Rubberduck.RibbonDispatcher {
             RdControlSize       Size            = rdLarge,
             IPictureDisp        Image           = null,
             bool                ShowImage       = false,
-            bool                ShowLabel       = true,
-            ToggledEventHandler OnToggledAction = null
+            bool                ShowLabel       = true
         );
         /// <summary>Returns a new Ribbon ToggleButton ViewModel instance that uses an Office built-in Image.</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
@@ -86,8 +85,7 @@ namespace Rubberduck.RibbonDispatcher {
             RdControlSize       Size            = rdLarge,
             string              ImageMso        = "MacroSecurity",  // This one get's peope's attention ;-)
             bool                ShowImage       = false,
-            bool                ShowLabel       = true,
-            ToggledEventHandler OnToggledAction = null
+            bool                ShowLabel       = true
         );
 
         /// <summary>Returns a new Ribbon CheckBox ViewModel instance.</summary>
@@ -96,8 +94,7 @@ namespace Rubberduck.RibbonDispatcher {
         RibbonCheckBox NewRibbonCheckBox(
             string              ItemId,
             bool                Visible         = true,
-            bool                Enabled         = true,
-            ToggledEventHandler OnToggledAction = null
+            bool                Enabled         = true
         );
 
         /// <summary>Returns a new Ribbon DropDownViewModel instance.</summary>
@@ -107,7 +104,6 @@ namespace Rubberduck.RibbonDispatcher {
             string               ItemId,
             bool                 Visible    = true,
             bool                 Enabled    = true,
-            SelectedEventHandler OnSelected = null,
             ISelectableItem[]    Items      = null
         );
 

@@ -10,8 +10,8 @@ namespace Rubberduck.RibbonDispatcher {
 
         /// <summary>TODO</summary>
         public static TValue GetOrDefault<TValue>(this IReadOnlyDictionary<string, TValue> dictionary, string key) {
-            if (dictionary == null) return default(TValue);
-            return dictionary.TryGetValue(key ?? "", out var ctrl) ? ctrl : default(TValue);
+            if (dictionary == null) return default;
+            return dictionary.TryGetValue(key ?? "", out var ctrl) ? ctrl : default;
         }
     }
 }

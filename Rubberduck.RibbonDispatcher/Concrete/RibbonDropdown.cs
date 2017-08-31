@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Resources;
 using System.Runtime.InteropServices;
 
 using Rubberduck.RibbonDispatcher.ControlDecorators;
@@ -25,11 +24,8 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [Guid(RubberduckGuid.RibbonDropDown)]
     public class RibbonDropDown : RibbonCommon, IRibbonDropDown, ISelectableDecorator {
         internal RibbonDropDown(string itemId, IResourceManager mgr, bool visible, bool enabled,
-                SelectedEventHandler onSelectionMade, ISelectableItem[] items = null)
-            : base(itemId, mgr, visible, enabled){
-            if(onSelectionMade != null) SelectionMade += onSelectionMade;
-            _items = items?.ToList()?.AsReadOnly();
-        }
+                ISelectableItem[] items = null) : base(itemId, mgr, visible, enabled)
+            => _items = items?.ToList()?.AsReadOnly();
 
         /// <summary>TODO</summary>
         public event SelectedEventHandler SelectionMade;

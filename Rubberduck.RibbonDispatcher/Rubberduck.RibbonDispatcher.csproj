@@ -23,7 +23,7 @@
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>Rubberduck.RibbonDispatcher.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>true</RunCodeAnalysis>
-    <LangVersion>6</LangVersion>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -34,9 +34,15 @@
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>Rubberduck.RibbonDispatcher.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>true</RunCodeAnalysis>
-    <LangVersion>7</LangVersion>
+    <LangVersion>7.1</LangVersion>
     <RegisterForComInterop>true</RegisterForComInterop>
     <DocumentationFile>bin\Release\Rubberduck.RibbonDispatcher.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>Temporary.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Office, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
@@ -64,7 +70,8 @@
     <Compile Include="AbstractCOM\IResourceManager.cs" />
     <Compile Include="AbstractCOM\ISelectableItem.cs" />
     <Compile Include="Concrete\SelectableItem.cs" />
-    <Compile Include="ControlDecorators\ISizeableDecorator.cs" />
+    <Compile Include="ControlDecorators\ISizeableMixin.cs" />
+    <Compile Include="ControlDecorators\Sizeable.cs" />
     <Compile Include="DispIds.cs" />
     <Compile Include="ControlDecorators\IActionableDecorator.cs" />
     <Compile Include="EventHandlers\IClickedEventArgs.cs" />
@@ -120,7 +127,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="CustomDictionary.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Rubberduck.RibbonDispatcher.ruleset" />
+    <None Include="Temporary.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

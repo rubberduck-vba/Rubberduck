@@ -2,7 +2,6 @@
 //                                Copyright (c) 2017 Pieter Geerkens                              //
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 using System;
-using System.Resources;
 using System.Runtime.InteropServices;
 using System.Diagnostics.CodeAnalysis;
 
@@ -22,10 +21,8 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [ComDefaultInterface(typeof(IRibbonCheckBox))]
     [Guid(RubberduckGuid.RibbonCheckBox)]
     public class RibbonCheckBox : RibbonCommon, IRibbonCheckBox, IToggleableDecorator {
-        internal RibbonCheckBox(string itemId, IResourceManager mgr, bool visible, bool enabled,
-                ToggledEventHandler onToggledAction)
+        internal RibbonCheckBox(string itemId, IResourceManager mgr, bool visible, bool enabled)
             : base(itemId, mgr, visible, enabled) {
-            if (onToggledAction != null) Toggled += onToggledAction;
         }
 
         #region IToggleableDecoration

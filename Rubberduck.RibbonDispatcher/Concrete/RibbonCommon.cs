@@ -3,7 +3,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 using System;
 using System.Globalization;
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
 using Rubberduck.RibbonDispatcher.AbstractCOM;

@@ -12,7 +12,7 @@ namespace Rubberduck.RibbonDispatcher.ControlDecorators {
         [DispId(DispIds.SelectedItemId)]
         string SelectedItemId      { get; }
         /// <summary>TODO</summary>
-        [DispId(DispIds.SelectedItemId)]
+        [DispId(DispIds.SelectedItemIndex)]
         int    SelectedItemIndex   { get; }
         /// <summary>Call back for OnAction events from the drop-down ribbon elements.</summary>
         [DispId(DispIds.OnActionDropDown)]

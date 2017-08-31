@@ -27,5 +27,8 @@ namespace Rubberduck.RibbonDispatcher {
         /// <summary>TODO</summary>
         internal RibbonViewModel(IRibbonUI RibbonUI, IResourceManager ResourceManager) : base() 
             => InitializeRibbonFactory(RibbonUI, ResourceManager);
+
+        /// <summary>TODO</summary>
+     //   public void OnRibbonLoad(IRibbonUI RibbonUI) {;}
     }
 }

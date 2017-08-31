@@ -1,7 +1,5 @@
 using System;
 using System.Globalization;
-using System.Reflection;
-using System.Resources;
 using System.Runtime.InteropServices;
 
 using Microsoft.Office.Core;
@@ -39,13 +37,19 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         protected void InitializeRibbonFactory(IRibbonUI RibbonUI, IResourceManager ResourceManager) 
             => _ribbonFactory = new RibbonFactory(RibbonUI, ResourceManager);
 
+        /// <summary>TODO</summary>
+     //   public abstract void OnRibbonLoad(IRibbonUI RibbonUI);
+
+        /// <summary>TODO</summary>
+        public object LoadImage(string imageId) => _ribbonFactory.LoadImage(imageId);
+
         /// <inheritdoc/>
-        public  IRibbonFactory RibbonFactory => _ribbonFactory; private RibbonFactory _ribbonFactory;
+        public IRibbonFactory RibbonFactory => _ribbonFactory; private RibbonFactory _ribbonFactory;
 
         /// <summary>All of the defined controls.</summary>
         private IRibbonCommon        Controls    (string controlId) => _ribbonFactory.Controls.GetOrDefault(controlId);
         /// <summary>All of the defined controls implementing the {ISizeableDecorator} interface.</summary>
-        private ISizeableDecorator   Sizeables   (string controlId) => _ribbonFactory.Sizeables.GetOrDefault(controlId);
+        private ISizeableMixin   Sizeables   (string controlId) => _ribbonFactory.Sizeables.GetOrDefault(controlId);
         /// <summary>All of the defined controls implementing the {IActionableDecorator} interface.</summary>
         private IActionableDecorator Actionables (string controlId) => _ribbonFactory.Actionables.GetOrDefault(controlId);
         /// <summary>All of the defined controls implementing the {IToggleableDecorator} interface.</summary>
@@ -142,9 +146,5 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
 
         private static string Unknown(IRibbonControl Control) 
             => string.Format(CultureInfo.InvariantCulture, $"'{Control?.Id??""}' unknown");
-
-        ///// <summary>TODO</summary>
-        //protected static ResourceManager GetResourceManager(string ResourceSetName) 
-        //    => new ResourceManager(ResourceSetName, Assembly.GetExecutingAssembly());
     }
 }

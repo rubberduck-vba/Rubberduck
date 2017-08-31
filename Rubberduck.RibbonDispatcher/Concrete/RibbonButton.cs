@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Resources;
 using System.Runtime.InteropServices;
 using System.Diagnostics.CodeAnalysis;
 using stdole;
@@ -20,42 +19,38 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [ComDefaultInterface(typeof(IRibbonButton))]
     [Guid(RubberduckGuid.RibbonButton)]
     public class RibbonButton : RibbonCommon, IRibbonButton,
-        ISizeableDecorator, IActionableDecorator, IImageableDecorator {
+        ISizeableMixin, IActionableDecorator, IImageableDecorator {
         internal RibbonButton(string itemId, IResourceManager mgr, bool visible, bool enabled, RdControlSize size,
                 string imageMso, bool showImage, bool showLabel)
-            : base(itemId, mgr, visible, enabled) {
-            _size      = size;
-            _image     = new ImageObject(imageMso);
-            _showImage = showImage;
-            _showLabel = showLabel;
-        }
+            : this(itemId, mgr, visible, enabled, size, new ImageObject(imageMso), showImage, showLabel) { }
         internal RibbonButton(string itemId, IResourceManager mgr, bool visible, bool enabled, RdControlSize size,
                 IPictureDisp image, bool showImage, bool showLabel)
-            : base(itemId, mgr, visible, enabled) {
-            _size      = size;
-            _image     = new ImageObject(image);
+            : this(itemId, mgr, visible, enabled, size, new ImageObject(image), showImage, showLabel) { }
+        private RibbonButton(string itemId, IResourceManager mgr, bool visible, bool enabled, RdControlSize size,
+                ImageObject image, bool showImage, bool showLabel) : base(itemId, mgr, visible, enabled) {
+            this.SetSize(size, null);
+            _image     = image;
             _showImage = showImage;
             _showLabel = showLabel;
         }
 
-        #region ISizeableDecoration
-        /// <inheritdoc/>
+        #region ISizeableMixin
+        /// <summary>Sets ofr gets the preferred {RdControlSize} for the control.</summary>
         public RdControlSize Size {
-            get => _size;
-            set { _size = value; OnChanged(); }
+            get => this.GetSize();
+            set => this.SetSize(value, OnChanged);
         }
-        private RdControlSize _size;
         #endregion
 
         #region IActionableDecoration
         /// <summary>The Clicked event source for DOT NET clients</summary>
-        public event EventHandler<ClickedEventArgs> Clicked;
+        public event EventHandler<EventArgs> Clicked;
         /// <summary>The Clicked event source for COM clients</summary>
         public event ClickedComEventHandler ComClicked;
         /// <summary>The callback from the Ribbon Dispatcher to initiate Clicked events on this control.</summary>
         public void OnAction() {
-            Clicked?.Invoke(this, new ClickedEventArgs(Id));
-            ComClicked?.Invoke(Id);
+            Clicked?.Invoke(this, EventArgs.Empty);
+            ComClicked?.Invoke();
         }
         #endregion
 

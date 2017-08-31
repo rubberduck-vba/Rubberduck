@@ -3,7 +3,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Resources;
 using System.Runtime.InteropServices;
 using stdole;
 
@@ -23,33 +22,27 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [ComDefaultInterface(typeof(IRibbonToggleButton))]
     [Guid(RubberduckGuid.RibbonToggleButton)]
     public class RibbonToggleButton : RibbonCommon, IRibbonToggleButton,
-        ISizeableDecorator, IToggleableDecorator, IImageableDecorator {
+        ISizeableMixin, IToggleableDecorator, IImageableDecorator {
         internal RibbonToggleButton(string itemId, IResourceManager mgr, bool visible, bool enabled, RdControlSize size,
-                string imageMso, bool showImage, bool showLabel, ToggledEventHandler onToggledAction)
-            : base(itemId, mgr, visible, enabled) {
-            _size      = size;
-            _image     = new ImageObject(imageMso);
+                string imageMso, bool showImage, bool showLabel)
+            : this(itemId, mgr, visible, enabled, size, new ImageObject(imageMso), showImage, showLabel) { }
+        internal RibbonToggleButton(string itemId, IResourceManager mgr, bool visible, bool enabled, RdControlSize size,
+                IPictureDisp image, bool showImage, bool showLabel)
+            : this(itemId, mgr, visible, enabled, size, new ImageObject(image), showImage, showLabel) { }
+        private RibbonToggleButton(string itemId, IResourceManager mgr, bool visible, bool enabled, RdControlSize size,
+                ImageObject image, bool showImage, bool showLabel) : base(itemId, mgr, visible, enabled) {
+            this.SetSize(size, null);
+            _image = image;
             _showImage = showImage;
             _showLabel = showLabel;
-            if (onToggledAction != null) Toggled += onToggledAction;
-        }
-        internal RibbonToggleButton(string itemId, IResourceManager mgr, bool visible, bool enabled, RdControlSize size,
-                IPictureDisp image, bool showImage, bool showLabel, ToggledEventHandler onToggledAction)
-            : base(itemId, mgr, visible, enabled) {
-            _size      = size;
-            _image     = new ImageObject(image);
-            _showImage = showImage;
-            _showLabel = showLabel;
-            if (onToggledAction != null) Toggled += onToggledAction;
         }
 
-        #region ISizeableDecoration
-        /// <inheritdoc/>
+        #region ISizeableMixin
+        /// <summary>Sets ofr gets the preferred {RdControlSize} for the control.</summary>
         public RdControlSize Size {
-            get => _size;
-            set { _size = value; OnChanged(); }
+            get => this.GetSize();
+            set => this.SetSize(value, OnChanged);
         }
-        private RdControlSize _size;
         #endregion
 
         #region IToggleableDecoration

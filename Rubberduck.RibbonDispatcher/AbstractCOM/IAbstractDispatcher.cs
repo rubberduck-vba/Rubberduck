@@ -4,22 +4,19 @@ using System.Runtime.InteropServices;
 using Microsoft.Office.Core;
 
 namespace Rubberduck.RibbonDispatcher.AbstractCOM {
-    ///// <summary>TODO</summary>
-    //[ComVisible(true)]
-    //[CLSCompliant(true)]
-    //[InterfaceType(ComInterfaceType.InterfaceIsDual)]
-    //[Guid(RubberduckGuid.IRibbonViewModel)]
-    //public interface IRibbonViewModel  : IAbstractDispatcher {
-    //}
     /// <summary>TODO</summary>
     [ComVisible(true)]
     [CLSCompliant(true)]
     [InterfaceType(ComInterfaceType.InterfaceIsDual)]
     [Guid(RubberduckGuid.IRibbonViewModel)]
     public interface IRibbonViewModel {
-            /// <summary>TODO</summary>
-            [DispId(DispIds.RibbonFactory)]
+        /// <summary>TODO</summary>
+        [DispId(DispIds.RibbonFactory)]
         IRibbonFactory RibbonFactory { get; }
+
+        /// <summary>TODO</summary>
+        [DispId(DispIds.LoadImage)]
+        object LoadImage(string imageId);
 
         /// <summary>Call back for GetDescription events from ribbon elements.</summary>
         [DispId(DispIds.Description)]

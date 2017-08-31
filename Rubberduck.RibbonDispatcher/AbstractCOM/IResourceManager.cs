@@ -11,5 +11,8 @@ namespace Rubberduck.RibbonDispatcher.AbstractCOM {
         /// <summary>TODO</summary>
         [DispId(1)]
         string GetCurrentUIString(string name);
+        /// <summary>TODO</summary>
+        [DispId(2)]
+        object LoadImage(string name);
     }
 }
