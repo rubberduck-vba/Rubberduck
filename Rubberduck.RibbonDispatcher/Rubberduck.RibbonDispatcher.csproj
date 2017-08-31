@@ -63,8 +63,10 @@
   <ItemGroup>
     <Compile Include="Abstract\IClickedEventArgs.cs" />
     <Compile Include="Abstract\IControlChangedEventArgs.cs" />
+    <Compile Include="Abstract\IRibbonCheckBox.cs" />
     <Compile Include="Abstract\ISelectionMadeEventArgs.cs" />
     <Compile Include="Abstract\IToggledEventArgs.cs" />
+    <Compile Include="Concrete\RibbonCheckBox.cs" />
     <Compile Include="EventHandlers\ClickedEventArgs.cs" />
     <Compile Include="Concrete\AbstractRibbonDispatcher.cs" />
     <Compile Include="EventHandlers\EventHandlerDelegates.cs" />
