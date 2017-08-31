@@ -11,7 +11,8 @@
       <Word>p</Word><Word>q</Word><Word>r</Word><Word>s</Word><Word>t</Word>
       <Word>u</Word><Word>v</Word><Word>w</Word><Word>x</Word><Word>y</Word>
       <Word>z</Word>
-      
+
+      <Word>lhs</Word><Word>rhs</Word>
       <Word>disp</Word>       <!-- Inherited usage in IPictureDisp retained for consistency -->
       <Word>imageable</Word>
       <Word>imageables</Word>

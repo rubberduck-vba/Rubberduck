@@ -4,14 +4,16 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
+using stdole;
 
+using Rubberduck.RibbonDispatcher.Abstract;
 using Rubberduck.RibbonDispatcher.AbstractCOM;
 using Rubberduck.RibbonDispatcher.Concrete;
 using Rubberduck.RibbonDispatcher.EventHandlers;
 
 namespace Rubberduck.RibbonDispatcher {
-    using stdole;
     using static RdControlSize;
+
     /// <summary>TODO</summary>
     [ComVisible(true)]
     [CLSCompliant(true)]
@@ -41,7 +43,7 @@ namespace Rubberduck.RibbonDispatcher {
             RdControlSize       size    = rdLarge
         );
 
-        /// <summary>Returns a new Ribbon ActionButton ViewModel instance.</summary>
+        /// <summary>Returns a new Ribbon ActionButton ViewModel instance that uses a custom image (or none).</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         [DispId(12)]
         RibbonButton NewRibbonButton(
@@ -54,7 +56,7 @@ namespace Rubberduck.RibbonDispatcher {
             bool                showLabel       = true,
             EventHandler        onClickedAction = null
         );
-        /// <summary>Returns a new Ribbon ActionButton ViewModel instance.</summary>
+        /// <summary>Returns a new Ribbon ActionButton ViewModel instance that uses an Office built-in image.</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         [DispId(13)]
         RibbonButton NewRibbonButtonMso(
@@ -62,13 +64,13 @@ namespace Rubberduck.RibbonDispatcher {
             bool                visible         = true,
             bool                enabled         = true,
             RdControlSize       size            = rdLarge,
-            string              imageMso        = "Unknown",
+            string              imageMso        = "MacroSecurity",  // This one get's peope's attention ;-)
             bool                showImage       = false,
             bool                showLabel       = true,
             EventHandler        onClickedAction = null
         );
 
-        /// <summary>Returns a new Ribbon ToggleButton ViewModel instance.</summary>
+        /// <summary>Returns a new Ribbon ToggleButton ViewModel instance that uses a custom image (or none).</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         [DispId(14)]
         RibbonToggleButton NewRibbonToggle(
@@ -81,7 +83,7 @@ namespace Rubberduck.RibbonDispatcher {
             bool                showLabel       = true,
             ToggledEventHandler onToggledAction = null
         );
-        /// <summary>Returns a new Ribbon ToggleButton ViewModel instance.</summary>
+        /// <summary>Returns a new Ribbon ToggleButton ViewModel instance that uses an Office built-in image.</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         [DispId(15)]
         RibbonToggleButton NewRibbonToggleMso(
@@ -89,7 +91,7 @@ namespace Rubberduck.RibbonDispatcher {
             bool                visible         = true,
             bool                enabled         = true,
             RdControlSize       size            = rdLarge,
-            string              imageMso        = "Unknown",
+            string              imageMso        = "MacroSecurity",  // This one get's peope's attention ;-)
             bool                showImage       = false,
             bool                showLabel       = true,
             ToggledEventHandler onToggledAction = null
@@ -113,7 +115,19 @@ namespace Rubberduck.RibbonDispatcher {
             string              id,
             bool                visible = true,
             bool                enabled = true,
-            RdControlSize       size    = rdLarge
+            RdControlSize       size    = rdLarge,
+            SelectionMadeEventHandler onSelectionMade = null,
+            ISelectableItem[]   items   = null
+        );
+
+        /// <summary>Returns a new Ribbon DropDownViewModel instance.</summary>
+        [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification = "Matches COM usage.")]
+        [DispId(18)]
+        SelectableItem NewSelectableItem(
+            string id,
+            string label     = null,
+            string screenTip = null,
+            string superTip  = null
         );
     }
 }

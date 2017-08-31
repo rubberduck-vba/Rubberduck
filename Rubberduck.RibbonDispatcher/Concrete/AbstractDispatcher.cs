@@ -2,15 +2,11 @@
 //                                Copyright (c) 2017 Pieter Geerkens                              //
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Drawing;
 using System.Globalization;
 using System.Reflection;
 using System.Resources;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
 
-using stdole;
 using Microsoft.Office.Core;
 
 using Rubberduck.RibbonDispatcher.Abstract;
@@ -42,8 +38,8 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         protected void InitializeRibbonFactory(IRibbonUI ribbonUI, ResourceManager resourceManager) 
             => _ribbonFactory = new RibbonFactory(ribbonUI, resourceManager);
 
-        /// <summary>TODO</summary>
-        public IRibbonFactory  RibbonFactory => _ribbonFactory; private RibbonFactory _ribbonFactory;
+        /// <inheritdoc/>
+        public  IRibbonFactory RibbonFactory => _ribbonFactory; private RibbonFactory _ribbonFactory;
 
         /// <summary>TODO</summary>
         private IRibbonCommon  Controls   (string controlId) => _ribbonFactory.Controls.GetOrDefault(controlId);
@@ -56,38 +52,78 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         /// <summary>TODO</summary>
         private IImageableItem Imageables (string controlId) => _ribbonFactory.Imageables.GetOrDefault(controlId);
 
-        /// <summary>Call back for GetDescription events from ribbon elements.</summary>
-        public string          GetDescription(IRibbonControl control) => Controls(control?.Id)?.Description ?? Unknown(control);
-        /// <summary>Call back for GetEnabled events from ribbon elements.</summary>
-        public bool            GetEnabled    (IRibbonControl control) => Controls(control?.Id)?.IsEnabled   ?? false;
-        /// <summary>Call back for GetKeyTip events from ribbon elements.</summary>
-        public string          GetKeyTip     (IRibbonControl control) => Controls(control?.Id)?.KeyTip      ?? "??";
-        /// <summary>Call back for GetLabel events from ribbon elements.</summary>
-        public string          GetLabel      (IRibbonControl control) => Controls(control?.Id)?.Label       ?? Unknown(control);
-        /// <summary>Call back for GetScreenTip events from ribbon elements.</summary>
-        public string          GetScreenTip  (IRibbonControl control) => Controls(control?.Id)?.ScreenTip   ?? Unknown(control);
-        /// <summary>Call back for GetSize events from ribbon elements.</summary>
-        public RdControlSize   GetSize       (IRibbonControl control) => Controls(control?.Id)?.Size        ?? RdControlSize.rdLarge;
-        /// <summary>Call back for GetSuperTip events from ribbon elements.</summary>
-        public string          GetSuperTip   (IRibbonControl control) => Controls(control?.Id)?.SuperTip    ?? Unknown(control);
-        /// <summary>Call back for GetVisible events from ribbon elements.</summary>
-        public bool            GetVisible    (IRibbonControl control) => Controls(control?.Id)?.IsVisible   ?? true;
+        /// <inheritdoc/>
+        public string GetDescription(IRibbonControl control)
+            => Controls(control?.Id)?.Description ?? Unknown(control);
+        /// <inheritdoc/>
+        public bool   GetEnabled(IRibbonControl control)
+            => Controls(control?.Id)?.IsEnabled   ?? false;
+        /// <inheritdoc/>
+        public string GetKeyTip(IRibbonControl control)
+            => Controls(control?.Id)?.KeyTip      ?? "??";
+        /// <inheritdoc/>
+        public string GetLabel(IRibbonControl control)
+            => Controls(control?.Id)?.Label       ?? Unknown(control);
+        /// <inheritdoc/>
+        public string GetScreenTip(IRibbonControl control)
+            => Controls(control?.Id)?.ScreenTip   ?? Unknown(control);
+        /// <inheritdoc/>
+        public string GetSuperTip(IRibbonControl control)
+            => Controls(control?.Id)?.SuperTip    ?? Unknown(control);
+        /// <inheritdoc/>
+        public bool   GetVisible(IRibbonControl control)
+            => Controls(control?.Id)?.IsVisible   ?? true;
 
-        /// <summary>Call back for GetImage events from ribbon elements.</summary>
-        public object          GetImage      (IRibbonControl control) => Imageables(control?.Id)?.Image     ?? "MacroSecurity";
-        /// <summary>Call back for GetShowImage events from ribbon elements.</summary>
-        public bool            GetShowImage  (IRibbonControl control) => Imageables(control?.Id)?.ShowImage ?? true;
-        /// <summary>Call back for GetShowLabe l events from ribbon elements.</summary>
-        public bool            GetShowLabel  (IRibbonControl control) => Imageables(control?.Id)?.ShowLabel ?? true;
+        /// <inheritdoc/>
+        public RdControlSize GetSize(IRibbonControl control) => Controls(control?.Id)?.Size ?? RdControlSize.rdLarge;
 
-        /// <summary>Call back for GetPressed events from the checkBox and toggleButton ribbon elements.</summary>
-        public bool            GetPressed    (IRibbonControl control) => Toggles(control?.Id)?.IsPressed    ?? false;
-        /// <summary>Call back for OnAction events from the checkBox and toggleButton ribbon elements.</summary>
-        public void OnActionToggle(IRibbonControl control, bool pressed) => Toggles(control?.Id)?.OnActionToggle(pressed);
+        /// <inheritdoc/>
+        public object GetImage(IRibbonControl control)
+            => Imageables(control?.Id)?.Image     ?? "MacroSecurity";
+        /// <inheritdoc/>
+        public bool   GetShowImage(IRibbonControl control)
+            => Imageables(control?.Id)?.ShowImage ?? true;
+        /// <inheritdoc/>
+        public bool   GetShowLabel(IRibbonControl control)
+            => Imageables(control?.Id)?.ShowLabel ?? true;
 
-        /// <summary>Call back for OnAction events from the button ribbon elements.</summary>
-        public void OnAction(IRibbonControl control) => Actions(control?.Id)?.OnAction();
+        /// <inheritdoc/>
+        public bool   GetPressed(IRibbonControl control)
+            => Toggles(control?.Id)?.IsPressed    ?? false;
+        /// <inheritdoc/>
+        public void   OnActionToggle(IRibbonControl control, bool pressed)
+            => Toggles(control?.Id)?.OnActionToggle(pressed);
 
+        /// <inheritdoc/>
+        public void   OnAction(IRibbonControl control) => Actions(control?.Id)?.OnAction();
+
+        /// <inheritdoc/>
+        public string GetSelectedItemId(IRibbonControl control)           => DropDowns(control?.Id)?.SelectedItemId;
+        /// <inheritdoc/>
+        public int    GetSelectedItemIndex(IRibbonControl control)        => DropDowns(control?.Id)?.SelectedItemIndex    ?? 0;
+        /// <inheritdoc/>
+        public void   OnActionDropDown(IRibbonControl control, string selectedId, int selectedIndex) => DropDowns(control?.Id)?.OnActionDropDown(selectedId, selectedIndex);
+ 
+        /// <inheritdoc/>
+        public int    GetItemCount(IRibbonControl control)                => DropDowns(control?.Id)?.ItemCount            ?? 0;
+        /// <inheritdoc/>
+        public string GetItemId(IRibbonControl control, int index)        => DropDowns(control?.Id)?.ItemId(index)        ?? "";
+        /// <inheritdoc/>
+        public string GetItemLabel(IRibbonControl control, int index)     => DropDowns(control?.Id)?.ItemLabel(index)     ?? Unknown(control);
+        /// <inheritdoc/>
+        public string GetItemScreenTip(IRibbonControl control, int index) => DropDowns(control?.Id)?.ItemScreenTip(index) ?? Unknown(control);
+        /// <inheritdoc/>
+        public string GetItemSuperTip(IRibbonControl control, int index)  => DropDowns(control?.Id)?.ItemSuperTip(index)  ?? Unknown(control);
+
+        /// <inheritdoc/>
+        public object GetItemImage(IRibbonControl control, int index)     => DropDowns(control?.Id)?.ItemImage(index)     ?? "MacroSecurity";
+        /// <inheritdoc/>
+        public bool   GetItemShowImage(IRibbonControl control, int index) => DropDowns(control?.Id)?.ItemShowImage(index) ?? true;
+        /// <inheritdoc/>
+        public bool   GetItemShowLabel(IRibbonControl control, int index) => DropDowns(control?.Id)?.ItemShowLabel(index) ?? true;
+
+        //private ISelectableItem DropDownItem(IRibbonControl control, int index)
+        //    => DropDowns(control?.Id)[index];
 
         private static string Unknown(IRibbonControl control) 
             => string.Format(CultureInfo.InvariantCulture, $"Unknown control '{control?.Id??""}'");
@@ -95,28 +131,5 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         /// <summary>TODO</summary>
         protected static ResourceManager GetResourceManager(string resourceSetName) 
             => new ResourceManager(resourceSetName, Assembly.GetExecutingAssembly());
-
-        /// <summary>TODO</summary>
-        protected static IPictureDisp    GetResourceImage(string imageName, ResourceManager resourceManager) {
-            using (var image = resourceManager?.GetObject(imageName, CultureInfo.InvariantCulture) as Image) {
-                return (image == null) ? null : PictureConverter.ImageToPictureDisp(image);
-            }
-        }
-
-        /// <summary>TODO</summary>
-        protected static IPictureDisp    GetResourceIcon(string iconName, ResourceManager resourceManager) {
-            using (var icon = resourceManager?.GetObject(iconName, CultureInfo.InvariantCulture) as Icon) {
-                return icon == null ? null : PictureConverter.IconToPictureDisp(icon);
-            }
-        }
-
-        [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
-        internal class PictureConverter : AxHost {
-            private PictureConverter() : base(String.Empty) { }
-
-            public static IPictureDisp ImageToPictureDisp(Image image) => GetIPictureDispFromPicture(image) as IPictureDisp;
-
-            public static IPictureDisp IconToPictureDisp(Icon icon)    => ImageToPictureDisp(icon.ToBitmap());
-        }
     }
 }

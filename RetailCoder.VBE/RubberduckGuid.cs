@@ -54,5 +54,7 @@ namespace Rubberduck
         public const string RibbonTextLanguageControl   = "69E1941D" + RibbonDispatcherGuidspace;
         public const string IRibbonToggleButton         = "69E1941E" + RibbonDispatcherGuidspace;
         public const string RibbonToggleButton          = "69E1941F" + RibbonDispatcherGuidspace;
+        public const string ISelectableItem             = "69E19420" + RibbonDispatcherGuidspace;
+        public const string SelectableItem              = "69E19421" + RibbonDispatcherGuidspace;
     }
 }

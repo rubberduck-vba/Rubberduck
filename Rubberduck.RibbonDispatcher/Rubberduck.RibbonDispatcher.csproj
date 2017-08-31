@@ -61,6 +61,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AbstractCOM\ISelectableItem.cs" />
+    <Compile Include="Concrete\SelectableItem.cs" />
     <Compile Include="DispIds.cs" />
     <Compile Include="Abstract\IActionItem.cs" />
     <Compile Include="EventHandlers\IClickedEventArgs.cs" />
@@ -82,7 +84,7 @@
     <Compile Include="Concrete\AbstractDispatcher.cs" />
     <Compile Include="EventHandlers\EventHandlerDelegates.cs" />
     <Compile Include="AbstractCOM\RdControlSize.cs" />
-    <Compile Include="RibbonCommonExtensions.cs" />
+    <Compile Include="MiscellaneousExtensions.cs" />
     <Compile Include="Abstract\ControlChangedEventArgs.cs" />
     <Compile Include="EventHandlers\ToggledEventArgs.cs" />
     <Compile Include="AbstractCOM\IRibbonButton.cs" />

@@ -148,8 +148,20 @@ namespace Rubberduck.RibbonDispatcher {
             string              id,
             bool                visible         = true,
             bool                enabled         = true,
-            RdControlSize       size            = rdLarge
-        ) => Add(new RibbonDropDown(id, _resourceManager, visible, enabled, size));
+            RdControlSize       size            = rdLarge,
+            SelectionMadeEventHandler onSelectionMade = null,
+            ISelectableItem[]   items           = null
+        ) => Add(new RibbonDropDown(id, _resourceManager, visible, enabled, size, onSelectionMade, items));
+
+        /// <summary>Returns a new Ribbon DropDownViewModel instance.</summary>
+        [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification = "Matches COM usage.")]
+        [DispId(18)]
+        public SelectableItem NewSelectableItem(
+            string id,
+            string label,
+            string screenTip = null,
+            string superTip = null
+        ) => new SelectableItem(id, _resourceManager);
 
         /// <summary>TODO</summary>
         public void Invalidate()                            => _ribbonUI.Invalidate();

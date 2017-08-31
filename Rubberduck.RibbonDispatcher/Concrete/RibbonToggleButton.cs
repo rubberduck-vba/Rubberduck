@@ -45,8 +45,8 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
 
         /// <summary>TODO</summary>
         public void OnActionToggle(bool isPressed) {
-            Toggled?.Invoke(this, new ToggledEventArgs(isPressed));
             IsPressed = isPressed;
+            Toggled?.Invoke(this, new ToggledEventArgs(isPressed));
             OnChanged();
         }
 

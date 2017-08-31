@@ -36,15 +36,16 @@ namespace Rubberduck.RibbonDispatcher {
 
         // IDropDownItem
         public const int SelectedItemId     = 19;
-        public const int OnActionDropDown   = 20;
-        //public const int Image              = 21;
-        //public const int ShowImage          = 22;
-        //public const int ShowLabel          = 23;
-        //public const int IsVisible          = 24;
-        //public const int Pressed            = 25;
-        //public const int OnAction           = 26;
-        //public const int OnActionToggle     = 27;
-        //public const int SetImage           = 28;
-        //public const int SetImageMso        = 29;
+        public const int SelectedItemIndex  = 20;
+        public const int OnActionDropDown   = 21;
+
+        public const int ItemCount          = 22;
+        public const int ItemId             = 23;
+        public const int ItemLabel          = 24;
+        public const int ItemScreenTip      = 25;
+        public const int ItemSuperTip       = 26;
+        public const int ItemImage          = 27;
+        public const int ItemShowLabel      = 28;
+        public const int ItemShowImage      = 29;
     }
 }

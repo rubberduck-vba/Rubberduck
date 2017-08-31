@@ -8,7 +8,6 @@ using System.Runtime.InteropServices;
 
 using Rubberduck.RibbonDispatcher.Abstract;
 using Rubberduck.RibbonDispatcher.AbstractCOM;
-using Rubberduck.RibbonDispatcher.EventHandlers;
 using LanguageStrings = Rubberduck.RibbonDispatcher.AbstractCOM.IRibbonTextLanguageControl;
 
 namespace Rubberduck.RibbonDispatcher.Concrete {
@@ -21,6 +20,9 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [ComDefaultInterface(typeof(IRibbonCommon))]
     [Guid(RubberduckGuid.RibbonCommon)]
     public abstract class RibbonCommon : IRibbonCommon {
+        /// <summary>TODO</summary>
+        protected RibbonCommon(string id, ResourceManager resourceManager)
+            : this(id, resourceManager, true, true, RdControlSize.rdRegular) {;}
         /// <summary>TODO</summary>
         protected RibbonCommon(string id, ResourceManager resourceManager, bool visible, bool enabled, RdControlSize size) {
             Id               = id;
@@ -89,15 +91,5 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
                     mgr.GetCurrentUItString(Invariant($"{controlId ?? ""}_Description"))    ?? controlId + " Description");
         /// <summary>TODO</summary>
         private static string Invariant(string formattable) => String.Format(formattable, CultureInfo.InvariantCulture);
-    }
-
-    /// <summary>TODO</summary>
-    public static partial class ResourceManagerExtensions {
-        /// <summary>TODO</summary>
-        public static string GetCurrentUItString(this ResourceManager resourceManager, string name)
-            => resourceManager?.GetString(name, CultureInfo.CurrentUICulture) ?? "";
-        /// <summary>TODO</summary>
-        public static string GetInvariantString(this ResourceManager resourceManager, string name)
-            => resourceManager?.GetString(name, CultureInfo.InvariantCulture) ?? "";
     }
 }

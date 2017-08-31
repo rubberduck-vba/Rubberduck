@@ -3,9 +3,8 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 using System;
 using System.Runtime.InteropServices;
-using Microsoft.Office.Core;
 
-using Dispids = Rubberduck.RibbonDispatcher.DispIds;
+using Microsoft.Office.Core;
 
 namespace Rubberduck.RibbonDispatcher.AbstractCOM {
     /// <summary>TODO</summary>
@@ -15,53 +14,89 @@ namespace Rubberduck.RibbonDispatcher.AbstractCOM {
     [Guid(RubberduckGuid.IAbstractDispatcher)]
     public interface IAbstractDispatcher {
         /// <summary>TODO</summary>
-        [DispId(Dispids.RibbonFactory)]
+        [DispId(DispIds.RibbonFactory)]
         IRibbonFactory RibbonFactory { get; }
 
         /// <summary>Call back for GetDescription events from ribbon elements.</summary>
-        [DispId(Dispids.Description)]
+        [DispId(DispIds.Description)]
         string        GetDescription(IRibbonControl control);
         /// <summary>Call back for GetEnabled events from ribbon elements.</summary>
-        [DispId(Dispids.IsEnabled)]
+        [DispId(DispIds.IsEnabled)]
         bool          GetEnabled    (IRibbonControl control);
         /// <summary>Call back for GetKeyTip events from ribbon elements.</summary>
-        [DispId(Dispids.KeyTip)]
+        [DispId(DispIds.KeyTip)]
         string        GetKeyTip     (IRibbonControl control);
         /// <summary>Call back for GetLabel events from ribbon elements.</summary>
-        [DispId(Dispids.Label)]
+        [DispId(DispIds.Label)]
         string        GetLabel      (IRibbonControl control);
         /// <summary>Call back for GetScreenTip events from ribbon elements.</summary>
-        [DispId(Dispids.ScreenTip)]
+        [DispId(DispIds.ScreenTip)]
         string        GetScreenTip  (IRibbonControl control);
         /// <summary>Call back for GetSize events from ribbon elements.</summary>
-        [DispId(Dispids.Size)]
+        [DispId(DispIds.Size)]
         RdControlSize GetSize       (IRibbonControl control);
         /// <summary>Call back for GetSuperTip events from ribbon elements.</summary>
-        [DispId(Dispids.SuperTip)]
+        [DispId(DispIds.SuperTip)]
         string        GetSuperTip   (IRibbonControl control);
         /// <summary>Call back for GetVisible events from ribbon elements.</summary>
-        [DispId(Dispids.IsVisible)]
+        [DispId(DispIds.IsVisible)]
         bool          GetVisible    (IRibbonControl control);
 
         /// <summary>Call back for GetImage events from ribbon elements.</summary>
-        [DispId(Dispids.Image)]
+        [DispId(DispIds.Image)]
         object        GetImage      (IRibbonControl control);
         /// <summary>Call back for GetShowImage events from ribbon elements.</summary>
-        [DispId(Dispids.ShowImage)]
+        [DispId(DispIds.ShowImage)]
         bool          GetShowImage  (IRibbonControl control);
         /// <summary>Call back for GetShowLabe l events from ribbon elements.</summary>
-        [DispId(Dispids.ShowLabel)]
+        [DispId(DispIds.ShowLabel)]
         bool          GetShowLabel  (IRibbonControl control);
 
         /// <summary>Call back for GetPressed events from the checkBox and toggleButton ribbon elements.</summary>
-        [DispId(Dispids.IsPressed)]
+        [DispId(DispIds.IsPressed)]
         bool          GetPressed    (IRibbonControl control);
         /// <summary>Call back for OnAction events from the checkBox and toggleButton ribbon elements.</summary>
-        [DispId(Dispids.OnActionToggle)]
-        void OnActionToggle(IRibbonControl control, bool pressed);
+        [DispId(DispIds.OnActionToggle)]
+        void   OnActionToggle(IRibbonControl control, bool pressed);
 
         /// <summary>Call back for OnAction events from the button ribbon elements.</summary>
-        [DispId(Dispids.OnAction)]
-        void OnAction(IRibbonControl control);
+        [DispId(DispIds.OnAction)]
+        void   OnAction(IRibbonControl control);
+
+        /// <summary>TODO</summary>
+        [DispId(DispIds.SelectedItemId)]
+        string GetSelectedItemId(IRibbonControl control);
+        /// <summary>TODO</summary>
+        [DispId(DispIds.SelectedItemIndex)]
+        int    GetSelectedItemIndex(IRibbonControl control);
+        /// <summary>Call back for OnAction events from the drop-down ribbon elements.</summary>
+        [DispId(DispIds.OnActionDropDown)]
+        void   OnActionDropDown(IRibbonControl control, string selectedId, int selectedIndex);
+
+        /// <summary>Call back for ItemCount events from the drop-down ribbon elements.</summary>
+        [DispId(DispIds.ItemCount)]
+        int    GetItemCount(IRibbonControl control);
+        /// <summary>Call back for GetItemID events from the drop-down ribbon elements.</summary>
+        [DispId(DispIds.ItemId)]
+        string GetItemId(IRibbonControl control, int index);
+        /// <summary>Call back for GetItemLabel events from the drop-down ribbon elements.</summary>
+        [DispId(DispIds.ItemLabel)]
+        string GetItemLabel(IRibbonControl control, int index);
+        /// <summary>Call back for GetItemScreenTip events from the drop-down ribbon elements.</summary>
+        [DispId(DispIds.ItemScreenTip)]
+        string GetItemScreenTip(IRibbonControl control, int index);
+        /// <summary>Call back for GetItemSuperTip events from the drop-down ribbon elements.</summary>
+        [DispId(DispIds.ItemSuperTip)]
+        string GetItemSuperTip(IRibbonControl control, int index);
+
+        /// <summary>Call back for GetItemImage events from the drop-down ribbon elements.</summary>
+        [DispId(DispIds.ItemImage)]
+        object GetItemImage(IRibbonControl control, int index);
+        /// <summary>Call back for GetItemShowImage events from the drop-down ribbon elements.</summary>
+        [DispId(DispIds.ItemShowImage)]
+        bool   GetItemShowImage(IRibbonControl control, int index);
+        /// <summary>Call back for GetItemShowLabel events from the drop-down ribbon elements.</summary>
+        [DispId(DispIds.ItemShowLabel)]
+        bool   GetItemShowLabel(IRibbonControl control, int index);
     }
 }

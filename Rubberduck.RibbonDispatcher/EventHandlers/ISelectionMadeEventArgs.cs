@@ -15,6 +15,9 @@ namespace Rubberduck.RibbonDispatcher.AbstractCOM {
     public interface ISelectionMadeEventArgs {
         /// <summary>TODO</summary>
         [DispId(DispIds.SelectedItemId)]
-        string ItemId { get; }
+        string ItemId    { get; }
+        /// <summary>TODO</summary>
+        [DispId(DispIds.SelectedItemIndex)]
+        int    ItemIndex { get; }
     }
 }

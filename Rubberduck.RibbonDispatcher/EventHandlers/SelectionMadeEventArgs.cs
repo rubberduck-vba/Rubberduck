@@ -14,8 +14,10 @@ namespace Rubberduck.RibbonDispatcher.EventHandlers {
     [ComDefaultInterface(typeof(ISelectionMadeEventArgs))]
     public class SelectionMadeEventArgs : EventArgs, ISelectionMadeEventArgs {
         /// <summary>TODO</summary>
-        public SelectionMadeEventArgs(string itemId) { ItemId = itemId; }
+        public SelectionMadeEventArgs(string itemId, int itemIndex) { ItemId = itemId; ItemIndex = itemIndex; }
         /// <summary>TODO</summary>
         public string ItemId    { get; }
+        /// <summary>TODO</summary>
+        public int    ItemIndex { get; }
     }
 }
