@@ -133,11 +133,10 @@ namespace Rubberduck.Parsing.Symbols
         private void DeclareControlsAsMembers(IVBComponent form)
         {
             if (form.Controls == null) { return; }
-            var msFormsLib = _state.DeclarationFinder.FindProject("MSForms");
 
             foreach (var control in form.Controls)
             {
-                var typeName = control.TypeName();
+                var typeName = $"MSForms.{control.TypeName()}";
                 // The as type declaration should be TextBox, CheckBox, etc. depending on the type.
                 var declaration = new Declaration(
                     _qualifiedModuleName.QualifyMemberName(control.Name),
@@ -154,11 +153,6 @@ namespace Rubberduck.Parsing.Symbols
                     false,
                     null,
                     true);
-
-                if (msFormsLib != null)
-                {
-                    declaration.AsTypeDeclaration = _state.DeclarationFinder.FindClassModule(typeName, msFormsLib, true);
-                }
 
                 AddDeclaration(declaration);
             }
