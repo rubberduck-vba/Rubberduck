@@ -1,13 +1,11 @@
 ﻿using System;
+using System.Resources;
 using System.Runtime.InteropServices;
-
-using Microsoft.Office.Core;
 
 using Rubberduck.RibbonDispatcher.Abstract;
 using Rubberduck.RibbonDispatcher.EventHandlers;
 
-namespace Rubberduck.RibbonDispatcher.Concrete
-{
+namespace Rubberduck.RibbonDispatcher.Concrete {
     using LanguageStrings           = IRibbonTextLanguageControl;
 
     /// <summary>TODO</summary>
@@ -16,8 +14,8 @@ namespace Rubberduck.RibbonDispatcher.Concrete
     [ClassInterface(ClassInterfaceType.None)]
     [ComSourceInterfaces(typeof(ISelectionMadeEvents))]
     public class RibbonDropDown : RibbonCommon, IRibbonDropDown {
-        internal RibbonDropDown(string id, LanguageStrings strings, bool visible, bool enabled, MyRibbonControlSize size)
-            : base(id, strings, visible, enabled, size){
+        internal RibbonDropDown(string id, ResourceManager mgr, bool visible, bool enabled, MyRibbonControlSize size)
+            : base(id, mgr, visible, enabled, size){
         }
 
         /// <summary>TODO</summary>

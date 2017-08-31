@@ -12,6 +12,7 @@ using Rubberduck.RibbonDispatcher.EventHandlers;
 
 namespace Rubberduck.RibbonDispatcher
 {
+    using System.Resources;
     using static MyRibbonControlSize;
 
     using LanguageStrings     = IRibbonTextLanguageControl;
@@ -27,15 +28,18 @@ namespace Rubberduck.RibbonDispatcher
     [ComVisible(false)]
     [CLSCompliant(true)]
     public class RibbonFactory {
-        internal RibbonFactory(IRibbonUI ribbonUI) {
+        internal RibbonFactory(IRibbonUI ribbonUI, ResourceManager resourceManager) {
             _ribbonUI  = ribbonUI;
             _controls  = new Dictionary<string,IRibbonCommon>();
             _buttons   = new Dictionary<string,IRibbonButton>();
             _toggles   = new Dictionary<string,IRibbonToggle>();
             _dropDowns = new Dictionary<string,IRibbonDropDown>();
+
+            _resourceManager = resourceManager;
         }
 
-        private readonly IRibbonUI _ribbonUI;
+        private readonly IRibbonUI       _ribbonUI;
+        private readonly ResourceManager _resourceManager;
 
         private void PropertyChanged(object sender, IControlChangedEventArgs e) => _ribbonUI.InvalidateControl(e.ControlId);
 
@@ -56,11 +60,10 @@ namespace Rubberduck.RibbonDispatcher
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         public IRibbonCommon NewRibbonGroup(
             string              id,
-            LanguageStrings     strings = null, 
             bool                visible = true,
             bool                enabled = true,
             MyRibbonControlSize size    = Large
-        ) => Add(new RibbonGroup(id, strings, visible, enabled, size));
+        ) => Add(new RibbonGroup(id, _resourceManager, visible, enabled, size));
 
         /// <summary>TODO</summary>
         public IReadOnlyDictionary<string,IRibbonButton>     Buttons   => new ReadOnlyDictionary<string,IRibbonButton>(_buttons);
@@ -69,14 +72,13 @@ namespace Rubberduck.RibbonDispatcher
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         public IRibbonButton NewRibbonButton(
             string              id,
-            LanguageStrings     strings   = null, 
             bool                visible   = true,
             bool                enabled   = true,
             MyRibbonControlSize size      = Large,
             bool                showImage = false,
             bool                showLabel = true,
             EventHandler        onClickedAction = null
-        ) => Add(new RibbonButton(id, strings, visible, enabled, size, showImage, showLabel, onClickedAction));
+        ) => Add(new RibbonButton(id, _resourceManager, visible, enabled, size, showImage, showLabel, onClickedAction));
 
         /// <summary>TODO</summary>
         public IReadOnlyDictionary<string,IRibbonToggle>     Toggles   => new ReadOnlyDictionary<string,IRibbonToggle>(_toggles);
@@ -85,14 +87,13 @@ namespace Rubberduck.RibbonDispatcher
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         public IRibbonToggle NewRibbonToggle(
             string              id,
-            LanguageStrings     strings   = null, 
             bool                visible   = true,
             bool                enabled   = true,
             MyRibbonControlSize size      = Large,
             bool                showImage = false,
             bool                showLabel = true,
             ToggledEventHandler onClickedAction = null
-        ) => Add(new RibbonToggle(id, strings, visible, enabled, size, showImage, showLabel, onClickedAction));
+        ) => Add(new RibbonToggle(id, _resourceManager, visible, enabled, size, showImage, showLabel, onClickedAction));
 
         /// <summary>TODO</summary>
         public IReadOnlyDictionary<string,IRibbonDropDown>   DropDowns => new ReadOnlyDictionary<string,IRibbonDropDown>(_dropDowns);
@@ -101,11 +102,10 @@ namespace Rubberduck.RibbonDispatcher
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         public IRibbonDropDown NewRibbonDropDown(
             string              id,
-            LanguageStrings     strings = null, 
             bool                visible = true,
             bool                enabled = true,
             MyRibbonControlSize size    = Large
-        ) => Add(new RibbonDropDown(id, strings, visible, enabled, size));
+        ) => Add(new RibbonDropDown(id, _resourceManager, visible, enabled, size));
 
         /// <summary>TODO</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
@@ -122,7 +122,7 @@ namespace Rubberduck.RibbonDispatcher
     /// <summary>TODO</summary>
     public interface IMain {
         /// <summary>TODO</summary>
-        IRibbonViewModel NewRibbonViewModel(IRibbonUI ribbonUI);
+        IRibbonViewModel NewRibbonViewModel(IRibbonUI ribbonUI, ResourceManager resourceManager);
     }
 
     /// <summary>TODO</summary>
@@ -130,7 +130,8 @@ namespace Rubberduck.RibbonDispatcher
         /// <summary>TODO</summary>
         public Main() { }
         /// <inheritdoc/>
-        public IRibbonViewModel NewRibbonViewModel(IRibbonUI ribbonUI) => new RibbonViewModel(ribbonUI);
+        public IRibbonViewModel NewRibbonViewModel(IRibbonUI ribbonUI, ResourceManager resourceManager)
+            => new RibbonViewModel(ribbonUI, resourceManager);
     }
 
     /// <summary>TODO</summary>
@@ -141,8 +142,8 @@ namespace Rubberduck.RibbonDispatcher
     /// <summary>TODO</summary>
     public class RibbonViewModel : AbstractRibbonDispatcher, IRibbonViewModel {
         /// <summary>TODO</summary>
-        public RibbonViewModel(IRibbonUI ribbonUI) : base() {
-            InitializeRibbonFactory(ribbonUI);
+        public RibbonViewModel(IRibbonUI ribbonUI, ResourceManager resourceManager) : base() {
+            InitializeRibbonFactory(ribbonUI, resourceManager);
         }
     }
 }

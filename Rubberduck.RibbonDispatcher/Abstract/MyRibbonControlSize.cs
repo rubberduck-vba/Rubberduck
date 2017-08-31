@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using Microsoft.Office.Core;
 
 namespace Rubberduck.RibbonDispatcher.Abstract {
-    /// <summary>COM-compatible alias for the OFFICE enumeration <see cref="RibbonControlSize"/>.</summary>
+    /// <summary>COM-visible alias for the OFFICE enumeration <see cref="RibbonControlSize"/>.</summary>
     /// <remarks>
     /// This enumeration exists because COM Interop claims that (though it should)
     /// it doesn't know about the OFFICE enumeration {RibbonControlSize}.
