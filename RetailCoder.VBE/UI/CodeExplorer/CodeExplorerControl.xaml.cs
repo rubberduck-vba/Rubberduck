@@ -22,11 +22,13 @@ namespace Rubberduck.UI.CodeExplorer
             {
                 ViewModel.NavigateCommand.Execute(ViewModel.SelectedItem);
             }
+            e.Handled = true;
         }
 
-        private void OnPreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        private void TreeView_OnMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             ((TreeViewItem)sender).IsSelected = true;
+            e.Handled = true;
         }
     }
 }

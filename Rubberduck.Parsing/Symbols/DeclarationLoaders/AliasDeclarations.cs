@@ -38,6 +38,7 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
             Grammar.Tokens.Command,
             Grammar.Tokens.Environ,
             Grammar.Tokens.Chr,
+            Grammar.Tokens.ChrB,
             Grammar.Tokens.ChrW,
             Grammar.Tokens.Format,
             Grammar.Tokens.LCase,
@@ -50,6 +51,7 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
             Grammar.Tokens.Right,
             Grammar.Tokens.RightB,
             Grammar.Tokens.RTrim,
+            Grammar.Tokens.Space,
             Grammar.Tokens.String,
             Grammar.Tokens.UCase,
             Grammar.Tokens.Date,
@@ -179,6 +181,7 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 CommandFunction(),
                 EnvironFunction(),
                 ChrFunction(),
+                ChrBFunction(),
                 ChrwFunction(),
                 FormatFunction(),
                 LCaseFunction(),
@@ -191,6 +194,7 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 RightFunction(),
                 RightBFunction(),
                 RTrimFunction(),
+                SpaceFunction(),
                 StringFunction(),
                 UCaseFunction(),
                 InputFunction(),
@@ -346,6 +350,24 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
         {
             return new FunctionDeclaration(
                 new QualifiedMemberName(_stringsModule.QualifiedName.QualifiedModuleName, "Chr"),
+                _stringsModule,
+                _stringsModule,
+                "Variant",
+                null,
+                string.Empty,
+                Accessibility.Global,
+                null,
+                new Selection(),
+                false,
+                false,
+                new List<IAnnotation>(),
+                new Attributes());
+        }
+
+        private FunctionDeclaration ChrBFunction()
+        {
+            return new FunctionDeclaration(
+                new QualifiedMemberName(_stringsModule.QualifiedName.QualifiedModuleName, "ChrB"),
                 _stringsModule,
                 _stringsModule,
                 "Variant",
@@ -562,6 +584,24 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
         {
             return new FunctionDeclaration(
                 new QualifiedMemberName(_stringsModule.QualifiedName.QualifiedModuleName, "RTrim"),
+                _stringsModule,
+                _stringsModule,
+                "Variant",
+                null,
+                string.Empty,
+                Accessibility.Global,
+                null,
+                new Selection(),
+                false,
+                false,
+                new List<IAnnotation>(),
+                new Attributes());
+        }
+
+        private FunctionDeclaration SpaceFunction()
+        {
+            return new FunctionDeclaration(
+                new QualifiedMemberName(_stringsModule.QualifiedName.QualifiedModuleName, "Space"),
                 _stringsModule,
                 _stringsModule,
                 "Variant",

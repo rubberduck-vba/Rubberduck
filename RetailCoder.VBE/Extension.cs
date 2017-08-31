@@ -237,25 +237,25 @@ namespace Rubberduck
             try
             {
                 _logger.Log(LogLevel.Info, "Rubberduck is shutting down.");
-                _logger.Log(LogLevel.Trace, "Extension unhooking VBENativeServices events.");
+                _logger.Log(LogLevel.Trace, "Unhooking VBENativeServices events...");
                 VBENativeServices.UnhookEvents();
 
-                _logger.Log(LogLevel.Trace, "Extension broadcasting shutdown.");
+                _logger.Log(LogLevel.Trace, "Broadcasting shutdown...");
                 User32.EnumChildWindows(_ide.MainWindow.Handle(), EnumCallback, new IntPtr(0));
 
-                _logger.Log(LogLevel.Trace, "Extension calling ReleaseDockableHosts.");
+                _logger.Log(LogLevel.Trace, "Releasing dockable hosts...");
                 Windows.ReleaseDockableHosts();
 
                 if (_app != null)
                 {
-                    _logger.Log(LogLevel.Trace, "Extension calling App.Shutdown.");
+                    _logger.Log(LogLevel.Trace, "Initiating App.Shutdown...");
                     _app.Shutdown();
                     _app = null;
                 }
 
                 if (_kernel != null)
                 {
-                    _logger.Log(LogLevel.Trace, "Extension calling Kernel.Dispose.");
+                    _logger.Log(LogLevel.Trace, "Disposing IoC container...");
                     _kernel.Dispose();
                     _kernel = null;
                 }
@@ -271,9 +271,15 @@ namespace Rubberduck
             }
             finally
             {
+                _logger.Log(LogLevel.Trace, "Unregistering AppDomain handlers....");
                 currentDomain.AssemblyResolve -= LoadFromSameFolder;
                 currentDomain.UnhandledException -= HandlAppDomainException;
-                _logger.Log(LogLevel.Trace, "AppDomain handlers unregistered.");
+                _logger.Log(LogLevel.Trace, "Done. Initiating garbage collection...");
+                GC.Collect();
+                _logger.Log(LogLevel.Trace, "Done. Waiting for pending finalizers...");
+                GC.WaitForPendingFinalizers();
+                _logger.Log(LogLevel.Trace, "Done. Shutdown completed. Quack!");
+                _isInitialized = false;
             }
         }
 
