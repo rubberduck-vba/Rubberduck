@@ -153,6 +153,37 @@ End Property";
 
         [TestMethod]
         [TestCategory("Inspections")]
+        public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsNonExposedClassModuleInReferencedProject()
+        {
+            var declarationResults = new Dictionary<string, int>
+            {
+                [ProjectName] = 0, [ProceduralModuleName] = 0, [ClassModuleName] = 0, [UserFormName] = 0, [DocumentName] = 0, [ProcedureName] = 0, [FunctionName] = 0,
+                [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0, [ParameterName] = 0, [VariableName] = 0, [ConstantName] = 0,
+                [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+            };
+
+            foreach (var result in declarationResults)
+            {
+                var builder = new MockVbeBuilder();
+                var referencedProject = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected)
+                    .AddComponent(result.Key, ComponentType.ClassModule, "")
+                    .Build();
+                builder.AddProject(referencedProject);
+                var userProject = CreateUserProject(builder).AddReference("Foo", "").Build();
+                builder.AddProject(userProject);
+
+                var vbe = builder.Build();
+                var state = MockParser.CreateAndParse(vbe.Object);
+
+                var inspection = new ShadowedDeclarationInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
+
+                Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for {result.Key}");
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsUserFormInReferencedProject()
         {
             var declarationResults = new Dictionary<string, int>
