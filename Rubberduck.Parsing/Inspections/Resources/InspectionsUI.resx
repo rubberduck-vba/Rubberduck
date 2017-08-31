@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
+  <!--
+    Microsoft ResX Schema
+
     Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
     associated with the data types.
-    
+
     Example:
-    
+
     ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
@@ -26,36 +26,36 @@
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
-                
-    There are any number of "resheader" rows that contain simple 
+
+    There are any number of "resheader" rows that contain simple
     name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
     mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
     extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
     read any of the formats listed below.
-    
+
     mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
-    
+
     mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
             : and then encoded with base64 encoding.
 
     mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
+    value   : The object must be serialized into a byte array
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
@@ -124,7 +124,7 @@
     <value>ByVal parameter is assigned</value>
   </data>
   <data name="ConstantNotUsedInspectionMeta" xml:space="preserve">
-    <value>Rubberduck could not find any reference to constant. Consider removing the unused declaration.</value>
+    <value>The code analyzer could not find any reference to constant. Consider removing the unused declaration.</value>
   </data>
   <data name="ConstantNotUsedInspectionName" xml:space="preserve">
     <value>Constant is not used</value>
@@ -163,13 +163,13 @@
     <value>Ignore once</value>
   </data>
   <data name="ImplicitActiveSheetReferenceInspectionMeta" xml:space="preserve">
-    <value>Implicit references to the active sheet make the code frail and harder to debug. Consider making these references explicit when they're intended, and prefer working off object references. Ignore if the member call is referring to a type Rubberduck can't resolve.</value>
+    <value>Implicit references to the active sheet make the code frail and harder to debug. Consider making these references explicit when they're intended, and prefer working off object references. Ignore if the member call is referring to a type the code analyzer can't resolve.</value>
   </data>
   <data name="ImplicitActiveSheetReferenceInspectionName" xml:space="preserve">
     <value>Implicit reference to ActiveSheet</value>
   </data>
   <data name="ImplicitActiveWorkbookReferenceInspectionMeta" xml:space="preserve">
-    <value>Implicit references to the active workbook make the code frail and harder to debug. Consider making these references explicit when they're intended, and prefer working off object references. Ignore if the member call is referring to a type Rubberduck can't resolve.</value>
+    <value>Implicit references to the active workbook make the code frail and harder to debug. Consider making these references explicit when they're intended, and prefer working off object references. Ignore if the member call is referring to a type the code analyzer can't resolve.</value>
   </data>
   <data name="ImplicitActiveWorkbookReferenceInspectionName" xml:space="preserve">
     <value>Implicit reference to ActiveWorkbook</value>
@@ -217,7 +217,7 @@
     <value>'{0}' has more than one '@Folder' annotation.</value>
   </data>
   <data name="MultipleFolderAnnotationsInspectionMeta" xml:space="preserve">
-    <value>Rubberduck only uses the first '@Folder' annotation in a code module; consider removing extraneous ones.</value>
+    <value>The code analyzer only uses the first '@Folder' annotation in a code module; consider removing extraneous ones.</value>
   </data>
   <data name="MultipleFolderAnnotationsInspectionName" xml:space="preserve">
     <value>Module has more than one folder annotation.</value>
@@ -283,7 +283,7 @@
     <value>Parameter is not referred to</value>
   </data>
   <data name="ProcedureNotUsedInspectionMeta" xml:space="preserve">
-    <value>Rubberduck could not find any caller for a procedure. If the procedure is hooked to a macro-button, used as a user-defined function (UDF) or handles an application event that Rubberduck didn't know of you can safely ignore this inspection result; otherwise, consider removing it.</value>
+    <value>The code analyzer could not find any caller for a procedure. If the procedure is hooked to a macro-button, used as a user-defined function (UDF) or handles an application event that the code analyzer didn't know of you can safely ignore this inspection result; otherwise, consider removing it.</value>
   </data>
   <data name="ProcedureNotUsedInspectionName" xml:space="preserve">
     <value>Procedure is not referred to</value>
@@ -295,7 +295,7 @@
     <value>Variable is used but not assigned</value>
   </data>
   <data name="UntypedFunctionUsageInspectionMeta" xml:space="preserve">
-    <value>A string-returning equivalent function exists and should preferably be used to avoid implicit type conversions. 
+    <value>A string-returning equivalent function exists and should preferably be used to avoid implicit type conversions.
 If the parameter can be null, ignore this inspection result; passing a null value to a function expecting a string would raise a type mismatch runtime error.</value>
   </data>
   <data name="UntypedFunctionUsageInspectionName" xml:space="preserve">
@@ -318,7 +318,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>Use meaningful names</value>
   </data>
   <data name="VariableNotAssignedInspectionMeta" xml:space="preserve">
-    <value>Variable does not seem to be assigned. If Rubberduck is correct, the variable could probably be safely removed.</value>
+    <value>Variable does not seem to be assigned. If the code analyzer is correct, the variable could probably be safely removed.</value>
   </data>
   <data name="VariableNotAssignedInspectionName" xml:space="preserve">
     <value>Variable is not assigned</value>
@@ -502,7 +502,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>{0}: {1} - {2} {3}.{4}, line {5}</value>
   </data>
   <data name="ObjectVariableNotSetInspectionMeta" xml:space="preserve">
-    <value>As far as Rubberduck can tell, this variable is an object variable, assigned without the 'Set' keyword. This causes run-time error 91 'Object or With block variable not set'.</value>
+    <value>As far as the code analyzer can tell, this variable is an object variable, assigned without the 'Set' keyword. This causes run-time error 91 'Object or With block variable not set'.</value>
   </data>
   <data name="ObjectVariableNotSetInspectionResultFormat" xml:space="preserve">
     <value>Object variable '{0}' is assigned without the 'Set' keyword</value>
@@ -607,7 +607,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>Add to whitelist</value>
   </data>
   <data name="MemberNotOnInterfaceInspectionMeta" xml:space="preserve">
-    <value>A member access call is made against an extended interface that Rubberduck couldn't resolve, or the member couldn't be found. If VBA cannot resolve the type at run-time, error 438 will be raised. If an equivalent, non-extended interface that Rubberduck can resolve is available, consider using it instead.</value>
+    <value>A member access call is made against an extended interface that the code analyzer couldn't resolve, or the member couldn't be found. If VBA cannot resolve the type at run-time, error 438 will be raised. If an equivalent, non-extended interface that the code analyzer can resolve is available, consider using it instead.</value>
   </data>
   <data name="MemberNotOnInterfaceInspectionName" xml:space="preserve">
     <value>Member not found</value>
@@ -670,7 +670,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <comment>{0} annotation name</comment>
   </data>
   <data name="MissingAnnotationInspectionMeta" xml:space="preserve">
-    <value>Module and member attributes are not displayed in the VBE. By adding an annotation, you make these attributes more explicit, and Rubberduck can keep annotations and attributes synchronized.</value>
+    <value>Module and member attributes are not displayed in the VBE. By adding an annotation, you make these attributes more explicit, and the code analyzer can keep annotations and attributes synchronized.</value>
   </data>
   <data name="MissingAnnotationInspectionName" xml:space="preserve">
     <value>Missing annotation</value>
@@ -680,7 +680,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <comment>{0} module/member; {1} specified attribute</comment>
   </data>
   <data name="MissingAttributeInspectionMeta" xml:space="preserve">
-    <value>A Rubberduck annotation is specified for a module or member, but the corresponding attribute isn't present. Module needs to be synchronized.</value>
+    <value>A code analyzer annotation is specified for a module or member, but the corresponding attribute isn't present. Module needs to be synchronized.</value>
   </data>
   <data name="MissingAttributeInspectionName" xml:space="preserve">
     <value>Missing attribute</value>
@@ -727,7 +727,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>Remove redundant ByRef modifier</value>
   </data>
   <data name="LineLabelNotUsedInspectionMeta" xml:space="preserve">
-    <value>Rubberduck could not find a corresponding Resume or GoTo statement for a line label.  Consider removing it.</value>
+    <value>The code analyzer could not find a corresponding Resume or GoTo statement for a line label.  Consider removing it.</value>
   </data>
   <data name="LineLabelNotUsedInspectionName" xml:space="preserve">
     <value>Line label is not referred to</value>

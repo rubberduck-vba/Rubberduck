@@ -241,7 +241,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rubberduck could not find any reference to constant. Consider removing the unused declaration..
+        ///   Looks up a localized string similar to The code analyzer could not find any reference to constant. Consider removing the unused declaration..
         /// </summary>
         public static string ConstantNotUsedInspectionMeta {
             get {
@@ -574,7 +574,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Implicit references to the active sheet make the code frail and harder to debug. Consider making these references explicit when they&apos;re intended, and prefer working off object references. Ignore if the member call is referring to a type Rubberduck can&apos;t resolve..
+        ///   Looks up a localized string similar to Implicit references to the active sheet make the code frail and harder to debug. Consider making these references explicit when they&apos;re intended, and prefer working off object references. Ignore if the member call is referring to a type the code analyzer can&apos;t resolve..
         /// </summary>
         public static string ImplicitActiveSheetReferenceInspectionMeta {
             get {
@@ -601,7 +601,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Implicit references to the active workbook make the code frail and harder to debug. Consider making these references explicit when they&apos;re intended, and prefer working off object references. Ignore if the member call is referring to a type Rubberduck can&apos;t resolve..
+        ///   Looks up a localized string similar to Implicit references to the active workbook make the code frail and harder to debug. Consider making these references explicit when they&apos;re intended, and prefer working off object references. Ignore if the member call is referring to a type the code analyzer can&apos;t resolve..
         /// </summary>
         public static string ImplicitActiveWorkbookReferenceInspectionMeta {
             get {
@@ -835,7 +835,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rubberduck could not find a corresponding Resume or GoTo statement for a line label.  Consider removing it..
+        ///   Looks up a localized string similar to The code analyzer could not find a corresponding Resume or GoTo statement for a line label.  Consider removing it..
         /// </summary>
         public static string LineLabelNotUsedInspectionMeta {
             get {
@@ -871,7 +871,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A member access call is made against an extended interface that Rubberduck couldn&apos;t resolve, or the member couldn&apos;t be found. If VBA cannot resolve the type at run-time, error 438 will be raised. If an equivalent, non-extended interface that Rubberduck can resolve is available, consider using it instead..
+        ///   Looks up a localized string similar to A member access call is made against an extended interface that the code analyzer couldn&apos;t resolve, or the member couldn&apos;t be found. If VBA cannot resolve the type at run-time, error 438 will be raised. If an equivalent, non-extended interface that the code analyzer can resolve is available, consider using it instead..
         /// </summary>
         public static string MemberNotOnInterfaceInspectionMeta {
             get {
@@ -925,7 +925,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Module and member attributes are not displayed in the VBE. By adding an annotation, you make these attributes more explicit, and Rubberduck can keep annotations and attributes synchronized..
+        ///   Looks up a localized string similar to Module and member attributes are not displayed in the VBE. By adding an annotation, you make these attributes more explicit, and the code analyzer can keep annotations and attributes synchronized..
         /// </summary>
         public static string MissingAnnotationInspectionMeta {
             get {
@@ -952,7 +952,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A Rubberduck annotation is specified for a module or member, but the corresponding attribute isn&apos;t present. Module needs to be synchronized..
+        ///   Looks up a localized string similar to A code analyzer annotation is specified for a module or member, but the corresponding attribute isn&apos;t present. Module needs to be synchronized..
         /// </summary>
         public static string MissingAttributeInspectionMeta {
             get {
@@ -1087,7 +1087,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rubberduck only uses the first &apos;@Folder&apos; annotation in a code module; consider removing extraneous ones..
+        ///   Looks up a localized string similar to The code analyzer only uses the first &apos;@Folder&apos; annotation in a code module; consider removing extraneous ones..
         /// </summary>
         public static string MultipleFolderAnnotationsInspectionMeta {
             get {
@@ -1141,7 +1141,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to As far as Rubberduck can tell, this variable is an object variable, assigned without the &apos;Set&apos; keyword. This causes run-time error 91 &apos;Object or With block variable not set&apos;..
+        ///   Looks up a localized string similar to As far as the code analyzer can tell, this variable is an object variable, assigned without the &apos;Set&apos; keyword. This causes run-time error 91 &apos;Object or With block variable not set&apos;..
         /// </summary>
         public static string ObjectVariableNotSetInspectionMeta {
             get {
@@ -1501,7 +1501,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rubberduck could not find any caller for a procedure. If the procedure is hooked to a macro-button, used as a user-defined function (UDF) or handles an application event that Rubberduck didn&apos;t know of you can safely ignore this inspection result; otherwise, consider removing it..
+        ///   Looks up a localized string similar to The code analyzer could not find any caller for a procedure. If the procedure is hooked to a macro-button, used as a user-defined function (UDF) or handles an application event that the code analyzer didn&apos;t know of you can safely ignore this inspection result; otherwise, consider removing it..
         /// </summary>
         public static string ProcedureNotUsedInspectionMeta {
             get {
@@ -1879,7 +1879,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A string-returning equivalent function exists and should preferably be used to avoid implicit type conversions. 
+        ///   Looks up a localized string similar to A string-returning equivalent function exists and should preferably be used to avoid implicit type conversions.
         ///If the parameter can be null, ignore this inspection result; passing a null value to a function expecting a string would raise a type mismatch runtime error..
         /// </summary>
         public static string UntypedFunctionUsageInspectionMeta {
@@ -1925,7 +1925,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Variable does not seem to be assigned. If Rubberduck is correct, the variable could probably be safely removed..
+        ///   Looks up a localized string similar to Variable does not seem to be assigned. If the code analyzer is correct, the variable could probably be safely removed..
         /// </summary>
         public static string VariableNotAssignedInspectionMeta {
             get {
