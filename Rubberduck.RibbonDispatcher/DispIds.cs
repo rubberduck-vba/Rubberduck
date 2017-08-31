@@ -1,8 +1,4 @@
-﻿////////////////////////////////////////////////////////////////////////////////////////////////////
-//                                Copyright (c) 2017 Pieter Geerkens                              //
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
+﻿
 namespace Rubberduck.RibbonDispatcher {
     internal static class DispIds {
         public const int RibbonFactory      =  1;   // No conflict with "Id" below as only in disjoint interfaces.

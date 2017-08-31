@@ -17,7 +17,7 @@ namespace Rubberduck.RibbonDispatcher {
     /// </remarks>
     [SuppressMessage("Microsoft.Interoperability", "CA1405:ComVisibleTypeBaseTypesShouldBeComVisible")]
     [SuppressMessage("Microsoft.Interoperability", "CA1409:ComVisibleTypesShouldBeCreatable",
-        Justification ="Public non-creatable class for COM.")]
+        Justification ="Public Non-Creatable class for COM.")]
     [Serializable]
     [ComVisible(true)]
     [CLSCompliant(true)]
