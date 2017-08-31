@@ -24,5 +24,35 @@ namespace Rubberduck
         public const string IFakeGuid = "69E194DF" + UnitTestingGuidspace;                          // added for 2.0.14
         public const string IVerifyGuid = "69E194E0" + UnitTestingGuidspace;                        // added for 2.0.14
         public const string IStubGuid = "69E194E1" + UnitTestingGuidspace;                          // added for 2.0.14
+
+        // Ribbon Dispatcher Guids:
+        private const string RibbonDispatcherGuidspace = "-43F1-3B33-B105-9B8188A6F040";
+        public const string IClickedEvents              = "69E19400" + RibbonDispatcherGuidspace;
+        public const string IClickedEventArgs           = "69E19401" + RibbonDispatcherGuidspace;
+        public const string IToggledEvents              = "69E19402" + RibbonDispatcherGuidspace;
+        public const string IToggledEventArgs           = "69E19403" + RibbonDispatcherGuidspace;
+        public const string ISelectionMadeEvents        = "69E19404" + RibbonDispatcherGuidspace;
+        public const string ISelectionMadeEventArgs     = "69E19405" + RibbonDispatcherGuidspace;
+
+        public const string IMain                       = "69E1940C" + RibbonDispatcherGuidspace;
+        public const string Main                        = "69E1940D" + RibbonDispatcherGuidspace;
+        public const string IRibbonFactory              = "69E1940E" + RibbonDispatcherGuidspace;
+        public const string RdControlSize               = "69E1940F" + RibbonDispatcherGuidspace;
+        public const string IAbstractDispatcher         = "69E19410" + RibbonDispatcherGuidspace;
+        public const string AbstractDispatcher          = "69E19411" + RibbonDispatcherGuidspace;
+        public const string IRibbonCommon               = "69E19412" + RibbonDispatcherGuidspace;
+        public const string RibbonCommon                = "69E19413" + RibbonDispatcherGuidspace;
+        public const string IRibbonButton               = "69E19414" + RibbonDispatcherGuidspace;
+        public const string RibbonButton                = "69E19415" + RibbonDispatcherGuidspace;
+        public const string IRibbonCheckBox             = "69E19416" + RibbonDispatcherGuidspace;
+        public const string RibbonCheckBox              = "69E19417" + RibbonDispatcherGuidspace;
+        public const string IRibbonDropDown             = "69E19418" + RibbonDispatcherGuidspace;
+        public const string RibbonDropDown              = "69E19419" + RibbonDispatcherGuidspace;
+        public const string IRibbonGroup                = "69E1941A" + RibbonDispatcherGuidspace;
+        public const string RibbonGroup                 = "69E1941B" + RibbonDispatcherGuidspace;
+        public const string IRibbonTextLanguageControl  = "69E1941C" + RibbonDispatcherGuidspace;
+        public const string RibbonTextLanguageControl   = "69E1941D" + RibbonDispatcherGuidspace;
+        public const string IRibbonToggleButton         = "69E1941E" + RibbonDispatcherGuidspace;
+        public const string RibbonToggleButton          = "69E1941F" + RibbonDispatcherGuidspace;
     }
 }

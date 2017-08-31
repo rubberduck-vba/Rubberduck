@@ -196,7 +196,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         private bool _eventsAttached;
         private void AttachEvents()
         {
-            throw new NotImplementedException("Correct the Guid (see comment above), verify the DispIds, then remove this throw.");
+           // throw new NotImplementedException("Correct the Guid (see comment above), verify the DispIds, then remove this throw.");
             if (!_eventsAttached && !IsWrappingNullReference)
             {
                 _componentAdded = OnComponentAdded;

@@ -1,0 +1,38 @@
+﻿<Dictionary>
+  <Words>
+    <Unrecognized>
+      <Word>knokker</Word>
+    </Unrecognized>
+    <Recognized>
+      <!-- I solemnly promise to not abuse these, on pain of having my privilege to use 'i'as a loop index revoked. -->
+      <Word>a</Word><Word>b</Word><Word>c</Word><Word>d</Word><Word>e</Word>
+      <Word>f</Word><Word>g</Word><Word>h</Word><Word>i</Word><Word>j</Word>
+      <Word>k</Word><Word>l</Word><Word>m</Word><Word>n</Word><Word>o</Word>
+      <Word>p</Word><Word>q</Word><Word>r</Word><Word>s</Word><Word>t</Word>
+      <Word>u</Word><Word>v</Word><Word>w</Word><Word>x</Word><Word>y</Word>
+      <Word>z</Word>
+      
+      <Word>disp</Word>       <!-- Inherited usage in IPictureDisp retained for consistency -->
+      <Word>imageable</Word>
+      <Word>imageables</Word>
+      <Word>mso</Word>        <!-- Inherited usage from Fluent Ribbon interface spec. -->
+      <Word>rd</Word>         <!-- Prefix for Rubberduck enum types. -->
+      <Word>Rubberduck</Word>
+    </Recognized>
+    <Deprecated>
+      <Term PreferredAlternate=""></Term>
+    </Deprecated>
+    <Compound>
+      <Term CompoundAlternate=""></Term>
+    </Compound>
+    <DiscreteExceptions>
+      <Term></Term>
+    </DiscreteExceptions>
+  </Words>
+  <Acronyms>
+    <CasingExceptions>
+      <Acronym>COM</Acronym>
+      <Acronym>rd</Acronym>       <!-- Prefix for Rubberduck enum constants. -->
+   </CasingExceptions>
+  </Acronyms>
+</Dictionary>
