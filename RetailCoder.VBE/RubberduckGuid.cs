@@ -34,6 +34,7 @@ namespace Rubberduck
         public const string ISelectedEvents             = "69E19404" + RibbonDispatcherGuidspace;
         public const string ISelectedEventArgs          = "69E19405" + RibbonDispatcherGuidspace;
 
+        public const string Typelib                     = "69E19408" + RibbonDispatcherGuidspace;
         public const string IResourceManager            = "69E19409" + RibbonDispatcherGuidspace;
         public const string IAbstractDispatcher         = "69E1940A" + RibbonDispatcherGuidspace;
         public const string AbstractDispatcher          = "69E1940B" + RibbonDispatcherGuidspace;
