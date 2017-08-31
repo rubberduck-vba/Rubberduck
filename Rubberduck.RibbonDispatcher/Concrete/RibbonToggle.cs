@@ -1,22 +1,20 @@
 ﻿using System;
+using System.Resources;
 using System.Runtime.InteropServices;
 
 using Rubberduck.RibbonDispatcher.Abstract;
 using Rubberduck.RibbonDispatcher.EventHandlers;
 
-namespace Rubberduck.RibbonDispatcher.Concrete
-{
-    using LanguageStrings     = IRibbonTextLanguageControl;
-
+namespace Rubberduck.RibbonDispatcher.Concrete {
     /// <summary>TODO</summary>
     [Serializable]
     [CLSCompliant(true)]
     [ClassInterface(ClassInterfaceType.None)]
     [ComSourceInterfaces(typeof(IToggledEvents))]
     public class RibbonToggle : RibbonCommon, IRibbonToggle {
-        internal RibbonToggle(string id, LanguageStrings strings, bool visible, bool enabled, MyRibbonControlSize size,
+        internal RibbonToggle(string id, ResourceManager mgr, bool visible, bool enabled, MyRibbonControlSize size,
                 bool showImage, bool showLabel, ToggledEventHandler onClickedAction)
-            : base(id, strings, visible, enabled, size, showImage, showLabel) {
+            : base(id, mgr, visible, enabled, size, showImage, showLabel) {
             if (onClickedAction != null) Toggled += onClickedAction;
         }
 
@@ -36,7 +34,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete
         public void OnAction(bool isPressed) {
             Toggled?.Invoke(this,new ToggledEventArgs(isPressed));
             IsPressed         = isPressed;
-            UseAlternateLabel = isPressed;
+            UseAlternateLabel = isPressed && (LanguageStrings?.AlternateLabel??"") != "";
             OnChanged();
         }
 

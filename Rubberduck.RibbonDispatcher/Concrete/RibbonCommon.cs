@@ -1,13 +1,14 @@
 ﻿using System;
+using System.Resources;
 using System.Runtime.InteropServices;
 
 using stdole;
-using Microsoft.Office.Core;
 
+using Rubberduck.RibbonDispatcher.Abstract;
 using Rubberduck.RibbonDispatcher.EventHandlers;
+using System.Globalization;
 
-namespace Rubberduck.RibbonDispatcher.Abstract
-{
+namespace Rubberduck.RibbonDispatcher.Concrete {
     using LanguageStrings     = IRibbonTextLanguageControl;
 
     /// <summary>TODO</summary>
@@ -16,13 +17,13 @@ namespace Rubberduck.RibbonDispatcher.Abstract
     [ClassInterface(ClassInterfaceType.None)]
     public abstract class RibbonCommon : IRibbonCommon {
         /// <summary>TODO</summary>
-        protected RibbonCommon(string id, LanguageStrings strings, bool visible, bool enabled, MyRibbonControlSize size)
-            : this(id, strings, visible, enabled, size, false, true) {;}
+        protected RibbonCommon(string id, ResourceManager mgr, bool visible, bool enabled, MyRibbonControlSize size)
+            : this(id, mgr, visible, enabled, size, false, true) {;}
         /// <summary>TODO</summary>
-        protected RibbonCommon(string id, LanguageStrings strings, bool visible, bool enabled, MyRibbonControlSize size,
+        protected RibbonCommon(string id, ResourceManager mgr, bool visible, bool enabled, MyRibbonControlSize size,
                 bool showImage, bool showLabel) {
             Id               = id;
-            LanguageStrings = strings;
+            LanguageStrings  = GetLanguageStrings(id, mgr);
             _visible         = visible;
             _enabled         = enabled;
             _size            = size;
@@ -98,5 +99,24 @@ namespace Rubberduck.RibbonDispatcher.Abstract
 
         /// <inheritdoc/>
         public void OnChanged() => Changed?.Invoke(this, new ControlChangedEventArgs(Id));
+
+        private static LanguageStrings GetLanguageStrings(string controlId, ResourceManager mgr)
+            => new RibbonTextLanguageControl(
+                    mgr.GetCurrentUItString($"{controlId ?? ""}_Label")          ?? controlId,
+                    mgr.GetCurrentUItString($"{controlId ?? ""}_ScreenTip")      ?? controlId + " SuperTip",
+                    mgr.GetCurrentUItString($"{controlId ?? ""}_SuperTip")       ?? controlId + " ScreenTip",
+                    mgr.GetCurrentUItString($"{controlId ?? ""}_KeyTip")         ?? controlId,
+                    mgr.GetCurrentUItString($"{controlId ?? ""}_AlternateLabel") ?? "",
+                    mgr.GetCurrentUItString($"{controlId ?? ""}_Description")    ?? controlId + " Description");
+    }
+
+    /// <summary>TODO</summary>
+    public static partial class ResourceManagerExtensions {
+        /// <summary>TODO</summary>
+        public static string GetCurrentUItString(this ResourceManager resourceManager, string name)
+            => resourceManager.GetString(name, CultureInfo.CurrentUICulture);
+        /// <summary>TODO</summary>
+        public static string GetInvariantString(this ResourceManager resourceManager, string name)
+            => resourceManager.GetString(name, CultureInfo.InvariantCulture);
     }
 }

@@ -1,5 +1,10 @@
 ﻿using System;
+using System.Drawing;
+using System.Globalization;
+using System.Reflection;
+using System.Resources;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 using stdole;
 using Microsoft.Office.Core;
@@ -7,8 +12,6 @@ using Microsoft.Office.Core;
 using Rubberduck.RibbonDispatcher.Abstract;
 
 namespace Rubberduck.RibbonDispatcher.Concrete {
-    using static MyRibbonControlSize;
-    using static System.Globalization.CultureInfo;
 
     /// <summary>(All) the callbacks for the Fluent Ribbon.</summary>
     /// <remarks>
@@ -30,7 +33,8 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [CLSCompliant(true)]
     public abstract class AbstractRibbonDispatcher {
         /// <summary>TODO</summary>
-        protected void           InitializeRibbonFactory(IRibbonUI ribbonUI) => RibbonFactory = new RibbonFactory(ribbonUI);
+        protected void           InitializeRibbonFactory(IRibbonUI ribbonUI, ResourceManager resourceManager) 
+            => RibbonFactory = new RibbonFactory(ribbonUI, resourceManager);
         /// <summary>TODO</summary>
         protected RibbonFactory    RibbonFactory  { get; private set; }
 
@@ -63,7 +67,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         /// <summary>Call back for GetShowLabel events from ribbon elements.</summary>
         public bool                GetShowLabel   (IRibbonControl control) => Controls(control)?.ShowLabel   ?? true;
         /// <summary>Call back for GetSize events from ribbon elements.</summary>
-        public MyRibbonControlSize GetSize        (IRibbonControl control) => Controls(control)?.Size        ?? Large;
+        public MyRibbonControlSize GetSize        (IRibbonControl control) => Controls(control)?.Size        ?? MyRibbonControlSize.Large;
         /// <summary>Call back for GetVisible events from ribbon elements.</summary>
         public bool                GetVisible     (IRibbonControl control) => Controls(control)?.IsVisible   ?? true;
 
@@ -76,6 +80,36 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         public void OnActionToggle(IRibbonControl control, bool pressed)   => Toggles(control)?.OnAction(pressed);
 
         private static string Unknown(IRibbonControl control) 
-            => string.Format(InvariantCulture, $"Unknown control '{control?.Id??""}'");
+            => string.Format(CultureInfo.InvariantCulture, $"Unknown control '{control?.Id??""}'");
+
+        /// <summary>TODO</summary>
+        internal static ResourceManager GetResourceManager()
+            => GetResourceManager("RubberDuck.RibbonSupport.Properties.Resources");
+        /// <summary>TODO</summary>
+        /// <param name="resourceSetName"></param>
+        internal static ResourceManager GetResourceManager(string resourceSetName) {
+            return new ResourceManager(resourceSetName, Assembly.GetExecutingAssembly());
+        }
+
+        private IPictureDisp GetResourceImage(string resourceName) {
+            var rm = GetResourceManager("RubberDuck.RibbonSupport.Properties.Resources");
+            rm.IgnoreCase = true;
+            using (var stream = rm.GetStream(resourceName)) {
+                    if (stream != null) return PictureConverter.ImageToPictureDisp(Image.FromStream(stream));
+                }
+            return null;
+        }
+        internal class PictureConverter : AxHost {
+            private PictureConverter() : base(String.Empty) { }
+
+            static public IPictureDisp ImageToPictureDisp(Image image)
+                => (IPictureDisp) GetIPictureDispFromPicture(image);
+
+            static public IPictureDisp IconToPictureDisp(Icon icon)
+                => ImageToPictureDisp(icon.ToBitmap());
+
+            static public Image PictureDispToImage(IPictureDisp picture)
+                => GetPictureFromIPicture(picture);
+        }
     }
 }

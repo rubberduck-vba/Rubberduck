@@ -1,20 +1,17 @@
 ﻿using System;
+using System.Resources;
 using System.Runtime.InteropServices;
-using Microsoft.Office.Core;
 
 using Rubberduck.RibbonDispatcher.Abstract;
 
-namespace Rubberduck.RibbonDispatcher.Concrete
-{
-    using LanguageStrings     = IRibbonTextLanguageControl;
-
+namespace Rubberduck.RibbonDispatcher.Concrete {
     /// <summary>TODO</summary>
     [Serializable]
     [CLSCompliant(true)]
     [ClassInterface(ClassInterfaceType.None)]
     public class RibbonGroup : RibbonCommon
     {
-        internal RibbonGroup(string id, LanguageStrings strings, bool visible, bool enabled, MyRibbonControlSize size)
-            : base(id, strings, visible, enabled, size) {; }
+        internal RibbonGroup(string id, ResourceManager mgr, bool visible, bool enabled, MyRibbonControlSize size)
+            : base(id, mgr, visible, enabled, size) {; }
     }
 }
