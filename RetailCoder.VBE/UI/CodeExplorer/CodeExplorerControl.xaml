@@ -720,8 +720,7 @@
                     </Button.ToolTip>
                 </Button>
                 <Hyperlink Command="{Binding RefreshCommand}"><Run Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Refresh}"/></Hyperlink>
-                <Run Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_EmptyViewMessage_Line1}"/><LineBreak/>
-                <Run Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_EmptyViewMessage_Line2}"/>
+                <Run Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_EmptyViewMessage}"/>
             </TextBlock>
         </Border>
 

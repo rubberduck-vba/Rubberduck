@@ -2092,12 +2092,10 @@ Would you like to import them to Rubberduck?</value>
   <data name="CodeExplorer_AddModule" xml:space="preserve">
     <value>Add Module</value>
   </data>
-  <data name="CodeExplorer_EmptyViewMessage_Line1" xml:space="preserve">
-    <value>to parse and process</value>
+  <data name="CodeExplorer_EmptyViewMessage" xml:space="preserve">
+    <value>to parse and process
+the projects in the VBE.</value>
     <comment>Follows the text for "Refresh"</comment>
-  </data>
-  <data name="CodeExplorer_EmptyViewMessage_Line2" xml:space="preserve">
-    <value>the projects in the VBE.</value>
   </data>
   <data name="CodeExplorer_EmptyViewMessage_Title" xml:space="preserve">
     <value>Rubberduck doesn't see anything yet.</value>

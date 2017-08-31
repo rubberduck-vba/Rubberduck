@@ -618,20 +618,12 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to to parse and process.
+        ///   Looks up a localized string similar to to parse and process
+        ///the projects in the VBE..
         /// </summary>
-        public static string CodeExplorer_EmptyViewMessage_Line1 {
+        public static string CodeExplorer_EmptyViewMessage {
             get {
-                return ResourceManager.GetString("CodeExplorer_EmptyViewMessage_Line1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to the projects in the VBE..
-        /// </summary>
-        public static string CodeExplorer_EmptyViewMessage_Line2 {
-            get {
-                return ResourceManager.GetString("CodeExplorer_EmptyViewMessage_Line2", resourceCulture);
+                return ResourceManager.GetString("CodeExplorer_EmptyViewMessage", resourceCulture);
             }
         }
         
