@@ -1,4 +1,5 @@
-﻿<Dictionary>
+﻿<Dictionary xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:noNamespaceSchemaLocation="CustomDictionary.xsd">
   <Words>
     <Unrecognized>
       <Word>knokker</Word>
@@ -17,6 +18,7 @@
       <Word>disp</Word>       <!-- Inherited usage in IPictureDisp retained for consistency -->
       <Word>imageable</Word>
       <Word>imageables</Word>
+      <Word>mixin</Word>
       <Word>mso</Word>        <!-- Inherited usage from Fluent Ribbon interface spec. -->
       <Word>rd</Word>         <!-- Prefix for Rubberduck enum types. -->
       <Word>Rubberduck</Word>
