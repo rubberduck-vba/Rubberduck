@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Resources;
 using System.Runtime.InteropServices;
 
 using Microsoft.Office.Core;
@@ -10,20 +11,16 @@ using Rubberduck.RibbonDispatcher.Abstract;
 using Rubberduck.RibbonDispatcher.Concrete;
 using Rubberduck.RibbonDispatcher.EventHandlers;
 
-namespace Rubberduck.RibbonDispatcher
-{
-    using System.Resources;
+namespace Rubberduck.RibbonDispatcher {
     using static MyRibbonControlSize;
-
-    using LanguageStrings     = IRibbonTextLanguageControl;
 
     /// <summary>TODO</summary>
     /// <remarks>
     /// The {SuppressMessage} attributes are left in the source here, instead of being 'fired and
-    /// forgotten' to the Global Suppresion file. This explicitly points out that although "optional
-    /// parameters with default values" is often regarded ad an anti-pattern for DOT NET development,
-    /// COM does not support overrides. This is (believed) to be the only means of implementing
-    /// the equivalent functionality in a COM-compatible way.
+    /// forgotten' to the Global Suppresion file, as commentary on a practice often seen as a C#
+    /// anti-pattern. Although non-standard C# practice, these "optional parameters with default 
+    /// values" usages are (believed to be) the only means of implementing functionality equivalent
+    /// to "overrides" in a COM-compatible way.
     /// </remarks>
     [ComVisible(false)]
     [CLSCompliant(true)]
@@ -46,32 +43,32 @@ namespace Rubberduck.RibbonDispatcher
         private readonly IDictionary<string, IRibbonImageable>  _imageables;
         private readonly IDictionary<string, IRibbonToggle>     _toggles;
 
-        /// <summary>TODO</summary>
+        /// <summary>Returns a readonly collection of all Ribbon Controls in this Ribbon ViewModel.</summary>
         public IReadOnlyDictionary<string, IRibbonCommon>    Controls   => new ReadOnlyDictionary<string, IRibbonCommon>(_controls);
-        /// <summary>TODO</summary>
+        /// <summary>Returns a readonly collection of all Ribbon (Action) Buttons in this Ribbon ViewModel.</summary>
         public IReadOnlyDictionary<string, IRibbonButton>    Buttons    => new ReadOnlyDictionary<string, IRibbonButton>(_buttons);
-        /// <summary>TODO</summary>
+        /// <summary>Returns a readonly collection of all Ribbon DropDowns in this Ribbon ViewModel.</summary>
         public IReadOnlyDictionary<string, IRibbonDropDown>  DropDowns  => new ReadOnlyDictionary<string, IRibbonDropDown>(_dropDowns);
-        /// <summary>TODO</summary>
+        /// <summary>Returns a readonly collection of all Ribbon Imageable Controls in this Ribbon ViewModel.</summary>
         public IReadOnlyDictionary<string, IRibbonImageable> Imageables => new ReadOnlyDictionary<string, IRibbonImageable>(_imageables);
-        /// <summary>TODO</summary>
+        /// <summary>Returns a readonly collection of all Ribbon Toggle Buttons in this Ribbon ViewModel.</summary>
         public IReadOnlyDictionary<string, IRibbonToggle>    Toggles    => new ReadOnlyDictionary<string, IRibbonToggle>(_toggles);
 
 
         private void PropertyChanged(object sender, IControlChangedEventArgs e) => _ribbonUI.InvalidateControl(e.ControlId);
 
-        private T Add<T>(T ctrl) where T:IRibbonCommon {
+        private T Add<T>(T ctrl) where T:RibbonCommon {
             _controls.Add(ctrl.Id, ctrl);
-            var button    = ctrl as IRibbonButton;    if (button    != null) _buttons  .Add(ctrl.Id, button);
-            var toggle    = ctrl as IRibbonToggle;    if (toggle    != null) _toggles  .Add(ctrl.Id, toggle);
-            var dropDown  = ctrl as IRibbonDropDown;  if (dropDown  != null) _dropDowns.Add(ctrl.Id, dropDown);
+            var button    = ctrl as IRibbonButton;    if (button    != null) _buttons   .Add(ctrl.Id, button);
+            var dropDown  = ctrl as IRibbonDropDown;  if (dropDown  != null) _dropDowns .Add(ctrl.Id, dropDown);
             var imageable = ctrl as IRibbonImageable; if (imageable != null) _imageables.Add(ctrl.Id, imageable);
+            var toggle    = ctrl as IRibbonToggle;    if (toggle    != null) _toggles   .Add(ctrl.Id, toggle);
 
             ctrl.Changed += PropertyChanged;
             return ctrl;
         }
 
-        /// <summary>TODO</summary>
+        /// <summary>Returns a new Ribbon Group ViewModel instance.</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         public IRibbonCommon NewRibbonGroup(
             string              id,
@@ -80,42 +77,42 @@ namespace Rubberduck.RibbonDispatcher
             MyRibbonControlSize size    = Large
         ) => Add(new RibbonGroup(id, _resourceManager, visible, enabled, size));
 
-        /// <summary>TODO</summary>
+        /// <summary>Returns a new Ribbon ActionButton ViewModel instance.</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         public IRibbonButton NewRibbonButton(
             string              id,
-            bool                visible   = true,
-            bool                enabled   = true,
-            MyRibbonControlSize size      = Large,
-            bool                showImage = false,
-            bool                showLabel = true,
+            bool                visible         = true,
+            bool                enabled         = true,
+            MyRibbonControlSize size            = Large,
+            bool                showImage       = false,
+            bool                showLabel       = true,
             EventHandler        onClickedAction = null
         ) => Add(new RibbonButton(id, _resourceManager, visible, enabled, size, showImage, showLabel, onClickedAction));
 
-        /// <summary>TODO</summary>
+        /// <summary>Returns a new Ribbon ToggleButton ViewModel instance.</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         public IRibbonToggle NewRibbonToggle(
             string              id,
-            bool                visible   = true,
-            bool                enabled   = true,
-            MyRibbonControlSize size      = Large,
-            bool                showImage = false,
-            bool                showLabel = true,
-            ToggledEventHandler onClickedAction = null
-        ) => Add(new RibbonToggle(id, _resourceManager, visible, enabled, size, showImage, showLabel, onClickedAction));
+            bool                visible         = true,
+            bool                enabled         = true,
+            MyRibbonControlSize size            = Large,
+            bool                showImage       = false,
+            bool                showLabel       = true,
+            ToggledEventHandler onToggledAction = null
+        ) => Add(new RibbonToggle(id, _resourceManager, visible, enabled, size, showImage, showLabel, onToggledAction));
 
 
-        /// <summary>TODO</summary>
-        [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification = "Matches COM usage.")]
+        /// <summary>Returns a new Ribbon CheckBox ViewModel instance.</summary>
+        [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         public IRibbonToggle NewRibbonCheckBox(
-            string id,
-            bool visible = true,
-            bool enabled = true,
-            MyRibbonControlSize size = Large,
-            ToggledEventHandler onClickedAction = null
-        ) => Add(new RibbonCheckBox(id, _resourceManager, visible, enabled, size, onClickedAction));
+            string              id,
+            bool                visible         = true,
+            bool                enabled         = true,
+            MyRibbonControlSize size            = Large,
+            ToggledEventHandler onToggledAction = null
+        ) => Add(new RibbonCheckBox(id, _resourceManager, visible, enabled, size, onToggledAction));
 
-        /// <summary>TODO</summary>
+        /// <summary>Returns a new Ribbon DropDownViewModel instance.</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         public IRibbonDropDown NewRibbonDropDown(
             string              id,
@@ -125,16 +122,14 @@ namespace Rubberduck.RibbonDispatcher
         ) => Add(new RibbonDropDown(id, _resourceManager, visible, enabled, size));
 
         /// <summary>TODO</summary>
-        [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
-        public static LanguageStrings NewLanguageControlRibbonText(
-            string label,
-            string screenTip      = null,
-            string superTip       = null,
-            string keyTip         = null,
-            string alternateLabel = null,
-            string description    = null
-        ) => new RibbonTextLanguageControl(label, screenTip, superTip, keyTip, alternateLabel, description);
-    }
+        public void Invalidate()                            => _ribbonUI.Invalidate();
+        /// <summary>TODO</summary>
+        public void InvalidateControl(string controlId)     => _ribbonUI.InvalidateControl(controlId);
+        /// <summary>TODO</summary>
+        public void InvalidateControlMso(string controlId)  => _ribbonUI.InvalidateControlMso(controlId);
+        /// <summary>TODO</summary>
+        public void ActivateTab(string controlId)           => _ribbonUI.ActivateTab(controlId);
+   }
 
     #region WorkInProgress
     /// <summary>TODO</summary>
@@ -153,6 +148,7 @@ namespace Rubberduck.RibbonDispatcher
     }
 
     /// <summary>TODO</summary>
+    [SuppressMessage("Microsoft.Design", "CA1040:AvoidEmptyInterfaces")]
     public interface IRibbonViewModel {
 
     }

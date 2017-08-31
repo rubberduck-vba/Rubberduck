@@ -49,9 +49,6 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
             IsPressed         = isPressed;
             OnChanged();
         }
-
-        /// <summary>TODO</summary>
-        public IRibbonCommon AsRibbonControl => this;
    }
 
 }
