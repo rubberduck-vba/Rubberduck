@@ -34,7 +34,7 @@
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>true</RunCodeAnalysis>
-    <LangVersion>6</LangVersion>
+    <LangVersion>7</LangVersion>
     <RegisterForComInterop>true</RegisterForComInterop>
     <DocumentationFile>bin\Release\Rubberduck.RibbonDispatcher.xml</DocumentationFile>
   </PropertyGroup>
@@ -68,7 +68,7 @@
     <Compile Include="ControlDecorators\IActionableDecorator.cs" />
     <Compile Include="EventHandlers\IClickedEventArgs.cs" />
     <Compile Include="AbstractCOM\IClickedEvents.cs" />
-    <Compile Include="ControlDecorators\IControlChangedEventArgs.cs" />
+    <Compile Include="EventHandlers\IControlChangedEventArgs.cs" />
     <Compile Include="AbstractCOM\IRibbonCheckBox.cs" />
     <Compile Include="ControlDecorators\IImageableDecorator.cs" />
     <Compile Include="AbstractCOM\IRibbonGroup.cs" />
@@ -86,7 +86,7 @@
     <Compile Include="EventHandlers\EventHandlerDelegates.cs" />
     <Compile Include="AbstractCOM\RdControlSize.cs" />
     <Compile Include="DictionaryExtensions.cs" />
-    <Compile Include="ControlDecorators\ControlChangedEventArgs.cs" />
+    <Compile Include="EventHandlers\ControlChangedEventArgs.cs" />
     <Compile Include="EventHandlers\ToggledEventArgs.cs" />
     <Compile Include="AbstractCOM\IRibbonButton.cs" />
     <Compile Include="AbstractCOM\IRibbonCommon.cs" />

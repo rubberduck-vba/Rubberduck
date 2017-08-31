@@ -140,7 +140,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         //    => DropDowns(control?.Id)[index];
 
         private static string Unknown(IRibbonControl control) 
-            => string.Format(CultureInfo.InvariantCulture, $"Unknown control '{control?.Id??""}'");
+            => string.Format(CultureInfo.InvariantCulture, $"'{control?.Id??""}' unknown");
 
         /// <summary>TODO</summary>
         protected static ResourceManager GetResourceManager(string resourceSetName) 

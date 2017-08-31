@@ -36,7 +36,7 @@ namespace Rubberduck.RibbonDispatcher {
         [DispId(11)]
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         RibbonGroup NewRibbonGroup(
-            string              id,
+            string              itemId,
             bool                visible = true,
             bool                enabled = true
         );
@@ -45,7 +45,7 @@ namespace Rubberduck.RibbonDispatcher {
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         [DispId(12)]
         RibbonButton NewRibbonButton(
-            string              id,
+            string              itemId,
             bool                visible         = true,
             bool                enabled         = true,
             RdControlSize       size            = rdLarge,
@@ -58,7 +58,7 @@ namespace Rubberduck.RibbonDispatcher {
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         [DispId(13)]
         RibbonButton NewRibbonButtonMso(
-            string              id,
+            string              itemId,
             bool                visible         = true,
             bool                enabled         = true,
             RdControlSize       size            = rdLarge,
@@ -72,7 +72,7 @@ namespace Rubberduck.RibbonDispatcher {
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         [DispId(14)]
         RibbonToggleButton NewRibbonToggle(
-            string              id,
+            string              itemId,
             bool                visible         = true,
             bool                enabled         = true,
             RdControlSize       size            = rdLarge,
@@ -85,7 +85,7 @@ namespace Rubberduck.RibbonDispatcher {
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         [DispId(15)]
         RibbonToggleButton NewRibbonToggleMso(
-            string              id,
+            string              itemId,
             bool                visible         = true,
             bool                enabled         = true,
             RdControlSize       size            = rdLarge,
@@ -99,7 +99,7 @@ namespace Rubberduck.RibbonDispatcher {
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         [DispId(16)]
         RibbonCheckBox NewRibbonCheckBox(
-            string              id,
+            string              itemId,
             bool                visible         = true,
             bool                enabled         = true,
             ToggledEventHandler onToggledAction = null
@@ -109,7 +109,7 @@ namespace Rubberduck.RibbonDispatcher {
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         [DispId(17)]
         RibbonDropDown NewRibbonDropDown(
-            string              id,
+            string              itemId,
             bool                visible = true,
             bool                enabled = true,
             SelectionMadeEventHandler onSelectionMade = null,
@@ -119,11 +119,11 @@ namespace Rubberduck.RibbonDispatcher {
         /// <summary>Returns a new Ribbon DropDownViewModel instance.</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification = "Matches COM usage.")]
         [DispId(18)]
-        SelectableItem NewSelectableItem(string id, IPictureDisp image = null);
+        SelectableItem NewSelectableItem(string itemId, IPictureDisp image = null);
 
         /// <summary>Returns a new Ribbon DropDownViewModel instance.</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification = "Matches COM usage.")]
         [DispId(19)]
-        SelectableItem NewSelectableItemMso(string id, string imageMso = "MacroSecurity");
+        SelectableItem NewSelectableItemMso(string itemId, string imageMso = "MacroSecurity");
     }
 }

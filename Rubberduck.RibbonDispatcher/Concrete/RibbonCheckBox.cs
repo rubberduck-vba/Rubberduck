@@ -22,9 +22,9 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [ComDefaultInterface(typeof(IRibbonCheckBox))]
     [Guid(RubberduckGuid.RibbonCheckBox)]
     public class RibbonCheckBox : RibbonCommon, IRibbonCheckBox, IToggleableDecorator {
-        internal RibbonCheckBox(string id, ResourceManager mgr, bool visible, bool enabled,
+        internal RibbonCheckBox(string itemId, ResourceManager mgr, bool visible, bool enabled,
                 ToggledEventHandler onToggledAction)
-            : base(id, mgr, visible, enabled) {
+            : base(itemId, mgr, visible, enabled) {
             if (onToggledAction != null) Toggled += onToggledAction;
         }
 

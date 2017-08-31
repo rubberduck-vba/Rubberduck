@@ -23,18 +23,18 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [Guid(RubberduckGuid.RibbonButton)]
     public class RibbonButton : RibbonCommon, IRibbonButton,
         ISizeableDecorator, IActionableDecorator, IImageableDecorator {
-        internal RibbonButton(string id, ResourceManager mgr, bool visible, bool enabled, RdControlSize size,
+        internal RibbonButton(string itemId, ResourceManager mgr, bool visible, bool enabled, RdControlSize size,
                 string imageMso, bool showImage, bool showLabel, EventHandler onClickedAction)
-            : base(id, mgr, visible, enabled) {
+            : base(itemId, mgr, visible, enabled) {
             _size      = size;
             _image     = new ImageObject(imageMso);
             _showImage = showImage;
             _showLabel = showLabel;
             if (onClickedAction != null) Clicked += onClickedAction;
         }
-        internal RibbonButton(string id, ResourceManager mgr, bool visible, bool enabled, RdControlSize size,
+        internal RibbonButton(string itemId, ResourceManager mgr, bool visible, bool enabled, RdControlSize size,
                 IPictureDisp image, bool showImage, bool showLabel, EventHandler onClickedAction)
-            : base(id, mgr, visible, enabled) {
+            : base(itemId, mgr, visible, enabled) {
             _size      = size;
             _image     = new ImageObject(image);
             _showImage = showImage;

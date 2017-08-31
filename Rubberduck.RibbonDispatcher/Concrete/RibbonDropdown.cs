@@ -24,9 +24,9 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [ComDefaultInterface(typeof(IRibbonDropDown))]
     [Guid(RubberduckGuid.RibbonDropDown)]
     public class RibbonDropDown : RibbonCommon, IRibbonDropDown, ISelectableDecorator {
-        internal RibbonDropDown(string id, ResourceManager mgr, bool visible, bool enabled,
+        internal RibbonDropDown(string itemId, ResourceManager mgr, bool visible, bool enabled,
                 SelectionMadeEventHandler onSelectionMade, ISelectableItem[] items = null)
-            : base(id, mgr, visible, enabled){
+            : base(itemId, mgr, visible, enabled){
             if(onSelectionMade != null) SelectionMade += onSelectionMade;
             _items = items?.ToList()?.AsReadOnly();
         }

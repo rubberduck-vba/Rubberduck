@@ -6,8 +6,8 @@ using System.Globalization;
 using System.Resources;
 using System.Runtime.InteropServices;
 
-using Rubberduck.RibbonDispatcher.ControlDecorators;
 using Rubberduck.RibbonDispatcher.AbstractCOM;
+using Rubberduck.RibbonDispatcher.EventHandlers;
 using LanguageStrings = Rubberduck.RibbonDispatcher.AbstractCOM.IRibbonTextLanguageControl;
 
 namespace Rubberduck.RibbonDispatcher.Concrete {
@@ -21,12 +21,12 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [Guid(RubberduckGuid.RibbonCommon)]
     public abstract class RibbonCommon : IRibbonCommon {
         /// <summary>TODO</summary>
-        protected RibbonCommon(string id, ResourceManager resourceManager)
-            : this(id, resourceManager, true, true) {;}
+        protected RibbonCommon(string itemId, ResourceManager resourceManager)
+            : this(itemId, resourceManager, true, true) {;}
         /// <summary>TODO</summary>
-        protected RibbonCommon(string id, ResourceManager resourceManager, bool visible, bool enabled) {
-            Id               = id;
-            LanguageStrings  = GetLanguageStrings(id, resourceManager);
+        protected RibbonCommon(string itemId, ResourceManager resourceManager, bool visible, bool enabled) {
+            Id               = itemId;
+            LanguageStrings  = GetLanguageStrings(itemId, resourceManager);
             _visible         = visible;
             _enabled         = enabled;
         }

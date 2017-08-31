@@ -24,18 +24,18 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [Guid(RubberduckGuid.RibbonToggleButton)]
     public class RibbonToggleButton : RibbonCommon, IRibbonToggleButton,
         ISizeableDecorator, IToggleableDecorator, IImageableDecorator {
-        internal RibbonToggleButton(string id, ResourceManager mgr, bool visible, bool enabled, RdControlSize size,
+        internal RibbonToggleButton(string itemId, ResourceManager mgr, bool visible, bool enabled, RdControlSize size,
                 string imageMso, bool showImage, bool showLabel, ToggledEventHandler onToggledAction)
-            : base(id, mgr, visible, enabled) {
+            : base(itemId, mgr, visible, enabled) {
             _size      = size;
             _image     = new ImageObject(imageMso);
             _showImage = showImage;
             _showLabel = showLabel;
             if (onToggledAction != null) Toggled += onToggledAction;
         }
-        internal RibbonToggleButton(string id, ResourceManager mgr, bool visible, bool enabled, RdControlSize size,
+        internal RibbonToggleButton(string itemId, ResourceManager mgr, bool visible, bool enabled, RdControlSize size,
                 IPictureDisp image, bool showImage, bool showLabel, ToggledEventHandler onToggledAction)
-            : base(id, mgr, visible, enabled) {
+            : base(itemId, mgr, visible, enabled) {
             _size      = size;
             _image     = new ImageObject(image);
             _showImage = showImage;

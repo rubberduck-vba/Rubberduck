@@ -88,15 +88,15 @@ namespace Rubberduck.RibbonDispatcher {
         /// <summary>Returns a new Ribbon Group ViewModel instance.</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         public RibbonGroup NewRibbonGroup(
-            string              id,
+            string              itemId,
             bool                visible         = true,
             bool                enabled         = true
-        ) => Add(new RibbonGroup(id, _resourceManager, visible, enabled));
+        ) => Add(new RibbonGroup(itemId, _resourceManager, visible, enabled));
 
         /// <summary>Returns a new Ribbon ActionButton ViewModel instance.</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         public RibbonButton NewRibbonButton(
-            string              id,
+            string              itemId,
             bool                visible         = true,
             bool                enabled         = true,
             RdControlSize       size            = rdLarge,
@@ -104,11 +104,11 @@ namespace Rubberduck.RibbonDispatcher {
             bool                showImage       = true,
             bool                showLabel       = true,
             EventHandler        onClickedAction = null
-        ) => Add(new RibbonButton(id, _resourceManager, visible, enabled, size, image, showImage, showLabel, onClickedAction));
+        ) => Add(new RibbonButton(itemId, _resourceManager, visible, enabled, size, image, showImage, showLabel, onClickedAction));
         /// <summary>Returns a new Ribbon ActionButton ViewModel instance.</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         public RibbonButton NewRibbonButtonMso(
-            string              id,
+            string              itemId,
             bool                visible         = true,
             bool                enabled         = true,
             RdControlSize       size            = rdLarge,
@@ -116,12 +116,12 @@ namespace Rubberduck.RibbonDispatcher {
             bool                showImage       = true,
             bool                showLabel       = true,
             EventHandler        onClickedAction = null
-        ) => Add(new RibbonButton(id, _resourceManager, visible, enabled, size, imageMso, showImage, showLabel, onClickedAction));
+        ) => Add(new RibbonButton(itemId, _resourceManager, visible, enabled, size, imageMso, showImage, showLabel, onClickedAction));
 
         /// <summary>Returns a new Ribbon ToggleButton ViewModel instance.</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         public RibbonToggleButton NewRibbonToggle(
-            string              id,
+            string              itemId,
             bool                visible         = true,
             bool                enabled         = true,
             RdControlSize       size            = rdLarge,
@@ -129,11 +129,11 @@ namespace Rubberduck.RibbonDispatcher {
             bool                showImage       = true,
             bool                showLabel       = true,
             ToggledEventHandler onToggledAction = null
-        ) => Add(new RibbonToggleButton(id, _resourceManager, visible, enabled, size, image, showImage, showLabel, onToggledAction));
+        ) => Add(new RibbonToggleButton(itemId, _resourceManager, visible, enabled, size, image, showImage, showLabel, onToggledAction));
         /// <summary>Returns a new Ribbon ToggleButton ViewModel instance.</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         public RibbonToggleButton NewRibbonToggleMso(
-            string              id,
+            string              itemId,
             bool                visible         = true,
             bool                enabled         = true,
             RdControlSize       size            = rdLarge,
@@ -141,35 +141,35 @@ namespace Rubberduck.RibbonDispatcher {
             bool                showImage       = true,
             bool                showLabel       = true,
             ToggledEventHandler onToggledAction = null
-        ) => Add(new RibbonToggleButton(id, _resourceManager, visible, enabled, size, imageMso, showImage, showLabel, onToggledAction));
+        ) => Add(new RibbonToggleButton(itemId, _resourceManager, visible, enabled, size, imageMso, showImage, showLabel, onToggledAction));
 
         /// <summary>Returns a new Ribbon CheckBox ViewModel instance.</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         public RibbonCheckBox NewRibbonCheckBox(
-            string              id,
+            string              itemId,
             bool                visible         = true,
             bool                enabled         = true,
             ToggledEventHandler onToggledAction = null
-        ) => Add(new RibbonCheckBox(id, _resourceManager, visible, enabled, onToggledAction));
+        ) => Add(new RibbonCheckBox(itemId, _resourceManager, visible, enabled, onToggledAction));
 
         /// <summary>Returns a new Ribbon DropDownViewModel instance.</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         public RibbonDropDown NewRibbonDropDown(
-            string              id,
+            string              itemId,
             bool                visible         = true,
             bool                enabled         = true,
             SelectionMadeEventHandler onSelectionMade = null,
             ISelectableItem[]   items           = null
-        ) => Add(new RibbonDropDown(id, _resourceManager, visible, enabled, onSelectionMade, items));
+        ) => Add(new RibbonDropDown(itemId, _resourceManager, visible, enabled, onSelectionMade, items));
 
         /// <inheritdoc/>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification = "Matches COM usage.")]
-        public SelectableItem NewSelectableItem(string id, IPictureDisp image = null)
-            => new SelectableItem(id, _resourceManager, image);
+        public SelectableItem NewSelectableItem(string itemId, IPictureDisp image = null)
+            => new SelectableItem(itemId, _resourceManager, image);
 
         /// <inheritdoc/>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification = "Matches COM usage.")]
-        public SelectableItem NewSelectableItemMso(string id, string imageMso = "MacroSecurity")
-            => new SelectableItem(id, _resourceManager, imageMso);
+        public SelectableItem NewSelectableItemMso(string itemId, string imageMso = "MacroSecurity")
+            => new SelectableItem(itemId, _resourceManager, imageMso);
     }
 }
