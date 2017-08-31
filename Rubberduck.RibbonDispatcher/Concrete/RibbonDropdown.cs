@@ -24,7 +24,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [ComDefaultInterface(typeof(IRibbonDropDown))]
     [Guid(RubberduckGuid.RibbonDropDown)]
     public class RibbonDropDown : RibbonCommon, IRibbonDropDown, ISelectableDecorator {
-        internal RibbonDropDown(string itemId, ResourceManager mgr, bool visible, bool enabled,
+        internal RibbonDropDown(string itemId, IResourceManager mgr, bool visible, bool enabled,
                 SelectedEventHandler onSelectionMade, ISelectableItem[] items = null)
             : base(itemId, mgr, visible, enabled){
             if(onSelectionMade != null) SelectionMade += onSelectionMade;
@@ -40,7 +40,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         /// <summary>TODO</summary>
         [DispId(DispIds.SelectedItemId)]
         public string      SelectedItemId {
-            get { return _items[_selectedItemIndex].Id; }
+            get => _items[_selectedItemIndex].Id;
             set { _selectedItemIndex = _items.Where((t,i) => t.Id == value).Select((t,i)=>i).FirstOrDefault();
                   OnChanged();
                 }
@@ -48,7 +48,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         /// <summary>TODO</summary>
         [DispId(DispIds.SelectedItemIndex)]
         public int         SelectedItemIndex {
-            get { return _selectedItemIndex; }
+            get => _selectedItemIndex;
             set { _selectedItemIndex = value; OnChanged(); }
         }
         /// <summary>Call back for OnAction events from the drop-down ribbon elements.</summary>

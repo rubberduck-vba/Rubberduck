@@ -13,11 +13,11 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [ComDefaultInterface(typeof(ISelectableItem))]
     public class SelectableItem : RibbonCommon, ISelectableItem {
         /// <summary>TODO</summary>
-        public SelectableItem(string ItemId, ResourceManager ResourceManager, IPictureDisp Image) 
+        public SelectableItem(string ItemId, IResourceManager ResourceManager, IPictureDisp Image) 
             : base(ItemId, ResourceManager, true, true)
             => _image = new ImageObject(Image);
         /// <summary>TODO</summary>
-        public SelectableItem(string ItemId, ResourceManager ResourceManager, string ImageMso)
+        public SelectableItem(string ItemId, IResourceManager ResourceManager, string ImageMso)
             : base(ItemId, ResourceManager, true, true)
             => _image = new ImageObject(ImageMso);
 

@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using Microsoft.Office.Core;
 
 using Rubberduck.RibbonDispatcher.AbstractCOM;
+using Rubberduck.RibbonDispatcher.Concrete;
 
 namespace Rubberduck.RibbonDispatcher {
 
@@ -22,7 +23,7 @@ namespace Rubberduck.RibbonDispatcher {
         /// <summary>TODO</summary>
         public Main() { }
         /// <inheritdoc/>
-        public IRibbonViewModel NewRibbonViewModel(IRibbonUI ribbonUI, ResourceManager resourceManager)
+        public IRibbonViewModel NewRibbonViewModel(IRibbonUI ribbonUI, IResourceManager resourceManager)
             => new RibbonViewModel(ribbonUI, resourceManager);
     }
 }

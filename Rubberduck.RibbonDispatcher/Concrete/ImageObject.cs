@@ -9,9 +9,9 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [Serializable]
     internal class ImageObject {
         /// <summary>TODO</summary>
-        public ImageObject(string imageMso)    { Image = imageMso; }
+        public ImageObject(string imageMso)    => Image = imageMso;
         /// <summary>TODO</summary>
-        public ImageObject(IPictureDisp image) { Image = image; }
+        public ImageObject(IPictureDisp image) => Image = image;
 
         /// <summary>TODO</summary>
         public object Image { get; }

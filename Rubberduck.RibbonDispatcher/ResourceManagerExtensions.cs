@@ -37,7 +37,7 @@ namespace Rubberduck.RibbonDispatcher {
 
         [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
         internal class PictureConverter : AxHost {
-            private PictureConverter() : base(String.Empty) { }
+            private PictureConverter() : base(string.Empty) { }
 
             public static IPictureDisp ImageToPictureDisp(Image image) => GetIPictureDispFromPicture(image) as IPictureDisp;
 

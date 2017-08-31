@@ -16,7 +16,7 @@ namespace Rubberduck.RibbonDispatcher.EventHandlers {
     [ComDefaultInterface(typeof(IControlChangedEventArgs))]
     internal class ControlChangedEventArgs : EventArgs, IControlChangedEventArgs {
         /// <summary>TODO</summary>
-        public ControlChangedEventArgs(string controlId) { ControlId = controlId; }
+        public ControlChangedEventArgs(string controlId) => ControlId = controlId;
         /// <summary>TODO</summary>
         public string ControlId { get; }
     }

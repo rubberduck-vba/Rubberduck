@@ -36,7 +36,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [Guid(RubberduckGuid.AbstractDispatcher)]
     public abstract class AbstractDispatcher : IRibbonViewModel {
         /// <summary>TODO</summary>
-        protected void InitializeRibbonFactory(IRibbonUI RibbonUI, ResourceManager ResourceManager) 
+        protected void InitializeRibbonFactory(IRibbonUI RibbonUI, IResourceManager ResourceManager) 
             => _ribbonFactory = new RibbonFactory(RibbonUI, ResourceManager);
 
         /// <inheritdoc/>
@@ -143,8 +143,8 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         private static string Unknown(IRibbonControl Control) 
             => string.Format(CultureInfo.InvariantCulture, $"'{Control?.Id??""}' unknown");
 
-        /// <summary>TODO</summary>
-        protected static ResourceManager GetResourceManager(string ResourceSetName) 
-            => new ResourceManager(ResourceSetName, Assembly.GetExecutingAssembly());
+        ///// <summary>TODO</summary>
+        //protected static ResourceManager GetResourceManager(string ResourceSetName) 
+        //    => new ResourceManager(ResourceSetName, Assembly.GetExecutingAssembly());
     }
 }

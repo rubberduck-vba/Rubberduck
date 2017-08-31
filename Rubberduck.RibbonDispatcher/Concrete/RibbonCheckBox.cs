@@ -22,7 +22,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [ComDefaultInterface(typeof(IRibbonCheckBox))]
     [Guid(RubberduckGuid.RibbonCheckBox)]
     public class RibbonCheckBox : RibbonCommon, IRibbonCheckBox, IToggleableDecorator {
-        internal RibbonCheckBox(string itemId, ResourceManager mgr, bool visible, bool enabled,
+        internal RibbonCheckBox(string itemId, IResourceManager mgr, bool visible, bool enabled,
                 ToggledEventHandler onToggledAction)
             : base(itemId, mgr, visible, enabled) {
             if (onToggledAction != null) Toggled += onToggledAction;
@@ -35,7 +35,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         /// <summary>TODO</summary>
         public bool IsPressed         { get; private set; }
         /// <summary>TODO</summary>
-        public new string Label       => IsPressed && ! String.IsNullOrEmpty(LanguageStrings?.AlternateLabel)
+        public new string Label       => IsPressed && ! string.IsNullOrEmpty(LanguageStrings?.AlternateLabel)
                                        ? LanguageStrings?.AlternateLabel??Id 
                                        : LanguageStrings?.Label??Id;
 

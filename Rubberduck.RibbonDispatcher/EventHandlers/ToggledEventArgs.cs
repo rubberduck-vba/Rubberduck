@@ -14,7 +14,7 @@ namespace Rubberduck.RibbonDispatcher.EventHandlers {
     [ComDefaultInterface(typeof(IToggledEventArgs))]
     public class ToggledEventArgs : EventArgs, IToggledEventArgs {
         /// <summary>TODO</summary>
-        public ToggledEventArgs(bool isPressed) { IsPressed = isPressed; }
+        public ToggledEventArgs(bool isPressed) => IsPressed = isPressed;
         /// <summary>TODO</summary>
         public bool IsPressed   { get; }
     }

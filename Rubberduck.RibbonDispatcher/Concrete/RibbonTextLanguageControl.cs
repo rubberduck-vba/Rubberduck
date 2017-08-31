@@ -24,8 +24,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete
             string alternateLabel,
             string description
         ) {
-            if (label == null) throw new ArgumentNullException(nameof(label)); 
-            Label           = label; 
+            Label = label ?? throw new ArgumentNullException(nameof(label)); 
             ScreenTip       = screenTip     ?? Label; 
             SuperTip        = superTip      ?? "SuperTip text for " + Label; 
             KeyTip          = keyTip        ?? "";

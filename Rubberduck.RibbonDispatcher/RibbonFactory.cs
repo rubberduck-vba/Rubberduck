@@ -28,7 +28,7 @@ namespace Rubberduck.RibbonDispatcher {
     [CLSCompliant(true)]
     [ComDefaultInterface(typeof(IRibbonFactory))]
     public class RibbonFactory : IRibbonFactory {
-        internal RibbonFactory(IRibbonUI RibbonUI, ResourceManager ResourceManager) {
+        internal RibbonFactory(IRibbonUI RibbonUI, IResourceManager ResourceManager) {
             _ribbonUI        = RibbonUI;
             _resourceManager = ResourceManager;
 
@@ -41,7 +41,7 @@ namespace Rubberduck.RibbonDispatcher {
         }
 
         private readonly IRibbonUI                                  _ribbonUI;
-        private readonly ResourceManager                            _resourceManager;
+        private readonly IResourceManager                           _resourceManager;
         private readonly IDictionary<string, IRibbonCommon>         _controls;
         private readonly IDictionary<string, ISizeableDecorator>    _sizeables;
         private readonly IDictionary<string, IActionableDecorator>  _actionables;

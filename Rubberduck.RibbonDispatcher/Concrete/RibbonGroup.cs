@@ -20,7 +20,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [Guid(RubberduckGuid.RibbonGroup)]
     public class RibbonGroup : RibbonCommon, IRibbonGroup
     {
-        internal RibbonGroup(string itemId, ResourceManager mgr, bool visible, bool enabled)
+        internal RibbonGroup(string itemId, IResourceManager mgr, bool visible, bool enabled)
             : base(itemId, mgr, visible, enabled) {; }
     }
 }

@@ -18,6 +18,6 @@ namespace Rubberduck.RibbonDispatcher {
     public interface IMain {
         /// <summary>TODO</summary>
         [DispId(1)]
-        IRibbonViewModel NewRibbonViewModel(IRibbonUI ribbonUI, ResourceManager resourceManager);
+        IRibbonViewModel NewRibbonViewModel(IRibbonUI ribbonUI, IResourceManager resourceManager);
     }
 }

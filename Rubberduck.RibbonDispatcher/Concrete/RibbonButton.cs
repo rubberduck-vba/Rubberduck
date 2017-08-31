@@ -21,7 +21,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [Guid(RubberduckGuid.RibbonButton)]
     public class RibbonButton : RibbonCommon, IRibbonButton,
         ISizeableDecorator, IActionableDecorator, IImageableDecorator {
-        internal RibbonButton(string itemId, ResourceManager mgr, bool visible, bool enabled, RdControlSize size,
+        internal RibbonButton(string itemId, IResourceManager mgr, bool visible, bool enabled, RdControlSize size,
                 string imageMso, bool showImage, bool showLabel)
             : base(itemId, mgr, visible, enabled) {
             _size      = size;
@@ -29,7 +29,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
             _showImage = showImage;
             _showLabel = showLabel;
         }
-        internal RibbonButton(string itemId, ResourceManager mgr, bool visible, bool enabled, RdControlSize size,
+        internal RibbonButton(string itemId, IResourceManager mgr, bool visible, bool enabled, RdControlSize size,
                 IPictureDisp image, bool showImage, bool showLabel)
             : base(itemId, mgr, visible, enabled) {
             _size      = size;

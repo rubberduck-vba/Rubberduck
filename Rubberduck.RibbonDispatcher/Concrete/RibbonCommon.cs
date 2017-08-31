@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 using System;
 using System.Globalization;
-using System.Resources;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
 using Rubberduck.RibbonDispatcher.AbstractCOM;
@@ -21,10 +21,10 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [Guid(RubberduckGuid.RibbonCommon)]
     public abstract class RibbonCommon : IRibbonCommon {
         /// <summary>TODO</summary>
-        protected RibbonCommon(string itemId, ResourceManager resourceManager)
+        protected RibbonCommon(string itemId, IResourceManager resourceManager)
             : this(itemId, resourceManager, true, true) {;}
         /// <summary>TODO</summary>
-        protected RibbonCommon(string itemId, ResourceManager resourceManager, bool visible, bool enabled) {
+        protected RibbonCommon(string itemId, IResourceManager resourceManager, bool visible, bool enabled) {
             Id               = itemId;
             LanguageStrings  = GetLanguageStrings(itemId, resourceManager);
             _visible         = visible;
@@ -52,14 +52,14 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
 
         /// <inheritdoc/>
         public bool IsEnabled {
-            get { return _enabled; }
+            get => _enabled;
             set { _enabled = value; OnChanged(); }
         }
         private bool _enabled;
 
         /// <inheritdoc/>
         public bool IsVisible {
-            get { return _visible; }
+            get => _visible;
             set { _visible = value; OnChanged(); }
         }
         private bool _visible;
@@ -73,7 +73,8 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         /// <inheritdoc/>
         public void OnChanged() => Changed?.Invoke(this, new ControlChangedEventArgs(Id));
 
-        private static LanguageStrings GetLanguageStrings(string controlId, ResourceManager mgr)
+    //    [SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.String.Format(System.String,System.Object)")]
+        private static LanguageStrings GetLanguageStrings(string controlId, IResourceManager mgr)
             => new RibbonTextLanguageControl(
                     mgr.GetCurrentUIString(Invariant($"{controlId ?? ""}_Label"))          ?? controlId,
                     mgr.GetCurrentUIString(Invariant($"{controlId ?? ""}_ScreenTip"))      ?? controlId + " SuperTip",
@@ -82,6 +83,6 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
                     mgr.GetCurrentUIString(Invariant($"{controlId ?? ""}_AlternateLabel")) ?? "",
                     mgr.GetCurrentUIString(Invariant($"{controlId ?? ""}_Description"))    ?? controlId + " Description");
         /// <summary>TODO</summary>
-        private static string Invariant(string formattable) => String.Format(formattable, CultureInfo.InvariantCulture);
+        private static string Invariant(string formattable) => string.Format(formattable, CultureInfo.InvariantCulture);
     }
 }
