@@ -73,6 +73,15 @@ namespace Rubberduck.RibbonDispatcher {
             return ctrl;
         }
 
+        /// <summary>TODO</summary>
+        public void Invalidate()                            => _ribbonUI.Invalidate();
+        /// <summary>TODO</summary>
+        public void InvalidateControl(string controlId)     => _ribbonUI.InvalidateControl(controlId);
+        /// <summary>TODO</summary>
+        public void InvalidateControlMso(string controlId)  => _ribbonUI.InvalidateControlMso(controlId);
+        /// <summary>TODO</summary>
+        public void ActivateTab(string controlId)           => _ribbonUI.ActivateTab(controlId);
+
         /// <summary>Returns a new Ribbon Group ViewModel instance.</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         public RibbonGroup NewRibbonGroup(
@@ -153,23 +162,14 @@ namespace Rubberduck.RibbonDispatcher {
             ISelectableItem[]   items           = null
         ) => Add(new RibbonDropDown(id, _resourceManager, visible, enabled, size, onSelectionMade, items));
 
-        /// <summary>Returns a new Ribbon DropDownViewModel instance.</summary>
+        /// <inheritdoc/>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification = "Matches COM usage.")]
-        [DispId(18)]
-        public SelectableItem NewSelectableItem(
-            string id,
-            string label,
-            string screenTip = null,
-            string superTip = null
-        ) => new SelectableItem(id, _resourceManager);
+        public SelectableItem NewSelectableItem(string id, IPictureDisp image = null)
+            => new SelectableItem(id, _resourceManager, image);
 
-        /// <summary>TODO</summary>
-        public void Invalidate()                            => _ribbonUI.Invalidate();
-        /// <summary>TODO</summary>
-        public void InvalidateControl(string controlId)     => _ribbonUI.InvalidateControl(controlId);
-        /// <summary>TODO</summary>
-        public void InvalidateControlMso(string controlId)  => _ribbonUI.InvalidateControlMso(controlId);
-        /// <summary>TODO</summary>
-        public void ActivateTab(string controlId)           => _ribbonUI.ActivateTab(controlId);
-   }
+        /// <inheritdoc/>
+        [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification = "Matches COM usage.")]
+        public SelectableItem NewSelectableItemMso(string id, string imageMso = "MacroSecurity")
+            => new SelectableItem(id, _resourceManager, imageMso);
+    }
 }

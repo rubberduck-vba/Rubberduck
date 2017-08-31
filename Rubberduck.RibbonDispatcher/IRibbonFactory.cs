@@ -6,7 +6,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using stdole;
 
-using Rubberduck.RibbonDispatcher.Abstract;
 using Rubberduck.RibbonDispatcher.AbstractCOM;
 using Rubberduck.RibbonDispatcher.Concrete;
 using Rubberduck.RibbonDispatcher.EventHandlers;
@@ -123,11 +122,11 @@ namespace Rubberduck.RibbonDispatcher {
         /// <summary>Returns a new Ribbon DropDownViewModel instance.</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification = "Matches COM usage.")]
         [DispId(18)]
-        SelectableItem NewSelectableItem(
-            string id,
-            string label     = null,
-            string screenTip = null,
-            string superTip  = null
-        );
+        SelectableItem NewSelectableItem(string id, IPictureDisp image = null);
+
+        /// <summary>Returns a new Ribbon DropDownViewModel instance.</summary>
+        [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification = "Matches COM usage.")]
+        [DispId(19)]
+        SelectableItem NewSelectableItemMso(string id, string imageMso = "MacroSecurity");
     }
 }

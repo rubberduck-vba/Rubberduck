@@ -57,29 +57,30 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
             => Controls(control?.Id)?.Description ?? Unknown(control);
         /// <inheritdoc/>
         public bool   GetEnabled(IRibbonControl control)
-            => Controls(control?.Id)?.IsEnabled   ?? false;
+            => Controls(control?.Id)?.IsEnabled ?? false;
         /// <inheritdoc/>
         public string GetKeyTip(IRibbonControl control)
-            => Controls(control?.Id)?.KeyTip      ?? "??";
+            => Controls(control?.Id)?.KeyTip ?? "??";
         /// <inheritdoc/>
         public string GetLabel(IRibbonControl control)
-            => Controls(control?.Id)?.Label       ?? Unknown(control);
+            => Controls(control?.Id)?.Label ?? Unknown(control);
         /// <inheritdoc/>
         public string GetScreenTip(IRibbonControl control)
-            => Controls(control?.Id)?.ScreenTip   ?? Unknown(control);
+            => Controls(control?.Id)?.ScreenTip ?? Unknown(control);
         /// <inheritdoc/>
         public string GetSuperTip(IRibbonControl control)
-            => Controls(control?.Id)?.SuperTip    ?? Unknown(control);
+            => Controls(control?.Id)?.SuperTip ?? Unknown(control);
         /// <inheritdoc/>
         public bool   GetVisible(IRibbonControl control)
-            => Controls(control?.Id)?.IsVisible   ?? true;
+            => Controls(control?.Id)?.IsVisible ?? true;
 
         /// <inheritdoc/>
-        public RdControlSize GetSize(IRibbonControl control) => Controls(control?.Id)?.Size ?? RdControlSize.rdLarge;
+        public RdControlSize GetSize(IRibbonControl control)
+            => Controls(control?.Id)?.Size ?? RdControlSize.rdLarge;
 
         /// <inheritdoc/>
         public object GetImage(IRibbonControl control)
-            => Imageables(control?.Id)?.Image     ?? "MacroSecurity";
+            => Imageables(control?.Id)?.Image ?? "MacroSecurity";
         /// <inheritdoc/>
         public bool   GetShowImage(IRibbonControl control)
             => Imageables(control?.Id)?.ShowImage ?? true;
@@ -89,7 +90,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
 
         /// <inheritdoc/>
         public bool   GetPressed(IRibbonControl control)
-            => Toggles(control?.Id)?.IsPressed    ?? false;
+            => Toggles(control?.Id)?.IsPressed ?? false;
         /// <inheritdoc/>
         public void   OnActionToggle(IRibbonControl control, bool pressed)
             => Toggles(control?.Id)?.OnActionToggle(pressed);
@@ -98,29 +99,40 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         public void   OnAction(IRibbonControl control) => Actions(control?.Id)?.OnAction();
 
         /// <inheritdoc/>
-        public string GetSelectedItemId(IRibbonControl control)           => DropDowns(control?.Id)?.SelectedItemId;
+        public string GetSelectedItemId(IRibbonControl control)
+            => DropDowns(control?.Id)?.SelectedItemId;
         /// <inheritdoc/>
-        public int    GetSelectedItemIndex(IRibbonControl control)        => DropDowns(control?.Id)?.SelectedItemIndex    ?? 0;
+        public int    GetSelectedItemIndex(IRibbonControl control)
+            => DropDowns(control?.Id)?.SelectedItemIndex ?? 0;
         /// <inheritdoc/>
-        public void   OnActionDropDown(IRibbonControl control, string selectedId, int selectedIndex) => DropDowns(control?.Id)?.OnActionDropDown(selectedId, selectedIndex);
+        public void   OnActionDropDown(IRibbonControl control, string selectedId, int selectedIndex)
+            => DropDowns(control?.Id)?.OnActionDropDown(selectedId, selectedIndex);
  
         /// <inheritdoc/>
-        public int    GetItemCount(IRibbonControl control)                => DropDowns(control?.Id)?.ItemCount            ?? 0;
+        public int    GetItemCount(IRibbonControl control)
+            => DropDowns(control?.Id)?.ItemCount ?? 0;
         /// <inheritdoc/>
-        public string GetItemId(IRibbonControl control, int index)        => DropDowns(control?.Id)?.ItemId(index)        ?? "";
+        public string GetItemId(IRibbonControl control, int index)
+            => DropDowns(control?.Id)?.ItemId(index) ?? "";
         /// <inheritdoc/>
-        public string GetItemLabel(IRibbonControl control, int index)     => DropDowns(control?.Id)?.ItemLabel(index)     ?? Unknown(control);
+        public string GetItemLabel(IRibbonControl control, int index)
+            => DropDowns(control?.Id)?.ItemLabel(index) ?? Unknown(control);
         /// <inheritdoc/>
-        public string GetItemScreenTip(IRibbonControl control, int index) => DropDowns(control?.Id)?.ItemScreenTip(index) ?? Unknown(control);
+        public string GetItemScreenTip(IRibbonControl control, int index)
+            => DropDowns(control?.Id)?.ItemScreenTip(index) ?? Unknown(control);
         /// <inheritdoc/>
-        public string GetItemSuperTip(IRibbonControl control, int index)  => DropDowns(control?.Id)?.ItemSuperTip(index)  ?? Unknown(control);
+        public string GetItemSuperTip(IRibbonControl control, int index)
+            => DropDowns(control?.Id)?.ItemSuperTip(index) ?? Unknown(control);
 
         /// <inheritdoc/>
-        public object GetItemImage(IRibbonControl control, int index)     => DropDowns(control?.Id)?.ItemImage(index)     ?? "MacroSecurity";
+        public object GetItemImage(IRibbonControl control, int index)
+            => DropDowns(control?.Id)?.ItemImage(index) ?? "MacroSecurity";
         /// <inheritdoc/>
-        public bool   GetItemShowImage(IRibbonControl control, int index) => DropDowns(control?.Id)?.ItemShowImage(index) ?? true;
+        public bool   GetItemShowImage(IRibbonControl control, int index)
+            => DropDowns(control?.Id)?.ItemShowImage(index) ?? true;
         /// <inheritdoc/>
-        public bool   GetItemShowLabel(IRibbonControl control, int index) => DropDowns(control?.Id)?.ItemShowLabel(index) ?? true;
+        public bool   GetItemShowLabel(IRibbonControl control, int index)
+            => DropDowns(control?.Id)?.ItemShowLabel(index) ?? true;
 
         //private ISelectableItem DropDownItem(IRibbonControl control, int index)
         //    => DropDowns(control?.Id)[index];
