@@ -33,9 +33,9 @@ namespace Rubberduck.VBEditor.Application
         string ApplicationName { get; }
 
         /// <summary>
-        /// Gets all document-embedded controls. Yields COM objects.
+        /// Gets all document-embedded controls.
         /// </summary>
         /// <returns></returns>
-        IEnumerable GetDocumentControls();
+        IEnumerable GetDocumentMacros();
     }
 }

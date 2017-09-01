@@ -54,7 +54,7 @@ namespace Rubberduck.VBEditor.Application
         }
 
         public string ApplicationName { get { return "(unknown)"; } }
-        public IEnumerable GetDocumentControls()
+        public IEnumerable GetDocumentMacros()
         {
             return Enumerable.Empty<object>();
         }

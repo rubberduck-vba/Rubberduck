@@ -61,22 +61,13 @@ namespace Rubberduck.VBEditor.Application
 			Dispose(false);
         }
 
-        public string ApplicationName
-        {
-            get { return _applicationName; }
-        }
+        public string ApplicationName => _applicationName;
 
-        public virtual IEnumerable GetDocumentControls()
-        {
-            return Enumerable.Empty<object>();
-        }
+        public virtual IEnumerable GetDocumentMacros() => Enumerable.Empty<object>();
 
         public abstract void Run(dynamic declaration);
 
-        public virtual object Run(string name, params object[] args)
-        {
-            return null;
-        }
+        public virtual object Run(string name, params object[] args) => null;
 
         public void Dispose()
         {
