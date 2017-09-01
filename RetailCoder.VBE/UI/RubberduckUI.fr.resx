@@ -473,9 +473,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="Change" xml:space="preserve">
     <value>Modifier</value>
   </data>
-  <data name="CodeExplorer_AddFormText" xml:space="preserve">
-    <value>&amp;Fenêtre</value>
-  </data>
   <data name="CodeExplorer_AddStdModuleText" xml:space="preserve">
     <value>Module &amp;standard (.bas)</value>
   </data>

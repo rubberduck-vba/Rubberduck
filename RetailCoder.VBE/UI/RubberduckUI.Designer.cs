@@ -528,11 +528,20 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User form (.frm).
+        ///   Looks up a localized string similar to UserForm (.frm).
         /// </summary>
         public static string CodeExplorer_AddFormText {
             get {
                 return ResourceManager.GetString("CodeExplorer_AddFormText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add Module.
+        /// </summary>
+        public static string CodeExplorer_AddModule {
+            get {
+                return ResourceManager.GetString("CodeExplorer_AddModule", resourceCulture);
             }
         }
         
@@ -605,6 +614,25 @@ namespace Rubberduck.UI {
         public static string CodeExplorer_DisplaySignaturesText {
             get {
                 return ResourceManager.GetString("CodeExplorer_DisplaySignaturesText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to to parse and process
+        ///the projects in the VBE..
+        /// </summary>
+        public static string CodeExplorer_EmptyViewMessage {
+            get {
+                return ResourceManager.GetString("CodeExplorer_EmptyViewMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck doesn&apos;t see anything yet..
+        /// </summary>
+        public static string CodeExplorer_EmptyViewMessage_Title {
+            get {
+                return ResourceManager.GetString("CodeExplorer_EmptyViewMessage_Title", resourceCulture);
             }
         }
         
@@ -695,6 +723,24 @@ namespace Rubberduck.UI {
         public static string CodeExplorer_NewToolTip {
             get {
                 return ResourceManager.GetString("CodeExplorer_NewToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open.
+        /// </summary>
+        public static string CodeExplorer_Open {
+            get {
+                return ResourceManager.GetString("CodeExplorer_Open", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open Designer.
+        /// </summary>
+        public static string CodeExplorer_OpenDesigner {
+            get {
+                return ResourceManager.GetString("CodeExplorer_OpenDesigner", resourceCulture);
             }
         }
         
@@ -1558,9 +1604,9 @@ namespace Rubberduck.UI {
         /// <summary>
         ///   Looks up a localized string similar to Choose a folder to export the source of {0} to:.
         /// </summary>
-        public static string ExportAllCommand_SaveAsDialog {
+        public static string ExportAllCommand_SaveAsDialog_Title {
             get {
-                return ResourceManager.GetString("ExportAllCommand_SaveAsDialog", resourceCulture);
+                return ResourceManager.GetString("ExportAllCommand_SaveAsDialog_Title", resourceCulture);
             }
         }
         
@@ -2155,6 +2201,33 @@ namespace Rubberduck.UI {
         public static string ImplementInterface_InvalidSelectionMessage {
             get {
                 return ResourceManager.GetString("ImplementInterface_InvalidSelectionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All Files.
+        /// </summary>
+        public static string ImportCommand_OpenDialog_Filter_AllFiles {
+            get {
+                return ResourceManager.GetString("ImportCommand_OpenDialog_Filter_AllFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to VB Files.
+        /// </summary>
+        public static string ImportCommand_OpenDialog_Filter_VBFiles {
+            get {
+                return ResourceManager.GetString("ImportCommand_OpenDialog_Filter_VBFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import Source Files.
+        /// </summary>
+        public static string ImportCommand_OpenDialog_Title {
+            get {
+                return ResourceManager.GetString("ImportCommand_OpenDialog_Title", resourceCulture);
             }
         }
         

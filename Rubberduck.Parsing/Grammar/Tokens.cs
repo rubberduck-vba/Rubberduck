@@ -27,6 +27,7 @@
         public static readonly string ChDir = "ChDir";
         public static readonly string ChDrive = "ChDrive";
         public static readonly string Chr = "Chr";
+        public static readonly string ChrB = "ChrB";
         public static readonly string ChrW = "ChrW";
         public static readonly string CInt = "CInt";
         public static readonly string CLng = "CLng";
