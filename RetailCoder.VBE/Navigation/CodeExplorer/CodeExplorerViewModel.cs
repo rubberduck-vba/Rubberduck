@@ -10,6 +10,7 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
+using Rubberduck.SettingsProvider;
 using Rubberduck.UI;
 using Rubberduck.UI.CodeExplorer.Commands;
 using Rubberduck.UI.Command;
@@ -27,15 +28,30 @@ namespace Rubberduck.Navigation.CodeExplorer
     {
         private readonly FolderHelper _folderHelper;
         private readonly RubberduckParserState _state;
-        private bool _sourceControlEnabled;
+        private IConfigProvider<GeneralSettings> _generalSettingsProvider;
+        private IConfigProvider<WindowSettings> _windowSettingsProvider;
+        private GeneralSettings _generalSettings;
+        private WindowSettings _windowSettings;
 
-        public CodeExplorerViewModel(FolderHelper folderHelper, RubberduckParserState state, List<CommandBase> commands, IGeneralConfigService configLoader)
+        public CodeExplorerViewModel(FolderHelper folderHelper, RubberduckParserState state, List<CommandBase> commands,
+            IConfigProvider<GeneralSettings> generalSettingsProvider, IConfigProvider<WindowSettings> windowSettingsProvider)
         {
             _folderHelper = folderHelper;
             _state = state;
             _state.StateChanged += HandleStateChanged;
             _state.ModuleStateChanged += ParserState_ModuleStateChanged;
-            _sourceControlEnabled = configLoader.LoadConfiguration().UserSettings.GeneralSettings.SourceControlEnabled;
+            _generalSettingsProvider = generalSettingsProvider;
+            _windowSettingsProvider = windowSettingsProvider;
+
+            if (generalSettingsProvider != null)
+            {
+                _generalSettings = generalSettingsProvider.Create();
+            }
+
+            if (windowSettingsProvider != null)
+            {
+                _windowSettings = windowSettingsProvider.Create();
+            }
 
             var reparseCommand = commands.OfType<ReparseCommand>().SingleOrDefault();
 
@@ -114,36 +130,38 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        private bool _sortByName = true;
         public bool SortByName
         {
-            get { return _sortByName; }
+            get { return _windowSettings.CodeExplorer_SortByName; }
             set
             {
-                if (_sortByName == value)
+                if (_windowSettings.CodeExplorer_SortByName == value)
                 {
                     return;
                 }
 
-                _sortByName = value;
+                _windowSettings.CodeExplorer_SortByName = value;
+                _windowSettings.CodeExplorer_SortByLocation = !value;
+                _windowSettingsProvider.Save(_windowSettings);
                 OnPropertyChanged();
 
                 ReorderChildNodes(Projects);
             }
         }
 
-        private bool _sortBySelection;
         public bool SortBySelection
         {
-            get { return _sortBySelection; }
+            get { return _windowSettings.CodeExplorer_SortByLocation; }
             set
             {
-                if (_sortBySelection == value)
+                if (_windowSettings.CodeExplorer_SortByLocation == value)
                 {
                     return;
                 }
 
-                _sortBySelection = value;
+                _windowSettings.CodeExplorer_SortByLocation = value;
+                _windowSettings.CodeExplorer_SortByName = !value;
+                _windowSettingsProvider.Save(_windowSettings);
                 OnPropertyChanged();
 
                 ReorderChildNodes(Projects);
@@ -156,15 +174,16 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public CommandBase SetSelectionSortCommand { get; }
 
-        private bool _sortByType = true;
         public bool SortByType
         {
-            get { return _sortByType; }
+            get { return _windowSettings.CodeExplorer_GroupByType; }
             set
             {
-                if (_sortByType != value)
+                if (_windowSettings.CodeExplorer_GroupByType != value)
                 {
-                    _sortByType = value;
+                    _windowSettings.CodeExplorer_GroupByType = value;
+                    _windowSettingsProvider.Save(_windowSettings);
+
                     OnPropertyChanged();
 
                     ReorderChildNodes(Projects);
@@ -522,7 +541,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public bool IsSourceControlEnabled
         {
-            get { return _sourceControlEnabled; }
+            get { return _generalSettings.SourceControlEnabled; }
         }
 
         public Visibility TreeViewVisibility

@@ -16,12 +16,32 @@ using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.SettingsProvider;
 
 namespace RubberduckTests.CodeExplorer
 {
     [TestClass]
     public class CodeExplorerTests
     {
+        private GeneralSettings _generalSettings;
+        private WindowSettings _windowSettings;
+
+        private Mock<IConfigProvider<GeneralSettings>> _generalSettingsProvider;
+        private Mock<IConfigProvider<WindowSettings>> _windowSettingsProvider;
+
+        [TestInitialize]
+        public void Initialize()
+        {
+            _generalSettings = new GeneralSettings();
+            _windowSettings = new WindowSettings();
+
+            _generalSettingsProvider = new Mock<IConfigProvider<GeneralSettings>>();
+            _windowSettingsProvider = new Mock<IConfigProvider<WindowSettings>>();
+
+            _generalSettingsProvider.Setup(s => s.Create()).Returns(_generalSettings);
+            _windowSettingsProvider.Setup(s => s.Create()).Returns(_windowSettings);
+        }
+
         [TestCategory("Code Explorer")]
         [TestMethod]
         public void AddStdModule()
@@ -36,11 +56,8 @@ namespace RubberduckTests.CodeExplorer
 
             var commands = new List<CommandBase> { new AddStdModuleCommand(new AddComponentCommand(vbe.Object)) };
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
-            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
-
             var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, configLoader.Object);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -66,11 +83,8 @@ namespace RubberduckTests.CodeExplorer
 
             var commands = new List<CommandBase> { new AddClassModuleCommand(new AddComponentCommand(vbe.Object)) };
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
-            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
-
             var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, configLoader.Object);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -96,11 +110,8 @@ namespace RubberduckTests.CodeExplorer
 
             var commands = new List<CommandBase> { new AddUserFormCommand(new AddComponentCommand(vbe.Object)) };
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
-            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
-
             var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, configLoader.Object);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -131,11 +142,11 @@ namespace RubberduckTests.CodeExplorer
             var vbeWrapper = vbe.Object;
             var commands = new List<CommandBase>
             {
-                new Rubberduck.UI.CodeExplorer.Commands.AddTestModuleCommand(vbeWrapper, 
+                new Rubberduck.UI.CodeExplorer.Commands.AddTestModuleCommand(vbeWrapper,
                     new Rubberduck.UI.Command.AddTestModuleCommand(vbeWrapper, state, configLoader.Object))
             };
 
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, configLoader.Object);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -167,11 +178,8 @@ namespace RubberduckTests.CodeExplorer
             openFileDialog.Setup(o => o.ShowHelp);
             openFileDialog.Setup(o => o.Filter);
             openFileDialog.Setup(o => o.CheckFileExists);
-            openFileDialog.Setup(o => o.FileNames).Returns(new[] {"C:\\Users\\Rubberduck\\Desktop\\StdModule1.bas"});
+            openFileDialog.Setup(o => o.FileNames).Returns(new[] { "C:\\Users\\Rubberduck\\Desktop\\StdModule1.bas" });
             openFileDialog.Setup(o => o.ShowDialog()).Returns(DialogResult.OK);
-
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
-            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
 
             var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
             var commands = new List<CommandBase>
@@ -179,7 +187,7 @@ namespace RubberduckTests.CodeExplorer
                 new ImportCommand(vbe.Object, openFileDialog.Object)
             };
 
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, configLoader.Object);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -214,16 +222,13 @@ namespace RubberduckTests.CodeExplorer
             openFileDialog.Setup(o => o.FileNames).Returns(new[] { "C:\\Users\\Rubberduck\\Desktop\\StdModule1.bas", "C:\\Users\\Rubberduck\\Desktop\\ClsModule1.cls" });
             openFileDialog.Setup(o => o.ShowDialog()).Returns(DialogResult.OK);
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
-            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
-
             var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
             var commands = new List<CommandBase>
             {
                 new ImportCommand(vbe.Object, openFileDialog.Object)
             };
 
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, configLoader.Object);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -259,16 +264,13 @@ namespace RubberduckTests.CodeExplorer
             openFileDialog.Setup(o => o.FileName).Returns("C:\\Users\\Rubberduck\\Desktop\\StdModule1.bas");
             openFileDialog.Setup(o => o.ShowDialog()).Returns(DialogResult.Cancel);
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
-            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
-
             var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
             var commands = new List<CommandBase>
             {
                 new ImportCommand(vbe.Object, openFileDialog.Object)
             };
 
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, configLoader.Object);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -297,9 +299,6 @@ namespace RubberduckTests.CodeExplorer
             saveFileDialog.Setup(o => o.FileName).Returns("C:\\Users\\Rubberduck\\Desktop\\StdModule1.bas");
             saveFileDialog.Setup(o => o.ShowDialog()).Returns(DialogResult.OK);
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
-            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
-
             var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
             var commands = new List<CommandBase>
             {
@@ -307,7 +306,7 @@ namespace RubberduckTests.CodeExplorer
             };
 
 
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, configLoader.Object);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -336,16 +335,13 @@ namespace RubberduckTests.CodeExplorer
             saveFileDialog.Setup(o => o.FileName).Returns("C:\\Users\\Rubberduck\\Desktop\\StdModule1.bas");
             saveFileDialog.Setup(o => o.ShowDialog()).Returns(DialogResult.Cancel);
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
-            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
-
             var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
             var commands = new List<CommandBase>
             {
                 new ExportCommand(saveFileDialog.Object)
             };
 
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, configLoader.Object);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -370,15 +366,11 @@ namespace RubberduckTests.CodeExplorer
 
             var vbe = builder.AddProject(project).Build();
 
-
             var component1 = project.Object.VBComponents[0];
             var module1 = component1.CodeModule;
 
             var mockFolderBrowser = new Mock<IFolderBrowser>();
             var mockFolderBrowserFactory = new Mock<IFolderBrowserFactory>();
-
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
-            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
 
             var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
             var commands = new List<CommandBase>
@@ -386,7 +378,7 @@ namespace RubberduckTests.CodeExplorer
                 new ExportAllCommand(vbe.Object, mockFolderBrowserFactory.Object)
             };
 
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, configLoader.Object);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -432,16 +424,13 @@ namespace RubberduckTests.CodeExplorer
             var mockFolderBrowserFactory = new Mock<IFolderBrowserFactory>();
             mockFolderBrowserFactory.Setup(m => m.CreateFolderBrowser(It.IsAny<string>(), true, projectPath)).Returns(mockFolderBrowser.Object);
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
-            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
-
             var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
             var commands = new List<CommandBase>
             {
                 new ExportAllCommand(null, mockFolderBrowserFactory.Object)
             };
 
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, configLoader.Object);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -487,16 +476,13 @@ namespace RubberduckTests.CodeExplorer
             var mockFolderBrowserFactory = new Mock<IFolderBrowserFactory>();
             mockFolderBrowserFactory.Setup(m => m.CreateFolderBrowser(It.IsAny<string>(), true, projectPath)).Returns(mockFolderBrowser.Object);
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
-            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
-
             var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
             var commands = new List<CommandBase>
             {
                 new ExportAllCommand(null, mockFolderBrowserFactory.Object)
             };
 
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, configLoader.Object);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -520,16 +506,13 @@ namespace RubberduckTests.CodeExplorer
             var vbe = builder.AddProject(project).Build();
             var component = projectMock.MockComponents.First();
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
-            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
-
             var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
             var commands = new List<CommandBase>
             {
                 new OpenDesignerCommand()
             };
 
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, configLoader.Object);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -573,11 +556,8 @@ namespace RubberduckTests.CodeExplorer
                 new RemoveCommand(saveFileDialog.Object, messageBox.Object)
             };
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
-            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
-
             var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, configLoader.Object);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -608,7 +588,7 @@ namespace RubberduckTests.CodeExplorer
             saveFileDialog.Setup(o => o.ShowDialog()).Returns(DialogResult.Cancel);
 
             var messageBox = new Mock<IMessageBox>();
-            messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), 
+            messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(),
                                          It.IsAny<MessageBoxButtons>(),
                                          It.IsAny<MessageBoxIcon>(), It.IsAny<MessageBoxDefaultButton>()))
                       .Returns(DialogResult.Yes);
@@ -618,11 +598,8 @@ namespace RubberduckTests.CodeExplorer
                 new RemoveCommand(saveFileDialog.Object, messageBox.Object)
             };
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
-            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
-
             var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, configLoader.Object);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -648,12 +625,11 @@ namespace RubberduckTests.CodeExplorer
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents[0];
 
-
             var saveFileDialog = new Mock<ISaveFileDialog>();
             saveFileDialog.Setup(o => o.ShowDialog()).Returns(DialogResult.OK);
 
             var messageBox = new Mock<IMessageBox>();
-            messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), 
+            messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(),
                                          It.IsAny<MessageBoxButtons>(),
                                          It.IsAny<MessageBoxIcon>(), It.IsAny<MessageBoxDefaultButton>()))
                       .Returns(DialogResult.No);
@@ -663,11 +639,8 @@ namespace RubberduckTests.CodeExplorer
                 new RemoveCommand(saveFileDialog.Object, messageBox.Object)
             };
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
-            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
-
             var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, configLoader.Object);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -693,7 +666,6 @@ namespace RubberduckTests.CodeExplorer
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents[0];
 
-
             var saveFileDialog = new Mock<ISaveFileDialog>();
             saveFileDialog.Setup(o => o.OverwritePrompt);
 
@@ -707,11 +679,8 @@ namespace RubberduckTests.CodeExplorer
                 new RemoveCommand(saveFileDialog.Object, messageBox.Object)
             };
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
-            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
-
             var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, configLoader.Object);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -728,23 +697,20 @@ namespace RubberduckTests.CodeExplorer
         public void IndentModule()
         {
             var inputCode =
-@"Sub Foo()
+    @"Sub Foo()
 Dim d As Boolean
 d = True
 End Sub";
 
             var expectedCode =
-@"Sub Foo()
+    @"Sub Foo()
     Dim d As Boolean
     d = True
 End Sub
 ";
-            
+
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
-            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
 
             var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
             var commands = new List<CommandBase>
@@ -752,7 +718,7 @@ End Sub
                 new IndentCommand(state, new Indenter(vbe.Object,() => Settings.IndenterSettingsTests.GetMockIndenterSettings()), null)
             };
 
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, configLoader.Object);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -769,18 +735,15 @@ End Sub
         public void IndentModule_DisabledWithNoIndentAnnotation()
         {
             var inputCode =
-@"'@NoIndent
+    @"'@NoIndent
 
 Sub Foo()
 Dim d As Boolean
 d = True
 End Sub";
-            
+
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
-            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
 
             var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
             var commands = new List<CommandBase>
@@ -788,7 +751,7 @@ End Sub";
                 new IndentCommand(state, new Indenter(vbe.Object, () => Settings.IndenterSettingsTests.GetMockIndenterSettings()), null)
             };
 
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, configLoader.Object);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -804,13 +767,13 @@ End Sub";
         public void IndentProject()
         {
             var inputCode =
-@"Sub Foo()
+    @"Sub Foo()
 Dim d As Boolean
 d = True
 End Sub";
 
             var expectedCode =
-@"Sub Foo()
+    @"Sub Foo()
     Dim d As Boolean
     d = True
 End Sub
@@ -829,16 +792,13 @@ End Sub
             var component2 = project.Object.VBComponents[1];
             var module2 = component2.CodeModule;
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
-            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
-
             var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
             var commands = new List<CommandBase>
             {
                 new IndentCommand(state, new Indenter(vbe.Object, () => Settings.IndenterSettingsTests.GetMockIndenterSettings()), null)
             };
 
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, configLoader.Object);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -856,13 +816,13 @@ End Sub
         public void IndentProject_IndentsModulesWithoutNoIndentAnnotation()
         {
             var inputCode1 =
-@"Sub Foo()
+    @"Sub Foo()
 Dim d As Boolean
 d = True
 End Sub";
 
             var inputCode2 =
-@"'@NoIndent
+    @"'@NoIndent
 
 Sub Foo()
 Dim d As Boolean
@@ -870,7 +830,7 @@ d = True
 End Sub";
 
             var expectedCode =
-@"Sub Foo()
+    @"Sub Foo()
     Dim d As Boolean
     d = True
 End Sub
@@ -889,16 +849,13 @@ End Sub
             var component2 = project.Object.VBComponents[1];
             var module2 = component2.CodeModule;
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
-            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
-
             var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
             var commands = new List<CommandBase>
             {
                 new IndentCommand(state, new Indenter(vbe.Object, () => Settings.IndenterSettingsTests.GetMockIndenterSettings()), null)
             };
 
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, configLoader.Object);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -916,7 +873,7 @@ End Sub
         public void IndentProject_DisabledWhenAllModulesHaveNoIndentAnnotation()
         {
             var inputCode =
-@"'@NoIndent
+    @"'@NoIndent
 
 Sub Foo()
 Dim d As Boolean
@@ -931,16 +888,13 @@ End Sub";
             var project = projectMock.Build();
             var vbe = builder.AddProject(project).Build();
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
-            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
-
             var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
             var commands = new List<CommandBase>
             {
                 new IndentCommand(state, new Indenter(vbe.Object, () => Settings.IndenterSettingsTests.GetMockIndenterSettings()), null)
             };
 
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, configLoader.Object);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -957,7 +911,7 @@ End Sub";
         public void IndentFolder()
         {
             var inputCode =
-@"'@Folder ""folder""
+    @"'@Folder ""folder""
 
 Sub Foo()
 Dim d As Boolean
@@ -965,7 +919,7 @@ d = True
 End Sub";
 
             var expectedCode =
-@"'@Folder ""folder""
+    @"'@Folder ""folder""
 
 Sub Foo()
     Dim d As Boolean
@@ -986,16 +940,13 @@ End Sub
             var component2 = project.Object.VBComponents[1];
             var module2 = component2.CodeModule;
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
-            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
-
             var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
             var commands = new List<CommandBase>
             {
                 new IndentCommand(state, new Indenter(vbe.Object, () => Settings.IndenterSettingsTests.GetMockIndenterSettings()), null)
             };
 
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, configLoader.Object);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -1013,7 +964,7 @@ End Sub
         public void IndentFolder_IndentsModulesWithoutNoIndentAnnotation()
         {
             var inputCode1 =
-@"'@Folder ""folder""
+    @"'@Folder ""folder""
 
 Sub Foo()
 Dim d As Boolean
@@ -1021,7 +972,7 @@ d = True
 End Sub";
 
             var inputCode2 =
-@"'@NoIndent
+    @"'@NoIndent
 '@Folder ""folder""
 
 Sub Foo()
@@ -1030,7 +981,7 @@ d = True
 End Sub";
 
             var expectedCode =
-@"'@Folder ""folder""
+    @"'@Folder ""folder""
 
 Sub Foo()
     Dim d As Boolean
@@ -1051,16 +1002,13 @@ End Sub
             var component2 = project.Object.VBComponents[1];
             var module2 = component2.CodeModule;
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
-            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
-
             var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
             var commands = new List<CommandBase>
             {
                 new IndentCommand(state, new Indenter(vbe.Object, () => Settings.IndenterSettingsTests.GetMockIndenterSettings()), null)
             };
 
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, configLoader.Object);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -1078,7 +1026,7 @@ End Sub
         public void IndentFolder_DisabledWhenAllModulesHaveNoIndentAnnotation()
         {
             var inputCode =
-@"'@NoIndent
+    @"'@NoIndent
 '@Folder ""folder""
 
 Sub Foo()
@@ -1094,16 +1042,13 @@ End Sub";
             var project = projectMock.Build();
             var vbe = builder.AddProject(project).Build();
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
-            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
-
             var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
             var commands = new List<CommandBase>
             {
                 new IndentCommand(state, new Indenter(vbe.Object, () => Settings.IndenterSettingsTests.GetMockIndenterSettings()), null)
             };
 
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, configLoader.Object);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -1118,17 +1063,14 @@ End Sub";
         public void ExpandAllNodes()
         {
             var inputCode =
-@"Sub Foo()
+    @"Sub Foo()
 End Sub";
-            
+
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
-            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
-
             var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), configLoader.Object);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -1154,21 +1096,18 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
-            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
-
             var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), configLoader.Object);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-            
+
             vm.Projects.Single().Items.Last().IsExpanded = false;
 
             vm.SelectedItem = vm.Projects.Single().Items.First();
             vm.ExpandAllSubnodesCommand.Execute(vm.SelectedItem);
-            
+
             Assert.IsTrue(vm.Projects.Single().Items.First().IsExpanded);
             Assert.IsFalse(vm.Projects.Single().Items.Last().IsExpanded);
         }
@@ -1178,17 +1117,14 @@ End Sub";
         public void CollapseAllNodes()
         {
             var inputCode =
-@"Sub Foo()
+    @"Sub Foo()
 End Sub";
-            
+
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
-            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
-
             var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), configLoader.Object);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -1214,11 +1150,8 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
-            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
-
             var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), configLoader.Object);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -1276,17 +1209,14 @@ End Sub";
         public void CompareByType_ReturnsEventAboveConst()
         {
             var inputCode =
-@"Public Event Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+    @"Public Event Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 Public Const Bar = 0";
-            
+
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
-            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
-
             var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), configLoader.Object);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -1302,17 +1232,14 @@ Public Const Bar = 0";
         public void CompareByType_ReturnsConstAboveField()
         {
             var inputCode =
-@"Public Const Foo = 0
+    @"Public Const Foo = 0
 Public Bar As Boolean";
-            
+
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
-            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
-
             var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), configLoader.Object);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -1328,20 +1255,17 @@ Public Bar As Boolean";
         public void CompareByType_ReturnsFieldAbovePropertyGet()
         {
             var inputCode =
-@"Private Bar As Boolean
+    @"Private Bar As Boolean
 
 Public Property Get Foo() As Variant
 End Property
 ";
-            
+
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
-            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
-
             var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), configLoader.Object);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -1357,21 +1281,18 @@ End Property
         public void CompareByType_ReturnsPropertyGetAbovePropertyLet()
         {
             var inputCode =
-@"Public Property Get Foo() As Variant
+    @"Public Property Get Foo() As Variant
 End Property
 
 Public Property Let Foo(ByVal Value As Variant)
 End Property
 ";
-            
+
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
-            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
-
             var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), configLoader.Object);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -1387,21 +1308,18 @@ End Property
         public void CompareByType_ReturnsPropertyLetAbovePropertySet()
         {
             var inputCode =
-@"Public Property Let Foo(ByVal Value As Variant)
+    @"Public Property Let Foo(ByVal Value As Variant)
 End Property
 
 Public Property Set Foo(ByVal Value As Variant)
 End Property
 ";
-            
+
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
-            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
-
             var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), configLoader.Object);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -1417,21 +1335,18 @@ End Property
         public void CompareByType_ReturnsPropertySetAboveFunction()
         {
             var inputCode =
-@"Public Property Set Foo(ByVal Value As Variant)
+    @"Public Property Set Foo(ByVal Value As Variant)
 End Property
 
 Public Function Bar() As Boolean
 End Function
 ";
-            
+
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
-            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
-
             var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), configLoader.Object);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -1447,21 +1362,18 @@ End Function
         public void CompareByType_SubsAndFunctionsReturnsEqual()
         {
             var inputCode =
-@"Public Function Foo() As Boolean
+    @"Public Function Foo() As Boolean
 End Function
 
 Public Sub Bar()
 End Sub
 ";
-            
+
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
-            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
-
             var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), configLoader.Object);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -1484,12 +1396,8 @@ End Sub
             var project = projectMock.Build();
             var vbe = builder.AddProject(project).Build();
 
-
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
-            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
-
             var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), configLoader.Object);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -1498,8 +1406,8 @@ End Sub
             var clsNode = vm.Projects.First().Items.First().Items.Single(s => s.Name == "ClassModule1");
 
             // this tests the logic I wrote to place docs above cls modules even though the parser calls them both cls modules
-            Assert.AreEqual(((ICodeExplorerDeclarationViewModel) clsNode).Declaration.DeclarationType,
-                ((ICodeExplorerDeclarationViewModel) docNode).Declaration.DeclarationType);
+            Assert.AreEqual(((ICodeExplorerDeclarationViewModel)clsNode).Declaration.DeclarationType,
+                ((ICodeExplorerDeclarationViewModel)docNode).Declaration.DeclarationType);
 
             Assert.AreEqual(-1, new CompareByType().Compare(docNode, clsNode));
         }
@@ -1509,21 +1417,18 @@ End Sub
         public void CompareBySelection_ReturnsZeroForIdenticalNodes()
         {
             var inputCode =
-@"Sub Foo()
+    @"Sub Foo()
 End Sub
 
 Sub Bar()
     Foo
 End Sub";
-            
+
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
-            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
-
             var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), configLoader.Object);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -1539,21 +1444,18 @@ End Sub";
         public void CompareByNodeType_ReturnsCorrectMemberFirst_MemberPassedFirst()
         {
             var inputCode =
-@"Sub Foo()
+    @"Sub Foo()
 End Sub
 
 Sub Bar()
     Foo
 End Sub";
-            
+
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
-            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
-
             var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), configLoader.Object);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
@@ -1569,21 +1471,18 @@ End Sub";
         public void CompareByNodeType_ReturnsZeroForIdenticalNodes()
         {
             var inputCode =
-@"Sub Foo()
+    @"Sub Foo()
 End Sub
 
 Sub Bar()
     Foo
 End Sub";
-            
+
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
-            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
-
             var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
-            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), configLoader.Object);
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
             var parser = MockParser.Create(vbe.Object, state);
             parser.Parse(new CancellationTokenSource());
