@@ -9,6 +9,8 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Settings;
+using Rubberduck.SettingsProvider;
 using Rubberduck.UI;
 using Rubberduck.UI.CodeExplorer.Commands;
 using Rubberduck.UI.Command;
@@ -26,13 +28,30 @@ namespace Rubberduck.Navigation.CodeExplorer
     {
         private readonly FolderHelper _folderHelper;
         private readonly RubberduckParserState _state;
+        private IConfigProvider<GeneralSettings> _generalSettingsProvider;
+        private IConfigProvider<WindowSettings> _windowSettingsProvider;
+        private GeneralSettings _generalSettings;
+        private WindowSettings _windowSettings;
 
-        public CodeExplorerViewModel(FolderHelper folderHelper, RubberduckParserState state, List<CommandBase> commands)
+        public CodeExplorerViewModel(FolderHelper folderHelper, RubberduckParserState state, List<CommandBase> commands,
+            IConfigProvider<GeneralSettings> generalSettingsProvider, IConfigProvider<WindowSettings> windowSettingsProvider)
         {
             _folderHelper = folderHelper;
             _state = state;
             _state.StateChanged += HandleStateChanged;
             _state.ModuleStateChanged += ParserState_ModuleStateChanged;
+            _generalSettingsProvider = generalSettingsProvider;
+            _windowSettingsProvider = windowSettingsProvider;
+
+            if (generalSettingsProvider != null)
+            {
+                _generalSettings = generalSettingsProvider.Create();
+            }
+
+            if (windowSettingsProvider != null)
+            {
+                _windowSettings = windowSettingsProvider.Create();
+            }
 
             var reparseCommand = commands.OfType<ReparseCommand>().SingleOrDefault();
 
@@ -40,15 +59,15 @@ namespace Rubberduck.Navigation.CodeExplorer
                 reparseCommand == null ? (Action<object>)(o => { }) :
                 o => reparseCommand.Execute(o),
                 o => !IsBusy && reparseCommand != null && reparseCommand.CanExecute(o));
-            
-            NavigateCommand = commands.OfType<UI.CodeExplorer.Commands.NavigateCommand>().SingleOrDefault();
+
+            OpenCommand = commands.OfType<UI.CodeExplorer.Commands.OpenCommand>().SingleOrDefault();
+            OpenDesignerCommand = commands.OfType<OpenDesignerCommand>().SingleOrDefault();
 
             AddTestModuleCommand = commands.OfType<UI.CodeExplorer.Commands.AddTestModuleCommand>().SingleOrDefault();
             AddStdModuleCommand = commands.OfType<AddStdModuleCommand>().SingleOrDefault();
             AddClassModuleCommand = commands.OfType<AddClassModuleCommand>().SingleOrDefault();
             AddUserFormCommand = commands.OfType<AddUserFormCommand>().SingleOrDefault();
 
-            OpenDesignerCommand = commands.OfType<OpenDesignerCommand>().SingleOrDefault();
             OpenProjectPropertiesCommand = commands.OfType<OpenProjectPropertiesCommand>().SingleOrDefault();
             RenameCommand = commands.OfType<RenameCommand>().SingleOrDefault();
             IndenterCommand = commands.OfType<IndentCommand>().SingleOrDefault();
@@ -111,36 +130,38 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        private bool _sortByName = true;
         public bool SortByName
         {
-            get { return _sortByName; }
+            get { return _windowSettings.CodeExplorer_SortByName; }
             set
             {
-                if (_sortByName == value)
+                if (_windowSettings.CodeExplorer_SortByName == value)
                 {
                     return;
                 }
 
-                _sortByName = value;
+                _windowSettings.CodeExplorer_SortByName = value;
+                _windowSettings.CodeExplorer_SortByLocation = !value;
+                _windowSettingsProvider.Save(_windowSettings);
                 OnPropertyChanged();
 
                 ReorderChildNodes(Projects);
             }
         }
 
-        private bool _sortBySelection;
         public bool SortBySelection
         {
-            get { return _sortBySelection; }
+            get { return _windowSettings.CodeExplorer_SortByLocation; }
             set
             {
-                if (_sortBySelection == value)
+                if (_windowSettings.CodeExplorer_SortByLocation == value)
                 {
                     return;
                 }
 
-                _sortBySelection = value;
+                _windowSettings.CodeExplorer_SortByLocation = value;
+                _windowSettings.CodeExplorer_SortByName = !value;
+                _windowSettingsProvider.Save(_windowSettings);
                 OnPropertyChanged();
 
                 ReorderChildNodes(Projects);
@@ -153,15 +174,16 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public CommandBase SetSelectionSortCommand { get; }
 
-        private bool _sortByType = true;
         public bool SortByType
         {
-            get { return _sortByType; }
+            get { return _windowSettings.CodeExplorer_GroupByType; }
             set
             {
-                if (_sortByType != value)
+                if (_windowSettings.CodeExplorer_GroupByType != value)
                 {
-                    _sortByType = value;
+                    _windowSettings.CodeExplorer_GroupByType = value;
+                    _windowSettingsProvider.Save(_windowSettings);
+
                     OnPropertyChanged();
 
                     ReorderChildNodes(Projects);
@@ -177,6 +199,8 @@ namespace Rubberduck.Navigation.CodeExplorer
             {
                 _isBusy = value;
                 OnPropertyChanged();
+                // If the window is "busy" then hide the Refresh message
+                OnPropertyChanged("EmptyTreeMessageVisibility");
             }
         }
 
@@ -244,6 +268,8 @@ namespace Rubberduck.Navigation.CodeExplorer
                 _projects = new ObservableCollection<CodeExplorerItemViewModel>(value.OrderBy(o => o.NameWithSignature));
                 
                 OnPropertyChanged();
+                // Once a Project has been set, show the TreeView
+                OnPropertyChanged("TreeViewVisibility");
             }
         }
 
@@ -254,7 +280,8 @@ namespace Rubberduck.Navigation.CodeExplorer
                 Projects = new ObservableCollection<CodeExplorerItemViewModel>();
             }
 
-            IsBusy = _state.Status != ParserState.Pending && _state.Status < ParserState.ResolvedDeclarations;
+            IsBusy = _state.Status != ParserState.Pending && _state.Status <= ParserState.ResolvedDeclarations;
+
             if (e.State != ParserState.ResolvedDeclarations)
             {
                 return;
@@ -447,7 +474,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public CommandBase RefreshCommand { get; }
 
-        public CommandBase NavigateCommand { get; }
+        public CommandBase OpenCommand { get; }
 
         public CommandBase AddTestModuleCommand { get; }
         public CommandBase AddStdModuleCommand { get; }
@@ -509,6 +536,27 @@ namespace Rubberduck.Navigation.CodeExplorer
                 if (CanExecuteExportAllCommand == true)
                 { return Visibility.Visible; }
                 else { return Visibility.Collapsed; }
+            }
+        }
+
+        public bool IsSourceControlEnabled
+        {
+            get { return _generalSettings.SourceControlEnabled; }
+        }
+
+        public Visibility TreeViewVisibility
+        {
+            get
+            {
+                return Projects == null || Projects.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
+            }
+        }
+
+        public Visibility EmptyTreeMessageVisibility
+        {
+            get
+            {
+                return _isBusy ? Visibility.Hidden : Visibility.Visible;
             }
         }
 
