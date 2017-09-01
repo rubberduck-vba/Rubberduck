@@ -19,7 +19,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class InspectionsUI {
@@ -1699,6 +1699,15 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Remove usage of the &apos;stop&apos; keyword.
+        /// </summary>
+        public static string RemoveStopKeywordQuickFix {
+            get {
+                return ResourceManager.GetString("RemoveStopKeywordQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Remove type hints.
         /// </summary>
         public static string RemoveTypeHintsQuickFix {
@@ -1812,6 +1821,33 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         public static string SplitMultipleDeclarationsQuickFix {
             get {
                 return ResourceManager.GetString("SplitMultipleDeclarationsQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;stop&apos; keyword halts execution and brings up the debugger. Avoid its usage..
+        /// </summary>
+        public static string StopKeywordInspectionMeta {
+            get {
+                return ResourceManager.GetString("StopKeywordInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stop keyword.
+        /// </summary>
+        public static string StopKeywordInspectionName {
+            get {
+                return ResourceManager.GetString("StopKeywordInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stop keyword detected.
+        /// </summary>
+        public static string StopKeywordInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("StopKeywordInspectionResultFormat", resourceCulture);
             }
         }
         
