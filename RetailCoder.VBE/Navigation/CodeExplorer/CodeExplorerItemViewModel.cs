@@ -31,6 +31,8 @@ namespace Rubberduck.Navigation.CodeExplorer
     {
         private static readonly Dictionary<DeclarationType, int> SortOrder = new Dictionary<DeclarationType, int>
         {
+            // Some DeclarationTypes we want to treat the same, like Subs and Functions.
+            // Give them the same number.
             {DeclarationType.LibraryFunction, 0},
             {DeclarationType.LibraryProcedure, 0},
             {DeclarationType.UserDefinedType, 1},
@@ -74,6 +76,8 @@ namespace Rubberduck.Navigation.CodeExplorer
                 }
             }
 
+            // The Tree shows Public and Private Subs/Functions with a seperate icon.
+            // But Public and Implicit Subs/Functions appear the same, so treat Implicts like Publics.
             var xNodeAcc = xNode.Declaration.Accessibility == Accessibility.Implicit ? Accessibility.Public : xNode.Declaration.Accessibility;
             var yNodeAcc = yNode.Declaration.Accessibility == Accessibility.Implicit ? Accessibility.Public : yNode.Declaration.Accessibility;
 
