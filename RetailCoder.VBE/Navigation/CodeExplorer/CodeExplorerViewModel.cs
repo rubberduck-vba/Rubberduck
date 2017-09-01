@@ -180,6 +180,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             {
                 _isBusy = value;
                 OnPropertyChanged();
+                // If the window is "busy" then hide the Refresh message
                 OnPropertyChanged("EmptyTreeMessageVisibility");
             }
         }
@@ -248,6 +249,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 _projects = new ObservableCollection<CodeExplorerItemViewModel>(value.OrderBy(o => o.NameWithSignature));
                 
                 OnPropertyChanged();
+                // Once a Project has been set, show the TreeView
                 OnPropertyChanged("TreeViewVisibility");
             }
         }
