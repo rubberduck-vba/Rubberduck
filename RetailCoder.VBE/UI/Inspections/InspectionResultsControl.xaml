@@ -540,8 +540,9 @@
         <controls:GroupingGrid Grid.Row="1"
                                ShowGroupingItemCount="True"
                                SelectedItem="{Binding SelectedItem}"
-                               ItemsSource="{Binding Source={StaticResource ResultsByInspectionType}}"
-                               Visibility="{Binding IsChecked, ElementName=GroupByInspectionType, Converter={StaticResource BoolToVisibility}}">
+                               ItemsSource="{Binding Source={StaticResource ResultsByInspectionType}, IsAsync=True}"
+                               Visibility="{Binding IsChecked, ElementName=GroupByInspectionType, Converter={StaticResource BoolToVisibility}}"
+                               VirtualizingPanel.IsVirtualizingWhenGrouping="True">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspectionResults_Type}" SortDirection="Descending">
                     <DataGridTemplateColumn.CellTemplate>
@@ -558,8 +559,9 @@
         <controls:GroupingGrid Grid.Row="1"
                                ShowGroupingItemCount="True"
                                SelectedItem="{Binding SelectedItem}"
-                               ItemsSource="{Binding Source={StaticResource ResultsByModule}}"
-                               Visibility="{Binding IsChecked, ElementName=GroupByLocation, Converter={StaticResource BoolToVisibility}}">
+                               ItemsSource="{Binding Source={StaticResource ResultsByModule}, IsAsync=True}"
+                               Visibility="{Binding IsChecked, ElementName=GroupByLocation, Converter={StaticResource BoolToVisibility}}"
+                               VirtualizingPanel.IsVirtualizingWhenGrouping="True">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspectionResults_Type}">
                     <DataGridTemplateColumn.CellTemplate>
