@@ -484,9 +484,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="ParseErrors_Caption" xml:space="preserve">
     <value>Rubberduck - Parserfehler</value>
   </data>
-  <data name="CodeExplorer_AddFormText" xml:space="preserve">
-    <value>Benutzerdefiniertes Formular</value>
-  </data>
   <data name="CodeExplorer_AddStdModuleText" xml:space="preserve">
     <value>Standardmodul (.bas)</value>
   </data>
