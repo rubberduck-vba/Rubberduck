@@ -402,7 +402,7 @@
     <Compile Include="UI\CodeExplorer\Commands\FindAllReferencesCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\FindAllImplementationsCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\IndentCommand.cs" />
-    <Compile Include="UI\CodeExplorer\Commands\NavigateCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\OpenCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\RemoveCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\ExportCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\ImportCommand.cs" />
