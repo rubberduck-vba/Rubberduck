@@ -4,6 +4,7 @@ using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
+using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -12,18 +13,16 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public sealed class IgnoreOnceQuickFix : IQuickFix
+    public sealed class IgnoreOnceQuickFix : QuickFixBase, IQuickFix
     {
         private readonly RubberduckParserState _state;
-        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>();
 
         public IgnoreOnceQuickFix(RubberduckParserState state, IEnumerable<IInspection> inspections)
         {
             _state = state;
-            _supportedInspections.UnionWith(inspections.Where(i => i.Type.CustomAttributes.All(a => a.AttributeType != typeof(CannotAnnotateAttribute))).Select(i => i.Type));
+            RegisterInspections(inspections.Where(i =>
+                i.Type.CustomAttributes.All(a => a.AttributeType != typeof(CannotAnnotateAttribute))).ToArray());
         }
-
-        public IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
 
         public bool CanFixInProcedure => false;
         public bool CanFixInModule => false;
@@ -46,9 +45,8 @@ namespace Rubberduck.Inspections.QuickFixes
             {
                 treeRoot = treeRoot.Parent;
             }
-
-            int commentStart;
-            if (codeLine.HasComment(out commentStart) && codeLine.Substring(commentStart).StartsWith("'@Ignore "))
+            
+            if (codeLine.HasComment(out var commentStart) && codeLine.Substring(commentStart).StartsWith("'@Ignore "))
             {
                 var listener = new AnnotationListener();
                 ParseTreeWalker.Default.Walk(listener, treeRoot);

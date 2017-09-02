@@ -5,7 +5,6 @@ using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
@@ -21,8 +20,7 @@ namespace RubberduckTests.Inspections
 @"Function Foo() As Integer
 End Function";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new IntegerDataTypeInspection(state);
@@ -39,8 +37,7 @@ End Function";
 @"Property Get Foo() As Integer
 End Property";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new IntegerDataTypeInspection(state);
@@ -57,8 +54,7 @@ End Property";
 @"Sub Foo(arg as Integer)
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new IntegerDataTypeInspection(state);
@@ -76,8 +72,7 @@ End Sub";
     Dim v as Integer
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new IntegerDataTypeInspection(state);
@@ -95,8 +90,7 @@ End Sub";
     Const c as Integer = 0
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new IntegerDataTypeInspection(state);
@@ -114,8 +108,7 @@ End Sub";
     i as Integer
 End Type";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new IntegerDataTypeInspection(state);
@@ -254,8 +247,7 @@ End Sub";
             const string inputCode =
 @"Declare Function Foo Lib ""lib.dll"" () As Integer";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new IntegerDataTypeInspection(state);
@@ -271,8 +263,7 @@ End Sub";
             const string inputCode =
 @"Declare Function Foo Lib ""lib.dll"" (arg As Integer) As String";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new IntegerDataTypeInspection(state);
@@ -288,8 +279,7 @@ End Sub";
             const string inputCode =
 @"Declare Sub Foo Lib ""lib.dll"" (arg As Integer)";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new IntegerDataTypeInspection(state);
@@ -307,8 +297,7 @@ End Sub";
 Sub Foo(arg1 As Integer)
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new IntegerDataTypeInspection(state);
@@ -329,14 +318,13 @@ End Function";
 @"Function Foo() As Long
 End Function";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -353,14 +341,13 @@ End Function";
 @"Function Foo&()
 End Function";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -377,14 +364,13 @@ End Property";
 @"Property Get Foo() As Long
 End Property";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -401,14 +387,13 @@ End Property";
 @"Property Get Foo&()
 End Property";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -425,14 +410,13 @@ End Sub";
 @"Sub Foo(arg As Long)
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -449,14 +433,13 @@ End Sub";
 @"Sub Foo(arg&)
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -475,14 +458,13 @@ End Sub";
     Dim v As Long
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -501,14 +483,13 @@ End Sub";
     Dim v&
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -527,14 +508,13 @@ End Sub";
     Const c As Long = 0
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -553,14 +533,13 @@ End Sub";
     Const c& = 0
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -579,14 +558,13 @@ End Type";
     i as Long
 End Type";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -605,14 +583,13 @@ End Type";
     i() as Long
 End Type";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -653,7 +630,7 @@ End Function";
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
 
             var project = vbe.Object.VBProjects[0];
             var interfaceComponent = project.VBComponents[0];
@@ -699,7 +676,7 @@ End Function";
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
 
             var project = vbe.Object.VBProjects[0];
             var interfaceComponent = project.VBComponents[0];
@@ -745,7 +722,7 @@ End Function";
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
 
             var project = vbe.Object.VBProjects[0];
             var interfaceComponent = project.VBComponents[0];
@@ -791,7 +768,7 @@ End Function";
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
 
             var project = vbe.Object.VBProjects[0];
             var interfaceComponent = project.VBComponents[0];
@@ -837,7 +814,7 @@ End Property";
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
 
             var project = vbe.Object.VBProjects[0];
             var interfaceComponent = project.VBComponents[0];
@@ -883,7 +860,7 @@ End Property";
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
 
             var project = vbe.Object.VBProjects[0];
             var interfaceComponent = project.VBComponents[0];
@@ -929,7 +906,7 @@ End Property";
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
 
             var project = vbe.Object.VBProjects[0];
             var interfaceComponent = project.VBComponents[0];
@@ -975,7 +952,7 @@ End Property";
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
 
             var project = vbe.Object.VBProjects[0];
             var interfaceComponent = project.VBComponents[0];
@@ -1021,7 +998,7 @@ End Sub";
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
 
             var project = vbe.Object.VBProjects[0];
             var interfaceComponent = project.VBComponents[0];
@@ -1067,7 +1044,7 @@ End Sub";
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
 
             var project = vbe.Object.VBProjects[0];
             var interfaceComponent = project.VBComponents[0];
@@ -1113,7 +1090,7 @@ End Sub";
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
 
             var project = vbe.Object.VBProjects[0];
             var interfaceComponent = project.VBComponents[0];
@@ -1159,7 +1136,7 @@ End Sub";
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
 
             var project = vbe.Object.VBProjects[0];
             var interfaceComponent = project.VBComponents[0];
@@ -1205,7 +1182,7 @@ End Sub";
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
 
             var project = vbe.Object.VBProjects[0];
             var interfaceComponent = project.VBComponents[0];
@@ -1251,7 +1228,7 @@ End Sub";
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state).Fix(
+            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(
                 inspectionResults.First(
                     result =>
                         ((VBAParser.ArgContext)result.Context).unrestrictedIdentifier()

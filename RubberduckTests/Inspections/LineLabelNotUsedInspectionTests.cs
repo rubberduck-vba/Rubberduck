@@ -3,7 +3,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
@@ -32,8 +31,7 @@ buzz: Beep   'Line-label and instruction
 End Sub
 ";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new LineLabelNotUsedInspection(state);
@@ -51,8 +49,7 @@ End Sub
 label1:
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new LineLabelNotUsedInspection(state);
@@ -71,8 +68,7 @@ label1:
 label2:
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new LineLabelNotUsedInspection(state);
@@ -91,8 +87,7 @@ label1:
     GoTo label1
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new LineLabelNotUsedInspection(state);
@@ -111,8 +106,7 @@ End Sub";
 label1:
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new LineLabelNotUsedInspection(state);
@@ -133,8 +127,7 @@ label2:
     Goto label2
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new LineLabelNotUsedInspection(state);
@@ -159,8 +152,7 @@ End Sub
 Sub Goo(ByVal arg1 As Integer)
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new LineLabelNotUsedInspection(state);
@@ -178,8 +170,7 @@ End Sub";
 '@Ignore label1
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new LineLabelNotUsedInspection(state);
@@ -202,12 +193,11 @@ End Sub";
 
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new LineLabelNotUsedInspection(state);
-            new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults().First());
+            new RemoveUnusedDeclarationQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspection.GetInspectionResults().First());
 
             var rewriter = state.GetRewriter(component);
             Assert.AreEqual(expectedCode, rewriter.GetText());
@@ -233,12 +223,11 @@ dim var1 as variant
 goto label1:
 End Sub"; ;
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new LineLabelNotUsedInspection(state);
-            new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults().First());
+            new RemoveUnusedDeclarationQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspection.GetInspectionResults().First());
 
             var rewriter = state.GetRewriter(component);
             Assert.AreEqual(expectedCode, rewriter.GetText());
@@ -260,8 +249,7 @@ End Sub";
 label1:
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new LineLabelNotUsedInspection(state);

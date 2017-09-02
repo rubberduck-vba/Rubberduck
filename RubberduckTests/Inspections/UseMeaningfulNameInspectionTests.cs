@@ -11,7 +11,6 @@ using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Inspections
 {
@@ -27,8 +26,7 @@ Sub DoSomething()
 10 Debug.Print 42
 End Sub
 ";
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
 
             var parser = MockParser.Create(vbe.Object);
             parser.Parse(new CancellationTokenSource());

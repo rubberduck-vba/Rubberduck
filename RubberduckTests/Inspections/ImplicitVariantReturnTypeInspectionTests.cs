@@ -3,7 +3,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
@@ -19,8 +18,7 @@ namespace RubberduckTests.Inspections
 @"Function Foo()
 End Function";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ImplicitVariantReturnTypeInspection(state);
@@ -46,8 +44,7 @@ End Function";
                                                            lpStartupInfo As STARTUPINFO, _
                                                            lpProcessInformation As PROCESS_INFORMATION)";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ImplicitVariantReturnTypeInspection(state);
@@ -73,8 +70,7 @@ End Function";
                                                            lpStartupInfo As STARTUPINFO, _
                                                            lpProcessInformation As PROCESS_INFORMATION) As Long";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ImplicitVariantReturnTypeInspection(state);
@@ -91,8 +87,7 @@ End Function";
 @"Property Get Foo()
 End Property";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ImplicitVariantReturnTypeInspection(state);
@@ -112,8 +107,7 @@ End Function
 Function Goo()
 End Function";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ImplicitVariantReturnTypeInspection(state);
@@ -130,8 +124,7 @@ End Function";
 @"Function Foo() As Boolean
 End Function";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ImplicitVariantReturnTypeInspection(state);
@@ -151,8 +144,7 @@ End Function
 Function Goo() As String
 End Function";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ImplicitVariantReturnTypeInspection(state);
@@ -170,8 +162,7 @@ End Function";
 Function Foo()
 End Function";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ImplicitVariantReturnTypeInspection(state);
@@ -192,14 +183,13 @@ End Function";
 @"Function Foo() As Variant
 End Function";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ImplicitVariantReturnTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new SetExplicitVariantReturnTypeQuickFix(state).Fix(inspectionResults.First());
+            new SetExplicitVariantReturnTypeQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
@@ -215,14 +205,13 @@ End Property";
 @"Property Get Foo() As Variant
 End Property";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ImplicitVariantReturnTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new SetExplicitVariantReturnTypeQuickFix(state).Fix(inspectionResults.First());
+            new SetExplicitVariantReturnTypeQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -257,14 +246,13 @@ End Property";
                                                            lpStartupInfo As STARTUPINFO, _
                                                            lpProcessInformation As PROCESS_INFORMATION) As Variant";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ImplicitVariantReturnTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new SetExplicitVariantReturnTypeQuickFix(state).Fix(inspectionResults.First());
+            new SetExplicitVariantReturnTypeQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -281,14 +269,13 @@ End Function";
 @"Function Foo() As Variant    ' comment
 End Function";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ImplicitVariantReturnTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new SetExplicitVariantReturnTypeQuickFix(state).Fix(inspectionResults.First());
+            new SetExplicitVariantReturnTypeQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -306,14 +293,13 @@ End Function";
 Function Foo()
 End Function";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ImplicitVariantReturnTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
-            
-            new IgnoreOnceQuickFix(state, new[] {inspection}).Fix(inspectionResults.First());
+
+            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 

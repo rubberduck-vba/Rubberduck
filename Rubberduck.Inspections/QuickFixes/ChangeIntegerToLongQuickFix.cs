@@ -1,9 +1,9 @@
 ﻿using System;
 using Rubberduck.Parsing.Grammar;
-using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Common;
+using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -13,21 +13,15 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class ChangeIntegerToLongQuickFix : IQuickFix
+    public class ChangeIntegerToLongQuickFix : QuickFixBase, IQuickFix
     {
         private readonly RubberduckParserState _state;
 
-        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
-        {
-            typeof(IntegerDataTypeInspection)
-        };
-
-        public ChangeIntegerToLongQuickFix(RubberduckParserState state)
+        public ChangeIntegerToLongQuickFix(RubberduckParserState state, InspectionLocator inspectionLocator)
         {
             _state = state;
+            RegisterInspections(inspectionLocator.GetInspection<IntegerDataTypeInspection>());
         }
-
-        public IReadOnlyCollection<Type> SupportedInspections { get; } = _supportedInspections.ToList();
 
         public void Fix(IInspectionResult result)
         {

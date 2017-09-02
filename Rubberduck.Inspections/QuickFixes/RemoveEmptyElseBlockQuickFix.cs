@@ -1,10 +1,4 @@
-﻿using Antlr4.Runtime.Tree;
-using Antlr4.Runtime;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -12,19 +6,16 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 
-
 namespace Rubberduck.Inspections.QuickFixes
 {
-    class RemoveEmptyElseBlockQuickFix : IQuickFix
+    class RemoveEmptyElseBlockQuickFix : QuickFixBase, IQuickFix
     {
-        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type> { typeof(EmptyElseBlockInspection) };
         private readonly RubberduckParserState _state;
 
-        public IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
-
-        public RemoveEmptyElseBlockQuickFix(RubberduckParserState state)
+        public RemoveEmptyElseBlockQuickFix(RubberduckParserState state, InspectionLocator inspectionLocator)
         {
             _state = state;
+            RegisterInspections(inspectionLocator.GetInspection<EmptyElseBlockInspection>());
         }
 
         public void Fix(IInspectionResult result)

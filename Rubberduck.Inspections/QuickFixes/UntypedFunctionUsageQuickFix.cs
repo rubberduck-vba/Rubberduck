@@ -1,8 +1,7 @@
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Antlr4.Runtime;
+using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -11,20 +10,15 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public sealed class UntypedFunctionUsageQuickFix : IQuickFix
+    public sealed class UntypedFunctionUsageQuickFix : QuickFixBase, IQuickFix
     {
         private readonly RubberduckParserState _state;
-        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
-        {
-            typeof(UntypedFunctionUsageInspection)
-        };
 
-        public UntypedFunctionUsageQuickFix(RubberduckParserState state)
+        public UntypedFunctionUsageQuickFix(RubberduckParserState state, InspectionLocator inspectionLocator)
         {
             _state = state;
+            RegisterInspections(inspectionLocator.GetInspection<UntypedFunctionUsageInspection>());
         }
-
-        public IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
 
         public void Fix(IInspectionResult result)
         {

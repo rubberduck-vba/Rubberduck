@@ -1,7 +1,6 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Common;
+using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -12,20 +11,15 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public sealed class PassParameterByValueQuickFix : IQuickFix
+    public sealed class PassParameterByValueQuickFix : QuickFixBase, IQuickFix
     {
         private readonly RubberduckParserState _state;
-        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
-        {
-            typeof(ParameterCanBeByValInspection)
-        };
 
-        public PassParameterByValueQuickFix(RubberduckParserState state)
+        public PassParameterByValueQuickFix(RubberduckParserState state, InspectionLocator inspectionLocator)
         {
             _state = state;
+            RegisterInspections(inspectionLocator.GetInspection<ParameterCanBeByValInspection>());
         }
-
-        public IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
 
         public void Fix(IInspectionResult result)
         {

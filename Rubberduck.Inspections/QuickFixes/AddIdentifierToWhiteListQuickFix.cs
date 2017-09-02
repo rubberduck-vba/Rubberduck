@@ -1,6 +1,5 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -9,21 +8,16 @@ using Rubberduck.SettingsProvider;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public sealed class AddIdentifierToWhiteListQuickFix : IQuickFix
+    public sealed class AddIdentifierToWhiteListQuickFix : QuickFixBase, IQuickFix
     {
         private readonly IPersistanceService<CodeInspectionSettings> _settings;
-        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
-        {
-            typeof(HungarianNotationInspection),
-            typeof(UseMeaningfulNameInspection)
-        };
 
-        public AddIdentifierToWhiteListQuickFix(IPersistanceService<CodeInspectionSettings> settings)
+        public AddIdentifierToWhiteListQuickFix(IPersistanceService<CodeInspectionSettings> settings, InspectionLocator inspectionLocator)
         {
             _settings = settings;
+            RegisterInspections(inspectionLocator.GetInspection<HungarianNotationInspection>(),
+                inspectionLocator.GetInspection<UseMeaningfulNameInspection>());
         }
-
-        public IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
 
         public void Fix(IInspectionResult result)
         {

@@ -165,10 +165,9 @@ End Sub
         private string ApplyPassParameterByReferenceQuickFixToVBAFragment(string inputCode)
         {
             var vbe = BuildMockVBEStandardModuleForVBAFragment(inputCode);
-            RubberduckParserState state;
-            var inspectionResults = GetAssignedByValParameterInspectionResults(vbe.Object, out state);
+            var inspectionResults = GetAssignedByValParameterInspectionResults(vbe.Object, out var state);
 
-            new PassParameterByReferenceQuickFix(state).Fix(inspectionResults.First());
+            new PassParameterByReferenceQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
             return state.GetRewriter(vbe.Object.ActiveVBProject.VBComponents[0]).GetText();
         }
 
@@ -182,8 +181,7 @@ End Sub
 
         private Mock<IVBE> BuildMockVBEStandardModuleForVBAFragment(string inputCode)
         {
-            IVBComponent component;
-            return MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            return MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
         }
     }
 }

@@ -4,7 +4,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
@@ -17,9 +16,8 @@ namespace RubberduckTests.Inspections
         public void ObsoleteCommentSyntax_ReturnsResult()
         {
             const string inputCode = @"Rem test";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCommentSyntaxInspection(state);
@@ -34,9 +32,8 @@ namespace RubberduckTests.Inspections
         public void ObsoleteCommentSyntax_DoesNotReturnResult_QuoteComment()
         {
             const string inputCode = @"' test";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCommentSyntaxInspection(state);
@@ -55,9 +52,8 @@ Sub foo()
     Dim i As String
     i = """"
 End Sub";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCommentSyntaxInspection(state);
@@ -77,9 +73,8 @@ End Sub";
     Dim bar As String
     bar = ""iejo rem oernp"" ' test
 End Sub";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCommentSyntaxInspection(state);
@@ -96,9 +91,8 @@ End Sub";
             const string inputCode =
 @"Rem test1
 Rem test2";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCommentSyntaxInspection(state);
@@ -115,9 +109,8 @@ Rem test2";
             const string inputCode =
 @"Rem test1
 ' test2";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCommentSyntaxInspection(state);
@@ -134,9 +127,8 @@ Rem test2";
             const string inputCode = @"
 '@Ignore ObsoleteCommentSyntax
 Rem test";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCommentSyntaxInspection(state);
@@ -155,16 +147,15 @@ Rem test";
 
             const string expectedCode =
 @"' test1";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCommentSyntaxInspection(state);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new ReplaceObsoleteCommentMarkerQuickFix(state).Fix(inspectionResults.First());
+            new ReplaceObsoleteCommentMarkerQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
@@ -179,16 +170,15 @@ a comment";
             const string expectedCode =
 @"' this is _
 a comment";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCommentSyntaxInspection(state);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new ReplaceObsoleteCommentMarkerQuickFix(state).Fix(inspectionResults.First());
+            new ReplaceObsoleteCommentMarkerQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
@@ -201,16 +191,15 @@ a comment";
 
             const string expectedCode =
 @"";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCommentSyntaxInspection(state);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new RemoveCommentQuickFix(state).Fix(inspectionResults.First());
+            new RemoveCommentQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
@@ -224,16 +213,15 @@ continued";
 
             const string expectedCode =
 @"";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCommentSyntaxInspection(state);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new RemoveCommentQuickFix(state).Fix(inspectionResults.First());
+            new RemoveCommentQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
@@ -246,16 +234,15 @@ continued";
 
             const string expectedCode =
 @"Dim Foo As Integer: ' This is a comment";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCommentSyntaxInspection(state);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new ReplaceObsoleteCommentMarkerQuickFix(state).Fix(inspectionResults.First());
+            new ReplaceObsoleteCommentMarkerQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
@@ -270,16 +257,15 @@ a comment";
             const string expectedCode =
 @"Dim Foo As Integer: ' This is _
 a comment";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCommentSyntaxInspection(state);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new ReplaceObsoleteCommentMarkerQuickFix(state).Fix(inspectionResults.First());
+            new ReplaceObsoleteCommentMarkerQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
@@ -292,16 +278,15 @@ a comment";
 
             const string expectedCode =
 @"Dim Foo As Integer: ";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCommentSyntaxInspection(state);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new RemoveCommentQuickFix(state).Fix(inspectionResults.First());
+            new RemoveCommentQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
@@ -315,16 +300,15 @@ a comment";
 
             const string expectedCode =
 @"Dim Foo As Integer: ";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCommentSyntaxInspection(state);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new RemoveCommentQuickFix(state).Fix(inspectionResults.First());
+            new RemoveCommentQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
@@ -338,16 +322,15 @@ a comment";
             const string expectedCode =
 @"'@Ignore ObsoleteCommentSyntax
 Rem test1";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCommentSyntaxInspection(state);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new IgnoreOnceQuickFix(state, new[] {inspection}).Fix(inspectionResults.First());
+            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 

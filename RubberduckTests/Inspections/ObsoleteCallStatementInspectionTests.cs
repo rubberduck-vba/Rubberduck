@@ -5,7 +5,6 @@ using System.Threading;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Inspections
 {
@@ -21,7 +20,7 @@ namespace RubberduckTests.Inspections
     Call Foo
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCallStatementInspection(state);
@@ -39,8 +38,8 @@ End Sub";
 @"Sub Foo()
     Foo
 End Sub";
-            
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCallStatementInspection(state);
@@ -58,9 +57,8 @@ End Sub";
 @"Sub Foo()
     Call Foo: Foo
 End Sub";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCallStatementInspection(state);
@@ -78,8 +76,8 @@ End Sub";
 @"Sub Foo()
     Call Foo ' I''ve got a colon: see?
 End Sub";
-            
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCallStatementInspection(state);
@@ -97,8 +95,8 @@ End Sub";
 @"Sub Foo(ByVal str As String)
     Call Foo("":"")
 End Sub";
-            
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCallStatementInspection(state);
@@ -120,8 +118,8 @@ End Sub
 Sub Goo(arg1 As Integer, arg1 As String)
     Call Foo
 End Sub";
-            
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCallStatementInspection(state);
@@ -143,8 +141,8 @@ End Sub
 Sub Goo(arg1 As Integer, arg1 As String)
     Foo
 End Sub";
-            
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCallStatementInspection(state);
@@ -163,8 +161,8 @@ End Sub";
     '@Ignore ObsoleteCallStatement
     Call Foo
 End Sub";
-            
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCallStatementInspection(state);
@@ -195,7 +193,7 @@ End Sub
 Sub Goo(arg1 As Integer, arg1 As String)
     Foo
 End Sub";
-            
+
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
@@ -203,7 +201,7 @@ End Sub";
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            var fix = new RemoveExplicitCallStatmentQuickFix(state);
+            var fix = new RemoveExplicitCallStatmentQuickFix(state, InspectionsHelper.GetLocator());
             foreach (var result in inspectionResults)
             {
                 fix.Fix(result);
@@ -235,7 +233,7 @@ Sub Goo(arg1 As Integer, arg1 As String)
 '@Ignore ObsoleteCallStatement
     Call Foo
 End Sub";
-            
+
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
@@ -243,7 +241,7 @@ End Sub";
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            var fix = new IgnoreOnceQuickFix(state, new[] {inspection});
+            var fix = new IgnoreOnceQuickFix(state, new[] { inspection });
             foreach (var result in inspectionResults)
             {
                 fix.Fix(result);

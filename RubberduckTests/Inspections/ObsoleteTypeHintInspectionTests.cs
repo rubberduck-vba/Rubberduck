@@ -3,7 +3,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
@@ -17,9 +16,7 @@ namespace RubberduckTests.Inspections
         {
             const string inputCode =
 @"Public Foo&";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteTypeHintInspection(state);
@@ -34,9 +31,7 @@ namespace RubberduckTests.Inspections
         {
             const string inputCode =
 @"Public Foo%";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteTypeHintInspection(state);
@@ -51,9 +46,7 @@ namespace RubberduckTests.Inspections
         {
             const string inputCode =
 @"Public Foo#";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteTypeHintInspection(state);
@@ -68,9 +61,7 @@ namespace RubberduckTests.Inspections
         {
             const string inputCode =
 @"Public Foo!";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteTypeHintInspection(state);
@@ -85,9 +76,7 @@ namespace RubberduckTests.Inspections
         {
             const string inputCode =
 @"Public Foo@";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteTypeHintInspection(state);
@@ -102,9 +91,7 @@ namespace RubberduckTests.Inspections
         {
             const string inputCode =
 @"Public Foo$";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteTypeHintInspection(state);
@@ -120,9 +107,7 @@ namespace RubberduckTests.Inspections
             const string inputCode =
 @"Public Function Foo$(ByVal bar As Boolean)
 End Function";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteTypeHintInspection(state);
@@ -138,9 +123,7 @@ End Function";
             const string inputCode =
 @"Public Property Get Foo$(ByVal bar As Boolean)
 End Property";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteTypeHintInspection(state);
@@ -156,9 +139,7 @@ End Property";
             const string inputCode =
 @"Public Function Foo(ByVal bar$) As Boolean
 End Function";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteTypeHintInspection(state);
@@ -176,9 +157,7 @@ End Function";
     Dim buzz$
     Foo = True
 End Function";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteTypeHintInspection(state);
@@ -197,8 +176,7 @@ End Function";
     Foo = True
 End Function";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteTypeHintInspection(state);
@@ -217,8 +195,7 @@ End Function";
     bar = ""Public baz$""
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteTypeHintInspection(state);
@@ -235,8 +212,7 @@ End Sub";
 @"Public Foo$
 Public Bar$";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteTypeHintInspection(state);
@@ -254,8 +230,7 @@ Public Bar$";
 Public Function Foo$(ByVal bar As Boolean)
 End Function";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteTypeHintInspection(state);
@@ -274,14 +249,13 @@ End Function";
             const string expectedCode =
 @"Public Foo As Long";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteTypeHintInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            var fix = new RemoveTypeHintsQuickFix(state);
+            var fix = new RemoveTypeHintsQuickFix(state, InspectionsHelper.GetLocator());
             foreach (var result in inspectionResults)
             {
                 fix.Fix(result);
@@ -300,14 +274,13 @@ End Function";
             const string expectedCode =
 @"Public Foo As Integer";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteTypeHintInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            var fix = new RemoveTypeHintsQuickFix(state);
+            var fix = new RemoveTypeHintsQuickFix(state, InspectionsHelper.GetLocator());
             foreach (var result in inspectionResults)
             {
                 fix.Fix(result);
@@ -326,14 +299,13 @@ End Function";
             const string expectedCode =
 @"Public Foo As Double";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteTypeHintInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            var fix = new RemoveTypeHintsQuickFix(state);
+            var fix = new RemoveTypeHintsQuickFix(state, InspectionsHelper.GetLocator());
             foreach (var result in inspectionResults)
             {
                 fix.Fix(result);
@@ -352,14 +324,13 @@ End Function";
             const string expectedCode =
 @"Public Foo As Single";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteTypeHintInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            var fix = new RemoveTypeHintsQuickFix(state);
+            var fix = new RemoveTypeHintsQuickFix(state, InspectionsHelper.GetLocator());
             foreach (var result in inspectionResults)
             {
                 fix.Fix(result);
@@ -378,14 +349,13 @@ End Function";
             const string expectedCode =
 @"Public Foo As Decimal";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteTypeHintInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            var fix = new RemoveTypeHintsQuickFix(state);
+            var fix = new RemoveTypeHintsQuickFix(state, InspectionsHelper.GetLocator());
             foreach (var result in inspectionResults)
             {
                 fix.Fix(result);
@@ -404,14 +374,13 @@ End Function";
             const string expectedCode =
 @"Public Foo As String";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteTypeHintInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            var fix = new RemoveTypeHintsQuickFix(state);
+            var fix = new RemoveTypeHintsQuickFix(state, InspectionsHelper.GetLocator());
             foreach (var result in inspectionResults)
             {
                 fix.Fix(result);
@@ -434,14 +403,13 @@ End Function";
     Foo = ""test""
 End Function";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteTypeHintInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            var fix = new RemoveTypeHintsQuickFix(state);
+            var fix = new RemoveTypeHintsQuickFix(state, InspectionsHelper.GetLocator());
             foreach (var result in inspectionResults)
             {
                 fix.Fix(result);
@@ -464,14 +432,13 @@ End Property";
     Foo = ""test""
 End Property";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteTypeHintInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
-            
-            var fix = new RemoveTypeHintsQuickFix(state);
+
+            var fix = new RemoveTypeHintsQuickFix(state, InspectionsHelper.GetLocator());
             foreach (var result in inspectionResults)
             {
                 fix.Fix(result);
@@ -494,14 +461,13 @@ End Sub";
     Foo = ""test""
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteTypeHintInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            var fix = new RemoveTypeHintsQuickFix(state);
+            var fix = new RemoveTypeHintsQuickFix(state, InspectionsHelper.GetLocator());
             foreach (var result in inspectionResults)
             {
                 fix.Fix(result);
@@ -524,14 +490,13 @@ End Sub";
     Dim buzz As String
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteTypeHintInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            var fix = new RemoveTypeHintsQuickFix(state);
+            var fix = new RemoveTypeHintsQuickFix(state, InspectionsHelper.GetLocator());
             foreach (var result in inspectionResults)
             {
                 fix.Fix(result);
@@ -554,14 +519,13 @@ End Sub";
     Const buzz As String = """"
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteTypeHintInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            var fix = new RemoveTypeHintsQuickFix(state);
+            var fix = new RemoveTypeHintsQuickFix(state, InspectionsHelper.GetLocator());
             foreach (var result in inspectionResults)
             {
                 fix.Fix(result);
@@ -585,14 +549,13 @@ Public Function Foo$(ByVal fizz As Integer)
     Foo = ""test""
 End Function";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteTypeHintInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            var fix = new IgnoreOnceQuickFix(state, new[] {inspection});
+            var fix = new IgnoreOnceQuickFix(state, new[] { inspection });
             foreach (var result in inspectionResults)
             {
                 fix.Fix(result);

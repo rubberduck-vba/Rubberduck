@@ -1,6 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
@@ -11,20 +9,15 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public sealed class RemoveTypeHintsQuickFix : IQuickFix
+    public sealed class RemoveTypeHintsQuickFix : QuickFixBase, IQuickFix
     {
         private readonly RubberduckParserState _state;
-        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
-        {
-            typeof(ObsoleteTypeHintInspection)
-        };
 
-        public RemoveTypeHintsQuickFix(RubberduckParserState state)
+        public RemoveTypeHintsQuickFix(RubberduckParserState state, InspectionLocator inspectionLocator)
         {
             _state = state;
+            RegisterInspections(inspectionLocator.GetInspection<ObsoleteTypeHintInspection>());
         }
-
-        public IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
 
         public void Fix(IInspectionResult result)
         {

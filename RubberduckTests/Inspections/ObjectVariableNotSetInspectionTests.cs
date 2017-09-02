@@ -5,7 +5,6 @@ using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
@@ -104,10 +103,10 @@ End Sub
             var input =
 @"
 Private Sub Workbook_Open()
-    
+
     Dim target As String
     target = Range(""A1"")
-    
+
     target.Value = ""all good""
 
 End Sub";
@@ -209,10 +208,10 @@ End Sub";
             var input =
 @"
 Private Sub Workbook_Open()
-    
+
     Dim target As Range
     target = Range(""A1"")
-    
+
     target.Value = ""forgot something?""
 
 End Sub";
@@ -227,11 +226,11 @@ End Sub";
             var input =
 @"
 Private Sub Workbook_Open()
-    
+
     Dim target As Range
 '@Ignore ObjectVariableNotSet
     target = Range(""A1"")
-    
+
     target.Value = ""forgot something?""
 
 End Sub";
@@ -246,10 +245,10 @@ End Sub";
             var input =
 @"
 Private Sub Workbook_Open()
-    
+
     Dim target As Range
     Set target = Range(""A1"")
-    
+
     target.Value = ""All good""
 
 End Sub";
@@ -300,33 +299,32 @@ End Function";
             var inputCode =
             @"
 Private Sub Workbook_Open()
-    
+
     Dim target As Range
     target = Range(""A1"")
-    
+
     target.Value = ""forgot something?""
 
 End Sub";
             var expectedCode =
             @"
 Private Sub Workbook_Open()
-    
+
     Dim target As Range
 '@Ignore ObjectVariableNotSet
     target = Range(""A1"")
-    
+
     target.Value = ""forgot something?""
 
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObjectVariableNotSetInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
-            
-            new IgnoreOnceQuickFix(state, new[] {inspection}).Fix(inspectionResults.First());
+
+            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
@@ -354,15 +352,14 @@ Private Function CombineRanges(ByVal source As Range, ByVal toCombine As Range) 
     End If
 End Function";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObjectVariableNotSetInspection(state);
             var inspectionResults = inspection.GetInspectionResults().ToList();
 
             Assert.AreEqual(expectedResultCount, inspectionResults.Count);
-            var fix = new UseSetKeywordForObjectAssignmentQuickFix(state);
+            var fix = new UseSetKeywordForObjectAssignmentQuickFix(state, InspectionsHelper.GetLocator());
             foreach (var result in inspectionResults)
             {
                 fix.Fix(result);
@@ -390,15 +387,14 @@ Public Property Get Example() As MyObject
 End Property
 ";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObjectVariableNotSetInspection(state);
             var inspectionResults = inspection.GetInspectionResults().ToList();
 
             Assert.AreEqual(expectedResultCount, inspectionResults.Count);
-            var fix = new UseSetKeywordForObjectAssignmentQuickFix(state);
+            var fix = new UseSetKeywordForObjectAssignmentQuickFix(state, InspectionsHelper.GetLocator());
             foreach (var result in inspectionResults)
             {
                 fix.Fix(result);
@@ -595,8 +591,7 @@ End Sub";
 
         private void AssertInputCodeYieldsExpectedInspectionResultCount(string inputCode, int expected)
         {
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObjectVariableNotSetInspection(state);

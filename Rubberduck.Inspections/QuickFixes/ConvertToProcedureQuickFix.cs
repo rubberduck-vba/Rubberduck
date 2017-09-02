@@ -1,7 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
+using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -11,34 +11,27 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public sealed class ConvertToProcedureQuickFix : IQuickFix
+    public sealed class ConvertToProcedureQuickFix : QuickFixBase, IQuickFix
     {
         private readonly RubberduckParserState _state;
-        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
-        {
-            typeof(NonReturningFunctionInspection),
-            typeof(FunctionReturnValueNotUsedInspection)
-        };
 
-        public ConvertToProcedureQuickFix(RubberduckParserState state)
+        public ConvertToProcedureQuickFix(RubberduckParserState state, InspectionLocator inspectionLocator)
         {
             _state = state;
+            RegisterInspections(inspectionLocator.GetInspection<NonReturningFunctionInspection>(),
+                inspectionLocator.GetInspection<FunctionReturnValueNotUsedInspection>());
         }
-
-        public IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
 
         public void Fix(IInspectionResult result)
         {
-            var functionContext = result.Context as VBAParser.FunctionStmtContext;
-            if (functionContext != null)
+            switch (result.Context)
             {
-                ConvertFunction(result, functionContext);
-            }
-
-            var propertyGetContext = result.Context as VBAParser.PropertyGetStmtContext;
-            if (propertyGetContext != null)
-            {
-                ConvertPropertyGet(result, propertyGetContext);
+                case VBAParser.FunctionStmtContext functionContext:
+                    ConvertFunction(result, functionContext);
+                    break;
+                case VBAParser.PropertyGetStmtContext propertyGetContext:
+                    ConvertPropertyGet(result, propertyGetContext);
+                    break;
             }
         }
 

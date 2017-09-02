@@ -6,7 +6,6 @@ using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
@@ -22,11 +21,10 @@ namespace RubberduckTests.Inspections
 @"Sub Foo(ByRef arg1 As Integer)
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new RedundantByRefModifierInspection(state) {Severity = CodeInspectionSeverity.Hint};
+            var inspection = new RedundantByRefModifierInspection(state) { Severity = CodeInspectionSeverity.Hint };
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
@@ -41,8 +39,7 @@ End Sub";
 @"Sub Foo(ByRef arg1 As Integer, ByRef arg2 As Date)
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new RedundantByRefModifierInspection(state) { Severity = CodeInspectionSeverity.Hint };
@@ -60,8 +57,7 @@ End Sub";
 @"Sub Foo(arg1 As Integer)
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new RedundantByRefModifierInspection(state) { Severity = CodeInspectionSeverity.Hint };
@@ -79,8 +75,7 @@ End Sub";
 @"Sub Foo(ByVal arg1 As Integer)
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new RedundantByRefModifierInspection(state) { Severity = CodeInspectionSeverity.Hint };
@@ -98,8 +93,7 @@ End Sub";
 @"Sub Foo(ByVal arg1 As Integer, ByRef arg2 As Date)
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new RedundantByRefModifierInspection(state) { Severity = CodeInspectionSeverity.Hint };
@@ -185,8 +179,7 @@ End Sub";
 Sub Foo(ByRef arg1 As Integer)
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new RedundantByRefModifierInspection(state) { Severity = CodeInspectionSeverity.Hint };
@@ -208,15 +201,14 @@ End Sub";
 @"Sub Foo(arg1 As Integer)
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new RedundantByRefModifierInspection(state) { Severity = CodeInspectionSeverity.Hint };
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new RemoveExplicitByRefModifierQuickFix(state).Fix(inspectionResults.First());
+            new RemoveExplicitByRefModifierQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -234,8 +226,7 @@ End Sub";
 Sub Foo(ByRef arg1 As Integer)
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new RedundantByRefModifierInspection(state) { Severity = CodeInspectionSeverity.Hint };
@@ -259,15 +250,14 @@ End Sub";
 @"Sub Foo(Optional arg1 As Integer)
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new RedundantByRefModifierInspection(state) { Severity = CodeInspectionSeverity.Hint };
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new RemoveExplicitByRefModifierQuickFix(state).Fix(inspectionResults.First());
+            new RemoveExplicitByRefModifierQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -290,15 +280,14 @@ End Sub";
     bar = 1
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new RedundantByRefModifierInspection(state) { Severity = CodeInspectionSeverity.Hint };
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new RemoveExplicitByRefModifierQuickFix(state).Fix(inspectionResults.First());
+            new RemoveExplicitByRefModifierQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -319,15 +308,14 @@ End Sub";
     bar = 1
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new RedundantByRefModifierInspection(state) { Severity = CodeInspectionSeverity.Hint };
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new RemoveExplicitByRefModifierQuickFix(state).Fix(inspectionResults.First());
+            new RemoveExplicitByRefModifierQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -350,15 +338,14 @@ End Sub";
     bar = 1
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new RedundantByRefModifierInspection(state) { Severity = CodeInspectionSeverity.Hint };
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new RemoveExplicitByRefModifierQuickFix(state).Fix(inspectionResults.First());
+            new RemoveExplicitByRefModifierQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -400,7 +387,7 @@ End Sub";
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new RemoveExplicitByRefModifierQuickFix(state).Fix(inspectionResults.First());
+            new RemoveExplicitByRefModifierQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
 
             var project = vbe.Object.VBProjects[0];
             var interfaceComponent = project.VBComponents[0];
@@ -447,7 +434,7 @@ End Sub";
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new RemoveExplicitByRefModifierQuickFix(state).Fix(inspectionResults.First());
+            new RemoveExplicitByRefModifierQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
 
             var project = vbe.Object.VBProjects[0];
             var interfaceComponent = project.VBComponents[0];
@@ -494,10 +481,10 @@ End Sub";
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new RemoveExplicitByRefModifierQuickFix(state).Fix(
+            new RemoveExplicitByRefModifierQuickFix(state, InspectionsHelper.GetLocator()).Fix(
                 inspectionResults.First(
                     result =>
-                        ((VBAParser.ArgContext) result.Context).unrestrictedIdentifier()
+                        ((VBAParser.ArgContext)result.Context).unrestrictedIdentifier()
                         .identifier()
                         .untypedIdentifier()
                         .identifierValue()

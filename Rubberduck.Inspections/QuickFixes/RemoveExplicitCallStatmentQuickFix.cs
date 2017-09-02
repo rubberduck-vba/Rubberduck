@@ -1,6 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -9,20 +7,15 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public sealed class RemoveExplicitCallStatmentQuickFix : IQuickFix
+    public sealed class RemoveExplicitCallStatmentQuickFix : QuickFixBase, IQuickFix
     {
         private readonly RubberduckParserState _state;
-        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
-        {
-            typeof(ObsoleteCallStatementInspection)
-        };
 
-        public RemoveExplicitCallStatmentQuickFix(RubberduckParserState state)
+        public RemoveExplicitCallStatmentQuickFix(RubberduckParserState state, InspectionLocator inspectionLocator)
         {
             _state = state;
+            RegisterInspections(inspectionLocator.GetInspection<ObsoleteCallStatementInspection>());
         }
-
-        public IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
 
         public void Fix(IInspectionResult result)
         {
@@ -33,9 +26,8 @@ namespace Rubberduck.Inspections.QuickFixes
             rewriter.Remove(context.whiteSpace());
 
             // The CALL statement only has arguments if it's an index expression.
-            if (context.lExpression() is VBAParser.IndexExprContext)
+            if (context.lExpression() is VBAParser.IndexExprContext indexExpr)
             {
-                var indexExpr = (VBAParser.IndexExprContext)context.lExpression();
                 rewriter.Replace(indexExpr.LPAREN(), " ");
                 rewriter.Remove(indexExpr.RPAREN());
             }

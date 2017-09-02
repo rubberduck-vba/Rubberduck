@@ -3,7 +3,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
@@ -18,8 +17,7 @@ namespace RubberduckTests.Inspections
             const string inputCode =
 @"Public fizz As Boolean";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EncapsulatePublicFieldInspection(state);
@@ -37,8 +35,7 @@ namespace RubberduckTests.Inspections
 Public buzz As Integer, _
        bazz As Integer";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EncapsulatePublicFieldInspection(state);
@@ -54,8 +51,7 @@ Public buzz As Integer, _
             const string inputCode =
 @"Private fizz As Boolean";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EncapsulatePublicFieldInspection(state);
@@ -72,8 +68,7 @@ Public buzz As Integer, _
 @"Public Sub Foo(ByRef arg1 As String)
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EncapsulatePublicFieldInspection(state);
@@ -90,8 +85,7 @@ End Sub";
 @"'@Ignore EncapsulatePublicField
 Public fizz As Boolean";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EncapsulatePublicFieldInspection(state);
@@ -111,8 +105,7 @@ Public fizz As Boolean";
 @"'@Ignore EncapsulatePublicField
 Public fizz As Boolean";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EncapsulatePublicFieldInspection(state);

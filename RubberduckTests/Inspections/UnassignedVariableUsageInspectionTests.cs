@@ -4,7 +4,6 @@ using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
@@ -23,8 +22,7 @@ namespace RubberduckTests.Inspections
     bb = b
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new UnassignedVariableUsageInspection(state);
@@ -55,8 +53,7 @@ Sub DoSomething(ByVal foo As Variant)
 End Sub
 ";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new UnassignedVariableUsageInspection(state);
@@ -77,8 +74,7 @@ End Sub
     bb = b
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new UnassignedVariableUsageInspection(state);
@@ -100,8 +96,7 @@ End Sub";
     bb = b
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new UnassignedVariableUsageInspection(state);
@@ -119,8 +114,7 @@ End Sub";
     Dim foo
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new UnassignedVariableUsageInspection(state);
@@ -128,7 +122,7 @@ End Sub";
 
             Assert.IsFalse(inspectionResults.Any());
         }
-        
+
         [TestMethod]
         [TestCategory("Inspections")]
         public void UnassignedVariableUsage_QuickFixWorks()
@@ -147,14 +141,13 @@ End Sub";
     
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new UnassignedVariableUsageInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new RemoveUnassignedVariableUsageQuickFix(state).Fix(inspectionResults.First());
+            new RemoveUnassignedVariableUsageQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
@@ -177,14 +170,13 @@ End Sub";
     bb = b
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new UnassignedVariableUsageInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
-            
-            new IgnoreOnceQuickFix(state, new[] {inspection}).Fix(inspectionResults.First());
+
+            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 

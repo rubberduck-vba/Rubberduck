@@ -1,6 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -11,22 +9,17 @@ using Rubberduck.UI.Refactorings.EncapsulateField;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public sealed class EncapsulateFieldQuickFix : IQuickFix
+    public sealed class EncapsulateFieldQuickFix : QuickFixBase, IQuickFix
     {
         private readonly RubberduckParserState _state;
         private readonly IIndenter _indenter;
-        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
-        {
-            typeof(EncapsulatePublicFieldInspection)
-        };
 
-        public EncapsulateFieldQuickFix(RubberduckParserState state, IIndenter indenter)
+        public EncapsulateFieldQuickFix(RubberduckParserState state, IIndenter indenter, InspectionLocator inspectionLocator)
         {
             _state = state;
             _indenter = indenter;
+            RegisterInspections(inspectionLocator.GetInspection<EncapsulatePublicFieldInspection>());
         }
-
-        public IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
 
         public void Fix(IInspectionResult result)
         {

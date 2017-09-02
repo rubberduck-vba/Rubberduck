@@ -6,7 +6,6 @@ using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
@@ -190,15 +189,14 @@ Property Let Foo(value)
 End Property";
 
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out var component);
 
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new WriteOnlyPropertyInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new WriteOnlyPropertyQuickFix(state).Fix(inspectionResults.First());
+            new WriteOnlyPropertyQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
@@ -217,15 +215,14 @@ End Property
 Public Property Let Foo(ByVal value As Integer)
 End Property";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out var component);
 
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new WriteOnlyPropertyInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new WriteOnlyPropertyQuickFix(state).Fix(inspectionResults.First());
+            new WriteOnlyPropertyQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
@@ -244,15 +241,14 @@ End Property
 Public Property Let Foo(value1, ByVal value2 As Integer, ByRef value3 As Long, value4 As Date, ByVal value5, value6 As String)
 End Property";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out var component);
 
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new WriteOnlyPropertyInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new WriteOnlyPropertyQuickFix(state).Fix(inspectionResults.First());
+            new WriteOnlyPropertyQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
@@ -284,7 +280,7 @@ End Property";
             var inspection = new WriteOnlyPropertyInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new IgnoreOnceQuickFix(parser.State, new[] {inspection}).Fix(inspectionResults.First());
+            new IgnoreOnceQuickFix(parser.State, new[] { inspection }).Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, parser.State.GetRewriter(component).GetText());
         }

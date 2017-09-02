@@ -1,6 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -11,23 +9,18 @@ namespace Rubberduck.Inspections.QuickFixes
     /// <summary>
     /// A code inspection quickfix that removes an unused identifier declaration.
     /// </summary>
-    public sealed class RemoveUnusedDeclarationQuickFix : IQuickFix
+    public sealed class RemoveUnusedDeclarationQuickFix : QuickFixBase, IQuickFix
     {
         private readonly RubberduckParserState _state;
-        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
-        {
-            typeof(ConstantNotUsedInspection),
-            typeof(ProcedureNotUsedInspection),
-            typeof(VariableNotUsedInspection),
-            typeof(LineLabelNotUsedInspection)
-        };
 
-        public RemoveUnusedDeclarationQuickFix(RubberduckParserState state)
+        public RemoveUnusedDeclarationQuickFix(RubberduckParserState state, InspectionLocator inspectionLocator)
         {
             _state = state;
+            RegisterInspections(inspectionLocator.GetInspection<ConstantNotUsedInspection>(),
+                inspectionLocator.GetInspection<ProcedureNotUsedInspection>(),
+                inspectionLocator.GetInspection<VariableNotUsedInspection>(),
+                inspectionLocator.GetInspection<LineLabelNotUsedInspection>());
         }
-
-        public IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
 
         public void Fix(IInspectionResult result)
         {

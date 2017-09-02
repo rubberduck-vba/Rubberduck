@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,6 +30,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
@@ -108,6 +110,8 @@
     <Compile Include="QuickFixes\AssignedByValParameterMakeLocalCopyQuickFix.cs" />
     <Compile Include="QuickFixes\ChangeDimToPrivateQuickFix.cs" />
     <Compile Include="QuickFixes\ChangeIntegerToLongQuickFix.cs" />
+    <Compile Include="InspectionLocator.cs" />
+    <Compile Include="Abstract\QuickFixBase.cs" />
     <Compile Include="QuickFixes\RemoveStopKeywordQuickFix.cs" />
     <Compile Include="QuickFixes\SpecifyExplicitByRefModifierQuickFix.cs" />
     <Compile Include="QuickFixes\ChangeProcedureToFunctionQuickFix.cs" />

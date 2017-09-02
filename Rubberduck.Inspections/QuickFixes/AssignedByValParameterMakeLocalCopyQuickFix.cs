@@ -7,6 +7,7 @@ using Rubberduck.Common;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using Antlr4.Runtime;
+using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -15,19 +16,17 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public sealed class AssignedByValParameterMakeLocalCopyQuickFix : IQuickFix
+    public sealed class AssignedByValParameterMakeLocalCopyQuickFix : QuickFixBase, IQuickFix
     {
         private readonly IAssignedByValParameterQuickFixDialogFactory _dialogFactory;
         private readonly RubberduckParserState _parserState;
-        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type> { typeof(AssignedByValParameterInspection) };
 
-        public AssignedByValParameterMakeLocalCopyQuickFix(RubberduckParserState parserState, IAssignedByValParameterQuickFixDialogFactory dialogFactory)
+        public AssignedByValParameterMakeLocalCopyQuickFix(RubberduckParserState state, InspectionLocator inspectionLocator, IAssignedByValParameterQuickFixDialogFactory dialogFactory)
         {
             _dialogFactory = dialogFactory;
-            _parserState = parserState;
+            _parserState = state;
+            RegisterInspections(inspectionLocator.GetInspection<AssignedByValParameterInspection>());
         }
-
-        public IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
 
         public void Fix(IInspectionResult result)
         {

@@ -1,6 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -12,24 +10,20 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public sealed class RemoveUnusedParameterQuickFix : IQuickFix
+    public sealed class RemoveUnusedParameterQuickFix : QuickFixBase, IQuickFix
     {
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
-        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
-        {
-            typeof(ParameterNotUsedInspection)
-        };
 
-        public RemoveUnusedParameterQuickFix(IVBE vbe, RubberduckParserState state, IMessageBox messageBox)
+        public RemoveUnusedParameterQuickFix(IVBE vbe, RubberduckParserState state, InspectionLocator inspectionLocator, IMessageBox messageBox)
         {
             _vbe = vbe;
             _state = state;
             _messageBox = messageBox;
-        }
 
-        public IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
+            RegisterInspections(inspectionLocator.GetInspection<ParameterNotUsedInspection>());
+        }
 
         public void Fix(IInspectionResult result)
         {
