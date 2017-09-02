@@ -1278,7 +1278,7 @@ End Property
 
         [TestCategory("Code Explorer")]
         [TestMethod]
-        public void CompareByType_ReturnsPropertyGetAbovePropertyLet()
+        public void CompareByType_ReturnsPropertyGetEqualToPropertyLet()
         {
             var inputCode =
     @"Public Property Get Foo() As Variant
@@ -1300,12 +1300,66 @@ End Property
             var propertyGetNode = vm.Projects.First().Items.First().Items.First().Items.Single(s => s.Name == "Foo (Get)");
             var propertyLetNode = vm.Projects.First().Items.First().Items.First().Items.Single(s => s.Name == "Foo (Let)");
 
-            Assert.AreEqual(-1, new CompareByType().Compare(propertyGetNode, propertyLetNode));
+            Assert.AreEqual(0, new CompareByType().Compare(propertyGetNode, propertyLetNode));
         }
 
         [TestCategory("Code Explorer")]
         [TestMethod]
-        public void CompareByType_ReturnsPropertyLetAbovePropertySet()
+        public void CompareByType_ReturnsPropertyGetEqualToPropertySet()
+        {
+            var inputCode =
+    @"Public Property Get Foo() As Variant
+End Property
+
+Public Property Set Foo(ByVal Value As Variant)
+End Property
+";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), _generalSettingsProvider.Object, _windowSettingsProvider.Object);
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse(new CancellationTokenSource());
+
+            var propertyGetNode = vm.Projects.First().Items.First().Items.First().Items.Single(s => s.Name == "Foo (Get)");
+            var propertyLetNode = vm.Projects.First().Items.First().Items.First().Items.Single(s => s.Name == "Foo (Set)");
+
+            Assert.AreEqual(0, new CompareByType().Compare(propertyGetNode, propertyLetNode));
+        }
+
+        [TestCategory("Code Explorer")]
+        [TestMethod]
+        public void CompareByType_ReturnsPropertyLetEqualToPropertyGet()
+        {
+            var inputCode =
+    @"Public Property Let Foo(ByVal Value As Variant)
+End Property
+
+Public Property Get Foo() As Variant
+End Property
+";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), _generalSettingsProvider.Object, _windowSettingsProvider.Object);
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse(new CancellationTokenSource());
+
+            var propertyLetNode = vm.Projects.First().Items.First().Items.First().Items.Single(s => s.Name == "Foo (Let)");
+            var propertySetNode = vm.Projects.First().Items.First().Items.First().Items.Single(s => s.Name == "Foo (Get)");
+
+            Assert.AreEqual(0, new CompareByType().Compare(propertyLetNode, propertySetNode));
+        }
+
+        [TestCategory("Code Explorer")]
+        [TestMethod]
+        public void CompareByType_ReturnsPropertyLetEqualToPropertySet()
         {
             var inputCode =
     @"Public Property Let Foo(ByVal Value As Variant)
@@ -1327,7 +1381,7 @@ End Property
             var propertyLetNode = vm.Projects.First().Items.First().Items.First().Items.Single(s => s.Name == "Foo (Let)");
             var propertySetNode = vm.Projects.First().Items.First().Items.First().Items.Single(s => s.Name == "Foo (Set)");
 
-            Assert.AreEqual(-1, new CompareByType().Compare(propertyLetNode, propertySetNode));
+            Assert.AreEqual(0, new CompareByType().Compare(propertyLetNode, propertySetNode));
         }
 
         [TestCategory("Code Explorer")]
