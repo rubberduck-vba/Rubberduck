@@ -152,7 +152,7 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new VariableNotUsedInspection(state);
-            new RemoveUnusedDeclarationQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspection.GetInspectionResults().First());
+            new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
             var rewriter = state.GetRewriter(component);
             Assert.AreEqual(expectedCode, rewriter.GetText());

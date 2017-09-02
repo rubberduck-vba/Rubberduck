@@ -3,7 +3,6 @@ using Rubberduck.Inspections.Rubberduck.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Settings;
 using System.Linq;
-using Rubberduck.Inspections;
 
 namespace RubberduckTests.Inspections
 {
@@ -12,11 +11,6 @@ namespace RubberduckTests.Inspections
         public static IInspector GetInspector(IInspection inspection, params IInspection[] otherInspections)
         {
             return new Inspector(GetSettings(inspection), otherInspections.Union(new[] {inspection}));
-        }
-
-        public static InspectionLocator GetLocator(params IInspection[] inspections)
-        {
-            return new InspectionLocator(inspections);
         }
 
         public static IGeneralConfigService GetSettings(IInspection inspection)

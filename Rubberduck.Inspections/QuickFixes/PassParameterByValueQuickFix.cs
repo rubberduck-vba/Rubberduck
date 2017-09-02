@@ -11,17 +11,17 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public sealed class PassParameterByValueQuickFix : QuickFixBase, IQuickFix
+    public sealed class PassParameterByValueQuickFix : QuickFixBase
     {
         private readonly RubberduckParserState _state;
 
-        public PassParameterByValueQuickFix(RubberduckParserState state, InspectionLocator inspectionLocator)
+        public PassParameterByValueQuickFix(RubberduckParserState state)
+            : base(typeof(ParameterCanBeByValInspection))
         {
             _state = state;
-            RegisterInspections(inspectionLocator.GetInspection<ParameterCanBeByValInspection>());
         }
 
-        public void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result)
         {
             if (result.Target.ParentDeclaration.DeclarationType == DeclarationType.Event ||
                 _state.AllUserDeclarations.FindInterfaceMembers().Contains(result.Target.ParentDeclaration))
@@ -34,7 +34,7 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
-        public string Description(IInspectionResult result)
+        public override string Description(IInspectionResult result)
         {
             return InspectionsUI.PassParameterByValueQuickFix;
         }
@@ -90,8 +90,8 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
-        public bool CanFixInProcedure => true;
-        public bool CanFixInModule => true;
-        public bool CanFixInProject => true;
+        public override bool CanFixInProcedure => true;
+        public override bool CanFixInModule => true;
+        public override bool CanFixInProject => true;
     }
 }

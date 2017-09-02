@@ -359,7 +359,7 @@ End Function";
             var inspectionResults = inspection.GetInspectionResults().ToList();
 
             Assert.AreEqual(expectedResultCount, inspectionResults.Count);
-            var fix = new UseSetKeywordForObjectAssignmentQuickFix(state, InspectionsHelper.GetLocator());
+            var fix = new UseSetKeywordForObjectAssignmentQuickFix(state);
             foreach (var result in inspectionResults)
             {
                 fix.Fix(result);
@@ -394,7 +394,7 @@ End Property
             var inspectionResults = inspection.GetInspectionResults().ToList();
 
             Assert.AreEqual(expectedResultCount, inspectionResults.Count);
-            var fix = new UseSetKeywordForObjectAssignmentQuickFix(state, InspectionsHelper.GetLocator());
+            var fix = new UseSetKeywordForObjectAssignmentQuickFix(state);
             foreach (var result in inspectionResults)
             {
                 fix.Fix(result);

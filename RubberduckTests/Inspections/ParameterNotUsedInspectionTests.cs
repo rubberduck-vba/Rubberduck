@@ -152,7 +152,7 @@ End Sub";
             var inspection = new ParameterNotUsedInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new RemoveUnusedParameterQuickFix(vbe.Object, state, InspectionsHelper.GetLocator(), new Mock<IMessageBox>().Object).Fix(
+            new RemoveUnusedParameterQuickFix(vbe.Object, state, new Mock<IMessageBox>().Object).Fix(
                 inspectionResults.First());
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }

@@ -9,19 +9,19 @@ using Rubberduck.UI.Refactorings.EncapsulateField;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public sealed class EncapsulateFieldQuickFix : QuickFixBase, IQuickFix
+    public sealed class EncapsulateFieldQuickFix : QuickFixBase
     {
         private readonly RubberduckParserState _state;
         private readonly IIndenter _indenter;
 
-        public EncapsulateFieldQuickFix(RubberduckParserState state, IIndenter indenter, InspectionLocator inspectionLocator)
+        public EncapsulateFieldQuickFix(RubberduckParserState state, IIndenter indenter)
+            : base(typeof(EncapsulatePublicFieldInspection))
         {
             _state = state;
             _indenter = indenter;
-            RegisterInspections(inspectionLocator.GetInspection<EncapsulatePublicFieldInspection>());
         }
 
-        public void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result)
         {
             var vbe = result.Target.Project.VBE;
 
@@ -33,13 +33,13 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
-        public string Description(IInspectionResult result)
+        public override string Description(IInspectionResult result)
         {
             return string.Format(InspectionsUI.EncapsulatePublicFieldInspectionQuickFix, result.Target.IdentifierName);
         }
 
-        public bool CanFixInProcedure => false;
-        public bool CanFixInModule => false;
-        public bool CanFixInProject => false;
+        public override bool CanFixInProcedure => false;
+        public override bool CanFixInModule => false;
+        public override bool CanFixInProject => false;
     }
 }

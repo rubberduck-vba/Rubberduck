@@ -110,7 +110,6 @@
     <Compile Include="QuickFixes\AssignedByValParameterMakeLocalCopyQuickFix.cs" />
     <Compile Include="QuickFixes\ChangeDimToPrivateQuickFix.cs" />
     <Compile Include="QuickFixes\ChangeIntegerToLongQuickFix.cs" />
-    <Compile Include="InspectionLocator.cs" />
     <Compile Include="Abstract\QuickFixBase.cs" />
     <Compile Include="QuickFixes\RemoveStopKeywordQuickFix.cs" />
     <Compile Include="QuickFixes\SpecifyExplicitByRefModifierQuickFix.cs" />

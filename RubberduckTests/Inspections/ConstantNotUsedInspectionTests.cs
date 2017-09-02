@@ -191,7 +191,7 @@ End Sub";
             var inspection = new ConstantNotUsedInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new RemoveUnusedDeclarationQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new RemoveUnusedDeclarationQuickFix(state).Fix(inspectionResults.First());
 
             var rewriter = state.GetRewriter(component);
             var rewrittenCode = rewriter.GetText();

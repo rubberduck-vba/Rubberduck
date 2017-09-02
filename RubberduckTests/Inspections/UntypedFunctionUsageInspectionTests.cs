@@ -142,7 +142,7 @@ End Sub";
             var inspection = new UntypedFunctionUsageInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new UntypedFunctionUsageQuickFix(parser.State, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new UntypedFunctionUsageQuickFix(parser.State).Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, parser.State.GetRewriter(component).GetText());
         }

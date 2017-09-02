@@ -262,7 +262,7 @@ End Sub"
                 Assert.Inconclusive("Inspection yielded no results.");
             }
 
-            new AssignedByValParameterMakeLocalCopyQuickFix(state, InspectionsHelper.GetLocator(), mockDialogFactory.Object).Fix(result);
+            new AssignedByValParameterMakeLocalCopyQuickFix(state, mockDialogFactory.Object).Fix(result);
             return state.GetRewriter(vbe.Object.ActiveVBProject.VBComponents[0]).GetText();
         }
 

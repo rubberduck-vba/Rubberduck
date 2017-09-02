@@ -7,17 +7,17 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public sealed class ChangeDimToPrivateQuickFix : QuickFixBase, IQuickFix
+    public sealed class ChangeDimToPrivateQuickFix : QuickFixBase
     {
         private readonly RubberduckParserState _state;
 
-        public ChangeDimToPrivateQuickFix(RubberduckParserState state, InspectionLocator inspectionLocator)
+        public ChangeDimToPrivateQuickFix(RubberduckParserState state)
+            : base(typeof(ModuleScopeDimKeywordInspection))
         {
             _state = state;
-            RegisterInspections(inspectionLocator.GetInspection<ModuleScopeDimKeywordInspection>());
         }
 
-        public void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result)
         {
             var rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
 
@@ -25,13 +25,13 @@ namespace Rubberduck.Inspections.QuickFixes
             rewriter.Replace(context.DIM(), Tokens.Private);
         }
 
-        public string Description(IInspectionResult result)
+        public override string Description(IInspectionResult result)
         {
             return InspectionsUI.ChangeDimToPrivateQuickFix;
         }
 
-        public bool CanFixInProcedure { get; } = false;
-        public bool CanFixInModule { get; } = true;
-        public bool CanFixInProject { get; } = true;
+        public override bool CanFixInProcedure { get; } = false;
+        public override bool CanFixInModule { get; } = true;
+        public override bool CanFixInProject { get; } = true;
     }
 }

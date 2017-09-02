@@ -8,17 +8,17 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public sealed class RemoveExplicitLetStatementQuickFix : QuickFixBase, IQuickFix
+    public sealed class RemoveExplicitLetStatementQuickFix : QuickFixBase
     {
         private readonly RubberduckParserState _state;
 
-        public RemoveExplicitLetStatementQuickFix(RubberduckParserState state, InspectionLocator inspectionLocator)
+        public RemoveExplicitLetStatementQuickFix(RubberduckParserState state)
+            : base(typeof(ObsoleteLetStatementInspection))
         {
             _state = state;
-            RegisterInspections(inspectionLocator.GetInspection<ObsoleteLetStatementInspection>());
         }
 
-        public void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result)
         {
             var rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
 
@@ -27,13 +27,13 @@ namespace Rubberduck.Inspections.QuickFixes
             rewriter.Remove(context.whiteSpace().First());
         }
 
-        public string Description(IInspectionResult result)
+        public override string Description(IInspectionResult result)
         {
             return InspectionsUI.RemoveObsoleteStatementQuickFix;
         }
 
-        public bool CanFixInProcedure => true;
-        public bool CanFixInModule => true;
-        public bool CanFixInProject => true;
+        public override bool CanFixInProcedure => true;
+        public override bool CanFixInModule => true;
+        public override bool CanFixInProject => true;
     }
 }

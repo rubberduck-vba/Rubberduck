@@ -7,27 +7,27 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public sealed class IntroduceLocalVariableQuickFix : QuickFixBase, IQuickFix
+    public sealed class IntroduceLocalVariableQuickFix : QuickFixBase
     {
         private readonly RubberduckParserState _state;
 
-        public IntroduceLocalVariableQuickFix(RubberduckParserState state, InspectionLocator inspectionLocator)
+        public IntroduceLocalVariableQuickFix(RubberduckParserState state)
+            : base(typeof(UndeclaredVariableInspection))
         {
             _state = state;
-            RegisterInspections(inspectionLocator.GetInspection<UndeclaredVariableInspection>());
         }
 
-        public bool CanFixInProcedure => true;
-        public bool CanFixInModule => true;
-        public bool CanFixInProject => true;
+        public override bool CanFixInProcedure => true;
+        public override bool CanFixInModule => true;
+        public override bool CanFixInProject => true;
 
-        public void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result)
         {
             var instruction = $"{Environment.NewLine}Dim {result.Target.IdentifierName} As Variant{Environment.NewLine}";
             _state.GetRewriter(result.Target).InsertBefore(result.Target.Context.Start.TokenIndex, instruction);
         }
 
-        public string Description(IInspectionResult result)
+        public override string Description(IInspectionResult result)
         {
             return InspectionsUI.IntroduceLocalVariableQuickFix;
         }

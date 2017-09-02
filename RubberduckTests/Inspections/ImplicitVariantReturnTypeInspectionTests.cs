@@ -189,7 +189,7 @@ End Function";
             var inspection = new ImplicitVariantReturnTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new SetExplicitVariantReturnTypeQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new SetExplicitVariantReturnTypeQuickFix(state).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
@@ -211,7 +211,7 @@ End Property";
             var inspection = new ImplicitVariantReturnTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new SetExplicitVariantReturnTypeQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new SetExplicitVariantReturnTypeQuickFix(state).Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -252,7 +252,7 @@ End Property";
             var inspection = new ImplicitVariantReturnTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new SetExplicitVariantReturnTypeQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new SetExplicitVariantReturnTypeQuickFix(state).Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -275,7 +275,7 @@ End Function";
             var inspection = new ImplicitVariantReturnTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new SetExplicitVariantReturnTypeQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new SetExplicitVariantReturnTypeQuickFix(state).Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }

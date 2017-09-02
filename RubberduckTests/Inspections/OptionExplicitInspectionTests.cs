@@ -106,7 +106,7 @@ namespace RubberduckTests.Inspections
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new OptionExplicitQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new OptionExplicitQuickFix(state).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 

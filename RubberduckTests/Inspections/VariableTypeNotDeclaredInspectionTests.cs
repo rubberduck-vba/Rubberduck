@@ -177,7 +177,7 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new VariableTypeNotDeclaredInspection(state);
-            new DeclareAsExplicitVariantQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspection.GetInspectionResults().First());
+            new DeclareAsExplicitVariantQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -198,7 +198,7 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new VariableTypeNotDeclaredInspection(state);
-            new DeclareAsExplicitVariantQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspection.GetInspectionResults().First());
+            new DeclareAsExplicitVariantQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -221,7 +221,7 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new VariableTypeNotDeclaredInspection(state);
-            new DeclareAsExplicitVariantQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspection.GetInspectionResults().First());
+            new DeclareAsExplicitVariantQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -242,7 +242,7 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new VariableTypeNotDeclaredInspection(state);
-            new DeclareAsExplicitVariantQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspection.GetInspectionResults().First());
+            new DeclareAsExplicitVariantQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -263,7 +263,7 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new VariableTypeNotDeclaredInspection(state);
-            new DeclareAsExplicitVariantQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspection.GetInspectionResults().First());
+            new DeclareAsExplicitVariantQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }

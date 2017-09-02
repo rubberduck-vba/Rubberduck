@@ -9,17 +9,17 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public sealed class RemoveTypeHintsQuickFix : QuickFixBase, IQuickFix
+    public sealed class RemoveTypeHintsQuickFix : QuickFixBase
     {
         private readonly RubberduckParserState _state;
 
-        public RemoveTypeHintsQuickFix(RubberduckParserState state, InspectionLocator inspectionLocator)
+        public RemoveTypeHintsQuickFix(RubberduckParserState state)
+            : base(typeof(ObsoleteTypeHintInspection))
         {
             _state = state;
-            RegisterInspections(inspectionLocator.GetInspection<ObsoleteTypeHintInspection>());
         }
 
-        public void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result)
         {
             if (!string.IsNullOrWhiteSpace(result.Target.TypeHint))
             {
@@ -66,13 +66,13 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
-        public string Description(IInspectionResult result)
+        public override string Description(IInspectionResult result)
         {
             return InspectionsUI.RemoveTypeHintsQuickFix;
         }
 
-        public bool CanFixInProcedure => true;
-        public bool CanFixInModule => true;
-        public bool CanFixInProject => true;
+        public override bool CanFixInProcedure => true;
+        public override bool CanFixInModule => true;
+        public override bool CanFixInProject => true;
     }
 }

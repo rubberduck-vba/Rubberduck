@@ -8,17 +8,17 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public sealed class SplitMultipleDeclarationsQuickFix : QuickFixBase, IQuickFix
+    public sealed class SplitMultipleDeclarationsQuickFix : QuickFixBase
     {
         private readonly RubberduckParserState _state;
 
-        public SplitMultipleDeclarationsQuickFix(RubberduckParserState state, InspectionLocator inspectionLocator)
+        public SplitMultipleDeclarationsQuickFix(RubberduckParserState state)
+            : base(typeof(MultipleDeclarationsInspection))
         {
             _state = state;
-            RegisterInspections(inspectionLocator.GetInspection<MultipleDeclarationsInspection>());
         }
 
-        public void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result)
         {
             dynamic context = result.Context is VBAParser.ConstStmtContext
                 ? result.Context
@@ -74,13 +74,13 @@ namespace Rubberduck.Inspections.QuickFixes
             return newContent.ToString();
         }
 
-        public string Description(IInspectionResult result)
+        public override string Description(IInspectionResult result)
         {
             return InspectionsUI.SplitMultipleDeclarationsQuickFix;
         }
 
-        public bool CanFixInProcedure => true;
-        public bool CanFixInModule => true;
-        public bool CanFixInProject => true;
+        public override bool CanFixInProcedure => true;
+        public override bool CanFixInModule => true;
+        public override bool CanFixInProject => true;
     }
 }

@@ -432,7 +432,7 @@ End Sub";
             var inspection = new FunctionReturnValueNotUsedInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ConvertToProcedureQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
@@ -469,7 +469,7 @@ End Sub";
             var inspection = new FunctionReturnValueNotUsedInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ConvertToProcedureQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
@@ -519,7 +519,7 @@ End Function";
             var inspection = new FunctionReturnValueNotUsedInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ConvertToProcedureQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
 
             var component = vbe.Object.VBProjects[0].VBComponents[0];
             Assert.AreEqual(expectedInterfaceCode, state.GetRewriter(component).GetText());

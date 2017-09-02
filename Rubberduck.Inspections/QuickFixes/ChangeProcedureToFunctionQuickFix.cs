@@ -10,17 +10,17 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public sealed class ChangeProcedureToFunctionQuickFix : QuickFixBase, IQuickFix
+    public sealed class ChangeProcedureToFunctionQuickFix : QuickFixBase
     {
         private readonly RubberduckParserState _state;
 
-        public ChangeProcedureToFunctionQuickFix(RubberduckParserState state, InspectionLocator inspectionLocator)
+        public ChangeProcedureToFunctionQuickFix(RubberduckParserState state)
+            : base(typeof(ProcedureCanBeWrittenAsFunctionInspection))
         {
             _state = state;
-            RegisterInspections(inspectionLocator.GetInspection<ProcedureCanBeWrittenAsFunctionInspection>());
         }
 
-        public void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result)
         {
             var parameterizedDeclaration = (IParameterizedDeclaration) result.Target;
             var arg = parameterizedDeclaration.Parameters.Cast<ParameterDeclaration>().First(p => p.IsByRef || p.IsImplicitByRef);
@@ -33,7 +33,7 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
-        public string Description(IInspectionResult result)
+        public override string Description(IInspectionResult result)
         {
             return InspectionsUI.ProcedureShouldBeFunctionInspectionQuickFix;
         }
@@ -77,8 +77,8 @@ namespace Rubberduck.Inspections.QuickFixes
             rewriter.InsertAfter(argListContext.Stop.TokenIndex, ")");
         }
 
-        public bool CanFixInProcedure => false;
-        public bool CanFixInModule => false;
-        public bool CanFixInProject => false;
+        public override bool CanFixInProcedure => false;
+        public override bool CanFixInModule => false;
+        public override bool CanFixInProject => false;
     }
 }

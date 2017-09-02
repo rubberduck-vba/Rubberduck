@@ -123,7 +123,7 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new VariableNotAssignedInspection(state);
-            new RemoveUnassignedIdentifierQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspection.GetInspectionResults().First());
+            new RemoveUnassignedIdentifierQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -148,7 +148,7 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new VariableNotAssignedInspection(state);
-            new RemoveUnassignedIdentifierQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspection.GetInspectionResults().First());
+            new RemoveUnassignedIdentifierQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -172,7 +172,7 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new VariableNotAssignedInspection(state);
-            new RemoveUnassignedIdentifierQuickFix(state, InspectionsHelper.GetLocator()).Fix(
+            new RemoveUnassignedIdentifierQuickFix(state).Fix(
                 inspection.GetInspectionResults().Single(s => s.Target.IdentifierName == "var2"));
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
@@ -197,7 +197,7 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new VariableNotAssignedInspection(state);
-            new RemoveUnassignedIdentifierQuickFix(state, InspectionsHelper.GetLocator()).Fix(
+            new RemoveUnassignedIdentifierQuickFix(state).Fix(
                 inspection.GetInspectionResults().Single(s => s.Target.IdentifierName == "var2"));
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());

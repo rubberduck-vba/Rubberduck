@@ -50,7 +50,7 @@ End Sub";
                 Assert.Inconclusive("Inspection failed to return a result.");
             }
 
-            var fix = new SynchronizeAttributesQuickFix(state, InspectionsHelper.GetLocator());
+            var fix = new SynchronizeAttributesQuickFix(state);
             fix.Fix(result);
 
             var rewriter = state.GetRewriter(result.QualifiedSelection.QualifiedName);
@@ -97,7 +97,7 @@ End Sub";
                 Assert.Inconclusive("Inspection failed to return a result.");
             }
 
-            var fix = new SynchronizeAttributesQuickFix(state, InspectionsHelper.GetLocator());
+            var fix = new SynchronizeAttributesQuickFix(state);
             fix.Fix(result);
 
             var rewriter = state.GetRewriter(result.QualifiedSelection.QualifiedName);
@@ -144,7 +144,7 @@ End Sub";
                 Assert.Inconclusive("Inspection failed to return a result.");
             }
 
-            var fix = new SynchronizeAttributesQuickFix(state, InspectionsHelper.GetLocator());
+            var fix = new SynchronizeAttributesQuickFix(state);
             fix.Fix(result);
 
             var rewriter = state.GetRewriter(result.QualifiedSelection.QualifiedName);
@@ -191,7 +191,7 @@ End Property";
                 Assert.Inconclusive("Inspection failed to return a result.");
             }
 
-            var fix = new SynchronizeAttributesQuickFix(state, InspectionsHelper.GetLocator());
+            var fix = new SynchronizeAttributesQuickFix(state);
             fix.Fix(result);
 
             var rewriter = state.GetRewriter(result.QualifiedSelection.QualifiedName);
@@ -242,7 +242,7 @@ Option Explicit
                 Assert.Inconclusive("Inspection failed to return a result.");
             }
 
-            var fix = new SynchronizeAttributesQuickFix(state, InspectionsHelper.GetLocator());
+            var fix = new SynchronizeAttributesQuickFix(state);
             fix.Fix(result);
 
             var rewriter = state.GetAttributeRewriter(result.QualifiedSelection.QualifiedName);
@@ -293,7 +293,7 @@ Option Explicit
                 Assert.Inconclusive("Inspection failed to return a result.");
             }
 
-            var fix = new SynchronizeAttributesQuickFix(state, InspectionsHelper.GetLocator());
+            var fix = new SynchronizeAttributesQuickFix(state);
             fix.Fix(result);
 
             var rewriter = state.GetAttributeRewriter(result.QualifiedSelection.QualifiedName);

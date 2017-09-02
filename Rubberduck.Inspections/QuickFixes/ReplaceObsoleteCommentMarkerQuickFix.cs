@@ -7,17 +7,17 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public sealed class ReplaceObsoleteCommentMarkerQuickFix : QuickFixBase, IQuickFix
+    public sealed class ReplaceObsoleteCommentMarkerQuickFix : QuickFixBase
     {
         private readonly RubberduckParserState _state;
 
-        public ReplaceObsoleteCommentMarkerQuickFix(RubberduckParserState state, InspectionLocator inspectionLocator)
+        public ReplaceObsoleteCommentMarkerQuickFix(RubberduckParserState state)
+            : base(typeof(ObsoleteCommentSyntaxInspection))
         {
             _state = state;
-            RegisterInspections(inspectionLocator.GetInspection<ObsoleteCommentSyntaxInspection>());
         }
 
-        public void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result)
         {
             var rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
             var context = (VBAParser.RemCommentContext) result.Context;
@@ -25,13 +25,13 @@ namespace Rubberduck.Inspections.QuickFixes
             rewriter.Replace(context.REM(), "'");
         }
 
-        public string Description(IInspectionResult result)
+        public override string Description(IInspectionResult result)
         {
             return InspectionsUI.RemoveObsoleteStatementQuickFix;
         }
 
-        public bool CanFixInProcedure => true;
-        public bool CanFixInModule => true;
-        public bool CanFixInProject => true;
+        public override bool CanFixInProcedure => true;
+        public override bool CanFixInModule => true;
+        public override bool CanFixInProject => true;
     }
 }

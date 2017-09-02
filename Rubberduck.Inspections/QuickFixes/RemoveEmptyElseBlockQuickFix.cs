@@ -8,17 +8,17 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    class RemoveEmptyElseBlockQuickFix : QuickFixBase, IQuickFix
+    class RemoveEmptyElseBlockQuickFix : QuickFixBase
     {
         private readonly RubberduckParserState _state;
 
-        public RemoveEmptyElseBlockQuickFix(RubberduckParserState state, InspectionLocator inspectionLocator)
+        public RemoveEmptyElseBlockQuickFix(RubberduckParserState state)
+            : base(typeof(EmptyElseBlockInspection))
         {
             _state = state;
-            RegisterInspections(inspectionLocator.GetInspection<EmptyElseBlockInspection>());
         }
 
-        public void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result)
         {
             IModuleRewriter rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
 
@@ -50,13 +50,13 @@ namespace Rubberduck.Inspections.QuickFixes
         //    => block.blockStmt()?.Any() ?? false;
 
 
-        public string Description(IInspectionResult result)
+        public override string Description(IInspectionResult result)
         {
             return InspectionsUI.RemoveEmptyElseBlockQuickFix;
         }
 
-        public bool CanFixInProcedure { get; }  = false;
-        public bool CanFixInModule { get; } = false;
-        public bool CanFixInProject { get; } = false;
+        public override bool CanFixInProcedure { get; }  = false;
+        public override bool CanFixInModule { get; } = false;
+        public override bool CanFixInProject { get; } = false;
     }
 }

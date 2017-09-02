@@ -187,7 +187,7 @@ End Sub";
             var inspection = new NonReturningFunctionInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ConvertToProcedureQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
@@ -209,7 +209,7 @@ End Sub";
             var inspection = new NonReturningFunctionInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ConvertToProcedureQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
@@ -231,7 +231,7 @@ End Sub";
             var inspection = new NonReturningFunctionInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ConvertToProcedureQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
@@ -253,7 +253,7 @@ End Sub";
             var inspection = new NonReturningFunctionInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ConvertToProcedureQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
@@ -275,7 +275,7 @@ End Sub";
             var inspection = new NonReturningFunctionInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ConvertToProcedureQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
@@ -297,7 +297,7 @@ End Sub";
             var inspection = new NonReturningFunctionInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ConvertToProcedureQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
@@ -319,7 +319,7 @@ End Sub";
             var inspection = new NonReturningFunctionInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ConvertToProcedureQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
@@ -341,7 +341,7 @@ End Sub";
             var inspection = new NonReturningFunctionInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ConvertToProcedureQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 

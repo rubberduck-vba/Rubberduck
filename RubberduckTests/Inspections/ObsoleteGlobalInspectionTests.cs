@@ -109,7 +109,7 @@ Global var1 As Integer";
             var inspection = new ObsoleteGlobalInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ReplaceGlobalModifierQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new ReplaceGlobalModifierQuickFix(state).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 

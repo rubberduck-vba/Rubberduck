@@ -11,18 +11,17 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public sealed class ConvertToProcedureQuickFix : QuickFixBase, IQuickFix
+    public sealed class ConvertToProcedureQuickFix : QuickFixBase
     {
         private readonly RubberduckParserState _state;
 
-        public ConvertToProcedureQuickFix(RubberduckParserState state, InspectionLocator inspectionLocator)
+        public ConvertToProcedureQuickFix(RubberduckParserState state)
+            : base(typeof(NonReturningFunctionInspection), typeof(FunctionReturnValueNotUsedInspection))
         {
             _state = state;
-            RegisterInspections(inspectionLocator.GetInspection<NonReturningFunctionInspection>(),
-                inspectionLocator.GetInspection<FunctionReturnValueNotUsedInspection>());
         }
 
-        public void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result)
         {
             switch (result.Context)
             {
@@ -85,14 +84,14 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
-        public string Description(IInspectionResult result)
+        public override string Description(IInspectionResult result)
         {
             return InspectionsUI.ConvertFunctionToProcedureQuickFix;
         }
 
-        public bool CanFixInProcedure => false;
-        public bool CanFixInModule => true;
-        public bool CanFixInProject => false;
+        public override bool CanFixInProcedure => false;
+        public override bool CanFixInModule => true;
+        public override bool CanFixInProject => false;
 
         private IEnumerable<ParserRuleContext> GetReturnStatements(Declaration declaration)
         {

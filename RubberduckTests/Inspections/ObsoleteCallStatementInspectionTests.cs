@@ -201,7 +201,7 @@ End Sub";
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            var fix = new RemoveExplicitCallStatmentQuickFix(state, InspectionsHelper.GetLocator());
+            var fix = new RemoveExplicitCallStatmentQuickFix(state);
             foreach (var result in inspectionResults)
             {
                 fix.Fix(result);

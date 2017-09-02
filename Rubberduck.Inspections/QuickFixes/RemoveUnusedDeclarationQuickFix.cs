@@ -9,32 +9,29 @@ namespace Rubberduck.Inspections.QuickFixes
     /// <summary>
     /// A code inspection quickfix that removes an unused identifier declaration.
     /// </summary>
-    public sealed class RemoveUnusedDeclarationQuickFix : QuickFixBase, IQuickFix
+    public sealed class RemoveUnusedDeclarationQuickFix : QuickFixBase
     {
         private readonly RubberduckParserState _state;
 
-        public RemoveUnusedDeclarationQuickFix(RubberduckParserState state, InspectionLocator inspectionLocator)
+        public RemoveUnusedDeclarationQuickFix(RubberduckParserState state)
+            : base(typeof(ConstantNotUsedInspection), typeof(ProcedureNotUsedInspection), typeof(VariableNotUsedInspection), typeof(LineLabelNotUsedInspection))
         {
             _state = state;
-            RegisterInspections(inspectionLocator.GetInspection<ConstantNotUsedInspection>(),
-                inspectionLocator.GetInspection<ProcedureNotUsedInspection>(),
-                inspectionLocator.GetInspection<VariableNotUsedInspection>(),
-                inspectionLocator.GetInspection<LineLabelNotUsedInspection>());
         }
 
-        public void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result)
         {
             var rewriter = _state.GetRewriter(result.Target);
             rewriter.Remove(result.Target);
         }
 
-        public string Description(IInspectionResult result)
+        public override string Description(IInspectionResult result)
         {
             return InspectionsUI.RemoveUnusedDeclarationQuickFix;
         }
 
-        public bool CanFixInProcedure => false;
-        public bool CanFixInModule => true;
-        public bool CanFixInProject => true;
+        public override bool CanFixInProcedure => false;
+        public override bool CanFixInModule => true;
+        public override bool CanFixInProject => true;
     }
 }

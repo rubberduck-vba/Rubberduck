@@ -144,7 +144,7 @@ End Sub";
             var inspection = new ImplicitPublicMemberInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new SpecifyExplicitPublicModifierQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new SpecifyExplicitPublicModifierQuickFix(state).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 

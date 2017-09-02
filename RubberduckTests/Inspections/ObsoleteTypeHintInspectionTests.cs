@@ -255,7 +255,7 @@ End Function";
             var inspection = new ObsoleteTypeHintInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            var fix = new RemoveTypeHintsQuickFix(state, InspectionsHelper.GetLocator());
+            var fix = new RemoveTypeHintsQuickFix(state);
             foreach (var result in inspectionResults)
             {
                 fix.Fix(result);
@@ -280,7 +280,7 @@ End Function";
             var inspection = new ObsoleteTypeHintInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            var fix = new RemoveTypeHintsQuickFix(state, InspectionsHelper.GetLocator());
+            var fix = new RemoveTypeHintsQuickFix(state);
             foreach (var result in inspectionResults)
             {
                 fix.Fix(result);
@@ -305,7 +305,7 @@ End Function";
             var inspection = new ObsoleteTypeHintInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            var fix = new RemoveTypeHintsQuickFix(state, InspectionsHelper.GetLocator());
+            var fix = new RemoveTypeHintsQuickFix(state);
             foreach (var result in inspectionResults)
             {
                 fix.Fix(result);
@@ -330,7 +330,7 @@ End Function";
             var inspection = new ObsoleteTypeHintInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            var fix = new RemoveTypeHintsQuickFix(state, InspectionsHelper.GetLocator());
+            var fix = new RemoveTypeHintsQuickFix(state);
             foreach (var result in inspectionResults)
             {
                 fix.Fix(result);
@@ -355,7 +355,7 @@ End Function";
             var inspection = new ObsoleteTypeHintInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            var fix = new RemoveTypeHintsQuickFix(state, InspectionsHelper.GetLocator());
+            var fix = new RemoveTypeHintsQuickFix(state);
             foreach (var result in inspectionResults)
             {
                 fix.Fix(result);
@@ -380,7 +380,7 @@ End Function";
             var inspection = new ObsoleteTypeHintInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            var fix = new RemoveTypeHintsQuickFix(state, InspectionsHelper.GetLocator());
+            var fix = new RemoveTypeHintsQuickFix(state);
             foreach (var result in inspectionResults)
             {
                 fix.Fix(result);
@@ -409,7 +409,7 @@ End Function";
             var inspection = new ObsoleteTypeHintInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            var fix = new RemoveTypeHintsQuickFix(state, InspectionsHelper.GetLocator());
+            var fix = new RemoveTypeHintsQuickFix(state);
             foreach (var result in inspectionResults)
             {
                 fix.Fix(result);
@@ -438,7 +438,7 @@ End Property";
             var inspection = new ObsoleteTypeHintInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            var fix = new RemoveTypeHintsQuickFix(state, InspectionsHelper.GetLocator());
+            var fix = new RemoveTypeHintsQuickFix(state);
             foreach (var result in inspectionResults)
             {
                 fix.Fix(result);
@@ -467,7 +467,7 @@ End Sub";
             var inspection = new ObsoleteTypeHintInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            var fix = new RemoveTypeHintsQuickFix(state, InspectionsHelper.GetLocator());
+            var fix = new RemoveTypeHintsQuickFix(state);
             foreach (var result in inspectionResults)
             {
                 fix.Fix(result);
@@ -496,7 +496,7 @@ End Sub";
             var inspection = new ObsoleteTypeHintInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            var fix = new RemoveTypeHintsQuickFix(state, InspectionsHelper.GetLocator());
+            var fix = new RemoveTypeHintsQuickFix(state);
             foreach (var result in inspectionResults)
             {
                 fix.Fix(result);
@@ -525,7 +525,7 @@ End Sub";
             var inspection = new ObsoleteTypeHintInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            var fix = new RemoveTypeHintsQuickFix(state, InspectionsHelper.GetLocator());
+            var fix = new RemoveTypeHintsQuickFix(state);
             foreach (var result in inspectionResults)
             {
                 fix.Fix(result);

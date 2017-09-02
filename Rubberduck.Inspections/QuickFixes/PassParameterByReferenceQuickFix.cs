@@ -7,17 +7,17 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public sealed class PassParameterByReferenceQuickFix : QuickFixBase, IQuickFix
+    public sealed class PassParameterByReferenceQuickFix : QuickFixBase
     {
         private readonly RubberduckParserState _state;
 
-        public PassParameterByReferenceQuickFix(RubberduckParserState state, InspectionLocator inspectionLocator)
+        public PassParameterByReferenceQuickFix(RubberduckParserState state)
+            : base(typeof(AssignedByValParameterInspection))
         {
             _state = state;
-            RegisterInspections(inspectionLocator.GetInspection<AssignedByValParameterInspection>());
         }
 
-        public void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result)
         {
             var rewriter = _state.GetRewriter(result.Target);
 
@@ -25,13 +25,13 @@ namespace Rubberduck.Inspections.QuickFixes
             rewriter.Replace(token, Tokens.ByRef);
         }
 
-        public string Description(IInspectionResult result)
+        public override string Description(IInspectionResult result)
         {
             return InspectionsUI.PassParameterByReferenceQuickFix;
         }
 
-        public bool CanFixInProcedure => true;
-        public bool CanFixInModule => true;
-        public bool CanFixInProject => true;
+        public override bool CanFixInProcedure => true;
+        public override bool CanFixInModule => true;
+        public override bool CanFixInProject => true;
     }
 }

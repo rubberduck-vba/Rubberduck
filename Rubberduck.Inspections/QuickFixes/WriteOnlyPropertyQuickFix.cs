@@ -10,17 +10,17 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public sealed class WriteOnlyPropertyQuickFix : QuickFixBase, IQuickFix
+    public sealed class WriteOnlyPropertyQuickFix : QuickFixBase
     {
         private readonly RubberduckParserState _state;
 
-        public WriteOnlyPropertyQuickFix(RubberduckParserState state, InspectionLocator inspectionLocator)
+        public WriteOnlyPropertyQuickFix(RubberduckParserState state)
+            : base(typeof(WriteOnlyPropertyInspection))
         {
             _state = state;
-            RegisterInspections(inspectionLocator.GetInspection<WriteOnlyPropertyInspection>());
         }
 
-        public void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result)
         {
             var parameters = ((IParameterizedDeclaration) result.Target).Parameters.Cast<ParameterDeclaration>().ToList();
 
@@ -32,14 +32,14 @@ namespace Rubberduck.Inspections.QuickFixes
             rewriter.InsertBefore(result.Target.Context.Start.TokenIndex, propertyGet);
         }
 
-        public string Description(IInspectionResult result)
+        public override string Description(IInspectionResult result)
         {
             return InspectionsUI.WriteOnlyPropertyQuickFix;
         }
 
-        public bool CanFixInProcedure => false;
-        public bool CanFixInModule => true;
-        public bool CanFixInProject => true;
+        public override bool CanFixInProcedure => false;
+        public override bool CanFixInModule => true;
+        public override bool CanFixInProject => true;
 
         private string GetParamText(ParameterDeclaration param)
         {

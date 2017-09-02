@@ -222,7 +222,7 @@ End Sub";
             var inspection = new MoveFieldCloserToUsageInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new MoveFieldCloserToUsageQuickFix(state, InspectionsHelper.GetLocator(), new Mock<IMessageBox>().Object).Fix(inspectionResults.First());
+            new MoveFieldCloserToUsageQuickFix(state, new Mock<IMessageBox>().Object).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 

@@ -8,29 +8,29 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public sealed class ReplaceGlobalModifierQuickFix : QuickFixBase, IQuickFix
+    public sealed class ReplaceGlobalModifierQuickFix : QuickFixBase
     {
         private readonly RubberduckParserState _state;
 
-        public ReplaceGlobalModifierQuickFix(RubberduckParserState state, InspectionLocator inspectionLocator)
+        public ReplaceGlobalModifierQuickFix(RubberduckParserState state)
+            : base(typeof(ObsoleteGlobalInspection))
         {
             _state = state;
-            RegisterInspections(inspectionLocator.GetInspection<ObsoleteGlobalInspection>());
         }
 
-        public void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result)
         {
             var rewriter = _state.GetRewriter(result.Target);
             rewriter.Replace(ParserRuleContextHelper.GetDescendent<VBAParser.VisibilityContext>(result.Context.Parent.Parent), Tokens.Public);
         }
 
-        public string Description(IInspectionResult result)
+        public override string Description(IInspectionResult result)
         {
             return InspectionsUI.ObsoleteGlobalInspectionQuickFix;
         }
 
-        public bool CanFixInProcedure => false;
-        public bool CanFixInModule => true;
-        public bool CanFixInProject => true;
+        public override bool CanFixInProcedure => false;
+        public override bool CanFixInModule => true;
+        public override bool CanFixInProject => true;
     }
 }

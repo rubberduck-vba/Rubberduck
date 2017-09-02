@@ -16,19 +16,19 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public sealed class AssignedByValParameterMakeLocalCopyQuickFix : QuickFixBase, IQuickFix
+    public sealed class AssignedByValParameterMakeLocalCopyQuickFix : QuickFixBase
     {
         private readonly IAssignedByValParameterQuickFixDialogFactory _dialogFactory;
         private readonly RubberduckParserState _parserState;
 
-        public AssignedByValParameterMakeLocalCopyQuickFix(RubberduckParserState state, InspectionLocator inspectionLocator, IAssignedByValParameterQuickFixDialogFactory dialogFactory)
+        public AssignedByValParameterMakeLocalCopyQuickFix(RubberduckParserState state, IAssignedByValParameterQuickFixDialogFactory dialogFactory)
+            : base(typeof(AssignedByValParameterInspection))
         {
             _dialogFactory = dialogFactory;
             _parserState = state;
-            RegisterInspections(inspectionLocator.GetInspection<AssignedByValParameterInspection>());
         }
 
-        public void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result)
         {
             var forbiddenNames = _parserState.DeclarationFinder.GetDeclarationsWithIdentifiersToAvoid(result.Target).Select(n => n.IdentifierName);
 
@@ -43,14 +43,14 @@ namespace Rubberduck.Inspections.QuickFixes
             InsertLocalVariableDeclarationAndAssignment(rewriter, result.Target, localIdentifier);
         }
 
-        public string Description(IInspectionResult result)
+        public override string Description(IInspectionResult result)
         {
             return InspectionsUI.AssignedByValParameterMakeLocalCopyQuickFix;
         }
 
-        public bool CanFixInProcedure { get; } = false;
-        public bool CanFixInModule { get; } = false;
-        public bool CanFixInProject { get; } = false;
+        public override bool CanFixInProcedure { get; } = false;
+        public override bool CanFixInModule { get; } = false;
+        public override bool CanFixInProject { get; } = false;
 
         private string PromptForLocalVariableName(Declaration target, List<string> forbiddenNames)
         {

@@ -584,7 +584,7 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ParameterCanBeByValInspection(state);
-            new PassParameterByValueQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspection.GetInspectionResults().First());
+            new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -605,7 +605,7 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ParameterCanBeByValInspection(state);
-            new PassParameterByValueQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspection.GetInspectionResults().First());
+            new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -626,7 +626,7 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ParameterCanBeByValInspection(state);
-            new PassParameterByValueQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspection.GetInspectionResults().First());
+            new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -649,7 +649,7 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ParameterCanBeByValInspection(state);
-            new PassParameterByValueQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspection.GetInspectionResults().First());
+            new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -672,7 +672,7 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ParameterCanBeByValInspection(state);
-            new PassParameterByValueQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspection.GetInspectionResults().First());
+            new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -728,7 +728,7 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ParameterCanBeByValInspection(state);
-            new PassParameterByValueQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspection.GetInspectionResults().First());
+            new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
             Assert.AreEqual(expectedCode1, state.GetRewriter(component1).GetText());
             Assert.AreEqual(expectedCode2, state.GetRewriter(component2).GetText());
@@ -784,7 +784,7 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ParameterCanBeByValInspection(state);
-            new PassParameterByValueQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspection.GetInspectionResults().First());
+            new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
             Assert.AreEqual(expectedCode1, state.GetRewriter(component1).GetText());
             Assert.AreEqual(expectedCode2, state.GetRewriter(component2).GetText());
@@ -834,7 +834,7 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ParameterCanBeByValInspection(state);
-            new PassParameterByValueQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspection.GetInspectionResults().First());
+            new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -858,7 +858,7 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ParameterCanBeByValInspection(state);
-            new PassParameterByValueQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspection.GetInspectionResults().First());
+            new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -892,7 +892,7 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ParameterCanBeByValInspection(state);
-            new PassParameterByValueQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspection.GetInspectionResults().First());
+            new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }

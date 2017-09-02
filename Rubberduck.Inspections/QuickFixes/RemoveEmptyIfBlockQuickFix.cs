@@ -12,17 +12,17 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    internal sealed class RemoveEmptyIfBlockQuickFix : QuickFixBase, IQuickFix
+    internal sealed class RemoveEmptyIfBlockQuickFix : QuickFixBase
     {
         private readonly RubberduckParserState _state;
 
-        public RemoveEmptyIfBlockQuickFix(RubberduckParserState state, InspectionLocator inspectionLocator)
+        public RemoveEmptyIfBlockQuickFix(RubberduckParserState state)
+            : base(typeof(EmptyIfBlockInspection))
         {
             _state = state;
-            RegisterInspections(inspectionLocator.GetInspection<EmptyIfBlockInspection>());
         }
 
-        public void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result)
         {
             var rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
 
@@ -174,13 +174,13 @@ namespace Rubberduck.Inspections.QuickFixes
         private bool FirstBlockStmntHasLabel(VBAParser.BlockContext block)
             => block.blockStmt()?.FirstOrDefault()?.statementLabelDefinition() != null;
 
-        public string Description(IInspectionResult result)
+        public override string Description(IInspectionResult result)
         {
             return InspectionsUI.RemoveEmptyIfBlockQuickFix;
         }
 
-        public bool CanFixInProcedure { get; } = false;
-        public bool CanFixInModule { get; } = false;
-        public bool CanFixInProject { get; } = false;
+        public override bool CanFixInProcedure { get; } = false;
+        public override bool CanFixInModule { get; } = false;
+        public override bool CanFixInProject { get; } = false;
     }
 }

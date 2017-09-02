@@ -167,7 +167,7 @@ End Sub
             var vbe = BuildMockVBEStandardModuleForVBAFragment(inputCode);
             var inspectionResults = GetAssignedByValParameterInspectionResults(vbe.Object, out var state);
 
-            new PassParameterByReferenceQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new PassParameterByReferenceQuickFix(state).Fix(inspectionResults.First());
             return state.GetRewriter(vbe.Object.ActiveVBProject.VBComponents[0]).GetText();
         }
 

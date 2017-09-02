@@ -8,18 +8,17 @@ using Rubberduck.SettingsProvider;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public sealed class AddIdentifierToWhiteListQuickFix : QuickFixBase, IQuickFix
+    public sealed class AddIdentifierToWhiteListQuickFix : QuickFixBase
     {
         private readonly IPersistanceService<CodeInspectionSettings> _settings;
 
-        public AddIdentifierToWhiteListQuickFix(IPersistanceService<CodeInspectionSettings> settings, InspectionLocator inspectionLocator)
+        public AddIdentifierToWhiteListQuickFix(IPersistanceService<CodeInspectionSettings> settings)
+            : base(typeof(HungarianNotationInspection), typeof(UseMeaningfulNameInspection))
         {
             _settings = settings;
-            RegisterInspections(inspectionLocator.GetInspection<HungarianNotationInspection>(),
-                inspectionLocator.GetInspection<UseMeaningfulNameInspection>());
         }
 
-        public void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result)
         {
             var inspectionSettings = _settings.Load(new CodeInspectionSettings()) ?? new CodeInspectionSettings();
             var whitelist = inspectionSettings.WhitelistedIdentifiers;
@@ -28,13 +27,13 @@ namespace Rubberduck.Inspections.QuickFixes
             _settings.Save(inspectionSettings);
         }
 
-        public string Description(IInspectionResult result)
+        public override string Description(IInspectionResult result)
         {
             return InspectionsUI.WhiteListIdentifierQuickFix;
         }
 
-        public bool CanFixInProcedure { get; } = false;
-        public bool CanFixInModule { get; } = false;
-        public bool CanFixInProject { get; } = false;
+        public override bool CanFixInProcedure { get; } = false;
+        public override bool CanFixInModule { get; } = false;
+        public override bool CanFixInProject { get; } = false;
     }
 }

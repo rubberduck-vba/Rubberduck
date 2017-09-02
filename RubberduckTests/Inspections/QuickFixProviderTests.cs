@@ -48,7 +48,7 @@ End Sub";
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            var quickFixProvider = new QuickFixProvider(state, new IQuickFix[] { new ReplaceEmptyStringLiteralStatementQuickFix(state, InspectionsHelper.GetLocator(inspection)) });
+            var quickFixProvider = new QuickFixProvider(state, new IQuickFix[] { new ReplaceEmptyStringLiteralStatementQuickFix(state) });
             Assert.AreEqual(1, quickFixProvider.QuickFixes(inspectionResults.First()).Count());
         }
 
@@ -67,7 +67,7 @@ End Sub";
             var inspection = new ConstantNotUsedInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            var quickFixProvider = new QuickFixProvider(state, new IQuickFix[] { new RemoveUnusedDeclarationQuickFix(state, InspectionsHelper.GetLocator()) });
+            var quickFixProvider = new QuickFixProvider(state, new IQuickFix[] { new RemoveUnusedDeclarationQuickFix(state) });
 
             var result = inspectionResults.First();
             result.Properties.Add("DisableFixes", nameof(RemoveUnusedDeclarationQuickFix));

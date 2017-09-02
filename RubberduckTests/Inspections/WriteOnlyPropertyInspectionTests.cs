@@ -196,7 +196,7 @@ End Property";
             var inspection = new WriteOnlyPropertyInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new WriteOnlyPropertyQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new WriteOnlyPropertyQuickFix(state).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
@@ -222,7 +222,7 @@ End Property";
             var inspection = new WriteOnlyPropertyInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new WriteOnlyPropertyQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new WriteOnlyPropertyQuickFix(state).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
@@ -248,7 +248,7 @@ End Property";
             var inspection = new WriteOnlyPropertyInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new WriteOnlyPropertyQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new WriteOnlyPropertyQuickFix(state).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 

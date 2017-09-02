@@ -259,7 +259,7 @@ End Sub";
             var inspector = InspectionsHelper.GetInspector(inspection);
             var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new RemoveEmptyElseBlockQuickFix(state, InspectionsHelper.GetLocator()).Fix(actualResults.First());
+            new RemoveEmptyElseBlockQuickFix(state).Fix(actualResults.First());
 
             string actualRewrite = state.GetRewriter(component).GetText();
 

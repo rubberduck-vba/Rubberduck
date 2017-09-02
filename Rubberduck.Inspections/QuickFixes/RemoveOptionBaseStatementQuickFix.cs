@@ -6,29 +6,29 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public sealed class RemoveOptionBaseStatementQuickFix : QuickFixBase, IQuickFix
+    public sealed class RemoveOptionBaseStatementQuickFix : QuickFixBase
     {
         private readonly RubberduckParserState _state;
 
-        public RemoveOptionBaseStatementQuickFix(RubberduckParserState state, InspectionLocator inspectionLocator)
+        public RemoveOptionBaseStatementQuickFix(RubberduckParserState state)
+            : base(typeof(RedundantOptionInspection))
         {
             _state = state;
-            RegisterInspections(inspectionLocator.GetInspection<RedundantOptionInspection>());
         }
 
-        public void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result)
         {
             var rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
             rewriter.Remove(result.Context);
         }
 
-        public string Description(IInspectionResult result)
+        public override string Description(IInspectionResult result)
         {
             return InspectionsUI.RemoveOptionBaseStatementQuickFix;
         }
 
-        public bool CanFixInProcedure => false;
-        public bool CanFixInModule => false;
-        public bool CanFixInProject => false;
+        public override bool CanFixInProcedure => false;
+        public override bool CanFixInModule => false;
+        public override bool CanFixInProject => false;
     }
 }

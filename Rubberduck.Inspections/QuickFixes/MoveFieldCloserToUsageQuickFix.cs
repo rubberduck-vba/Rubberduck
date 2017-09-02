@@ -8,19 +8,19 @@ using Rubberduck.UI;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public sealed class MoveFieldCloserToUsageQuickFix : QuickFixBase, IQuickFix
+    public sealed class MoveFieldCloserToUsageQuickFix : QuickFixBase
     {
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
 
-        public MoveFieldCloserToUsageQuickFix(RubberduckParserState state, InspectionLocator inspectionLocator, IMessageBox messageBox)
+        public MoveFieldCloserToUsageQuickFix(RubberduckParserState state, IMessageBox messageBox)
+            : base(typeof(MoveFieldCloserToUsageInspection))
         {
             _state = state;
             _messageBox = messageBox;
-            RegisterInspections(inspectionLocator.GetInspection<MoveFieldCloserToUsageInspection>());
         }
 
-        public void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result)
         {
             var vbe = result.Target.Project.VBE;
 
@@ -28,13 +28,13 @@ namespace Rubberduck.Inspections.QuickFixes
             refactoring.Refactor(result.Target);
         }
 
-        public string Description(IInspectionResult result)
+        public override string Description(IInspectionResult result)
         {
             return string.Format(InspectionsUI.MoveFieldCloserToUsageInspectionResultFormat, result.Target.IdentifierName);
         }
 
-        public bool CanFixInProcedure => true;
-        public bool CanFixInModule => true;
-        public bool CanFixInProject => true;
+        public override bool CanFixInProcedure => true;
+        public override bool CanFixInModule => true;
+        public override bool CanFixInProject => true;
     }
 }

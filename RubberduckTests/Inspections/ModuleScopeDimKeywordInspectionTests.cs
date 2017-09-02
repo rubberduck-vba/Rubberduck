@@ -155,7 +155,7 @@ Dim foo";
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new ChangeDimToPrivateQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new ChangeDimToPrivateQuickFix(state).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
@@ -178,7 +178,7 @@ Dim foo";
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new ChangeDimToPrivateQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new ChangeDimToPrivateQuickFix(state).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
@@ -201,7 +201,7 @@ Dim foo";
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new ChangeDimToPrivateQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new ChangeDimToPrivateQuickFix(state).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 

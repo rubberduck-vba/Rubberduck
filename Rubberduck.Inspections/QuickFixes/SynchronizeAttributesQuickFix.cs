@@ -15,25 +15,23 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public sealed class SynchronizeAttributesQuickFix : QuickFixBase, IQuickFix
+    public sealed class SynchronizeAttributesQuickFix : QuickFixBase
     {
         private readonly RubberduckParserState _state;
 
         private readonly IDictionary<string, string> _attributeNames;
 
-        public SynchronizeAttributesQuickFix(RubberduckParserState state, InspectionLocator inspectionLocator)
+        public SynchronizeAttributesQuickFix(RubberduckParserState state)
+            : base(typeof(MissingAnnotationArgumentInspection), typeof(MissingAttributeInspection))
         {
             _state = state;
             _attributeNames = typeof(AnnotationType).GetFields()
                 .Where(field => field.GetCustomAttributes(typeof (AttributeAnnotationAttribute), true).Any())
                 .Select(a => new { AnnotationName = a.Name, a.GetCustomAttributes(typeof (AttributeAnnotationAttribute), true).Cast<AttributeAnnotationAttribute>().FirstOrDefault()?.AttributeName})
                 .ToDictionary(a => a.AnnotationName, a => a.AttributeName);
-
-            RegisterInspections(inspectionLocator.GetInspection<MissingAnnotationArgumentInspection>(),
-                inspectionLocator.GetInspection<MissingAttributeInspection>());
         }
 
-        public void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result)
         {
             var context = result.Context;
             // bug: this needs to assume member name is null for module-level stuff...
@@ -260,13 +258,13 @@ namespace Rubberduck.Inspections.QuickFixes
             return attributeInstruction;
         }
 
-        public string Description(IInspectionResult result)
+        public override string Description(IInspectionResult result)
         {
             return InspectionsUI.SynchronizeAttributesQuickFix;
         }
 
-        public bool CanFixInProcedure => false;
-        public bool CanFixInModule => true;
-        public bool CanFixInProject => true;
+        public override bool CanFixInProcedure => false;
+        public override bool CanFixInModule => true;
+        public override bool CanFixInProject => true;
     }
 }

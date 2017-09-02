@@ -147,7 +147,7 @@ End Sub";
             var inspection = new UnassignedVariableUsageInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new RemoveUnassignedVariableUsageQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new RemoveUnassignedVariableUsageQuickFix(state).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 

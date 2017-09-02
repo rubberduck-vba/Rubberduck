@@ -5,9 +5,6 @@ using System.Threading;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.Parsing.Inspections.Abstract;
-using System.Collections.Generic;
-using Rubberduck.Inspections;
 
 namespace RubberduckTests.Inspections
 {
@@ -119,7 +116,7 @@ End Sub";
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new RemoveOptionBaseStatementQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new RemoveOptionBaseStatementQuickFix(state).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
@@ -138,7 +135,7 @@ End Sub";
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new RemoveStopKeywordQuickFix(state, new InspectionLocator(new List<IInspection>())).Fix(inspectionResults.First());
+            new RemoveStopKeywordQuickFix(state).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 

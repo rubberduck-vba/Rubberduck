@@ -255,7 +255,7 @@ End Sub";
             var inspection = new ProcedureNotUsedInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new RemoveUnusedDeclarationQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new RemoveUnusedDeclarationQuickFix(state).Fix(inspectionResults.First());
 
             var rewriter = state.GetRewriter(component);
             Assert.AreEqual(expectedCode, rewriter.GetText());

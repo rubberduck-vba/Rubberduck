@@ -12,17 +12,17 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class RemoveExplicitByRefModifierQuickFix : QuickFixBase, IQuickFix
+    public class RemoveExplicitByRefModifierQuickFix : QuickFixBase
     {
         private readonly RubberduckParserState _state;
 
-        public RemoveExplicitByRefModifierQuickFix(RubberduckParserState state, InspectionLocator inspectionLocator)
+        public RemoveExplicitByRefModifierQuickFix(RubberduckParserState state)
+            : base(typeof(RedundantByRefModifierInspection))
         {
             _state = state;
-            RegisterInspections(inspectionLocator.GetInspection<RedundantByRefModifierInspection>());
         }
 
-        public void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result)
         {
             var context = (VBAParser.ArgContext) result.Context;
 
@@ -59,14 +59,14 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
-        public string Description(IInspectionResult result)
+        public override string Description(IInspectionResult result)
         {
             return InspectionsUI.RedundantByRefModifierQuickFix;
         }
 
-        public bool CanFixInProcedure => true;
-        public bool CanFixInModule => true;
-        public bool CanFixInProject => true;
+        public override bool CanFixInProcedure => true;
+        public override bool CanFixInModule => true;
+        public override bool CanFixInProject => true;
 
         private static int GetParameterIndex(VBAParser.ArgContext context)
         {

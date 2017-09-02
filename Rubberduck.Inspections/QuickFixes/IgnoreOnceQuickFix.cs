@@ -13,22 +13,21 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public sealed class IgnoreOnceQuickFix : QuickFixBase, IQuickFix
+    public sealed class IgnoreOnceQuickFix : QuickFixBase
     {
         private readonly RubberduckParserState _state;
 
         public IgnoreOnceQuickFix(RubberduckParserState state, IEnumerable<IInspection> inspections)
+            : base(inspections.Select(s => s.Type).Where(i => i.CustomAttributes.All(a => a.AttributeType != typeof(CannotAnnotateAttribute))).ToArray())
         {
             _state = state;
-            RegisterInspections(inspections.Where(i =>
-                i.Type.CustomAttributes.All(a => a.AttributeType != typeof(CannotAnnotateAttribute))).ToArray());
         }
 
-        public bool CanFixInProcedure => false;
-        public bool CanFixInModule => false;
-        public bool CanFixInProject => false;
+        public override bool CanFixInProcedure => false;
+        public override bool CanFixInModule => false;
+        public override bool CanFixInProject => false;
 
-        public void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result)
         {
             var annotationText = $"'@Ignore {result.Inspection.AnnotationName}";
 
@@ -84,7 +83,7 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
-        public string Description(IInspectionResult result)
+        public override string Description(IInspectionResult result)
         {
             return InspectionsUI.IgnoreOnce;
         }

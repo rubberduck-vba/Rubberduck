@@ -9,17 +9,17 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public sealed class RemoveUnassignedVariableUsageQuickFix : QuickFixBase, IQuickFix
+    public sealed class RemoveUnassignedVariableUsageQuickFix : QuickFixBase
     {
         private readonly RubberduckParserState _state;
 
-        public RemoveUnassignedVariableUsageQuickFix(RubberduckParserState state, InspectionLocator inspectionLocator)
+        public RemoveUnassignedVariableUsageQuickFix(RubberduckParserState state)
+            : base(typeof(UnassignedVariableUsageInspection))
         {
             _state = state;
-            RegisterInspections(inspectionLocator.GetInspection<UnassignedVariableUsageInspection>());
         }
 
-        public void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result)
         {
             var rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
 
@@ -29,13 +29,13 @@ namespace Rubberduck.Inspections.QuickFixes
             rewriter.Remove(assignmentContext);
         }
 
-        public string Description(IInspectionResult result)
+        public override string Description(IInspectionResult result)
         {
             return InspectionsUI.RemoveUnassignedVariableUsageQuickFix;
         }
 
-        public bool CanFixInProcedure => true;
-        public bool CanFixInModule => true;
-        public bool CanFixInProject => true;
+        public override bool CanFixInProcedure => true;
+        public override bool CanFixInModule => true;
+        public override bool CanFixInProject => true;
     }
 }

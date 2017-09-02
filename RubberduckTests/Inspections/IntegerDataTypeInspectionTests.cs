@@ -324,7 +324,7 @@ End Function";
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -347,7 +347,7 @@ End Function";
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -370,7 +370,7 @@ End Property";
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -393,7 +393,7 @@ End Property";
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -416,7 +416,7 @@ End Sub";
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -439,7 +439,7 @@ End Sub";
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -464,7 +464,7 @@ End Sub";
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -489,7 +489,7 @@ End Sub";
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -514,7 +514,7 @@ End Sub";
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -539,7 +539,7 @@ End Sub";
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -564,7 +564,7 @@ End Type";
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -589,7 +589,7 @@ End Type";
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
@@ -630,7 +630,7 @@ End Function";
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
             var project = vbe.Object.VBProjects[0];
             var interfaceComponent = project.VBComponents[0];
@@ -676,7 +676,7 @@ End Function";
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
             var project = vbe.Object.VBProjects[0];
             var interfaceComponent = project.VBComponents[0];
@@ -722,7 +722,7 @@ End Function";
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
             var project = vbe.Object.VBProjects[0];
             var interfaceComponent = project.VBComponents[0];
@@ -768,7 +768,7 @@ End Function";
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
             var project = vbe.Object.VBProjects[0];
             var interfaceComponent = project.VBComponents[0];
@@ -814,7 +814,7 @@ End Property";
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
             var project = vbe.Object.VBProjects[0];
             var interfaceComponent = project.VBComponents[0];
@@ -860,7 +860,7 @@ End Property";
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
             var project = vbe.Object.VBProjects[0];
             var interfaceComponent = project.VBComponents[0];
@@ -906,7 +906,7 @@ End Property";
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
             var project = vbe.Object.VBProjects[0];
             var interfaceComponent = project.VBComponents[0];
@@ -952,7 +952,7 @@ End Property";
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
             var project = vbe.Object.VBProjects[0];
             var interfaceComponent = project.VBComponents[0];
@@ -998,7 +998,7 @@ End Sub";
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
             var project = vbe.Object.VBProjects[0];
             var interfaceComponent = project.VBComponents[0];
@@ -1044,7 +1044,7 @@ End Sub";
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
             var project = vbe.Object.VBProjects[0];
             var interfaceComponent = project.VBComponents[0];
@@ -1090,7 +1090,7 @@ End Sub";
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
             var project = vbe.Object.VBProjects[0];
             var interfaceComponent = project.VBComponents[0];
@@ -1136,7 +1136,7 @@ End Sub";
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
             var project = vbe.Object.VBProjects[0];
             var interfaceComponent = project.VBComponents[0];
@@ -1182,7 +1182,7 @@ End Sub";
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(inspectionResults.First());
+            new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
             var project = vbe.Object.VBProjects[0];
             var interfaceComponent = project.VBComponents[0];
@@ -1228,7 +1228,7 @@ End Sub";
             var inspection = new IntegerDataTypeInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            new ChangeIntegerToLongQuickFix(state, InspectionsHelper.GetLocator()).Fix(
+            new ChangeIntegerToLongQuickFix(state).Fix(
                 inspectionResults.First(
                     result =>
                         ((VBAParser.ArgContext)result.Context).unrestrictedIdentifier()

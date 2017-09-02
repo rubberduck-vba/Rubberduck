@@ -13,17 +13,17 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class ChangeIntegerToLongQuickFix : QuickFixBase, IQuickFix
+    public class ChangeIntegerToLongQuickFix : QuickFixBase
     {
         private readonly RubberduckParserState _state;
 
-        public ChangeIntegerToLongQuickFix(RubberduckParserState state, InspectionLocator inspectionLocator)
+        public ChangeIntegerToLongQuickFix(RubberduckParserState state)
+            : base(typeof(IntegerDataTypeInspection))
         {
             _state = state;
-            RegisterInspections(inspectionLocator.GetInspection<IntegerDataTypeInspection>());
         }
 
-        public void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result)
         {
             var rewriter = _state.GetRewriter(result.Target);
 
@@ -181,14 +181,14 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
-        public string Description(IInspectionResult result)
+        public override string Description(IInspectionResult result)
         {
             return InspectionsUI.IntegerDataTypeQuickFix;
         }
 
-        public bool CanFixInProcedure => true;
-        public bool CanFixInModule => true;
-        public bool CanFixInProject => true;
+        public override bool CanFixInProcedure => true;
+        public override bool CanFixInModule => true;
+        public override bool CanFixInProject => true;
 
         private static int GetParameterIndex(VBAParser.ArgContext context)
         {

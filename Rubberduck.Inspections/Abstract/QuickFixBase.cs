@@ -6,19 +6,36 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.Abstract
 {
-    public class QuickFixBase
+    public abstract class QuickFixBase : IQuickFix
     {
-        private HashSet<Type> _supportedInspections = new HashSet<Type>();
+        private HashSet<Type> _supportedInspections;
         public IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
 
-        public void RemoveInspections(params IInspection[] inspections)
+        protected QuickFixBase(params Type[] inspections)
         {
-            _supportedInspections = _supportedInspections.Except(inspections.Select(s => s.Type)).ToHashSet();
+            RegisterInspections(inspections);
         }
 
-        public void RegisterInspections(params IInspection[] inspections)
+        public void RegisterInspections(params Type[] inspections)
         {
-            _supportedInspections = inspections.Where(w => w != null).Select(s => s.Type).ToHashSet();
+            if (!inspections.All(s => s.GetInterfaces().Any(a => a == typeof(IInspection))))
+            {
+                throw new ArgumentException($"Parameters must implement {nameof(IInspection)}", nameof(inspections));
+            }
+
+            _supportedInspections = inspections.ToHashSet();
         }
+
+        public void RemoveInspections(params Type[] inspections)
+        {
+            _supportedInspections = _supportedInspections.Except(inspections).ToHashSet();
+        }
+
+        public abstract void Fix(IInspectionResult result);
+        public abstract string Description(IInspectionResult result);
+
+        public abstract bool CanFixInProcedure { get; }
+        public abstract bool CanFixInModule { get; }
+        public abstract bool CanFixInProject { get; }
     }
 }
