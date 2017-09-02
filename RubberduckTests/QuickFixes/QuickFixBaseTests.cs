@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
@@ -34,19 +33,6 @@ namespace RubberduckTests.QuickFixes
             quickFix.RemoveInspections(quickFix.SupportedInspections.ToArray());
 
             Assert.IsFalse(quickFix.SupportedInspections.Any());
-        }
-
-
-        [TestMethod]
-        [TestCategory(nameof(QuickFixes))]
-        [ExpectedException(typeof(ArgumentException), "Parameters must implement IInspection")]
-        public void QuickFixBase_ThrowsWhenNonIInspectionIsRegistered()
-        {
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var quickFix = new RemoveCommentQuickFix(state);
-            quickFix.RegisterInspections(typeof(int));
         }
     }
 }
