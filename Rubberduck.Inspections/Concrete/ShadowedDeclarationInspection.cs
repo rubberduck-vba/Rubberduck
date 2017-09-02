@@ -256,9 +256,7 @@ namespace Rubberduck.Inspections.Concrete
                 }.ToHashSet(),
             [DeclarationType.UserDefinedType] = new[]
                 {
-                    DeclarationType.Project, DeclarationType.ProceduralModule, DeclarationType.UserForm, DeclarationType.Document, DeclarationType.Procedure, DeclarationType.Function,
-                    DeclarationType.PropertyGet, DeclarationType.PropertySet, DeclarationType.PropertyLet, DeclarationType.Parameter, DeclarationType.Variable, DeclarationType.Constant,
-                    DeclarationType.Enumeration, DeclarationType.EnumerationMember, DeclarationType.LibraryProcedure, DeclarationType.LibraryFunction
+                    DeclarationType.Project, DeclarationType.ProceduralModule, DeclarationType.UserForm, DeclarationType.Document
                 }.ToHashSet(),
             [DeclarationType.LibraryProcedure] = new[]
                 {
