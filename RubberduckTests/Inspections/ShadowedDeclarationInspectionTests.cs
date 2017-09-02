@@ -865,7 +865,7 @@ End Enum";
         {
             var declarationResults = new Dictionary<string, int>
             {
-                [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 0, [FunctionName] = 0,
+                [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 1, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 0, [FunctionName] = 0,
                 [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0, [ParameterName] = 0, [VariableName] = 0, [ConstantName] = 0,
                 [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
