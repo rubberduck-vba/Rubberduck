@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NLog;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 
@@ -8,6 +9,7 @@ namespace Rubberduck.Inspections.Abstract
 {
     public abstract class QuickFixBase : IQuickFix
     {
+        private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
         private HashSet<Type> _supportedInspections;
         public IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
 
@@ -20,7 +22,12 @@ namespace Rubberduck.Inspections.Abstract
         {
             if (!inspections.All(s => s.GetInterfaces().Any(a => a == typeof(IInspection))))
             {
+#if DEBUG
                 throw new ArgumentException($"Parameters must implement {nameof(IInspection)}", nameof(inspections));
+#else
+                inspections.Where(s => s.GetInterfaces().All(i => i != typeof(IInspection))).ToList()
+                    .ForEach(i => _logger.Error($"Type {i.Name} does not implement {nameof(IInspection)}"));
+#endif
             }
 
             _supportedInspections = inspections.ToHashSet();
