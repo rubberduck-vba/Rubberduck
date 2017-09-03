@@ -839,5 +839,31 @@ End Sub";
         }
 
 
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void ProcedureShouldBeFunction_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+@"Private Sub Foo(ByRef arg1 As Integer)
+End Sub";
+
+            const string expectedCode =
+@"'@Ignore ProcedureCanBeWrittenAsFunction
+Private Sub Foo(ByRef arg1 As Integer)
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+        }
+
+
     }
 }
