@@ -496,5 +496,33 @@ End Sub";
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
+
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void MultipleDeclarations_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+@"Public Sub Foo()
+    Dim var1 As Integer, var2 As String
+End Sub";
+
+            const string expectedCode =
+@"Public Sub Foo()
+'@Ignore MultipleDeclarations
+    Dim var1 As Integer, var2 As String
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new MultipleDeclarationsInspection(state);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+        }
+
     }
 }
