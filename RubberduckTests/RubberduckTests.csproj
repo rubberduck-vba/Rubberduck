@@ -119,6 +119,7 @@
     <Compile Include="Parsing\Coordination\StandAloneModuleToModuleReferenceManagerTests.cs" />
     <Compile Include="PostProcessing\ModuleRewriterTests.cs" />
     <Compile Include="QuickFixes\ApplicationWorksheetFunctionQuickFixTests.cs" />
+    <Compile Include="QuickFixes\ChangeDimToPrivateQuickFixTests.cs" />
     <Compile Include="QuickFixes\ChangeIntegerToLongQuickFixTests.cs" />
     <Compile Include="QuickFixes\ConvertToProcedureQuickFixTests.cs" />
     <Compile Include="QuickFixes\IgnoreOnceQuickFixTests.cs" />
