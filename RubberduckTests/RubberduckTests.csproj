@@ -123,6 +123,8 @@
     <Compile Include="QuickFixes\ChangeIntegerToLongQuickFixTests.cs" />
     <Compile Include="QuickFixes\ConvertToProcedureQuickFixTests.cs" />
     <Compile Include="QuickFixes\IgnoreOnceQuickFixTests.cs" />
+    <Compile Include="QuickFixes\MakeSingleLineParamegerQuickFixTests.cs" />
+    <Compile Include="QuickFixes\MoveFieldCloserToUsageQuickFixTests.cs" />
     <Compile Include="QuickFixes\RemoveEmptyElseBlockQuickFixTests.cs" />
     <Compile Include="QuickFixes\RemoveEmptyIfBlockQuickFixTests.cs" />
     <Compile Include="QuickFixes\RemoveUnusedDeclarationQuickFixTests.cs" />
