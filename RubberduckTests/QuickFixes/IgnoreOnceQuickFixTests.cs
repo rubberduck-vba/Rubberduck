@@ -8,6 +8,7 @@ using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Inspections;
+using Rubberduck.Parsing.Inspections.Resources;
 
 namespace RubberduckTests.QuickFixes
 {
@@ -864,6 +865,32 @@ End Sub";
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
+
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void RedundantByRefModifier_IgnoredQuickFixWorks()
+        {
+            const string inputCode =
+@"Sub Foo(ByRef arg1 As Integer)
+End Sub";
+
+            const string expectedCode =
+@"'@Ignore RedundantByRefModifier
+Sub Foo(ByRef arg1 As Integer)
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new RedundantByRefModifierInspection(state) { Severity = CodeInspectionSeverity.Hint };
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+        }
 
     }
 }

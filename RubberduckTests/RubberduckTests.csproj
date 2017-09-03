@@ -110,7 +110,7 @@
     <Compile Include="Inspections\OptionBaseZeroInspectionTests.cs" />
     <Compile Include="QuickFixes\ChangeProcedureToFunctionQuickFixTests.cs" />
     <Compile Include="QuickFixes\PassParameterByReferenceQuickFixTests.cs" />
-    <Compile Include="Inspections\QuickFixProviderTests.cs" />
+    <Compile Include="QuickFixes\QuickFixProviderTests.cs" />
     <Compile Include="Inspections\SynchronizeAttributesQuickFixTests.cs" />
     <Compile Include="Inspections\RedundantByRefModifierInspectionTests.cs" />
     <Compile Include="Inspections\UndeclaredVariableInspectionTests.cs" />
@@ -131,6 +131,7 @@
     <Compile Include="QuickFixes\RemoveCommentQuickFixTests.cs" />
     <Compile Include="QuickFixes\RemoveEmptyElseBlockQuickFixTests.cs" />
     <Compile Include="QuickFixes\RemoveEmptyIfBlockQuickFixTests.cs" />
+    <Compile Include="QuickFixes\RemoveExplicitByRefModifierQuickFixTests.cs" />
     <Compile Include="QuickFixes\RemoveExplicitCallStatementQuickFixTests.cs" />
     <Compile Include="QuickFixes\RemoveExplicitLetStatementQuickFixTests.cs" />
     <Compile Include="QuickFixes\RemoveOptionBaseStatementQuickFixTests.cs" />
