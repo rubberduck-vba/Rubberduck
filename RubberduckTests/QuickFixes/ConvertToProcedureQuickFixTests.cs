@@ -135,5 +135,190 @@ End Function";
             var component = vbe.Object.VBProjects[0].VBComponents[0];
             Assert.AreEqual(expectedInterfaceCode, state.GetRewriter(component).GetText());
         }
+
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void NonReturningFunction_QuickFixWorks_Function()
+        {
+            const string inputCode =
+@"Function Foo() As Boolean
+End Function";
+
+            const string expectedCode =
+@"Sub Foo()
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new NonReturningFunctionInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+        }
+
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void GivenFunctionNameWithTypeHint_SubNameHasNoTypeHint()
+        {
+            const string inputCode =
+@"Function Foo$()
+End Function";
+
+            const string expectedCode =
+@"Sub Foo()
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new NonReturningFunctionInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+        }
+
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void NonReturningFunction_QuickFixWorks_FunctionReturnsImplicitVariant()
+        {
+            const string inputCode =
+@"Function Foo()
+End Function";
+
+            const string expectedCode =
+@"Sub Foo()
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new NonReturningFunctionInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+        }
+
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void NonReturningFunction_QuickFixWorks_FunctionHasVariable()
+        {
+            const string inputCode =
+@"Function Foo(ByVal b As Boolean) As String
+End Function";
+
+            const string expectedCode =
+@"Sub Foo(ByVal b As Boolean)
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new NonReturningFunctionInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+        }
+
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void GivenNonReturningPropertyGetter_QuickFixConvertsToSub()
+        {
+            const string inputCode =
+@"Property Get Foo() As Boolean
+End Property";
+
+            const string expectedCode =
+@"Sub Foo()
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new NonReturningFunctionInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+        }
+
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void GivenNonReturningPropertyGetWithTypeHint_QuickFixDropsTypeHint()
+        {
+            const string inputCode =
+@"Property Get Foo$()
+End Property";
+
+            const string expectedCode =
+@"Sub Foo()
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new NonReturningFunctionInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+        }
+
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void GivenImplicitVariantPropertyGetter_StillConvertsToSub()
+        {
+            const string inputCode =
+@"Property Get Foo()
+End Property";
+
+            const string expectedCode =
+@"Sub Foo()
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new NonReturningFunctionInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+        }
+
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void GivenParameterizedPropertyGetter_QuickFixKeepsParameter()
+        {
+            const string inputCode =
+@"Property Get Foo(ByVal b As Boolean) As String
+End Property";
+
+            const string expectedCode =
+@"Sub Foo(ByVal b As Boolean)
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new NonReturningFunctionInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+        }
+
     }
 }

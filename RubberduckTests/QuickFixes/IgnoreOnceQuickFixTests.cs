@@ -524,5 +524,30 @@ End Sub";
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void NonReturningFunction_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+@"Function Foo() As Boolean
+End Function";
+
+            const string expectedCode =
+@"'@Ignore NonReturningFunction
+Function Foo() As Boolean
+End Function";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new NonReturningFunctionInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+        }
+
+
     }
 }
