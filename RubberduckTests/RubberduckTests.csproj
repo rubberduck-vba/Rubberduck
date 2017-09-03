@@ -133,6 +133,7 @@
     <Compile Include="QuickFixes\RemoveExplicitCallStatementQuickFixTests.cs" />
     <Compile Include="QuickFixes\RemoveExplicitLetStatementQuickFixTests.cs" />
     <Compile Include="QuickFixes\RemoveOptionBaseStatementQuickFixTests.cs" />
+    <Compile Include="QuickFixes\RemoveUnusedParameterQuickFixTests.cs" />
     <Compile Include="QuickFixes\RemoveTypeHintsQuickFixTests.cs" />
     <Compile Include="QuickFixes\RemoveUnusedDeclarationQuickFixTests.cs" />
     <Compile Include="QuickFixes\ReplaceEmptyStringLiteralStatementQuickFixTests.cs" />
