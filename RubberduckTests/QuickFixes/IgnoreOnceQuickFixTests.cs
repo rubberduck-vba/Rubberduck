@@ -739,6 +739,29 @@ End Function";
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void OptionBaseOneSpecified_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+@"Option Base 1";
+
+            const string expectedCode =
+@"'@Ignore OptionBase
+Option Base 1";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new OptionBaseInspection(state);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+        }
+
 
     }
 }
