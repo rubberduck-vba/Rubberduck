@@ -95,5 +95,28 @@ End Sub"; ;
             Assert.AreEqual(expectedCode, rewriter.GetText());
         }
 
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void ProcedureNotUsed_QuickFixWorks()
+        {
+            const string inputCode =
+@"Private Sub Foo(ByVal arg1 as Integer)
+End Sub";
+
+            const string expectedCode = @"";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new ProcedureNotUsedInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            new RemoveUnusedDeclarationQuickFix(state).Fix(inspectionResults.First());
+
+            var rewriter = state.GetRewriter(component);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
+        }
+
     }
 }

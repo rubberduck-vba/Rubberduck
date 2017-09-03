@@ -814,5 +814,30 @@ End Sub";
         }
 
 
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void ProcedureNotUsed_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+@"Private Sub Foo(ByVal arg1 as Integer)
+End Sub";
+
+            const string expectedCode =
+@"'@Ignore ProcedureNotUsed
+Private Sub Foo(ByVal arg1 as Integer)
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new ProcedureNotUsedInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+        }
+
+
     }
 }
