@@ -627,5 +627,30 @@ End Sub";
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void ObsoleteCommentSyntax_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+@"Rem test1";
+
+            const string expectedCode =
+@"'@Ignore ObsoleteCommentSyntax
+Rem test1";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new ObsoleteCommentSyntaxInspection(state);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+        }
+
+
+
     }
 }

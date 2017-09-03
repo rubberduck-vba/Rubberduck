@@ -125,10 +125,13 @@
     <Compile Include="QuickFixes\IgnoreOnceQuickFixTests.cs" />
     <Compile Include="QuickFixes\MakeSingleLineParamegerQuickFixTests.cs" />
     <Compile Include="QuickFixes\MoveFieldCloserToUsageQuickFixTests.cs" />
+    <Compile Include="QuickFixes\RemoveCommentQuickFixTests.cs" />
     <Compile Include="QuickFixes\RemoveEmptyElseBlockQuickFixTests.cs" />
     <Compile Include="QuickFixes\RemoveEmptyIfBlockQuickFixTests.cs" />
+    <Compile Include="QuickFixes\RemoveExplicitCallStatementQuickFixTests.cs" />
     <Compile Include="QuickFixes\RemoveUnusedDeclarationQuickFixTests.cs" />
     <Compile Include="QuickFixes\ReplaceEmptyStringLiteralStatementQuickFixTests.cs" />
+    <Compile Include="QuickFixes\ReplaceOboleteCommentMarkerQuickFixTests.cs" />
     <Compile Include="QuickFixes\SetExplicitVariantReturnTypeQuickFixTests.cs" />
     <Compile Include="QuickFixes\SpecifyExplicitByRefModifierQuickFixTests.cs" />
     <Compile Include="QuickFixes\SpecifyExplicitPublicModifierQuickFixTests.cs" />
