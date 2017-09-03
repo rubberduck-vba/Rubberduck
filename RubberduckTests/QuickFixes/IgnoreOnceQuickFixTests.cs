@@ -137,6 +137,28 @@ End Sub";
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void EncapsulatePublicField_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+@"Public fizz As Boolean";
+
+            const string expectedCode =
+@"'@Ignore EncapsulatePublicField
+Public fizz As Boolean";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new EncapsulatePublicFieldInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+        }
+
 
     }
 }
