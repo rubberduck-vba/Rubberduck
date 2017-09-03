@@ -1107,6 +1107,38 @@ End Sub";
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void WriteOnlyProperty_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+@"Property Let Foo(value)
+End Property";
+
+            const string expectedCode =
+@"'@Ignore WriteOnlyProperty
+Property Let Foo(value)
+End Property";
+
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
+                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
+                .Build();
+            var component = project.Object.VBComponents[0];
+            var vbe = builder.AddProject(project).Build();
+
+            var parser = MockParser.Create(vbe.Object);
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new WriteOnlyPropertyInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            new IgnoreOnceQuickFix(parser.State, new[] { inspection }).Fix(inspectionResults.First());
+
+            Assert.AreEqual(expectedCode, parser.State.GetRewriter(component).GetText());
+        }
 
     }
 }

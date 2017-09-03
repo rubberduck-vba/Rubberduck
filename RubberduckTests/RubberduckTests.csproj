@@ -151,6 +151,7 @@
     <Compile Include="QuickFixes\SplitMultipleDeclarationsQuickFixTests.cs" />
     <Compile Include="QuickFixes\UntypedFunctionUsageQuickFixTests.cs" />
     <Compile Include="QuickFixes\UseSetKeywordForObjectAssignmentQuickFixTests.cs" />
+    <Compile Include="QuickFixes\WriteOnlyPropertyQuickFixTests.cs" />
     <Compile Include="SmartIndenter\VerticalSpacingTests.cs" />
     <Compile Include="SourceControl\SynchrounouslyConstructedDeclarationFinderFactory.cs" />
     <Compile Include="Symbols\AccessibilityCheckTests.cs" />
