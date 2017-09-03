@@ -435,6 +435,66 @@ Dim foo";
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void MoveFieldCloserToUsage_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+@"Private bar As String
+Public Sub Foo()
+    bar = ""test""
+End Sub";
+
+            const string expectedCode =
+@"'@Ignore MoveFieldCloserToUsage
+Private bar As String
+Public Sub Foo()
+    bar = ""test""
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new MoveFieldCloserToUsageInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+        }
+
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void MultilineParameter_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+@"Public Sub Foo( _
+    ByVal _
+    Var1 _
+    As _
+    Integer)
+End Sub";
+
+            const string expectedCode =
+@"'@Ignore MultilineParameter
+Public Sub Foo( _
+    ByVal _
+    Var1 _
+    As _
+    Integer)
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new MultilineParameterInspection(state);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+        }
 
     }
 }
