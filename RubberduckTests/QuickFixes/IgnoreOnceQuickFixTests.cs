@@ -958,7 +958,50 @@ End Sub";
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        [Ignore] // not sure how to handle GetBuiltInDeclarations
+        public void UntypedFunctionUsage_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+@"Sub Foo()
+    Dim str As String
+    str = Left(""test"", 1)
+End Sub";
+
+            const string expectedCode =
+@"Sub Foo()
+    Dim str As String
+'@Ignore UntypedFunctionUsage
+    str = Left(""test"", 1)
+End Sub";
+
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
+                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
+                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 1, true)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+
+            var component = project.Object.VBComponents[0];
+            var parser = MockParser.Create(vbe.Object);
+
+            // FIXME reinstate and unignore tests
+            // refers to "UntypedFunctionUsageInspectionTests.GetBuiltInDeclarations()"
+            //GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new UntypedFunctionUsageInspection(parser.State);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            new IgnoreOnceQuickFix(parser.State, new[] { inspection }).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, parser.State.GetRewriter(component).GetText());
+        }
+
 
 
     }
 }
+ 
