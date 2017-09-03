@@ -674,5 +674,37 @@ Global var1 As Integer";
         }
 
 
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void ObsoleteLetStatement_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+@"Public Sub Foo()
+    Dim var1 As Integer
+    Dim var2 As Integer
+    
+    Let var2 = var1
+End Sub";
+
+            const string expectedCode =
+@"Public Sub Foo()
+    Dim var1 As Integer
+    Dim var2 As Integer
+    
+'@Ignore ObsoleteLetStatement
+    Let var2 = var1
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new ObsoleteLetStatementInspection(state);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+        }
     }
 }
