@@ -13,7 +13,6 @@ namespace RubberduckTests.QuickFixes
     {
         [TestMethod]
         [TestCategory("QuickFixes")]
-        [TestCategory("Unused Value")]
         public void FunctionReturnValueNotUsed_QuickFixWorks_NoInterface()
         {
             const string inputCode =
@@ -48,7 +47,6 @@ End Sub";
 
         [TestMethod]
         [TestCategory("QuickFixes")]
-        [TestCategory("Unused Value")]
         public void FunctionReturnValueNotUsed_QuickFixWorks_NoInterface_ManyBodyStatements()
         {
             const string inputCode =
@@ -86,7 +84,6 @@ End Sub";
 
         [TestMethod]
         [TestCategory("QuickFixes")]
-        [TestCategory("Unused Value")]
         public void FunctionReturnValueNotUsed_QuickFixWorks_Interface()
         {
             const string inputInterfaceCode =

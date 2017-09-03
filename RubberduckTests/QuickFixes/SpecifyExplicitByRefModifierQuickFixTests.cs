@@ -16,7 +16,7 @@ namespace RubberduckTests.QuickFixes
     {
 
         [TestMethod]
-        [TestCategory("Inspections")]
+        [TestCategory("QuickFixes")]
         public void ImplicitByRefModifier_QuickFixWorks_ImplicitByRefParameter()
         {
             const string inputCode =
@@ -41,7 +41,7 @@ End Sub";
         }
 
         [TestMethod]
-        [TestCategory("Inspections")]
+        [TestCategory("QuickFixes")]
         public void ImplicitByRefModifier_QuickFixWorks_OptionalParameter()
         {
             const string inputCode =
@@ -66,7 +66,7 @@ End Sub";
         }
 
         [TestMethod]
-        [TestCategory("Inspections")]
+        [TestCategory("QuickFixes")]
         public void ImplicitByRefModifier_QuickFixWorks_Optional_LineContinuations()
         {
             const string inputCode =
@@ -97,7 +97,7 @@ End Sub";
         }
 
         [TestMethod]
-        [TestCategory("Inspections")]
+        [TestCategory("QuickFixes")]
         public void ImplicitByRefModifier_QuickFixWorks_LineContinuation()
         {
             const string inputCode =
@@ -126,7 +126,7 @@ End Sub";
         }
 
         [TestMethod]
-        [TestCategory("Inspections")]
+        [TestCategory("QuickFixes")]
         public void ImplicitByRefModifier_QuickFixWorks_LineContinuation_FirstLine()
         {
             const string inputCode =
@@ -157,7 +157,7 @@ End Sub";
         }
 
         [TestMethod]
-        [TestCategory("Inspections")]
+        [TestCategory("QuickFixes")]
         public void ImplicitByRefModifier_QuickFixWorks_InterfaceImplementation()
         {
             const string inputCode1 =
@@ -204,7 +204,7 @@ End Sub";
         }
 
         [TestMethod]
-        [TestCategory("Inspections")]
+        [TestCategory("QuickFixes")]
         public void ImplicitByRefModifier_QuickFixWorks_InterfaceImplementationDifferentParameterName()
         {
             const string inputCode1 =
@@ -251,7 +251,7 @@ End Sub";
         }
 
         [TestMethod]
-        [TestCategory("Inspections")]
+        [TestCategory("QuickFixes")]
         public void ImplicitByRefModifier_QuickFixWorks_InterfaceImplementationWithMultipleParameters()
         {
             const string inputCode1 =
