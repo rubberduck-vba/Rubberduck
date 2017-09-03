@@ -651,6 +651,28 @@ Rem test1";
         }
 
 
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void ObsoleteGlobal_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+@"Global var1 As Integer";
+
+            const string expectedCode =
+@"'@Ignore ObsoleteGlobal
+Global var1 As Integer";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new ObsoleteGlobalInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+        }
+
 
     }
 }

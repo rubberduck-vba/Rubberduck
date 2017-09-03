@@ -131,6 +131,7 @@
     <Compile Include="QuickFixes\RemoveExplicitCallStatementQuickFixTests.cs" />
     <Compile Include="QuickFixes\RemoveUnusedDeclarationQuickFixTests.cs" />
     <Compile Include="QuickFixes\ReplaceEmptyStringLiteralStatementQuickFixTests.cs" />
+    <Compile Include="QuickFixes\ReplaceGlobalModifierQuickFixTests.cs" />
     <Compile Include="QuickFixes\ReplaceOboleteCommentMarkerQuickFixTests.cs" />
     <Compile Include="QuickFixes\SetExplicitVariantReturnTypeQuickFixTests.cs" />
     <Compile Include="QuickFixes\SpecifyExplicitByRefModifierQuickFixTests.cs" />
