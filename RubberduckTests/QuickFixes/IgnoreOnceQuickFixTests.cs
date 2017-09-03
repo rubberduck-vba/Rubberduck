@@ -706,5 +706,39 @@ End Sub";
             new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
+
+
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void ObsoleteTypeHint_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+@"Public Function Foo$(ByVal fizz As Integer)
+    Foo = ""test""
+End Function";
+
+            const string expectedCode =
+@"'@Ignore ObsoleteTypeHint
+Public Function Foo$(ByVal fizz As Integer)
+    Foo = ""test""
+End Function";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new ObsoleteTypeHintInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            var fix = new IgnoreOnceQuickFix(state, new[] { inspection });
+            foreach (var result in inspectionResults)
+            {
+                fix.Fix(result);
+            }
+
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+        }
+
+
     }
 }
