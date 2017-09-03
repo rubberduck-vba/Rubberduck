@@ -19,6 +19,14 @@ namespace Rubberduck.Inspections.Concrete
 {
     public sealed class ShadowedDeclarationInspection : InspectionBase
     {
+        private enum DeclarationSite
+        {
+            NotApplicable = 0,
+            ReferencedProject = 1,
+            OtherComponent = 2,
+            SameComponent = 3
+        }
+
         private class OptionPrivateModuleListener : VBAParserBaseListener
         {
             public List<VBAParser.ModuleContext> OptionPrivateModules { get; } = new List<VBAParser.ModuleContext>();
@@ -68,10 +76,12 @@ namespace Rubberduck.Inspections.Concrete
                 foreach (var declaration in userDeclarations)
                 {
                     var shadowedDeclaration = State.AllDeclarations.FirstOrDefault(d =>
-                        referencedProjectIds.Contains(d.ProjectId) &&
-                        string.Equals(d.IdentifierName, declaration.IdentifierName, StringComparison.OrdinalIgnoreCase) &&
-                        DeclarationCanBeShadowed(d, declaration) &&
-                        !DeclarationIsInsideOptionPrivateModule(d, listener));
+                    {
+                        return !Equals(d, declaration) &&
+                               string.Equals(d.IdentifierName, declaration.IdentifierName, StringComparison.OrdinalIgnoreCase) &&
+                               DeclarationCanBeShadowed(d, declaration, GetDeclarationSite(d, declaration, referencedProjectIds)) &&
+                               !DeclarationIsInsideOptionPrivateModule(d, listener);
+                    });
 
                     if (shadowedDeclaration != null)
                     {
@@ -89,6 +99,21 @@ namespace Rubberduck.Inspections.Concrete
             return issues;
         }
 
+        private static DeclarationSite GetDeclarationSite(Declaration originalDeclaration, Declaration userDeclaration, ICollection<string> referencedProjectIds)
+        {
+            if (originalDeclaration.ProjectId != userDeclaration.ProjectId)
+            {
+                return referencedProjectIds.Contains(originalDeclaration.ProjectId) ? DeclarationSite.ReferencedProject : DeclarationSite.NotApplicable;
+            }
+
+            if (originalDeclaration.QualifiedName.QualifiedModuleName.Name != userDeclaration.QualifiedName.QualifiedModuleName.Name)
+            {
+                return DeclarationSite.OtherComponent;
+            }
+
+            return DeclarationSite.SameComponent;
+        }
+
         private static bool DeclarationIsPartOfBuiltInEventHandler(Declaration declaration, ICollection<Declaration> builtInEventHandlers)
         {
             if (builtInEventHandlers.Contains(declaration))
@@ -101,7 +126,27 @@ namespace Rubberduck.Inspections.Concrete
             return parameterDeclaration != null && builtInEventHandlers.Contains(parameterDeclaration.ParentDeclaration);
         }
 
-        private static bool DeclarationCanBeShadowed(Declaration originalDeclaration, Declaration userDeclaration)
+        private static bool DeclarationCanBeShadowed(Declaration originalDeclaration, Declaration userDeclaration, DeclarationSite originalDeclarationSite)
+        {
+            if (originalDeclarationSite == DeclarationSite.NotApplicable)
+            {
+                return false;
+            }
+
+            if (originalDeclarationSite == DeclarationSite.ReferencedProject)
+            {
+                return DeclarationInReferencedProjectCanBeShadowed(originalDeclaration, userDeclaration);
+            }
+
+            if (originalDeclarationSite == DeclarationSite.OtherComponent)
+            {
+                return DeclarationInAnotherComponentCanBeShadowed(originalDeclaration, userDeclaration);
+            }
+
+            return DeclarationInTheSameComponentCanBeShadowed(originalDeclaration, userDeclaration);
+        }
+
+        private static bool DeclarationInReferencedProjectCanBeShadowed(Declaration originalDeclaration, Declaration userDeclaration)
         {
             var originalDeclarationComponentType = originalDeclaration.QualifiedName.QualifiedModuleName.ComponentType;
             var userDeclarationComponentType = userDeclaration.QualifiedName.QualifiedModuleName.ComponentType;
@@ -133,20 +178,21 @@ namespace Rubberduck.Inspections.Concrete
 
             if (userDeclaration.DeclarationType == DeclarationType.ClassModule)
             {
-                if (userDeclarationComponentType == ComponentType.UserForm && !TypeShadowingRelations[originalDeclaration.DeclarationType].Contains(DeclarationType.UserForm))
+                if (userDeclarationComponentType == ComponentType.UserForm && !ReferencedProjectTypeShadowingRelations[originalDeclaration.DeclarationType].Contains(DeclarationType.UserForm))
                 {
                     return false;
                 }
 
-                if (userDeclarationComponentType == ComponentType.Document && !TypeShadowingRelations[originalDeclaration.DeclarationType].Contains(DeclarationType.Document))
+                if (userDeclarationComponentType == ComponentType.Document && !ReferencedProjectTypeShadowingRelations[originalDeclaration.DeclarationType].Contains(DeclarationType.Document))
                 {
                     return false;
                 }
             }
 
-            if (userDeclaration.DeclarationType != DeclarationType.ClassModule || (userDeclarationComponentType != ComponentType.UserForm && userDeclarationComponentType != ComponentType.Document))
+            if (userDeclaration.DeclarationType != DeclarationType.ClassModule ||
+                (userDeclarationComponentType != ComponentType.UserForm && userDeclarationComponentType != ComponentType.Document))
             {
-                if (!TypeShadowingRelations[originalDeclaration.DeclarationType].Contains(userDeclaration.DeclarationType))
+                if (!ReferencedProjectTypeShadowingRelations[originalDeclaration.DeclarationType].Contains(userDeclaration.DeclarationType))
                 {
                     return false;
                 }
@@ -158,6 +204,64 @@ namespace Rubberduck.Inspections.Concrete
                 return false;
             }
 
+            return DeclarationAccessibilityCanBeShadowed(originalDeclaration);
+        }
+
+        private static bool DeclarationInAnotherComponentCanBeShadowed(Declaration originalDeclaration, Declaration userDeclaration)
+        {
+            if (DeclarationIsProjectOrComponent(originalDeclaration) && DeclarationIsProjectOrComponent(userDeclaration))
+            {
+                return false;
+            }
+
+            var originalDeclarationComponentType = originalDeclaration.QualifiedName.QualifiedModuleName.ComponentType;
+
+            // Syntax of instantiating a new class makes it impossible to be shadowed. For UDT a compile-time error is thrown.
+            if (originalDeclaration.DeclarationType == DeclarationType.ClassModule && originalDeclarationComponentType == ComponentType.ClassModule)
+            {
+                return false;
+            }
+
+            // Syntax of instantiating a new UDT makes it impossible to be shadowed.
+            if (originalDeclaration.DeclarationType == DeclarationType.UserDefinedType)
+            {
+                return false;
+            }
+
+            // It is not possible to directly access a Parameter, UDT Member or Label declared in another component
+            if (originalDeclaration.DeclarationType == DeclarationType.Parameter || originalDeclaration.DeclarationType == DeclarationType.UserDefinedTypeMember ||
+                originalDeclaration.DeclarationType == DeclarationType.LineLabel)
+            {
+                return false;
+            }
+
+            // It is not possible to directly access any declarations placed inside a Class Module
+            if (originalDeclaration.DeclarationType != DeclarationType.ClassModule && originalDeclarationComponentType == ComponentType.ClassModule)
+            {
+                return false;
+            }
+
+            if (!OtherComponentTypeShadowingRelations[originalDeclaration.DeclarationType].Contains(userDeclaration.DeclarationType))
+            {
+                return false;
+            }
+
+            // Events don't have a body, so their parameters can't be accessed
+            if (userDeclaration.DeclarationType == DeclarationType.Parameter && userDeclaration.ParentDeclaration.DeclarationType == DeclarationType.Event)
+            {
+                return false;
+            }
+
+            return DeclarationAccessibilityCanBeShadowed(originalDeclaration);
+        }
+
+        private static bool DeclarationInTheSameComponentCanBeShadowed(Declaration originalDeclaration, Declaration userDeclaration)
+        {
+            return false;
+        }
+
+        private static bool DeclarationAccessibilityCanBeShadowed(Declaration originalDeclaration)
+        {
             return originalDeclaration.Accessibility == Accessibility.Global ||
                    originalDeclaration.Accessibility == Accessibility.Public ||
                    originalDeclaration.DeclarationType == DeclarationType.Project ||
@@ -181,8 +285,17 @@ namespace Rubberduck.Inspections.Concrete
             return listener.OptionPrivateModules.Any(moduleContext => ParserRuleContextHelper.HasParent(declaration.Context, moduleContext));
         }
 
+        private static bool DeclarationIsProjectOrComponent(Declaration declaration)
+        {
+            return declaration.DeclarationType == DeclarationType.Project ||
+                   declaration.DeclarationType == DeclarationType.ProceduralModule ||
+                   declaration.DeclarationType == DeclarationType.ClassModule ||
+                   declaration.DeclarationType == DeclarationType.UserForm ||
+                   declaration.DeclarationType == DeclarationType.Document;
+        }
+
         // Dictionary values represent all declaration types that can shadow the declaration type of the key
-        private static readonly Dictionary<DeclarationType, HashSet<DeclarationType>> TypeShadowingRelations = new Dictionary<DeclarationType, HashSet<DeclarationType>>
+        private static readonly Dictionary<DeclarationType, HashSet<DeclarationType>> ReferencedProjectTypeShadowingRelations = new Dictionary<DeclarationType, HashSet<DeclarationType>>
         {
             [DeclarationType.Project] = new[]
                 {
@@ -254,6 +367,7 @@ namespace Rubberduck.Inspections.Concrete
                     DeclarationType.PropertyGet, DeclarationType.PropertySet, DeclarationType.PropertyLet, DeclarationType.Parameter, DeclarationType.Variable, DeclarationType.Constant,
                     DeclarationType.Enumeration, DeclarationType.EnumerationMember, DeclarationType.LibraryProcedure, DeclarationType.LibraryFunction
                 }.ToHashSet(),
+            // TODO: UDT shadowing UDT? In other project and component
             [DeclarationType.UserDefinedType] = new[]
                 {
                     DeclarationType.Project, DeclarationType.ProceduralModule, DeclarationType.ClassModule, DeclarationType.UserForm, DeclarationType.Document
@@ -269,7 +383,98 @@ namespace Rubberduck.Inspections.Concrete
                     DeclarationType.Project, DeclarationType.ProceduralModule, DeclarationType.UserForm, DeclarationType.Document, DeclarationType.Procedure, DeclarationType.Function,
                     DeclarationType.PropertyGet, DeclarationType.PropertySet, DeclarationType.PropertyLet, DeclarationType.Parameter, DeclarationType.Variable, DeclarationType.Constant,
                     DeclarationType.Enumeration, DeclarationType.EnumerationMember, DeclarationType.LibraryProcedure, DeclarationType.LibraryFunction
+                }.ToHashSet()
+        };
+
+        // Dictionary values represent all declaration types that can shadow the declaration type of the key
+        private static readonly Dictionary<DeclarationType, HashSet<DeclarationType>> OtherComponentTypeShadowingRelations = new Dictionary<DeclarationType, HashSet<DeclarationType>>
+        {
+            [DeclarationType.Project] = new[]
+                {
+                    DeclarationType.Procedure, DeclarationType.Function, DeclarationType.PropertyGet, DeclarationType.PropertySet, DeclarationType.PropertyLet, DeclarationType.Parameter,
+                    DeclarationType.Variable, DeclarationType.Constant, DeclarationType.EnumerationMember, DeclarationType.LibraryProcedure, DeclarationType.LibraryFunction
                 }.ToHashSet(),
+            [DeclarationType.ProceduralModule] = new[]
+                {
+                    DeclarationType.Procedure, DeclarationType.Function, DeclarationType.PropertyGet, DeclarationType.PropertySet, DeclarationType.PropertyLet, DeclarationType.Parameter,
+                    DeclarationType.Variable, DeclarationType.Constant, DeclarationType.EnumerationMember, DeclarationType.LibraryProcedure, DeclarationType.LibraryFunction
+                }.ToHashSet(),
+            [DeclarationType.UserForm] = new[]
+                {
+                    DeclarationType.Procedure, DeclarationType.Function, DeclarationType.PropertyGet, DeclarationType.PropertySet, DeclarationType.PropertyLet, DeclarationType.Parameter,
+                    DeclarationType.Variable, DeclarationType.Constant, DeclarationType.EnumerationMember, DeclarationType.LibraryProcedure, DeclarationType.LibraryFunction
+                }.ToHashSet(),
+            [DeclarationType.Document] = new[]
+                {
+                    DeclarationType.Procedure, DeclarationType.Function, DeclarationType.PropertyGet, DeclarationType.PropertySet, DeclarationType.PropertyLet, DeclarationType.Parameter,
+                    DeclarationType.Variable, DeclarationType.Constant, DeclarationType.EnumerationMember, DeclarationType.LibraryProcedure, DeclarationType.LibraryFunction
+                }.ToHashSet(),
+            [DeclarationType.Procedure] = new[]
+                {
+                    DeclarationType.Procedure, DeclarationType.Function, DeclarationType.PropertyGet, DeclarationType.PropertySet, DeclarationType.PropertyLet, DeclarationType.Parameter,
+                    DeclarationType.Variable, DeclarationType.Constant, DeclarationType.Enumeration, DeclarationType.EnumerationMember,
+                    DeclarationType.LibraryProcedure, DeclarationType.LibraryFunction
+                }.ToHashSet(),
+            [DeclarationType.Function] = new[]
+                {
+                    DeclarationType.Procedure, DeclarationType.Function, DeclarationType.PropertyGet, DeclarationType.PropertySet, DeclarationType.PropertyLet, DeclarationType.Parameter,
+                    DeclarationType.Variable, DeclarationType.Constant, DeclarationType.Enumeration, DeclarationType.EnumerationMember,
+                    DeclarationType.LibraryProcedure, DeclarationType.LibraryFunction
+                }.ToHashSet(),
+            [DeclarationType.PropertyGet] = new[]
+                {
+                    DeclarationType.Procedure, DeclarationType.Function, DeclarationType.PropertyGet, DeclarationType.PropertySet, DeclarationType.PropertyLet, DeclarationType.Parameter,
+                    DeclarationType.Variable, DeclarationType.Constant, DeclarationType.Enumeration, DeclarationType.EnumerationMember,
+                    DeclarationType.LibraryProcedure, DeclarationType.LibraryFunction
+                }.ToHashSet(),
+            [DeclarationType.PropertySet] = new[]
+                {
+                    DeclarationType.Procedure, DeclarationType.Function, DeclarationType.PropertyGet, DeclarationType.PropertySet, DeclarationType.PropertyLet, DeclarationType.Parameter,
+                    DeclarationType.Variable, DeclarationType.Constant, DeclarationType.Enumeration, DeclarationType.EnumerationMember,
+                    DeclarationType.LibraryProcedure, DeclarationType.LibraryFunction
+                }.ToHashSet(),
+            [DeclarationType.PropertyLet] = new[]
+                {
+                    DeclarationType.Procedure, DeclarationType.Function, DeclarationType.PropertyGet, DeclarationType.PropertySet, DeclarationType.PropertyLet, DeclarationType.Parameter,
+                    DeclarationType.Variable, DeclarationType.Constant, DeclarationType.Enumeration, DeclarationType.EnumerationMember,
+                    DeclarationType.LibraryProcedure, DeclarationType.LibraryFunction
+                }.ToHashSet(),
+            [DeclarationType.Variable] = new[]
+                {
+                    DeclarationType.Procedure, DeclarationType.Function, DeclarationType.PropertyGet, DeclarationType.PropertySet, DeclarationType.PropertyLet, DeclarationType.Parameter,
+                    DeclarationType.Variable, DeclarationType.Constant, DeclarationType.Enumeration, DeclarationType.EnumerationMember,
+                    DeclarationType.LibraryProcedure, DeclarationType.LibraryFunction
+                }.ToHashSet(),
+            [DeclarationType.Constant] = new[]
+                {
+                    DeclarationType.Procedure, DeclarationType.Function, DeclarationType.PropertyGet, DeclarationType.PropertySet, DeclarationType.PropertyLet, DeclarationType.Parameter,
+                    DeclarationType.Variable, DeclarationType.Constant, DeclarationType.Enumeration, DeclarationType.EnumerationMember,
+                    DeclarationType.LibraryProcedure, DeclarationType.LibraryFunction
+                }.ToHashSet(),
+            [DeclarationType.Enumeration] = new[]
+                {
+                    DeclarationType.Procedure, DeclarationType.Function, DeclarationType.PropertyGet, DeclarationType.PropertySet, DeclarationType.PropertyLet, DeclarationType.Parameter,
+                    DeclarationType.Variable, DeclarationType.Constant, DeclarationType.Enumeration, DeclarationType.EnumerationMember,
+                    DeclarationType.LibraryProcedure, DeclarationType.LibraryFunction
+                }.ToHashSet(),
+            [DeclarationType.EnumerationMember] = new[]
+                {
+                    DeclarationType.Procedure, DeclarationType.Function, DeclarationType.PropertyGet, DeclarationType.PropertySet, DeclarationType.PropertyLet, DeclarationType.Parameter,
+                    DeclarationType.Variable, DeclarationType.Constant, DeclarationType.Enumeration, DeclarationType.EnumerationMember,
+                    DeclarationType.LibraryProcedure, DeclarationType.LibraryFunction
+                }.ToHashSet(),
+            [DeclarationType.LibraryProcedure] = new[]
+                {
+                    DeclarationType.Procedure, DeclarationType.Function, DeclarationType.PropertyGet, DeclarationType.PropertySet, DeclarationType.PropertyLet, DeclarationType.Parameter,
+                    DeclarationType.Variable, DeclarationType.Constant, DeclarationType.Enumeration, DeclarationType.EnumerationMember,
+                    DeclarationType.LibraryProcedure, DeclarationType.LibraryFunction
+                }.ToHashSet(),
+            [DeclarationType.LibraryFunction] = new[]
+                {
+                    DeclarationType.Procedure, DeclarationType.Function, DeclarationType.PropertyGet, DeclarationType.PropertySet, DeclarationType.PropertyLet, DeclarationType.Parameter,
+                    DeclarationType.Variable, DeclarationType.Constant, DeclarationType.Enumeration, DeclarationType.EnumerationMember,
+                    DeclarationType.LibraryProcedure, DeclarationType.LibraryFunction
+                }.ToHashSet()
         };
     }
 }
