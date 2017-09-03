@@ -1084,6 +1084,29 @@ End Sub";
         }
 
 
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void VariableTypeNotDeclared_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+@"Sub Foo(arg1)
+End Sub";
+
+            const string expectedCode =
+@"'@Ignore VariableTypeNotDeclared
+Sub Foo(arg1)
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new VariableTypeNotDeclaredInspection(state);
+            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspection.GetInspectionResults().First());
+
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+        }
+
 
     }
 }
