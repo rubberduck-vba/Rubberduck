@@ -549,5 +549,41 @@ End Function";
         }
 
 
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void ObjectVariableNotSet_IgnoreQuickFixWorks()
+        {
+            var inputCode =
+            @"
+Private Sub Workbook_Open()
+    
+    Dim target As Range
+    target = Range(""A1"")
+    
+    target.Value = ""forgot something?""
+
+End Sub";
+            var expectedCode =
+            @"
+Private Sub Workbook_Open()
+    
+    Dim target As Range
+'@Ignore ObjectVariableNotSet
+    target = Range(""A1"")
+    
+    target.Value = ""forgot something?""
+
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new ObjectVariableNotSetInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+        }
     }
 }
