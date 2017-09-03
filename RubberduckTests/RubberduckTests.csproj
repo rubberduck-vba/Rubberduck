@@ -126,6 +126,7 @@
     <Compile Include="QuickFixes\RemoveUnusedDeclarationQuickFixTests.cs" />
     <Compile Include="QuickFixes\ReplaceEmptyStringLiteralStatementQuickFixTests.cs" />
     <Compile Include="QuickFixes\SpecifyExplicitByRefModifierQuickFixTests.cs" />
+    <Compile Include="QuickFixes\SpecifyExplicitPublicModifierQuickFixTests.cs" />
     <Compile Include="SmartIndenter\VerticalSpacingTests.cs" />
     <Compile Include="SourceControl\SynchrounouslyConstructedDeclarationFinderFactory.cs" />
     <Compile Include="Symbols\AccessibilityCheckTests.cs" />
