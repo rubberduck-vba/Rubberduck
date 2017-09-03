@@ -216,12 +216,6 @@ namespace Rubberduck.Inspections.Concrete
 
             var originalDeclarationComponentType = originalDeclaration.QualifiedName.QualifiedModuleName.ComponentType;
 
-            // Syntax of instantiating a new class makes it impossible to be shadowed. For UDT a compile-time error is thrown.
-            if (originalDeclaration.DeclarationType == DeclarationType.ClassModule && originalDeclarationComponentType == ComponentType.ClassModule)
-            {
-                return false;
-            }
-
             // Syntax of instantiating a new UDT makes it impossible to be shadowed.
             if (originalDeclaration.DeclarationType == DeclarationType.UserDefinedType)
             {
@@ -241,7 +235,27 @@ namespace Rubberduck.Inspections.Concrete
                 return false;
             }
 
-            if (!OtherComponentTypeShadowingRelations[originalDeclaration.DeclarationType].Contains(userDeclaration.DeclarationType))
+            if (originalDeclaration.DeclarationType == DeclarationType.ClassModule)
+            {
+                // Syntax of instantiating a new class makes it impossible to be shadowed
+                if (originalDeclarationComponentType == ComponentType.ClassModule)
+                {
+                    return false;
+                }
+
+                if (originalDeclarationComponentType == ComponentType.UserForm && 
+                    !OtherComponentTypeShadowingRelations[DeclarationType.UserForm].Contains(userDeclaration.DeclarationType))
+                {
+                    return false;
+                }
+
+                if (originalDeclarationComponentType == ComponentType.Document && 
+                    !OtherComponentTypeShadowingRelations[DeclarationType.Document].Contains(userDeclaration.DeclarationType))
+                {
+                    return false;
+                }
+            }
+            else if (!OtherComponentTypeShadowingRelations[originalDeclaration.DeclarationType].Contains(userDeclaration.DeclarationType))
             {
                 return false;
             }
