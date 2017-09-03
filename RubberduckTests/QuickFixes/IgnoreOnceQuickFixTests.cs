@@ -928,5 +928,37 @@ End Sub";
         }
 
 
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void UnassignedVariableUsage_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+@"Sub Foo()
+    Dim b As Boolean
+    Dim bb As Boolean
+    bb = b
+End Sub";
+
+            const string expectedCode =
+@"Sub Foo()
+    Dim b As Boolean
+    Dim bb As Boolean
+'@Ignore UnassignedVariableUsage
+    bb = b
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new UnassignedVariableUsageInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+        }
+
+
+
     }
 }
