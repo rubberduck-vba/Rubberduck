@@ -126,6 +126,7 @@
     <Compile Include="QuickFixes\MakeSingleLineParamegerQuickFixTests.cs" />
     <Compile Include="QuickFixes\MoveFieldCloserToUsageQuickFixTests.cs" />
     <Compile Include="QuickFixes\OptionExplicitQuickFixTests.cs" />
+    <Compile Include="QuickFixes\PassParameterByValueQuickFixTests.cs" />
     <Compile Include="QuickFixes\RemoveCommentQuickFixTests.cs" />
     <Compile Include="QuickFixes\RemoveEmptyElseBlockQuickFixTests.cs" />
     <Compile Include="QuickFixes\RemoveEmptyIfBlockQuickFixTests.cs" />

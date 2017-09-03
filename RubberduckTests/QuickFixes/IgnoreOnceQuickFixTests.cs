@@ -763,5 +763,32 @@ Option Base 1";
         }
 
 
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void ParameterCanBeByVal_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+@"Sub Foo(ByRef _
+arg1 As String)
+End Sub";
+
+            const string expectedCode =
+@"'@Ignore ParameterCanBeByVal
+Sub Foo(ByRef _
+arg1 As String)
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new ParameterCanBeByValInspection(state);
+            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspection.GetInspectionResults().First());
+
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+        }
+
+
+
     }
 }
