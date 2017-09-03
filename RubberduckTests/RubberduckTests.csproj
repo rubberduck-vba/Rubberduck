@@ -111,7 +111,7 @@
     <Compile Include="QuickFixes\ChangeProcedureToFunctionQuickFixTests.cs" />
     <Compile Include="QuickFixes\PassParameterByReferenceQuickFixTests.cs" />
     <Compile Include="QuickFixes\QuickFixProviderTests.cs" />
-    <Compile Include="Inspections\SynchronizeAttributesQuickFixTests.cs" />
+    <Compile Include="QuickFixes\SynchronizeAttributesQuickFixTests.cs" />
     <Compile Include="Inspections\RedundantByRefModifierInspectionTests.cs" />
     <Compile Include="Inspections\UndeclaredVariableInspectionTests.cs" />
     <Compile Include="Inspections\LineLabelNotUsedInspectionTests.cs" />
