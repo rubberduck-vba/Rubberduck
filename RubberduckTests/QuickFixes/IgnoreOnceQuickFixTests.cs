@@ -1033,6 +1033,30 @@ End Sub";
         }
 
 
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void UnassignedVariable_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+@"Sub Foo()
+Dim var1 as Integer
+End Sub";
+
+            const string expectedCode =
+@"Sub Foo()
+'@Ignore VariableNotAssigned
+Dim var1 as Integer
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new VariableNotAssignedInspection(state);
+            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspection.GetInspectionResults().First());
+
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+        }
 
     }
 }
