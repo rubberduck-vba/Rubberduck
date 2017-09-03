@@ -8,6 +8,7 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.QuickFixes
 {
+    [TestClass]
     public class ConvertToProcedureQuickFixTests
     {
         [TestMethod]
