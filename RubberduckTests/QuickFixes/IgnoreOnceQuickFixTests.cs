@@ -159,6 +159,37 @@ Public fizz As Boolean";
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        [TestCategory("Unused Value")]
+        public void FunctionReturnValueNotUsed_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+@"Public Function Foo(ByVal bar As String) As Boolean
+End Function
 
+Public Sub Goo()
+    Foo ""test""
+End Sub";
+
+            const string expectedCode =
+@"'@Ignore FunctionReturnValueNotUsed
+Public Function Foo(ByVal bar As String) As Boolean
+End Function
+
+Public Sub Goo()
+    Foo ""test""
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new FunctionReturnValueNotUsedInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+        }
     }
 }
