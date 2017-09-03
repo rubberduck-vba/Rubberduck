@@ -11,5 +11,9 @@ namespace RubberduckTests.SourceControl
         {
             return new DeclarationFinder(declarations, annotations, unresolvedMemberDeclarations, hostApp);
         }
+
+        public void Release(DeclarationFinder declarationFinder)
+        {
+        }
     }
 }

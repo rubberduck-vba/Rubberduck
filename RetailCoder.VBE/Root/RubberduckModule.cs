@@ -103,6 +103,7 @@ namespace Rubberduck.Root
             Bind<Func<IIndenterSettings>>().ToMethod(t => () => KernelInstance.Get<IGeneralConfigService>().LoadConfiguration().UserSettings.IndenterSettings);
 
             Rebind<DeclarationFinder>().To<ConcurrentlyConstructedDeclarationFinder>().InCallScope();
+            Rebind<IDeclarationFinderFactory>().To<ConcurrentlyConstructedDeclarationFinderFactory>();
 
             BindCustomDeclarationLoadersToParser();
             Rebind<ICOMReferenceSynchronizer, IProjectReferencesProvider>().To<COMReferenceSynchronizer>().InSingletonScope().WithConstructorArgument("serializedDeclarationsPath", (string)null);
