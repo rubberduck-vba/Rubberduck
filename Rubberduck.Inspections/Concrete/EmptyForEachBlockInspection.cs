@@ -16,7 +16,6 @@ namespace Rubberduck.Inspections.Concrete
 
         public class EmptyForEachBlockListener : EmptyBlockListenerBase
         {
-
             public override void EnterForEachStmt([NotNull] VBAParser.ForEachStmtContext context)
             {
                 InspectBlockForExecutableStatements(context.block(), context);

@@ -11,7 +11,8 @@ namespace Rubberduck.Inspections.Concrete
         public EmptyElseBlockInspection(RubberduckParserState state) 
             : base(state, InspectionsUI.EmptyElseBlockInspectionResultFormat) { }
 
-        public override IInspectionListener Listener { get; } = new EmptyElseBlockListener();
+        public override IInspectionListener Listener { get; } 
+            = new EmptyElseBlockListener();
         
         public class EmptyElseBlockListener : EmptyBlockListenerBase
         {
