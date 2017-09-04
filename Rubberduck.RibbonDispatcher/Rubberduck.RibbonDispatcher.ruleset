@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="Rules for Rubberduck.RibbonDispatcher" Description="Code analysis rules for Rubberduck.RibbonDispatcher.csproj." ToolsVersion="15.0">
+  <IncludeAll Action="Warning" />
+  <Rules AnalyzerId="Microsoft.Analyzers.ManagedCodeAnalysis" RuleNamespace="Microsoft.Rules.Managed">
+    <Rule Id="CA1709" Action="None" />
+  </Rules>
+</RuleSet>

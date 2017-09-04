@@ -11,8 +11,8 @@ namespace Rubberduck.RibbonDispatcher.AbstractCOM {
     [ComVisible(true)]
     [CLSCompliant(true)]
     [InterfaceType(ComInterfaceType.InterfaceIsDual)]
-    [Guid(RubberduckGuid.ISelectionMadeEventArgs)]
-    public interface ISelectionMadeEventArgs {
+    [Guid(RubberduckGuid.ISelectedEventArgs)]
+    public interface ISelectedEventArgs {
         /// <summary>TODO</summary>
         [DispId(DispIds.SelectedItemId)]
         string ItemId    { get; }

@@ -1,7 +1,4 @@
-﻿////////////////////////////////////////////////////////////////////////////////////////////////////
-//                                Copyright (c) 2017 Pieter Geerkens                              //
-////////////////////////////////////////////////////////////////////////////////////////////////////
-using System;
+﻿using System;
 using System.Globalization;
 using System.Reflection;
 using System.Resources;
@@ -14,8 +11,12 @@ using Rubberduck.RibbonDispatcher.AbstractCOM;
 
 namespace Rubberduck.RibbonDispatcher.Concrete {
 
-    /// <summary>(All) the callbacks for the Fluent Ribbon.</summary>
+    /// <summary>Implementation of (all) the callbacks for the Fluent Ribbon; for .NET clients.</summary>
     /// <remarks>
+    /// DOT NET clients are expected to find it more convenient to inherit their View 
+    /// Model class from {AbstractDispatcher} than to compose against an instance of 
+    /// {RibbonViewModel}. COM clients will most likely find the reverse true. 
+    /// 
     /// The callback names are chosen to be identical to the corresponding xml tag in
     /// the Ribbon schema, except for:
     ///  - PascalCase instead of camelCase; and
@@ -35,115 +36,115 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [Guid(RubberduckGuid.AbstractDispatcher)]
     public abstract class AbstractDispatcher : IAbstractDispatcher {
         /// <summary>TODO</summary>
-        protected void InitializeRibbonFactory(IRibbonUI ribbonUI, ResourceManager resourceManager) 
-            => _ribbonFactory = new RibbonFactory(ribbonUI, resourceManager);
+        protected void InitializeRibbonFactory(IRibbonUI RibbonUI, ResourceManager ResourceManager) 
+            => _ribbonFactory = new RibbonFactory(RibbonUI, ResourceManager);
 
         /// <inheritdoc/>
         public  IRibbonFactory RibbonFactory => _ribbonFactory; private RibbonFactory _ribbonFactory;
 
-        /// <summary>TODO</summary>
+        /// <summary>All of the defined controls.</summary>
         private IRibbonCommon        Controls    (string controlId) => _ribbonFactory.Controls.GetOrDefault(controlId);
-        /// <summary>TODO</summary>
+        /// <summary>All of the defined controls implementing the {ISizeableDecorator} interface.</summary>
         private ISizeableDecorator   Sizeables   (string controlId) => _ribbonFactory.Sizeables.GetOrDefault(controlId);
-        /// <summary>TODO</summary>
-        private IActionableDecorator Actionables (string controlId) => _ribbonFactory.Buttons.GetOrDefault(controlId);
-        /// <summary>TODO</summary>
-        private IToggleableDecorator Toggleables (string controlId) => _ribbonFactory.Toggles.GetOrDefault(controlId);
-        /// <summary>TODO</summary>
-        private ISelectableDecorator DropDowns   (string controlId) => _ribbonFactory.DropDowns.GetOrDefault(controlId);
-        /// <summary>TODO</summary>
+        /// <summary>All of the defined controls implementing the {IActionableDecorator} interface.</summary>
+        private IActionableDecorator Actionables (string controlId) => _ribbonFactory.Actionables.GetOrDefault(controlId);
+        /// <summary>All of the defined controls implementing the {IToggleableDecorator} interface.</summary>
+        private IToggleableDecorator Toggleables (string controlId) => _ribbonFactory.Toggleables.GetOrDefault(controlId);
+        /// <summary>All of the defined controls implementing the {ISelectableDecorator} interface.</summary>
+        private ISelectableDecorator Selectables (string controlId) => _ribbonFactory.Selectables.GetOrDefault(controlId);
+        /// <summary>All of the defined controls implementing the {IImageableDecorator} interface.</summary>
         private IImageableDecorator  Imageables  (string controlId) => _ribbonFactory.Imageables.GetOrDefault(controlId);
 
         /// <inheritdoc/>
-        public string GetDescription(IRibbonControl control)
-            => Controls(control?.Id)?.Description ?? Unknown(control);
+        public string GetDescription(IRibbonControl Control)
+            => Controls(Control?.Id)?.Description ?? Unknown(Control);
         /// <inheritdoc/>
-        public bool   GetEnabled(IRibbonControl control)
-            => Controls(control?.Id)?.IsEnabled ?? false;
+        public bool   GetEnabled(IRibbonControl Control)
+            => Controls(Control?.Id)?.IsEnabled ?? false;
         /// <inheritdoc/>
-        public string GetKeyTip(IRibbonControl control)
-            => Controls(control?.Id)?.KeyTip ?? "??";
+        public string GetKeyTip(IRibbonControl Control)
+            => Controls(Control?.Id)?.KeyTip ?? "??";
         /// <inheritdoc/>
-        public string GetLabel(IRibbonControl control)
-            => Controls(control?.Id)?.Label ?? Unknown(control);
+        public string GetLabel(IRibbonControl Control)
+            => Controls(Control?.Id)?.Label ?? Unknown(Control);
         /// <inheritdoc/>
-        public string GetScreenTip(IRibbonControl control)
-            => Controls(control?.Id)?.ScreenTip ?? Unknown(control);
+        public string GetScreenTip(IRibbonControl Control)
+            => Controls(Control?.Id)?.ScreenTip ?? Unknown(Control);
         /// <inheritdoc/>
-        public string GetSuperTip(IRibbonControl control)
-            => Controls(control?.Id)?.SuperTip ?? Unknown(control);
+        public string GetSuperTip(IRibbonControl Control)
+            => Controls(Control?.Id)?.SuperTip ?? Unknown(Control);
         /// <inheritdoc/>
-        public bool   GetVisible(IRibbonControl control)
-            => Controls(control?.Id)?.IsVisible ?? true;
+        public bool   GetVisible(IRibbonControl Control)
+            => Controls(Control?.Id)?.IsVisible ?? true;
 
         /// <inheritdoc/>
-        public RdControlSize GetSize(IRibbonControl control)
-            => Sizeables(control?.Id)?.Size ?? RdControlSize.rdLarge;
+        public RdControlSize GetSize(IRibbonControl Control)
+            => Sizeables(Control?.Id)?.Size ?? RdControlSize.rdLarge;
 
         /// <inheritdoc/>
-        public object GetImage(IRibbonControl control)
-            => Imageables(control?.Id)?.Image ?? "MacroSecurity";
+        public object GetImage(IRibbonControl Control)
+            => Imageables(Control?.Id)?.Image ?? "MacroSecurity";
         /// <inheritdoc/>
-        public bool   GetShowImage(IRibbonControl control)
-            => Imageables(control?.Id)?.ShowImage ?? true;
+        public bool   GetShowImage(IRibbonControl Control)
+            => Imageables(Control?.Id)?.ShowImage ?? true;
         /// <inheritdoc/>
-        public bool   GetShowLabel(IRibbonControl control)
-            => Imageables(control?.Id)?.ShowLabel ?? true;
+        public bool   GetShowLabel(IRibbonControl Control)
+            => Imageables(Control?.Id)?.ShowLabel ?? true;
 
         /// <inheritdoc/>
-        public bool   GetPressed(IRibbonControl control)
-            => Toggleables(control?.Id)?.IsPressed ?? false;
+        public bool   GetPressed(IRibbonControl Control)
+            => Toggleables(Control?.Id)?.IsPressed ?? false;
         /// <inheritdoc/>
-        public void   OnActionToggle(IRibbonControl control, bool pressed)
-            => Toggleables(control?.Id)?.OnActionToggle(pressed);
+        public void   OnActionToggle(IRibbonControl Control, bool Pressed)
+            => Toggleables(Control?.Id)?.OnActionToggle(Pressed);
 
         /// <inheritdoc/>
-        public void   OnAction(IRibbonControl control) => Actionables(control?.Id)?.OnAction();
+        public void   OnAction(IRibbonControl Control) => Actionables(Control?.Id)?.OnAction();
 
         /// <inheritdoc/>
-        public string GetSelectedItemId(IRibbonControl control)
-            => DropDowns(control?.Id)?.SelectedItemId;
+        public string GetSelectedItemId(IRibbonControl Control)
+            => Selectables(Control?.Id)?.SelectedItemId;
         /// <inheritdoc/>
-        public int    GetSelectedItemIndex(IRibbonControl control)
-            => DropDowns(control?.Id)?.SelectedItemIndex ?? 0;
+        public int    GetSelectedItemIndex(IRibbonControl Control)
+            => Selectables(Control?.Id)?.SelectedItemIndex ?? 0;
         /// <inheritdoc/>
-        public void   OnActionDropDown(IRibbonControl control, string selectedId, int selectedIndex)
-            => DropDowns(control?.Id)?.OnActionDropDown(selectedId, selectedIndex);
+        public void   OnActionDropDown(IRibbonControl Control, string SelectedId, int SelectedIndex)
+            => Selectables(Control?.Id)?.OnActionDropDown(SelectedId, SelectedIndex);
  
         /// <inheritdoc/>
-        public int    GetItemCount(IRibbonControl control)
-            => DropDowns(control?.Id)?.ItemCount ?? 0;
+        public int    GetItemCount(IRibbonControl Control)
+            => Selectables(Control?.Id)?.ItemCount ?? 0;
         /// <inheritdoc/>
-        public string GetItemId(IRibbonControl control, int index)
-            => DropDowns(control?.Id)?.ItemId(index) ?? "";
+        public string GetItemId(IRibbonControl Control, int Index)
+            => Selectables(Control?.Id)?.ItemId(Index) ?? "";
         /// <inheritdoc/>
-        public string GetItemLabel(IRibbonControl control, int index)
-            => DropDowns(control?.Id)?.ItemLabel(index) ?? Unknown(control);
+        public string GetItemLabel(IRibbonControl Control, int Index)
+            => Selectables(Control?.Id)?.ItemLabel(Index) ?? Unknown(Control);
         /// <inheritdoc/>
-        public string GetItemScreenTip(IRibbonControl control, int index)
-            => DropDowns(control?.Id)?.ItemScreenTip(index) ?? Unknown(control);
+        public string GetItemScreenTip(IRibbonControl Control, int Index)
+            => Selectables(Control?.Id)?.ItemScreenTip(Index) ?? Unknown(Control);
         /// <inheritdoc/>
-        public string GetItemSuperTip(IRibbonControl control, int index)
-            => DropDowns(control?.Id)?.ItemSuperTip(index) ?? Unknown(control);
+        public string GetItemSuperTip(IRibbonControl Control, int Index)
+            => Selectables(Control?.Id)?.ItemSuperTip(Index) ?? Unknown(Control);
 
         /// <inheritdoc/>
-        public object GetItemImage(IRibbonControl control, int index)
-            => DropDowns(control?.Id)?.ItemImage(index) ?? "MacroSecurity";
+        public object GetItemImage(IRibbonControl Control, int Index)
+            => Selectables(Control?.Id)?.ItemImage(Index) ?? "MacroSecurity";
         /// <inheritdoc/>
-        public bool   GetItemShowImage(IRibbonControl control, int index)
-            => DropDowns(control?.Id)?.ItemShowImage(index) ?? true;
+        public bool   GetItemShowImage(IRibbonControl Control, int Index)
+            => Selectables(Control?.Id)?.ItemShowImage(Index) ?? true;
         /// <inheritdoc/>
-        public bool   GetItemShowLabel(IRibbonControl control, int index)
-            => DropDowns(control?.Id)?.ItemShowLabel(index) ?? true;
+        public bool   GetItemShowLabel(IRibbonControl Control, int Index)
+            => Selectables(Control?.Id)?.ItemShowLabel(Index) ?? true;
 
         //private ISelectableItem DropDownItem(IRibbonControl control, int index)
         //    => DropDowns(control?.Id)[index];
 
-        private static string Unknown(IRibbonControl control) 
-            => string.Format(CultureInfo.InvariantCulture, $"'{control?.Id??""}' unknown");
+        private static string Unknown(IRibbonControl Control) 
+            => string.Format(CultureInfo.InvariantCulture, $"'{Control?.Id??""}' unknown");
 
         /// <summary>TODO</summary>
-        protected static ResourceManager GetResourceManager(string resourceSetName) 
-            => new ResourceManager(resourceSetName, Assembly.GetExecutingAssembly());
+        protected static ResourceManager GetResourceManager(string ResourceSetName) 
+            => new ResourceManager(ResourceSetName, Assembly.GetExecutingAssembly());
     }
 }

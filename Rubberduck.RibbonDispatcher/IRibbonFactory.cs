@@ -112,7 +112,7 @@ namespace Rubberduck.RibbonDispatcher {
             string              itemId,
             bool                visible = true,
             bool                enabled = true,
-            SelectionMadeEventHandler onSelectionMade = null,
+            SelectedEventHandler onSelectionMade = null,
             ISelectableItem[]   items   = null
         );
 

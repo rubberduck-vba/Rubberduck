@@ -31,15 +31,17 @@ namespace Rubberduck
         public const string IClickedEventArgs           = "69E19401" + RibbonDispatcherGuidspace;
         public const string IToggledEvents              = "69E19402" + RibbonDispatcherGuidspace;
         public const string IToggledEventArgs           = "69E19403" + RibbonDispatcherGuidspace;
-        public const string ISelectionMadeEvents        = "69E19404" + RibbonDispatcherGuidspace;
-        public const string ISelectionMadeEventArgs     = "69E19405" + RibbonDispatcherGuidspace;
+        public const string ISelectedEvents             = "69E19404" + RibbonDispatcherGuidspace;
+        public const string ISelectedEventArgs          = "69E19405" + RibbonDispatcherGuidspace;
 
+        public const string IAbstractDispatcher         = "69E1940A" + RibbonDispatcherGuidspace;
+        public const string AbstractDispatcher          = "69E1940B" + RibbonDispatcherGuidspace;
         public const string IMain                       = "69E1940C" + RibbonDispatcherGuidspace;
         public const string Main                        = "69E1940D" + RibbonDispatcherGuidspace;
         public const string IRibbonFactory              = "69E1940E" + RibbonDispatcherGuidspace;
         public const string RdControlSize               = "69E1940F" + RibbonDispatcherGuidspace;
-        public const string IAbstractDispatcher         = "69E19410" + RibbonDispatcherGuidspace;
-        public const string AbstractDispatcher          = "69E19411" + RibbonDispatcherGuidspace;
+        public const string IRibbonViewModel            = "69E19410" + RibbonDispatcherGuidspace;
+        public const string RibbonViewModel             = "69E19411" + RibbonDispatcherGuidspace;
         public const string IRibbonCommon               = "69E19412" + RibbonDispatcherGuidspace;
         public const string RibbonCommon                = "69E19413" + RibbonDispatcherGuidspace;
         public const string IRibbonButton               = "69E19414" + RibbonDispatcherGuidspace;

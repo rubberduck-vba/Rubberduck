@@ -21,7 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>Rubberduck.RibbonDispatcher.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <LangVersion>6</LangVersion>
   </PropertyGroup>
@@ -32,7 +32,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>Rubberduck.RibbonDispatcher.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <LangVersion>7</LangVersion>
     <RegisterForComInterop>true</RegisterForComInterop>
@@ -73,7 +73,7 @@
     <Compile Include="ControlDecorators\IImageableDecorator.cs" />
     <Compile Include="AbstractCOM\IRibbonGroup.cs" />
     <Compile Include="AbstractCOM\IRibbonDropDown.cs" />
-    <Compile Include="EventHandlers\ISelectionMadeEventArgs.cs" />
+    <Compile Include="EventHandlers\ISelectedEventArgs.cs" />
     <Compile Include="AbstractCOM\ISelectionMadeEvents.cs" />
     <Compile Include="EventHandlers\IToggledEventArgs.cs" />
     <Compile Include="AbstractCOM\IToggledEvents.cs" />
@@ -106,7 +106,7 @@
     <Compile Include="RibbonFactory.cs" />
     <Compile Include="Concrete\RibbonTextLanguageControl.cs" />
     <Compile Include="Concrete\RibbonToggleButton.cs" />
-    <Compile Include="EventHandlers\SelectionMadeEventArgs.cs" />
+    <Compile Include="EventHandlers\SelectedEventArgs.cs" />
     <Compile Include="RibbonViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -117,6 +117,9 @@
       <Project>{20589de8-432e-4359-9232-69eb070b7185}</Project>
       <Name>Rubberduck</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Rubberduck.RibbonDispatcher.ruleset" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

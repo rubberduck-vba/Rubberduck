@@ -11,10 +11,10 @@ namespace Rubberduck.RibbonDispatcher.EventHandlers {
     [Serializable]
     [CLSCompliant(true)]
     [ClassInterface(ClassInterfaceType.None)]
-    [ComDefaultInterface(typeof(ISelectionMadeEventArgs))]
-    public class SelectionMadeEventArgs : EventArgs, ISelectionMadeEventArgs {
+    [ComDefaultInterface(typeof(ISelectedEventArgs))]
+    public class SelectedEventArgs : EventArgs, ISelectedEventArgs {
         /// <summary>TODO</summary>
-        public SelectionMadeEventArgs(string itemId, int itemIndex) { ItemId = itemId; ItemIndex = itemIndex; }
+        public SelectedEventArgs(string itemId, int itemIndex) { ItemId = itemId; ItemIndex = itemIndex; }
         /// <summary>TODO</summary>
         public string ItemId    { get; }
         /// <summary>TODO</summary>

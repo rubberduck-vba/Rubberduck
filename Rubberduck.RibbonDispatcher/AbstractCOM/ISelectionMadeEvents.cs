@@ -9,10 +9,10 @@ namespace Rubberduck.RibbonDispatcher.AbstractCOM {
     [ComVisible(true)]
     [CLSCompliant(true)]
     [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
-    [Guid(RubberduckGuid.ISelectionMadeEvents)]
+    [Guid(RubberduckGuid.ISelectedEvents)]
     public interface ISelectionMadeEvents {
         /// <summary>TODO</summary>
         [DispId(1)]
-        void SelectionMade(object sender, ISelectionMadeEventArgs e);
+        void SelectionMade(object sender, ISelectedEventArgs e);
     }
 }

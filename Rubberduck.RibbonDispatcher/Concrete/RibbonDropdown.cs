@@ -25,14 +25,14 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
     [Guid(RubberduckGuid.RibbonDropDown)]
     public class RibbonDropDown : RibbonCommon, IRibbonDropDown, ISelectableDecorator {
         internal RibbonDropDown(string itemId, ResourceManager mgr, bool visible, bool enabled,
-                SelectionMadeEventHandler onSelectionMade, ISelectableItem[] items = null)
+                SelectedEventHandler onSelectionMade, ISelectableItem[] items = null)
             : base(itemId, mgr, visible, enabled){
             if(onSelectionMade != null) SelectionMade += onSelectionMade;
             _items = items?.ToList()?.AsReadOnly();
         }
 
         /// <summary>TODO</summary>
-        public event SelectionMadeEventHandler SelectionMade;
+        public event SelectedEventHandler SelectionMade;
 
         private int                             _selectedItemIndex;
         private IReadOnlyList<ISelectableItem>  _items;
@@ -55,7 +55,7 @@ namespace Rubberduck.RibbonDispatcher.Concrete {
         [DispId(DispIds.OnActionDropDown)]
         public void OnActionDropDown(string selectedId, int selectedIndex) {
             _selectedItemIndex = selectedIndex;
-            SelectionMade?.Invoke(this, new SelectionMadeEventArgs(selectedId, selectedIndex));
+            SelectionMade?.Invoke(this, new SelectedEventArgs(selectedId, selectedIndex));
             OnChanged();
         }
 

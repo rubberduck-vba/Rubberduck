@@ -1,21 +1,31 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Resources;
+using System.Runtime.InteropServices;
 
 using Microsoft.Office.Core;
 
-using Rubberduck.RibbonDispatcher.AbstractCOM;
 using Rubberduck.RibbonDispatcher.Concrete;
+using Rubberduck.RibbonDispatcher.AbstractCOM;
 
 namespace Rubberduck.RibbonDispatcher {
-    /// <summary>TODO</summary>
+    /// <summary>Implementation of (all) the callbacks for the Fluent Ribbon; for COM clients.</summary>
+    /// <remarks>
+    /// DOT NET clients are expected to find it more convenient to inherit their View 
+    /// Model class from {AbstractDispatcher} than to compose against an instance of 
+    /// {RibbonViewModel}. COM clients will most likely find the reverse true. 
+    /// </remarks>
+    [SuppressMessage("Microsoft.Interoperability", "CA1405:ComVisibleTypeBaseTypesShouldBeComVisible")]
+    [SuppressMessage("Microsoft.Interoperability", "CA1409:ComVisibleTypesShouldBeCreatable",
+        Justification ="Public non-creatable class for COM.")]
     [Serializable]
+    [ComVisible(true)]
     [CLSCompliant(true)]
-    internal class RibbonViewModel : AbstractDispatcher, IAbstractDispatcher {
+    [ComDefaultInterface(typeof(IRibbonViewModel))]
+    [Guid(RubberduckGuid.RibbonViewModel)]
+    public sealed class RibbonViewModel : AbstractDispatcher, IRibbonViewModel {
         /// <summary>TODO</summary>
-        public RibbonViewModel(IRibbonUI ribbonUI, ResourceManager resourceManager) : base() {
-            InitializeRibbonFactory(ribbonUI, resourceManager);
-        }
-
-        public new IRibbonFactory RibbonFactory => base.RibbonFactory;
+        public RibbonViewModel(IRibbonUI RibbonUI, ResourceManager ResourceManager) : base() 
+            => InitializeRibbonFactory(RibbonUI, ResourceManager);
     }
 }

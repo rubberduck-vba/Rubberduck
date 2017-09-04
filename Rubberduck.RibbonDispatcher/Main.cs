@@ -22,7 +22,7 @@ namespace Rubberduck.RibbonDispatcher {
         /// <summary>TODO</summary>
         public Main() { }
         /// <inheritdoc/>
-        public IAbstractDispatcher NewRibbonViewModel(IRibbonUI ribbonUI, ResourceManager resourceManager)
+        public IRibbonViewModel NewRibbonViewModel(IRibbonUI ribbonUI, ResourceManager resourceManager)
             => new RibbonViewModel(ribbonUI, resourceManager);
     }
 }

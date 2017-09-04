@@ -30,47 +30,47 @@ namespace Rubberduck.RibbonDispatcher {
     public class RibbonFactory : IRibbonFactory {
         internal RibbonFactory(IRibbonUI ribbonUI, ResourceManager resourceManager) {
             _ribbonUI        = ribbonUI;
+            _resourceManager = resourceManager;
             _controls        = new Dictionary<string, IRibbonCommon>();
             _sizeables       = new Dictionary<string, ISizeableDecorator>();
-            _buttons         = new Dictionary<string, IActionableDecorator>();
-            _toggles         = new Dictionary<string, IToggleableDecorator>();
-            _dropDowns       = new Dictionary<string, ISelectableDecorator>();
+            _actionables     = new Dictionary<string, IActionableDecorator>();
+            _toggleables     = new Dictionary<string, IToggleableDecorator>();
+            _selectables     = new Dictionary<string, ISelectableDecorator>();
             _imageables      = new Dictionary<string, IImageableDecorator>();
-            _resourceManager = resourceManager;
         }
 
         private readonly IRibbonUI                                  _ribbonUI;
         private readonly ResourceManager                            _resourceManager;
         private readonly IDictionary<string, IRibbonCommon>         _controls;
         private readonly IDictionary<string, ISizeableDecorator>    _sizeables;
-        private readonly IDictionary<string, IActionableDecorator>  _buttons;
-        private readonly IDictionary<string, ISelectableDecorator>  _dropDowns;
+        private readonly IDictionary<string, IActionableDecorator>  _actionables;
+        private readonly IDictionary<string, ISelectableDecorator>  _selectables;
         private readonly IDictionary<string, IImageableDecorator>   _imageables;
-        private readonly IDictionary<string, IToggleableDecorator>  _toggles;
+        private readonly IDictionary<string, IToggleableDecorator>  _toggleables;
 
         /// <summary>Returns a readonly collection of all Ribbon Controls in this Ribbon ViewModel.</summary>
-        public IReadOnlyDictionary<string, IRibbonCommon>        Controls   => new ReadOnlyDictionary<string, IRibbonCommon>(_controls);
+        public IReadOnlyDictionary<string, IRibbonCommon>        Controls    => new ReadOnlyDictionary<string, IRibbonCommon>(_controls);
         /// <summary>Returns a readonly collection of all Ribbon (Action) Buttons in this Ribbon ViewModel.</summary>
-        public IReadOnlyDictionary<string, ISizeableDecorator>   Sizeables  => new ReadOnlyDictionary<string, ISizeableDecorator>(_sizeables);
+        public IReadOnlyDictionary<string, ISizeableDecorator>   Sizeables   => new ReadOnlyDictionary<string, ISizeableDecorator>(_sizeables);
         /// <summary>Returns a readonly collection of all Ribbon (Action) Buttons in this Ribbon ViewModel.</summary>
-        public IReadOnlyDictionary<string, IActionableDecorator> Buttons    => new ReadOnlyDictionary<string, IActionableDecorator>(_buttons);
+        public IReadOnlyDictionary<string, IActionableDecorator> Actionables => new ReadOnlyDictionary<string, IActionableDecorator>(_actionables);
         /// <summary>Returns a readonly collection of all Ribbon DropDowns in this Ribbon ViewModel.</summary>
-        public IReadOnlyDictionary<string, ISelectableDecorator> DropDowns  => new ReadOnlyDictionary<string, ISelectableDecorator>(_dropDowns);
+        public IReadOnlyDictionary<string, ISelectableDecorator> Selectables => new ReadOnlyDictionary<string, ISelectableDecorator>(_selectables);
         /// <summary>Returns a readonly collection of all Ribbon Imageable Controls in this Ribbon ViewModel.</summary>
-        public IReadOnlyDictionary<string, IImageableDecorator>  Imageables => new ReadOnlyDictionary<string, IImageableDecorator>(_imageables);
+        public IReadOnlyDictionary<string, IImageableDecorator>  Imageables  => new ReadOnlyDictionary<string, IImageableDecorator>(_imageables);
         /// <summary>Returns a readonly collection of all Ribbon Toggle Buttons in this Ribbon ViewModel.</summary>
-        public IReadOnlyDictionary<string, IToggleableDecorator> Toggles    => new ReadOnlyDictionary<string, IToggleableDecorator>(_toggles);
+        public IReadOnlyDictionary<string, IToggleableDecorator> Toggleables => new ReadOnlyDictionary<string, IToggleableDecorator>(_toggleables);
 
         private void PropertyChanged(object sender, IControlChangedEventArgs e) => _ribbonUI.InvalidateControl(e.ControlId);
 
         private T Add<T>(T ctrl) where T:RibbonCommon {
             _controls.Add(ctrl.Id, ctrl);
 
-            _buttons.AddNotNull(ctrl.Id, ctrl as IActionableDecorator);
+            _actionables.AddNotNull(ctrl.Id, ctrl as IActionableDecorator);
             _sizeables.AddNotNull(ctrl.Id, ctrl as ISizeableDecorator);
-            _dropDowns.AddNotNull(ctrl.Id, ctrl as ISelectableDecorator);
+            _selectables.AddNotNull(ctrl.Id, ctrl as ISelectableDecorator);
             _imageables.AddNotNull(ctrl.Id, ctrl as IImageableDecorator);
-            _toggles.AddNotNull(ctrl.Id, ctrl as IToggleableDecorator);
+            _toggleables.AddNotNull(ctrl.Id, ctrl as IToggleableDecorator);
 
             ctrl.Changed += PropertyChanged;
             return ctrl;
@@ -155,11 +155,11 @@ namespace Rubberduck.RibbonDispatcher {
         /// <summary>Returns a new Ribbon DropDownViewModel instance.</summary>
         [SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed", Justification="Matches COM usage.")]
         public RibbonDropDown NewRibbonDropDown(
-            string              itemId,
-            bool                visible         = true,
-            bool                enabled         = true,
-            SelectionMadeEventHandler onSelectionMade = null,
-            ISelectableItem[]   items           = null
+            string               itemId,
+            bool                 visible         = true,
+            bool                 enabled         = true,
+            SelectedEventHandler onSelectionMade = null,
+            ISelectableItem[]    items           = null
         ) => Add(new RibbonDropDown(itemId, _resourceManager, visible, enabled, onSelectionMade, items));
 
         /// <inheritdoc/>

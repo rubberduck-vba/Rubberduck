@@ -12,6 +12,7 @@
       <Word>u</Word><Word>v</Word><Word>w</Word><Word>x</Word><Word>y</Word>
       <Word>z</Word>
 
+      <Word>actionables</Word>
       <Word>lhs</Word><Word>rhs</Word>
       <Word>disp</Word>       <!-- Inherited usage in IPictureDisp retained for consistency -->
       <Word>imageable</Word>
@@ -19,9 +20,11 @@
       <Word>mso</Word>        <!-- Inherited usage from Fluent Ribbon interface spec. -->
       <Word>rd</Word>         <!-- Prefix for Rubberduck enum types. -->
       <Word>Rubberduck</Word>
+      <Word>selectables</Word>
       <Word>sizeable</Word>
       <Word>sizeables</Word>
       <Word>toggleable</Word>
+      <Word>toggleables</Word>
     </Recognized>
     <Deprecated>
       <Term PreferredAlternate=""></Term>

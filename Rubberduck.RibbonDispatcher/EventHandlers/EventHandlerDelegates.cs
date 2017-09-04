@@ -13,7 +13,7 @@ namespace Rubberduck.RibbonDispatcher.EventHandlers {
     /// <summary>TODO</summary>
     [SuppressMessage("Microsoft.Design", "CA1003:UseGenericEventHandlerInstances", Justification = "Necessary for COM Interop.")]
     [CLSCompliant(true)]
-    public delegate void SelectionMadeEventHandler(object sender, SelectionMadeEventArgs e);
+    public delegate void SelectedEventHandler(object sender, SelectedEventArgs e);
 
     /// <summary>TODO</summary>
     [SuppressMessage("Microsoft.Design", "CA1003:UseGenericEventHandlerInstances", Justification = "Necessary for COM Interop.")]
