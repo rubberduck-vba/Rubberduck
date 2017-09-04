@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -13,45 +11,34 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    internal class EmptyIfBlockInspection : ParseTreeInspectionBase
+    internal class EmptyWhileWendBlockInspection : ParseTreeInspectionBase
     {
-        public EmptyIfBlockInspection(RubberduckParserState state)
+        public EmptyWhileWendBlockInspection(RubberduckParserState state)
             : base(state) { }
 
-        public override Type Type => typeof(EmptyIfBlockInspection);
+        public override Type Type => typeof(EmptyWhileWendBlockInspection);
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
         public override IInspectionListener Listener { get; } =
-            new EmptyIfBlockListener();
+            new EmptyWhileWendBlockListener();
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
+            //TODO: create InspectionUI resource
             return Listener.Contexts
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))
                 .Select(result => new QualifiedContextInspectionResult(this,
-                                                       InspectionsUI.EmptyIfBlockInspectionResultFormat,
+                                                       //InspectionsUI.EmptyIfBlockInspectionResultFormat,
+                                                       "While Wend loop contains no executable statements",
                                                        result));
         }
 
-        public class EmptyIfBlockListener : EmptyBlockListenerBase
+        public class EmptyWhileWendBlockListener : EmptyBlockListenerBase
         {
-            public override void EnterIfStmt([NotNull] VBAParser.IfStmtContext context)
+            public override void EnterWhileWendStmt([NotNull] VBAParser.WhileWendStmtContext context)
             {
                 InspectBlockForExecutableStatements(context.block(), context);
-            }
-
-            public override void EnterElseIfBlock([NotNull] VBAParser.ElseIfBlockContext context)
-            {
-                InspectBlockForExecutableStatements(context.block(), context);
-            }
-
-            public override void EnterSingleLineIfStmt([NotNull] VBAParser.SingleLineIfStmtContext context)
-            {
-                if (context.ifWithEmptyThen() != null)
-                {
-                    AddResult(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context.ifWithEmptyThen()));
-                }
             }
         }
     }
