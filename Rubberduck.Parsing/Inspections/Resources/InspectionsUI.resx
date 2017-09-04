@@ -790,4 +790,17 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="IntegerDataTypeQuickFix" xml:space="preserve">
     <value>Change declaration type to Long</value>
   </data>
+  <data name="RemoveStopKeywordQuickFix" xml:space="preserve">
+    <value>Remove usage of the 'stop' keyword</value>
+  </data>
+  <data name="StopKeywordInspectionMeta" xml:space="preserve">
+    <value>The 'stop' keyword halts execution and brings up the debugger. Avoid its usage.</value>
+  </data>
+  <data name="StopKeywordInspectionName" xml:space="preserve">
+    <value>Stop keyword</value>
+  </data>
+  <data name="StopKeywordInspectionResultFormat" xml:space="preserve">
+    <value>Stop keyword detected</value>
+    <comment>{0} Property name</comment>
+  </data>
 </root>
