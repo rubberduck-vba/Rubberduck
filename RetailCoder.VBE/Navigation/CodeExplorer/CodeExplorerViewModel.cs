@@ -97,8 +97,11 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             SetNameSortCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
             {
+                if ((bool)param == true)
+                {
                     SortByName = (bool)param;
                     SortByCodeOrder = !(bool)param;
+                }
             }, param =>
             {
                 return SortByName ? false : true;
@@ -106,8 +109,11 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             SetCodeOrderSortCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
             {
+                if ((bool)param == true)
+                {
                     SortByCodeOrder = (bool)param;
                     SortByName = !(bool)param;
+                };
             }, param => 
             {
                 return SortByCodeOrder ? false : true;
