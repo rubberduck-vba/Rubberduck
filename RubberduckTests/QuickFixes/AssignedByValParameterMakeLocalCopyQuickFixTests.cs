@@ -11,13 +11,13 @@ using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 
-namespace RubberduckTests.Inspections
+namespace RubberduckTests.QuickFixes
 {
     [TestClass]
     public class AssignedByValParameterMakeLocalCopyQuickFixTests
     {
         [TestMethod]
-        [TestCategory("Inspections")]
+        [TestCategory("QuickFixes")]
         public void AssignedByValParameter_LocalVariableAssignment()
         {
             var inputCode =
@@ -36,7 +36,7 @@ End Sub";
         }
         
         [TestMethod]
-        [TestCategory("Inspections")]
+        [TestCategory("QuickFixes")]
         public void AssignedByValParameter_LocalVariableAssignment_ComplexFormat()
         {
             var inputCode =
@@ -71,7 +71,7 @@ End Sub
         }
 
         [TestMethod]
-        [TestCategory("Inspections")]
+        [TestCategory("QuickFixes")]
         public void AssignedByValParameter_LocalVariableAssignment_ComputedNameAvoidsCollision()
         {
             var inputCode =
@@ -98,7 +98,7 @@ End Sub"
         }
 
         [TestMethod]
-        [TestCategory("Inspections")]
+        [TestCategory("QuickFixes")]
         public void AssignedByValParameter_LocalVariableAssignment_NameInUseOtherSub()
         {
             //Make sure the modified code stays within the specific method under repair
@@ -130,7 +130,7 @@ End Sub"
         }
 
         [TestMethod]
-        [TestCategory("Inspections")]
+        [TestCategory("QuickFixes")]
         public void AssignedByValParameter_LocalVariableAssignment_NameInUseOtherProperty()
         {
             //Make sure the modified code stays within the specific method under repair
@@ -168,7 +168,7 @@ End Function
 
         //Replicates issue #2873 : AssignedByValParameter quick fix needs to use `Set` for reference types.
         [TestMethod]
-        [TestCategory("Inspections")]
+        [TestCategory("QuickFixes")]
         public void AssignedByValParameter_LocalVariableAssignment_UsesSet()
         {
             var inputCode =
@@ -191,7 +191,7 @@ End Sub"
         }
 
         [TestMethod]
-        [TestCategory("Inspections")]
+        [TestCategory("QuickFixes")]
         public void AssignedByValParameter_LocalVariableAssignment_NoAsTypeClause()
         {
             var inputCode =
@@ -214,7 +214,7 @@ End Sub"
         }
 
         [TestMethod]
-        [TestCategory("Inspections")]
+        [TestCategory("QuickFixes")]
         public void AssignedByValParameter_LocalVariableAssignment_EnumType()
         {
             var inputCode =

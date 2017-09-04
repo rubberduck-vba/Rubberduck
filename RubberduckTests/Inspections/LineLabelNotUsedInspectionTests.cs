@@ -1,7 +1,6 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
@@ -186,88 +185,6 @@ End Sub";
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.IsFalse(inspectionResults.Any());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void LabelNotUsed_QuickFixWorks()
-        {
-            const string inputCode =
-@"Sub Foo()
-label1:
-End Sub";
-
-            const string expectedCode =
-@"Sub Foo()
-
-End Sub";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new LineLabelNotUsedInspection(state);
-            new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults().First());
-
-            var rewriter = state.GetRewriter(component);
-            Assert.AreEqual(expectedCode, rewriter.GetText());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void LabelNotUsed_QuickFixWorks_MultipleLabels()
-        {
-            const string inputCode =
-@"Sub Foo()
-label1:
-dim var1 as variant
-label2:
-goto label1:
-End Sub";
-
-            const string expectedCode =
-@"Sub Foo()
-label1:
-dim var1 as variant
-
-goto label1:
-End Sub"; ;
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new LineLabelNotUsedInspection(state);
-            new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults().First());
-
-            var rewriter = state.GetRewriter(component);
-            Assert.AreEqual(expectedCode, rewriter.GetText());
-        }
-
-        [TestMethod]
-
-        [TestCategory("Inspections")]
-        public void LabelNotUsed_IgnoreQuickFixWorks()
-        {
-            const string inputCode =
-@"Sub Foo()
-label1:
-End Sub";
-
-            const string expectedCode =
-@"Sub Foo()
-'@Ignore LineLabelNotUsed
-label1:
-End Sub";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new LineLabelNotUsedInspection(state);
-            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspection.GetInspectionResults().First());
-
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
