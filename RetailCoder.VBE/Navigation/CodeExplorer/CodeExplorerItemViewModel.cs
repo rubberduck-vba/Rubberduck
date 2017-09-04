@@ -84,7 +84,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             if (xNodeAcc != yNodeAcc)
             {
-                return xNodeAcc < yNodeAcc ? -1 : 1;
+                return xNodeAcc > yNodeAcc ? -1 : 1;
             }
 
             if (x.ExpandedIcon != y.ExpandedIcon)
