@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Antlr4.Runtime.Misc;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
+﻿using Antlr4.Runtime.Misc;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -11,28 +6,13 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    internal class EmptyDoWhileBlockInspection : ParseTreeInspectionBase
+    internal class EmptyDoWhileBlockInspection : EmptyBlockInspectionBase<EmptyDoWhileBlockInspection>
     {
-        public EmptyDoWhileBlockInspection(RubberduckParserState state)
-            : base(state) { }
-
-        public override Type Type => typeof(EmptyDoWhileBlockInspection);
-
-        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
+        public EmptyDoWhileBlockInspection(RubberduckParserState state) 
+            : base(state, "Do While loop contains no executable statements") { }
 
         public override IInspectionListener Listener { get; } =
             new EmptyDoWhileBlockListener();
-
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
-        {
-            //TODO: create InspectionUI resource
-            return Listener.Contexts
-                .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))
-                .Select(result => new QualifiedContextInspectionResult(this,
-                                                       //InspectionsUI.EmptyIfBlockInspectionResultFormat,
-                                                       "Do While loop contains no executable statements",
-                                                       result));
-        }
 
         public class EmptyDoWhileBlockListener : EmptyBlockListenerBase
         {
