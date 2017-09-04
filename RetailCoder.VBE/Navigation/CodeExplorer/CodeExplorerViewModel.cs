@@ -99,12 +99,18 @@ namespace Rubberduck.Navigation.CodeExplorer
             {
                     SortByName = (bool)param;
                     SortByCodeOrder = !(bool)param;
+            }, param =>
+            {
+                return SortByName ? false : true;
             });
 
             SetCodeOrderSortCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
             {
                     SortByCodeOrder = (bool)param;
                     SortByName = !(bool)param;
+            }, param => 
+            {
+                return SortByCodeOrder ? false : true;
             });
         }
 
