@@ -1413,7 +1413,7 @@ End Function
 
         [TestCategory("Code Explorer")]
         [TestMethod]
-        public void CompareByType_SubsAndFunctionsReturnsEqual()
+        public void CompareByType_ReturnsSubsAndFunctionsEqual()
         {
             var inputCode =
     @"Public Function Foo() As Boolean
