@@ -156,6 +156,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 _windowSettings.CodeExplorer_SortByCodeOrder = !value;
                 _windowSettingsProvider.Save(_windowSettings);
                 OnPropertyChanged();
+                OnPropertyChanged("SortByCodeOrder");
 
                 ReorderChildNodes(Projects);
             }
@@ -175,6 +176,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 _windowSettings.CodeExplorer_SortByName = !value;
                 _windowSettingsProvider.Save(_windowSettings);
                 OnPropertyChanged();
+                OnPropertyChanged("SortByName");
 
                 ReorderChildNodes(Projects);
             }
