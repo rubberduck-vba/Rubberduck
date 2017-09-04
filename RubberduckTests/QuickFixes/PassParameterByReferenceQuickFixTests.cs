@@ -12,10 +12,10 @@ using Rubberduck.Parsing.VBA;
 namespace RubberduckTests.Inspections
 {
     [TestClass]
-    public class AssignedByValParameterChangeToByRefQuickFixTests
+    public class PassParameterByReferenceQuickFixTests
     {
         [TestMethod]
-        [TestCategory("Inspections")]
+        [TestCategory("QuickFixes")]
         public void AssignedByValParameter_PassByReferenceQuickFixWorks()
         {
 
