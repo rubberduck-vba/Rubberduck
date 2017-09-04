@@ -1,7 +1,6 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Resources;
 using RubberduckTests.Mocks;
 
@@ -133,53 +132,6 @@ End Sub";
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.IsFalse(inspectionResults.Any());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void UnassignedVariable_QuickFixWorks()
-        {
-            const string inputCode =
-@"Sub Foo()
-Dim var1 As String
-End Sub";
-
-            const string expectedCode =
-@"Sub Foo()
-End Sub";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new VariableNotUsedInspection(state);
-            new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults().First());
-
-            var rewriter = state.GetRewriter(component);
-            Assert.AreEqual(expectedCode, rewriter.GetText());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void UnassignedVariable_IgnoreQuickFixWorks()
-        {
-            const string inputCode =
-@"Sub Foo()
-Dim var1 As String
-End Sub";
-
-            const string expectedCode =
-@"Sub Foo()
-'@Ignore VariableNotUsed
-Dim var1 As String
-End Sub";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new VariableNotUsedInspection(state);
-            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspection.GetInspectionResults().First());
-
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]

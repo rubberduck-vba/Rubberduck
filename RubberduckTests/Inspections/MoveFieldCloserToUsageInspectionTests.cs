@@ -1,10 +1,7 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.UI;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
@@ -21,7 +18,6 @@ namespace RubberduckTests.Inspections
 Public Sub Foo()
     bar = ""test""
 End Sub";
-
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
@@ -43,7 +39,6 @@ End Sub
 Public Sub For2()
     Let bar = ""test""
 End Sub";
-
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
@@ -62,7 +57,6 @@ End Sub";
     Dim bar As String
     bar = ""test""
 End Sub";
-
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
@@ -80,7 +74,6 @@ End Sub";
 @"Private bar As String
 Public Sub Foo()
 End Sub";
-
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
@@ -99,7 +92,6 @@ End Sub";
 Public Property Get Foo() As String
     Foo = bar
 End Property";
-
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
@@ -121,7 +113,6 @@ End Property
 Public Property Let Foo(ByVal value As String)
     bar = value
 End Property";
-
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
@@ -143,7 +134,6 @@ End Property
 Public Property Set Foo(ByVal value As Variant)
     bar = value
 End Property";
-
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
@@ -163,7 +153,6 @@ Private bar As String
 Public Sub Foo()
     bar = ""test""
 End Sub";
-
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
@@ -171,59 +160,6 @@ End Sub";
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.IsFalse(inspectionResults.Any());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void MoveFieldCloserToUsage_IgnoreQuickFixWorks()
-        {
-            const string inputCode =
-@"Private bar As String
-Public Sub Foo()
-    bar = ""test""
-End Sub";
-
-            const string expectedCode =
-@"'@Ignore MoveFieldCloserToUsage
-Private bar As String
-Public Sub Foo()
-    bar = ""test""
-End Sub";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new MoveFieldCloserToUsageInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void MoveFieldCloserToUsage_QuickFixWorks()
-        {
-            const string inputCode =
-@"Private bar As String
-Public Sub Foo()
-    bar = ""test""
-End Sub";
-
-            const string expectedCode =
-@"Public Sub Foo()
-    Dim bar As String
-bar = ""test""
-End Sub";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new MoveFieldCloserToUsageInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            new MoveFieldCloserToUsageQuickFix(state, new Mock<IMessageBox>().Object).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]

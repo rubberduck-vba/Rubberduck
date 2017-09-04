@@ -1,7 +1,6 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Resources;
 using RubberduckTests.Mocks;
 
@@ -170,58 +169,6 @@ End Sub";
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.IsFalse(inspectionResults.Any());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void ConstantNotUsed_QuickFixWorks()
-        {
-            const string inputCode =
-@"Public Sub Foo()
-Const const1 As Integer = 9
-End Sub";
-
-            const string expectedCode =
-@"Public Sub Foo()
-End Sub";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new ConstantNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            new RemoveUnusedDeclarationQuickFix(state).Fix(inspectionResults.First());
-
-            var rewriter = state.GetRewriter(component);
-            var rewrittenCode = rewriter.GetText();
-            Assert.AreEqual(expectedCode, rewrittenCode);
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void ConstantNotUsed_IgnoreQuickFixWorks()
-        {
-            const string inputCode =
-@"Public Sub Foo()
-    Const const1 As Integer = 9
-End Sub";
-
-            const string expectedCode =
-@"Public Sub Foo()
-'@Ignore ConstantNotUsed
-    Const const1 As Integer = 9
-End Sub";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new ConstantNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
-
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]

@@ -2,7 +2,6 @@ using System.Linq;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
@@ -103,10 +102,10 @@ End Sub
             var input =
 @"
 Private Sub Workbook_Open()
-
+    
     Dim target As String
     target = Range(""A1"")
-
+    
     target.Value = ""all good""
 
 End Sub";
@@ -208,10 +207,10 @@ End Sub";
             var input =
 @"
 Private Sub Workbook_Open()
-
+    
     Dim target As Range
     target = Range(""A1"")
-
+    
     target.Value = ""forgot something?""
 
 End Sub";
@@ -226,11 +225,11 @@ End Sub";
             var input =
 @"
 Private Sub Workbook_Open()
-
+    
     Dim target As Range
 '@Ignore ObjectVariableNotSet
     target = Range(""A1"")
-
+    
     target.Value = ""forgot something?""
 
 End Sub";
@@ -245,10 +244,10 @@ End Sub";
             var input =
 @"
 Private Sub Workbook_Open()
-
+    
     Dim target As Range
     Set target = Range(""A1"")
-
+    
     target.Value = ""All good""
 
 End Sub";
@@ -290,117 +289,6 @@ End Function";
 
             Assert.AreEqual(expectedResultCount, inspectionResults.Count());
 
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void ObjectVariableNotSet_IgnoreQuickFixWorks()
-        {
-            var inputCode =
-            @"
-Private Sub Workbook_Open()
-
-    Dim target As Range
-    target = Range(""A1"")
-
-    target.Value = ""forgot something?""
-
-End Sub";
-            var expectedCode =
-            @"
-Private Sub Workbook_Open()
-
-    Dim target As Range
-'@Ignore ObjectVariableNotSet
-    target = Range(""A1"")
-
-    target.Value = ""forgot something?""
-
-End Sub";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new ObjectVariableNotSetInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void ObjectVariableNotSet_ForFunctionAssignment_ReturnsResult()
-        {
-            var expectedResultCount = 2;
-            var input =
-@"
-Private Function CombineRanges(ByVal source As Range, ByVal toCombine As Range) As Range
-    If source Is Nothing Then
-        CombineRanges = toCombine 'no inspection result (but there should be one!)
-    Else
-        CombineRanges = Union(source, toCombine) 'no inspection result (but there should be one!)
-    End If
-End Function";
-            var expectedCode =
-            @"
-Private Function CombineRanges(ByVal source As Range, ByVal toCombine As Range) As Range
-    If source Is Nothing Then
-        Set CombineRanges = toCombine 'no inspection result (but there should be one!)
-    Else
-        Set CombineRanges = Union(source, toCombine) 'no inspection result (but there should be one!)
-    End If
-End Function";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new ObjectVariableNotSetInspection(state);
-            var inspectionResults = inspection.GetInspectionResults().ToList();
-
-            Assert.AreEqual(expectedResultCount, inspectionResults.Count);
-            var fix = new UseSetKeywordForObjectAssignmentQuickFix(state);
-            foreach (var result in inspectionResults)
-            {
-                fix.Fix(result);
-            }
-
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void ObjectVariableNotSet_ForPropertyGetAssignment_ReturnsResults()
-        {
-            var expectedResultCount = 1;
-            var input = @"
-Private example As MyObject
-Public Property Get Example() As MyObject
-    Example = example
-End Property
-";
-            var expectedCode =
-            @"
-Private example As MyObject
-Public Property Get Example() As MyObject
-    Set Example = example
-End Property
-";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new ObjectVariableNotSetInspection(state);
-            var inspectionResults = inspection.GetInspectionResults().ToList();
-
-            Assert.AreEqual(expectedResultCount, inspectionResults.Count);
-            var fix = new UseSetKeywordForObjectAssignmentQuickFix(state);
-            foreach (var result in inspectionResults)
-            {
-                fix.Fix(result);
-            }
-
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]

@@ -3,7 +3,6 @@ using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RubberduckTests.Mocks;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Resources;
 
 namespace RubberduckTests.Inspections
@@ -233,37 +232,6 @@ End Sub";
             const int expectedCount = 0;
 
             Assert.AreEqual(expectedCount, actualResults.Count());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void EmptyElseBlock_QuickFixRemovesElse()
-        {
-            const string inputCode =
-@"Sub Foo()
-    If True Then
-    Else
-    End If
-End Sub";
-
-            const string expectedCode =
-@"Sub Foo()
-    If True Then
-    End If
-End Sub";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new EmptyElseBlockInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-            new RemoveEmptyElseBlockQuickFix(state).Fix(actualResults.First());
-
-            string actualRewrite = state.GetRewriter(component).GetText();
-
-            Assert.AreEqual(expectedCode, actualRewrite);
         }
     }
 }

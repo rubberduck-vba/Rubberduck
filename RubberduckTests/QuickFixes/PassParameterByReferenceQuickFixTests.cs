@@ -1,21 +1,21 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using RubberduckTests.Mocks;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using Rubberduck.Inspections.Concrete;
+using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using RubberduckTests.Mocks;
 
-namespace RubberduckTests.Inspections
+namespace RubberduckTests.QuickFixes
 {
     [TestClass]
-    public class AssignedByValParameterChangeToByRefQuickFixTests
+    public class PassParameterByReferenceQuickFixTests
     {
         [TestMethod]
-        [TestCategory("Inspections")]
+        [TestCategory("QuickFixes")]
         public void AssignedByValParameter_PassByReferenceQuickFixWorks()
         {
 

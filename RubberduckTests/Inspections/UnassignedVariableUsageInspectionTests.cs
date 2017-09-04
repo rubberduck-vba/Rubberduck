@@ -1,7 +1,6 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
@@ -121,63 +120,6 @@ End Sub";
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.IsFalse(inspectionResults.Any());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void UnassignedVariableUsage_QuickFixWorks()
-        {
-            const string inputCode =
-@"Sub Foo()
-    Dim b As Boolean
-    Dim bb As Boolean
-    bb = b
-End Sub";
-
-            const string expectedCode =
-@"Sub Foo()
-    Dim b As Boolean
-    Dim bb As Boolean
-    
-End Sub";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new UnassignedVariableUsageInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            new RemoveUnassignedVariableUsageQuickFix(state).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void UnassignedVariableUsage_IgnoreQuickFixWorks()
-        {
-            const string inputCode =
-@"Sub Foo()
-    Dim b As Boolean
-    Dim bb As Boolean
-    bb = b
-End Sub";
-
-            const string expectedCode =
-@"Sub Foo()
-    Dim b As Boolean
-    Dim bb As Boolean
-'@Ignore UnassignedVariableUsage
-    bb = b
-End Sub";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new UnassignedVariableUsageInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]

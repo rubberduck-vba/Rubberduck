@@ -1,7 +1,6 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Resources;
 using RubberduckTests.Mocks;
 
@@ -17,7 +16,6 @@ namespace RubberduckTests.Inspections
             const string inputCode =
 @"Function Foo()
 End Function";
-
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
@@ -43,7 +41,6 @@ End Function";
                                                            ByVal lpCurrentDirectory As String, _
                                                            lpStartupInfo As STARTUPINFO, _
                                                            lpProcessInformation As PROCESS_INFORMATION)";
-
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
@@ -69,7 +66,6 @@ End Function";
                                                            ByVal lpCurrentDirectory As String, _
                                                            lpStartupInfo As STARTUPINFO, _
                                                            lpProcessInformation As PROCESS_INFORMATION) As Long";
-
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
@@ -86,7 +82,6 @@ End Function";
             const string inputCode =
 @"Property Get Foo()
 End Property";
-
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
@@ -106,7 +101,6 @@ End Function
 
 Function Goo()
 End Function";
-
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
@@ -123,7 +117,6 @@ End Function";
             const string inputCode =
 @"Function Foo() As Boolean
 End Function";
-
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
@@ -143,7 +136,6 @@ End Function
 
 Function Goo() As String
 End Function";
-
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
@@ -161,7 +153,6 @@ End Function";
 @"'@Ignore ImplicitVariantReturnType
 Function Foo()
 End Function";
-
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
@@ -169,138 +160,6 @@ End Function";
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.IsFalse(inspectionResults.Any());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void ImplicitVariantReturnType_QuickFixWorks_Function()
-        {
-            const string inputCode =
-@"Function Foo()
-End Function";
-
-            const string expectedCode =
-@"Function Foo() As Variant
-End Function";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new ImplicitVariantReturnTypeInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            new SetExplicitVariantReturnTypeQuickFix(state).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void ImplicitVariantReturnType_QuickFixWorks_PropertyGet()
-        {
-            const string inputCode =
-@"Property Get Foo()
-End Property";
-
-            const string expectedCode =
-@"Property Get Foo() As Variant
-End Property";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new ImplicitVariantReturnTypeInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            new SetExplicitVariantReturnTypeQuickFix(state).Fix(inspectionResults.First());
-
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void ImplicitVariantReturnType_QuickFixWorks_LibraryFunction()
-        {
-            const string inputCode =
-@"Declare PtrSafe Function CreateProcess Lib ""kernel32"" _
-                                   Alias ""CreateProcessA""(ByVal lpApplicationName As String, _
-                                                           ByVal lpCommandLine As String, _
-                                                           lpProcessAttributes As SECURITY_ATTRIBUTES, _
-                                                           lpThreadAttributes As SECURITY_ATTRIBUTES, _
-                                                           ByVal bInheritHandles As Long, _
-                                                           ByVal dwCreationFlags As Long, _
-                                                           lpEnvironment As Any, _
-                                                           ByVal lpCurrentDirectory As String, _
-                                                           lpStartupInfo As STARTUPINFO, _
-                                                           lpProcessInformation As PROCESS_INFORMATION)";
-
-            const string expectedCode =
-@"Declare PtrSafe Function CreateProcess Lib ""kernel32"" _
-                                   Alias ""CreateProcessA""(ByVal lpApplicationName As String, _
-                                                           ByVal lpCommandLine As String, _
-                                                           lpProcessAttributes As SECURITY_ATTRIBUTES, _
-                                                           lpThreadAttributes As SECURITY_ATTRIBUTES, _
-                                                           ByVal bInheritHandles As Long, _
-                                                           ByVal dwCreationFlags As Long, _
-                                                           lpEnvironment As Any, _
-                                                           ByVal lpCurrentDirectory As String, _
-                                                           lpStartupInfo As STARTUPINFO, _
-                                                           lpProcessInformation As PROCESS_INFORMATION) As Variant";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new ImplicitVariantReturnTypeInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            new SetExplicitVariantReturnTypeQuickFix(state).Fix(inspectionResults.First());
-
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void ImplicitVariantReturnType_QuickFixWorks_Function_HasComment()
-        {
-            const string inputCode =
-@"Function Foo()    ' comment
-End Function";
-
-            const string expectedCode =
-@"Function Foo() As Variant    ' comment
-End Function";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new ImplicitVariantReturnTypeInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            new SetExplicitVariantReturnTypeQuickFix(state).Fix(inspectionResults.First());
-
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void ImplicitVariantReturnType_IgnoreQuickFixWorks()
-        {
-            const string inputCode =
-@"Function Foo()
-End Function";
-
-            const string expectedCode =
-@"'@Ignore ImplicitVariantReturnType
-Function Foo()
-End Function";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new ImplicitVariantReturnTypeInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]

@@ -1,7 +1,6 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Resources;
 using RubberduckTests.Mocks;
 
@@ -16,7 +15,6 @@ namespace RubberduckTests.Inspections
         {
             const string inputCode =
 @"Public fizz As Boolean";
-
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
@@ -34,7 +32,6 @@ namespace RubberduckTests.Inspections
 @"Public fizz As Boolean
 Public buzz As Integer, _
        bazz As Integer";
-
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
@@ -50,7 +47,6 @@ Public buzz As Integer, _
         {
             const string inputCode =
 @"Private fizz As Boolean";
-
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
@@ -67,7 +63,6 @@ Public buzz As Integer, _
             const string inputCode =
 @"Public Sub Foo(ByRef arg1 As String)
 End Sub";
-
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
@@ -84,7 +79,6 @@ End Sub";
             const string inputCode =
 @"'@Ignore EncapsulatePublicField
 Public fizz As Boolean";
-
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
@@ -92,27 +86,6 @@ Public fizz As Boolean";
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.IsFalse(inspectionResults.Any());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void EncapsulatePublicField_IgnoreQuickFixWorks()
-        {
-            const string inputCode =
-@"Public fizz As Boolean";
-
-            const string expectedCode =
-@"'@Ignore EncapsulatePublicField
-Public fizz As Boolean";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new EncapsulatePublicFieldInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-            
-            new IgnoreOnceQuickFix(state, new[] {inspection}).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]

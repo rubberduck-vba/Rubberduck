@@ -1,7 +1,6 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Resources;
 using RubberduckTests.Mocks;
 
@@ -16,7 +15,6 @@ namespace RubberduckTests.Inspections
         {
             const string inputCode =
 @"Global var1 As Integer";
-
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
@@ -33,7 +31,6 @@ namespace RubberduckTests.Inspections
             const string inputCode =
 @"Global var1 As Integer
 Global var2 As String";
-
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
@@ -49,7 +46,6 @@ Global var2 As String";
         {
             const string inputCode =
 @"Public var1 As Integer";
-
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
@@ -66,7 +62,6 @@ Global var2 As String";
             const string inputCode =
 @"Public var1 As Integer
 Global var2 As Date";
-
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
@@ -83,7 +78,6 @@ Global var2 As Date";
             const string inputCode =
 @"'@Ignore ObsoleteGlobal
 Global var1 As Integer";
-
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
@@ -91,47 +85,6 @@ Global var1 As Integer";
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.IsFalse(inspectionResults.Any());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void ObsoleteGlobal_QuickFixWorks()
-        {
-            const string inputCode =
-@"Global var1 As Integer";
-
-            const string expectedCode =
-@"Public var1 As Integer";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new ObsoleteGlobalInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            new ReplaceGlobalModifierQuickFix(state).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void ObsoleteGlobal_IgnoreQuickFixWorks()
-        {
-            const string inputCode =
-@"Global var1 As Integer";
-
-            const string expectedCode =
-@"'@Ignore ObsoleteGlobal
-Global var1 As Integer";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new ObsoleteGlobalInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]

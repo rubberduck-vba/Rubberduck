@@ -3,7 +3,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RubberduckTests.Mocks;
 using System.Threading;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Resources;
 
 namespace RubberduckTests.Inspections
@@ -93,50 +92,6 @@ End Sub";
 
             Assert.AreEqual(1, inspectionResults.Count());
             Assert.AreEqual(4, inspectionResults.First().QualifiedSelection.Selection.StartLine);
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void StopKeyword_QuickFixWorks_RemoveKeyword()
-        {
-            var inputCode =
-@"Sub Foo()
-    Stop
-End Sub";
-
-            var expectedCode =
-@"Sub Foo()
-    
-End Sub";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new StopKeywordInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-            new RemoveStopKeywordQuickFix(state).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void StopKeyword_QuickFixWorks_RemoveKeyword_InstructionSeparator()
-        {
-            var inputCode = "Sub Foo(): Stop: End Sub";
-
-            var expectedCode = "Sub Foo(): : End Sub";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new StopKeywordInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-            new RemoveStopKeywordQuickFix(state).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]

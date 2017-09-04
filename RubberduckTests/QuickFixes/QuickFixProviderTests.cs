@@ -6,14 +6,15 @@ using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Abstract;
 using RubberduckTests.Mocks;
+using RubberduckTests.Inspections;
 
-namespace RubberduckTests.Inspections
+namespace RubberduckTests.QuickFixes
 {
     [TestClass]
     public class QuickFixProviderTests
     {
         [TestMethod]
-        [TestCategory("Inspections")]
+        [TestCategory("QuickFixes")]
         public void ProviderDoesNotKnowAboutInspection()
         {
             const string inputCode =
@@ -32,7 +33,7 @@ End Sub";
         }
 
         [TestMethod]
-        [TestCategory("Inspections")]
+        [TestCategory("QuickFixes")]
         public void ProviderKnowsAboutInspection()
         {
             const string inputCode =
@@ -53,7 +54,7 @@ End Sub";
         }
 
         [TestMethod]
-        [TestCategory("Inspections")]
+        [TestCategory("QuickFixes")]
         public void ResultDisablesFix()
         {
             const string inputCode =
