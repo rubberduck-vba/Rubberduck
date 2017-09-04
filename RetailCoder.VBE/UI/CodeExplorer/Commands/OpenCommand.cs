@@ -5,13 +5,13 @@ using Rubberduck.UI.Command;
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
     [CodeExplorerCommand]
-    public class NavigateCommand : CommandBase
+    public class OpenCommand : CommandBase
     {
-        private readonly INavigateCommand _navigateCommand;
+        private readonly INavigateCommand _openCommand;
 
-        public NavigateCommand(INavigateCommand navigateCommand) : base(LogManager.GetCurrentClassLogger())
+        public OpenCommand(INavigateCommand OpenCommand) : base(LogManager.GetCurrentClassLogger())
         {
-            _navigateCommand = navigateCommand;
+            _openCommand = OpenCommand;
         }
 
         protected override bool EvaluateCanExecute(object parameter)
@@ -22,7 +22,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         protected override void OnExecute(object parameter)
         {
             // ReSharper disable once PossibleInvalidOperationException
-            _navigateCommand.Execute(((CodeExplorerItemViewModel)parameter).QualifiedSelection.Value.GetNavitationArgs());
+            _openCommand.Execute(((CodeExplorerItemViewModel)parameter).QualifiedSelection.Value.GetNavitationArgs());
         }
     }
 }
