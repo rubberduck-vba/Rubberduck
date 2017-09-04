@@ -1440,6 +1440,33 @@ End Sub
 
         [TestCategory("Code Explorer")]
         [TestMethod]
+        public void CompareByType_ReturnsPublicMethodsAbovePrivateMethods()
+        {
+            var inputCode =
+    @"Private Sub Foo()
+End Sub
+
+Public Sub Bar()
+End Sub
+";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), _generalSettingsProvider.Object, _windowSettingsProvider.Object);
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse(new CancellationTokenSource());
+
+            var privateNode = vm.Projects.First().Items.First().Items.First().Items.Single(s => s.Name == "Foo");
+            var publicNode = vm.Projects.First().Items.First().Items.First().Items.Single(s => s.Name == "Bar");
+
+            Assert.AreEqual(-1, new CompareByType().Compare(publicNode, privateNode));
+        }
+
+        [TestCategory("Code Explorer")]
+        [TestMethod]
         public void CompareByType_ReturnsClassModuleBelowDocument()
         {
             var builder = new MockVbeBuilder();
