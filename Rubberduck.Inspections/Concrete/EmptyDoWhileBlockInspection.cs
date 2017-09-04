@@ -9,7 +9,7 @@ namespace Rubberduck.Inspections.Concrete
     internal class EmptyDoWhileBlockInspection : EmptyBlockInspectionBase<EmptyDoWhileBlockInspection>
     {
         public EmptyDoWhileBlockInspection(RubberduckParserState state) 
-            : base(state, "Do While loop contains no executable statements") { }
+            : base(state, InspectionsUI.EmptyDoWhileBlockInspectionFormat) { }
 
         public override IInspectionListener Listener { get; } =
             new EmptyDoWhileBlockListener();

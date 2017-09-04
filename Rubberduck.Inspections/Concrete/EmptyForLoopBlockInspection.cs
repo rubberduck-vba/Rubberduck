@@ -9,7 +9,7 @@ namespace Rubberduck.Inspections.Concrete
     internal class EmptyForLoopBlockInspection : EmptyBlockInspectionBase<EmptyForLoopBlockInspection>
     {
         public EmptyForLoopBlockInspection(RubberduckParserState state)
-            : base(state, "For loop contains no executable statements") { }
+            : base(state, InspectionsUI.EmptyForLoopBlockInspectionFormat) { }
 
         public override IInspectionListener Listener { get; } =
             new EmptyForloopBlockListener();

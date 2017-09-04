@@ -9,7 +9,7 @@ namespace Rubberduck.Inspections.Concrete
     internal class EmptyCaseBlockInspection : EmptyBlockInspectionBase<EmptyCaseBlockInspection>
     {
         public EmptyCaseBlockInspection(RubberduckParserState state) 
-            : base(state, "Select Case contains no executable statements") { }
+            : base(state,  InspectionsUI.EmptyCaseBlockInspectionResultFormat) { }
 
         public override IInspectionListener Listener { get; } =
             new EmptyCaseBlockListener();
