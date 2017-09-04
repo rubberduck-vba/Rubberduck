@@ -228,9 +228,9 @@ namespace Rubberduck.Navigation.CodeExplorer
             _items.Add(item);
         }
 
-        public void ReorderItems(bool sortByName, bool sortByType)
+        public void ReorderItems(bool sortByName, bool groupByType)
         {
-            if (sortByType)
+            if (groupByType)
             {
                 Items = sortByName
                     ? Items.OrderBy(o => o, new CompareByType()).ThenBy(t => t, new CompareByName()).ToList()
