@@ -57,6 +57,7 @@
     <Compile Include="Abstract\ParseTreeInspectionBase.cs" />
     <Compile Include="Concrete\ApplicationWorksheetFunctionInspection.cs" />
     <Compile Include="Concrete\AssignedByValParameterInspection.cs" />
+    <Compile Include="Concrete\StopKeywordInspection.cs" />
     <Compile Include="Concrete\LineLabelNotUsedInspection.cs" />
     <Compile Include="Concrete\IntegerDataTypeInspection.cs" />
     <Compile Include="ParseTreeListeners\AttributeAnnotationListener.cs" />
@@ -107,6 +108,7 @@
     <Compile Include="QuickFixes\AssignedByValParameterMakeLocalCopyQuickFix.cs" />
     <Compile Include="QuickFixes\ChangeDimToPrivateQuickFix.cs" />
     <Compile Include="QuickFixes\ChangeIntegerToLongQuickFix.cs" />
+    <Compile Include="QuickFixes\RemoveStopKeywordQuickFix.cs" />
     <Compile Include="QuickFixes\SpecifyExplicitByRefModifierQuickFix.cs" />
     <Compile Include="QuickFixes\ChangeProcedureToFunctionQuickFix.cs" />
     <Compile Include="QuickFixes\ConvertToProcedureQuickFix.cs" />

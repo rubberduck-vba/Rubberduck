@@ -1,6 +1,5 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 using Rubberduck.Inspections.Concrete;
@@ -162,32 +161,6 @@ End Sub
             var inspectionResults = inspection.GetInspectionResults();
             
             Assert.IsFalse(inspectionResults.Any());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void AssignedByValParameter_IgnoreQuickFixWorks()
-        {
-            const string inputCode =
-@"Public Sub Foo(ByVal arg1 As String)
-    Let arg1 = ""test""
-End Sub";
-
-            const string expectedCode =
-@"'@Ignore AssignedByValParameter
-Public Sub Foo(ByVal arg1 As String)
-    Let arg1 = ""test""
-End Sub";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var inspection = new AssignedByValParameterInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            new IgnoreOnceQuickFix(state, new[] {inspection}).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]

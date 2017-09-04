@@ -301,9 +301,11 @@ namespace Rubberduck.UI.Inspections
                     .ToList();
             }
 
+            Results = new ObservableCollection<IInspectionResult>(results);
+
             UiDispatcher.Invoke(() =>
             {
-                Results = new ObservableCollection<IInspectionResult>(results);
+                //Results = new ObservableCollection<IInspectionResult>(results);
 
                 IsBusy = false;
                 IsRefreshing = false;

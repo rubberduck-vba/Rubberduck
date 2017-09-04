@@ -18,9 +18,9 @@ namespace Rubberduck.UI.CodeExplorer
 
         private void TreeView_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (ViewModel != null && ViewModel.NavigateCommand.CanExecute(ViewModel.SelectedItem))
+            if (ViewModel != null && ViewModel.OpenCommand.CanExecute(ViewModel.SelectedItem))
             {
-                ViewModel.NavigateCommand.Execute(ViewModel.SelectedItem);
+                ViewModel.OpenCommand.Execute(ViewModel.SelectedItem);
             }
             e.Handled = true;
         }

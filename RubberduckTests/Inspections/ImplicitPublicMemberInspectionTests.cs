@@ -1,7 +1,6 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
@@ -127,61 +126,6 @@ End Sub";
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void ImplicitPublicMember_QuickFixWorks()
-        {
-            const string inputCode =
-@"Sub Foo(ByVal arg1 as Integer)
-'Just an inoffensive little comment
-
-End Sub";
-
-            const string expectedCode =
-@"Public Sub Foo(ByVal arg1 as Integer)
-'Just an inoffensive little comment
-
-End Sub";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new ImplicitPublicMemberInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            new SpecifyExplicitPublicModifierQuickFix(state).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void ImplicitPublicMember_IgnoreQuickFixWorks()
-        {
-            const string inputCode =
-@"Sub Foo(ByVal arg1 as Integer)
-'Just an inoffensive little comment
-
-End Sub";
-
-            const string expectedCode =
-@"'@Ignore ImplicitPublicMember
-Sub Foo(ByVal arg1 as Integer)
-'Just an inoffensive little comment
-
-End Sub";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new ImplicitPublicMemberInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-            
-            new IgnoreOnceQuickFix(state, new[] {inspection}).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
         [TestMethod]
