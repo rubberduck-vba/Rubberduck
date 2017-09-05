@@ -28,9 +28,9 @@ namespace Rubberduck.Inspections.Concrete
             }
         }
 
-        public void AddResult(QualifiedContext<ParserRuleContext> context)
+        public void AddResult(QualifiedContext<ParserRuleContext> qualifiedContext)
         {
-            _contexts.Add(context);
+            _contexts.Add(qualifiedContext);
         }
 
         private bool BlockContainsExecutableStatements(VBAParser.BlockContext block)
