@@ -53,7 +53,7 @@ namespace Rubberduck.UI.Command
 
             IVBProject project = projectNode?.Declaration.Project ?? vbproject ?? _vbe.ActiveVBProject;
             
-            var desc = string.Format(RubberduckUI.ExportAllCommand_SaveAsDialog, project.Name);
+            var desc = string.Format(RubberduckUI.ExportAllCommand_SaveAsDialog_Title, project.Name);
 
             // If .GetDirectoryName is passed an empty string for a RootFolder, 
             // it defaults to the Documents library (Win 7+) or equivalent.
