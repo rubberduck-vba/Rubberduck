@@ -16,7 +16,7 @@ namespace Rubberduck.Inspections.Concrete
         public EmptyForEachBlockInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Suggestion) { }
 
-        public override Type Type => typeof(EmptyCaseBlockInspection);
+        public override Type Type => typeof(EmptyForEachBlockInspection);
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
