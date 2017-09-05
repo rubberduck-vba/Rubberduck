@@ -16,7 +16,7 @@ namespace Rubberduck.Inspections.Concrete
         public EmptyDoWhileBlockInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Suggestion) { }
 
-        public override Type Type => typeof(EmptyCaseBlockInspection);
+        public override Type Type => typeof(EmptyDoWhileBlockInspection);
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
@@ -25,14 +25,14 @@ namespace Rubberduck.Inspections.Concrete
             return Listener.Contexts
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))
                 .Select(result => new QualifiedContextInspectionResult(this,
-                                                        InspectionsUI.EmptyDoWhileBlockInspectionFormat,
+                                                        InspectionsUI.EmptyDoWhileBlockInspectionResultFormat,
                                                         result));
         }
 
         public override IInspectionListener Listener { get; } =
             new EmptyDoWhileBlockListener();
 
-        public class EmptyDoWhileBlockListener : EmptyBlockListenerBase
+        public class EmptyDoWhileBlockListener : EmptyBlockInspectionListenerBase
         {
             public override void EnterDoLoopStmt([NotNull] VBAParser.DoLoopStmtContext context)
             {

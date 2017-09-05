@@ -812,7 +812,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="EmptyCaseBlockInspectionResultFormat" xml:space="preserve">
     <value>Case block has no executable statements</value>
   </data>
-  <data name="EmptyDoWhileBlockInspectionFormat" xml:space="preserve">
+  <data name="EmptyDoWhileBlockInspectionResultFormat" xml:space="preserve">
     <value>Do-While Loop has no executable statements</value>
   </data>
   <data name="EmptyDoWhileBlockInspectionMeta" xml:space="preserve">
@@ -821,7 +821,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="EmptyDoWhileBlockInspectionName" xml:space="preserve">
     <value>Empty Do-While Loop</value>
   </data>
-  <data name="EmptyForEachBlockInspectionFormat" xml:space="preserve">
+  <data name="EmptyForEachBlockInspectionResultFormat" xml:space="preserve">
     <value>For-Each Loop has no executable statements</value>
   </data>
   <data name="EmptyForEachBlockInspectionMeta" xml:space="preserve">
@@ -830,7 +830,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="EmptyForEachBlockInspectionName" xml:space="preserve">
     <value>Empty For-Each Loop</value>
   </data>
-  <data name="EmptyForLoopBlockInspectionFormat" xml:space="preserve">
+  <data name="EmptyForLoopBlockInspectionResultFormat" xml:space="preserve">
     <value>For Loop has no executable statements</value>
   </data>
   <data name="EmptyForLoopBlockInspectionMeta" xml:space="preserve">
@@ -839,7 +839,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="EmptyForLoopBlockInspectionName" xml:space="preserve">
     <value>Empty For Loop</value>
   </data>
-  <data name="EmptyWhileWendBlockInspectionFormat" xml:space="preserve">
+  <data name="EmptyWhileWendBlockInspectionResultFormat" xml:space="preserve">
     <value>While-Wend block has no executable statements</value>
   </data>
   <data name="EmptyWhileWendBlockInspectionMeta" xml:space="preserve">

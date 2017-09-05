@@ -25,14 +25,14 @@ namespace Rubberduck.Inspections.Concrete
             return Listener.Contexts
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))
                 .Select(result => new QualifiedContextInspectionResult(this,
-                                                        InspectionsUI.EmptyWhileWendBlockInspectionFormat,
+                                                        InspectionsUI.EmptyWhileWendBlockInspectionResultFormat,
                                                         result));
         }
 
         public override IInspectionListener Listener { get; } =
             new EmptyWhileWendBlockListener();
 
-        public class EmptyWhileWendBlockListener : EmptyBlockListenerBase
+        public class EmptyWhileWendBlockListener : EmptyBlockInspectionListenerBase
         {
             public override void EnterWhileWendStmt([NotNull] VBAParser.WhileWendStmtContext context)
             {

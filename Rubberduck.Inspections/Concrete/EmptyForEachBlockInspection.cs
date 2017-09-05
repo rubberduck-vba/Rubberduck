@@ -25,14 +25,14 @@ namespace Rubberduck.Inspections.Concrete
             return Listener.Contexts
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))
                 .Select(result => new QualifiedContextInspectionResult(this,
-                                                        InspectionsUI.EmptyForEachBlockInspectionFormat,
+                                                        InspectionsUI.EmptyForEachBlockInspectionResultFormat,
                                                         result));
         }
 
         public override IInspectionListener Listener { get; } =
             new EmptyForEachBlockListener();
 
-        public class EmptyForEachBlockListener : EmptyBlockListenerBase
+        public class EmptyForEachBlockListener : EmptyBlockInspectionListenerBase
         {
             public override void EnterForEachStmt([NotNull] VBAParser.ForEachStmtContext context)
             {

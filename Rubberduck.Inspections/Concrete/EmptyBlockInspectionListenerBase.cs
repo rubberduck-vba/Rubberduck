@@ -8,7 +8,7 @@ using System.Diagnostics;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    public class EmptyBlockListenerBase : VBAParserBaseListener, IInspectionListener
+    public class EmptyBlockInspectionListenerBase : VBAParserBaseListener, IInspectionListener
     {
         private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
         public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;

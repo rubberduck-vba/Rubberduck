@@ -34,7 +34,7 @@ namespace Rubberduck.Inspections.Concrete
         public override IInspectionListener Listener { get; } =
             new EmptyIfBlockListener();
 
-        public class EmptyIfBlockListener : EmptyBlockListenerBase
+        public class EmptyIfBlockListener : EmptyBlockInspectionListenerBase
         {
             public override void EnterIfStmt([NotNull] VBAParser.IfStmtContext context)
             {

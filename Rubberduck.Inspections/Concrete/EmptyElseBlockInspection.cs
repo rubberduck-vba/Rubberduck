@@ -16,7 +16,7 @@ namespace Rubberduck.Inspections.Concrete
         public EmptyElseBlockInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Suggestion) { }
 
-        public override Type Type => typeof(EmptyCaseBlockInspection);
+        public override Type Type => typeof(EmptyElseBlockInspection);
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
@@ -32,7 +32,7 @@ namespace Rubberduck.Inspections.Concrete
         public override IInspectionListener Listener { get; } 
             = new EmptyElseBlockListener();
         
-        public class EmptyElseBlockListener : EmptyBlockListenerBase
+        public class EmptyElseBlockListener : EmptyBlockInspectionListenerBase
         {
             public override void EnterElseBlock([NotNull] VBAParser.ElseBlockContext context)
             {

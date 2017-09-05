@@ -340,15 +340,6 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Do-While Loop has no executable statements.
-        /// </summary>
-        public static string EmptyDoWhileBlockInspectionFormat {
-            get {
-                return ResourceManager.GetString("EmptyDoWhileBlockInspectionFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to A Loop block should have executable statements.
         /// </summary>
         public static string EmptyDoWhileBlockInspectionMeta {
@@ -363,6 +354,15 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         public static string EmptyDoWhileBlockInspectionName {
             get {
                 return ResourceManager.GetString("EmptyDoWhileBlockInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do-While Loop has no executable statements.
+        /// </summary>
+        public static string EmptyDoWhileBlockInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("EmptyDoWhileBlockInspectionResultFormat", resourceCulture);
             }
         }
         
@@ -394,15 +394,6 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to For-Each Loop has no executable statements.
-        /// </summary>
-        public static string EmptyForEachBlockInspectionFormat {
-            get {
-                return ResourceManager.GetString("EmptyForEachBlockInspectionFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to A Loop block should have executable statements.
         /// </summary>
         public static string EmptyForEachBlockInspectionMeta {
@@ -421,11 +412,11 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to For Loop has no executable statements.
+        ///   Looks up a localized string similar to For-Each Loop has no executable statements.
         /// </summary>
-        public static string EmptyForLoopBlockInspectionFormat {
+        public static string EmptyForEachBlockInspectionResultFormat {
             get {
-                return ResourceManager.GetString("EmptyForLoopBlockInspectionFormat", resourceCulture);
+                return ResourceManager.GetString("EmptyForEachBlockInspectionResultFormat", resourceCulture);
             }
         }
         
@@ -444,6 +435,15 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         public static string EmptyForLoopBlockInspectionName {
             get {
                 return ResourceManager.GetString("EmptyForLoopBlockInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For Loop has no executable statements.
+        /// </summary>
+        public static string EmptyForLoopBlockInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("EmptyForLoopBlockInspectionResultFormat", resourceCulture);
             }
         }
         
@@ -520,15 +520,6 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to While-Wend block has no executable statements.
-        /// </summary>
-        public static string EmptyWhileWendBlockInspectionFormat {
-            get {
-                return ResourceManager.GetString("EmptyWhileWendBlockInspectionFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to A Loop block should have executable statements.
         /// </summary>
         public static string EmptyWhileWendBlockInspectionMeta {
@@ -543,6 +534,15 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         public static string EmptyWhileWendBlockInspectionName {
             get {
                 return ResourceManager.GetString("EmptyWhileWendBlockInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to While-Wend block has no executable statements.
+        /// </summary>
+        public static string EmptyWhileWendBlockInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("EmptyWhileWendBlockInspectionResultFormat", resourceCulture);
             }
         }
         
