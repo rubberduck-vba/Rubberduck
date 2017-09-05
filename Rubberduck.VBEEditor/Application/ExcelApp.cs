@@ -1,10 +1,17 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
+using Microsoft.Office.Core;
 using Path = System.IO.Path;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Excel = Microsoft.Office.Interop.Excel;
+using MSForms = Microsoft.Vbe.Interop.Forms;
 
 namespace Rubberduck.VBEditor.Application
 {
-    public class ExcelApp : HostApplicationBase<Microsoft.Office.Interop.Excel.Application>
+    public class ExcelApp : HostApplicationBase<Excel.Application>
     {
         public const int MaxPossibleLengthOfProcedureName = 255;
 
@@ -86,6 +93,137 @@ namespace Rubberduck.VBEditor.Application
                 default:
                     throw new ArgumentException("Too many arguments.");
             }
+        }
+
+        public override IEnumerable GetDocumentMacros()
+        {
+            var books = Application.Workbooks;
+            foreach (Excel.Workbook workbook in books)
+            {
+                var worksheets = workbook.Worksheets;
+                foreach (Excel.Worksheet worksheet in worksheets)
+                {
+                    foreach (var macro in GetMacrosFromShapes(worksheet))
+                    {
+                        yield return macro;
+                    }
+
+                    foreach (var macro in GetMacrosFromOleObjects(worksheet))
+                    {
+                        yield return macro;
+                    }
+                }
+
+                Marshal.ReleaseComObject(worksheets);
+            }
+            Marshal.ReleaseComObject(books);
+        }
+
+        private static readonly string[] CommonEvents = new[]
+        {
+            "BeforeDragOver",
+            "BeforeDropOrPaste",
+            "Click",
+            "DblClick",
+            "Error",
+            "KeyDown",
+            "KeyPress",
+            "KeyUp",
+            "MouseDown",
+            "MouseMove",
+            "MouseUp",
+        };
+
+        private static IEnumerable<HostDocumentMacro> GetMacrosFromOleObjects(Excel.Worksheet worksheet)
+        {
+            var oleObjects = worksheet.OLEObjects();
+            foreach (Excel.OLEObject oleObject in oleObjects)
+            {
+                yield return new HostDocumentMacro(oleObject.ShapeRange.ID, oleObject.Name, oleObject.progID, CommonEvents);
+
+                var optionButton = oleObject.Object as MSForms.OptionButton;
+                var checkBox = oleObject.Object as MSForms.CheckBox;
+                var listBox = oleObject.Object as MSForms.ListBox;
+                var toggleButton = oleObject.Object as MSForms.ToggleButton;
+
+                var changingControls = new object[] 
+                {
+                    optionButton,
+                    checkBox,
+                    listBox,
+                    toggleButton,
+                };
+
+                if (changingControls.Any(e => e != null))
+                {
+                    var events = CommonEvents.Union(new[] {nameof(optionButton.Change)});
+                    yield return new HostDocumentMacro(oleObject.ShapeRange.ID, oleObject.Name, oleObject.progID, events);
+                    continue;
+                }
+
+                var textBox = oleObject.Object as MSForms.TextBox;
+                var comboBox = oleObject.Object as MSForms.ComboBoxClass;
+                if ((textBox ?? (object)comboBox) != null)
+                {
+                    var events = CommonEvents.Union(new[] { "Change", "DropButtonClick" });
+                    yield return new HostDocumentMacro(oleObject.ShapeRange.ID, oleObject.Name, oleObject.progID, events);
+                    continue;
+                }
+
+                var spinButton = oleObject.Object as MSForms.SpinButton;
+                var scrollBar = oleObject.Object as MSForms.ScrollBar;
+                if ((spinButton ?? (object)scrollBar) != null)
+                {
+                    var events = CommonEvents
+                        .Where(e => !e.StartsWith("Mouse") && !e.EndsWith("Click"))
+                        .Union(new[]
+                        {
+                            nameof(spinButton.Change),
+                            nameof(spinButton.SpinDown),
+                            nameof(spinButton.SpinUp)
+                        });
+                    yield return new HostDocumentMacro(oleObject.ShapeRange.ID, oleObject.Name, oleObject.progID, events);
+                    continue;
+                }
+
+                var multiPage = oleObject.Object as MSForms.MultiPage;
+                var frame = oleObject.Object as MSForms.Frame;
+                if ((multiPage ?? (object)frame) != null)
+                {
+                    var events = CommonEvents
+                        .Where(e => !e.StartsWith("Mouse"))
+                        .Union(new[]
+                        {
+                            nameof(frame.AddControl),
+                            nameof(frame.Layout),
+                            nameof(frame.RemoveControl),
+                            nameof(frame.Scroll),
+                            "Zoom" // nameof is ambiguous in this scope
+                        });
+                    yield return new HostDocumentMacro(oleObject.ShapeRange.ID, oleObject.Name, oleObject.progID, events);
+                    continue;
+                }
+            }
+
+            Marshal.ReleaseComObject(oleObjects);
+        }
+
+        private static IEnumerable GetMacrosFromShapes(Excel.Worksheet worksheet)
+        {
+            var shapes = worksheet.Shapes;
+            foreach (Excel.Shape shape in shapes)
+            {
+                var actionName = shape.OnAction;
+                if (!string.IsNullOrEmpty(actionName))
+                {
+                    if (shape.Type != MsoShapeType.msoOLEControlObject)
+                    {
+                        yield return new HostDocumentMacro(shape.ID, shape.Name, shape.OnAction);
+                    }
+                }
+                Marshal.ReleaseComObject(shape);
+            }
+            Marshal.ReleaseComObject(shapes);
         }
 
         protected virtual string GenerateMethodCall(dynamic declaration)

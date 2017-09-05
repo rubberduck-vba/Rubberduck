@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 
 namespace Rubberduck.VBEditor.Application
 {
@@ -30,5 +31,11 @@ namespace Rubberduck.VBEditor.Application
         /// cannot be used outside assembly boundaries because the type is generic.
         /// </remarks>
         string ApplicationName { get; }
+
+        /// <summary>
+        /// Gets all document-embedded controls.
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable GetDocumentMacros();
     }
 }
