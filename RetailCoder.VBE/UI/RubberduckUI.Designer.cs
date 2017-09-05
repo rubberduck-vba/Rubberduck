@@ -826,6 +826,33 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to As in module.
+        /// </summary>
+        public static string CodeExplorer_SortStyle_ByCodeOrder {
+            get {
+                return ResourceManager.GetString("CodeExplorer_SortStyle_ByCodeOrder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to by Name.
+        /// </summary>
+        public static string CodeExplorer_SortStyle_ByName {
+            get {
+                return ResourceManager.GetString("CodeExplorer_SortStyle_ByName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Group by Type.
+        /// </summary>
+        public static string CodeExplorer_SortStyle_ByType {
+            get {
+                return ResourceManager.GetString("CodeExplorer_SortStyle_ByType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Undo....
         /// </summary>
         public static string CodeExplorer_Undo {
@@ -3995,33 +4022,6 @@ namespace Rubberduck.UI {
         public static string SmartIndenterMenu {
             get {
                 return ResourceManager.GetString("SmartIndenterMenu", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to As in module.
-        /// </summary>
-        public static string SortStyle_ByCodeOrder {
-            get {
-                return ResourceManager.GetString("SortStyle_ByCodeOrder", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to By name.
-        /// </summary>
-        public static string SortStyle_ByName {
-            get {
-                return ResourceManager.GetString("SortStyle_ByName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to By type.
-        /// </summary>
-        public static string SortStyle_ByType {
-            get {
-                return ResourceManager.GetString("SortStyle_ByType", resourceCulture);
             }
         }
         

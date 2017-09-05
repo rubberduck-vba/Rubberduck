@@ -793,24 +793,24 @@
 
                         <MenuItem Name="SortByName"
                                   Style="{DynamicResource MenuItemStyle}" VerticalAlignment="Center" 
-                                  Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SortStyle_ByName}"
+                                  Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_SortStyle_ByName}"
                                   IsChecked="{Binding SortByName, UpdateSourceTrigger=PropertyChanged}" 
                                   Command="{Binding SetNameSortCommand}"
                                   CommandParameter="{Binding ElementName=SortByName, Path=IsChecked}"
                                   IsCheckable="True" />
-                        <MenuItem Name="SortBySelection"
+                        <MenuItem Name="SortByCodeOrder"
                                   Style="{DynamicResource MenuItemStyle}" VerticalAlignment="Center" 
-                                  Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SortStyle_ByCodeOrder}"
-                                  IsChecked="{Binding SortBySelection, UpdateSourceTrigger=PropertyChanged}" 
-                                  Command="{Binding SetSelectionSortCommand}"
-                                  CommandParameter="{Binding ElementName=SortBySelection, Path=IsChecked}"
+                                  Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_SortStyle_ByCodeOrder}"
+                                  IsChecked="{Binding SortByCodeOrder, UpdateSourceTrigger=PropertyChanged}" 
+                                  Command="{Binding SetCodeOrderSortCommand}"
+                                  CommandParameter="{Binding ElementName=SortByCodeOrder, Path=IsChecked}"
                                   IsCheckable="True" />
 
                         <Separator />
 
                         <MenuItem Style="{DynamicResource MenuItemStyle}" VerticalAlignment="Center" 
-                                  Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SortStyle_ByType}"
-                                  IsChecked="{Binding SortByType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                  Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_SortStyle_ByType}"
+                                  IsChecked="{Binding GroupByType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                   IsCheckable="True" />
                     </MenuItem>
                 </Menu>
