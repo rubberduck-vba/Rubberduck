@@ -1807,7 +1807,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Two declarations have the same name, and both are in scope. This means that only one of them will be available to use..
+        ///   Looks up a localized string similar to Two declarations are in scope and have the same identifier name. This means that only one of them will be available to use..
         /// </summary>
         public static string ShadowedDeclarationInspectionMeta {
             get {
