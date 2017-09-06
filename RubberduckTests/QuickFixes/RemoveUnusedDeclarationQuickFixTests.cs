@@ -142,5 +142,119 @@ End Sub";
         }
 
 
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void UnassignedVariable_WithFollowingEmptyLine_DoesNotRemoveEmptyLine()
+        {
+            const string inputCode =
+@"Sub Foo()
+Dim var1 As String
+
+End Sub";
+
+            const string expectedCode =
+@"Sub Foo()
+
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new VariableNotUsedInspection(state);
+            new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults().First());
+
+            var rewriter = state.GetRewriter(component);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
+        }
+
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void UnassignedVariable_WithFollowingCommentLine_DoesNotRemoveCommentLine()
+        {
+            const string inputCode =
+@"Sub Foo()
+Dim var1 As String
+' Comment
+End Sub";
+
+            const string expectedCode =
+@"Sub Foo()
+' Comment
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new VariableNotUsedInspection(state);
+            new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults().First());
+
+            var rewriter = state.GetRewriter(component);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
+        }
+
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void UnassignedVariable_InMultideclaration_WithFollowingCommentLine_DoesNotRemoveCommentLineOrOtherDeclarations()
+        {
+            const string inputCode =
+@"Function Foo() As String
+Dim var1 As String, var2 As String
+' Comment
+var2 = ""Something""
+Foo = var2
+End Function";
+
+            const string expectedCode =
+@"Function Foo() As String
+Dim var2 As String
+' Comment
+var2 = ""Something""
+Foo = var2
+End Function";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new VariableNotUsedInspection(state);
+            new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults().First());
+
+            var rewriter = state.GetRewriter(component);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
+        }
+
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void UnassignedVariable_InMultideclarationByStmtSeparators_WithFollowingCommentLine_DoesNotRemoveCommentLineOrOtherDeclarations()
+        {
+            const string inputCode =
+@"Function Foo() As String
+Dim var1 As String:Dim var2 As String
+' Comment
+var2 = ""Something""
+Foo = var2
+End Function";
+
+            const string expectedCode =
+@"Function Foo() As String
+Dim var2 As String
+' Comment
+var2 = ""Something""
+Foo = var2
+End Function";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new VariableNotUsedInspection(state);
+            new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults().First());
+
+            var rewriter = state.GetRewriter(component);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
+        }
+
     }
 }

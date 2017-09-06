@@ -24,8 +24,7 @@ namespace Rubberduck.Parsing.Rewriter.RewriterInfo
             var itemIndex = items.ToList().IndexOf(variable);
             var count = items.Count;
 
-            var element = context.Parent.Parent as VBAParser.ModuleDeclarationsElementContext;
-            if (element != null)
+            if (context.Parent.Parent is VBAParser.ModuleDeclarationsElementContext element)
             {
                 return GetModuleVariableRemovalInfo(variable, element, count, itemIndex, items);
             }
@@ -60,15 +59,16 @@ namespace Rubberduck.Parsing.Rewriter.RewriterInfo
         {
             var mainBlockStmt = (VBAParser.MainBlockStmtContext)variables.Parent.Parent;
             var startIndex = mainBlockStmt.Start.TokenIndex;
+            if (count == 1)
+            {
+                // we know the target is all we want to remove, so we'll use that
+                // we also need to remove the following token, namely either newline, comma or statement separator
+                return new RewriterInfo(startIndex, mainBlockStmt.Stop.TokenIndex + 1);
+            }
+
             var blockStmt = (VBAParser.BlockStmtContext)mainBlockStmt.Parent;
             var block = (VBAParser.BlockContext)blockStmt.Parent;
             var statements = block.blockStmt();
-
-            if (count == 1)
-            {
-                var stopIndex = FindStopTokenIndex(statements, blockStmt, block);
-                return new RewriterInfo(startIndex, stopIndex);
-            }
             return GetRewriterInfoForTargetRemovedFromListStmt(target.Start, itemIndex, items);
         }
     }
