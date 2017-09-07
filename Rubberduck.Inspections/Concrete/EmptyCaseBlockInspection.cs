@@ -11,12 +11,15 @@ using System.Linq;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    internal class EmptyElseBlockInspection : ParseTreeInspectionBase
+    internal class EmptyCaseBlockInspection : ParseTreeInspectionBase
     {
-        public EmptyElseBlockInspection(RubberduckParserState state)
+        public EmptyCaseBlockInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Suggestion) { }
 
-        public override Type Type => typeof(EmptyElseBlockInspection);
+        public override IInspectionListener Listener { get; } =
+            new EmptyCaseBlockListener();
+
+        public override Type Type => typeof(EmptyCaseBlockInspection);
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
@@ -25,16 +28,13 @@ namespace Rubberduck.Inspections.Concrete
             return Listener.Contexts
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))
                 .Select(result => new QualifiedContextInspectionResult(this,
-                                                        InspectionsUI.EmptyElseBlockInspectionResultFormat,
+                                                        InspectionsUI.EmptyCaseBlockInspectionResultFormat,
                                                         result));
         }
 
-        public override IInspectionListener Listener { get; } 
-            = new EmptyElseBlockListener();
-        
-        public class EmptyElseBlockListener : EmptyBlockInspectionListenerBase
+        public class EmptyCaseBlockListener : EmptyBlockInspectionListenerBase
         {
-            public override void EnterElseBlock([NotNull] VBAParser.ElseBlockContext context)
+            public override void EnterCaseClause([NotNull] VBAParser.CaseClauseContext context)
             {
                 InspectBlockForExecutableStatements(context.block(), context);
             }

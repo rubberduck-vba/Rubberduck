@@ -11,12 +11,12 @@ using System.Linq;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    internal class EmptyElseBlockInspection : ParseTreeInspectionBase
+    internal class EmptyForLoopBlockInspection : ParseTreeInspectionBase
     {
-        public EmptyElseBlockInspection(RubberduckParserState state)
+        public EmptyForLoopBlockInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Suggestion) { }
 
-        public override Type Type => typeof(EmptyElseBlockInspection);
+        public override Type Type => typeof(EmptyForLoopBlockInspection);
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
@@ -25,16 +25,16 @@ namespace Rubberduck.Inspections.Concrete
             return Listener.Contexts
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))
                 .Select(result => new QualifiedContextInspectionResult(this,
-                                                        InspectionsUI.EmptyElseBlockInspectionResultFormat,
+                                                        InspectionsUI.EmptyForLoopBlockInspectionResultFormat,
                                                         result));
         }
 
-        public override IInspectionListener Listener { get; } 
-            = new EmptyElseBlockListener();
-        
-        public class EmptyElseBlockListener : EmptyBlockInspectionListenerBase
+        public override IInspectionListener Listener { get; } =
+            new EmptyForloopBlockListener();
+
+        public class EmptyForloopBlockListener : EmptyBlockInspectionListenerBase
         {
-            public override void EnterElseBlock([NotNull] VBAParser.ElseBlockContext context)
+            public override void EnterForNextStmt([NotNull] VBAParser.ForNextStmtContext context)
             {
                 InspectBlockForExecutableStatements(context.block(), context);
             }
