@@ -170,6 +170,33 @@ End Sub";
 
         [TestMethod]
         [TestCategory("QuickFixes")]
+        public void UnassignedVariable_WithCommentOnSameLine_DoesNotRemoveComment()
+        {
+            const string inputCode =
+@"Sub Foo()
+Dim var1 As String ' Comment
+End Sub";
+
+            const string expectedCode =
+@"Sub Foo()
+' Comment
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new VariableNotUsedInspection(state);
+            new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults().First());
+
+            var rewriter = state.GetRewriter(component);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
+        }
+
+
+
+        [TestMethod]
+        [TestCategory("QuickFixes")]
         public void UnassignedVariable_WithFollowingCommentLine_DoesNotRemoveCommentLine()
         {
             const string inputCode =
