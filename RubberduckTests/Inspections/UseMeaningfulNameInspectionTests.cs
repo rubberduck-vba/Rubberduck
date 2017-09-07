@@ -3,19 +3,42 @@ using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Inspections
 {
     [TestClass]
     public class UseMeaningfulNameInspectionTests
     {
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void UseMeaningfulName_NoResultForLineNumberLabels()
+        {
+            const string inputCode = @"
+Sub DoSomething()
+10 Debug.Print 42
+End Sub
+";
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var parser = MockParser.Create(vbe.Object);
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new UseMeaningfulNameInspection(parser.State, GetInspectionSettings().Object);
+            var inspectionResults = inspection.GetInspectionResults().Where(i => i.Target.DeclarationType == DeclarationType.LineLabel);
+
+            Assert.IsFalse(inspectionResults.Any());
+        }
+
         [TestMethod]
         [TestCategory("Inspections")]
         public void UseMeaningfulName_ReturnsResult_NameWithAllTheSameLetters()
@@ -124,38 +147,6 @@ Sub Ffffff()
 End Sub";
 
             AssertVbaFragmentYieldsExpectedInspectionResultCount(inputCode, 0);
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void UseMeaningfulName_IgnoreQuickFixWorks()
-        {
-            const string inputCode =
-@"Sub Ffffff()
-End Sub";
-
-            const string expectedCode =
-@"'@Ignore UseMeaningfulName
-Sub Ffffff()
-End Sub";
-
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
-                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
-                .Build();
-            var component = project.Object.VBComponents[0];
-            var vbe = builder.AddProject(project).Build();
-
-            var parser = MockParser.Create(vbe.Object);
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new UseMeaningfulNameInspection(parser.State, GetInspectionSettings().Object);
-            var inspectionResults = inspection.GetInspectionResults();
-            
-            new IgnoreOnceQuickFix(parser.State, new[] {inspection}).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, parser.State.GetRewriter(component).GetText());
         }
 
         [TestMethod]

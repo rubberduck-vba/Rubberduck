@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
@@ -21,6 +22,8 @@ namespace Rubberduck.Inspections.Concrete
             Listener = new MissingOptionExplicitListener();
         }
 
+        public override Type Type => typeof(OptionExplicitInspection);
+
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
         public override IInspectionListener Listener { get; }
@@ -29,7 +32,6 @@ namespace Rubberduck.Inspections.Concrete
         {
             return Listener.Contexts.Select(context => new QualifiedContextInspectionResult(this,
                                                                       string.Format(InspectionsUI.OptionExplicitInspectionResultFormat, context.ModuleName.ComponentName),
-                                                                      State,
                                                                       context));
         }
 

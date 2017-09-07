@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
@@ -6,6 +7,7 @@ using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
@@ -13,6 +15,7 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    [CannotAnnotate]
     public sealed class MissingAttributeInspection : ParseTreeInspectionBase
     {
         public MissingAttributeInspection(RubberduckParserState state)
@@ -20,6 +23,8 @@ namespace Rubberduck.Inspections.Concrete
         {
             Listener = new MissingMemberAttributeListener(state);
         }
+
+        public override Type Type => typeof(MissingAttributeInspection);
 
         public override ParsePass Pass => ParsePass.AttributesPass;
 
@@ -30,9 +35,9 @@ namespace Rubberduck.Inspections.Concrete
         {
             return Listener.Contexts.Select(context =>
             {
-                var name = string.Format(InspectionsUI.MissingAttributeInspectionResultFormat, context.MemberName,
+                var name = string.Format(InspectionsUI.MissingAttributeInspectionResultFormat, context.MemberName.MemberName,
                     ((VBAParser.AnnotationContext) context.Context).annotationName().GetText());
-                return new QualifiedContextInspectionResult(this, name, State, context);
+                return new QualifiedContextInspectionResult(this, name, context);
             });
         }
 
@@ -61,7 +66,7 @@ namespace Rubberduck.Inspections.Concrete
                         AddContext(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
                     }
                 }
-                else
+                else if (isMemberAnnotation)
                 {
                     // member-level annotation is above the context for the first member in the module..
                     if (isModuleScope)
@@ -74,6 +79,10 @@ namespace Rubberduck.Inspections.Concrete
                     {
                         AddContext(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
                     }
+                }
+                else
+                {
+                    // annotation is illegal. ignore.
                 }
             }
         }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
@@ -20,6 +21,8 @@ namespace Rubberduck.Inspections.Concrete
             Listener = new RedundantModuleOptionListener();
         }
 
+        public override Type Type => typeof(RedundantOptionInspection);
+
         public override string Meta => InspectionsUI.RedundantOptionInspectionMeta;
         public override string Description => InspectionsUI.RedundantOptionInspectionName;
         public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
@@ -31,7 +34,6 @@ namespace Rubberduck.Inspections.Concrete
             return Listener.Contexts.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName, context.Context.Start.Line))
                                    .Select(context => new QualifiedContextInspectionResult(this,
                                                                            string.Format(InspectionsUI.RedundantOptionInspectionResultFormat, context.Context.GetText()),
-                                                                           State,
                                                                            context));
         }
 

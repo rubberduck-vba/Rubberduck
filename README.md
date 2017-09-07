@@ -1,5 +1,11 @@
 <img src="http://i.stack.imgur.com/jnBEp.jpg" width=100% />
 
+### Donate!
+
+If you like this project and would like to thank its contributors, you are welcome to support our GoFundMe campaign to finance Rubberduck swag and international shipping - contributors will be getting t-shirts, mugs, and other cool things.
+
+[![GoFundMe campaign](https://user-images.githubusercontent.com/5751684/29191799-e3d20b72-7dec-11e7-8ec6-0c69da4a3135.png)](https://www.gofundme.com/rubberduckvba)
+
 Branch     | Description | Build Status |
 |------------|---|--------------|
 | **master** | The last released build | ![master branch build status][masterBuildStatus] |
@@ -19,7 +25,7 @@ Branch     | Description | Build Status |
  * [Attributions](https://github.com/rubberduck-vba/Rubberduck/blob/next/docs/Attributions.md)
  * [About](https://github.com/rubberduck-vba/Rubberduck/blob/next/docs/About.md)
  * [Getting Started](https://github.com/rubberduck-vba/Rubberduck/blob/next/docs/GettingStarted.md)
- * [Contributing](https://github.com/rubberduck-vba/Rubberduck/wiki/Contributing)
+ * [Contributing](https://github.com/rubberduck-vba/Rubberduck/blob/next/CONTRIBUTING.md)
 
 ---
 

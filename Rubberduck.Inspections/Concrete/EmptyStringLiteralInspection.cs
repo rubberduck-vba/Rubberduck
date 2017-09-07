@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
@@ -17,6 +18,8 @@ namespace Rubberduck.Inspections.Concrete
         public EmptyStringLiteralInspection(RubberduckParserState state)
             : base(state) { }
 
+        public override Type Type => typeof(EmptyStringLiteralInspection);
+
         public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
 
         public override IInspectionListener Listener { get; } =
@@ -28,7 +31,6 @@ namespace Rubberduck.Inspections.Concrete
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))
                 .Select(result => new QualifiedContextInspectionResult(this,
                                                        InspectionsUI.EmptyStringLiteralInspectionResultFormat,
-                                                       State,
                                                        result));
         }
 

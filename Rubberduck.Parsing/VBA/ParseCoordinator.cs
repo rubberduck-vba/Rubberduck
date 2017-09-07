@@ -13,9 +13,8 @@ namespace Rubberduck.Parsing.VBA
 {
     public class ParseCoordinator : IParseCoordinator
     {
-        public RubberduckParserState State { get { return _state; } }
+        public RubberduckParserState State { get; }
 
-        private readonly RubberduckParserState _state;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private readonly IParsingStageService _parsingStageService;
@@ -54,7 +53,7 @@ namespace Rubberduck.Parsing.VBA
                 throw new ArgumentNullException(nameof(parserStateManager));
             }
 
-            _state = state;
+            State = state;
             _parsingStageService = parsingStageService;
             _projectManager = projectManager;
             _parsingCacheService = parsingCacheService;
@@ -321,7 +320,7 @@ namespace Rubberduck.Parsing.VBA
                 if (watch != null && watch.IsRunning) watch.Stop();
                 if (lockTaken) Monitor.Exit(_parsingRunSyncObject);
             }
-            if (watch != null) Logger.Debug("Parsing run finished after {0}s. (thread {1}).", watch.Elapsed.Seconds, Thread.CurrentThread.ManagedThreadId);
+            if (watch != null) Logger.Debug("Parsing run finished after {0}s. (thread {1}).", watch.Elapsed.TotalSeconds, Thread.CurrentThread.ManagedThreadId);
         }
 
         private void ParseAllInternal(object requestor, CancellationToken token)

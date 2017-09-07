@@ -123,7 +123,7 @@ namespace Rubberduck.Parsing.VBA
 
             foreach (var documentDeclaration in documentModuleDeclarations)
             {
-                var documentSupertype = SupertypeForDocument(documentDeclaration.QualifiedName.QualifiedModuleName, documentDeclaration.AsTypeName, state);
+                var documentSupertype = SupertypeForDocument(documentDeclaration.QualifiedName.QualifiedModuleName, state);
                 if (documentSupertype != null)
                 {
                     ((ClassModuleDeclaration)documentDeclaration).AddSupertype(documentSupertype);
@@ -131,20 +131,36 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private Declaration SupertypeForDocument(QualifiedModuleName module, string asTypeName, RubberduckParserState state)
+        private Declaration SupertypeForDocument(QualifiedModuleName module, RubberduckParserState state)
         {
-            if(module.ComponentType != ComponentType.Document || module.Component?.Properties == null)
+            if(module.ComponentType != ComponentType.Document || module.Component == null)
             {
                 return null;
             }
 
-            var documentPropertyCount = module.Component.Properties.Count;
+            int documentPropertyCount = 0;
+            try
+            {
+                if(module.Component.IsWrappingNullReference
+                    || module.Component.Properties == null
+                    || module.Component.Properties.IsWrappingNullReference)
+                {
+                    return null;
+                }
+                documentPropertyCount = module.Component.Properties.Count;
+            }
+            catch(COMException)
+            {
+                return null;
+            }
 
             Declaration superType = null;
             foreach (var coclass in state.CoClasses)
             {
                 try
                 {
+                    
+
                     if (coclass.Key.Count != documentPropertyCount)
                     {
                         continue;

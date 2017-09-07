@@ -6,6 +6,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 {
     public class CommandBarControl : SafeComWrapper<Microsoft.Office.Core.CommandBarControl>, ICommandBarControl
     {
+        public const bool AddCommandBarControlsTemporarily = false;
+
         public CommandBarControl(Microsoft.Office.Core.CommandBarControl target) 
             : base(target)
         {
@@ -25,7 +27,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
         public string Caption
         {
             get { return IsWrappingNullReference ? string.Empty : Target.Caption; }
-            set { if (!IsWrappingNullReference) Target.Caption = value; }
+            set { if (!IsWrappingNullReference) Target.Caption = CommandBarControlCaptionGuard.ApplyGuard(value); }
         }
 
         public string DescriptionText
@@ -125,7 +127,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 
         public void Delete()
         {
-            if (!IsWrappingNullReference) Target.Delete(true);
+            if (!IsWrappingNullReference) Target.Delete(AddCommandBarControlsTemporarily);
         }
 
         public void Execute()

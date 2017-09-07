@@ -1,54 +1,73 @@
-version: 2.1.{build}
+version: 2.1.0
+for:
+-
+  branches:
+    only:
+      - next
+  version: 2.1.0.{build}
+  after_test:
+  - cmd: iscc /q "Installer Build Script.iss" 
+  - cmd: move Installers\Rubberduck.Setup.exe Installers\Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%-pre.exe
+skip_commits:
+  files:
+  - docs/*
+  - '**/*.md'
+  - '**/*.yml'
+  - license
+  - License.rtf
 branches:
   only:
   - master
   - next
 skip_tags: true
-image: Visual Studio 2015
+image: Visual Studio 2017
 configuration: Release
 platform: Any CPU
 install:
-- cmd: set PATH=C:\Program Files (x86)\MSBuild\14.0\Bin;%PATH%
+- cmd: set PATH=C:\Program Files (x86)\MSBuild\15.0\Bin;%PATH%
 init:
   - git config --global core.autocrlf true
 before_build:
 - ps: choco install innosetup
 build:
   verbosity: normal
-artifacts:
-- path: Installers\Rubberduck.Setup.exe
-  name: Rubberduck
+assembly_info:
+  patch: true
+  file: RetailCoder.VBE\Properties\AssemblyInfo.cs
+  assembly_version: '{version}'
 hosts:
   api.nuget.org: 93.184.221.200
-after_test:
-- iscc /q "Installer Build Script.iss"  
 before_package:
 - cmd: copy Rubberduck.Inspections\bin\Release\Rubberduck.Inspections.dll RetailCoder.VBE\bin\Release\Rubberduck.Inspections.dll
-before_deploy:
-- ps: 
+after_test:
+- iscc /q "Installer Build Script.iss" 
+- cmd: move Installers\Rubberduck.Setup.exe Installers\Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%.exe
+artifacts:
+- path: Installers\Rubberduck.Setup.*.exe
+  name: Rubberduck
 deploy:
-- provider: GitHub
-  tag: Rubberduck v$(appveyor_build_version)
-  release: Rubberduck v$(appveyor_build_version)
-  description: AppVeyor build on [next] - https://ci.appveyor.com/project/retailcoder/rubberduck/build/$(appveyor_build_version)
-  auth_token:
-    secure: oh0SRnZVt0ABeWqFr7ut5TZkxFJjHmS/DZnJnp2HErQTCmX3O8RASJH3ZiYl11gz
-  artifact: Installers\Rubberduck.Setup.exe
-  draft: false
-  prerelease: true
-  on:
-    branch: next
 - provider: GitHub
   tag: Rubberduck v$(appveyor_build_version)
   release: Rubberduck v$(appveyor_build_version)
   description: AppVeyor build on [master] - https://ci.appveyor.com/project/retailcoder/rubberduck/build/$(appveyor_build_version)
   auth_token:
     secure: oh0SRnZVt0ABeWqFr7ut5TZkxFJjHmS/DZnJnp2HErQTCmX3O8RASJH3ZiYl11gz
-  artifact: Installers\Rubberduck.Setup.exe
+  artifact: Installers\Rubberduck.Setup.$(appveyor_build_version).exe
   draft: true
   prerelease: false
   on:
     branch: master
+- provider: GitHub
+  tag: Rubberduck v$(appveyor_build_version)
+  release: Rubberduck v$(appveyor_build_version)-pre
+  description: AppVeyor build on [next] - https://ci.appveyor.com/project/retailcoder/rubberduck/build/$(appveyor_build_version)
+  auth_token:
+    secure: oh0SRnZVt0ABeWqFr7ut5TZkxFJjHmS/DZnJnp2HErQTCmX3O8RASJH3ZiYl11gz
+  artifact: Installers\Rubberduck.Setup.$(appveyor_build_version)-pre.exe
+  draft: false
+  prerelease: true
+  on:
+    branch: next
 notifications:
 - provider: Webhook
   url: http://stats.zomis.net/GithubHookSEChatService/hooks/github/payload?roomId=14929

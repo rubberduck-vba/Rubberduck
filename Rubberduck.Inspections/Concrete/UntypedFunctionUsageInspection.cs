@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
@@ -13,6 +14,8 @@ namespace Rubberduck.Inspections.Concrete
     {
         public UntypedFunctionUsageInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Hint) { }
+
+        public override Type Type => typeof(UntypedFunctionUsageInspection);
 
         public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
 

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using System.Linq;
+using Rubberduck.Parsing.Annotations;
 
 namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
 {
@@ -90,7 +91,10 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 Accessibility.Global,
                 DeclarationType.Event,
                 false,
-                null);
+                null,
+                false,
+                new List<IAnnotation>(),
+                new Attributes());
         }
 
         private static Declaration UserFormDeactivateEvent(Declaration formsClassModule)
@@ -106,7 +110,10 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 Accessibility.Global,
                 DeclarationType.Event,
                 false,
-                null);
+                null,
+                false,
+                new List<IAnnotation>(),
+                new Attributes());
         }
 
         private static Declaration UserFormInitializeEvent(Declaration formsClassModule)
@@ -122,7 +129,10 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 Accessibility.Global,
                 DeclarationType.Event,
                 false,
-                null);
+                null,
+                false,
+                new List<IAnnotation>(),
+                new Attributes());
         }
 
         private static Declaration UserFormQueryCloseEvent(Declaration formsClassModule)
@@ -138,7 +148,10 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 Accessibility.Global,
                 DeclarationType.Event,
                 false,
-                null);
+                null,
+                false,
+                new List<IAnnotation>(),
+                new Attributes());
         }
 
         private static ParameterDeclaration UserFormQueryCloseEventCancelParameter(Declaration userFormQueryCloseEvent)
@@ -146,14 +159,9 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
             return new ParameterDeclaration(
                 new QualifiedMemberName(userFormQueryCloseEvent.QualifiedName.QualifiedModuleName, "Cancel"),
                 userFormQueryCloseEvent,
-                null,
-                new Selection(),
                 "Integer",
                 null,
                 string.Empty,
-                false,
-                true,
-                false,
                 false,
                 true);
         }
@@ -163,14 +171,9 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
             return new ParameterDeclaration(
                 new QualifiedMemberName(userFormQueryCloseEvent.QualifiedName.QualifiedModuleName, "CloseMode"),
                 userFormQueryCloseEvent,
-                null,
-                new Selection(),
                 "Integer",
                 null,
                 string.Empty,
-                false,
-                true,
-                false,
                 false,
                 true);
         }
@@ -188,7 +191,10 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 Accessibility.Global,
                 DeclarationType.Event,
                 false,
-                null);
+                null,
+                false,
+                new List<IAnnotation>(),
+                new Attributes());
         }
 
         private static Declaration UserFormTerminateEvent(Declaration formsClassModule)
@@ -204,7 +210,10 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 Accessibility.Global,
                 DeclarationType.Event,
                 false,
-                null);
+                null,
+                false,
+                new List<IAnnotation>(),
+                new Attributes());
         }
 
     }

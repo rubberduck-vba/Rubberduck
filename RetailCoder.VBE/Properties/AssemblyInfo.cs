@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Rubberduck")]
 [assembly: AssemblyProduct("Rubberduck")]
-[assembly: AssemblyCopyright("Copyright ©  2014-2016")]
+[assembly: AssemblyCopyright("Copyright ©  2014-2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -31,5 +31,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.0.14.*")]
-[assembly: AssemblyFileVersion("2.0.14.0")]
+[assembly: AssemblyVersion("2.1.*")]
+//[assembly: AssemblyFileVersion("2.1.0.0")]

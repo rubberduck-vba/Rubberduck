@@ -24,6 +24,8 @@ namespace Rubberduck.Inspections.Concrete
             Listener = new IllegalAttributeAnnotationsListener(state);
         }
 
+        public override Type Type => typeof(IllegalAnnotationInspection);
+
         public override CodeInspectionType InspectionType => CodeInspectionType.RubberduckOpportunities;
         public override IInspectionListener Listener { get; }
         public override ParsePass Pass => ParsePass.AttributesPass;
@@ -32,8 +34,7 @@ namespace Rubberduck.Inspections.Concrete
         {
             return Listener.Contexts.Select(context => 
                 new QualifiedContextInspectionResult(this, 
-                string.Format(InspectionsUI.IllegalAnnotationInspectionResultFormat, ((VBAParser.AnnotationContext)context.Context).annotationName().GetText()), 
-                State, context));
+                string.Format(InspectionsUI.IllegalAnnotationInspectionResultFormat, ((VBAParser.AnnotationContext)context.Context).annotationName().GetText()), context));
         }
 
         public class IllegalAttributeAnnotationsListener : VBAParserBaseListener, IInspectionListener
@@ -60,9 +61,17 @@ namespace Rubberduck.Inspections.Concrete
 
             public QualifiedModuleName CurrentModuleName { get; set; }
 
+            private bool _isFirstMemberProcessed;
+
             public void ClearContexts()
             {
                 _contexts.Clear();
+                _isFirstMemberProcessed = false;
+                var keys = _annotationCounts.Keys.ToList();
+                foreach (var key in keys)
+                {
+                    _annotationCounts[key] = 0;
+                }
             }
 
             #region scoping
@@ -72,6 +81,7 @@ namespace Rubberduck.Inspections.Concrete
             private void SetCurrentScope(string memberName = null)
             {
                 _hasMembers = !string.IsNullOrEmpty(memberName);
+                _isFirstMemberProcessed = _hasMembers;
                 _currentScopeDeclaration = _hasMembers ? _members.Value[memberName] : _module.Value;
             }
 
@@ -152,15 +162,23 @@ namespace Rubberduck.Inspections.Concrete
                 var annotationType = (AnnotationType) Enum.Parse(typeof (AnnotationType), name);
                 _annotationCounts[annotationType]++;
 
-                var isPerModule = annotationType.HasFlag(AnnotationType.ModuleAnnotation);
-                var isMemberOnModule = !_currentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Module) && isPerModule;
+                var moduleHasMembers = _members.Value.Any();
 
-                var isPerMember = annotationType.HasFlag(AnnotationType.MemberAnnotation);
-                var isModuleOnMember = _currentScopeDeclaration == null && isPerMember;
+                var isMemberAnnotation = annotationType.HasFlag(AnnotationType.MemberAnnotation);
+                var isModuleAnnotation = annotationType.HasFlag(AnnotationType.ModuleAnnotation);
 
-                var isOnlyAllowedOnce = isPerModule || isPerMember;
+                var isModuleAnnotatedForMemberAnnotation = isMemberAnnotation
+                    && (_currentScopeDeclaration?.DeclarationType.HasFlag(DeclarationType.Module) ?? false);
 
-                if ((isOnlyAllowedOnce && _annotationCounts[annotationType] > 1) || isModuleOnMember || isMemberOnModule)
+                var isMemberAnnotatedForModuleAnnotation = isModuleAnnotation 
+                    && (_currentScopeDeclaration?.DeclarationType.HasFlag(DeclarationType.Member) ?? false);
+
+                var isIllegal = !(isMemberAnnotation && moduleHasMembers && !_isFirstMemberProcessed) &&
+                                (isModuleAnnotation && _annotationCounts[annotationType] > 1
+                                 || isMemberAnnotatedForModuleAnnotation
+                                 || isModuleAnnotatedForMemberAnnotation);
+
+                if (isIllegal)
                 {
                     _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
                 }

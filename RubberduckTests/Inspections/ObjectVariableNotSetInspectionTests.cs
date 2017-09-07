@@ -2,7 +2,6 @@ using System.Linq;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -24,6 +23,57 @@ Private Sub DoSomething()
     Dim target As Object
     Set target = CreateObject(""Scripting.Dictionary"")
     target(""foo"") = 42
+End Sub
+";
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ObjectVariableNotSet_GivenPropertyLet_ReturnsNoResult()
+        {
+            var expectResultCount = 0;
+            var input =
+                @"
+Public Property Let Foo(rhs As String)
+End Property
+
+Private Sub DoSomething()
+    Foo = 42
+End Sub
+";
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ObjectVariableNotSet_GivenPropertySet_WithoutSet_ReturnsResult()
+        {
+            var expectResultCount = 1;
+            var input =
+                @"
+Public Property Set Foo(rhs As Object)
+End Property
+
+Private Sub DoSomething()
+    Foo = New Object
+End Sub
+";
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ObjectVariableNotSet_GivenPropertySet_WithSet_ReturnsNoResult()
+        {
+            var expectResultCount = 0;
+            var input =
+                @"
+Public Property Set Foo(rhs As Object)
+End Property
+
+Private Sub DoSomething()
+    Set Foo = New Object
 End Sub
 ";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
@@ -244,120 +294,6 @@ End Function";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ObjectVariableNotSet_IgnoreQuickFixWorks()
-        {
-            var inputCode =
-            @"
-Private Sub Workbook_Open()
-    
-    Dim target As Range
-    target = Range(""A1"")
-    
-    target.Value = ""forgot something?""
-
-End Sub";
-            var expectedCode =
-            @"
-Private Sub Workbook_Open()
-    
-    Dim target As Range
-'@Ignore ObjectVariableNotSet
-    target = Range(""A1"")
-    
-    target.Value = ""forgot something?""
-
-End Sub";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new ObjectVariableNotSetInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-            
-            new IgnoreOnceQuickFix(state, new[] {inspection}).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void ObjectVariableNotSet_ForFunctionAssignment_ReturnsResult()
-        {
-            var expectedResultCount = 2;
-            var input =
-@"
-Private Function CombineRanges(ByVal source As Range, ByVal toCombine As Range) As Range
-    If source Is Nothing Then
-        CombineRanges = toCombine 'no inspection result (but there should be one!)
-    Else
-        CombineRanges = Union(source, toCombine) 'no inspection result (but there should be one!)
-    End If
-End Function";
-            var expectedCode =
-            @"
-Private Function CombineRanges(ByVal source As Range, ByVal toCombine As Range) As Range
-    If source Is Nothing Then
-        Set CombineRanges = toCombine 'no inspection result (but there should be one!)
-    Else
-        Set CombineRanges = Union(source, toCombine) 'no inspection result (but there should be one!)
-    End If
-End Function";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new ObjectVariableNotSetInspection(state);
-            var inspectionResults = inspection.GetInspectionResults().ToList();
-
-            Assert.AreEqual(expectedResultCount, inspectionResults.Count);
-            var fix = new UseSetKeywordForObjectAssignmentQuickFix(state);
-            foreach (var result in inspectionResults)
-            {
-                fix.Fix(result);
-            }
-
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void ObjectVariableNotSet_ForPropertyGetAssignment_ReturnsResults()
-        {
-            var expectedResultCount = 1;
-            var input = @"
-Private example As MyObject
-Public Property Get Example() As MyObject
-    Example = example
-End Property
-";
-            var expectedCode =
-            @"
-Private example As MyObject
-Public Property Get Example() As MyObject
-    Set Example = example
-End Property
-";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new ObjectVariableNotSetInspection(state);
-            var inspectionResults = inspection.GetInspectionResults().ToList();
-
-            Assert.AreEqual(expectedResultCount, inspectionResults.Count);
-            var fix = new UseSetKeywordForObjectAssignmentQuickFix(state);
-            foreach (var result in inspectionResults)
-            {
-                fix.Fix(result);
-            }
-
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
         public void ObjectVariableNotSet_LongPtrVariable_ReturnsNoResult()
         {
             var expectResultCount = 0;
@@ -424,18 +360,120 @@ End Sub";
         public void ObjectVariableNotSet_FunctionReturnNotSet_ReturnsResult()
         {
 
-            var expectResultCount = 0;
+            var expectResultCount = 1;
             var input =
 @"
-Enum TestEnum
-    EnumOne
-    EnumTwo
-    EnumThree
-End Enum
+Private Function Test() As Collection
+    Test = new Collection
+End Function";
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+        }
 
-Private Sub TestEnum()
-    Dim enumVariable As TestEnum
-    enumVariable = EnumThree
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ObjectVariableNotSet_ObjectLiteral_ReturnsResult()
+        {
+
+            var expectResultCount = 1;
+            var input =
+    @"
+Private Sub Test()
+    Dim bar As Variant
+    bar = Nothing
+End Sub";
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ObjectVariableNotSet_NonObjectLiteral_ReturnsNoResult()
+        {
+
+            var expectResultCount = 0;
+            var input =
+    @"
+Private Sub Test()
+    Dim bar As Variant
+    bar = Null
+    bar = Empty
+    bar = ""aaa""
+    bar = 5
+End Sub";
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ObjectVariableNotSet_ForEach_ReturnsNoResult()
+        {
+
+            var expectResultCount = 0;
+            var input =
+    @"
+Private Sub Test()
+    Dim bar As Variant
+    For Each foo In bar
+    Next
+End Sub";
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ObjectVariableNotSet_RSet_ReturnsNoResult()
+        {
+
+            var expectResultCount = 0;
+            var input =
+    @"
+Private Sub Test()
+    Dim foo As Variant
+    Dim bar As Variant
+    RSet foo = bar
+End Sub";
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ObjectVariableNotSet_LSet_ReturnsNoResult()
+        {
+
+            var expectResultCount = 0;
+            var input =
+    @"
+Private Sub Test()
+    Dim foo As Variant
+    Dim bar As Variant
+    LSet foo = bar
+End Sub";
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ObjectVariableNotSet_LSetOnUDT_ReturnsNoResult()
+        {
+
+            var expectResultCount = 0;
+            var input =
+                @"
+Type TFoo
+  CountryCode As String * 2
+  SecurityNumber As String * 8
+End Type
+
+Type TBar
+  ISIN As String * 10
+End Type
+
+Sub Test()
+
+  Dim foo As TFoo
+  Dim bar As TBar
+
+  bar.ISIN = ""DE12345678""
+  LSet foo = bar
 End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }

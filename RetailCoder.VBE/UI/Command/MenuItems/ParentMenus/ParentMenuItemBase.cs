@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using Rubberduck.Parsing.VBA;
@@ -88,19 +89,24 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             EvaluateCanExecute(null);
         }
 
-        public void RemoveChildren()
+        public void RemoveMenu()
+        {
+            Logger.Debug($"Removing menu {_key}.");
+            RemoveChildren();
+            Item?.Delete();
+            Item = null;
+        }
+
+        private void RemoveChildren()
         {
             foreach (var child in _items.Keys.Select(item => item as IParentMenuItem).Where(child => child != null))
             {
-                child.RemoveChildren();
-                //var item = _items[child];
-                //Debug.Assert(item is CommandBarPopup);
-                //(item as CommandBarPopup).Delete();
+                child.RemoveMenu();
             }
-            foreach (var child in _items.Values.Select(item => item as CommandBarButton).Where(child => child != null))
+            foreach (var child in _items.Values.Select(item => item as ICommandBarButton).Where(child => child != null))
             {
                 child.Click -= child_Click;
-                //child.Delete();
+                child.Delete();
             }
         }
 

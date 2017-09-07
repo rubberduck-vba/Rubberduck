@@ -8,6 +8,8 @@ namespace Rubberduck.Parsing.Inspections.Abstract
     /// </summary>
     public interface IInspection : IInspectionModel, IComparable<IInspection>, IComparable
     {
+        Type Type { get; }
+
         /// <summary>
         /// Runs code inspection and returns inspection results.
         /// </summary>

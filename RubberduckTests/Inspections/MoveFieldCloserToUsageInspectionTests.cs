@@ -2,7 +2,6 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.UI;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -180,61 +179,6 @@ End Sub";
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.IsFalse(inspectionResults.Any());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void MoveFieldCloserToUsage_IgnoreQuickFixWorks()
-        {
-            const string inputCode =
-@"Private bar As String
-Public Sub Foo()
-    bar = ""test""
-End Sub";
-
-            const string expectedCode =
-@"'@Ignore MoveFieldCloserToUsage
-Private bar As String
-Public Sub Foo()
-    bar = ""test""
-End Sub";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new MoveFieldCloserToUsageInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-            
-            new IgnoreOnceQuickFix(state, new[] {inspection}).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void MoveFieldCloserToUsage_QuickFixWorks()
-        {
-            const string inputCode =
-@"Private bar As String
-Public Sub Foo()
-    bar = ""test""
-End Sub";
-
-            const string expectedCode =
-@"Public Sub Foo()
-    Dim bar As String
-bar = ""test""
-End Sub";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new MoveFieldCloserToUsageInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            new MoveFieldCloserToUsageQuickFix(state, new Mock<IMessageBox>().Object).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]

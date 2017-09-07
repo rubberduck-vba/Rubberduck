@@ -9,38 +9,35 @@ namespace Rubberduck.Common.Hotkeys
     {
         private const Keys Modifiers = Keys.Alt | Keys.Control | Keys.Shift;
 
-        private readonly IntPtr _hookId;
-        private readonly Keys _keys;
-
         public HotkeyInfo(IntPtr hookId, Keys keys)
         {
-            _hookId = hookId;
-            _keys = keys;
+            HookId = hookId;
+            Keys = keys;
         }
 
-        public IntPtr HookId { get { return _hookId; } }
-        public Keys Keys { get { return _keys; } }
+        public IntPtr HookId { get; }
+        public Keys Keys { get; }
 
         public override string ToString()
         {
             var builder = new StringBuilder();
-            if (_keys.HasFlag(Keys.Alt))
+            if (Keys.HasFlag(Keys.Alt))
             {
                 builder.Append(RubberduckUI.GeneralSettings_HotkeyAlt);
                 builder.Append('+');
             }
-            if (_keys.HasFlag(Keys.Control))
+            if (Keys.HasFlag(Keys.Control))
             {
                 builder.Append(RubberduckUI.GeneralSettings_HotkeyCtrl);
                 builder.Append('+');
             }
-            if (_keys.HasFlag(Keys.Shift))
+            if (Keys.HasFlag(Keys.Shift))
             {
                 builder.Append(RubberduckUI.GeneralSettings_HotkeyShift);
                 builder.Append('+');
             }
             
-            builder.Append(HotkeyDisplayConverter.Convert(_keys & ~Modifiers));
+            builder.Append(HotkeyDisplayConverter.Convert(Keys & ~Modifiers));
             return builder.ToString();
         }
     }

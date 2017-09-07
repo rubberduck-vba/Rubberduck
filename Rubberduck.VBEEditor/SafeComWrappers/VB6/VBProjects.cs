@@ -11,10 +11,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 {
     public class VBProjects : SafeComWrapper<VB.VBProjects>, IVBProjects
     {
-        //TODO - This is currently the VBA Guid, and it need to be updated when VB6 support is added.
-        private static readonly Guid VBProjectsEventsGuid = new Guid("0002E103-0000-0000-C000-000000000046");
+        private static readonly Guid VBProjectsEventsGuid = new Guid("0002E190-0000-0000-C000-000000000046");
 
-        //TODO - These *should* be the same, but this should be verified.
         private enum ProjectEventDispId
         {
             ItemAdded = 1,
@@ -112,7 +110,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         private bool _eventsAttached;
         private void AttachEvents()
         {
-            throw new NotImplementedException("Correct the Guid (see comment above), verify the DispIds, then remove this throw.");
             if (!_eventsAttached && !IsWrappingNullReference)
             {
                 _projectAdded = OnProjectAdded;
