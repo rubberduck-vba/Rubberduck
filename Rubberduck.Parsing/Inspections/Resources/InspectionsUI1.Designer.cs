@@ -313,7 +313,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An Else block should have executable statements.
+        ///   Looks up a localized string similar to An Else block should have executable statements. An empty block serves no purpose and can be confusing for the maintainer. Was this empty execution path originally intended to do something? Clear code only contains executable paths..
         /// </summary>
         public static string EmptyElseBlockInspectionMeta {
             get {
@@ -331,7 +331,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Else block has no executable statements.
+        ///   Looks up a localized string similar to Else block contains no executable statements.
         /// </summary>
         public static string EmptyElseBlockInspectionResultFormat {
             get {

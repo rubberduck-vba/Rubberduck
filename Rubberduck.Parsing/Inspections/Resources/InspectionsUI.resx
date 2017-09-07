@@ -767,10 +767,10 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>Warning</value>
   </data>
   <data name="EmptyElseBlockInspectionResultFormat" xml:space="preserve">
-    <value>Else block has no executable statements</value>
+    <value>Else block contains no executable statements</value>
   </data>
   <data name="EmptyElseBlockInspectionMeta" xml:space="preserve">
-    <value>An Else block should have executable statements</value>
+    <value>An Else block should have executable statements. An empty block serves no purpose and can be confusing for the maintainer. Was this empty execution path originally intended to do something? Clear code only contains executable paths.</value>
   </data>
   <data name="EmptyElseBlockInspectionName" xml:space="preserve">
     <value>Empty Else block</value>
