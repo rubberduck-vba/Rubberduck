@@ -193,6 +193,37 @@ End Sub";
             Assert.AreEqual(expectedCode, rewriter.GetText());
         }
 
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void UnassignedVariable_WithCommentOnSameLineAndFollowingStuff_DoesNotRemoveComment()
+        {
+            const string inputCode =
+@"Function Foo() As String
+Dim var1 As String ' Comment
+Dim var2 As String
+var2 = ""Something""
+Foo = var2
+End Function";
+
+            const string expectedCode =
+@"Function Foo() As String
+' Comment
+Dim var2 As String
+var2 = ""Something""
+Foo = var2
+End Function";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new VariableNotUsedInspection(state);
+            new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults().First());
+
+            var rewriter = state.GetRewriter(component);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
+        }
+
 
 
         [TestMethod]
