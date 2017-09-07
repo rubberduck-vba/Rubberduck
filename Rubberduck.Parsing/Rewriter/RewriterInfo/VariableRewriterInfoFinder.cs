@@ -74,9 +74,9 @@ namespace Rubberduck.Parsing.Rewriter.RewriterInfo
                 else if (containingBlock.GetChild(blockStmtIndex + 1) is VBAParser.EndOfStatementContext eos)
                 {
                     // since EOS includes the following comment, we need to do weird shit
-                    // eos cannot be EOF, since we're on a local var
+                    // eos cannot be EOF, since we're on a local var, but it can be a statment separator
                     var eol = eos.endOfLine(0);
-                    if (eol.commentOrAnnotation() != null)
+                    if (eol?.commentOrAnnotation() != null)
                     {
                         stopIndex = eol.commentOrAnnotation().Start.TokenIndex - 1;
                     }
