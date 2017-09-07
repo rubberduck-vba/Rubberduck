@@ -7,13 +7,15 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
+using RubberduckTests.Inspections;
 
-namespace RubberduckTests.Inspections
+namespace RubberduckTests.QuickFixes
 {
     [TestClass]
     public class SynchronizeAttributesQuickFixTests
     {
         [TestMethod]
+        [TestCategory("QuickFixes")]
         public void AddsMissingPredeclaredIdAnnotation()
         {
             const string testModuleName = "Test";
@@ -62,6 +64,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("QuickFixes")]
         public void AddsMissingDescriptionAnnotation()
         {
             const string testModuleName = "Test";
@@ -110,6 +113,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("QuickFixes")]
         public void AddsDefaultMemberAnnotation()
         {
             const string testModuleName = "Test";
@@ -158,6 +162,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("QuickFixes")]
         public void AddsEnumeratorMemberAnnotation()
         {
             const string testModuleName = "Test";
@@ -206,6 +211,7 @@ End Property";
         }
 
         [TestMethod]
+        [TestCategory("QuickFixes")]
         public void AddsMissingPredeclaredIdAttribute()
         {
             const string testModuleName = "Test";
@@ -258,6 +264,7 @@ Option Explicit
         }
 
         [TestMethod]
+        [TestCategory("QuickFixes")]
         public void AddsMissingExposedAttribute()
         {
             const string testModuleName = "Test";

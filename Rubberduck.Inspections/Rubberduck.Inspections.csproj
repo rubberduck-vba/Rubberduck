@@ -57,6 +57,12 @@
     <Compile Include="Abstract\ParseTreeInspectionBase.cs" />
     <Compile Include="Concrete\ApplicationWorksheetFunctionInspection.cs" />
     <Compile Include="Concrete\AssignedByValParameterInspection.cs" />
+    <Compile Include="Concrete\EmptyBlockInspectionListenerBase.cs" />
+    <Compile Include="Concrete\EmptyCaseBlockInspection.cs" />
+    <Compile Include="Concrete\EmptyDoWhileBlockInspection.cs" />
+    <Compile Include="Concrete\EmptyForEachBlockInspection.cs" />
+    <Compile Include="Concrete\EmptyForLoopBlockInspection.cs" />
+    <Compile Include="Concrete\EmptyWhileWendBlockInspection.cs" />
     <Compile Include="Concrete\StopKeywordInspection.cs" />
     <Compile Include="Concrete\LineLabelNotUsedInspection.cs" />
     <Compile Include="Concrete\IntegerDataTypeInspection.cs" />
