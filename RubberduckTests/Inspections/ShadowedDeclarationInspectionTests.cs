@@ -1567,9 +1567,9 @@ End Enum";
         {
             var declarationResults = new Dictionary<string, int>
             {
-                [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 1, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 0, [FunctionName] = 0,
+                [ProjectName] = 0, [ProceduralModuleName] = 0, [ClassModuleName] = 0, [UserFormName] = 0, [DocumentName] = 0, [ProcedureName] = 0, [FunctionName] = 0,
                 [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0, [ParameterName] = 0, [VariableName] = 0, [ConstantName] = 0,
-                [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+                [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 1, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
             // Public
@@ -1620,6 +1620,67 @@ End Type";
                 var inspectionResults = inspection.GetInspectionResults();
 
                 Assert.AreEqual(0, inspectionResults.Count(), $"Wrong inspection result for private {result.Key}");
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsUserDefinedTypeInUserProject()
+        {
+            var declarationResults = new Dictionary<string, int>
+            {
+                [ProjectName] = 0, [ProceduralModuleName] = 0, [ClassModuleName] = 0, [UserFormName] = 0, [DocumentName] = 0, [ProcedureName] = 0, [FunctionName] = 0,
+                [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0, [ParameterName] = 0, [VariableName] = 0, [ConstantName] = 0,
+                [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 2, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+            };
+
+            // Public
+            foreach (var result in declarationResults)
+            {
+                var userModuleCode =
+$@"Public Type {result.Key}
+    s As String
+End Type";
+
+                var builder = new MockVbeBuilder();
+                var userProject = CreateUserProject(builder).AddComponent("Foo", ComponentType.StandardModule, userModuleCode).Build();
+                builder.AddProject(userProject);
+
+                var vbe = builder.Build();
+                var state = MockParser.CreateAndParse(vbe.Object);
+
+                var inspection = new ShadowedDeclarationInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
+
+                Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+            }
+
+            declarationResults = new Dictionary<string, int>
+            {
+                [ProjectName] = 0, [ProceduralModuleName] = 0, [ClassModuleName] = 0, [UserFormName] = 0, [DocumentName] = 0, [ProcedureName] = 0, [FunctionName] = 0,
+                [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0, [ParameterName] = 0, [VariableName] = 0, [ConstantName] = 0,
+                [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 1, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+            };
+
+            // Private
+            foreach (var result in declarationResults)
+            {
+                var userModuleCode =
+$@"Private Type {result.Key}
+    s As String
+End Type";
+
+                var builder = new MockVbeBuilder();
+                var userProject = CreateUserProject(builder).AddComponent("Foo", ComponentType.StandardModule, userModuleCode).Build();
+                builder.AddProject(userProject);
+
+                var vbe = builder.Build();
+                var state = MockParser.CreateAndParse(vbe.Object);
+
+                var inspection = new ShadowedDeclarationInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
+
+                Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for private {result.Key}");
             }
         }
 

@@ -216,12 +216,6 @@ namespace Rubberduck.Inspections.Concrete
 
             var originalDeclarationComponentType = originalDeclaration.QualifiedName.QualifiedModuleName.ComponentType;
 
-            // Syntax of instantiating a new UDT makes it impossible to be shadowed.
-            if (originalDeclaration.DeclarationType == DeclarationType.UserDefinedType)
-            {
-                return false;
-            }
-
             // It is not possible to directly access a Parameter, UDT Member or Label declared in another component
             if (originalDeclaration.DeclarationType == DeclarationType.Parameter || originalDeclaration.DeclarationType == DeclarationType.UserDefinedTypeMember ||
                 originalDeclaration.DeclarationType == DeclarationType.LineLabel)
@@ -381,10 +375,9 @@ namespace Rubberduck.Inspections.Concrete
                     DeclarationType.PropertyGet, DeclarationType.PropertySet, DeclarationType.PropertyLet, DeclarationType.Parameter, DeclarationType.Variable, DeclarationType.Constant,
                     DeclarationType.Enumeration, DeclarationType.EnumerationMember, DeclarationType.LibraryProcedure, DeclarationType.LibraryFunction
                 }.ToHashSet(),
-            // TODO: UDT shadowing UDT? In other project and component
             [DeclarationType.UserDefinedType] = new[]
                 {
-                    DeclarationType.Project, DeclarationType.ProceduralModule, DeclarationType.ClassModule, DeclarationType.UserForm, DeclarationType.Document
+                    DeclarationType.UserDefinedType
                 }.ToHashSet(),
             [DeclarationType.LibraryProcedure] = new[]
                 {
@@ -476,6 +469,10 @@ namespace Rubberduck.Inspections.Concrete
                     DeclarationType.Procedure, DeclarationType.Function, DeclarationType.PropertyGet, DeclarationType.PropertySet, DeclarationType.PropertyLet, DeclarationType.Parameter,
                     DeclarationType.Variable, DeclarationType.Constant, DeclarationType.Enumeration, DeclarationType.EnumerationMember,
                     DeclarationType.LibraryProcedure, DeclarationType.LibraryFunction
+                }.ToHashSet(),
+            [DeclarationType.UserDefinedType] = new[]
+                {
+                    DeclarationType.UserDefinedType
                 }.ToHashSet(),
             [DeclarationType.LibraryProcedure] = new[]
                 {
