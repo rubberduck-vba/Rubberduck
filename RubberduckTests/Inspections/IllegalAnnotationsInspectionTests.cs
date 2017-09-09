@@ -68,7 +68,7 @@ End Sub
 Option Explicit
 '@Folder(""Legal"")
 ";
-            var vbe = MockVbeBuilder.BuildFromStdModules(Tuple.Create("Module1", inputCode1), Tuple.Create("Module2", inputCode2));
+            var vbe = MockVbeBuilder.BuildFromStdModules(("Module1", inputCode1), ("Module2", inputCode2));
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new IllegalAnnotationInspection(state);

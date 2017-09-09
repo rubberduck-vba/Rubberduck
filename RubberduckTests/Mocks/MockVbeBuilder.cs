@@ -151,16 +151,14 @@ namespace RubberduckTests.Mocks
         /// <summary>
         /// Builds a mock VBE containing multiple standard modules.
         /// </summary>
-        /// <param name="modules">Each tuple is [name, content].</param>
-        /// <returns></returns>
-        public static Mock<IVBE> BuildFromStdModules(params Tuple<string, string>[] modules)
+        public static Mock<IVBE> BuildFromStdModules(params (string name, string content)[] modules)
         {
             var vbeBuilder = new MockVbeBuilder();
 
             var builder = vbeBuilder.ProjectBuilder(TestProjectName, ProjectProtection.Unprotected);
             foreach (var module in modules)
             {
-                builder.AddComponent(module.Item1, ComponentType.StandardModule, module.Item2);
+                builder.AddComponent(module.name, ComponentType.StandardModule, module.content);
             }
 
             var project = builder.Build();
