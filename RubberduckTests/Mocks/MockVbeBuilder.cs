@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 namespace RubberduckTests.Mocks
 {
     /// <summary>
-    /// Builds a mock <see cref="VBE"/>.
+    /// Builds a mock <see cref="IVBE"/>.
     /// </summary>
     public class MockVbeBuilder
     {
@@ -51,7 +52,7 @@ namespace RubberduckTests.Mocks
         /// Adds a project to the mock VBE.
         /// Use a <see cref="MockProjectBuilder"/> to build the <see cref="project"/>.
         /// </summary>
-        /// <param name="project">A mock <see cref="VBProject"/>.</param>
+        /// <param name="project">A mock <see cref="IVBProject"/>.</param>
         /// <returns>Returns the <see cref="MockVbeBuilder"/> instance.</returns>
         public MockVbeBuilder AddProject(Mock<IVBProject> project)
         {
@@ -92,7 +93,7 @@ namespace RubberduckTests.Mocks
         }
 
         /// <summary>
-        /// Gets the mock <see cref="VBE"/> instance.
+        /// Gets the mock <see cref="IVBE"/> instance.
         /// </summary>
         public Mock<IVBE> Build()
         {
@@ -100,14 +101,14 @@ namespace RubberduckTests.Mocks
         }
 
         /// <summary>
-        /// Gets a mock <see cref="VBE"/> instance, 
-        /// containing a single "TestProject1" <see cref="VBProject"/>
-        /// and a single "TestModule1" <see cref="VBComponent"/>, with the specified <see cref="content"/>.
+        /// Gets a mock <see cref="IVBE"/> instance, 
+        /// containing a single "TestProject1" <see cref="IVBProject"/>
+        /// and a single "TestModule1" <see cref="IVBComponent"/>, with the specified <see cref="content"/>.
         /// </summary>
         /// <param name="content">The VBA code associated to the component.</param>
-        /// <param name="component">The created <see cref="VBComponent"/></param>
-        /// <param name="module">The created <see cref="CodeModule"/></param>
-        /// <param name="selection"></param>
+        /// <param name="component">The created <see cref="IVBComponent"/></param>
+        /// <param name="selection">Specifies user selection in the editor.</param>
+        /// <param name="referenceStdLibs">Specifies whether standard libraries are referenced.</param>
         /// <returns></returns>
         public static Mock<IVBE> BuildFromSingleStandardModule(string content, out IVBComponent component, Selection selection = default(Selection), bool referenceStdLibs = false)
         {
@@ -140,6 +141,30 @@ namespace RubberduckTests.Mocks
             var vbe = vbeBuilder.AddProject(project).Build();
 
             component = project.Object.VBComponents[0];
+
+            vbe.Object.ActiveVBProject = project.Object;
+            vbe.Object.ActiveCodePane = component.CodeModule.CodePane;
+
+            return vbe;
+        }
+
+        /// <summary>
+        /// Builds a mock VBE containing multiple standard modules.
+        /// </summary>
+        public static Mock<IVBE> BuildFromStdModules(params (string name, string content)[] modules)
+        {
+            var vbeBuilder = new MockVbeBuilder();
+
+            var builder = vbeBuilder.ProjectBuilder(TestProjectName, ProjectProtection.Unprotected);
+            foreach (var module in modules)
+            {
+                builder.AddComponent(module.name, ComponentType.StandardModule, module.content);
+            }
+
+            var project = builder.Build();
+            var vbe = vbeBuilder.AddProject(project).Build();
+
+            var component = project.Object.VBComponents[0];
 
             vbe.Object.ActiveVBProject = project.Object;
             vbe.Object.ActiveCodePane = component.CodeModule.CodePane;
