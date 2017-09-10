@@ -38,7 +38,7 @@ End Type
 
 Public Declare PtrSafe Sub {LibraryProcedureName} Lib ""lib.dll"" ()
 
-Public Declare PtrSafe Function {LibraryFunctionName} Lib ""lib.dll""()
+Public Declare PtrSafe Function {LibraryFunctionName} Lib ""lib.dll"" ()
 
 Public {VariableName} As String
 
@@ -473,6 +473,37 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
+        public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsProcedureInSameComponent()
+        {
+            var declarationResults = new Dictionary<string, int>
+            {
+                [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
+                [ParameterName] = 1, [VariableName] = 0, [ConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+            };
+
+            foreach (var result in declarationResults)
+            {
+                var declarationCode =
+$@"Public Sub {result.Key}()
+End Sub";
+
+                var builder = new MockVbeBuilder();
+                var project = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected)
+                    .AddComponent(ProceduralModuleName, ComponentType.StandardModule, $"{declarationCode}\n\n{moduleCode}").Build();
+
+                var vbe = builder.AddProject(project).Build();
+                var state = MockParser.CreateAndParse(vbe.Object);
+
+                var inspection = new ShadowedDeclarationInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
+
+                Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsFunctionInReferencedProject()
         {
             var declarationResults = new Dictionary<string, int>
@@ -587,6 +618,37 @@ End Function";
                 var inspectionResults = inspection.GetInspectionResults();
 
                 Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for private {result.Key}");
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsFunctionInSameComponent()
+        {
+            var declarationResults = new Dictionary<string, int>
+            {
+                [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
+                [ParameterName] = 1, [VariableName] = 0, [ConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+            };
+
+            foreach (var result in declarationResults)
+            {
+                var declarationCode =
+$@"Public Function {result.Key}()
+End Function";
+
+                var builder = new MockVbeBuilder();
+                var project = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected)
+                    .AddComponent(ProceduralModuleName, ComponentType.StandardModule, $"{declarationCode}\n\n{moduleCode}").Build();
+
+                var vbe = builder.AddProject(project).Build();
+                var state = MockParser.CreateAndParse(vbe.Object);
+
+                var inspection = new ShadowedDeclarationInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
+
+                Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
             }
         }
 
@@ -711,6 +773,37 @@ End Property";
 
         [TestMethod]
         [TestCategory("Inspections")]
+        public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPropertyGetInSameComponent()
+        {
+            var declarationResults = new Dictionary<string, int>
+            {
+                [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
+                [ParameterName] = 1, [VariableName] = 0, [ConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+            };
+
+            foreach (var result in declarationResults)
+            {
+                var declarationCode =
+$@"Public Property Get {result.Key}() As String
+End Property";
+
+                var builder = new MockVbeBuilder();
+                var project = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected)
+                    .AddComponent(ProceduralModuleName, ComponentType.StandardModule, $"{declarationCode}\n\n{moduleCode}").Build();
+
+                var vbe = builder.AddProject(project).Build();
+                var state = MockParser.CreateAndParse(vbe.Object);
+
+                var inspection = new ShadowedDeclarationInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
+
+                Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPropertySetInReferencedProject()
         {
             var declarationResults = new Dictionary<string, int>
@@ -825,6 +918,37 @@ End Property";
                 var inspectionResults = inspection.GetInspectionResults();
 
                 Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for private {result.Key}");
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPropertySetInSameComponent()
+        {
+            var declarationResults = new Dictionary<string, int>
+            {
+                [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
+                [ParameterName] = 1, [VariableName] = 0, [ConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+            };
+
+            foreach (var result in declarationResults)
+            {
+                var declarationCode =
+$@"Public Property Set {result.Key}(v as Variant)
+End Property";
+
+                var builder = new MockVbeBuilder();
+                var project = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected)
+                    .AddComponent(ProceduralModuleName, ComponentType.StandardModule, $"{declarationCode}\n\n{moduleCode}").Build();
+
+                var vbe = builder.AddProject(project).Build();
+                var state = MockParser.CreateAndParse(vbe.Object);
+
+                var inspection = new ShadowedDeclarationInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
+
+                Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
             }
         }
 
@@ -949,6 +1073,37 @@ End Property";
 
         [TestMethod]
         [TestCategory("Inspections")]
+        public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPropertyLetInSameComponent()
+        {
+            var declarationResults = new Dictionary<string, int>
+            {
+                [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
+                [ParameterName] = 1, [VariableName] = 0, [ConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+            };
+
+            foreach (var result in declarationResults)
+            {
+                var declarationCode =
+$@"Public Property Let {result.Key}(s As String)
+End Property";
+
+                var builder = new MockVbeBuilder();
+                var project = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected)
+                    .AddComponent(ProceduralModuleName, ComponentType.StandardModule, $"{declarationCode}\n\n{moduleCode}").Build();
+
+                var vbe = builder.AddProject(project).Build();
+                var state = MockParser.CreateAndParse(vbe.Object);
+
+                var inspection = new ShadowedDeclarationInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
+
+                Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsParameterInReferencedProject()
         {
             var declarationResults = new Dictionary<string, int>
@@ -1010,6 +1165,37 @@ End Sub";
                 var inspectionResults = inspection.GetInspectionResults();
 
                 Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for {result.Key}");
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsParameterInSameComponent()
+        {
+            var declarationResults = new Dictionary<string, int>
+            {
+                [ProceduralModuleName] = 0, [ProcedureName] = 1, [FunctionName] = 1, [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1,
+                [ParameterName] = 0, [VariableName] = 1, [ConstantName] = 1, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
+            };
+
+            foreach (var result in declarationResults)
+            {
+                var declarationCode =
+$@"Public Sub Qux({result.Key} As String)
+End Sub";
+
+                var builder = new MockVbeBuilder();
+                var project = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected)
+                    .AddComponent(ProceduralModuleName, ComponentType.StandardModule, $"{declarationCode}\n\n{moduleCode}").Build();
+
+                var vbe = builder.AddProject(project).Build();
+                var state = MockParser.CreateAndParse(vbe.Object);
+
+                var inspection = new ShadowedDeclarationInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
+
+                Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
             }
         }
 
@@ -1166,6 +1352,35 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
+        public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsVariableInSameComponent()
+        {
+            var declarationResults = new Dictionary<string, int>
+            {
+                [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
+                [ParameterName] = 1, [VariableName] = 0, [ConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+            };
+
+            foreach (var result in declarationResults)
+            {
+                var declarationCode = $"Public {result.Key} As String";
+
+                var builder = new MockVbeBuilder();
+                var project = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected)
+                    .AddComponent(ProceduralModuleName, ComponentType.StandardModule, $"{declarationCode}\n\n{moduleCode}").Build();
+
+                var vbe = builder.AddProject(project).Build();
+                var state = MockParser.CreateAndParse(vbe.Object);
+
+                var inspection = new ShadowedDeclarationInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
+
+                Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsConstantInReferencedProject()
         {
             var declarationResults = new Dictionary<string, int>
@@ -1317,6 +1532,35 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
+        public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsConstantInSameComponent()
+        {
+            var declarationResults = new Dictionary<string, int>
+            {
+                [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
+                [ParameterName] = 1, [VariableName] = 0, [ConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+            };
+
+            foreach (var result in declarationResults)
+            {
+                var declarationCode = $"Public Const {result.Key} As String= \"\"";
+
+                var builder = new MockVbeBuilder();
+                var project = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected)
+                    .AddComponent(ProceduralModuleName, ComponentType.StandardModule, $"{declarationCode}\n\n{moduleCode}").Build();
+
+                var vbe = builder.AddProject(project).Build();
+                var state = MockParser.CreateAndParse(vbe.Object);
+
+                var inspection = new ShadowedDeclarationInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
+
+                Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsEnumerationInReferencedProject()
         {
             var declarationResults = new Dictionary<string, int>
@@ -1435,6 +1679,38 @@ End Enum";
                 var inspectionResults = inspection.GetInspectionResults();
 
                 Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for private {result.Key}");
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsEnumerationInSameComponent()
+        {
+            var declarationResults = new Dictionary<string, int>
+            {
+                [ProceduralModuleName] = 0, [ProcedureName] = 1, [FunctionName] = 1, [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1,
+                [ParameterName] = 1, [VariableName] = 1, [ConstantName] = 1, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
+            };
+
+            foreach (var result in declarationResults)
+            {
+                var declarationCode =
+$@"Public Enum {result.Key}
+    i
+End Enum";
+
+                var builder = new MockVbeBuilder();
+                var project = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected)
+                    .AddComponent(ProceduralModuleName, ComponentType.StandardModule, $"{declarationCode}\n\n{moduleCode}").Build();
+
+                var vbe = builder.AddProject(project).Build();
+                var state = MockParser.CreateAndParse(vbe.Object);
+
+                var inspection = new ShadowedDeclarationInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
+
+                Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
             }
         }
 
@@ -1563,6 +1839,38 @@ End Enum";
 
         [TestMethod]
         [TestCategory("Inspections")]
+        public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsEnumerationMemberInSameComponent()
+        {
+            var declarationResults = new Dictionary<string, int>
+            {
+                [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
+                [ParameterName] = 1, [VariableName] = 0, [ConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+            };
+
+            foreach (var result in declarationResults)
+            {
+                var declarationCode =
+$@"Public Enum Baz
+    {result.Key}
+End Enum";
+
+                var builder = new MockVbeBuilder();
+                var project = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected)
+                    .AddComponent(ProceduralModuleName, ComponentType.StandardModule, $"{declarationCode}\n\n{moduleCode}").Build();
+
+                var vbe = builder.AddProject(project).Build();
+                var state = MockParser.CreateAndParse(vbe.Object);
+
+                var inspection = new ShadowedDeclarationInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
+
+                Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsUserDefinedTypeInReferencedProject()
         {
             var declarationResults = new Dictionary<string, int>
@@ -1686,6 +1994,38 @@ End Type";
 
         [TestMethod]
         [TestCategory("Inspections")]
+        public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsUserDefinedTypeInSameComponent()
+        {
+            var declarationResults = new Dictionary<string, int>
+            {
+                [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
+                [ParameterName] = 0, [VariableName] = 0, [ConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+            };
+
+            foreach (var result in declarationResults)
+            {
+                var declarationCode =
+$@"Public Type {result.Key}
+    s As String
+End Type";
+
+                var builder = new MockVbeBuilder();
+                var project = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected)
+                    .AddComponent(ProceduralModuleName, ComponentType.StandardModule, $"{declarationCode}\n\n{moduleCode}").Build();
+
+                var vbe = builder.AddProject(project).Build();
+                var state = MockParser.CreateAndParse(vbe.Object);
+
+                var inspection = new ShadowedDeclarationInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
+
+                Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsUserDefinedTypeMemberInReferencedProject()
         {
             var declarationResults = new Dictionary<string, int>
@@ -1749,6 +2089,38 @@ End Type";
                 var inspectionResults = inspection.GetInspectionResults();
 
                 Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for {result.Key}");
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsUserDefinedTypeMemberInSameComponent()
+        {
+            var declarationResults = new Dictionary<string, int>
+            {
+                [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
+                [ParameterName] = 0, [VariableName] = 0, [ConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+            };
+
+            foreach (var result in declarationResults)
+            {
+                var declarationCode =
+$@"Public Type T
+    {result.Key} As String
+End Type";
+
+                var builder = new MockVbeBuilder();
+                var project = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected)
+                    .AddComponent(ProceduralModuleName, ComponentType.StandardModule, $"{declarationCode}\n\n{moduleCode}").Build();
+
+                var vbe = builder.AddProject(project).Build();
+                var state = MockParser.CreateAndParse(vbe.Object);
+
+                var inspection = new ShadowedDeclarationInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
+
+                Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
             }
         }
 
@@ -1865,6 +2237,35 @@ End Type";
 
         [TestMethod]
         [TestCategory("Inspections")]
+        public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsLibraryProcedureInSameComponent()
+        {
+            var declarationResults = new Dictionary<string, int>
+            {
+                [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
+                [ParameterName] = 1, [VariableName] = 0, [ConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+            };
+
+            foreach (var result in declarationResults)
+            {
+                var declarationCode = $"Public Declare PtrSafe Sub {result.Key} Lib \"lib.dll\" ()";
+
+                var builder = new MockVbeBuilder();
+                var project = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected)
+                    .AddComponent(ProceduralModuleName, ComponentType.StandardModule, $"{declarationCode}\n\n{moduleCode}").Build();
+
+                var vbe = builder.AddProject(project).Build();
+                var state = MockParser.CreateAndParse(vbe.Object);
+
+                var inspection = new ShadowedDeclarationInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
+
+                Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsLibraryFunctionInReferencedProject()
         {
             var declarationResults = new Dictionary<string, int>
@@ -1976,6 +2377,35 @@ End Type";
 
         [TestMethod]
         [TestCategory("Inspections")]
+        public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsLibraryFunctionInSameComponent()
+        {
+            var declarationResults = new Dictionary<string, int>
+            {
+                [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
+                [ParameterName] = 1, [VariableName] = 0, [ConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+            };
+
+            foreach (var result in declarationResults)
+            {
+                var declarationCode = $"Public Declare PtrSafe Function {result.Key} Lib \"lib.dll\" ()";
+
+                var builder = new MockVbeBuilder();
+                var project = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected)
+                    .AddComponent(ProceduralModuleName, ComponentType.StandardModule, $"{declarationCode}\n\n{moduleCode}").Build();
+
+                var vbe = builder.AddProject(project).Build();
+                var state = MockParser.CreateAndParse(vbe.Object);
+
+                var inspection = new ShadowedDeclarationInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
+
+                Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsLineLabelInReferencedProject()
         {
             var declarationResults = new Dictionary<string, int>
@@ -2044,6 +2474,38 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
+        public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsLineLabelInSameComponent()
+        {
+            var declarationResults = new Dictionary<string, int>
+            {
+                [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
+                [ParameterName] = 0, [VariableName] = 0, [ConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+            };
+
+            foreach (var result in declarationResults)
+            {
+                var declarationCode =
+$@"Public Sub Qux()
+    {result.Key}:
+End Sub";
+
+                var builder = new MockVbeBuilder();
+                var project = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected)
+                    .AddComponent(ProceduralModuleName, ComponentType.StandardModule, $"{declarationCode}\n\n{moduleCode}").Build();
+
+                var vbe = builder.AddProject(project).Build();
+                var state = MockParser.CreateAndParse(vbe.Object);
+
+                var inspection = new ShadowedDeclarationInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
+
+                Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void ShadowedDeclaration_DoesNotReturnResult_DeclarationsInsideOptionPrivateModuleInReferencedProject()
         {
             var referencedModuleCode = $"Option Private Module\n\n{moduleCode}";
@@ -2082,7 +2544,7 @@ End Sub";
             var inspection = new ShadowedDeclarationInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(11, inspectionResults.Count());
+            Assert.AreEqual(12, inspectionResults.Count());
         }
 
         [TestMethod]
@@ -2235,6 +2697,31 @@ End Sub";
             var userProject = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected)
                 .AddComponent("Bar", ComponentType.StandardModule, $"Public {sameName} As String")
                 .AddComponent("Baz", ComponentType.ClassModule, $"Public Event E ({sameName} As String)")
+                .Build();
+            builder.AddProject(userProject);
+
+            var vbe = builder.Build();
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new ShadowedDeclarationInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ShadowedDeclaration_DoesNotReturnResult_EventParameterWithSameNameAsDeclarationInSameComponent()
+        {
+            const string sameName = "SameName";
+
+            var code =
+$@"Public Event E ({sameName} As String)
+Public {sameName} As String";
+
+            var builder = new MockVbeBuilder();
+            var userProject = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected)
+                .AddComponent("Baz", ComponentType.ClassModule, code)
                 .Build();
             builder.AddProject(userProject);
 

@@ -76,12 +76,9 @@ namespace Rubberduck.Inspections.Concrete
                 foreach (var declaration in userDeclarations)
                 {
                     var shadowedDeclaration = State.AllDeclarations.FirstOrDefault(d =>
-                    {
-                        return !Equals(d, declaration) &&
-                               string.Equals(d.IdentifierName, declaration.IdentifierName, StringComparison.OrdinalIgnoreCase) &&
-                               DeclarationCanBeShadowed(d, declaration, GetDeclarationSite(d, declaration, referencedProjectIds)) &&
-                               !DeclarationIsInsideOptionPrivateModule(d, listener);
-                    });
+                        !Equals(d, declaration) &&
+                        string.Equals(d.IdentifierName, declaration.IdentifierName, StringComparison.OrdinalIgnoreCase) &&
+                        DeclarationCanBeShadowed(d, declaration, GetDeclarationSite(d, declaration, referencedProjectIds), listener));
 
                     if (shadowedDeclaration != null)
                     {
@@ -126,7 +123,7 @@ namespace Rubberduck.Inspections.Concrete
             return parameterDeclaration != null && builtInEventHandlers.Contains(parameterDeclaration.ParentDeclaration);
         }
 
-        private static bool DeclarationCanBeShadowed(Declaration originalDeclaration, Declaration userDeclaration, DeclarationSite originalDeclarationSite)
+        private static bool DeclarationCanBeShadowed(Declaration originalDeclaration, Declaration userDeclaration, DeclarationSite originalDeclarationSite, OptionPrivateModuleListener listener)
         {
             if (originalDeclarationSite == DeclarationSite.NotApplicable)
             {
@@ -135,19 +132,25 @@ namespace Rubberduck.Inspections.Concrete
 
             if (originalDeclarationSite == DeclarationSite.ReferencedProject)
             {
-                return DeclarationInReferencedProjectCanBeShadowed(originalDeclaration, userDeclaration);
+                return DeclarationInReferencedProjectCanBeShadowed(originalDeclaration, userDeclaration, listener);
             }
 
             if (originalDeclarationSite == DeclarationSite.OtherComponent)
             {
-                return DeclarationInAnotherComponentCanBeShadowed(originalDeclaration, userDeclaration);
+                return DeclarationInAnotherComponentCanBeShadowed(originalDeclaration, userDeclaration, listener);
             }
 
             return DeclarationInTheSameComponentCanBeShadowed(originalDeclaration, userDeclaration);
         }
 
-        private static bool DeclarationInReferencedProjectCanBeShadowed(Declaration originalDeclaration, Declaration userDeclaration)
+        // TODO: Remove code duplication
+        private static bool DeclarationInReferencedProjectCanBeShadowed(Declaration originalDeclaration, Declaration userDeclaration, OptionPrivateModuleListener listener)
         {
+            if (DeclarationIsInsideOptionPrivateModule(originalDeclaration, listener))
+            {
+                return false;
+            }
+
             var originalDeclarationComponentType = originalDeclaration.QualifiedName.QualifiedModuleName.ComponentType;
             var userDeclarationComponentType = userDeclaration.QualifiedName.QualifiedModuleName.ComponentType;
 
@@ -207,8 +210,13 @@ namespace Rubberduck.Inspections.Concrete
             return DeclarationAccessibilityCanBeShadowed(originalDeclaration);
         }
 
-        private static bool DeclarationInAnotherComponentCanBeShadowed(Declaration originalDeclaration, Declaration userDeclaration)
+        private static bool DeclarationInAnotherComponentCanBeShadowed(Declaration originalDeclaration, Declaration userDeclaration, OptionPrivateModuleListener listener)
         {
+            if (DeclarationIsInsideOptionPrivateModule(originalDeclaration, listener))
+            {
+                return false;
+            }
+
             if (DeclarationIsProjectOrComponent(originalDeclaration) && DeclarationIsProjectOrComponent(userDeclaration))
             {
                 return false;
@@ -265,7 +273,32 @@ namespace Rubberduck.Inspections.Concrete
 
         private static bool DeclarationInTheSameComponentCanBeShadowed(Declaration originalDeclaration, Declaration userDeclaration)
         {
-            return false;
+            // Shadowing the component containing the declaration is not a problem, because it is possible to directly access declarations inside that component
+            if (originalDeclaration.DeclarationType == DeclarationType.ProceduralModule || originalDeclaration.DeclarationType == DeclarationType.ClassModule)
+            {
+                return false;
+            }
+
+            // Syntax of instantiating a new UDT makes it impossible to be shadowed.
+            if (originalDeclaration.DeclarationType == DeclarationType.UserDefinedType)
+            {
+                return false;
+            }
+
+            if (originalDeclaration.DeclarationType == DeclarationType.Parameter || originalDeclaration.DeclarationType == DeclarationType.UserDefinedTypeMember ||
+                originalDeclaration.DeclarationType == DeclarationType.LineLabel)
+            {
+                return false;
+            }
+
+            // Events don't have a body, so their parameters can't be accessed
+            if (userDeclaration.DeclarationType == DeclarationType.Parameter && userDeclaration.ParentDeclaration.DeclarationType == DeclarationType.Event)
+            {
+                return false;
+            }
+
+            // TODO: Distinguish between private and local
+            return  SameComponentTypeShadowingRelations[originalDeclaration.DeclarationType].Contains(userDeclaration.DeclarationType);
         }
 
         private static bool DeclarationAccessibilityCanBeShadowed(Declaration originalDeclaration)
@@ -485,6 +518,56 @@ namespace Rubberduck.Inspections.Concrete
                     DeclarationType.Procedure, DeclarationType.Function, DeclarationType.PropertyGet, DeclarationType.PropertySet, DeclarationType.PropertyLet, DeclarationType.Parameter,
                     DeclarationType.Variable, DeclarationType.Constant, DeclarationType.Enumeration, DeclarationType.EnumerationMember,
                     DeclarationType.LibraryProcedure, DeclarationType.LibraryFunction
+                }.ToHashSet()
+        };
+
+        // Dictionary values represent all declaration types that can shadow the declaration type of the key
+        private static readonly Dictionary<DeclarationType, HashSet<DeclarationType>> SameComponentTypeShadowingRelations = new Dictionary<DeclarationType, HashSet<DeclarationType>>
+        {
+            [DeclarationType.Procedure] = new[]
+                {
+                    DeclarationType.Parameter//, DeclarationType.Variable, DeclarationType.Constant
+                }.ToHashSet(),
+            [DeclarationType.Function] = new[]
+                {
+                    DeclarationType.Parameter//, DeclarationType.Variable, DeclarationType.Constant
+                }.ToHashSet(),
+            [DeclarationType.PropertyGet] = new[]
+                {
+                    DeclarationType.Parameter//, DeclarationType.Variable, DeclarationType.Constant
+                }.ToHashSet(),
+            [DeclarationType.PropertySet] = new[]
+                {
+                    DeclarationType.Parameter//, DeclarationType.Variable, DeclarationType.Constant
+                }.ToHashSet(),
+            [DeclarationType.PropertyLet] = new[]
+                {
+                    DeclarationType.Parameter//, DeclarationType.Variable, DeclarationType.Constant
+                }.ToHashSet(),
+            [DeclarationType.Variable] = new[]
+                {
+                    DeclarationType.Parameter, /*DeclarationType.Variable, DeclarationType.Constant,*/ DeclarationType.Enumeration
+                }.ToHashSet(),
+            [DeclarationType.Constant] = new[]
+                {
+                    DeclarationType.Parameter, /*DeclarationType.Variable, DeclarationType.Constant,*/ DeclarationType.Enumeration
+                }.ToHashSet(),
+            [DeclarationType.Enumeration] = new[]
+                {
+                    DeclarationType.Procedure, DeclarationType.Function, DeclarationType.PropertyGet, DeclarationType.PropertySet, DeclarationType.PropertyLet, DeclarationType.Parameter,
+                    /*DeclarationType.Variable, DeclarationType.Constant,*/ DeclarationType.LibraryProcedure, DeclarationType.LibraryFunction
+                }.ToHashSet(),
+            [DeclarationType.EnumerationMember] = new[]
+                {
+                    DeclarationType.Parameter//, DeclarationType.Variable, DeclarationType.Constant
+                }.ToHashSet(),
+            [DeclarationType.LibraryProcedure] = new[]
+                {
+                    DeclarationType.Parameter//, DeclarationType.Variable, DeclarationType.Constant
+                }.ToHashSet(),
+            [DeclarationType.LibraryFunction] = new[]
+                {
+                    DeclarationType.Parameter//, DeclarationType.Variable, DeclarationType.Constant
                 }.ToHashSet()
         };
     }
