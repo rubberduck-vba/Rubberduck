@@ -22,7 +22,9 @@ namespace RubberduckTests.Inspections
         private const string PropertyLetName = "SameNamePropertyLet";
         private const string ParameterName = "SameNameParameter";
         private const string VariableName = "SameNameVariable";
+        private const string LocalVariableName = "SameNameLocalVariable";
         private const string ConstantName = "SameNameConstant";
+        private const string LocalConstantName = "SameNameLocalConstant";
         private const string EnumerationName = "SameNameEnumeration";
         private const string EnumerationMemberName = "SameNameEnumerationMember";
         private const string EventName = "SameNameEvent";
@@ -49,6 +51,8 @@ Public Enum {EnumerationName}
 End Enum
 
 Public Sub {ProcedureName}({ParameterName} As String)
+Dim {LocalVariableName} as String
+Const {LocalConstantName} as String = """"
 {LineLabelName}:
 End Sub
 
@@ -96,8 +100,9 @@ End Property";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 0, [ProceduralModuleName] = 0, [ClassModuleName] = 0, [UserFormName] = 0, [DocumentName] = 0, [ProcedureName] = 1, [FunctionName] = 1,
-                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [ConstantName] = 1,
-                [EnumerationName] = 0, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
+                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [LocalVariableName] = 1,
+                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 0, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
@@ -127,8 +132,9 @@ End Property";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 0, [ProceduralModuleName] = 0, [ClassModuleName] = 0, [UserFormName] = 0, [DocumentName] = 0, [ProcedureName] = 1, [FunctionName] = 1,
-                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [ConstantName] = 1,
-                [EnumerationName] = 0, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
+                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [LocalVariableName] = 1,
+                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 0, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
@@ -154,8 +160,9 @@ End Property";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
-                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [ConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
+                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [LocalVariableName] = 1,
+                [ConstantName] = 1, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
@@ -185,8 +192,9 @@ End Property";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 0, [ProceduralModuleName] = 0, [ClassModuleName] = 0, [UserFormName] = 0, [DocumentName] = 0, [ProcedureName] = 1, [FunctionName] = 1,
-                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [ConstantName] = 1,
-                [EnumerationName] = 0, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
+                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [LocalVariableName] = 1,
+                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 0, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
@@ -212,8 +220,9 @@ End Property";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 0, [ProceduralModuleName] = 0, [ClassModuleName] = 0, [UserFormName] = 0, [DocumentName] = 0, [ProcedureName] = 0, [FunctionName] = 0,
-                [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0, [ParameterName] = 0, [VariableName] = 0, [ConstantName] = 0,
-                [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+                [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0, [ParameterName] = 0, [VariableName] = 0, [LocalVariableName] = 0,
+                [ConstantName] = 0, [LocalConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
@@ -243,8 +252,9 @@ End Property";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 0, [ProceduralModuleName] = 0, [ClassModuleName] = 0, [UserFormName] = 0, [DocumentName] = 0, [ProcedureName] = 0, [FunctionName] = 0,
-                [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0, [ParameterName] = 0, [VariableName] = 0, [ConstantName] = 0,
-                [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+                [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0, [ParameterName] = 0, [VariableName] = 0, [LocalVariableName] = 0,
+                [ConstantName] = 0, [LocalConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
@@ -274,8 +284,9 @@ End Property";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 0, [ProceduralModuleName] = 0, [ClassModuleName] = 0, [UserFormName] = 0, [DocumentName] = 0, [ProcedureName] = 1, [FunctionName] = 1,
-                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [ConstantName] = 1,
-                [EnumerationName] = 0, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
+                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [LocalVariableName] = 1,
+                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 0, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
@@ -301,8 +312,9 @@ End Property";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 0, [ProceduralModuleName] = 0, [ClassModuleName] = 0, [UserFormName] = 0, [DocumentName] = 0, [ProcedureName] = 0, [FunctionName] = 0,
-                [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0, [ParameterName] = 0, [VariableName] = 0, [ConstantName] = 0,
-                [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+                [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0, [ParameterName] = 0, [VariableName] = 0, [LocalVariableName] = 0,
+                [ConstantName] = 0, [LocalConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
@@ -332,8 +344,9 @@ End Property";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 0, [ProceduralModuleName] = 0, [ClassModuleName] = 0, [UserFormName] = 0, [DocumentName] = 0, [ProcedureName] = 1, [FunctionName] = 1,
-                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [ConstantName] = 1,
-                [EnumerationName] = 0, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
+                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [LocalVariableName] = 1,
+                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 0, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
@@ -359,8 +372,9 @@ End Property";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
-                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [ConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
+                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [LocalVariableName] = 1,
+                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             // Public
@@ -419,8 +433,9 @@ End Sub";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 2, [FunctionName] = 2,
-                [PropertyGetName] = 2, [PropertySetName] = 2, [PropertyLetName] = 2, [ParameterName] = 1, [VariableName] = 2, [ConstantName] = 2,
-                [EnumerationName] = 2, [EnumerationMemberName] = 2, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 2, [LibraryFunctionName] = 2, [LineLabelName] = 0
+                [PropertyGetName] = 2, [PropertySetName] = 2, [PropertyLetName] = 2, [ParameterName] = 1, [VariableName] = 2, [LocalVariableName] = 1,
+                [ConstantName] = 2, [LocalConstantName] = 1, [EnumerationName] = 2, [EnumerationMemberName] = 2, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 2, [LibraryFunctionName] = 2, [LineLabelName] = 0
             };
 
             // Public
@@ -446,8 +461,9 @@ End Sub";
             declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
-                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 0, [VariableName] = 1, [ConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
+                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 0, [VariableName] = 1, [LocalVariableName] = 0,
+                [ConstantName] = 1, [LocalConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             // Private
@@ -478,8 +494,8 @@ End Sub";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
-                [ParameterName] = 1, [VariableName] = 0, [ConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
-                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+                [ParameterName] = 1, [VariableName] = 0, [LocalVariableName] = 1, [ConstantName] = 0, [LocalConstantName] = 1,
+                [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
@@ -509,8 +525,9 @@ End Sub";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
-                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [ConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
+                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [LocalVariableName] = 1,
+                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             // Public
@@ -569,8 +586,9 @@ End Function";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 2, [FunctionName] = 2,
-                [PropertyGetName] = 2, [PropertySetName] = 2, [PropertyLetName] = 2, [ParameterName] = 1, [VariableName] = 2, [ConstantName] = 2,
-                [EnumerationName] = 2, [EnumerationMemberName] = 2, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 2, [LibraryFunctionName] = 2, [LineLabelName] = 0
+                [PropertyGetName] = 2, [PropertySetName] = 2, [PropertyLetName] = 2, [ParameterName] = 1, [VariableName] = 2, [LocalVariableName] = 1,
+                [ConstantName] = 2, [LocalConstantName] = 1, [EnumerationName] = 2, [EnumerationMemberName] = 2, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 2, [LibraryFunctionName] = 2, [LineLabelName] = 0
             };
 
             // Public
@@ -596,8 +614,9 @@ End Function";
             declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
-                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 0, [VariableName] = 1, [ConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
+                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 0, [VariableName] = 1, [LocalVariableName] = 0,
+                [ConstantName] = 1, [LocalConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             // Private
@@ -628,8 +647,8 @@ End Function";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
-                [ParameterName] = 1, [VariableName] = 0, [ConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
-                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+                [ParameterName] = 1, [VariableName] = 0, [LocalVariableName] = 1, [ConstantName] = 0, [LocalConstantName] = 1,
+                [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
@@ -659,8 +678,9 @@ End Function";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
-                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [ConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
+                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1,[LocalVariableName] = 1,
+                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             // Public
@@ -719,8 +739,9 @@ End Property";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 2, [FunctionName] = 2,
-                [PropertyGetName] = 2, [PropertySetName] = 2, [PropertyLetName] = 2, [ParameterName] = 1, [VariableName] = 2, [ConstantName] = 2,
-                [EnumerationName] = 2, [EnumerationMemberName] = 2, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 2, [LibraryFunctionName] = 2, [LineLabelName] = 0
+                [PropertyGetName] = 2, [PropertySetName] = 2, [PropertyLetName] = 2, [ParameterName] = 1, [VariableName] = 2, [LocalVariableName] = 1,
+                [ConstantName] = 2, [LocalConstantName] = 1, [EnumerationName] = 2, [EnumerationMemberName] = 2, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 2, [LibraryFunctionName] = 2, [LineLabelName] = 0
             };
 
             // Public
@@ -746,8 +767,9 @@ End Property";
             declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
-                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 0, [VariableName] = 1, [ConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
+                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 0, [VariableName] = 1, [LocalVariableName] = 0,
+                [ConstantName] = 1, [LocalConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             // Private
@@ -778,8 +800,8 @@ End Property";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
-                [ParameterName] = 1, [VariableName] = 0, [ConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
-                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+                [ParameterName] = 1, [VariableName] = 0, [LocalVariableName] = 1, [ConstantName] = 0, [LocalConstantName] = 1,
+                [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
@@ -809,8 +831,9 @@ End Property";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
-                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [ConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
+                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1,[LocalVariableName] = 1,
+                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             // Public
@@ -869,8 +892,9 @@ End Property";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 2, [FunctionName] = 2,
-                [PropertyGetName] = 2, [PropertySetName] = 2, [PropertyLetName] = 2, [ParameterName] = 1, [VariableName] = 2, [ConstantName] = 2,
-                [EnumerationName] = 2, [EnumerationMemberName] = 2, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 2, [LibraryFunctionName] = 2, [LineLabelName] = 0
+                [PropertyGetName] = 2, [PropertySetName] = 2, [PropertyLetName] = 2, [ParameterName] = 1, [VariableName] = 2, [LocalVariableName] = 1,
+                [ConstantName] = 2, [LocalConstantName] = 1, [EnumerationName] = 2, [EnumerationMemberName] = 2, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 2, [LibraryFunctionName] = 2, [LineLabelName] = 0
             };
 
             // Public
@@ -896,8 +920,9 @@ End Property";
             declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
-                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 0, [VariableName] = 1, [ConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
+                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 0, [VariableName] = 1, [LocalVariableName] = 0,
+                [ConstantName] = 1, [LocalConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             // Private
@@ -928,8 +953,8 @@ End Property";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
-                [ParameterName] = 1, [VariableName] = 0, [ConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
-                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+                [ParameterName] = 1, [VariableName] = 0, [LocalVariableName] = 1, [ConstantName] = 0, [LocalConstantName] = 1,
+                [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
@@ -959,8 +984,9 @@ End Property";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
-                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [ConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
+                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1,[LocalVariableName] = 1,
+                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             // Public
@@ -1019,8 +1045,9 @@ End Property";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 2, [FunctionName] = 2,
-                [PropertyGetName] = 2, [PropertySetName] = 2, [PropertyLetName] = 2, [ParameterName] = 1, [VariableName] = 2, [ConstantName] = 2,
-                [EnumerationName] = 2, [EnumerationMemberName] = 2, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 2, [LibraryFunctionName] = 2, [LineLabelName] = 0
+                [PropertyGetName] = 2, [PropertySetName] = 2, [PropertyLetName] = 2, [ParameterName] = 1, [VariableName] = 2, [LocalVariableName] = 1,
+                [ConstantName] = 2, [LocalConstantName] = 1, [EnumerationName] = 2, [EnumerationMemberName] = 2, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 2, [LibraryFunctionName] = 2, [LineLabelName] = 0
             };
 
             // Public
@@ -1046,8 +1073,9 @@ End Property";
             declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
-                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 0, [VariableName] = 1, [ConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
+                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 0, [VariableName] = 1, [LocalVariableName] = 0,
+                [ConstantName] = 1, [LocalConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             // Private
@@ -1078,8 +1106,8 @@ End Property";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
-                [ParameterName] = 1, [VariableName] = 0, [ConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
-                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+                [ParameterName] = 1, [VariableName] = 0, [LocalVariableName] = 1, [ConstantName] = 0, [LocalConstantName] = 1,
+                [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
@@ -1109,8 +1137,9 @@ End Property";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 0, [ProceduralModuleName] = 0, [ClassModuleName] = 0, [UserFormName] = 0, [DocumentName] = 0, [ProcedureName] = 0, [FunctionName] = 0,
-                [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0, [ParameterName] = 0, [VariableName] = 0, [ConstantName] = 0,
-                [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+                [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0, [ParameterName] = 0, [VariableName] = 0, [LocalVariableName] = 0,
+                [ConstantName] = 0, [LocalConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
@@ -1144,8 +1173,9 @@ End Sub";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
-                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 0, [VariableName] = 1, [ConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
+                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 0, [VariableName] = 1, [LocalVariableName] = 0,
+                [ConstantName] = 1, [LocalConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
@@ -1175,8 +1205,8 @@ End Sub";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProceduralModuleName] = 0, [ProcedureName] = 1, [FunctionName] = 1, [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1,
-                [ParameterName] = 0, [VariableName] = 1, [ConstantName] = 1, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
-                [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
+                [ParameterName] = 0, [VariableName] = 1, [LocalVariableName] = 0, [ConstantName] = 1, [LocalConstantName] = 0,
+                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
@@ -1206,8 +1236,9 @@ End Sub";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
-                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [ConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
+                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [LocalVariableName] = 1,
+                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             // Global
@@ -1284,8 +1315,9 @@ End Sub";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 2, [FunctionName] = 2,
-                [PropertyGetName] = 2, [PropertySetName] = 2, [PropertyLetName] = 2, [ParameterName] = 1, [VariableName] = 2, [ConstantName] = 2,
-                [EnumerationName] = 2, [EnumerationMemberName] = 2, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 2, [LibraryFunctionName] = 2, [LineLabelName] = 0
+                [PropertyGetName] = 2, [PropertySetName] = 2, [PropertyLetName] = 2, [ParameterName] = 1, [VariableName] = 2, [LocalVariableName] = 1,
+                [ConstantName] = 2, [LocalConstantName] = 1, [EnumerationName] = 2, [EnumerationMemberName] = 2, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 2, [LibraryFunctionName] = 2, [LineLabelName] = 0
             };
 
             // Global
@@ -1327,8 +1359,9 @@ End Sub";
             declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
-                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 0, [VariableName] = 1, [ConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
+                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 0, [VariableName] = 1, [LocalVariableName] = 0,
+                [ConstantName] = 1, [LocalConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             // Private
@@ -1357,8 +1390,8 @@ End Sub";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
-                [ParameterName] = 1, [VariableName] = 0, [ConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
-                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+                [ParameterName] = 1, [VariableName] = 0, [LocalVariableName] = 1, [ConstantName] = 0, [LocalConstantName] = 1,
+                [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
@@ -1386,8 +1419,9 @@ End Sub";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
-                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [ConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
+                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [LocalVariableName] = 1,
+                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             // Global
@@ -1464,8 +1498,9 @@ End Sub";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 2, [FunctionName] = 2,
-                [PropertyGetName] = 2, [PropertySetName] = 2, [PropertyLetName] = 2, [ParameterName] = 1, [VariableName] = 2, [ConstantName] = 2,
-                [EnumerationName] = 2, [EnumerationMemberName] = 2, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 2, [LibraryFunctionName] = 2, [LineLabelName] = 0
+                [PropertyGetName] = 2, [PropertySetName] = 2, [PropertyLetName] = 2, [ParameterName] = 1, [VariableName] = 2, [LocalVariableName] = 1,
+                [ConstantName] = 2, [LocalConstantName] = 1, [EnumerationName] = 2, [EnumerationMemberName] = 2, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 2, [LibraryFunctionName] = 2, [LineLabelName] = 0
             };
 
             // Global
@@ -1507,8 +1542,9 @@ End Sub";
             declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
-                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 0, [VariableName] = 1, [ConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
+                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 0, [VariableName] = 1, [LocalVariableName] = 0,
+                [ConstantName] = 1, [LocalConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             // Private
@@ -1537,8 +1573,8 @@ End Sub";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
-                [ParameterName] = 1, [VariableName] = 0, [ConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
-                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+                [ParameterName] = 1, [VariableName] = 0, [LocalVariableName] = 1, [ConstantName] = 0, [LocalConstantName] = 1,
+                [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
@@ -1566,8 +1602,9 @@ End Sub";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
-                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [ConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
+                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [LocalVariableName] = 1,
+                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             // Public
@@ -1628,8 +1665,9 @@ End Enum";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 0, [ProceduralModuleName] = 0, [ClassModuleName] = 0, [UserFormName] = 0, [DocumentName] = 0, [ProcedureName] = 2, [FunctionName] = 2,
-                [PropertyGetName] = 2, [PropertySetName] = 2, [PropertyLetName] = 2, [ParameterName] = 1, [VariableName] = 2, [ConstantName] = 2,
-                [EnumerationName] = 2, [EnumerationMemberName] = 2, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 2, [LibraryFunctionName] = 2, [LineLabelName] = 0
+                [PropertyGetName] = 2, [PropertySetName] = 2, [PropertyLetName] = 2, [ParameterName] = 1, [VariableName] = 2, [LocalVariableName] = 1,
+                [ConstantName] = 2, [LocalConstantName] = 1, [EnumerationName] = 2, [EnumerationMemberName] = 2, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 2, [LibraryFunctionName] = 2, [LineLabelName] = 0
             };
 
             // Public
@@ -1656,8 +1694,9 @@ End Enum";
             declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 0, [ProceduralModuleName] = 0, [ClassModuleName] = 0, [UserFormName] = 0, [DocumentName] = 0, [ProcedureName] = 1, [FunctionName] = 1,
-                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 0, [VariableName] = 1, [ConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
+                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 0, [VariableName] = 1, [LocalVariableName] = 0,
+                [ConstantName] = 1, [LocalConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             // Private
@@ -1689,8 +1728,8 @@ End Enum";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProceduralModuleName] = 0, [ProcedureName] = 1, [FunctionName] = 1, [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1,
-                [ParameterName] = 1, [VariableName] = 1, [ConstantName] = 1, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
-                [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
+                [ParameterName] = 1, [VariableName] = 1, [LocalVariableName] = 1, [ConstantName] = 1, [LocalConstantName] = 1,
+                [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
@@ -1721,8 +1760,9 @@ End Enum";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
-                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [ConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
+                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [LocalVariableName] = 1,
+                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             // Public
@@ -1783,8 +1823,9 @@ End Enum";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 2, [FunctionName] = 2,
-                [PropertyGetName] = 2, [PropertySetName] = 2, [PropertyLetName] = 2, [ParameterName] = 1, [VariableName] = 2, [ConstantName] = 2,
-                [EnumerationName] = 2, [EnumerationMemberName] = 2, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 2, [LibraryFunctionName] = 2, [LineLabelName] = 0
+                [PropertyGetName] = 2, [PropertySetName] = 2, [PropertyLetName] = 2, [ParameterName] = 1, [VariableName] = 2, [LocalVariableName] = 1,
+                [ConstantName] = 2, [LocalConstantName] = 1, [EnumerationName] = 2, [EnumerationMemberName] = 2, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 2, [LibraryFunctionName] = 2, [LineLabelName] = 0
             };
 
             // Public
@@ -1811,8 +1852,9 @@ End Enum";
             declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
-                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 0, [VariableName] = 1, [ConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
+                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 0, [VariableName] = 1, [LocalVariableName] = 0,
+                [ConstantName] = 1, [LocalConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             // Private
@@ -1844,8 +1886,8 @@ End Enum";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
-                [ParameterName] = 1, [VariableName] = 0, [ConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
-                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+                [ParameterName] = 1, [VariableName] = 0, [LocalVariableName] = 1, [ConstantName] = 0, [LocalConstantName] = 1,
+                [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
@@ -1876,8 +1918,9 @@ End Enum";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 0, [ProceduralModuleName] = 0, [ClassModuleName] = 0, [UserFormName] = 0, [DocumentName] = 0, [ProcedureName] = 0, [FunctionName] = 0,
-                [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0, [ParameterName] = 0, [VariableName] = 0, [ConstantName] = 0,
-                [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 1, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+                [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0, [ParameterName] = 0, [VariableName] = 0, [LocalVariableName] = 0,
+                [ConstantName] = 0, [LocalConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 1,
+                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
             // Public
@@ -1938,8 +1981,9 @@ End Type";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 0, [ProceduralModuleName] = 0, [ClassModuleName] = 0, [UserFormName] = 0, [DocumentName] = 0, [ProcedureName] = 0, [FunctionName] = 0,
-                [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0, [ParameterName] = 0, [VariableName] = 0, [ConstantName] = 0,
-                [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 2, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+                [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0, [ParameterName] = 0, [VariableName] = 0, [LocalVariableName] = 0,
+                [ConstantName] = 0, [LocalConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 2,
+                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
             // Public
@@ -1966,8 +2010,9 @@ End Type";
             declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 0, [ProceduralModuleName] = 0, [ClassModuleName] = 0, [UserFormName] = 0, [DocumentName] = 0, [ProcedureName] = 0, [FunctionName] = 0,
-                [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0, [ParameterName] = 0, [VariableName] = 0, [ConstantName] = 0,
-                [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 1, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+                [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0, [ParameterName] = 0, [VariableName] = 0, [LocalVariableName] = 0,
+                [ConstantName] = 0, [LocalConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 1,
+                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
             // Private
@@ -1999,8 +2044,8 @@ End Type";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
-                [ParameterName] = 0, [VariableName] = 0, [ConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
-                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+                [ParameterName] = 0, [VariableName] = 0, [LocalVariableName] = 0, [ConstantName] = 0, [LocalConstantName] = 0,
+                [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
@@ -2031,8 +2076,9 @@ End Type";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 0, [ProceduralModuleName] = 0, [ClassModuleName] = 0, [UserFormName] = 0, [DocumentName] = 0, [ProcedureName] = 0, [FunctionName] = 0,
-                [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0, [ParameterName] = 0, [VariableName] = 0, [ConstantName] = 0,
-                [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+                [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0, [ParameterName] = 0, [VariableName] = 0, [LocalVariableName] = 0,
+                [ConstantName] = 0, [LocalConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
@@ -2067,8 +2113,9 @@ End Type";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 0, [ProceduralModuleName] = 0, [ClassModuleName] = 0, [UserFormName] = 0, [DocumentName] = 0, [ProcedureName] = 0, [FunctionName] = 0,
-                [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0, [ParameterName] = 0, [VariableName] = 0, [ConstantName] = 0,
-                [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+                [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0, [ParameterName] = 0, [VariableName] = 0, [LocalVariableName] = 0,
+                [ConstantName] = 0, [LocalConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
@@ -2099,8 +2146,8 @@ End Type";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
-                [ParameterName] = 0, [VariableName] = 0, [ConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
-                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+                [ParameterName] = 0, [VariableName] = 0, [LocalVariableName] = 0, [ConstantName] = 0, [LocalConstantName] = 0,
+                [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
@@ -2131,8 +2178,9 @@ End Type";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
-                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [ConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
+                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [LocalVariableName] = 1,
+                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             // Public
@@ -2187,8 +2235,9 @@ End Type";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 2, [FunctionName] = 2,
-                [PropertyGetName] = 2, [PropertySetName] = 2, [PropertyLetName] = 2, [ParameterName] = 1, [VariableName] = 2, [ConstantName] = 2,
-                [EnumerationName] = 2, [EnumerationMemberName] = 2, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 2, [LibraryFunctionName] = 2, [LineLabelName] = 0
+                [PropertyGetName] = 2, [PropertySetName] = 2, [PropertyLetName] = 2, [ParameterName] = 1, [VariableName] = 2, [LocalVariableName] = 1,
+                [ConstantName] = 2, [LocalConstantName] = 1, [EnumerationName] = 2, [EnumerationMemberName] = 2, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 2, [LibraryFunctionName] = 2, [LineLabelName] = 0
             };
 
             // Public
@@ -2212,8 +2261,9 @@ End Type";
             declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
-                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 0, [VariableName] = 1, [ConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
+                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 0, [VariableName] = 1, [LocalVariableName] = 0,
+                [ConstantName] = 1, [LocalConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             // Private
@@ -2242,8 +2292,8 @@ End Type";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
-                [ParameterName] = 1, [VariableName] = 0, [ConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
-                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+                [ParameterName] = 1, [VariableName] = 0, [LocalVariableName] = 1, [ConstantName] = 0, [LocalConstantName] = 1,
+                [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
@@ -2271,8 +2321,9 @@ End Type";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
-                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [ConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
+                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [LocalVariableName] = 1,
+                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             // Public
@@ -2327,8 +2378,9 @@ End Type";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 2, [FunctionName] = 2,
-                [PropertyGetName] = 2, [PropertySetName] = 2, [PropertyLetName] = 2, [ParameterName] = 1, [VariableName] = 2, [ConstantName] = 2,
-                [EnumerationName] = 2, [EnumerationMemberName] = 2, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 2, [LibraryFunctionName] = 2, [LineLabelName] = 0
+                [PropertyGetName] = 2, [PropertySetName] = 2, [PropertyLetName] = 2, [ParameterName] = 1, [VariableName] = 2, [LocalVariableName] = 1,
+                [ConstantName] = 2, [LocalConstantName] = 1, [EnumerationName] = 2, [EnumerationMemberName] = 2, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 2, [LibraryFunctionName] = 2, [LineLabelName] = 0
             };
 
             // Public
@@ -2352,8 +2404,9 @@ End Type";
             declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
-                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 0, [VariableName] = 1, [ConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
+                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 0, [VariableName] = 1, [LocalVariableName] = 0,
+                [ConstantName] = 1, [LocalConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             // Private
@@ -2382,8 +2435,8 @@ End Type";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
-                [ParameterName] = 1, [VariableName] = 0, [ConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
-                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+                [ParameterName] = 1, [VariableName] = 0, [LocalVariableName] = 1, [ConstantName] = 0, [LocalConstantName] = 1,
+                [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
@@ -2411,8 +2464,9 @@ End Type";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 0, [ProceduralModuleName] = 0, [ClassModuleName] = 0, [UserFormName] = 0, [DocumentName] = 0, [ProcedureName] = 0, [FunctionName] = 0,
-                [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0, [ParameterName] = 0, [VariableName] = 0, [ConstantName] = 0,
-                [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+                [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0, [ParameterName] = 0, [VariableName] = 0, [LocalVariableName] = 0,
+                [ConstantName] = 0, [LocalConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
@@ -2447,8 +2501,9 @@ End Sub";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProjectName] = 0, [ProceduralModuleName] = 0, [ClassModuleName] = 0, [UserFormName] = 0, [DocumentName] = 0, [ProcedureName] = 0, [FunctionName] = 0,
-                [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0, [ParameterName] = 0, [VariableName] = 0, [ConstantName] = 0,
-                [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+                [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0, [ParameterName] = 0, [VariableName] = 0, [LocalVariableName] = 0,
+                [ConstantName] = 0, [LocalConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
@@ -2479,8 +2534,8 @@ End Sub";
             var declarationResults = new Dictionary<string, int>
             {
                 [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
-                [ParameterName] = 0, [VariableName] = 0, [ConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
-                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+                [ParameterName] = 0, [VariableName] = 0, [LocalVariableName] = 0, [ConstantName] = 0, [LocalConstantName] = 0,
+                [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)

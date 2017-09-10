@@ -279,7 +279,7 @@ namespace Rubberduck.Inspections.Concrete
                 return false;
             }
 
-            // Syntax of instantiating a new UDT makes it impossible to be shadowed.
+            // Syntax of instantiating a new UDT makes it impossible to be shadowed
             if (originalDeclaration.DeclarationType == DeclarationType.UserDefinedType)
             {
                 return false;
@@ -291,13 +291,23 @@ namespace Rubberduck.Inspections.Concrete
                 return false;
             }
 
+            if ((originalDeclaration.DeclarationType == DeclarationType.Variable || originalDeclaration.DeclarationType == DeclarationType.Constant) &&
+                DeclarationIsLocal(originalDeclaration))
+            {
+                return false;
+            }
+
+            if (userDeclaration.DeclarationType == DeclarationType.Variable || userDeclaration.DeclarationType == DeclarationType.Constant)
+            {
+                return DeclarationIsLocal(userDeclaration);
+            }
+
             // Events don't have a body, so their parameters can't be accessed
             if (userDeclaration.DeclarationType == DeclarationType.Parameter && userDeclaration.ParentDeclaration.DeclarationType == DeclarationType.Event)
             {
                 return false;
             }
 
-            // TODO: Distinguish between private and local
             return  SameComponentTypeShadowingRelations[originalDeclaration.DeclarationType].Contains(userDeclaration.DeclarationType);
         }
 
@@ -333,6 +343,15 @@ namespace Rubberduck.Inspections.Concrete
                    declaration.DeclarationType == DeclarationType.ClassModule ||
                    declaration.DeclarationType == DeclarationType.UserForm ||
                    declaration.DeclarationType == DeclarationType.Document;
+        }
+
+        private static bool DeclarationIsLocal(Declaration declaration)
+        {
+            return declaration.ParentDeclaration.DeclarationType == DeclarationType.Procedure ||
+                   declaration.ParentDeclaration.DeclarationType == DeclarationType.Function ||
+                   declaration.ParentDeclaration.DeclarationType == DeclarationType.PropertyGet ||
+                   declaration.ParentDeclaration.DeclarationType == DeclarationType.PropertySet ||
+                   declaration.ParentDeclaration.DeclarationType == DeclarationType.PropertyLet;
         }
 
         // Dictionary values represent all declaration types that can shadow the declaration type of the key
@@ -526,48 +545,48 @@ namespace Rubberduck.Inspections.Concrete
         {
             [DeclarationType.Procedure] = new[]
                 {
-                    DeclarationType.Parameter//, DeclarationType.Variable, DeclarationType.Constant
+                    DeclarationType.Parameter
                 }.ToHashSet(),
             [DeclarationType.Function] = new[]
                 {
-                    DeclarationType.Parameter//, DeclarationType.Variable, DeclarationType.Constant
+                    DeclarationType.Parameter
                 }.ToHashSet(),
             [DeclarationType.PropertyGet] = new[]
                 {
-                    DeclarationType.Parameter//, DeclarationType.Variable, DeclarationType.Constant
+                    DeclarationType.Parameter
                 }.ToHashSet(),
             [DeclarationType.PropertySet] = new[]
                 {
-                    DeclarationType.Parameter//, DeclarationType.Variable, DeclarationType.Constant
+                    DeclarationType.Parameter
                 }.ToHashSet(),
             [DeclarationType.PropertyLet] = new[]
                 {
-                    DeclarationType.Parameter//, DeclarationType.Variable, DeclarationType.Constant
+                    DeclarationType.Parameter
                 }.ToHashSet(),
             [DeclarationType.Variable] = new[]
                 {
-                    DeclarationType.Parameter, /*DeclarationType.Variable, DeclarationType.Constant,*/ DeclarationType.Enumeration
+                    DeclarationType.Parameter, DeclarationType.Enumeration
                 }.ToHashSet(),
             [DeclarationType.Constant] = new[]
                 {
-                    DeclarationType.Parameter, /*DeclarationType.Variable, DeclarationType.Constant,*/ DeclarationType.Enumeration
+                    DeclarationType.Parameter, DeclarationType.Enumeration
                 }.ToHashSet(),
             [DeclarationType.Enumeration] = new[]
                 {
                     DeclarationType.Procedure, DeclarationType.Function, DeclarationType.PropertyGet, DeclarationType.PropertySet, DeclarationType.PropertyLet, DeclarationType.Parameter,
-                    /*DeclarationType.Variable, DeclarationType.Constant,*/ DeclarationType.LibraryProcedure, DeclarationType.LibraryFunction
+                    DeclarationType.LibraryProcedure, DeclarationType.LibraryFunction
                 }.ToHashSet(),
             [DeclarationType.EnumerationMember] = new[]
                 {
-                    DeclarationType.Parameter//, DeclarationType.Variable, DeclarationType.Constant
+                    DeclarationType.Parameter
                 }.ToHashSet(),
             [DeclarationType.LibraryProcedure] = new[]
                 {
-                    DeclarationType.Parameter//, DeclarationType.Variable, DeclarationType.Constant
+                    DeclarationType.Parameter
                 }.ToHashSet(),
             [DeclarationType.LibraryFunction] = new[]
                 {
-                    DeclarationType.Parameter//, DeclarationType.Variable, DeclarationType.Constant
+                    DeclarationType.Parameter
                 }.ToHashSet()
         };
     }
