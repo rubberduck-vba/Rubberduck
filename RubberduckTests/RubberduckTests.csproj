@@ -93,6 +93,7 @@
     <Compile Include="Commands\IndentCommandTests.cs" />
     <Compile Include="Commands\UnitTestCommandTests.cs" />
     <Compile Include="Grammar\ParserRuleContextExtensionTests.cs" />
+    <Compile Include="Grammar\SelectionExtensionsTests.cs" />
     <Compile Include="Inspections\ApplicationWorksheetFunctionInspectionTests.cs" />
     <Compile Include="QuickFixes\AssignedByValParameterMakeLocalCopyQuickFixTests.cs" />
     <Compile Include="Inspections\EmptyElseBlockInspectionTests.cs" />

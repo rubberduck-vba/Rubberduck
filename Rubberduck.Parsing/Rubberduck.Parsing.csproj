@@ -199,6 +199,7 @@
     <Compile Include="ComReflection\ComProject.cs" />
     <Compile Include="Rewriter\IModuleRewriter.cs" />
     <Compile Include="PreProcessing\VBAPreprocessorVisitor.cs" />
+    <Compile Include="SelectionExtensions.cs" />
     <Compile Include="SymbolList.cs" />
     <Compile Include="Symbols\AliasDeclaration.cs" />
     <Compile Include="Symbols\DeclarationFinderFactory.cs" />
