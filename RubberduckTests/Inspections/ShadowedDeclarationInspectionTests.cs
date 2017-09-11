@@ -1414,6 +1414,108 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
+        public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsLocalVariableInReferencedProject()
+        {
+            var declarationResults = new Dictionary<string, int>
+            {
+                [ProjectName] = 0, [ProceduralModuleName] = 0, [ClassModuleName] = 0, [UserFormName] = 0, [DocumentName] = 0, [ProcedureName] = 0, [FunctionName] = 0,
+                [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0, [ParameterName] = 0, [VariableName] = 0, [LocalVariableName] = 0,
+                [ConstantName] = 0, [LocalConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+            };
+
+            foreach (var result in declarationResults)
+            {
+                var referencedModuleCode = 
+$@"Public Sub Qux()
+    Dim {result.Key} as String
+End Sub";
+
+                var builder = new MockVbeBuilder();
+                var referencedProject = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected)
+                    .AddComponent("Bar", ComponentType.StandardModule, referencedModuleCode)
+                    .Build();
+                builder.AddProject(referencedProject);
+                var userProject = CreateUserProject(builder).AddReference("Foo", "").Build();
+                builder.AddProject(userProject);
+
+                var vbe = builder.Build();
+                var state = MockParser.CreateAndParse(vbe.Object);
+
+                var inspection = new ShadowedDeclarationInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
+
+                Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for global {result.Key}");
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsLocalVariableInUserProject()
+        {
+            var declarationResults = new Dictionary<string, int>
+            {
+                [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
+                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 0, [VariableName] = 1, [LocalVariableName] = 0,
+                [ConstantName] = 1, [LocalConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
+            };
+
+            foreach (var result in declarationResults)
+            {
+                var userModuleCode = 
+$@"Public Sub Qux()
+    Dim {result.Key} as String
+End Sub";
+
+                var builder = new MockVbeBuilder();
+                var userProject = CreateUserProject(builder).AddComponent("Foo", ComponentType.StandardModule, userModuleCode).Build();
+                builder.AddProject(userProject);
+
+                var vbe = builder.Build();
+                var state = MockParser.CreateAndParse(vbe.Object);
+
+                var inspection = new ShadowedDeclarationInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
+
+                Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for global {result.Key}");
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsLocalVariableInSameComponent()
+        {
+            var declarationResults = new Dictionary<string, int>
+            {
+                [ProceduralModuleName] = 0, [ProcedureName] = 1, [FunctionName] = 1, [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1,
+                [ParameterName] = 0, [VariableName] = 1, [LocalVariableName] = 0, [ConstantName] = 1, [LocalConstantName] = 0,
+                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
+            };
+
+            foreach (var result in declarationResults)
+            {
+                var declarationCode = 
+$@"Public Sub Qux()
+    Dim {result.Key} as String
+End Sub";
+
+                var builder = new MockVbeBuilder();
+                var project = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected)
+                    .AddComponent(ProceduralModuleName, ComponentType.StandardModule, $"{declarationCode}\n\n{moduleCode}").Build();
+
+                var vbe = builder.AddProject(project).Build();
+                var state = MockParser.CreateAndParse(vbe.Object);
+
+                var inspection = new ShadowedDeclarationInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
+
+                Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsConstantInReferencedProject()
         {
             var declarationResults = new Dictionary<string, int>
@@ -1580,6 +1682,108 @@ End Sub";
             foreach (var result in declarationResults)
             {
                 var declarationCode = $"Public Const {result.Key} As String= \"\"";
+
+                var builder = new MockVbeBuilder();
+                var project = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected)
+                    .AddComponent(ProceduralModuleName, ComponentType.StandardModule, $"{declarationCode}\n\n{moduleCode}").Build();
+
+                var vbe = builder.AddProject(project).Build();
+                var state = MockParser.CreateAndParse(vbe.Object);
+
+                var inspection = new ShadowedDeclarationInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
+
+                Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsLocalConstantInReferencedProject()
+        {
+            var declarationResults = new Dictionary<string, int>
+            {
+                [ProjectName] = 0, [ProceduralModuleName] = 0, [ClassModuleName] = 0, [UserFormName] = 0, [DocumentName] = 0, [ProcedureName] = 0, [FunctionName] = 0,
+                [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0, [ParameterName] = 0, [VariableName] = 0, [LocalVariableName] = 0,
+                [ConstantName] = 0, [LocalConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+            };
+
+            foreach (var result in declarationResults)
+            {
+                var referencedModuleCode = 
+$@"Public Sub Qux()
+    Const {result.Key} as String = """"
+End Sub";
+
+                var builder = new MockVbeBuilder();
+                var referencedProject = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected)
+                    .AddComponent("Bar", ComponentType.StandardModule, referencedModuleCode)
+                    .Build();
+                builder.AddProject(referencedProject);
+                var userProject = CreateUserProject(builder).AddReference("Foo", "").Build();
+                builder.AddProject(userProject);
+
+                var vbe = builder.Build();
+                var state = MockParser.CreateAndParse(vbe.Object);
+
+                var inspection = new ShadowedDeclarationInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
+
+                Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for global {result.Key}");
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsLocalConstantInUserProject()
+        {
+            var declarationResults = new Dictionary<string, int>
+            {
+                [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
+                [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 0, [VariableName] = 1, [LocalVariableName] = 0,
+                [ConstantName] = 1, [LocalConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
+            };
+
+            foreach (var result in declarationResults)
+            {
+                var userModuleCode = 
+$@"Public Sub Qux()
+    Const {result.Key} as String = """"
+End Sub";
+
+                var builder = new MockVbeBuilder();
+                var userProject = CreateUserProject(builder).AddComponent("Foo", ComponentType.StandardModule, userModuleCode).Build();
+                builder.AddProject(userProject);
+
+                var vbe = builder.Build();
+                var state = MockParser.CreateAndParse(vbe.Object);
+
+                var inspection = new ShadowedDeclarationInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
+
+                Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for global {result.Key}");
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsLocalConstantInSameComponent()
+        {
+            var declarationResults = new Dictionary<string, int>
+            {
+                [ProceduralModuleName] = 0, [ProcedureName] = 1, [FunctionName] = 1, [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1,
+                [ParameterName] = 0, [VariableName] = 1, [LocalVariableName] = 0, [ConstantName] = 1, [LocalConstantName] = 0,
+                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
+            };
+
+            foreach (var result in declarationResults)
+            {
+                var declarationCode = 
+$@"Public Sub Qux()
+    Const {result.Key} as String = """"
+End Sub";
 
                 var builder = new MockVbeBuilder();
                 var project = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected)
