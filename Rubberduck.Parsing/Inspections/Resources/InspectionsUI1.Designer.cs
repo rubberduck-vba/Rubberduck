@@ -340,6 +340,42 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An If/Else block should have executable statements. An empty block serves no purpose and can be confusing for the maintainer. Was this empty execution path originally intended to do something? Clear code only contains executable paths..
+        /// </summary>
+        public static string EmptyConditionBlockInspectionsMeta {
+            get {
+                return ResourceManager.GetString("EmptyConditionBlockInspectionsMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Empty condition (If or Else)  block.
+        /// </summary>
+        public static string EmptyConditionBlockInspectionsName {
+            get {
+                return ResourceManager.GetString("EmptyConditionBlockInspectionsName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove the empty block. ***Note: Empty If necessitates applying &apos;Not&apos; to the check ensuring the else block was inverted..
+        /// </summary>
+        public static string EmptyConditionBlockInspectionsQuickFix {
+            get {
+                return ResourceManager.GetString("EmptyConditionBlockInspectionsQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  .
+        /// </summary>
+        public static string EmptyConditionBlockInspectionsResultFormat {
+            get {
+                return ResourceManager.GetString("EmptyConditionBlockInspectionsResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A Loop block should have executable statements.
         /// </summary>
         public static string EmptyDoWhileBlockInspectionMeta {
@@ -367,7 +403,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An Else block should have executable statements.
+        ///   Looks up a localized string similar to An Else block should have executable statements. An empty block serves no purpose and can be confusing for the maintainer. Was this empty execution path originally intended to do something? Clear code only contains executable paths..
         /// </summary>
         public static string EmptyElseBlockInspectionMeta {
             get {

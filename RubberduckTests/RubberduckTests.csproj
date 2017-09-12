@@ -98,6 +98,7 @@
     <Compile Include="Grammar\ParserRuleContextExtensionTests.cs" />
     <Compile Include="Inspections\ApplicationWorksheetFunctionInspectionTests.cs" />
     <Compile Include="Inspections\EmptyCaseBlockInspectionTests.cs" />
+    <Compile Include="Inspections\EmptyConditionBlockInspectionTests.cs" />
     <Compile Include="Inspections\EmptyDoWhileBlockInspectionTests.cs" />
     <Compile Include="Inspections\EmptyElseBlockInspectionTests.cs" />
     <Compile Include="Inspections\EmptyForEachBlockInspectionTests.cs" />
@@ -120,6 +121,7 @@
     <Compile Include="QuickFixes\DeclareAsExplicitVariantQuickFixTests.cs" />
     <Compile Include="QuickFixes\PassParameterByReferenceQuickFixTests.cs" />
     <Compile Include="QuickFixes\QuickFixProviderTests.cs" />
+    <Compile Include="QuickFixes\RemoveEmptyConditionBlockQuickFixTests.cs" />
     <Compile Include="QuickFixes\RemoveUnassignedIdentifierQuickFixTests.cs" />
     <Compile Include="QuickFixes\RemoveUnassignedVariableUsageQuickFix.cs" />
     <Compile Include="QuickFixes\SynchronizeAttributesQuickFixTests.cs" />

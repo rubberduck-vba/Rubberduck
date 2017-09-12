@@ -694,12 +694,15 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   </data>
   <data name="EmptyIfBlockInspectionMeta" xml:space="preserve">
     <value>An If block should have executable statements</value>
+    <comment>Removal</comment>
   </data>
   <data name="EmptyIfBlockInspectionName" xml:space="preserve">
     <value>Empty If block</value>
+    <comment>Removal</comment>
   </data>
   <data name="EmptyIfBlockInspectionResultFormat" xml:space="preserve">
     <value>If block has no executable statements</value>
+    <comment>Removal</comment>
   </data>
   <data name="RemoveEmptyIfBlockQuickFix" xml:space="preserve">
     <value>Remove empty If block</value>
@@ -768,12 +771,15 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   </data>
   <data name="EmptyElseBlockInspectionResultFormat" xml:space="preserve">
     <value>Else block contains no executable statements</value>
+    <comment>Removal</comment>
   </data>
   <data name="EmptyElseBlockInspectionMeta" xml:space="preserve">
     <value>An Else block should have executable statements. An empty block serves no purpose and can be confusing for the maintainer. Was this empty execution path originally intended to do something? Clear code only contains executable paths.</value>
+    <comment>Removal</comment>
   </data>
   <data name="EmptyElseBlockInspectionName" xml:space="preserve">
     <value>Empty Else block</value>
+    <comment>Removal</comment>
   </data>
   <data name="RemoveEmptyElseBlockQuickFix" xml:space="preserve">
     <value>Remove empty Else block</value>
@@ -847,5 +853,21 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   </data>
   <data name="EmptyWhileWendBlockInspectionName" xml:space="preserve">
     <value>Empty While-Wend block</value>
+  </data>
+  <data name="EmptyConditionBlockInspectionsMeta" xml:space="preserve">
+    <value>An If/Else block should have executable statements. An empty block serves no purpose and can be confusing for the maintainer. Was this empty execution path originally intended to do something? Clear code only contains executable paths.</value>
+    <comment>Condense: EmptyIfBlockInspction &amp;EmptyElseBlockInspection</comment>
+  </data>
+  <data name="EmptyConditionBlockInspectionsName" xml:space="preserve">
+    <value>Empty condition (If or Else)  block</value>
+    <comment>Condense: EmptyIfBlockInspction &amp;EmptyElseBlockInspection</comment>
+  </data>
+  <data name="EmptyConditionBlockInspectionsQuickFix" xml:space="preserve">
+    <value>Remove the empty block. ***Note: Empty If necessitates applying 'Not' to the check ensuring the else block was inverted.</value>
+    <comment>Condense: EmptyIfBlockInspction &amp;EmptyElseBlockInspection</comment>
+  </data>
+  <data name="EmptyConditionBlockInspectionsResultFormat" xml:space="preserve">
+    <value> </value>
+    <comment>Condense: EmptyIfBlockInspction &amp;EmptyElseBlockInspection</comment>
   </data>
 </root>

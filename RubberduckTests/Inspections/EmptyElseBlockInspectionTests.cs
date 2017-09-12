@@ -5,6 +5,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Inspections.QuickFixes;
 
 namespace RubberduckTests.Inspections
 {
