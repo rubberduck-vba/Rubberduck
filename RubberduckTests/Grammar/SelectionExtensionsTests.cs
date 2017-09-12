@@ -35,8 +35,7 @@ namespace RubberduckTests.Grammar
         {
             public override IEnumerable<IfStmtContext> VisitIfStmt([NotNull] IfStmtContext context)
             {
-                base.VisitIfStmt(context);
-                return new List<IfStmtContext> { context };
+                return base.VisitIfStmt(context).Concat(new List<IfStmtContext> { context });
             }
         }
 
@@ -457,6 +456,7 @@ End Sub : 'Lame comment!
 
         [TestMethod]
         [TestCategory("Grammar")]
+        [TestCategory("Selection")]
         public void Selection_Not_Contains_LastToken()
         {
             const string inputCode = @"
@@ -487,6 +487,126 @@ End Sub : 'Lame comment!
             var context = visitor.Visit(tree).Last();
             var token = context.Stop;
             var selection = new Selection(12, 1, 14, 1);
+
+            Assert.IsFalse(selection.Contains(token));
+        }
+
+        [TestMethod]
+        [TestCategory("Grammar")]
+        [TestCategory("Selection")]
+        public void Selection__Contains_Only_Innermost_Nested_Context()
+        {
+            const string inputCode = @"
+Option Explicit
+
+Public Sub foo(Bar As Long, Baz As Long, FooBar As Long)
+
+If Bar > Baz Then
+  Debug.Print ""Yeah!""
+  If FooBar Then
+     Debug.Print ""Foo bar!""
+  End If
+Else
+  Debug.Print ""Boo!""
+End If
+
+If Baz > Bar Then
+  Debug.Print ""Boo!""
+Else
+  Debug.Print ""Yeah!""
+End If
+
+End Sub : 'Lame comment!
+";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
+            var pane = component.CodeModule.CodePane;
+            var state = MockParser.CreateAndParse(vbe.Object);
+            var tree = state.GetParseTree(new QualifiedModuleName(component));
+            var visitor = new IfStmtContextElementCollectorVisitor();
+            var context = visitor.Visit(tree).First(); //returns innermost statement first then topmost consecutively
+            var token = context.Stop;
+            var selection = new Selection(8, 1, 10, 9);
+
+            Assert.IsTrue(selection.Contains(token));
+        }
+
+        [TestMethod]
+        [TestCategory("Grammar")]
+        [TestCategory("Selection")]
+        public void Selection__Contains_Both_Nested_Context()
+        {
+            const string inputCode = @"
+Option Explicit
+
+Public Sub foo(Bar As Long, Baz As Long, FooBar As Long)
+
+If Bar > Baz Then
+  Debug.Print ""Yeah!""
+  If FooBar Then
+     Debug.Print ""Foo bar!""
+  End If
+Else
+  Debug.Print ""Boo!""
+End If
+
+If Baz > Bar Then
+  Debug.Print ""Boo!""
+Else
+  Debug.Print ""Yeah!""
+End If
+
+End Sub : 'Lame comment!
+";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
+            var pane = component.CodeModule.CodePane;
+            var state = MockParser.CreateAndParse(vbe.Object);
+            var tree = state.GetParseTree(new QualifiedModuleName(component));
+            var visitor = new IfStmtContextElementCollectorVisitor();
+            var context = visitor.Visit(tree).First(); //returns innermost statement first then topmost consecutively
+            var token = context.Stop;
+            var selection = new Selection(6, 1, 13, 7);
+
+            Assert.IsTrue(selection.Contains(token));
+        }
+
+        [TestMethod]
+        [TestCategory("Grammar")]
+        [TestCategory("Selection")]
+        public void Selection_Not_Contained_In_Neither_Nested_Context()
+        {
+            const string inputCode = @"
+Option Explicit
+
+Public Sub foo(Bar As Long, Baz As Long, FooBar As Long)
+
+If Bar > Baz Then
+  Debug.Print ""Yeah!""
+  If FooBar Then
+     Debug.Print ""Foo bar!""
+  End If
+Else
+  Debug.Print ""Boo!""
+End If
+
+If Baz > Bar Then
+  Debug.Print ""Boo!""
+Else
+  Debug.Print ""Yeah!""
+End If
+
+End Sub : 'Lame comment!
+";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
+            var pane = component.CodeModule.CodePane;
+            var state = MockParser.CreateAndParse(vbe.Object);
+            var tree = state.GetParseTree(new QualifiedModuleName(component));
+            var visitor = new IfStmtContextElementCollectorVisitor();
+            var context = visitor.Visit(tree).First(); //returns innermost statement first then topmost consecutively
+            var token = context.Stop;
+            var selection = new Selection(15, 1, 19, 7);
 
             Assert.IsFalse(selection.Contains(token));
         }
