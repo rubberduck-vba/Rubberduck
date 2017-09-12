@@ -416,6 +416,9 @@
     <Compile Include="UI\Command\MenuItems\CommandBars\ContextDescriptionLabelMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\IndentCurrentProjectCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\ExportAllCommandMenuItem.cs" />
+    <Compile Include="UI\Controls\EmptyUIRefresh.xaml.cs">
+      <DependentUpon>EmptyUIRefresh.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\EnvironmentProvider.cs" />
     <Compile Include="UI\Inspections\AggregateInspectionResult.cs" />
     <Compile Include="UI\ModernFolderBrowser.cs" />
@@ -1375,6 +1378,10 @@
     <Page Include="UI\CodeExplorer\CodeExplorerControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Controls\EmptyUIRefresh.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Inspections\InspectionResultsControl.xaml">
       <SubType>Designer</SubType>
