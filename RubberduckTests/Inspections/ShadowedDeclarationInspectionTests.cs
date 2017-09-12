@@ -2117,6 +2117,106 @@ End Enum";
 
         [TestMethod]
         [TestCategory("Inspections")]
+        public void ShadowedDeclaration_ReturnsResult_EnumerationWithSameNameAsEnumerationMember()
+        {
+            var code =
+$@"Public enum SameName
+    Baz
+End Enum
+
+Public enum Qux
+    SameName
+End Enum";
+
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected)
+                .AddComponent("Bar", ComponentType.StandardModule, code).Build();
+
+            var vbe = builder.AddProject(project).Build();
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new ShadowedDeclarationInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ShadowedDeclaration_ReturnsResult_EnumerationMemberWithSameNameAsEnumeration()
+        {
+            var code =
+$@"Public enum Baz
+    SameName
+End Enum
+
+Public enum SameName
+    Qux
+End Enum";
+
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected)
+                .AddComponent("Bar", ComponentType.StandardModule, code).Build();
+
+            var vbe = builder.AddProject(project).Build();
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new ShadowedDeclarationInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ShadowedDeclaration_DoesNotReturnResult_EnumerationMemberWithSameNameAsEnumerationMember()
+        {
+            var code =
+$@"Public enum Baz
+    SameName
+End Enum
+
+Public enum Qux
+    SameName
+End Enum";
+
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected)
+                .AddComponent("Bar", ComponentType.StandardModule, code).Build();
+
+            var vbe = builder.AddProject(project).Build();
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new ShadowedDeclarationInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ShadowedDeclaration_DoesNotReturnResult_EnumerationWithSameNameAsOwnMember()
+        {
+            var code =
+$@"Public enum SameName
+    SameName
+End Enum";
+
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected)
+                .AddComponent("Bar", ComponentType.StandardModule, code).Build();
+
+            var vbe = builder.AddProject(project).Build();
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new ShadowedDeclarationInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsUserDefinedTypeInReferencedProject()
         {
             var declarationResults = new Dictionary<string, int>

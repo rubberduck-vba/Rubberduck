@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
@@ -40,6 +41,21 @@ namespace Rubberduck.Inspections.Concrete
             }
         }
 
+        private class EnumerationRuleIndexListener : VBAParserBaseListener
+        {
+            public Dictionary<ParserRuleContext, int> DeclarationIndexes { get; } = new Dictionary<ParserRuleContext, int>();
+
+            public override void EnterEnumerationStmt(VBAParser.EnumerationStmtContext context)
+            {
+                DeclarationIndexes.Add(context, context.Start.TokenIndex);
+            }
+
+            public override void EnterEnumerationStmt_Constant(VBAParser.EnumerationStmt_ConstantContext context)
+            {
+                DeclarationIndexes.Add(context, context.Start.TokenIndex);
+            }
+        }
+
         public ShadowedDeclarationInspection(RubberduckParserState state) : base(state)
         {
         }
@@ -50,12 +66,17 @@ namespace Rubberduck.Inspections.Concrete
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
-            var listener = new OptionPrivateModuleListener();
-            var moduleDeclarations = State.DeclarationFinder.AllModules.Where(m => m.ComponentType == ComponentType.StandardModule);
+            var optionPrivateModuleListener = new OptionPrivateModuleListener();
+            var enumerationRuleIndexListener = new EnumerationRuleIndexListener();
 
-            foreach (var module in moduleDeclarations)
+            foreach (var module in State.DeclarationFinder.AllModules.Where(m => m.ComponentType == ComponentType.StandardModule))
             {
-                ParseTreeWalker.Default.Walk(listener, State.GetParseTree(module));
+                ParseTreeWalker.Default.Walk(optionPrivateModuleListener, State.GetParseTree(module));
+            }
+
+            foreach (var module in State.AllUserDeclarations.Where(d => d.DeclarationType == DeclarationType.ProceduralModule || d.DeclarationType == DeclarationType.ClassModule))
+            {
+                ParseTreeWalker.Default.Walk(enumerationRuleIndexListener, State.GetParseTree(module.QualifiedName.QualifiedModuleName));
             }
 
             var builtInEventHandlers = State.DeclarationFinder.FindEventHandlers().ToHashSet();
@@ -78,7 +99,7 @@ namespace Rubberduck.Inspections.Concrete
                     var shadowedDeclaration = State.AllDeclarations.FirstOrDefault(d =>
                         !Equals(d, declaration) &&
                         string.Equals(d.IdentifierName, declaration.IdentifierName, StringComparison.OrdinalIgnoreCase) &&
-                        DeclarationCanBeShadowed(d, declaration, GetDeclarationSite(d, declaration, referencedProjectIds), listener));
+                        DeclarationCanBeShadowed(d, declaration, GetDeclarationSite(d, declaration, referencedProjectIds), optionPrivateModuleListener, enumerationRuleIndexListener));
 
                     if (shadowedDeclaration != null)
                     {
@@ -123,7 +144,8 @@ namespace Rubberduck.Inspections.Concrete
             return parameterDeclaration != null && builtInEventHandlers.Contains(parameterDeclaration.ParentDeclaration);
         }
 
-        private static bool DeclarationCanBeShadowed(Declaration originalDeclaration, Declaration userDeclaration, DeclarationSite originalDeclarationSite, OptionPrivateModuleListener listener)
+        private static bool DeclarationCanBeShadowed(Declaration originalDeclaration, Declaration userDeclaration, DeclarationSite originalDeclarationSite,
+            OptionPrivateModuleListener optionPrivateModuleListener, EnumerationRuleIndexListener enumerationRuleIndexListener)
         {
             if (originalDeclarationSite == DeclarationSite.NotApplicable)
             {
@@ -132,18 +154,17 @@ namespace Rubberduck.Inspections.Concrete
 
             if (originalDeclarationSite == DeclarationSite.ReferencedProject)
             {
-                return DeclarationInReferencedProjectCanBeShadowed(originalDeclaration, userDeclaration, listener);
+                return DeclarationInReferencedProjectCanBeShadowed(originalDeclaration, userDeclaration, optionPrivateModuleListener);
             }
 
             if (originalDeclarationSite == DeclarationSite.OtherComponent)
             {
-                return DeclarationInAnotherComponentCanBeShadowed(originalDeclaration, userDeclaration, listener);
+                return DeclarationInAnotherComponentCanBeShadowed(originalDeclaration, userDeclaration, optionPrivateModuleListener);
             }
 
-            return DeclarationInTheSameComponentCanBeShadowed(originalDeclaration, userDeclaration);
+            return DeclarationInTheSameComponentCanBeShadowed(originalDeclaration, userDeclaration, enumerationRuleIndexListener);
         }
 
-        // TODO: Remove code duplication
         private static bool DeclarationInReferencedProjectCanBeShadowed(Declaration originalDeclaration, Declaration userDeclaration, OptionPrivateModuleListener listener)
         {
             if (DeclarationIsInsideOptionPrivateModule(originalDeclaration, listener))
@@ -271,7 +292,7 @@ namespace Rubberduck.Inspections.Concrete
             return DeclarationAccessibilityCanBeShadowed(originalDeclaration);
         }
 
-        private static bool DeclarationInTheSameComponentCanBeShadowed(Declaration originalDeclaration, Declaration userDeclaration)
+        private static bool DeclarationInTheSameComponentCanBeShadowed(Declaration originalDeclaration, Declaration userDeclaration, EnumerationRuleIndexListener listener)
         {
             // Shadowing the component containing the declaration is not a problem, because it is possible to directly access declarations inside that component
             if (originalDeclaration.DeclarationType == DeclarationType.ProceduralModule || originalDeclaration.DeclarationType == DeclarationType.ClassModule)
@@ -300,6 +321,19 @@ namespace Rubberduck.Inspections.Concrete
             if (userDeclaration.DeclarationType == DeclarationType.Variable || userDeclaration.DeclarationType == DeclarationType.Constant)
             {
                 return DeclarationIsLocal(userDeclaration);
+            }
+
+            if (listener.DeclarationIndexes.ContainsKey(originalDeclaration.Context) && listener.DeclarationIndexes.ContainsKey(userDeclaration.Context))
+            {
+                var originalDeclarationIndex = listener.DeclarationIndexes[originalDeclaration.Context];
+                var userDeclarationIndex = listener.DeclarationIndexes[userDeclaration.Context];
+
+                // The same declaration type means that both declarations are enumerations or enumeration members, and such shadowing is not possible inside one component
+                return originalDeclaration.DeclarationType != userDeclaration.DeclarationType &&
+                       // First declaration wins
+                       originalDeclarationIndex > userDeclarationIndex &&
+                       // Enumeration member can have the same name as enclosing enumeration
+                       !Equals(originalDeclaration.ParentDeclaration, userDeclaration);
             }
 
             // Events don't have a body, so their parameters can't be accessed
