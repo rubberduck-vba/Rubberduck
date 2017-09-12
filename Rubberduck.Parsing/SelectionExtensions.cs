@@ -14,15 +14,19 @@ namespace Rubberduck.Parsing
         public static bool Contains(this Selection selection, IToken token)
         {
             return
-                (((selection.StartLine == token.Line) && (selection.StartColumn - 1) <= token.Column) || (selection.StartLine < token.Line))
-             && (((selection.EndLine == token.Line) && (selection.EndColumn - 1) >= (token.EndColumn())) || (selection.EndLine > token.Line));
+                (((selection.StartLine == token.Line) && (selection.StartColumn - 1) <= token.Column) 
+                    || (selection.StartLine < token.Line))
+             && (((selection.EndLine == token.EndLine()) && (selection.EndColumn - 1) >= (token.EndColumn())) 
+                    || (selection.EndLine > token.EndLine()));
         }
 
         public static bool Contains(this ParserRuleContext context, Selection selection)
         {
             return
-               (((selection.StartLine == context.Start.Line) && (selection.StartColumn - 1) <= context.Start.Column) || (selection.StartLine < context.Start.Line))
-            && (((selection.EndLine == context.Stop.Line) && (selection.EndColumn - 1) >= (context.Stop.EndColumn())) || (selection.EndLine > context.Stop.Line));
+               (((selection.StartLine == context.Start.Line) && (selection.StartColumn - 1) <= context.Start.Column) 
+                    || (selection.StartLine < context.Start.Line))
+            && (((selection.EndLine == context.Stop.EndLine()) && (selection.EndColumn - 1) >= (context.Stop.EndColumn())) 
+                    || (selection.EndLine > context.Stop.EndLine()));
         }
 
         /// <summary>
@@ -37,15 +41,26 @@ namespace Rubberduck.Parsing
             if (token.Text.Contains(Environment.NewLine))
             {
                 var splitStrings = token.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
-                var tokenOnLastLine = splitStrings[splitStrings.Length - 1];
+                var lastOccupiedLine = splitStrings[splitStrings.Length - 1];
 
-                return tokenOnLastLine.Length;
+                return lastOccupiedLine.Length;
             }
             else
             {
                 return token.Column + token.Text.Length;
             }
+        }
 
+        public static int EndLine(this IToken token)
+        {
+            if(token.Text.Contains(Environment.NewLine))
+            {
+                var splitStrings = token.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+
+                return token.Line + (splitStrings.Length - 1);
+            }
+
+            return token.Line;
         }
     }
 }

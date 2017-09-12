@@ -13,44 +13,36 @@ namespace RubberduckTests.Grammar
     [TestClass]
     public class SelectionExtensionsTests
     {
-        public class CollectorVBAParserBaseVisitor<Result> : VBAParserBaseVisitor<IList<Result>>
+        public class CollectorVBAParserBaseVisitor<Result> : VBAParserBaseVisitor<IEnumerable<Result>>
         {
-            private List<Result> defaultResult = new List<Result>();
+            protected override IEnumerable<Result> DefaultResult => new List<Result>();
 
-            protected override IList<Result> DefaultResult => defaultResult;
-            /*
-            protected override IList<Result> AggregateResult(IList<Result> firstResult, IList<Result> secondResult)
+            protected override IEnumerable<Result> AggregateResult(IEnumerable<Result> firstResult, IEnumerable<Result> secondResult)
             {
-                if (firstResult != null && secondResult != null)
-                    return firstResult.Concat(secondResult) as IList<Result>;
-
-                if (secondResult == null)
-                    return firstResult;
-
-                return secondResult;
-            }*/
+                return firstResult.Concat(secondResult);
+            }
         }
 
         public class SubStmtContextElementCollectorVisitor : CollectorVBAParserBaseVisitor<SubStmtContext>
         {
-            public override IList<SubStmtContext> VisitSubStmt([NotNull] SubStmtContext context)
+            public override IEnumerable<SubStmtContext> VisitSubStmt([NotNull] SubStmtContext context)
             {
-                DefaultResult.Add(context);
-                return base.VisitSubStmt(context);
+                return new List<SubStmtContext> { context };
             }
         }
 
         public class IfStmtContextElementCollectorVisitor : CollectorVBAParserBaseVisitor<IfStmtContext>
         {
-            public override IList<IfStmtContext> VisitIfStmt([NotNull] IfStmtContext context)
+            public override IEnumerable<IfStmtContext> VisitIfStmt([NotNull] IfStmtContext context)
             {
-                DefaultResult.Add(context);
-                return base.VisitIfStmt(context);
+                base.VisitIfStmt(context);
+                return new List<IfStmtContext> { context };
             }
         }
 
         [TestMethod]
         [TestCategory("Grammar")]
+        [TestCategory("Selection")]
         public void Context_Not_In_Selection_ZeroBased_EvilCode()
         {
             const string inputCode = @"
@@ -78,6 +70,7 @@ Debug.Print ""foo""
 
         [TestMethod]
         [TestCategory("Grammar")]
+        [TestCategory("Selection")]
         public void Context_In_Selection_OneBased_EvilCode()
         {
             const string inputCode = @"
@@ -105,6 +98,63 @@ Debug.Print ""foo""
 
         [TestMethod]
         [TestCategory("Grammar")]
+        [TestCategory("Selection")]
+        public void Context_Not_In_Selection_Start_OneBased_EvilCode()
+        {
+            const string inputCode = @"
+Option Explicit
+
+Public _
+    Sub _
+foo()
+
+Debug.Print ""foo""
+
+    End _
+  Sub : 'Lame comment!
+";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+            var tree = state.GetParseTree(new QualifiedModuleName(component));
+            var visitor = new SubStmtContextElementCollectorVisitor();
+            var context = visitor.Visit(tree).First();
+            var selection = new Selection(5, 1, 11, 8);
+
+            Assert.IsFalse(context.Contains(selection));
+        }
+
+        [TestMethod]
+        [TestCategory("Grammar")]
+        [TestCategory("Selection")]
+        public void Context_Not_In_Selection_End_OneBased_EvilCode()
+        {
+            const string inputCode = @"
+Option Explicit
+
+Public _
+    Sub _
+foo()
+
+Debug.Print ""foo""
+
+    End _
+  Sub : 'Lame comment!
+";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+            var tree = state.GetParseTree(new QualifiedModuleName(component));
+            var visitor = new SubStmtContextElementCollectorVisitor();
+            var context = visitor.Visit(tree).First();
+            var selection = new Selection(4, 1, 10, 8);
+
+            Assert.IsFalse(context.Contains(selection));
+        }
+
+        [TestMethod]
+        [TestCategory("Grammar")]
+        [TestCategory("Selection")]
         public void Context_In_GetSelection_OneBased_EvilCode()
         {
             const string inputCode = @"
@@ -133,6 +183,7 @@ Debug.Print ""foo""
 
         [TestMethod]
         [TestCategory("Grammar")]
+        [TestCategory("Selection")]
         public void Context_Not_In_GetSelection_ZeroBased()
         {
             const string inputCode = @"
@@ -158,6 +209,7 @@ End Sub : 'Lame comment!
 
         [TestMethod]
         [TestCategory("Grammar")]
+        [TestCategory("Selection")]
         public void Context_In_GetSelection_OneBased()
         {
             const string inputCode = @"
@@ -183,6 +235,7 @@ End Sub : 'Lame comment!
 
         [TestMethod]
         [TestCategory("Grammar")]
+        [TestCategory("Selection")]
         public void Context_In_Selection_OneBased()
         {
             const string inputCode = @"
@@ -208,6 +261,7 @@ End Sub : 'Lame comment!
 
         [TestMethod]
         [TestCategory("Grammar")]
+        [TestCategory("Selection")]
         public void Context_NotIn_Selection_StartTooSoon_OneBased()
         {
             const string inputCode = @"
@@ -233,6 +287,7 @@ End Sub : 'Lame comment!
 
         [TestMethod]
         [TestCategory("Grammar")]
+        [TestCategory("Selection")]
         public void Context_NotIn_Selection_EndsTooSoon_OneBased()
         {
             const string inputCode = @"
@@ -293,6 +348,7 @@ End Sub : 'Lame comment!
 
         [TestMethod]
         [TestCategory("Grammar")]
+        [TestCategory("Selection")]
         public void Context_Not_In_Selection_SecondBlock_OneBased()
         {
             const string inputCode = @"
@@ -328,6 +384,7 @@ End Sub : 'Lame comment!
 
         [TestMethod]
         [TestCategory("Grammar")]
+        [TestCategory("Selection")]
         public void Context_In_Selection_SecondBlock_OneBased()
         {
             const string inputCode = @"
@@ -363,6 +420,7 @@ End Sub : 'Lame comment!
 
         [TestMethod]
         [TestCategory("Grammar")]
+        [TestCategory("Selection")]
         public void Selection_Contains_LastToken()
         {
             const string inputCode = @"
