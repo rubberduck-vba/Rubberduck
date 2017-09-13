@@ -339,10 +339,11 @@ End Sub : 'Lame comment!
             var state = MockParser.CreateAndParse(vbe.Object);
             var tree = state.GetParseTree(new QualifiedModuleName(component));
             var visitor = new IfStmtContextElementCollectorVisitor();
-            var context = visitor.Visit(tree).First();
+            var contexts = visitor.Visit(tree);
             var selection = new Selection(6, 1, 10, 7);
 
-            Assert.IsTrue(context.Contains(selection));
+            Assert.IsTrue(contexts.ElementAt(0).Contains(selection));   // first If block
+            Assert.IsFalse(contexts.ElementAt(1).Contains(selection));  // second If block
         }
 
         [TestMethod]
@@ -375,10 +376,11 @@ End Sub : 'Lame comment!
             var state = MockParser.CreateAndParse(vbe.Object);
             var tree = state.GetParseTree(new QualifiedModuleName(component));
             var visitor = new IfStmtContextElementCollectorVisitor();
-            var context = visitor.Visit(tree).Last();
+            var contexts = visitor.Visit(tree);
             var selection = new Selection(6, 1, 10, 7);
 
-            Assert.IsFalse(context.Contains(selection));
+            Assert.IsTrue(contexts.ElementAt(0).Contains(selection));   // first If block
+            Assert.IsFalse(contexts.ElementAt(1).Contains(selection));  // second If block
         }
 
         [TestMethod]
@@ -411,10 +413,11 @@ End Sub : 'Lame comment!
             var state = MockParser.CreateAndParse(vbe.Object);
             var tree = state.GetParseTree(new QualifiedModuleName(component));
             var visitor = new IfStmtContextElementCollectorVisitor();
-            var context = visitor.Visit(tree).Last();
+            var contexts = visitor.Visit(tree);
             var selection = new Selection(12, 1, 16, 7);
 
-            Assert.IsTrue(context.Contains(selection));
+            Assert.IsFalse(contexts.ElementAt(0).Contains(selection));  // first If block
+            Assert.IsTrue(contexts.ElementAt(1).Contains(selection));   // second If block
         }
 
         [TestMethod]
@@ -447,11 +450,13 @@ End Sub : 'Lame comment!
             var state = MockParser.CreateAndParse(vbe.Object);
             var tree = state.GetParseTree(new QualifiedModuleName(component));
             var visitor = new IfStmtContextElementCollectorVisitor();
-            var context = visitor.Visit(tree).Last();
-            var token = context.Stop;
+            var contexts = visitor.Visit(tree);
+            var token = contexts.ElementAt(1).Stop;
             var selection = new Selection(12, 1, 16, 7);
 
-            Assert.IsTrue(selection.Contains(token));
+            Assert.IsTrue(selection.Contains(token));                   // last token in second If block
+            Assert.IsFalse(contexts.ElementAt(0).Contains(selection));  // first If block
+            Assert.IsTrue(contexts.ElementAt(1).Contains(selection));   // second If block
         }
 
         [TestMethod]
@@ -494,7 +499,7 @@ End Sub : 'Lame comment!
         [TestMethod]
         [TestCategory("Grammar")]
         [TestCategory("Selection")]
-        public void Selection__Contains_Only_Innermost_Nested_Context()
+        public void Selection_Contains_Only_Innermost_Nested_Context()
         {
             const string inputCode = @"
 Option Explicit
@@ -524,17 +529,20 @@ End Sub : 'Lame comment!
             var state = MockParser.CreateAndParse(vbe.Object);
             var tree = state.GetParseTree(new QualifiedModuleName(component));
             var visitor = new IfStmtContextElementCollectorVisitor();
-            var context = visitor.Visit(tree).First(); //returns innermost statement first then topmost consecutively
-            var token = context.Stop;
+            var contexts = visitor.Visit(tree); 
+            var token = contexts.ElementAt(0).Stop; 
             var selection = new Selection(8, 1, 10, 9);
 
-            Assert.IsTrue(selection.Contains(token));
+            Assert.IsTrue(selection.Contains(token));                   // last token in innermost If block
+            Assert.IsTrue(contexts.ElementAt(0).Contains(selection));   // innermost If block
+            Assert.IsFalse(contexts.ElementAt(1).Contains(selection));  // first outer If block
+            Assert.IsFalse(contexts.ElementAt(2).Contains(selection));  // second outer If block
         }
 
         [TestMethod]
         [TestCategory("Grammar")]
         [TestCategory("Selection")]
-        public void Selection__Contains_Both_Nested_Context()
+        public void Selection_Contains_Both_Nested_Context()
         {
             const string inputCode = @"
 Option Explicit
@@ -564,11 +572,14 @@ End Sub : 'Lame comment!
             var state = MockParser.CreateAndParse(vbe.Object);
             var tree = state.GetParseTree(new QualifiedModuleName(component));
             var visitor = new IfStmtContextElementCollectorVisitor();
-            var context = visitor.Visit(tree).First(); //returns innermost statement first then topmost consecutively
-            var token = context.Stop;
+            var contexts = visitor.Visit(tree); //returns innermost statement first then topmost consecutively
+            var token = contexts.ElementAt(0).Stop;
             var selection = new Selection(6, 1, 13, 7);
 
-            Assert.IsTrue(selection.Contains(token));
+            Assert.IsTrue(selection.Contains(token));                   // last token in innermost If block
+            Assert.IsTrue(contexts.ElementAt(0).Contains(selection));   // innermost If block
+            Assert.IsTrue(contexts.ElementAt(1).Contains(selection));   // first outer If block
+            Assert.IsFalse(contexts.ElementAt(2).Contains(selection));  // second outer If block
         }
 
         [TestMethod]
@@ -604,11 +615,14 @@ End Sub : 'Lame comment!
             var state = MockParser.CreateAndParse(vbe.Object);
             var tree = state.GetParseTree(new QualifiedModuleName(component));
             var visitor = new IfStmtContextElementCollectorVisitor();
-            var context = visitor.Visit(tree).First(); //returns innermost statement first then topmost consecutively
-            var token = context.Stop;
+            var contexts = visitor.Visit(tree); //returns innermost statement first then topmost consecutively
+            var token = contexts.ElementAt(0).Stop;
             var selection = new Selection(15, 1, 19, 7);
 
-            Assert.IsFalse(selection.Contains(token));
+            Assert.IsFalse(selection.Contains(token));                  // last token in innermost If block
+            Assert.IsFalse(contexts.ElementAt(0).Contains(selection));  // innermost If block
+            Assert.IsFalse(contexts.ElementAt(1).Contains(selection));  // first outer if block
+            Assert.IsTrue(contexts.ElementAt(2).Contains(selection));   // second outer If block
         }
     }
 }
