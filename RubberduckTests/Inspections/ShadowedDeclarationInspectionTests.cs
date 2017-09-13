@@ -29,13 +29,14 @@ namespace RubberduckTests.Inspections
         private const string EnumerationMemberName = "SameNameEnumerationMember";
         private const string EventName = "SameNameEvent";
         private const string UserDefinedTypeName = "SameNameUserDefinedType";
+        private const string UserDefinedTypeMemberName = "SameNameUserDefinedTypeMember";
         private const string LibraryProcedureName = "SameNameLibraryProcedure";
         private const string LibraryFunctionName = "SameNameLibraryFunction";
         private const string LineLabelName = "SameNameLineLabel";
 
         private readonly string moduleCode =
 $@"Public Type {UserDefinedTypeName}
-    s As String
+    {UserDefinedTypeMemberName} As String
 End Type
 
 Public Declare PtrSafe Sub {LibraryProcedureName} Lib ""lib.dll"" ()
@@ -101,7 +102,7 @@ End Property";
             {
                 [ProjectName] = 0, [ProceduralModuleName] = 0, [ClassModuleName] = 0, [UserFormName] = 0, [DocumentName] = 0, [ProcedureName] = 1, [FunctionName] = 1,
                 [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [LocalVariableName] = 1,
-                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 0, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 0, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
@@ -133,7 +134,7 @@ End Property";
             {
                 [ProjectName] = 0, [ProceduralModuleName] = 0, [ClassModuleName] = 0, [UserFormName] = 0, [DocumentName] = 0, [ProcedureName] = 1, [FunctionName] = 1,
                 [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [LocalVariableName] = 1,
-                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 0, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 0, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
@@ -161,7 +162,7 @@ End Property";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
                 [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [LocalVariableName] = 1,
-                [ConstantName] = 1, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [ConstantName] = 1, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
@@ -193,7 +194,7 @@ End Property";
             {
                 [ProjectName] = 0, [ProceduralModuleName] = 0, [ClassModuleName] = 0, [UserFormName] = 0, [DocumentName] = 0, [ProcedureName] = 1, [FunctionName] = 1,
                 [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [LocalVariableName] = 1,
-                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 0, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 0, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
@@ -221,7 +222,7 @@ End Property";
             {
                 [ProjectName] = 0, [ProceduralModuleName] = 0, [ClassModuleName] = 0, [UserFormName] = 0, [DocumentName] = 0, [ProcedureName] = 0, [FunctionName] = 0,
                 [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0, [ParameterName] = 0, [VariableName] = 0, [LocalVariableName] = 0,
-                [ConstantName] = 0, [LocalConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
+                [ConstantName] = 0, [LocalConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
@@ -253,7 +254,7 @@ End Property";
             {
                 [ProjectName] = 0, [ProceduralModuleName] = 0, [ClassModuleName] = 0, [UserFormName] = 0, [DocumentName] = 0, [ProcedureName] = 0, [FunctionName] = 0,
                 [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0, [ParameterName] = 0, [VariableName] = 0, [LocalVariableName] = 0,
-                [ConstantName] = 0, [LocalConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
+                [ConstantName] = 0, [LocalConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
@@ -285,7 +286,7 @@ End Property";
             {
                 [ProjectName] = 0, [ProceduralModuleName] = 0, [ClassModuleName] = 0, [UserFormName] = 0, [DocumentName] = 0, [ProcedureName] = 1, [FunctionName] = 1,
                 [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [LocalVariableName] = 1,
-                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 0, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 0, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
@@ -313,7 +314,7 @@ End Property";
             {
                 [ProjectName] = 0, [ProceduralModuleName] = 0, [ClassModuleName] = 0, [UserFormName] = 0, [DocumentName] = 0, [ProcedureName] = 0, [FunctionName] = 0,
                 [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0, [ParameterName] = 0, [VariableName] = 0, [LocalVariableName] = 0,
-                [ConstantName] = 0, [LocalConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
+                [ConstantName] = 0, [LocalConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
@@ -345,7 +346,7 @@ End Property";
             {
                 [ProjectName] = 0, [ProceduralModuleName] = 0, [ClassModuleName] = 0, [UserFormName] = 0, [DocumentName] = 0, [ProcedureName] = 1, [FunctionName] = 1,
                 [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [LocalVariableName] = 1,
-                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 0, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 0, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
@@ -373,7 +374,7 @@ End Property";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
                 [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [LocalVariableName] = 1,
-                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
@@ -434,7 +435,7 @@ End Sub";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 2, [FunctionName] = 2,
                 [PropertyGetName] = 2, [PropertySetName] = 2, [PropertyLetName] = 2, [ParameterName] = 1, [VariableName] = 2, [LocalVariableName] = 1,
-                [ConstantName] = 2, [LocalConstantName] = 1, [EnumerationName] = 2, [EnumerationMemberName] = 2, [UserDefinedTypeName] = 0,
+                [ConstantName] = 2, [LocalConstantName] = 1, [EnumerationName] = 2, [EnumerationMemberName] = 2, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 2, [LibraryFunctionName] = 2, [LineLabelName] = 0
             };
 
@@ -462,7 +463,7 @@ End Sub";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
                 [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 0, [VariableName] = 1, [LocalVariableName] = 0,
-                [ConstantName] = 1, [LocalConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [ConstantName] = 1, [LocalConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
@@ -495,14 +496,15 @@ End Sub";
             {
                 [ProceduralModuleName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
                 [ParameterName] = 1, [VariableName] = 0, [LocalVariableName] = 1, [ConstantName] = 0, [LocalConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+                [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
+                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
             {
                 var code =
 $@"Public Type {UserDefinedTypeName}
-    s As String
+    {UserDefinedTypeMemberName} As String
 End Type
 
 Public Declare PtrSafe Sub {LibraryProcedureName} Lib ""lib.dll"" ()
@@ -557,7 +559,7 @@ End Property";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
                 [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [LocalVariableName] = 1,
-                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
@@ -618,7 +620,7 @@ End Function";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 2, [FunctionName] = 2,
                 [PropertyGetName] = 2, [PropertySetName] = 2, [PropertyLetName] = 2, [ParameterName] = 1, [VariableName] = 2, [LocalVariableName] = 1,
-                [ConstantName] = 2, [LocalConstantName] = 1, [EnumerationName] = 2, [EnumerationMemberName] = 2, [UserDefinedTypeName] = 0,
+                [ConstantName] = 2, [LocalConstantName] = 1, [EnumerationName] = 2, [EnumerationMemberName] = 2, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 2, [LibraryFunctionName] = 2, [LineLabelName] = 0
             };
 
@@ -646,7 +648,7 @@ End Function";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
                 [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 0, [VariableName] = 1, [LocalVariableName] = 0,
-                [ConstantName] = 1, [LocalConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [ConstantName] = 1, [LocalConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
@@ -679,14 +681,15 @@ End Function";
             {
                 [ProceduralModuleName] = 0, [ProcedureName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
                 [ParameterName] = 1, [VariableName] = 0, [LocalVariableName] = 1, [ConstantName] = 0, [LocalConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+                [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
+                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
             {
                 var code =
 $@"Public Type {UserDefinedTypeName}
-    s As String
+    {UserDefinedTypeMemberName} As String
 End Type
 
 Public Declare PtrSafe Sub {LibraryProcedureName} Lib ""lib.dll"" ()
@@ -741,7 +744,7 @@ End Property";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
                 [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1,[LocalVariableName] = 1,
-                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
@@ -802,7 +805,7 @@ End Property";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 2, [FunctionName] = 2,
                 [PropertyGetName] = 2, [PropertySetName] = 2, [PropertyLetName] = 2, [ParameterName] = 1, [VariableName] = 2, [LocalVariableName] = 1,
-                [ConstantName] = 2, [LocalConstantName] = 1, [EnumerationName] = 2, [EnumerationMemberName] = 2, [UserDefinedTypeName] = 0,
+                [ConstantName] = 2, [LocalConstantName] = 1, [EnumerationName] = 2, [EnumerationMemberName] = 2, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 2, [LibraryFunctionName] = 2, [LineLabelName] = 0
             };
 
@@ -830,7 +833,7 @@ End Property";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
                 [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 0, [VariableName] = 1, [LocalVariableName] = 0,
-                [ConstantName] = 1, [LocalConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [ConstantName] = 1, [LocalConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
@@ -863,14 +866,15 @@ End Property";
             {
                 [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
                 [ParameterName] = 1, [VariableName] = 0, [LocalVariableName] = 1, [ConstantName] = 0, [LocalConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+                [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
+                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
             {
                 var code =
 $@"Public Type {UserDefinedTypeName}
-    s As String
+    {UserDefinedTypeMemberName} As String
 End Type
 
 Public Declare PtrSafe Sub {LibraryProcedureName} Lib ""lib.dll"" ()
@@ -925,7 +929,7 @@ End Property";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
                 [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1,[LocalVariableName] = 1,
-                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
@@ -986,7 +990,7 @@ End Property";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 2, [FunctionName] = 2,
                 [PropertyGetName] = 2, [PropertySetName] = 2, [PropertyLetName] = 2, [ParameterName] = 1, [VariableName] = 2, [LocalVariableName] = 1,
-                [ConstantName] = 2, [LocalConstantName] = 1, [EnumerationName] = 2, [EnumerationMemberName] = 2, [UserDefinedTypeName] = 0,
+                [ConstantName] = 2, [LocalConstantName] = 1, [EnumerationName] = 2, [EnumerationMemberName] = 2, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 2, [LibraryFunctionName] = 2, [LineLabelName] = 0
             };
 
@@ -1014,7 +1018,7 @@ End Property";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
                 [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 0, [VariableName] = 1, [LocalVariableName] = 0,
-                [ConstantName] = 1, [LocalConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [ConstantName] = 1, [LocalConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
@@ -1047,14 +1051,15 @@ End Property";
             {
                 [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertyLetName] = 0,
                 [ParameterName] = 1, [VariableName] = 0, [LocalVariableName] = 1, [ConstantName] = 0, [LocalConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+                [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
+                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
             {
                 var code =
 $@"Public Type {UserDefinedTypeName}
-    s As String
+    {UserDefinedTypeMemberName} As String
 End Type
 
 Public Declare PtrSafe Sub {LibraryProcedureName} Lib ""lib.dll"" ()
@@ -1109,7 +1114,7 @@ End Property";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
                 [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1,[LocalVariableName] = 1,
-                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
@@ -1170,7 +1175,7 @@ End Property";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 2, [FunctionName] = 2,
                 [PropertyGetName] = 2, [PropertySetName] = 2, [PropertyLetName] = 2, [ParameterName] = 1, [VariableName] = 2, [LocalVariableName] = 1,
-                [ConstantName] = 2, [LocalConstantName] = 1, [EnumerationName] = 2, [EnumerationMemberName] = 2, [UserDefinedTypeName] = 0,
+                [ConstantName] = 2, [LocalConstantName] = 1, [EnumerationName] = 2, [EnumerationMemberName] = 2, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 2, [LibraryFunctionName] = 2, [LineLabelName] = 0
             };
 
@@ -1198,7 +1203,7 @@ End Property";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
                 [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 0, [VariableName] = 1, [LocalVariableName] = 0,
-                [ConstantName] = 1, [LocalConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [ConstantName] = 1, [LocalConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
@@ -1231,14 +1236,15 @@ End Property";
             {
                 [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0,
                 [ParameterName] = 1, [VariableName] = 0, [LocalVariableName] = 1, [ConstantName] = 0, [LocalConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+                [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
+                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
             {
                 var code =
 $@"Public Type {UserDefinedTypeName}
-    s As String
+    {UserDefinedTypeMemberName} As String
 End Type
 
 Public Declare PtrSafe Sub {LibraryProcedureName} Lib ""lib.dll"" ()
@@ -1293,7 +1299,7 @@ End Property";
             {
                 [ProjectName] = 0, [ProceduralModuleName] = 0, [ClassModuleName] = 0, [UserFormName] = 0, [DocumentName] = 0, [ProcedureName] = 0, [FunctionName] = 0,
                 [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0, [ParameterName] = 0, [VariableName] = 0, [LocalVariableName] = 0,
-                [ConstantName] = 0, [LocalConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
+                [ConstantName] = 0, [LocalConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
@@ -1329,7 +1335,7 @@ End Sub";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
                 [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 0, [VariableName] = 1, [LocalVariableName] = 0,
-                [ConstantName] = 1, [LocalConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [ConstantName] = 1, [LocalConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
@@ -1361,14 +1367,15 @@ End Sub";
             {
                 [ProceduralModuleName] = 0, [ProcedureName] = 1, [FunctionName] = 1, [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1,
                 [ParameterName] = 0, [VariableName] = 1, [LocalVariableName] = 0, [ConstantName] = 1, [LocalConstantName] = 0,
-                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
+                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
+                [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
             {
                 var code =
 $@"Public Type {UserDefinedTypeName}
-    s As String
+    {UserDefinedTypeMemberName} As String
 End Type
 
 Public Declare PtrSafe Sub {LibraryProcedureName} Lib ""lib.dll"" ()
@@ -1423,7 +1430,7 @@ End Property";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
                 [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [LocalVariableName] = 1,
-                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
@@ -1502,7 +1509,7 @@ End Property";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 2, [FunctionName] = 2,
                 [PropertyGetName] = 2, [PropertySetName] = 2, [PropertyLetName] = 2, [ParameterName] = 1, [VariableName] = 2, [LocalVariableName] = 1,
-                [ConstantName] = 2, [LocalConstantName] = 1, [EnumerationName] = 2, [EnumerationMemberName] = 2, [UserDefinedTypeName] = 0,
+                [ConstantName] = 2, [LocalConstantName] = 1, [EnumerationName] = 2, [EnumerationMemberName] = 2, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 2, [LibraryFunctionName] = 2, [LineLabelName] = 0
             };
 
@@ -1546,7 +1553,7 @@ End Property";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
                 [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 0, [VariableName] = 1, [LocalVariableName] = 0,
-                [ConstantName] = 1, [LocalConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [ConstantName] = 1, [LocalConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
@@ -1577,7 +1584,8 @@ End Property";
             {
                 [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
                 [ParameterName] = 1, [VariableName] = 0, [LocalVariableName] = 1, [ConstantName] = 0, [LocalConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+                [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
+                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
@@ -1606,7 +1614,7 @@ End Property";
             {
                 [ProjectName] = 0, [ProceduralModuleName] = 0, [ClassModuleName] = 0, [UserFormName] = 0, [DocumentName] = 0, [ProcedureName] = 0, [FunctionName] = 0,
                 [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0, [ParameterName] = 0, [VariableName] = 0, [LocalVariableName] = 0,
-                [ConstantName] = 0, [LocalConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
+                [ConstantName] = 0, [LocalConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
@@ -1643,7 +1651,7 @@ End Sub";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
                 [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 0, [VariableName] = 1, [LocalVariableName] = 0,
-                [ConstantName] = 1, [LocalConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [ConstantName] = 1, [LocalConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
@@ -1676,14 +1684,15 @@ End Sub";
             {
                 [ProceduralModuleName] = 0, [ProcedureName] = 1, [FunctionName] = 1, [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1,
                 [ParameterName] = 0, [VariableName] = 1, [LocalVariableName] = 0, [ConstantName] = 1, [LocalConstantName] = 0,
-                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
+                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
+                [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
             {
                 var code =
 $@"Public Type {UserDefinedTypeName}
-    s As String
+    {UserDefinedTypeMemberName} As String
 End Type
 
 Public Declare PtrSafe Sub {LibraryProcedureName} Lib ""lib.dll"" ()
@@ -1739,7 +1748,7 @@ End Property";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
                 [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [LocalVariableName] = 1,
-                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
@@ -1818,7 +1827,7 @@ End Property";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 2, [FunctionName] = 2,
                 [PropertyGetName] = 2, [PropertySetName] = 2, [PropertyLetName] = 2, [ParameterName] = 1, [VariableName] = 2, [LocalVariableName] = 1,
-                [ConstantName] = 2, [LocalConstantName] = 1, [EnumerationName] = 2, [EnumerationMemberName] = 2, [UserDefinedTypeName] = 0,
+                [ConstantName] = 2, [LocalConstantName] = 1, [EnumerationName] = 2, [EnumerationMemberName] = 2, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 2, [LibraryFunctionName] = 2, [LineLabelName] = 0
             };
 
@@ -1862,7 +1871,7 @@ End Property";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
                 [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 0, [VariableName] = 1, [LocalVariableName] = 0,
-                [ConstantName] = 1, [LocalConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [ConstantName] = 1, [LocalConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
@@ -1893,7 +1902,8 @@ End Property";
             {
                 [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
                 [ParameterName] = 1, [VariableName] = 0, [LocalVariableName] = 1, [ConstantName] = 0, [LocalConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+                [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
+                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
@@ -1922,7 +1932,7 @@ End Property";
             {
                 [ProjectName] = 0, [ProceduralModuleName] = 0, [ClassModuleName] = 0, [UserFormName] = 0, [DocumentName] = 0, [ProcedureName] = 0, [FunctionName] = 0,
                 [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0, [ParameterName] = 0, [VariableName] = 0, [LocalVariableName] = 0,
-                [ConstantName] = 0, [LocalConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
+                [ConstantName] = 0, [LocalConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
@@ -1959,7 +1969,7 @@ End Sub";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
                 [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 0, [VariableName] = 1, [LocalVariableName] = 0,
-                [ConstantName] = 1, [LocalConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [ConstantName] = 1, [LocalConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
@@ -1992,14 +2002,15 @@ End Sub";
             {
                 [ProceduralModuleName] = 0, [ProcedureName] = 1, [FunctionName] = 1, [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1,
                 [ParameterName] = 0, [VariableName] = 1, [LocalVariableName] = 0, [ConstantName] = 1, [LocalConstantName] = 0,
-                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
+                [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
+                [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
             {
                 var code =
 $@"Public Type {UserDefinedTypeName}
-    s As String
+    {UserDefinedTypeMemberName} As String
 End Type
 
 Public Declare PtrSafe Sub {LibraryProcedureName} Lib ""lib.dll"" ()
@@ -2055,7 +2066,7 @@ End Property";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
                 [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [LocalVariableName] = 1,
-                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
@@ -2118,7 +2129,7 @@ End Enum";
             {
                 [ProjectName] = 0, [ProceduralModuleName] = 0, [ClassModuleName] = 0, [UserFormName] = 0, [DocumentName] = 0, [ProcedureName] = 2, [FunctionName] = 2,
                 [PropertyGetName] = 2, [PropertySetName] = 2, [PropertyLetName] = 2, [ParameterName] = 1, [VariableName] = 2, [LocalVariableName] = 1,
-                [ConstantName] = 2, [LocalConstantName] = 1, [EnumerationName] = 2, [EnumerationMemberName] = 2, [UserDefinedTypeName] = 0,
+                [ConstantName] = 2, [LocalConstantName] = 1, [EnumerationName] = 2, [EnumerationMemberName] = 2, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 2, [LibraryFunctionName] = 2, [LineLabelName] = 0
             };
 
@@ -2147,7 +2158,7 @@ End Enum";
             {
                 [ProjectName] = 0, [ProceduralModuleName] = 0, [ClassModuleName] = 0, [UserFormName] = 0, [DocumentName] = 0, [ProcedureName] = 1, [FunctionName] = 1,
                 [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 0, [VariableName] = 1, [LocalVariableName] = 0,
-                [ConstantName] = 1, [LocalConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [ConstantName] = 1, [LocalConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
@@ -2181,7 +2192,7 @@ End Enum";
             {
                 [ProceduralModuleName] = 0, [ProcedureName] = 1, [FunctionName] = 1, [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1,
                 [ParameterName] = 1, [VariableName] = 1, [LocalVariableName] = 1, [ConstantName] = 1, [LocalConstantName] = 1,
-                [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
+                [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
@@ -2213,7 +2224,7 @@ End Enum";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
                 [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [LocalVariableName] = 1,
-                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
@@ -2276,7 +2287,7 @@ End Enum";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 2, [FunctionName] = 2,
                 [PropertyGetName] = 2, [PropertySetName] = 2, [PropertyLetName] = 2, [ParameterName] = 1, [VariableName] = 2, [LocalVariableName] = 1,
-                [ConstantName] = 2, [LocalConstantName] = 1, [EnumerationName] = 2, [EnumerationMemberName] = 2, [UserDefinedTypeName] = 0,
+                [ConstantName] = 2, [LocalConstantName] = 1, [EnumerationName] = 2, [EnumerationMemberName] = 2, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 2, [LibraryFunctionName] = 2, [LineLabelName] = 0
             };
 
@@ -2305,7 +2316,7 @@ End Enum";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
                 [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 0, [VariableName] = 1, [LocalVariableName] = 0,
-                [ConstantName] = 1, [LocalConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [ConstantName] = 1, [LocalConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
@@ -2339,7 +2350,7 @@ End Enum";
             {
                 [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
                 [ParameterName] = 1, [VariableName] = 0, [LocalVariableName] = 1, [ConstantName] = 0, [LocalConstantName] = 1,
-                [UserDefinedTypeName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+                [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
@@ -2471,7 +2482,7 @@ End Enum";
             {
                 [ProjectName] = 0, [ProceduralModuleName] = 0, [ClassModuleName] = 0, [UserFormName] = 0, [DocumentName] = 0, [ProcedureName] = 0, [FunctionName] = 0,
                 [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0, [ParameterName] = 0, [VariableName] = 0, [LocalVariableName] = 0,
-                [ConstantName] = 0, [LocalConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 1,
+                [ConstantName] = 0, [LocalConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 1, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
@@ -2534,7 +2545,7 @@ End Type";
             {
                 [ProjectName] = 0, [ProceduralModuleName] = 0, [ClassModuleName] = 0, [UserFormName] = 0, [DocumentName] = 0, [ProcedureName] = 0, [FunctionName] = 0,
                 [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0, [ParameterName] = 0, [VariableName] = 0, [LocalVariableName] = 0,
-                [ConstantName] = 0, [LocalConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 2,
+                [ConstantName] = 0, [LocalConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 2, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
@@ -2563,7 +2574,7 @@ End Type";
             {
                 [ProjectName] = 0, [ProceduralModuleName] = 0, [ClassModuleName] = 0, [UserFormName] = 0, [DocumentName] = 0, [ProcedureName] = 0, [FunctionName] = 0,
                 [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0, [ParameterName] = 0, [VariableName] = 0, [LocalVariableName] = 0,
-                [ConstantName] = 0, [LocalConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 1,
+                [ConstantName] = 0, [LocalConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 1, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
@@ -2597,14 +2608,15 @@ End Type";
             {
                 [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
                 [ParameterName] = 0, [VariableName] = 0, [LocalVariableName] = 0, [ConstantName] = 0, [LocalConstantName] = 0,
-                [EnumerationName] = 0, [EnumerationMemberName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+                [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeMemberName] = 0,
+                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
             {
                 var code =
 $@"Public Type {result.Key}
-    s As String
+    {UserDefinedTypeMemberName} As String
 End Type
 
 Public Declare PtrSafe Sub {LibraryProcedureName} Lib ""lib.dll"" ()
@@ -2659,7 +2671,7 @@ End Property";
             {
                 [ProjectName] = 0, [ProceduralModuleName] = 0, [ClassModuleName] = 0, [UserFormName] = 0, [DocumentName] = 0, [ProcedureName] = 0, [FunctionName] = 0,
                 [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0, [ParameterName] = 0, [VariableName] = 0, [LocalVariableName] = 0,
-                [ConstantName] = 0, [LocalConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
+                [ConstantName] = 0, [LocalConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
@@ -2696,7 +2708,7 @@ End Type";
             {
                 [ProjectName] = 0, [ProceduralModuleName] = 0, [ClassModuleName] = 0, [UserFormName] = 0, [DocumentName] = 0, [ProcedureName] = 0, [FunctionName] = 0,
                 [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0, [ParameterName] = 0, [VariableName] = 0, [LocalVariableName] = 0,
-                [ConstantName] = 0, [LocalConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
+                [ConstantName] = 0, [LocalConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
@@ -2729,7 +2741,8 @@ End Type";
             {
                 [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
                 [ParameterName] = 0, [VariableName] = 0, [LocalVariableName] = 0, [ConstantName] = 0, [LocalConstantName] = 0,
-                [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+                [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
+                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
@@ -2761,7 +2774,7 @@ End Type";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
                 [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [LocalVariableName] = 1,
-                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
@@ -2818,7 +2831,7 @@ End Type";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 2, [FunctionName] = 2,
                 [PropertyGetName] = 2, [PropertySetName] = 2, [PropertyLetName] = 2, [ParameterName] = 1, [VariableName] = 2, [LocalVariableName] = 1,
-                [ConstantName] = 2, [LocalConstantName] = 1, [EnumerationName] = 2, [EnumerationMemberName] = 2, [UserDefinedTypeName] = 0,
+                [ConstantName] = 2, [LocalConstantName] = 1, [EnumerationName] = 2, [EnumerationMemberName] = 2, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 2, [LibraryFunctionName] = 2, [LineLabelName] = 0
             };
 
@@ -2844,7 +2857,7 @@ End Type";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
                 [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 0, [VariableName] = 1, [LocalVariableName] = 0,
-                [ConstantName] = 1, [LocalConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [ConstantName] = 1, [LocalConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
@@ -2875,7 +2888,8 @@ End Type";
             {
                 [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
                 [ParameterName] = 1, [VariableName] = 0, [LocalVariableName] = 1, [ConstantName] = 0, [LocalConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+                [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
+                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
@@ -2904,7 +2918,7 @@ End Type";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
                 [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 1, [VariableName] = 1, [LocalVariableName] = 1,
-                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [ConstantName] = 1, [LocalConstantName] = 1, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
@@ -2961,7 +2975,7 @@ End Type";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 2, [FunctionName] = 2,
                 [PropertyGetName] = 2, [PropertySetName] = 2, [PropertyLetName] = 2, [ParameterName] = 1, [VariableName] = 2, [LocalVariableName] = 1,
-                [ConstantName] = 2, [LocalConstantName] = 1, [EnumerationName] = 2, [EnumerationMemberName] = 2, [UserDefinedTypeName] = 0,
+                [ConstantName] = 2, [LocalConstantName] = 1, [EnumerationName] = 2, [EnumerationMemberName] = 2, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 2, [LibraryFunctionName] = 2, [LineLabelName] = 0
             };
 
@@ -2987,7 +3001,7 @@ End Type";
             {
                 [ProjectName] = 1, [ProceduralModuleName] = 1, [ClassModuleName] = 0, [UserFormName] = 1, [DocumentName] = 1, [ProcedureName] = 1, [FunctionName] = 1,
                 [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1, [ParameterName] = 0, [VariableName] = 1, [LocalVariableName] = 0,
-                [ConstantName] = 1, [LocalConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0,
+                [ConstantName] = 1, [LocalConstantName] = 0, [EnumerationName] = 1, [EnumerationMemberName] = 1, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
@@ -3018,7 +3032,8 @@ End Type";
             {
                 [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
                 [ParameterName] = 1, [VariableName] = 0, [LocalVariableName] = 1, [ConstantName] = 0, [LocalConstantName] = 1,
-                [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+                [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
+                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
@@ -3047,7 +3062,7 @@ End Type";
             {
                 [ProjectName] = 0, [ProceduralModuleName] = 0, [ClassModuleName] = 0, [UserFormName] = 0, [DocumentName] = 0, [ProcedureName] = 0, [FunctionName] = 0,
                 [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0, [ParameterName] = 0, [VariableName] = 0, [LocalVariableName] = 0,
-                [ConstantName] = 0, [LocalConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
+                [ConstantName] = 0, [LocalConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
@@ -3084,7 +3099,7 @@ End Sub";
             {
                 [ProjectName] = 0, [ProceduralModuleName] = 0, [ClassModuleName] = 0, [UserFormName] = 0, [DocumentName] = 0, [ProcedureName] = 0, [FunctionName] = 0,
                 [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0, [ParameterName] = 0, [VariableName] = 0, [LocalVariableName] = 0,
-                [ConstantName] = 0, [LocalConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0,
+                [ConstantName] = 0, [LocalConstantName] = 0, [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
                 [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
@@ -3117,14 +3132,15 @@ End Sub";
             {
                 [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
                 [ParameterName] = 0, [VariableName] = 0, [LocalVariableName] = 0, [ConstantName] = 0, [LocalConstantName] = 0,
-                [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+                [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [UserDefinedTypeMemberName] = 0,
+                [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
             {
                 var code =
 $@"Public Type {UserDefinedTypeName}
-    s As String
+    {UserDefinedTypeMemberName} As String
 End Type
 
 Public Declare PtrSafe Sub {LibraryProcedureName} Lib ""lib.dll"" ()
