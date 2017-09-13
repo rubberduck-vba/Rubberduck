@@ -493,20 +493,51 @@ End Sub";
         {
             var declarationResults = new Dictionary<string, int>
             {
-                [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
+                [ProceduralModuleName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
                 [ParameterName] = 1, [VariableName] = 0, [LocalVariableName] = 1, [ConstantName] = 0, [LocalConstantName] = 1,
                 [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
             {
-                var declarationCode =
-$@"Public Sub {result.Key}()
-End Sub";
+                var code =
+$@"Public Type {UserDefinedTypeName}
+    s As String
+End Type
+
+Public Declare PtrSafe Sub {LibraryProcedureName} Lib ""lib.dll"" ()
+
+Public Declare PtrSafe Function {LibraryFunctionName} Lib ""lib.dll"" ()
+
+Public {VariableName} As String
+
+Public Const {ConstantName} As String = """"
+
+Public Enum {EnumerationName}
+    {EnumerationMemberName}
+End Enum
+
+Public Sub {result.Key}({ParameterName} As String)
+Dim {LocalVariableName} as String
+Const {LocalConstantName} as String = """"
+{LineLabelName}:
+End Sub
+
+Public Function {FunctionName}()
+End Function
+
+Public Property Get {PropertyGetName}()
+End Property
+
+Public Property Let {PropertySetName}(v As Variant)
+End Property
+
+Public Property Set {PropertyLetName}(s As String)
+End Property";
 
                 var builder = new MockVbeBuilder();
                 var project = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected)
-                    .AddComponent(ProceduralModuleName, ComponentType.StandardModule, $"{declarationCode}\n\n{moduleCode}").Build();
+                    .AddComponent(ProceduralModuleName, ComponentType.StandardModule, code).Build();
 
                 var vbe = builder.AddProject(project).Build();
                 var state = MockParser.CreateAndParse(vbe.Object);
@@ -646,20 +677,51 @@ End Function";
         {
             var declarationResults = new Dictionary<string, int>
             {
-                [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
+                [ProceduralModuleName] = 0, [ProcedureName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
                 [ParameterName] = 1, [VariableName] = 0, [LocalVariableName] = 1, [ConstantName] = 0, [LocalConstantName] = 1,
                 [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
             {
-                var declarationCode =
-$@"Public Function {result.Key}()
-End Function";
+                var code =
+$@"Public Type {UserDefinedTypeName}
+    s As String
+End Type
+
+Public Declare PtrSafe Sub {LibraryProcedureName} Lib ""lib.dll"" ()
+
+Public Declare PtrSafe Function {LibraryFunctionName} Lib ""lib.dll"" ()
+
+Public {VariableName} As String
+
+Public Const {ConstantName} As String = """"
+
+Public Enum {EnumerationName}
+    {EnumerationMemberName}
+End Enum
+
+Public Sub {ProcedureName}({ParameterName} As String)
+Dim {LocalVariableName} as String
+Const {LocalConstantName} as String = """"
+{LineLabelName}:
+End Sub
+
+Public Function {result.Key}()
+End Function
+
+Public Property Get {PropertyGetName}()
+End Property
+
+Public Property Let {PropertySetName}(v As Variant)
+End Property
+
+Public Property Set {PropertyLetName}(s As String)
+End Property";
 
                 var builder = new MockVbeBuilder();
                 var project = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected)
-                    .AddComponent(ProceduralModuleName, ComponentType.StandardModule, $"{declarationCode}\n\n{moduleCode}").Build();
+                    .AddComponent(ProceduralModuleName, ComponentType.StandardModule, code).Build();
 
                 var vbe = builder.AddProject(project).Build();
                 var state = MockParser.CreateAndParse(vbe.Object);
@@ -799,20 +861,51 @@ End Property";
         {
             var declarationResults = new Dictionary<string, int>
             {
-                [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
+                [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
                 [ParameterName] = 1, [VariableName] = 0, [LocalVariableName] = 1, [ConstantName] = 0, [LocalConstantName] = 1,
                 [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
             {
-                var declarationCode =
-$@"Public Property Get {result.Key}() As String
+                var code =
+$@"Public Type {UserDefinedTypeName}
+    s As String
+End Type
+
+Public Declare PtrSafe Sub {LibraryProcedureName} Lib ""lib.dll"" ()
+
+Public Declare PtrSafe Function {LibraryFunctionName} Lib ""lib.dll"" ()
+
+Public {VariableName} As String
+
+Public Const {ConstantName} As String = """"
+
+Public Enum {EnumerationName}
+    {EnumerationMemberName}
+End Enum
+
+Public Sub {ProcedureName}({ParameterName} As String)
+Dim {LocalVariableName} as String
+Const {LocalConstantName} as String = """"
+{LineLabelName}:
+End Sub
+
+Public Function {FunctionName}()
+End Function
+
+Public Property Get {result.Key}()
+End Property
+
+Public Property Let {PropertySetName}(v As Variant)
+End Property
+
+Public Property Set {PropertyLetName}(s As String)
 End Property";
 
                 var builder = new MockVbeBuilder();
                 var project = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected)
-                    .AddComponent(ProceduralModuleName, ComponentType.StandardModule, $"{declarationCode}\n\n{moduleCode}").Build();
+                    .AddComponent(ProceduralModuleName, ComponentType.StandardModule, code).Build();
 
                 var vbe = builder.AddProject(project).Build();
                 var state = MockParser.CreateAndParse(vbe.Object);
@@ -952,20 +1045,51 @@ End Property";
         {
             var declarationResults = new Dictionary<string, int>
             {
-                [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
+                [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertyLetName] = 0,
                 [ParameterName] = 1, [VariableName] = 0, [LocalVariableName] = 1, [ConstantName] = 0, [LocalConstantName] = 1,
                 [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
             {
-                var declarationCode =
-$@"Public Property Set {result.Key}(v as Variant)
+                var code =
+$@"Public Type {UserDefinedTypeName}
+    s As String
+End Type
+
+Public Declare PtrSafe Sub {LibraryProcedureName} Lib ""lib.dll"" ()
+
+Public Declare PtrSafe Function {LibraryFunctionName} Lib ""lib.dll"" ()
+
+Public {VariableName} As String
+
+Public Const {ConstantName} As String = """"
+
+Public Enum {EnumerationName}
+    {EnumerationMemberName}
+End Enum
+
+Public Sub {ProcedureName}({ParameterName} As String)
+Dim {LocalVariableName} as String
+Const {LocalConstantName} as String = """"
+{LineLabelName}:
+End Sub
+
+Public Function {FunctionName}()
+End Function
+
+Public Property Get {PropertyGetName}()
+End Property
+
+Public Property Let {PropertySetName}(v As Variant)
+End Property
+
+Public Property Set {result.Key}(s As String)
 End Property";
 
                 var builder = new MockVbeBuilder();
                 var project = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected)
-                    .AddComponent(ProceduralModuleName, ComponentType.StandardModule, $"{declarationCode}\n\n{moduleCode}").Build();
+                    .AddComponent(ProceduralModuleName, ComponentType.StandardModule, code).Build();
 
                 var vbe = builder.AddProject(project).Build();
                 var state = MockParser.CreateAndParse(vbe.Object);
@@ -1105,20 +1229,51 @@ End Property";
         {
             var declarationResults = new Dictionary<string, int>
             {
-                [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
+                [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0,
                 [ParameterName] = 1, [VariableName] = 0, [LocalVariableName] = 1, [ConstantName] = 0, [LocalConstantName] = 1,
                 [EnumerationName] = 1, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
             {
-                var declarationCode =
-$@"Public Property Let {result.Key}(s As String)
+                var code =
+$@"Public Type {UserDefinedTypeName}
+    s As String
+End Type
+
+Public Declare PtrSafe Sub {LibraryProcedureName} Lib ""lib.dll"" ()
+
+Public Declare PtrSafe Function {LibraryFunctionName} Lib ""lib.dll"" ()
+
+Public {VariableName} As String
+
+Public Const {ConstantName} As String = """"
+
+Public Enum {EnumerationName}
+    {EnumerationMemberName}
+End Enum
+
+Public Sub {ProcedureName}({ParameterName} As String)
+Dim {LocalVariableName} as String
+Const {LocalConstantName} as String = """"
+{LineLabelName}:
+End Sub
+
+Public Function {FunctionName}()
+End Function
+
+Public Property Get {PropertyGetName}()
+End Property
+
+Public Property Let {result.Key}(v As Variant)
+End Property
+
+Public Property Set {PropertyLetName}(s As String)
 End Property";
 
                 var builder = new MockVbeBuilder();
                 var project = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected)
-                    .AddComponent(ProceduralModuleName, ComponentType.StandardModule, $"{declarationCode}\n\n{moduleCode}").Build();
+                    .AddComponent(ProceduralModuleName, ComponentType.StandardModule, code).Build();
 
                 var vbe = builder.AddProject(project).Build();
                 var state = MockParser.CreateAndParse(vbe.Object);
@@ -1211,13 +1366,44 @@ End Sub";
 
             foreach (var result in declarationResults)
             {
-                var declarationCode =
-$@"Public Sub Qux({result.Key} As String)
-End Sub";
+                var code =
+$@"Public Type {UserDefinedTypeName}
+    s As String
+End Type
+
+Public Declare PtrSafe Sub {LibraryProcedureName} Lib ""lib.dll"" ()
+
+Public Declare PtrSafe Function {LibraryFunctionName} Lib ""lib.dll"" ()
+
+Public {VariableName} As String
+
+Public Const {ConstantName} As String = """"
+
+Public Enum {EnumerationName}
+    {EnumerationMemberName}
+End Enum
+
+Public Sub {ProcedureName}({ParameterName} As String)
+Dim {LocalVariableName} as String
+Const {LocalConstantName} as String = """"
+{LineLabelName}:
+End Sub
+
+Public Function {FunctionName}({result.Key} As String)
+End Function
+
+Public Property Get {PropertyGetName}()
+End Property
+
+Public Property Let {PropertySetName}(v As Variant)
+End Property
+
+Public Property Set {PropertyLetName}(s As String)
+End Property";
 
                 var builder = new MockVbeBuilder();
                 var project = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected)
-                    .AddComponent(ProceduralModuleName, ComponentType.StandardModule, $"{declarationCode}\n\n{moduleCode}").Build();
+                    .AddComponent(ProceduralModuleName, ComponentType.StandardModule, code).Build();
 
                 var vbe = builder.AddProject(project).Build();
                 var state = MockParser.CreateAndParse(vbe.Object);
@@ -1495,14 +1681,45 @@ End Sub";
 
             foreach (var result in declarationResults)
             {
-                var declarationCode = 
-$@"Public Sub Qux()
-    Dim {result.Key} as String
-End Sub";
+                var code =
+$@"Public Type {UserDefinedTypeName}
+    s As String
+End Type
+
+Public Declare PtrSafe Sub {LibraryProcedureName} Lib ""lib.dll"" ()
+
+Public Declare PtrSafe Function {LibraryFunctionName} Lib ""lib.dll"" ()
+
+Public {VariableName} As String
+
+Public Const {ConstantName} As String = """"
+
+Public Enum {EnumerationName}
+    {EnumerationMemberName}
+End Enum
+
+Public Sub {ProcedureName}({ParameterName} As String)
+Dim {LocalVariableName} as String
+Const {LocalConstantName} as String = """"
+{LineLabelName}:
+End Sub
+
+Public Function {FunctionName}()
+Dim {result.Key} As String
+End Function
+
+Public Property Get {PropertyGetName}()
+End Property
+
+Public Property Let {PropertySetName}(v As Variant)
+End Property
+
+Public Property Set {PropertyLetName}(s As String)
+End Property";
 
                 var builder = new MockVbeBuilder();
                 var project = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected)
-                    .AddComponent(ProceduralModuleName, ComponentType.StandardModule, $"{declarationCode}\n\n{moduleCode}").Build();
+                    .AddComponent(ProceduralModuleName, ComponentType.StandardModule, code).Build();
 
                 var vbe = builder.AddProject(project).Build();
                 var state = MockParser.CreateAndParse(vbe.Object);
@@ -1780,14 +1997,45 @@ End Sub";
 
             foreach (var result in declarationResults)
             {
-                var declarationCode = 
-$@"Public Sub Qux()
-    Const {result.Key} as String = """"
-End Sub";
+                var code =
+$@"Public Type {UserDefinedTypeName}
+    s As String
+End Type
+
+Public Declare PtrSafe Sub {LibraryProcedureName} Lib ""lib.dll"" ()
+
+Public Declare PtrSafe Function {LibraryFunctionName} Lib ""lib.dll"" ()
+
+Public {VariableName} As String
+
+Public Const {ConstantName} As String = """"
+
+Public Enum {EnumerationName}
+    {EnumerationMemberName}
+End Enum
+
+Public Sub {ProcedureName}({ParameterName} As String)
+Dim {LocalVariableName} as String
+Const {LocalConstantName} as String = """"
+{LineLabelName}:
+End Sub
+
+Public Function {FunctionName}()
+Const {result.Key} as String = """"
+End Function
+
+Public Property Get {PropertyGetName}()
+End Property
+
+Public Property Let {PropertySetName}(v As Variant)
+End Property
+
+Public Property Set {PropertyLetName}(s As String)
+End Property";
 
                 var builder = new MockVbeBuilder();
                 var project = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected)
-                    .AddComponent(ProceduralModuleName, ComponentType.StandardModule, $"{declarationCode}\n\n{moduleCode}").Build();
+                    .AddComponent(ProceduralModuleName, ComponentType.StandardModule, code).Build();
 
                 var vbe = builder.AddProject(project).Build();
                 var state = MockParser.CreateAndParse(vbe.Object);
@@ -1933,7 +2181,7 @@ End Enum";
             {
                 [ProceduralModuleName] = 0, [ProcedureName] = 1, [FunctionName] = 1, [PropertyGetName] = 1, [PropertySetName] = 1, [PropertyLetName] = 1,
                 [ParameterName] = 1, [VariableName] = 1, [LocalVariableName] = 1, [ConstantName] = 1, [LocalConstantName] = 1,
-                [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
+                [UserDefinedTypeName] = 0, [LibraryProcedureName] = 1, [LibraryFunctionName] = 1, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
@@ -2091,7 +2339,7 @@ End Enum";
             {
                 [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
                 [ParameterName] = 1, [VariableName] = 0, [LocalVariableName] = 1, [ConstantName] = 0, [LocalConstantName] = 1,
-                [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+                [UserDefinedTypeName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
@@ -2349,19 +2597,49 @@ End Type";
             {
                 [ProceduralModuleName] = 0, [ProcedureName] = 0, [FunctionName] = 0, [PropertyGetName] = 0, [PropertySetName] = 0, [PropertyLetName] = 0,
                 [ParameterName] = 0, [VariableName] = 0, [LocalVariableName] = 0, [ConstantName] = 0, [LocalConstantName] = 0,
-                [EnumerationName] = 0, [EnumerationMemberName] = 0, [UserDefinedTypeName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
+                [EnumerationName] = 0, [EnumerationMemberName] = 0, [LibraryProcedureName] = 0, [LibraryFunctionName] = 0, [LineLabelName] = 0
             };
 
             foreach (var result in declarationResults)
             {
-                var declarationCode =
+                var code =
 $@"Public Type {result.Key}
     s As String
-End Type";
+End Type
+
+Public Declare PtrSafe Sub {LibraryProcedureName} Lib ""lib.dll"" ()
+
+Public Declare PtrSafe Function {LibraryFunctionName} Lib ""lib.dll"" ()
+
+Public {VariableName} As String
+
+Public Const {ConstantName} As String = """"
+
+Public Enum {EnumerationName}
+    {EnumerationMemberName}
+End Enum
+
+Public Sub {ProcedureName}({ParameterName} As String)
+Dim {LocalVariableName} as String
+Const {LocalConstantName} as String = """"
+{LineLabelName}:
+End Sub
+
+Public Function {FunctionName}()
+End Function
+
+Public Property Get {PropertyGetName}()
+End Property
+
+Public Property Let {PropertySetName}(v As Variant)
+End Property
+
+Public Property Set {PropertyLetName}(s As String)
+End Property";
 
                 var builder = new MockVbeBuilder();
                 var project = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected)
-                    .AddComponent(ProceduralModuleName, ComponentType.StandardModule, $"{declarationCode}\n\n{moduleCode}").Build();
+                    .AddComponent(ProceduralModuleName, ComponentType.StandardModule, code).Build();
 
                 var vbe = builder.AddProject(project).Build();
                 var state = MockParser.CreateAndParse(vbe.Object);
@@ -2844,14 +3122,45 @@ End Sub";
 
             foreach (var result in declarationResults)
             {
-                var declarationCode =
-$@"Public Sub Qux()
-    {result.Key}:
-End Sub";
+                var code =
+$@"Public Type {UserDefinedTypeName}
+    s As String
+End Type
+
+Public Declare PtrSafe Sub {LibraryProcedureName} Lib ""lib.dll"" ()
+
+Public Declare PtrSafe Function {LibraryFunctionName} Lib ""lib.dll"" ()
+
+Public {VariableName} As String
+
+Public Const {ConstantName} As String = """"
+
+Public Enum {EnumerationName}
+    {EnumerationMemberName}
+End Enum
+
+Public Sub {ProcedureName}({ParameterName} As String)
+Dim {LocalVariableName} as String
+Const {LocalConstantName} as String = """"
+{LineLabelName}:
+End Sub
+
+Public Function {FunctionName}()
+{result.Key}:
+End Function
+
+Public Property Get {PropertyGetName}()
+End Property
+
+Public Property Let {PropertySetName}(v As Variant)
+End Property
+
+Public Property Set {PropertyLetName}(s As String)
+End Property";
 
                 var builder = new MockVbeBuilder();
                 var project = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected)
-                    .AddComponent(ProceduralModuleName, ComponentType.StandardModule, $"{declarationCode}\n\n{moduleCode}").Build();
+                    .AddComponent(ProceduralModuleName, ComponentType.StandardModule, code).Build();
 
                 var vbe = builder.AddProject(project).Build();
                 var state = MockParser.CreateAndParse(vbe.Object);

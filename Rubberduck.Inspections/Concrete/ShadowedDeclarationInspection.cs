@@ -295,7 +295,8 @@ namespace Rubberduck.Inspections.Concrete
         private static bool DeclarationInTheSameComponentCanBeShadowed(Declaration originalDeclaration, Declaration userDeclaration, EnumerationRuleIndexListener listener)
         {
             // Shadowing the component containing the declaration is not a problem, because it is possible to directly access declarations inside that component
-            if (originalDeclaration.DeclarationType == DeclarationType.ProceduralModule || originalDeclaration.DeclarationType == DeclarationType.ClassModule)
+            if (originalDeclaration.DeclarationType == DeclarationType.ProceduralModule || originalDeclaration.DeclarationType == DeclarationType.ClassModule ||
+                userDeclaration.DeclarationType == DeclarationType.ProceduralModule || userDeclaration.DeclarationType == DeclarationType.ClassModule)
             {
                 return false;
             }
