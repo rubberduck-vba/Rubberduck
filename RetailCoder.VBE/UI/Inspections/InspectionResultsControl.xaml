@@ -59,8 +59,6 @@
             <RowDefinition Height="Auto" MinHeight="48"/>
         </Grid.RowDefinitions>
 
-        <Border Grid.Row="0" Grid.RowSpan="3" Background="White" />
-
         <ToolBarTray Grid.Row="0" IsLocked="True">
             <ToolBar Style="{StaticResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}">
 
@@ -127,14 +125,15 @@
             </ToolBar>
         </ToolBarTray>
 
-        <controls:GroupingGrid Grid.Row="1"
+        <controls:GroupingGrid x:Name="InspectionResultsGrid"
+                               Grid.Row="1"
                                ShowGroupingItemCount="True"
                                SelectedItem="{Binding SelectedItem}"
                                ItemsSource="{Binding Source={StaticResource ResultsByInspectionType}, IsAsync=True}"
                                Visibility="{Binding IsChecked, ElementName=GroupByInspectionType, Converter={StaticResource BoolToVisibility}}"
                                VirtualizingPanel.IsVirtualizingWhenGrouping="True">
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspectionResults_Type}" SortDirection="Descending">
+                <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspectionResults_Type}" SortDirection="{Binding}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate DataType="abstract1:IInspectionResult">
                             <Image Source="{Binding Inspection, Converter={StaticResource InspectionIconConverter}}" Height="16" />
@@ -164,6 +163,8 @@
                 <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspectionResults_Location}" Binding="{Binding QualifiedSelection.QualifiedName}" />
             </DataGrid.Columns>
         </controls:GroupingGrid>
+
+        <controls:EmptyUIRefresh Grid.Row="1" Visibility="{Binding EmptyUIRefreshVisibility}"/>
 
         <controls:BusyIndicator Grid.Row="1" Width="120" Height="120" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
 
