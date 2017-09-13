@@ -11,6 +11,12 @@ namespace Rubberduck.Parsing
     /// </summary>
     public static class SelectionExtensions
     {
+        /// <summary>
+        /// Validates whether a token is contained within a given Selection
+        /// </summary>
+        /// <param name="selection">One-based selection, usually from CodePane.Selection</param>
+        /// <param name="token">An individual token within a module's parse tree</param>
+        /// <returns>Boolean with true indicating that token is within the selection</returns>
         public static bool Contains(this Selection selection, IToken token)
         {
             return
@@ -20,6 +26,12 @@ namespace Rubberduck.Parsing
                     || (selection.EndLine > token.EndLine()));
         }
 
+        /// <summary>
+        /// Validates whether a context is contained within a given Selection
+        /// </summary>
+        /// <param name="context">A context which contains several tokens within a module's parse tree</param>
+        /// <param name="selection">One-based selection, usually from CodePane.Selection</param>
+        /// <returns>Boolean with true indicating that context is within the selection</returns>
         public static bool Contains(this ParserRuleContext context, Selection selection)
         {
             return
@@ -30,12 +42,13 @@ namespace Rubberduck.Parsing
         }
 
         /// <summary>
-        /// Because a token can be spread across multiple lines with line continuations
-        /// it is necessary to do some work to determine the token's actual ending column.
+        /// Obtain the actual last column the token occupies. Because a token can be spread 
+        /// across multiple lines with line continuations it is necessary to do some work 
+        /// to determine the token's actual ending column.
         /// Whitespace and newline should be preserved within the token.
         /// </summary>
         /// <param name="token">The last token within a given context to test</param>
-        /// <returns></returns>
+        /// <returns>Zero-based column position</returns>
         public static int EndColumn(this IToken token)
         {
             if (token.Text.Contains(Environment.NewLine))
@@ -51,6 +64,13 @@ namespace Rubberduck.Parsing
             }
         }
 
+        /// <summary>
+        /// Obtain the actual last line token occupies. Typically it is same as token.Line but 
+        /// when it contains line continuation and is spread across lines, extra newlines are
+        /// counted and added.
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns>One-based line position</returns>
         public static int EndLine(this IToken token)
         {
             if(token.Text.Contains(Environment.NewLine))
