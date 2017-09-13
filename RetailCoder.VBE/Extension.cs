@@ -41,6 +41,8 @@ namespace Rubberduck
         private bool _isInitialized;
         private bool _isBeginShutdownExecuted;
 
+        private GeneralSettings _initialSettings;
+
         private IKernel _kernel;
         private App _app;
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
@@ -152,12 +154,12 @@ namespace Rubberduck
             };
             var configProvider = new GeneralConfigProvider(configLoader);
             
-            var settings = configProvider.Create();
-            if (settings != null)
+            var _initialSettings = configProvider.Create();
+            if (_initialSettings != null)
             {
                 try
                 {
-                    var cultureInfo = CultureInfo.GetCultureInfo(settings.Language.Code);
+                    var cultureInfo = CultureInfo.GetCultureInfo(_initialSettings.Language.Code);
                     Dispatcher.CurrentDispatcher.Thread.CurrentUICulture = cultureInfo;
                 }
                 catch (CultureNotFoundException)
@@ -170,7 +172,7 @@ namespace Rubberduck
             }
 
             Splash splash = null;
-            if (settings.ShowSplash)
+            if (_initialSettings.ShowSplash)
             {
                 splash = new Splash
                 {
