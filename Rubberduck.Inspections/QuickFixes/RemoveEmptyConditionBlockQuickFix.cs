@@ -1,23 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using Antlr4.Runtime;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Rewriter;
+using Antlr4.Runtime;
+using Rubberduck.Parsing.Inspections.Resources;
+using System.Diagnostics;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    internal sealed class RemoveEmptyIfBlockQuickFix : IQuickFix
+    internal sealed class RemoveEmptyConditionBlockQuickFix : IQuickFix
     {
-        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type> { typeof(EmptyIfBlockInspection) };
+        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type> { typeof(EmptyConditionBlockInspection) };
         private readonly RubberduckParserState _state;
 
-        public RemoveEmptyIfBlockQuickFix(RubberduckParserState state)
+        public RemoveEmptyConditionBlockQuickFix(RubberduckParserState state)
         {
             _state = state;
         }
@@ -90,6 +90,16 @@ namespace Rubberduck.Inspections.QuickFixes
             }
 
             rewriter.Remove(context);
+        }
+
+        private void UpdateContext(VBAParser.ElseBlockContext context, IModuleRewriter rewriter)
+        {
+            VBAParser.BlockContext elseBlock = context.block();
+
+            if (elseBlock.ChildCount == 0)
+            {
+                rewriter.Remove(context);
+            }
         }
 
         private void UpdateCondition(VBAParser.RelationalOpContext condition, IModuleRewriter rewriter)
@@ -178,7 +188,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public string Description(IInspectionResult result)
         {
-            return InspectionsUI.RemoveEmptyIfBlockQuickFix;
+            return InspectionsUI.RemoveEmptyConditionBlockQuickFix;
         }
 
         public bool CanFixInProcedure { get; } = false;

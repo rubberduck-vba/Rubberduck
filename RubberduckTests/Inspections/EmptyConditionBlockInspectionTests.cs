@@ -10,7 +10,7 @@ using Rubberduck.Inspections.QuickFixes;
 namespace RubberduckTests.Inspections
 {
     [TestClass]
-    class EmptyConditionBlockInspectionTests
+    public class EmptyConditionBlockInspectionTests
     {
         [TestMethod]
         [TestCategory("Inspections")]
@@ -82,6 +82,8 @@ End Sub";
             const string inputCode =
 @"Sub Foo()
     If True Then
+        Dim a as Long
+        a = 0
     Else
     End If
 End Sub";
@@ -331,21 +333,21 @@ End Sub";
         #region EmptyElseBlock
         [TestMethod]
         [TestCategory("Inspections")]
-        public void EmptyElseBlock_DoesntFireOnEmptyIfBlock()
+        public void EmptyElseBlock_FiresOnEmptyIfBlock()
         {
             const string inputcode =
 @"Sub Foo()
     If True Then
-    EndIf
+    End If
 End Sub";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputcode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyElseBlockInspection(state);
+            var inspection = new EmptyConditionBlockInspection(state);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            const int expectedCount = 0;
+            const int expectedCount = 1;
 
             Assert.AreEqual(expectedCount, actualResults.Count());
         }
@@ -357,6 +359,8 @@ End Sub";
             const string inputcode =
 @"Sub Foo()
     If True Then
+        Dim a as Long
+        a = 0
     Else
     End If
 End Sub";
@@ -365,7 +369,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputcode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyElseBlockInspection(state);
+            var inspection = new EmptyConditionBlockInspection(state);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
             const int expectedCount = 1;
@@ -380,6 +384,8 @@ End Sub";
             const string inputCode =
 @"Sub Foo()
     If True Then
+        Dim a as Long
+        a = 0
     Else
         'Some Comment
     End If
@@ -388,10 +394,10 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyElseBlockInspection(state);
+            var inspection = new EmptyConditionBlockInspection(state);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            const int expectedCount = 1;
+            const int expectedCount = 1; 
 
             Assert.AreEqual(expectedCount, actualResults.Count());
         }
@@ -403,6 +409,8 @@ End Sub";
             const string inputCode =
 @"Sub Foo()
     If True Then
+        Dim a as Long
+        a = 0
     Else
         Rem Some Comment
     End If
@@ -412,7 +420,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyElseBlockInspection(state);
+            var inspection = new EmptyConditionBlockInspection(state);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
             const int expectedCount = 1;
@@ -427,6 +435,8 @@ End Sub";
             const string inputCode =
 @"Sub Foo()
     If True Then
+        Dim a as Long
+        a = 0
     Else
         Dim d
     End If
@@ -436,7 +446,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyElseBlockInspection(state);
+            var inspection = new EmptyConditionBlockInspection(state);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
             const int expectedCount = 1;
@@ -451,6 +461,8 @@ End Sub";
             const string inputCode =
 @"Sub Foo()
     If True Then
+        Dim a as Long
+        a = 0
     Else
         Const c = 0
     End If
@@ -460,7 +472,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyElseBlockInspection(state);
+            var inspection = new EmptyConditionBlockInspection(state);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
             const int expectedCount = 1;
@@ -475,6 +487,8 @@ End Sub";
             const string inputcode =
 @"Sub Foo()
     If True Then
+        Dim a as Long
+        a = 0
     Else
     
     
@@ -485,7 +499,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputcode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyElseBlockInspection(state);
+            var inspection = new EmptyConditionBlockInspection(state);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
             const int expectedCount = 1;
@@ -500,6 +514,8 @@ End Sub";
             const string inputCode =
 @"Sub Foo()
     If True Then
+        Dim a as Long
+        a = 0
     Else
         Dim d
     End If
@@ -509,7 +525,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyElseBlockInspection(state);
+            var inspection = new EmptyConditionBlockInspection(state);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
             const int expectedCount = 1;
@@ -534,10 +550,10 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyElseBlockInspection(state);
+            var inspection = new EmptyConditionBlockInspection(state);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            const int expectedCount = 0;
+            const int expectedCount = 1;
 
             Assert.AreEqual(expectedCount, actualResults.Count());
         }
@@ -563,11 +579,11 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyElseBlockInspection(state);
+            var inspection = new EmptyConditionBlockInspection(state);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new RemoveEmptyElseBlockQuickFix(state).Fix(actualResults.First());
+            new RemoveEmptyConditionBlockQuickFix(state).Fix(actualResults.First());
 
             string actualRewrite = state.GetRewriter(component).GetText();
 
@@ -579,23 +595,24 @@ End Sub";
         public void EmptyElseBlock_QuickFixRemoveInLineIfThenElse()
         {
             const string inputCode =
-    @"Sub Foo()
-        If True Then Else End If
-    End Sub";
+@"Sub Foo()
+    If True Then Else
+End Sub";
 
             const string expectedCode =
-    @"If True Then End If
-    End Sub";
+@"Sub Foo()
+    If True Then 
+End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyElseBlockInspection(state);
+            var inspection = new EmptyConditionBlockInspection(state);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new RemoveEmptyElseBlockQuickFix(state).Fix(actualResults.First());
+            new RemoveEmptyConditionBlockQuickFix(state).Fix(actualResults.First());
             
             string actualRewrite = state.GetRewriter(component).GetText();
 

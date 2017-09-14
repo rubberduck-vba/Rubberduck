@@ -1834,6 +1834,15 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Removy empty If and Else blocks.
+        /// </summary>
+        public static string RemoveEmptyConditionBlockQuickFix {
+            get {
+                return ResourceManager.GetString("RemoveEmptyConditionBlockQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Remove empty Else block.
         /// </summary>
         public static string RemoveEmptyElseBlockQuickFix {

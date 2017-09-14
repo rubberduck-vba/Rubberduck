@@ -706,6 +706,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   </data>
   <data name="RemoveEmptyIfBlockQuickFix" xml:space="preserve">
     <value>Remove empty If block</value>
+    <comment>Removal</comment>
   </data>
   <data name="RedundantOptionInspectionMeta" xml:space="preserve">
     <value>Being the default/implicit setting for this option, this instruction can be safely omitted.</value>
@@ -783,6 +784,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   </data>
   <data name="RemoveEmptyElseBlockQuickFix" xml:space="preserve">
     <value>Remove empty Else block</value>
+    <comment>Removal</comment>
   </data>
   <data name="IntegerDataTypeInspectionMeta" xml:space="preserve">
     <value>The maximum value of a 16-bit signed integer is 32,767 - using a 32-bit (Long) integer data type where possible can help prevent 'Overflow' run-time errors, and is better handled by modern CPUs.</value>
@@ -869,5 +871,9 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="EmptyConditionBlockInspectionsResultFormat" xml:space="preserve">
     <value> </value>
     <comment>Condense: EmptyIfBlockInspction &amp;EmptyElseBlockInspection</comment>
+  </data>
+  <data name="RemoveEmptyConditionBlockQuickFix" xml:space="preserve">
+    <value>Removy empty If and Else blocks</value>
+    <comment>Condense: RemoveEmpty[If,Else]BlockQuickFix</comment>
   </data>
 </root>
