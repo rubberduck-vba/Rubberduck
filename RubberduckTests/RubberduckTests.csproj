@@ -112,6 +112,7 @@
     <Compile Include="Inspections\MemberNotOnInterfaceInspectionTests.cs" />
     <Compile Include="Inspections\StopKeywordInspectionTests.cs" />
     <Compile Include="Inspections\OptionBaseZeroInspectionTests.cs" />
+    <Compile Include="Inspections\UnreachableCaseInspectionTests.cs" />
     <Compile Include="QuickFixes\AssignedByValParameterMakeLocalCopyQuickFixTests.cs" />
     <Compile Include="QuickFixes\ChangeProcedureToFunctionQuickFixTests.cs" />
     <Compile Include="QuickFixes\DeclareAsExplicitVariantQuickFixTests.cs" />
