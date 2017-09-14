@@ -198,7 +198,7 @@ namespace Rubberduck.Root
                     .WithService.Base()
                     .LifestyleTransient()
                     .Configure(c => c
-                        .Interceptors<WindsorTimedCallLoggerInterceptor, WindsorEnumerableCounterInterceptor<IInspectionResult>
+                        .Interceptors<TimedCallLoggerInterceptor, EnumerableCounterInterceptor<IInspectionResult>
                         >()));
             }
         }
@@ -212,16 +212,16 @@ namespace Rubberduck.Root
                     .WithService.Base()
                     .LifestyleTransient()
                     .Configure(c => c
-                        .Interceptors<WindsorTimedCallLoggerInterceptor, WindsorEnumerableCounterInterceptor<IInspectionResult>
+                        .Interceptors<TimedCallLoggerInterceptor, EnumerableCounterInterceptor<IInspectionResult>
                         >()));
             }
         }
 
         private static void RegisterInterceptors(IWindsorContainer container)
         {
-            container.Register(Component.For(typeof(WindsorEnumerableCounterInterceptor<>))
+            container.Register(Component.For(typeof(EnumerableCounterInterceptor<>))
                 .LifestyleTransient());
-            container.Register(Component.For<WindsorTimedCallLoggerInterceptor>()
+            container.Register(Component.For<TimedCallLoggerInterceptor>()
                 .LifestyleTransient());
         }
 

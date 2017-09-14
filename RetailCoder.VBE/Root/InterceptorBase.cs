@@ -1,6 +1,6 @@
 using System;
 using System.Diagnostics;
-using Ninject.Extensions.Interception;
+using Castle.DynamicProxy;
 
 namespace Rubberduck.Root
 {

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Ninject.Extensions.Interception;
-using Ninject.Infrastructure.Language;
+using System.Reflection;
+using Castle.DynamicProxy;
 using NLog;
 
 namespace Rubberduck.Root
@@ -21,13 +21,16 @@ namespace Rubberduck.Root
 
         protected override void AfterInvoke(IInvocation invocation)
         {
-            if (!invocation.Request.Method.HasAttribute<EnumerableCounterInterceptAttribute>()) { return; }
+            if (invocation.Method.GetCustomAttribute<EnumerableCounterInterceptAttribute>() == null)
+            {
+                return;
+            }
 
             var result = invocation.ReturnValue as IEnumerable<T>;
             if (result != null)
             {
                 _logger.Trace("Intercepted invocation of '{0}.{1}' returned {2} objects.",
-                    invocation.Request.Target.GetType().Name, invocation.Request.Method.Name, result.Count());
+                    invocation.TargetType.Name, invocation.Method.Name, result.Count());
             }
         }
     }

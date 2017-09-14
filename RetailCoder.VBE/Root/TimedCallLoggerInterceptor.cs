@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
-using Ninject.Extensions.Interception;
-using Ninject.Infrastructure.Language;
+using System.Reflection;
+using Castle.DynamicProxy;
 using NLog;
 
 namespace Rubberduck.Root
@@ -22,7 +22,7 @@ namespace Rubberduck.Root
 
         protected override void BeforeInvoke(IInvocation invocation)
         {
-            _running = invocation.Request.Method.HasAttribute<TimedCallInterceptAttribute>();
+            _running = (invocation.Method.GetCustomAttribute<TimedCallInterceptAttribute>() != null);
             if(!_running) { return; }
 
             _stopwatch.Reset();
@@ -35,7 +35,7 @@ namespace Rubberduck.Root
 
             _stopwatch.Stop();
             _logger.Trace("Intercepted invocation of '{0}.{1}' ran for {2}ms",
-                invocation.Request.Target.GetType().Name, invocation.Request.Method.Name, _stopwatch.ElapsedMilliseconds);
+                invocation.TargetType.Name, invocation.Method.Name, _stopwatch.ElapsedMilliseconds);
         }
     }
 }
