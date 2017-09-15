@@ -770,9 +770,13 @@ End Sub";
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionResults.First());
+            //Skip over empty If block and get Else block for the fix
+            var inspectionToFix = inspectionResults.Skip(1).First();
+            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            string actualCode = state.GetRewriter(component).GetText();
+
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [TestMethod]
