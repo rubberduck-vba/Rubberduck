@@ -584,10 +584,9 @@ End Sub";
             var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             new RemoveEmptyConditionBlockQuickFix(state).Fix(actualResults.First());
+            var actualCode = state.GetRewriter(component).GetText();
 
-            string actualRewrite = state.GetRewriter(component).GetText();
-
-            Assert.AreEqual(expectedCode, actualRewrite);
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [TestMethod]
@@ -615,7 +614,7 @@ End Sub";
             var inspectionToFix = actualResults.First();
             new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
             
-            string actualCode = state.GetRewriter(component).GetText();
+            var actualCode = state.GetRewriter(component).GetText();
             Assert.AreEqual(expectedCode, actualCode);
         }
         #endregion
