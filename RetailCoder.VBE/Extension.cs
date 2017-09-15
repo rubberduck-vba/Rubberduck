@@ -221,7 +221,7 @@ namespace Rubberduck
             catch (Exception e)
             {
                 _logger.Log(LogLevel.Fatal, e, "Startup sequence threw an unexpected exception.");
-                throw; // <<~ uncomment to crash the process
+                //throw; // <<~ uncomment to crash the process
             }
         }
 
