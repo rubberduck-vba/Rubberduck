@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -12,12 +13,14 @@ using Castle.Windsor;
 using Rubberduck.Common;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.Symbols.DeclarationLoaders;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
+using Rubberduck.SettingsProvider;
 using Rubberduck.SmartIndenter;
 using Rubberduck.SourceControl;
 using Rubberduck.UI;
@@ -27,6 +30,7 @@ using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Command.MenuItems.CommandBars;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
+using Rubberduck.UI.Command.Refactorings;
 using Rubberduck.UI.Controls;
 using Rubberduck.UI.Inspections;
 using Rubberduck.UI.Refactorings;
@@ -71,6 +75,7 @@ namespace Rubberduck.Root
         public void Install(IWindsorContainer container, IConfigurationStore store)
         {
             SetUpCollectionResolver(container);
+            ActivateAutoMagicFactories(container);
 
             RegisterConstantVbeAndAddIn(container);
             RegisterAppWithSpecialDependencies(container);
@@ -131,14 +136,48 @@ namespace Rubberduck.Root
 
             var assembliesToRegister = AssembliesToRegister().ToArray();
 
+            RegisterConfiguartion(container, assembliesToRegister);
+
             RegisterParseTreeInspections(container, assembliesToRegister);
             RegisterInspections(container, assembliesToRegister);
             RegisterQuickFixes(container, assembliesToRegister);
 
             RegisterSpecialFactories(container);
             RegisterFactories(container, assembliesToRegister);
+            
             ApplyDefaultInterfaceConvention(container, assembliesToRegister);
+        }
 
+
+        // note: settings namespace classes are injected in singleton scope
+        private void RegisterConfiguartion(IWindsorContainer container, Assembly[] assembliesToRegister)
+        {
+            foreach (var assembly in assembliesToRegister)
+            {
+                container.Register(Classes.FromAssembly(assembly)
+                    .InSameNamespaceAs<Configuration>()
+                    .WithService.AllInterfaces()
+                    .LifestyleSingleton());
+            }
+
+            container.Register(Component.For<IPersistable<SerializableProject>>()
+                .ImplementedBy<XmlPersistableDeclarations>()
+                .LifestyleTransient());
+
+            container.Register(Component.For(typeof(IPersistanceService<>), typeof(IFilePersistanceService<>))
+                .ImplementedBy(typeof(XmlPersistanceService<>))
+                .LifestyleSingleton());
+
+            container.Register(Component.For<IConfigProvider<IndenterSettings>>()
+                .ImplementedBy<IndenterConfigProvider>()
+                .LifestyleSingleton());
+            container.Register(Component.For<IConfigProvider<SourceControlSettings>>()
+                .ImplementedBy<SourceControlConfigProvider>()
+                .LifestyleSingleton());
+
+            container.Register(Component.For<ISourceControlSettings>()
+                .ImplementedBy<SourceControlSettings>()
+                .LifestyleTransient());
         }
 
         private static void ApplyDefaultInterfaceConvention(IWindsorContainer container, Assembly[] assembliesToRegister)
@@ -456,7 +495,6 @@ namespace Rubberduck.Root
                 typeof(ExportAllCommandMenuItem)
             };
 
-            //todo: See what to do about this.
             if (_initialSettings.SourceControlEnabled)
             {
                 items.Add(typeof(SourceControlCommandMenuItem));
@@ -470,8 +508,7 @@ namespace Rubberduck.Root
                 .Where(type => type.IsClass && type.Namespace != null &&
                                type.CustomAttributes.Any(a => a.AttributeType == typeof(CodeExplorerCommandAttribute)));
             container.Register(Component.For<CodeExplorerViewModel>()
-                .DependsOn(Dependency.OnComponentCollection(typeof(List<CommandBase>),
-                    codeExplorerCommands.ToArray()))
+                .DependsOn(Dependency.OnComponentCollection<List<CommandBase>>(codeExplorerCommands.ToArray()))
                 .LifestyleSingleton());
         }
 
@@ -489,7 +526,7 @@ namespace Rubberduck.Root
                 .BasedOn<ICommandMenuItem>()
                 .WithService.AllInterfaces()
                 .Configure(item => item.DependsOn(Dependency.OnComponent(typeof(CommandBase),
-                    CommandNameFromCommandMenuName(item.Name))))
+                    CommandNameFromCommandMenuName(item.Implementation.Name))))
                 .LifestyleTransient());
         }
 
@@ -502,13 +539,17 @@ namespace Rubberduck.Root
 
         private static void RegisterCommands(IWindsorContainer container)
         {
+            //note: convention: the registration name for commands is the type name, not the full type name.
+            //Otherwise, namespaces would get in the way when binding to the menu items.
             RegisterCommandsWithPresenters(container);
-
             container.Register(Classes.FromThisAssembly()
-                .Where(type => type.IsClass && type.Namespace != null &&
-                               type.Namespace.StartsWith(typeof(CommandBase).Namespace ?? string.Empty))
+                .Where(type => type.Namespace != null
+                            && type.Namespace.StartsWith(typeof(CommandBase).Namespace ?? string.Empty)
+                            && (type.BaseType == typeof(CommandBase) || type.BaseType == typeof(RefactorCommandBase)))
+                .WithService.Self()
                 .WithService.Select(new[] { typeof(CommandBase) })
-                .LifestyleTransient());
+                .LifestyleTransient()
+                .Configure(c => c.Named(c.Implementation.Name)));
         }
 
         private static void RegisterCommandsWithPresenters(IWindsorContainer container)
@@ -553,7 +594,7 @@ namespace Rubberduck.Root
 
         private static void RegisterSmartIndenter(IWindsorContainer container)
         {
-            container.Register(Component.For<IIndenter>()
+            container.Register(Component.For<IIndenter, Indenter>()
                 .ImplementedBy<Indenter>()
                 .LifestyleSingleton());
             container.Register(Component.For<IIndenterSettings>()
@@ -656,6 +697,11 @@ namespace Rubberduck.Root
         private static void SetUpCollectionResolver(IWindsorContainer container)
         {
             container.Kernel.Resolver.AddSubResolver(new CollectionResolver(container.Kernel, true));
+        }
+
+        private static void ActivateAutoMagicFactories(IWindsorContainer container)
+        {
+            container.Kernel.AddFacility<TypedFactoryFacility>();
         }
 
         private void RegisterParsingEngine(IWindsorContainer container)
