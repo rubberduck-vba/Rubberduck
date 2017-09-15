@@ -32,7 +32,7 @@ namespace Rubberduck.Parsing
         /// <param name="context">A context which contains several tokens within a module's parse tree</param>
         /// <param name="selection">One-based selection, usually from CodePane.Selection</param>
         /// <returns>Boolean with true indicating that context is within the selection</returns>
-        public static bool Contains(this ParserRuleContext context, Selection selection)
+        public static bool Contains(this Selection selection, ParserRuleContext context)
         {
             return
                (((selection.StartLine == context.Start.Line) && (selection.StartColumn - 1) <= context.Start.Column) 
@@ -42,45 +42,14 @@ namespace Rubberduck.Parsing
         }
 
         /// <summary>
-        /// Obtain the actual last column the token occupies. Because a token can be spread 
-        /// across multiple lines with line continuations it is necessary to do some work 
-        /// to determine the token's actual ending column.
-        /// Whitespace and newline should be preserved within the token.
+        /// Convenience method for validating that a selection is inside a specified parser rule context.
         /// </summary>
-        /// <param name="token">The last token within a given context to test</param>
-        /// <returns>Zero-based column position</returns>
-        public static int EndColumn(this IToken token)
+        /// <param name="selection">The selection that should be contained within the ParserRuleContext</param>
+        /// <param name="context">The containing ParserRuleContext</param>
+        /// <returns>Boolean with true indicating that the selection is inside the given context</returns>
+        public static bool IsContainedIn(this Selection selection, ParserRuleContext context)
         {
-            if (token.Text.Contains(Environment.NewLine))
-            {
-                var splitStrings = token.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
-                var lastOccupiedLine = splitStrings[splitStrings.Length - 1];
-
-                return lastOccupiedLine.Length;
-            }
-            else
-            {
-                return token.Column + token.Text.Length;
-            }
-        }
-
-        /// <summary>
-        /// Obtain the actual last line token occupies. Typically it is same as token.Line but 
-        /// when it contains line continuation and is spread across lines, extra newlines are
-        /// counted and added.
-        /// </summary>
-        /// <param name="token"></param>
-        /// <returns>One-based line position</returns>
-        public static int EndLine(this IToken token)
-        {
-            if(token.Text.Contains(Environment.NewLine))
-            {
-                var splitStrings = token.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
-
-                return token.Line + (splitStrings.Length - 1);
-            }
-
-            return token.Line;
+            return context.GetSelection().Contains(selection);
         }
     }
 }

@@ -349,6 +349,7 @@
     <Compile Include="Symbols\ConstantDeclaration.cs" />
     <Compile Include="ComReflection\XmlPersistableDeclarations.cs" />
     <Compile Include="Symbols\UnboundMemberDeclaration.cs" />
+    <Compile Include="TokenExtensions.cs" />
     <Compile Include="VBA\AttributeListener.cs" />
     <Compile Include="VBA\AttributeParser.cs" />
     <Compile Include="VBA\Attributes.cs" />

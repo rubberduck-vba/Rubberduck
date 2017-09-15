@@ -64,7 +64,8 @@ Debug.Print ""foo""
             var context = visitor.Visit(tree).First();
             var selection = new Selection(3, 0, 10, 5);
 
-            Assert.IsFalse(context.Contains(selection));
+            Assert.IsFalse(selection.Contains(context));
+            Assert.IsFalse(selection.IsContainedIn(context));
         }
 
         [TestMethod]
@@ -92,7 +93,8 @@ Debug.Print ""foo""
             var context = visitor.Visit(tree).First();
             var selection = new Selection(4, 1, 11, 8);
             
-            Assert.IsTrue(context.Contains(selection));
+            Assert.IsTrue(selection.Contains(context));
+            Assert.IsFalse(selection.IsContainedIn(context));
         }
 
         [TestMethod]
@@ -120,7 +122,8 @@ Debug.Print ""foo""
             var context = visitor.Visit(tree).First();
             var selection = new Selection(5, 1, 11, 8);
 
-            Assert.IsFalse(context.Contains(selection));
+            Assert.IsFalse(selection.Contains(context));
+            Assert.IsFalse(selection.IsContainedIn(context));
         }
 
         [TestMethod]
@@ -148,7 +151,8 @@ Debug.Print ""foo""
             var context = visitor.Visit(tree).First();
             var selection = new Selection(4, 1, 10, 8);
 
-            Assert.IsFalse(context.Contains(selection));
+            Assert.IsFalse(selection.Contains(context));
+            Assert.IsTrue(selection.IsContainedIn(context));
         }
 
         [TestMethod]
@@ -175,9 +179,11 @@ Debug.Print ""foo""
             var tree = state.GetParseTree(new QualifiedModuleName(component));
             var visitor = new SubStmtContextElementCollectorVisitor();
             var context = visitor.Visit(tree).First();
-            pane.Selection = new Selection(4, 1, 11, 8);
+            pane.Selection = new Selection(4, 1, 11, 6);
             
-            Assert.IsTrue(context.Contains(pane.Selection));
+            Assert.IsTrue(context.GetSelection().Contains(pane.Selection));
+            Assert.IsTrue(pane.Selection.IsContainedIn(context));
+            Assert.IsTrue(pane.Selection.Contains(context));
         }
 
         [TestMethod]
@@ -203,7 +209,9 @@ End Sub : 'Lame comment!
             var context = visitor.Visit(tree).First();
             pane.Selection = new Selection(3, 0, 7, 7);
 
-            Assert.IsFalse(context.Contains(pane.Selection));
+            Assert.IsFalse(context.GetSelection().Contains(pane.Selection));
+            Assert.IsFalse(pane.Selection.IsContainedIn(context));
+            Assert.IsFalse(pane.Selection.Contains(context));
         }
 
         [TestMethod]
@@ -229,7 +237,9 @@ End Sub : 'Lame comment!
             var context = visitor.Visit(tree).First();
             pane.Selection = new Selection(4, 1, 8, 8);
 
-            Assert.IsTrue(context.Contains(pane.Selection));
+            Assert.IsTrue(context.GetSelection().Contains(pane.Selection));
+            Assert.IsTrue(pane.Selection.IsContainedIn(context));
+            Assert.IsTrue(pane.Selection.Contains(context));
         }
 
         [TestMethod]
@@ -255,13 +265,14 @@ End Sub : 'Lame comment!
             var context = visitor.Visit(tree).First();
             var selection = new Selection(4, 1, 8, 8);
 
-            Assert.IsTrue(context.Contains(selection));
+            Assert.IsTrue(selection.Contains(context));
+            Assert.IsTrue(selection.IsContainedIn(context));
         }
 
         [TestMethod]
         [TestCategory("Grammar")]
         [TestCategory("Selection")]
-        public void Context_NotIn_Selection_StartTooSoon_OneBased()
+        public void Context_NotIn_Selection_StartTooLate_OneBased()
         {
             const string inputCode = @"
 Option Explicit
@@ -281,7 +292,8 @@ End Sub : 'Lame comment!
             var context = visitor.Visit(tree).First();
             var selection = new Selection(4, 2, 8, 8);
 
-            Assert.IsFalse(context.Contains(selection));
+            Assert.IsFalse(selection.Contains(context));
+            Assert.IsTrue(selection.IsContainedIn(context));
         }
 
         [TestMethod]
@@ -307,7 +319,8 @@ End Sub : 'Lame comment!
             var context = visitor.Visit(tree).First();
             var selection = new Selection(4, 1, 8, 7);
 
-            Assert.IsFalse(context.Contains(selection));
+            Assert.IsFalse(selection.Contains(context));
+            Assert.IsTrue(selection.IsContainedIn(context));
         }
 
         [TestMethod]
@@ -342,8 +355,8 @@ End Sub : 'Lame comment!
             var contexts = visitor.Visit(tree);
             var selection = new Selection(6, 1, 10, 7);
 
-            Assert.IsTrue(contexts.ElementAt(0).Contains(selection));   // first If block
-            Assert.IsFalse(contexts.ElementAt(1).Contains(selection));  // second If block
+            Assert.IsTrue(selection.Contains(contexts.ElementAt(0)));   // first If block
+            Assert.IsFalse(selection.Contains(contexts.ElementAt(1)));  // second If block
         }
 
         [TestMethod]
@@ -379,8 +392,8 @@ End Sub : 'Lame comment!
             var contexts = visitor.Visit(tree);
             var selection = new Selection(6, 1, 10, 7);
 
-            Assert.IsTrue(contexts.ElementAt(0).Contains(selection));   // first If block
-            Assert.IsFalse(contexts.ElementAt(1).Contains(selection));  // second If block
+            Assert.IsTrue(selection.Contains(contexts.ElementAt(0)));   // first If block
+            Assert.IsFalse(selection.Contains(contexts.ElementAt(1)));  // second If block
         }
 
         [TestMethod]
@@ -416,8 +429,8 @@ End Sub : 'Lame comment!
             var contexts = visitor.Visit(tree);
             var selection = new Selection(12, 1, 16, 7);
 
-            Assert.IsFalse(contexts.ElementAt(0).Contains(selection));  // first If block
-            Assert.IsTrue(contexts.ElementAt(1).Contains(selection));   // second If block
+            Assert.IsFalse(selection.Contains(contexts.ElementAt(0)));  // first If block
+            Assert.IsTrue(selection.Contains(contexts.ElementAt(1)));   // second If block
         }
 
         [TestMethod]
@@ -455,8 +468,8 @@ End Sub : 'Lame comment!
             var selection = new Selection(12, 1, 16, 7);
 
             Assert.IsTrue(selection.Contains(token));                   // last token in second If block
-            Assert.IsFalse(contexts.ElementAt(0).Contains(selection));  // first If block
-            Assert.IsTrue(contexts.ElementAt(1).Contains(selection));   // second If block
+            Assert.IsFalse(selection.Contains(contexts.ElementAt(0)));  // first If block
+            Assert.IsTrue(selection.Contains(contexts.ElementAt(1)));   // second If block
         }
 
         [TestMethod]
@@ -534,9 +547,9 @@ End Sub : 'Lame comment!
             var selection = new Selection(8, 1, 10, 9);
 
             Assert.IsTrue(selection.Contains(token));                   // last token in innermost If block
-            Assert.IsTrue(contexts.ElementAt(0).Contains(selection));   // innermost If block
-            Assert.IsFalse(contexts.ElementAt(1).Contains(selection));  // first outer If block
-            Assert.IsFalse(contexts.ElementAt(2).Contains(selection));  // second outer If block
+            Assert.IsTrue(selection.Contains(contexts.ElementAt(0)));   // innermost If block
+            Assert.IsFalse(selection.Contains(contexts.ElementAt(1)));  // first outer If block
+            Assert.IsFalse(selection.Contains(contexts.ElementAt(2)));  // second outer If block
         }
 
         [TestMethod]
@@ -577,9 +590,9 @@ End Sub : 'Lame comment!
             var selection = new Selection(6, 1, 13, 7);
 
             Assert.IsTrue(selection.Contains(token));                   // last token in innermost If block
-            Assert.IsTrue(contexts.ElementAt(0).Contains(selection));   // innermost If block
-            Assert.IsTrue(contexts.ElementAt(1).Contains(selection));   // first outer If block
-            Assert.IsFalse(contexts.ElementAt(2).Contains(selection));  // second outer If block
+            Assert.IsTrue(selection.Contains(contexts.ElementAt(0)));   // innermost If block
+            Assert.IsTrue(selection.Contains(contexts.ElementAt(1)));   // first outer If block
+            Assert.IsFalse(selection.Contains(contexts.ElementAt(2)));  // second outer If block
         }
 
         [TestMethod]
@@ -620,9 +633,9 @@ End Sub : 'Lame comment!
             var selection = new Selection(15, 1, 19, 7);
 
             Assert.IsFalse(selection.Contains(token));                  // last token in innermost If block
-            Assert.IsFalse(contexts.ElementAt(0).Contains(selection));  // innermost If block
-            Assert.IsFalse(contexts.ElementAt(1).Contains(selection));  // first outer if block
-            Assert.IsTrue(contexts.ElementAt(2).Contains(selection));   // second outer If block
+            Assert.IsFalse(selection.Contains(contexts.ElementAt(0)));  // innermost If block
+            Assert.IsFalse(selection.Contains(contexts.ElementAt(1)));  // first outer if block
+            Assert.IsTrue(selection.Contains(contexts.ElementAt(2)));   // second outer If block
         }
     }
 }
