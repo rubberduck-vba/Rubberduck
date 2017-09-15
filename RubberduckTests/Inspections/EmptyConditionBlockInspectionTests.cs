@@ -601,7 +601,7 @@ End Sub";
 
             const string expectedCode =
 @"Sub Foo()
-    If True Then 
+    If Not True Then 
 End Sub";
 
             IVBComponent component;
@@ -612,11 +612,11 @@ End Sub";
             var inspector = InspectionsHelper.GetInspector(inspection);
             var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new RemoveEmptyConditionBlockQuickFix(state).Fix(actualResults.First());
+            var inspectionToFix = actualResults.First();
+            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
             
-            string actualRewrite = state.GetRewriter(component).GetText();
-
-            Assert.AreEqual(expectedCode, actualRewrite);
+            string actualCode = state.GetRewriter(component).GetText();
+            Assert.AreEqual(expectedCode, actualCode);
         }
         #endregion
     }
