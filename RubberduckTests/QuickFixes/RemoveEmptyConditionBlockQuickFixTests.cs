@@ -500,9 +500,12 @@ End Sub";
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionResults.First());
+            //Skip over empty Else block and get If block for the fix
+            var inspectionToFix = inspectionResults.Skip(1).First();
+            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            var actualCode = state.GetRewriter(component).GetText();
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [TestMethod]
@@ -530,9 +533,12 @@ End Sub";
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionResults.First());
+            //Skip over empty Else block and get If block for the fix
+            var inspectionToFix = inspectionResults.Skip(1).First();
+            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            var actualCode = state.GetRewriter(component).GetText();
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [TestMethod]
@@ -560,9 +566,12 @@ End Sub";
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionResults.First());
+            //Skip over empty Else block and get If block for the fix
+            var inspectionToFix = inspectionResults.Skip(1).First();
+            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            var actualCode = state.GetRewriter(component).GetText();
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [TestMethod]
@@ -590,9 +599,12 @@ End Sub";
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionResults.First());
+            //Skip over empty Else block and get If block for the fix
+            var inspectionToFix = inspectionResults.Skip(1).First();
+            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            var actualCode = state.GetRewriter(component).GetText();
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [TestMethod]
@@ -620,9 +632,12 @@ End Sub";
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionResults.First());
+            //Skip over empty Else block and get If block for the fix
+            var inspectionToFix = inspectionResults.Skip(1).First();
+            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            var actualCode = state.GetRewriter(component).GetText();
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [TestMethod]
@@ -650,9 +665,12 @@ End Sub";
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionResults.First());
+            //Skip over empty Else block and get If block for the fix
+            var inspectionToFix = inspectionResults.Skip(1).First();
+            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            var actualCode = state.GetRewriter(component).GetText();
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [TestMethod]
@@ -680,9 +698,12 @@ End Sub";
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionResults.First());
+            //Skip over empty Else block and get If block for the fix
+            var inspectionToFix = inspectionResults.Skip(1).First();
+            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            var actualCode = state.GetRewriter(component).GetText();
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [TestMethod]
@@ -710,9 +731,12 @@ End Sub";
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionResults.First());
+            //Skip over empty Else block and get If block for the fix
+            var inspectionToFix = inspectionResults.Skip(1).First();
+            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            var actualCode = state.GetRewriter(component).GetText();
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [TestMethod]
@@ -740,9 +764,12 @@ End Sub";
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionResults.First());
+            //Skip over empty Else block and get If block for the fix
+            var inspectionToFix = inspectionResults.Skip(1).First();
+            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            var actualCode = state.GetRewriter(component).GetText();
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [TestMethod]
@@ -770,12 +797,11 @@ End Sub";
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            //Skip over empty If block and get Else block for the fix
+            //Skip over empty Else block and get If block for the fix
             var inspectionToFix = inspectionResults.Skip(1).First();
             new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
 
             string actualCode = state.GetRewriter(component).GetText();
-
             Assert.AreEqual(expectedCode, actualCode);
         }
 
@@ -804,9 +830,12 @@ End Sub";
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionResults.First());
+            //Skip over empty Else block and get If block for the fix
+            var inspectionToFix = inspectionResults.Skip(1).First();
+            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            var actualCode = state.GetRewriter(component).GetText();
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [TestMethod]
@@ -834,9 +863,12 @@ End Sub";
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionResults.First());
+            //Skip over empty Else block and get If block for the fix
+            var inspectionToFix = inspectionResults.Skip(1).First();
+            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            var actualCode = state.GetRewriter(component).GetText();
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [TestMethod]
@@ -864,9 +896,12 @@ End Sub";
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionResults.First());
+            //Skip over empty Else block and get If block for the fix
+            var inspectionToFix = inspectionResults.Skip(1).First();
+            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            var actualCode = state.GetRewriter(component).GetText();
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [TestMethod]
@@ -894,9 +929,12 @@ End Sub";
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionResults.First());
+            //Skip over empty Else block and get If block for the fix
+            var inspectionToFix = inspectionResults.Skip(1).First();
+            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            var actualCode = state.GetRewriter(component).GetText();
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [TestMethod]
@@ -924,9 +962,12 @@ End Sub";
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionResults.First());
+            //Skip over empty Else block and get If block for the fix
+            var inspectionToFix = inspectionResults.Skip(1).First();
+            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            var actualCode = state.GetRewriter(component).GetText();
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [TestMethod]
@@ -954,9 +995,12 @@ End Sub";
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionResults.First());
+            //Skip over empty Else block and get If block for the fix
+            var inspectionToFix = inspectionResults.Skip(1).First();
+            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            var actualCode = state.GetRewriter(component).GetText();
+            Assert.AreEqual(expectedCode, actualCode);
         }
         #endregion
 
