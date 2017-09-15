@@ -618,25 +618,6 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to to parse and process
-        ///the projects in the VBE..
-        /// </summary>
-        public static string CodeExplorer_EmptyViewMessage {
-            get {
-                return ResourceManager.GetString("CodeExplorer_EmptyViewMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Rubberduck doesn&apos;t see anything yet..
-        /// </summary>
-        public static string CodeExplorer_EmptyViewMessage_Title {
-            get {
-                return ResourceManager.GetString("CodeExplorer_EmptyViewMessage_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Expand node and all child nodes.
         /// </summary>
         public static string CodeExplorer_ExpandSubnodesToolTip {
@@ -1526,6 +1507,25 @@ namespace Rubberduck.UI {
         public static string EasterEgg_Continuator {
             get {
                 return ResourceManager.GetString("EasterEgg_Continuator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to to parse and process
+        ///the projects in the VBE..
+        /// </summary>
+        public static string EmptyUIRefreshMessage {
+            get {
+                return ResourceManager.GetString("EmptyUIRefreshMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck doesn&apos;t see anything yet..
+        /// </summary>
+        public static string EmptyUIRefreshMessage_Title {
+            get {
+                return ResourceManager.GetString("EmptyUIRefreshMessage_Title", resourceCulture);
             }
         }
         
