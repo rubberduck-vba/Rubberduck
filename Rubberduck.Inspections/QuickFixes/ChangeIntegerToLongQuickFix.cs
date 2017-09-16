@@ -68,7 +68,6 @@ namespace Rubberduck.Inspections.QuickFixes
                             rewriter.Replace(
                                 userDefinedTypeMemberContext.reservedNameMemberDeclaration().asTypeClause().type(),
                                 Tokens.Long);
-
                         }
                         else
                         {
@@ -87,9 +86,7 @@ namespace Rubberduck.Inspections.QuickFixes
             switch (result.Target.DeclarationType)
             {
                 case DeclarationType.Parameter:
-                    matchingInterfaceMemberContext =
-                        interfaceMembers.Select(member => member.Context)
-                            .FirstOrDefault(c => c == result.Context.Parent.Parent);
+                    matchingInterfaceMemberContext = interfaceMembers.Select(member => member.Context).FirstOrDefault(c => c == result.Context.Parent.Parent);
 
                     if (matchingInterfaceMemberContext != null)
                     {
@@ -127,9 +124,7 @@ namespace Rubberduck.Inspections.QuickFixes
                     }
                     break;
                 case DeclarationType.Function:
-                    matchingInterfaceMemberContext =
-                        interfaceMembers.Select(member => member.Context)
-                            .FirstOrDefault(c => c == result.Context);
+                    matchingInterfaceMemberContext = interfaceMembers.Select(member => member.Context).FirstOrDefault(c => c == result.Context);
 
                     if (matchingInterfaceMemberContext != null)
                     {
@@ -156,9 +151,7 @@ namespace Rubberduck.Inspections.QuickFixes
                     }
                     break;
                 case DeclarationType.PropertyGet:
-                    matchingInterfaceMemberContext =
-                        interfaceMembers.Select(member => member.Context)
-                            .FirstOrDefault(c => c == result.Context);
+                    matchingInterfaceMemberContext = interfaceMembers.Select(member => member.Context).FirstOrDefault(c => c == result.Context);
 
                     if (matchingInterfaceMemberContext != null)
                     {
