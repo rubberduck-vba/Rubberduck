@@ -340,7 +340,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An If/Else block should have executable statements. An empty block serves no purpose and can be confusing for the maintainer. Was this empty execution path originally intended to do something? Clear code only contains executable paths..
+        ///   Looks up a localized string similar to A condition block should have executable statements. An empty block serves no purpose and can be confusing for the maintainer. Was this empty execution path originally intended to do something? Clear code only contains executable paths..
         /// </summary>
         public static string EmptyConditionBlockInspectionsMeta {
             get {
@@ -1780,7 +1780,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Removy empty If and Else blocks.
+        ///   Looks up a localized string similar to Remove empty If and Else blocks.
         /// </summary>
         public static string RemoveEmptyConditionBlockQuickFix {
             get {

@@ -825,7 +825,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>Empty While-Wend block</value>
   </data>
   <data name="EmptyConditionBlockInspectionsMeta" xml:space="preserve">
-    <value>An If/Else block should have executable statements. An empty block serves no purpose and can be confusing for the maintainer. Was this empty execution path originally intended to do something? Clear code only contains executable paths.</value>
+    <value>A condition block should have executable statements. An empty block serves no purpose and can be confusing for the maintainer. Was this empty execution path originally intended to do something? Clear code only contains executable paths.</value>
   </data>
   <data name="EmptyConditionBlockInspectionsName" xml:space="preserve">
     <value>Empty condition (If or Else)  block</value>
@@ -837,6 +837,6 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value> </value>
   </data>
   <data name="RemoveEmptyConditionBlockQuickFix" xml:space="preserve">
-    <value>Removy empty If and Else blocks</value>
+    <value>Remove empty If and Else blocks</value>
   </data>
 </root>

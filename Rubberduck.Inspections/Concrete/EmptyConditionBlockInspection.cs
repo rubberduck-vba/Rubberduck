@@ -25,8 +25,8 @@ namespace Rubberduck.Inspections.Concrete
             return Listener.Contexts
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))
                 .Select(result => new QualifiedContextInspectionResult(this,
-                                                                        InspectionsUI.EmptyConditionBlockInspectionsResultFormat,
-                                                                        result));
+                                                        InspectionsUI.EmptyConditionBlockInspectionsResultFormat,
+                                                        result));
         }
 
         public override IInspectionListener Listener { get; } =
