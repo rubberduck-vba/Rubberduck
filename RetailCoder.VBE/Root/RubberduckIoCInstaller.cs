@@ -546,15 +546,20 @@ namespace Rubberduck.Root
             //Otherwise, namespaces would get in the way when binding to the menu items.
             RegisterCommandsWithPresenters(container);
 
+            var commandsForCommandMenuItems = Assembly.GetExecutingAssembly().GetTypes()
+                .Where(type => type.IsClass && typeof(ICommandMenuItem).IsAssignableFrom(type))
+                .Select(type => CommandNameFromCommandMenuName(type.Name))
+                .ToHashSet();
+
             container.Register(Classes.FromThisAssembly()
                 .Where(type => type.Namespace != null
                             && type.Namespace.StartsWith(typeof(CommandBase).Namespace ?? string.Empty)
                             && (type.BaseType == typeof(CommandBase) || type.BaseType == typeof(RefactorCommandBase))
-                            && type.Name.EndsWith("Command"))
+                            && type.Name.EndsWith("Command")
+                            && commandsForCommandMenuItems.Contains(type.Name))
                 .WithService.Self()
                 .WithService.Select(new[] { typeof(CommandBase) })
                 .LifestyleTransient()
-                .Unless(type => type == typeof(DelegateCommand))
                 .Configure(c => c.Named(c.Implementation.Name)));
         }
 
