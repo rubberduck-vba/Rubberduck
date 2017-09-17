@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
+using Antlr4.Runtime.Tree;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
@@ -14,13 +15,16 @@ namespace Rubberduck.Refactorings.ExtractMethod
     public class ExtractMethodSelectionValidation : IExtractMethodSelectionValidation
     {
         private IEnumerable<Declaration> _declarations;
-        
+        private List<Tuple<ParserRuleContext, string>> _invalidContexts = new List<Tuple<ParserRuleContext, string>>();
+
         public ExtractMethodSelectionValidation(IEnumerable<Declaration> declarations)
         {
             _declarations = declarations;
         }
 
-        public bool withinSingleProcedure(QualifiedSelection qualifiedSelection)
+        public IEnumerable<Tuple<ParserRuleContext, string>> InvalidContexts { get { return _invalidContexts; } }
+
+        public bool ValidateSelection(QualifiedSelection qualifiedSelection)
         {
             var selection = qualifiedSelection.Selection;
             IEnumerable<Declaration> procedures = _declarations.Where(d => d.IsUserDefined && (DeclarationExtensions.ProcedureTypes.Contains(d.DeclarationType)));
@@ -85,25 +89,68 @@ namespace Rubberduck.Refactorings.ExtractMethod
             /* At this point, we know the selection is within a single procedure. We need to validate that the user's
              * selection in fact contain only BlockStmt and not other stuff that might not be so extractable.
              */
-            var visitor = new ExtractValidatorVisitor(qualifiedSelection);
+            var visitor = new ExtractValidatorVisitor(qualifiedSelection, _invalidContexts);
             var results = visitor.Visit(procStartContext);
-            var errors = visitor.InvalidContexts;
+            _invalidContexts = visitor.InvalidContexts;
 
-            if (errors.Count == 0)
+            if (_invalidContexts.Count() == 0)
             {
-                return true;
+                // We've provved that there are no invalid statements contained in the selection. However, we need to analyze
+                // the statements to ensure they are not partial selections.
+
+                // The visitor will not return the results in a sorted manner, so we need to arrange the contexts in the same order.
+                var sorted = results.OrderBy(context => context.Start.StartIndex);
+                var finalResults = new List<VBAParser.BlockStmtContext>();
+                ContextIsContainedOnce(sorted, ref finalResults, qualifiedSelection);
+                return (results.Count() > 0 && _invalidContexts.Count() == 0);
             }
             return false;
+        }
+
+        /// <summary>
+        /// The function ensure that we return only top-level BlockStmtContexts that
+        /// exists within an user's selection, excluding any nested BlockStmtContexts
+        /// which are also "selected" and thus ensure that we build an unique list 
+        /// of BlockStmtContexts that corresponds to the user's selection. The function
+        /// also will validate there are no overlapping selections which could be invalid.
+        /// </summary>
+        /// <param name="context">The context to test</param>
+        /// <param name="aggregate">The list of contexts we already added to verify we are not adding one of its children or itself more than once</param>
+        /// <param name="qualifiedSelection"></param>
+        /// <returns>Boolean with true indicating that it's the first time we encountered a context in a user's selection and we can safely add it to the list</returns>
+        private void ContextIsContainedOnce(IEnumerable<VBAParser.BlockStmtContext> sortedResults, ref List<VBAParser.BlockStmtContext> aggregate, QualifiedSelection qualifiedSelection)
+        {
+            foreach (var context in sortedResults)
+            {
+                if (qualifiedSelection.Selection.Contains(context))
+                {
+                    if (!aggregate.Any(otherContext => otherContext.GetSelection().Contains(context) && context != otherContext))
+                    {
+                        aggregate.Add(context);
+                    }
+                }
+                else
+                {
+                    // We need to check if there was a partial selection made which would be invalid. It's OK if it's wholly contained inside
+                    // a context (e.g. an inner If/End If block within a bigger If/End If was selected which is legal. However, selecting only
+                    // part of inner If/End If block and a part of the outermost If/End If block should be illegal).
+                    if (qualifiedSelection.Selection.Overlaps(context.GetSelection()) && !qualifiedSelection.Selection.IsContainedIn(context))
+                    {
+                        _invalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method must contain selection that represents a set of complete statements. It cannot extract a part of statement."));
+                    }
+                }
+            }
         }
 
         private class ExtractValidatorVisitor : VBAParserBaseVisitor<IEnumerable<VBAParser.BlockStmtContext>>
         {
             private readonly QualifiedSelection _qualifiedSelection;
-            private List<Tuple<ParserRuleContext, string>> _invalidContexts = new List<Tuple<ParserRuleContext, string>> ();
+            private readonly List<Tuple<ParserRuleContext, string>> _invalidContexts;
 
-            public ExtractValidatorVisitor(QualifiedSelection qualifiedSelection)
+            public ExtractValidatorVisitor(QualifiedSelection qualifiedSelection, List<Tuple<ParserRuleContext, string>> invalidContexts)
             {
                 _qualifiedSelection = qualifiedSelection;
+                _invalidContexts = invalidContexts;
             }
 
             public List<Tuple<ParserRuleContext, string>> InvalidContexts { get { return _invalidContexts; } }
@@ -184,7 +231,8 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
             public override IEnumerable<VBAParser.BlockStmtContext> VisitBlockStmt([NotNull] VBAParser.BlockStmtContext context)
             {
-                if (_invalidContexts.Count==0)
+                if (_invalidContexts.Count == 0)
+                    //return base.VisitChildren(context);
                     return base.VisitBlockStmt(context).Concat(new List<VBAParser.BlockStmtContext> { context });
                 else
                     return null;
@@ -193,38 +241,17 @@ namespace Rubberduck.Refactorings.ExtractMethod
             protected override IEnumerable<VBAParser.BlockStmtContext> AggregateResult(IEnumerable<VBAParser.BlockStmtContext> aggregate, IEnumerable<VBAParser.BlockStmtContext> nextResult)
             {
                 if (_invalidContexts.Count == 0)
-                    return aggregate.Concat(nextResult.Where(context => ContextIsContainedOnce(context, aggregate.Concat(nextResult))));
+                {
+                    return aggregate.Concat(nextResult);
+                }
                 else
                     return null;
             }
 
-            /// <summary>
-            /// The function ensure that we return only top-level BlockStmtContexts that
-            /// exists within an user's selection, excluding any nested BlockStmtContexts
-            /// which are also "selected" and thus ensure that we build an unique list 
-            /// of BlockStmtContexts that corresponds to the user's selection. The function
-            /// also will validate there are no overlapping selections which could be invalid.
-            /// </summary>
-            /// <param name="context">The context to test</param>
-            /// <param name="aggregate">The list of contexts we already added to verify we are not adding one of its children or itself more than once</param>
-            /// <returns>Boolean with true indicating that it's the first time we encountered a context in a user's selection and we can safely add it to the list</returns>
-            private bool ContextIsContainedOnce(VBAParser.BlockStmtContext context, IEnumerable<VBAParser.BlockStmtContext> aggregate)
+            protected override bool ShouldVisitNextChild(IRuleNode node, IEnumerable<VBAParser.BlockStmtContext> currentResult)
             {
-                if (_qualifiedSelection.Selection.Contains(context))
-                {
-                    return (!aggregate.Any(otherContext => otherContext.GetSelection().Contains(context)));
-                }
-                else
-                {
-                    // We need to check if there was a partial selection made which would be invalid. It's OK if it's wholly contained inside
-                    // a context (e.g. an inner If/End If block within a bigger If/End If was selected which is legal. However, selecting only
-                    // part of inner If/End If block and a part of the outermost If/End If block should be illegal).
-                    if (_qualifiedSelection.Selection.Overlaps(context.GetSelection()) && !_qualifiedSelection.Selection.IsContainedIn(context))
-                    {
-                        _invalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method must contain selection that represents a set of complete statements. It cannot extract a part of statement."));
-                    }
-                }
-                return false;
+                // Don't visit any more children if we have any invalid contexts
+                return (_invalidContexts.Count == 0);
             }
         }
     }

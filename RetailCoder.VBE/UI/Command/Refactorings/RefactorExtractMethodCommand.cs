@@ -46,7 +46,7 @@ namespace Rubberduck.UI.Command.Refactorings
                 
                 var allDeclarations = _state.AllDeclarations;
                 var extractMethodValidation = new ExtractMethodSelectionValidation(allDeclarations);
-                var canExecute = extractMethodValidation.withinSingleProcedure(qualifiedSelection.Value);
+                var canExecute = extractMethodValidation.ValidateSelection(qualifiedSelection.Value);
 
                 return canExecute;
             }
@@ -58,7 +58,7 @@ namespace Rubberduck.UI.Command.Refactorings
             var qualifiedSelection = Vbe.ActiveCodePane.GetQualifiedSelection();
 
             var extractMethodValidation = new ExtractMethodSelectionValidation(declarations);
-            var canExecute = extractMethodValidation.withinSingleProcedure(qualifiedSelection.Value);
+            var canExecute = extractMethodValidation.ValidateSelection(qualifiedSelection.Value);
             if (!canExecute)
             {
                 return;

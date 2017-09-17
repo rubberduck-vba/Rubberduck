@@ -3,6 +3,6 @@ namespace Rubberduck.Refactorings.ExtractMethod
 {
     public interface IExtractMethodSelectionValidation
     {
-        bool withinSingleProcedure(QualifiedSelection qualifiedSelection);
+        bool ValidateSelection(QualifiedSelection qualifiedSelection);
     }
 }
