@@ -848,4 +848,13 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="EmptyWhileWendBlockInspectionName" xml:space="preserve">
     <value>Empty While-Wend block</value>
   </data>
+  <data name="ShadowedDeclarationInspectionMeta" xml:space="preserve">
+    <value>Two declarations are in scope and have the same identifier name. This means that only one of them will be available to use.</value>
+  </data>
+  <data name="ShadowedDeclarationInspectionName" xml:space="preserve">
+    <value>Shadowed declaration</value>
+  </data>
+  <data name="ShadowedDeclarationInspectionResultFormat" xml:space="preserve">
+    <value>{0} '{1}' hides {2} '{3}'</value>
+  </data>
 </root>
