@@ -43,21 +43,10 @@ namespace Rubberduck.UI.Command.Refactorings
                 {
                     return false;
                 }
-                var selection = qualifiedSelection.Value.Selection;
-
-                var code = module.GetLines(selection.StartLine, selection.LineCount);
-
+                
                 var allDeclarations = _state.AllDeclarations;
                 var extractMethodValidation = new ExtractMethodSelectionValidation(allDeclarations);
-                //var parentProcedure = _state.AllDeclarations.FindSelectedDeclaration(qualifiedSelection.Value, DeclarationExtensions.ProcedureTypes, d => ((ParserRuleContext)d.Context.Parent).GetSelection());
                 var canExecute = extractMethodValidation.withinSingleProcedure(qualifiedSelection.Value);
-
-                /*
-                var canExecute = parentProcedure != null
-                    && selection.StartColumn != selection.EndColumn
-                    && selection.LineCount > 0
-                    && !string.IsNullOrWhiteSpace(code);
-                */
 
                 return canExecute;
             }
