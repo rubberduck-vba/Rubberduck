@@ -156,84 +156,13 @@ namespace Rubberduck.Refactorings.ExtractMethod
             public List<Tuple<ParserRuleContext, string>> InvalidContexts { get { return _invalidContexts; } }
 
             protected override IEnumerable<VBAParser.BlockStmtContext> DefaultResult => new List<VBAParser.BlockStmtContext>();
-
-            public override IEnumerable<VBAParser.BlockStmtContext> VisitErrorStmt([NotNull] VBAParser.ErrorStmtContext context)
-            {
-                _invalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains an Error statement."));
-                return null;
-            }
-
-            public override IEnumerable<VBAParser.BlockStmtContext> VisitEndStmt([NotNull] VBAParser.EndStmtContext context)
-            {
-                _invalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains an End statement."));
-                return null;
-            }
-
-            public override IEnumerable<VBAParser.BlockStmtContext> VisitExitStmt([NotNull] VBAParser.ExitStmtContext context)
-            {
-                _invalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains an Exit statement"));
-                return null;
-            }
-
-            public override IEnumerable<VBAParser.BlockStmtContext> VisitGoSubStmt([NotNull] VBAParser.GoSubStmtContext context)
-            {
-                _invalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a GoSub statement"));
-                return null;
-            }
-
-            public override IEnumerable<VBAParser.BlockStmtContext> VisitGoToStmt([NotNull] VBAParser.GoToStmtContext context)
-            {
-                _invalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a GoTo statement"));
-                return null;
-            }
-
-            public override IEnumerable<VBAParser.BlockStmtContext> VisitOnErrorStmt([NotNull] VBAParser.OnErrorStmtContext context)
-            {
-                _invalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a On Error statement"));
-                return null;
-            }
             
-            public override IEnumerable<VBAParser.BlockStmtContext> VisitIdentifierStatementLabel([NotNull] VBAParser.IdentifierStatementLabelContext context)
-            {
-                _invalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a Line Label statement"));
-                return null;
-            }
-
-            public override IEnumerable<VBAParser.BlockStmtContext> VisitCombinedLabels([NotNull] VBAParser.CombinedLabelsContext context)
-            {
-                _invalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a Line Label statement"));
-                return null;
-            }
-
-            public override IEnumerable<VBAParser.BlockStmtContext> VisitOnGoSubStmt([NotNull] VBAParser.OnGoSubStmtContext context)
-            {
-                _invalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a On ... GoSub statement"));
-                return null;
-            }
-
-            public override IEnumerable<VBAParser.BlockStmtContext> VisitOnGoToStmt([NotNull] VBAParser.OnGoToStmtContext context)
-            {
-                _invalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a On ... GoTo statement"));
-                return null;
-            }
-
-            public override IEnumerable<VBAParser.BlockStmtContext> VisitResumeStmt([NotNull] VBAParser.ResumeStmtContext context)
-            {
-                _invalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a Resume statement"));
-                return null;
-            }
-
-            public override IEnumerable<VBAParser.BlockStmtContext> VisitReturnStmt([NotNull] VBAParser.ReturnStmtContext context)
-            {
-                _invalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a Return statement"));
-                return null;
-            }
-
             public override IEnumerable<VBAParser.BlockStmtContext> VisitBlockStmt([NotNull] VBAParser.BlockStmtContext context)
             {
+                var children = base.VisitBlockStmt(context);
                 if (_invalidContexts.Count == 0)
                     //return base.VisitChildren(context);
-                    return base.VisitBlockStmt(context).Concat(new List<VBAParser.BlockStmtContext> { context });
+                    return children.Concat(new List<VBAParser.BlockStmtContext> { context });
                 else
                     return null;
             }
@@ -252,6 +181,138 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 // Don't visit any more children if we have any invalid contexts
                 return (_invalidContexts.Count == 0);
+            }
+
+            public override IEnumerable<VBAParser.BlockStmtContext> VisitErrorStmt([NotNull] VBAParser.ErrorStmtContext context)
+            {
+                if (_qualifiedSelection.Selection.Contains(context))
+                {
+                    _invalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains an Error statement."));
+                    return null;
+                }
+
+                return base.VisitErrorStmt(context);
+            }
+
+            public override IEnumerable<VBAParser.BlockStmtContext> VisitEndStmt([NotNull] VBAParser.EndStmtContext context)
+            {
+                if (_qualifiedSelection.Selection.Contains(context))
+                {
+                    _invalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains an End statement."));
+                    return null;
+                }
+
+                return base.VisitEndStmt(context);
+            }
+
+            public override IEnumerable<VBAParser.BlockStmtContext> VisitExitStmt([NotNull] VBAParser.ExitStmtContext context)
+            {
+                if (_qualifiedSelection.Selection.Contains(context))
+                {
+                    _invalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains an Exit statement"));
+                    return null;
+                }
+
+                return base.VisitExitStmt(context);
+            }
+
+            public override IEnumerable<VBAParser.BlockStmtContext> VisitGoSubStmt([NotNull] VBAParser.GoSubStmtContext context)
+            {
+                if (_qualifiedSelection.Selection.Contains(context))
+                {
+                    _invalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a GoSub statement"));
+                    return null;
+                }
+
+                return base.VisitGoSubStmt(context);
+            }
+
+            public override IEnumerable<VBAParser.BlockStmtContext> VisitGoToStmt([NotNull] VBAParser.GoToStmtContext context)
+            {
+                if (_qualifiedSelection.Selection.Contains(context))
+                {
+                    _invalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a GoTo statement"));
+                    return null;
+                }
+
+                return base.VisitGoToStmt(context);
+            }
+
+            public override IEnumerable<VBAParser.BlockStmtContext> VisitOnErrorStmt([NotNull] VBAParser.OnErrorStmtContext context)
+            {
+                if (_qualifiedSelection.Selection.Contains(context))
+                {
+                    _invalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a On Error statement"));
+                    return null;
+                }
+
+                return base.VisitOnErrorStmt(context);
+            }
+            
+            public override IEnumerable<VBAParser.BlockStmtContext> VisitIdentifierStatementLabel([NotNull] VBAParser.IdentifierStatementLabelContext context)
+            {
+                if (_qualifiedSelection.Selection.Contains(context))
+                {
+                    _invalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a Line Label statement"));
+                    return null;
+                }
+
+                return base.VisitIdentifierStatementLabel(context);
+            }
+
+            public override IEnumerable<VBAParser.BlockStmtContext> VisitCombinedLabels([NotNull] VBAParser.CombinedLabelsContext context)
+            {
+                if (_qualifiedSelection.Selection.Contains(context))
+                {
+                    _invalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a Line Label statement"));
+                    return base.VisitCombinedLabels(context);
+                }
+
+                return VisitCombinedLabels(context);
+            }
+
+            public override IEnumerable<VBAParser.BlockStmtContext> VisitOnGoSubStmt([NotNull] VBAParser.OnGoSubStmtContext context)
+            {
+                if (_qualifiedSelection.Selection.Contains(context))
+                {
+                    _invalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a On ... GoSub statement"));
+                    return null;
+                }
+
+                return VisitOnGoSubStmt(context);
+            }
+
+            public override IEnumerable<VBAParser.BlockStmtContext> VisitOnGoToStmt([NotNull] VBAParser.OnGoToStmtContext context)
+            {
+                if (_qualifiedSelection.Selection.Contains(context))
+                {
+                    _invalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a On ... GoTo statement"));
+                    return null;
+                }
+
+                return VisitOnGoToStmt(context);
+            }
+
+            public override IEnumerable<VBAParser.BlockStmtContext> VisitResumeStmt([NotNull] VBAParser.ResumeStmtContext context)
+            {
+                if (_qualifiedSelection.Selection.Contains(context))
+                {
+                    _invalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a Resume statement"));
+                    return null;
+                }
+
+                return base.VisitResumeStmt(context);
+            }
+
+            public override IEnumerable<VBAParser.BlockStmtContext> VisitReturnStmt([NotNull] VBAParser.ReturnStmtContext context)
+            {
+                if (_qualifiedSelection.Selection.Contains(context))
+                {
+                    _invalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a Return statement"));
+                    return null;
+                }
+
+                return VisitReturnStmt(context);
             }
         }
     }
