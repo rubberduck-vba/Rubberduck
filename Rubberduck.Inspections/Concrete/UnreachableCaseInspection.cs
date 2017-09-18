@@ -21,12 +21,54 @@ namespace Rubberduck.Inspections.Concrete
     internal class UnreachableCaseInspection : ParseTreeInspectionBase
     {
         private string _typeName;
-        private List<long> _priorLongCaseClauseValues = new List<long>();
-        private List<string> _priorStringCaseClauseValues = new List<string>();
+        private Dictionary<string, Func<long, long, long, long, bool>> _operatorsLong;
+        private Dictionary<string, Func<CompareParams<double>, bool>> _operatorsDouble;
+
+        private struct CompareParams<T>
+        {
+            public CompareParams(T cMin, T cMax, T vMin, T vMax)
+            {
+                candidateMin = cMin;
+                candidateMax = cMax;
+                minVal = vMin;
+                maxVal = vMax;
+            }
+
+            public CompareParams(T cVal, T vVal)
+            {
+                candidateMin = cVal;
+                candidateMax = cVal;
+                minVal = vVal;
+                maxVal = vVal;
+            }
+
+            public T candidateMin;
+            public T candidateMax;
+            public T minVal;
+            public T maxVal;
+        }
 
         private readonly string _unreachableCaseInspectionResultFormat = "Unreachable or conflicting Case block";
         public UnreachableCaseInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Suggestion) { }
+            : base(state, CodeInspectionSeverity.Suggestion)
+        {
+            _operatorsDouble = new Dictionary<string, Func<CompareParams<double>, bool>>();
+            _operatorsLong = new Dictionary<string, Func<long, long, long, long, bool>>();
+            _operatorsLong.Add("=", _compareCaseEqualLongs);
+            _operatorsLong.Add("<>", _compareCaseNEQLongs);
+            _operatorsLong.Add(">", _compareCaseGTLongs);
+            _operatorsLong.Add("<", _compareCaseLTLongs);
+            _operatorsLong.Add(">=", _compareCaseGTELongs);
+            _operatorsLong.Add("<=", _compareCaseLTELongs);
+
+            //_operatorsDouble = new Dictionary<string, Func<double, double, double, double, bool>>();
+            //_operatorsDouble.Add("=", _compareCaseEqualDouble);
+            //_operatorsDouble.Add("<>", _compareCaseNEQDouble);
+            //_operatorsDouble.Add(">", _compareCaseGTDouble);
+            //_operatorsDouble.Add("<", _compareCaseLTDouble);
+            //_operatorsDouble.Add(">=", _compareCaseGTEDouble);
+            //_operatorsDouble.Add("<=", _compareCaseLTEDouble);
+        }
 
         public override IInspectionListener Listener { get; } =
             new UnreachableCaseInspectionListener();
@@ -55,16 +97,13 @@ namespace Rubberduck.Inspections.Concrete
 
         private IEnumerable<IInspectionResult> GetUnreachableCaseBlocks(QualifiedContext<ParserRuleContext> selectCaseStmt)
         {
-            _priorLongCaseClauseValues = new List<long>();
-            _priorStringCaseClauseValues = new List<string>();
             var theRef = GetTheSelectCaseReference(selectCaseStmt);
-            var theDec = theRef.Declaration;
-            _typeName = theDec.AsTypeName;
+            _typeName = theRef.Declaration.AsTypeName;
 
-            var caseClauses = ParserRuleContextHelper.GetDescendents<VBAParser.CaseClauseContext>(selectCaseStmt.Context);
+            var caseClauses = ParserRuleContextHelper.GetChildren<VBAParser.CaseClauseContext>(selectCaseStmt.Context);
 
             var qualifiedCaseClauses = new List<QualifiedContext<ParserRuleContext>>();
-            caseClauses.ForEach(clause => qualifiedCaseClauses.Add(new QualifiedContext<ParserRuleContext>(selectCaseStmt.MemberName, clause as ParserRuleContext)));
+            caseClauses.ForEach(clause => qualifiedCaseClauses.Add(new QualifiedContext<ParserRuleContext>(selectCaseStmt.ModuleName, clause as ParserRuleContext)));
 
             return InspectCaseClauses(selectCaseStmt, qualifiedCaseClauses);
         }
@@ -74,164 +113,164 @@ namespace Rubberduck.Inspections.Concrete
             var selectCaseExpr = ParserRuleContextHelper.GetChild<VBAParser.SelectExpressionContext>(selectCaseStmt.Context);
 
             var allRefs = new List<IdentifierReference>();
+            var name = selectCaseExpr.GetText();
+            var test = State.DeclarationFinder.MatchName(selectCaseExpr.GetText());
             foreach (var dec in State.DeclarationFinder.MatchName(selectCaseExpr.GetText()))
             {
                 allRefs.AddRange(dec.References);
             }
 
-            var theRef = allRefs.Where(rf => ParserRuleContextHelper.HasParent(rf.Context, selectCaseStmt.Context));
+            var selectCaseReference = allRefs.Where(rf => ParserRuleContextHelper.HasParent(rf.Context, selectCaseStmt.Context)
+                                    && (ParserRuleContextHelper.HasParent(rf.Context, selectCaseExpr)));
 
-            Debug.Assert(theRef.Count() == 1);
+            //Debug.Assert(selectCaseReference.Count() == 1);
+            if(selectCaseReference.Count() != 1)
+            {
+                int i = 0;
+            }
+            return selectCaseReference.First();
+        }
 
-            return theRef.First();
+        private void VBATypes()
+        {
+            string[] types = {"Boolean", "Integer",
+                    "Long", "Single","Double(negative)",
+                    "Double(positive)", "Currency",
+            "Date", "String", "Object", "Variant", "User defined" };
+        }
+
+        private static bool HandleAsLong(String typeName)
+        {
+            string[] types = { "Integer", "Long", "Single" };
+            return types.Contains(typeName);
+        }
+
+        private static bool HandleAsDouble(String typeName)
+        {
+            string[] types = { "Double","Double(negative)","Double(positive)", "Currency" };
+            return types.Contains(typeName);
         }
 
         private List<IInspectionResult> InspectCaseClauses(QualifiedContext<ParserRuleContext> selectCaseStmt, List<QualifiedContext<ParserRuleContext>> caseClauses)
         {
-            Func<string, string, bool> compareEqualStrings = delegate (string s, string t)
-            { return s.Equals(t, StringComparison.InvariantCulture); };
+            if (_typeName.Equals("String"))
+            {
+                return HandleSelectCase(selectCaseStmt, caseClauses, new List<Tuple<string, string, Func<string, string, string, string, bool>>>());
+            }
+            else if (HandleAsLong(_typeName))
+            {
+                return HandleSelectCase(selectCaseStmt, caseClauses, new List<Tuple<long, long, Func<long, long, long, long, bool>>>());
+            }
+            //else if (HandleAsDouble(_typeName))
+            //{
+            //    return HandleSelectCase(selectCaseStmt, caseClauses, new List<Tuple<double, double, Func<double, double, double, double, bool>>>());
+            //}
+            //else
+            {
+                return new List<IInspectionResult>();
+            }
+        }
 
-            Func<long, long, bool> compareEqualLongs = delegate (long s, long t)
-            { return s == t; };
-
-            Func<long, long, bool> isGreaterThanLong = delegate (long s, long test)
-            { return s > test; };
-
-            var stringClauseEvaluations = new List<KeyValuePair<string, Func<string, string, bool>>>();
-            var longClauseEvaluations = new List<KeyValuePair<long, Func<long, long, bool>>>();
-
+        private List<IInspectionResult> HandleSelectCase(QualifiedContext<ParserRuleContext> selectCaseStmt, List<QualifiedContext<ParserRuleContext>> caseClauses, List<Tuple<long, long, Func<long, long, long, long, bool>>> clauseEvaluations)
+        {
             var inspResults = new List<IInspectionResult>();
- 
+
             foreach (var caseClause in caseClauses)
             {
-                var rangeClauses = ParserRuleContextHelper.GetDescendents<VBAParser.RangeClauseContext>(caseClause.Context as ParserRuleContext);
-                foreach (var ctxt in rangeClauses )
+                var rangeClauses = ParserRuleContextHelper.GetChildren<VBAParser.RangeClauseContext>(caseClause.Context as ParserRuleContext);
+                foreach (var ctxt in rangeClauses)
                 {
-         
-                    if (_typeName.Equals("String"))
+                    bool hasStartEndContexts = false;
+                    var selectStartValue = ParserRuleContextHelper.GetChild<VBAParser.SelectStartValueContext>(ctxt);
+                    if (selectStartValue != null)
                     {
-                        var literalExpressionContexts = ParserRuleContextHelper.GetDescendents<VBAParser.LiteralExpressionContext>(ctxt as ParserRuleContext);
-                        foreach (var child in literalExpressionContexts)
+                        hasStartEndContexts = true;
+                        bool unparsableLong = false;
+                        var selectEndValue = ParserRuleContextHelper.GetChild<VBAParser.SelectEndValueContext>(ctxt);
+                        long startSelectValue;
+                        if (!long.TryParse(selectStartValue.GetText(), out startSelectValue))
                         {
-                            var text = child.GetText();
+                            unparsableLong = true;
+                            inspResults = AddInspectionResult(caseClause, inspResults);
+                        }
+                        long endSelectValue;
+                        if (!long.TryParse(selectEndValue.GetText(), out endSelectValue))
+                        {
+                            unparsableLong = true;
+                            inspResults = AddInspectionResult(caseClause, inspResults);
+                        }
+                        if (!unparsableLong)
+                        {
                             bool addInspResult = false;
-                            foreach(var cTest in stringClauseEvaluations)
+                            foreach (var cTest in clauseEvaluations)
                             {
-                                if(cTest.Value(cTest.Key, text))
+                                if (cTest.Item3(startSelectValue, endSelectValue, cTest.Item1, cTest.Item2))
                                 {
                                     addInspResult = true;
                                 }
                             }
-                            if (addInspResult ) //PriorCaseClauseContainsValue(text))
+                            if (addInspResult)
                             {
                                 inspResults = AddInspectionResult(caseClause, inspResults);
                             }
                             else
                             {
-                                var clauseTest = new KeyValuePair<string, Func<string, string, bool>>(text, compareEqualStrings);
-                                stringClauseEvaluations.Add(clauseTest);
-                                AddPriorCaseClauseValue(text);
+                                var clauseTest = new Tuple<long, long, Func<long, long, long, long, bool>>(startSelectValue, endSelectValue, _compareCaseEqualLongs);
+                               // var xTest = new Tuple<long, long, Func<CompareParams<long>, bool>>(startSelectValue, endSelectValue, _compareCaseEqualLongs);
+                                clauseEvaluations.Add(clauseTest);
                             }
                         }
                     }
-                    if (_typeName.Equals("Long"))
-                    {
-                        bool hasStartEndContexts = false;
-                        var selectStartValue = ParserRuleContextHelper.GetChild<VBAParser.SelectStartValueContext>(ctxt);
-                        if (selectStartValue != null)
-                        {
-                            hasStartEndContexts = true;
-                            bool unparsableLong = false;
-                            var selectEndValue = ParserRuleContextHelper.GetChild<VBAParser.SelectEndValueContext>(ctxt);
-                            long startSelectValue;
-                            if (!long.TryParse(selectStartValue.GetText(), out startSelectValue))
-                            {
-                                unparsableLong = true;
-                                inspResults = AddInspectionResult(caseClause, inspResults);
-                            }
-                            long endSelectValue;
-                            if (!long.TryParse(selectEndValue.GetText(), out endSelectValue))
-                            {
-                                unparsableLong = true;
-                                inspResults = AddInspectionResult(caseClause, inspResults);
-                            }
-                            if (!unparsableLong)
-                            {
 
-                                for (long selectVal = startSelectValue; selectVal <= endSelectValue; selectVal++)
+                    var theOperator = "=";
+                    //The 'Is' case
+                    var opCtxt = ParserRuleContextHelper.GetChild<VBAParser.ComparisonOperatorContext>(ctxt);
+                    if (opCtxt != null)
+                    {
+                        theOperator = opCtxt.GetText();
+                    }
+
+                    ////A statement like z > 5
+                    //var relationalOpCtxt = ParserRuleContextHelper.GetChild<VBAParser.RelationalOpContext>(ctxt);
+                    //if (relationalOpCtxt != null)
+                    //{
+                    //    theOperator = opCtxt.GetText();
+                    //}
+
+                    if (!_operatorsLong.ContainsKey(theOperator))
+                    {
+                        return inspResults;
+                    }
+
+                    var literalExpressionContexts = ParserRuleContextHelper.GetDescendents<VBAParser.LiteralExpressionContext>(ctxt as ParserRuleContext);
+                    if (literalExpressionContexts.Any() && !hasStartEndContexts)
+                    {
+                        foreach (var child in literalExpressionContexts)
+                        {
+                            long theValue;
+                            if (!long.TryParse(child.GetText(), out theValue))
+                            {
+                                inspResults = AddInspectionResult(caseClause, inspResults);
+                            }
+                            else
+                            {
+                                bool addInspResult = false;
+                                foreach (var cTest in clauseEvaluations)
                                 {
-                                    bool addInspResult = false;
-                                    foreach (var cTest in longClauseEvaluations)
+                                    if (cTest.Item3(theValue, theValue, cTest.Item1, cTest.Item2))
                                     {
-                                        if (cTest.Value(cTest.Key, selectVal))
-                                        {
-                                            addInspResult = true;
-                                        }
-                                    }
-                                    if (addInspResult ) //PriorCaseClauseContainsValue(selectVal))
-                                    {
-                                        inspResults = AddInspectionResult(caseClause, inspResults);
-                                    }
-                                    else
-                                    {
-                                        var clauseTest = new KeyValuePair<long, Func<long, long, bool>>(selectVal, compareEqualLongs);
-                                        longClauseEvaluations.Add(clauseTest);
-                                        AddPriorCaseClauseValue(selectVal);
+                                        addInspResult = true;
                                     }
                                 }
-                            }
-                        }
-
-                        //bool hasComparisonOperatorContexts = false;
-                        //var comparisonOperatorContexts = ParserRuleContextHelper.GetDescendents<VBAParser.ComparisonOperatorContext>(ctxt as ParserRuleContext);
-                        //if (comparisonOperatorContexts.Any() && !hasStartEndContexts)
-                        //{
-                        //    hasComparisonOperatorContexts = true;
-                        //    foreach (var child in comparisonOperatorContexts)
-                        //    {
-                        //        string theOp = child.GetText();
-                        //        var theValue = ParserRuleContextHelper.GetDescendent<VBAParser.LExprContext>(child.Parent);
-                        //        if (PriorCaseClauseContainsValue(theValue))
-                        //        {
-                        //            inspResults = AddInspectionResult(caseClause, inspResults);
-                        //        }
-                        //        else
-                        //        {
-                        //            AddPriorCaseClauseValue(theValue);
-                        //        }
-                        //    }
-                        //}
-
-                        var literalExpressionContexts = ParserRuleContextHelper.GetDescendents<VBAParser.LiteralExpressionContext>(ctxt as ParserRuleContext);
-                        if( literalExpressionContexts.Any() & !hasStartEndContexts)
-                        {
-                            foreach (var child in literalExpressionContexts)
-                            {
-                                long theValue;
-                                if (!long.TryParse(child.GetText(), out theValue))
+                                if (addInspResult)
                                 {
                                     inspResults = AddInspectionResult(caseClause, inspResults);
                                 }
                                 else
                                 {
-                                    bool addInspResult = false;
-                                    foreach (var cTest in longClauseEvaluations)
-                                    {
-                                        if (cTest.Value(cTest.Key, theValue))
-                                        {
-                                            addInspResult = true;
-                                        }
-                                    }
-                                    if (addInspResult ) //PriorCaseClauseContainsValue(theValue))
-                                    {
-                                        inspResults = AddInspectionResult(caseClause, inspResults);
-                                    }
-                                    else
-                                    {
-                                        var clauseTest = new KeyValuePair<long, Func<long, long, bool>>(theValue, compareEqualLongs);
-                                        longClauseEvaluations.Add(clauseTest);
-                                        AddPriorCaseClauseValue(theValue);
-                                    }
+                                    Func<long, long, long, long, bool> comparison = _operatorsLong[theOperator];
+                                    var clauseTest = new Tuple<long, long, Func<long, long, long, long, bool>>(theValue, theValue, comparison);
+                                    clauseEvaluations.Add(clauseTest);
                                 }
                             }
                         }
@@ -241,7 +280,46 @@ namespace Rubberduck.Inspections.Concrete
             return inspResults;
         }
 
-        private List<IInspectionResult> AddInspectionResult(QualifiedContext<ParserRuleContext> result, List<IInspectionResult> inspResults)
+        private List<IInspectionResult> HandleSelectCase(QualifiedContext<ParserRuleContext> selectCaseStmt, List<QualifiedContext<ParserRuleContext>> caseClauses, List<Tuple<string, string, Func<string, string, string, string, bool>>> clauseEvaluations)
+        {
+            var inspResults = new List<IInspectionResult>();
+
+            foreach (var caseClause in caseClauses)
+            {
+                var rangeClauses = ParserRuleContextHelper.GetChildren<VBAParser.RangeClauseContext>(caseClause.Context as ParserRuleContext);
+                foreach (var ctxt in rangeClauses)
+                {
+                    var literalExpressionContexts = ParserRuleContextHelper.GetDescendents<VBAParser.LiteralExpressionContext>(ctxt as ParserRuleContext);
+                    foreach (var child in literalExpressionContexts)
+                    {
+                        var text = child.GetText();
+                        bool addInspResult = false;
+                        foreach (var stringClauseEval in clauseEvaluations)
+                        {
+                            foreach (var clauseEvaluation in clauseEvaluations)
+                            {
+                                if (clauseEvaluation.Item3(text, text, clauseEvaluation.Item1, clauseEvaluation.Item2))
+                                {
+                                    addInspResult = true;
+                                }
+                            }
+                        }
+                        if (addInspResult)
+                        {
+                            inspResults = AddInspectionResult(caseClause, inspResults);
+                        }
+                        else
+                        {
+                            //var xTest = new Tuple<string, string, Func<CompareParams<string>, bool>>(text, text, _compareCaseClauseStrings);
+                            clauseEvaluations.Add(new Tuple<string, string, Func<string, string, string, string, bool>>(text, text, _compareCaseClauseStrings));
+                        }
+                    }
+                }
+            }
+            return inspResults;
+        }
+
+       private List<IInspectionResult> AddInspectionResult(QualifiedContext<ParserRuleContext> result, List<IInspectionResult> inspResults)
         {
             inspResults.Add(new QualifiedContextInspectionResult(this,
                     _unreachableCaseInspectionResultFormat,
@@ -249,32 +327,88 @@ namespace Rubberduck.Inspections.Concrete
             return inspResults;
         }
 
-        private void AddPriorCaseClauseValue(long theValue)
+        private Func<string, string, string, string, bool> _compareCaseClauseStrings = delegate (string candidateMin, string candidateMax, string minVal, string maxVal)
         {
-            _priorLongCaseClauseValues.Add(theValue);
-        }
+            //simple candidate value, simple value compare
+            //if ((candidateMin.Equals(candidateMax)) && (minVal.Equals(maxVal)))
+            //{
+            return candidateMin.Equals(minVal);
+            //}
 
-        private bool PriorCaseClauseContainsValue(long theValue)
-        {
-            return _priorLongCaseClauseValues.Contains(theValue);
-        }
+            ////simple candidate value, range compare
+            //if ((candidateMin == candidateMax) && (minVal != maxVal))
+            //{
+            //    Debug.Assert(maxVal >= minVal);
+            //    return candidateMin >= minVal && candidateMin <= maxVal;
+            //}
 
-        private void AddPriorCaseClauseValue(string theValue)
-        {
-            _priorStringCaseClauseValues.Add(theValue);
-        }
+            ////candidate range, simple value compare
+            //if ((candidateMin != candidateMax) && (minVal == maxVal))
+            //{
+            //    Debug.Assert(candidateMax >= candidateMin);
+            //    return minVal >= candidateMin && maxVal <= candidateMax;
+            //}
 
-        private bool PriorCaseClauseContainsValue(string theValue)
-        {
-            return _priorStringCaseClauseValues.Contains(theValue);
-        }
+            ////range to range compare
+            //Debug.Assert(candidateMax > candidateMin);
+            //return (candidateMin >= minVal && candidateMin <= maxVal) || (candidateMax >= minVal && candidateMax <= maxVal);
+        };
 
-        private void VBATypes()
+        private Func<long, long, long, long, bool> _compareCaseEqualLongs = delegate (long candidateMin, long candidateMax, long minVal, long maxVal)
         {
-            string[] types = {"Boolean", "Integer",
-                    "Long", "Single","Double(negative)",
-                    "Double(positive)", "Currency",
-            "Date", "String", "Object", "Variant", "User defined" };
+            //simple candidate value, simple value compare
+            if ((candidateMin == candidateMax) && (minVal == maxVal))
+            {
+                return candidateMin == minVal;
+            }
+
+            //simple candidate value, range compare
+            if ((candidateMin == candidateMax) && (minVal != maxVal))
+            {
+                Debug.Assert(maxVal >= minVal);
+                return candidateMin >= minVal && candidateMin <= maxVal;
+            }
+
+            //candidate range, simple value compare
+            if ((candidateMin != candidateMax) && (minVal == maxVal))
+            {
+                Debug.Assert(candidateMax >= candidateMin);
+                return minVal >= candidateMin && maxVal <= candidateMax;
+            }
+
+            //range to range compare
+            Debug.Assert(candidateMax > candidateMin);
+            return (candidateMin >= minVal && candidateMin <= maxVal) || (candidateMax >= minVal && candidateMax <= maxVal);
+        };
+
+        private Func<long, long, long, long, bool> _compareCaseGTLongs = delegate (long candidateMin, long candidateMax, long minVal, long maxVal)
+        {
+            return HasValidParamsForSimpleCompare(candidateMin, candidateMax, minVal, maxVal) ? candidateMin.CompareTo(minVal) > 0 : false;
+        };
+
+        private Func<long, long, long, long, bool> _compareCaseLTLongs = delegate (long candidateMin, long candidateMax, long minVal, long maxVal)
+        {
+            return HasValidParamsForSimpleCompare(candidateMin, candidateMax, minVal, maxVal) ? candidateMin.CompareTo(minVal) < 0 : false;
+        };
+
+        private Func<long, long, long, long, bool> _compareCaseGTELongs = delegate (long candidateMin, long candidateMax, long minVal, long maxVal)
+        {
+            return HasValidParamsForSimpleCompare(candidateMin, candidateMax, minVal, maxVal) ? candidateMin.CompareTo(minVal) >= 0 : false;
+        };
+
+        private Func<long, long, long, long, bool> _compareCaseLTELongs = delegate (long candidateMin, long candidateMax, long minVal, long maxVal)
+        {
+            return HasValidParamsForSimpleCompare(candidateMin, candidateMax, minVal, maxVal) ? candidateMin.CompareTo(minVal) <= 0 : false; // candidateMin <= minVal : false;
+        };
+
+        private Func<long, long, long, long, bool> _compareCaseNEQLongs = delegate (long candidateMin, long candidateMax, long minVal, long maxVal)
+        {
+            return HasValidParamsForSimpleCompare(candidateMin, candidateMax, minVal, maxVal) ? candidateMin.CompareTo(minVal) != 0 : false;
+        };
+
+        private static bool HasValidParamsForSimpleCompare<T>( T candidateMin, T candidateMax, T minVal, T maxVal) where T : System.IComparable<T>
+        {
+            return (candidateMin.CompareTo(candidateMax) == 0);
         }
 
         public class UnreachableCaseInspectionListener : VBAParserBaseListener, IInspectionListener

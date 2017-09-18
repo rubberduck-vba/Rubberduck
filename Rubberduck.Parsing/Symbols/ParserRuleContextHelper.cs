@@ -105,6 +105,25 @@ namespace Rubberduck.Parsing.Symbols
             return default(T);
         }
 
+        public static List<T> GetChildren<T>(RuleContext context)
+        {
+            var children = new List<T>();
+            if (context == null)
+            {
+                return children;
+            }
+
+            for (var index = 0; index < context.ChildCount; index++)
+            {
+                var child = context.GetChild(index);
+                if (child is T)
+                {
+                    children.Add((T)child);
+                }
+            }
+            return children;
+        }
+
         public static List<T> GetDescendents<T>(RuleContext context)
         {
             var descendents = new List<T>();
@@ -131,7 +150,5 @@ namespace Rubberduck.Parsing.Symbols
             }
             return descendents;
         }
-
-
     }
 }
