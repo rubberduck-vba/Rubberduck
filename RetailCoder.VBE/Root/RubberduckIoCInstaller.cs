@@ -293,7 +293,7 @@ namespace Rubberduck.Root
             {
                 typeof(AboutCommandMenuItem),
                 typeof(SettingsCommandMenuItem),
-//                typeof(InspectionResultsCommandMenuItem),
+                typeof(InspectionResultsCommandMenuItem),
                 typeof(UnitTestingParentMenu),
                 typeof(SmartIndenterParentMenu),
                 typeof(ToolsParentMenu),
