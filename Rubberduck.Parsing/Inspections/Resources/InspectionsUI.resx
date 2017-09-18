@@ -803,4 +803,58 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>Stop keyword detected</value>
     <comment>{0} Property name</comment>
   </data>
+  <data name="EmptyCaseBlockInspectionMeta" xml:space="preserve">
+    <value>A Case block should have executable statements</value>
+  </data>
+  <data name="EmptyCaseBlockInspectionName" xml:space="preserve">
+    <value>Empty Case block</value>
+  </data>
+  <data name="EmptyCaseBlockInspectionResultFormat" xml:space="preserve">
+    <value>Case block has no executable statements</value>
+  </data>
+  <data name="EmptyDoWhileBlockInspectionResultFormat" xml:space="preserve">
+    <value>Do-While Loop has no executable statements</value>
+  </data>
+  <data name="EmptyDoWhileBlockInspectionMeta" xml:space="preserve">
+    <value>A Loop block should have executable statements</value>
+  </data>
+  <data name="EmptyDoWhileBlockInspectionName" xml:space="preserve">
+    <value>Empty Do-While Loop</value>
+  </data>
+  <data name="EmptyForEachBlockInspectionResultFormat" xml:space="preserve">
+    <value>For-Each Loop has no executable statements</value>
+  </data>
+  <data name="EmptyForEachBlockInspectionMeta" xml:space="preserve">
+    <value>A Loop block should have executable statements</value>
+  </data>
+  <data name="EmptyForEachBlockInspectionName" xml:space="preserve">
+    <value>Empty For-Each Loop</value>
+  </data>
+  <data name="EmptyForLoopBlockInspectionResultFormat" xml:space="preserve">
+    <value>For Loop has no executable statements</value>
+  </data>
+  <data name="EmptyForLoopBlockInspectionMeta" xml:space="preserve">
+    <value>A Loop block should have executable statements</value>
+  </data>
+  <data name="EmptyForLoopBlockInspectionName" xml:space="preserve">
+    <value>Empty For Loop</value>
+  </data>
+  <data name="EmptyWhileWendBlockInspectionResultFormat" xml:space="preserve">
+    <value>While-Wend block has no executable statements</value>
+  </data>
+  <data name="EmptyWhileWendBlockInspectionMeta" xml:space="preserve">
+    <value>A Loop block should have executable statements</value>
+  </data>
+  <data name="EmptyWhileWendBlockInspectionName" xml:space="preserve">
+    <value>Empty While-Wend block</value>
+  </data>
+  <data name="ShadowedDeclarationInspectionMeta" xml:space="preserve">
+    <value>Two declarations are in scope and have the same identifier name. This means that only one of them will be available to use.</value>
+  </data>
+  <data name="ShadowedDeclarationInspectionName" xml:space="preserve">
+    <value>Shadowed declaration</value>
+  </data>
+  <data name="ShadowedDeclarationInspectionResultFormat" xml:space="preserve">
+    <value>{0} '{1}' hides {2} '{3}'</value>
+  </data>
 </root>

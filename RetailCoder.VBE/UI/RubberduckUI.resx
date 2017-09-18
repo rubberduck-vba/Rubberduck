@@ -1529,13 +1529,13 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="CodeExplorer_Sort" xml:space="preserve">
     <value>Sort</value>
   </data>
-  <data name="SortStyle_ByName" xml:space="preserve">
-    <value>By name</value>
+  <data name="CodeExplorer_SortStyle_ByName" xml:space="preserve">
+    <value>by Name</value>
   </data>
-  <data name="SortStyle_ByType" xml:space="preserve">
-    <value>By type</value>
+  <data name="CodeExplorer_SortStyle_ByType" xml:space="preserve">
+    <value>Group by Type</value>
   </data>
-  <data name="SortStyle_ByCodeOrder" xml:space="preserve">
+  <data name="CodeExplorer_SortStyle_ByCodeOrder" xml:space="preserve">
     <value>As in module</value>
   </data>
   <data name="TestOutcome_Ignored" xml:space="preserve">
@@ -2092,12 +2092,12 @@ Would you like to import them to Rubberduck?</value>
   <data name="CodeExplorer_AddModule" xml:space="preserve">
     <value>Add Module</value>
   </data>
-  <data name="CodeExplorer_EmptyViewMessage" xml:space="preserve">
+  <data name="EmptyUIRefreshMessage" xml:space="preserve">
     <value>to parse and process
 the projects in the VBE.</value>
     <comment>Follows the text for "Refresh"</comment>
   </data>
-  <data name="CodeExplorer_EmptyViewMessage_Title" xml:space="preserve">
+  <data name="EmptyUIRefreshMessage_Title" xml:space="preserve">
     <value>Rubberduck doesn't see anything yet.</value>
   </data>
 </root>

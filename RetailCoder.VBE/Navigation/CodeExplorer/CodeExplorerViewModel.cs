@@ -97,14 +97,26 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             SetNameSortCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
             {
-                SortByName = (bool)param;
-                SortBySelection = !(bool)param;
+                if ((bool)param == true)
+                {
+                    SortByName = (bool)param;
+                    SortByCodeOrder = !(bool)param;
+                }
+            }, param =>
+            {
+                return SortByName ? false : true;
             });
 
-            SetSelectionSortCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
+            SetCodeOrderSortCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
             {
-                SortBySelection = (bool)param;
-                SortByName = !(bool)param;
+                if ((bool)param == true)
+                {
+                    SortByCodeOrder = (bool)param;
+                    SortByName = !(bool)param;
+                };
+            }, param => 
+            {
+                return SortByCodeOrder ? false : true;
             });
         }
 
@@ -141,28 +153,30 @@ namespace Rubberduck.Navigation.CodeExplorer
                 }
 
                 _windowSettings.CodeExplorer_SortByName = value;
-                _windowSettings.CodeExplorer_SortByLocation = !value;
+                _windowSettings.CodeExplorer_SortByCodeOrder = !value;
                 _windowSettingsProvider.Save(_windowSettings);
                 OnPropertyChanged();
+                OnPropertyChanged("SortByCodeOrder");
 
                 ReorderChildNodes(Projects);
             }
         }
 
-        public bool SortBySelection
+        public bool SortByCodeOrder
         {
-            get { return _windowSettings.CodeExplorer_SortByLocation; }
+            get { return _windowSettings.CodeExplorer_SortByCodeOrder; }
             set
             {
-                if (_windowSettings.CodeExplorer_SortByLocation == value)
+                if (_windowSettings.CodeExplorer_SortByCodeOrder == value)
                 {
                     return;
                 }
 
-                _windowSettings.CodeExplorer_SortByLocation = value;
+                _windowSettings.CodeExplorer_SortByCodeOrder = value;
                 _windowSettings.CodeExplorer_SortByName = !value;
                 _windowSettingsProvider.Save(_windowSettings);
                 OnPropertyChanged();
+                OnPropertyChanged("SortByName");
 
                 ReorderChildNodes(Projects);
             }
@@ -172,9 +186,9 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public CommandBase SetNameSortCommand { get; }
 
-        public CommandBase SetSelectionSortCommand { get; }
+        public CommandBase SetCodeOrderSortCommand { get; }
 
-        public bool SortByType
+        public bool GroupByType
         {
             get { return _windowSettings.CodeExplorer_GroupByType; }
             set
@@ -200,7 +214,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 _isBusy = value;
                 OnPropertyChanged();
                 // If the window is "busy" then hide the Refresh message
-                OnPropertyChanged("EmptyTreeMessageVisibility");
+                OnPropertyChanged("EmptyUIRefreshMessageVisibility");
             }
         }
 
@@ -414,7 +428,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             foreach (var node in nodes)
             {
-                node.ReorderItems(SortByName, SortByType);
+                node.ReorderItems(SortByName, GroupByType);
                 ReorderChildNodes(node.Items);
             }
         }
@@ -552,7 +566,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        public Visibility EmptyTreeMessageVisibility
+        public Visibility EmptyUIRefreshMessageVisibility
         {
             get
             {
