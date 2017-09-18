@@ -29,8 +29,8 @@ namespace Rubberduck.Parsing
         /// <summary>
         /// Validates whether a context is contained within a given Selection
         /// </summary>
-        /// <param name="context">A context which contains several tokens within a module's parse tree</param>
         /// <param name="selection">One-based selection, usually from CodePane.Selection</param>
+        /// <param name="context">A context which contains several tokens within a module's parse tree</param>
         /// <returns>Boolean with true indicating that context is within the selection</returns>
         public static bool Contains(this Selection selection, ParserRuleContext context)
         {
