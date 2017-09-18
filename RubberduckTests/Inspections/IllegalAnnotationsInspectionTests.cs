@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -49,6 +50,32 @@ Option Explicit
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.IsFalse(inspectionResults.Any());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void GivenOneIlegalModuleAnnotationAcrossModules_OneResult()
+        {
+            const string inputCode1 = @"
+Option Explicit
+'@Folder(""Legal"")
+
+Sub DoSomething()
+'@Folder(""Illegal"")
+End Sub
+";
+            const string inputCode2 = @"
+Option Explicit
+'@Folder(""Legal"")
+";
+            var vbe = MockVbeBuilder.BuildFromStdModules(("Module1", inputCode1), ("Module2", inputCode2));
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new IllegalAnnotationInspection(state);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            Assert.AreEqual(1, inspectionResults.Count());
         }
 
         [TestMethod]

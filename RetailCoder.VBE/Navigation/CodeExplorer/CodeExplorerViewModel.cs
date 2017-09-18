@@ -214,7 +214,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 _isBusy = value;
                 OnPropertyChanged();
                 // If the window is "busy" then hide the Refresh message
-                OnPropertyChanged("EmptyTreeMessageVisibility");
+                OnPropertyChanged("EmptyUIRefreshMessageVisibility");
             }
         }
 
@@ -566,7 +566,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        public Visibility EmptyTreeMessageVisibility
+        public Visibility EmptyUIRefreshMessageVisibility
         {
             get
             {
