@@ -1,0 +1,65 @@
+<Project
+  Name='BareRibbon'
+  FileName='D:\UserData\Pieter\GitHub\Rubberduck\Rubberduck.RibbonDispatcher\Sample Ribbons\SampleRibbon\SampleRibbon V0.6.5.xlsm'
+  HelpContextID='0'
+  HelpFile=''
+  Protection='0'
+  Type='100'
+>
+  <References>
+    <Reference
+      Description='Visual Basic For Applications'
+      FullPath='C:\Program Files (x86)\Common Files\Microsoft Shared\VBA\VBA7.1\VBE7.DLL'
+      Guid='{000204EF-0000-0000-C000-000000000046}'
+      Major='4'
+      Minor='2'
+      Name='VBA'
+      Type='0'
+    />
+    <Reference
+      Description='Microsoft Excel 16.0 Object Library'
+      FullPath='C:\Program Files (x86)\Microsoft Office\Root\Office16\EXCEL.EXE'
+      Guid='{00020813-0000-0000-C000-000000000046}'
+      Major='1'
+      Minor='9'
+      Name='Excel'
+      Type='0'
+    />
+    <Reference
+      Description='OLE Automation'
+      FullPath='C:\Windows\SysWOW64\stdole2.tlb'
+      Guid='{00020430-0000-0000-C000-000000000046}'
+      Major='2'
+      Minor='0'
+      Name='stdole'
+      Type='0'
+    />
+    <Reference
+      Description='Microsoft Office 16.0 Object Library'
+      FullPath='C:\Program Files (x86)\Common Files\Microsoft Shared\OFFICE16\MSO.DLL'
+      Guid='{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}'
+      Major='2'
+      Minor='8'
+      Name='Office'
+      Type='0'
+    />
+    <Reference
+      Description=''
+      FullPath='D:\UserData\Pieter\GitHub\Rubberduck\Rubberduck.RibbonDispatcher\bin\Release\Rubberduck.RibbonDispatcher.tlb'
+      Guid='{69E19408-43F1-3B33-B105-9B8188A6F040}'
+      Major='0'
+      Minor='5'
+      Name='Rubberduck_RibbonDispatcher'
+      Type='0'
+    />
+    <Reference
+      Description=''
+      FullPath='C:\Users\pgeer\AppData\Roaming\Microsoft\AddIns\RibbonLibrary.xlam'
+      Guid=''
+      Major='0'
+      Minor='0'
+      Name='RibbonLibrary'
+      Type='1'
+    />
+  </References>
+</Project>
