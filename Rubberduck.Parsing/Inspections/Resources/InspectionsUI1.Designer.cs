@@ -1915,6 +1915,33 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Two declarations are in scope and have the same identifier name. This means that only one of them will be available to use..
+        /// </summary>
+        public static string ShadowedDeclarationInspectionMeta {
+            get {
+                return ResourceManager.GetString("ShadowedDeclarationInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shadowed declaration.
+        /// </summary>
+        public static string ShadowedDeclarationInspectionName {
+            get {
+                return ResourceManager.GetString("ShadowedDeclarationInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} &apos;{1}&apos; hides {2} &apos;{3}&apos;.
+        /// </summary>
+        public static string ShadowedDeclarationInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("ShadowedDeclarationInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Specify Public access modifier explicitly.
         /// </summary>
         public static string SpecifyExplicitPublicModifierQuickFix {

@@ -865,6 +865,11 @@ namespace Rubberduck.Parsing.Symbols
                 null));
         }
 
+        public override void EnterOptionPrivateModuleStmt(VBAParser.OptionPrivateModuleStmtContext context)
+        {
+            ((ProceduralModuleDeclaration) _moduleDeclaration).IsPrivateModule = true;
+        }
+
         private void AddDeclaration(Declaration declaration)
         {
             _createdDeclarations.Add(declaration);

@@ -16,7 +16,7 @@ namespace RubberduckTests.Inspections
         [TestCategory("Inspections")]
         public void InspectionType()
         {
-            var inspection = new EmptyConditionBlockInspection(null);
+            var inspection = new EmptyConditionBlockInspection(null, ConditionBlockToInspect.NA);
             Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
         }
 
@@ -26,7 +26,7 @@ namespace RubberduckTests.Inspections
         {
             const string inspectionName = nameof(EmptyConditionBlockInspection);
 
-            var inspection = new EmptyConditionBlockInspection(null);
+            var inspection = new EmptyConditionBlockInspection(null, ConditionBlockToInspect.NA);
 
             Assert.AreEqual(inspectionName, inspection.Name);
         }
@@ -46,7 +46,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyConditionBlockInspection(state);
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.If);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
@@ -68,11 +68,16 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyConditionBlockInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+            var allInspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.All);
+            var allInspector = InspectionsHelper.GetInspector(allInspection);
+            var allInspectionResults = allInspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.AreEqual(2, inspectionResults.Count());
+            var elseifInspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.ElseIf);
+            var elseifInspector = InspectionsHelper.GetInspector(elseifInspection);
+            var elseifInspectionResults = elseifInspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            Assert.AreEqual(3, allInspectionResults.Count());
+            Assert.AreEqual(1, elseifInspectionResults.Count());
         }
 
         [TestMethod]
@@ -92,7 +97,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyConditionBlockInspection(state);
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.Else);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
@@ -115,7 +120,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyConditionBlockInspection(state);
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.If);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
@@ -139,7 +144,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyConditionBlockInspection(state);
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.If);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
@@ -161,7 +166,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyConditionBlockInspection(state);
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.If);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
@@ -183,7 +188,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyConditionBlockInspection(state);
+            var inspection = new EmptyConditionBlockInspection(state,ConditionBlockToInspect.If);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
@@ -205,7 +210,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyConditionBlockInspection(state);
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.If);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
@@ -227,7 +232,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyConditionBlockInspection(state);
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.If);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
@@ -250,7 +255,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyConditionBlockInspection(state);
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.If);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
@@ -273,7 +278,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyConditionBlockInspection(state);
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.If);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
@@ -296,7 +301,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyConditionBlockInspection(state);
+            var inspection = new EmptyConditionBlockInspection(state,ConditionBlockToInspect.If);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
@@ -322,7 +327,8 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyConditionBlockInspection(state);
+            var inspection = new EmptyConditionBlockInspection(state,
+                                    ConditionBlockToInspect.If & ConditionBlockToInspect.ElseIf);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
@@ -344,7 +350,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputcode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyConditionBlockInspection(state);
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.If);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
             const int expectedCount = 1;
@@ -369,7 +375,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputcode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyConditionBlockInspection(state);
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.All);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
             const int expectedCount = 1;
@@ -394,7 +400,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyConditionBlockInspection(state);
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.Else);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
             const int expectedCount = 1; 
@@ -420,7 +426,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyConditionBlockInspection(state);
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.Else);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
             const int expectedCount = 1;
@@ -446,7 +452,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyConditionBlockInspection(state);
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.Else);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
             const int expectedCount = 1;
@@ -472,7 +478,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyConditionBlockInspection(state);
+            var inspection = new EmptyConditionBlockInspection(state,ConditionBlockToInspect.Else);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
             const int expectedCount = 1;
@@ -499,7 +505,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputcode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyConditionBlockInspection(state);
+            var inspection = new EmptyConditionBlockInspection(state,ConditionBlockToInspect.Else);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
             const int expectedCount = 1;
@@ -525,7 +531,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyConditionBlockInspection(state);
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.Else);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
             const int expectedCount = 1;
@@ -550,7 +556,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyConditionBlockInspection(state);
+            var inspection = new EmptyConditionBlockInspection(state,ConditionBlockToInspect.Else);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
             const int expectedCount = 1;
@@ -579,7 +585,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyConditionBlockInspection(state);
+            var inspection = new EmptyConditionBlockInspection(state,ConditionBlockToInspect.Else);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
@@ -607,7 +613,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyConditionBlockInspection(state);
+            var inspection = new EmptyConditionBlockInspection(state,ConditionBlockToInspect.Else);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
