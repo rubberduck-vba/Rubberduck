@@ -63,6 +63,9 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
+    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.4.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="WindowsBase" />
@@ -95,10 +98,15 @@
     <Compile Include="Commands\IndentCommandTests.cs" />
     <Compile Include="Commands\UnitTestCommandTests.cs" />
     <Compile Include="Grammar\ParserRuleContextExtensionTests.cs" />
+    <Compile Include="Grammar\SelectionExtensionsTests.cs" />
     <Compile Include="Inspections\ApplicationWorksheetFunctionInspectionTests.cs" />
-    <Compile Include="QuickFixes\AssignedByValParameterMakeLocalCopyQuickFixTests.cs" />
+    <Compile Include="Inspections\EmptyCaseBlockInspectionTests.cs" />
+    <Compile Include="Inspections\EmptyDoWhileBlockInspectionTests.cs" />
     <Compile Include="Inspections\EmptyElseBlockInspectionTests.cs" />
+    <Compile Include="Inspections\EmptyForEachBlockInspectionTests.cs" />
+    <Compile Include="Inspections\EmptyForLoopBlockInspectionTests.cs" />
     <Compile Include="Inspections\EmptyIfBlockInspectionTests.cs" />
+    <Compile Include="Inspections\EmptyWhileWendBlockInspectionTests.cs" />
     <Compile Include="Inspections\InspectionsHelper.cs" />
     <Compile Include="Inspections\IntegerDataTypeInspectionTests.cs" />
     <Compile Include="Inspections\MissingAnnotationInspectionTests.cs" />
@@ -108,8 +116,10 @@
     <Compile Include="Inspections\HungarianNotationInspectionTests.cs" />
     <Compile Include="Inspections\ImplicitActiveWorkbookReferenceInspectionTests.cs" />
     <Compile Include="Inspections\MemberNotOnInterfaceInspectionTests.cs" />
+    <Compile Include="Inspections\ShadowedDeclarationInspectionTests.cs" />
     <Compile Include="Inspections\StopKeywordInspectionTests.cs" />
     <Compile Include="Inspections\OptionBaseZeroInspectionTests.cs" />
+    <Compile Include="QuickFixes\AssignedByValParameterMakeLocalCopyQuickFixTests.cs" />
     <Compile Include="QuickFixes\ChangeProcedureToFunctionQuickFixTests.cs" />
     <Compile Include="QuickFixes\DeclareAsExplicitVariantQuickFixTests.cs" />
     <Compile Include="QuickFixes\PassParameterByReferenceQuickFixTests.cs" />
