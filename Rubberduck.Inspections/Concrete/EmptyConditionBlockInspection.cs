@@ -59,7 +59,7 @@ namespace Rubberduck.Inspections.Concrete
 
             public override void EnterIfStmt([NotNull] VBAParser.IfStmtContext context)
             {
-                if ((_blockToInspect & ConditionBlockToInspect.If) == ConditionBlockToInspect.If)
+                if (_blockToInspect.HasFlag(ConditionBlockToInspect.If))
                 {
                     InspectBlockForExecutableStatements(context.block(), context);
                 }
@@ -67,7 +67,7 @@ namespace Rubberduck.Inspections.Concrete
 
             public override void EnterElseIfBlock([NotNull] VBAParser.ElseIfBlockContext context)
             {
-                if ((_blockToInspect & ConditionBlockToInspect.ElseIf) == ConditionBlockToInspect.ElseIf)
+                if (_blockToInspect.HasFlag(ConditionBlockToInspect.ElseIf))
                 {
                     InspectBlockForExecutableStatements(context.block(), context);
                 }
@@ -75,8 +75,7 @@ namespace Rubberduck.Inspections.Concrete
 
             public override void EnterSingleLineIfStmt([NotNull] VBAParser.SingleLineIfStmtContext context)
             {
-                if (context.ifWithEmptyThen() != null
-                    & ((_blockToInspect & ConditionBlockToInspect.If) == ConditionBlockToInspect.If))
+                if (context.ifWithEmptyThen() != null & _blockToInspect.HasFlag(ConditionBlockToInspect.If))
                 {
                     AddResult(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context.ifWithEmptyThen()));
                 }
@@ -84,7 +83,7 @@ namespace Rubberduck.Inspections.Concrete
 
             public override void EnterElseBlock([NotNull] VBAParser.ElseBlockContext context)
             {
-                if ((_blockToInspect & ConditionBlockToInspect.Else) == ConditionBlockToInspect.Else)
+                if (_blockToInspect.HasFlag(ConditionBlockToInspect.Else))
                 {
                     InspectBlockForExecutableStatements(context.block(), context);
                 }

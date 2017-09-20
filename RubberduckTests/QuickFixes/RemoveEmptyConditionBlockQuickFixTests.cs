@@ -12,7 +12,6 @@ namespace RubberduckTests.QuickFixes
     [TestClass]
     public class RemoveEmptyConditionBlockQuickFixTests
     {
-        #region EmptyIfBlock
         [TestMethod]
         [TestCategory("QuickFixes")]
         public void EmptyIfBlock_QuickFixRemovesLoneIf()
@@ -22,7 +21,7 @@ namespace RubberduckTests.QuickFixes
     If True Then
     End If
 End Sub";
-            const string expectedCode =
+            const string expectedRewrite =
 @"Sub Foo()
     
 End Sub";
@@ -36,8 +35,9 @@ End Sub";
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionResults.First());
+            var actualRewrite = state.GetRewriter(component).GetText();
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            Assert.AreEqual(expectedRewrite, actualRewrite);
         }
 
         [TestMethod]
@@ -52,7 +52,7 @@ End Sub
 Sub Bar()
 End Sub";
 
-            const string expectedCode =
+            const string expectedRewrite =
 @"Sub Foo()
     If Not True Then Bar
 End Sub
@@ -64,13 +64,14 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyConditionBlockInspection(state,ConditionBlockToInspect.All);
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.If);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionResults.First());
+            var actualRewrite = state.GetRewriter(component).GetText();
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            Assert.AreEqual(expectedRewrite, actualRewrite);
         }
 
         [TestMethod]
@@ -83,7 +84,7 @@ End Sub";
         ' Im a comment
     End If
 End Sub";
-            const string expectedCode =
+            const string expectedRewrite =
 @"Sub Foo()
     
 End Sub";
@@ -97,8 +98,9 @@ End Sub";
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionResults.First());
+            var actualRewrite = state.GetRewriter(component).GetText();
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            Assert.AreEqual(expectedRewrite, actualRewrite);
         }
 
         [TestMethod]
@@ -116,7 +118,7 @@ End Sub";
         b = 0
     End If
 End Sub";
-            const string expectedCode =
+            const string expectedRewrite =
 @"Sub Foo()
     If False Then
         Dim d
@@ -136,8 +138,9 @@ End Sub";
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionResults.First());
+            var actualRewrite = state.GetRewriter(component).GetText();
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            Assert.AreEqual(expectedRewrite, actualRewrite);
         }
 
         [TestMethod]
@@ -155,7 +158,7 @@ End Sub";
         b = 0
     End If
 End Sub";
-            const string expectedCode =
+            const string expectedRewrite =
 @"Sub Foo()
     If True Then
         Dim d
@@ -175,8 +178,9 @@ End Sub";
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionResults.First());
+            var actualRewrite = state.GetRewriter(component).GetText();
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            Assert.AreEqual(expectedRewrite, actualRewrite);
         }
 
         [TestMethod]
@@ -195,7 +199,7 @@ End Sub";
         b = 0
     End If
 End Sub";
-            const string expectedCode =
+            const string expectedRewrite =
 @"Sub Foo()
     If True Then
         Dim d
@@ -215,8 +219,9 @@ End Sub";
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionResults.First());
+            var actualRewrite = state.GetRewriter(component).GetText();
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            Assert.AreEqual(expectedRewrite, actualRewrite);
         }
 
         [TestMethod]
@@ -232,7 +237,7 @@ End Sub";
         b = 0
     End If
 End Sub";
-            const string expectedCode =
+            const string expectedRewrite =
 @"Sub Foo()
     Dim d
     If Not True Then
@@ -251,8 +256,9 @@ End Sub";
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionResults.First());
+            var actualRewrite = state.GetRewriter(component).GetText();
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            Assert.AreEqual(expectedRewrite, actualRewrite);
         }
 
         [TestMethod]
@@ -269,7 +275,7 @@ End Sub";
         b = 0
     End If
 End Sub";
-            const string expectedCode =
+            const string expectedRewrite =
 @"Sub Foo()
     Dim d
     If Not True Then
@@ -289,8 +295,9 @@ End Sub";
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionResults.First());
+            var actualRewrite = state.GetRewriter(component).GetText();
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            Assert.AreEqual(expectedRewrite, actualRewrite);
         }
 
         [TestMethod]
@@ -308,7 +315,7 @@ a:      Dim e
         b = 0
     End If
 End Sub";
-            const string expectedCode =
+            const string expectedRewrite =
 @"Sub Foo()
     
 5       Dim d
@@ -330,9 +337,9 @@ End Sub";
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionResults.First());
+            var actualRewrite = state.GetRewriter(component).GetText();
 
-            var rewrittenCode = state.GetRewriter(component).GetText();
-            Assert.AreEqual(expectedCode, rewrittenCode);
+            Assert.AreEqual(expectedRewrite, actualRewrite);
         }
 
         [TestMethod]
@@ -348,7 +355,7 @@ End Sub";
         b = 0
     End If
 End Sub";
-            const string expectedCode =
+            const string expectedRewrite =
 @"Sub Foo()
     Const d = 0
     If Not True Then
@@ -367,9 +374,9 @@ End Sub";
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionResults.First());
+            var actualRewrite = state.GetRewriter(component).GetText();
 
-            var rewrittenCode = state.GetRewriter(component).GetText();
-            Assert.AreEqual(expectedCode, rewrittenCode);
+            Assert.AreEqual(expectedRewrite, actualRewrite);
         }
 
         [TestMethod]
@@ -385,7 +392,7 @@ End Sub";
         Dim b
     End If
 End Sub";
-            const string expectedCode =
+            const string expectedRewrite =
 @"Sub Foo()
     Dim b
     If True Then
@@ -403,8 +410,9 @@ End Sub";
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionResults.First());
+            var actualRewrite = state.GetRewriter(component).GetText();
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            Assert.AreEqual(expectedRewrite, actualRewrite);
         }
 
         [TestMethod]
@@ -420,7 +428,7 @@ End Sub";
         Const d = 0
     End If
 End Sub";
-            const string expectedCode =
+            const string expectedRewrite =
 @"Sub Foo()
     Const d = 0
     If True Then
@@ -438,8 +446,9 @@ End Sub";
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionResults.First());
+            var actualRewrite = state.GetRewriter(component).GetText();
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            Assert.AreEqual(expectedRewrite, actualRewrite);
         }
 
         [TestMethod]
@@ -454,7 +463,7 @@ End Sub";
         d = 0
     End If
 End Sub";
-            const string expectedCode =
+            const string expectedRewrite =
 @"Sub Foo()
     If False Then
         Dim d
@@ -471,13 +480,14 @@ End Sub";
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionResults.First());
+            var actualRewrite = state.GetRewriter(component).GetText();
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            Assert.AreEqual(expectedRewrite, actualRewrite);
         }
 
         [TestMethod]
         [TestCategory("QuickFixes")]
-        public void EmptyIfBlock_QuickFixRemovesElse_InvertsIf_SimpleCondition()
+        public void EmptyIfBlock_QuickFixRemovesIf_InvertsIf_SimpleCondition()
         {
             const string inputCode =
 @"Sub Foo()
@@ -485,7 +495,7 @@ End Sub";
     Else
     End If
 End Sub";
-            const string expectedCode =
+            const string expectedRewrite =
 @"Sub Foo()
     If Not True Then
     
@@ -500,18 +510,16 @@ End Sub";
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            //Skip over empty Else block and get If block for the fix
-            var inspectionToFix = inspectionResults.First(); //.ElementAt(1);
-            
+            var inspectionToFix = inspectionResults.First();
             new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
-            var actualCode = state.GetRewriter(component).GetText();
+            var actualRewrite = state.GetRewriter(component).GetText();
 
-            Assert.AreEqual(expectedCode, actualCode);
+            Assert.AreEqual(expectedRewrite, actualRewrite);
         }
 
         [TestMethod]
         [TestCategory("QuickFixes")]
-        public void EmptyIfBlock_QuickFixRemovesElse_InvertsIf_Equals()
+        public void EmptyElseBlock_QuickFixRemovesElse_Equals()
         {
             const string inputCode =
 @"Sub Foo()
@@ -519,7 +527,38 @@ End Sub";
     Else
     End If
 End Sub";
-            const string expectedCode =
+            const string expectedRewrite =
+@"Sub Foo()
+    If True = True Then
+    End If
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.Else);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            var inspectionToFix = inspectionResults.First();
+            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
+            var actualRewrite = state.GetRewriter(component).GetText();
+
+            Assert.AreEqual(expectedRewrite, actualRewrite);
+        }
+
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void EmptyIfBlock_QuickFixRemovesIf_InvertsIf_Equals()
+        {
+            const string inputCode =
+@"Sub Foo()
+    If True = True Then
+    Else
+    End If
+End Sub";
+            const string expectedRewrite =
 @"Sub Foo()
     If True <> True Then
     
@@ -530,21 +569,20 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.Else);
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.If);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            //Skip over empty Else block and get If block for the fix
-            var inspectionToFix = inspectionResults.ElementAt(1);
+            var inspectionToFix = inspectionResults.First();
             new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
-            var actualCode = state.GetRewriter(component).GetText();
+            var actualRewrite = state.GetRewriter(component).GetText();
 
-            Assert.AreEqual(expectedCode, actualCode);
+            Assert.AreEqual(expectedRewrite, actualRewrite);
         }
 
         [TestMethod]
         [TestCategory("QuickFixes")]
-        public void EmptyIfBlock_QuickFixRemovesElse_InvertsIf_NotEquals()
+        public void EmptyElseBlock_QuickFixRemovesElse_NotEquals()
         {
             const string inputCode =
 @"Sub Foo()
@@ -552,7 +590,38 @@ End Sub";
     Else
     End If
 End Sub";
-            const string expectedCode =
+            const string expectedRewrite =
+@"Sub Foo()
+    If True <> True Then
+    End If
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.Else);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            var inspectionToFix = inspectionResults.First();
+            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
+            var actualRewrite = state.GetRewriter(component).GetText();
+
+            Assert.AreEqual(expectedRewrite, actualRewrite);
+        }
+
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void EmptyIfBlock_QuickFixRemovesIf_InvertsIf_NotEquals()
+        {
+            const string inputCode =
+@"Sub Foo()
+    If True <> True Then
+    Else
+    End If
+End Sub";
+            const string expectedRewrite =
 @"Sub Foo()
     If True = True Then
     
@@ -563,21 +632,20 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.Else);
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.If);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            //Skip over empty Else block and get If block for the fix
-            var inspectionToFix = inspectionResults.ElementAt(1);
+            var inspectionToFix = inspectionResults.First();
             new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
-            var actualCode = state.GetRewriter(component).GetText();
+            var actualRewrite = state.GetRewriter(component).GetText();
 
-            Assert.AreEqual(expectedCode, actualCode);
+            Assert.AreEqual(expectedRewrite, actualRewrite);
         }
 
         [TestMethod]
         [TestCategory("QuickFixes")]
-        public void EmptyIfBlock_QuickFixRemovesElse_InvertsIf_LessThan()
+        public void EmptyElseBlock_QuickFixRemovesElse_LessThan()
         {
             const string inputCode =
 @"Sub Foo()
@@ -585,7 +653,38 @@ End Sub";
     Else
     End If
 End Sub";
-            const string expectedCode =
+            const string expectedRewrite =
+@"Sub Foo()
+    If True < True Then
+    End If
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.Else);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            var inspectionToFix = inspectionResults.First();
+            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
+            var actualRewrite = state.GetRewriter(component).GetText();
+
+            Assert.AreEqual(expectedRewrite, actualRewrite);
+        }
+
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void EmptyIfBlock_QuickFixRemovesIf_InvertsIf_LessThan()
+        {
+            const string inputCode =
+@"Sub Foo()
+    If True < True Then
+    Else
+    End If
+End Sub";
+            const string expectedRewrite =
 @"Sub Foo()
     If True >= True Then
     
@@ -596,21 +695,20 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.Else);
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.If);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            //Skip over empty Else block and get If block for the fix
-            var inspectionToFix = inspectionResults.ElementAt(1);
+            var inspectionToFix = inspectionResults.First();
             new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
-            var actualCode = state.GetRewriter(component).GetText();
+            var actualRewrite = state.GetRewriter(component).GetText();
 
-            Assert.AreEqual(expectedCode, actualCode);
+            Assert.AreEqual(expectedRewrite, actualRewrite);
         }
 
         [TestMethod]
         [TestCategory("QuickFixes")]
-        public void EmptyIfBlock_QuickFixRemovesElse_InvertsIf_LessThanEquals()
+        public void EmptyElseBlock_QuickFixRemovesElse_LessThanEquals()
         {
             const string inputCode =
 @"Sub Foo()
@@ -618,10 +716,9 @@ End Sub";
     Else
     End If
 End Sub";
-            const string expectedCode =
+            const string expectedRewrite =
 @"Sub Foo()
-    If True > True Then
-    
+    If True <= True Then
     End If
 End Sub";
 
@@ -633,17 +730,48 @@ End Sub";
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            //Skip over empty Else block and get If block for the fix
-            var inspectionToFix = inspectionResults.ElementAt(1);
+            var inspectionToFix = inspectionResults.First();
             new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
-            var actualCode = state.GetRewriter(component).GetText();
+            var actualRewrite = state.GetRewriter(component).GetText();
 
-            Assert.AreEqual(expectedCode, actualCode);
+            Assert.AreEqual(expectedRewrite, actualRewrite);
         }
 
         [TestMethod]
         [TestCategory("QuickFixes")]
-        public void EmptyIfBlock_QuickFixRemovesElse_InvertsIf_GreaterThan()
+        public void EmptyIfBlock_QuickFixRemovesIf_InvertsIf_LessThanEquals()
+        {
+            const string inputCode =
+@"Sub Foo()
+    If True <= True Then
+    Else
+    End If
+End Sub";
+            const string expectedRewrite =
+@"Sub Foo()
+    If True > True Then
+    
+    End If
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.If);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            var inspectionToFix = inspectionResults.First();
+            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
+            var actualRewrite = state.GetRewriter(component).GetText();
+
+            Assert.AreEqual(expectedRewrite, actualRewrite);
+        }
+
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void EmptyElseBlock_QuickFixRemovesElse_GreaterThan()
         {
             const string inputCode =
 @"Sub Foo()
@@ -651,10 +779,9 @@ End Sub";
     Else
     End If
 End Sub";
-            const string expectedCode =
+            const string expectedRewrite =
 @"Sub Foo()
-    If True <= True Then
-    
+    If True > True Then
     End If
 End Sub";
 
@@ -666,17 +793,48 @@ End Sub";
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            //Skip over empty Else block and get If block for the fix
-            var inspectionToFix = inspectionResults.ElementAt(1);
+            var inspectionToFix = inspectionResults.First();
             new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
-            var actualCode = state.GetRewriter(component).GetText();
+            var actualRewrite = state.GetRewriter(component).GetText();
 
-            Assert.AreEqual(expectedCode, actualCode);
+            Assert.AreEqual(expectedRewrite, actualRewrite);
         }
 
         [TestMethod]
         [TestCategory("QuickFixes")]
-        public void EmptyIfBlock_QuickFixRemovesElse_InvertsIf_GreaterThanEquals()
+        public void EmptyIfBlock_QuickFixRemovesIf_InvertsIf_GreaterThan()
+        {
+            const string inputCode =
+@"Sub Foo()
+    If True > True Then
+    Else
+    End If
+End Sub";
+            const string expectedRewrite =
+@"Sub Foo()
+    If True <= True Then
+    
+    End If
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.If);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            var inspectionToFix = inspectionResults.First();
+            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
+            var actualRewrite = state.GetRewriter(component).GetText();
+
+            Assert.AreEqual(expectedRewrite, actualRewrite);
+        }
+
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void EmptyElseBlock_QuickFixRemovesElse_GreaterThanEquals()
         {
             const string inputCode =
 @"Sub Foo()
@@ -684,7 +842,38 @@ End Sub";
     Else
     End If
 End Sub";
-            const string expectedCode =
+            const string expectedRewrite =
+@"Sub Foo()
+    If True >= True Then
+    End If
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.Else);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            var inspectionToFix = inspectionResults.First();
+            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
+            var actualRewrite = state.GetRewriter(component).GetText();
+
+            Assert.AreEqual(expectedRewrite, actualRewrite);
+        }
+
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void EmptyIfBlock_QuickFixRemovesIf_InvertsIf_GreaterThanEquals()
+        {
+            const string inputCode =
+@"Sub Foo()
+    If True >= True Then
+    Else
+    End If
+End Sub";
+            const string expectedRewrite =
 @"Sub Foo()
     If True < True Then
     
@@ -695,21 +884,20 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.Else);
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.If);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            //Skip over empty Else block and get If block for the fix
-            var inspectionToFix = inspectionResults.ElementAt(1);
+            var inspectionToFix = inspectionResults.First();
             new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
-            var actualCode = state.GetRewriter(component).GetText();
+            var actualRewrite = state.GetRewriter(component).GetText();
 
-            Assert.AreEqual(expectedCode, actualCode);
+            Assert.AreEqual(expectedRewrite, actualRewrite);
         }
 
         [TestMethod]
         [TestCategory("QuickFixes")]
-        public void EmptyIfBlock_QuickFixRemovesElse_InvertsIf_Not()
+        public void EmptyElseBlock_QuickFixRemovesElse_Not()
         {
             const string inputCode =
 @"Sub Foo()
@@ -717,7 +905,38 @@ End Sub";
     Else
     End If
 End Sub";
-            const string expectedCode =
+            const string expectedRewrite =
+@"Sub Foo()
+    If Not True Then
+    End If
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.Else);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            var inspectionToFix = inspectionResults.First();
+            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
+            var actualRewrite = state.GetRewriter(component).GetText();
+
+            Assert.AreEqual(expectedRewrite, actualRewrite);
+        }
+
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void EmptyIfBlock_QuickFixRemovesIf_InvertsIf_Not()
+        {
+            const string inputCode =
+@"Sub Foo()
+    If Not True Then
+    Else
+    End If
+End Sub";
+            const string expectedRewrite =
 @"Sub Foo()
     If True Then
     
@@ -728,21 +947,20 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.Else);
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.If);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            //Skip over empty Else block and get If block for the fix
-            var inspectionToFix = inspectionResults.ElementAt(1);
+            var inspectionToFix = inspectionResults.First();
             new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
-            var actualCode = state.GetRewriter(component).GetText();
+            var actualRewrite = state.GetRewriter(component).GetText();
 
-            Assert.AreEqual(expectedCode, actualCode);
+            Assert.AreEqual(expectedRewrite, actualRewrite);
         }
 
         [TestMethod]
         [TestCategory("QuickFixes")]
-        public void EmptyIfBlock_QuickFixRemovesElse_InvertsIf_Not_NoWhitespace()
+        public void EmptyElseBlock_QuickFixRemovesElse_Not_NoWhitespace()
         {
             const string inputCode =
 @"Sub Foo()
@@ -750,7 +968,38 @@ End Sub";
     Else
     End If
 End Sub";
-            const string expectedCode =
+            const string expectedRewrite =
+@"Sub Foo()
+    If Not(True) Then
+    End If
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.Else);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            var inspectionToFix = inspectionResults.First();
+            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
+            var actualRewrite = state.GetRewriter(component).GetText();
+
+            Assert.AreEqual(expectedRewrite, actualRewrite);
+        }
+
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void EmptyIfBlock_QuickFixRemovesIf_InvertsIf_Not_NoWhitespace()
+        {
+            const string inputCode =
+@"Sub Foo()
+    If Not(True) Then
+    Else
+    End If
+End Sub";
+            const string expectedRewrite =
 @"Sub Foo()
     If (True) Then
     
@@ -761,21 +1010,20 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.Else);
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.If);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            //Skip over empty Else block and get If block for the fix
-            var inspectionToFix = inspectionResults.ElementAt(1);
+            var inspectionToFix = inspectionResults.First();
             new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
-            var actualCode = state.GetRewriter(component).GetText();
+            var actualRewrite = state.GetRewriter(component).GetText();
 
-            Assert.AreEqual(expectedCode, actualCode);
+            Assert.AreEqual(expectedRewrite, actualRewrite);
         }
 
         [TestMethod]
         [TestCategory("QuickFixes")]
-        public void EmptyIfBlock_QuickFixRemovesElse_InvertsIf_And()
+        public void EmptyElseBlock_QuickFixRemovesElse_And()
         {
             const string inputCode =
 @"Sub Foo()
@@ -783,10 +1031,9 @@ End Sub";
     Else
     End If
 End Sub";
-            const string expectedCode =
+            const string expectedRewrite =
 @"Sub Foo()
-    If True Or True Then
-    
+    If True And True Then
     End If
 End Sub";
 
@@ -798,17 +1045,48 @@ End Sub";
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            //Skip over empty Else block and get If block for the fix
-            var inspectionToFix = inspectionResults.ElementAt(1);
+            var inspectionToFix = inspectionResults.First();
             new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
-            var actualCode = state.GetRewriter(component).GetText();
+            var actualRewrite = state.GetRewriter(component).GetText();
 
-            Assert.AreEqual(expectedCode, actualCode);
+            Assert.AreEqual(expectedRewrite, actualRewrite);
         }
 
         [TestMethod]
         [TestCategory("QuickFixes")]
-        public void EmptyIfBlock_QuickFixRemovesElse_InvertsIf_Or()
+        public void EmptyIfBlock_QuickFixRemovesIf_InvertsIf_And()
+        {
+            const string inputCode =
+@"Sub Foo()
+    If True And True Then
+    Else
+    End If
+End Sub";
+            const string expectedRewrite =
+@"Sub Foo()
+    If True Or True Then
+    
+    End If
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.If);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            var inspectionToFix = inspectionResults.First();
+            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
+            var actualRewrite = state.GetRewriter(component).GetText();
+
+            Assert.AreEqual(expectedRewrite, actualRewrite);
+        }
+
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void EmptyElseBlock_QuickFixRemovesElse_InvertsIf_Or()
         {
             const string inputCode =
 @"Sub Foo()
@@ -816,10 +1094,9 @@ End Sub";
     Else
     End If
 End Sub";
-            const string expectedCode =
+            const string expectedRewrite =
 @"Sub Foo()
-    If True And True Then
-    
+    If True Or True Then
     End If
 End Sub";
 
@@ -831,17 +1108,48 @@ End Sub";
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            //Skip over empty Else block and get If block for the fix
-            var inspectionToFix = inspectionResults.ElementAt(1);
+            var inspectionToFix = inspectionResults.First();
             new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
-            var actualCode = state.GetRewriter(component).GetText();
+            var actualRewrite = state.GetRewriter(component).GetText();
 
-            Assert.AreEqual(expectedCode, actualCode);
+            Assert.AreEqual(expectedRewrite, actualRewrite);
         }
 
         [TestMethod]
         [TestCategory("QuickFixes")]
-        public void EmptyIfBlock_QuickFixRemovesElse_InvertsIf_Xor()
+        public void EmptyIfBlock_QuickFixRemovesIf_InvertsIf_Or()
+        {
+            const string inputCode =
+@"Sub Foo()
+    If True Or True Then
+    Else
+    End If
+End Sub";
+            const string expectedRewrite =
+@"Sub Foo()
+    If True And True Then
+    
+    End If
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.If);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            var inspectionToFix = inspectionResults.First();
+            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
+            var actualRewrite = state.GetRewriter(component).GetText();
+
+            Assert.AreEqual(expectedRewrite, actualRewrite);
+        }
+
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void EmptyElseBlock_QuickFixRemovesElse_Xor()
         {
             const string inputCode =
 @"Sub Foo()
@@ -849,7 +1157,38 @@ End Sub";
     Else
     End If
 End Sub";
-            const string expectedCode =
+            const string expectedRewrite =
+@"Sub Foo()
+    If True Xor True Then
+    End If
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.Else);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            var inspectionToFix = inspectionResults.First();
+            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
+            var actualRewrite = state.GetRewriter(component).GetText();
+
+            Assert.AreEqual(expectedRewrite, actualRewrite);
+        }
+
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void EmptyIfBlock_QuickFixRemovesIf_InvertsIf_Xor()
+        {
+            const string inputCode =
+@"Sub Foo()
+    If True Xor True Then
+    Else
+    End If
+End Sub";
+            const string expectedRewrite =
 @"Sub Foo()
     If Not (True Xor True) Then
     
@@ -860,21 +1199,20 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.Else);
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.If);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            //Skip over empty Else block and get If block for the fix
-            var inspectionToFix = inspectionResults.ElementAt(1);
+            var inspectionToFix = inspectionResults.First();
             new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
-            var actualCode = state.GetRewriter(component).GetText();
+            var actualRewrite = state.GetRewriter(component).GetText();
 
-            Assert.AreEqual(expectedCode, actualCode);
+            Assert.AreEqual(expectedRewrite, actualRewrite);
         }
 
         [TestMethod]
         [TestCategory("QuickFixes")]
-        public void EmptyIfBlock_QuickFixRemovesElse_InvertsIf_ComplexCondition()
+        public void EmptyElseBlock_QuickFixRemovesElse_ComplexCondition()
         {
             const string inputCode =
 @"Sub Foo()
@@ -882,7 +1220,38 @@ End Sub";
     Else
     End If
 End Sub";
-            const string expectedCode =
+            const string expectedRewrite =
+@"Sub Foo()
+    If True Or True And True Or True Then
+    End If
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.Else);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            var inspectionToFix = inspectionResults.First();
+            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
+            var actualRewrite = state.GetRewriter(component).GetText();
+
+            Assert.AreEqual(expectedRewrite, actualRewrite);
+        }
+
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void EmptyIfBlock_QuickFixRemovesIf_InvertsIf_ComplexCondition()
+        {
+            const string inputCode =
+@"Sub Foo()
+    If True Or True And True Or True Then
+    Else
+    End If
+End Sub";
+            const string expectedRewrite =
 @"Sub Foo()
     If True Or True And True And True Then
     
@@ -893,21 +1262,20 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.Else);
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.If);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            //Skip over empty Else block and get If block for the fix
-            var inspectionToFix = inspectionResults.ElementAt(1);
+            var inspectionToFix = inspectionResults.First();
             new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
-            var actualCode = state.GetRewriter(component).GetText();
+            var actualRewrite = state.GetRewriter(component).GetText();
 
-            Assert.AreEqual(expectedCode, actualCode);
+            Assert.AreEqual(expectedRewrite, actualRewrite);
         }
 
         [TestMethod]
         [TestCategory("QuickFixes")]
-        public void EmptyIfBlock_QuickFixRemovesElse_InvertsIf_ComplexCondition1()
+        public void EmptyElseBlock_QuickFixRemovesElse_ComplexCondition1()
         {
             const string inputCode =
 @"Sub Foo()
@@ -915,7 +1283,38 @@ End Sub";
     Else
     End If
 End Sub";
-            const string expectedCode =
+            const string expectedRewrite =
+@"Sub Foo()
+    If True And True Or True And True Then
+    End If
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.Else);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            var inspectionToFix = inspectionResults.First();
+            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
+            var actualRewrite = state.GetRewriter(component).GetText();
+
+            Assert.AreEqual(expectedRewrite, actualRewrite);
+        }
+
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void EmptyIfBlock_QuickFixRemovesIf_InvertsIf_ComplexCondition1()
+        {
+            const string inputCode =
+@"Sub Foo()
+    If True And True Or True And True Then
+    Else
+    End If
+End Sub";
+            const string expectedRewrite =
 @"Sub Foo()
     If True And True And True And True Then
     
@@ -926,21 +1325,20 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.Else);
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.If);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            //Skip over empty Else block and get If block for the fix
-            var inspectionToFix = inspectionResults.ElementAt(1);
+            var inspectionToFix = inspectionResults.First();
             new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
-            var actualCode = state.GetRewriter(component).GetText();
+            var actualRewrite = state.GetRewriter(component).GetText();
 
-            Assert.AreEqual(expectedCode, actualCode);
+            Assert.AreEqual(expectedRewrite, actualRewrite);
         }
 
         [TestMethod]
         [TestCategory("QuickFixes")]
-        public void EmptyIfBlock_QuickFixRemovesElse_InvertsIf_ComplexCondition_WithParentheses()
+        public void EmptyElseBlock_QuickFixRemovesElse_ComplexCondition_WithParentheses()
         {
             const string inputCode =
 @"Sub Foo()
@@ -948,7 +1346,38 @@ End Sub";
     Else
     End If
 End Sub";
-            const string expectedCode =
+            const string expectedRewrite =
+@"Sub Foo()
+    If (True Or True) And (True Or True) Then
+    End If
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.Else);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            var inspectionToFix = inspectionResults.First();
+            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
+            var actualRewrite = state.GetRewriter(component).GetText();
+
+            Assert.AreEqual(expectedRewrite, actualRewrite);
+        }
+
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void EmptyIfBlock_QuickFixRemovesIf_InvertsIf_ComplexCondition_WithParentheses()
+        {
+            const string inputCode =
+@"Sub Foo()
+    If (True Or True) And (True Or True) Then
+    Else
+    End If
+End Sub";
+            const string expectedRewrite =
 @"Sub Foo()
     If (True Or True) Or (True Or True) Then
     
@@ -959,21 +1388,20 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.Else);
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.If);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            //Skip over empty Else block and get If block for the fix
-            var inspectionToFix = inspectionResults.ElementAt(1);
+            var inspectionToFix = inspectionResults.First();
             new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
-            var actualCode = state.GetRewriter(component).GetText();
+            var actualRewrite = state.GetRewriter(component).GetText();
 
-            Assert.AreEqual(expectedCode, actualCode);
+            Assert.AreEqual(expectedRewrite, actualRewrite);
         }
 
         [TestMethod]
         [TestCategory("QuickFixes")]
-        public void EmptyIfBlock_QuickFixRemovesElse_InvertsIf_ComplexCondition2()
+        public void EmptyElseBlock_QuickFixRemovesElse_ComplexCondition2()
         {
             const string inputCode =
 @"Sub Foo()
@@ -981,7 +1409,38 @@ End Sub";
     Else
     End If
 End Sub";
-            const string expectedCode =
+            const string expectedRewrite =
+@"Sub Foo()
+    If 1 > 2 And 3 = 3 Or 4 <> 5 And 8 - 6 = 2 Then
+    End If
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.Else);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            var inspectionToFix = inspectionResults.First();
+            new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
+            var actualRewrite = state.GetRewriter(component).GetText();
+
+            Assert.AreEqual(expectedRewrite, actualRewrite);
+        }
+
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void EmptyIfBlock_QuickFixRemovesIf_InvertsIf_ComplexCondition2()
+        {
+            const string inputCode =
+@"Sub Foo()
+    If 1 > 2 And 3 = 3 Or 4 <> 5 And 8 - 6 = 2 Then
+    Else
+    End If
+End Sub";
+            const string expectedRewrite =
 @"Sub Foo()
     If 1 > 2 And 3 = 3 And 4 <> 5 And 8 - 6 = 2 Then
     
@@ -992,50 +1451,15 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.Else);
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.If);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            //Skip over empty Else block and get If block for the fix
-            var inspectionToFix = inspectionResults.ElementAt(1);
+            var inspectionToFix = inspectionResults.First();
             new RemoveEmptyConditionBlockQuickFix(state).Fix(inspectionToFix);
-            var actualCode = state.GetRewriter(component).GetText();
+            var actualRewrite = state.GetRewriter(component).GetText();
 
-            Assert.AreEqual(expectedCode, actualCode);
+            Assert.AreEqual(expectedRewrite, actualRewrite);
         }
-        #endregion
-
-        #region EmptyElseBlock
-        [TestMethod]
-        [TestCategory("QuickFixes")]
-        public void EmptyElseBlock_QuickFixRemovesElse()
-        {
-            const string inputCode =
-@"Sub Foo()
-    If True Then
-    Else
-    End If
-End Sub";
-
-            const string expectedCode =
-@"Sub Foo()
-    If True Then
-    End If
-End Sub";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.Else);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-            new RemoveEmptyConditionBlockQuickFix(state).Fix(actualResults.First());
-            var actualCode = state.GetRewriter(component).GetText();
-
-            Assert.AreEqual(expectedCode, actualCode);
-        }
-        #endregion
     }
 }
