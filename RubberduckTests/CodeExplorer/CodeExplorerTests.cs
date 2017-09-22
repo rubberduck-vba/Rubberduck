@@ -194,6 +194,99 @@ namespace RubberduckTests.CodeExplorer
 
         [TestCategory("Code Explorer")]
         [TestMethod]
+        public void AddTestModuleWithStubs_DisabledWhenParameterIsProject()
+        {
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Module1", ComponentType.StandardModule, "");
+
+            var vbe = builder.AddProject(project.Build()).Build();
+
+            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
+            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
+
+            var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
+            var vbeWrapper = vbe.Object;
+            var commands = new List<CommandBase>
+            {
+                new AddTestModuleWithStubsCommand(vbeWrapper, new Rubberduck.UI.Command.AddTestModuleCommand(vbeWrapper, state, configLoader.Object))
+            };
+
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            vm.SelectedItem = vm.Projects.First();
+
+            Assert.IsFalse(vm.AddTestModuleWithStubsCommand.CanExecute(vm.SelectedItem));
+        }
+
+        [TestCategory("Code Explorer")]
+        [TestMethod]
+        public void AddTestModuleWithStubs_DisabledWhenParameterIsFolder()
+        {
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Module1", ComponentType.StandardModule, "");
+
+            var vbe = builder.AddProject(project.Build()).Build();
+
+            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
+            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
+
+            var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
+            var vbeWrapper = vbe.Object;
+            var commands = new List<CommandBase>
+            {
+                new AddTestModuleWithStubsCommand(vbeWrapper, new Rubberduck.UI.Command.AddTestModuleCommand(vbeWrapper, state, configLoader.Object))
+            };
+
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            vm.SelectedItem = vm.Projects.First().Items.First();
+
+            Assert.IsFalse(vm.AddTestModuleWithStubsCommand.CanExecute(vm.SelectedItem));
+        }
+
+        [TestCategory("Code Explorer")]
+        [TestMethod]
+        public void AddTestModuleWithStubs_DisabledWhenParameterIsModuleMember()
+        {
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Module1", ComponentType.StandardModule, "Public Sub S()\r\nEnd Sub");
+
+            var vbe = builder.AddProject(project.Build()).Build();
+
+            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
+            configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
+
+            var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
+            var vbeWrapper = vbe.Object;
+            var commands = new List<CommandBase>
+            {
+                new AddTestModuleWithStubsCommand(vbeWrapper, new Rubberduck.UI.Command.AddTestModuleCommand(vbeWrapper, state, configLoader.Object))
+            };
+
+            var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
+
+            var parser = MockParser.Create(vbe.Object, state);
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            vm.SelectedItem = vm.Projects.First().Items.First().Items.First().Items.First();
+
+            Assert.IsFalse(vm.AddTestModuleWithStubsCommand.CanExecute(vm.SelectedItem));
+        }
+
+        [TestCategory("Code Explorer")]
+        [TestMethod]
         public void ImportModule()
         {
             var builder = new MockVbeBuilder();

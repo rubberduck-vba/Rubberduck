@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using NLog;
+﻿using NLog;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI.Command;
@@ -19,17 +18,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _newUnitTestModuleCommand = newUnitTestModuleCommand;
         }
 
-        protected override bool EvaluateCanExecute(object parameter)
-        {
-            try
-            {
-                return GetDeclaration(parameter) != null || _vbe.VBProjects.Count == 1;
-            }
-            catch (COMException)
-            {
-                return false;
-            }
-        }
+        protected override bool EvaluateCanExecute(object parameter) => parameter is CodeExplorerComponentViewModel;
 
         protected override void OnExecute(object parameter)
         {
