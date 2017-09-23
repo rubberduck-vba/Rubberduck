@@ -41,8 +41,7 @@ namespace RubberduckTests.Inspections
     End If
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _ );
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.All);
@@ -63,8 +62,7 @@ End Sub";
     End If
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _ );
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.ElseIf);
@@ -87,8 +85,7 @@ End Sub";
     End If
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _ );
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.All);
@@ -110,8 +107,7 @@ End Sub
 Sub Bar()
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _ );
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.All);
@@ -134,8 +130,7 @@ End Sub";
     End If
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _ );
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.All);
@@ -156,8 +151,7 @@ End Sub";
     End If
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _ );
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.All);
@@ -178,8 +172,7 @@ End Sub";
     End If
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _ );
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyConditionBlockInspection(state,ConditionBlockToInspect.All);
@@ -200,8 +193,7 @@ End Sub";
     End If
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _ );
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.All);
@@ -222,8 +214,7 @@ End Sub";
     End If
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _ );
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.All);
@@ -245,8 +236,7 @@ End Sub";
     End If
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _ );
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.All);
@@ -268,8 +258,7 @@ End Sub";
     End If
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _ );
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.All);
@@ -291,8 +280,7 @@ End Sub
 Sub Bar()
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _ );
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyConditionBlockInspection(state,ConditionBlockToInspect.All);
@@ -317,8 +305,7 @@ End Sub";
     End If
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _ );
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.All);
@@ -337,8 +324,8 @@ End Sub";
     If True Then
     End If
 End Sub";
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputcode, out component);
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputcode, out _ );
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.All);
@@ -362,8 +349,7 @@ End Sub";
     End If
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputcode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputcode, out _ );
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.All);
@@ -387,8 +373,8 @@ End Sub";
         'Some Comment
     End If
 End Sub";
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _ );
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.All);
@@ -413,8 +399,7 @@ End Sub";
     End If
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _ );
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.All);
@@ -439,8 +424,7 @@ End Sub";
     End If
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _ );
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.All);
@@ -465,8 +449,7 @@ End Sub";
     End If
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _ );
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyConditionBlockInspection(state,ConditionBlockToInspect.All);
@@ -492,8 +475,7 @@ End Sub";
     End If
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputcode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputcode, out _ );
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyConditionBlockInspection(state,ConditionBlockToInspect.All);
@@ -518,8 +500,7 @@ End Sub";
     End If
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _ );
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.All);
@@ -543,8 +524,7 @@ End Sub";
     End If
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _ );
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyConditionBlockInspection(state,ConditionBlockToInspect.All);
@@ -572,8 +552,7 @@ End Sub";
     End If
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyConditionBlockInspection(state,ConditionBlockToInspect.Else);
@@ -600,8 +579,7 @@ End Sub";
     If Not True Then 
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyConditionBlockInspection(state,ConditionBlockToInspect.If);
