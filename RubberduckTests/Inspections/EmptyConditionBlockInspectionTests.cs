@@ -31,7 +31,6 @@ namespace RubberduckTests.Inspections
             Assert.AreEqual(inspectionName, inspection.Name);
         }
 
-        #region EmptyIfBlock
         [TestMethod]
         [TestCategory("Inspections")]
         public void EmptyIfBlock_FiresOnEmptyIfBlock()
@@ -68,16 +67,11 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var allInspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.All);
-            var allInspector = InspectionsHelper.GetInspector(allInspection);
-            var allInspectionResults = allInspector.FindIssuesAsync(state, CancellationToken.None).Result;
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.ElseIf);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            var elseifInspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.ElseIf);
-            var elseifInspector = InspectionsHelper.GetInspector(elseifInspection);
-            var elseifInspectionResults = elseifInspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-            Assert.AreEqual(2, allInspectionResults.Count());
-            Assert.AreEqual(1, elseifInspectionResults.Count());
+            Assert.AreEqual(1, inspectionResults.Count());
         }
 
         [TestMethod]
@@ -333,9 +327,7 @@ End Sub";
 
             Assert.IsFalse(inspectionResults.Any());
         }
-        #endregion
 
-        #region EmptyElseBlock
         [TestMethod]
         [TestCategory("Inspections")]
         public void EmptyElseBlock_FiresOnEmptyIfBlock()
@@ -622,6 +614,102 @@ End Sub";
             var actualCode = state.GetRewriter(component).GetText();
             Assert.AreEqual(expectedCode, actualCode);
         }
-        #endregion
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void NonEmptyIfBlock_FindsNoResults()
+        {
+            const string inputcode =
+@"Sub Foo()
+    If True Then
+        Dim a as String
+        a = ""a""
+    End If
+End Sub";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputcode, out _);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.All);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            Assert.IsFalse(actualResults.Any());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void NonEmptyIAndElseifBlock_FindsNoResults()
+        {
+            const string inputcode =
+@"Sub Foo()
+    If True Then
+        Dim a as String
+        a = ""a""
+    ElseIf True Then
+        Dim b as String
+        b = ""b""
+    End If
+End Sub";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputcode, out _);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.All);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            Assert.IsFalse(actualResults.Any());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void NonEmptyIfAndElseBlock_FindsNoResults()
+        {
+            const string inputcode =
+@"Sub Foo()
+    If True Then
+        Dim a as String
+        a = ""a""
+    Else
+        Dim b as String
+        b = ""b""
+    End If
+End Sub";
+            
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputcode, out _ );
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.All);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            Assert.IsFalse(actualResults.Any());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void NonEmptyIfElseifElseBlock_FindsNoResults()
+        {
+            const string inputCode =
+@"Sub Foo()
+    If True Then
+        Dim a as String
+        a = ""a""
+    ElseIf True Then
+        Dim b as String
+        b = ""b""
+    Else
+        Dim c as String
+        c = ""c""
+    End If
+End Sub";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new EmptyConditionBlockInspection(state, ConditionBlockToInspect.All);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            Assert.IsFalse(actualResults.Any());
+        }
     }
 }
