@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -7,6 +8,7 @@ using Rubberduck.UI;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Controls;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
@@ -224,6 +226,278 @@ End Sub";
             var command = new FindAllReferencesCommand(null, null, state, vbe.Object, vm, null);
 
             Assert.IsFalse(command.CanExecute(null));
+        }
+
+        [TestCategory("Commands")]
+        [TestMethod]
+        public void FindAllReferences_ControlMultipleResults_ReturnsCorrectNumber()
+        {
+var code = @"
+Public Sub DoSomething()
+    TextBox1.Height = 20
+    TextBox1.Width = 200
+End Sub
+";
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected);
+            var form = project.MockUserFormBuilder("Form1", code).AddControl("TextBox1").Build();
+            form.SetupGet(c => c.HasDesigner).Returns(true);
+            form.SetupGet(c => c.Target).Returns(form.Object);
+
+            var control = new Mock<IVBComponent>();
+            var designer = new Mock<IDesigner>();
+            form.SetupGet(c => c.Designer).Returns(designer.Object);
+            control.SetupGet(c => c.Name).Returns("TextBox1");
+            designer.SetupGet(d => d.Selected).Returns(new List<IVBComponent> {control.Object});
+
+            project.AddComponent(form);
+            builder.AddProject(project.Build());
+            var vbe = builder.Build();
+            vbe.SetupGet(v => v.SelectedVBComponent).Returns(form.Object);
+
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            AssertParserReady(parser);
+
+            var vm = new SearchResultsWindowViewModel();
+            var command = new FindAllReferencesCommand(null, null, parser.State, vbe.Object, vm, null);
+
+            command.Execute(null);
+
+            Assert.AreEqual(1, vm.Tabs.Count);
+            Assert.AreEqual(2, vm.Tabs[0].SearchResults.Count);
+        }
+
+        [TestCategory("Commands")]
+        [TestMethod]
+        public void FindAllReferences_ControlSingleResult_Navigates()
+        {
+var code = @"
+Public Sub DoSomething()
+    TextBox1.Height = 20
+End Sub
+";
+            var builder = new MockVbeBuilder();
+            var control = new Mock<IVBComponent>();
+            var designer = new Mock<IDesigner>();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected);
+            var form = project.MockUserFormBuilder("Form1", code).AddControl("TextBox1").Build();
+            form.SetupGet(c => c.HasDesigner).Returns(true);
+            form.SetupGet(c => c.Target).Returns(form.Object);
+            form.SetupGet(c => c.Designer).Returns(designer.Object);
+            control.SetupGet(c => c.Name).Returns("TextBox1");
+            designer.SetupGet(d => d.Selected).Returns(new List<IVBComponent> {control.Object});
+
+            project.AddComponent(form);
+            builder.AddProject(project.Build());
+            var vbe = builder.Build();
+            vbe.SetupGet(v => v.SelectedVBComponent).Returns(form.Object);
+
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            AssertParserReady(parser);
+            var navigateCommand = new Mock<INavigateCommand>();
+
+            var vm = new SearchResultsWindowViewModel();
+            var command = new FindAllReferencesCommand(navigateCommand.Object, null, parser.State, vbe.Object, vm, null);
+
+            command.Execute(parser.State.AllUserDeclarations.Single(s => s.IdentifierName == "TextBox1"));
+
+            navigateCommand.Verify(n => n.Execute(It.IsAny<object>()), Times.Once);
+        }
+
+        [TestCategory("Commands")]
+        [TestMethod]
+        public void FindAllReferences_ControlNoResults_DisplaysMessageBox()
+        {
+var code = @"
+Public Sub DoSomething()
+End Sub
+";
+            var builder = new MockVbeBuilder();
+            var control = new Mock<IVBComponent>();
+            var designer = new Mock<IDesigner>();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected);
+            var form = project.MockUserFormBuilder("Form1", code).AddControl("TextBox1").Build();
+            form.SetupGet(c => c.HasDesigner).Returns(true);
+            form.SetupGet(c => c.Target).Returns(form.Object);
+            form.SetupGet(c => c.Designer).Returns(designer.Object);
+            control.SetupGet(c => c.Name).Returns("TextBox1");
+            designer.SetupGet(d => d.Selected).Returns(new List<IVBComponent> { control.Object });
+
+            project.AddComponent(form);
+            builder.AddProject(project.Build());
+            var vbe = builder.Build();
+            vbe.SetupGet(v => v.SelectedVBComponent).Returns(form.Object);
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            AssertParserReady(parser);
+
+            var messageBox = new Mock<IMessageBox>();
+            messageBox.Setup(m =>
+                m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
+                    It.IsAny<MessageBoxIcon>())).Returns(DialogResult.OK);
+
+            var vm = new SearchResultsWindowViewModel();
+            var command = new FindAllReferencesCommand(null, messageBox.Object, parser.State, vbe.Object, vm, null);
+
+            command.Execute(parser.State.AllUserDeclarations.Single(s => s.IdentifierName == "TextBox1"));
+
+            messageBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
+                It.IsAny<MessageBoxIcon>()), Times.Once);
+        }
+
+        [TestCategory("Commands")]
+        [TestMethod]
+        public void FindAllReferences_ControlMultipleSelection_IsNotEnabled()
+        {
+var code = @"
+Public Sub DoSomething()
+End Sub
+";
+            var builder = new MockVbeBuilder();
+            var control1 = new Mock<IVBComponent>();
+            var control2 = new Mock<IVBComponent>();
+            var designer = new Mock<IDesigner>();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected);
+            var form = project.MockUserFormBuilder("Form1", code).AddControl("TextBox1").Build();
+            form.SetupGet(c => c.HasDesigner).Returns(true);
+            form.SetupGet(c => c.Target).Returns(form.Object);
+            form.SetupGet(c => c.Designer).Returns(designer.Object);
+            control1.SetupGet(c => c.Name).Returns("TextBox1");
+            control1.SetupGet(c => c.Name).Returns("TextBox2");
+            designer.SetupGet(d => d.Selected).Returns(new List<IVBComponent> { control1.Object, control2.Object });
+
+            project.AddComponent(form);
+            builder.AddProject(project.Build());
+            var vbe = builder.Build();
+            vbe.SetupGet(v => v.SelectedVBComponent).Returns(form.Object);
+
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            AssertParserReady(parser);
+
+            var command = new FindAllReferencesCommand(null, null, parser.State, vbe.Object, null, null);
+            
+            Assert.IsFalse(command.CanExecute(null));
+        }
+
+        [TestCategory("Commands")]
+        [TestMethod]
+        public void FindAllReferences_FormMultipleResults_ReturnsCorrectNumber()
+        {
+var code = @"
+Public Sub DoSomething()
+    Form1.Width = 20
+    Form1.Height = 200
+End Sub
+";
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected);
+            var form = project.MockUserFormBuilder("Form1", code).Build();
+            form.SetupGet(c => c.HasDesigner).Returns(true);
+            form.SetupGet(c => c.Target).Returns(form.Object);           
+            var designer = new Mock<IDesigner>();
+            form.SetupGet(c => c.Designer).Returns(designer.Object);
+            designer.SetupGet(d => d.Selected).Returns(new List<IVBComponent> ());
+
+            project.AddComponent(form);
+            builder.AddProject(project.Build());
+            var vbe = builder.Build();
+            vbe.SetupGet(v => v.SelectedVBComponent).Returns(form.Object);
+
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            AssertParserReady(parser);
+
+            var vm = new SearchResultsWindowViewModel();
+            var command = new FindAllReferencesCommand(null, null, parser.State, vbe.Object, vm, null);
+
+            command.Execute(null);
+
+            Assert.AreEqual(1, vm.Tabs.Count);
+            Assert.AreEqual(2, vm.Tabs[0].SearchResults.Count);
+        }
+
+        [TestCategory("Commands")]
+        [TestMethod]
+        public void FindAllReferences_FormSingleResult_Navigates()
+        {
+var code = @"
+Public Sub DoSomething()
+    Form1.Height = 20
+End Sub
+";
+            var builder = new MockVbeBuilder();
+            var designer = new Mock<IDesigner>();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected);
+            var form = project.MockUserFormBuilder("Form1", code).Build();
+            form.SetupGet(c => c.HasDesigner).Returns(true);
+            form.SetupGet(c => c.Target).Returns(form.Object);
+            form.SetupGet(c => c.Designer).Returns(designer.Object);
+            designer.SetupGet(d => d.Selected).Returns(new List<IVBComponent> ());
+
+            project.AddComponent(form);
+            builder.AddProject(project.Build());
+            var vbe = builder.Build();
+            vbe.SetupGet(v => v.SelectedVBComponent).Returns(form.Object);
+
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            AssertParserReady(parser);
+            var navigateCommand = new Mock<INavigateCommand>();
+
+            var vm = new SearchResultsWindowViewModel();
+            var command = new FindAllReferencesCommand(navigateCommand.Object, null, parser.State, vbe.Object, vm, null);
+
+            command.Execute(parser.State.AllUserDeclarations.Single(s => s.IdentifierName == "Form1"));
+
+            navigateCommand.Verify(n => n.Execute(It.IsAny<object>()), Times.Once);
+        }
+
+        [TestCategory("Commands")]
+        [TestMethod]
+        public void FindAllReferences_FormNoResults_DisplaysMessageBox()
+        {
+var code = @"
+Public Sub DoSomething()
+End Sub
+";
+            var builder = new MockVbeBuilder();
+            var designer = new Mock<IDesigner>();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected);
+            var form = project.MockUserFormBuilder("Form1", code).Build();
+            form.SetupGet(c => c.HasDesigner).Returns(true);
+            form.SetupGet(c => c.Target).Returns(form.Object);
+            form.SetupGet(c => c.Designer).Returns(designer.Object);
+            designer.SetupGet(d => d.Selected).Returns(new List<IVBComponent> ());
+
+            project.AddComponent(form);
+            builder.AddProject(project.Build());
+            var vbe = builder.Build();
+            vbe.SetupGet(v => v.SelectedVBComponent).Returns(form.Object);
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            AssertParserReady(parser);
+
+            var messageBox = new Mock<IMessageBox>();
+            messageBox.Setup(m =>
+                m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
+                    It.IsAny<MessageBoxIcon>())).Returns(DialogResult.OK);
+
+            var vm = new SearchResultsWindowViewModel();
+            var command = new FindAllReferencesCommand(null, messageBox.Object, parser.State, vbe.Object, vm, null);
+
+            command.Execute(parser.State.AllUserDeclarations.Single(s => s.IdentifierName == "Form1"));
+
+            messageBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
+                It.IsAny<MessageBoxIcon>()), Times.Once);
+        }
+
+        private void AssertParserReady(ParseCoordinator parser)
+        {
+            parser.Parse(new System.Threading.CancellationTokenSource());
+            if (parser.State.Status == ParserState.ResolverError)
+            {
+                Assert.Fail("Parser state should be 'Ready', but returns '{0}'.", parser.State.Status);
+            }
+            if (parser.State.Status != ParserState.Ready)
+            {
+                Assert.Inconclusive("Parser state should be 'Ready', but returns '{0}'.", parser.State.Status);
+            }
         }
     }
 }

@@ -86,6 +86,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             }
         }
 
+        public object Designer
+        {
+            get { return (IsWrappingNullReference ? null : Target.Designer); }
+        }
+
         public bool HasDesigner
         {
             get

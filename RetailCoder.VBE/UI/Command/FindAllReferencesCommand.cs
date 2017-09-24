@@ -87,11 +87,13 @@ namespace Rubberduck.UI.Command
 
         protected override bool CanExecuteImpl(object parameter)
         {
-            if (_vbe.ActiveCodePane == null || _state.Status != ParserState.Ready)
+            if (_state.Status != ParserState.Ready ||
+                (_vbe.ActiveCodePane == null 
+                    && (_vbe.SelectedVBComponent == null || !_vbe.SelectedVBComponent.HasDesigner)))
             {
                 return false;
             }
-            
+
             var target = FindTarget(parameter);
             var canExecute = target != null;
 
@@ -154,6 +156,14 @@ namespace Rubberduck.UI.Command
 
         private Declaration FindTarget(object parameter)
         {
+            var component = _vbe.SelectedVBComponent;
+            return (component != null && component.HasDesigner)
+                ? FindFormTarget()
+                : FindCodeTarget(parameter);
+        }
+
+        private Declaration FindCodeTarget(object parameter)
+        {
             var declaration = parameter as Declaration;
             if (declaration != null)
             {
@@ -162,6 +172,30 @@ namespace Rubberduck.UI.Command
 
             return _state.FindSelectedDeclaration(_vbe.ActiveCodePane);
         }
+
+        private Declaration FindFormTarget()
+        {            
+            var project = _vbe.ActiveVBProject;
+            var component = _vbe.SelectedVBComponent;
+            
+            if (component != null && _vbe.SelectedVBComponent.HasDesigner)
+            {
+                var designer = ((dynamic)component.Target).Designer;
+                var selectedCount = (int)designer.Selected.Count;
+
+                if (selectedCount > 1) { return null; }
+
+                var selectedType = selectedCount == 0 ? DeclarationType.ClassModule : DeclarationType.Control;
+                string selectedName = selectedCount == 0 ? component.Name : designer.Selected[0].Name;
+
+                return _state.DeclarationFinder.MatchName(selectedName)
+                                               .First(m => m.ProjectId == project.HelpFile
+                                                        && m.DeclarationType.HasFlag(selectedType)
+                                                        && m.ComponentName == component.Name);                
+            }
+            return null;
+        }
+
 
         public void Dispose()
         {

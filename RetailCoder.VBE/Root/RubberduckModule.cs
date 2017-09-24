@@ -535,7 +535,8 @@ namespace Rubberduck.Root
         {
             return new IMenuItem[]
             {
-                KernelInstance.Get<FormDesignerRefactorRenameCommandMenuItem>()
+                KernelInstance.Get<FormDesignerRefactorRenameCommandMenuItem>(),
+                KernelInstance.Get<FormDesignerFindAllReferencesCommandMenuItem>()
             };
         }
 

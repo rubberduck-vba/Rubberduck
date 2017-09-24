@@ -40,6 +40,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             get { return new Properties(IsWrappingNullReference ? null : Target.Properties); }
         }
 
+        public object Designer
+        {
+            get { return IsWrappingNullReference ? null : Target.Designer; }
+        }
+
         public bool HasOpenDesigner
         {
             get { return !IsWrappingNullReference && Target.HasOpenDesigner; }

@@ -123,7 +123,7 @@ namespace Rubberduck.UI
                 return;
             }
             var form =
-                _parser.State.DeclarationFinder.UserDeclarations(DeclarationType.UserForm).SingleOrDefault(decl =>
+                _parser.State.DeclarationFinder.UserDeclarations(DeclarationType.ClassModule).SingleOrDefault(decl =>
                     decl.IdentifierName.Equals(component.Name) &&
                     decl.ProjectId.Equals(component.ParentProject.ProjectId));
 
@@ -166,7 +166,7 @@ namespace Rubberduck.UI
         private bool DeclarationChanged(Declaration current)
         {
             if ((_lastSelectedDeclaration == null && current == null) ||
-                ((_lastSelectedDeclaration != null && current != null) && !_lastSelectedDeclaration.Equals(current)))
+                ((_lastSelectedDeclaration != null && current != null) && _lastSelectedDeclaration.Equals(current)))
             {
                 return false;
             }
