@@ -158,11 +158,11 @@ namespace Rubberduck.UI.Command
         {
             var component = _vbe.SelectedVBComponent;
             return (component != null && component.HasDesigner)
-                ? FindFormTarget()
-                : FindCodeTarget(parameter);
+                ? FindFormDesignerTarget()
+                : FindCodePaneTarget(parameter);
         }
 
-        private Declaration FindCodeTarget(object parameter)
+        private Declaration FindCodePaneTarget(object parameter)
         {
             var declaration = parameter as Declaration;
             if (declaration != null)
@@ -173,7 +173,7 @@ namespace Rubberduck.UI.Command
             return _state.FindSelectedDeclaration(_vbe.ActiveCodePane);
         }
 
-        private Declaration FindFormTarget()
+        private Declaration FindFormDesignerTarget()
         {            
             var project = _vbe.ActiveVBProject;
             var component = _vbe.SelectedVBComponent;
@@ -185,11 +185,12 @@ namespace Rubberduck.UI.Command
 
                 if (selectedCount > 1) { return null; }
 
+                // Cannot use DeclarationType.UserForm, parser only assigns UserForms the ClassModule flag
                 var selectedType = selectedCount == 0 ? DeclarationType.ClassModule : DeclarationType.Control;
                 string selectedName = selectedCount == 0 ? component.Name : designer.Selected[0].Name;
 
                 return _state.DeclarationFinder.MatchName(selectedName)
-                                               .First(m => m.ProjectId == project.HelpFile
+                                               .First(m => m.ProjectId == project.ProjectId
                                                         && m.DeclarationType.HasFlag(selectedType)
                                                         && m.ComponentName == component.Name);                
             }
