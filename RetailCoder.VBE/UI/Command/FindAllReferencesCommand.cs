@@ -136,7 +136,7 @@ namespace Rubberduck.UI.Command
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.Error(e);
             }
         }
 
@@ -179,9 +179,9 @@ namespace Rubberduck.UI.Command
             var component = _vbe.SelectedVBComponent;
             
             if (component != null && _vbe.SelectedVBComponent.HasDesigner)
-            {
-                var designer = ((dynamic)component.Target).Designer;
-                var selectedCount = (int)designer.Selected.Count;
+            {                
+                var designer = ((dynamic)component.Target).Designer; // COM Object, need to late bind
+                int selectedCount = designer.Selected.Count;
 
                 if (selectedCount > 1) { return null; }
 
