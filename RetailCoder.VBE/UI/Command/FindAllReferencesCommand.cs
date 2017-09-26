@@ -181,22 +181,29 @@ namespace Rubberduck.UI.Command
             var component = qualifiedModuleName.HasValue
                                                ? qualifiedModuleName.Value.Component
                                                :_vbe.SelectedVBComponent;
-            
-            if (component?.HasDesigner ?? false)
-            {                
-                var designer = ((dynamic)component.Target).Designer; // COM Object, need to late bind
-                int selectedCount = designer.Selected.Count;
+                        
 
+            if (component?.HasDesigner ?? false)
+            {
+                if (qualifiedModuleName.HasValue)
+                {
+                    return _state.DeclarationFinder.MatchName(qualifiedModuleName.Value.Name)
+                                                   .SingleOrDefault(m => m.ProjectId == projectId
+                                                                      && m.DeclarationType.HasFlag(qualifiedModuleName.Value.ComponentType)
+                                                                      && m.ComponentName == component.Name);
+                }
+
+                var selectedCount = component.SelectedControls.Count;                
                 if (selectedCount > 1) { return null; }
 
                 // Cannot use DeclarationType.UserForm, parser only assigns UserForms the ClassModule flag
                 var selectedType = selectedCount == 0 ? DeclarationType.ClassModule : DeclarationType.Control;
-                string selectedName = selectedCount == 0 ? component.Name : designer.Selected[0].Name;
+                string selectedName = selectedCount == 0 ? component.Name : component.SelectedControls[0].Name;
 
                 return _state.DeclarationFinder.MatchName(selectedName)
-                                               .First(m => m.ProjectId == projectId
-                                                        && m.DeclarationType.HasFlag(selectedType)
-                                                        && m.ComponentName == component.Name);                
+                                               .SingleOrDefault(m => m.ProjectId == projectId
+                                                                  && m.DeclarationType.HasFlag(selectedType)
+                                                                  && m.ComponentName == component.Name);                
             }
             return null;
         }

@@ -70,6 +70,8 @@ namespace RubberduckTests.Mocks
             window.SetupProperty(w => w.IsVisible, false);
             _component.Setup(m => m.Controls).Returns(_vbControls.Object);
             _component.Setup(m => m.DesignerWindow()).Returns(window.Object);
+            _component.SetupGet(m => m.HasDesigner).Returns(true);
+            _component.SetupGet(m => m.Target).Returns(_component.Object);
 
             return _component;
         }
