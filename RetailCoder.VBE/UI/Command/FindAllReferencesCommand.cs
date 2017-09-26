@@ -7,6 +7,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Controls;
+using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command
@@ -88,8 +89,7 @@ namespace Rubberduck.UI.Command
         protected override bool CanExecuteImpl(object parameter)
         {
             if (_state.Status != ParserState.Ready ||
-                (_vbe.ActiveCodePane == null 
-                    && (_vbe.SelectedVBComponent == null || !_vbe.SelectedVBComponent.HasDesigner)))
+                (_vbe.ActiveCodePane == null && !(_vbe.SelectedVBComponent?.HasDesigner ?? false)))
             {
                 return false;
             }
@@ -156,29 +156,33 @@ namespace Rubberduck.UI.Command
 
         private Declaration FindTarget(object parameter)
         {
-            var component = _vbe.SelectedVBComponent;
-            return (component != null && component.HasDesigner)
-                ? FindFormDesignerTarget()
-                : FindCodePaneTarget(parameter);
-        }
-
-        private Declaration FindCodePaneTarget(object parameter)
-        {
             var declaration = parameter as Declaration;
             if (declaration != null)
             {
                 return declaration;
             }
 
+            return _vbe.ActiveCodePane != null && (_vbe.SelectedVBComponent?.HasDesigner ?? false)
+                    ? FindFormDesignerTarget()
+                    : FindCodePaneTarget();
+        }
+
+        private Declaration FindCodePaneTarget()
+        {
             return _state.FindSelectedDeclaration(_vbe.ActiveCodePane);
         }
 
-        private Declaration FindFormDesignerTarget()
+        private Declaration FindFormDesignerTarget(QualifiedModuleName? qualifiedModuleName = null)
         {            
-            var project = _vbe.ActiveVBProject;
-            var component = _vbe.SelectedVBComponent;
+            var projectId = qualifiedModuleName.HasValue 
+                                               ? qualifiedModuleName.Value.ProjectId 
+                                               :  _vbe.ActiveVBProject.ProjectId;
+
+            var component = qualifiedModuleName.HasValue
+                                               ? qualifiedModuleName.Value.Component
+                                               :_vbe.SelectedVBComponent;
             
-            if (component != null && _vbe.SelectedVBComponent.HasDesigner)
+            if (component?.HasDesigner ?? false)
             {                
                 var designer = ((dynamic)component.Target).Designer; // COM Object, need to late bind
                 int selectedCount = designer.Selected.Count;
@@ -190,7 +194,7 @@ namespace Rubberduck.UI.Command
                 string selectedName = selectedCount == 0 ? component.Name : designer.Selected[0].Name;
 
                 return _state.DeclarationFinder.MatchName(selectedName)
-                                               .First(m => m.ProjectId == project.ProjectId
+                                               .First(m => m.ProjectId == projectId
                                                         && m.DeclarationType.HasFlag(selectedType)
                                                         && m.ComponentName == component.Name);                
             }
