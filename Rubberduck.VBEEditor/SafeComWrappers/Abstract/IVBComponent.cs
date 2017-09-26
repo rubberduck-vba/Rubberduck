@@ -13,7 +13,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         IControls Controls { get; }
         IControls SelectedControls { get; }
         bool IsSaved { get; }
-        object Designer { get; }
         bool HasDesigner { get; }
         bool HasOpenDesigner { get; }
         string DesignerId { get; }
