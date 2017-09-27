@@ -11,6 +11,7 @@ namespace Rubberduck.UI.FindSymbol
         public FindSymbolControl()
         {
             InitializeComponent();
+            Loaded += FindSymbolControl_Loaded;
         }
 
         private FindSymbolViewModel ViewModel { get { return (FindSymbolViewModel)DataContext; } }
@@ -42,6 +43,11 @@ namespace Rubberduck.UI.FindSymbol
                 ViewModel.Execute();
                 e.Handled = true;
             }
+        }
+
+        private void FindSymbolControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            this.searchComboBox.Focus();
         }
     }
 }
