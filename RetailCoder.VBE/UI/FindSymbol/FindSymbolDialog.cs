@@ -28,6 +28,8 @@ namespace Rubberduck.UI.FindSymbol
             InitializeComponent();
             
             Text = string.Format("Rubberduck - {0}", RubberduckUI.FindSymbolDialog_Caption);
+
+            
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
