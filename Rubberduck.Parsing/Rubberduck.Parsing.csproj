@@ -202,6 +202,7 @@
     <Compile Include="ComReflection\ComProject.cs" />
     <Compile Include="Rewriter\IModuleRewriter.cs" />
     <Compile Include="PreProcessing\VBAPreprocessorVisitor.cs" />
+    <Compile Include="SelectionExtensions.cs" />
     <Compile Include="SymbolList.cs" />
     <Compile Include="Symbols\AliasDeclaration.cs" />
     <Compile Include="Symbols\DeclarationFinderFactory.cs" />
@@ -348,6 +349,7 @@
     <Compile Include="Symbols\ConstantDeclaration.cs" />
     <Compile Include="ComReflection\XmlPersistableDeclarations.cs" />
     <Compile Include="Symbols\UnboundMemberDeclaration.cs" />
+    <Compile Include="TokenExtensions.cs" />
     <Compile Include="VBA\AttributeListener.cs" />
     <Compile Include="VBA\AttributeParser.cs" />
     <Compile Include="VBA\Attributes.cs" />

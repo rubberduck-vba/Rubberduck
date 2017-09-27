@@ -72,6 +72,7 @@
     <Compile Include="Concrete\LineLabelNotUsedInspection.cs" />
     <Compile Include="Concrete\IntegerDataTypeInspection.cs" />
     <Compile Include="Concrete\UnreachableCaseInspection.cs" />
+    <Compile Include="Concrete\ShadowedDeclarationInspection.cs" />
     <Compile Include="ParseTreeListeners\AttributeAnnotationListener.cs" />
     <Compile Include="Concrete\ConstantNotUsedInspection.cs" />
     <Compile Include="Concrete\DefaultProjectNameInspection.cs" />
