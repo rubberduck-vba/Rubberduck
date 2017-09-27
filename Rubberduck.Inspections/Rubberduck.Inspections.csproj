@@ -66,6 +66,8 @@
     <Compile Include="Concrete\EmptyForEachBlockInspection.cs" />
     <Compile Include="Concrete\EmptyForLoopBlockInspection.cs" />
     <Compile Include="Concrete\EmptyWhileWendBlockInspection.cs" />
+    <Compile Include="Concrete\RangeClause.cs" />
+    <Compile Include="Concrete\RangeClauseExtent.cs" />
     <Compile Include="Concrete\StopKeywordInspection.cs" />
     <Compile Include="Concrete\LineLabelNotUsedInspection.cs" />
     <Compile Include="Concrete\IntegerDataTypeInspection.cs" />
