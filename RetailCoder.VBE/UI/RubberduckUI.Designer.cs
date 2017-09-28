@@ -3422,7 +3422,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Coult not rename {0}..
+        ///   Looks up a localized string similar to Could not rename {0}..
         /// </summary>
         public static string RenameDialog_DefaultRenameError {
             get {
