@@ -642,7 +642,7 @@ End Sub : 'Lame comment!
         [TestMethod]
         [TestCategory("Grammar")]
         [TestCategory("Selection")]
-        public void Selection_Token_BlankLines_Contains()
+        public void GivenOnlyBlankLines_EndColumn_Works()
         {
             const string inputCode = @"
 
@@ -661,15 +661,38 @@ End Sub : 'Lame comment!
 
             // Reminder: token columns are zero-based but lines are one-based
             Assert.IsTrue(startToken.EndColumn() == 0);
-            Assert.IsTrue(startToken.EndLine() == 1);
             Assert.IsTrue(endToken.EndColumn() == 0);
-            Assert.IsTrue(endToken.EndLine() == 4);
         }
-        
+
         [TestMethod]
         [TestCategory("Grammar")]
         [TestCategory("Selection")]
-        public void Selection_Token_BlankLines_LeadingSpaces_Contains()
+        public void GivenOnlyBlankLines_EndLine_Works()
+        {
+            const string inputCode = @"
+
+
+
+";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
+            var pane = component.CodeModule.CodePane;
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+
+            var tree = (Antlr4.Runtime.ParserRuleContext)state.GetParseTree(new QualifiedModuleName(component));
+            var startToken = tree.Start;
+            var endToken = tree.Stop;
+
+            // Reminder: token columns are zero-based but lines are one-based
+            Assert.IsTrue(startToken.EndLine() == 1);
+            Assert.IsTrue(endToken.EndLine() == 4);
+        }
+
+        [TestMethod]
+        [TestCategory("Grammar")]
+        [TestCategory("Selection")]
+        public void GivenBlankLinesWithLeadingSpaces_EndColumn_Works()
         {
             const string inputCode = @"
 
@@ -687,8 +710,30 @@ End Sub : 'Lame comment!
 
             // Reminder: token columns are zero-based but lines are one-based
             Assert.IsTrue(startToken.EndColumn() == 0);
-            Assert.IsTrue(startToken.EndLine() == 1);
             Assert.IsTrue(endToken.EndColumn() == 3);
+        }
+
+        [TestMethod]
+        [TestCategory("Grammar")]
+        [TestCategory("Selection")]
+        public void GivenBlankLinesWithLeadingSpaces_EndLine_Works()
+        {
+            const string inputCode = @"
+
+   
+";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
+            var pane = component.CodeModule.CodePane;
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+
+            var tree = (Antlr4.Runtime.ParserRuleContext)state.GetParseTree(new QualifiedModuleName(component));
+            var startToken = tree.Start;
+            var endToken = tree.Stop;
+
+            // Reminder: token columns are zero-based but lines are one-based
+            Assert.IsTrue(startToken.EndLine() == 1);
             Assert.IsTrue(endToken.EndLine() == 3);
         }
     }
