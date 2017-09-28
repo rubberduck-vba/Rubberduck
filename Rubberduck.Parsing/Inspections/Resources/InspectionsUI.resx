@@ -692,18 +692,6 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="SynchronizeAttributesQuickFix" xml:space="preserve">
     <value>Synchronize attributes/annotations in module</value>
   </data>
-  <data name="EmptyIfBlockInspectionMeta" xml:space="preserve">
-    <value>An If block should have executable statements</value>
-  </data>
-  <data name="EmptyIfBlockInspectionName" xml:space="preserve">
-    <value>Empty If block</value>
-  </data>
-  <data name="EmptyIfBlockInspectionResultFormat" xml:space="preserve">
-    <value>If block has no executable statements</value>
-  </data>
-  <data name="RemoveEmptyIfBlockQuickFix" xml:space="preserve">
-    <value>Remove empty If block</value>
-  </data>
   <data name="RedundantOptionInspectionMeta" xml:space="preserve">
     <value>Being the default/implicit setting for this option, this instruction can be safely omitted.</value>
   </data>
@@ -765,18 +753,6 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   </data>
   <data name="CodeInspectionSeverity_Warning" xml:space="preserve">
     <value>Warning</value>
-  </data>
-  <data name="EmptyElseBlockInspectionResultFormat" xml:space="preserve">
-    <value>Else block has no executable statements</value>
-  </data>
-  <data name="EmptyElseBlockInspectionMeta" xml:space="preserve">
-    <value>An Else block should have executable statements</value>
-  </data>
-  <data name="EmptyElseBlockInspectionName" xml:space="preserve">
-    <value>Empty Else block</value>
-  </data>
-  <data name="RemoveEmptyElseBlockQuickFix" xml:space="preserve">
-    <value>Remove empty Else block</value>
   </data>
   <data name="IntegerDataTypeInspectionMeta" xml:space="preserve">
     <value>The maximum value of a 16-bit signed integer is 32,767 - using a 32-bit (Long) integer data type where possible can help prevent 'Overflow' run-time errors, and is better handled by modern CPUs.</value>
@@ -846,7 +822,22 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>A Loop block should have executable statements</value>
   </data>
   <data name="EmptyWhileWendBlockInspectionName" xml:space="preserve">
-    <value>Empty While-Wend block</value>
+    <value>Empty While ... Wend block</value>
+  </data>
+  <data name="EmptyConditionBlockInspectionsMeta" xml:space="preserve">
+    <value>A conditional block should contain executable statements in a clean code base. Empty blocks can be confusing about the intent of the author.</value>
+  </data>
+  <data name="EmptyConditionBlockInspectionsName" xml:space="preserve">
+    <value>Empty conditional block</value>
+  </data>
+  <data name="EmptyConditionBlockInspectionsQuickFix" xml:space="preserve">
+    <value>Remove empty block</value>
+  </data>
+  <data name="EmptyConditionBlockInspectionsResultFormat" xml:space="preserve">
+    <value> </value>
+  </data>
+  <data name="RemoveEmptyConditionBlockQuickFix" xml:space="preserve">
+    <value>Remove empty conditional block</value>
   </data>
   <data name="ShadowedDeclarationInspectionMeta" xml:space="preserve">
     <value>Two declarations are in scope and have the same identifier name. This means that only one of them will be available to use.</value>
