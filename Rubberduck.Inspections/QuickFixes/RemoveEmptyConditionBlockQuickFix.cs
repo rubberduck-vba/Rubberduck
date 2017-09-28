@@ -94,7 +94,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
         private void UpdateContext(VBAParser.ElseBlockContext context, IModuleRewriter rewriter)
         {
-            VBAParser.BlockContext elseBlock = context.block();
+            var elseBlock = context.block();
 
             if (elseBlock.ChildCount == 0)
             {

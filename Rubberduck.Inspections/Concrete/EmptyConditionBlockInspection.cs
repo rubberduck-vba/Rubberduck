@@ -26,11 +26,11 @@ namespace Rubberduck.Inspections.Concrete
     internal class EmptyConditionBlockInspection : ParseTreeInspectionBase
     {
         public EmptyConditionBlockInspection(RubberduckParserState state,
-                                            ConditionBlockToInspect BlockToInspect) //= ConditionBlockToInspect.EmptyIf
+                                            ConditionBlockToInspect BlockToInspect)
             : base(state, CodeInspectionSeverity.Suggestion)
         {
             _blockToInspect = BlockToInspect;
-            Listener = new EmptyConditionBlockListener(BlockToInspect); // ¿better way to set this up?
+            _listener = new EmptyConditionBlockListener(BlockToInspect);
         }
 
         public static ConditionBlockToInspect _blockToInspect { get; private set; }
@@ -46,7 +46,8 @@ namespace Rubberduck.Inspections.Concrete
                                                         result));
         }
 
-        public override IInspectionListener Listener { get; } = new EmptyConditionBlockListener(_blockToInspect);
+        private IInspectionListener _listener;
+        public override IInspectionListener Listener { get { return _listener; } }
 
         public class EmptyConditionBlockListener : EmptyBlockInspectionListenerBase
         {

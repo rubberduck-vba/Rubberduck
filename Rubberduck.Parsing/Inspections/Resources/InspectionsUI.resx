@@ -822,22 +822,22 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>A Loop block should have executable statements</value>
   </data>
   <data name="EmptyWhileWendBlockInspectionName" xml:space="preserve">
-    <value>Empty While-Wend block</value>
+    <value>Empty While ... Wend block</value>
   </data>
   <data name="EmptyConditionBlockInspectionsMeta" xml:space="preserve">
-    <value>A condition block should have executable statements. An empty block serves no purpose and can be confusing for the maintainer. Was this empty execution path originally intended to do something? Clear code only contains executable paths.</value>
+    <value>A conditional block should contain executable statements in a clean code base. Empty blocks can be confusing about the intent of the author.</value>
   </data>
   <data name="EmptyConditionBlockInspectionsName" xml:space="preserve">
-    <value>Empty condition (If or Else)  block</value>
+    <value>Empty conditional block</value>
   </data>
   <data name="EmptyConditionBlockInspectionsQuickFix" xml:space="preserve">
-    <value>Remove the empty block. ***Note: Empty If necessitates applying 'Not' to the check ensuring the else block was inverted.</value>
+    <value>Remove empty block</value>
   </data>
   <data name="EmptyConditionBlockInspectionsResultFormat" xml:space="preserve">
     <value> </value>
   </data>
   <data name="RemoveEmptyConditionBlockQuickFix" xml:space="preserve">
-    <value>Remove empty If and Else blocks</value>
+    <value>Remove empty conditional block</value>
   </data>
   <data name="ShadowedDeclarationInspectionMeta" xml:space="preserve">
     <value>Two declarations are in scope and have the same identifier name. This means that only one of them will be available to use.</value>

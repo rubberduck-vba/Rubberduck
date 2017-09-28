@@ -340,7 +340,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A condition block should have executable statements. An empty block serves no purpose and can be confusing for the maintainer. Was this empty execution path originally intended to do something? Clear code only contains executable paths..
+        ///   Looks up a localized string similar to A conditional block should contain executable statements in a clean code base. Empty blocks can be confusing about the intent of the author..
         /// </summary>
         public static string EmptyConditionBlockInspectionsMeta {
             get {
@@ -349,7 +349,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Empty condition (If or Else)  block.
+        ///   Looks up a localized string similar to Empty conditional block.
         /// </summary>
         public static string EmptyConditionBlockInspectionsName {
             get {
@@ -358,7 +358,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Remove the empty block. ***Note: Empty If necessitates applying &apos;Not&apos; to the check ensuring the else block was inverted..
+        ///   Looks up a localized string similar to Remove empty block.
         /// </summary>
         public static string EmptyConditionBlockInspectionsQuickFix {
             get {
@@ -511,7 +511,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Empty While-Wend block.
+        ///   Looks up a localized string similar to Empty While ... Wend block.
         /// </summary>
         public static string EmptyWhileWendBlockInspectionName {
             get {
@@ -1780,7 +1780,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Remove empty If and Else blocks.
+        ///   Looks up a localized string similar to Remove empty conditional block.
         /// </summary>
         public static string RemoveEmptyConditionBlockQuickFix {
             get {
