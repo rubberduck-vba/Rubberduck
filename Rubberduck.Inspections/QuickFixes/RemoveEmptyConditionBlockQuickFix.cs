@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.VBA;
@@ -9,16 +8,16 @@ using Rubberduck.Parsing.Rewriter;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Inspections.Resources;
 using System.Diagnostics;
+using Rubberduck.Inspections.Abstract;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    internal sealed class RemoveEmptyConditionBlockQuickFix : IQuickFix
+    internal sealed class RemoveEmptyConditionBlockQuickFix : QuickFixBase
     {
-        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type> { typeof(EmptyIfBlockInspection) };
         private readonly RubberduckParserState _state;
 
         public RemoveEmptyConditionBlockQuickFix(RubberduckParserState state)
-            : base(typeof(EmptyIfBlockInspection))
+            : base(typeof(EmptyConditionBlockInspection))
         {
             _state = state;
         }
