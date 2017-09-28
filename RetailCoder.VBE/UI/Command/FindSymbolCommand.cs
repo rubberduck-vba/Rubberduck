@@ -26,7 +26,7 @@ namespace Rubberduck.UI.Command
             _state = state;
             _iconCache = iconCache;
         }
-        
+
         public override RubberduckHotkey Hotkey
         {
             get { return RubberduckHotkey.FindSymbol; }
@@ -39,14 +39,6 @@ namespace Rubberduck.UI.Command
             {
                 viewModel.Navigate += (sender, e) => { view.Hide(); };
                 viewModel.Navigate += OnDialogNavigate;
-
-                bool needsAParse = _state.IsDirty();
-                if (needsAParse)
-                {
-                    //TODO: Implement parse.
-                    
-                }
-                
                 view.ShowDialog();
                 _navigateCommand.Execute(_selected);
             }
