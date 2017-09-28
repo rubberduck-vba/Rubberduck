@@ -47,7 +47,7 @@ namespace Rubberduck.UI.FindSymbol
 
         private void FindSymbolControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
-            this.searchComboBox.Focus();
+            searchComboBox.Focus();
         }
     }
 }
