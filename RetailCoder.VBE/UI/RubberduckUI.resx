@@ -2032,7 +2032,7 @@ Would you like to import them to Rubberduck?</value>
     <value>Identifier {0} cannot be renamed.</value>
   </data>
   <data name="RenameDialog_DefaultRenameError" xml:space="preserve">
-    <value>Coult not rename {0}.</value>
+    <value>Could not rename {0}.</value>
   </data>
   <data name="RenameDialog_InterfaceRenameError" xml:space="preserve">
     <value>Could not rename Interface Member {0}.</value>
