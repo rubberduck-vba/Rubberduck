@@ -7,6 +7,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Controls;
+using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command
@@ -87,7 +88,8 @@ namespace Rubberduck.UI.Command
 
         protected override bool EvaluateCanExecute(object parameter)
         {
-            if (_vbe.ActiveCodePane == null || _state.Status != ParserState.Ready)
+            if (_state.Status != ParserState.Ready ||
+                (_vbe.ActiveCodePane == null && !(_vbe.SelectedVBComponent?.HasDesigner ?? false)))
             {
                 return false;
             }
@@ -134,7 +136,7 @@ namespace Rubberduck.UI.Command
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.Error(e);
             }
         }
 
@@ -160,8 +162,52 @@ namespace Rubberduck.UI.Command
                 return declaration;
             }
 
+            return _vbe.ActiveCodePane != null && (_vbe.SelectedVBComponent?.HasDesigner ?? false)
+                    ? FindFormDesignerTarget()
+                    : FindCodePaneTarget();
+        }
+
+        private Declaration FindCodePaneTarget()
+        {
             return _state.FindSelectedDeclaration(_vbe.ActiveCodePane);
         }
+
+        private Declaration FindFormDesignerTarget(QualifiedModuleName? qualifiedModuleName = null)
+        {            
+            var projectId = qualifiedModuleName.HasValue 
+                                               ? qualifiedModuleName.Value.ProjectId 
+                                               :  _vbe.ActiveVBProject.ProjectId;
+
+            var component = qualifiedModuleName.HasValue
+                                               ? qualifiedModuleName.Value.Component
+                                               :_vbe.SelectedVBComponent;
+                        
+
+            if (component?.HasDesigner ?? false)
+            {
+                if (qualifiedModuleName.HasValue)
+                {
+                    return _state.DeclarationFinder.MatchName(qualifiedModuleName.Value.Name)
+                                                   .SingleOrDefault(m => m.ProjectId == projectId
+                                                                      && m.DeclarationType.HasFlag(qualifiedModuleName.Value.ComponentType)
+                                                                      && m.ComponentName == component.Name);
+                }
+
+                var selectedCount = component.SelectedControls.Count;                
+                if (selectedCount > 1) { return null; }
+
+                // Cannot use DeclarationType.UserForm, parser only assigns UserForms the ClassModule flag
+                var selectedType = selectedCount == 0 ? DeclarationType.ClassModule : DeclarationType.Control;
+                string selectedName = selectedCount == 0 ? component.Name : component.SelectedControls[0].Name;
+
+                return _state.DeclarationFinder.MatchName(selectedName)
+                                               .SingleOrDefault(m => m.ProjectId == projectId
+                                                                  && m.DeclarationType.HasFlag(selectedType)
+                                                                  && m.ComponentName == component.Name);                
+            }
+            return null;
+        }
+
 
         public void Dispose()
         {
