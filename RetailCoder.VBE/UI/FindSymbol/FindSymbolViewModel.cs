@@ -83,7 +83,6 @@ namespace Rubberduck.UI.FindSymbol
             get { return _searchString; }
             set
             {
-                //Adding SelectedItem.set() will allow pasting to work?
                 SearchResult firstResult = GetSearchResultCollectionOfString(value).FirstOrDefault();
                 SelectedItem = firstResult;
 
