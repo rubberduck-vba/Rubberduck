@@ -9,8 +9,16 @@ namespace Rubberduck.Inspections.Concrete
 {
     public class RangeClause : IComparable, IRangeClause
     {
+        private const string EQ = "=";
+        private const string NEQ = "<>";
+        private const string LT = "<";
+        private const string LTE = "<=";
+        private const string GT = ">";
+        private const string GTE = ">=";
+
+        
+
         private readonly VBAParser.RangeClauseContext _ctxt;
-        //private string _stringValue;
         private readonly string _typeName;
         private bool _usesIsClause;
         private KeyValuePair<VBAParser.SelectStartValueContext, VBAParser.SelectEndValueContext> _rangeContexts;
@@ -23,7 +31,6 @@ namespace Rubberduck.Inspections.Concrete
         public RangeClause(VBAParser.RangeClauseContext ctxt, IdentifierReference theRef)
         {
             _ctxt = ctxt;
-            //_stringValue = _ctxt.GetText();
             _theRef = theRef;
             _typeName = theRef.Declaration.AsTypeName;
             _compareSymbol = DetermineTheComparisonOperator(ctxt);
@@ -32,8 +39,10 @@ namespace Rubberduck.Inspections.Concrete
             _usesIsClause = UsesIsExpression(ctxt);
             _isRange = UsesRangeExpression(ctxt);
             _isSingleVal = !_isRange;
+
+            //TODO: Below are type validations that belong in early checks...maybe before calling this constructor
             var result = GetRangeClauseText(ctxt);
-            if (HandleAsLong(_typeName) && _isSingleVal)
+            if (HandleAsLong(theRef.Declaration.AsTypeName) && _isSingleVal)
             {
                 long longValue;
                 var test = long.TryParse(result, out longValue);
@@ -42,7 +51,7 @@ namespace Rubberduck.Inspections.Concrete
                     _typeName = "String";
                 }
             }
-            if (HandleAsDouble(_typeName) && _isSingleVal)
+            if (HandleAsDouble(theRef.Declaration.AsTypeName) && _isSingleVal)
             {
                 double dblValue;
                 var test = double.TryParse(result, out dblValue);
@@ -174,15 +183,15 @@ namespace Rubberduck.Inspections.Concrete
                     var result = 1;
                     if (isLongType)
                     {
-                        result = CompareSingleValues(long.Parse(prior.ValueAsString), long.Parse(ValueAsString), "=");
+                        result = CompareSingleValues(long.Parse(prior.ValueAsString), long.Parse(ValueAsString), EQ);
                     }
                     else if (isDoubleType)
                     {
-                        result = CompareSingleValues(double.Parse(prior.ValueAsString), double.Parse(ValueAsString), "=");
+                        result = CompareSingleValues(double.Parse(prior.ValueAsString), double.Parse(ValueAsString), EQ);
                     }
                     else
                     {
-                        result = CompareSingleValues(prior.ValueAsString, ValueAsString, "=");
+                        result = CompareSingleValues(prior.ValueAsString, ValueAsString, EQ);
                     }
                     IsFullyEquivalent = result == 0;
                     return result;
@@ -371,27 +380,27 @@ namespace Rubberduck.Inspections.Concrete
         private int CompareSingleValues<T>( T priorRgValue, T candidate, string comparisonSymbol) where T : System.IComparable<T>
         {
             var result =  priorRgValue.CompareTo(candidate);
-            if (comparisonSymbol.Equals(">"))
+            if (comparisonSymbol.Equals(GT))
             {
                 return result < 0 ? 0 : result + 1;
             }
-            if (comparisonSymbol.Equals(">="))
+            if (comparisonSymbol.Equals(GTE))
             {
                 return result <= 0 ? 0 : result + 1;
             }
-            if (comparisonSymbol.Equals("<"))
+            if (comparisonSymbol.Equals(LT))
             {
                 return result > 0 ? 0 : result - 1;
             }
-            if (comparisonSymbol.Equals("<="))
+            if (comparisonSymbol.Equals(LTE))
             {
                 return result >= 0 ? 0 : result - 1;
             }
-            if (comparisonSymbol.Equals("="))
+            if (comparisonSymbol.Equals(EQ))
             {
                 return result;
             }
-            if (comparisonSymbol.Equals("<>"))
+            if (comparisonSymbol.Equals(NEQ))
             {
                 return result != 0 ? 0 : 1;
             }
@@ -404,7 +413,7 @@ namespace Rubberduck.Inspections.Concrete
 
         private int CompareRangeToIsStmt<T>(T priorIsStmtValue, T minVal, T maxVal, string compareSymbol) where T : System.IComparable<T>
         {
-            if (compareSymbol.Equals(">"))
+            if (compareSymbol.Equals(GT))
             {
                 if (minVal.CompareTo(priorIsStmtValue) > 0)
                 {
@@ -416,7 +425,7 @@ namespace Rubberduck.Inspections.Concrete
                 }
                 return -1;
             }
-            else if (compareSymbol.Equals(">="))
+            else if (compareSymbol.Equals(GTE))
             {
                 if (minVal.CompareTo(priorIsStmtValue) >= 0)
                 {
@@ -428,7 +437,7 @@ namespace Rubberduck.Inspections.Concrete
                 }
                 return -1;
             }
-            else if (compareSymbol.Equals("<"))
+            else if (compareSymbol.Equals(LT))
             {
                 if (maxVal.CompareTo(priorIsStmtValue) < 0)
                 {
@@ -440,7 +449,7 @@ namespace Rubberduck.Inspections.Concrete
                 }
                 return 1;
             }
-            else if (compareSymbol.Equals("<="))
+            else if (compareSymbol.Equals(LTE))
             {
                 if (maxVal.CompareTo(priorIsStmtValue) <= 0)
                 {
@@ -459,27 +468,27 @@ namespace Rubberduck.Inspections.Concrete
         private int CompareSingleValueToIsStmt<T>(T isStmtValue, T compareValue, string compareSymbol) where T :  System.IComparable<T>
         {
             var result = isStmtValue.CompareTo(compareValue);
-            if (compareSymbol.Equals("="))
+            if (compareSymbol.Equals(EQ))
             {
                 return result;
             }
-            else if (compareSymbol.Equals("<>"))
+            else if (compareSymbol.Equals(NEQ))
             {
                 return result != 0 ? 0 : 1;
             }
-            else if (compareSymbol.Equals(">"))
+            else if (compareSymbol.Equals(GT))
             {
                 return result < 0 ? 0 : -1;
             }
-            else if (compareSymbol.Equals(">="))
+            else if (compareSymbol.Equals(GTE))
             {
                 return result <= 0 ? 0 : -1;
             }
-            else if (compareSymbol.Equals("<"))
+            else if (compareSymbol.Equals(LT))
             {
                 return result > 0 ? 0 : 1;
             }
-            else if (compareSymbol.Equals("<="))
+            else if (compareSymbol.Equals(LTE))
             {
                 return result >= 0 ? 0 : 1;
             }
@@ -492,11 +501,11 @@ namespace Rubberduck.Inspections.Concrete
             int returnVal = CompareSingleValueToIsStmt(isStmtValuePreceding, isStmtValueSecond, compareSymbolPrecedingIsStmt);
             if (compareSymbolPrecedingIsStmt.CompareTo(compareSymbolSecond) != 0)
             {
-                IsPartiallyEquivalent = !(compareSymbolSecond.Contains("<>") || compareSymbolSecond.Contains("="));
+                IsPartiallyEquivalent = !(compareSymbolSecond.Contains(NEQ) || compareSymbolSecond.Contains(EQ));
             }
             else
             {
-                IsFullyEquivalent = !(compareSymbolPrecedingIsStmt.Contains("<>") || compareSymbolPrecedingIsStmt.Contains("="));
+                IsFullyEquivalent = !(compareSymbolPrecedingIsStmt.Contains(NEQ) || compareSymbolPrecedingIsStmt.Contains(EQ));
             }
             return returnVal;
         }
@@ -509,7 +518,7 @@ namespace Rubberduck.Inspections.Concrete
         private string DetermineTheComparisonOperator(VBAParser.RangeClauseContext ctxt)
         {
             _usesIsClause = false;
-            var theOperator = "=";
+            var theOperator = EQ;
             //'VBAParser.ComparisonOperatorContext' is the The 'Is' case
             var opCtxt = ParserRuleContextHelper.GetChild<VBAParser.ComparisonOperatorContext>(ctxt);
             if (opCtxt != null)
@@ -547,15 +556,15 @@ namespace Rubberduck.Inspections.Concrete
             return types.Contains(typeName);
         }
 
-        private static string[] ComparisonOperators = { "=", "<>", "<", "<=", ">", ">=" };
+        private static string[] ComparisonOperators = { EQ, NEQ, LT, LTE, GT, GTE };
         private static Dictionary<string, string> OperatorInversions = new Dictionary<string, string>()
         {
-            { "=","=" },
-            {"<>","<>" },
-            {"<",">" },
-            {"<=",">=" },
-            {">","<" },
-            {">=","<=" }
+            { EQ,EQ },
+            {NEQ,NEQ },
+            {LT,GT },
+            {LTE,GTE },
+            {GT,LT },
+            {GTE,LTE }
         };
     }
 }

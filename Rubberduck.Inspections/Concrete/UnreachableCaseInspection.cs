@@ -20,8 +20,6 @@ namespace Rubberduck.Inspections.Concrete
 {
     internal class UnreachableCaseInspection : ParseTreeInspectionBase
     {
-        private string _typeName;
-
         private static long BYTEMAX => 255;
         private static long BYTEMIN => 0;
 
@@ -66,6 +64,7 @@ namespace Rubberduck.Inspections.Concrete
         {
             var theRef = GetTheSelectCaseReference(selectCaseStmt);
 
+            //For now we only handle SelectCaseStmt that use a simple variable reference
             if(theRef == null)
             {
                 return new List<IInspectionResult>();
@@ -79,18 +78,9 @@ namespace Rubberduck.Inspections.Concrete
             return HandleSelectCase(qualifiedCaseClauses, theRef);
         }
 
-        //private bool IsConstantExpression(VBAParser.SelectExpressionContext selectCaseExpr)
-        //{
-        //    return selectCaseExpr.ChildCount == 1 && selectCaseExpr.children[0] is VBAParser.LiteralExprContext;
-        //}
-
         private IdentifierReference GetTheSelectCaseReference(QualifiedContext<ParserRuleContext> selectCaseStmt)
         {
             var selectCaseExpr = ParserRuleContextHelper.GetChild<VBAParser.SelectExpressionContext>(selectCaseStmt.Context);
-            //if (IsConstantExpression(selectCaseExpr))
-            //{
-            //    return null;
-            //}
 
             var allRefs = new List<IdentifierReference>();
             var name = selectCaseExpr.GetText();
@@ -119,20 +109,9 @@ namespace Rubberduck.Inspections.Concrete
         private List<IInspectionResult> HandleSelectCase(List<QualifiedContext<ParserRuleContext>> caseClauses, IdentifierReference theRef)
         {
             var inspResults = new List<IInspectionResult>();
+
             var rangeEvals = new List<IComparable>();
-            _typeName = theRef.Declaration.AsTypeName;
-
-            if (_typeName.Equals("Integer"))
-            {
-                rangeEvals.Add(new RangeClauseExtent<long>(INTMAX, "Integer", ">"));
-                rangeEvals.Add(new RangeClauseExtent<long>(INTMIN, "Integer", "<"));
-            }
-
-            if (_typeName.Equals("Byte"))
-            {
-                rangeEvals.Add(new RangeClauseExtent<long>(BYTEMAX, "Byte", ">"));
-                rangeEvals.Add(new RangeClauseExtent<long>(BYTEMIN, "Byte", "<"));
-            }
+            rangeEvals = LoadBoundaryEvaluations(theRef.Declaration.AsTypeName, rangeEvals);
 
             foreach (var caseClause in caseClauses)
             {
@@ -169,6 +148,25 @@ namespace Rubberduck.Inspections.Concrete
                     result));
             return inspResults;
         }
+
+        private static List<IComparable> LoadBoundaryEvaluations(string theTypeName, List<IComparable> rangeEvals)
+        {
+            if (theTypeName.Equals("Integer"))
+            {
+                rangeEvals.Add(new RangeClauseExtent<long>(INTMAX, "Integer", ">"));
+                rangeEvals.Add(new RangeClauseExtent<long>(INTMIN, "Integer", "<"));
+            }
+
+            if (theTypeName.Equals("Byte"))
+            {
+                rangeEvals.Add(new RangeClauseExtent<long>(BYTEMAX, "Byte", ">"));
+                rangeEvals.Add(new RangeClauseExtent<long>(BYTEMIN, "Byte", "<"));
+            }
+
+            //TODO: Single, Decimal, Currency, Boolean
+            return rangeEvals;
+        }
+
 
         public class UnreachableCaseInspectionListener : VBAParserBaseListener, IInspectionListener
         {
