@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Runtime.InteropServices;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
@@ -24,7 +25,8 @@ namespace Rubberduck.UI.Command.Refactorings
 
         protected override bool EvaluateCanExecute(object parameter)
         {
-            return _state.Status == ParserState.Ready && GetTarget() != null;
+            return (_state?.Status ?? ParserState.None) == ParserState.Ready 
+                && GetTarget() != null;
         }
 
         protected override void OnExecute(object parameter)
@@ -45,35 +47,36 @@ namespace Rubberduck.UI.Command.Refactorings
 
         private Declaration GetTarget(QualifiedModuleName? qualifiedModuleName = null)
         {
-            var projectId = qualifiedModuleName.HasValue
-                                               ? qualifiedModuleName.Value.ProjectId
-                                               : Vbe.ActiveVBProject.ProjectId;
-            
-            var component = qualifiedModuleName.HasValue
-                                               ? qualifiedModuleName.Value.Component
-                                               : Vbe.SelectedVBComponent;
+            (var projectId, var component) = 
+                qualifiedModuleName.HasValue 
+                                   ? (qualifiedModuleName.Value.ProjectId, qualifiedModuleName.Value.Component)
+                                   : (Vbe.ActiveVBProject.ProjectId, Vbe.SelectedVBComponent);
                         
             if (component?.HasDesigner ?? false)
             {
                 if (qualifiedModuleName.HasValue)
                 {
-                    return _state.DeclarationFinder.MatchName(qualifiedModuleName.Value.Name)
-                                                   .SingleOrDefault(m => m.ProjectId == projectId
-                                                                      && m.DeclarationType.HasFlag(qualifiedModuleName.Value.ComponentType)
-                                                                      && m.ComponentName == component.Name);
+                    return _state.DeclarationFinder
+                                 .MatchName(qualifiedModuleName.Value.Name)
+                                 .SingleOrDefault(m => m.ProjectId == projectId
+                                                    && m.DeclarationType.HasFlag(qualifiedModuleName.Value.ComponentType)
+                                                    && m.ComponentName == component.Name);
                 }
                 
                 var selectedCount = component.SelectedControls.Count;
                 if (selectedCount > 1) { return null; }
                 
                 // Cannot use DeclarationType.UserForm, parser only assigns UserForms the ClassModule flag
-                var selectedType = selectedCount == 0 ? DeclarationType.ClassModule : DeclarationType.Control;
-                var selectedName = selectedCount == 0 ? component.Name : component.SelectedControls[0].Name;
+                (var selectedType, var selectedName) = 
+                    selectedCount == 0
+                                   ? (DeclarationType.ClassModule, component.Name)
+                                   : (DeclarationType.Control, component.SelectedControls[0].Name);
                 
-                return _state.DeclarationFinder.MatchName(selectedName)
-                                               .SingleOrDefault(m => m.ProjectId == projectId
-                                                                  && m.DeclarationType.HasFlag(selectedType)
-                                                                  && m.ComponentName == component.Name);
+                return _state.DeclarationFinder
+                             .MatchName(selectedName)
+                             .SingleOrDefault(m => m.ProjectId == projectId
+                                                && m.DeclarationType.HasFlag(selectedType)
+                                                && m.ComponentName == component.Name);
              }
             return null;
         }
