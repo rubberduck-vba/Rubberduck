@@ -3,7 +3,6 @@ using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections   
@@ -11,7 +10,7 @@ namespace RubberduckTests.Inspections
     [TestClass]
     public class EmptyIfBlockInspectionTests
     {
-        [TestMethod]
+        [TestMethod, Ignore]
         [TestCategory("Inspections")]
         public void EmptyIfBlock_FiresOnEmptyIfBlock()
         {
@@ -21,8 +20,7 @@ namespace RubberduckTests.Inspections
     End If
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyIfBlockInspection(state);
@@ -32,7 +30,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Ignore]
         [TestCategory("Inspections")]
         public void EmptyIfBlock_FiresOnEmptyElseIfBlock()
         {
@@ -43,8 +41,7 @@ End Sub";
     End If
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyIfBlockInspection(state);
@@ -54,7 +51,7 @@ End Sub";
             Assert.AreEqual(2, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Ignore]
         [TestCategory("Inspections")]
         public void EmptyIfBlock_FiresOnEmptyIfBlock_ElseBlock()
         {
@@ -65,8 +62,7 @@ End Sub";
     End If
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyIfBlockInspection(state);
@@ -76,7 +72,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Ignore]
         [TestCategory("Inspections")]
         public void EmptyIfBlock_FiresOnEmptySingleLineIfStmt()
         {
@@ -88,8 +84,7 @@ End Sub
 Sub Bar()
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyIfBlockInspection(state);
@@ -99,7 +94,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Ignore]
         [TestCategory("Inspections")]
         public void EmptyIfBlock_FiresOnEmptyIfBlock_HasNonEmptyElseBlock()
         {
@@ -112,8 +107,7 @@ End Sub";
     End If
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyIfBlockInspection(state);
@@ -123,7 +117,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Ignore]
         [TestCategory("Inspections")]
         public void EmptyIfBlock_FiresOnEmptyIfBlock_HasQuoteComment()
         {
@@ -134,8 +128,7 @@ End Sub";
     End If
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyIfBlockInspection(state);
@@ -145,7 +138,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Ignore]
         [TestCategory("Inspections")]
         public void EmptyIfBlock_FiresOnEmptyIfBlock_HasRemComment()
         {
@@ -156,8 +149,7 @@ End Sub";
     End If
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyIfBlockInspection(state);
@@ -167,7 +159,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Ignore]
         [TestCategory("Inspections")]
         public void EmptyIfBlock_FiresOnEmptyIfBlock_HasVariableDeclaration()
         {
@@ -178,8 +170,7 @@ End Sub";
     End If
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyIfBlockInspection(state);
@@ -189,7 +180,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Ignore]
         [TestCategory("Inspections")]
         public void EmptyIfBlock_FiresOnEmptyIfBlock_HasConstDeclaration()
         {
@@ -200,8 +191,7 @@ End Sub";
     End If
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyIfBlockInspection(state);
@@ -211,7 +201,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Ignore]
         [TestCategory("Inspections")]
         public void EmptyIfBlock_FiresOnEmptyIfBlock_HasWhitespace()
         {
@@ -223,8 +213,7 @@ End Sub";
     End If
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyIfBlockInspection(state);
@@ -234,7 +223,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod]
+        [TestMethod, Ignore]
         [TestCategory("Inspections")]
         public void EmptyIfBlock_IfBlockHasExecutableStatement()
         {
@@ -246,8 +235,7 @@ End Sub";
     End If
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyIfBlockInspection(state);
@@ -257,7 +245,7 @@ End Sub";
             Assert.IsFalse(inspectionResults.Any());
         }
 
-        [TestMethod]
+        [TestMethod, Ignore]
         [TestCategory("Inspections")]
         public void EmptyIfBlock_SingleLineIfBlockHasExecutableStatement()
         {
@@ -269,8 +257,7 @@ End Sub
 Sub Bar()
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyIfBlockInspection(state);
@@ -280,7 +267,7 @@ End Sub";
             Assert.IsFalse(inspectionResults.Any());
         }
 
-        [TestMethod]
+        [TestMethod, Ignore]
         [TestCategory("Inspections")]
         public void EmptyIfBlock_IfAndElseIfBlockHaveExecutableStatement()
         {
@@ -295,8 +282,7 @@ End Sub";
     End If
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyIfBlockInspection(state);
@@ -306,7 +292,7 @@ End Sub";
             Assert.IsFalse(inspectionResults.Any());
         }
 
-        [TestMethod]
+        [TestMethod, Ignore]
         [TestCategory("Inspections")]
         public void InspectionType()
         {
@@ -314,7 +300,7 @@ End Sub";
             Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
         }
 
-        [TestMethod]
+        [TestMethod, Ignore]
         [TestCategory("Inspections")]
         public void InspectionName()
         {

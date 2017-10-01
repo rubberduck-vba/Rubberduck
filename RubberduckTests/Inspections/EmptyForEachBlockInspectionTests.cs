@@ -44,7 +44,7 @@ End Sub";
             CheckActualEmptyBlockCountEqualsExpected(inputCode, 0);
         }
 
-        [TestMethod]
+        [TestMethod, Ignore]
         [TestCategory("Inspections")]
         public void EmptyForLoopBlock_FiresOnEmptyLoopBlocks()
         {

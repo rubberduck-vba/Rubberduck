@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -11,7 +10,7 @@ namespace RubberduckTests.Inspections
     [TestClass]
     public class EmptyCaseBlockInspectionTests
     {
-        [TestMethod]
+        [TestMethod, Ignore]
         [TestCategory("Inspections")]
         public void EmptyCaseBlock_InspectionType()
         {
@@ -21,7 +20,7 @@ namespace RubberduckTests.Inspections
             Assert.AreEqual(expectedInspection, inspection.InspectionType);
         }
 
-        [TestMethod]
+        [TestMethod, Ignore]
         [TestCategory("Inspections")]
         public void EmptyCaseBlock_InspectionName()
         {
@@ -31,7 +30,7 @@ namespace RubberduckTests.Inspections
             Assert.AreEqual(expectedName, inspection.Name);
         }
 
-        [TestMethod]
+        [TestMethod, Ignore]
         [TestCategory("Inspections")]
         public void EmptyCaseBlock_DoesNotFiresOnImplementedCaseBlocks()
         {
@@ -51,7 +50,7 @@ End Sub";
             CheckActualEmptyBlockCountEqualsExpected(inputCode, 0);
         }
 
-        [TestMethod]
+        [TestMethod, Ignore]
         [TestCategory("Inspections")]
         public void EmptyCaseBlock_FiresOnEmptyCaseBlocks()
         {
@@ -68,7 +67,7 @@ End Sub";
             CheckActualEmptyBlockCountEqualsExpected(inputCode, 3);
         }
 
-        [TestMethod]
+        [TestMethod, Ignore]
         [TestCategory("Inspections")]
         public void EmptyCaseBlock_FiresOnCommentCaseBlocks()
         {
