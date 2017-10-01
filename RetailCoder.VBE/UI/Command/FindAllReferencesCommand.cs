@@ -88,7 +88,7 @@ namespace Rubberduck.UI.Command
 
         protected override bool EvaluateCanExecute(object parameter)
         {
-            if ((_state?.Status ?? ParserState.None) != ParserState.Ready ||
+            if (_state?.Status != ParserState.Ready ||
                 (_vbe.ActiveCodePane == null && !(_vbe.SelectedVBComponent?.HasDesigner ?? false)))
             {
                 return false;
@@ -102,7 +102,7 @@ namespace Rubberduck.UI.Command
 
         protected override void OnExecute(object parameter)
         {
-            if ((_state?.Status ?? ParserState.None) != ParserState.Ready)
+            if (_state?.Status != ParserState.Ready)
             {
                 return;
             }
