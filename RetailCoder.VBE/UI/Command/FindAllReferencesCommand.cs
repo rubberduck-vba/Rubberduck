@@ -43,11 +43,11 @@ namespace Rubberduck.UI.Command
         private Declaration FindNewDeclaration(Declaration declaration)
         {
             return _state.DeclarationFinder
-                         .MatchName(declaration.IdentifierName)
-                         .SingleOrDefault(d => d.ProjectId == declaration.ProjectId
-                                            && d.ComponentName == declaration.ComponentName
-                                            && d.ParentScope == declaration.ParentScope
-                                            && d.DeclarationType == declaration.DeclarationType);            
+                .MatchName(declaration.IdentifierName)
+                .SingleOrDefault(d => d.ProjectId == declaration.ProjectId
+                    && d.ComponentName == declaration.ComponentName
+                    && d.ParentScope == declaration.ParentScope
+                    && d.DeclarationType == declaration.DeclarationType);            
         }
 
         private void _state_StateChanged(object sender, ParserStateEventArgs e)
@@ -162,8 +162,8 @@ namespace Rubberduck.UI.Command
             }
 
             return _vbe.ActiveCodePane != null && (_vbe.SelectedVBComponent?.HasDesigner ?? false)
-                    ? FindFormDesignerTarget()
-                    : FindCodePaneTarget();
+                ? FindFormDesignerTarget()
+                : FindCodePaneTarget();
         }
 
         private Declaration FindCodePaneTarget()
@@ -173,36 +173,34 @@ namespace Rubberduck.UI.Command
 
         private Declaration FindFormDesignerTarget(QualifiedModuleName? qualifiedModuleName = null)
         {            
-            (var projectId, var component)
-                = qualifiedModuleName.HasValue
-                                     ? (qualifiedModuleName.Value.ProjectId, qualifiedModuleName.Value.Component)
-                                     : (_vbe.ActiveVBProject.ProjectId, _vbe.SelectedVBComponent);
+            (var projectId, var component) = qualifiedModuleName.HasValue
+                ? (qualifiedModuleName.Value.ProjectId, qualifiedModuleName.Value.Component)
+                : (_vbe.ActiveVBProject.ProjectId, _vbe.SelectedVBComponent);
 
             if (component?.HasDesigner ?? false)
             {
                 if (qualifiedModuleName.HasValue)
                 {
                     return _state.DeclarationFinder
-                                 .MatchName(qualifiedModuleName.Value.Name)
-                                 .SingleOrDefault(m => m.ProjectId == projectId
-                                                    && m.DeclarationType.HasFlag(qualifiedModuleName.Value.ComponentType)
-                                                    && m.ComponentName == component.Name);
+                        .MatchName(qualifiedModuleName.Value.Name)
+                        .SingleOrDefault(m => m.ProjectId == projectId
+                            && m.DeclarationType.HasFlag(qualifiedModuleName.Value.ComponentType)
+                            && m.ComponentName == component.Name);
                 }
 
                 var selectedCount = component.SelectedControls.Count;                
                 if (selectedCount > 1) { return null; }
 
                 // Cannot use DeclarationType.UserForm, parser only assigns UserForms the ClassModule flag
-                (var selectedType, var selectedName)
-                    = selectedCount == 0
-                                     ? (DeclarationType.ClassModule, component.Name)
-                                     : (DeclarationType.Control, component.SelectedControls[0].Name);
+                (var selectedType, var selectedName) = selectedCount == 0
+                    ? (DeclarationType.ClassModule, component.Name)
+                    : (DeclarationType.Control, component.SelectedControls[0].Name);
                 
                 return _state.DeclarationFinder
-                             .MatchName(selectedName)
-                             .SingleOrDefault(m => m.ProjectId == projectId
-                                                && m.DeclarationType.HasFlag(selectedType)
-                                                && m.ComponentName == component.Name);                
+                    .MatchName(selectedName)
+                    .SingleOrDefault(m => m.ProjectId == projectId
+                        && m.DeclarationType.HasFlag(selectedType)
+                        && m.ComponentName == component.Name);                
             }
             return null;
         }
