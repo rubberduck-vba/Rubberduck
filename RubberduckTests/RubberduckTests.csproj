@@ -101,10 +101,11 @@
     <Compile Include="Grammar\SelectionExtensionsTests.cs" />
     <Compile Include="Inspections\ApplicationWorksheetFunctionInspectionTests.cs" />
     <Compile Include="Inspections\EmptyCaseBlockInspectionTests.cs" />
-    <Compile Include="Inspections\EmptyConditionBlockInspectionTests.cs" />
     <Compile Include="Inspections\EmptyDoWhileBlockInspectionTests.cs" />
+    <Compile Include="Inspections\EmptyElseBlockInspectionTests.cs" />
     <Compile Include="Inspections\EmptyForEachBlockInspectionTests.cs" />
     <Compile Include="Inspections\EmptyForLoopBlockInspectionTests.cs" />
+    <Compile Include="Inspections\EmptyIfBlockInspectionTests.cs" />
     <Compile Include="Inspections\EmptyWhileWendBlockInspectionTests.cs" />
     <Compile Include="Inspections\InspectionsHelper.cs" />
     <Compile Include="Inspections\IntegerDataTypeInspectionTests.cs" />
@@ -123,7 +124,6 @@
     <Compile Include="QuickFixes\DeclareAsExplicitVariantQuickFixTests.cs" />
     <Compile Include="QuickFixes\PassParameterByReferenceQuickFixTests.cs" />
     <Compile Include="QuickFixes\QuickFixProviderTests.cs" />
-    <Compile Include="QuickFixes\RemoveEmptyConditionBlockQuickFixTests.cs" />
     <Compile Include="QuickFixes\RemoveUnassignedIdentifierQuickFixTests.cs" />
     <Compile Include="QuickFixes\RemoveUnassignedVariableUsageQuickFix.cs" />
     <Compile Include="QuickFixes\SynchronizeAttributesQuickFixTests.cs" />
@@ -144,6 +144,8 @@
     <Compile Include="QuickFixes\OptionExplicitQuickFixTests.cs" />
     <Compile Include="QuickFixes\PassParameterByValueQuickFixTests.cs" />
     <Compile Include="QuickFixes\RemoveCommentQuickFixTests.cs" />
+    <Compile Include="QuickFixes\RemoveEmptyElseBlockQuickFixTests.cs" />
+    <Compile Include="QuickFixes\RemoveEmptyIfBlockQuickFixTests.cs" />
     <Compile Include="QuickFixes\RemoveExplicitByRefModifierQuickFixTests.cs" />
     <Compile Include="QuickFixes\RemoveExplicitCallStatementQuickFixTests.cs" />
     <Compile Include="QuickFixes\RemoveExplicitLetStatementQuickFixTests.cs" />

@@ -56,7 +56,7 @@ namespace Rubberduck.Inspections.Concrete
             }
         }
 
-        public ShadowedDeclarationInspection(RubberduckParserState state) : base(state)
+        public ShadowedDeclarationInspection(RubberduckParserState state) : base(state, CodeInspectionSeverity.DoNotShow)
         {
         }
 

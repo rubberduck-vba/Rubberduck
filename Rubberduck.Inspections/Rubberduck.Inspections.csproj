@@ -64,7 +64,6 @@
     <Compile Include="Concrete\AssignedByValParameterInspection.cs" />
     <Compile Include="Concrete\EmptyBlockInspectionListenerBase.cs" />
     <Compile Include="Concrete\EmptyCaseBlockInspection.cs" />
-    <Compile Include="Concrete\EmptyConditionBlockInspection.cs" />
     <Compile Include="Concrete\EmptyDoWhileBlockInspection.cs" />
     <Compile Include="Concrete\EmptyForEachBlockInspection.cs" />
     <Compile Include="Concrete\EmptyForLoopBlockInspection.cs" />
@@ -76,6 +75,7 @@
     <Compile Include="ParseTreeListeners\AttributeAnnotationListener.cs" />
     <Compile Include="Concrete\ConstantNotUsedInspection.cs" />
     <Compile Include="Concrete\DefaultProjectNameInspection.cs" />
+    <Compile Include="Concrete\EmptyIfBlockInspection.cs" />
     <Compile Include="Concrete\EmptyStringLiteralInspection.cs" />
     <Compile Include="Concrete\EncapsulatePublicFieldInspection.cs" />
     <Compile Include="Concrete\FunctionReturnValueNotUsedInspection.cs" />
@@ -92,6 +92,7 @@
     <Compile Include="Concrete\MissingAttributeInspection.cs" />
     <Compile Include="Abstract\InspectionResultBase.cs" />
     <Compile Include="Concrete\RedundantByRefModifierInspection.cs" />
+    <Compile Include="Concrete\EmptyElseBlockInspection.cs" />
     <Compile Include="Inspector.cs" />
     <Compile Include="Concrete\MemberNotOnInterfaceInspection.cs" />
     <Compile Include="Concrete\MissingAnnotationArgumentInspection.cs" />
@@ -120,7 +121,6 @@
     <Compile Include="QuickFixes\ChangeDimToPrivateQuickFix.cs" />
     <Compile Include="QuickFixes\ChangeIntegerToLongQuickFix.cs" />
     <Compile Include="Abstract\QuickFixBase.cs" />
-    <Compile Include="QuickFixes\RemoveEmptyConditionBlockQuickFix.cs" />
     <Compile Include="QuickFixes\RemoveStopKeywordQuickFix.cs" />
     <Compile Include="QuickFixes\SpecifyExplicitByRefModifierQuickFix.cs" />
     <Compile Include="QuickFixes\ChangeProcedureToFunctionQuickFix.cs" />
@@ -135,6 +135,8 @@
     <Compile Include="QuickFixes\PassParameterByReferenceQuickFix.cs" />
     <Compile Include="QuickFixes\PassParameterByValueQuickFix.cs" />
     <Compile Include="QuickFixes\RemoveCommentQuickFix.cs" />
+    <Compile Include="QuickFixes\RemoveEmptyElseBlockQuickFix.cs" />
+    <Compile Include="QuickFixes\RemoveEmptyIfBlockQuickFix.cs" />
     <Compile Include="QuickFixes\RemoveExplicitCallStatmentQuickFix.cs" />
     <Compile Include="QuickFixes\RemoveExplicitLetStatementQuickFix.cs" />
     <Compile Include="QuickFixes\RemoveOptionBaseStatementQuickFix.cs" />

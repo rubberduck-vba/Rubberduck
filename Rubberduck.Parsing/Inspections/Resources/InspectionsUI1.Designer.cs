@@ -340,42 +340,6 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A conditional block should contain executable statements in a clean code base. Empty blocks can be confusing about the intent of the author..
-        /// </summary>
-        public static string EmptyConditionBlockInspectionsMeta {
-            get {
-                return ResourceManager.GetString("EmptyConditionBlockInspectionsMeta", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Empty conditional block.
-        /// </summary>
-        public static string EmptyConditionBlockInspectionsName {
-            get {
-                return ResourceManager.GetString("EmptyConditionBlockInspectionsName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Remove empty block.
-        /// </summary>
-        public static string EmptyConditionBlockInspectionsQuickFix {
-            get {
-                return ResourceManager.GetString("EmptyConditionBlockInspectionsQuickFix", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to  .
-        /// </summary>
-        public static string EmptyConditionBlockInspectionsResultFormat {
-            get {
-                return ResourceManager.GetString("EmptyConditionBlockInspectionsResultFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to A Loop block should have executable statements.
         /// </summary>
         public static string EmptyDoWhileBlockInspectionMeta {
@@ -399,6 +363,33 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         public static string EmptyDoWhileBlockInspectionResultFormat {
             get {
                 return ResourceManager.GetString("EmptyDoWhileBlockInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An Else block should have executable statements.
+        /// </summary>
+        public static string EmptyElseBlockInspectionMeta {
+            get {
+                return ResourceManager.GetString("EmptyElseBlockInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Empty Else block.
+        /// </summary>
+        public static string EmptyElseBlockInspectionName {
+            get {
+                return ResourceManager.GetString("EmptyElseBlockInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Else block has no executable statements.
+        /// </summary>
+        public static string EmptyElseBlockInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("EmptyElseBlockInspectionResultFormat", resourceCulture);
             }
         }
         
@@ -457,6 +448,33 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An If block should have executable statements.
+        /// </summary>
+        public static string EmptyIfBlockInspectionMeta {
+            get {
+                return ResourceManager.GetString("EmptyIfBlockInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Empty If block.
+        /// </summary>
+        public static string EmptyIfBlockInspectionName {
+            get {
+                return ResourceManager.GetString("EmptyIfBlockInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If block has no executable statements.
+        /// </summary>
+        public static string EmptyIfBlockInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("EmptyIfBlockInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Prefer &apos;vbNullString&apos; to an empty string literal.
         /// </summary>
         public static string EmptyStringLiteralInspection {
@@ -511,7 +529,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Empty While ... Wend block.
+        ///   Looks up a localized string similar to Empty While-Wend block.
         /// </summary>
         public static string EmptyWhileWendBlockInspectionName {
             get {
@@ -1780,11 +1798,20 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Remove empty conditional block.
+        ///   Looks up a localized string similar to Remove empty Else block.
         /// </summary>
-        public static string RemoveEmptyConditionBlockQuickFix {
+        public static string RemoveEmptyElseBlockQuickFix {
             get {
-                return ResourceManager.GetString("RemoveEmptyConditionBlockQuickFix", resourceCulture);
+                return ResourceManager.GetString("RemoveEmptyElseBlockQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove empty If block.
+        /// </summary>
+        public static string RemoveEmptyIfBlockQuickFix {
+            get {
+                return ResourceManager.GetString("RemoveEmptyIfBlockQuickFix", resourceCulture);
             }
         }
         

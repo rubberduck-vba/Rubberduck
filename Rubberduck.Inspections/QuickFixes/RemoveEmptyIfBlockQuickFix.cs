@@ -1,23 +1,23 @@
 ﻿using System;
-using System.Linq;
-using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.VBA;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Rewriter;
-using Antlr4.Runtime;
-using Rubberduck.Parsing.Inspections.Resources;
 using System.Diagnostics;
+using System.Linq;
+using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    internal sealed class RemoveEmptyConditionBlockQuickFix : QuickFixBase
+    internal sealed class RemoveEmptyIfBlockQuickFix : QuickFixBase
     {
         private readonly RubberduckParserState _state;
 
-        public RemoveEmptyConditionBlockQuickFix(RubberduckParserState state)
-            : base(typeof(EmptyConditionBlockInspection))
+        public RemoveEmptyIfBlockQuickFix(RubberduckParserState state)
+            : base(typeof(EmptyIfBlockInspection))
         {
             _state = state;
         }
@@ -88,16 +88,6 @@ namespace Rubberduck.Inspections.QuickFixes
             }
 
             rewriter.Remove(context);
-        }
-
-        private void UpdateContext(VBAParser.ElseBlockContext context, IModuleRewriter rewriter)
-        {
-            var elseBlock = context.block();
-
-            if (elseBlock.ChildCount == 0)
-            {
-                rewriter.Remove(context);
-            }
         }
 
         private void UpdateCondition(VBAParser.RelationalOpContext condition, IModuleRewriter rewriter)
@@ -186,7 +176,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override string Description(IInspectionResult result)
         {
-            return InspectionsUI.RemoveEmptyConditionBlockQuickFix;
+            return InspectionsUI.RemoveEmptyIfBlockQuickFix;
         }
 
         public override bool CanFixInProcedure { get; } = false;

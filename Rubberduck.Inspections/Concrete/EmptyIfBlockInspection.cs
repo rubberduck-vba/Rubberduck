@@ -1,39 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Antlr4.Runtime;
+using Antlr4.Runtime.Misc;
 using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Results;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
-using Antlr4.Runtime;
-using Antlr4.Runtime.Misc;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Inspections.Results;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Rubberduck.Inspections.Concrete
 {
-
-    internal class EmptyConditionBlockInspection : ParseTreeInspectionBase
+    internal class EmptyIfBlockInspection : ParseTreeInspectionBase
     {
-        public EmptyConditionBlockInspection(RubberduckParserState state)
+        public EmptyIfBlockInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Suggestion) { }
 
-        public override Type Type => typeof(EmptyConditionBlockInspection);
+        public override Type Type => typeof(EmptyIfBlockInspection);
+
+        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
         public override IEnumerable<IInspectionResult> GetInspectionResults()
         {
             return Listener.Contexts
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))
                 .Select(result => new QualifiedContextInspectionResult(this,
-                                                        InspectionsUI.EmptyConditionBlockInspectionsResultFormat,
+                                                        InspectionsUI.EmptyIfBlockInspectionResultFormat,
                                                         result));
         }
 
-        public override IInspectionListener Listener { get; } = 
-            new EmptyConditionBlockListener();
+        public override IInspectionListener Listener { get; } =
+            new EmptyIfBlockListener();
 
-        public class EmptyConditionBlockListener : EmptyBlockInspectionListenerBase
+        public class EmptyIfBlockListener : EmptyBlockInspectionListenerBase
         {
             public override void EnterIfStmt([NotNull] VBAParser.IfStmtContext context)
             {
@@ -47,12 +48,10 @@ namespace Rubberduck.Inspections.Concrete
 
             public override void EnterSingleLineIfStmt([NotNull] VBAParser.SingleLineIfStmtContext context)
             {
-                AddResult(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context.ifWithEmptyThen()));
-            }
-
-            public override void EnterElseBlock([NotNull] VBAParser.ElseBlockContext context)
-            {
-                InspectBlockForExecutableStatements(context.block(), context);
+                if (context.ifWithEmptyThen() != null)
+                {
+                    AddResult(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context.ifWithEmptyThen()));
+                }
             }
         }
     }
