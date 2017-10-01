@@ -7,10 +7,10 @@ using Rubberduck.Parsing.Inspections.Resources;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestClass, Ignore]
     public class EmptyCaseBlockInspectionTests
     {
-        [TestMethod, Ignore]
+        [TestMethod]
         [TestCategory("Inspections")]
         public void EmptyCaseBlock_InspectionType()
         {
@@ -20,7 +20,7 @@ namespace RubberduckTests.Inspections
             Assert.AreEqual(expectedInspection, inspection.InspectionType);
         }
 
-        [TestMethod, Ignore]
+        [TestMethod]
         [TestCategory("Inspections")]
         public void EmptyCaseBlock_InspectionName()
         {
@@ -30,7 +30,7 @@ namespace RubberduckTests.Inspections
             Assert.AreEqual(expectedName, inspection.Name);
         }
 
-        [TestMethod, Ignore]
+        [TestMethod]
         [TestCategory("Inspections")]
         public void EmptyCaseBlock_DoesNotFiresOnImplementedCaseBlocks()
         {
@@ -50,7 +50,7 @@ End Sub";
             CheckActualEmptyBlockCountEqualsExpected(inputCode, 0);
         }
 
-        [TestMethod, Ignore]
+        [TestMethod]
         [TestCategory("Inspections")]
         public void EmptyCaseBlock_FiresOnEmptyCaseBlocks()
         {
@@ -67,7 +67,7 @@ End Sub";
             CheckActualEmptyBlockCountEqualsExpected(inputCode, 3);
         }
 
-        [TestMethod, Ignore]
+        [TestMethod]
         [TestCategory("Inspections")]
         public void EmptyCaseBlock_FiresOnCommentCaseBlocks()
         {

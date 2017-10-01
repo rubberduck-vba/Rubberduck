@@ -7,10 +7,10 @@ using Rubberduck.Parsing.Inspections.Resources;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestClass, Ignore]
     public class EmptyElseBlockInspectionTests
     {
-        [TestMethod, Ignore]
+        [TestMethod]
         [TestCategory("Inspections")]
         public void InspectionType()
         {
@@ -20,7 +20,7 @@ namespace RubberduckTests.Inspections
             Assert.AreEqual(expectedInspection, inspection.InspectionType);
         }
 
-        [TestMethod, Ignore]
+        [TestMethod]
         [TestCategory("Inspections")]
         public void InspectionName()
         {
@@ -30,7 +30,7 @@ namespace RubberduckTests.Inspections
             Assert.AreEqual(expectedName, inspection.Name);
         }
 
-        [TestMethod, Ignore]
+        [TestMethod]
         [TestCategory("Inspections")]
         public void EmptyElseBlock_DoesntFireOnEmptyIfBlock()
         {
@@ -50,7 +50,7 @@ End Sub";
             Assert.AreEqual(expectedCount, actualResults.Count());
         }
 
-        [TestMethod, Ignore]
+        [TestMethod]
         [TestCategory("Inspections")]
         public void EmptyElseBlock_HasNoContent()
         {
@@ -72,7 +72,7 @@ End Sub";
             Assert.AreEqual(expectedCount, actualResults.Count());
         }
 
-        [TestMethod, Ignore]
+        [TestMethod]
         [TestCategory("Inspections")]
         public void EmptyElseBlock_HasQuoteComment()
         {
@@ -94,7 +94,7 @@ End Sub";
             Assert.AreEqual(expectedCount, actualResults.Count());
         }
 
-        [TestMethod, Ignore]
+        [TestMethod]
         [TestCategory("Inspections")]
         public void EmptyElseBlock_HasRemComment()
         {
@@ -117,7 +117,7 @@ End Sub";
             Assert.AreEqual(expectedCount, actualResults.Count());
         }
 
-        [TestMethod, Ignore]
+        [TestMethod]
         [TestCategory("Inspections")]
         public void EmptyElseBlock_HasVariableDeclaration()
         {
@@ -140,7 +140,7 @@ End Sub";
             Assert.AreEqual(expectedCount, actualResults.Count());
         }
 
-        [TestMethod, Ignore]
+        [TestMethod]
         [TestCategory("Inspections")]
         public void EmptyElseBlock_HasConstDeclaration()
         {
@@ -163,7 +163,7 @@ End Sub";
             Assert.AreEqual(expectedCount, actualResults.Count());
         }
 
-        [TestMethod, Ignore]
+        [TestMethod]
         [TestCategory("Inspections")]
         public void EmptyElseBlock_HasWhitespace()
         {
@@ -187,7 +187,7 @@ End Sub";
             Assert.AreEqual(expectedCount, actualResults.Count());
         }
 
-        [TestMethod, Ignore]
+        [TestMethod]
         [TestCategory("Inspections")]
         public void EmptyElseBlock_HasDeclarationStatement()
         {
@@ -210,7 +210,7 @@ End Sub";
             Assert.AreEqual(expectedCount, actualResults.Count());
         }
 
-        [TestMethod, Ignore]
+        [TestMethod]
         [TestCategory("Inspections")]
         public void EmptyElseBlock_HasExecutableStatement()
         {

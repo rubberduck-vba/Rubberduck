@@ -7,10 +7,10 @@ using Rubberduck.Parsing.Inspections.Resources;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestClass, Ignore]
     public class EmptyForLoopBlockInspectionTests
     {
-        [TestMethod, Ignore]
+        [TestMethod]
         [TestCategory("Inspections")]
         public void EmptyForLoopBlock_InspectionType()
         {
@@ -20,7 +20,7 @@ namespace RubberduckTests.Inspections
             Assert.AreEqual(expectedInspection, inspection.InspectionType);
         }
 
-        [TestMethod, Ignore]
+        [TestMethod]
         [TestCategory("Inspections")]
         public void EmptyForLoopBlock_InspectionName()
         {
@@ -30,7 +30,7 @@ namespace RubberduckTests.Inspections
             Assert.AreEqual(expectedName, inspection.Name);
         }
 
-        [TestMethod, Ignore]
+        [TestMethod]
         [TestCategory("Inspections")]
         public void EmptyForLoopBlock_DoesNotFiresOnImplementedLoopBlocks()
         {
@@ -44,7 +44,7 @@ End Sub";
             CheckActualEmptyBlockCountEqualsExpected(inputCode, 0);
         }
 
-        [TestMethod, Ignore]
+        [TestMethod]
         [TestCategory("Inspections")]
         public void EmptyForLoopBlock_FiresOnEmptyLoopBlocks()
         {

@@ -7,10 +7,10 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections   
 {
-    [TestClass]
+    [TestClass, Ignore]
     public class EmptyIfBlockInspectionTests
     {
-        [TestMethod, Ignore]
+        [TestMethod]
         [TestCategory("Inspections")]
         public void EmptyIfBlock_FiresOnEmptyIfBlock()
         {
@@ -30,7 +30,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod, Ignore]
+        [TestMethod]
         [TestCategory("Inspections")]
         public void EmptyIfBlock_FiresOnEmptyElseIfBlock()
         {
@@ -51,7 +51,7 @@ End Sub";
             Assert.AreEqual(2, inspectionResults.Count());
         }
 
-        [TestMethod, Ignore]
+        [TestMethod]
         [TestCategory("Inspections")]
         public void EmptyIfBlock_FiresOnEmptyIfBlock_ElseBlock()
         {
@@ -72,7 +72,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod, Ignore]
+        [TestMethod]
         [TestCategory("Inspections")]
         public void EmptyIfBlock_FiresOnEmptySingleLineIfStmt()
         {
@@ -94,7 +94,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod, Ignore]
+        [TestMethod]
         [TestCategory("Inspections")]
         public void EmptyIfBlock_FiresOnEmptyIfBlock_HasNonEmptyElseBlock()
         {
@@ -117,7 +117,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod, Ignore]
+        [TestMethod]
         [TestCategory("Inspections")]
         public void EmptyIfBlock_FiresOnEmptyIfBlock_HasQuoteComment()
         {
@@ -138,7 +138,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod, Ignore]
+        [TestMethod]
         [TestCategory("Inspections")]
         public void EmptyIfBlock_FiresOnEmptyIfBlock_HasRemComment()
         {
@@ -159,7 +159,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod, Ignore]
+        [TestMethod]
         [TestCategory("Inspections")]
         public void EmptyIfBlock_FiresOnEmptyIfBlock_HasVariableDeclaration()
         {
@@ -180,7 +180,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod, Ignore]
+        [TestMethod]
         [TestCategory("Inspections")]
         public void EmptyIfBlock_FiresOnEmptyIfBlock_HasConstDeclaration()
         {
@@ -201,7 +201,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod, Ignore]
+        [TestMethod]
         [TestCategory("Inspections")]
         public void EmptyIfBlock_FiresOnEmptyIfBlock_HasWhitespace()
         {
@@ -223,7 +223,7 @@ End Sub";
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod, Ignore]
+        [TestMethod]
         [TestCategory("Inspections")]
         public void EmptyIfBlock_IfBlockHasExecutableStatement()
         {
@@ -245,7 +245,7 @@ End Sub";
             Assert.IsFalse(inspectionResults.Any());
         }
 
-        [TestMethod, Ignore]
+        [TestMethod]
         [TestCategory("Inspections")]
         public void EmptyIfBlock_SingleLineIfBlockHasExecutableStatement()
         {
@@ -267,7 +267,7 @@ End Sub";
             Assert.IsFalse(inspectionResults.Any());
         }
 
-        [TestMethod, Ignore]
+        [TestMethod]
         [TestCategory("Inspections")]
         public void EmptyIfBlock_IfAndElseIfBlockHaveExecutableStatement()
         {
@@ -300,7 +300,7 @@ End Sub";
             Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
         }
 
-        [TestMethod, Ignore]
+        [TestMethod]
         [TestCategory("Inspections")]
         public void InspectionName()
         {

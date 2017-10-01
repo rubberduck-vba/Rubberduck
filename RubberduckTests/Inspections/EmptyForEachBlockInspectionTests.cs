@@ -8,7 +8,7 @@ using Rubberduck.Parsing.Inspections.Resources;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestClass, Ignore]
     public class EmptyForEachInspectionTests
     {
         [TestMethod]
