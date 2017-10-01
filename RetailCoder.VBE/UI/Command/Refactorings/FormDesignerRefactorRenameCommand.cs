@@ -25,7 +25,7 @@ namespace Rubberduck.UI.Command.Refactorings
 
         protected override bool EvaluateCanExecute(object parameter)
         {
-            return (_state?.Status ?? ParserState.None) == ParserState.Ready 
+            return _state?.Status == ParserState.Ready 
                 && GetTarget() != null;
         }
 
@@ -47,36 +47,34 @@ namespace Rubberduck.UI.Command.Refactorings
 
         private Declaration GetTarget(QualifiedModuleName? qualifiedModuleName = null)
         {
-            (var projectId, var component) = 
-                qualifiedModuleName.HasValue 
-                                   ? (qualifiedModuleName.Value.ProjectId, qualifiedModuleName.Value.Component)
-                                   : (Vbe.ActiveVBProject.ProjectId, Vbe.SelectedVBComponent);
+            (var projectId, var component) = qualifiedModuleName.HasValue 
+                ? (qualifiedModuleName.Value.ProjectId, qualifiedModuleName.Value.Component)
+                : (Vbe.ActiveVBProject.ProjectId, Vbe.SelectedVBComponent);
                         
             if (component?.HasDesigner ?? false)
             {
                 if (qualifiedModuleName.HasValue)
                 {
                     return _state.DeclarationFinder
-                                 .MatchName(qualifiedModuleName.Value.Name)
-                                 .SingleOrDefault(m => m.ProjectId == projectId
-                                                    && m.DeclarationType.HasFlag(qualifiedModuleName.Value.ComponentType)
-                                                    && m.ComponentName == component.Name);
+                        .MatchName(qualifiedModuleName.Value.Name)
+                        .SingleOrDefault(m => m.ProjectId == projectId
+                            && m.DeclarationType.HasFlag(qualifiedModuleName.Value.ComponentType)
+                            && m.ComponentName == component.Name);
                 }
                 
                 var selectedCount = component.SelectedControls.Count;
                 if (selectedCount > 1) { return null; }
                 
                 // Cannot use DeclarationType.UserForm, parser only assigns UserForms the ClassModule flag
-                (var selectedType, var selectedName) = 
-                    selectedCount == 0
-                                   ? (DeclarationType.ClassModule, component.Name)
-                                   : (DeclarationType.Control, component.SelectedControls[0].Name);
+                (var selectedType, var selectedName) = selectedCount == 0
+                    ? (DeclarationType.ClassModule, component.Name)
+                    : (DeclarationType.Control, component.SelectedControls[0].Name);
                 
                 return _state.DeclarationFinder
-                             .MatchName(selectedName)
-                             .SingleOrDefault(m => m.ProjectId == projectId
-                                                && m.DeclarationType.HasFlag(selectedType)
-                                                && m.ComponentName == component.Name);
+                    .MatchName(selectedName)
+                    .SingleOrDefault(m => m.ProjectId == projectId
+                        && m.DeclarationType.HasFlag(selectedType)
+                        && m.ComponentName == component.Name);
              }
             return null;
         }
