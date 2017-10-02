@@ -1,10 +1,8 @@
 ﻿using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
@@ -19,9 +17,7 @@ namespace RubberduckTests.Inspections
             const string inputCode =
 @"Function Foo() As Integer
 End Function";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new IntegerDataTypeInspection(state);
@@ -37,9 +33,7 @@ End Function";
             const string inputCode =
 @"Property Get Foo() As Integer
 End Property";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new IntegerDataTypeInspection(state);
@@ -55,9 +49,7 @@ End Property";
             const string inputCode =
 @"Sub Foo(arg as Integer)
 End Sub";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new IntegerDataTypeInspection(state);
@@ -74,9 +66,7 @@ End Sub";
 @"Sub Foo()
     Dim v as Integer
 End Sub";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new IntegerDataTypeInspection(state);
@@ -93,9 +83,7 @@ End Sub";
 @"Sub Foo()
     Const c as Integer = 0
 End Sub";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new IntegerDataTypeInspection(state);
@@ -112,9 +100,7 @@ End Sub";
 @"Type T
     i as Integer
 End Type";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new IntegerDataTypeInspection(state);
@@ -252,9 +238,7 @@ End Sub";
         {
             const string inputCode =
 @"Declare Function Foo Lib ""lib.dll"" () As Integer";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new IntegerDataTypeInspection(state);
@@ -269,9 +253,7 @@ End Sub";
         {
             const string inputCode =
 @"Declare Function Foo Lib ""lib.dll"" (arg As Integer) As String";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new IntegerDataTypeInspection(state);
@@ -286,9 +268,7 @@ End Sub";
         {
             const string inputCode =
 @"Declare Sub Foo Lib ""lib.dll"" (arg As Integer)";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new IntegerDataTypeInspection(state);
@@ -305,9 +285,7 @@ End Sub";
 @"'@Ignore IntegerDataType
 Sub Foo(arg1 As Integer)
 End Sub";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new IntegerDataTypeInspection(state);

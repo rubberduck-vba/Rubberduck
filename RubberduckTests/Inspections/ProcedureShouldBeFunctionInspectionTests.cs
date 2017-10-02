@@ -5,7 +5,6 @@ using System.Threading;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Inspections
 {
@@ -19,9 +18,8 @@ namespace RubberduckTests.Inspections
             const string inputCode =
 @"Private Sub Foo(ByRef foo As Boolean)
 End Sub";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
@@ -41,9 +39,8 @@ End Sub
 
 Private Sub Goo(ByRef foo As Integer)
 End Sub";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
@@ -61,9 +58,8 @@ End Sub";
 @"Private Function Foo(ByRef bar As Integer) As Integer
     Foo = bar
 End Function";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
@@ -80,9 +76,8 @@ End Function";
             const string inputCode =
 @"Private Sub Foo(ByVal foo As Integer)
 End Sub";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
@@ -99,9 +94,8 @@ End Sub";
             const string inputCode =
 @"Private Sub Foo(ByVal foo As Integer, ByVal goo As Integer)
 End Sub";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
@@ -118,9 +112,8 @@ End Sub";
             const string inputCode =
 @"Private Sub Foo(ByRef foo As Integer, ByRef goo As Integer)
 End Sub";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
@@ -143,7 +136,7 @@ End Sub";
 
 Private Sub IClass1_DoSomething(ByRef a As Integer)
 End Sub";
-            
+
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
@@ -197,9 +190,8 @@ End Sub";
 @"'@Ignore ProcedureCanBeWrittenAsFunction
 Private Sub Foo(ByRef foo As Boolean)
 End Sub";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);

@@ -1,10 +1,8 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
@@ -23,8 +21,7 @@ namespace RubberduckTests.Inspections
     bb = b
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new UnassignedVariableUsageInspection(state);
@@ -55,8 +52,7 @@ Sub DoSomething(ByVal foo As Variant)
 End Sub
 ";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new UnassignedVariableUsageInspection(state);
@@ -77,8 +73,7 @@ End Sub
     bb = b
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new UnassignedVariableUsageInspection(state);
@@ -100,8 +95,7 @@ End Sub";
     bb = b
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new UnassignedVariableUsageInspection(state);
@@ -119,8 +113,7 @@ End Sub";
     Dim foo
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new UnassignedVariableUsageInspection(state);
