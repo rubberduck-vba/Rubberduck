@@ -25,7 +25,6 @@
             <BitmapImage x:Key="UndoImage" UriSource="../../Resources/arrow-circle-left.png" />
             <BitmapImage x:Key="PrintImage" UriSource="../../Resources/printer.png" />
             <BitmapImage x:Key="AddTestModuleImage" UriSource="../../Resources/Custom/PNG/ListOfTests.png" />
-            <BitmapImage x:Key="AddTestModuleWithStubsImage" UriSource="../../Resources/Custom/PNG/ListOfTests.png" />
             <BitmapImage x:Key="AddStdModuleImage" UriSource="../../Resources/Custom/PNG/AddModule.png" />
             <BitmapImage x:Key="AddClassModuleImage" UriSource="../../Resources/Custom/PNG/AddClass.png" />
             <BitmapImage x:Key="AddUserFormImage" UriSource="../../Resources/Custom/PNG/AddForm.png" />
@@ -166,7 +165,7 @@
                                   Command="{Binding AddTestModuleWithStubsCommand}"
                                   CommandParameter="{Binding SelectedItem}">
                                     <MenuItem.Icon>
-                                        <Image Height="16" Source="{StaticResource AddTestModuleWithStubsImage}" />
+                                        <Image Height="16" Source="{StaticResource AddTestModuleImage}" />
                                     </MenuItem.Icon>
                                 </MenuItem>
                                 <Separator />

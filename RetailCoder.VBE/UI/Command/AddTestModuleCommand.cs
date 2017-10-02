@@ -225,7 +225,7 @@ namespace Rubberduck.UI.Command
 
         private IEnumerable<Declaration> GetDeclarationsToStub(Declaration parentDeclaration)
         {
-            return _state.AllUserDeclarations
+            return _state.DeclarationFinder.Members(parentDeclaration)
                 .Where(d => Equals(d.ParentDeclaration, parentDeclaration) && d.Accessibility == Accessibility.Public &&
                             (d.DeclarationType == DeclarationType.Procedure || d.DeclarationType == DeclarationType.Function || d.DeclarationType.HasFlag(DeclarationType.Property)))
                 .OrderBy(d => d.Context.Start.TokenIndex);
