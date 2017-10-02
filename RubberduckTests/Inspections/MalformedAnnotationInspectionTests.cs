@@ -4,7 +4,6 @@ using RubberduckTests.Mocks;
 using System.Threading;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Inspections
 {
@@ -17,9 +16,8 @@ namespace RubberduckTests.Inspections
         {
             const string inputCode =
 @"'@Folder";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new MissingAnnotationArgumentInspection(state);
@@ -35,9 +33,8 @@ namespace RubberduckTests.Inspections
         {
             const string inputCode =
 @"'@Folder ""Foo""";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new MissingAnnotationArgumentInspection(state);
@@ -53,9 +50,8 @@ namespace RubberduckTests.Inspections
         {
             const string inputCode =
 @"'@Ignore";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new MissingAnnotationArgumentInspection(state);
@@ -71,9 +67,8 @@ namespace RubberduckTests.Inspections
         {
             const string inputCode =
 @"'@Ignore ProcedureNotUsedInspection";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new MissingAnnotationArgumentInspection(state);
@@ -90,9 +85,8 @@ namespace RubberduckTests.Inspections
             const string inputCode =
 @"'@Folder
 '@Ignore";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new MissingAnnotationArgumentInspection(state);

@@ -4,7 +4,6 @@ using RubberduckTests.Mocks;
 using System.Threading;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Inspections
 {
@@ -19,9 +18,8 @@ namespace RubberduckTests.Inspections
 @"Sub Foo()
     Stop
 End Sub";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new StopKeywordInspection(state);
@@ -38,9 +36,8 @@ End Sub";
             var inputCode =
 @"Sub Foo()
 End Sub";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new StopKeywordInspection(state);
@@ -59,9 +56,8 @@ End Sub";
 '@Ignore StopKeyword
     Stop
 End Sub";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCallStatementInspection(state);
@@ -87,8 +83,7 @@ End Sub";
     Stop
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new StopKeywordInspection(state);

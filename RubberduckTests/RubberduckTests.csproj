@@ -28,6 +28,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>true</UseVSHostingProcess>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -36,6 +37,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Antlr4.Runtime.net45">
@@ -162,6 +164,7 @@
     <Compile Include="QuickFixes\UntypedFunctionUsageQuickFixTests.cs" />
     <Compile Include="QuickFixes\UseSetKeywordForObjectAssignmentQuickFixTests.cs" />
     <Compile Include="QuickFixes\WriteOnlyPropertyQuickFixTests.cs" />
+    <Compile Include="QuickFixes\QuickFixBaseTests.cs" />
     <Compile Include="SmartIndenter\VerticalSpacingTests.cs" />
     <Compile Include="SourceControl\SynchrounouslyConstructedDeclarationFinderFactory.cs" />
     <Compile Include="Symbols\AccessibilityCheckTests.cs" />

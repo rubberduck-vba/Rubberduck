@@ -3,7 +3,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
@@ -23,8 +22,7 @@ End Function
 Public Sub Bar()
     Call Foo(""Test"")
 End Sub";
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new FunctionReturnValueNotUsedInspection(state);
@@ -45,8 +43,7 @@ End Function
 Public Sub Bar()
     Foo ""Test""
 End Sub";
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new FunctionReturnValueNotUsedInspection(state);
@@ -67,8 +64,7 @@ End Function
 Public Sub Bar()
     Bar AddressOf Foo
 End Sub";
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new FunctionReturnValueNotUsedInspection(state);
@@ -88,8 +84,7 @@ End Function
 Public Sub Bar()
     Foo
 End Sub";
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new FunctionReturnValueNotUsedInspection(state);
@@ -111,8 +106,7 @@ End Function
 Public Sub Bar()
     Bar AddressOf Foo
 End Sub";
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new FunctionReturnValueNotUsedInspection(state);
@@ -133,9 +127,7 @@ End Function
 Public Sub Baz()
     Foo Foo(Foo(""Bar""))
 End Sub";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new FunctionReturnValueNotUsedInspection(state);
@@ -157,9 +149,7 @@ Public Sub Baz()
     If Foo(""Test"") Then
     End If
 End Sub";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new FunctionReturnValueNotUsedInspection(state);
@@ -183,9 +173,7 @@ Public Sub Baz()
     For Each Bar In Foo
     Next Bar
 End Sub";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new FunctionReturnValueNotUsedInspection(state);
@@ -209,9 +197,7 @@ Public Sub Baz()
     While Foo
     Wend
 End Sub";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new FunctionReturnValueNotUsedInspection(state);
@@ -235,9 +221,7 @@ Public Sub Baz()
     Do Until Foo
     Loop
 End Sub";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new FunctionReturnValueNotUsedInspection(state);
@@ -258,9 +242,7 @@ End Function
 Public Sub Baz()
     TestVal = Foo(""Test"")
 End Sub";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new FunctionReturnValueNotUsedInspection(state);
@@ -282,9 +264,7 @@ End Sub";
         Factorial = Factorial(n - 1) * n
     End If
 End Function";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new FunctionReturnValueNotUsedInspection(state);
@@ -307,9 +287,7 @@ End Sub
 Public Sub Baz()
     Bar Foo(""Test"")
 End Sub";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new FunctionReturnValueNotUsedInspection(state);
@@ -328,9 +306,7 @@ End Sub";
     MsgBox ""Test""
     Workbooks.Add
 End Sub";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new FunctionReturnValueNotUsedInspection(state);

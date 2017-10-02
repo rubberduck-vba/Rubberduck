@@ -1,14 +1,13 @@
 ﻿using System.Linq;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Resources;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestClass, Ignore]
     public class EmptyCaseBlockInspectionTests
     {
         [TestMethod]

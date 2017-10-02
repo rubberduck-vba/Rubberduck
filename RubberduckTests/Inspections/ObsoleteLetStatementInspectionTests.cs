@@ -4,7 +4,6 @@ using RubberduckTests.Mocks;
 using System.Threading;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Inspections
 {
@@ -22,9 +21,7 @@ namespace RubberduckTests.Inspections
     
     Let var2 = var1
 End Sub";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteLetStatementInspection(state);
@@ -46,9 +43,7 @@ End Sub";
     Let var2 = var1
     Let var1 = var2
 End Sub";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteLetStatementInspection(state);
@@ -69,9 +64,7 @@ End Sub";
     
     var2 = var1
 End Sub";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteLetStatementInspection(state);
@@ -93,9 +86,7 @@ End Sub";
     Let var2 = var1
     var1 = var2
 End Sub";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteLetStatementInspection(state);
@@ -117,9 +108,7 @@ End Sub";
     '@Ignore ObsoleteLetStatement
     Let var2 = var1
 End Sub";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteLetStatementInspection(state);
