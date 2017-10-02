@@ -46,7 +46,7 @@ using Component = Castle.MicroKernel.Registration.Component;
 
 namespace Rubberduck.Root
 {
-    class RubberduckIoCInstaller : IWindsorInstaller
+    public class RubberduckIoCInstaller : IWindsorInstaller
     {
         private readonly IVBE _vbe;
         private readonly IAddIn _addin;
@@ -237,9 +237,7 @@ namespace Rubberduck.Root
                     .BasedOn<IInspection>()
                     .WithService.Base()
                     .LifestyleTransient()
-                    .Configure(c => c
-                        .Interceptors<TimedCallLoggerInterceptor, EnumerableCounterInterceptor<IInspectionResult>
-                        >()));
+                    .Configure(c => c.Interceptors<TimedCallLoggerInterceptor, EnumerableCounterInterceptor<IInspectionResult>>()));
             }
         }
 
@@ -251,9 +249,7 @@ namespace Rubberduck.Root
                     .BasedOn<IParseTreeInspection>()
                     .WithService.Base()
                     .LifestyleTransient()
-                    .Configure(c => c
-                        .Interceptors<TimedCallLoggerInterceptor, EnumerableCounterInterceptor<IInspectionResult>
-                        >()));
+                    .Configure(c => c.Interceptors<TimedCallLoggerInterceptor, EnumerableCounterInterceptor<IInspectionResult>>()));
             }
         }
 
