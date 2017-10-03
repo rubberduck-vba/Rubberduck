@@ -564,6 +564,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Test module with stubs.
+        /// </summary>
+        public static string CodeExplorer_AddTestModuleWithStubsText {
+            get {
+                return ResourceManager.GetString("CodeExplorer_AddTestModuleWithStubsText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Collapse node and all child nodes.
         /// </summary>
         public static string CodeExplorer_CollapseSubnodesToolTip {
