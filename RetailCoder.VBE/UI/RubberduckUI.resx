@@ -2100,4 +2100,8 @@ the projects in the VBE.</value>
   <data name="EmptyUIRefreshMessage_Title" xml:space="preserve">
     <value>Rubberduck doesn't see anything yet.</value>
   </data>
+  <data name="CodeExplorer_AddTestModuleWithStubsText" xml:space="preserve">
+    <value>Test module with stubs</value>
+    <comment>TC</comment>
+  </data>
 </root>

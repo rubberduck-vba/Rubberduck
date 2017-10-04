@@ -1,6 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -11,37 +9,29 @@ namespace Rubberduck.Inspections.QuickFixes
     /// <summary>
     /// A code inspection quickfix that removes an unused identifier declaration.
     /// </summary>
-    public sealed class RemoveUnusedDeclarationQuickFix : IQuickFix
+    public sealed class RemoveUnusedDeclarationQuickFix : QuickFixBase
     {
         private readonly RubberduckParserState _state;
-        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
-        {
-            typeof(ConstantNotUsedInspection),
-            typeof(ProcedureNotUsedInspection),
-            typeof(VariableNotUsedInspection),
-            typeof(LineLabelNotUsedInspection)
-        };
 
         public RemoveUnusedDeclarationQuickFix(RubberduckParserState state)
+            : base(typeof(ConstantNotUsedInspection), typeof(ProcedureNotUsedInspection), typeof(VariableNotUsedInspection), typeof(LineLabelNotUsedInspection))
         {
             _state = state;
         }
 
-        public IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
-
-        public void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result)
         {
             var rewriter = _state.GetRewriter(result.Target);
             rewriter.Remove(result.Target);
         }
 
-        public string Description(IInspectionResult result)
+        public override string Description(IInspectionResult result)
         {
             return InspectionsUI.RemoveUnusedDeclarationQuickFix;
         }
 
-        public bool CanFixInProcedure => false;
-        public bool CanFixInModule => true;
-        public bool CanFixInProject => true;
+        public override bool CanFixInProcedure => false;
+        public override bool CanFixInModule => true;
+        public override bool CanFixInProject => true;
     }
 }

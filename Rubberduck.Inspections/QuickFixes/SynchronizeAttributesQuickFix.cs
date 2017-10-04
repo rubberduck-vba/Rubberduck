@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Antlr4.Runtime;
+using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
@@ -14,18 +15,14 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public sealed class SynchronizeAttributesQuickFix : IQuickFix
+    public sealed class SynchronizeAttributesQuickFix : QuickFixBase
     {
         private readonly RubberduckParserState _state;
-        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
-        {
-            typeof(MissingAnnotationInspection),
-            typeof(MissingAttributeInspection),
-        };
 
         private readonly IDictionary<string, string> _attributeNames;
 
         public SynchronizeAttributesQuickFix(RubberduckParserState state)
+            : base(typeof(MissingAnnotationArgumentInspection), typeof(MissingAttributeInspection))
         {
             _state = state;
             _attributeNames = typeof(AnnotationType).GetFields()
@@ -34,7 +31,7 @@ namespace Rubberduck.Inspections.QuickFixes
                 .ToDictionary(a => a.AnnotationName, a => a.AttributeName);
         }
 
-        public void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result)
         {
             var context = result.Context;
             // bug: this needs to assume member name is null for module-level stuff...
@@ -52,18 +49,14 @@ namespace Rubberduck.Inspections.QuickFixes
         {
             var moduleName = result.QualifiedSelection.QualifiedName;
 
-            var attributeContext = context as VBAParser.AttributeStmtContext;
-            if (attributeContext != null)
+            switch (context)
             {
-                Fix(moduleName, attributeContext);
-                return;
-            }
-
-            var annotationContext = context as VBAParser.AnnotationContext;
-            if (annotationContext != null)
-            {
-                Fix(moduleName, annotationContext);
-                return;
+                case VBAParser.AttributeStmtContext attributeContext:
+                    Fix(moduleName, attributeContext);
+                    return;
+                case VBAParser.AnnotationContext annotationContext:
+                    Fix(moduleName, annotationContext);
+                    return;
             }
         }
 
@@ -72,18 +65,14 @@ namespace Rubberduck.Inspections.QuickFixes
             Debug.Assert(result.QualifiedMemberName.HasValue);
             var memberName = result.QualifiedMemberName.Value;
 
-            var attributeContext = context as VBAParser.AttributeStmtContext;
-            if (attributeContext != null)
+            switch (context)
             {
-                Fix(memberName, attributeContext);
-                return;
-            }
-
-            var annotationContext = context as VBAParser.AnnotationContext;
-            if (annotationContext != null)
-            {
-                Fix(memberName, annotationContext);
-                return;
+                case VBAParser.AttributeStmtContext attributeContext:
+                    Fix(memberName, attributeContext);
+                    return;
+                case VBAParser.AnnotationContext annotationContext:
+                    Fix(memberName, annotationContext);
+                    return;
             }
         }
 
@@ -114,9 +103,8 @@ namespace Rubberduck.Inspections.QuickFixes
 
             Debug.Assert(attributes.Length == 1, "Member has too many attributes");
             var attribute = attributes.SingleOrDefault();
-
-            AttributeNode node;
-            if (!attribute.Value.HasMemberDescriptionAttribute(memberName.MemberName, out node))
+            
+            if (!attribute.Value.HasMemberDescriptionAttribute(memberName.MemberName, out var node))
             {
                 return;
             }
@@ -270,15 +258,13 @@ namespace Rubberduck.Inspections.QuickFixes
             return attributeInstruction;
         }
 
-        public IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
-
-        public string Description(IInspectionResult result)
+        public override string Description(IInspectionResult result)
         {
             return InspectionsUI.SynchronizeAttributesQuickFix;
         }
 
-        public bool CanFixInProcedure => false;
-        public bool CanFixInModule => true;
-        public bool CanFixInProject => true;
+        public override bool CanFixInProcedure => false;
+        public override bool CanFixInModule => true;
+        public override bool CanFixInProject => true;
     }
 }
