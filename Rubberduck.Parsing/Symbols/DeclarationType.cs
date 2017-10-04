@@ -13,7 +13,6 @@ namespace Rubberduck.Parsing.Symbols
         ClassModule = 1 << 3 | Module,
         UserForm = 1 << 4 | ClassModule,
         Document = 1 << 5 | ClassModule,
-        ModuleOption = 1 << 6,
         Member = 1 << 7,
         Procedure = 1 << 8 | Member,
         Function = 1 << 9 | Member,
