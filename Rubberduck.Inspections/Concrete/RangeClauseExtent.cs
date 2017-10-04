@@ -20,13 +20,13 @@ namespace Rubberduck.Inspections.Concrete
 
     public class RangeClauseExtent<T> : IComparable, IRangeClause where T : System.IComparable
     {
-        public RangeClauseExtent( T extent, string typeName, string compareSymbol)
+        public RangeClauseExtent(T extent, string typeName, string compareSymbol)
         {
             _extent = extent;
             _typeName = typeName;
             _compareSymbol = compareSymbol;
         }
-
+        
         private T _extent;
         private string _typeName;
         private string _compareSymbol;

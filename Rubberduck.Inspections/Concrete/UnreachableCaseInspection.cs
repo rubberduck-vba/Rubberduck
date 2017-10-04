@@ -29,10 +29,18 @@ namespace Rubberduck.Inspections.Concrete
         private static long LONGMAX => 2147486647;
         private static long LONGMIN => -2147486648;
 
+        private static decimal CURRENCYMAX => 922337203685477.5807M;
+        private static decimal CURRENCYMIN => -922337203685477.5808M;
+
+        private VBAParser.CaseElseClauseContext _caseElseClause;
+        QualifiedModuleName _qMemberName;
+        //private bool _hasCaseElseClause;
+
         private readonly string _unreachableCaseInspectionResultFormat = "Unreachable or conflicting Case block";
         public UnreachableCaseInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Suggestion)
         {
+            //_hasCaseElseClause = false;
         }
 
         public override IInspectionListener Listener { get; } =
@@ -72,7 +80,11 @@ namespace Rubberduck.Inspections.Concrete
 
             var caseClauses = ParserRuleContextHelper.GetChildren<VBAParser.CaseClauseContext>(selectCaseStmt.Context);
 
+            _caseElseClause = ParserRuleContextHelper.GetChild<VBAParser.CaseElseClauseContext>(selectCaseStmt.Context);
+            //_hasCaseElseClause = _caseElseClause != null;
+
             var qualifiedCaseClauses = new List<QualifiedContext<ParserRuleContext>>();
+            _qMemberName = selectCaseStmt.ModuleName;
             caseClauses.ForEach(clause => qualifiedCaseClauses.Add(new QualifiedContext<ParserRuleContext>(selectCaseStmt.ModuleName, clause as ParserRuleContext)));
 
             return HandleSelectCase(qualifiedCaseClauses, theRef);
@@ -106,12 +118,13 @@ namespace Rubberduck.Inspections.Concrete
             return selectCaseReference.First();
         }
 
+        //TODO: Check for matching types early on
+        //TODO: Check that all contexts are parseable
         private List<IInspectionResult> HandleSelectCase(List<QualifiedContext<ParserRuleContext>> caseClauses, IdentifierReference theRef)
         {
             var inspResults = new List<IInspectionResult>();
 
-            var rangeEvals = new List<IComparable>();
-            rangeEvals = LoadBoundaryEvaluations(theRef.Declaration.AsTypeName, rangeEvals);
+            var rangeEvals = LoadBoundaryEvaluations(theRef.Declaration.AsTypeName, new List<IComparable>());
 
             foreach (var caseClause in caseClauses)
             {
@@ -119,9 +132,13 @@ namespace Rubberduck.Inspections.Concrete
                 foreach (var ctxt in rangeClauses)
                 {
                     var test = ctxt.GetText();
-                    //TODO: Check for ctxt type to match _typeName here
-                    //TODO: Check that ctxt is parse-able to the _typeName type
                     var rangeClause = new RangeClause(ctxt, theRef);
+                    if (!rangeClause.IsParseable)
+                    {
+                        inspResults = AddInspectionResult(caseClause, inspResults);
+                        continue;
+                    }
+
                     if (rangeEvals.Any())
                     {
                         bool hasConflict = false;
@@ -129,12 +146,38 @@ namespace Rubberduck.Inspections.Concrete
                         {
                             hasConflict = rangeClause.CompareTo(rangeEvals[idx]) == 0;
                         }
+
                         if (hasConflict)
                         {
                             inspResults = AddInspectionResult(caseClause, inspResults);
                         }
                     }
                     rangeEvals.Add(rangeClause);
+                }
+            }
+
+            if (_caseElseClause != null && theRef.Declaration.AsTypeName.Equals("Boolean"))
+            {
+                //Check if at least one Case exists for both True and False, then the Case Else clause is unreachable
+                bool hasTrueResult = false;
+                bool hasFalseResult = false;
+                for (int idx = 0; idx < rangeEvals.Count() && !(hasTrueResult && hasFalseResult); idx++)
+                {
+                    var rangeEval = rangeEvals[idx];
+                    var resultTrue = rangeEval.CompareTo(new RangeClauseExtent<decimal>(1, theRef.Declaration.AsTypeName, "=")) == 0;
+                    if (resultTrue)
+                    {
+                        hasTrueResult = true;
+                    }
+                    var resultFalse = rangeEval.CompareTo(new RangeClauseExtent<decimal>(0, theRef.Declaration.AsTypeName, "=")) == 0;
+                    if (resultFalse)
+                    {
+                        hasFalseResult = true;
+                    }
+                }
+                if (hasTrueResult && hasFalseResult)
+                {
+                    inspResults = AddInspectionResult(new QualifiedContext<ParserRuleContext>(_qMemberName, _caseElseClause as ParserRuleContext), inspResults);
                 }
             }
 
@@ -153,17 +196,26 @@ namespace Rubberduck.Inspections.Concrete
         {
             if (theTypeName.Equals("Integer"))
             {
-                rangeEvals.Add(new RangeClauseExtent<long>(INTMAX, "Integer", ">"));
-                rangeEvals.Add(new RangeClauseExtent<long>(INTMIN, "Integer", "<"));
+                rangeEvals.Add(new RangeClauseExtent<long>(INTMAX, theTypeName, ">"));
+                rangeEvals.Add(new RangeClauseExtent<long>(INTMIN, theTypeName, "<"));
             }
-
-            if (theTypeName.Equals("Byte"))
+            else if (theTypeName.Equals("Byte"))
             {
-                rangeEvals.Add(new RangeClauseExtent<long>(BYTEMAX, "Byte", ">"));
-                rangeEvals.Add(new RangeClauseExtent<long>(BYTEMIN, "Byte", "<"));
+                rangeEvals.Add(new RangeClauseExtent<long>(BYTEMAX, theTypeName, ">"));
+                rangeEvals.Add(new RangeClauseExtent<long>(BYTEMIN, theTypeName, "<"));
+            }
+            else if (theTypeName.Equals("Currency"))
+            {
+                rangeEvals.Add(new RangeClauseExtent<decimal>(CURRENCYMAX, theTypeName, ">"));
+                rangeEvals.Add(new RangeClauseExtent<decimal>(CURRENCYMIN, theTypeName, "<"));
+            }
+            else if (theTypeName.Equals("Boolean"))
+            {
+                rangeEvals.Add(new RangeClauseExtent<decimal>(1, theTypeName, ">"));
+                rangeEvals.Add(new RangeClauseExtent<decimal>(0, theTypeName, "<"));
             }
 
-            //TODO: Single, Decimal, Currency, Boolean
+            //TODO: Add Single, Decimal
             return rangeEvals;
         }
 

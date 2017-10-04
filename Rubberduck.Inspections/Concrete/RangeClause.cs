@@ -1,4 +1,6 @@
-﻿using Rubberduck.Parsing.Grammar;
+﻿using Antlr4.Runtime;
+using Antlr4.Runtime.Tree;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using System;
 using System.Collections.Generic;
@@ -16,8 +18,6 @@ namespace Rubberduck.Inspections.Concrete
         private const string GT = ">";
         private const string GTE = ">=";
 
-        
-
         private readonly VBAParser.RangeClauseContext _ctxt;
         private readonly string _typeName;
         private bool _usesIsClause;
@@ -25,8 +25,20 @@ namespace Rubberduck.Inspections.Concrete
         private bool _isRange;
         private readonly bool _isSingleVal;
         private string _compareSymbol;
+        private bool _isParseable;
         private bool IsPartiallyEquivalent;
         private bool IsFullyEquivalent;
+
+        private static string[] _comparisonOperators = { EQ, NEQ, LT, LTE, GT, GTE };
+        private static Dictionary<string, string> _operatorInversions = new Dictionary<string, string>()
+        {
+            { EQ,EQ },
+            { NEQ,NEQ },
+            { LT,GT },
+            { LTE,GTE },
+            { GT,LT },
+            { GTE,LTE }
+        };
 
         public RangeClause(VBAParser.RangeClauseContext ctxt, IdentifierReference theRef)
         {
@@ -34,30 +46,74 @@ namespace Rubberduck.Inspections.Concrete
             _theRef = theRef;
             _typeName = theRef.Declaration.AsTypeName;
             _compareSymbol = DetermineTheComparisonOperator(ctxt);
-            //_isRange = 
-            TryGetRangeContext(ctxt, out _rangeContexts);
-            _usesIsClause = UsesIsExpression(ctxt);
-            _isRange = UsesRangeExpression(ctxt);
-            _isSingleVal = !_isRange;
+            _usesIsClause = HasChildToken(ctxt, Tokens.Is);
+            _isSingleVal = true;
+            _isParseable = true;
+            _isRange = HasChildToken(ctxt, Tokens.To);
+            if (_isRange)
+            {
+                _rangeContexts = new KeyValuePair<VBAParser.SelectStartValueContext, VBAParser.SelectEndValueContext>
+                    (ParserRuleContextHelper.GetChild<VBAParser.SelectStartValueContext>(ctxt),
+                    ParserRuleContextHelper.GetChild<VBAParser.SelectEndValueContext>(ctxt));
+                _isParseable = _rangeContexts.Key != null && _rangeContexts.Value != null;
+                _isSingleVal = false;
+            }
 
-            //TODO: Below are type validations that belong in early checks...maybe before calling this constructor
-            var result = GetRangeClauseText(ctxt);
-            if (HandleAsLong(theRef.Declaration.AsTypeName) && _isSingleVal)
+            if (HandleAsLong(theRef.Declaration.AsTypeName))// && _isSingleVal)
             {
                 long longValue;
-                var test = long.TryParse(result, out longValue);
-                if (!test)
+                if (_isRange)
                 {
-                    _typeName = "String";
+                    _isParseable = long.TryParse(_rangeContexts.Key.GetText(), out longValue)
+                            && long.TryParse(_rangeContexts.Value.GetText(), out longValue);
+                }
+                else
+                {
+                    _isParseable = long.TryParse(GetRangeClauseText(ctxt), out longValue);
                 }
             }
-            if (HandleAsDouble(theRef.Declaration.AsTypeName) && _isSingleVal)
+            else if (HandleAsDouble(theRef.Declaration.AsTypeName))// && _isSingleVal)
             {
                 double dblValue;
-                var test = double.TryParse(result, out dblValue);
-                if (!test)
+                if (_isRange)
                 {
-                    _typeName = "String";
+                    _isParseable = double.TryParse(_rangeContexts.Key.GetText(), out dblValue)
+                            && double.TryParse(_rangeContexts.Value.GetText(), out dblValue);
+                }
+                else
+                {
+                    _isParseable = double.TryParse(GetRangeClauseText(ctxt), out dblValue);
+                }
+            }
+            else if (HandleAsDecimal(theRef.Declaration.AsTypeName))// && _isSingleVal)
+            {
+                decimal decimalValue;
+                if (_isRange)
+                {
+                    _isParseable = decimal.TryParse(_rangeContexts.Key.GetText(), out decimalValue)
+                            && decimal.TryParse(_rangeContexts.Value.GetText(), out decimalValue);
+                }
+                else
+                {
+                    _isParseable = decimal.TryParse(GetRangeClauseText(ctxt), out decimalValue);
+                }
+            }
+            else if (HandleAsBoolean(theRef.Declaration.AsTypeName))// && _isSingleVal)
+            {
+                long longValue;
+                if (_isRange)
+                {
+                    _isParseable = long.TryParse(_rangeContexts.Key.GetText(), out longValue)
+                            && long.TryParse(_rangeContexts.Value.GetText(), out longValue);
+                }
+                else
+                {
+
+                    _isParseable = long.TryParse(GetRangeClauseText(ctxt), out longValue);
+                    if (!_isParseable)
+                    {
+                        _isParseable = (ctxt.GetText().Equals("True") || ctxt.GetText().Equals("False"));
+                    }
                 }
             }
         }
@@ -68,102 +124,96 @@ namespace Rubberduck.Inspections.Concrete
         public bool IsRange => _isRange;
         public string CompareSymbol => _compareSymbol;
         public string TypeName => _typeName;
+        public bool IsParseable => _isParseable;
         private IdentifierReference _theRef;
 
         private bool isLongType => HandleAsLong(_typeName);
         private bool isDoubleType => HandleAsDouble(_typeName);
+        private bool isBooleanType => HandleAsBoolean(_typeName);
+        private bool isDecimalType => HandleAsDecimal(_typeName);
 
         public string ValueAsString => _typeName.Equals("String") ? _ctxt.GetText() : GetRangeClauseText(_ctxt);
         public string ValueMinAsString => _isRange ? _rangeContexts.Key.GetText() : ValueAsString;
         public string ValueMaxAsString => _isRange ? _rangeContexts.Value.GetText() : ValueAsString;
 
-        private static bool UsesIsExpression(VBAParser.RangeClauseContext ctxt)
-        {
-            var usesIsClause = false;
-            for (int idx = 0; idx < ctxt.ChildCount && !usesIsClause; idx++)
-            {
-                if (ctxt.children[idx].GetText().Equals("Is"))
-                {
-                    usesIsClause = true;
-                }
-            }
-            return usesIsClause;
-        }
-
-        private static bool UsesRangeExpression(VBAParser.RangeClauseContext ctxt)
-        {
-            var isRange = false;
-            for (int idx = 0; idx < ctxt.ChildCount && !isRange; idx++)
-            {
-                if (ctxt.children[idx].GetText().Equals("To"))
-                {
-                    isRange = true;
-                }
-            }
-            return isRange;
-        }
 
         private string GetRangeClauseText(VBAParser.RangeClauseContext ctxt)
         {
-            var relationalOpCtxt = ParserRuleContextHelper.GetChild<VBAParser.RelationalOpContext>(ctxt);
-            if(relationalOpCtxt != null)
+            VBAParser.RelationalOpContext relationalOpCtxt;
+            if (TryGetExprContext(ctxt, out relationalOpCtxt))
             {
-                var lExprCtxtIndex = -1;
-                var literalExprCtxtIndex = -1;
-                var lExprCtxt = ParserRuleContextHelper.GetChild<VBAParser.LExprContext>(relationalOpCtxt);
-                if(lExprCtxt != null)
-                {
-                    var theValueCtxt = ParserRuleContextHelper.GetChild<VBAParser.LiteralExprContext>(relationalOpCtxt);
-                    if(theValueCtxt == null)
-                    {
-                        return ""; //TODO: handle this better...is it an error to be detected earlier?
-                    }
-                    for (int idx = 0; idx < relationalOpCtxt.ChildCount; idx++)
-                    {
-                        if (relationalOpCtxt.children[idx] is VBAParser.LExprContext)
-                        {
-                            lExprCtxtIndex = idx;
-                        }
-                        else if (relationalOpCtxt.children[idx] is VBAParser.LiteralExprContext)
-                        {
-                            literalExprCtxtIndex = idx;
-                        }
-                    }
-                    for (int idx = 0; idx < relationalOpCtxt.ChildCount; idx++)
-                    {
-
-                        var content = relationalOpCtxt.children[idx].GetText();
-                        if (ComparisonOperators.Contains(content))
-                        {
-                            if (lExprCtxtIndex < literalExprCtxtIndex)
-                            {
-                                _compareSymbol = content;
-                            }
-                            else
-                            {
-                                _compareSymbol = OperatorInversions[content];
-                            }
-                        }
-                    }
-                    if (lExprCtxt.GetText().Equals(_theRef.IdentifierName))
-                    {
-                        _usesIsClause = true;
-                        return theValueCtxt.GetText();
-                    }
-                }
+                return GetTextForRelationalOpContext(relationalOpCtxt);
             }
 
-            var negativeCtxt = ParserRuleContextHelper.GetChild<VBAParser.UnaryMinusOpContext>(ctxt);
-            if (negativeCtxt != null)
+            VBAParser.UnaryMinusOpContext negativeCtxt;
+            if (TryGetExprContext(ctxt, out negativeCtxt))
             {
-                var theValueCtxt = ParserRuleContextHelper.GetChild<VBAParser.LiteralExprContext>(negativeCtxt);
-                return theValueCtxt != null ? negativeCtxt.GetText() + theValueCtxt.GetText() : string.Empty;
+                return negativeCtxt.GetText();
             }
             else
             {
-                var theValueCtxt = ParserRuleContextHelper.GetChild<VBAParser.LiteralExprContext>(ctxt);
-                return theValueCtxt != null ? theValueCtxt.GetText() : string.Empty;
+                VBAParser.LiteralExprContext theValCtxt;
+                return TryGetExprContext(ctxt, out theValCtxt) ? theValCtxt.GetText() : string.Empty;
             }
+        }
+
+        private string GetTextForRelationalOpContext(VBAParser.RelationalOpContext relationalOpCtxt)
+        {
+
+            VBAParser.LExprContext lExprCtxt = null;
+            VBAParser.LiteralExprContext theValueCtxt = null;
+
+            //TODO: Figure out how to use 'GetToken' - and see if the comparison symbols can be acquired there.
+            // var test = (ParserRuleContext)relationalOpCtxt.GetToken(VBAParser.GT, 0);
+            var lExprCtxtIndex = -1;
+            var literalExprCtxtIndex = -1;
+            for (int idx = 0; idx < relationalOpCtxt.ChildCount; idx++)
+            {
+                var text = relationalOpCtxt.children[idx].GetText();
+                if (relationalOpCtxt.children[idx] is VBAParser.LExprContext)
+                {
+                    lExprCtxt = (VBAParser.LExprContext)relationalOpCtxt.children[idx];
+                    lExprCtxtIndex = idx;
+                }
+                else if (relationalOpCtxt.children[idx] is VBAParser.LiteralExprContext)
+                {
+                    theValueCtxt = (VBAParser.LiteralExprContext)relationalOpCtxt.children[idx];
+                    literalExprCtxtIndex = idx;
+                }
+                else if (_comparisonOperators.Contains(text))
+                {
+                    _compareSymbol = text;
+                }
+            }
+
+            if (lExprCtxtIndex > literalExprCtxtIndex)
+            {
+                _compareSymbol = _operatorInversions[_compareSymbol];
+            }
+
+            if (lExprCtxt.GetText().Equals(_theRef.IdentifierName))
+            {
+                //If 'z' is the Select Case variable, 
+                //then 'z < 10' will be treated as 'Is < 10'
+                //and '10 < z' will be treated as 'Is > 10
+                _usesIsClause = true;
+                return theValueCtxt.GetText();
+            }
+            return string.Empty;
+        }
+
+        private bool StringToBool(string strValue)
+        {
+            int intVal = 0;
+            if (strValue.Equals("True") || strValue.Equals("False"))
+            {
+                intVal = strValue.Equals("True") ? 1 : 0;
+            }
+            else
+            {
+                intVal = int.Parse(strValue);
+            }
+            return intVal != 0;
         }
 
         public int CompareTo(object obj)
@@ -189,6 +239,14 @@ namespace Rubberduck.Inspections.Concrete
                     {
                         result = CompareSingleValues(double.Parse(prior.ValueAsString), double.Parse(ValueAsString), EQ);
                     }
+                    else if (isDecimalType)
+                    {
+                        result = CompareSingleValues(decimal.Parse(prior.ValueAsString), decimal.Parse(ValueAsString), EQ);
+                    }
+                    else if (isBooleanType)
+                    {
+                        result = CompareSingleValues(StringToBool(prior.ValueAsString), StringToBool(ValueAsString), EQ);
+                    }
                     else
                     {
                         result = CompareSingleValues(prior.ValueAsString, ValueAsString, EQ);
@@ -207,6 +265,14 @@ namespace Rubberduck.Inspections.Concrete
                     {
                         result = CompareSingleValues(double.Parse(prior.ValueAsString), double.Parse(ValueAsString), prior.CompareSymbol);
                     }
+                    else if (isDecimalType)
+                    {
+                        result = CompareSingleValues(decimal.Parse(prior.ValueAsString), decimal.Parse(ValueAsString), prior.CompareSymbol);
+                    }
+                    else if (isBooleanType)
+                    {
+                        result = CompareSingleValues(StringToBool(prior.ValueAsString), StringToBool(ValueAsString), prior.CompareSymbol);
+                    }
                     IsFullyEquivalent = (result == 0);
                     return result;
                 }
@@ -218,9 +284,17 @@ namespace Rubberduck.Inspections.Concrete
                     {
                         result = CompareSingleValues(long.Parse(ValueAsString), long.Parse(prior.ValueAsString), CompareSymbol);
                     }
-                    if (isDoubleType)
+                    else if (isDoubleType)
                     {
                         result = CompareSingleValues(double.Parse(ValueAsString), double.Parse(prior.ValueAsString), CompareSymbol);
+                    }
+                    else if (isDecimalType)
+                    {
+                        result = CompareSingleValues(decimal.Parse(ValueAsString), decimal.Parse(prior.ValueAsString), CompareSymbol);
+                    }
+                    else if (isBooleanType)
+                    {
+                        result = CompareSingleValues(StringToBool(ValueAsString), StringToBool(prior.ValueAsString), CompareSymbol);
                     }
                     else
                     {
@@ -238,6 +312,14 @@ namespace Rubberduck.Inspections.Concrete
                     else if (isDoubleType)
                     {
                         return CompareIsStmtToIsStmt(double.Parse(prior.ValueAsString), double.Parse(ValueAsString), prior.CompareSymbol, CompareSymbol);
+                    }
+                    else if (isDecimalType)
+                    {
+                        return CompareIsStmtToIsStmt(decimal.Parse(prior.ValueAsString), decimal.Parse(ValueAsString), prior.CompareSymbol, CompareSymbol);
+                    }
+                    else if (isBooleanType)
+                    {
+                        return CompareIsStmtToIsStmt(StringToBool(prior.ValueAsString), StringToBool(ValueAsString), prior.CompareSymbol, CompareSymbol);
                     }
                     else
                     {
@@ -260,6 +342,15 @@ namespace Rubberduck.Inspections.Concrete
                     {
                         result = IsWithin(double.Parse(ValueAsString), double.Parse(prior.ValueMinAsString), double.Parse(prior.ValueMaxAsString));
                     }
+                    else if (isDecimalType)
+                    {
+                        result = IsWithin(decimal.Parse(ValueAsString), decimal.Parse(prior.ValueMinAsString), decimal.Parse(prior.ValueMaxAsString));
+                    }
+                    else if (isBooleanType)
+                    {
+                        //result = IsWithin(StringToBool(ValueAsString), long.Parse(prior.ValueMinAsString) != 0, long.Parse(prior.ValueMaxAsString) != 0);
+                        result = IsWithin(StringToBool(ValueAsString), StringToBool(prior.ValueMinAsString), StringToBool(prior.ValueMaxAsString));
+                    }
                     else
                     {
                         result = IsWithin(ValueAsString, prior.ValueMinAsString, prior.ValueMaxAsString);
@@ -277,10 +368,20 @@ namespace Rubberduck.Inspections.Concrete
                         resultStartVal = CompareSingleValueToIsStmt(long.Parse(ValueAsString), long.Parse(prior.ValueMinAsString), CompareSymbol);
                         resultEndVal = CompareSingleValueToIsStmt(long.Parse(ValueAsString), long.Parse(prior.ValueMaxAsString), CompareSymbol);
                     }
-                    if (isDoubleType)
+                    else if (isDoubleType)
                     {
                         resultStartVal = CompareSingleValueToIsStmt(double.Parse(ValueAsString), double.Parse(prior.ValueMinAsString), CompareSymbol);
                         resultEndVal = CompareSingleValueToIsStmt(double.Parse(ValueAsString), double.Parse(prior.ValueMaxAsString), CompareSymbol);
+                    }
+                    else if (isDecimalType)
+                    {
+                        resultStartVal = CompareSingleValueToIsStmt(decimal.Parse(ValueAsString), decimal.Parse(prior.ValueMinAsString), CompareSymbol);
+                        resultEndVal = CompareSingleValueToIsStmt(decimal.Parse(ValueAsString), decimal.Parse(prior.ValueMaxAsString), CompareSymbol);
+                    }
+                    else if (isBooleanType)
+                    {
+                        resultStartVal = CompareSingleValueToIsStmt(StringToBool(ValueAsString), StringToBool(prior.ValueMinAsString), CompareSymbol);
+                        resultEndVal = CompareSingleValueToIsStmt(StringToBool(ValueAsString), StringToBool(prior.ValueMaxAsString), CompareSymbol);
                     }
                     return resultStartVal == 0 || resultEndVal == 0 ? 0 : 1;
                 }
@@ -299,6 +400,14 @@ namespace Rubberduck.Inspections.Concrete
                     {
                         result = IsWithin(double.Parse(prior.ValueAsString), double.Parse(ValueMinAsString), double.Parse(ValueMaxAsString));
                     }
+                    else if (isDecimalType)
+                    {
+                        result = IsWithin(decimal.Parse(prior.ValueAsString), decimal.Parse(ValueMinAsString), decimal.Parse(ValueMaxAsString));
+                    }
+                    else if (isBooleanType)
+                    {
+                        result = IsWithin(StringToBool(prior.ValueAsString), StringToBool(ValueMinAsString), StringToBool(ValueMaxAsString));
+                    }
                     else
                     {
                         result = IsWithin(prior.ValueAsString, ValueMinAsString, ValueMaxAsString);
@@ -315,6 +424,15 @@ namespace Rubberduck.Inspections.Concrete
                     else if (isDoubleType)
                     {
                         return CompareRangeToIsStmt(double.Parse(prior.ValueMinAsString), double.Parse(ValueMinAsString), double.Parse(ValueMaxAsString), prior.CompareSymbol);
+                    }
+                    else if (isDecimalType)
+                    {
+                        return CompareRangeToIsStmt(decimal.Parse(prior.ValueMinAsString), decimal.Parse(ValueMinAsString), decimal.Parse(ValueMaxAsString), prior.CompareSymbol);
+                    }
+                    else if (isBooleanType)
+                    {
+                        //return CompareRangeToIsStmt(decimal.Parse(prior.ValueMinAsString), decimal.Parse(ValueMinAsString), decimal.Parse(ValueMaxAsString), prior.CompareSymbol);
+                        return CompareRangeToIsStmt(StringToBool(prior.ValueMinAsString), StringToBool(ValueMinAsString), StringToBool(ValueMaxAsString), prior.CompareSymbol);
                     }
                     else
                     {
@@ -352,6 +470,38 @@ namespace Rubberduck.Inspections.Concrete
                     {
                         IsPartiallyEquivalent = IsWithin(double.Parse(ValueMinAsString), double.Parse(prior.ValueMinAsString), double.Parse(prior.ValueMaxAsString)) == 0
                             || IsWithin(double.Parse(ValueMaxAsString), double.Parse(prior.ValueMinAsString), double.Parse(prior.ValueMaxAsString)) == 0;
+
+                        return IsPartiallyEquivalent ? 0 : ValueMaxAsString.CompareTo(prior.ValueMaxAsString);
+                    }
+                }
+                else if (isDecimalType)
+                {
+                    if (IsWithin(decimal.Parse(ValueMinAsString), decimal.Parse(prior.ValueMinAsString), decimal.Parse(prior.ValueMaxAsString)) == 0
+                         && IsWithin(decimal.Parse(ValueMaxAsString), decimal.Parse(prior.ValueMinAsString), decimal.Parse(prior.ValueMaxAsString)) == 0)
+                    {
+                        IsFullyEquivalent = true;
+                        return 0;
+                    }
+                    else
+                    {
+                        IsPartiallyEquivalent = IsWithin(decimal.Parse(ValueMinAsString), decimal.Parse(prior.ValueMinAsString), decimal.Parse(prior.ValueMaxAsString)) == 0
+                            || IsWithin(decimal.Parse(ValueMaxAsString), decimal.Parse(prior.ValueMinAsString), decimal.Parse(prior.ValueMaxAsString)) == 0;
+
+                        return IsPartiallyEquivalent ? 0 : ValueMaxAsString.CompareTo(prior.ValueMaxAsString);
+                    }
+                }
+                else if (isBooleanType)
+                {
+                    if (IsWithin(StringToBool(ValueMinAsString), StringToBool(prior.ValueMinAsString), StringToBool(prior.ValueMaxAsString)) == 0
+                         && IsWithin(StringToBool(ValueMaxAsString), StringToBool(prior.ValueMinAsString), StringToBool(prior.ValueMaxAsString)) == 0)
+                    {
+                        IsFullyEquivalent = true;
+                        return 0;
+                    }
+                    else
+                    {
+                        IsPartiallyEquivalent = IsWithin(bool.Parse(ValueMinAsString), bool.Parse(prior.ValueMinAsString), bool.Parse(prior.ValueMaxAsString)) == 0
+                            || IsWithin(bool.Parse(ValueMaxAsString), bool.Parse(prior.ValueMinAsString), bool.Parse(prior.ValueMaxAsString)) == 0;
 
                         return IsPartiallyEquivalent ? 0 : ValueMaxAsString.CompareTo(prior.ValueMaxAsString);
                     }
@@ -408,7 +558,6 @@ namespace Rubberduck.Inspections.Concrete
             {
                 return result;
             }
-
         }
 
         private int CompareRangeToIsStmt<T>(T priorIsStmtValue, T minVal, T maxVal, string compareSymbol) where T : System.IComparable<T>
@@ -529,13 +678,24 @@ namespace Rubberduck.Inspections.Concrete
             return theOperator;
         }
 
-        private bool TryGetRangeContext(VBAParser.RangeClauseContext ctxt, out KeyValuePair<VBAParser.SelectStartValueContext, VBAParser.SelectEndValueContext> rangeContexts)
+        private static bool HasChildToken<T>(T ctxt, string token) where T : ParserRuleContext
         {
-            rangeContexts = new KeyValuePair<VBAParser.SelectStartValueContext, VBAParser.SelectEndValueContext>
-                (ParserRuleContextHelper.GetChild<VBAParser.SelectStartValueContext>(ctxt),
-                ParserRuleContextHelper.GetChild<VBAParser.SelectEndValueContext>(ctxt));
+            var result = false;
+            for (int idx = 0; idx < ctxt.ChildCount && !result; idx++)
+            {
+                if (ctxt.children[idx].GetText().Equals(token))
+                {
+                    result = true;
+                }
+            }
+            return result;
+        }
 
-            return rangeContexts.Key != null && rangeContexts.Value != null;
+        private static bool TryGetExprContext<T, U>(T ctxt, out U opCtxt) where T : ParserRuleContext where U : VBAParser.ExpressionContext
+        {
+            opCtxt = null;
+            opCtxt = ParserRuleContextHelper.GetChild<U>(ctxt);
+            return opCtxt != null;
         }
 
         private static bool HandleAsLong(String typeName)
@@ -546,7 +706,13 @@ namespace Rubberduck.Inspections.Concrete
 
         private static bool HandleAsDouble(String typeName)
         {
-            string[] types = { "Double", "Double(negative)", "Double(positive)", "Currency" };
+            string[] types = { "Double", "Double(negative)", "Double(positive)" };
+            return types.Contains(typeName);
+        }
+
+        private static bool HandleAsDecimal(String typeName)
+        {
+            string[] types = { "Currency" };
             return types.Contains(typeName);
         }
 
@@ -555,16 +721,5 @@ namespace Rubberduck.Inspections.Concrete
             string[] types = { "Boolean" };
             return types.Contains(typeName);
         }
-
-        private static string[] ComparisonOperators = { EQ, NEQ, LT, LTE, GT, GTE };
-        private static Dictionary<string, string> OperatorInversions = new Dictionary<string, string>()
-        {
-            { EQ,EQ },
-            {NEQ,NEQ },
-            {LT,GT },
-            {LTE,GTE },
-            {GT,LT },
-            {GTE,LTE }
-        };
     }
 }
