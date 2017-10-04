@@ -43,13 +43,16 @@ namespace Rubberduck.Settings
                 ?? GetSetting(typeof(TInspection));
         }
 
-        public CodeInspectionSetting GetSetting(Type inspection)
+        public CodeInspectionSetting GetSetting(Type inspectionType)
         {
             try
             {
-                var proto = Convert.ChangeType(Activator.CreateInstance(inspection), inspection);
-                var existing = CodeInspections.FirstOrDefault(s => proto.GetType().ToString().Equals(s.Name));
-                if (existing != null) return existing;
+                var existing = CodeInspections.FirstOrDefault(s => inspectionType.ToString().Equals(s.Name));
+                if (existing != null)
+                {
+                    return existing;
+                }
+                var proto = Convert.ChangeType(Activator.CreateInstance(inspectionType), inspectionType);
                 var setting = new CodeInspectionSetting(proto as IInspectionModel);
                 CodeInspections.Add(setting);
                 return setting;
@@ -80,37 +83,15 @@ namespace Rubberduck.Settings
         [XmlIgnore]
         public string Description
         {
-            get
-            {
-                if (_description == null)
-                {
-                    _description = InspectionsUI.ResourceManager.GetString(Name + "Name");
-                }
-                return _description;
-            }
-            set
-            {
-                _description = value;
-            }
+            get => _description ?? (_description = InspectionsUI.ResourceManager.GetString(Name + "Name"));
+            set => _description = value;
         }// not serialized because culture-dependent
 
         [XmlIgnore]
-        public string LocalizedName
-        {
-            get
-            {
-                return InspectionsUI.ResourceManager.GetString(Name + "Name", CultureInfo.CurrentUICulture);
-            }
-        } // not serialized because culture-dependent
+        public string LocalizedName => InspectionsUI.ResourceManager.GetString(Name + "Name", CultureInfo.CurrentUICulture); // not serialized because culture-dependent
 
         [XmlIgnore]
-        public string AnnotationName
-        {
-            get
-            {
-                return Name.Replace("Inspection", string.Empty);
-            }
-        }
+        public string AnnotationName => Name.Replace("Inspection", string.Empty);
 
         [XmlIgnore]
         public CodeInspectionSeverity DefaultSeverity { get; private set; }
@@ -119,13 +100,7 @@ namespace Rubberduck.Settings
         public CodeInspectionSeverity Severity { get; set; }
 
         [XmlIgnore]
-        public string Meta
-        {
-            get
-            {
-                return InspectionsUI.ResourceManager.GetString(Name + "Meta", CultureInfo.CurrentUICulture);
-            }
-        }
+        public string Meta => InspectionsUI.ResourceManager.GetString(Name + "Meta", CultureInfo.CurrentUICulture);
 
         [XmlIgnore]
         // ReSharper disable once UnusedMember.Global; used in string literal to define collection groupings
@@ -134,7 +109,7 @@ namespace Rubberduck.Settings
         [XmlIgnore]
         public string SeverityLabel
         {
-            get { return InspectionsUI.ResourceManager.GetString("CodeInspectionSeverity_" + Severity, CultureInfo.CurrentUICulture); }
+            get => InspectionsUI.ResourceManager.GetString("CodeInspectionSeverity_" + Severity, CultureInfo.CurrentUICulture);
             set
             {
                 foreach (var severity in Enum.GetValues(typeof(CodeInspectionSeverity)))
