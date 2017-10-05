@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using Rubberduck.Navigation.CodeExplorer;
 
@@ -38,6 +39,12 @@ namespace Rubberduck.UI.CodeExplorer
 
         private void SearchIcon_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
+            SearchBox.Focus();
+        }
+
+        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        {
+            SearchBox.Text = string.Empty;
             SearchBox.Focus();
         }
     }
