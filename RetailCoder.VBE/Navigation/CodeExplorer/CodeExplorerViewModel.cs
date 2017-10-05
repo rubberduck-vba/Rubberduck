@@ -574,6 +574,23 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
+        public void Search(IEnumerable<CodeExplorerItemViewModel> nodes, string searchString)
+        {
+            foreach (var item in nodes)
+            {
+                if (item == null) { continue; }
+                
+                if (item.Items.Any())
+                {
+                    Search(item.Items, searchString);
+                }
+                
+                item.IsVisible = item.Items.Any(c => c.IsVisible) ||
+                                 item.Name.ToLowerInvariant().Contains(searchString.ToLowerInvariant()) ||
+                                 string.IsNullOrEmpty(searchString);
+            }
+        }
+
         public void Dispose()
         {
             if (_state != null)

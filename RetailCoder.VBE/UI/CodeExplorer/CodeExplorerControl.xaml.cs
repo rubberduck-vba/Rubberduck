@@ -30,5 +30,15 @@ namespace Rubberduck.UI.CodeExplorer
             ((TreeViewItem)sender).IsSelected = true;
             e.Handled = true;
         }
+
+        private void SearchBox_OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            ViewModel.Search(ViewModel.Projects, ((TextBox)sender).Text);
+        }
+
+        private void SearchIcon_OnMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            SearchBox.Focus();
+        }
     }
 }

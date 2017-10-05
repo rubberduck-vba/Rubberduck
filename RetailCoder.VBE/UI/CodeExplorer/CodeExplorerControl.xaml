@@ -28,6 +28,7 @@
             <BitmapImage x:Key="AddStdModuleImage" UriSource="../../Resources/Custom/PNG/AddModule.png" />
             <BitmapImage x:Key="AddClassModuleImage" UriSource="../../Resources/Custom/PNG/AddClass.png" />
             <BitmapImage x:Key="AddUserFormImage" UriSource="../../Resources/Custom/PNG/AddForm.png" />
+            <BitmapImage x:Key="SearchImage" UriSource="../../Resources/magnifier-medium.png" />
 
             <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
             <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
@@ -48,6 +49,7 @@
                 <Setter Property="BorderThickness" Value="1.5"/>
                 <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
                 <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                <Setter Property="Visibility" Value="{Binding IsVisible, Mode=OneWay, Converter={StaticResource BoolToVisibility}}" />
                 <Setter Property="HorizontalAlignment" Value="Left" />
                 <EventSetter Event="MouseDoubleClick" Handler="TreeView_OnMouseDoubleClick" />
                 <EventSetter Event="MouseRightButtonDown" Handler="TreeView_OnMouseRightButtonDown" />
@@ -283,6 +285,7 @@
     <Grid UseLayoutRounding="True">
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
+            <RowDefinition Height="20"/>
             <RowDefinition Height="*" MinHeight="64" />
             <RowDefinition Height="5"/>
             <RowDefinition Height="Auto" MinHeight="48"/>
@@ -424,10 +427,13 @@
             </ToolBar>
         </ToolBarTray>
 
-        <controls:EmptyUIRefresh Grid.Row="1" />
+        <TextBox Grid.Row="1" TextChanged="SearchBox_OnTextChanged" VerticalContentAlignment="Center" Name="SearchBox"></TextBox>
+        <Image Grid.Row="1" Source="{StaticResource SearchImage}" HorizontalAlignment="Right" VerticalAlignment="Center" MaxHeight="16" Margin="0,0,1,0" MouseDown="SearchIcon_OnMouseDown" />
+
+        <controls:EmptyUIRefresh Grid.Row="2" />
 
         <TreeView x:Name="ProjectTree"
-                  Grid.Row="1"
+                  Grid.Row="2"
                   Background="White"
                   ItemContainerStyle="{StaticResource ShinyTreeView}"
                   HorizontalContentAlignment="Stretch"
@@ -439,11 +445,11 @@
             </i:Interaction.Behaviors>
         </TreeView>
 
-        <controls:BusyIndicator Grid.Row="1" Width="120" Height="120" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
+        <controls:BusyIndicator Grid.Row="2" Width="120" Height="120" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
 
-        <GridSplitter Grid.Row="2" Height="5" ShowsPreview="True" Cursor="SizeNS" HorizontalAlignment="Stretch"/>
+        <GridSplitter Grid.Row="3" Height="5" ShowsPreview="True" Cursor="SizeNS" HorizontalAlignment="Stretch"/>
 
-        <Border Grid.Row="3" BorderThickness="0,1,0,0" BorderBrush="DimGray">
+        <Border Grid.Row="4" BorderThickness="0,1,0,0" BorderBrush="DimGray">
 
             <ScrollViewer Background="WhiteSmoke" VerticalScrollBarVisibility="Auto">
                 <WrapPanel Orientation="Vertical" MinHeight="70" Background="WhiteSmoke">
