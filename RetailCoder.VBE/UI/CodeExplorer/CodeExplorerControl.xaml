@@ -163,6 +163,13 @@
                                         <Image Height="16" Source="{StaticResource AddTestModuleImage}" />
                                     </MenuItem.Icon>
                                 </MenuItem>
+                                <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_AddTestModuleWithStubsText}"
+                                  Command="{Binding AddTestModuleWithStubsCommand}"
+                                  CommandParameter="{Binding SelectedItem}">
+                                    <MenuItem.Icon>
+                                        <Image Height="16" Source="{StaticResource AddTestModuleImage}" />
+                                    </MenuItem.Icon>
+                                </MenuItem>
                                 <Separator />
                                 <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_AddStdModuleText}"
                                   Command="{Binding AddStdModuleCommand}"

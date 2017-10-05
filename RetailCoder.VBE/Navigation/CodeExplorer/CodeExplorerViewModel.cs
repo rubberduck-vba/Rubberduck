@@ -64,6 +64,8 @@ namespace Rubberduck.Navigation.CodeExplorer
             OpenDesignerCommand = commands.OfType<OpenDesignerCommand>().SingleOrDefault();
 
             AddTestModuleCommand = commands.OfType<UI.CodeExplorer.Commands.AddTestModuleCommand>().SingleOrDefault();
+            AddTestModuleWithStubsCommand = commands.OfType<AddTestModuleWithStubsCommand>().SingleOrDefault();
+
             AddStdModuleCommand = commands.OfType<AddStdModuleCommand>().SingleOrDefault();
             AddClassModuleCommand = commands.OfType<AddClassModuleCommand>().SingleOrDefault();
             AddUserFormCommand = commands.OfType<AddUserFormCommand>().SingleOrDefault();
@@ -491,6 +493,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         public CommandBase OpenCommand { get; }
 
         public CommandBase AddTestModuleCommand { get; }
+        public CommandBase AddTestModuleWithStubsCommand { get; }
         public CommandBase AddStdModuleCommand { get; }
         public CommandBase AddClassModuleCommand { get; }
         public CommandBase AddUserFormCommand { get; }

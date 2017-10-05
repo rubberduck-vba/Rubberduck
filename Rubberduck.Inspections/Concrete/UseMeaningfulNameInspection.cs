@@ -32,7 +32,6 @@ namespace Rubberduck.Inspections.Concrete
 
         private static readonly DeclarationType[] IgnoreDeclarationTypes = 
         {
-            DeclarationType.ModuleOption,
             DeclarationType.BracketedExpression, 
             DeclarationType.LibraryFunction,
             DeclarationType.LibraryProcedure, 
