@@ -34,7 +34,7 @@ namespace Rubberduck.UI.CodeExplorer
 
         private void SearchBox_OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            ViewModel.Search(ViewModel.Projects, ((TextBox)sender).Text);
+            ViewModel.FilterByName(ViewModel.Projects, ((TextBox)sender).Text);
         }
 
         private void SearchIcon_OnMouseDown(object sender, MouseButtonEventArgs e)

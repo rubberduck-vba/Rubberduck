@@ -577,7 +577,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        public void Search(IEnumerable<CodeExplorerItemViewModel> nodes, string searchString)
+        public void FilterByName(IEnumerable<CodeExplorerItemViewModel> nodes, string searchString)
         {
             foreach (var item in nodes)
             {
@@ -585,7 +585,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 
                 if (item.Items.Any())
                 {
-                    Search(item.Items, searchString);
+                    FilterByName(item.Items, searchString);
                 }
                 
                 item.IsVisible = item.Items.Any(c => c.IsVisible) ||
