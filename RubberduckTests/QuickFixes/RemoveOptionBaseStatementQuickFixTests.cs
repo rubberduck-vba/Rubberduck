@@ -4,7 +4,6 @@ using RubberduckTests.Mocks;
 using System.Threading;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Inspections;
 
 namespace RubberduckTests.QuickFixes
@@ -19,8 +18,7 @@ namespace RubberduckTests.QuickFixes
             var inputCode = "Option Base 0";
             var expectedCode = string.Empty;
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new RedundantOptionInspection(state);
@@ -42,8 +40,7 @@ Base _
 
             var expectedCode = string.Empty;
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new RedundantOptionInspection(state);
@@ -62,8 +59,7 @@ Base _
 
             var expectedCode = "Option Explicit: : Option Base 1";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new RedundantOptionInspection(state);
@@ -85,8 +81,7 @@ Base _
 
             var expectedCode = "Option Explicit: : Option Base 1";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new RedundantOptionInspection(state);

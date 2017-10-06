@@ -29,6 +29,7 @@
     <NoWarn>1591</NoWarn>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <UseVSHostingProcess>true</UseVSHostingProcess>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -41,6 +42,7 @@
     <DocumentationFile>bin\Release\Rubberduck.XML</DocumentationFile>
     <DebugSymbols>true</DebugSymbols>
     <NoWarn>1591</NoWarn>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugAccess|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -54,6 +56,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <WarningLevel>4</WarningLevel>
     <Optimize>false</Optimize>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -151,6 +154,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <WarningLevel>4</WarningLevel>
     <Optimize>false</Optimize>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug64|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -191,6 +195,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release64|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -395,10 +400,13 @@
     <Compile Include="UI\About\AboutDialog.Designer.cs">
       <DependentUpon>AboutDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\CodeExplorer\Commands\AddTestModuleWithStubsCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorerCommandAttribute.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CommitCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddUserFormCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CopyResultsCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Converters\StringHasNoValueToVisibilityConverter.cs" />
+    <Compile Include="UI\CodeExplorer\Converters\StringHasValueToVisibilityConverter.cs" />
     <Compile Include="UI\Command\ExportAllCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\OpenProjectPropertiesCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\RenameCommand.cs" />
@@ -1285,6 +1293,7 @@
     <Resource Include="Resources\folder-open.png" />
     <Resource Include="Resources\folder.png" />
     <None Include="Resources\RD-300x250-base.png" />
+    <Resource Include="Resources\magnifier-medium.png" />
     <Content Include="Resources\Rubberduck\RD-AboutWindow.png" />
     <Content Include="Resources\Rubberduck\RD-InstallBanner.bmp" />
     <Content Include="Resources\Rubberduck\RD-InstallWindow.bmp" />

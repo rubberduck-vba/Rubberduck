@@ -1,6 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -10,20 +10,17 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public sealed class ChangeProcedureToFunctionQuickFix : IQuickFix
+    public sealed class ChangeProcedureToFunctionQuickFix : QuickFixBase
     {
-        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type> { typeof(ProcedureCanBeWrittenAsFunctionInspection) };
-
-        public IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
-
         private readonly RubberduckParserState _state;
 
         public ChangeProcedureToFunctionQuickFix(RubberduckParserState state)
+            : base(typeof(ProcedureCanBeWrittenAsFunctionInspection))
         {
             _state = state;
         }
 
-        public void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result)
         {
             var parameterizedDeclaration = (IParameterizedDeclaration) result.Target;
             var arg = parameterizedDeclaration.Parameters.Cast<ParameterDeclaration>().First(p => p.IsByRef || p.IsImplicitByRef);
@@ -36,7 +33,7 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
-        public string Description(IInspectionResult result)
+        public override string Description(IInspectionResult result)
         {
             return InspectionsUI.ProcedureShouldBeFunctionInspectionQuickFix;
         }
@@ -80,8 +77,8 @@ namespace Rubberduck.Inspections.QuickFixes
             rewriter.InsertAfter(argListContext.Stop.TokenIndex, ")");
         }
 
-        public bool CanFixInProcedure => false;
-        public bool CanFixInModule => false;
-        public bool CanFixInProject => false;
+        public override bool CanFixInProcedure => false;
+        public override bool CanFixInModule => false;
+        public override bool CanFixInProject => false;
     }
 }

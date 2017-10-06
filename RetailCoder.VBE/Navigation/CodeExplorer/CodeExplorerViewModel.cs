@@ -64,6 +64,8 @@ namespace Rubberduck.Navigation.CodeExplorer
             OpenDesignerCommand = commands.OfType<OpenDesignerCommand>().SingleOrDefault();
 
             AddTestModuleCommand = commands.OfType<UI.CodeExplorer.Commands.AddTestModuleCommand>().SingleOrDefault();
+            AddTestModuleWithStubsCommand = commands.OfType<AddTestModuleWithStubsCommand>().SingleOrDefault();
+
             AddStdModuleCommand = commands.OfType<AddStdModuleCommand>().SingleOrDefault();
             AddClassModuleCommand = commands.OfType<AddClassModuleCommand>().SingleOrDefault();
             AddUserFormCommand = commands.OfType<AddUserFormCommand>().SingleOrDefault();
@@ -491,6 +493,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         public CommandBase OpenCommand { get; }
 
         public CommandBase AddTestModuleCommand { get; }
+        public CommandBase AddTestModuleWithStubsCommand { get; }
         public CommandBase AddStdModuleCommand { get; }
         public CommandBase AddClassModuleCommand { get; }
         public CommandBase AddUserFormCommand { get; }
@@ -571,6 +574,23 @@ namespace Rubberduck.Navigation.CodeExplorer
             get
             {
                 return _isBusy ? Visibility.Hidden : Visibility.Visible;
+            }
+        }
+
+        public void FilterByName(IEnumerable<CodeExplorerItemViewModel> nodes, string searchString)
+        {
+            foreach (var item in nodes)
+            {
+                if (item == null) { continue; }
+                
+                if (item.Items.Any())
+                {
+                    FilterByName(item.Items, searchString);
+                }
+                
+                item.IsVisible = item.Items.Any(c => c.IsVisible) ||
+                                 item.Name.ToLowerInvariant().Contains(searchString.ToLowerInvariant()) ||
+                                 string.IsNullOrEmpty(searchString);
             }
         }
 

@@ -2,7 +2,6 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
@@ -17,9 +16,7 @@ namespace RubberduckTests.Inspections
             const string inputCode =
 @"Function Foo()
 End Function";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ImplicitVariantReturnTypeInspection(state);
@@ -44,9 +41,7 @@ End Function";
                                                            ByVal lpCurrentDirectory As String, _
                                                            lpStartupInfo As STARTUPINFO, _
                                                            lpProcessInformation As PROCESS_INFORMATION)";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ImplicitVariantReturnTypeInspection(state);
@@ -71,9 +66,7 @@ End Function";
                                                            ByVal lpCurrentDirectory As String, _
                                                            lpStartupInfo As STARTUPINFO, _
                                                            lpProcessInformation As PROCESS_INFORMATION) As Long";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ImplicitVariantReturnTypeInspection(state);
@@ -89,9 +82,7 @@ End Function";
             const string inputCode =
 @"Property Get Foo()
 End Property";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ImplicitVariantReturnTypeInspection(state);
@@ -110,9 +101,7 @@ End Function
 
 Function Goo()
 End Function";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ImplicitVariantReturnTypeInspection(state);
@@ -128,9 +117,7 @@ End Function";
             const string inputCode =
 @"Function Foo() As Boolean
 End Function";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ImplicitVariantReturnTypeInspection(state);
@@ -149,9 +136,7 @@ End Function
 
 Function Goo() As String
 End Function";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ImplicitVariantReturnTypeInspection(state);
@@ -168,9 +153,7 @@ End Function";
 @"'@Ignore ImplicitVariantReturnType
 Function Foo()
 End Function";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ImplicitVariantReturnTypeInspection(state);

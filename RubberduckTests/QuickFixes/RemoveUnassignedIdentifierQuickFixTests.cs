@@ -2,7 +2,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.QuickFixes
@@ -10,7 +9,6 @@ namespace RubberduckTests.QuickFixes
     [TestClass]
     public class RemoveUnassignedIdentifierQuickFixTests
     {
-
         [TestMethod]
         [TestCategory("QuickFixes")]
         public void UnassignedVariable_QuickFixWorks()
@@ -24,8 +22,7 @@ End Sub";
 @"Sub Foo()
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new VariableNotAssignedInspection(state);
@@ -50,8 +47,7 @@ End Sub";
 @"Sub Foo()
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new VariableNotAssignedInspection(state);
@@ -75,8 +71,7 @@ End Sub";
 Dim var1 As Integer
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new VariableNotAssignedInspection(state);
@@ -101,8 +96,7 @@ End Sub";
 Dim var1 As Integer
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new VariableNotAssignedInspection(state);

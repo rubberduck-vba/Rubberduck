@@ -14,8 +14,7 @@ namespace Rubberduck.UI.FindSymbol
     {
         private static readonly DeclarationType[] ExcludedTypes =
         {
-            DeclarationType.Control, 
-            DeclarationType.ModuleOption,
+            DeclarationType.Control,
             DeclarationType.Project
         };
 

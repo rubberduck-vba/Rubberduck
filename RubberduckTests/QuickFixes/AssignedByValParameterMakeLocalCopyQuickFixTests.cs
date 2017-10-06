@@ -8,8 +8,6 @@ using RubberduckTests.Mocks;
 using Rubberduck.UI.Refactorings;
 using System.Windows.Forms;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.QuickFixes
 {
@@ -34,7 +32,7 @@ End Sub";
             var quickFixResult = ApplyLocalVariableQuickFixToCodeFragment(inputCode);
             Assert.AreEqual(expectedCode, quickFixResult);
         }
-        
+
         [TestMethod]
         [TestCategory("QuickFixes")]
         public void AssignedByValParameter_LocalVariableAssignment_ComplexFormat()
@@ -254,30 +252,23 @@ End Sub"
 
             var mockDialogFactory = BuildMockDialogFactory(userEnteredName);
 
-            RubberduckParserState state;
-            var inspectionResults = GetInspectionResults(vbe.Object, out state);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new AssignedByValParameterInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
             var result = inspectionResults.FirstOrDefault();
             if (result == null)
             {
                 Assert.Inconclusive("Inspection yielded no results.");
             }
-            
+
             new AssignedByValParameterMakeLocalCopyQuickFix(state, mockDialogFactory.Object).Fix(result);
             return state.GetRewriter(vbe.Object.ActiveVBProject.VBComponents[0]).GetText();
         }
 
         private Mock<IVBE> BuildMockVBE(string inputCode)
         {
-            IVBComponent component;
-            return MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-        }
-
-        private IEnumerable<IInspectionResult> GetInspectionResults(IVBE vbe, out RubberduckParserState state)
-        {
-            state = MockParser.CreateAndParse(vbe);
-
-            var inspection = new AssignedByValParameterInspection(state);
-            return inspection.GetInspectionResults();
+            return MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
         }
 
         private Mock<IAssignedByValParameterQuickFixDialogFactory> BuildMockDialogFactory(string userEnteredName)

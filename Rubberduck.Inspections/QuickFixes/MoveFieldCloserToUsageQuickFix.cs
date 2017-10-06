@@ -1,6 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -10,24 +8,19 @@ using Rubberduck.UI;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public sealed class MoveFieldCloserToUsageQuickFix : IQuickFix
+    public sealed class MoveFieldCloserToUsageQuickFix : QuickFixBase
     {
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
-        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
-        {
-            typeof(MoveFieldCloserToUsageInspection)
-        };
 
         public MoveFieldCloserToUsageQuickFix(RubberduckParserState state, IMessageBox messageBox)
+            : base(typeof(MoveFieldCloserToUsageInspection))
         {
             _state = state;
             _messageBox = messageBox;
         }
 
-        public IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
-
-        public void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result)
         {
             var vbe = result.Target.Project.VBE;
 
@@ -35,13 +28,13 @@ namespace Rubberduck.Inspections.QuickFixes
             refactoring.Refactor(result.Target);
         }
 
-        public string Description(IInspectionResult result)
+        public override string Description(IInspectionResult result)
         {
             return string.Format(InspectionsUI.MoveFieldCloserToUsageInspectionResultFormat, result.Target.IdentifierName);
         }
 
-        public bool CanFixInProcedure => true;
-        public bool CanFixInModule => true;
-        public bool CanFixInProject => true;
+        public override bool CanFixInProcedure => true;
+        public override bool CanFixInModule => true;
+        public override bool CanFixInProject => true;
     }
 }

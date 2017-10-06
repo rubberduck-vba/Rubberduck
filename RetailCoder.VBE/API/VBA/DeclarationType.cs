@@ -12,7 +12,6 @@ namespace Rubberduck.API.VBA
         Control, //= 1 << 3,
         UserForm,// = 1 << 4,
         Document,// = 1 << 5,
-        ModuleOption,// = 1 << 6,
         Procedure, //= 1 << 8,
         Function,// = 1 << 9,
         PropertyGet,// = 1 << 11,
