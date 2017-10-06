@@ -174,7 +174,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
             lock (Locker)
             {
-                if (_components == null)
+                if (_components == null && components != null)
                 {
                     _components = components;
                     _componentAdded = OnComponentAdded;
