@@ -101,7 +101,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
             var ext = Path.GetExtension(path);
             var name = Path.GetFileNameWithoutExtension(path);
-            if (!File.Exists(path))
+            if (!File.Exists(path) || this[name] == null)
             {
                 return;
             }
@@ -152,6 +152,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public void RemoveSafely(IVBComponent component)
         {
+            if (component == null)
+                { return; }
+
             switch (component.Type)
             {
                 case ComponentType.ClassModule:
