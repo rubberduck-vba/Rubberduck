@@ -190,6 +190,17 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public bool IsSelected { get; set; }
 
+        private bool _isVisisble = true;
+        public bool IsVisible
+        {
+            get { return _isVisisble; }
+            set
+            {
+                _isVisisble = value;
+                OnPropertyChanged();
+            }
+        }
+
         public abstract string Name { get; }
         public abstract string NameWithSignature { get; }
         public abstract BitmapImage CollapsedIcon { get; }

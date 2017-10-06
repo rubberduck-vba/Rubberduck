@@ -315,10 +315,7 @@ namespace Rubberduck.Parsing.Symbols
                     return ModuleDeclaration(qualifiedSelection.Value.QualifiedName);
 
                 case 1:
-                    var match = matches.Single();
-                    return match.DeclarationType == DeclarationType.ModuleOption
-                        ? match.ParentScopeDeclaration
-                        : match;
+                    return matches.Single();
 
                 default:
                     // they're sorted by type, so a local comes before the procedure it's in
