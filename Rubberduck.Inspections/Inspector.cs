@@ -171,7 +171,7 @@ namespace Rubberduck.Inspections
 
             private bool IsDisabled(CodeInspectionSettings config, IInspection inspection)
             {
-                var setting = config.GetSetting(inspection.GetType());
+                var setting = config.GetSetting(inspection.Type);
                 return setting != null && setting.Severity == CodeInspectionSeverity.DoNotShow;
             }
 

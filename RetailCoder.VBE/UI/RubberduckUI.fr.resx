@@ -1608,9 +1608,6 @@ End If      'Plus d'outils? Suggestions http://github.com/rubberduck-vba/Rubberd
 
 End Sub</value>
   </data>
-  <data name="SourceControl_InitializeRepositoryTitle" xml:space="preserve">
-    <value>Initialiser un noueau repository</value>
-  </data>
   <data name="SourceControl_OpenCommandPromptFailureTitle" xml:space="preserve">
     <value>Échec de l'ouverture de l'invite de commande</value>
   </data>
@@ -1659,9 +1656,6 @@ End Sub</value>
   <data name="SourceControl_FileStatus_RenamedInIndex" xml:space="preserve">
     <value>Renommé en index</value>
   </data>
-  <data name="SourceControl_InitializeRepositoryDescription" xml:space="preserve">
-    <value>Crée un nouveau repository avec le projet actif..</value>
-  </data>
   <data name="SourceControl_ExternalModifications" xml:space="preserve">
     <value>Un fichier source a été modifié sans l'éditeur; recharger le fichier?</value>
   </data>
@@ -1673,9 +1667,6 @@ End Sub</value>
   </data>
   <data name="SourceControl_CommandPromptExeLabel" xml:space="preserve">
     <value>Emplacement de l'exécutable de l'invite de commande</value>
-  </data>
-  <data name="SourceControl_CloneRepositoryDescription" xml:space="preserve">
-    <value>Clone un 'repository' distant à partir d'une URI; Ayez un projet (vide) actif dans l'éditeur.</value>
   </data>
   <data name="SourceControl_CloneRepositoryTitle" xml:space="preserve">
     <value>Cloner un repository distant</value>
@@ -1694,9 +1685,6 @@ End Sub</value>
   </data>
   <data name="SourceControl_ActivateProject" xml:space="preserve">
     <value>Veuillez ouvrir ou activer un projet et essayer de nouveau.</value>
-  </data>
-  <data name="SourceControl_OpenRepositoryTitle" xml:space="preserve">
-    <value>Ouvrir un repository existant</value>
   </data>
   <data name="ToolsMenu" xml:space="preserve">
     <value>&amp;Outils</value>
@@ -1766,9 +1754,6 @@ End Sub</value>
   </data>
   <data name="CodeInspectionSettings_InspectionSeveritySettingsLabel" xml:space="preserve">
     <value>Niveau de sévérité</value>
-  </data>
-  <data name="SourceControl_OpenRepositoryDescription" xml:space="preserve">
-    <value>Ouvrir un repository existant. Le projet actif recevra le code.</value>
   </data>
   <data name="SourceControl_FileStatus_Nonexistent" xml:space="preserve">
     <value>Non-existent</value>

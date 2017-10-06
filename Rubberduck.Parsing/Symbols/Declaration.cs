@@ -467,7 +467,6 @@ namespace Rubberduck.Parsing.Symbols
             DeclarationType.LibraryProcedure,
             DeclarationType.LineLabel,
             DeclarationType.ProceduralModule,
-            DeclarationType.ModuleOption,
             DeclarationType.Project,
             DeclarationType.Procedure,
             DeclarationType.PropertyGet,

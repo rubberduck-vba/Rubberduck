@@ -6,7 +6,6 @@ using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 using RubberduckTests.Inspections;
 
@@ -28,8 +27,7 @@ End Sub";
 @"Sub Foo(Optional arg1 As Integer)
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new RedundantByRefModifierInspection(state) { Severity = CodeInspectionSeverity.Hint };
@@ -59,8 +57,7 @@ End Sub";
     bar = 1
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new RedundantByRefModifierInspection(state) { Severity = CodeInspectionSeverity.Hint };
@@ -88,8 +85,7 @@ End Sub";
     bar = 1
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new RedundantByRefModifierInspection(state) { Severity = CodeInspectionSeverity.Hint };
@@ -119,8 +115,7 @@ End Sub";
     bar = 1
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new RedundantByRefModifierInspection(state) { Severity = CodeInspectionSeverity.Hint };
@@ -292,8 +287,7 @@ End Sub";
 @"Sub Foo(arg1 As Integer)
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new RedundantByRefModifierInspection(state) { Severity = CodeInspectionSeverity.Hint };

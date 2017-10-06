@@ -4,7 +4,6 @@ using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
@@ -20,8 +19,7 @@ namespace RubberduckTests.Inspections
 @"Private Sub Foo()
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ProcedureNotUsedInspection(state);
@@ -41,8 +39,7 @@ End Sub
 Private Sub Goo()
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ProcedureNotUsedInspection(state);
@@ -64,8 +61,7 @@ Private Sub Goo()
     Foo
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ProcedureNotUsedInspection(state);
@@ -86,8 +82,7 @@ Private Sub Goo()
     Foo
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ProcedureNotUsedInspection(state);
@@ -161,8 +156,7 @@ End Sub";
 @"Private Sub Class_Initialize()
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ProcedureNotUsedInspection(state);
@@ -180,8 +174,7 @@ End Sub";
 @"Private Sub class_initialize()
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ProcedureNotUsedInspection(state);
@@ -199,8 +192,7 @@ End Sub";
 @"Private Sub Class_Terminate()
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ProcedureNotUsedInspection(state);
@@ -218,8 +210,7 @@ End Sub";
 @"Private Sub class_terminate()
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ProcedureNotUsedInspection(state);
@@ -238,8 +229,7 @@ End Sub";
 Private Sub Foo()
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ProcedureNotUsedInspection(state);

@@ -1,9 +1,9 @@
 ﻿using System;
 using Rubberduck.Parsing.Grammar;
-using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Common;
+using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -13,23 +13,17 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class ChangeIntegerToLongQuickFix : IQuickFix
+    public class ChangeIntegerToLongQuickFix : QuickFixBase
     {
         private readonly RubberduckParserState _state;
 
-        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type>
-        {
-            typeof(IntegerDataTypeInspection)
-        };
-
         public ChangeIntegerToLongQuickFix(RubberduckParserState state)
+            : base(typeof(IntegerDataTypeInspection))
         {
             _state = state;
         }
 
-        public IReadOnlyCollection<Type> SupportedInspections { get; } = _supportedInspections.ToList();
-
-        public void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result)
         {
             var rewriter = _state.GetRewriter(result.Target);
 
@@ -180,14 +174,14 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
-        public string Description(IInspectionResult result)
+        public override string Description(IInspectionResult result)
         {
             return InspectionsUI.IntegerDataTypeQuickFix;
         }
 
-        public bool CanFixInProcedure => true;
-        public bool CanFixInModule => true;
-        public bool CanFixInProject => true;
+        public override bool CanFixInProcedure => true;
+        public override bool CanFixInModule => true;
+        public override bool CanFixInProject => true;
 
         private static int GetParameterIndex(VBAParser.ArgContext context)
         {
