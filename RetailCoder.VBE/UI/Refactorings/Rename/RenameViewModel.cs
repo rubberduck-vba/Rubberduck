@@ -73,7 +73,7 @@ namespace Rubberduck.UI.Refactorings.Rename
                        char.IsLetter(NewName.FirstOrDefault()) &&
                        !tokenValues.Contains(NewName, StringComparer.InvariantCultureIgnoreCase) &&
                        !NewName.Any(c => !char.IsLetterOrDigit(c) && c != '_') &&
-                       NewName.Length <= (Target.DeclarationType.HasFlag(DeclarationType.Module) ? 31 : 255);
+                       NewName.Length <= (Target.DeclarationType.HasFlag(DeclarationType.Module) ? Declaration.MaxModuleNameLength : Declaration.MaxMemberNameLength);
             }
         }
 
