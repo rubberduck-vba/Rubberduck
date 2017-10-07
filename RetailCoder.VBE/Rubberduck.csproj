@@ -405,6 +405,8 @@
     <Compile Include="UI\CodeExplorer\Commands\CommitCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddUserFormCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CopyResultsCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Converters\StringHasNoValueToVisibilityConverter.cs" />
+    <Compile Include="UI\CodeExplorer\Converters\StringHasValueToVisibilityConverter.cs" />
     <Compile Include="UI\Command\ExportAllCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\OpenProjectPropertiesCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\RenameCommand.cs" />
@@ -421,8 +423,10 @@
     <Compile Include="UI\CodeExplorer\Commands\AddStdModuleCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddTestModuleCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddComponentCommand.cs" />
+    <Compile Include="UI\Command\FormDesignerFindAllReferencesCommand.cs" />
     <Compile Include="UI\Command\IndentCurrentProjectCommand.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\ContextDescriptionLabelMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\FormDesignerFindAllReferencesCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\IndentCurrentProjectCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\ExportAllCommandMenuItem.cs" />
     <Compile Include="UI\Controls\EmptyUIRefresh.xaml.cs">
@@ -1289,6 +1293,7 @@
     <Resource Include="Resources\folder-open.png" />
     <Resource Include="Resources\folder.png" />
     <None Include="Resources\RD-300x250-base.png" />
+    <Resource Include="Resources\magnifier-medium.png" />
     <Content Include="Resources\Rubberduck\RD-AboutWindow.png" />
     <Content Include="Resources\Rubberduck\RD-InstallBanner.bmp" />
     <Content Include="Resources\Rubberduck\RD-InstallWindow.bmp" />
