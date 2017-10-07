@@ -857,4 +857,13 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="ShadowedDeclarationInspectionResultFormat" xml:space="preserve">
     <value>{0} '{1}' hides {2} '{3}'</value>
   </data>
+  <data name="ObsoleteErrorSyntaxInspectionMeta" xml:space="preserve">
+    <value>The 'Error' statement only exists in the language to support legacy code that required it; prefer using 'Err.Raise' instead.</value>
+  </data>
+  <data name="ObsoleteErrorSyntaxInspectionResultFormat" xml:space="preserve">
+    <value>Error throw uses obsolete 'Error' statement</value>
+  </data>
+  <data name="ReplaceObsoleteErrorStatementQuickFix" xml:space="preserve">
+    <value>Replace 'Error' with 'Err.Raise'</value>
+  </data>
 </root>
