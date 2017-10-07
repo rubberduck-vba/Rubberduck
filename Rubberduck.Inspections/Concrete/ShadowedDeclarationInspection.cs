@@ -125,6 +125,11 @@ namespace Rubberduck.Inspections.Concrete
                 return false;
             }
 
+            if ((originalDeclaration.ParentDeclaration as ClassModuleDeclaration)?.IsGlobalClassModule == false)
+            {
+                return false;
+            }
+
             var originalDeclarationComponentType = originalDeclaration.QualifiedName.QualifiedModuleName.ComponentType;
             var userDeclarationComponentType = userDeclaration.QualifiedName.QualifiedModuleName.ComponentType;
 
