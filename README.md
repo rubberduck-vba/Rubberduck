@@ -1,10 +1,12 @@
 <img src="http://i.stack.imgur.com/jnBEp.jpg" width=100% />
 
+<!-- campaign is no longer accepting donations
 ### Donate!
 
 If you like this project and would like to thank its contributors, you are welcome to support our GoFundMe campaign to finance Rubberduck swag and international shipping - contributors will be getting t-shirts, mugs, and other cool things.
 
 [![GoFundMe campaign](https://user-images.githubusercontent.com/5751684/29191799-e3d20b72-7dec-11e7-8ec6-0c69da4a3135.png)](https://www.gofundme.com/rubberduckvba)
+-->
 
 Branch     | Description | Build Status |
 |------------|---|--------------|

@@ -99,6 +99,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public void ImportSourceFile(string path)
         {
+            if (IsWrappingNullReference) { return; }
+
             var ext = Path.GetExtension(path);
             var name = Path.GetFileNameWithoutExtension(path);
             if (!File.Exists(path))
@@ -152,6 +154,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public void RemoveSafely(IVBComponent component)
         {
+            if (component.IsWrappingNullReference) { return; }
+
             switch (component.Type)
             {
                 case ComponentType.ClassModule:
@@ -174,7 +178,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
             lock (Locker)
             {
-                if (_components == null)
+                if (_components == null && components != null)
                 {
                     _components = components;
                     _componentAdded = OnComponentAdded;
