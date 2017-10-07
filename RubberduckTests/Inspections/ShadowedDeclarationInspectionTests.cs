@@ -2379,7 +2379,7 @@ End Enum";
         public void ShadowedDeclaration_ReturnsResult_EnumerationWithSameNameAsEnumerationMember()
         {
             var code =
-$@"Public enum SameName
+@"Public enum SameName
     Baz
 End Enum
 
@@ -2405,7 +2405,7 @@ End Enum";
         public void ShadowedDeclaration_ReturnsResult_EnumerationMemberWithSameNameAsEnumeration()
         {
             var code =
-$@"Public enum Baz
+@"Public enum Baz
     SameName
 End Enum
 
@@ -2431,7 +2431,7 @@ End Enum";
         public void ShadowedDeclaration_DoesNotReturnResult_EnumerationMemberWithSameNameAsEnumerationMember()
         {
             var code =
-$@"Public enum Baz
+@"Public enum Baz
     SameName
 End Enum
 
@@ -2457,7 +2457,7 @@ End Enum";
         public void ShadowedDeclaration_DoesNotReturnResult_EnumerationWithSameNameAsOwnMember()
         {
             var code =
-$@"Public enum SameName
+@"Public enum SameName
     SameName
 End Enum";
 

@@ -322,8 +322,7 @@ namespace Rubberduck.Inspections.Concrete
                 return false;
             }
 
-            var moduleDeclaration = Declaration.GetModuleParent(declaration) as ProceduralModuleDeclaration;
-            if (moduleDeclaration != null)
+            if (Declaration.GetModuleParent(declaration) is ProceduralModuleDeclaration moduleDeclaration)
             {
                 return moduleDeclaration.IsPrivateModule;
             }
