@@ -60,9 +60,9 @@ namespace Rubberduck.Inspections.Concrete
                         issues.Add(new DeclarationInspectionResult(this,
                             string.Format(InspectionsUI.ShadowedDeclarationInspectionResultFormat,
                                 RubberduckUI.ResourceManager.GetString("DeclarationType_" + userDeclaration.DeclarationType, CultureInfo.CurrentUICulture),
-                                userDeclaration.IdentifierName,
+                                userDeclaration.QualifiedName,
                                 RubberduckUI.ResourceManager.GetString("DeclarationType_" + shadowedDeclaration.DeclarationType, CultureInfo.CurrentUICulture),
-                                shadowedDeclaration.IdentifierName),
+                                shadowedDeclaration.QualifiedName),
                             userDeclaration));
                     }
                 }
