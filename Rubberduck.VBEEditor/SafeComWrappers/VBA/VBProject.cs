@@ -60,7 +60,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public IVBComponents VBComponents
         {
-            get { return new VBComponents(IsWrappingNullReference ? null : Target.VBComponents); }
+            get { return new VBComponents(IsWrappingNullReference || Protection == ProjectProtection.Locked ? null : Target.VBComponents); }
         }
 
         public ProjectProtection Protection
