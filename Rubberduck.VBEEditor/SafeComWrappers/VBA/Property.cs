@@ -58,7 +58,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public void SetIndexedValue(object value, object index1, object index2 = null, object index3 = null, object index4 = null)
         {
-            if (!IsWrappingNullReference) Target.set_IndexedValue(index1, index2, index3, index4, value);
+            if (!IsWrappingNullReference)
+            {
+                Target.set_IndexedValue(index1, index2, index3, index4, value);
+            }
         }
 
         /// <summary>

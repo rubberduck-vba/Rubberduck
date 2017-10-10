@@ -56,13 +56,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         private Selection GetSelection()
         {
-            if (IsWrappingNullReference) return new Selection(0, 0, 0, 0);
+            if (IsWrappingNullReference)
+            {
+                return new Selection(0, 0, 0, 0);
+            }
 
-            int startLine;
-            int startColumn;
-            int endLine;
-            int endColumn;
-            Target.GetSelection(out startLine, out startColumn, out endLine, out endColumn);
+            Target.GetSelection(out int startLine, out int startColumn, out int endLine, out int endColumn);
 
             if (endLine > startLine && endColumn == 1)
             {
@@ -93,14 +92,22 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         private void SetSelection(int startLine, int startColumn, int endLine, int endColumn)
         {
-            if (IsWrappingNullReference) return;
+            if (IsWrappingNullReference)
+            {
+                return;
+            }
+
             Target.SetSelection(startLine, startColumn, endLine, endColumn);
             ForceFocus();
         }
 
         private void ForceFocus()
         {
-            if (IsWrappingNullReference) return;
+            if (IsWrappingNullReference)
+            {
+                return;
+            }
+
             Show();
 
             var window = VBE.MainWindow;
@@ -123,7 +130,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public void Show()
         {
-            if (IsWrappingNullReference) return;
+            if (IsWrappingNullReference)
+            {
+                return;
+            }
+
             Target.Show();
         }
 

@@ -68,7 +68,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         /// <param name="selection"></param>
         public void DeleteLines(Selection selection)
         {
-            if (IsWrappingNullReference) return; 
+            if (IsWrappingNullReference)
+            {
+                return;
+            }
+
             DeleteLines(selection.StartLine, selection.LineCount);
         }
 
@@ -78,6 +82,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             {
                 return null;
             }
+
             return CodePane.GetQualifiedSelection();
         }
 
@@ -88,7 +93,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public void Clear()
         {
-            if (IsWrappingNullReference) return; 
+            if (IsWrappingNullReference)
+            {
+                return;
+            }
+
             if (Target.CountOfLines > 0)
             {
                 Target.DeleteLines(1, CountOfLines);
@@ -109,37 +118,60 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public void AddFromString(string content)
         {
-            if (IsWrappingNullReference) return; 
+            if (IsWrappingNullReference)
+            {
+                return;
+            }
+
             Target.AddFromString(content);
         }
 
         public void AddFromFile(string path)
         {
-            if (IsWrappingNullReference) return; 
+            if (IsWrappingNullReference)
+            {
+                return;
+            }
+
             Target.AddFromFile(path);
         }
 
         public void InsertLines(int line, string content)
         {
-            if (IsWrappingNullReference) return; 
+            if (IsWrappingNullReference)
+            {
+                return;
+            }
+
             Target.InsertLines(line, content);
         }
 
         public void DeleteLines(int startLine, int count = 1)
         {
-            if (IsWrappingNullReference) return; 
+            if (IsWrappingNullReference)
+            {
+                return;
+            }
+
             Target.DeleteLines(startLine, count);
         }
 
         public void ReplaceLine(int line, string content)
         {
-            if (IsWrappingNullReference) return;           
+            if (IsWrappingNullReference)
+            {
+                return;
+            }
+
             Target.ReplaceLine(line, content);
         }
 
         public Selection? Find(string target, bool wholeWord = false, bool matchCase = false, bool patternSearch = false)
         {
-            if (IsWrappingNullReference) return null;
+            if (IsWrappingNullReference)
+            {
+                return null;
+            }
 
             var startLine = 0;
             var startColumn = 0;
@@ -168,16 +200,22 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public string GetProcOfLine(int line)
         {
-            if (IsWrappingNullReference) return string.Empty;
-            vbext_ProcKind procKind;
-            return Target.get_ProcOfLine(line, out procKind);
+            if (IsWrappingNullReference)
+            {
+                return string.Empty;
+            }
+
+            return Target.get_ProcOfLine(line, out vbext_ProcKind procKind);
         }
 
         public ProcKind GetProcKindOfLine(int line)
         {
-            if (IsWrappingNullReference) return 0;
-            vbext_ProcKind procKind;
-            Target.get_ProcOfLine(line, out procKind);
+            if (IsWrappingNullReference)
+            {
+                return 0;
+            }
+
+            Target.get_ProcOfLine(line, out vbext_ProcKind procKind);
             return (ProcKind)procKind;
         }
 
