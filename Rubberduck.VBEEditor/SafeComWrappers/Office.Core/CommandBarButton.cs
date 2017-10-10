@@ -67,7 +67,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
             System.Diagnostics.Debug.Assert(handler.GetInvocationList().Length == 1, "Multicast delegate is registered more than once.");
 
             //note: event is fired for every parent the command exists under. not sure why.
-            System.Diagnostics.Debug.WriteLine($"Executing handler for: {Parent.GetType().Name} '{Target.Caption}' (tag: {Tag}, hashcode:{Target.GetHashCode()})";
+            System.Diagnostics.Debug.WriteLine($"Executing handler for: {Parent.GetType().Name} '{Target.Caption}' (tag: {Tag}, hashcode:{Target.GetHashCode()})");
 
             var button = new CommandBarButton(ctrl);
             var args = new CommandBarButtonClickEventArgs(button);
