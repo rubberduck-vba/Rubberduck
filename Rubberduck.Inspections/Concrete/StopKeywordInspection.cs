@@ -19,8 +19,6 @@ namespace Rubberduck.Inspections.Concrete
         public StopKeywordInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Suggestion) { }
 
-        public override Type Type => typeof(StopKeywordInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
         public override IInspectionListener Listener { get; } =

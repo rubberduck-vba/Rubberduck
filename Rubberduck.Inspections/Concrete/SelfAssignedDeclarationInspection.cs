@@ -16,8 +16,6 @@ namespace Rubberduck.Inspections.Concrete
         public SelfAssignedDeclarationInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Suggestion) { }
 
-        public override Type Type => typeof(SelfAssignedDeclarationInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()

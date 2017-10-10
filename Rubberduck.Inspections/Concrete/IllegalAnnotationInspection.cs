@@ -24,8 +24,6 @@ namespace Rubberduck.Inspections.Concrete
             Listener = new IllegalAttributeAnnotationsListener(state);
         }
 
-        public override Type Type => typeof(IllegalAnnotationInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.RubberduckOpportunities;
         public override IInspectionListener Listener { get; }
 

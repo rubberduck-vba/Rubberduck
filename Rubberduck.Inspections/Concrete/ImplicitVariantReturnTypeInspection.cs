@@ -17,8 +17,6 @@ namespace Rubberduck.Inspections.Concrete
         public ImplicitVariantReturnTypeInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Hint) { }
 
-        public override Type Type => typeof(ImplicitVariantReturnTypeInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()

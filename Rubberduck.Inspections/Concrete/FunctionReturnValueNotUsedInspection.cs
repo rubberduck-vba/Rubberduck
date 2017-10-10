@@ -19,8 +19,6 @@ namespace Rubberduck.Inspections.Concrete
         public FunctionReturnValueNotUsedInspection(RubberduckParserState state)
             : base(state) { }
 
-        public override Type Type => typeof(FunctionReturnValueNotUsedInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()

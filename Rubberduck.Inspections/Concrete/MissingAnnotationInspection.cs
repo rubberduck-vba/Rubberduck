@@ -22,8 +22,6 @@ namespace Rubberduck.Inspections.Concrete
             Listener = new MissingAnnotationListener(state);
         }
 
-        public override Type Type => typeof(MissingAnnotationInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.RubberduckOpportunities;
         public override IInspectionListener Listener { get; }
         public override ParsePass Pass => ParsePass.AttributesPass;

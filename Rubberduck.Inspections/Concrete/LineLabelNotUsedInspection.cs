@@ -18,8 +18,6 @@ namespace Rubberduck.Inspections.Concrete
     {
         public LineLabelNotUsedInspection(RubberduckParserState state) : base(state) { }
 
-        public override Type Type => typeof(LineLabelNotUsedInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()

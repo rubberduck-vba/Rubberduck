@@ -16,8 +16,6 @@ namespace Rubberduck.Inspections.Concrete
         public EmptyWhileWendBlockInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.DoNotShow) { }
 
-        public override Type Type => typeof(EmptyWhileWendBlockInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()

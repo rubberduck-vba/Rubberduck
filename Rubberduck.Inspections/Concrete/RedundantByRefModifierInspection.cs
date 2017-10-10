@@ -21,8 +21,6 @@ namespace Rubberduck.Inspections.Concrete
         {
         }
 
-        public override Type Type => typeof(RedundantByRefModifierInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
         public override IInspectionListener Listener { get; } = new RedundantByRefModifierListener();

@@ -19,8 +19,6 @@ namespace Rubberduck.Inspections.Concrete
         public override IInspectionListener Listener { get; } =
             new EmptyCaseBlockListener();
 
-        public override Type Type => typeof(EmptyCaseBlockInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()

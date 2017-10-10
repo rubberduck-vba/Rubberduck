@@ -15,8 +15,6 @@ namespace Rubberduck.Inspections.Concrete
         public MoveFieldCloserToUsageInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Hint) { }
 
-        public override Type Type => typeof(MoveFieldCloserToUsageInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()

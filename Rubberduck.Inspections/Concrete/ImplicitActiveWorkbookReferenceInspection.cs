@@ -16,8 +16,6 @@ namespace Rubberduck.Inspections.Concrete
         public ImplicitActiveWorkbookReferenceInspection(RubberduckParserState state)
             : base(state) { }
 
-        public override Type Type => typeof(ImplicitActiveWorkbookReferenceInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
 
         private static readonly string[] Targets =

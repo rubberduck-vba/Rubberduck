@@ -21,8 +21,6 @@ namespace Rubberduck.Inspections.Concrete
             Listener = new OptionBaseStatementListener();
         }
 
-        public override Type Type => typeof(OptionBaseInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
         public override IInspectionListener Listener { get; }
 

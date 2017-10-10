@@ -15,8 +15,6 @@ namespace Rubberduck.Inspections.Concrete
         public HostSpecificExpressionInspection(RubberduckParserState state)
             : base(state) { }
 
-        public override Type Type => typeof(HostSpecificExpressionInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()

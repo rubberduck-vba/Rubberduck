@@ -16,8 +16,6 @@ namespace Rubberduck.Inspections.Concrete
         public ParameterNotUsedInspection(RubberduckParserState state)
             : base(state) { }
 
-        public override Type Type => typeof(ParameterNotUsedInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()

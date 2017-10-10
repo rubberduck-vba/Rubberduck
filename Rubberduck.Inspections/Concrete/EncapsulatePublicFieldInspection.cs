@@ -15,8 +15,6 @@ namespace Rubberduck.Inspections.Concrete
         public EncapsulatePublicFieldInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Suggestion) { }
 
-        public override Type Type => typeof(EncapsulatePublicFieldInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()

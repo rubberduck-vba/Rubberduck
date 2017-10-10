@@ -17,8 +17,6 @@ namespace Rubberduck.Inspections.Concrete
         public DefaultProjectNameInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Suggestion) { }
 
-        public override Type Type => typeof(DefaultProjectNameInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()

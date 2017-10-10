@@ -15,8 +15,6 @@ namespace Rubberduck.Inspections.Concrete
         public MemberNotOnInterfaceInspection(RubberduckParserState state)
             : base(state) { }
 
-        public override Type Type => typeof(MemberNotOnInterfaceInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()

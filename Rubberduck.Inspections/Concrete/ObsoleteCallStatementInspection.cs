@@ -21,8 +21,6 @@ namespace Rubberduck.Inspections.Concrete
             Listener = new ObsoleteCallStatementListener();
         }
 
-        public override Type Type => typeof(ObsoleteCallStatementInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
         public override IInspectionListener Listener { get; }
 

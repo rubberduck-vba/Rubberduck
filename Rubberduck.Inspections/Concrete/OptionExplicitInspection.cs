@@ -22,8 +22,6 @@ namespace Rubberduck.Inspections.Concrete
             Listener = new MissingOptionExplicitListener();
         }
 
-        public override Type Type => typeof(OptionExplicitInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
         public override IInspectionListener Listener { get; }

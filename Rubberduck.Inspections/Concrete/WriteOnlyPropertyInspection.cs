@@ -15,8 +15,6 @@ namespace Rubberduck.Inspections.Concrete
         public WriteOnlyPropertyInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Suggestion) { }
 
-        public override Type Type => typeof(WriteOnlyPropertyInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()

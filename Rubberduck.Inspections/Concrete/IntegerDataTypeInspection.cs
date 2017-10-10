@@ -20,8 +20,6 @@ namespace Rubberduck.Inspections.Concrete
         {
         }
 
-        public override Type Type => typeof(IntegerDataTypeInspection);
-
         public override CodeInspectionType InspectionType { get; } = CodeInspectionType.CodeQualityIssues;
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()

@@ -23,8 +23,6 @@ namespace Rubberduck.Inspections.Concrete
             Listener = new ParameterListener();
         }
 
-        public override Type Type => typeof(MultilineParameterInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
         public override IInspectionListener Listener { get; }

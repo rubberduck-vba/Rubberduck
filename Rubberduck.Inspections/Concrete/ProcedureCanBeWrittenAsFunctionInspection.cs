@@ -26,8 +26,6 @@ namespace Rubberduck.Inspections.Concrete
             Listener = new SingleByRefParamArgListListener();
         }
 
-        public override Type Type => typeof(ProcedureCanBeWrittenAsFunctionInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
         public override IInspectionListener Listener { get; }
 

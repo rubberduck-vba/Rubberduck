@@ -16,8 +16,6 @@ namespace Rubberduck.Inspections.Concrete
         public EmptyForLoopBlockInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.DoNotShow) { }
 
-        public override Type Type => typeof(EmptyForLoopBlockInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()

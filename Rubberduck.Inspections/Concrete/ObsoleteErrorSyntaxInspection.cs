@@ -21,8 +21,6 @@ namespace Rubberduck.Inspections.Concrete
             Listener = new ObsoleteErrorSyntaxListener();
         }
 
-        public override Type Type => typeof(ObsoleteErrorSyntaxInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
         public override IInspectionListener Listener { get; }
 

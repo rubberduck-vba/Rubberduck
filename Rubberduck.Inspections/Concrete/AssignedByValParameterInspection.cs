@@ -15,9 +15,7 @@ namespace Rubberduck.Inspections.Concrete
         public AssignedByValParameterInspection(RubberduckParserState state)
             : base(state)
         { }
-
-        public override Type Type => typeof(AssignedByValParameterInspection);
-
+        
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()

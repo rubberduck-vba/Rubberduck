@@ -16,8 +16,6 @@ namespace Rubberduck.Inspections.Concrete
         public ImplicitDefaultMemberAssignmentInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Suggestion) { }
 
-        public override Type Type => typeof(ImplicitDefaultMemberAssignmentInspection);
-
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var interestingDeclarations =

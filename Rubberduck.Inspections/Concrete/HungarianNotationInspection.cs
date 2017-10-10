@@ -106,8 +106,6 @@ namespace Rubberduck.Inspections.Concrete
             _settings = settings;
         }
 
-        public override Type Type => typeof(HungarianNotationInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
