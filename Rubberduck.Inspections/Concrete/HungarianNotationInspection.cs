@@ -110,7 +110,7 @@ namespace Rubberduck.Inspections.Concrete
 
         public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var settings = _settings.Load(new CodeInspectionSettings()) ?? new CodeInspectionSettings();
             var whitelistedNames = settings.WhitelistedIdentifiers.Select(s => s.Identifier).ToList();

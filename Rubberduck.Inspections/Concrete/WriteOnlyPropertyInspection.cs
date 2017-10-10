@@ -19,7 +19,7 @@ namespace Rubberduck.Inspections.Concrete
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var setters = State.DeclarationFinder.UserDeclarations(DeclarationType.Property | DeclarationType.Procedure)
                 .Where(item => 

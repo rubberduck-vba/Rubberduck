@@ -25,7 +25,7 @@ namespace Rubberduck.Inspections.Concrete
 
         public override IInspectionListener Listener { get; } = new ModuleScopedDimListener();
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             return Listener.Contexts
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))

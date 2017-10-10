@@ -23,7 +23,7 @@ namespace Rubberduck.Inspections.Concrete
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             // Note: This inspection does not find dictionary calls (e.g. foo!bar) since we do not know what the
             // default member is of a class.

@@ -22,7 +22,7 @@ namespace Rubberduck.Inspections.Concrete
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var results = State.DeclarationFinder.UserDeclarations(DeclarationType.Constant)
                 .Where(declaration => declaration.Context != null

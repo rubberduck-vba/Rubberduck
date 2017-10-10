@@ -26,8 +26,8 @@ namespace Rubberduck.Inspections.Concrete
 
         public override IInspectionListener Listener { get; } =
             new InvalidAnnotationStatementListener();
-        
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             return (from result in Listener.Contexts
                     let context = (VBAParser.AnnotationContext)result.Context 

@@ -25,7 +25,7 @@ namespace Rubberduck.Inspections.Concrete
             "Cells", "Range", "Columns", "Rows"
         };
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var excel = State.DeclarationFinder.Projects.SingleOrDefault(item => !item.IsUserDefined && item.IdentifierName == "Excel");
             if (excel == null) { return Enumerable.Empty<IInspectionResult>(); }

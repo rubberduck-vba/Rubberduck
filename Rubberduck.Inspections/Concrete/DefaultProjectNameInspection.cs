@@ -21,7 +21,7 @@ namespace Rubberduck.Inspections.Concrete
 
         public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var projects = State.DeclarationFinder.UserDeclarations(DeclarationType.Project)
                 .Where(item => item.IdentifierName.StartsWith("VBAProject"))

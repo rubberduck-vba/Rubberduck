@@ -30,7 +30,7 @@ namespace Rubberduck.Inspections.Concrete
             "Session_"
         };
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var declarations = UserDeclarations.ToList();
 

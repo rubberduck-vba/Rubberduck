@@ -28,7 +28,7 @@ namespace Rubberduck.Inspections.Concrete
             DeclarationType.PropertySet
         };
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var issues = from item in UserDeclarations
                          where ProcedureTypes.Contains(item.DeclarationType)

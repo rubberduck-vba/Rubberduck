@@ -20,7 +20,7 @@ namespace Rubberduck.Inspections.Concrete
 
         public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var issues = from item in UserDeclarations
                          where item.Accessibility == Accessibility.Global && item.Context != null

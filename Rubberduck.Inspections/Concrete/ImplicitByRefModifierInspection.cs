@@ -27,7 +27,7 @@ namespace Rubberduck.Inspections.Concrete
 
         public override IInspectionListener Listener { get; } = new ImplicitByRefModifierListener();
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var builtInEventHandlerContexts = State.DeclarationFinder.FindEventHandlers().Select(handler => handler.Context).ToHashSet();
             var interfaceImplementationMemberContexts = UserDeclarations.FindInterfaceImplementationMembers().Select(member => member.Context).ToHashSet();

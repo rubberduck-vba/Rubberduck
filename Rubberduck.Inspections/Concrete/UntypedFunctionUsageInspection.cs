@@ -45,7 +45,7 @@ namespace Rubberduck.Inspections.Concrete
             Tokens.UCase
         };
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var declarations = BuiltInDeclarations
                 .Where(item =>
