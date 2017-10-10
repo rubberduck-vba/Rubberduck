@@ -117,8 +117,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             for (var line = 0; line < lines.Length; line++)
             {
                 var code = lines[line];
-                int? lineNumber;
-                if (!continuing && HasNumberedLine(code, out lineNumber))
+                if (!continuing && HasNumberedLine(code, out int? lineNumber))
                 {
                     var lineNumberLength = lineNumber.ToString().Length;
                     if (lines[line].Length > lineNumberLength)
@@ -141,9 +140,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                 return false;
             }
 
-            int line;
             var firstToken = codeLine.TrimStart().Split(' ')[0];
-            if (int.TryParse(firstToken, out line))
+            if (int.TryParse(firstToken, out int line))
             {
                 lineNumber = line;
                 return true;
@@ -218,14 +216,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         public string GetProcOfLine(int line)
         {
-            vbext_ProcKind procKind;
-            return Target.get_ProcOfLine(line, out procKind);
+            return Target.get_ProcOfLine(line, out vbext_ProcKind procKind);
         }
 
         public ProcKind GetProcKindOfLine(int line)
         {
-            vbext_ProcKind procKind;
-            Target.get_ProcOfLine(line, out procKind);
+            Target.get_ProcOfLine(line, out vbext_ProcKind procKind);
             return (ProcKind)procKind;
         }
 

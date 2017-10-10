@@ -64,14 +64,20 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         private void Target_ItemRemoved(Microsoft.Vbe.Interop.Reference reference)
         {
             var handler = ItemRemoved;
-            if (handler == null) { return; }
+            if (handler == null)
+            {
+                return;
+            }
             handler.Invoke(this, new ReferenceEventArgs(new Reference(reference)));
         }
 
         private void Target_ItemAdded(Microsoft.Vbe.Interop.Reference reference)
         {
             var handler = ItemAdded;
-            if (handler == null) { return; }
+            if (handler == null)
+            {
+                return;
+            }
             handler.Invoke(this, new ReferenceEventArgs(new Reference(reference)));
         }
 
@@ -92,7 +98,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public void Remove(IReference reference)
         {
-            if (IsWrappingNullReference) return;
+            if (IsWrappingNullReference)
+            {
+                return;
+            }
             Target.Remove(((ISafeComWrapper<VB.Reference>)reference).Target);
         }
 

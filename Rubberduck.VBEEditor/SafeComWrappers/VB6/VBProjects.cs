@@ -48,7 +48,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         public void Remove(IVBProject project)
         {
-            if (IsWrappingNullReference) return;
+            if (IsWrappingNullReference)
+            {
+                return;
+            }
             Target.Remove((VB.VBProject)project.Target);
         }
 
