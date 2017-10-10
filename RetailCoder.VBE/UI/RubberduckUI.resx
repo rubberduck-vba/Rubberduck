@@ -2104,4 +2104,7 @@ the projects in the VBE.</value>
     <value>Test module with stubs</value>
     <comment>TC</comment>
   </data>
+  <data name="RubberduckMenu_Refresh" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
 </root>

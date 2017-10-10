@@ -3701,6 +3701,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Refresh.
+        /// </summary>
+        public static string RubberduckMenu_Refresh {
+            get {
+                return ResourceManager.GetString("RubberduckMenu_Refresh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rege&amp;x Search/Replace.
         /// </summary>
         public static string RubberduckMenu_RegexSearchReplace {
