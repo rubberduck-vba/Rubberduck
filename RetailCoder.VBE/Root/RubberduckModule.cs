@@ -508,6 +508,7 @@ namespace Rubberduck.Root
         {
             return new[]
             {
+                KernelInstance.Get<RefreshCommandMenuItem>(),
                 KernelInstance.Get<AboutCommandMenuItem>(),
                 KernelInstance.Get<SettingsCommandMenuItem>(),
                 KernelInstance.Get<InspectionResultsCommandMenuItem>(),
