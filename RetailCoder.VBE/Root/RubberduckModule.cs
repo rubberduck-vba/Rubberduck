@@ -308,17 +308,12 @@ namespace Rubberduck.Root
                         .InCallScope()
                         .Named(inspection.FullName);
 
-                    binding.Intercept().With<TimedCallLoggerInterceptor>();
-                    binding.Intercept().With<EnumerableCounterInterceptor<IInspectionResult>>();
-
                     var localInspection = inspection;
                     Bind<IInspection>().ToMethod(c => (IInspection)c.Kernel.Get(iParseTreeInspection, localInspection.FullName));
                 }
                 else
                 {
                     var binding = Bind<IInspection>().To(inspection).InCallScope();
-                    binding.Intercept().With<TimedCallLoggerInterceptor>();
-                    binding.Intercept().With<EnumerableCounterInterceptor<IInspectionResult>>();
                 }
             }
         }
