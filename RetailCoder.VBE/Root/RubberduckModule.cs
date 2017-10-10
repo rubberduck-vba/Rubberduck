@@ -294,8 +294,12 @@ namespace Rubberduck.Root
         private void BindCodeInspectionTypes(IEnumerable<Assembly> assemblies)
         {
             var inspections = assemblies
-                .SelectMany(a => a.GetTypes().Where(type => type.IsClass && !type.IsAbstract && type.GetInterfaces().Contains(typeof(IInspection))))
-                .ToList();
+                .SelectMany(a => a.GetTypes()
+                    .Where(type => type.IsClass 
+                        && !type.IsAbstract 
+                        && type.GetInterfaces().Contains(typeof(IInspection))
+                    )
+                );
 
             // multibinding for IEnumerable<IInspection> dependency
             foreach(var inspection in inspections)
