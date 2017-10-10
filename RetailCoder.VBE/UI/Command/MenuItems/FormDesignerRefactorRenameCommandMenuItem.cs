@@ -15,7 +15,7 @@ namespace Rubberduck.UI.Command.MenuItems
 
         public override bool EvaluateCanExecute(RubberduckParserState state)
         {
-            return state.Status == ParserState.Ready && Command.CanExecute(null);
+            return state != null && state.Status == ParserState.Ready && Command.CanExecute(null);
         }
     }
 }
