@@ -124,7 +124,16 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
                 var commandItem = kvp.Key as ICommandMenuItem;
                 if (commandItem != null && kvp.Value != null)
                 {
-                     kvp.Value.IsEnabled = commandItem.EvaluateCanExecute(state);
+                    try
+                    {
+                        kvp.Value.IsEnabled = commandItem.EvaluateCanExecute(state);
+                    }
+                    catch (Exception exception)
+                    {
+                        kvp.Value.IsEnabled = false;
+                        Logger.Error(exception, "Could not evaluate availability of commmand menu item {0}.", kvp.Value.Tag ?? "{Unknown}");
+                    }
+                     
                 }
             }
         }
