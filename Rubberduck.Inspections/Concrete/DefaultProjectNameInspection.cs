@@ -17,11 +17,9 @@ namespace Rubberduck.Inspections.Concrete
         public DefaultProjectNameInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Suggestion) { }
 
-        public override Type Type => typeof(DefaultProjectNameInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var projects = State.DeclarationFinder.UserDeclarations(DeclarationType.Project)
                 .Where(item => item.IdentifierName.StartsWith("VBAProject"))

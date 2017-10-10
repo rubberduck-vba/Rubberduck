@@ -373,10 +373,6 @@
     <Compile Include="Refactorings\ExtractMethod\IExtractMethodProc.cs" />
     <Compile Include="Refactorings\ExtractMethod\IExtractMethodRule.cs" />
     <Compile Include="Refactorings\ExtractMethod\IExtractMethodSelectionValidation.cs" />
-    <Compile Include="Root\EnumerableCounterInterceptor.cs" />
-    <Compile Include="Root\InterceptedException.cs" />
-    <Compile Include="Root\InterceptorBase.cs" />
-    <Compile Include="Root\TimedCallLoggerInterceptor.cs" />
     <Compile Include="RubberduckGuid.cs" />
     <Compile Include="RubberduckProgId.cs" />
     <Compile Include="Settings\CodeInspectionConfigProvider.cs" />

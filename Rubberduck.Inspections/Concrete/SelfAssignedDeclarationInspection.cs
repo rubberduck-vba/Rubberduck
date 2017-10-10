@@ -16,11 +16,9 @@ namespace Rubberduck.Inspections.Concrete
         public SelfAssignedDeclarationInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Suggestion) { }
 
-        public override Type Type => typeof(SelfAssignedDeclarationInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             return State.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
                 .Where(declaration => declaration.IsSelfAssigned 

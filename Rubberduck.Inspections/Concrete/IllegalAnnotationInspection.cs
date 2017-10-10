@@ -24,12 +24,10 @@ namespace Rubberduck.Inspections.Concrete
             Listener = new IllegalAttributeAnnotationsListener(state);
         }
 
-        public override Type Type => typeof(IllegalAnnotationInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.RubberduckOpportunities;
         public override IInspectionListener Listener { get; }
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             return Listener.Contexts.Select(context => 
                 new QualifiedContextInspectionResult(this, 

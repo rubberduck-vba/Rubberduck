@@ -19,15 +19,13 @@ namespace Rubberduck.Inspections.Concrete
         public MissingAnnotationArgumentInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Error) { }
 
-        public override Type Type => typeof(MissingAnnotationArgumentInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
         public override ParsePass Pass => ParsePass.AttributesPass;
 
         public override IInspectionListener Listener { get; } =
             new InvalidAnnotationStatementListener();
-        
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             return (from result in Listener.Contexts
                     let context = (VBAParser.AnnotationContext)result.Context 
