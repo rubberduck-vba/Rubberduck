@@ -1659,25 +1659,25 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
     <value>Untracked</value>
   </data>
   <data name="SourceControl_CloneRepositoryDescription" xml:space="preserve">
-    <value>Clones remote repository from provided URI. Have an (empty) project active in the editor.</value>
+    <value>Clone a remote repository from a provided URL to the local disk. The repository will then be loaded into the active project.</value>
   </data>
   <data name="SourceControl_CloneRepositoryTitle" xml:space="preserve">
     <value>Clone Remote Repository</value>
   </data>
   <data name="SourceControl_InitializeRepositoryDescription" xml:space="preserve">
-    <value>Creates a new repository from the active project.</value>
+    <value>Creates a new local repository from the active project.</value>
   </data>
   <data name="SourceControl_InitializeRepositoryTitle" xml:space="preserve">
-    <value>Initialize New Repository</value>
+    <value>Create New Local Repository</value>
   </data>
   <data name="SourceControl_ManageRepositories" xml:space="preserve">
     <value>Manage</value>
   </data>
   <data name="SourceControl_OpenRepositoryDescription" xml:space="preserve">
-    <value>Open repository from disk. The active project will host the source code.</value>
+    <value>Open local repository from disk. The active project will host the source code.</value>
   </data>
   <data name="SourceControl_OpenRepositoryTitle" xml:space="preserve">
-    <value>Open Existing Repository</value>
+    <value>Open Local Repository</value>
   </data>
   <data name="SourceControl_OpenWorkingDirectory" xml:space="preserve">
     <value>Open Working Directory</value>
@@ -2099,5 +2099,9 @@ the projects in the VBE.</value>
   </data>
   <data name="EmptyUIRefreshMessage_Title" xml:space="preserve">
     <value>Rubberduck doesn't see anything yet.</value>
+  </data>
+  <data name="CodeExplorer_AddTestModuleWithStubsText" xml:space="preserve">
+    <value>Test module with stubs</value>
+    <comment>TC</comment>
   </data>
 </root>

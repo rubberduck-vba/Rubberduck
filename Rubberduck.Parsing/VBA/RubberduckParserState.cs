@@ -119,9 +119,9 @@ namespace Rubberduck.Parsing.VBA
 
         private void RemoveEventHandlers()
         {
-            VBProjects.ProjectAdded += Sinks_ProjectAdded;
-            VBProjects.ProjectRemoved += Sinks_ProjectRemoved;
-            VBProjects.ProjectRenamed += Sinks_ProjectRenamed;
+            VBProjects.ProjectAdded -= Sinks_ProjectAdded;
+            VBProjects.ProjectRemoved -= Sinks_ProjectRemoved;
+            VBProjects.ProjectRenamed -= Sinks_ProjectRenamed;
             VBComponents.ComponentAdded -= Sinks_ComponentAdded;
             VBComponents.ComponentRemoved -= Sinks_ComponentRemoved;
             VBComponents.ComponentRenamed -= Sinks_ComponentRenamed;

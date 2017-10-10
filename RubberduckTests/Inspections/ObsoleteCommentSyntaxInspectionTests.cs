@@ -2,9 +2,7 @@ using System.Linq;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
@@ -17,9 +15,7 @@ namespace RubberduckTests.Inspections
         public void ObsoleteCommentSyntax_ReturnsResult()
         {
             const string inputCode = @"Rem test";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCommentSyntaxInspection(state);
@@ -34,9 +30,7 @@ namespace RubberduckTests.Inspections
         public void ObsoleteCommentSyntax_DoesNotReturnResult_QuoteComment()
         {
             const string inputCode = @"' test";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCommentSyntaxInspection(state);
@@ -55,9 +49,7 @@ Sub foo()
     Dim i As String
     i = """"
 End Sub";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCommentSyntaxInspection(state);
@@ -77,9 +69,7 @@ End Sub";
     Dim bar As String
     bar = ""iejo rem oernp"" ' test
 End Sub";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCommentSyntaxInspection(state);
@@ -96,9 +86,7 @@ End Sub";
             const string inputCode =
 @"Rem test1
 Rem test2";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCommentSyntaxInspection(state);
@@ -115,9 +103,7 @@ Rem test2";
             const string inputCode =
 @"Rem test1
 ' test2";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCommentSyntaxInspection(state);
@@ -134,9 +120,7 @@ Rem test2";
             const string inputCode = @"
 '@Ignore ObsoleteCommentSyntax
 Rem test";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCommentSyntaxInspection(state);

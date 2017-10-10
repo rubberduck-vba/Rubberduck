@@ -14,7 +14,7 @@ namespace Rubberduck.Inspections.Concrete
     internal class EmptyWhileWendBlockInspection : ParseTreeInspectionBase
     {
         public EmptyWhileWendBlockInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Suggestion) { }
+            : base(state, CodeInspectionSeverity.DoNotShow) { }
 
         public override Type Type => typeof(EmptyWhileWendBlockInspection);
 

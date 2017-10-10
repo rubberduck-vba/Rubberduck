@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
@@ -9,7 +8,7 @@ using RubberduckTests.Inspections;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass]
+    [TestClass, Ignore]
     public class RemoveEmptyElseBlockQuickFixTests
     {
         [TestMethod]
@@ -29,8 +28,7 @@ End Sub";
     End If
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new EmptyElseBlockInspection(state);

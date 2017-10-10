@@ -4,7 +4,6 @@ using RubberduckTests.Mocks;
 using System.Threading;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Inspections
 {
@@ -20,7 +19,7 @@ namespace RubberduckTests.Inspections
     Call Foo
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCallStatementInspection(state);
@@ -39,7 +38,7 @@ End Sub";
     Foo
 End Sub";
             
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCallStatementInspection(state);
@@ -57,9 +56,8 @@ End Sub";
 @"Sub Foo()
     Call Foo: Foo
 End Sub";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCallStatementInspection(state);
@@ -78,7 +76,7 @@ End Sub";
     Call Foo ' I''ve got a colon: see?
 End Sub";
             
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCallStatementInspection(state);
@@ -97,7 +95,7 @@ End Sub";
     Call Foo("":"")
 End Sub";
             
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCallStatementInspection(state);
@@ -120,7 +118,7 @@ Sub Goo(arg1 As Integer, arg1 As String)
     Call Foo
 End Sub";
             
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCallStatementInspection(state);
@@ -143,7 +141,7 @@ Sub Goo(arg1 As Integer, arg1 As String)
     Foo
 End Sub";
             
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCallStatementInspection(state);
@@ -163,7 +161,7 @@ End Sub";
     Call Foo
 End Sub";
             
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObsoleteCallStatementInspection(state);

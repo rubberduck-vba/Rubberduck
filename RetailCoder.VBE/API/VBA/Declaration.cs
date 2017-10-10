@@ -56,7 +56,6 @@ namespace Rubberduck.API.VBA
                 { Parsing.Symbols.DeclarationType.Control, DeclarationType.Control },
                 { Parsing.Symbols.DeclarationType.UserForm, DeclarationType.UserForm },
                 { Parsing.Symbols.DeclarationType.Document, DeclarationType.Document },
-                { Parsing.Symbols.DeclarationType.ModuleOption, DeclarationType.ModuleOption },
                 { Parsing.Symbols.DeclarationType.Procedure, DeclarationType.Procedure },
                 { Parsing.Symbols.DeclarationType.Function, DeclarationType.Function },
                 { Parsing.Symbols.DeclarationType.PropertyGet, DeclarationType.PropertyGet },

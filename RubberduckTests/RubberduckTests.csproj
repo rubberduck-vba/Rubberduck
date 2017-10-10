@@ -28,6 +28,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>true</UseVSHostingProcess>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -36,6 +37,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Antlr4.Runtime.net45">
@@ -114,6 +116,7 @@
     <Compile Include="Inspections\HungarianNotationInspectionTests.cs" />
     <Compile Include="Inspections\ImplicitActiveWorkbookReferenceInspectionTests.cs" />
     <Compile Include="Inspections\MemberNotOnInterfaceInspectionTests.cs" />
+    <Compile Include="Inspections\ObsoleteErrorSyntaxInspectionTests.cs" />
     <Compile Include="Inspections\ShadowedDeclarationInspectionTests.cs" />
     <Compile Include="Inspections\StopKeywordInspectionTests.cs" />
     <Compile Include="Inspections\OptionBaseZeroInspectionTests.cs" />
@@ -124,6 +127,7 @@
     <Compile Include="QuickFixes\QuickFixProviderTests.cs" />
     <Compile Include="QuickFixes\RemoveUnassignedIdentifierQuickFixTests.cs" />
     <Compile Include="QuickFixes\RemoveUnassignedVariableUsageQuickFix.cs" />
+    <Compile Include="QuickFixes\ReplaceObsoleteErrorStatementQuickFixTests.cs" />
     <Compile Include="QuickFixes\SynchronizeAttributesQuickFixTests.cs" />
     <Compile Include="Inspections\RedundantByRefModifierInspectionTests.cs" />
     <Compile Include="Inspections\UndeclaredVariableInspectionTests.cs" />
@@ -154,7 +158,7 @@
     <Compile Include="QuickFixes\RemoveUnusedDeclarationQuickFixTests.cs" />
     <Compile Include="QuickFixes\ReplaceEmptyStringLiteralStatementQuickFixTests.cs" />
     <Compile Include="QuickFixes\ReplaceGlobalModifierQuickFixTests.cs" />
-    <Compile Include="QuickFixes\ReplaceOboleteCommentMarkerQuickFixTests.cs" />
+    <Compile Include="QuickFixes\ReplaceObsoleteCommentMarkerQuickFixTests.cs" />
     <Compile Include="QuickFixes\SetExplicitVariantReturnTypeQuickFixTests.cs" />
     <Compile Include="QuickFixes\SpecifyExplicitByRefModifierQuickFixTests.cs" />
     <Compile Include="QuickFixes\SpecifyExplicitPublicModifierQuickFixTests.cs" />
@@ -162,6 +166,7 @@
     <Compile Include="QuickFixes\UntypedFunctionUsageQuickFixTests.cs" />
     <Compile Include="QuickFixes\UseSetKeywordForObjectAssignmentQuickFixTests.cs" />
     <Compile Include="QuickFixes\WriteOnlyPropertyQuickFixTests.cs" />
+    <Compile Include="QuickFixes\QuickFixBaseTests.cs" />
     <Compile Include="SmartIndenter\VerticalSpacingTests.cs" />
     <Compile Include="SourceControl\SynchrounouslyConstructedDeclarationFinderFactory.cs" />
     <Compile Include="Symbols\AccessibilityCheckTests.cs" />

@@ -51,9 +51,9 @@ namespace Rubberduck.Navigation.CodeExplorer
             _name = _declaration.IdentifierName;
 
             var component = declaration.QualifiedName.QualifiedModuleName.Component;
-            if (component.Type == ComponentType.Document)
+            try
             {
-                try
+                if (component.Type == ComponentType.Document)
                 {
                     var parenthesizedName = component.Properties["Name"].Value.ToString();
 
@@ -72,10 +72,10 @@ namespace Rubberduck.Navigation.CodeExplorer
                         _name += " (" + parenthesizedName + ")";
                     }
                 }
-                catch
-                {
-                    // gotcha! (this means that the property either doesn't exist or we weren't able to get it for some reason)
-                }
+            }
+            catch
+            {
+                // gotcha! (this means that the property either doesn't exist or we weren't able to get it for some reason)
             }
         }
 

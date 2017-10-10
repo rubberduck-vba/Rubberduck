@@ -2,7 +2,6 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
@@ -19,8 +18,7 @@ namespace RubberduckTests.Inspections
     Dim var1 As String
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new VariableNotAssignedInspection(state);
@@ -39,8 +37,7 @@ End Sub";
     Dim var2 As Date
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new VariableNotAssignedInspection(state);
@@ -59,8 +56,7 @@ End Sub";
     var1 = ""test""
 End Function";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new VariableNotAssignedInspection(state);
@@ -81,8 +77,7 @@ End Function";
     Dim var2 as String
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new VariableNotAssignedInspection(state);
@@ -101,8 +96,7 @@ End Sub";
 Dim var1 As String
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new VariableNotAssignedInspection(state);

@@ -14,9 +14,7 @@ namespace Rubberduck.Inspections.Concrete
     {
         public AssignedByValParameterInspection(RubberduckParserState state)
             : base(state)
-        {
-            Severity = DefaultSeverity;
-        }
+        { }
 
         public override Type Type => typeof(AssignedByValParameterInspection);
 

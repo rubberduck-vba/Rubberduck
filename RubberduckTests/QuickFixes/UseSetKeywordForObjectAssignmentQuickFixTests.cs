@@ -2,7 +2,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.QuickFixes
@@ -34,8 +33,7 @@ Private Function CombineRanges(ByVal source As Range, ByVal toCombine As Range) 
     End If
 End Function";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObjectVariableNotSetInspection(state);
@@ -70,8 +68,7 @@ Public Property Get Example() As MyObject
 End Property
 ";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ObjectVariableNotSetInspection(state);

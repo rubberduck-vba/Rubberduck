@@ -3,7 +3,6 @@ using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
@@ -17,9 +16,7 @@ namespace RubberduckTests.Inspections
         {
             const string inputCode =
 @"Dim foo As String";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ModuleScopeDimKeywordInspection(state);
@@ -36,9 +33,7 @@ namespace RubberduckTests.Inspections
             const string inputCode =
 @"Dim foo
 Dim bar";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ModuleScopeDimKeywordInspection(state);
@@ -54,9 +49,7 @@ Dim bar";
         {
             const string inputCode =
 @"Private foo";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ModuleScopeDimKeywordInspection(state);
@@ -74,9 +67,7 @@ Dim bar";
 @"'@IgnoreModule
 
 Dim foo";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ModuleScopeDimKeywordInspection(state);
@@ -94,9 +85,7 @@ Dim foo";
 @"'@IgnoreModule ModuleScopeDimKeyword
 
 Dim foo";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ModuleScopeDimKeywordInspection(state);
@@ -114,9 +103,7 @@ Dim foo";
 @"'@IgnoreModule VariableNotUsed
 
 Dim foo";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ModuleScopeDimKeywordInspection(state);
@@ -133,9 +120,7 @@ Dim foo";
             const string inputCode =
 @"'@Ignore ModuleScopeDimKeyword
 Dim foo";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ModuleScopeDimKeywordInspection(state);

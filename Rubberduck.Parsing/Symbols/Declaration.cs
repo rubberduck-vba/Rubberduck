@@ -19,6 +19,9 @@ namespace Rubberduck.Parsing.Symbols
     [DebuggerDisplay("({DeclarationType}) {Accessibility} {IdentifierName} As {AsTypeName} | {Selection}")]
     public class Declaration : IEquatable<Declaration>
     {
+        public const int MaxModuleNameLength = 31;
+        public const int MaxMemberNameLength = 255;
+
         public Declaration(
             QualifiedMemberName qualifiedName,
             Declaration parentDeclaration,
@@ -467,7 +470,6 @@ namespace Rubberduck.Parsing.Symbols
             DeclarationType.LibraryProcedure,
             DeclarationType.LineLabel,
             DeclarationType.ProceduralModule,
-            DeclarationType.ModuleOption,
             DeclarationType.Project,
             DeclarationType.Procedure,
             DeclarationType.PropertyGet,
