@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -1558,9 +1558,6 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   <data name="SourceControl_ExternalModifications" xml:space="preserve">
     <value>Eine Quelldatei wurde außerhalb des VBA-Editors geändert. Soll Rubberduck diese nachladen?</value>
   </data>
-  <data name="SourceControl_InitializeRepositoryTitle" xml:space="preserve">
-    <value>Neues Repository initialisieren</value>
-  </data>
   <data name="SourceControl_OpenCommandPromptFailureTitle" xml:space="preserve">
     <value>Fehler beim öffnen der Eingabeaufforderung</value>
   </data>
@@ -1588,9 +1585,6 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   <data name="SourceControl_FileStatus_RenamedInIndex" xml:space="preserve">
     <value>Im Index umbenannt</value>
   </data>
-  <data name="SourceControl_InitializeRepositoryDescription" xml:space="preserve">
-    <value>Neues Repository mit dem geöffneten Projekt erstellen.</value>
-  </data>
   <data name="SourceControl_FileStatus_Staged" xml:space="preserve">
     <value>Vorgemerkt</value>
   </data>
@@ -1599,9 +1593,6 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   </data>
   <data name="SourceControl_CommandPromptExeLabel" xml:space="preserve">
     <value>Speicherort der Eingabeaufforderung (cmd.exe / powershell.exe)</value>
-  </data>
-  <data name="SourceControl_CloneRepositoryDescription" xml:space="preserve">
-    <value>Klont das entfernte Repository von der angegebenen URL. Dazu muss ein leeres Projekt in der VBE geöffnet sein.</value>
   </data>
   <data name="SourceControl_CloneRepositoryTitle" xml:space="preserve">
     <value>Klone entferntes Repository</value>
@@ -1614,9 +1605,6 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   </data>
   <data name="SourceControl_ActivateProject" xml:space="preserve">
     <value>Bitte öffnen oder aktivieren Sie ein Projekt und versuchen Sie es erneut.</value>
-  </data>
-  <data name="SourceControl_OpenRepositoryTitle" xml:space="preserve">
-    <value>Existierendes Repository öffnen.</value>
   </data>
   <data name="SourceControl_PublishRepositoryTitle" xml:space="preserve">
     <value>Existierendes Repository Veröffentlichen</value>
@@ -1641,9 +1629,6 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   </data>
   <data name="SourceControl_FilePickerCommandPromptHeader" xml:space="preserve">
     <value>Eingabeaufforderung</value>
-  </data>
-  <data name="SourceControl_OpenRepositoryDescription" xml:space="preserve">
-    <value>Repository von der Festplatte öffnen. Dazu muss ein leeres Projekt in der VBE geöffnet sein.</value>
   </data>
   <data name="SourceControl_FileStatus_Nonexistent" xml:space="preserve">
     <value>Nicht Vorhanden</value>
@@ -1915,109 +1900,109 @@ Möchten sie die Einstellungen in Rubberduck importieren?</value>
   <data name="AssignedByValDialog_DoesNotStartWithLetter" xml:space="preserve">
     <value>Variablennamen müssen mit einem Buchstaben beginnen.</value>
   </data>
-  <data name="RenameDialog_ControlRenameError">
+  <data name="RenameDialog_ControlRenameError" xml:space="preserve">
     <value>Konnte Control-Objekt {0} nicht umbenennen.</value>
   </data>
-  <data name="RenameDialog_InterfaceRenameError">
+  <data name="RenameDialog_InterfaceRenameError" xml:space="preserve">
     <value>Konnte Interfacemitglied {0} nicht umbenennen.</value>
   </data>
-  <data name="Assert_NeitherParameterIsArray">
+  <data name="Assert_NeitherParameterIsArray" xml:space="preserve">
     <value>Weder [Erwartet] noch [Tatsächlich] ist ein Array.</value>
   </data>
-  <data name="Assert_UnexpectedArrayFormat">
+  <data name="Assert_UnexpectedArrayFormat" xml:space="preserve">
     <value>[Erwartet] und [Tatsächlich] sind Arrays. Erwägen Sie eine Benutzung von {0}.</value>
   </data>
-  <data name="Assert_ReferenceValueMismatch">
+  <data name="Assert_ReferenceValueMismatch" xml:space="preserve">
     <value>[Erwartet] ist ein Referenztyp und [Tatsächlich] ist ein Werttyp.</value>
   </data>
-  <data name="Assert_GenericException">
+  <data name="Assert_GenericException" xml:space="preserve">
     <value>Unerwarteter Fehler beim Ausführen der Tests.</value>
   </data>
-  <data name="Assert_UBoundMismatchFormat">
+  <data name="Assert_UBoundMismatchFormat" xml:space="preserve">
     <value>Dimension {0}: Erwarteter UBound-Wert {1}; Tatsächlicher UBound-Wert {2}. {3}</value>
   </data>
-  <data name="Assert_FailedMessageFormat">
+  <data name="Assert_FailedMessageFormat" xml:space="preserve">
     <value>{0} Prüfung fehlgeschlagen. {1}</value>
   </data>
-  <data name="Assert_UnexpectedNullArraysFormat">
+  <data name="Assert_UnexpectedNullArraysFormat" xml:space="preserve">
     <value>[Erwartet] und [Tatsächlich] sind Nothing. Erwägen Sie eine Benutzung von {0}.</value>
   </data>
-  <data name="Assert_UnexpectedValueComparisonFormat">
+  <data name="Assert_UnexpectedValueComparisonFormat" xml:space="preserve">
     <value>[Erwartet] und [Tatsächlich] sind Werttypen. Erwägen Sie eine Benutzung von {0}.</value>
   </data>
-  <data name="Assert_ComException">
+  <data name="Assert_ComException" xml:space="preserve">
     <value>Unerwarteter Fehler in der COM Schnittstelle bei der Ausführung der Tests.</value>
   </data>
-  <data name="TestExplorer_RunInconclusiveTests">
+  <data name="TestExplorer_RunInconclusiveTests" xml:space="preserve">
     <value>Nicht aussagekräftige Tests</value>
   </data>
-  <data name="Assert_UnexpectedReferenceComparisonFormat">
+  <data name="Assert_UnexpectedReferenceComparisonFormat" xml:space="preserve">
     <value>[Erwartet] und [Tatsächlich] sind Referenztypen. Erwägen Sie eine Benutzung von {0}.</value>
   </data>
-  <data name="RefactorRename_TargetNotUserDefinedError">
+  <data name="RefactorRename_TargetNotUserDefinedError" xml:space="preserve">
     <value>Bezeichner {0} kann nicht umbenannt werden.</value>
   </data>
-  <data name="Assert_EasterEggIVerifyPassed">
+  <data name="Assert_EasterEggIVerifyPassed" xml:space="preserve">
     <value>I verifizier au.</value>
   </data>
-  <data name="RefactorRename_TargetNotDefinedError">
+  <data name="RefactorRename_TargetNotDefinedError" xml:space="preserve">
     <value>Kann gewähltes Ziel für Umbenennung nicht erkennen.</value>
   </data>
-  <data name="RenameDialog_PropertyRenameError">
+  <data name="RenameDialog_PropertyRenameError" xml:space="preserve">
     <value>Konnte Eigenschaft {0} nicht umbenennen.</value>
   </data>
-  <data name="Assert_InvalidFakePassThrough">
+  <data name="Assert_InvalidFakePassThrough" xml:space="preserve">
     <value>Aufgesetztes IFake-Objekt {0} ist nicht valide. PassThrough muss False sein.</value>
   </data>
-  <data name="Assert_EasterEggAssertClassPassed">
+  <data name="Assert_EasterEggAssertClassPassed" xml:space="preserve">
     <value>OK. Rubberduck hat etwas geprüft. Und jetzt?</value>
   </data>
-  <data name="Assert_DimensionMismatchFormat">
+  <data name="Assert_DimensionMismatchFormat" xml:space="preserve">
     <value>Gesuchter Wert hat {0} Dimensionen; Tatsächlicher Wert hat {1} Dimensionen. {2}</value>
   </data>
-  <data name="Assert_VerifyParameterNonNumeric">
+  <data name="Assert_VerifyParameterNonNumeric" xml:space="preserve">
     <value>Parameter {0} hatte beim Aufruf keinen numerischen Wert {1}. {2}</value>
   </data>
-  <data name="RenameDialog_EventRenameError">
+  <data name="RenameDialog_EventRenameError" xml:space="preserve">
     <value>Konnte Event Handler {0} nicht umbenennen.</value>
   </data>
-  <data name="Assert_VerifyNoInvocationFormat">
+  <data name="Assert_VerifyNoInvocationFormat" xml:space="preserve">
     <value>Kein passender Aufruf für Parameter {0}; Nur {1} Aufrufe. {2}</value>
   </data>
-  <data name="Assert_VerifyInternalErrorMessage">
+  <data name="Assert_VerifyInternalErrorMessage" xml:space="preserve">
     <value>Rubberduck konnte das Ergebnis des Aufrufs nicht verarbeiten.</value>
   </data>
-  <data name="Assert_VerifyParameterNotPassed">
+  <data name="Assert_VerifyParameterNotPassed" xml:space="preserve">
     <value>Parameter {0} wurde beim Aufruf nicht übergeben {1}. {2}</value>
   </data>
-  <data name="Assert_ParameterIsNotArrayFormat">
+  <data name="Assert_ParameterIsNotArrayFormat" xml:space="preserve">
     <value>{0} ist kein Array.</value>
   </data>
-  <data name="Assert_MismatchedTypes">
+  <data name="Assert_MismatchedTypes" xml:space="preserve">
     <value>[Erwartet] und [Tatsächlich] Werte sind von verschiedenem Typ.</value>
   </data>
-  <data name="Assert_LBoundMismatchFormat">
+  <data name="Assert_LBoundMismatchFormat" xml:space="preserve">
     <value>Dimension {0}: Erwarteter LBound-Wert {1}; Tatsächlicher LBound-Wert {2}. {3}</value>
   </data>
-  <data name="Assert_NotImplemented">
+  <data name="Assert_NotImplemented" xml:space="preserve">
     <value>Nicht implementiert.</value>
   </data>
-  <data name="Assert_ValueReferenceMismatch">
+  <data name="Assert_ValueReferenceMismatch" xml:space="preserve">
     <value>[Erwartet] ist ein Werttyp und [Tatsächlich] ist ein Referenztyp.</value>
   </data>
-  <data name="Assert_ParameterResultFormat">
+  <data name="Assert_ParameterResultFormat" xml:space="preserve">
     <value>Erwartet: {0}; Tatsächlich: {1}. {2}</value>
   </data>
-  <data name="RenameDialog_DefaultRenameError">
+  <data name="RenameDialog_DefaultRenameError" xml:space="preserve">
     <value>Konnte {0} nicht umbenennen.</value>
   </data>
-  <data name="Assert_EasterEggIFakePassed">
+  <data name="Assert_EasterEggIFakePassed" xml:space="preserve">
     <value>Erwartet: Stacküberlauf?; Tatsächlich: Schutzbedingung.</value>
   </data>
-  <data name="RenameDialog_PropertyParameterRenameError">
+  <data name="RenameDialog_PropertyParameterRenameError" xml:space="preserve">
     <value>Konnte Parameter {0} für Eigenschaft {1} nicht umbenennen.</value>
   </data>
-  <data name="Preview">
+  <data name="Preview" xml:space="preserve">
     <value>Vorschau</value>
   </data>
 </root>
