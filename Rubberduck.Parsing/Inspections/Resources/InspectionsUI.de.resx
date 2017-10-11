@@ -777,4 +777,103 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
   <data name="MissingAttributeInspectionResultFormat">
     <value>Modul oder Element '{0}' hat eine '{1}' Annotation, aber das zugehörige Attribut fehlt.</value>
   </data>
+  <data name="EmptyCaseBlockInspectionResultFormat">
+    <value>Case block has no executable statements</value>
+  </data>
+  <data name="IntegerDataTypeInspectionName">
+    <value>Use of 16-bit integer type</value>
+  </data>
+  <data name="EmptyForLoopBlockInspectionMeta">
+    <value>A Loop block should have executable statements</value>
+  </data>
+  <data name="EmptyCaseBlockInspectionName">
+    <value>Empty Case block</value>
+  </data>
+  <data name="ShadowedDeclarationInspectionMeta">
+    <value>Two declarations are in scope and have the same identifier name. This means that only one of them will be available to use.</value>
+  </data>
+  <data name="StopKeywordInspectionMeta">
+    <value>The 'stop' keyword halts execution and brings up the debugger. Avoid its usage.</value>
+  </data>
+  <data name="EmptyForLoopBlockInspectionName">
+    <value>Empty For Loop</value>
+  </data>
+  <data name="ReplaceObsoleteErrorStatementQuickFix">
+    <value>Replace 'Error' with 'Err.Raise'</value>
+  </data>
+  <data name="EmptyCaseBlockInspectionMeta">
+    <value>A Case block should have executable statements</value>
+  </data>
+  <data name="StopKeywordInspectionResultFormat">
+    <value>Stop keyword detected</value>
+  </data>
+  <data name="EmptyForEachBlockInspectionMeta">
+    <value>A Loop block should have executable statements</value>
+  </data>
+  <data name="EmptyElseBlockInspectionMeta">
+    <value>An Else block should have executable statements</value>
+  </data>
+  <data name="RemoveEmptyElseBlockQuickFix">
+    <value>Remove empty Else block</value>
+  </data>
+  <data name="ShadowedDeclarationInspectionResultFormat">
+    <value>{0} '{1}' hides {2} '{3}'</value>
+  </data>
+  <data name="RemoveStopKeywordQuickFix">
+    <value>Remove usage of the 'stop' keyword</value>
+  </data>
+  <data name="ObsoleteErrorSyntaxInspectionResultFormat">
+    <value>Error throw uses obsolete 'Error' statement</value>
+  </data>
+  <data name="EmptyForEachBlockInspectionResultFormat">
+    <value>For-Each Loop has no executable statements</value>
+  </data>
+  <data name="EmptyElseBlockInspectionResultFormat">
+    <value>Else block has no executable statements</value>
+  </data>
+  <data name="IntegerDataTypeQuickFix">
+    <value>Change declaration type to Long</value>
+  </data>
+  <data name="EmptyForEachBlockInspectionName">
+    <value>Empty For-Each Loop</value>
+  </data>
+  <data name="EmptyDoWhileBlockInspectionName">
+    <value>Empty Do-While Loop</value>
+  </data>
+  <data name="EmptyElseBlockInspectionName">
+    <value>Empty Else block</value>
+  </data>
+  <data name="EmptyForLoopBlockInspectionResultFormat">
+    <value>For Loop has no executable statements</value>
+  </data>
+  <data name="EmptyWhileWendBlockInspectionMeta">
+    <value>A Loop block should have executable statements</value>
+  </data>
+  <data name="ObsoleteErrorSyntaxInspectionMeta">
+    <value>The 'Error' statement only exists in the language to support legacy code that required it; prefer using 'Err.Raise' instead.</value>
+  </data>
+  <data name="IntegerDataTypeInspectionMeta">
+    <value>The maximum value of a 16-bit signed integer is 32,767 - using a 32-bit (Long) integer data type where possible can help prevent 'Overflow' run-time errors, and is better handled by modern CPUs.</value>
+  </data>
+  <data name="IntegerDataTypeInspectionResultFormat">
+    <value>{0} '{1}' is declared as Integer</value>
+  </data>
+  <data name="EmptyWhileWendBlockInspectionResultFormat">
+    <value>While-Wend block has no executable statements</value>
+  </data>
+  <data name="EmptyDoWhileBlockInspectionResultFormat">
+    <value>Do-While Loop has no executable statements</value>
+  </data>
+  <data name="EmptyWhileWendBlockInspectionName">
+    <value>Empty While-Wend block</value>
+  </data>
+  <data name="ShadowedDeclarationInspectionName">
+    <value>Shadowed declaration</value>
+  </data>
+  <data name="EmptyDoWhileBlockInspectionMeta">
+    <value>A Loop block should have executable statements</value>
+  </data>
+  <data name="StopKeywordInspectionName">
+    <value>Stop keyword</value>
+  </data>
 </root>

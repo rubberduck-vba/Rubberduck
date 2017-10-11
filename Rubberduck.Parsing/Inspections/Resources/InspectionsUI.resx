@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -318,7 +318,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>Use meaningful names</value>
   </data>
   <data name="VariableNotAssignedInspectionMeta" xml:space="preserve">
-    <value>Variable does not seem to be assigned. If Rubberduck is correct, the variable could probably be safely removed.</value>
+    <value>Variable is not assigned. If this isn't intended, there's probably a bug. Ignore this inspection result if the variable is assigned in another procedure via a ByRef parameter.</value>
   </data>
   <data name="VariableNotAssignedInspectionName" xml:space="preserve">
     <value>Variable is not assigned</value>
@@ -676,30 +676,30 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>Missing annotation</value>
   </data>
   <data name="MissingAnnotationInspectionResultFormat" xml:space="preserve">
-    <value>Module or member '{0}' has a '{1}' attribute, but no corresponding annotation.</value>
+    <value>Module or member '{0}' has a '{1}' attribute, but no corresponding annotation</value>
     <comment>{0} module/member; {1} specified attribute</comment>
   </data>
   <data name="MissingAttributeInspectionMeta" xml:space="preserve">
-    <value>A Rubberduck annotation is specified for a module or member, but the corresponding attribute isn't present. Module needs to be synchronized.</value>
+    <value>A Rubberduck annotation is specified for a module or member, but the corresponding attribute isn't present. Module attributes and annotations need to be synchronized.</value>
   </data>
   <data name="MissingAttributeInspectionName" xml:space="preserve">
     <value>Missing attribute</value>
   </data>
   <data name="MissingAttributeInspectionResultFormat" xml:space="preserve">
-    <value>Module or member '{0}' has a '{1}' annotation, but no corresponding attribute.</value>
+    <value>Module or member '{0}' has a '{1}' annotation, but no corresponding attribute</value>
     <comment>{0} module/member; {1} specified annotation</comment>
   </data>
   <data name="SynchronizeAttributesQuickFix" xml:space="preserve">
     <value>Synchronize attributes/annotations in module</value>
   </data>
   <data name="EmptyIfBlockInspectionMeta" xml:space="preserve">
-    <value>An If block should have executable statements</value>
+    <value>An empty conditional branch without any executable statements, leaves a maintainer wondering about the intent of the code. Avoid writing code that doesn't need to be written.</value>
   </data>
   <data name="EmptyIfBlockInspectionName" xml:space="preserve">
-    <value>Empty If block</value>
+    <value>Empty conditional branch</value>
   </data>
   <data name="EmptyIfBlockInspectionResultFormat" xml:space="preserve">
-    <value>If block has no executable statements</value>
+    <value>'If' block contains no executable statements.</value>
   </data>
   <data name="RemoveEmptyIfBlockQuickFix" xml:space="preserve">
     <value>Remove empty If block</value>
@@ -711,26 +711,26 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>Redundant module option</value>
   </data>
   <data name="RedundantOptionInspectionResultFormat" xml:space="preserve">
-    <value>'{0}' has no effect.</value>
+    <value>'{0}' has no effect</value>
     <comment>'{0}' the whole ModuleOptionContext text</comment>
   </data>
   <data name="RedundantByRefModifierInspectionMeta" xml:space="preserve">
-    <value>By default, all parameters are passed by reference, so it is not necessary to include the ByRef modifier declaration</value>
+    <value>By default, all parameters are passed by reference, so it is not necessary to include the 'ByRef' modifier.</value>
   </data>
   <data name="RedundantByRefModifierInspectionName" xml:space="preserve">
-    <value>Redundant ByRef modifier</value>
+    <value>Redundant 'ByRef' modifier</value>
   </data>
   <data name="RedundantByRefModifierInspectionResultFormat" xml:space="preserve">
     <value>Parameter '{0}' has a redundant ByRef modifier</value>
   </data>
   <data name="RedundantByRefModifierQuickFix" xml:space="preserve">
-    <value>Remove redundant ByRef modifier</value>
+    <value>Remove 'ByRef' modifier</value>
   </data>
   <data name="LineLabelNotUsedInspectionMeta" xml:space="preserve">
-    <value>Rubberduck could not find a corresponding Resume or GoTo statement for a line label.  Consider removing it.</value>
+    <value>A line label that is never jumpted to ('GoTo', 'Resume', ...), serves no purpose. Consider removing it.</value>
   </data>
   <data name="LineLabelNotUsedInspectionName" xml:space="preserve">
-    <value>Line label is not referred to</value>
+    <value>Line label is not used</value>
   </data>
   <data name="LineLabelNotUsedInspectionResultFormat" xml:space="preserve">
     <value>Line label '{0}' is not used</value>
@@ -767,16 +767,16 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>Warning</value>
   </data>
   <data name="EmptyElseBlockInspectionResultFormat" xml:space="preserve">
-    <value>Else block has no executable statements</value>
+    <value>'Else' block contains no executable statements</value>
   </data>
   <data name="EmptyElseBlockInspectionMeta" xml:space="preserve">
-    <value>An Else block should have executable statements</value>
+    <value>An empty 'Else' loop without any executable statements, leaves a maintainer wondering about the intent of the code. Avoid writing code that doesn't need to be written.</value>
   </data>
   <data name="EmptyElseBlockInspectionName" xml:space="preserve">
-    <value>Empty Else block</value>
+    <value>Empty 'Else' block</value>
   </data>
   <data name="RemoveEmptyElseBlockQuickFix" xml:space="preserve">
-    <value>Remove empty Else block</value>
+    <value>Remove empty 'Else' block</value>
   </data>
   <data name="IntegerDataTypeInspectionMeta" xml:space="preserve">
     <value>The maximum value of a 16-bit signed integer is 32,767 - using a 32-bit (Long) integer data type where possible can help prevent 'Overflow' run-time errors, and is better handled by modern CPUs.</value>
@@ -788,65 +788,65 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>{0} '{1}' is declared as Integer</value>
   </data>
   <data name="IntegerDataTypeQuickFix" xml:space="preserve">
-    <value>Change declaration type to Long</value>
+    <value>Change type to 'Long'</value>
   </data>
   <data name="RemoveStopKeywordQuickFix" xml:space="preserve">
-    <value>Remove usage of the 'stop' keyword</value>
+    <value>Remove usage of the 'Stop' keyword</value>
   </data>
   <data name="StopKeywordInspectionMeta" xml:space="preserve">
-    <value>The 'stop' keyword halts execution and brings up the debugger. Avoid its usage.</value>
+    <value>The 'Stop' keyword halts execution and brings up the debugger. Avoid its use in distributed code.</value>
   </data>
   <data name="StopKeywordInspectionName" xml:space="preserve">
-    <value>Stop keyword</value>
+    <value>'Stop' keyword</value>
   </data>
   <data name="StopKeywordInspectionResultFormat" xml:space="preserve">
-    <value>Stop keyword detected</value>
+    <value>'Stop' keyword halts execution</value>
     <comment>{0} Property name</comment>
   </data>
   <data name="EmptyCaseBlockInspectionMeta" xml:space="preserve">
-    <value>A Case block should have executable statements</value>
+    <value>An empty 'Case' block without any executable statements, leaves a maintainer wondering about the intent of the code. Avoid writing code that doesn't need to be written.</value>
   </data>
   <data name="EmptyCaseBlockInspectionName" xml:space="preserve">
-    <value>Empty Case block</value>
+    <value>Empty 'Case' block</value>
   </data>
   <data name="EmptyCaseBlockInspectionResultFormat" xml:space="preserve">
-    <value>Case block has no executable statements</value>
+    <value>'Case' block contains no executable statements</value>
   </data>
   <data name="EmptyDoWhileBlockInspectionResultFormat" xml:space="preserve">
-    <value>Do-While Loop has no executable statements</value>
+    <value>An empty 'Do...While' loop without any executable statements, leaves a maintainer wondering about the intent of the code. Avoid writing code that doesn't need to be written.</value>
   </data>
   <data name="EmptyDoWhileBlockInspectionMeta" xml:space="preserve">
-    <value>A Loop block should have executable statements</value>
+    <value>An empty 'Case' block without any executable statements, leaves a maintainer wondering about the intent of the code. Avoid writing code that doesn't need to be written.</value>
   </data>
   <data name="EmptyDoWhileBlockInspectionName" xml:space="preserve">
-    <value>Empty Do-While Loop</value>
+    <value>Empty 'Do...While' Loop</value>
   </data>
   <data name="EmptyForEachBlockInspectionResultFormat" xml:space="preserve">
-    <value>For-Each Loop has no executable statements</value>
+    <value>'For-Each loop contains no executable statements</value>
   </data>
   <data name="EmptyForEachBlockInspectionMeta" xml:space="preserve">
-    <value>A Loop block should have executable statements</value>
+    <value>An empty 'Loop' block without any executable statements, leaves a maintainer wondering about the intent of the code. Avoid writing code that doesn't need to be written.</value>
   </data>
   <data name="EmptyForEachBlockInspectionName" xml:space="preserve">
-    <value>Empty For-Each Loop</value>
+    <value>Empty 'For Each...Next' Loop</value>
   </data>
   <data name="EmptyForLoopBlockInspectionResultFormat" xml:space="preserve">
-    <value>For Loop has no executable statements</value>
+    <value>'For...Next' loop contains no executable statements.</value>
   </data>
   <data name="EmptyForLoopBlockInspectionMeta" xml:space="preserve">
-    <value>A Loop block should have executable statements</value>
+    <value>An empty 'For...Next' loop without any executable statements, leaves a maintainer wondering about the intent of the code. Avoid writing code that doesn't need to be written.</value>
   </data>
   <data name="EmptyForLoopBlockInspectionName" xml:space="preserve">
-    <value>Empty For Loop</value>
+    <value>Empty 'For...Next' Loop</value>
   </data>
   <data name="EmptyWhileWendBlockInspectionResultFormat" xml:space="preserve">
-    <value>While-Wend block has no executable statements</value>
+    <value>'While...Wend' loop contains no executable statements.</value>
   </data>
   <data name="EmptyWhileWendBlockInspectionMeta" xml:space="preserve">
-    <value>A Loop block should have executable statements</value>
+    <value>An empty 'Loop' block without any executable statements, leaves a maintainer wondering about the intent of the code. Avoid writing code that doesn't need to be written.</value>
   </data>
   <data name="EmptyWhileWendBlockInspectionName" xml:space="preserve">
-    <value>Empty While-Wend block</value>
+    <value>Empty 'While...Wend' loop</value>
   </data>
   <data name="ShadowedDeclarationInspectionMeta" xml:space="preserve">
     <value>Two declarations are in scope and have the same identifier name. This means that only one of them will be available to use.</value>
@@ -861,7 +861,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>The 'Error' statement only exists in the language to support legacy code that required it; prefer using 'Err.Raise' instead.</value>
   </data>
   <data name="ObsoleteErrorSyntaxInspectionResultFormat" xml:space="preserve">
-    <value>Error throw uses obsolete 'Error' statement</value>
+    <value>A run-time error is raised using the obsolete 'Error' statement</value>
   </data>
   <data name="ReplaceObsoleteErrorStatementQuickFix" xml:space="preserve">
     <value>Replace 'Error' with 'Err.Raise'</value>
