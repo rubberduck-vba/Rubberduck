@@ -7,6 +7,7 @@ using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using Rubberduck.Settings;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.UI.Refactorings;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
@@ -65,8 +66,26 @@ namespace Rubberduck.UI.Command.Refactorings
             }
 
             var pane = Vbe.ActiveCodePane;
+
+            if (pane == null)
+            {
+                return;
+            }
+
             var module = pane.CodeModule;
             var component = module.Parent;
+            
+            using (var view = new ExtractMethodDialog(new ExtractMethodViewModel()))
+            {
+                var factory = new ExtractMethodPresenterFactory(_indenter);
+                var refactoring = new ExtractMethodRefactoring(_state, factory);
+                refactoring.Refactor();
+
+                //var refactoring = new ExtractMethodRefactoring(Vbe, _messageBox, factory);
+                //refactoring.Refactor();
+            }
+
+            /*
             {
                 Func<QualifiedSelection?, string, IExtractMethodModel> createMethodModel = (qs, code) =>
                 {
@@ -100,6 +119,7 @@ namespace Rubberduck.UI.Command.Refactorings
                 refactoring.InvalidSelection += HandleInvalidSelection;
                 refactoring.Refactor();
             }
+            */
         }
     }
 }

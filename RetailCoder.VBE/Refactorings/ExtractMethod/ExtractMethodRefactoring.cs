@@ -13,25 +13,57 @@ namespace Rubberduck.Refactorings.ExtractMethod
     public class ExtractMethodRefactoring : IRefactoring
     {
         private readonly ICodeModule _codeModule;
+        private readonly IRefactoringPresenterFactory<IExtractMethodPresenter> _factory;
         private Func<QualifiedSelection?, string, IExtractMethodModel> _createMethodModel;
         private IExtractMethodExtraction _extraction;
         private Action<object> _onParseRequest;
         
         public ExtractMethodRefactoring(
-            ICodeModule codeModule,
-            Action<Object> onParseRequest,
-            Func<QualifiedSelection?, string, IExtractMethodModel> createMethodModel,
-            IExtractMethodExtraction extraction)
+            ICodeModule codeModule
+                //,
+                //Action<Object> onParseRequest,
+                //Func<QualifiedSelection?, string, IExtractMethodModel> createMethodModel,
+                //IExtractMethodExtraction extraction
+        )
         {
             _codeModule = codeModule;
-            _createMethodModel = createMethodModel;
-            _extraction = extraction;
-            _onParseRequest = onParseRequest;
+            //_createMethodModel = createMethodModel;
+            //_extraction = extraction;
+            //_onParseRequest = onParseRequest;
         }
 
         public void Refactor()
         {
-            // TODO : move all this presenter code out
+            var factory = new ExtractMethodPresenterFactory();
+            //IRefactoringPresenterFactory<IExtractMethodPresenter> factory
+            var presenter = _factory.Create();
+            if (presenter == null)
+            {
+                return;
+            }
+
+            var model = presenter.Show();
+            if (model == null)
+            {
+                return;
+            }
+            
+            QualifiedSelection? oldSelection;
+            if (!_codeModule.IsWrappingNullReference)
+            {
+                oldSelection = _codeModule.GetQualifiedSelection();
+            }
+            else
+            {
+                return;
+            }
+            
+            if (oldSelection.HasValue)
+            {
+                _codeModule.CodePane.Selection = oldSelection.Value.Selection;
+            }
+
+            model.State.OnParseRequested(this);
             /*
             var presenter = _factory.Create();
             if (presenter == null)
@@ -39,14 +71,13 @@ namespace Rubberduck.Refactorings.ExtractMethod
                 OnInvalidSelection();
                 return;
             }
-
-            */
+            
             var qualifiedSelection = _codeModule.GetQualifiedSelection();
             if (!qualifiedSelection.HasValue)
             {
                 return;
             }
-
+            
             var selection = qualifiedSelection.Value.Selection;
             var selectedCode = _codeModule.GetLines(selection);
             var model = _createMethodModel(qualifiedSelection, selectedCode);
@@ -54,18 +85,17 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 return;
             }
-
-            /*
+            
             var success = presenter.Show(model,_createProc);
             if (!success)
             {
                 return;
             }
-            */
-
+            
             _extraction.Apply(_codeModule, model, selection);
 
             _onParseRequest(this);
+            */
         }
 
         public void Refactor(QualifiedSelection target)

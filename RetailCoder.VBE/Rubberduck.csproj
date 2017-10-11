@@ -29,6 +29,7 @@
     <NoWarn>1591</NoWarn>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <UseVSHostingProcess>true</UseVSHostingProcess>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -41,6 +42,7 @@
     <DocumentationFile>bin\Release\Rubberduck.XML</DocumentationFile>
     <DebugSymbols>true</DebugSymbols>
     <NoWarn>1591</NoWarn>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugAccess|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -54,6 +56,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <WarningLevel>4</WarningLevel>
     <Optimize>false</Optimize>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -151,6 +154,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <WarningLevel>4</WarningLevel>
     <Optimize>false</Optimize>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug64|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -191,6 +195,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release64|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -395,10 +400,13 @@
     <Compile Include="UI\About\AboutDialog.Designer.cs">
       <DependentUpon>AboutDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\CodeExplorer\Commands\AddTestModuleWithStubsCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorerCommandAttribute.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CommitCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddUserFormCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CopyResultsCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Converters\StringHasNoValueToVisibilityConverter.cs" />
+    <Compile Include="UI\CodeExplorer\Converters\StringHasValueToVisibilityConverter.cs" />
     <Compile Include="UI\Command\ExportAllCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\OpenProjectPropertiesCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\RenameCommand.cs" />
@@ -433,6 +441,16 @@
       <DependentUpon>ExtractInterfaceView.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Refactorings\ExtractInterface\ExtractInterfaceViewModel.cs" />
+    <Compile Include="UI\Refactorings\ExtractMethod\ExtractMethodDialog - Original.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Refactorings\ExtractMethod\ExtractMethodDialog - Original.Designer.cs">
+      <DependentUpon>ExtractMethodDialog - Original.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Refactorings\ExtractMethod\ExtractMethodView.xaml.cs">
+      <DependentUpon>ExtractMethodView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Refactorings\ExtractMethod\ExtractMethodViewModel.cs" />
     <Compile Include="UI\Refactorings\IAssignedByValParameterQuickFixDialog.cs" />
     <Compile Include="UI\Refactorings\IAssignedByValParameterQuickFixDialogFactory.cs" />
     <Compile Include="UI\Refactorings\IRefactoringDialog.cs" />
@@ -807,10 +825,10 @@
     </Compile>
     <Compile Include="Refactorings\ExtractMethod\ExtractMethodPresenter.cs" />
     <Compile Include="Refactorings\ExtractMethod\ExtractedParameter.cs" />
-    <Compile Include="UI\Refactorings\ExtractMethodDialog.cs">
+    <Compile Include="UI\Refactorings\ExtractMethod\ExtractMethodDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\Refactorings\ExtractMethodDialog.Designer.cs">
+    <Compile Include="UI\Refactorings\ExtractMethod\ExtractMethodDialog.Designer.cs">
       <DependentUpon>ExtractMethodDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Refactorings\ExtractMethod\IExtractMethodDialog.cs" />
@@ -995,6 +1013,9 @@
     <EmbeddedResource Include="UI\Refactorings\ExtractInterface\ExtractInterfaceDialog.resx">
       <DependentUpon>ExtractInterfaceDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\Refactorings\ExtractMethod\ExtractMethodDialog - Original.resx">
+      <DependentUpon>ExtractMethodDialog - Original.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\RegexAssistant\RegexAssistantDialog.resx">
       <DependentUpon>RegexAssistantDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -1009,7 +1030,7 @@
     <EmbeddedResource Include="UI\SimpleListControl.resx">
       <DependentUpon>SimpleListControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Refactorings\ExtractMethodDialog.resx">
+    <EmbeddedResource Include="UI\Refactorings\ExtractMethod\ExtractMethodDialog.resx">
       <DependentUpon>ExtractMethodDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Refactorings\RemoveParameters\RemoveParametersDialog.resx">
@@ -1283,6 +1304,7 @@
     <Resource Include="Resources\folder-open.png" />
     <Resource Include="Resources\folder.png" />
     <None Include="Resources\RD-300x250-base.png" />
+    <Resource Include="Resources\magnifier-medium.png" />
     <Content Include="Resources\Rubberduck\RD-AboutWindow.png" />
     <Content Include="Resources\Rubberduck\RD-InstallBanner.bmp" />
     <Content Include="Resources\Rubberduck\RD-InstallWindow.bmp" />
@@ -1409,6 +1431,10 @@
     <Page Include="UI\Refactorings\ExtractInterface\ExtractInterfaceView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Refactorings\ExtractMethod\ExtractMethodView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\Refactorings\RemoveParameters\RemoveParametersView.xaml">
       <Generator>MSBuild:Compile</Generator>

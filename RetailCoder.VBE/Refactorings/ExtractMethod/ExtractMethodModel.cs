@@ -6,6 +6,7 @@ using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Refactorings.ExtractMethod
 {
@@ -60,59 +61,18 @@ namespace Rubberduck.Refactorings.ExtractMethod
         }
     }
 
-    public class ExtractMethodModel : IExtractMethodModel
+    public class ExtractMethodModel
     {
         private List<Declaration> _extractDeclarations;
-        private IExtractMethodParameterClassification _paramClassify;
-        private IExtractedMethod _extractedMethod;
 
-        public ExtractMethodModel(IExtractedMethod extractedMethod, IExtractMethodParameterClassification paramClassify)
-        {
-            _extractedMethod = extractedMethod;
-            _paramClassify = paramClassify;
-        }
+        public RubberduckParserState State { get; }
 
-        public void extract(IEnumerable<Declaration> declarations, QualifiedSelection selection, string selectedCode)
+        public ExtractMethodModel(RubberduckParserState state, QualifiedSelection selection)
         {
-            var items = declarations.ToList();
+            State = state;
             _selection = selection;
-            _selectedCode = selectedCode;
-            _rowsToRemove = new List<Selection>();
-
-            var sourceMember = items.FindSelectedDeclaration(
-                selection,
-                DeclarationExtensions.ProcedureTypes,
-                d => ((ParserRuleContext)d.Context.Parent).GetSelection());
-
-            if (sourceMember == null)
-            {
-                throw new InvalidOperationException("Invalid selection.");
-            }
-
-            var inScopeDeclarations = items.Where(item => item.ParentScope == sourceMember.Scope).ToList();
-            var selectionStartLine = selection.Selection.StartLine;
-            var selectionEndLine = selection.Selection.EndLine;
-            var methodInsertLine = sourceMember.Context.Stop.Line + 1;
-
-            _positionForNewMethod = new Selection(methodInsertLine, 1, methodInsertLine, 1);
-
-            foreach (var item in inScopeDeclarations)
-            {
-                _paramClassify.classifyDeclarations(selection, item);
-            }
-            _declarationsToMove = _paramClassify.DeclarationsToMove.ToList();
-
-            _rowsToRemove = splitSelection(selection.Selection, _declarationsToMove).ToList();
-
-            var methodCallPositionStartLine = selectionStartLine - _declarationsToMove.Count(d => d.Selection.StartLine < selectionStartLine);
-            _positionForMethodCall = new Selection(methodCallPositionStartLine, 1, methodCallPositionStartLine, 1);
-            _extractedMethod.ReturnValue = null;
-            _extractedMethod.Accessibility = Accessibility.Private;
-            _extractedMethod.SetReturnValue = false;
-            _extractedMethod.Parameters = _paramClassify.ExtractedParameters.ToList();
-
         }
-
+        
         public IEnumerable<Selection> splitSelection(Selection selection, IEnumerable<Declaration> declarations)
         {
             var tupleList = new List<Tuple<int, int>>();
@@ -149,12 +109,12 @@ namespace Rubberduck.Refactorings.ExtractMethod
         private List<Declaration> _declarationsToMove;
         public IEnumerable<Declaration> DeclarationsToMove { get { return _declarationsToMove; } }
 
-        public IExtractedMethod Method { get { return _extractedMethod; } }
+        //public IExtractedMethod Method { get { return _extractedMethod; } }
 
         private Selection _positionForMethodCall;
         public Selection PositionForMethodCall { get { return _positionForMethodCall; } }
 
-        public string NewMethodCall { get { return _extractedMethod.NewMethodCall(); } }
+        //public string NewMethodCall { get { return _extractedMethod.NewMethodCall(); } }
 
         private Selection _positionForNewMethod;
         public Selection PositionForNewMethod { get { return _positionForNewMethod; } }

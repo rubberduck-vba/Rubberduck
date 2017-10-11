@@ -14,9 +14,9 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
         public IExtractMethodPresenter Create()
         {
-
             var view = new ExtractMethodDialog();
-            return new ExtractMethodPresenter(view, _indenter);
+            var model = new ExtractMethodModel();
+            return new ExtractMethodPresenter(view, model, _indenter);
         }
     }
 }
