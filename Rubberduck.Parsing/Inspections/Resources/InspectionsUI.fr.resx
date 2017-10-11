@@ -323,7 +323,7 @@
     <value>Utilisez un nom significatif</value>
   </data>
   <data name="VariableNotAssignedInspectionMeta" xml:space="preserve">
-    <value>Une variable est déclarée, mais aucune valeur ou référence n'y est assignée. Si Rubberduck ne se trompe pas, la variable pourrait être supprimée.</value>
+    <value>Une variable n'est pas assignée. Si ceci n'est pas intentionnel, il s'agit probablement d'un bogue. Ignorez ce résultat d'inspection si la variable est passée par référence à une procédure.</value>
   </data>
   <data name="VariableNotAssignedInspectionName" xml:space="preserve">
     <value>Une variable est déclarée, mais pas assignée</value>

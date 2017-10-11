@@ -318,7 +318,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>Use meaningful names</value>
   </data>
   <data name="VariableNotAssignedInspectionMeta" xml:space="preserve">
-    <value>Variable does not seem to be assigned. If Rubberduck is correct, the variable could probably be safely removed.</value>
+    <value>Variable is not assigned. If this isn't intended, there's probably a bug. Ignore this inspection result if the variable is assigned in another procedure via a ByRef parameter.</value>
   </data>
   <data name="VariableNotAssignedInspectionName" xml:space="preserve">
     <value>Variable is not assigned</value>
@@ -794,7 +794,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>Remove usage of the 'Stop' keyword</value>
   </data>
   <data name="StopKeywordInspectionMeta" xml:space="preserve">
-    <value>The 'stop' keyword halts execution and brings up the debugger. Avoid its use in distributed code.</value>
+    <value>The 'Stop' keyword halts execution and brings up the debugger. Avoid its use in distributed code.</value>
   </data>
   <data name="StopKeywordInspectionName" xml:space="preserve">
     <value>'Stop' keyword</value>
