@@ -781,7 +781,7 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>Case block has no executable statements</value>
   </data>
   <data name="IntegerDataTypeInspectionName">
-    <value>Use of 16-bit integer type</value>
+    <value>Verwendung von 16-bit Ganzzahl</value>
   </data>
   <data name="EmptyForLoopBlockInspectionMeta">
     <value>A Loop block should have executable statements</value>
@@ -790,7 +790,7 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>Empty Case block</value>
   </data>
   <data name="ShadowedDeclarationInspectionMeta">
-    <value>Two declarations are in scope and have the same identifier name. This means that only one of them will be available to use.</value>
+    <value>Zwei Deklarationen sind aktiv und haben denselben Namen. Dies bedeutet, dass nur eine von ihnen zur Verwendung verfügbar ist.</value>
   </data>
   <data name="StopKeywordInspectionMeta">
     <value>The 'stop' keyword halts execution and brings up the debugger. Avoid its usage.</value>
@@ -799,7 +799,7 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>Empty For Loop</value>
   </data>
   <data name="ReplaceObsoleteErrorStatementQuickFix">
-    <value>Replace 'Error' with 'Err.Raise'</value>
+    <value>'Error' durch 'Err.Raise' ersetzen</value>
   </data>
   <data name="EmptyCaseBlockInspectionMeta">
     <value>A Case block should have executable statements</value>
@@ -817,13 +817,13 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>Remove empty Else block</value>
   </data>
   <data name="ShadowedDeclarationInspectionResultFormat">
-    <value>{0} '{1}' hides {2} '{3}'</value>
+    <value>{0} '{1}' überschattet {2} '{3}'</value>
   </data>
   <data name="RemoveStopKeywordQuickFix">
     <value>Remove usage of the 'stop' keyword</value>
   </data>
   <data name="ObsoleteErrorSyntaxInspectionResultFormat">
-    <value>Error throw uses obsolete 'Error' statement</value>
+    <value>Ein Laufzeitfehler wird mit der veralteten 'Error'-Anweisung ausgelöst</value>
   </data>
   <data name="EmptyForEachBlockInspectionResultFormat">
     <value>For-Each Loop has no executable statements</value>
@@ -850,13 +850,13 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>A Loop block should have executable statements</value>
   </data>
   <data name="ObsoleteErrorSyntaxInspectionMeta">
-    <value>The 'Error' statement only exists in the language to support legacy code that required it; prefer using 'Err.Raise' instead.</value>
+    <value>Die 'Error'-Anweisung existiert in der Sprache nur um Legacy-Programme zu unterstützen, die sie benötigten; Bevorzugen Sie stattdessen 'Err.Raise'.</value>
   </data>
   <data name="IntegerDataTypeInspectionMeta">
-    <value>The maximum value of a 16-bit signed integer is 32,767 - using a 32-bit (Long) integer data type where possible can help prevent 'Overflow' run-time errors, and is better handled by modern CPUs.</value>
+    <value>Der größte Wert einer vorzeichenbehafteten 16-bit Ganzzahl ist 32.767 - Eine 32-bit Ganzzahl (Long) zu verwenden, wo es möglich ist, kann Überlauffehler zur Laufzeit verhindern und ist für moderne CPUs einfacher.</value>
   </data>
   <data name="IntegerDataTypeInspectionResultFormat">
-    <value>{0} '{1}' is declared as Integer</value>
+    <value>{0} '{1}' ist als Integer deklariert</value>
   </data>
   <data name="EmptyWhileWendBlockInspectionResultFormat">
     <value>While-Wend block has no executable statements</value>
@@ -868,7 +868,7 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>Empty While-Wend block</value>
   </data>
   <data name="ShadowedDeclarationInspectionName">
-    <value>Shadowed declaration</value>
+    <value>Überschattete Deklaration</value>
   </data>
   <data name="EmptyDoWhileBlockInspectionMeta">
     <value>A Loop block should have executable statements</value>
