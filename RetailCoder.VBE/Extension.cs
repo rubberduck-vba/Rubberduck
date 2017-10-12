@@ -66,7 +66,7 @@ namespace Rubberduck
                 else if (Application is VB6IA.VBE vb6e)
                 {                    
                     _ide = new VB6.VBE(vb6e);
-
+                    VBENativeServices.HookEvents(_ide);
                     var addin = (VB6IA.AddIn) AddInInst;
                     _addin = new VB6.AddIn(addin);
                 }
@@ -245,7 +245,7 @@ namespace Rubberduck
                 User32.EnumChildWindows(_ide.MainWindow.Handle(), EnumCallback, new IntPtr(0));
 
                 _logger.Log(LogLevel.Trace, "Releasing dockable hosts...");
-                VBA.Windows.ReleaseDockableHosts(); // TODO!!!
+                VBA.Windows.ReleaseDockableHosts();
 
                 if (_app != null)
                 {

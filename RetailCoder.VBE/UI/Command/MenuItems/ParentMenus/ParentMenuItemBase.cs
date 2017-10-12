@@ -6,7 +6,7 @@ using System.Linq;
 using Rubberduck.Parsing.VBA;
 using NLog;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers.Office.v12;
+using Rubberduck.VBEditor.SafeComWrappers.Office;
 
 namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 {

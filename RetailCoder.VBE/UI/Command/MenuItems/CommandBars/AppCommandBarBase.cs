@@ -6,7 +6,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Enums;
-using Rubberduck.VBEditor.SafeComWrappers.Office.v12;
+using Rubberduck.VBEditor.SafeComWrappers.Office;
 
 
 namespace Rubberduck.UI.Command.MenuItems.CommandBars

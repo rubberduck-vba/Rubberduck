@@ -1,7 +1,7 @@
 ﻿using System;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Abstract;
 
-namespace Rubberduck.VBEditor.SafeComWrappers.Office.v12
+namespace Rubberduck.VBEditor.SafeComWrappers.Office
 {
     public class CommandBarButtonClickEventArgs : EventArgs
     {

@@ -60,8 +60,8 @@ namespace Rubberduck.VBEditor.Events
                     info.Subclass.FocusChange -= FocusDispatcher;
                     info.Subclass.Dispose();
                 }
-                SafeComWrappers.VB.VBA.VBProjects.DetatchEvents();      //TODO!!!
-                SafeComWrappers.VB.VBA.VBComponents.DetatchEvents();    //TODO!!!
+                SafeComWrappers.VB.VBA.VBProjects.DetatchEvents();
+                SafeComWrappers.VB.VBA.VBComponents.DetatchEvents();
             }
         }
 

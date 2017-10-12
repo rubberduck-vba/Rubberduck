@@ -105,20 +105,20 @@ namespace Rubberduck.UI.SourceControl
 
         private bool _listening = true;
 
-        private void AddComponentEventHandlers() //TODO!!!
+        private void AddComponentEventHandlers()
         {
-            //VBEditor.SafeComWrappers.VBA.VBProjects.ProjectRemoved += ProjectRemoved; 
-            //VBEditor.SafeComWrappers.VBA.VBComponents.ComponentAdded += ComponentAdded;
-            //VBEditor.SafeComWrappers.VBA.VBComponents.ComponentRemoved += ComponentRemoved;
-            //VBEditor.SafeComWrappers.VBA.VBComponents.ComponentRenamed += ComponentRenamed;
+            VBEditor.SafeComWrappers.VB.VBA.VBProjects.ProjectRemoved += ProjectRemoved;
+            VBEditor.SafeComWrappers.VB.VBA.VBComponents.ComponentAdded += ComponentAdded;
+            VBEditor.SafeComWrappers.VB.VBA.VBComponents.ComponentRemoved += ComponentRemoved;
+            VBEditor.SafeComWrappers.VB.VBA.VBComponents.ComponentRenamed += ComponentRenamed;
         }
 
         private void RemoveComponentEventHandlers()
         {
-            //VBEditor.SafeComWrappers.VBA.VBProjects.ProjectRemoved -= ProjectRemoved;
-            //VBEditor.SafeComWrappers.VBA.VBComponents.ComponentAdded -= ComponentAdded;
-            //VBEditor.SafeComWrappers.VBA.VBComponents.ComponentRemoved -= ComponentRemoved;
-            //VBEditor.SafeComWrappers.VBA.VBComponents.ComponentRenamed -= ComponentRenamed;
+            VBEditor.SafeComWrappers.VB.VBA.VBProjects.ProjectRemoved -= ProjectRemoved;
+            VBEditor.SafeComWrappers.VB.VBA.VBComponents.ComponentAdded -= ComponentAdded;
+            VBEditor.SafeComWrappers.VB.VBA.VBComponents.ComponentRemoved -= ComponentRemoved;
+            VBEditor.SafeComWrappers.VB.VBA.VBComponents.ComponentRenamed -= ComponentRenamed;
         }
 
         private void ComponentAdded(object sender, ComponentEventArgs e)

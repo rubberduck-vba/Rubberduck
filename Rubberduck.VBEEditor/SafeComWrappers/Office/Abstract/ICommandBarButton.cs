@@ -1,7 +1,6 @@
 using System;
 using System.Drawing;
 using Rubberduck.VBEditor.SafeComWrappers.VB.Enums;
-using Rubberduck.VBEditor.SafeComWrappers.Office.v12;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.Office.Abstract
 {
