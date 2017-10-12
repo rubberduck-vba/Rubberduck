@@ -1,5 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck.VBEditor.SafeComWrappers.Office.Core;
+using Rubberduck.VBEditor.SafeComWrappers.Office;
 using System;
 
 namespace RubberduckTests.Symbols

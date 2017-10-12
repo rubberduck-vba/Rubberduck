@@ -3,7 +3,7 @@ using Moq;
 using Rubberduck.UI;
 using Rubberduck.UI.Command;
 using Rubberduck.UnitTesting;
-using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.VB.Enums;
 using RubberduckTests.Mocks;
 using System.Linq;
 using System.Windows.Forms;

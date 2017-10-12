@@ -7,7 +7,7 @@ using Rubberduck.Parsing.Symbols;
 using Antlr4.Runtime.Tree;
 using System.Diagnostics;
 using NLog;
-using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.VB.Enums;
 using System.Runtime.InteropServices;
 
 namespace Rubberduck.Parsing.VBA
