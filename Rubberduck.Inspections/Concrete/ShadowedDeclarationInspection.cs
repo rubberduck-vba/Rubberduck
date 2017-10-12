@@ -27,11 +27,9 @@ namespace Rubberduck.Inspections.Concrete
         {
         }
 
-        public override Type Type => typeof(ShadowedDeclarationInspection);
-
         public override CodeInspectionType InspectionType { get; } = CodeInspectionType.CodeQualityIssues;
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var builtInEventHandlers = State.DeclarationFinder.FindEventHandlers().ToHashSet();
 

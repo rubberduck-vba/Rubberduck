@@ -19,13 +19,11 @@ namespace Rubberduck.Inspections.Concrete
         public ModuleScopeDimKeywordInspection(RubberduckParserState state) 
             : base(state, CodeInspectionSeverity.Suggestion) { }
 
-        public override Type Type => typeof(ModuleScopeDimKeywordInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
 
         public override IInspectionListener Listener { get; } = new ModuleScopedDimListener();
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             return Listener.Contexts
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))

@@ -34,12 +34,12 @@ namespace Rubberduck.Inspections
 
         public IEnumerable<IQuickFix> QuickFixes(IInspectionResult result)
         {
-            if (!_quickFixes.ContainsKey(result.Inspection.Type))
+            if (!_quickFixes.ContainsKey(result.Inspection.GetType()))
             {
                 return Enumerable.Empty<IQuickFix>();
             }
 
-            return _quickFixes[result.Inspection.Type].Where(fix =>
+            return _quickFixes[result.Inspection.GetType()].Where(fix =>
             {
                 string value;
                 if (!result.Properties.TryGetValue("DisableFixes", out value)) { return true; }
