@@ -29,12 +29,17 @@ namespace Rubberduck.Inspections.Concrete
         public override IInspectionListener Listener { get; } =
             new UnreachableCaseInspectionListener();
 
-        public override Type Type => typeof(UnreachableCaseInspection);
+        //public override Type Type => typeof(UnreachableCaseInspection);
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        //protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var selectCaseContexts = Listener.Contexts
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line));
