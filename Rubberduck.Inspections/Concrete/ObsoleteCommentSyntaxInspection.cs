@@ -21,12 +21,10 @@ namespace Rubberduck.Inspections.Concrete
             Listener = new ObsoleteCommentSyntaxListener();
         }
 
-        public override Type Type => typeof(ObsoleteCommentSyntaxInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
         public override IInspectionListener Listener { get; }
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             return Listener.Contexts.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName, context.Context.Start.Line))
                 .Select(context => new QualifiedContextInspectionResult(this, InspectionsUI.ObsoleteCommentSyntaxInspectionResultFormat, context));

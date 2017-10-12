@@ -19,7 +19,7 @@ namespace Rubberduck.UI {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class RubberduckUI {
@@ -3701,6 +3701,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Refresh.
+        /// </summary>
+        public static string RubberduckMenu_Refresh {
+            get {
+                return ResourceManager.GetString("RubberduckMenu_Refresh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rege&amp;x Search/Replace.
         /// </summary>
         public static string RubberduckMenu_RegexSearchReplace {
@@ -4098,7 +4107,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Clones remote repository from provided URI. Have an (empty) project active in the editor..
+        ///   Looks up a localized string similar to Clone a remote repository from a provided URL to the local disk. The repository will then be loaded into the active project..
         /// </summary>
         public static string SourceControl_CloneRepositoryDescription {
             get {
@@ -4593,7 +4602,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Creates a new repository from the active project..
+        ///   Looks up a localized string similar to Creates a new local repository from the active project..
         /// </summary>
         public static string SourceControl_InitializeRepositoryDescription {
             get {
@@ -4602,7 +4611,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Initialize New Repository.
+        ///   Looks up a localized string similar to Create New Local Repository.
         /// </summary>
         public static string SourceControl_InitializeRepositoryTitle {
             get {
@@ -4764,7 +4773,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open repository from disk. The active project will host the source code..
+        ///   Looks up a localized string similar to Open local repository from disk. The active project will host the source code..
         /// </summary>
         public static string SourceControl_OpenRepositoryDescription {
             get {
@@ -4773,7 +4782,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open Existing Repository.
+        ///   Looks up a localized string similar to Open Local Repository.
         /// </summary>
         public static string SourceControl_OpenRepositoryTitle {
             get {

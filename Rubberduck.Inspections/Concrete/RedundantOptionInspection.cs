@@ -21,15 +21,13 @@ namespace Rubberduck.Inspections.Concrete
             Listener = new RedundantModuleOptionListener();
         }
 
-        public override Type Type => typeof(RedundantOptionInspection);
-
         public override string Meta => InspectionsUI.RedundantOptionInspectionMeta;
         public override string Description => InspectionsUI.RedundantOptionInspectionName;
         public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
 
         public override IInspectionListener Listener { get; }
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             return Listener.Contexts.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName, context.Context.Start.Line))
                                    .Select(context => new QualifiedContextInspectionResult(this,

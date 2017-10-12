@@ -15,11 +15,9 @@ namespace Rubberduck.Inspections.Concrete
         public UndeclaredVariableInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Error) { }
 
-        public override Type Type => typeof(UndeclaredVariableInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             return State.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
                 .Where(item => item.IsUndeclared && !IsIgnoringInspectionResultFor(item, AnnotationName))

@@ -15,8 +15,6 @@ namespace Rubberduck.Inspections.Concrete
         public ImplicitPublicMemberInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Hint) { }
 
-        public override Type Type => typeof(ImplicitPublicMemberInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
 
         private static readonly DeclarationType[] ProcedureTypes = 
@@ -28,7 +26,7 @@ namespace Rubberduck.Inspections.Concrete
             DeclarationType.PropertySet
         };
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var issues = from item in UserDeclarations
                          where ProcedureTypes.Contains(item.DeclarationType)

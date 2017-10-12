@@ -294,8 +294,12 @@ namespace Rubberduck.Root
         private void BindCodeInspectionTypes(IEnumerable<Assembly> assemblies)
         {
             var inspections = assemblies
-                .SelectMany(a => a.GetTypes().Where(type => type.IsClass && !type.IsAbstract && type.GetInterfaces().Contains(typeof(IInspection))))
-                .ToList();
+                .SelectMany(a => a.GetTypes()
+                    .Where(type => type.IsClass 
+                        && !type.IsAbstract 
+                        && type.GetInterfaces().Contains(typeof(IInspection))
+                    )
+                );
 
             // multibinding for IEnumerable<IInspection> dependency
             foreach(var inspection in inspections)
@@ -308,17 +312,12 @@ namespace Rubberduck.Root
                         .InCallScope()
                         .Named(inspection.FullName);
 
-                    binding.Intercept().With<TimedCallLoggerInterceptor>();
-                    binding.Intercept().With<EnumerableCounterInterceptor<IInspectionResult>>();
-
                     var localInspection = inspection;
                     Bind<IInspection>().ToMethod(c => (IInspection)c.Kernel.Get(iParseTreeInspection, localInspection.FullName));
                 }
                 else
                 {
                     var binding = Bind<IInspection>().To(inspection).InCallScope();
-                    binding.Intercept().With<TimedCallLoggerInterceptor>();
-                    binding.Intercept().With<EnumerableCounterInterceptor<IInspectionResult>>();
                 }
             }
         }
@@ -509,6 +508,7 @@ namespace Rubberduck.Root
         {
             return new[]
             {
+                KernelInstance.Get<RefreshCommandMenuItem>(),
                 KernelInstance.Get<AboutCommandMenuItem>(),
                 KernelInstance.Get<SettingsCommandMenuItem>(),
                 KernelInstance.Get<InspectionResultsCommandMenuItem>(),
@@ -613,7 +613,8 @@ namespace Rubberduck.Root
         {
             return new IMenuItem[]
             {
-                KernelInstance.Get<FormDesignerRefactorRenameCommandMenuItem>()
+                KernelInstance.Get<FormDesignerRefactorRenameCommandMenuItem>(),
+                KernelInstance.Get<FormDesignerFindAllReferencesCommandMenuItem>()
             };
         }
 

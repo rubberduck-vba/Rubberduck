@@ -373,10 +373,6 @@
     <Compile Include="Refactorings\ExtractMethod\IExtractMethodProc.cs" />
     <Compile Include="Refactorings\ExtractMethod\IExtractMethodRule.cs" />
     <Compile Include="Refactorings\ExtractMethod\IExtractMethodSelectionValidation.cs" />
-    <Compile Include="Root\EnumerableCounterInterceptor.cs" />
-    <Compile Include="Root\InterceptedException.cs" />
-    <Compile Include="Root\InterceptorBase.cs" />
-    <Compile Include="Root\TimedCallLoggerInterceptor.cs" />
     <Compile Include="RubberduckGuid.cs" />
     <Compile Include="RubberduckProgId.cs" />
     <Compile Include="Settings\CodeInspectionConfigProvider.cs" />
@@ -423,10 +419,14 @@
     <Compile Include="UI\CodeExplorer\Commands\AddStdModuleCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddTestModuleCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddComponentCommand.cs" />
+    <Compile Include="UI\Command\FormDesignerFindAllReferencesCommand.cs" />
     <Compile Include="UI\Command\IndentCurrentProjectCommand.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\ContextDescriptionLabelMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\RefreshCommandMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\FormDesignerFindAllReferencesCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\IndentCurrentProjectCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\ExportAllCommandMenuItem.cs" />
+    <Compile Include="UI\Command\RefreshCommand .cs" />
     <Compile Include="UI\Controls\EmptyUIRefresh.xaml.cs">
       <DependentUpon>EmptyUIRefresh.xaml</DependentUpon>
     </Compile>

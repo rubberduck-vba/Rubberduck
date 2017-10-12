@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
@@ -13,12 +13,12 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    public sealed class ObsoleteLetStatementInspection : ParseTreeInspectionBase
+    public sealed class ObsoleteErrorSyntaxInspection : ParseTreeInspectionBase
     {
-        public ObsoleteLetStatementInspection(RubberduckParserState state)
+        public ObsoleteErrorSyntaxInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Suggestion)
         {
-            Listener = new ObsoleteLetStatementListener();
+            Listener = new ObsoleteErrorSyntaxListener();
         }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
@@ -27,10 +27,10 @@ namespace Rubberduck.Inspections.Concrete
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             return Listener.Contexts.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName, context.Context.Start.Line))
-                .Select(context => new QualifiedContextInspectionResult(this, InspectionsUI.ObsoleteLetStatementInspectionResultFormat, context));
+                .Select(context => new QualifiedContextInspectionResult(this, InspectionsUI.ObsoleteErrorSyntaxInspectionResultFormat, context));
         }
 
-        public class ObsoleteLetStatementListener : VBAParserBaseListener, IInspectionListener
+        public class ObsoleteErrorSyntaxListener : VBAParserBaseListener, IInspectionListener
         {
             private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
             public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
@@ -42,12 +42,9 @@ namespace Rubberduck.Inspections.Concrete
                 _contexts.Clear();
             }
 
-            public override void ExitLetStmt(VBAParser.LetStmtContext context)
+            public override void ExitErrorStmt(VBAParser.ErrorStmtContext context)
             {
-                if (context.LET() != null)
-                {
-                    _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
-                }
+                _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
             }
         }
     }
