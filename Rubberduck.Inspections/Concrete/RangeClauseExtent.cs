@@ -10,21 +10,18 @@ namespace Rubberduck.Inspections.Concrete
         string ValueAsString { get; }
         string ValueMinAsString { get; }
         string ValueMaxAsString { get; }
-        string TypeName { get; }
         string CompareSymbol { get; }
     }
 
-    public class RangeClauseExtent<T> : IComparable, IRangeClause where T : System.IComparable
+    public class RangeClauseExtent<T> : IRangeClause
     {
-        public RangeClauseExtent(T extent, string typeName, string compareSymbol)
+        public RangeClauseExtent(T extent, string compareSymbol)
         {
             _extent = extent;
-            _typeName = typeName;
             _compareSymbol = compareSymbol;
         }
 
         private T _extent;
-        private string _typeName;
         private string _compareSymbol;
 
         public bool IsSingleVal => true;
@@ -35,19 +32,10 @@ namespace Rubberduck.Inspections.Concrete
 
         public string ValueAsString => _extent.ToString();
 
-        public string TypeName => _typeName;
-
         public string CompareSymbol => _compareSymbol;
 
-        public string ValueMinAsString => throw new NotImplementedException();
+        public string ValueMinAsString => ValueAsString;
 
-        public string ValueMaxAsString => throw new NotImplementedException();
-
-        public int CompareTo(object x)
-        {
-            return 1;
-        }
-
-
+        public string ValueMaxAsString => ValueAsString;
     }
 }

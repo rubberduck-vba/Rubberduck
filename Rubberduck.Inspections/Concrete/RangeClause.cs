@@ -3,14 +3,36 @@ using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    public class RangeClause : IComparable, IRangeClause
+    public struct RangeClauseEvaluationResults
+    {
+        public bool IsReachable;
+        public bool IsParseable;
+        public bool IsStringLiteral;
+        public bool MatchesSelectCaseTypeName;
+        public bool IsFullyEquivalent;
+        public bool IsPartiallyEquivalent;
+
+        public RangeClauseEvaluationResults(IRangeClause rangeClause)
+        {
+            IsReachable = true;
+            IsParseable = true;
+            IsStringLiteral = true;
+            MatchesSelectCaseTypeName = true;
+            IsFullyEquivalent = false;
+            IsPartiallyEquivalent = false;
+        }
+    }
+
+    public class RangeClause : IRangeClause
     {
         private const string EQ = "=";
         private const string NEQ = "<>";
@@ -20,20 +42,27 @@ namespace Rubberduck.Inspections.Concrete
         private const string GTE = ">=";
 
         private readonly VBAParser.RangeClauseContext _ctxt;
-        private readonly QualifiedContext<ParserRuleContext> _qualifiedCaseContext;
         private readonly string _typeName;
+        RubberduckParserState _state;
         private bool _usesIsClause;
         private KeyValuePair<VBAParser.SelectStartValueContext, VBAParser.SelectEndValueContext> _rangeContexts;
         private bool _isRange;
+        private bool _RangeValuesAreHighToLow;
         private readonly bool _isSingleVal;
         private string _compareSymbol;
         public bool IsPartiallyEquivalent { get; set; }
         public bool IsFullyEquivalent { get; set; }
-        private Dictionary<string, Func<string, string, string, int>> _singleValueCompares = new Dictionary<string, Func<string, string, string, int>>();
-        private Dictionary<string, Func<string, string, string, string, int>> _isStmtToIsStmtCompares = new Dictionary<string, Func<string, string, string, string, int>>();
-        private Dictionary<string, Func<string, string, string, int>> _isWithinCompares = new Dictionary<string, Func<string, string, string, int>>();
-        private Dictionary<string, Func<string, string, string, int>> _singleValueToIsStmtComparers = new Dictionary<string, Func<string, string, string, int>>();
-        private Dictionary<string, Func<string, string, string, string, int>> _rangeToIsStmtCompares = new Dictionary<string, Func<string, string, string, string, int>>();
+        public bool IsStringLiteral { get; set; }
+
+        private Func<string, string, string, int> SingleValueClauseCompare;
+        private Func<string, string, string, int> IsWithinClauseCompare;
+        private Func<string, string, string, int> SingleValueToIsStmtClauseCompare;
+        private Func<string, string, string, string, int> IsStmtToIsStmtClauseCompare;
+        private Func<string, string, string, string, int> RangeToIsStmtClauseCompare;
+        private Func<string, string, int> StandardValueToValueCompare;
+
+        private RangeClauseEvaluationResults _evalResults;
+
 
         private static string[] LongComparisonTypes = { "Integer", "Long", "Byte" };
         private static string[] DoubleComparisonTypes = { "Double", "Single" };
@@ -42,61 +71,190 @@ namespace Rubberduck.Inspections.Concrete
 
         private static Dictionary<string, string> _comparisonOperatorsAndInversions = new Dictionary<string, string>()
         {
-            { EQ,EQ },
-            { NEQ,NEQ },
+            { EQ,NEQ },
+            { NEQ,EQ },
             { LT,GT },
             { LTE,GTE },
             { GT,LT },
             { GTE,LTE }
         };
 
-        public RangeClause(QualifiedContext<ParserRuleContext> caseClause, VBAParser.RangeClauseContext ctxt, IdentifierReference theRef, string typeName)
+        private static Dictionary<string, string> _extendeCcomparisonOperatorInversions = new Dictionary<string, string>()
         {
-            _qualifiedCaseContext = caseClause;
+            { LT,GTE },
+            { LTE,GT },
+            { GT,LTE },
+            { GTE,LT }
+        };
+
+        public RangeClause(RubberduckParserState state, VBAParser.RangeClauseContext ctxt, IdentifierReference theRef, string typeName)
+        {
+            _state = state;
             _ctxt = ctxt;
             _theRef = theRef;
             _typeName = typeName;
+            SetCompareDelegates();
             _compareSymbol = DetermineTheComparisonOperator(ctxt);
             _usesIsClause = HasChildToken(ctxt, Tokens.Is);
             _isRange = HasChildToken(ctxt, Tokens.To);
-            _isSingleVal = true;
-            IsParseable = true;
+            _isSingleVal = !_isRange;
+            _evalResults = new RangeClauseEvaluationResults
+            {
+                IsParseable = true,
+                IsFullyEquivalent = false,
+                IsPartiallyEquivalent = false,
+                MatchesSelectCaseTypeName = true,
+                IsReachable = true,
+                IsStringLiteral = false
+            };
 
             if (_isRange)
             {
                 _rangeContexts = new KeyValuePair<VBAParser.SelectStartValueContext, VBAParser.SelectEndValueContext>
-                    (ParserRuleContextHelper.GetChild<VBAParser.SelectStartValueContext>(ctxt),
-                    ParserRuleContextHelper.GetChild<VBAParser.SelectEndValueContext>(ctxt));
+                    (ParserRuleContextHelper.GetChild<VBAParser.SelectStartValueContext>(_ctxt),
+                    ParserRuleContextHelper.GetChild<VBAParser.SelectEndValueContext>(_ctxt));
                 IsParseable = _rangeContexts.Key != null && _rangeContexts.Value != null;
-                _isSingleVal = false;
+                _RangeValuesAreHighToLow = StandardValueToValueCompare(GetText(_rangeContexts.Key), GetText(_rangeContexts.Value)) > 0;
             }
+            IsStringLiteral = _ctxt.GetText().StartsWith("\"") && _ctxt.GetText().EndsWith("\"");
+            _evalResults.IsStringLiteral = IsStringLiteral;
+
             SetIsParseable();
+
+            HasUnreachableCaseElse = false;
         }
 
-        public string ClauseTypeName => _typeName;
         public bool IsSingleVal => _isSingleVal;
         public bool UsesIsClause => _usesIsClause;
         public bool IsRange => _isRange;
         public string CompareSymbol => _compareSymbol;
-        public string TypeName => _typeName;
+        private string SelectCaseTypeName => _typeName;
         public bool IsParseable { get; set; }
+        public bool MatchesSelectCaseType
+        {
+            get
+            {
+                return _evalResults.MatchesSelectCaseTypeName;
+            } 
+        }
+        public bool HasUnreachableCaseElse { get; set; }
+
         private bool IsComparisonOperator(string opCandidate) { return _comparisonOperatorsAndInversions.Keys.Contains(opCandidate); }
-        private string InvertComparisonOperator(string theOperator)
+        private string GetOperatorInverseStrict(string theOperator)
         {
             return IsComparisonOperator(theOperator) ? _comparisonOperatorsAndInversions[theOperator] : theOperator;
+        }
+        private string GetOperatorInverseExtendedSet(string theOperator)
+        {
+            return IsComparisonOperator(theOperator) ? _extendeCcomparisonOperatorInversions[theOperator] : theOperator;
         }
 
         private IdentifierReference _theRef;
 
-        private bool isLongType => LongComparisonTypes.Contains(_typeName);
-        private bool isDoubleType => DoubleComparisonTypes.Contains(_typeName);
-        private bool isBooleanType => BooleanComparisonTypes.Contains(_typeName);
-        private bool isDecimalType => CurrencyComparisonTypes.Contains(_typeName);
+        private bool isLongType => LongComparisonTypes.Contains(SelectCaseTypeName);
+        private bool isDoubleType => DoubleComparisonTypes.Contains(SelectCaseTypeName);
+        private bool isBooleanType => BooleanComparisonTypes.Contains(SelectCaseTypeName);
+        private bool isDecimalType => CurrencyComparisonTypes.Contains(SelectCaseTypeName);
+        private bool isStringType => !(isLongType || isDoubleType || isBooleanType || isDecimalType);
 
         public string ValueAsString => GetRangeClauseText(_ctxt);
-        public string ValueMinAsString => _isRange ? _rangeContexts.Key.GetText() : ValueAsString;
-        public string ValueMaxAsString => _isRange ? _rangeContexts.Value.GetText() : ValueAsString;
+        public string ValueMinAsString => _isRange ? _RangeValuesAreHighToLow ? GetText( _rangeContexts.Value) : GetText(_rangeContexts.Key) : ValueAsString;
+        public string ValueMaxAsString => _isRange ? _RangeValuesAreHighToLow ? GetText(_rangeContexts.Key) : GetText(_rangeContexts.Value) : ValueAsString;
 
+
+        public bool IsReachable(object obj)
+        {
+            var prior = obj as IRangeClause;
+            if (prior == null)
+            {
+                throw new InvalidCastException("Unable to cast parameter 'obj' to IRangeClass");
+            }
+
+            if (!_evalResults.MatchesSelectCaseTypeName)
+            {
+                return false;
+            }
+
+            return CompareTo(prior) != 0;
+        }
+
+        private void SetCompareDelegates()
+        {
+            if (isLongType)
+            {
+                SingleValueClauseCompare = CompareSingleValuesLong;
+                IsWithinClauseCompare = CompareIsWithinLong;
+                SingleValueToIsStmtClauseCompare = CompareSingleValueToIsStmtLong;
+                IsStmtToIsStmtClauseCompare = CompareIsStmtToIsStmtLong;
+                RangeToIsStmtClauseCompare = CompareRangeToIsStmtLong;
+                StandardValueToValueCompare = SimpleCompareLong;
+            }
+            else if (isDecimalType)
+            {
+                SingleValueClauseCompare = CompareSingleValuesDecimal;
+                IsWithinClauseCompare = CompareIsWithinDecimal;
+                SingleValueToIsStmtClauseCompare = CompareSingleValueToIsStmtDecimal;
+                IsStmtToIsStmtClauseCompare = CompareIsStmtToIsStmtDecimal;
+                RangeToIsStmtClauseCompare = CompareRangeToIsStmtDecimal;
+                StandardValueToValueCompare = SimpleCompareDecimal;
+            }
+            else if (isDoubleType)
+            {
+                SingleValueClauseCompare = CompareSingleValuesDouble;
+                IsWithinClauseCompare = CompareIsWithinDouble;
+                SingleValueToIsStmtClauseCompare = CompareSingleValueToIsStmtDouble;
+                IsStmtToIsStmtClauseCompare = CompareIsStmtToIsStmtDouble;
+                RangeToIsStmtClauseCompare = CompareRangeToIsStmtDouble;
+                StandardValueToValueCompare = SimpleCompareDouble;
+            }
+            else if (isBooleanType)
+            {
+                SingleValueClauseCompare = CompareSingleValuesBoolean;
+                IsWithinClauseCompare = CompareIsWithinBoolean;
+                SingleValueToIsStmtClauseCompare = CompareSingleValueToIsStmtBoolean;
+                IsStmtToIsStmtClauseCompare = CompareIsStmtToIsStmtBoolean;
+                RangeToIsStmtClauseCompare = CompareRangeToIsStmtBoolean;
+                StandardValueToValueCompare = SimpleCompareBoolean;
+            }
+            else
+            {
+                SingleValueClauseCompare = CompareSingleValues;
+                IsWithinClauseCompare = CompareIsWithin;
+                SingleValueToIsStmtClauseCompare = CompareSingleValueToIsStmt;
+                IsStmtToIsStmtClauseCompare = CompareIsStmtToIsStmt;
+                RangeToIsStmtClauseCompare = CompareRangeToIsStmt;
+                StandardValueToValueCompare = SimpleCompareAny;
+            }
+        }
+
+        private IdentifierReference GetTheRangeClauseReference(ParserRuleContext rangeClauseCtxt, string theName)
+        {
+            var simpleNameExpr = ParserRuleContextHelper.GetChild<VBAParser.SimpleNameExprContext>(rangeClauseCtxt);
+
+            var allRefs = new List<IdentifierReference>();
+            foreach (var dec in _state.DeclarationFinder.MatchName(theName))
+            {
+                allRefs.AddRange(dec.References);
+            }
+
+            if (!allRefs.Any())
+            {
+                return null;
+            }
+
+            if(allRefs.Count == 1)
+            {
+                return allRefs.First();
+            }
+            else
+            {
+                var rangeClauseReference = allRefs.Where(rf => ParserRuleContextHelper.HasParent(rf.Context, rangeClauseCtxt)
+                                        && (ParserRuleContextHelper.HasParent(rf.Context, simpleNameExpr.Parent)));
+
+                Debug.Assert(rangeClauseReference.Count() == 1);
+                return rangeClauseReference.First();
+            }
+        }
 
         private string GetRangeClauseText(VBAParser.RangeClauseContext ctxt)
         {
@@ -104,6 +262,20 @@ namespace Rubberduck.Inspections.Concrete
             if (TryGetExprContext(ctxt, out relationalOpCtxt))
             {
                 return GetTextForRelationalOpContext(relationalOpCtxt);
+            }
+
+            var smplName = ParserRuleContextHelper.GetDescendent<VBAParser.SimpleNameExprContext>(ctxt);
+            if (smplName != null)
+            {
+                var rangeClauseIdentifierReference = GetTheRangeClauseReference(smplName, smplName.GetText());
+                if (rangeClauseIdentifierReference != null)
+                {
+                    if (rangeClauseIdentifierReference.Declaration.DeclarationType.HasFlag(DeclarationType.Constant))
+                    {
+                        var valuedDeclaration = (ConstantDeclaration)rangeClauseIdentifierReference.Declaration;
+                        return valuedDeclaration.Expression;
+                    }
+                }
             }
 
             VBAParser.UnaryMinusOpContext negativeCtxt;
@@ -114,7 +286,33 @@ namespace Rubberduck.Inspections.Concrete
             else
             {
                 VBAParser.LiteralExprContext theValCtxt;
-                return TryGetExprContext(ctxt, out theValCtxt) ? theValCtxt.GetText() : string.Empty;
+                if (TryGetExprContext(ctxt, out theValCtxt))
+                {
+                    var result = GetText(theValCtxt);
+                    if (isBooleanType)
+                    {
+                        if (result.Equals("True"))
+                        {
+                            return "-1";
+                        }
+                        else if (result.Equals("False"))
+                        {
+                            return "0";
+                        }
+                        else
+                        {
+                            return result;
+                        }
+                    }
+                    else
+                    {
+                        return result;
+                    }
+                }
+                else
+                {
+                    return string.Empty;
+                }
             }
         }
 
@@ -144,18 +342,80 @@ namespace Rubberduck.Inspections.Concrete
                 }
             }
 
-            if (lExprCtxtIndex > literalExprCtxtIndex)
+            if(lExprCtxtIndex != -1 && literalExprCtxtIndex != -1)
             {
-                _compareSymbol = _comparisonOperatorsAndInversions[_compareSymbol];
+                if (lExprCtxtIndex > literalExprCtxtIndex)
+                {
+                    _compareSymbol = _comparisonOperatorsAndInversions[_compareSymbol];
+                }
+
+                if (lExprCtxt.GetText().Equals(_theRef.IdentifierName))
+                {
+                    //If 'z' is the Select Case variable, 
+                    //then 'z < 10' will be treated as 'Is < 10'
+                    //and '10 < z' will be treated as 'Is > 10
+                    _usesIsClause = true;
+                    return theValueCtxt.GetText();
+                }
             }
 
-            if (lExprCtxt.GetText().Equals(_theRef.IdentifierName))
+            var lExprCtxtIndices = new List<int>();
+            for (int idx = 0; idx < relationalOpCtxt.ChildCount; idx++)
             {
-                //If 'z' is the Select Case variable, 
-                //then 'z < 10' will be treated as 'Is < 10'
-                //and '10 < z' will be treated as 'Is > 10
-                _usesIsClause = true;
-                return theValueCtxt.GetText();
+                var text = relationalOpCtxt.children[idx].GetText();
+                if (relationalOpCtxt.children[idx] is VBAParser.LExprContext)
+                {
+                    lExprCtxt = (VBAParser.LExprContext)relationalOpCtxt.children[idx];
+                    lExprCtxtIndices.Add(idx);
+                }
+                else if (IsComparisonOperator(text))
+                {
+                    _compareSymbol = text;
+                }
+            }
+            if (lExprCtxtIndices.Count() == 2)
+            {
+                var ctxt1 = (VBAParser.LExprContext)relationalOpCtxt.children[lExprCtxtIndices.First()];
+                var expr1 = GetText(ctxt1);
+
+                var ctxt2 = (VBAParser.LExprContext)relationalOpCtxt.children[lExprCtxtIndices.Last()];
+                var expr2 = GetText(ctxt2);
+
+                if (expr1.Equals(_theRef.IdentifierName))
+                {
+                    _usesIsClause = true;
+                    var smplName = ParserRuleContextHelper.GetDescendent<VBAParser.SimpleNameExprContext>(ctxt2);
+                    if (smplName != null)
+                    {
+                        var rangeClauseIdentifierReference = GetTheRangeClauseReference(smplName, smplName.GetText());
+                        if (rangeClauseIdentifierReference != null)
+                        {
+                            if (rangeClauseIdentifierReference.Declaration.DeclarationType.HasFlag(DeclarationType.Constant))
+                            {
+                                var valuedDeclaration = (ConstantDeclaration)rangeClauseIdentifierReference.Declaration;
+                                return valuedDeclaration.Expression;
+                            }
+                        }
+                    }
+                }
+                else if (expr2.Equals(_theRef.IdentifierName))
+                {
+                    _usesIsClause = true;
+                    _compareSymbol = _comparisonOperatorsAndInversions[_compareSymbol];
+                    var smplName = ParserRuleContextHelper.GetDescendent<VBAParser.SimpleNameExprContext>(ctxt1);
+                    if (smplName != null)
+                    {
+                        var rangeClauseIdentifierReference = GetTheRangeClauseReference(smplName, smplName.GetText());
+                        if (rangeClauseIdentifierReference != null)
+                        {
+                            if (rangeClauseIdentifierReference.Declaration.DeclarationType.HasFlag(DeclarationType.Constant))
+                            {
+                                var valuedDeclaration = (ConstantDeclaration)rangeClauseIdentifierReference.Declaration;
+                                return valuedDeclaration.Expression;
+                            }
+                        }
+                    }
+                }
             }
             return string.Empty;
         }
@@ -176,86 +436,134 @@ namespace Rubberduck.Inspections.Concrete
             }
         }
 
-        private Func<string, string, string, int> GetSingleValueComparer()
+        private void CheckCaseElseIsReachable(IRangeClause prior)
         {
-            if (!_singleValueCompares.Any())
+            if (isBooleanType && !(prior is RangeClauseExtent<int>))
             {
-                _singleValueCompares.Add("Long", new Func<string, string, string, int>(CompareSingleValuesLong));
-                _singleValueCompares.Add("Integer", new Func<string, string, string, int>(CompareSingleValuesLong));
-                _singleValueCompares.Add("Byte", new Func<string, string, string, int>(CompareSingleValuesLong));
-                _singleValueCompares.Add("Double", new Func<string, string, string, int>(CompareSingleValuesDouble));
-                _singleValueCompares.Add("Single", new Func<string, string, string, int>(CompareSingleValuesDouble));
-                _singleValueCompares.Add("Boolean", new Func<string, string, string, int>(CompareSingleValuesBoolean));
-                _singleValueCompares.Add("Currency", new Func<string, string, string, int>(CompareSingleValuesDecimal));
+                if (StringToBool(prior.ValueAsString) != StringToBool(ValueAsString))
+                {
+                    HasUnreachableCaseElse = true;
+                }
             }
-
-            Func<string, string, string, int> comparer;
-
-            if (!_singleValueCompares.TryGetValue(_typeName, out comparer))
-            {
-                comparer = CompareSingleValues;
-            }
-            return comparer;
         }
 
-        public int CompareTo(object obj)
+        //For RangeClauses, a comparison == 0 means that the two range contexts 
+        //include all of the same (IsFullyEquivalent) or some of the 
+        //same (PartiallyEquivalent) values.
+
+        //The obj passed is always a range clause that is applied prior to the 
+        //'this' range clause.  We are checking that 'this' Range Clause is not 
+        //made unreachable by the 'prior' RangeClause.
+        private int CompareTo(IRangeClause prior)
         {
-            var prior = obj as IRangeClause;
-
-            if(!_typeName.Equals(prior.TypeName))
-            {
-                //Inconsistent type => different inspection?
-                return 0;
-            }
-
             if (IsSingleVal && prior.IsSingleVal)
             {
-                var comparer = GetSingleValueComparer();
-
                 if (!UsesIsClause && !prior.UsesIsClause)
                 {
-                    var result = comparer(prior.ValueAsString, ValueAsString, EQ);
+                    var result = SingleValueClauseCompare(prior.ValueAsString, ValueAsString, EQ);
 
                     IsFullyEquivalent = result == 0;
+
+                    if (isBooleanType)
+                    {
+                        CheckCaseElseIsReachable(prior);
+                    }
+
                     return result;
                 }
                 else if (!UsesIsClause && prior.UsesIsClause)
                 {
-                    var result = comparer(prior.ValueAsString, ValueAsString, prior.CompareSymbol);
+                    var result = SingleValueClauseCompare(prior.ValueAsString, ValueAsString, prior.CompareSymbol);
 
                     IsFullyEquivalent = (result == 0);
+                    if (isBooleanType)
+                    {
+                        CheckCaseElseIsReachable(prior);
+                    }
+                    else if (prior.CompareSymbol.Equals(NEQ))
+                    {
+                        if (SingleValueClauseCompare(ValueAsString, prior.ValueAsString, EQ) == 0)
+                        {
+                            HasUnreachableCaseElse = true;
+                        }
+                    }
+
                     return result;
                 }
                 else if (UsesIsClause && !prior.UsesIsClause)
                 {
-                    var result = comparer(ValueAsString, prior.ValueAsString, CompareSymbol);
+                    var result = SingleValueClauseCompare(ValueAsString, prior.ValueAsString, CompareSymbol);
 
                     IsPartiallyEquivalent = (result == 0);
+                    if (isBooleanType)
+                    {
+                        CheckCaseElseIsReachable(prior);
+                    }
+                    else if (CompareSymbol.Equals(NEQ))
+                    {
+                        if(SingleValueClauseCompare(ValueAsString, prior.ValueAsString, EQ) == 0)
+                        {
+                            HasUnreachableCaseElse = true;
+                        }
+                    }
+
                     return result;
                 }
                 else if (UsesIsClause && prior.UsesIsClause)
                 {
-                    var isStmtToIsStmtComparer = GetIsStmtComparer();
-                    return isStmtToIsStmtComparer(prior.ValueAsString, ValueAsString, prior.CompareSymbol, CompareSymbol);
+                    var result = IsStmtToIsStmtClauseCompare(prior.ValueAsString, ValueAsString, prior.CompareSymbol, CompareSymbol);
+
+                    if (isBooleanType)
+                    {
+                        CheckCaseElseIsReachable(prior);
+                    }
+                    else if (GetOperatorInverseStrict( prior.CompareSymbol).Equals(CompareSymbol)
+                        || GetOperatorInverseExtendedSet(prior.CompareSymbol).Equals(CompareSymbol)
+                        )
+                    {
+                        if ((prior.CompareSymbol.Equals(LT) || prior.CompareSymbol.Equals(LTE)) && SingleValueClauseCompare(prior.ValueAsString, ValueAsString, EQ) > 0)
+                        {
+                            HasUnreachableCaseElse = true;
+                        }
+                        else if ((prior.CompareSymbol.Equals(GT) || prior.CompareSymbol.Equals(GTE)) && SingleValueClauseCompare(prior.ValueAsString, ValueAsString, EQ) < 0)
+                        {
+                            HasUnreachableCaseElse = true;
+                        }
+                        else if ((prior.CompareSymbol.Equals(EQ) || prior.CompareSymbol.Equals(NEQ)) && SingleValueClauseCompare(prior.ValueAsString, ValueAsString, EQ) == 0)
+                        {
+                            HasUnreachableCaseElse = true;
+                        }
+                    }
+
+                    return result;
                 }
             }
             else if (IsSingleVal && prior.IsRange)
             {
                 if (!UsesIsClause)
                 {
-                    var isWithin = GetIsWithinComparer();
-
-                    var result = isWithin(ValueAsString, prior.ValueMinAsString, prior.ValueMaxAsString);
+                    var result = IsWithinClauseCompare(ValueAsString, prior.ValueMinAsString, prior.ValueMaxAsString);
                     IsFullyEquivalent = result == 0;
+
+                    if (isBooleanType)
+                    {
+                        if (StringToBool(prior.ValueMinAsString)  != StringToBool(prior.ValueMaxAsString))
+                        {
+                            HasUnreachableCaseElse = true;
+                        }
+                        else if (StringToBool(ValueAsString) != (StringToBool(prior.ValueMinAsString) || StringToBool(prior.ValueMaxAsString)))
+                        {
+                            HasUnreachableCaseElse = true;
+                        }
+                    }
+
                     return result;
                 }
                 else
                 {
                     // e.g. Case Is > 8 prior Case 3 to 10
-                    var comparer = GetSingleValueToIsStmtComparer();
-
-                    var resultStartVal = comparer(ValueAsString, prior.ValueMinAsString, CompareSymbol);
-                    var resultEndVal = comparer(ValueAsString, prior.ValueMaxAsString, CompareSymbol);
+                    var resultStartVal = SingleValueToIsStmtClauseCompare(ValueAsString, prior.ValueMinAsString, CompareSymbol);
+                    var resultEndVal = SingleValueToIsStmtClauseCompare(ValueAsString, prior.ValueMaxAsString, CompareSymbol);
 
                     return resultStartVal == 0 || resultEndVal == 0 ? 0 : 1;
                 }
@@ -264,127 +572,54 @@ namespace Rubberduck.Inspections.Concrete
             {
                 if (!prior.UsesIsClause)
                 {
-                    var comparer = GetIsWithinComparer();
-
-                    var result = comparer(prior.ValueAsString, ValueMinAsString, ValueMaxAsString);
+                    var result = IsWithinClauseCompare(prior.ValueAsString, ValueMinAsString, ValueMaxAsString);
                     IsPartiallyEquivalent = result == 0;
+
+                    if (isBooleanType)
+                    {
+                        if (StringToBool(ValueMinAsString) != (StringToBool(prior.ValueAsString)) && !(prior is RangeClauseExtent<int>))
+                        {
+                            HasUnreachableCaseElse = true;
+                        }
+                        else if (StringToBool(ValueMaxAsString) != (StringToBool(prior.ValueAsString)) && !(prior is RangeClauseExtent<int>))
+                        {
+                            HasUnreachableCaseElse = true;
+                        }
+                        else if (StringToBool(ValueMinAsString) != (StringToBool(ValueMaxAsString)))
+                        {
+                            HasUnreachableCaseElse = true;
+                        }
+                    }
                     return result;
                 }
                 else
                 {
-                    var compareRangeToIsStmt = GetRangeToIsStmtComparer();
-
-                    return compareRangeToIsStmt(prior.ValueMinAsString, ValueMinAsString, ValueMaxAsString, prior.CompareSymbol);
+                    var result = RangeToIsStmtClauseCompare(prior.ValueMinAsString, ValueMinAsString, ValueMaxAsString, prior.CompareSymbol);
+                    if (StringToBool(ValueMinAsString) != (StringToBool(ValueMaxAsString)))
+                    {
+                        HasUnreachableCaseElse = true;
+                    }
+                    return result;
                 }
             }
             else if (IsRange && prior.IsRange)
             {
-                var isWithin = GetIsWithinComparer();
-
-                if (isWithin(ValueMinAsString, prior.ValueMinAsString, prior.ValueMaxAsString) == 0
-                        && isWithin(ValueMaxAsString, prior.ValueMinAsString, prior.ValueMaxAsString) == 0)
+                if (IsWithinClauseCompare(ValueMinAsString, prior.ValueMinAsString, prior.ValueMaxAsString) == 0
+                        && IsWithinClauseCompare(ValueMaxAsString, prior.ValueMinAsString, prior.ValueMaxAsString) == 0)
                 {
                     IsFullyEquivalent = true;
                     return 0;
                 }
                 else
                 {
-                    IsPartiallyEquivalent = isWithin(ValueMinAsString, prior.ValueMinAsString, prior.ValueMaxAsString) == 0
-                        || isWithin(ValueMaxAsString, prior.ValueMinAsString, prior.ValueMaxAsString) == 0;
+                    IsPartiallyEquivalent = IsWithinClauseCompare(ValueMinAsString, prior.ValueMinAsString, prior.ValueMaxAsString) == 0
+                        || IsWithinClauseCompare(ValueMaxAsString, prior.ValueMinAsString, prior.ValueMaxAsString) == 0;
 
                     return IsPartiallyEquivalent ? 0 : ValueMaxAsString.CompareTo(prior.ValueMaxAsString);
                 }
             }
             Debug.Assert(true, "Unanticipated code path");
             return 1;
-        }
-
-        private Func<string, string, string, int> GetSingleValueToIsStmtComparer()
-        {
-            if (!_singleValueToIsStmtComparers.Any())
-            {
-                _singleValueToIsStmtComparers.Add("Long", new Func<string, string, string, int>(CompareSingleValueToIsStmtLong));
-                _singleValueToIsStmtComparers.Add("Integer", new Func<string, string, string, int>(CompareSingleValueToIsStmtLong));
-                _singleValueToIsStmtComparers.Add("Byte", new Func<string, string, string, int>(CompareSingleValueToIsStmtLong));
-                _singleValueToIsStmtComparers.Add("Double", new Func<string, string, string, int>(CompareSingleValueToIsStmtDouble));
-                _singleValueToIsStmtComparers.Add("Single", new Func<string, string, string, int>(CompareSingleValueToIsStmtDouble));
-                _singleValueToIsStmtComparers.Add("Boolean", new Func<string, string, string, int>(CompareSingleValueToIsStmtBoolean));
-                _singleValueToIsStmtComparers.Add("Currency", new Func<string, string, string, int>(CompareSingleValueToIsStmtDecimal));
-            }
-
-            Func<string, string, string, int> comparer;
-
-            if (!_singleValueToIsStmtComparers.TryGetValue(_typeName, out comparer))
-            {
-                comparer = CompareSingleValueToIsStmt;
-            }
-            return comparer;
-        }
-
-        private Func<string, string, string, int> GetIsWithinComparer()
-        {
-            if (!_isWithinCompares.Any())
-            {
-                _isWithinCompares.Add("Long", new Func<string, string, string, int>(IsWithinLong));
-                _isWithinCompares.Add("Integer", new Func<string, string, string, int>(IsWithinLong));
-                _isWithinCompares.Add("Byte", new Func<string, string, string, int>(IsWithinLong));
-                _isWithinCompares.Add("Double", new Func<string, string, string, int>(IsWithinDouble));
-                _isWithinCompares.Add("Single", new Func<string, string, string, int>(IsWithinDouble));
-                _isWithinCompares.Add("Boolean", new Func<string, string, string, int>(IsWithinBoolean));
-                _isWithinCompares.Add("Currency", new Func<string, string, string, int>(IsWithinDecimal));
-            }
-
-            Func<string, string, string, int> comparer;
-
-            if (!_isWithinCompares.TryGetValue(_typeName, out comparer))
-            {
-                comparer = IsWithin;
-            }
-            return comparer;
-        }
-
-        private Func<string, string, string, string, int> GetIsStmtComparer()
-        {
-            if (!_isStmtToIsStmtCompares.Any())
-            {
-                _isStmtToIsStmtCompares.Add("Long", new Func<string, string, string, string, int>(CompareIsStmtToIsStmtLong));
-                _isStmtToIsStmtCompares.Add("Integer", new Func<string, string, string, string, int>(CompareIsStmtToIsStmtLong));
-                _isStmtToIsStmtCompares.Add("Byte", new Func<string, string, string, string, int>(CompareIsStmtToIsStmtLong));
-                _isStmtToIsStmtCompares.Add("Double", new Func<string, string, string, string, int>(CompareIsStmtToIsStmtDouble));
-                _isStmtToIsStmtCompares.Add("Single", new Func<string, string, string, string, int>(CompareIsStmtToIsStmtDouble));
-                _isStmtToIsStmtCompares.Add("Boolean", new Func<string, string, string, string, int>(CompareIsStmtToIsStmtBoolean));
-                _isStmtToIsStmtCompares.Add("Currency", new Func<string, string, string, string, int>(CompareIsStmtToIsStmtDecimal));
-            }
-
-            Func<string, string, string, string, int> comparer;
-
-            if (!_isStmtToIsStmtCompares.TryGetValue(_typeName, out comparer))
-            {
-                comparer = CompareIsStmtToIsStmt;
-            }
-            return comparer;
-        }
-
-        private Func<string, string, string, string, int> GetRangeToIsStmtComparer()
-        {
-            if (!_rangeToIsStmtCompares.Any())
-            {
-                _rangeToIsStmtCompares.Add("Long", new Func<string, string, string, string, int>(CompareRangeToIsStmtLong));
-                _rangeToIsStmtCompares.Add("Integer", new Func<string, string, string, string, int>(CompareRangeToIsStmtLong));
-                _rangeToIsStmtCompares.Add("Byte", new Func<string, string, string, string, int>(CompareRangeToIsStmtLong));
-                _rangeToIsStmtCompares.Add("Double", new Func<string, string, string, string, int>(CompareRangeToIsStmtDouble));
-                _rangeToIsStmtCompares.Add("Single", new Func<string, string, string, string, int>(CompareRangeToIsStmtDouble));
-                _rangeToIsStmtCompares.Add("Boolean", new Func<string, string, string, string, int>(CompareRangeToIsStmtBoolean));
-                _rangeToIsStmtCompares.Add("Currency", new Func<string, string, string, string, int>(CompareRangeToIsStmtDecimal));
-            }
-
-            Func<string, string, string, string, int> comparer;
-
-            if (!_rangeToIsStmtCompares.TryGetValue(_typeName, out comparer))
-            {
-                comparer = CompareIsStmtToIsStmt;
-            }
-            return comparer;
         }
 
         private void SetIsParseable()
@@ -394,12 +629,19 @@ namespace Rubberduck.Inspections.Concrete
                 long longValue;
                 if (_isRange)
                 {
-                    IsParseable = long.TryParse(_rangeContexts.Key.GetText(), out longValue)
-                            && long.TryParse(_rangeContexts.Value.GetText(), out longValue);
+                    IsParseable = long.TryParse(GetText(_rangeContexts.Key), out longValue)
+                            && long.TryParse(GetText(_rangeContexts.Value), out longValue);
                 }
                 else
                 {
                     IsParseable = long.TryParse(GetRangeClauseText(_ctxt), out longValue);
+                }
+                if (!IsParseable)
+                {
+                    if (GetText(_ctxt).Contains(".") || (IsStringLiteral && !SelectCaseTypeName.Equals("String")))
+                    {
+                        _evalResults.MatchesSelectCaseTypeName = false;
+                    }
                 }
             }
             else if (isDoubleType)
@@ -417,15 +659,20 @@ namespace Rubberduck.Inspections.Concrete
             }
             else if (isBooleanType)
             {
-                long longValue;
+                int intVal;
                 if (_isRange)
                 {
-                    IsParseable = long.TryParse(_rangeContexts.Key.GetText(), out longValue)
-                            && long.TryParse(_rangeContexts.Value.GetText(), out longValue);
+                    IsParseable = int.TryParse(_rangeContexts.Key.GetText(), out intVal)
+                            && int.TryParse(_rangeContexts.Value.GetText(), out intVal);
+                    if (!IsParseable)
+                    {
+                        IsParseable = (_rangeContexts.Key.GetText().Equals("True") || _rangeContexts.Key.GetText().Equals("False"))
+                            || (_rangeContexts.Value.GetText().Equals("False") || _rangeContexts.Value.GetText().Equals("True"));
+                    }
                 }
                 else
                 {
-                    IsParseable = long.TryParse(GetRangeClauseText(_ctxt), out longValue);
+                    IsParseable = int.TryParse(GetRangeClauseText(_ctxt), out intVal);
                     if (!IsParseable)
                     {
                         IsParseable = (_ctxt.GetText().Equals("True") || _ctxt.GetText().Equals("False"));
@@ -449,6 +696,63 @@ namespace Rubberduck.Inspections.Concrete
             {
                 IsParseable = true;
             }
+            _evalResults.IsParseable = IsParseable;
+        }
+
+        private string GetText(ParserRuleContext ctxt)
+        {
+            var text = ctxt.GetText();
+            //if (!IsStringLiteral)
+            //{
+            //    IsStringLiteral = text.Contains("\"");
+            //}
+            return text.Replace("\"", "");
+        }
+
+        private int SimpleCompareLong(string value1, string value2)
+        {
+            return long.Parse(value1).CompareTo(long.Parse(value2));
+        }
+
+        private int SimpleCompareDouble(string value1, string value2)
+        {
+            return double.Parse(value1).CompareTo(double.Parse(value2));
+        }
+
+        private int SimpleCompareDecimal(string value1, string value2)
+        {
+            return decimal.Parse(value1).CompareTo(decimal.Parse(value2));
+        }
+
+        private int SimpleCompareAny<T>(T value1, T value2) where T : System.IComparable<T>
+        {
+            return value1.CompareTo(value2);
+        }
+
+        private int SimpleCompareBoolean(string value1, string value2)
+        {
+            bool val1 = false;
+            bool val2 = false;
+            int result;
+            if (int.TryParse(value1, out result))
+            {
+                val1 = result != 0;
+            }
+            else
+            {
+                val1 = value1.Equals("True");
+            }
+
+            if (int.TryParse(value2, out result))
+            {
+                val2 = result != 0;
+            }
+            else
+            {
+                val2 = value2.Equals("True");
+            }
+
+            return val1.CompareTo(val2);
         }
 
 #region CompareSingleValues
@@ -494,10 +798,12 @@ namespace Rubberduck.Inspections.Concrete
             else if (comparisonSymbol.Equals(LT))
             {
                 return result > 0 ? 0 : result - 1;
+                //return result < 0 ? 0 : result;
             }
             else if (comparisonSymbol.Equals(LTE))
             {
                 return result >= 0 ? 0 : result - 1;
+                //return result <= 0 ? 0 : result;
             }
             Debug.Assert(true, "Unanticipated code path");
             return 1;
@@ -558,7 +864,7 @@ namespace Rubberduck.Inspections.Concrete
             Debug.Assert(true, "Unanticipated code path");
             return 1;
         }
-        #endregion
+#endregion
 
 #region CompareSingleValueToIsStmt
         private int CompareSingleValueToIsStmtLong(string value1, string value2, string compareSymbol)
@@ -640,37 +946,39 @@ namespace Rubberduck.Inspections.Concrete
             if (priorIsStmtCompareSymbol.CompareTo(isStmtCompareSymbol) != 0)
             {
                 IsPartiallyEquivalent = !(isStmtCompareSymbol.Contains(NEQ) || isStmtCompareSymbol.Contains(EQ));
+                returnVal = IsPartiallyEquivalent ? 0 : returnVal;
             }
             else
             {
                 IsFullyEquivalent = !(priorIsStmtCompareSymbol.Contains(NEQ) || priorIsStmtCompareSymbol.Contains(EQ));
+                returnVal = IsFullyEquivalent ? 0 : returnVal;
             }
             return returnVal;
         }
 #endregion
 
 #region IsWithin
-        private int IsWithinLong(string toCheck, string min, string max)
+        private int CompareIsWithinLong(string toCheck, string min, string max)
         {
-            return IsWithin(long.Parse(toCheck), long.Parse(min), long.Parse(max));
+            return CompareIsWithin(long.Parse(toCheck), long.Parse(min), long.Parse(max));
         }
 
-        private int IsWithinDouble(string toCheck, string min, string max)
+        private int CompareIsWithinDouble(string toCheck, string min, string max)
         {
-            return IsWithin(double.Parse(toCheck), double.Parse(min), double.Parse(max));
+            return CompareIsWithin(double.Parse(toCheck), double.Parse(min), double.Parse(max));
         }
 
-        private int IsWithinDecimal(string toCheck, string min, string max)
+        private int CompareIsWithinDecimal(string toCheck, string min, string max)
         {
-            return IsWithin(decimal.Parse(toCheck), decimal.Parse(min), decimal.Parse(max));
+            return CompareIsWithin(decimal.Parse(toCheck), decimal.Parse(min), decimal.Parse(max));
         }
 
-        private int IsWithinBoolean(string toCheck, string min, string max)
+        private int CompareIsWithinBoolean(string toCheck, string min, string max)
         {
-            return IsWithin(StringToBool(toCheck), StringToBool(min), StringToBool(max));
+            return CompareIsWithin(StringToBool(toCheck), StringToBool(min), StringToBool(max));
         }
 
-        private int IsWithin<T>(T toCheck, T min, T max) where T : System.IComparable<T>
+        private int CompareIsWithin<T>(T toCheck, T min, T max) where T : System.IComparable<T>
         {
             return toCheck.CompareTo(min) >= 0 && toCheck.CompareTo(max) <= 0 ? 0 : toCheck.CompareTo(min);
         }
