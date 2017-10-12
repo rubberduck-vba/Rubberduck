@@ -1,5 +1,6 @@
 using System;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -17,9 +18,11 @@ namespace Rubberduck.Refactorings.ExtractMethod
         private Func<QualifiedSelection?, string, IExtractMethodModel> _createMethodModel;
         private IExtractMethodExtraction _extraction;
         private Action<object> _onParseRequest;
-        
+        private IIndenter _indenter;
+
         public ExtractMethodRefactoring(
-            ICodeModule codeModule
+            ICodeModule codeModule,
+            IIndenter indenter
                 //,
                 //Action<Object> onParseRequest,
                 //Func<QualifiedSelection?, string, IExtractMethodModel> createMethodModel,
@@ -27,6 +30,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
         )
         {
             _codeModule = codeModule;
+            _indenter = indenter;
             //_createMethodModel = createMethodModel;
             //_extraction = extraction;
             //_onParseRequest = onParseRequest;
@@ -34,7 +38,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
         public void Refactor()
         {
-            var factory = new ExtractMethodPresenterFactory();
+            var factory = new ExtractMethodPresenterFactory(_indenter);
             //IRefactoringPresenterFactory<IExtractMethodPresenter> factory
             var presenter = _factory.Create();
             if (presenter == null)
