@@ -1,8 +1,8 @@
 ﻿using System.Runtime.InteropServices;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VB.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VB.Enums;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {

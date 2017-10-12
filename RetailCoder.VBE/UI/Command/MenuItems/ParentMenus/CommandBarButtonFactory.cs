@@ -1,6 +1,6 @@
-using Rubberduck.VBEditor.SafeComWrappers.MSForms;
-using Rubberduck.VBEditor.SafeComWrappers.Office.Core;
-using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VB.Enums;
+using Rubberduck.VBEditor.SafeComWrappers.Office.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.Office.v12; // TODO!!!!!
 
 namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 {

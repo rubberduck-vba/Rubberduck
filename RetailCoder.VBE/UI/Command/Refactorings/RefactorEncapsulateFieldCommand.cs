@@ -5,7 +5,7 @@ using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.SmartIndenter;
 using Rubberduck.Settings;
 using Rubberduck.UI.Refactorings.EncapsulateField;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VB.Abstract;
 
 namespace Rubberduck.UI.Command.Refactorings
 {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor.SafeComWrappers.MSForms;
+using Rubberduck.VBEditor.SafeComWrappers.VB.Enums;
 
 namespace Rubberduck.UI.Command
 {

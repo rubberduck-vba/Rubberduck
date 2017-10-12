@@ -2,7 +2,7 @@
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VB.Abstract;
 
 namespace Rubberduck.Parsing.Symbols
 {

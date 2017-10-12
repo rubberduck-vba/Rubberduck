@@ -5,7 +5,7 @@ using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using RubberduckTests.Mocks;
 using RubberduckTests.Inspections;
-using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.VB.Enums;
 using Rubberduck.Parsing.Grammar;
 
 namespace RubberduckTests.QuickFixes

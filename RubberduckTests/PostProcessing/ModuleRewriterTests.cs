@@ -8,7 +8,7 @@ using Moq;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VB.Abstract;
 using RubberduckTests.Mocks;
 
 // ReSharper disable InvokeAsExtensionMethod

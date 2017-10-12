@@ -10,7 +10,7 @@ using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor.Application;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VB.Abstract;
 using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Parsing.Symbols

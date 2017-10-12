@@ -1,5 +1,5 @@
 using Interop.SldWorks.Types;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VB.Abstract;
 
 namespace Rubberduck.VBEditor.Application
 {

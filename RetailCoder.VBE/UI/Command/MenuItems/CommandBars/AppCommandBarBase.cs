@@ -4,8 +4,10 @@ using System.Runtime.InteropServices;
 using NLog;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
-using Rubberduck.VBEditor.SafeComWrappers.Office.Core;
-using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.Office.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.Office.Enums;
+using Rubberduck.VBEditor.SafeComWrappers.Office.v12;
+
 
 namespace Rubberduck.UI.Command.MenuItems.CommandBars
 {

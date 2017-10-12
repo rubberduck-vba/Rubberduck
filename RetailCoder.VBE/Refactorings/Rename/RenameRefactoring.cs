@@ -4,14 +4,14 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VB.Abstract;
 using System;
 using System.Diagnostics;
 using Microsoft.CSharp.RuntimeBinder;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.VB.Enums;
 
 namespace Rubberduck.Refactorings.Rename
 {

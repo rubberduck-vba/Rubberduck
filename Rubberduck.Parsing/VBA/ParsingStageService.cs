@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VB.Abstract;
 
 namespace Rubberduck.Parsing.VBA
 {

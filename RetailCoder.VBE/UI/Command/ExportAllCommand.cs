@@ -1,7 +1,7 @@
 using System.IO;
 using System.Windows.Forms;
 using NLog;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VB.Abstract;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.UI.CodeExplorer.Commands;
 using Rubberduck.Settings;

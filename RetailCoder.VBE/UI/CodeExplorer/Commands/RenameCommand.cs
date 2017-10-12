@@ -6,7 +6,7 @@ using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.UI.Refactorings.Rename;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VB.Abstract;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {

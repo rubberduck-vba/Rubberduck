@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.QuickFixes;
 using Moq;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VB.Abstract;
 using RubberduckTests.Mocks;
 using Rubberduck.UI.Refactorings;
 using System.Windows.Forms;

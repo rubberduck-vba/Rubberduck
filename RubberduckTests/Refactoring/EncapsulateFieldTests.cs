@@ -9,8 +9,8 @@ using RubberduckTests.Mocks;
 using Rubberduck.SmartIndenter;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.UI.Refactorings.EncapsulateField;
-using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VB.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VB.Enums;
 using Rubberduck.Parsing.VBA;
 using System.Threading;
 

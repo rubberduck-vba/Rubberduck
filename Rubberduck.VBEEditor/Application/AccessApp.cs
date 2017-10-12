@@ -3,7 +3,6 @@ using System.IO;
 using System.Reflection;
 using Microsoft.Office.Interop.Access;
 using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.VBEditor.Application
 {

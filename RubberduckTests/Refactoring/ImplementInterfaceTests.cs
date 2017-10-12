@@ -1,7 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Refactorings.ImplementInterface;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.VB.Enums;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Refactoring

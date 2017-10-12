@@ -5,7 +5,7 @@ using Moq;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.Application;
-using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.VB.Enums;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections

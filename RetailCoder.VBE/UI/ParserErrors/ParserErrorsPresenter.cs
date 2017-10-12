@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.IdentifierReferences;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VB.Abstract;
 
 namespace Rubberduck.UI.ParserErrors
 {

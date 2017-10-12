@@ -16,7 +16,7 @@ using Rubberduck.SourceControl;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.VBEditor.Events;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VB.Abstract;
 using resx = Rubberduck.UI.SourceControl.SourceControl;
 // ReSharper disable ExplicitCallerInfoArgument
 
@@ -105,20 +105,20 @@ namespace Rubberduck.UI.SourceControl
 
         private bool _listening = true;
 
-        private void AddComponentEventHandlers()
+        private void AddComponentEventHandlers() //TODO!!!
         {
-            VBEditor.SafeComWrappers.VBA.VBProjects.ProjectRemoved += ProjectRemoved;
-            VBEditor.SafeComWrappers.VBA.VBComponents.ComponentAdded += ComponentAdded;
-            VBEditor.SafeComWrappers.VBA.VBComponents.ComponentRemoved += ComponentRemoved;
-            VBEditor.SafeComWrappers.VBA.VBComponents.ComponentRenamed += ComponentRenamed;
+            //VBEditor.SafeComWrappers.VBA.VBProjects.ProjectRemoved += ProjectRemoved; 
+            //VBEditor.SafeComWrappers.VBA.VBComponents.ComponentAdded += ComponentAdded;
+            //VBEditor.SafeComWrappers.VBA.VBComponents.ComponentRemoved += ComponentRemoved;
+            //VBEditor.SafeComWrappers.VBA.VBComponents.ComponentRenamed += ComponentRenamed;
         }
 
         private void RemoveComponentEventHandlers()
         {
-            VBEditor.SafeComWrappers.VBA.VBProjects.ProjectRemoved -= ProjectRemoved;
-            VBEditor.SafeComWrappers.VBA.VBComponents.ComponentAdded -= ComponentAdded;
-            VBEditor.SafeComWrappers.VBA.VBComponents.ComponentRemoved -= ComponentRemoved;
-            VBEditor.SafeComWrappers.VBA.VBComponents.ComponentRenamed -= ComponentRenamed;
+            //VBEditor.SafeComWrappers.VBA.VBProjects.ProjectRemoved -= ProjectRemoved;
+            //VBEditor.SafeComWrappers.VBA.VBComponents.ComponentAdded -= ComponentAdded;
+            //VBEditor.SafeComWrappers.VBA.VBComponents.ComponentRemoved -= ComponentRemoved;
+            //VBEditor.SafeComWrappers.VBA.VBComponents.ComponentRenamed -= ComponentRenamed;
         }
 
         private void ComponentAdded(object sender, ComponentEventArgs e)

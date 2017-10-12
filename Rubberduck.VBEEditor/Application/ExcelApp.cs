@@ -1,6 +1,6 @@
 ﻿using System;
 using Path = System.IO.Path;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VB.Abstract;
 
 namespace Rubberduck.VBEditor.Application
 {

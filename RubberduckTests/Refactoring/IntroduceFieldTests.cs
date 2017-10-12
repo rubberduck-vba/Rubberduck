@@ -8,7 +8,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.IntroduceField;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VB.Abstract;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Refactoring

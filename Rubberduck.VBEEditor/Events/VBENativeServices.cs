@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers.MSForms;
+using Rubberduck.VBEditor.SafeComWrappers.VB.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VB.Enums;
 using Rubberduck.VBEditor.WindowsApi;
 
 namespace Rubberduck.VBEditor.Events
@@ -60,8 +60,8 @@ namespace Rubberduck.VBEditor.Events
                     info.Subclass.FocusChange -= FocusDispatcher;
                     info.Subclass.Dispose();
                 }
-                SafeComWrappers.VBA.VBProjects.DetatchEvents();
-                SafeComWrappers.VBA.VBComponents.DetatchEvents();
+                SafeComWrappers.VB.VBA.VBProjects.DetatchEvents();      //TODO!!!
+                SafeComWrappers.VB.VBA.VBComponents.DetatchEvents();    //TODO!!!
             }
         }
 

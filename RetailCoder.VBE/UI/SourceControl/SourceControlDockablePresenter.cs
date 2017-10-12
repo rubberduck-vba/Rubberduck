@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VB.Abstract;
 
 namespace Rubberduck.UI.SourceControl
 {

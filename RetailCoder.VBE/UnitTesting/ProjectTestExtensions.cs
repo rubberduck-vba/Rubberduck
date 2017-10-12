@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.IO;
 using System.Linq;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VB.Abstract;
 
 namespace Rubberduck.UnitTesting
 {

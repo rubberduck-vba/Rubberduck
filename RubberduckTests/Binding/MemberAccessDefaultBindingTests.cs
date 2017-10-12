@@ -6,8 +6,8 @@ using System;
 using System.Linq;
 using System.Threading;
 using Moq;
-using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VB.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VB.Enums;
 
 namespace RubberduckTests.Binding
 {

@@ -5,7 +5,7 @@ using System.Linq;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor.SafeComWrappers.Office.Core;
+using Rubberduck.VBEditor.SafeComWrappers.Office.Enums;
 
 namespace Rubberduck.UI.Command.MenuItems.CommandBars
 {

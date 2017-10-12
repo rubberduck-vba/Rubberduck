@@ -13,16 +13,19 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Windows.Threading;
-using Microsoft.Vbe.Interop;
 using Ninject.Extensions.Interception;
 using NLog;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor.Events;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VB.Abstract;
+using VBAIA = Microsoft.Vbe.Interop;
+using VBA = Rubberduck.VBEditor.SafeComWrappers.VB.VBA;
+using VB6IA = Microsoft.VB6.Interop.VBIDE; 
+using VB6 = Rubberduck.VBEditor.SafeComWrappers.VB.VB6;
 using Rubberduck.VBEditor.WindowsApi;
 using User32 = Rubberduck.Common.WinAPI.User32;
-using Windows = Rubberduck.VBEditor.SafeComWrappers.VBA.Windows;
+
 
 namespace Rubberduck
 {
@@ -52,22 +55,20 @@ namespace Rubberduck
         {
             try
             {
-                if (Application is Microsoft.Vbe.Interop.VBE)
-                {
-                    var vbe = (VBE) Application;                  
-                    _ide = new VBEditor.SafeComWrappers.VBA.VBE(vbe);
+                if (Application is VBAIA.VBE vbae)
+                {                    
+                    _ide = new VBA.VBE(vbae);
                     VBENativeServices.HookEvents(_ide);
                     
-                    var addin = (AddIn)AddInInst;
-                    _addin = new VBEditor.SafeComWrappers.VBA.AddIn(addin) { Object = this };
+                    var addin = (VBAIA.AddIn)AddInInst;
+                    _addin = new VBA.AddIn(addin) { Object = this };
                 }
-                else if (Application is Microsoft.VB6.Interop.VBIDE.VBE)
-                {
-                    var vbe = Application as Microsoft.VB6.Interop.VBIDE.VBE;
-                    _ide = new VBEditor.SafeComWrappers.VB6.VBE(vbe);
+                else if (Application is VB6IA.VBE vb6e)
+                {                    
+                    _ide = new VB6.VBE(vb6e);
 
-                    var addin = (Microsoft.VB6.Interop.VBIDE.AddIn) AddInInst;
-                    _addin = new VBEditor.SafeComWrappers.VB6.AddIn(addin);
+                    var addin = (VB6IA.AddIn) AddInInst;
+                    _addin = new VB6.AddIn(addin);
                 }
 
 
@@ -244,7 +245,7 @@ namespace Rubberduck
                 User32.EnumChildWindows(_ide.MainWindow.Handle(), EnumCallback, new IntPtr(0));
 
                 _logger.Log(LogLevel.Trace, "Releasing dockable hosts...");
-                Windows.ReleaseDockableHosts();
+                VBA.Windows.ReleaseDockableHosts(); // TODO!!!
 
                 if (_app != null)
                 {
