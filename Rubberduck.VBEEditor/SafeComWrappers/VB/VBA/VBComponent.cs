@@ -23,7 +23,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB.VBA
 
         public string Name
         {
-            get { return IsWrappingNullReference ? string.Empty : Target.Name; }
+            get => IsWrappingNullReference ? string.Empty : Target.Name;
             set { if (!IsWrappingNullReference) Target.Name = value; }
         }
 
@@ -138,8 +138,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB.VBA
             {
                 if (line.Contains("OleObjectBlob"))
                 {
-                    var binaryFileName = line.Trim().Split(new Char[] { '"' })[1];
-                    var tempName = Path.GetFileName(tempFile);
+                    var binaryFileName = line.Trim().Split('"')[1];
                     var destPath = Directory.GetParent(path).FullName;
                     if (File.Exists(Path.Combine(tempFilePath, binaryFileName)) && !destPath.Equals(tempFilePath))
                     {

@@ -17,10 +17,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.v12
         {
         }
 
-        private Microsoft.Office.Core.CommandBarButton Button
-        {
-            get { return (Microsoft.Office.Core.CommandBarButton)Target; }
-        }
+        private Microsoft.Office.Core.CommandBarButton Button => (Microsoft.Office.Core.CommandBarButton)Target;
 
         public static ICommandBarButton FromCommandBarControl(ICommandBarControl control)
         {
@@ -79,31 +76,31 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.v12
 
         public bool IsBuiltInFace
         {
-            get { return !IsWrappingNullReference && Button.BuiltInFace; }
+            get => !IsWrappingNullReference && Button.BuiltInFace;
             set { if (!IsWrappingNullReference) Button.BuiltInFace = value; }
         }
 
         public int FaceId 
         {
-            get { return IsWrappingNullReference ? 0 : Button.FaceId; }
+            get => IsWrappingNullReference ? 0 : Button.FaceId;
             set { if (!IsWrappingNullReference) Button.FaceId = value; }
         }
 
         public string ShortcutText
         {
-            get { return IsWrappingNullReference ? string.Empty : Button.ShortcutText; }
+            get => IsWrappingNullReference ? string.Empty : Button.ShortcutText;
             set { if (!IsWrappingNullReference) Button.ShortcutText = value; }
         }
 
         public ButtonState State
         {
-            get { return IsWrappingNullReference ? 0 : (ButtonState)Button.State; }
+            get => IsWrappingNullReference ? 0 : (ButtonState)Button.State;
             set { if (!IsWrappingNullReference) Button.State = (Microsoft.Office.Core.MsoButtonState)value; }
         }
 
         public ButtonStyle Style
         {
-            get { return IsWrappingNullReference ? 0 : (ButtonStyle)Button.Style; }
+            get => IsWrappingNullReference ? 0 : (ButtonStyle)Button.Style;
             set { if (!IsWrappingNullReference) Button.Style = (Microsoft.Office.Core.MsoButtonStyle)value; }
         }
 
@@ -122,7 +119,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.v12
 
             if (!HasPictureProperty)
             {
-                using (var image = CreateTransparentImage(Picture, Mask))
+                using (var image = CreateTransparentImage(Picture))
                 {
                     Clipboard.SetImage(image);
                     Button.PasteFace();
@@ -170,7 +167,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.v12
             }
         }
 
-        private static Image CreateTransparentImage(Image image, Image mask)
+        private static Image CreateTransparentImage(Image image)
         {
             //HACK - just blend image with a SystemColors value (mask is ignored)
             //TODO - a real solution would use clipboard formats "Toolbar Button Face" AND "Toolbar Button Mask"

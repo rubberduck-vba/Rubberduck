@@ -1,5 +1,4 @@
-using VB6IA = Microsoft.VB6.Interop.VBIDE;
-
+using VBIA = Microsoft.VB6.Interop.VBIDE;
 namespace Rubberduck.VBEditor.SafeComWrappers.VB.VB6
 {
     //public class Controls : SafeComWrapper<VB6IA.Controls>, IControls

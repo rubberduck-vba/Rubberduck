@@ -1,6 +1,4 @@
 using System;
-using System.Runtime.InteropServices.ComTypes;
-using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.VB.Enums;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VB.Abstract

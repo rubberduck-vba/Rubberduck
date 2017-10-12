@@ -12,15 +12,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB.VBA
         {
         }
 
-        public int Count
-        {
-            get { return IsWrappingNullReference ? 0 : Target.Count; }
-        }
+        public int Count => IsWrappingNullReference ? 0 : Target.Count;
 
-        public IControl this[object index]
-        {
-            get { return IsWrappingNullReference ? new Control(null) : new Control((VBAIA.Forms.Control) Target.Item(index)); }
-        }
+        public IControl this[object index] => IsWrappingNullReference ? new Control(null) : new Control((VBAIA.Forms.Control) Target.Item(index));
 
         IEnumerator<IControl> IEnumerable<IControl>.GetEnumerator()
         {

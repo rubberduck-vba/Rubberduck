@@ -119,7 +119,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB.VBA
                 }
                 catch
                 {
-                    throw new IndexOutOfRangeException(string.Format("Could not find document component named '{0}'.  Try adding a document component with the same name and try again.", name));
+                    throw new IndexOutOfRangeException($"Could not find document component named '{name}'.  Try adding a document component with the same name and try again.");
                 }
 
                 var component = this[name];
