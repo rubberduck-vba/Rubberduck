@@ -44,7 +44,11 @@ namespace Rubberduck.Inspections.Concrete
         private bool FlagIfObjectVariableNotSet(IdentifierReference reference)
         {
             var letStmtContext = ParserRuleContextHelper.GetParent<VBAParser.LetStmtContext>(reference.Context);
-            return (reference.IsAssignment && letStmtContext != null);
+            var setStmtContext = ParserRuleContextHelper.GetParent<VBAParser.SetStmtContext>(reference.Context);
+            var setAssignmentExpression = setStmtContext?.expression()?.GetText();
+
+            return reference.IsAssignment && (letStmtContext != null 
+                   || (setAssignmentExpression?.Equals(Tokens.Nothing, StringComparison.InvariantCultureIgnoreCase) ?? false));
         }
     }
 }
