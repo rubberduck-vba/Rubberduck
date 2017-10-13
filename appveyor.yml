@@ -44,7 +44,7 @@ before_package:
 - cmd: copy Rubberduck.Inspections\bin\Release\Rubberduck.Inspections.dll RetailCoder.VBE\bin\Release\Rubberduck.Inspections.dll
 
 test_script:
-- OpenCover.Console.exe -register:user -target:"C:\Program Files (x86)\Microsoft Visual Studio 15.0\Common7\IDE\MSTest.exe" -targetargs:"/testcontainer:"".\RubberduckTest\bin\Debug\RubberduckTests.dll" -output:".\Rubberduck_Coverage.xml"
+- OpenCover.Console.exe -register:user -target:"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\MSTest.exe" -targetargs:"/testcontainer:"".\RubberduckTest\bin\Debug\RubberduckTests.dll" -output:".\Rubberduck_Coverage.xml"
 - codecov -f "Rubberduck_Coverage.xml"
 
 after_test:
