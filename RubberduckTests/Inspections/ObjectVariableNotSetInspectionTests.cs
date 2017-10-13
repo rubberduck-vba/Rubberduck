@@ -29,6 +29,23 @@ End Sub
 
         [TestMethod]
         [TestCategory("Inspections")]
+        public void ObjectVariableNotSet_AlsoAssignedToNothing_ReturnsNoResult()
+        {
+            var expectResultCount = 0;
+            var input =
+                @"
+Private Sub DoSomething()
+    Dim target As Object
+    Set target = New Object
+    target.DoSomething
+    Set target = Nothing
+End Sub
+";
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void ObjectVariableNotSet_GivenIndexerObjectAccess_ReturnsNoResult()
         {
             var expectResultCount = 0;
