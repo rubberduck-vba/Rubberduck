@@ -12,7 +12,7 @@ skip_commits:
   files:
   - docs/*
   - '**/*.md'
-  - '**/*.yml'
+  # - '**/*.yml'
   - license
   - License.rtf
 branches:
