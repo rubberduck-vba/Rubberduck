@@ -49,7 +49,7 @@ namespace Rubberduck.Inspections.Concrete
             var setAssignmentExpression = setStmtContext?.expression()?.GetText();
 
             return reference.IsAssignment && (letStmtContext != null 
-                   || allrefs.All(r => r.IsAssignment && (setAssignmentExpression?.Equals(Tokens.Nothing, StringComparison.InvariantCultureIgnoreCase) ?? false)));
+                   || allrefs.Where(r => r.IsAssignment).All(r => setAssignmentExpression?.Equals(Tokens.Nothing, StringComparison.InvariantCultureIgnoreCase) ?? false));
         }
     }
 }
