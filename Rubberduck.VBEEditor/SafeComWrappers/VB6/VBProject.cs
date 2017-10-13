@@ -13,85 +13,49 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         {
         }
 
-        public IApplication Application
-        {
-            get { throw new NotImplementedException(); }
-        }
+        public IApplication Application => throw new NotImplementedException();
 
-        public IApplication Parent
-        {
-            get { throw new NotImplementedException(); }
-        }
+        public IApplication Parent => throw new NotImplementedException();
 
-        public string ProjectId { get { return HelpFile; } }
+        public string ProjectId => HelpFile;
 
         public string HelpFile
         {
-            get { return IsWrappingNullReference ? string.Empty : Target.HelpFile; }
-            set { Target.HelpFile = value; }
+            get => IsWrappingNullReference ? string.Empty : Target.HelpFile;
+            set => Target.HelpFile = value;
         }
 
         public string Description 
         {
-            get { return IsWrappingNullReference ? string.Empty : Target.Description; }
-            set { Target.Description = value; } 
+            get => IsWrappingNullReference ? string.Empty : Target.Description;
+            set => Target.Description = value;
         }
 
         public string Name
         {
-            get { return IsWrappingNullReference ? string.Empty : Target.Name; }
-            set { Target.Name = value; }
+            get => IsWrappingNullReference ? string.Empty : Target.Name;
+            set => Target.Name = value;
         }
 
-        public EnvironmentMode Mode
-        {
-            get { throw new NotImplementedException(); }
-        }
+        public EnvironmentMode Mode => throw new NotImplementedException();
 
-        public IVBProjects Collection
-        {
-            get { return new VBProjects(IsWrappingNullReference ? null : Target.Collection); }
-        }
+        public IVBProjects Collection => new VBProjects(IsWrappingNullReference ? null : Target.Collection);
 
-        public IReferences References
-        {
-            get { throw new NotImplementedException(); }
-        }
+        public IReferences References => throw new NotImplementedException();
 
-        public IVBComponents VBComponents
-        {
-            get { throw new NotImplementedException(); }
-        }
+        public IVBComponents VBComponents => throw new NotImplementedException();
 
-        public ProjectProtection Protection
-        {
-            get { throw new NotImplementedException(); }
-        }
+        public ProjectProtection Protection => throw new NotImplementedException();
 
-        public bool IsSaved
-        {
-            get { return !IsWrappingNullReference && Target.Saved; }
-        }
+        public bool IsSaved => !IsWrappingNullReference && Target.Saved;
 
-        public ProjectType Type
-        {
-            get { return IsWrappingNullReference ? 0 : (ProjectType)Target.Type; }
-        }
+        public ProjectType Type => IsWrappingNullReference ? 0 : (ProjectType)Target.Type;
 
-        public string FileName
-        {
-            get { return IsWrappingNullReference ? string.Empty : Target.FileName; }
-        }
+        public string FileName => IsWrappingNullReference ? string.Empty : Target.FileName;
 
-        public string BuildFileName
-        {
-            get { return IsWrappingNullReference ? string.Empty : Target.BuildFileName; }
-        }
+        public string BuildFileName => IsWrappingNullReference ? string.Empty : Target.BuildFileName;
 
-        public IVBE VBE
-        {
-            get { return new VBE(IsWrappingNullReference ? null : Target.VBE); }
-        }
+        public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
 
         public void SaveAs(string fileName)
         {

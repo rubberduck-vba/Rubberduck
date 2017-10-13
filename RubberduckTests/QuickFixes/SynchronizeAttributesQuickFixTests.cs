@@ -5,15 +5,16 @@ using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
+using RubberduckTests.Inspections;
 
-namespace RubberduckTests.Inspections
+namespace RubberduckTests.QuickFixes
 {
     [TestClass]
     public class SynchronizeAttributesQuickFixTests
     {
         [TestMethod]
+        [TestCategory("QuickFixes")]
         public void AddsMissingPredeclaredIdAnnotation()
         {
             const string testModuleName = "Test";
@@ -40,14 +41,13 @@ Option Explicit
 
 Sub DoSomething()
 End Sub";
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out _);
 
             var state = MockParser.CreateAndParse(vbe.Object);
             var inspection = new MissingAnnotationInspection(state);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var result = inspector.FindIssuesAsync(state, CancellationToken.None).Result?.SingleOrDefault();
-            if(result?.Context.GetType() != typeof(VBAParser.AttributeStmtContext))
+            if (result?.Context.GetType() != typeof(VBAParser.AttributeStmtContext))
             {
                 Assert.Inconclusive("Inspection failed to return a result.");
             }
@@ -62,6 +62,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("QuickFixes")]
         public void AddsMissingDescriptionAnnotation()
         {
             const string testModuleName = "Test";
@@ -88,14 +89,13 @@ Option Explicit
 Sub DoSomething()
 Attribute DoSomething.VB_Description = ""Does something""
 End Sub";
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out _);
 
             var state = MockParser.CreateAndParse(vbe.Object);
             var inspection = new MissingAnnotationInspection(state);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var result = inspector.FindIssuesAsync(state, CancellationToken.None).Result?.SingleOrDefault();
-            if(result?.Context.GetType() != typeof(VBAParser.AttributeStmtContext))
+            if (result?.Context.GetType() != typeof(VBAParser.AttributeStmtContext))
             {
                 Assert.Inconclusive("Inspection failed to return a result.");
             }
@@ -110,6 +110,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("QuickFixes")]
         public void AddsDefaultMemberAnnotation()
         {
             const string testModuleName = "Test";
@@ -136,14 +137,13 @@ Option Explicit
 Sub DoSomething()
 Attribute DoSomething.VB_UserMemId = 0
 End Sub";
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out _);
 
             var state = MockParser.CreateAndParse(vbe.Object);
             var inspection = new MissingAnnotationInspection(state);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var result = inspector.FindIssuesAsync(state, CancellationToken.None).Result?.SingleOrDefault();
-            if(result?.Context.GetType() != typeof(VBAParser.AttributeStmtContext))
+            if (result?.Context.GetType() != typeof(VBAParser.AttributeStmtContext))
             {
                 Assert.Inconclusive("Inspection failed to return a result.");
             }
@@ -158,6 +158,7 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("QuickFixes")]
         public void AddsEnumeratorMemberAnnotation()
         {
             const string testModuleName = "Test";
@@ -184,14 +185,13 @@ Option Explicit
 Public Property Get NewEnum() As IUnknown
 Attribute NewEnum.VB_UserMemId = -4
 End Property";
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out _);
 
             var state = MockParser.CreateAndParse(vbe.Object);
             var inspection = new MissingAnnotationInspection(state);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var result = inspector.FindIssuesAsync(state, CancellationToken.None).Result?.SingleOrDefault();
-            if(result?.Context.GetType() != typeof(VBAParser.AttributeStmtContext))
+            if (result?.Context.GetType() != typeof(VBAParser.AttributeStmtContext))
             {
                 Assert.Inconclusive("Inspection failed to return a result.");
             }
@@ -206,6 +206,7 @@ End Property";
         }
 
         [TestMethod]
+        [TestCategory("QuickFixes")]
         public void AddsMissingPredeclaredIdAttribute()
         {
             const string testModuleName = "Test";
@@ -236,14 +237,13 @@ Option Explicit
 '@PredeclaredId
 ";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out _);
 
             var state = MockParser.CreateAndParse(vbe.Object);
             var inspection = new MissingAttributeInspection(state);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var result = inspector.FindIssuesAsync(state, CancellationToken.None).Result?.SingleOrDefault();
-            if(result?.Context.GetType() != typeof(VBAParser.AnnotationContext))
+            if (result?.Context.GetType() != typeof(VBAParser.AnnotationContext))
             {
                 Assert.Inconclusive("Inspection failed to return a result.");
             }
@@ -258,6 +258,7 @@ Option Explicit
         }
 
         [TestMethod]
+        [TestCategory("QuickFixes")]
         public void AddsMissingExposedAttribute()
         {
             const string testModuleName = "Test";
@@ -288,14 +289,13 @@ Option Explicit
 '@Exposed
 ";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out _);
 
             var state = MockParser.CreateAndParse(vbe.Object);
             var inspection = new MissingAttributeInspection(state);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var result = inspector.FindIssuesAsync(state, CancellationToken.None).Result?.SingleOrDefault();
-            if(result?.Context.GetType() != typeof(VBAParser.AnnotationContext))
+            if (result?.Context.GetType() != typeof(VBAParser.AnnotationContext))
             {
                 Assert.Inconclusive("Inspection failed to return a result.");
             }

@@ -8,16 +8,14 @@ using RubberduckTests.Mocks;
 using Rubberduck.UI.Refactorings;
 using System.Windows.Forms;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.VBA;
 
-namespace RubberduckTests.Inspections
+namespace RubberduckTests.QuickFixes
 {
     [TestClass]
     public class AssignedByValParameterMakeLocalCopyQuickFixTests
     {
         [TestMethod]
-        [TestCategory("Inspections")]
+        [TestCategory("QuickFixes")]
         public void AssignedByValParameter_LocalVariableAssignment()
         {
             var inputCode =
@@ -34,9 +32,9 @@ End Sub";
             var quickFixResult = ApplyLocalVariableQuickFixToCodeFragment(inputCode);
             Assert.AreEqual(expectedCode, quickFixResult);
         }
-        
+
         [TestMethod]
-        [TestCategory("Inspections")]
+        [TestCategory("QuickFixes")]
         public void AssignedByValParameter_LocalVariableAssignment_ComplexFormat()
         {
             var inputCode =
@@ -71,7 +69,7 @@ End Sub
         }
 
         [TestMethod]
-        [TestCategory("Inspections")]
+        [TestCategory("QuickFixes")]
         public void AssignedByValParameter_LocalVariableAssignment_ComputedNameAvoidsCollision()
         {
             var inputCode =
@@ -98,7 +96,7 @@ End Sub"
         }
 
         [TestMethod]
-        [TestCategory("Inspections")]
+        [TestCategory("QuickFixes")]
         public void AssignedByValParameter_LocalVariableAssignment_NameInUseOtherSub()
         {
             //Make sure the modified code stays within the specific method under repair
@@ -130,7 +128,7 @@ End Sub"
         }
 
         [TestMethod]
-        [TestCategory("Inspections")]
+        [TestCategory("QuickFixes")]
         public void AssignedByValParameter_LocalVariableAssignment_NameInUseOtherProperty()
         {
             //Make sure the modified code stays within the specific method under repair
@@ -168,7 +166,7 @@ End Function
 
         //Replicates issue #2873 : AssignedByValParameter quick fix needs to use `Set` for reference types.
         [TestMethod]
-        [TestCategory("Inspections")]
+        [TestCategory("QuickFixes")]
         public void AssignedByValParameter_LocalVariableAssignment_UsesSet()
         {
             var inputCode =
@@ -191,7 +189,7 @@ End Sub"
         }
 
         [TestMethod]
-        [TestCategory("Inspections")]
+        [TestCategory("QuickFixes")]
         public void AssignedByValParameter_LocalVariableAssignment_NoAsTypeClause()
         {
             var inputCode =
@@ -214,7 +212,7 @@ End Sub"
         }
 
         [TestMethod]
-        [TestCategory("Inspections")]
+        [TestCategory("QuickFixes")]
         public void AssignedByValParameter_LocalVariableAssignment_EnumType()
         {
             var inputCode =
@@ -254,30 +252,23 @@ End Sub"
 
             var mockDialogFactory = BuildMockDialogFactory(userEnteredName);
 
-            RubberduckParserState state;
-            var inspectionResults = GetInspectionResults(vbe.Object, out state);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new AssignedByValParameterInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
             var result = inspectionResults.FirstOrDefault();
             if (result == null)
             {
                 Assert.Inconclusive("Inspection yielded no results.");
             }
-            
+
             new AssignedByValParameterMakeLocalCopyQuickFix(state, mockDialogFactory.Object).Fix(result);
             return state.GetRewriter(vbe.Object.ActiveVBProject.VBComponents[0]).GetText();
         }
 
         private Mock<IVBE> BuildMockVBE(string inputCode)
         {
-            IVBComponent component;
-            return MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-        }
-
-        private IEnumerable<IInspectionResult> GetInspectionResults(IVBE vbe, out RubberduckParserState state)
-        {
-            state = MockParser.CreateAndParse(vbe);
-
-            var inspection = new AssignedByValParameterInspection(state);
-            return inspection.GetInspectionResults();
+            return MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
         }
 
         private Mock<IAssignedByValParameterQuickFixDialogFactory> BuildMockDialogFactory(string userEnteredName)

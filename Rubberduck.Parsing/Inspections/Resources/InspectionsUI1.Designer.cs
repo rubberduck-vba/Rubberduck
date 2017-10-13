@@ -19,7 +19,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class InspectionsUI {
@@ -313,6 +313,60 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A Case block should have executable statements.
+        /// </summary>
+        public static string EmptyCaseBlockInspectionMeta {
+            get {
+                return ResourceManager.GetString("EmptyCaseBlockInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Empty Case block.
+        /// </summary>
+        public static string EmptyCaseBlockInspectionName {
+            get {
+                return ResourceManager.GetString("EmptyCaseBlockInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Case block has no executable statements.
+        /// </summary>
+        public static string EmptyCaseBlockInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("EmptyCaseBlockInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A Loop block should have executable statements.
+        /// </summary>
+        public static string EmptyDoWhileBlockInspectionMeta {
+            get {
+                return ResourceManager.GetString("EmptyDoWhileBlockInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Empty Do-While Loop.
+        /// </summary>
+        public static string EmptyDoWhileBlockInspectionName {
+            get {
+                return ResourceManager.GetString("EmptyDoWhileBlockInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do-While Loop has no executable statements.
+        /// </summary>
+        public static string EmptyDoWhileBlockInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("EmptyDoWhileBlockInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An Else block should have executable statements.
         /// </summary>
         public static string EmptyElseBlockInspectionMeta {
@@ -336,6 +390,60 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         public static string EmptyElseBlockInspectionResultFormat {
             get {
                 return ResourceManager.GetString("EmptyElseBlockInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A Loop block should have executable statements.
+        /// </summary>
+        public static string EmptyForEachBlockInspectionMeta {
+            get {
+                return ResourceManager.GetString("EmptyForEachBlockInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Empty For-Each Loop.
+        /// </summary>
+        public static string EmptyForEachBlockInspectionName {
+            get {
+                return ResourceManager.GetString("EmptyForEachBlockInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For-Each Loop has no executable statements.
+        /// </summary>
+        public static string EmptyForEachBlockInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("EmptyForEachBlockInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A Loop block should have executable statements.
+        /// </summary>
+        public static string EmptyForLoopBlockInspectionMeta {
+            get {
+                return ResourceManager.GetString("EmptyForLoopBlockInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Empty For Loop.
+        /// </summary>
+        public static string EmptyForLoopBlockInspectionName {
+            get {
+                return ResourceManager.GetString("EmptyForLoopBlockInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For Loop has no executable statements.
+        /// </summary>
+        public static string EmptyForLoopBlockInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("EmptyForLoopBlockInspectionResultFormat", resourceCulture);
             }
         }
         
@@ -408,6 +516,33 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         public static string EmptyStringLiteralInspectionResultFormat {
             get {
                 return ResourceManager.GetString("EmptyStringLiteralInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A Loop block should have executable statements.
+        /// </summary>
+        public static string EmptyWhileWendBlockInspectionMeta {
+            get {
+                return ResourceManager.GetString("EmptyWhileWendBlockInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Empty While-Wend block.
+        /// </summary>
+        public static string EmptyWhileWendBlockInspectionName {
+            get {
+                return ResourceManager.GetString("EmptyWhileWendBlockInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to While-Wend block has no executable statements.
+        /// </summary>
+        public static string EmptyWhileWendBlockInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("EmptyWhileWendBlockInspectionResultFormat", resourceCulture);
             }
         }
         
@@ -1222,6 +1357,24 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The &apos;Error&apos; statement only exists in the language to support legacy code that required it; prefer using &apos;Err.Raise&apos; instead..
+        /// </summary>
+        public static string ObsoleteErrorSyntaxInspectionMeta {
+            get {
+                return ResourceManager.GetString("ObsoleteErrorSyntaxInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error throw uses obsolete &apos;Error&apos; statement.
+        /// </summary>
+        public static string ObsoleteErrorSyntaxInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("ObsoleteErrorSyntaxInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The &apos;Global&apos; keyword only exists in the language to support legacy code that required it; it can be safely replaced with the &apos;Public&apos; modifier..
         /// </summary>
         public static string ObsoleteGlobalInspectionMeta {
@@ -1699,6 +1852,15 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Remove usage of the &apos;stop&apos; keyword.
+        /// </summary>
+        public static string RemoveStopKeywordQuickFix {
+            get {
+                return ResourceManager.GetString("RemoveStopKeywordQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Remove type hints.
         /// </summary>
         public static string RemoveTypeHintsQuickFix {
@@ -1753,6 +1915,15 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Replace &apos;Error&apos; with &apos;Err.Raise&apos;.
+        /// </summary>
+        public static string ReplaceObsoleteErrorStatementQuickFix {
+            get {
+                return ResourceManager.GetString("ReplaceObsoleteErrorStatementQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An auto-instantiated object variable declaration at procedure scope changes how nulling the reference works, which can lead to unexpected behavior..
         /// </summary>
         public static string SelfAssignedDeclarationInspectionMeta {
@@ -1798,6 +1969,33 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Two declarations are in scope and have the same identifier name. This means that only one of them will be available to use..
+        /// </summary>
+        public static string ShadowedDeclarationInspectionMeta {
+            get {
+                return ResourceManager.GetString("ShadowedDeclarationInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shadowed declaration.
+        /// </summary>
+        public static string ShadowedDeclarationInspectionName {
+            get {
+                return ResourceManager.GetString("ShadowedDeclarationInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} &apos;{1}&apos; hides {2} &apos;{3}&apos;.
+        /// </summary>
+        public static string ShadowedDeclarationInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("ShadowedDeclarationInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Specify Public access modifier explicitly.
         /// </summary>
         public static string SpecifyExplicitPublicModifierQuickFix {
@@ -1812,6 +2010,33 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         public static string SplitMultipleDeclarationsQuickFix {
             get {
                 return ResourceManager.GetString("SplitMultipleDeclarationsQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;stop&apos; keyword halts execution and brings up the debugger. Avoid its usage..
+        /// </summary>
+        public static string StopKeywordInspectionMeta {
+            get {
+                return ResourceManager.GetString("StopKeywordInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stop keyword.
+        /// </summary>
+        public static string StopKeywordInspectionName {
+            get {
+                return ResourceManager.GetString("StopKeywordInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stop keyword detected.
+        /// </summary>
+        public static string StopKeywordInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("StopKeywordInspectionResultFormat", resourceCulture);
             }
         }
         

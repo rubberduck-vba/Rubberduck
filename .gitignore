@@ -6,6 +6,7 @@
 *.user
 *.sln.docstates
 *.csproj.user
+*.csproj.DotSettings
 
 # External NuGet Packages
 [Pp]ackages/

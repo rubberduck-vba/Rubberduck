@@ -255,7 +255,7 @@ namespace Rubberduck.UI.Inspections
         }
 
         private bool _isBusy;
-        public bool IsBusy { get { return _isBusy; } set { _isBusy = value; OnPropertyChanged(); } }
+        public bool IsBusy { get { return _isBusy; } set { _isBusy = value; OnPropertyChanged(); OnPropertyChanged("EmptyUIRefreshMessageVisibility"); } }
 
         private bool _runInspectionsOnReparse;
         private void HandleStateChanged(object sender, EventArgs e)
@@ -301,11 +301,12 @@ namespace Rubberduck.UI.Inspections
                     .ToList();
             }
 
+            Results = new ObservableCollection<IInspectionResult>(results);
+
             UiDispatcher.Invoke(() =>
             {
-                Results = new ObservableCollection<IInspectionResult>(results);
-
                 IsBusy = false;
+                OnPropertyChanged("EmptyUIRefreshVisibility");
                 IsRefreshing = false;
                 SelectedItem = null;
             });
@@ -474,6 +475,22 @@ namespace Rubberduck.UI.Inspections
         private bool CanExecuteCopyResultsCommand(object parameter)
         {
             return !IsBusy && _results != null && _results.Any();
+        }
+
+        public Visibility EmptyUIRefreshVisibility
+        {
+            get
+            {
+                return _state.Projects.Count > 0 ? Visibility.Hidden : Visibility.Visible;
+            }
+        }
+
+        public Visibility EmptyUIRefreshMessageVisibility
+        {
+            get
+            {
+                return _isBusy ? Visibility.Hidden : Visibility.Visible;
+            }
         }
 
         public void Dispose()

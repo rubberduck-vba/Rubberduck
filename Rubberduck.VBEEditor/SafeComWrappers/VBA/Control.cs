@@ -13,7 +13,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public string Name
         {
-            get { return IsWrappingNullReference ? string.Empty : Target.Name; }
+            get => IsWrappingNullReference ? string.Empty : Target.Name;
             set { if (!IsWrappingNullReference) Target.Name = value; }
         }
 

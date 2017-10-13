@@ -13,7 +13,6 @@ skip_commits:
   - docs/*
   - '**/*.md'
   - '**/*.yml'
-  - '**/.*'
   - license
   - License.rtf
 branches:
@@ -21,11 +20,11 @@ branches:
   - master
   - next
 skip_tags: true
-image: Visual Studio 2015
+image: Visual Studio 2017
 configuration: Release
 platform: Any CPU
 install:
-- cmd: set PATH=C:\Program Files (x86)\MSBuild\14.0\Bin;%PATH%
+- cmd: set PATH=C:\Program Files (x86)\MSBuild\15.0\Bin;%PATH%
 init:
   - git config --global core.autocrlf true
 before_build:

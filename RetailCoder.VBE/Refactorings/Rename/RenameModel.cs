@@ -40,7 +40,7 @@ namespace Rubberduck.Refactorings.Rename
         private void AcquireTarget(out Declaration target, QualifiedSelection selection)
         {
             target = _declarations
-                .Where(item => item.IsUserDefined && item.DeclarationType != DeclarationType.ModuleOption)
+                .Where(item => item.IsUserDefined)
                 .FirstOrDefault(item => item.IsSelected(selection) || item.References.Any(r => r.IsSelected(selection)));
         }
     }

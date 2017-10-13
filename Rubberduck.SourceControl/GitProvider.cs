@@ -52,13 +52,13 @@ namespace Rubberduck.SourceControl
             _credentialsHandler = (url, user, cred) => _credentials;
         }
 
-        public GitProvider(IVBProject project, IRepository repository, ICredentials<SecureString> credentials)
+        public GitProvider(IVBProject project, IRepository repository, ICredentials<SecureString> secureCredentials)
             : this(project, repository)
         {
             _credentials = new SecureUsernamePasswordCredentials()
             {
-                Username = credentials.Username,
-                Password = credentials.Password
+                Username = secureCredentials.Username,
+                Password = secureCredentials.Password
             };
 
             _credentialsHandler = (url, user, cred) => _credentials;
