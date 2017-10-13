@@ -4,7 +4,7 @@ skip_commits:
   files:
   - docs/*
   - '**/*.md'
-  - '**/*.yml'
+  # - '**/*.yml'
   - license
   - License.rtf
 branches:
@@ -21,7 +21,10 @@ install:
 init:
   - git config --global core.autocrlf true
 before_build:
-  - choco install innosetup
+- choco install innosetup
+- choco install opencover.portable
+- choco install codecov
+- nuget restore
 build:
   verbosity: minimal
 assembly_info:
@@ -47,6 +50,9 @@ for:
     - iscc /q "Installer Build Script.iss" 
     - cmd: move Installers\Rubberduck.Setup.exe Installers\Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%.exe
     
+test_script:
+- OpenCover.Console.exe -register:user -target:"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\MSTest.exe" -targetargs:"/testcontainer:"".\RubberduckTests\bin\Release\RubberduckTests.dll" -output:".\Rubberduck_Coverage.xml"
+- codecov -f "Rubberduck_Coverage.xml"
 artifacts:
 - path: Installers\Rubberduck.Setup.*.exe
   name: Rubberduck
