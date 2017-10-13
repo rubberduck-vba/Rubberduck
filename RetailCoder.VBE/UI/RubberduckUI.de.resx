@@ -912,13 +912,13 @@ Wollen Sie trotzdem fortfahren?</value>
     <value>Bitte spezifizieren Sie den Interface-Namen und die Mitglieder</value>
   </data>
   <data name="IndentCurrentModule" xml:space="preserve">
-    <value>Aktuelles &amp;Projekt</value>
+    <value>Aktuelles &amp;Modul</value>
   </data>
   <data name="IndentCurrentProcedure" xml:space="preserve">
-    <value>Aktuelle Pro&amp;zedur</value>
+    <value>Aktuelle &amp;Prozedur</value>
   </data>
   <data name="IndentCurrentProject" xml:space="preserve">
-    <value>Current Project</value>
+    <value>Aktuelles Projekt</value>
   </data>
   <data name="SmartIndenterMenu" xml:space="preserve">
     <value>Ein&amp;rücken</value>
@@ -1637,7 +1637,7 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
     <value>Rubberduck - Regexassistent</value>
   </data>
   <data name="ToolsMenu" xml:space="preserve">
-    <value>T&amp;ools</value>
+    <value>&amp;Werkzeuge</value>
   </data>
   <data name="ToolsMenu_RegexAssistant" xml:space="preserve">
     <value>Regex&amp;assistent</value>
@@ -1964,90 +1964,90 @@ Möchten sie die Einstellungen in Rubberduck importieren?</value>
     <value>Vorschau</value>
   </data>
   <data name="CodeExplorer_OpenDesigner">
-    <value />
+    <value>Designer öffnen</value>
   </data>
   <data name="SourceControl_InitializeRepositoryTitle">
-    <value />
+    <value>Neues lokales Repository erstellen.</value>
   </data>
   <data name="EmptyUIRefreshMessage">
-    <value />
+    <value>Um die Projekte in der VBE zu parsen und zu analysieren.</value>
   </data>
   <data name="CodeExplorer_ExportAll">
-    <value />
+    <value>Projekt exportieren...</value>
   </data>
   <data name="ToolsMenu_ExportProject">
-    <value />
+    <value>Aktives Projekt exportieren</value>
   </data>
   <data name="ImportCommand_OpenDialog_Filter_VBFiles">
-    <value />
+    <value>VB Dateien</value>
   </data>
   <data name="GeneralSettings_EnableSourceControl">
-    <value />
+    <value>Versionsverwaltung aktivieren. Benötigt Neustart zur Anwendung.</value>
   </data>
   <data name="RenameDialog_BuiltInNameError">
-    <value />
+    <value>{0} {1} kann nicht geändert werden.</value>
   </data>
   <data name="SourceControl_InitializeRepositoryDescription">
-    <value />
+    <value>Erstellt aus dem aktiven Projekt ein neues lokales Repository.</value>
   </data>
   <data name="RenamePresenter_TargetIsControlEventHandler">
-    <value />
+    <value>Methode '{0}' ist ein EventHandler für die Schaltfläche '{1}'. Nur die Schaltfläche kann umbenannt werden. Stattdessen '{1}' umbennen?</value>
   </data>
   <data name="ImportCommand_OpenDialog_Filter_AllFiles">
-    <value />
+    <value>Alle Dateien</value>
   </data>
   <data name="SourceControl_CloneRepositoryDescription">
-    <value />
+    <value>Ein entferntes Repository von einer anzugebenden URL auf die lokale Festplatte klonen. Das Repository wird anschließend in das aktive Projekt geladen.</value>
   </data>
   <data name="CodeExplorer_SortStyle_ByType">
-    <value />
+    <value>Nach Typ gruppieren</value>
   </data>
   <data name="CodeExplorer_AddModule">
-    <value />
+    <value>Modul hinzufügen</value>
   </data>
   <data name="CodeExplorer_SortStyle_ByName">
-    <value />
+    <value>nach Name</value>
   </data>
   <data name="ImportCommand_OpenDialog_Title">
-    <value />
+    <value>Quellcode aus Datei importieren</value>
   </data>
   <data name="SourceControl_OpenRepositoryTitle">
-    <value />
+    <value>Lokales Repository öffnen</value>
   </data>
   <data name="EmptyUIRefreshMessage_Title">
-    <value />
+    <value>Rubberduck sieht noch nichts</value>
   </data>
   <data name="GeneralSettings_ExperimentalFeaturesWarning">
-    <value />
+    <value>Auf eigene Verantwortung und Gefahr aktivieren. Aktivierung und / oder Verwendung von Funktionalitäten in dieser Sektion kann zu unvorhergesehenen Fehlern und unwiederbringlichem Datenverlust führen.</value>
   </data>
   <data name="HotkeyDescription_ExportActiveProject">
-    <value />
+    <value>Aktives Projekt exportieren</value>
   </data>
   <data name="CodeExplorer_Open">
-    <value />
+    <value>Öffnen</value>
   </data>
   <data name="RenamePresenter_TargetIsEventHandlerImplementation">
-    <value />
+    <value>Die Methode '{0}' ist eine Implementierung des Ereignisses '{1}.{2}'. Stattdessen Ereignis '{2}' umbenennen?</value>
   </data>
   <data name="ExportAllCommand_SaveAsDialog_Title">
-    <value />
+    <value>Einen Ordner als Ziel für den Quellcode von {0} wählen:</value>
   </data>
   <data name="CodeExplorer_AddFormText">
-    <value />
+    <value>Formular (.frm)</value>
   </data>
   <data name="GeneralSettings_ExperimentalFeatures">
-    <value />
+    <value>Experimentelle Funktionalität:</value>
   </data>
   <data name="CodeExplorer_AddTestModuleWithStubsText">
-    <value />
+    <value>Testmodul mit Skelettmethoden</value>
   </data>
   <data name="SourceControl_OpenRepositoryDescription">
-    <value />
+    <value>Lokales Repository auf der Festplatte öffnen. Das aktive Projekt wird den Quellcode übernehmen.</value>
   </data>
   <data name="CodeExplorer_SortStyle_ByCodeOrder">
-    <value />
+    <value>Wie im Modul deklariert</value>
   </data>
   <data name="RubberduckMenu_Refresh">
-    <value />
+    <value>Aktualisieren</value>
   </data>
 </root>
