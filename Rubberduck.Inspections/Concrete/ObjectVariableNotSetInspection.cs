@@ -45,11 +45,9 @@ namespace Rubberduck.Inspections.Concrete
         {
             var allrefs = reference.Declaration.References;
             var letStmtContext = ParserRuleContextHelper.GetParent<VBAParser.LetStmtContext>(reference.Context);
-            var setStmtContext = ParserRuleContextHelper.GetParent<VBAParser.SetStmtContext>(reference.Context);
-            var setAssignmentExpression = setStmtContext?.expression()?.GetText();
 
             return reference.IsAssignment && (letStmtContext != null 
-                   || allrefs.Where(r => r.IsAssignment).All(r => setAssignmentExpression?.Equals(Tokens.Nothing, StringComparison.InvariantCultureIgnoreCase) ?? false));
+                   || allrefs.Where(r => r.IsAssignment).All(r => ParserRuleContextHelper.GetParent<VBAParser.SetStmtContext>(r.Context)?.expression()?.GetText().Equals(Tokens.Nothing, StringComparison.InvariantCultureIgnoreCase) ?? false));
         }
     }
 }
