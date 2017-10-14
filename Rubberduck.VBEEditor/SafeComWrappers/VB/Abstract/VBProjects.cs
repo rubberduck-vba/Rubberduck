@@ -9,9 +9,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB.Abstract
 {
     public abstract class VBProjects
     {
-        private static readonly object _locker = new object();        
-        private static IComIds _comIds;
+        private static readonly object _locker = new object();
         private static object _projects;
+        private static IComIds _comIds;        
 
         protected VBProjects(object target, VBType vbType)
         {
@@ -113,7 +113,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB.Abstract
         where T : class
     {
         private readonly VBProjectsWrapper<T> _comWrapper;
-        protected VBProjects(T target, VBType vbType) : base(target, vbType)
+        protected VBProjects(T target, VBType vbType) 
+            : base(target, vbType)
         {
             _comWrapper = new VBProjectsWrapper<T>(target, Equals, GetHashCode);
         }

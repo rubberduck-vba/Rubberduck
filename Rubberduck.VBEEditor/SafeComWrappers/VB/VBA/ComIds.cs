@@ -6,7 +6,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB.VBA
     internal class ComIds : IComIds
     {
         private static readonly Guid _vBComponentsEventsGuid = new Guid("0002E116-0000-0000-C000-000000000046");
-        private static readonly Guid _vBProjectsEventsGuid = new Guid("0002E190-0000-0000-C000-000000000046");
+        private static readonly Guid _vBProjectsEventsGuid = new Guid("0002E103-0000-0000-C000-000000000046");
         private static readonly IComponentEventDispIds _componentEventDispIds = new ComponentEventDispIdsPrivate();
         private static readonly IProjectEventDispIds _projectEventDispIds = new ProjectEventDispIdsPrivate();
 
