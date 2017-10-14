@@ -199,5 +199,76 @@ End Sub";
 
             Assert.IsFalse(results.Any());
         }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void BlockContainsPrefixComment()
+        {
+            const string inputcode =
+                @"Sub Foo()
+    Dim d
+    If True Then
+        ' test
+        d = True
+    Else
+        d = False
+    EndIf
+End Sub";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputcode, out _);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new BooleanAssignedInIfElseInspection(state);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var results = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            Assert.AreEqual(1, results.Count());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void BlockContainsPostfixComment()
+        {
+            const string inputcode =
+                @"Sub Foo()
+    Dim d
+    If True Then
+        d = True
+        ' test
+    Else
+        d = False
+    EndIf
+End Sub";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputcode, out _);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new BooleanAssignedInIfElseInspection(state);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var results = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            Assert.AreEqual(1, results.Count());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void BlockContainsEOLComment()
+        {
+            const string inputcode =
+                @"Sub Foo()
+    Dim d
+    If True Then
+        d = True    ' test
+    Else
+        d = False
+    EndIf
+End Sub";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputcode, out _);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new BooleanAssignedInIfElseInspection(state);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var results = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            Assert.AreEqual(1, results.Count());
+        }
     }
 }
