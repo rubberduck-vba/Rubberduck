@@ -19,13 +19,27 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB.VB6
 
         public IApplication Parent => throw new NotImplementedException();
 
-        public IWindow this[object index] => new Window(Target.Item(index));
+        public IWindow this[object index] => new Window(Target.Item(index));       
+
+        private static readonly Dictionary<VB6IA.Window, object> _dockableHosts = new Dictionary<VB6IA.Window, object>();
 
         public ToolWindowInfo CreateToolWindow(IAddIn addInInst, string progId, string caption, string guidPosition)
         {
+            if (IsWrappingNullReference) return new ToolWindowInfo(null, null);
             object control = null;
-            var window = new Window(Target.CreateToolWindow((VB6IA.AddIn)addInInst.Target, progId, caption, guidPosition, ref control));
-            return new ToolWindowInfo(window, control);
+            var window = Target.CreateToolWindow((VB6IA.AddIn)addInInst.Target, progId, caption, guidPosition, ref control);
+            _dockableHosts.Add(window, control);
+            return new ToolWindowInfo(new Window(window), control);
+        }
+
+        public void ReleaseDockableHosts()
+        {
+            foreach (var item in _dockableHosts)
+            {
+                item.Key.Close();
+                dynamic host = item.Value;
+                host.Release();
+            }
         }
 
         IEnumerator IEnumerable.GetEnumerator()

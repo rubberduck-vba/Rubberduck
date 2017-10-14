@@ -1,6 +1,6 @@
 using System;
 using System.Windows.Forms;
-using Microsoft.Vbe.Interop;
+using Rubberduck.VBEditor.SafeComWrappers.VB.Abstract;
 
 namespace Rubberduck.Common
 {
@@ -9,16 +9,13 @@ namespace Rubberduck.Common
     /// </summary>
     public class KeyHookEventArgs : EventArgs
     {
-        private readonly Keys _key;
-        private readonly VBComponent _component;
-
-        public KeyHookEventArgs(Keys key, VBComponent component)
+        public KeyHookEventArgs(Keys key, IVBComponent component)
         {
-            _key = key;
-            _component = component;
+            Key = key;
+            Component = component;
         }
 
-        public Keys Key { get { return _key; } }
-        public VBComponent Component { get { return _component; } }
+        public Keys Key { get; }
+        public IVBComponent Component { get; }
     }
 }

@@ -19,10 +19,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB.Abstract
         ICodePanes CodePanes { get; }
         ICommandBars CommandBars { get; }
         IWindows Windows { get; }
-
         IHostApplication HostApplication();
         IWindow ActiveMDIChild();
-
         bool IsInDesignMode { get; }
+        void SetSelection(IVBProject vbProject, Selection selection, string name);
     }
 }

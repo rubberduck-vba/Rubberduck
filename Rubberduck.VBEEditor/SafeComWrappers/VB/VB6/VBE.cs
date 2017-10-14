@@ -127,5 +127,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB.VB6
         {
             get { return VBProjects.All(project => project.Mode == EnvironmentMode.Design); }
         }
+
+        public void SetSelection(IVBProject vbProject, Selection selection, string name)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

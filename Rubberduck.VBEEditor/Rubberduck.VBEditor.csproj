@@ -109,9 +109,14 @@
       <HintPath>..\libs\Microsoft.Vbe.Interop.Forms.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="office">
-      <HintPath>..\libs\Office.dll</HintPath>
+    <Reference Include="Office.v12">
+      <HintPath>..\libs\Office.v12.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Office.v8">
+      <HintPath>..\libs\Office.v8.dll</HintPath>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <Private>True</Private>
     </Reference>
     <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
@@ -143,6 +148,14 @@
     <Compile Include="SafeComWrappers\Office\v12\CommandBarControls.cs" />
     <Compile Include="SafeComWrappers\Office\v12\CommandBarPopup.cs" />
     <Compile Include="SafeComWrappers\Office\v12\CommandBars.cs" />
+    <Compile Include="SafeComWrappers\VB\Abstract\ComIds.cs" />
+    <Compile Include="SafeComWrappers\VB\ComIds.cs" />
+    <Compile Include="SafeComWrappers\VB\Enums\VBType.cs" />
+    <Compile Include="SafeComWrappers\VB\VBA\ComIds.cs" />
+    <Compile Include="SafeComWrappers\VB\VBProjectFactory.cs" />
+    <Compile Include="SafeComWrappers\VB\Abstract\VBComponents.cs" />
+    <Compile Include="SafeComWrappers\VB\Abstract\VBProjects.cs" />
+    <Compile Include="SafeComWrappers\VB\AddInFactory.cs" />
     <Compile Include="SafeComWrappers\VB\Enums\MSAccessComponentType.cs" />
     <Compile Include="SafeComWrappers\VB\Enums\ControlType.cs" />
     <Compile Include="SafeComWrappers\VB\Abstract\ICodePanes.cs" />
@@ -233,6 +246,8 @@
     <Compile Include="SafeComWrappers\VB\VBA\VBProjects.cs" />
     <Compile Include="SafeComWrappers\VB\VBA\Window.cs" />
     <Compile Include="SafeComWrappers\VB\VBA\Windows.cs" />
+    <Compile Include="SafeComWrappers\VB\VBComponentFactory.cs" />
+    <Compile Include="SafeComWrappers\VB\VBEFactory.cs" />
     <Compile Include="WindowsApi\ChildWindowFinder.cs" />
     <Compile Include="WindowsApi\CodePaneSubclass.cs" />
     <Compile Include="WindowsApi\DesignerWindowSubclass.cs" />

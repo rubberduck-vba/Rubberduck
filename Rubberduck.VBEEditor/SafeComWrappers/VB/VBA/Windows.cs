@@ -32,7 +32,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB.VBA
             return new ToolWindowInfo(new Window(window), control);
         }
 
-        public static void ReleaseDockableHosts()
+        public void ReleaseDockableHosts()
         {
             foreach (var item in _dockableHosts)
             {

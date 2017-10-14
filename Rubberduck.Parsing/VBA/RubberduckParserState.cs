@@ -18,7 +18,6 @@ using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.VB.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VB.Enums;
-using Rubberduck.VBEditor.SafeComWrappers.VB.VBA;
 
 // ReSharper disable LoopCanBeConvertedToQuery
 

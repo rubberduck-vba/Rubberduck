@@ -8,7 +8,6 @@ using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.VB.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VB.Enums;
-using Rubberduck.VBEditor.SafeComWrappers.VB.VBA;
 using System.Text;
 using Rubberduck.Parsing.Symbols;
 
@@ -127,9 +126,9 @@ namespace Rubberduck.UI.Command
 
             var projects = _vbe.VBProjects;
             {
-                return projects.Count == 1 
+                return projects.Count == 1
                     ? projects[1]
-                    : new VBProject(null);
+                    : _vbe.VBProjects.Add(ProjectType.HostProject);
             }
         }
 

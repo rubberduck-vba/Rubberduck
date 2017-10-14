@@ -23,7 +23,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB.VB6
 
         public VBProjects(VB6IA.VBProjects target) : base(target)
         {
-            AttachEvents();
+  //          AttachEvents();
         }
 
         public int Count => IsWrappingNullReference ? 0 : Target.Count;
@@ -93,89 +93,89 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB.VB6
                 : HashCode.Compute(Target);
         }
 
-        #region Events
+        //#region Events
 
-        private bool _eventsAttached;
-        private void AttachEvents()
-        {
-            if (!_eventsAttached && !IsWrappingNullReference)
-            {
-                _projectAdded = OnProjectAdded;
-                _projectRemoved = OnProjectRemoved;
-                _projectRenamed = OnProjectRenamed;
-                _projectActivated = OnProjectActivated;
-                ComEventsHelper.Combine(Target, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemAdded, _projectAdded);
-                ComEventsHelper.Combine(Target, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemRemoved, _projectRemoved);
-                ComEventsHelper.Combine(Target, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemRenamed, _projectRenamed);
-                ComEventsHelper.Combine(Target, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemActivated, _projectActivated);
-            }
-        }
+        //private bool _eventsAttached;
+        //private void AttachEvents()
+        //{
+        //    if (!_eventsAttached && !IsWrappingNullReference)
+        //    {
+        //        _projectAdded = OnProjectAdded;
+        //        _projectRemoved = OnProjectRemoved;
+        //        _projectRenamed = OnProjectRenamed;
+        //        _projectActivated = OnProjectActivated;
+        //        ComEventsHelper.Combine(Target, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemAdded, _projectAdded);
+        //        ComEventsHelper.Combine(Target, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemRemoved, _projectRemoved);
+        //        ComEventsHelper.Combine(Target, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemRenamed, _projectRenamed);
+        //        ComEventsHelper.Combine(Target, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemActivated, _projectActivated);
+        //    }
+        //}
 
-        private void DetatchEvents()
-        {
-            if (!_eventsAttached && !IsWrappingNullReference)
-            {
-                ComEventsHelper.Remove(Target, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemAdded, _projectAdded);
-                ComEventsHelper.Remove(Target, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemRemoved, _projectRemoved);
-                ComEventsHelper.Remove(Target, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemRenamed, _projectRenamed);
-                ComEventsHelper.Remove(Target, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemActivated, _projectActivated);
-                _eventsAttached = false;
-            }
-        }
+        //private void DetatchEvents()
+        //{
+        //    if (!_eventsAttached && !IsWrappingNullReference)
+        //    {
+        //        ComEventsHelper.Remove(Target, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemAdded, _projectAdded);
+        //        ComEventsHelper.Remove(Target, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemRemoved, _projectRemoved);
+        //        ComEventsHelper.Remove(Target, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemRenamed, _projectRenamed);
+        //        ComEventsHelper.Remove(Target, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemActivated, _projectActivated);
+        //        _eventsAttached = false;
+        //    }
+        //}
 
-        public event EventHandler<ProjectEventArgs> ProjectAdded;
-        private delegate void ItemAddedDelegate(Microsoft.Vbe.Interop.VBProject vbProject);
-        private ItemAddedDelegate _projectAdded;
-        private void OnProjectAdded(Microsoft.Vbe.Interop.VBProject vbProject)
-        {
-            if (VBE.IsInDesignMode) OnDispatch(ProjectAdded, vbProject, true);
-        }
+        //public event EventHandler<ProjectEventArgs> ProjectAdded;
+        //private delegate void ItemAddedDelegate(VB6IA.VBProject vbProject);
+        //private ItemAddedDelegate _projectAdded;
+        //private void OnProjectAdded(VB6IA.VBProject vbProject)
+        //{
+        //    if (VBE.IsInDesignMode) OnDispatch(ProjectAdded, vbProject, true);
+        //}
 
-        public event EventHandler<ProjectEventArgs> ProjectRemoved;
-        private delegate void ItemRemovedDelegate(Microsoft.Vbe.Interop.VBProject vbProject);
-        private ItemRemovedDelegate _projectRemoved;
-        private void OnProjectRemoved(Microsoft.Vbe.Interop.VBProject vbProject)
-        {
-            if (VBE.IsInDesignMode) OnDispatch(ProjectRemoved, vbProject);
-        }
+        //public event EventHandler<ProjectEventArgs> ProjectRemoved;
+        //private delegate void ItemRemovedDelegate(VB6IA.VBProject vbProject);
+        //private ItemRemovedDelegate _projectRemoved;
+        //private void OnProjectRemoved(VB6IA.VBProject vbProject)
+        //{
+        //    if (VBE.IsInDesignMode) OnDispatch(ProjectRemoved, vbProject);
+        //}
 
-        public event EventHandler<ProjectRenamedEventArgs> ProjectRenamed;
-        private delegate void ItemRenamedDelegate(Microsoft.Vbe.Interop.VBProject vbProject, string oldName);
-        private ItemRenamedDelegate _projectRenamed;
-        private void OnProjectRenamed(Microsoft.Vbe.Interop.VBProject vbProject, string oldName)
-        {
-            if (!VBE.IsInDesignMode) { return; }
+        //public event EventHandler<ProjectRenamedEventArgs> ProjectRenamed;
+        //private delegate void ItemRenamedDelegate(VB6IA.VBProject vbProject, string oldName);
+        //private ItemRenamedDelegate _projectRenamed;
+        //private void OnProjectRenamed(VB6IA.VBProject vbProject, string oldName)
+        //{
+        //    if (!VBE.IsInDesignMode) { return; }
 
-            var project = new VBA.VBProject(vbProject);
-            var projectId = project.ProjectId;
+        //    var project = new VBProject(vbProject);
+        //    var projectId = project.ProjectId;
 
-            var handler = ProjectRenamed;
-            handler?.Invoke(this, new ProjectRenamedEventArgs(projectId, project, oldName));
-        }
+        //    var handler = ProjectRenamed;
+        //    handler?.Invoke(this, new ProjectRenamedEventArgs(projectId, project, oldName));
+        //}
 
-        public event EventHandler<ProjectEventArgs> ProjectActivated;
-        private delegate void ItemActivatedDelegate(Microsoft.Vbe.Interop.VBProject vbProject);
-        private ItemActivatedDelegate _projectActivated;
-        private void OnProjectActivated(Microsoft.Vbe.Interop.VBProject vbProject)
-        {
-            if (VBE.IsInDesignMode) OnDispatch(ProjectActivated, vbProject);
-        }
+        //public event EventHandler<ProjectEventArgs> ProjectActivated;
+        //private delegate void ItemActivatedDelegate(VB6IA.VBProject vbProject);
+        //private ItemActivatedDelegate _projectActivated;
+        //private void OnProjectActivated(VB6IA.VBProject vbProject)
+        //{
+        //    if (VBE.IsInDesignMode) OnDispatch(ProjectActivated, vbProject);
+        //}
 
-        private void OnDispatch(EventHandler<ProjectEventArgs> dispatched, Microsoft.Vbe.Interop.VBProject vbProject, bool assignId = false)
-        {
-            var handler = dispatched;
-            if (handler != null)
-            {
-                var project = new VBA.VBProject(vbProject);
-                if (assignId)
-                {
-                    project.AssignProjectId();
-                }
-                var projectId = project.ProjectId;
-                handler.Invoke(this, new ProjectEventArgs(projectId, project));
-            }
-        }
+        //private void OnDispatch(EventHandler<ProjectEventArgs> dispatched, VB6IA.VBProject vbProject, bool assignId = false)
+        //{
+        //    var handler = dispatched;
+        //    if (handler != null)
+        //    {
+        //        var project = new VBProject(vbProject);
+        //        if (assignId)
+        //        {
+        //            project.AssignProjectId();
+        //        }
+        //        var projectId = project.ProjectId;
+        //        handler.Invoke(this, new ProjectEventArgs(projectId, project));
+        //    }
+        //}
 
-        #endregion
+        //#endregion
     }
 }

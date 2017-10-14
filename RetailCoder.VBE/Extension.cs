@@ -18,11 +18,8 @@ using NLog;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor.Events;
+using Rubberduck.VBEditor.SafeComWrappers.VB;
 using Rubberduck.VBEditor.SafeComWrappers.VB.Abstract;
-using VBAIA = Microsoft.Vbe.Interop;
-using VBA = Rubberduck.VBEditor.SafeComWrappers.VB.VBA;
-using VB6IA = Microsoft.VB6.Interop.VBIDE; 
-using VB6 = Rubberduck.VBEditor.SafeComWrappers.VB.VB6;
 using Rubberduck.VBEditor.WindowsApi;
 using User32 = Rubberduck.Common.WinAPI.User32;
 
@@ -55,22 +52,11 @@ namespace Rubberduck
         {
             try
             {
-                if (Application is VBAIA.VBE vbae)
-                {                    
-                    _ide = new VBA.VBE(vbae);
-                    VBENativeServices.HookEvents(_ide);
-                    
-                    var addin = (VBAIA.AddIn)AddInInst;
-                    _addin = new VBA.AddIn(addin) { Object = this };
-                }
-                else if (Application is VB6IA.VBE vb6e)
-                {                    
-                    _ide = new VB6.VBE(vb6e);
-                    VBENativeServices.HookEvents(_ide);
-                    var addin = (VB6IA.AddIn) AddInInst;
-                    _addin = new VB6.AddIn(addin);
-                }
+                _ide = VBEFactory.Create(Application);
+                VBENativeServices.HookEvents(_ide);
 
+                _addin = AddInFactory.Create(Application, AddInInst);
+                _addin.Object = this;                
 
                 switch (ConnectMode)
                 {
@@ -245,7 +231,7 @@ namespace Rubberduck
                 User32.EnumChildWindows(_ide.MainWindow.Handle(), EnumCallback, new IntPtr(0));
 
                 _logger.Log(LogLevel.Trace, "Releasing dockable hosts...");
-                VBA.Windows.ReleaseDockableHosts();
+                _ide.Windows.ReleaseDockableHosts();
 
                 if (_app != null)
                 {

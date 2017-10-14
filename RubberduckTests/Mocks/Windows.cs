@@ -74,6 +74,10 @@ namespace RubberduckTests.Mocks
             return new ToolWindowInfo(window.Object, null);
         }
 
+        public void ReleaseDockableHosts()
+        {
+        }
+
         IEnumerator IEnumerable.GetEnumerator()
         {
             return _windows.GetEnumerator();

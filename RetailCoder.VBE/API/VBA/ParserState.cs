@@ -10,14 +10,15 @@ using Rubberduck.Parsing.Symbols.DeclarationLoaders;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.VBEditor.SafeComWrappers.VB.VBA;
+using Rubberduck.VBEditor.SafeComWrappers.VB;
+using Rubberduck.VBEditor.SafeComWrappers.VB.Abstract;
 
 namespace Rubberduck.API.VBA
 {
     [ComVisible(true)]
     public interface IParserState
     {
-        void Initialize(Microsoft.Vbe.Interop.VBE vbe);
+        void Initialize(object vbe);
 
         void Parse();
         void BeginParse();
@@ -48,21 +49,21 @@ namespace Rubberduck.API.VBA
         private RubberduckParserState _state;
         private AttributeParser _attributeParser;
         private ParseCoordinator _parser;
-        private VBE _vbe;
+        private IVBE _vbe;
 
         public ParserState()
         {
             UiDispatcher.Initialize();
         }
 
-        public void Initialize(Microsoft.Vbe.Interop.VBE vbe)
+        public void Initialize(object vbe)
         {
             if (_parser != null)
             {
                 throw new InvalidOperationException("ParserState is already initialized.");
             }
 
-            _vbe = new VBE(vbe);
+            _vbe = VBEFactory.Create(vbe);
             var declarationFinderFactory = new ConcurrentlyConstructedDeclarationFinderFactory();
             _state = new RubberduckParserState(null, declarationFinderFactory);
             _state.StateChanged += _state_StateChanged;

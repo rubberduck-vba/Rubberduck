@@ -20,5 +20,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB.Abstract
         IVBE VBE { get; }
         IApplication Parent { get; }
         ToolWindowInfo CreateToolWindow(IAddIn addInInst, string progId, string caption, string guidPosition);
+        void ReleaseDockableHosts();
     }
 }

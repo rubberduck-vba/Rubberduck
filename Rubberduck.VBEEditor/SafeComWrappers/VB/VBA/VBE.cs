@@ -101,7 +101,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB.VBA
             get { return VBProjects.All(project => project.Mode == EnvironmentMode.Design); }
         }
 
-        public static void SetSelection(IVBProject vbProject, Selection selection, string name)
+        public void SetSelection(IVBProject vbProject, Selection selection, string name)
         {
             var components = vbProject.VBComponents;
             var component = components.SingleOrDefault(c => c.Name == name);

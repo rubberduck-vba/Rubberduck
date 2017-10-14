@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers.VB.VBA;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.VB.Abstract;
 
@@ -120,7 +119,7 @@ namespace Rubberduck.SourceControl
         {
             if (File.Exists(filePath))
             {
-                var component = Project.VBComponents.OfType<VBComponent>().FirstOrDefault(f => f.Name == filePath.Split('.')[0]);
+                var component = Project.VBComponents.FirstOrDefault(f => f.Name == filePath.Split('.')[0]);
 
                 HandleVbeSinkEvents = false;
                 Project.VBComponents.RemoveSafely(component);
@@ -181,7 +180,7 @@ namespace Rubberduck.SourceControl
                         directory += directory.EndsWith("\\") ? string.Empty : "\\";
                         components.Import(directory + filePath);
 
-                        VBE.SetSelection(component.Collection.Parent, selection.Selection, name);
+                        vbe.SetSelection(component.Collection.Parent, selection.Selection, name);
                     }
                 }
                 else
@@ -224,7 +223,7 @@ namespace Rubberduck.SourceControl
                             throw new SourceControlException("Unknown exception.", ex);
                         }
 
-                        VBE.SetSelection(component.Collection.Parent, selection.Selection, name);
+                        vbe.SetSelection(component.Collection.Parent, selection.Selection, name);
                     }
                 }
                 else
