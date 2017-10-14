@@ -19,7 +19,7 @@ namespace Rubberduck.Inspections.Concrete
         public BooleanAssignedInIfElseInspection(RubberduckParserState state)
             : base(state) { }
         
-        public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
+        public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
         public override IInspectionListener Listener { get; } =
             new BooleanAssignedInIfElseListener();

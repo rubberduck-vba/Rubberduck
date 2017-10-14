@@ -34,6 +34,28 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
+        public void QualifiedName()
+        {
+            const string inputcode =
+@"Sub Foo()
+    If True Then
+        Fizz.Buzz = True
+    Else
+        Fizz.Buzz = False
+    EndIf
+End Sub";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputcode, out _);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new BooleanAssignedInIfElseInspection(state);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var results = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            Assert.AreEqual(1, results.Count());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void MultipleResults()
         {
             const string inputcode =
@@ -181,7 +203,7 @@ End Sub";
         public void IsIgnored()
         {
             const string inputcode =
-                @"Sub Foo()
+@"Sub Foo()
     Dim d
     '@Ignore BooleanAssignedInIfElse
     If True Then
@@ -205,7 +227,7 @@ End Sub";
         public void BlockContainsPrefixComment()
         {
             const string inputcode =
-                @"Sub Foo()
+@"Sub Foo()
     Dim d
     If True Then
         ' test
@@ -229,7 +251,7 @@ End Sub";
         public void BlockContainsPostfixComment()
         {
             const string inputcode =
-                @"Sub Foo()
+@"Sub Foo()
     Dim d
     If True Then
         d = True
@@ -253,7 +275,7 @@ End Sub";
         public void BlockContainsEOLComment()
         {
             const string inputcode =
-                @"Sub Foo()
+@"Sub Foo()
     Dim d
     If True Then
         d = True    ' test
