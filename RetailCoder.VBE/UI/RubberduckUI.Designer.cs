@@ -1520,8 +1520,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to to parse and process
-        ///the projects in the VBE..
+        ///   Looks up a localized string similar to to parse and process the projects in the VBE..
         /// </summary>
         public static string EmptyUIRefreshMessage {
             get {
@@ -3467,7 +3466,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Method {0} is an EventHandler for control &apos;{1}&apos;.  Only the control can be renamed.  Rename &apos;{1}&apos;?.
+        ///   Looks up a localized string similar to Method &apos;{0}&apos; is an EventHandler for control &apos;{1}&apos;.  Only the control can be renamed.  Rename &apos;{1}&apos; instead?.
         /// </summary>
         public static string RenamePresenter_TargetIsControlEventHandler {
             get {
@@ -3476,7 +3475,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Method &apos;{0}&apos; is an implementation of event &apos;{1}.{2}&apos;.  Rename event &apos;{2}&apos;?.
+        ///   Looks up a localized string similar to Method &apos;{0}&apos; is an implementation of event &apos;{1}.{2}&apos;.  Rename event &apos;{2}&apos; instead?.
         /// </summary>
         public static string RenamePresenter_TargetIsEventHandlerImplementation {
             get {
@@ -5385,6 +5384,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Copy to clipboard.
+        /// </summary>
+        public static string ToDoExplorer_CopyToolTip {
+            get {
+                return ResourceManager.GetString("ToDoExplorer_CopyToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Description.
         /// </summary>
         public static string TodoExplorer_Description {
@@ -5399,6 +5407,35 @@ namespace Rubberduck.UI {
         public static string TodoExplorer_LineNumber {
             get {
                 return ResourceManager.GetString("TodoExplorer_LineNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck ToDo Items - {0}
+        ///{1} items found..
+        /// </summary>
+        public static string ToDoExplorer_NumberOfIssuesFound_Plural {
+            get {
+                return ResourceManager.GetString("ToDoExplorer_NumberOfIssuesFound_Plural", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck ToDo Items - {0}
+        ///{1} items found..
+        /// </summary>
+        public static string ToDoExplorer_NumberOfIssuesFound_Singular {
+            get {
+                return ResourceManager.GetString("ToDoExplorer_NumberOfIssuesFound_Singular", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}: {1} - {2}.{3} line {4}..
+        /// </summary>
+        public static string ToDoExplorerToDoItemFormat {
+            get {
+                return ResourceManager.GetString("ToDoExplorerToDoItemFormat", resourceCulture);
             }
         }
         
