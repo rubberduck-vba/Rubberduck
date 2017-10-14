@@ -8,13 +8,15 @@ If you like this project and would like to thank its contributors, you are welco
 [![GoFundMe campaign](https://user-images.githubusercontent.com/5751684/29191799-e3d20b72-7dec-11e7-8ec6-0c69da4a3135.png)](https://www.gofundme.com/rubberduckvba)
 -->
 
-Branch     | Description | Build Status |
-|------------|---|--------------|
-| **master** | The last released build | ![master branch build status][masterBuildStatus] |
-| **next**   | The current build (dev)  | ![next branch build status][nextBuildStatus] |
+Branch     | Description | Build Status | Coverage |
+|------------|---|--------------|-----------|
+| **master** | The last released build | ![master branch build status][masterBuildStatus] | |
+| **next**   | The current build (dev)  | ![next branch build status][nextBuildStatus] | [![codecov](https://codecov.io/gh/rubberduck-vba/Rubberduck/branch/next/graph/badge.svg)](https://codecov.io/gh/rubberduck-vba/Rubberduck) |
 
 [nextBuildStatus]:https://ci.appveyor.com/api/projects/status/we3pdnkeebo4nlck/branch/next?svg=true
 [masterBuildStatus]:https://ci.appveyor.com/api/projects/status/we3pdnkeebo4nlck/branch/master?svg=true
+
+
 
 [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/rubberduck-vba/rubberduck.svg)](http://isitmaintained.com/project/rubberduck-vba/rubberduck "Average time to resolve an issue") [![Percentage of issues still open](http://isitmaintained.com/badge/open/rubberduck-vba/rubberduck.svg)](http://isitmaintained.com/project/rubberduck-vba/rubberduck "Percentage of issues still open") 
 
