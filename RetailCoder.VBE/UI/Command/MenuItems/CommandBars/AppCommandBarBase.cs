@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -38,14 +39,22 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
                 return;
             }
 
-            foreach (var kvp in _items)
+            foreach (var kvp in _items.Where(kv => kv.Key != null && kv.Value != null))
             {
-                var item = kvp;
-                UiDispatcher.Invoke(() =>
+                try
                 {
-                    item.Value.Caption = item.Key.Caption.Invoke();
-                    item.Value.TooltipText = item.Key.ToolTipText.Invoke();
-                });
+                    var item = kvp;
+                    UiDispatcher.Invoke(() =>
+                    {
+                        item.Value.Caption = item.Key.Caption.Invoke();
+                        item.Value.TooltipText = item.Key.ToolTipText.Invoke();
+                    });
+
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e, $"Assignment of {kvp.Value.GetType().Name}.Caption or .TooltipText for {kvp.Key.GetType().Name} threw an exception.");
+                }
             }
         }
 
@@ -92,17 +101,23 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
 
         public void EvaluateCanExecute(RubberduckParserState state)
         {
-            foreach (var kvp in _items)
+            foreach (var kvp in _items.Where(kv => kv.Key != null && kv.Value != null))
             {
                 var commandItem = kvp.Key;
-                if (commandItem != null && kvp.Value != null)
+                var canExecute = false;
+                try
                 {
-                    var canExecute = commandItem.EvaluateCanExecute(state);
-                    kvp.Value.IsEnabled = canExecute;
-                    if (commandItem.HiddenWhenDisabled)
-                    {
-                        kvp.Value.IsVisible = canExecute;
-                    }
+                    canExecute = commandItem.EvaluateCanExecute(state);
+
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e, $"{commandItem?.GetType().Name ?? nameof(ICommandMenuItem)}.EvaluateCanExecute(RubberduckParserState) threw an exception.");
+                }
+                kvp.Value.IsEnabled = canExecute;
+                if (commandItem?.HiddenWhenDisabled ?? false)
+                {
+                    kvp.Value.IsVisible = canExecute;
                 }
             }
         }
