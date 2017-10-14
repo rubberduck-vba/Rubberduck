@@ -511,7 +511,7 @@
         
                 <Button Style="{StaticResource XButtonStyle}" 
                         HorizontalAlignment="Right" VerticalAlignment="Center" 
-                        Height="18" Width="18" Margin="0,1,1,0" 
+                        Height="18" Width="18" Margin="1" 
                         IsEnabled="{Binding CanSearch}"
                         Visibility="{Binding ElementName=SearchBox, Path=Text.Length, Converter={StaticResource StringHasNoValueToVisibility}}" 
                         Click="ButtonBase_OnClick" />
