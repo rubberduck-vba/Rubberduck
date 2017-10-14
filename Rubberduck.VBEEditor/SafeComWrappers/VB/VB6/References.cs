@@ -70,8 +70,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB.VB6
         //{
         //    if (!IsWrappingNullReference)
         //    {
-        //        Target.ItemAdded -= Target_ItemAdded;
-        //        Target.ItemRemoved -= Target_ItemRemoved;
+        //        Target.VBComponentAdded -= Target_ItemAdded;
+        //        Target.VBComponentRemoved -= Target_ItemRemoved;
         //        for (var i = 1; i <= Count; i++)
         //        {
         //            this[i].Release();

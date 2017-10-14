@@ -149,7 +149,7 @@
     <Compile Include="SafeComWrappers\Office\v12\CommandBarPopup.cs" />
     <Compile Include="SafeComWrappers\Office\v12\CommandBars.cs" />
     <Compile Include="SafeComWrappers\VB\Abstract\ComIds.cs" />
-    <Compile Include="SafeComWrappers\VB\ComIds.cs" />
+    <Compile Include="SafeComWrappers\VB\VBComIds.cs" />
     <Compile Include="SafeComWrappers\VB\Enums\VBType.cs" />
     <Compile Include="SafeComWrappers\VB\VBA\ComIds.cs" />
     <Compile Include="SafeComWrappers\VB\VBProjectFactory.cs" />

@@ -1,34 +1,30 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VB.Abstract
 {
-    internal interface IComIds
+    internal interface IVBComIds
     {
-        Guid VBComponentsEventsGuid { get; }
-        Guid VBProjectsEventsGuid { get; }
-        IComponentEventDispIds ComponentEventDispIds { get; }                
-        IProjectEventDispIds ProjectEventDispIds { get; }
+        Guid VBComponentEvents { get; }
+        Guid VBProjectEvents { get; }
+        IVBComponentEventDispIds VBComponent { get; }                
+        IVBProjectEventDispIds VBProject { get; }
     }
 
-    internal interface IComponentEventDispIds
+    internal interface IVBComponentEventDispIds
     {
-        int ItemAdded { get; }
-        int ItemRemoved { get; }
-        int ItemRenamed { get; }
-        int ItemSelected { get; }
-        int ItemActivated { get; }
-        int ItemReloaded { get; }
+        int Added { get; }
+        int Removed { get; }
+        int Renamed { get; }
+        int Selected { get; }
+        int Activated { get; }
+        int Reloaded { get; }
     }
 
-    internal interface IProjectEventDispIds
+    internal interface IVBProjectEventDispIds
     {
-        int ItemAdded { get; }
-        int ItemRemoved { get; }
-        int ItemRenamed { get; }
-        int ItemActivated { get; }
+        int Added { get; }
+        int Removed { get; }
+        int Renamed { get; }
+        int Activated { get; }
     }
 }

@@ -61,7 +61,7 @@ namespace Rubberduck.VBEditor.Events
                     info.Subclass.Dispose();
                 }
 
-                VBComponents.DetachEvents();
+                VBProjects.DetachEvents();
                 VBComponents.DetachEvents();
             }
         }

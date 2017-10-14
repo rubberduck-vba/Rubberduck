@@ -104,10 +104,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB.VB6
         //        _projectRemoved = OnProjectRemoved;
         //        _projectRenamed = OnProjectRenamed;
         //        _projectActivated = OnProjectActivated;
-        //        ComEventsHelper.Combine(Target, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemAdded, _projectAdded);
-        //        ComEventsHelper.Combine(Target, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemRemoved, _projectRemoved);
-        //        ComEventsHelper.Combine(Target, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemRenamed, _projectRenamed);
-        //        ComEventsHelper.Combine(Target, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemActivated, _projectActivated);
+        //        ComEventsHelper.Combine(Target, VBProjectsEventsGuid, (int)ProjectEventDispId.VBComponentAdded, _projectAdded);
+        //        ComEventsHelper.Combine(Target, VBProjectsEventsGuid, (int)ProjectEventDispId.VBComponentRemoved, _projectRemoved);
+        //        ComEventsHelper.Combine(Target, VBProjectsEventsGuid, (int)ProjectEventDispId.VBComponentRenamed, _projectRenamed);
+        //        ComEventsHelper.Combine(Target, VBProjectsEventsGuid, (int)ProjectEventDispId.VBComponentActivated, _projectActivated);
         //    }
         //}
 
@@ -115,10 +115,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB.VB6
         //{
         //    if (!_eventsAttached && !IsWrappingNullReference)
         //    {
-        //        ComEventsHelper.Remove(Target, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemAdded, _projectAdded);
-        //        ComEventsHelper.Remove(Target, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemRemoved, _projectRemoved);
-        //        ComEventsHelper.Remove(Target, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemRenamed, _projectRenamed);
-        //        ComEventsHelper.Remove(Target, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemActivated, _projectActivated);
+        //        ComEventsHelper.Remove(Target, VBProjectsEventsGuid, (int)ProjectEventDispId.VBComponentAdded, _projectAdded);
+        //        ComEventsHelper.Remove(Target, VBProjectsEventsGuid, (int)ProjectEventDispId.VBComponentRemoved, _projectRemoved);
+        //        ComEventsHelper.Remove(Target, VBProjectsEventsGuid, (int)ProjectEventDispId.VBComponentRenamed, _projectRenamed);
+        //        ComEventsHelper.Remove(Target, VBProjectsEventsGuid, (int)ProjectEventDispId.VBComponentActivated, _projectActivated);
         //        _eventsAttached = false;
         //    }
         //}
