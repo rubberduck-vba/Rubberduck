@@ -69,7 +69,15 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             Item.IsVisible = true;
             foreach (var item in _items.Keys.OrderBy(item => item.DisplayOrder))
             {
-                _items[item] = InitializeChildControl(item);
+                try
+                {
+                    _items[item] = InitializeChildControl(item);
+
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e, $"Initialization of the menu item for {item.Command.GetType().Name} threw an exception.");
+                }
             }
         }
 
@@ -159,20 +167,13 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             _items.Clear();
         }
 
-        // note: HAAAAACK!!!
-        private static int _lastHashCode;
-
         private void child_Click(object sender, CommandBarButtonClickEventArgs e)
         {
             var item = _items.Select(kvp => kvp.Key).SingleOrDefault(menu => menu.GetType().FullName == e.Control.Tag);
-            if (item == null || e.Control.Target.GetHashCode() == _lastHashCode)
+            if (item == null)
             {
                 return;
             }
-
-            // without this hack, handler runs once for each menu item that's hooked up to the command.
-            // hash code is different on every frakkin' click. go figure. I've had it, this is the fix.
-            _lastHashCode = e.Control.Target.GetHashCode();
 
             Logger.Debug("({0}) Executing click handler for commandbar item '{1}', hash code {2}", GetHashCode(), e.Control.Caption, e.Control.Target.GetHashCode());
             item.Command.Execute(null);
