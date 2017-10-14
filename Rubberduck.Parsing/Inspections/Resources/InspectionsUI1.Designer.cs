@@ -142,6 +142,33 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A member is assigned True/False in different branches of an if statement with no other statements in the conditional. Use the condition directly to the member instead..
+        /// </summary>
+        public static string BooleanAssignedInIfElseInspectionMeta {
+            get {
+                return ResourceManager.GetString("BooleanAssignedInIfElseInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Boolean literal assignment in conditional.
+        /// </summary>
+        public static string BooleanAssignedInIfElseInspectionName {
+            get {
+                return ResourceManager.GetString("BooleanAssignedInIfElseInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Boolean literal &apos;{0}&apos; assigned in conditional.
+        /// </summary>
+        public static string BooleanAssignedInIfElseInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("BooleanAssignedInIfElseInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Replace &apos;Dim&apos; with &apos;Private&apos;.
         /// </summary>
         public static string ChangeDimToPrivateQuickFix {

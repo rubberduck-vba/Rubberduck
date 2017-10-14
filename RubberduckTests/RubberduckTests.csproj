@@ -100,6 +100,7 @@
     <Compile Include="Grammar\ParserRuleContextExtensionTests.cs" />
     <Compile Include="Grammar\SelectionExtensionsTests.cs" />
     <Compile Include="Inspections\ApplicationWorksheetFunctionInspectionTests.cs" />
+    <Compile Include="Inspections\BooleanAssignedInIfElseInspectionTests.cs" />
     <Compile Include="Inspections\EmptyCaseBlockInspectionTests.cs" />
     <Compile Include="Inspections\EmptyDoWhileBlockInspectionTests.cs" />
     <Compile Include="Inspections\EmptyElseBlockInspectionTests.cs" />

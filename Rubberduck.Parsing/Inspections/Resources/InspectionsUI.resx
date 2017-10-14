@@ -857,4 +857,13 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="ShadowedDeclarationInspectionResultFormat" xml:space="preserve">
     <value>{0} '{1}' hides {2} '{3}'</value>
   </data>
+  <data name="BooleanAssignedInIfElseInspectionMeta" xml:space="preserve">
+    <value>A member is assigned True/False in different branches of an if statement with no other statements in the conditional. Use the condition directly to the member instead.</value>
+  </data>
+  <data name="BooleanAssignedInIfElseInspectionName" xml:space="preserve">
+    <value>Boolean literal assignment in conditional</value>
+  </data>
+  <data name="BooleanAssignedInIfElseInspectionResultFormat" xml:space="preserve">
+    <value>Boolean literal '{0}' assigned in conditional</value>
+  </data>
 </root>

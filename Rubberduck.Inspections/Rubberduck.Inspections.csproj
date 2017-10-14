@@ -67,6 +67,7 @@
     <Compile Include="Concrete\EmptyDoWhileBlockInspection.cs" />
     <Compile Include="Concrete\EmptyForEachBlockInspection.cs" />
     <Compile Include="Concrete\EmptyForLoopBlockInspection.cs" />
+    <Compile Include="Concrete\BooleanAssignedInIfElseInspection.cs" />
     <Compile Include="Concrete\EmptyWhileWendBlockInspection.cs" />
     <Compile Include="Concrete\StopKeywordInspection.cs" />
     <Compile Include="Concrete\LineLabelNotUsedInspection.cs" />
