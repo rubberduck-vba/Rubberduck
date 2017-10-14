@@ -44,8 +44,21 @@ namespace Rubberduck.UI.CodeExplorer
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
+            ClearSearchBox();
+        }
+
+        private void ClearSearchBox()
+        {
             SearchBox.Text = string.Empty;
             SearchBox.Focus();
+        }
+
+        private void SearchBox_OnPreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+            {
+                ClearSearchBox();
+            }
         }
     }
 }
