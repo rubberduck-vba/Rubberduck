@@ -27,11 +27,9 @@ namespace Rubberduck.Inspections.Concrete
         {
         }
 
-        public override Type Type => typeof(ShadowedDeclarationInspection);
-
         public override CodeInspectionType InspectionType { get; } = CodeInspectionType.CodeQualityIssues;
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var builtInEventHandlers = State.DeclarationFinder.FindEventHandlers().ToHashSet();
 
@@ -60,9 +58,9 @@ namespace Rubberduck.Inspections.Concrete
                         issues.Add(new DeclarationInspectionResult(this,
                             string.Format(InspectionsUI.ShadowedDeclarationInspectionResultFormat,
                                 RubberduckUI.ResourceManager.GetString("DeclarationType_" + userDeclaration.DeclarationType, CultureInfo.CurrentUICulture),
-                                userDeclaration.IdentifierName,
+                                userDeclaration.QualifiedName,
                                 RubberduckUI.ResourceManager.GetString("DeclarationType_" + shadowedDeclaration.DeclarationType, CultureInfo.CurrentUICulture),
-                                shadowedDeclaration.IdentifierName),
+                                shadowedDeclaration.QualifiedName),
                             userDeclaration));
                     }
                 }
@@ -121,6 +119,11 @@ namespace Rubberduck.Inspections.Concrete
         private static bool DeclarationInReferencedProjectCanBeShadowed(Declaration originalDeclaration, Declaration userDeclaration)
         {
             if (DeclarationIsInsideOptionPrivateModule(originalDeclaration))
+            {
+                return false;
+            }
+
+            if ((originalDeclaration.ParentDeclaration as ClassModuleDeclaration)?.IsGlobalClassModule == false)
             {
                 return false;
             }
@@ -317,8 +320,7 @@ namespace Rubberduck.Inspections.Concrete
                 return false;
             }
 
-            var moduleDeclaration = Declaration.GetModuleParent(declaration) as ProceduralModuleDeclaration;
-            if (moduleDeclaration != null)
+            if (Declaration.GetModuleParent(declaration) is ProceduralModuleDeclaration moduleDeclaration)
             {
                 return moduleDeclaration.IsPrivateModule;
             }
@@ -355,65 +357,65 @@ namespace Rubberduck.Inspections.Concrete
                 }.ToHashSet(),
             [DeclarationType.ProceduralModule] = new[]
                 {
-                    DeclarationType.Project, DeclarationType.ProceduralModule, DeclarationType.UserForm, DeclarationType.Document, DeclarationType.Procedure, DeclarationType.Function,
+                    DeclarationType.Project, DeclarationType.ProceduralModule, DeclarationType.UserForm, DeclarationType.Procedure, DeclarationType.Function,
                     DeclarationType.PropertyGet, DeclarationType.PropertySet, DeclarationType.PropertyLet, DeclarationType.Parameter, DeclarationType.Variable, DeclarationType.Constant,
                     DeclarationType.Enumeration, DeclarationType.EnumerationMember, DeclarationType.LibraryProcedure, DeclarationType.LibraryFunction
                 }.ToHashSet(),
             [DeclarationType.ClassModule] = new[]
                 {
-                    DeclarationType.Project, DeclarationType.ProceduralModule, DeclarationType.ClassModule, DeclarationType.UserForm, DeclarationType.Document,
+                    DeclarationType.Project, DeclarationType.ProceduralModule, DeclarationType.ClassModule, DeclarationType.UserForm
                 }.ToHashSet(),
             [DeclarationType.Procedure] = new[]
                 {
-                    DeclarationType.Project, DeclarationType.ProceduralModule, DeclarationType.UserForm, DeclarationType.Document, DeclarationType.Procedure, DeclarationType.Function,
+                    DeclarationType.Project, DeclarationType.ProceduralModule, DeclarationType.UserForm, DeclarationType.Procedure, DeclarationType.Function,
                     DeclarationType.PropertyGet, DeclarationType.PropertySet, DeclarationType.PropertyLet, DeclarationType.Parameter, DeclarationType.Variable, DeclarationType.Constant,
                     DeclarationType.Enumeration, DeclarationType.EnumerationMember, DeclarationType.LibraryProcedure, DeclarationType.LibraryFunction
                 }.ToHashSet(),
             [DeclarationType.Function] = new[]
                 {
-                    DeclarationType.Project, DeclarationType.ProceduralModule, DeclarationType.UserForm, DeclarationType.Document, DeclarationType.Procedure, DeclarationType.Function,
+                    DeclarationType.Project, DeclarationType.ProceduralModule, DeclarationType.UserForm, DeclarationType.Procedure, DeclarationType.Function,
                     DeclarationType.PropertyGet, DeclarationType.PropertySet, DeclarationType.PropertyLet, DeclarationType.Parameter, DeclarationType.Variable, DeclarationType.Constant,
                     DeclarationType.Enumeration, DeclarationType.EnumerationMember, DeclarationType.LibraryProcedure, DeclarationType.LibraryFunction
                 }.ToHashSet(),
             [DeclarationType.PropertyGet] = new[]
                 {
-                    DeclarationType.Project, DeclarationType.ProceduralModule, DeclarationType.UserForm, DeclarationType.Document, DeclarationType.Procedure, DeclarationType.Function,
+                    DeclarationType.Project, DeclarationType.ProceduralModule, DeclarationType.UserForm, DeclarationType.Procedure, DeclarationType.Function,
                     DeclarationType.PropertyGet, DeclarationType.PropertySet, DeclarationType.PropertyLet, DeclarationType.Parameter, DeclarationType.Variable, DeclarationType.Constant,
                     DeclarationType.Enumeration, DeclarationType.EnumerationMember, DeclarationType.LibraryProcedure, DeclarationType.LibraryFunction
                 }.ToHashSet(),
             [DeclarationType.PropertySet] = new[]
                 {
-                    DeclarationType.Project, DeclarationType.ProceduralModule, DeclarationType.UserForm, DeclarationType.Document, DeclarationType.Procedure, DeclarationType.Function,
+                    DeclarationType.Project, DeclarationType.ProceduralModule, DeclarationType.UserForm, DeclarationType.Procedure, DeclarationType.Function,
                     DeclarationType.PropertyGet, DeclarationType.PropertySet, DeclarationType.PropertyLet, DeclarationType.Parameter, DeclarationType.Variable, DeclarationType.Constant,
                     DeclarationType.Enumeration, DeclarationType.EnumerationMember, DeclarationType.LibraryProcedure, DeclarationType.LibraryFunction
                 }.ToHashSet(),
             [DeclarationType.PropertyLet] = new[]
                 {
-                    DeclarationType.Project, DeclarationType.ProceduralModule, DeclarationType.UserForm, DeclarationType.Document, DeclarationType.Procedure, DeclarationType.Function,
+                    DeclarationType.Project, DeclarationType.ProceduralModule, DeclarationType.UserForm, DeclarationType.Procedure, DeclarationType.Function,
                     DeclarationType.PropertyGet, DeclarationType.PropertySet, DeclarationType.PropertyLet, DeclarationType.Parameter, DeclarationType.Variable, DeclarationType.Constant,
                     DeclarationType.Enumeration, DeclarationType.EnumerationMember, DeclarationType.LibraryProcedure, DeclarationType.LibraryFunction
                 }.ToHashSet(),
             [DeclarationType.Variable] = new[]
                 {
-                    DeclarationType.Project, DeclarationType.ProceduralModule, DeclarationType.UserForm, DeclarationType.Document, DeclarationType.Procedure, DeclarationType.Function,
+                    DeclarationType.Project, DeclarationType.ProceduralModule, DeclarationType.UserForm, DeclarationType.Procedure, DeclarationType.Function,
                     DeclarationType.PropertyGet, DeclarationType.PropertySet, DeclarationType.PropertyLet, DeclarationType.Parameter, DeclarationType.Variable, DeclarationType.Constant,
                     DeclarationType.Enumeration, DeclarationType.EnumerationMember, DeclarationType.LibraryProcedure, DeclarationType.LibraryFunction
                 }.ToHashSet(),
             [DeclarationType.Constant] = new[]
                 {
-                    DeclarationType.Project, DeclarationType.ProceduralModule, DeclarationType.UserForm, DeclarationType.Document, DeclarationType.Procedure, DeclarationType.Function,
+                    DeclarationType.Project, DeclarationType.ProceduralModule, DeclarationType.UserForm, DeclarationType.Procedure, DeclarationType.Function,
                     DeclarationType.PropertyGet, DeclarationType.PropertySet, DeclarationType.PropertyLet, DeclarationType.Parameter, DeclarationType.Variable, DeclarationType.Constant,
                     DeclarationType.Enumeration, DeclarationType.EnumerationMember, DeclarationType.LibraryProcedure, DeclarationType.LibraryFunction
                 }.ToHashSet(),
             [DeclarationType.Enumeration] = new[]
                 {
-                    DeclarationType.Project, DeclarationType.ProceduralModule, DeclarationType.UserForm, DeclarationType.Document, DeclarationType.Procedure, DeclarationType.Function,
+                    DeclarationType.Project, DeclarationType.ProceduralModule, DeclarationType.UserForm, DeclarationType.Procedure, DeclarationType.Function,
                     DeclarationType.PropertyGet, DeclarationType.PropertySet, DeclarationType.PropertyLet, DeclarationType.Parameter, DeclarationType.Variable, DeclarationType.Constant,
                     DeclarationType.Enumeration, DeclarationType.EnumerationMember, DeclarationType.LibraryProcedure, DeclarationType.LibraryFunction
                 }.ToHashSet(),
             [DeclarationType.EnumerationMember] = new[]
                 {
-                    DeclarationType.Project, DeclarationType.ProceduralModule, DeclarationType.UserForm, DeclarationType.Document, DeclarationType.Procedure, DeclarationType.Function,
+                    DeclarationType.Project, DeclarationType.ProceduralModule, DeclarationType.UserForm, DeclarationType.Procedure, DeclarationType.Function,
                     DeclarationType.PropertyGet, DeclarationType.PropertySet, DeclarationType.PropertyLet, DeclarationType.Parameter, DeclarationType.Variable, DeclarationType.Constant,
                     DeclarationType.Enumeration, DeclarationType.EnumerationMember, DeclarationType.LibraryProcedure, DeclarationType.LibraryFunction
                 }.ToHashSet(),
@@ -423,13 +425,13 @@ namespace Rubberduck.Inspections.Concrete
                 }.ToHashSet(),
             [DeclarationType.LibraryProcedure] = new[]
                 {
-                    DeclarationType.Project, DeclarationType.ProceduralModule, DeclarationType.UserForm, DeclarationType.Document, DeclarationType.Procedure, DeclarationType.Function,
+                    DeclarationType.Project, DeclarationType.ProceduralModule, DeclarationType.UserForm, DeclarationType.Procedure, DeclarationType.Function,
                     DeclarationType.PropertyGet, DeclarationType.PropertySet, DeclarationType.PropertyLet, DeclarationType.Parameter, DeclarationType.Variable, DeclarationType.Constant,
                     DeclarationType.Enumeration, DeclarationType.EnumerationMember, DeclarationType.LibraryProcedure, DeclarationType.LibraryFunction
                 }.ToHashSet(),
             [DeclarationType.LibraryFunction] = new[]
                 {
-                    DeclarationType.Project, DeclarationType.ProceduralModule, DeclarationType.UserForm, DeclarationType.Document, DeclarationType.Procedure, DeclarationType.Function,
+                    DeclarationType.Project, DeclarationType.ProceduralModule, DeclarationType.UserForm, DeclarationType.Procedure, DeclarationType.Function,
                     DeclarationType.PropertyGet, DeclarationType.PropertySet, DeclarationType.PropertyLet, DeclarationType.Parameter, DeclarationType.Variable, DeclarationType.Constant,
                     DeclarationType.Enumeration, DeclarationType.EnumerationMember, DeclarationType.LibraryProcedure, DeclarationType.LibraryFunction
                 }.ToHashSet()

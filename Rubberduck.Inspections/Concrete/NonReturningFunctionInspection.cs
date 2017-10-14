@@ -17,8 +17,6 @@ namespace Rubberduck.Inspections.Concrete
         public NonReturningFunctionInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Error) { }
 
-        public override Type Type => typeof(NonReturningFunctionInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
         private static readonly DeclarationType[] ReturningMemberTypes =
@@ -27,7 +25,7 @@ namespace Rubberduck.Inspections.Concrete
             DeclarationType.PropertyGet
         };
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var declarations = UserDeclarations.ToList();
 

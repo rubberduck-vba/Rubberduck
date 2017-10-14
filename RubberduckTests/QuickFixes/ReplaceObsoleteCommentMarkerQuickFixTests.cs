@@ -9,7 +9,7 @@ using RubberduckTests.Inspections;
 namespace RubberduckTests.QuickFixes
 {
     [TestClass]
-    public class ReplaceOboleteCommentMarkerQuickFixTests
+    public class ReplaceObsoleteCommentMarkerQuickFixTests
     {
         [TestMethod]
         [TestCategory("QuickFixes")]

@@ -18,7 +18,7 @@ namespace Rubberduck.Inspections.QuickFixes
         private readonly RubberduckParserState _state;
 
         public IgnoreOnceQuickFix(RubberduckParserState state, IEnumerable<IInspection> inspections)
-            : base(inspections.Select(s => s.Type).Where(i => i.CustomAttributes.All(a => a.AttributeType != typeof(CannotAnnotateAttribute))).ToArray())
+            : base(inspections.Select(s => s.GetType()).Where(i => i.CustomAttributes.All(a => a.AttributeType != typeof(CannotAnnotateAttribute))).ToArray())
         {
             _state = state;
         }

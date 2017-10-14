@@ -1384,6 +1384,24 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The &apos;Error&apos; statement only exists in the language to support legacy code that required it; prefer using &apos;Err.Raise&apos; instead..
+        /// </summary>
+        public static string ObsoleteErrorSyntaxInspectionMeta {
+            get {
+                return ResourceManager.GetString("ObsoleteErrorSyntaxInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error throw uses obsolete &apos;Error&apos; statement.
+        /// </summary>
+        public static string ObsoleteErrorSyntaxInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("ObsoleteErrorSyntaxInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The &apos;Global&apos; keyword only exists in the language to support legacy code that required it; it can be safely replaced with the &apos;Public&apos; modifier..
         /// </summary>
         public static string ObsoleteGlobalInspectionMeta {
@@ -1920,6 +1938,15 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         public static string ReplaceCommentMarkerQuickFix {
             get {
                 return ResourceManager.GetString("ReplaceCommentMarkerQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replace &apos;Error&apos; with &apos;Err.Raise&apos;.
+        /// </summary>
+        public static string ReplaceObsoleteErrorStatementQuickFix {
+            get {
+                return ResourceManager.GetString("ReplaceObsoleteErrorStatementQuickFix", resourceCulture);
             }
         }
         

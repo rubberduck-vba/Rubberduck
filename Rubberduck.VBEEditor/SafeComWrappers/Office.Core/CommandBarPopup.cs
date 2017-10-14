@@ -14,20 +14,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
             return new CommandBarPopup(control.Target as Microsoft.Office.Core.CommandBarPopup);
         }
 
-        private Microsoft.Office.Core.CommandBarPopup Popup
-        {
-            get { return Target as Microsoft.Office.Core.CommandBarPopup; }
-        }
+        private Microsoft.Office.Core.CommandBarPopup Popup => Target as Microsoft.Office.Core.CommandBarPopup;
 
-        public ICommandBar CommandBar
-        {
-            get { return new CommandBar(IsWrappingNullReference ? null : Popup.CommandBar); }
-        }
+        public ICommandBar CommandBar => new CommandBar(IsWrappingNullReference ? null : Popup.CommandBar);
 
-        public ICommandBarControls Controls
-        {
-            get { return new CommandBarControls(IsWrappingNullReference ? null : Popup.Controls); }
-        }
+        public ICommandBarControls Controls => new CommandBarControls(IsWrappingNullReference ? null : Popup.Controls);
 
         //public override void Release(bool final = false)
         //{
