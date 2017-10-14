@@ -47,7 +47,7 @@ namespace Rubberduck.UI.Command.MenuItems
         /// <remarks>Returns <c>true</c> if not overridden.</remarks>
         public virtual bool EvaluateCanExecute(RubberduckParserState state)
         {
-            return state != null && _command.CanExecute(state);
+            return state != null && (_command?.CanExecute(state) ?? false);
         }
 
         public virtual ButtonStyle ButtonStyle => ButtonStyle.IconAndCaption;

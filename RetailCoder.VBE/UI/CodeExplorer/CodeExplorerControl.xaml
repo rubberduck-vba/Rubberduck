@@ -291,6 +291,7 @@
 
             <Style x:Key="XButtonStyle" TargetType="Button">
                 <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="Content" Value="✕"/>
                 <Setter Property="BorderThickness" Value="0"/>
                 <Setter Property="HorizontalContentAlignment" Value="Center"/>
                 <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -490,10 +491,32 @@
             </ToolBar>
         </ToolBarTray>
 
-        <TextBox Grid.Row="1" TextChanged="SearchBox_OnTextChanged" VerticalContentAlignment="Center" Name="SearchBox"></TextBox>
-        <Image Grid.Row="1" Source="{StaticResource SearchImage}" HorizontalAlignment="Right" VerticalAlignment="Center" MaxHeight="16" Margin="0,0,1,0" MouseDown="SearchIcon_OnMouseDown" Visibility="{Binding ElementName=SearchBox, Path=Text.Length, Converter={StaticResource StringHasValueToVisibility}}" />
-        <Button Grid.Row="1" Style="{StaticResource XButtonStyle}" HorizontalAlignment="Right" VerticalAlignment="Center" Height="18" Width="18" Margin="0,1,1,0" Visibility="{Binding ElementName=SearchBox, Path=Text.Length, Converter={StaticResource StringHasNoValueToVisibility}}" Click="ButtonBase_OnClick">✕</Button>
+        <Border Grid.Row="1" 
+                BorderBrush="{StaticResource {x:Static SystemColors.ControlBrushKey}}" 
+                BorderThickness="1">
+            <Grid>
+                <TextBox x:Name="SearchBox"
+                         VerticalContentAlignment="Center"
+                         IsEnabled="{Binding CanSearch}"
+                         MinHeight="20"
+                         PreviewKeyDown="SearchBox_OnPreviewKeyDown"
+                         TextChanged="SearchBox_OnTextChanged" />
         
+                <Image Source="{StaticResource SearchImage}" 
+                       HorizontalAlignment="Right" VerticalAlignment="Center" 
+                       MaxHeight="16" Margin="0,0,1,0" 
+                       IsEnabled="{Binding CanSearch}"
+                       Visibility="{Binding ElementName=SearchBox, Path=Text.Length, Converter={StaticResource StringHasValueToVisibility}}"
+                       MouseDown="SearchIcon_OnMouseDown" />
+        
+                <Button Style="{StaticResource XButtonStyle}" 
+                        HorizontalAlignment="Right" VerticalAlignment="Center" 
+                        Height="18" Width="18" Margin="0,1,1,0" 
+                        IsEnabled="{Binding CanSearch}"
+                        Visibility="{Binding ElementName=SearchBox, Path=Text.Length, Converter={StaticResource StringHasNoValueToVisibility}}" 
+                        Click="ButtonBase_OnClick" />
+            </Grid>
+        </Border>
         <controls:EmptyUIRefresh Grid.Row="2" />
 
         <TreeView x:Name="ProjectTree"

@@ -13,6 +13,39 @@ namespace RubberduckTests.Inspections
     {
         [TestMethod]
         [TestCategory("Inspections")]
+        public void ObjectVariableNotSet_OnlyAssignedToNothing_ReturnsResult()
+        {
+            var expectResultCount = 1;
+            var input =
+                @"
+Private Sub DoSomething()
+    Dim target As Object
+    target.DoSomething ' error 91
+    Set target = Nothing
+End Sub
+";
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ObjectVariableNotSet_AlsoAssignedToNothing_ReturnsNoResult()
+        {
+            var expectResultCount = 0;
+            var input =
+                @"
+Private Sub DoSomething()
+    Dim target As Object
+    Set target = New Object
+    target.DoSomething
+    Set target = Nothing
+End Sub
+";
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void ObjectVariableNotSet_GivenIndexerObjectAccess_ReturnsNoResult()
         {
             var expectResultCount = 0;
