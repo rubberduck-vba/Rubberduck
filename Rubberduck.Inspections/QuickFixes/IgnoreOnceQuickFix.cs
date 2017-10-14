@@ -67,15 +67,8 @@ namespace Rubberduck.Inspections.QuickFixes
                 }
                 else
                 {
-                    var listener = new EOLListener();
-                    ParseTreeWalker.Default.Walk(listener, treeRoot);
-
-                    // we subtract 2 here to get the insertion index to A) account for VBE's one-based indexing
-                    // and B) to get the newline token that introduces that line
-                    var eolContext = listener.Contexts.OrderBy(o => o.Start.TokenIndex).ElementAt(annotationLine - 2);
-                    insertIndex = eolContext.Start.TokenIndex;
-
                     annotationText = Environment.NewLine + annotationText;
+                    insertIndex = result.Context.Start.TokenIndex - 1;
                 }
 
                 var rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
