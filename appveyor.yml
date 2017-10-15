@@ -1,22 +1,5 @@
-version: 2.1.1
-for:
--
-  branches:
-    only:
-      - master
-      - next
-  version: {version}.{build}
-  after_test:
-  - cmd: iscc /q "Installer Build Script.iss" 
-  - cmd: move Installers\Rubberduck.Setup.exe Installers\Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%-pre.exe
--
-  branches:
-    only: 
-      - master
-    version: {version}
-    after_test:
-    - cmd: iscc /q "Installer Build Script.iss"
-    - cmd: move Installers\Rubberduck.Setup.exe Installers\Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%.exe
+version: '2.1.1.{build}'
+
 skip_commits:
   files:
   - docs/*
@@ -29,17 +12,18 @@ branches:
   - master
   - next
 skip_tags: true
+
 image: Visual Studio 2017
 configuration: Release
 platform: Any CPU
 install:
-- cmd: set PATH=C:\Program Files (x86)\MSBuild\15.0\Bin;%PATH%
+  - cmd: set PATH=C:\Program Files (x86)\MSBuild\15.0\Bin;%PATH%
 init:
   - git config --global core.autocrlf true
 before_build:
-- ps: choco install innosetup
+  - choco install innosetup
 build:
-  verbosity: normal
+  verbosity: minimal
 assembly_info:
   patch: true
   file: RetailCoder.VBE\Properties\AssemblyInfo.cs
@@ -48,9 +32,21 @@ hosts:
   api.nuget.org: 93.184.221.200
 before_package:
 - cmd: copy Rubberduck.Inspections\bin\Release\Rubberduck.Inspections.dll RetailCoder.VBE\bin\Release\Rubberduck.Inspections.dll
-after_test:
-- iscc /q "Installer Build Script.iss" 
-- cmd: move Installers\Rubberduck.Setup.exe Installers\Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%.exe
+
+for:
+- branches:
+    only:
+      - next
+  after_test:
+    - iscc /q "Installer Build Script.iss" 
+    - cmd: move Installers\Rubberduck.Setup.exe Installers\Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%-pre.exe
+- branches:
+    only:
+      - master
+  after_test:
+    - iscc /q "Installer Build Script.iss" 
+    - cmd: move Installers\Rubberduck.Setup.exe Installers\Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%.exe
+    
 artifacts:
 - path: Installers\Rubberduck.Setup.*.exe
   name: Rubberduck
