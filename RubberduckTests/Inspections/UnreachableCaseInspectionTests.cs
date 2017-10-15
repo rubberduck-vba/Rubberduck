@@ -84,6 +84,24 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
+        public void UnreachableCaseInspection_ConflictingCaseStmt()
+        {
+            const string inputCode =
+@"Sub Foo(x As Long)
+
+Select Case x
+  Case 1 To 45, 35, 85
+    'Internal Conflict but reachable
+  Case Else
+    'OK
+End Select
+                
+End Sub";
+            CheckActualUnreachableBlockCountEqualsExpected(inputCode, 0);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void UnreachableCaseInspection_StringRange()
         {
             const string inputCode =
@@ -316,16 +334,67 @@ End Sub";
 @"Sub Foo(x As Integer)
 
 Select Case x
-  Case 1,2,5
+  Case 10,11,12
     'Do FooBar
-  Case 40000
+  'Case 40000
+  '  'Unreachable
+  Case x < 4
+    'OK
+  'Case -50000
+  '  'Unreachable
+End Select
+
+End Sub";
+            CheckActualUnreachableBlockCountEqualsExpected(inputCode, 0);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void UnreachableCaseInspection_ExceedsLongValue()
+        {
+            const string inputCode =
+@"Sub Foo(x As Long)
+
+Select Case x
+  Case 98
+    'OK
+  Case 5 To 25, 50, 80
+    'OK
+  Case 2147486648#
     'Unreachable
-  Case -50000
+  Case -2147486647#
     'Unreachable
+  Case Is < -5000
+    'OK
 End Select
 
 End Sub";
             CheckActualUnreachableBlockCountEqualsExpected(inputCode, 2);
+        }
+
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void UnreachableCaseInspection_IntegerWithDoubleValue()
+        {
+            const string inputCode =
+@"Sub Foo(x As Integer)
+
+Select Case x
+  Case 214.0
+    'Unreachable
+  Case -214#
+    'Unreachable
+  Case Is < -5000
+    'OK
+  Case 98
+    'OK
+  Case 5 To 25, 50, 80
+    'OK
+End Select
+
+End Sub";
+            CheckActualUnreachableBlockCountEqualsExpected(inputCode, 0);
         }
 
         [TestMethod]

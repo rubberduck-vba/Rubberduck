@@ -29,15 +29,7 @@ namespace Rubberduck.Inspections.Concrete
         public override IInspectionListener Listener { get; } =
             new UnreachableCaseInspectionListener();
 
-        //public override Type Type => typeof(UnreachableCaseInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
-
-
-        //protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
-        //{
-        //    throw new NotImplementedException();
-        //}
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
@@ -61,20 +53,6 @@ namespace Rubberduck.Inspections.Concrete
                         new QualifiedContext<ParserRuleContext>(selectStmt.ModuleName, unreachableBlock));
         }
 
-        private bool SelectStmtIsBooleanExpression(QualifiedContext<ParserRuleContext> selectCaseStmt)
-        {
-            var selectExpr = ParserRuleContextHelper.GetChild<VBAParser.SelectExpressionContext>(selectCaseStmt.Context);
-            if (selectExpr == null)
-            {
-                return false;
-            }
-            else
-            {
-                var relationalOpCtxt = ParserRuleContextHelper.GetChild<VBAParser.RelationalOpContext>(selectExpr);
-                return relationalOpCtxt != null;
-            }
-        }
-
         private List<ParserRuleContext> GetUnreachableCaseBlocks(QualifiedContext<ParserRuleContext> selectCaseStmt)
         {
             var selectCaseExpr = ParserRuleContextHelper.GetChild<VBAParser.SelectExpressionContext>(selectCaseStmt.Context);
@@ -86,14 +64,10 @@ namespace Rubberduck.Inspections.Concrete
             IdentifierReference selectCaseIdentifierReference = null;
             var typeName = string.Empty;
 
-            if (SelectStmtIsBooleanExpression(selectCaseStmt))
+            if (IsBooleanSelectExpression(selectCaseExpr))
             {
                 typeName = "Boolean";
-                var caseClauses = ParserRuleContextHelper.GetChildren<VBAParser.CaseClauseContext>(selectCaseStmt.Context);
-
-                var caseElseClause = ParserRuleContextHelper.GetChild<VBAParser.CaseElseClauseContext>(selectCaseStmt.Context);
-
-                return EvaluateCaseClauses(caseClauses, caseElseClause, selectCaseIdentifierReference, typeName);
+                return EvaluateCaseClauses(selectCaseStmt, selectCaseIdentifierReference, typeName);
             }
 
             var smplName = ParserRuleContextHelper.GetDescendent<VBAParser.SimpleNameExprContext>(selectCaseExpr);
@@ -103,15 +77,17 @@ namespace Rubberduck.Inspections.Concrete
                 if (selectCaseIdentifierReference != null)
                 {
                     typeName = selectCaseIdentifierReference.Declaration.AsTypeName;
-                    var caseClauses = ParserRuleContextHelper.GetChildren<VBAParser.CaseClauseContext>(selectCaseStmt.Context);
-
-                    var caseElseClause = ParserRuleContextHelper.GetChild<VBAParser.CaseElseClauseContext>(selectCaseStmt.Context);
-
-                    return EvaluateCaseClauses(caseClauses, caseElseClause, selectCaseIdentifierReference, typeName);
+                    return EvaluateCaseClauses(selectCaseStmt, selectCaseIdentifierReference, typeName);
                 }
             }
 
             return new List<ParserRuleContext>();
+        }
+
+        private bool IsBooleanSelectExpression(VBAParser.SelectExpressionContext selectExpr)
+        {
+            var relationalOpCtxt = ParserRuleContextHelper.GetChild<VBAParser.RelationalOpContext>(selectExpr);
+            return relationalOpCtxt != null;
         }
 
         private IdentifierReference GetTheSelectCaseReference(QualifiedContext<ParserRuleContext> selectCaseStmt, string theName)
@@ -136,8 +112,11 @@ namespace Rubberduck.Inspections.Concrete
             return selectCaseReference.First();
         }
 
-        private List<ParserRuleContext> EvaluateCaseClauses(List<VBAParser.CaseClauseContext> caseClauses, VBAParser.CaseElseClauseContext caseElseClause, IdentifierReference theRef, string typeName)
+        private List<ParserRuleContext> EvaluateCaseClauses(QualifiedContext<ParserRuleContext> selectCaseStmt, IdentifierReference theRef, string typeName)
         {
+            var caseClauses = ParserRuleContextHelper.GetChildren<VBAParser.CaseClauseContext>(selectCaseStmt.Context);
+            var caseElseClause = ParserRuleContextHelper.GetChild<VBAParser.CaseElseClauseContext>(selectCaseStmt.Context);
+
             var unreachableClauses = new List<ParserRuleContext>();
 
             var rangeEvals = LoadBoundaryEvaluations(typeName, new List<IRangeClause>());
@@ -198,9 +177,13 @@ namespace Rubberduck.Inspections.Concrete
 
         private static List<IRangeClause> LoadBoundaryEvaluations(string theTypeName, List<IRangeClause> rangeEvals)
         {
-            //long LONGMAX = 2147486647;
-            //long LONGMIN = -2147486648;
 
+            if (theTypeName.Equals("Long"))
+            {
+                long LONGMAX = 2147486647;
+                long LONGMIN = -2147486648;
+                return LoadExents(LONGMIN, LONGMAX, rangeEvals);
+            }
             if (theTypeName.Equals("Integer"))
             {
                 long INTEGERMAX = 32767;

@@ -65,8 +65,9 @@ namespace Rubberduck.Inspections.Concrete
 
 
         private static string[] LongComparisonTypes = { "Integer", "Long", "Byte" };
+        //private static string[] LongComparisonTypes = { "Integer", "Byte" };
         private static string[] DoubleComparisonTypes = { "Double", "Single" };
-        private static string[] CurrencyComparisonTypes = { "Currency" };
+        private static string[] DecimalComparisonTypes = { "Currency" };
         private static string[] BooleanComparisonTypes = { "Boolean" };
 
         private static Dictionary<string, string> _comparisonOperatorsAndInversions = new Dictionary<string, string>()
@@ -116,6 +117,7 @@ namespace Rubberduck.Inspections.Concrete
                 IsParseable = _rangeContexts.Key != null && _rangeContexts.Value != null;
                 _RangeValuesAreHighToLow = StandardValueToValueCompare(GetText(_rangeContexts.Key), GetText(_rangeContexts.Value)) > 0;
             }
+
             IsStringLiteral = _ctxt.GetText().StartsWith("\"") && _ctxt.GetText().EndsWith("\"");
             _evalResults.IsStringLiteral = IsStringLiteral;
 
@@ -126,6 +128,7 @@ namespace Rubberduck.Inspections.Concrete
 
         public bool IsSingleVal => _isSingleVal;
         public bool UsesIsClause => _usesIsClause;
+        public bool IsRangeExtent => false;
         public bool IsRange => _isRange;
         public string CompareSymbol => _compareSymbol;
         private string SelectCaseTypeName => _typeName;
@@ -154,7 +157,7 @@ namespace Rubberduck.Inspections.Concrete
         private bool isLongType => LongComparisonTypes.Contains(SelectCaseTypeName);
         private bool isDoubleType => DoubleComparisonTypes.Contains(SelectCaseTypeName);
         private bool isBooleanType => BooleanComparisonTypes.Contains(SelectCaseTypeName);
-        private bool isDecimalType => CurrencyComparisonTypes.Contains(SelectCaseTypeName);
+        private bool isDecimalType => DecimalComparisonTypes.Contains(SelectCaseTypeName);
         private bool isStringType => !(isLongType || isDoubleType || isBooleanType || isDecimalType);
 
         public string ValueAsString => GetRangeClauseText(_ctxt);
@@ -229,7 +232,6 @@ namespace Rubberduck.Inspections.Concrete
 
         private IdentifierReference GetTheRangeClauseReference(ParserRuleContext rangeClauseCtxt, string theName)
         {
-            var simpleNameExpr = ParserRuleContextHelper.GetChild<VBAParser.SimpleNameExprContext>(rangeClauseCtxt);
 
             var allRefs = new List<IdentifierReference>();
             foreach (var dec in _state.DeclarationFinder.MatchName(theName))
@@ -248,6 +250,7 @@ namespace Rubberduck.Inspections.Concrete
             }
             else
             {
+                var simpleNameExpr = ParserRuleContextHelper.GetChild<VBAParser.SimpleNameExprContext>(rangeClauseCtxt);
                 var rangeClauseReference = allRefs.Where(rf => ParserRuleContextHelper.HasParent(rf.Context, rangeClauseCtxt)
                                         && (ParserRuleContextHelper.HasParent(rf.Context, simpleNameExpr.Parent)));
 
@@ -346,19 +349,19 @@ namespace Rubberduck.Inspections.Concrete
             {
                 if (lExprCtxtIndex > literalExprCtxtIndex)
                 {
+                    //A greater lExprCtxtIndex means '10 < z'...invert 
+                    //the operator to get 'z > 10' or 'Is > 10'
                     _compareSymbol = _comparisonOperatorsAndInversions[_compareSymbol];
                 }
 
                 if (lExprCtxt.GetText().Equals(_theRef.IdentifierName))
                 {
-                    //If 'z' is the Select Case variable, 
-                    //then 'z < 10' will be treated as 'Is < 10'
-                    //and '10 < z' will be treated as 'Is > 10
                     _usesIsClause = true;
                     return theValueCtxt.GetText();
                 }
             }
 
+            //TODO: can this function also be used the single lExpr model like 'z < 10'
             var lExprCtxtIndices = new List<int>();
             for (int idx = 0; idx < relationalOpCtxt.ChildCount; idx++)
             {
@@ -511,30 +514,51 @@ namespace Rubberduck.Inspections.Concrete
                 }
                 else if (UsesIsClause && prior.UsesIsClause)
                 {
-                    var result = IsStmtToIsStmtClauseCompare(prior.ValueAsString, ValueAsString, prior.CompareSymbol, CompareSymbol);
+                    int result;
+                    if (prior.IsRangeExtent)
+                    {
+                        //TODO: this is a copy of the !UsesIsClause & prior.UsesIsClause...extract function?
+                        result = SingleValueClauseCompare(prior.ValueAsString, ValueAsString, prior.CompareSymbol);
 
-                    if (isBooleanType)
-                    {
-                        CheckCaseElseIsReachable(prior);
-                    }
-                    else if (GetOperatorInverseStrict( prior.CompareSymbol).Equals(CompareSymbol)
-                        || GetOperatorInverseExtendedSet(prior.CompareSymbol).Equals(CompareSymbol)
-                        )
-                    {
-                        if ((prior.CompareSymbol.Equals(LT) || prior.CompareSymbol.Equals(LTE)) && SingleValueClauseCompare(prior.ValueAsString, ValueAsString, EQ) > 0)
+                        IsFullyEquivalent = (result == 0);
+                        if (isBooleanType)
                         {
-                            HasUnreachableCaseElse = true;
+                            CheckCaseElseIsReachable(prior);
                         }
-                        else if ((prior.CompareSymbol.Equals(GT) || prior.CompareSymbol.Equals(GTE)) && SingleValueClauseCompare(prior.ValueAsString, ValueAsString, EQ) < 0)
+                        else if (prior.CompareSymbol.Equals(NEQ))
                         {
-                            HasUnreachableCaseElse = true;
-                        }
-                        else if ((prior.CompareSymbol.Equals(EQ) || prior.CompareSymbol.Equals(NEQ)) && SingleValueClauseCompare(prior.ValueAsString, ValueAsString, EQ) == 0)
-                        {
-                            HasUnreachableCaseElse = true;
+                            if (SingleValueClauseCompare(ValueAsString, prior.ValueAsString, EQ) == 0)
+                            {
+                                HasUnreachableCaseElse = true;
+                            }
                         }
                     }
+                    else
+                    {
+                        result = IsStmtToIsStmtClauseCompare(prior.ValueAsString, ValueAsString, prior.CompareSymbol, CompareSymbol);
 
+                        if (isBooleanType)
+                        {
+                            CheckCaseElseIsReachable(prior);
+                        }
+                        else if (GetOperatorInverseStrict( prior.CompareSymbol).Equals(CompareSymbol)
+                            || GetOperatorInverseExtendedSet(prior.CompareSymbol).Equals(CompareSymbol)
+                            )
+                        {
+                            if ((prior.CompareSymbol.Equals(LT) || prior.CompareSymbol.Equals(LTE)) && SingleValueClauseCompare(prior.ValueAsString, ValueAsString, EQ) > 0)
+                            {
+                                HasUnreachableCaseElse = true;
+                            }
+                            else if ((prior.CompareSymbol.Equals(GT) || prior.CompareSymbol.Equals(GTE)) && SingleValueClauseCompare(prior.ValueAsString, ValueAsString, EQ) < 0)
+                            {
+                                HasUnreachableCaseElse = true;
+                            }
+                            else if ((prior.CompareSymbol.Equals(EQ) || prior.CompareSymbol.Equals(NEQ)) && SingleValueClauseCompare(prior.ValueAsString, ValueAsString, EQ) == 0)
+                            {
+                                HasUnreachableCaseElse = true;
+                            }
+                        }
+                    }
                     return result;
                 }
             }
@@ -642,6 +666,10 @@ namespace Rubberduck.Inspections.Concrete
                     {
                         _evalResults.MatchesSelectCaseTypeName = false;
                     }
+                    else if (GetText(_ctxt).EndsWith("#"))
+                    {
+                        _evalResults.MatchesSelectCaseTypeName = false;
+                    }
                 }
             }
             else if (isDoubleType)
@@ -702,10 +730,6 @@ namespace Rubberduck.Inspections.Concrete
         private string GetText(ParserRuleContext ctxt)
         {
             var text = ctxt.GetText();
-            //if (!IsStringLiteral)
-            //{
-            //    IsStringLiteral = text.Contains("\"");
-            //}
             return text.Replace("\"", "");
         }
 

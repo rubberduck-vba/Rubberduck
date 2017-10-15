@@ -7,6 +7,7 @@ namespace Rubberduck.Inspections.Concrete
         bool IsSingleVal { get; }
         bool IsRange { get; }
         bool UsesIsClause { get; }
+        bool IsRangeExtent { get; }
         string ValueAsString { get; }
         string ValueMinAsString { get; }
         string ValueMaxAsString { get; }
@@ -29,6 +30,8 @@ namespace Rubberduck.Inspections.Concrete
         public bool IsRange => false;
 
         public bool UsesIsClause => true;
+
+        public bool IsRangeExtent => true;
 
         public string ValueAsString => _extent.ToString();
 
