@@ -2053,4 +2053,18 @@ les projets dans le VBE.</value>
   <data name="Preview">
     <value>Aperçu</value>
   </data>
+  <data name="ToDoExplorer_CopyToolTip">
+    <value>Copier dans le presse-papier</value>
+  </data>
+  <data name="ToDoExplorer_NumberOfIssuesFound_Plural">
+    <value>Rubberduck - {0}
+{1} marqueurs TODO trouvés.</value>
+  </data>
+  <data name="ToDoExplorerToDoItemFormat">
+    <value>{0}: {1} - {2}.{3} ligne {4}.</value>
+  </data>
+  <data name="ToDoExplorer_NumberOfIssuesFound_Singular">
+    <value>Rubberduck marqueurs TODO - {0}
+{1} marqueurs trouvés.</value>
+  </data>
 </root>

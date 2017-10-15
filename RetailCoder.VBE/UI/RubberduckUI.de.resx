@@ -2050,4 +2050,18 @@ Möchten sie die Einstellungen in Rubberduck importieren?</value>
   <data name="RubberduckMenu_Refresh">
     <value>Aktualisieren</value>
   </data>
+  <data name="ToDoExplorer_CopyToolTip">
+    <value>In die Zwischenablage kopieren</value>
+  </data>
+  <data name="ToDoExplorer_NumberOfIssuesFound_Plural">
+    <value>Rubberduck TODO Markierungen - {0}
+{1} Markierungen gefunden.</value>
+  </data>
+  <data name="ToDoExplorerToDoItemFormat">
+    <value>{0}: {1} - {2}.{3} Zeile {4}.</value>
+  </data>
+  <data name="ToDoExplorer_NumberOfIssuesFound_Singular">
+    <value>Rubberduck TODO Markierungen - {0}
+{1} Markierungen gefunden.</value>
+  </data>
 </root>
