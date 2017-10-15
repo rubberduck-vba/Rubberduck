@@ -10,7 +10,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         {
         }
 
-        public string Version { get { return IsWrappingNullReference ? null : Target.Version; } }
+        public string Version => IsWrappingNullReference ? null : Target.Version;
 
         public override bool Equals(ISafeComWrapper<VB.Application> other)
         {

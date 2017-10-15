@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 namespace RubberduckTests.Mocks
 {
     /// <summary>
-    /// Builds a mock <see cref="VBE"/>.
+    /// Builds a mock <see cref="IVBE"/>.
     /// </summary>
     public class MockVbeBuilder
     {
@@ -113,7 +114,8 @@ namespace RubberduckTests.Mocks
         /// </summary>
         /// <param name="content">The VBA code associated to the component.</param>
         /// <param name="component">The created <see cref="IVBComponent"/></param>
-        /// <param name="selection"></param>
+        /// <param name="selection">Specifies user selection in the editor.</param>
+        /// <param name="referenceStdLibs">Specifies whether standard libraries are referenced.</param>
         /// <returns></returns>
         public static Mock<IVBE> BuildFromSingleStandardModule(string content, out IVBComponent component, Selection selection = default(Selection), bool referenceStdLibs = false)
         {
@@ -153,6 +155,30 @@ namespace RubberduckTests.Mocks
             return vbe;
         }
 
+        /// <summary>
+        /// Builds a mock VBE containing multiple standard modules.
+        /// </summary>
+        public static Mock<IVBE> BuildFromStdModules(params (string name, string content)[] modules)
+        {
+            var vbeBuilder = new MockVbeBuilder();
+
+            var builder = vbeBuilder.ProjectBuilder(TestProjectName, ProjectProtection.Unprotected);
+            foreach (var module in modules)
+            {
+                builder.AddComponent(module.name, ComponentType.StandardModule, module.content);
+            }
+
+            var project = builder.Build();
+            var vbe = vbeBuilder.AddProject(project).Build();
+
+            var component = project.Object.VBComponents[0];
+
+            vbe.Object.ActiveVBProject = project.Object;
+            vbe.Object.ActiveCodePane = component.CodeModule.CodePane;
+
+            return vbe;
+        }
+
         private Mock<IVBE> CreateVbeMock()
         {
             var vbe = new Mock<IVBE>();
@@ -161,7 +187,7 @@ namespace RubberduckTests.Mocks
             vbe.SetupProperty(m => m.ActiveCodePane);
             vbe.SetupProperty(m => m.ActiveVBProject);
             
-            vbe.SetupGet(m => m.SelectedVBComponent).Returns(() => vbe.Object.ActiveCodePane.CodeModule.Parent);
+            vbe.SetupGet(m => m.SelectedVBComponent).Returns(() => vbe.Object.ActiveCodePane?.CodeModule?.Parent);
             vbe.SetupGet(m => m.ActiveWindow).Returns(() => vbe.Object.ActiveCodePane.Window);
 
             var mainWindow = new Mock<IWindow>();

@@ -13,80 +13,56 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
         }
 
-        public int HWnd
-        {
-            get { return IsWrappingNullReference ? 0 : Target.HWnd; }
-        }
+        public int HWnd => IsWrappingNullReference ? 0 : Target.HWnd;
 
         public IntPtr Handle()
         {
             return (IntPtr)HWnd;
         }
 
-        public IVBE VBE
-        {
-            get { return new VBE(IsWrappingNullReference ? null : Target.VBE); }
-        }
-        
-        public IWindows Collection
-        {
-            get { return new Windows(IsWrappingNullReference ? null : Target.Collection); }
-        }
+        public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
 
-        public string Caption
-        {
-            get { return IsWrappingNullReference ? string.Empty : Target.Caption; }
-        }
+        public IWindows Collection => new Windows(IsWrappingNullReference ? null : Target.Collection);
+
+        public string Caption => IsWrappingNullReference ? string.Empty : Target.Caption;
 
         public bool IsVisible
         {
-            get { return !IsWrappingNullReference && Target.Visible; }
+            get => !IsWrappingNullReference && Target.Visible;
             set { if (!IsWrappingNullReference) Target.Visible = value; }
         }
 
         public int Left
         {
-            get { return IsWrappingNullReference ? 0 : Target.Left; }
+            get => IsWrappingNullReference ? 0 : Target.Left;
             set { if (!IsWrappingNullReference) Target.Left = value; }
         }
 
         public int Top
         {
-            get { return IsWrappingNullReference ? 0 : Target.Top; }
+            get => IsWrappingNullReference ? 0 : Target.Top;
             set { if (!IsWrappingNullReference) Target.Top = value; }
         }
 
         public int Width
         {
-            get { return IsWrappingNullReference ? 0 : Target.Width; }
+            get => IsWrappingNullReference ? 0 : Target.Width;
             set { if (!IsWrappingNullReference) Target.Width = value; }
         }
 
         public int Height
         {
-            get { return IsWrappingNullReference ? 0 : Target.Height; }
+            get => IsWrappingNullReference ? 0 : Target.Height;
             set { if (!IsWrappingNullReference) Target.Height = value; }
         }
 
-        public WindowState WindowState
-        {
-            get { return IsWrappingNullReference ? 0 : (WindowState)Target.WindowState; }
-        }
+        public WindowState WindowState => IsWrappingNullReference ? 0 : (WindowState)Target.WindowState;
 
-        public WindowKind Type
-        {
-            get { return IsWrappingNullReference ? 0 : (WindowKind)Target.Type; }
-        }
+        public WindowKind Type => IsWrappingNullReference ? 0 : (WindowKind)Target.Type;
 
-        public ILinkedWindows LinkedWindows
-        {
-            get { return new LinkedWindows(IsWrappingNullReference ? null : Target.LinkedWindows); }
-        }
+        public ILinkedWindows LinkedWindows => new LinkedWindows(IsWrappingNullReference ? null : Target.LinkedWindows);
 
-        public IWindow LinkedWindowFrame
-        {
-            get { return new Window(IsWrappingNullReference ? null : Target.LinkedWindowFrame); }
-        }
+        public IWindow LinkedWindowFrame => new Window(IsWrappingNullReference ? null : Target.LinkedWindowFrame);
 
         public void Close()
         {

@@ -3,7 +3,6 @@ using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
@@ -29,8 +28,7 @@ Attribute VB_Exposed = False                      ' Must be False
 Option Explicit
 ";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out _);
 
             var state = MockParser.CreateAndParse(vbe.Object);
             var inspection = new MissingAttributeInspection(state);
@@ -62,8 +60,7 @@ Public Sub Test()
 End Sub
 ";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out _);
 
             var state = MockParser.CreateAndParse(vbe.Object);
             var inspection = new MissingAttributeInspection(state);
@@ -92,8 +89,7 @@ Option Explicit
 '@PredeclaredId
 ";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out _);
 
             var state = MockParser.CreateAndParse(vbe.Object);
             var inspection = new MissingAttributeInspection(state);
@@ -122,8 +118,7 @@ Option Explicit
 '@PredeclaredId
 ";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out _);
 
             var state = MockParser.CreateAndParse(vbe.Object);
             var inspection = new MissingAttributeInspection(state);
@@ -151,8 +146,7 @@ Attribute VB_Exposed = True                       ' Must be True
 Option Explicit
 ";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out _);
 
             var state = MockParser.CreateAndParse(vbe.Object);
             var inspection = new MissingAttributeInspection(state);
@@ -181,8 +175,7 @@ Option Explicit
 '@Exposed
 ";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out _);
 
             var state = MockParser.CreateAndParse(vbe.Object);
             var inspection = new MissingAttributeInspection(state);
@@ -214,8 +207,7 @@ Attribute DoSomething.VB_Description = ""Does something""
 End Sub
 ";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out _);
 
             var state = MockParser.CreateAndParse(vbe.Object);
             var inspection = new MissingAttributeInspection(state);
@@ -247,8 +239,7 @@ Sub DoSomething()
 End Sub
 ";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out _);
 
             var state = MockParser.CreateAndParse(vbe.Object);
             var inspection = new MissingAttributeInspection(state);

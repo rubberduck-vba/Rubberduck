@@ -134,8 +134,6 @@ namespace Rubberduck.Root
 
             RegisterWindowsHooks(container);
 
-            RegisterInterceptors(container);
-
             var assembliesToRegister = AssembliesToRegister().ToArray();
 
             RegisterConfiguartion(container, assembliesToRegister);
@@ -236,8 +234,7 @@ namespace Rubberduck.Root
                 container.Register(Classes.FromAssembly(assembly)
                     .BasedOn<IInspection>()
                     .WithService.Base()
-                    .LifestyleTransient()
-                    .Configure(c => c.Interceptors<TimedCallLoggerInterceptor, EnumerableCounterInterceptor<IInspectionResult>>()));
+                    .LifestyleTransient());
             }
         }
 
@@ -248,17 +245,8 @@ namespace Rubberduck.Root
                 container.Register(Classes.FromAssembly(assembly)
                     .BasedOn<IParseTreeInspection>()
                     .WithService.Base()
-                    .LifestyleTransient()
-                    .Configure(c => c.Interceptors<TimedCallLoggerInterceptor, EnumerableCounterInterceptor<IInspectionResult>>()));
+                    .LifestyleTransient());
             }
-        }
-
-        private static void RegisterInterceptors(IWindsorContainer container)
-        {
-            container.Register(Component.For(typeof(EnumerableCounterInterceptor<>))
-                .LifestyleTransient());
-            container.Register(Component.For<TimedCallLoggerInterceptor>()
-                .LifestyleTransient());
         }
 
         private void RegisterRubberduckMenu(IWindsorContainer container)
@@ -287,6 +275,7 @@ namespace Rubberduck.Root
         {
             return new[]
             {
+                typeof(RefreshCommandMenuItem),
                 typeof(AboutCommandMenuItem),
                 typeof(SettingsCommandMenuItem),
                 typeof(InspectionResultsCommandMenuItem),
@@ -352,7 +341,8 @@ namespace Rubberduck.Root
         {
             return new Type[]
             {
-                typeof(FormDesignerRefactorRenameCommandMenuItem)
+                typeof(FormDesignerRefactorRenameCommandMenuItem),
+                typeof(FormDesignerFindAllReferencesCommandMenuItem)
             };
         }
 

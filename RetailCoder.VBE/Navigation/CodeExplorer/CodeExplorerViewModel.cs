@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using NLog;
@@ -21,6 +22,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using System.Windows;
 
 // ReSharper disable CanBeReplacedWithTryCastAndCheckForNull
+// ReSharper disable ExplicitCallerInfoArgument
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
@@ -64,6 +66,8 @@ namespace Rubberduck.Navigation.CodeExplorer
             OpenDesignerCommand = commands.OfType<OpenDesignerCommand>().SingleOrDefault();
 
             AddTestModuleCommand = commands.OfType<UI.CodeExplorer.Commands.AddTestModuleCommand>().SingleOrDefault();
+            AddTestModuleWithStubsCommand = commands.OfType<AddTestModuleWithStubsCommand>().SingleOrDefault();
+
             AddStdModuleCommand = commands.OfType<AddStdModuleCommand>().SingleOrDefault();
             AddClassModuleCommand = commands.OfType<AddClassModuleCommand>().SingleOrDefault();
             AddUserFormCommand = commands.OfType<AddUserFormCommand>().SingleOrDefault();
@@ -97,27 +101,32 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             SetNameSortCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
             {
-                SortByName = (bool)param;
-                SortBySelection = !(bool)param;
-            });
+                if ((bool)param)
+                {
+                    SortByName = (bool)param;
+                    SortByCodeOrder = !(bool)param;
+                }
+            }, param => !SortByName);
 
-            SetSelectionSortCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
+            SetCodeOrderSortCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
             {
-                SortBySelection = (bool)param;
-                SortByName = !(bool)param;
-            });
+                if ((bool)param)
+                {
+                    SortByCodeOrder = (bool)param;
+                    SortByName = !(bool)param;
+                }
+            }, param => !SortByCodeOrder);
         }
 
         private CodeExplorerItemViewModel _selectedItem;
         public CodeExplorerItemViewModel SelectedItem
         {
-            get { return _selectedItem; }
+            get => _selectedItem;
             set
             {
                 _selectedItem = value;
                 OnPropertyChanged();
 
-                // ReSharper disable ExplicitCallerInfoArgument
                 OnPropertyChanged("CanExecuteIndenterCommand");
                 OnPropertyChanged("CanExecuteRenameCommand");
                 OnPropertyChanged("CanExecuteFindAllReferencesCommand");
@@ -125,14 +134,12 @@ namespace Rubberduck.Navigation.CodeExplorer
                 OnPropertyChanged("ExportAllVisibility");
                 OnPropertyChanged("PanelTitle");
                 OnPropertyChanged("Description");
-
-                // ReSharper restore ExplicitCallerInfoArgument
             }
         }
 
         public bool SortByName
         {
-            get { return _windowSettings.CodeExplorer_SortByName; }
+            get => _windowSettings.CodeExplorer_SortByName;
             set
             {
                 if (_windowSettings.CodeExplorer_SortByName == value)
@@ -141,28 +148,30 @@ namespace Rubberduck.Navigation.CodeExplorer
                 }
 
                 _windowSettings.CodeExplorer_SortByName = value;
-                _windowSettings.CodeExplorer_SortByLocation = !value;
+                _windowSettings.CodeExplorer_SortByCodeOrder = !value;
                 _windowSettingsProvider.Save(_windowSettings);
                 OnPropertyChanged();
+                OnPropertyChanged("SortByCodeOrder");
 
                 ReorderChildNodes(Projects);
             }
         }
 
-        public bool SortBySelection
+        public bool SortByCodeOrder
         {
-            get { return _windowSettings.CodeExplorer_SortByLocation; }
+            get => _windowSettings.CodeExplorer_SortByCodeOrder;
             set
             {
-                if (_windowSettings.CodeExplorer_SortByLocation == value)
+                if (_windowSettings.CodeExplorer_SortByCodeOrder == value)
                 {
                     return;
                 }
 
-                _windowSettings.CodeExplorer_SortByLocation = value;
+                _windowSettings.CodeExplorer_SortByCodeOrder = value;
                 _windowSettings.CodeExplorer_SortByName = !value;
                 _windowSettingsProvider.Save(_windowSettings);
                 OnPropertyChanged();
+                OnPropertyChanged("SortByName");
 
                 ReorderChildNodes(Projects);
             }
@@ -172,11 +181,11 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public CommandBase SetNameSortCommand { get; }
 
-        public CommandBase SetSelectionSortCommand { get; }
+        public CommandBase SetCodeOrderSortCommand { get; }
 
-        public bool SortByType
+        public bool GroupByType
         {
-            get { return _windowSettings.CodeExplorer_GroupByType; }
+            get => _windowSettings.CodeExplorer_GroupByType;
             set
             {
                 if (_windowSettings.CodeExplorer_GroupByType != value)
@@ -191,16 +200,28 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
+        private bool _canSearch;
+
+        public bool CanSearch
+        {
+            get => _canSearch;
+            set
+            {
+                _canSearch = value;
+                OnPropertyChanged();
+            }
+        }
+
         private bool _isBusy;
         public bool IsBusy
         {
-            get { return _isBusy; }
+            get => _isBusy;
             set
             {
                 _isBusy = value;
                 OnPropertyChanged();
                 // If the window is "busy" then hide the Refresh message
-                OnPropertyChanged("EmptyTreeMessageVisibility");
+                OnPropertyChanged("EmptyUIRefreshMessageVisibility");
             }
         }
 
@@ -261,15 +282,17 @@ namespace Rubberduck.Navigation.CodeExplorer
         private ObservableCollection<CodeExplorerItemViewModel> _projects;
         public ObservableCollection<CodeExplorerItemViewModel> Projects
         {
-            get { return _projects; }
+            get => _projects;
             set
             {
                 ReorderChildNodes(value);
                 _projects = new ObservableCollection<CodeExplorerItemViewModel>(value.OrderBy(o => o.NameWithSignature));
-                
+                CanSearch = _projects.Any();
+
                 OnPropertyChanged();
                 // Once a Project has been set, show the TreeView
                 OnPropertyChanged("TreeViewVisibility");
+                OnPropertyChanged("CanSearch");
             }
         }
 
@@ -414,7 +437,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             foreach (var node in nodes)
             {
-                node.ReorderItems(SortByName, SortByType);
+                node.ReorderItems(SortByName, GroupByType);
                 ReorderChildNodes(node.Items);
             }
         }
@@ -477,6 +500,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         public CommandBase OpenCommand { get; }
 
         public CommandBase AddTestModuleCommand { get; }
+        public CommandBase AddTestModuleWithStubsCommand { get; }
         public CommandBase AddStdModuleCommand { get; }
         public CommandBase AddClassModuleCommand { get; }
         public CommandBase AddUserFormCommand { get; }
@@ -552,11 +576,28 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        public Visibility EmptyTreeMessageVisibility
+        public Visibility EmptyUIRefreshMessageVisibility
         {
             get
             {
                 return _isBusy ? Visibility.Hidden : Visibility.Visible;
+            }
+        }
+
+        public void FilterByName(IEnumerable<CodeExplorerItemViewModel> nodes, string searchString)
+        {
+            foreach (var item in nodes)
+            {
+                if (item == null) { continue; }
+                
+                if (item.Items.Any())
+                {
+                    FilterByName(item.Items, searchString);
+                }
+                
+                item.IsVisible = item.Items.Any(c => c.IsVisible) ||
+                                 item.Name.ToLowerInvariant().Contains(searchString.ToLowerInvariant()) ||
+                                 string.IsNullOrEmpty(searchString);
             }
         }
 

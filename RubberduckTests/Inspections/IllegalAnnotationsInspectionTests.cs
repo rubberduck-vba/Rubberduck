@@ -1,9 +1,9 @@
+using System;
 using System.Linq;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
@@ -20,8 +20,7 @@ namespace RubberduckTests.Inspections
     Const const1 As Integer = 9
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new IllegalAnnotationInspection(state);
@@ -40,8 +39,7 @@ Option Explicit
 '@PredeclaredId
 ";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new IllegalAnnotationInspection(state);
@@ -49,6 +47,32 @@ Option Explicit
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.IsFalse(inspectionResults.Any());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void GivenOneIlegalModuleAnnotationAcrossModules_OneResult()
+        {
+            const string inputCode1 = @"
+Option Explicit
+'@Folder(""Legal"")
+
+Sub DoSomething()
+'@Folder(""Illegal"")
+End Sub
+";
+            const string inputCode2 = @"
+Option Explicit
+'@Folder(""Legal"")
+";
+            var vbe = MockVbeBuilder.BuildFromStdModules(("Module1", inputCode1), ("Module2", inputCode2));
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new IllegalAnnotationInspection(state);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            Assert.AreEqual(1, inspectionResults.Count());
         }
 
         [TestMethod]
@@ -91,8 +115,7 @@ Public Sub TestCleanup()
 End Sub
 ";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new IllegalAnnotationInspection(state);
@@ -112,8 +135,7 @@ Public Sub Foo()
     Const const1 As Integer = 9
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new IllegalAnnotationInspection(state);
@@ -134,8 +156,7 @@ End Sub";
 Public Sub Foo()
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new IllegalAnnotationInspection(state);
@@ -162,8 +183,7 @@ Private Fakes As Object
 Public Sub Test1()
 End Sub
 ";
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new IllegalAnnotationInspection(state);
@@ -188,8 +208,7 @@ End Sub
 Public Sub Test2()
 End Sub
 ";
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new IllegalAnnotationInspection(state);
@@ -214,8 +233,7 @@ End Sub
 Public Sub Test2()
 End Sub
 ";
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new IllegalAnnotationInspection(state);

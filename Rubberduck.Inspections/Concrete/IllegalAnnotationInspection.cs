@@ -24,13 +24,10 @@ namespace Rubberduck.Inspections.Concrete
             Listener = new IllegalAttributeAnnotationsListener(state);
         }
 
-        public override Type Type => typeof(IllegalAnnotationInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.RubberduckOpportunities;
         public override IInspectionListener Listener { get; }
-        public override ParsePass Pass => ParsePass.AttributesPass;
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             return Listener.Contexts.Select(context => 
                 new QualifiedContextInspectionResult(this, 
@@ -39,9 +36,10 @@ namespace Rubberduck.Inspections.Concrete
 
         public class IllegalAttributeAnnotationsListener : VBAParserBaseListener, IInspectionListener
         {
-            private readonly IDictionary<AnnotationType, int> _annotationCounts;
-
             private static readonly AnnotationType[] AnnotationTypes = Enum.GetValues(typeof(AnnotationType)).Cast<AnnotationType>().ToArray();
+
+            private IDictionary<Tuple<QualifiedModuleName, AnnotationType>, int> _annotationCounts = 
+                new Dictionary<Tuple<QualifiedModuleName, AnnotationType>, int>();
 
             private readonly RubberduckParserState _state;
 
@@ -51,7 +49,6 @@ namespace Rubberduck.Inspections.Concrete
             public IllegalAttributeAnnotationsListener(RubberduckParserState state)
             {
                 _state = state;
-                _annotationCounts = AnnotationTypes.ToDictionary(a => a, a => 0);
             }
 
             private readonly List<QualifiedContext<ParserRuleContext>> _contexts =
@@ -59,24 +56,32 @@ namespace Rubberduck.Inspections.Concrete
 
             public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
 
-            public QualifiedModuleName CurrentModuleName { get; set; }
+            public QualifiedModuleName CurrentModuleName
+            {
+                get => _currentModuleName;
+                set
+                {
+                    _currentModuleName = value;
+                    foreach (var type in AnnotationTypes)
+                    {
+                        _annotationCounts.Add(Tuple.Create(value, type), 0);
+                    }
+                }
+            }
 
             private bool _isFirstMemberProcessed;
 
             public void ClearContexts()
             {
+                _annotationCounts = new Dictionary<Tuple<QualifiedModuleName, AnnotationType>, int>();
                 _contexts.Clear();
                 _isFirstMemberProcessed = false;
-                var keys = _annotationCounts.Keys.ToList();
-                foreach (var key in keys)
-                {
-                    _annotationCounts[key] = 0;
-                }
             }
 
             #region scoping
             private Declaration _currentScopeDeclaration;
             private bool _hasMembers;
+            private QualifiedModuleName _currentModuleName;
 
             private void SetCurrentScope(string memberName = null)
             {
@@ -160,7 +165,8 @@ namespace Rubberduck.Inspections.Concrete
             {
                 var name = Identifier.GetName(context.annotationName().unrestrictedIdentifier());
                 var annotationType = (AnnotationType) Enum.Parse(typeof (AnnotationType), name);
-                _annotationCounts[annotationType]++;
+                var key = Tuple.Create(_currentModuleName, annotationType);
+                _annotationCounts[key]++;
 
                 var moduleHasMembers = _members.Value.Any();
 
@@ -174,7 +180,7 @@ namespace Rubberduck.Inspections.Concrete
                     && (_currentScopeDeclaration?.DeclarationType.HasFlag(DeclarationType.Member) ?? false);
 
                 var isIllegal = !(isMemberAnnotation && moduleHasMembers && !_isFirstMemberProcessed) &&
-                                (isModuleAnnotation && _annotationCounts[annotationType] > 1
+                                (isModuleAnnotation && _annotationCounts[key] > 1
                                  || isMemberAnnotatedForModuleAnnotation
                                  || isModuleAnnotatedForMemberAnnotation);
 

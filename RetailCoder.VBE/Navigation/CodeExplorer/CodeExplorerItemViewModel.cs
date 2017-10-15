@@ -31,7 +31,8 @@ namespace Rubberduck.Navigation.CodeExplorer
     {
         private static readonly Dictionary<DeclarationType, int> SortOrder = new Dictionary<DeclarationType, int>
         {
-            // Some DeclarationTypes we want to treat the same, like Subs and Functions.
+            // Some DeclarationTypes we want to treat the same, like Subs and Functions,
+            // or Property Gets, Lets, and Sets.
             // Give them the same number.
             {DeclarationType.LibraryFunction, 0},
             {DeclarationType.LibraryProcedure, 0},
@@ -41,10 +42,10 @@ namespace Rubberduck.Navigation.CodeExplorer
             {DeclarationType.Constant, 4},
             {DeclarationType.Variable, 5},
             {DeclarationType.PropertyGet, 6},
-            {DeclarationType.PropertyLet, 7},
-            {DeclarationType.PropertySet, 8},
-            {DeclarationType.Function, 9},
-            {DeclarationType.Procedure, 9}
+            {DeclarationType.PropertyLet, 6},
+            {DeclarationType.PropertySet, 6},
+            {DeclarationType.Function, 7},
+            {DeclarationType.Procedure, 7}
         };
 
         public override int Compare(CodeExplorerItemViewModel x, CodeExplorerItemViewModel y)
@@ -83,7 +84,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             if (xNodeAcc != yNodeAcc)
             {
-                return xNodeAcc < yNodeAcc ? -1 : 1;
+                return xNodeAcc > yNodeAcc ? -1 : 1;
             }
 
             if (x.ExpandedIcon != y.ExpandedIcon)
@@ -189,6 +190,17 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public bool IsSelected { get; set; }
 
+        private bool _isVisisble = true;
+        public bool IsVisible
+        {
+            get { return _isVisisble; }
+            set
+            {
+                _isVisisble = value;
+                OnPropertyChanged();
+            }
+        }
+
         public abstract string Name { get; }
         public abstract string NameWithSignature { get; }
         public abstract BitmapImage CollapsedIcon { get; }
@@ -227,9 +239,9 @@ namespace Rubberduck.Navigation.CodeExplorer
             _items.Add(item);
         }
 
-        public void ReorderItems(bool sortByName, bool sortByType)
+        public void ReorderItems(bool sortByName, bool groupByType)
         {
-            if (sortByType)
+            if (groupByType)
             {
                 Items = sortByName
                     ? Items.OrderBy(o => o, new CompareByType()).ThenBy(t => t, new CompareByName()).ToList()

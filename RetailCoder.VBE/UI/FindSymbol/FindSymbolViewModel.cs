@@ -14,8 +14,7 @@ namespace Rubberduck.UI.FindSymbol
     {
         private static readonly DeclarationType[] ExcludedTypes =
         {
-            DeclarationType.Control, 
-            DeclarationType.ModuleOption,
+            DeclarationType.Control,
             DeclarationType.Project
         };
 
@@ -83,7 +82,6 @@ namespace Rubberduck.UI.FindSymbol
             get { return _searchString; }
             set
             {
-                //Adding SelectedItem.set() will allow pasting to work?
                 SearchResult firstResult = GetSearchResultCollectionOfString(value).FirstOrDefault();
                 SelectedItem = firstResult;
 
