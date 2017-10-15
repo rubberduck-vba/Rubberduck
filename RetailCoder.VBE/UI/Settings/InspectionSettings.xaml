@@ -4,11 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:core="clr-namespace:System;assembly=mscorlib"
+             xmlns:inspections="clr-namespace:Rubberduck.Inspections"
              xmlns:settings="clr-namespace:Rubberduck.UI.Settings"
              xmlns:converters="clr-namespace:Rubberduck.UI.Settings.Converters"
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
              xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
-             xmlns:resources1="clr-namespace:Rubberduck.Parsing.Inspections.Resources;assembly=Rubberduck.Parsing"
+             xmlns:resources="clr-namespace:Rubberduck.Inspections.Resources"
              mc:Ignorable="d" 
              d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type settings:InspectionSettingsViewModel}, IsDesignTimeCreatable=False}">
@@ -35,7 +36,7 @@
                             MethodName="GetValues"
                             ObjectType="{x:Type core:Enum}">
             <ObjectDataProvider.MethodParameters>
-                <x:Type Type="resources1:CodeInspectionSeverity"/>
+                <x:Type Type="resources:CodeInspectionSeverity"/>
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
 

@@ -135,16 +135,6 @@ namespace RubberduckTests.Settings
             Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.AutoSavePeriod, viewModel.AutoSavePeriod);
         }
 
-        [TestCategory("Settings")]
-        [TestMethod]
-        public void SourceControlEnabledIsSetInCtor()
-        {
-            var defaultConfig = GetDefaultConfig();
-            var viewModel = new GeneralSettingsViewModel(defaultConfig, GetOperatingSystemMock().Object);
-
-            Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.SourceControlEnabled, viewModel.SourceControlEnabled);
-        }
-
         //[TestCategory("Settings")]
         //[TestMethod]
         //public void DelimiterIsSetInCtor()

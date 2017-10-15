@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Data;
 using NLog;
-using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Inspections.Resources;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Command;
@@ -22,7 +22,10 @@ namespace Rubberduck.UI.Settings
 
             RunInspectionsOnSuccessfulParse = config.UserSettings.CodeInspectionSettings.RunInspectionsOnSuccessfulParse;
 
-            InspectionSettings.GroupDescriptions?.Add(new PropertyGroupDescription("TypeLabel"));
+            if (InspectionSettings.GroupDescriptions != null)
+            {
+                InspectionSettings.GroupDescriptions.Add(new PropertyGroupDescription("TypeLabel"));
+            }
             ExportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ExportSettings());
             ImportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ImportSettings());
         }
@@ -54,6 +57,7 @@ namespace Rubberduck.UI.Settings
         }
 
         private bool _runInspectionsOnSuccessfulParse;
+
         public bool RunInspectionsOnSuccessfulParse
         {
             get { return _runInspectionsOnSuccessfulParse; }
@@ -127,10 +131,14 @@ namespace Rubberduck.UI.Settings
 
         private void TransferSettingsToView(CodeInspectionSettings toLoad)
         {
-            InspectionSettings = new ListCollectionView(toLoad.CodeInspections.ToList());
-            
-            InspectionSettings.GroupDescriptions?.Add(new PropertyGroupDescription("TypeLabel"));
-            
+            InspectionSettings = new ListCollectionView(
+                toLoad.CodeInspections.ToList());
+
+            if (InspectionSettings.GroupDescriptions != null)
+            {
+                InspectionSettings.GroupDescriptions.Add(new PropertyGroupDescription("TypeLabel"));
+            }
+
             WhitelistedIdentifierSettings = new ObservableCollection<WhitelistedIdentifierSetting>();
             RunInspectionsOnSuccessfulParse = true;
         }

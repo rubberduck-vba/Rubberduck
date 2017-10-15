@@ -21,7 +21,7 @@ using Antlr4.Runtime.Atn;
 // Missing XML comment for publicly visible type or member '...'
 #pragma warning disable 1591
 
-namespace Rubberduck.Parsing.PreProcessing {
+namespace Rubberduck.Parsing.Preprocessing {
     [System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.3")]
 [System.CLSCompliant(false)]
 public partial class VBADateLexer : Lexer {

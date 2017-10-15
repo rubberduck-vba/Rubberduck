@@ -4,8 +4,6 @@ using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.UI.Refactorings;
-using Rubberduck.UI.Refactorings.EncapsulateField;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
@@ -16,10 +14,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
     public class EncapsulateFieldPresenter : IEncapsulateFieldPresenter
     {
-        private readonly IRefactoringDialog<EncapsulateFieldViewModel> _view;
+        private readonly IEncapsulateFieldDialog _view;
         private readonly EncapsulateFieldModel _model;
 
-        public EncapsulateFieldPresenter(IRefactoringDialog<EncapsulateFieldViewModel> view, EncapsulateFieldModel model)
+        public EncapsulateFieldPresenter(IEncapsulateFieldDialog view, EncapsulateFieldModel model)
         {
             _view = view;
             _model = model;
@@ -29,31 +27,13 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             if (_model.TargetDeclaration == null) { return null; }
 
-            _view.ViewModel.TargetDeclaration = _model.TargetDeclaration;
+            _view.TargetDeclaration = _model.TargetDeclaration;
+            _view.NewPropertyName = _model.TargetDeclaration.IdentifierName;
 
             var isVariant = _model.TargetDeclaration.AsTypeName.Equals(Tokens.Variant);
             var isValueType = !isVariant && (SymbolList.ValueTypes.Contains(_model.TargetDeclaration.AsTypeName) ||
                               _model.TargetDeclaration.DeclarationType == DeclarationType.Enumeration);
 
-            AssignSetterAndLetterAvailability(isVariant, isValueType);
-
-            _view.ShowDialog();
-            if (_view.DialogResult != DialogResult.OK)
-            {
-                return null;
-            }
-
-            _model.PropertyName = _view.ViewModel.PropertyName;
-            _model.ImplementLetSetterType = _view.ViewModel.CanHaveLet;
-            _model.ImplementSetSetterType = _view.ViewModel.CanHaveSet;
-            _model.CanImplementLet = _view.ViewModel.CanHaveSet && !_view.ViewModel.CanHaveSet;
-
-            _model.ParameterName = _view.ViewModel.ParameterName;
-            return _model;
-        }
-
-        private void AssignSetterAndLetterAvailability(bool isVariant, bool isValueType)
-        {
             if (_model.TargetDeclaration.References.Any(r => r.IsAssignment))
             {
                 if (isVariant)
@@ -66,38 +46,51 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
                     if (node is VBAParser.LetStmtContext)
                     {
-                        _view.ViewModel.CanHaveLet = true;
+                        _view.CanImplementLetSetterType = true;
                     }
                     else
                     {
-                        _view.ViewModel.CanHaveSet = true;
-                    }
+                        _view.CanImplementSetSetterType = true;
+                    }                    
                 }
                 else if (isValueType)
                 {
-                    _view.ViewModel.CanHaveLet = true;
+                    _view.CanImplementLetSetterType = true;
                 }
                 else
                 {
-                    _view.ViewModel.CanHaveSet = true;
+                    _view.CanImplementSetSetterType = true;
                 }
             }
             else
             {
                 if (isValueType)
                 {
-                    _view.ViewModel.CanHaveLet = true;
+                    _view.CanImplementLetSetterType = true;
                 }
                 else if (!isVariant)
                 {
-                    _view.ViewModel.CanHaveSet = true;
+                    _view.CanImplementSetSetterType = true;
                 }
                 else
                 {
-                    _view.ViewModel.CanHaveLet = true;
-                    _view.ViewModel.CanHaveSet = true;
+                    _view.CanImplementLetSetterType = true;
+                    _view.CanImplementSetSetterType = true;
                 }
             }
+
+            if (_view.ShowDialog() != DialogResult.OK)
+            {
+                return null;
+            }
+
+            _model.PropertyName = _view.NewPropertyName;
+            _model.ImplementLetSetterType = _view.CanImplementLetSetterType;
+            _model.ImplementSetSetterType = _view.CanImplementSetSetterType;
+            _model.CanImplementLet = !_view.MustImplementSetSetterType;
+
+            _model.ParameterName = _view.ParameterName;
+            return _model;
         }
     }
 }

@@ -18,7 +18,6 @@ namespace RubberduckTests.Binding
         private const string TEST_CLASS_NAME = "TestClass";
         private const string REFERENCED_PROJECT_FILEPATH = @"C:\Temp\ReferencedProjectA";
 
-        [TestCategory("Binding")]
         [TestMethod]
         public void RecursiveDefaultMember()
         {
@@ -57,7 +56,6 @@ End Property
             Assert.AreEqual(1, declaration.References.Count());
         }
 
-        [TestCategory("Binding")]
         [TestMethod]
         public void NormalPropertyFunctionSubroutine()
         {
@@ -88,7 +86,7 @@ End Property
 
         private static RubberduckParserState Parse(Mock<IVBE> vbe)
         {
-            var parser = MockParser.Create(vbe.Object);
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status != ParserState.Ready)
             {

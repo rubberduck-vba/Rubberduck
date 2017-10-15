@@ -32,12 +32,12 @@ namespace Rubberduck.UI.Command
 
         private static readonly ParserState[] AllowedRunStates = { ParserState.ResolvedDeclarations, ParserState.ResolvingReferences, ParserState.Ready };
 
-        protected override bool EvaluateCanExecute(object parameter)
+        protected override bool CanExecuteImpl(object parameter)
         {
             return _vbe.IsInDesignMode && AllowedRunStates.Contains(_state.Status);
         }
 
-        protected override void OnExecute(object parameter)
+        protected override void ExecuteImpl(object parameter)
         {
             EnsureRubberduckIsReferencedForEarlyBoundTests();
 
@@ -78,20 +78,17 @@ namespace Rubberduck.UI.Command
             _model.ClearLastRun();
             _model.IsBusy = true;
 
-            _presenter?.Show();
+            if (_presenter != null)
+            {
+                _presenter.Show();
+            }
 
             stopwatch.Start();
-            try
-            {
-                _engine.Run(_model.Tests);
-            }
-            finally
-            {
-                stopwatch.Stop();
-                _model.IsBusy = false;
-            }
+            _engine.Run(_model.Tests);
+            stopwatch.Stop();
 
-            Logger.Info($"Test run completed in {stopwatch.ElapsedMilliseconds}.");
+            _model.IsBusy = false;
+
             OnRunCompleted(new TestRunEventArgs(stopwatch.ElapsedMilliseconds));
         }
 
@@ -99,7 +96,10 @@ namespace Rubberduck.UI.Command
         protected virtual void OnRunCompleted(TestRunEventArgs e)
         {
             var handler = RunCompleted;
-            handler?.Invoke(this, e);
+            if (handler != null)
+            {
+                handler.Invoke(this, e);
+            }
         }
     }
     

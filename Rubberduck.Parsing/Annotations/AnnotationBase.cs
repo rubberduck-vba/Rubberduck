@@ -4,17 +4,36 @@ namespace Rubberduck.Parsing.Annotations
 {
     public abstract class AnnotationBase : IAnnotation
     {
+        private readonly AnnotationType _annotationType;
+        private readonly QualifiedSelection _qualifiedSelection;
+
         public const string ANNOTATION_MARKER = "'@";
 
-        protected AnnotationBase(AnnotationType annotationType, QualifiedSelection qualifiedSelection)
+        public AnnotationBase(AnnotationType annotationType, QualifiedSelection qualifiedSelection)
         {
-            AnnotationType = annotationType;
-            QualifiedSelection = qualifiedSelection;
+            _annotationType = annotationType;
+            _qualifiedSelection = qualifiedSelection;
         }
 
-        public AnnotationType AnnotationType { get; }
-        public QualifiedSelection QualifiedSelection { get; }
+        public AnnotationType AnnotationType
+        {
+            get
+            {
+                return _annotationType;
+            }
+        }
 
-        public override string ToString() => $"Annotation Type: {AnnotationType}";
+        public QualifiedSelection QualifiedSelection
+        {
+            get
+            {
+                return _qualifiedSelection;
+            }
+        }
+
+        public override string ToString()
+        {
+            return string.Format("Annotation Type: {0}", _annotationType);
+        }
     }
 }

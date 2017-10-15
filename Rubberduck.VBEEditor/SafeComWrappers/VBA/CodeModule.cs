@@ -16,19 +16,34 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
         }
 
-        public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
+        public IVBE VBE
+        {
+            get { return new VBE(IsWrappingNullReference ? null : Target.VBE); }
+        }
 
-        public IVBComponent Parent => new VBComponent(IsWrappingNullReference ? null : Target.Parent);
+        public IVBComponent Parent
+        {
+            get { return new VBComponent(IsWrappingNullReference ? null : Target.Parent); }
+        }
 
-        public ICodePane CodePane => new CodePane(IsWrappingNullReference ? null : Target.CodePane);
+        public ICodePane CodePane
+        {
+            get { return new CodePane(IsWrappingNullReference ? null : Target.CodePane); }
+        }
 
-        public int CountOfDeclarationLines => IsWrappingNullReference ? 0 : Target.CountOfDeclarationLines;
+        public int CountOfDeclarationLines
+        {
+            get { return IsWrappingNullReference ? 0 : Target.CountOfDeclarationLines; }
+        }
 
-        public int CountOfLines => IsWrappingNullReference ? 0 : Target.CountOfLines;
+        public int CountOfLines
+        {
+            get { return IsWrappingNullReference ? 0 : Target.CountOfLines; }
+        }
 
         public string Name
         {
-            get => IsWrappingNullReference ? string.Empty : Target.Name;
+            get { return IsWrappingNullReference ? string.Empty : Target.Name; }
             set { if (!IsWrappingNullReference) Target.Name = value; }
         }
 
@@ -90,7 +105,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             }
         }
 
-        public bool IsDirty => _previousContentHash.Equals(ContentHash());
+        public bool IsDirty { get { return _previousContentHash.Equals(ContentHash()); } }
 
         public void AddFromString(string content)
         {
@@ -161,7 +176,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public ProcKind GetProcKindOfLine(int line)
         {
             if (IsWrappingNullReference) return 0;
-            Target.get_ProcOfLine(line, out var procKind);
+            vbext_ProcKind procKind;
+            Target.get_ProcOfLine(line, out procKind);
             return (ProcKind)procKind;
         }
 

@@ -8,8 +8,8 @@ namespace Rubberduck.UI.Command.MenuItems
         {
         }
 
-        public override string Key => "ToolsMenu_RegexAssistant";
+        public override string Key { get { return "ToolsMenu_RegexAssistant"; } }
 
-        public override int DisplayOrder => (int)ToolsMenuItemDisplayOrder.RegexAssistant;
+        public override int DisplayOrder { get { return (int)ToolsMenuItemDisplayOrder.RegexAssistant; } }
     }
 }

@@ -46,7 +46,9 @@ namespace Rubberduck.Common
             }
 
             var statement = GetVariableStmtContext(target) ?? target.Context; // undeclared variables don't have a VariableStmtContext
-            return statement.GetSelection();
+
+            return new Selection(statement.Start.Line, statement.Start.Column,
+                    statement.Stop.Line, statement.Stop.Column);
         }
 
         /// <summary>
@@ -63,7 +65,9 @@ namespace Rubberduck.Common
             }
 
             var statement = GetConstStmtContext(target);
-            return statement.GetSelection();
+
+            return new Selection(statement.Start.Line, statement.Start.Column,
+                    statement.Stop.Line, statement.Stop.Column);
         }
 
         /// <summary>
@@ -79,7 +83,6 @@ namespace Rubberduck.Common
                 throw new ArgumentException("Target DeclarationType is not Variable.", "target");
             }
 
-            Debug.Assert(target.IsUndeclared || target.Context is VBAParser.VariableSubStmtContext);
             var statement = target.Context.Parent.Parent as VBAParser.VariableStmtContext;
             if (statement == null && !target.IsUndeclared)
             {
@@ -125,6 +128,7 @@ namespace Rubberduck.Common
             }
 
             var statement = target.Context.Parent as VBAParser.VariableListStmtContext;
+
             return statement != null && statement.children.OfType<VBAParser.VariableSubStmtContext>().Count() > 1;
         }
 
@@ -230,7 +234,7 @@ namespace Rubberduck.Common
         public static IEnumerable<Declaration> FindInterfaces(this IEnumerable<Declaration> declarations)
         {
             var classes = declarations.Where(item => item.DeclarationType == DeclarationType.ClassModule);
-            var interfaces = classes.Where(item => ((ClassModuleDeclaration)item).Subtypes.Any(s => s.IsUserDefined));
+            var interfaces = classes.Where(item => ((ClassModuleDeclaration)item).Subtypes.Any(s => !s.IsBuiltIn));
             return interfaces;
         }
 
@@ -241,7 +245,7 @@ namespace Rubberduck.Common
         {
             var items = declarations.ToList();
             var interfaces = FindInterfaces(items).Select(i => i.Scope).ToList();
-            var interfaceMembers = items.Where(item => item.IsUserDefined
+            var interfaceMembers = items.Where(item => !item.IsBuiltIn
                                                 && ProcedureTypes.Contains(item.DeclarationType)
                                                 && interfaces.Any(i => item.ParentScope.StartsWith(i)))
                                                 .ToList();
@@ -265,7 +269,7 @@ namespace Rubberduck.Common
             var declarationList = declarations.ToList();
 
             var userEvents =
-                declarationList.Where(item => item.IsUserDefined && item.DeclarationType == DeclarationType.Event).ToList();
+                declarationList.Where(item => !item.IsBuiltIn && item.DeclarationType == DeclarationType.Event).ToList();
 
             var handlers = new List<Declaration>();
             foreach (var @event in userEvents)
@@ -293,7 +297,7 @@ namespace Rubberduck.Common
         /// </summary>
         public static Declaration FindSelectedDeclaration(this IEnumerable<Declaration> declarations, QualifiedSelection selection, IEnumerable<DeclarationType> types, Func<Declaration, Selection> selector = null)
         {
-            var userDeclarations = declarations.Where(item => item.IsUserDefined);
+            var userDeclarations = declarations.Where(item => !item.IsBuiltIn);
             var items = userDeclarations.Where(item => types.Contains(item.DeclarationType)
                 && item.QualifiedName.QualifiedModuleName == selection.QualifiedName).ToList();
 
@@ -308,7 +312,7 @@ namespace Rubberduck.Common
             }
 
             // if we haven't returned yet, then we must be on an identifier reference.
-            declaration = items.SingleOrDefault(item => item.IsUserDefined
+            declaration = items.SingleOrDefault(item => !item.IsBuiltIn
                 && types.Contains(item.DeclarationType)
                 && item.References.Any(reference =>
                 reference.QualifiedModuleName == selection.QualifiedName
@@ -337,7 +341,7 @@ namespace Rubberduck.Common
         public static IEnumerable<Declaration> FindFormEventHandlers(this RubberduckParserState state, Declaration userForm)
         {
             var items = state.AllDeclarations.ToList();
-            var events = items.Where(item => !item.IsUserDefined
+            var events = items.Where(item => item.IsBuiltIn
                                                      && item.ParentScope == "FM20.DLL;MSForms.FormEvents"
                                                      && item.DeclarationType == DeclarationType.Event).ToList();
 
@@ -415,7 +419,7 @@ namespace Rubberduck.Common
             var items = declarations.ToList();
             var members = FindInterfaceMembers(items);
             var result = items.Where(item => 
-                item.IsUserDefined
+                !item.IsBuiltIn 
                 && ProcedureTypes.Contains(item.DeclarationType)
                 && members.Select(m => m.ComponentName + '_' + m.IdentifierName).Contains(item.IdentifierName))
             .ToList();
@@ -438,7 +442,7 @@ namespace Rubberduck.Common
         public static Declaration FindInterfaceMember(this IEnumerable<Declaration> declarations, Declaration implementation)
         {
             var members = FindInterfaceMembers(declarations);
-            var matches = members.Where(m => m.IsUserDefined && implementation.IdentifierName == m.ComponentName + '_' + m.IdentifierName).ToList();
+            var matches = members.Where(m => !m.IsBuiltIn && implementation.IdentifierName == m.ComponentName + '_' + m.IdentifierName).ToList();
 
             return matches.Count > 1
                 ? matches.SingleOrDefault(m => m.ProjectId == implementation.ProjectId)
@@ -466,7 +470,7 @@ namespace Rubberduck.Common
             // TODO: Due to the new binding mechanism this can have more than one match (e.g. in the case of index expressions + simple name expressions)
             // Left as is for now because the binding is not fully integrated yet.
             var target = items
-                .Where(item => item.IsUserDefined && validDeclarationTypes.Contains(item.DeclarationType))
+                .Where(item => !item.IsBuiltIn && validDeclarationTypes.Contains(item.DeclarationType))
                 .FirstOrDefault(item => item.IsSelected(selection)
                                      || item.References.Any(r => r.IsSelected(selection)));
 
@@ -476,7 +480,7 @@ namespace Rubberduck.Common
             }
 
             var targets = items
-                .Where(item => item.IsUserDefined
+                .Where(item => !item.IsBuiltIn
                                && item.ComponentName == selection.QualifiedName.ComponentName
                                && validDeclarationTypes.Contains(item.DeclarationType));
 
@@ -534,7 +538,7 @@ namespace Rubberduck.Common
         /// <returns></returns>
         public static Declaration FindVariable(this IEnumerable<Declaration> declarations, QualifiedSelection selection)
         {
-            var items = declarations.Where(d => d.IsUserDefined && d.DeclarationType == DeclarationType.Variable).ToList();
+            var items = declarations.Where(d => !d.IsBuiltIn && d.DeclarationType == DeclarationType.Variable).ToList();
 
             var target = items
                 .FirstOrDefault(item => item.IsSelected(selection) || item.References.Any(r => r.IsSelected(selection)));

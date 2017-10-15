@@ -18,8 +18,6 @@ namespace RubberduckTests.Refactoring
     public class ReorderParametersTests
     {
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
         public void ReorderParams_SwapPositions()
         {
             //Input
@@ -52,8 +50,6 @@ End Sub";
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
         public void ReorderParams_SwapPositions_SignatureContainsParamName()
         {
             //Input
@@ -86,8 +82,6 @@ End Sub";
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
         public void ReorderParams_SwapPositions_ReferenceValueContainsOtherReferenceValue()
         {
             //Input
@@ -128,8 +122,6 @@ End Sub";
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
         public void ReorderParams_RefactorDeclaration()
         {
             //Input
@@ -162,8 +154,6 @@ End Sub";
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
         public void ReorderParams_RefactorDeclaration_FailsInvalidTarget()
         {
             //Input
@@ -202,8 +192,6 @@ End Sub";
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
         public void ReorderParams_WithOptionalParam()
         {
             //Input
@@ -243,8 +231,6 @@ End Sub";
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
         public void ReorderParams_SwapPositions_UpdatesCallers()
         {
             //Input
@@ -287,8 +273,6 @@ End Sub
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
         public void RemoveParametersRefactoring_ClientReferencesAreUpdated_ParensAroundCall()
         {
             //Input
@@ -339,8 +323,6 @@ End Function";
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
         public void ReorderParametersRefactoring_ReorderNamedParams()
         {
             //Input
@@ -391,8 +373,6 @@ End Sub
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
         public void ReorderParametersRefactoring_ReorderNamedParams_Function()
         {
             //Input
@@ -428,8 +408,6 @@ End Function";
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
         public void ReorderParametersRefactoring_ReorderNamedParams_WithOptionalParam()
         {
             //Input
@@ -480,8 +458,6 @@ End Sub
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
         public void ReorderParametersRefactoring_ReorderGetter()
         {
             //Input
@@ -522,13 +498,11 @@ End Property";
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
         public void ReorderParametersRefactoring_ReorderLetter()
         {
             //Input
             const string inputCode =
-@"Private Property Let Foo(ByVal arg1 As Integer, ByVal arg2 As String, ByVal arg3 As Date)
+@"Private Property Let Foo(ByVal arg1 As Integer, ByVal arg2 As String, ByVal arg3 As Date) 
 End Property";
             var selection = new Selection(1, 23, 1, 27);
 
@@ -557,13 +531,11 @@ End Property";
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
         public void ReorderParametersRefactoring_ReorderSetter()
         {
             //Input
             const string inputCode =
-@"Private Property Set Foo(ByVal arg1 As Integer, ByVal arg2 As String, ByVal arg3 As Date)
+@"Private Property Set Foo(ByVal arg1 As Integer, ByVal arg2 As String, ByVal arg3 As Date) 
 End Property";
             var selection = new Selection(1, 23, 1, 27);
 
@@ -592,8 +564,6 @@ End Property";
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
         public void ReorderParametersRefactoring_ReorderLastParamFromSetter_NotAllowed()
         {
             //Input
@@ -614,8 +584,6 @@ End Property";
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
         public void ReorderParametersRefactoring_ReorderLastParamFromLetter_NotAllowed()
         {
             //Input
@@ -636,8 +604,6 @@ End Property";
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
         public void ReorderParametersRefactoring_SignatureOnMultipleLines()
         {
             //Input
@@ -650,9 +616,7 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-@"Private Sub Foo(ByVal arg3 As Date, _
-                  ByVal arg2 As String, _
-                  ByVal arg1 As Integer)
+@"Private Sub Foo(ByVal arg3 As Date, ByVal arg2 As String, ByVal arg1 As Integer)
 End Sub";   // note: IDE removes excess spaces
 
             IVBComponent component;
@@ -675,8 +639,6 @@ End Sub";   // note: IDE removes excess spaces
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
         public void ReorderParametersRefactoring_CallOnMultipleLines()
         {
             //Input
@@ -701,9 +663,7 @@ End Sub
 
 Private Sub Goo(ByVal arg1 as Integer, ByVal arg2 As String, ByVal arg3 As Date)
 
-    Foo arg3, _
-        arg2, _
-        arg1
+    Foo arg3, arg2, arg1
 
 End Sub
 ";
@@ -728,8 +688,6 @@ End Sub
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
         public void ReorderParametersRefactoring_ClientReferencesAreNotUpdated_ParamArray()
         {
             //Input
@@ -772,8 +730,6 @@ End Sub
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
         public void ReorderParametersRefactoring_ClientReferencesAreUpdated_ParamArray()
         {
             //Input
@@ -841,8 +797,6 @@ End Sub
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
         public void ReorderParametersRefactoring_ClientReferencesAreUpdated_ParamArray_CallOnMultiplelines()
         {
             //Input
@@ -883,14 +837,7 @@ Public Sub Goo(ByVal arg As Date, _
                ByVal arg5 As Integer, _
                ByVal arg6 As Integer)
               
-    Foo arg, _
-        ""test"", _
-        test1x, _
-        test2x, _
-        test3x, _
-        test4x, _
-        test5x, _
-        test6x
+    Foo arg, ""test"", test1x, test2x, test3x, test4x, test5x, test6x
 End Sub
 ";
 
@@ -924,8 +871,6 @@ End Sub
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
         public void ReorderParams_MoveOptionalParamBeforeNonOptionalParamFails()
         {
             //Input
@@ -963,8 +908,6 @@ End Sub";
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
         public void ReorderParams_ReorderCallsWithoutOptionalParams()
         {
             //Input
@@ -1014,8 +957,6 @@ End Sub
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
         public void ReorderParametersRefactoring_ReorderFirstParamFromGetterAndSetter()
         {
             //Input
@@ -1055,8 +996,6 @@ End Property";
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
         public void ReorderParametersRefactoring_ReorderFirstParamFromGetterAndLetter()
         {
             //Input
@@ -1096,8 +1035,6 @@ End Property";
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
         public void ReorderParams_PresenterIsNull()
         {
             //Input
@@ -1118,8 +1055,6 @@ End Sub";
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
         public void ReorderParametersRefactoring_InterfaceParamsSwapped()
         {
             //Input
@@ -1172,8 +1107,6 @@ End Sub";   // note: IDE removes excess spaces
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
         public void ReorderParametersRefactoring_InterfaceParamsSwapped_ParamsHaveDifferentNames()
         {
             //Input
@@ -1226,8 +1159,6 @@ End Sub";   // note: IDE removes excess spaces
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
         public void ReorderParametersRefactoring_InterfaceParamsSwapped_ParamsHaveDifferentNames_TwoImplementations()
         {
             //Input
@@ -1293,8 +1224,6 @@ End Sub";   // note: IDE removes excess spaces
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
         public void ReorderParametersRefactoring_InterfaceParamsSwapped_AcceptPrompt()
         {
             //Input
@@ -1353,8 +1282,6 @@ End Sub";
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
         public void ReorderParametersRefactoring_ParamsSwapped_RejectPrompt()
         {
             //Input
@@ -1390,8 +1317,6 @@ End Sub";
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
         public void ReorderParametersRefactoring_EventParamsSwapped()
         {
             //Input
@@ -1444,8 +1369,6 @@ End Sub";   // note: IDE removes excess spaces
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
         public void ReorderParametersRefactoring_EventParamsSwapped_EventImplementationSelected()
         {
             //Input
@@ -1498,8 +1421,6 @@ End Sub";   // note: IDE removes excess spaces
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
         public void ReorderParametersRefactoring_EventParamsSwapped_DifferentParamNames()
         {
             //Input
@@ -1552,8 +1473,6 @@ End Sub";   // note: IDE removes excess spaces
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
         public void ReorderParametersRefactoring_EventParamsSwapped_DifferentParamNames_TwoHandlers()
         {
             //Input
@@ -1620,8 +1539,6 @@ End Sub";   // note: IDE removes excess spaces
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
         public void Presenter_ParameterlessMemberCreatesNullModel()
         {
             //Input
@@ -1647,8 +1564,6 @@ End Sub";
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
         public void Presenter_SingleParameterMemberCreatesNullModel()
         {
             //Input
@@ -1674,8 +1589,6 @@ End Sub";
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
         public void Presenter_NullTargetCreatesNullModel()
         {
             //Input
@@ -1699,8 +1612,6 @@ End Sub";
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
         public void Factory_NullSelectionCreatesNullPresenter()
         {
             //Input

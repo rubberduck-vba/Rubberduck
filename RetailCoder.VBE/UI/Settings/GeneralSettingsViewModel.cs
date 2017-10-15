@@ -153,20 +153,6 @@ namespace Rubberduck.UI.Settings
             }
         }
 
-        private bool _sourceControlEnabled;
-        public bool SourceControlEnabled
-        {
-            get { return _sourceControlEnabled; }
-            set
-            {
-                if (_sourceControlEnabled != value)
-                {
-                    _sourceControlEnabled = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
         private readonly CommandBase _showLogFolderCommand;
         public CommandBase ShowLogFolderCommand
         {
@@ -200,8 +186,7 @@ namespace Rubberduck.UI.Settings
                 AutoSaveEnabled = AutoSaveEnabled,
                 AutoSavePeriod = AutoSavePeriod,
                 //Delimiter = (char)Delimiter,
-                MinimumLogLevel = SelectedLogLevel.Ordinal,
-                SourceControlEnabled = SourceControlEnabled
+                MinimumLogLevel = SelectedLogLevel.Ordinal
             };
         }
 
@@ -216,7 +201,6 @@ namespace Rubberduck.UI.Settings
             AutoSavePeriod = general.AutoSavePeriod;
             //Delimiter = (DelimiterOptions)general.Delimiter;
             SelectedLogLevel = LogLevels.First(l => l.Ordinal == general.MinimumLogLevel);
-            SourceControlEnabled = general.SourceControlEnabled;
         }
 
         private void ImportSettings()

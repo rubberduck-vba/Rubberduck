@@ -28,7 +28,7 @@ namespace Rubberduck.UI.Command.Refactorings
             get { return RubberduckHotkey.RefactorExtractMethod; }
         }
 
-        protected override bool EvaluateCanExecute(object parameter)
+        protected override bool CanExecuteImpl(object parameter)
         {
             if (Vbe.ActiveCodePane == null || _state.Status != ParserState.Ready)
             {
@@ -63,7 +63,7 @@ namespace Rubberduck.UI.Command.Refactorings
             }
         }
 
-        protected override void OnExecute(object parameter)
+        protected override void ExecuteImpl(object parameter)
         {
             var declarations = _state.AllDeclarations;
             var qualifiedSelection = Vbe.ActiveCodePane.GetQualifiedSelection();

@@ -12,7 +12,7 @@ namespace Rubberduck.Parsing.Symbols
             QualifiedMemberName qualifiedName,
             Declaration projectDeclaration,
             string name,
-            bool isUserDefined,
+            bool isBuiltIn,
             IEnumerable<IAnnotation> annotations,
             Attributes attributes)
             : base(
@@ -29,7 +29,7 @@ namespace Rubberduck.Parsing.Symbols
                   Selection.Home,
                   false,
                   null,
-                  isUserDefined,
+                  isBuiltIn,
                   annotations,
                   attributes) { }
 
@@ -39,7 +39,7 @@ namespace Rubberduck.Parsing.Symbols
                 module.QualifyMemberName(statics.Name),
                 parent,
                 statics.Name,
-                false,
+                true,
                 new List<IAnnotation>(),
                 attributes)
         {
@@ -49,19 +49,19 @@ namespace Rubberduck.Parsing.Symbols
         //These are the pseudo-module ctor for COM enumerations and types.
         public ProceduralModuleDeclaration(ComEnumeration pseudo, Declaration parent, QualifiedModuleName module)
             : this(
-                module.QualifyMemberName($"_{pseudo.Name}"),
+                module.QualifyMemberName(string.Format("_{0}", pseudo.Name)),
                 parent,
-                $"_{pseudo.Name}",
-                false,
+                string.Format("_{0}", pseudo.Name),
+                true,
                 new List<IAnnotation>(),
                 new Attributes()) { }
 
         public ProceduralModuleDeclaration(ComStruct pseudo, Declaration parent, QualifiedModuleName module)
             : this(
-                module.QualifyMemberName($"_{pseudo.Name}"),
+                module.QualifyMemberName(string.Format("_{0}", pseudo.Name)),
                 parent,
-                $"_{pseudo.Name}",
-                false,
+                string.Format("_{0}", pseudo.Name),
+                true,
                 new List<IAnnotation>(),
                 new Attributes()) { }
 

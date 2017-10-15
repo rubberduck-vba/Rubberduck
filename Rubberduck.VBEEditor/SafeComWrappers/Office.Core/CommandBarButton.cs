@@ -1,7 +1,6 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using System.Runtime.InteropServices;
 using Microsoft.CSharp.RuntimeBinder;
 using Rubberduck.VBEditor.SafeComWrappers.MSForms;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
@@ -16,7 +15,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
         {
         }
 
-        private Microsoft.Office.Core.CommandBarButton Button => (Microsoft.Office.Core.CommandBarButton)Target;
+        private Microsoft.Office.Core.CommandBarButton Button
+        {
+            get { return (Microsoft.Office.Core.CommandBarButton)Target; }
+        }
 
         public static ICommandBarButton FromCommandBarControl(ICommandBarControl control)
         {
@@ -28,27 +30,21 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
         {
             add
             {
-                if (_clickHandler == null)
-                {
-                    ((Microsoft.Office.Core.CommandBarButton)Target).Click += Target_Click;
-                }
+                ((Microsoft.Office.Core.CommandBarButton)Target).Click += Target_Click;
                 _clickHandler += value;
                 System.Diagnostics.Debug.WriteLine("Added handler for: {0} '{1}' (tag: {2}, hashcode:{3})", Parent.Name, Target.Caption, Tag, Target.GetHashCode());
             }
             remove
             {
-                _clickHandler -= value;
                 try
                 {
-                    if (_clickHandler == null)
-                    {
-                        ((Microsoft.Office.Core.CommandBarButton)Target).Click -= Target_Click;
-                    }
+                    ((Microsoft.Office.Core.CommandBarButton)Target).Click -= Target_Click;
                 }
                 catch
                 {
                     // he's gone, dave.
                 }
+                _clickHandler -= value;
                 System.Diagnostics.Debug.WriteLine("Removed handler for: {0} '{1}' (tag: {2}, hashcode:{3})", Parent.GetType().Name, Target.Caption, Tag, Target.GetHashCode());
             }
         }
@@ -75,31 +71,31 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 
         public bool IsBuiltInFace
         {
-            get => !IsWrappingNullReference && Button.BuiltInFace;
+            get { return !IsWrappingNullReference && Button.BuiltInFace; }
             set { if (!IsWrappingNullReference) Button.BuiltInFace = value; }
         }
 
         public int FaceId 
         {
-            get => IsWrappingNullReference ? 0 : Button.FaceId;
+            get { return IsWrappingNullReference ? 0 : Button.FaceId; }
             set { if (!IsWrappingNullReference) Button.FaceId = value; }
         }
 
         public string ShortcutText
         {
-            get => IsWrappingNullReference ? string.Empty : Button.ShortcutText;
+            get { return IsWrappingNullReference ? string.Empty : Button.ShortcutText; }
             set { if (!IsWrappingNullReference) Button.ShortcutText = value; }
         }
 
         public ButtonState State
         {
-            get => IsWrappingNullReference ? 0 : (ButtonState)Button.State;
+            get { return IsWrappingNullReference ? 0 : (ButtonState)Button.State; }
             set { if (!IsWrappingNullReference) Button.State = (Microsoft.Office.Core.MsoButtonState)value; }
         }
 
         public ButtonStyle Style
         {
-            get => IsWrappingNullReference ? 0 : (ButtonStyle)Button.Style;
+            get { return IsWrappingNullReference ? 0 : (ButtonStyle)Button.Style; }
             set { if (!IsWrappingNullReference) Button.Style = (Microsoft.Office.Core.MsoButtonStyle)value; }
         }
 
@@ -118,7 +114,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 
             if (!HasPictureProperty)
             {
-                using (var image = CreateTransparentImage(Picture))
+                using (var image = CreateTransparentImage(Picture, Mask))
                 {
                     Clipboard.SetImage(image);
                     Button.PasteFace();
@@ -157,16 +153,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
                     _hasPictureProperty = false;
                 }
 
-                catch (COMException)
-                {
-                    _hasPictureProperty = false;
-                }
-
                 return _hasPictureProperty.Value;
             }
         }
 
-        private static Image CreateTransparentImage(Image image)
+        private static Image CreateTransparentImage(Image image, Image mask)
         {
             //HACK - just blend image with a SystemColors value (mask is ignored)
             //TODO - a real solution would use clipboard formats "Toolbar Button Face" AND "Toolbar Button Mask"

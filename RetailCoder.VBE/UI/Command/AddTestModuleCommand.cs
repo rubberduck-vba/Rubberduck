@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using NLog;
@@ -9,8 +8,6 @@ using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
-using System.Text;
-using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.UI.Command
 {
@@ -32,69 +29,52 @@ namespace Rubberduck.UI.Command
             _configLoader = configLoader;
         }
 
-        private string TestModuleEmptyTemplate = new StringBuilder()
-            .AppendLine("'@TestModule")
-            .AppendLine("'@Folder(\"Tests\")")
-            .AppendLine()
-            .AppendLine("{0}")
-            .AppendLine("{1}")
-            .AppendLine()
-            .ToString();
+        private const string FolderAnnotation = "'@Folder(\"Tests\")\r\n";
+        private const string ModuleLateBinding = "Private Assert As Object\r\n";
+        private const string ModuleEarlyBinding = "Private Assert As New Rubberduck.{0}AssertClass\r\n";
 
-        private readonly string _moduleInit = new StringBuilder()
-            .AppendLine("'@ModuleInitialize")
-            .AppendLine("Public Sub ModuleInitialize()")
-            .AppendLine($"    '{RubberduckUI.UnitTest_NewModule_RunOnce}.")
-            .AppendLine("    {0}")
-            .AppendLine("    {1}")
-            .AppendLine("End Sub")
-            .AppendLine()
-            .AppendLine("'@ModuleCleanup")
-            .AppendLine("Public Sub ModuleCleanup()")
-            .AppendLine($"    '{RubberduckUI.UnitTest_NewModule_RunOnce}.")
-            .AppendLine("    Set Assert = Nothing")
-            .AppendLine("    Set Fakes = Nothing")
-            .AppendLine("End Sub")
-            .AppendLine()
-            .ToString();
+        private const string TestModuleEmptyTemplate = "'@TestModule\r\n{0}\r\n{1}\r\n";
 
-        private readonly string _methodInit = new StringBuilder()
-            .AppendLine("'@TestInitialize")
-            .AppendLine("Public Sub TestInitialize()")
-            .AppendLine($"    '{RubberduckUI.UnitTest_NewModule_RunBeforeTest}.")
-            .AppendLine("End Sub")
-            .AppendLine()
-            .AppendLine("'@TestCleanup")
-            .AppendLine("Public Sub TestCleanup()")
-            .AppendLine($"    '{RubberduckUI.UnitTest_NewModule_RunAfterTest}.")
-            .AppendLine("End Sub")
-            .AppendLine()
-            .ToString();
+        private const string ModuleInitLateBinding = "Set Assert = CreateObject(\"Rubberduck.{0}AssertClass\")\r\n";
+        private readonly string _moduleInit = string.Concat(
+            "'@ModuleInitialize\r\n"
+            , "Public Sub ModuleInitialize()\r\n"
+            , "    '", RubberduckUI.UnitTest_NewModule_RunOnce, ".\r\n    {0}\r\n"
+            , "End Sub\r\n\r\n"
+            , "'@ModuleCleanup\r\n"
+            , "Public Sub ModuleCleanup()\r\n"
+            , "    '", RubberduckUI.UnitTest_NewModule_RunOnce, ".\r\n"
+            , "End Sub\r\n\r\n"
+        );
 
-        private const string FakesFieldDeclarationFormat = "Private Fakes As {0}";
-        private const string AssertFieldDeclarationFormat = "Private Assert As {0}";
+        private readonly string _methodInit = string.Concat(
+            "'@TestInitialize\r\n"
+            , "Public Sub TestInitialize()\r\n"
+            , "    '", RubberduckUI.UnitTest_NewModule_RunBeforeTest, ".\r\n"
+            , "End Sub\r\n\r\n"
+            , "'@TestCleanup\r\n"
+            , "Public Sub TestCleanup()\r\n"
+            , "    '", RubberduckUI.UnitTest_NewModule_RunAfterTest, ".\r\n"
+            , "End Sub\r\n\r\n"
+        );
 
         private const string TestModuleBaseName = "TestModule";
 
         private string GetTestModule(IUnitTestSettings settings)
         {
-            var assertType = string.Format("Rubberduck.{0}AssertClass", settings.AssertMode == AssertMode.StrictAssert ? string.Empty : "Permissive");
-            var assertDeclaredAs = DeclarationFormatFor(AssertFieldDeclarationFormat, assertType, settings);
+            var assertClass = settings.AssertMode == AssertMode.StrictAssert ? string.Empty : "Permissive";
+            var moduleBinding = settings.BindingMode == BindingMode.EarlyBinding
+                ? string.Format(ModuleEarlyBinding, assertClass)
+                : ModuleLateBinding;
 
-            var fakesType = "Rubberduck.FakesProvider";
-            var fakesDeclaredAs = DeclarationFormatFor(FakesFieldDeclarationFormat, fakesType, settings); 
-
-            var formattedModuleTemplate = string.Format(TestModuleEmptyTemplate, assertDeclaredAs, fakesDeclaredAs);
+            var formattedModuleTemplate = string.Format(TestModuleEmptyTemplate, FolderAnnotation, moduleBinding);
 
             if (settings.ModuleInit)
             {
-                var assertBinding = InstantiationFormatFor(assertType, settings);
-                var assertSetAs = $"Set Assert = {assertBinding}";
+                var lateBindingString = string.Format(ModuleInitLateBinding,
+                    settings.AssertMode == AssertMode.StrictAssert ? string.Empty : "Permissive");
 
-                var fakesBinding = InstantiationFormatFor(fakesType, settings);
-                var fakesSetAs = $"Set Fakes = {fakesBinding}";
-
-                formattedModuleTemplate += string.Format(_moduleInit, assertSetAs, fakesSetAs);
+                formattedModuleTemplate += string.Format(_moduleInit, settings.BindingMode == BindingMode.EarlyBinding ? string.Empty : lateBindingString);
             }
 
             if (settings.MethodInit)
@@ -103,18 +83,6 @@ namespace Rubberduck.UI.Command
             }
 
             return formattedModuleTemplate;
-        }
-
-        private string InstantiationFormatFor(string type, IUnitTestSettings settings) 
-        {
-            const string EarlyBoundInstantiationFormat = "New {0}";
-            const string LateBoundInstantiationFormat = "CreateObject(\"{0}\")";
-            return string.Format(settings.BindingMode == BindingMode.EarlyBinding ? EarlyBoundInstantiationFormat : LateBoundInstantiationFormat, type); 
-        }
-
-        private string DeclarationFormatFor(string declarationFormat, string type, IUnitTestSettings settings) 
-        {
-            return string.Format(declarationFormat, settings.BindingMode == BindingMode.EarlyBinding ? type : "Object");
         }
 
         private IVBProject GetProject()
@@ -133,18 +101,14 @@ namespace Rubberduck.UI.Command
             }
         }
 
-        protected override bool EvaluateCanExecute(object parameter)
+        protected override bool CanExecuteImpl(object parameter)
         {
             return !GetProject().IsWrappingNullReference && _vbe.HostSupportsUnitTests();
         }
 
-        protected override void OnExecute(object parameter)
+        protected override void ExecuteImpl(object parameter)
         {
-            var parameterIsModuleDeclaration = parameter is ProceduralModuleDeclaration || parameter is ClassModuleDeclaration;
-
-            var project = parameter as IVBProject ??
-                          (parameterIsModuleDeclaration ? ((Declaration) parameter).Project : GetProject());
-
+            var project = parameter as IVBProject ?? GetProject();
             if (project.IsWrappingNullReference)
             {
                 return;
@@ -170,47 +134,14 @@ namespace Rubberduck.UI.Command
             var options = string.Concat(hasOptionExplicit ? string.Empty : "Option Explicit\r\n",
                 "Option Private Module\r\n\r\n");
 
-            if (parameterIsModuleDeclaration)
+            var defaultTestMethod = string.Empty;
+            if (settings.DefaultTestStubInNewModule)
             {
-                var moduleCodeBuilder = new StringBuilder();
-                var declarationsToStub = GetDeclarationsToStub((Declaration)parameter);
-
-                foreach (var declaration in declarationsToStub)
-                {
-                    var name = string.Empty;
-
-                    switch (declaration.DeclarationType)
-                    {
-                        case DeclarationType.Procedure:
-                        case DeclarationType.Function:
-                            name = declaration.IdentifierName;
-                            break;
-                        case DeclarationType.PropertyGet:
-                            name = $"Get{declaration.IdentifierName}";
-                            break;
-                        case DeclarationType.PropertyLet:
-                            name = $"Let{declaration.IdentifierName}";
-                            break;
-                        case DeclarationType.PropertySet:
-                            name = $"Set{declaration.IdentifierName}";
-                            break;
-                    }
-
-                    var stub = AddTestMethodCommand.TestMethodTemplate.Replace(AddTestMethodCommand.NamePlaceholder, $"{name}_Test");
-                    moduleCodeBuilder.AppendLine(stub);
-                }
-
-                module.AddFromString(options + GetTestModule(settings) + moduleCodeBuilder);
-            }
-            else
-            {
-                var defaultTestMethod = settings.DefaultTestStubInNewModule
-                    ? AddTestMethodCommand.TestMethodTemplate.Replace(AddTestMethodCommand.NamePlaceholder, "TestMethod1")
-                    : string.Empty;
-
-                module.AddFromString(options + GetTestModule(settings) + defaultTestMethod);
+                defaultTestMethod = AddTestMethodCommand.TestMethodTemplate.Replace(
+                    AddTestMethodCommand.NamePlaceholder, "TestMethod1");
             }
 
+            module.AddFromString(options + GetTestModule(settings) + defaultTestMethod);
             component.Activate();
             _state.OnParseRequested(this, component);
         }
@@ -221,14 +152,6 @@ namespace Rubberduck.UI.Command
             var index = names.Count(n => n.StartsWith(TestModuleBaseName)) + 1;
 
             return string.Concat(TestModuleBaseName, index);
-        }
-
-        private IEnumerable<Declaration> GetDeclarationsToStub(Declaration parentDeclaration)
-        {
-            return _state.DeclarationFinder.Members(parentDeclaration)
-                .Where(d => Equals(d.ParentDeclaration, parentDeclaration) && d.Accessibility == Accessibility.Public &&
-                            (d.DeclarationType == DeclarationType.Procedure || d.DeclarationType == DeclarationType.Function || d.DeclarationType.HasFlag(DeclarationType.Property)))
-                .OrderBy(d => d.Context.Start.TokenIndex);
         }
     }
 }

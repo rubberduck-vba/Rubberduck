@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Rubberduck.Parsing.PreProcessing
+namespace Rubberduck.Parsing.Preprocessing
 {
     public sealed class BinaryIntDivExpression : Expression
     {

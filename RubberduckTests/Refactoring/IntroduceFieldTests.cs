@@ -17,14 +17,12 @@ namespace RubberduckTests.Refactoring
     public class IntroduceFieldTests
     {
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Introduce Field")]
         public void IntroduceFieldRefactoring_NoFieldsInClass_Sub()
         {
             //Input
             const string inputCode =
 @"Private Sub Foo()
-Dim bar As Boolean
+    Dim bar As Boolean
 End Sub";
             var selection = new Selection(2, 10, 2, 13);
 
@@ -32,6 +30,7 @@ End Sub";
             const string expectedCode =
 @"Private bar As Boolean
 Private Sub Foo()
+    
 End Sub";
 
             IVBComponent component;
@@ -43,20 +42,17 @@ End Sub";
             var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, null);
             refactoring.Refactor(qualifiedSelection);
 
-            var actual = state.GetRewriter(component).GetText();
-            Assert.AreEqual(expectedCode, actual);
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Introduce Field")]
         public void IntroduceFieldRefactoring_NoFieldsInList_Function()
         {
             //Input
             const string inputCode =
 @"Private Function Foo() As Boolean
-Dim bar As Boolean
-Foo = True
+    Dim bar As Boolean
+    Foo = True
 End Function";
             var selection = new Selection(2, 10, 2, 13);
 
@@ -64,7 +60,8 @@ End Function";
             const string expectedCode =
 @"Private bar As Boolean
 Private Function Foo() As Boolean
-Foo = True
+    
+    Foo = True
 End Function";
 
             IVBComponent component;
@@ -76,20 +73,17 @@ End Function";
             var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, null);
             refactoring.Refactor(qualifiedSelection);
 
-            var actual = state.GetRewriter(component).GetText();
-            Assert.AreEqual(expectedCode, actual);
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Introduce Field")]
         public void IntroduceFieldRefactoring_OneFieldInList()
         {
             //Input
             const string inputCode =
 @"Public fizz As Integer
 Private Sub Foo(ByVal buz As Integer)
-Dim bar As Boolean
+    Dim bar As Boolean
 End Sub";
             var selection = new Selection(3, 10, 3, 13);
 
@@ -98,6 +92,7 @@ End Sub";
 @"Public fizz As Integer
 Private bar As Boolean
 Private Sub Foo(ByVal buz As Integer)
+    
 End Sub";
 
             IVBComponent component;
@@ -109,23 +104,20 @@ End Sub";
             var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, null);
             refactoring.Refactor(qualifiedSelection);
 
-            var actual = state.GetRewriter(component).GetText();
-            Assert.AreEqual(expectedCode, actual);
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Introduce Field")]
         public void IntroduceFieldRefactoring_OneFieldInList_MultipleLines()
         {
             //Input
             const string inputCode =
 @"Public fizz As Integer
 Private Sub Foo(ByVal buz As Integer)
-Dim _
-bar _
-As _
-Boolean
+    Dim _
+    bar _
+    As _
+    Boolean
 End Sub";
             var selection = new Selection(3, 10, 3, 13);
 
@@ -134,6 +126,7 @@ End Sub";
 @"Public fizz As Integer
 Private bar As Boolean
 Private Sub Foo(ByVal buz As Integer)
+    
 End Sub";
 
             IVBComponent component;
@@ -145,13 +138,10 @@ End Sub";
             var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, null);
             refactoring.Refactor(qualifiedSelection);
 
-            var actual = state.GetRewriter(component).GetText();
-            Assert.AreEqual(expectedCode, actual);
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Introduce Field")]
         public void IntroduceFieldRefactoring_MultipleFieldsOnMultipleLines()
         {
             //Input
@@ -159,8 +149,8 @@ End Sub";
 @"Public fizz As Integer
 Public buzz As Integer
 Private Sub Foo(ByVal buz As Integer, _
-ByRef baz As Date)
-Dim bar As Boolean
+                  ByRef baz As Date)
+    Dim bar As Boolean
 End Sub";
             var selection = new Selection(5, 8, 5, 20);
 
@@ -170,7 +160,8 @@ End Sub";
 Public buzz As Integer
 Private bar As Boolean
 Private Sub Foo(ByVal buz As Integer, _
-ByRef baz As Date)
+                  ByRef baz As Date)
+    
 End Sub";
 
             IVBComponent component;
@@ -182,22 +173,19 @@ End Sub";
             var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, null);
             refactoring.Refactor(qualifiedSelection);
 
-            var actual = state.GetRewriter(component).GetText();
-            Assert.AreEqual(expectedCode, actual);
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Introduce Field")]
         public void IntroduceFieldRefactoring_MultipleVariablesInStatement_MoveFirst()
         {
             //Input
             const string inputCode =
 @"Private Sub Foo(ByVal buz As Integer, _
-ByRef baz As Date)
-Dim bar As Boolean, _
-bat As Date, _
-bap As Integer
+                  ByRef baz As Date)
+    Dim bar As Boolean, _
+        bat As Date, _
+        bap As Integer
 End Sub";
             var selection = new Selection(3, 10, 3, 13);
 
@@ -205,9 +193,10 @@ End Sub";
             const string expectedCode =
 @"Private bar As Boolean
 Private Sub Foo(ByVal buz As Integer, _
-ByRef baz As Date)
-Dim bat As Date, _
-bap As Integer
+                  ByRef baz As Date)
+    Dim _
+        bat As Date, _
+        bap As Integer
 End Sub";
 
             IVBComponent component;
@@ -219,57 +208,54 @@ End Sub";
             var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, null);
             refactoring.Refactor(qualifiedSelection);
 
-            var actual = state.GetRewriter(component).GetText();
-            Assert.AreEqual(expectedCode, actual);
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Introduce Field")]
         public void IntroduceFieldRefactoring_MultipleVariablesInStatement_MoveSecond()
         {
             //Input
-            const string inputCode = @"
-Private Sub Foo(ByVal buz As Integer, _
-ByRef baz As Date)
-Dim bar As Boolean, _
-bat As Date, _
-bap As Integer
+            const string inputCode =
+@"Private Sub Foo(ByVal buz As Integer, _
+                  ByRef baz As Date)
+    Dim bar As Boolean, _
+        bat As Date, _
+        bap As Integer
 End Sub";
+            var selection = new Selection(4, 10, 4, 13);
+
             //Expectation
-            const string expectedCode = @"
-Private bat As Date
+            const string expectedCode =
+@"Private bat As Date
 Private Sub Foo(ByVal buz As Integer, _
-ByRef baz As Date)
-Dim bar As Boolean, _
-bap As Integer
+                  ByRef baz As Date)
+    Dim bar As Boolean, _
+         _
+        bap As Integer
 End Sub";
 
             IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var target = state.AllUserDeclarations.SingleOrDefault(e => e.IdentifierName == "bat");
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, new Mock<IMessageBox>().Object);
-            refactoring.Refactor(target);
+            var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, null);
+            refactoring.Refactor(qualifiedSelection);
 
-            var actual = state.GetRewriter(component).GetText();
-            Assert.AreEqual(expectedCode, actual);
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Introduce Field")]
         public void IntroduceFieldRefactoring_MultipleVariablesInStatement_MoveLast()
         {
             //Input
             const string inputCode =
 @"Private Sub Foo(ByVal buz As Integer, _
-ByRef baz As Date)
-Dim bar As Boolean, _
-bat As Date, _
-bap As Integer
+                  ByRef baz As Date)
+    Dim bar As Boolean, _
+        bat As Date, _
+        bap As Integer
 End Sub";
             var selection = new Selection(5, 10, 5, 13);
 
@@ -277,9 +263,10 @@ End Sub";
             const string expectedCode =
 @"Private bap As Integer
 Private Sub Foo(ByVal buz As Integer, _
-ByRef baz As Date)
-Dim bar As Boolean, _
-bat As Date
+                  ByRef baz As Date)
+    Dim bar As Boolean, _
+        bat As Date
+        
 End Sub";
 
             IVBComponent component;
@@ -291,20 +278,17 @@ End Sub";
             var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, null);
             refactoring.Refactor(qualifiedSelection);
 
-            var actual = state.GetRewriter(component).GetText();
-            Assert.AreEqual(expectedCode, actual);
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Introduce Field")]
         public void IntroduceFieldRefactoring_MultipleVariablesInStatement_OnOneLine_MoveFirst()
         {
             //Input
             const string inputCode =
 @"Private Sub Foo(ByVal buz As Integer, _
-ByRef baz As Date)
-Dim bar As Boolean, bat As Date, bap As Integer
+                  ByRef baz As Date)
+    Dim bar As Boolean, bat As Date, bap As Integer
 End Sub";
             var selection = new Selection(3, 10, 3, 13);
 
@@ -312,8 +296,8 @@ End Sub";
             const string expectedCode =
 @"Private bar As Boolean
 Private Sub Foo(ByVal buz As Integer, _
-ByRef baz As Date)
-Dim bat As Date, bap As Integer
+                  ByRef baz As Date)
+    Dim bat As Date, bap As Integer
 End Sub";
 
             IVBComponent component;
@@ -325,13 +309,10 @@ End Sub";
             var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, null);
             refactoring.Refactor(qualifiedSelection);
 
-            var actual = state.GetRewriter(component).GetText();
-            Assert.AreEqual(expectedCode, actual);
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Introduce Field")]
         public void IntroduceFieldRefactoring_DisplaysInvalidSelectionAndDoesNothingForField()
         {
             //Input
@@ -362,8 +343,6 @@ End Sub";
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Introduce Field")]
         public void IntroduceFieldRefactoring_DisplaysInvalidSelectionAndDoesNothingForInvalidSelection()
         {
             //Input
@@ -390,20 +369,16 @@ End Sub";
 
             messageBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
                 It.IsAny<MessageBoxIcon>()), Times.Once);
-
-            var actual = state.GetRewriter(component).GetText();
-            Assert.AreEqual(inputCode, actual);
+            Assert.AreEqual(inputCode, component.CodeModule.Content());
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Introduce Field")]
         public void IntroduceFieldRefactoring_PassInTarget()
         {
             //Input
             const string inputCode =
 @"Private Sub Foo()
-Dim bar As Boolean
+    Dim bar As Boolean
 End Sub";
             var selection = new Selection(2, 10, 2, 13);
 
@@ -411,6 +386,7 @@ End Sub";
             const string expectedCode =
 @"Private bar As Boolean
 Private Sub Foo()
+    
 End Sub";
 
             IVBComponent component;
@@ -422,19 +398,16 @@ End Sub";
             var refactoring = new IntroduceFieldRefactoring((vbe.Object), state, null);
             refactoring.Refactor(state.AllUserDeclarations.FindVariable(qualifiedSelection));
 
-            var actual = state.GetRewriter(component).GetText();
-            Assert.AreEqual(expectedCode, actual);
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Introduce Field")]
         public void IntroduceFieldRefactoring_PassInTarget_Nonvariable()
         {
             //Input
             const string inputCode =
 @"Private Sub Foo()
-Dim bar As Boolean
+    Dim bar As Boolean
 End Sub";
 
             IVBComponent component;
@@ -458,8 +431,7 @@ End Sub";
                     It.IsAny<MessageBoxIcon>()), Times.Once);
 
                 Assert.AreEqual("target", e.ParamName);
-                var actual = state.GetRewriter(component).GetText();
-                Assert.AreEqual(inputCode, actual);
+                Assert.AreEqual(inputCode, component.CodeModule.Content());
                 return;
             }
 

@@ -1,7 +1,7 @@
-﻿using Antlr4.Runtime;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 
-namespace Rubberduck.Parsing.PreProcessing
+namespace Rubberduck.Parsing.Preprocessing
 {
     public sealed class ConditionalCompilationBlockExpression : Expression
     {
@@ -14,13 +14,7 @@ namespace Rubberduck.Parsing.PreProcessing
 
         public override IValue Evaluate()
         {
-            //For some reason, using LINQ here breaks a large number of tests.
-            var tokens = new List<IToken>();
-            foreach(var child in _children)
-            {
-                tokens.AddRange(child.Evaluate().AsTokens);
-            }
-            return new TokensValue(tokens);
+            return new StringValue(string.Join(string.Empty, _children.Select(child => child.Evaluate().AsString)));
         }
     }
 }

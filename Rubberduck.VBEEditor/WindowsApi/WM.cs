@@ -1,6 +1,6 @@
 using System;
 
-namespace Rubberduck.VBEditor.WindowsApi
+namespace Rubberduck.Common.WinAPI
 {
     /// <summary>
     /// Windows Messages

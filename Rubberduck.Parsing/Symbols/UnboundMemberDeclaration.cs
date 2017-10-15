@@ -30,7 +30,7 @@ namespace Rubberduck.Parsing.Symbols
                  unboundIdentifier.GetSelection(), 
                  false, 
                  null,
-                 true, 
+                 false, 
                  annotations)
         {
             CallingContext = callingContext;

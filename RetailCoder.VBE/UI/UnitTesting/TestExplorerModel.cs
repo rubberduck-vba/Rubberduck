@@ -20,12 +20,12 @@ namespace Rubberduck.UI.UnitTesting
         {
             _vbe = vbe;
             _state = state;
-            _state.StateChanged += HandleStateChanged;
+            _state.StateChanged += State_StateChanged;
 
             _dispatcher = Dispatcher.CurrentDispatcher;
         }
 
-        private void HandleStateChanged(object sender, ParserStateEventArgs e)
+        private void State_StateChanged(object sender, ParserStateEventArgs e)
         {
             if (e.State != ParserState.ResolvedDeclarations) { return; }
 
@@ -72,18 +72,20 @@ namespace Rubberduck.UI.UnitTesting
             OnTestsRefreshed();
         }
 
-        public ObservableCollection<TestMethod> Tests { get; } = new ObservableCollection<TestMethod>();
+        private readonly ObservableCollection<TestMethod> _tests = new ObservableCollection<TestMethod>();
+        public ObservableCollection<TestMethod> Tests { get { return _tests; } }
 
-        public List<TestMethod> LastRun { get; } = new List<TestMethod>();
+        private readonly List<TestMethod> _lastRun = new List<TestMethod>();
+        public List<TestMethod> LastRun { get { return _lastRun; } } 
 
         public void ClearLastRun()
         {
-            LastRun.Clear();
+            _lastRun.Clear();
         }
 
         public void AddExecutedTest(TestMethod test)
         {
-            LastRun.Add(test);
+            _lastRun.Add(test);
             ExecutedCount = Tests.Count(t => t.Result.Outcome != TestOutcome.Unknown);
 
             if (Tests.Any(t => t.Result.Outcome == TestOutcome.Failed))
@@ -161,14 +163,17 @@ namespace Rubberduck.UI.UnitTesting
         private void OnTestsRefreshed()
         {
             var handler = TestsRefreshed;
-            handler?.Invoke(this, EventArgs.Empty);
+            if (handler != null)
+            {
+                handler.Invoke(this, EventArgs.Empty);
+            }
         }
 
         public void Dispose()
         {
             if (_state != null)
             {
-                _state.StateChanged -= HandleStateChanged;
+                _state.StateChanged -= State_StateChanged;
             }
         }
     }

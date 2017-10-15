@@ -7,8 +7,6 @@ namespace RubberduckTests.Grammar
     [TestClass]
     public class AnnotationTests
     {
-        [TestCategory("Grammar")]
-        [TestCategory("Annotations")]
         [TestMethod]
         public void TestModuleAnnotation_TypeIsTestModule()
         {
@@ -16,8 +14,6 @@ namespace RubberduckTests.Grammar
             Assert.AreEqual(AnnotationType.TestModule, annotation.AnnotationType);
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Annotations")]
         [TestMethod]
         public void ModuleInitializeAnnotation_TypeIsModuleInitialize()
         {
@@ -25,8 +21,6 @@ namespace RubberduckTests.Grammar
             Assert.AreEqual(AnnotationType.ModuleInitialize, annotation.AnnotationType);
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Annotations")]
         [TestMethod]
         public void ModuleCleanupAnnotation_TypeIsModuleCleanup()
         {
@@ -34,8 +28,6 @@ namespace RubberduckTests.Grammar
             Assert.AreEqual(AnnotationType.ModuleCleanup, annotation.AnnotationType);
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Annotations")]
         [TestMethod]
         public void TestMethodAnnotation_TypeIsTestTest()
         {
@@ -43,8 +35,6 @@ namespace RubberduckTests.Grammar
             Assert.AreEqual(AnnotationType.TestMethod, annotation.AnnotationType);
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Annotations")]
         [TestMethod]
         public void TestInitializeAnnotation_TypeIsTestInitialize()
         {
@@ -52,8 +42,6 @@ namespace RubberduckTests.Grammar
             Assert.AreEqual(AnnotationType.TestInitialize, annotation.AnnotationType);
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Annotations")]
         [TestMethod]
         public void TestCleanupAnnotation_TypeIsTestCleanup()
         {
@@ -61,8 +49,6 @@ namespace RubberduckTests.Grammar
             Assert.AreEqual(AnnotationType.TestCleanup, annotation.AnnotationType);
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Annotations")]
         [TestMethod]
         public void IgnoreTestAnnotation_TypeIsIgnoreTest()
         {
@@ -70,8 +56,6 @@ namespace RubberduckTests.Grammar
             Assert.AreEqual(AnnotationType.IgnoreTest, annotation.AnnotationType);
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Annotations")]
         [TestMethod]
         public void IgnoreAnnotation_TypeIsIgnore()
         {
@@ -79,8 +63,6 @@ namespace RubberduckTests.Grammar
             Assert.AreEqual(AnnotationType.Ignore, annotation.AnnotationType);
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Annotations")]
         [TestMethod]
         public void FolderAnnotation_TypeIsFolder()
         {
@@ -88,8 +70,6 @@ namespace RubberduckTests.Grammar
             Assert.AreEqual(AnnotationType.Folder, annotation.AnnotationType);
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Annotations")]
         [TestMethod]
         public void NoIndentAnnotation_TypeIsNoIndent()
         {
@@ -97,20 +77,11 @@ namespace RubberduckTests.Grammar
             Assert.AreEqual(AnnotationType.NoIndent, annotation.AnnotationType);
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Annotations")]
         [TestMethod]
         public void InterfaceAnnotation_TypeIsInterface()
         {
             var annotation = new InterfaceAnnotation(new QualifiedSelection(), null);
             Assert.AreEqual(AnnotationType.Interface, annotation.AnnotationType);
-        }
-
-        [TestMethod]
-        public void DescriptionAnnotation_TypeIsDescription()
-        {
-            var annotation = new DescriptionAnnotation(new QualifiedSelection(), null);
-            Assert.AreEqual(AnnotationType.Description, annotation.AnnotationType);
         }
     }
 }

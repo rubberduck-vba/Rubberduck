@@ -16,12 +16,12 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _presenter = presenter;
         }
 
-        protected override bool EvaluateCanExecute(object parameter)
+        protected override bool CanExecuteImpl(object parameter)
         {
             return parameter is CodeExplorerComponentViewModel;
         }
 
-        protected override void OnExecute(object parameter)
+        protected override void ExecuteImpl(object parameter)
         {
             _presenter.Show();
 

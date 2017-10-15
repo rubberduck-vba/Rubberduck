@@ -1,4 +1,6 @@
 using System;
+using System.Runtime.InteropServices.ComTypes;
+using Rubberduck.VBEditor.Events;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
 {

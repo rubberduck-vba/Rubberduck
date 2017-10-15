@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Inspections.Resources;
 using Rubberduck.Settings;
 using Rubberduck.UI.Settings;
 

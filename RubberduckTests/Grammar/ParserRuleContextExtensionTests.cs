@@ -14,7 +14,6 @@ namespace RubberduckTests.Grammar
     {
         [TestMethod]
         [TestCategory("Inspections")]
-        [TestCategory("Grammar")]
         public void Evil_Code_Selection_Not_Evil()
         {
             const string inputCode =

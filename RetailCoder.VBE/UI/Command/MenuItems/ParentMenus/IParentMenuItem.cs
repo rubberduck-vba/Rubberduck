@@ -6,6 +6,6 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
     {
         ICommandBarControls Parent { get; set; }
         ICommandBarPopup Item { get; }
-        void RemoveMenu();
+        void RemoveChildren();
     }
 }

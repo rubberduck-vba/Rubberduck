@@ -12,19 +12,31 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
         }
 
-        public int Count => IsWrappingNullReference ? 0 : Target.Count;
+        public int Count
+        {
+            get { return IsWrappingNullReference ? 0 : Target.Count; }
+        }
 
-        public IVBE Parent => new VBE(IsWrappingNullReference ? null : Target.Parent);
+        public IVBE Parent
+        {
+            get { return new VBE(IsWrappingNullReference ? null : Target.Parent); }
+        }
 
-        public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
+        public IVBE VBE
+        {
+            get { return new VBE(IsWrappingNullReference ? null : Target.VBE); }
+        }
 
         public ICodePane Current 
         { 
-            get => new CodePane(IsWrappingNullReference ? null : Target.Current);
+            get { return new CodePane(IsWrappingNullReference ? null : Target.Current); }
             set { if (!IsWrappingNullReference) Target.Current = (VB.CodePane)value.Target; }
         }
 
-        public ICodePane this[object index] => new CodePane(IsWrappingNullReference ? null : Target.Item(index));
+        public ICodePane this[object index]
+        {
+            get { return new CodePane(IsWrappingNullReference ? null : Target.Item(index)); }
+        }
 
         IEnumerator<ICodePane> IEnumerable<ICodePane>.GetEnumerator()
         {

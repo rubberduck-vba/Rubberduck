@@ -10,6 +10,34 @@ namespace Rubberduck.Parsing.Symbols
     {
         public ConstantDeclaration(
             QualifiedMemberName qualifiedName, 
+            Declaration parentDeclaration, 
+            string parentScope,
+            string asTypeName,
+            VBAParser.AsTypeClauseContext asTypeContext,
+            string typeHint,
+            IEnumerable<IAnnotation> annotations,
+            Accessibility accessibility, 
+            DeclarationType declarationType, 
+            string value)
+            : this(
+                  qualifiedName,
+                  parentDeclaration, 
+                  parentScope, 
+                  asTypeName,
+                  asTypeContext,
+                  typeHint,
+                  annotations,
+                  accessibility, 
+                  declarationType, 
+                  value, 
+                  null, 
+                  Selection.Home,
+                  true)
+        {
+        }
+
+        public ConstantDeclaration(
+            QualifiedMemberName qualifiedName, 
             Declaration parentDeclaration,
             string parentScope,
             string asTypeName,
@@ -21,7 +49,7 @@ namespace Rubberduck.Parsing.Symbols
             string value,
             ParserRuleContext context, 
             Selection selection, 
-            bool isUserDefined = true)
+            bool isBuiltIn = false)
             :base(
                  qualifiedName, 
                  parentDeclaration, 
@@ -36,12 +64,13 @@ namespace Rubberduck.Parsing.Symbols
                  selection,
                  false,
                  asTypeContext,
-                 isUserDefined,
+                 isBuiltIn,
                  annotations)
         {
-            Expression = value;
+            _expression = value;
         }
 
-        public string Expression { get; }
+        private readonly string _expression;
+        public string Expression { get { return _expression; } }
     }
 }

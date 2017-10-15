@@ -2,7 +2,7 @@
 
 namespace Rubberduck.UI.Refactorings.ReorderParameters
 {
-    public sealed partial class ReorderParametersDialog : Form, IRefactoringDialog<ReorderParametersViewModel>
+    public partial class ReorderParametersDialog : Form
     {
         public ReorderParametersViewModel ViewModel { get; }
 

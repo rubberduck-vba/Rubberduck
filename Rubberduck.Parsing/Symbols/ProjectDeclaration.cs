@@ -13,7 +13,7 @@ namespace Rubberduck.Parsing.Symbols
         public ProjectDeclaration(
             QualifiedMemberName qualifiedName,
             string name,
-            bool isUserDefined,
+            bool isBuiltIn,
             IVBProject project)
             : base(
                   qualifiedName,
@@ -29,14 +29,14 @@ namespace Rubberduck.Parsing.Symbols
                   Selection.Home,
                   false,
                   null,
-                  isUserDefined)
+                  isBuiltIn)
         {
             _project = project;
             _projectReferences = new List<ProjectReference>();
         }
 
         public ProjectDeclaration(ComProject project, QualifiedModuleName module)
-            : this(module.QualifyMemberName(project.Name), project.Name, false, null)
+            : this(module.QualifyMemberName(project.Name), project.Name, true, null)
         {
             MajorVersion = project.MajorVersion;
             MinorVersion = project.MinorVersion;
@@ -60,7 +60,7 @@ namespace Rubberduck.Parsing.Symbols
         /// <remarks>
         /// This property is intended to differenciate identically-named VBProjects.
         /// </remarks>
-        public override IVBProject Project => _project;
+        public override IVBProject Project { get { return _project; } }
 
         public void AddProjectReference(string referencedProjectId, int priority)
         {
@@ -69,11 +69,6 @@ namespace Rubberduck.Parsing.Symbols
                 return;
             }
             _projectReferences.Add(new ProjectReference(referencedProjectId, priority));
-        }
-
-        public void ClearProjectReferences()
-        {
-            _projectReferences.Clear();
         }
 
         private string _displayName;

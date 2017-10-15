@@ -10,30 +10,42 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         {
         }
 
-        public string ProgId => IsWrappingNullReference ? string.Empty : Target.ProgId;
+        public string ProgId
+        {
+            get { return IsWrappingNullReference ? string.Empty : Target.ProgId; }
+        }
 
-        public string Guid => IsWrappingNullReference ? string.Empty : Target.Guid;
+        public string Guid
+        {
+            get { return IsWrappingNullReference ? string.Empty : Target.Guid; }
+        }
 
-        public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
+        public IVBE VBE
+        {
+            get { return new VBE(IsWrappingNullReference ? null : Target.VBE); }
+        }
 
-        public IAddIns Collection => new AddIns(IsWrappingNullReference ? null : Target.Collection);
+        public IAddIns Collection
+        {
+            get { return new AddIns(IsWrappingNullReference ? null : Target.Collection); }
+        }
 
         public string Description
         {
-            get => IsWrappingNullReference ? string.Empty : Target.Description;
-            set => Target.Description = value;
+            get { return IsWrappingNullReference ? string.Empty : Target.Description; } 
+            set { Target.Description = value; }
         }
 
         public bool Connect
         {
-            get => !IsWrappingNullReference && Target.Connect;
-            set => Target.Connect = value;
+            get { return !IsWrappingNullReference && Target.Connect; }
+            set { Target.Connect = value; }
         }
 
         public object Object // definitely leaks a COM object
         {
-            get => IsWrappingNullReference ? null : Target.Object;
-            set => Target.Object = value;
+            get { return IsWrappingNullReference ? null : Target.Object; }
+            set { Target.Object = value; }
         }
 
         public override bool Equals(ISafeComWrapper<VB.AddIn> other)

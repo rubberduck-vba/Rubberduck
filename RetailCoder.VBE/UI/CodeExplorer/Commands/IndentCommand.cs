@@ -23,7 +23,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _navigateCommand = navigateCommand;
         }
 
-        protected override bool EvaluateCanExecute(object parameter)
+        protected override bool CanExecuteImpl(object parameter)
         {
             if (parameter == null)
             {
@@ -70,7 +70,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             return _state.Status == ParserState.Ready;
         }
 
-        protected override void OnExecute(object parameter)
+        protected override void ExecuteImpl(object parameter)
         {
             if (parameter == null)
             {

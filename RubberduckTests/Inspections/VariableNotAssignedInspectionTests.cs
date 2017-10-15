@@ -1,7 +1,9 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Inspections;
+using Rubberduck.Inspections.QuickFixes;
+using Rubberduck.Inspections.Resources;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
@@ -18,7 +20,8 @@ namespace RubberduckTests.Inspections
     Dim var1 As String
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new VariableNotAssignedInspection(state);
@@ -37,7 +40,8 @@ End Sub";
     Dim var2 As Date
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new VariableNotAssignedInspection(state);
@@ -56,7 +60,8 @@ End Sub";
     var1 = ""test""
 End Function";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new VariableNotAssignedInspection(state);
@@ -77,7 +82,8 @@ End Function";
     Dim var2 as String
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new VariableNotAssignedInspection(state);
@@ -92,17 +98,139 @@ End Sub";
         {
             const string inputCode =
 @"Sub Foo()
-'@Ignore VariableNotAssigned
-Dim var1 As String
+    '@Ignore VariableNotAssigned
+    Dim var1 As String
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new VariableNotAssignedInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.IsFalse(inspectionResults.Any());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void UnassignedVariable_QuickFixWorks()
+        {
+            const string inputCode =
+@"Sub Foo()
+    Dim var1 as Integer
+End Sub";
+
+            const string expectedCode =
+@"Sub Foo()
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new VariableNotAssignedInspection(state);
+            inspection.GetInspectionResults().First().QuickFixes.First().Fix();
+
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+        }
+
+        [TestMethod]
+        public void UnassignedVariable_VariableOnMultipleLines_QuickFixWorks()
+        {
+            const string inputCode =
+@"Sub Foo()
+    Dim _
+    var1 _
+    as _
+    Integer
+End Sub";
+
+            const string expectedCode =
+@"Sub Foo()
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new VariableNotAssignedInspection(state);
+            inspection.GetInspectionResults().First().QuickFixes.First().Fix();
+
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+        }
+
+        [TestMethod]
+        public void UnassignedVariable_MultipleVariablesOnSingleLine_QuickFixWorks()
+        {
+            const string inputCode =
+@"Sub Foo()
+    Dim var1 As Integer, var2 As Boolean
+End Sub";
+
+            // note the extra space after "Integer"--the VBE will remove it
+            const string expectedCode =
+@"Sub Foo()
+    Dim var1 As Integer 
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new VariableNotAssignedInspection(state);
+            inspection.GetInspectionResults().Single(s => s.Target.IdentifierName == "var2").QuickFixes.First().Fix();
+
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+        }
+
+        [TestMethod]
+        public void UnassignedVariable_MultipleVariablesOnMultipleLines_QuickFixWorks()
+        {
+            const string inputCode =
+@"Sub Foo()
+    Dim var1 As Integer, _
+        var2 As Boolean
+End Sub";
+
+            const string expectedCode =
+@"Sub Foo()
+    Dim var1 As Integer
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new VariableNotAssignedInspection(state);
+            inspection.GetInspectionResults().Single(s => s.Target.IdentifierName == "var2").QuickFixes.First().Fix();
+
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void UnassignedVariable_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+@"Sub Foo()
+    Dim var1 as Integer
+End Sub";
+
+            const string expectedCode =
+@"Sub Foo()
+'@Ignore VariableNotAssigned
+    Dim var1 as Integer
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new VariableNotAssignedInspection(state);
+            inspection.GetInspectionResults().First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
+
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]

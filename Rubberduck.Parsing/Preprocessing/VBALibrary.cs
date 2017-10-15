@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Rubberduck.Parsing.PreProcessing
+namespace Rubberduck.Parsing.Preprocessing
 {
     public static class VBALibrary
     {

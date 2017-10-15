@@ -13,8 +13,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 {
     public class VBComponents : SafeComWrapper<VB.VBComponents>, IVBComponents
     {
-        private static readonly Guid VBComponentsEventsGuid = new Guid("0002E193-0000-0000-C000-000000000046");
+        //TODO - This is currently the VBA Guid, and it need to be updated when VB6 support is added.
+        private static readonly Guid VBComponentsEventsGuid = new Guid("0002E116-0000-0000-C000-000000000046");
 
+        //TODO - These *should* be the same, but this should be verified.
         private enum ComponentEventDispId
         {
             ItemAdded = 1,
@@ -31,17 +33,29 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             AttachEvents();
         }
 
-        public int Count => IsWrappingNullReference ? 0 : Target.Count;
+        public int Count
+        {
+            get { return IsWrappingNullReference ? 0 : Target.Count; }
+        }
 
-        public IVBProject Parent => new VBProject(IsWrappingNullReference ? null : Target.Parent);
+        public IVBProject Parent
+        {
+            get { return new VBProject(IsWrappingNullReference ? null : Target.Parent); }
+        }
 
-        public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
+        public IVBE VBE
+        {
+            get { return new VBE(IsWrappingNullReference ? null : Target.VBE); }
+        }
 
-        public IVBComponent this[object index] => new VBComponent(IsWrappingNullReference ? null : Target.Item(index));
+        public IVBComponent this[object index]
+        {
+            get { return new VBComponent(IsWrappingNullReference ? null : Target.Item(index)); }
+        }
 
         public void Remove(IVBComponent item)
         {
-            if (item?.Target != null && !IsWrappingNullReference)
+            if (item != null && item.Target != null && !IsWrappingNullReference)
             {
                 Target.Remove((VB.VBComponent)item.Target);
             }
@@ -125,7 +139,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                 var component = this[name];
                 if (component.IsWrappingNullReference)
                 {
-                    throw new IndexOutOfRangeException($"Could not find document component named '{name}'.");
+                    throw new IndexOutOfRangeException(string.Format("Could not find document component named '{0}'.", name));
                 }
                 component.CodeModule.Clear();
                 component.CodeModule.AddFromString(codeString);
@@ -239,7 +253,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         private void OnComponentRenamed(VB.VBComponent vbComponent, string oldName)
         {
             var handler = ComponentRenamed;
-            handler?.Invoke(this, new ComponentRenamedEventArgs(Parent.ProjectId, Parent, new VBComponent(vbComponent), oldName));
+            if (handler != null)
+            {
+                handler.Invoke(this, new ComponentRenamedEventArgs(Parent.ProjectId, Parent, new VBComponent(vbComponent), oldName));
+            }
         }
 
         private delegate void ItemSelectedDelegate(VB.VBComponent vbComponent);
@@ -269,7 +286,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         private void OnDispatch(EventHandler<ComponentEventArgs> dispatched, VB.VBComponent component)
         {
             var handler = dispatched;
-            handler?.Invoke(this, new ComponentEventArgs(Parent.ProjectId, Parent, new VBComponent(component)));
+            if (handler != null)
+            {
+                handler.Invoke(this, new ComponentEventArgs(Parent.ProjectId, Parent, new VBComponent(component)));
+            }
         }
 
         #endregion

@@ -12,7 +12,6 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 
     public enum RubberduckMenuItemDisplayOrder
     {
-        Refresh,
         UnitTesting,
         Refactorings,
         Navigate,

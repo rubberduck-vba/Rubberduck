@@ -5,7 +5,6 @@ using Moq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.ExtractInterface;
-using Rubberduck.UI.Refactorings;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -17,8 +16,6 @@ namespace RubberduckTests.Refactoring
     public class ExtractInterfaceTests
     {
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Extract Interface")]
         public void ExtractInterfaceRefactoring_ImplementProc()
         {
             //Input
@@ -31,13 +28,13 @@ End Sub";
             const string expectedCode =
 @"Implements ITestModule1
 
-Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
-End Sub
 
 Private Sub ITestModule1_Foo(ByVal arg1 As Integer, ByVal arg2 As String)
     Err.Raise 5 'TODO implement interface member
 End Sub
-";
+
+Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub";
 
             const string expectedInterfaceCode =
 @"Option Explicit
@@ -63,7 +60,7 @@ End Sub
             //SetupFactory
             var factory = SetupFactory(model);
 
-            var refactoring = new ExtractInterfaceRefactoring(vbe.Object, null, factory.Object);
+            var refactoring = new ExtractInterfaceRefactoring(vbe.Object, state, null, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             Assert.AreEqual(expectedInterfaceCode, component.Collection[1].CodeModule.Content());
@@ -71,8 +68,6 @@ End Sub
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Extract Interface")]
         public void ExtractInterfaceRefactoring_ImplementProcAndFuncAndPropGetSetLet()
         {
             //Input
@@ -98,20 +93,6 @@ End Property";
             const string expectedCode = @"
 Implements ITestModule1
 
-Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
-End Sub
-
-Public Function Fizz(b) As Variant
-End Function
-
-Public Property Get Buzz()
-End Property
-
-Public Property Let Buzz(value)
-End Property
-
-Public Property Set Buzz(value)
-End Property
 
 Private Sub ITestModule1_Foo(ByVal arg1 As Integer, ByVal arg2 As String)
     Err.Raise 5 'TODO implement interface member
@@ -132,7 +113,21 @@ End Property
 Private Property Set ITestModule1_Buzz(ByRef value As Variant)
     Err.Raise 5 'TODO implement interface member
 End Property
-";
+
+Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub
+
+Public Function Fizz(b) As Variant
+End Function
+
+Public Property Get Buzz()
+End Property
+
+Public Property Let Buzz(value)
+End Property
+
+Public Property Set Buzz(value)
+End Property";
 
             const string expectedInterfaceCode =
 @"Option Explicit
@@ -170,7 +165,7 @@ End Property
             //SetupFactory
             var factory = SetupFactory(model);
 
-            var refactoring = new ExtractInterfaceRefactoring(vbe.Object, null, factory.Object);
+            var refactoring = new ExtractInterfaceRefactoring(vbe.Object, state, null, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             Assert.AreEqual(expectedInterfaceCode, component.Collection[1].CodeModule.Content());
@@ -178,8 +173,6 @@ End Property
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Extract Interface")]
         public void ExtractInterfaceRefactoring_ImplementProcAndFunc_IgnoreProperties()
         {
             //Input
@@ -205,6 +198,15 @@ End Property";
             const string expectedCode =
 @"Implements ITestModule1
 
+
+Private Sub ITestModule1_Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+    Err.Raise 5 'TODO implement interface member
+End Sub
+
+Private Function ITestModule1_Fizz(ByRef b As Variant) As Variant
+    Err.Raise 5 'TODO implement interface member
+End Function
+
 Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub
 
@@ -218,16 +220,7 @@ Public Property Let Buzz(value)
 End Property
 
 Public Property Set Buzz(value)
-End Property
-
-Private Sub ITestModule1_Foo(ByVal arg1 As Integer, ByVal arg2 As String)
-    Err.Raise 5 'TODO implement interface member
-End Sub
-
-Private Function ITestModule1_Fizz(ByRef b As Variant) As Variant
-    Err.Raise 5 'TODO implement interface member
-End Function
-";
+End Property";
 
             const string expectedInterfaceCode =
 @"Option Explicit
@@ -259,7 +252,7 @@ End Function
             //SetupFactory
             var factory = SetupFactory(model);
 
-            var refactoring = new ExtractInterfaceRefactoring(vbe.Object, null, factory.Object);
+            var refactoring = new ExtractInterfaceRefactoring(vbe.Object, state, null, factory.Object);
             refactoring.Refactor(qualifiedSelection);
 
             Assert.AreEqual(expectedInterfaceCode, component.Collection[1].CodeModule.Content());
@@ -267,8 +260,6 @@ End Function
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Extract Interface")]
         public void ExtractInterfaceRefactoring_IgnoresField()
         {
             //Input
@@ -289,8 +280,6 @@ End Function
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Extract Interface")]
         public void ExtractInterfaceRefactoring_NullPresenter_NoChanges()
         {
             //Input
@@ -312,7 +301,7 @@ End Sub";
             var factory = SetupFactory(model);
             factory.Setup(f => f.Create()).Returns(value: null);
 
-            var refactoring = new ExtractInterfaceRefactoring(vbe.Object, null, factory.Object);
+            var refactoring = new ExtractInterfaceRefactoring(vbe.Object, state, null, factory.Object);
             refactoring.Refactor();
 
             Assert.AreEqual(1, vbe.Object.ActiveVBProject.VBComponents.Count());
@@ -320,8 +309,6 @@ End Sub";
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Extract Interface")]
         public void ExtractInterfaceRefactoring_NullModel_NoChanges()
         {
             //Input
@@ -346,7 +333,7 @@ End Sub";
             var factory = SetupFactory(model);
             factory.Setup(f => f.Create()).Returns(presenter.Object);
 
-            var refactoring = new ExtractInterfaceRefactoring(vbe.Object, null, factory.Object);
+            var refactoring = new ExtractInterfaceRefactoring(vbe.Object, state, null, factory.Object);
             refactoring.Refactor();
 
             Assert.AreEqual(1, vbe.Object.ActiveVBProject.VBComponents.Count());
@@ -354,8 +341,6 @@ End Sub";
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Extract Interface")]
         public void ExtractInterfaceRefactoring_PassTargetIn()
         {
             //Input
@@ -368,13 +353,13 @@ End Sub";
             const string expectedCode =
 @"Implements ITestModule1
 
-Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
-End Sub
 
 Private Sub ITestModule1_Foo(ByVal arg1 As Integer, ByVal arg2 As String)
     Err.Raise 5 'TODO implement interface member
 End Sub
-";
+
+Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub";
 
             const string expectedInterfaceCode =
 @"Option Explicit
@@ -397,7 +382,7 @@ End Sub
             //SetupFactory
             var factory = SetupFactory(model);
 
-            var refactoring = new ExtractInterfaceRefactoring(vbe.Object, null, factory.Object);
+            var refactoring = new ExtractInterfaceRefactoring(vbe.Object, state, null, factory.Object);
             refactoring.Refactor(state.AllUserDeclarations.Single(s => s.DeclarationType == DeclarationType.ClassModule));
 
             Assert.AreEqual(expectedInterfaceCode, component.Collection[1].CodeModule.Content());
@@ -405,8 +390,6 @@ End Sub
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Extract Interface")]
         public void Presenter_Reject_ReturnsNull()
         {
             //Input
@@ -424,9 +407,8 @@ End Sub";
             var model = new ExtractInterfaceModel(state, qualifiedSelection);
             model.Members.ElementAt(0).IsSelected = true;
 
-            var view = new Mock<IRefactoringDialog<ExtractInterfaceViewModel>>();
-            view.Setup(v => v.ViewModel).Returns(new ExtractInterfaceViewModel());
-            view.Setup(v => v.DialogResult).Returns(DialogResult.Cancel);
+            var view = new Mock<IExtractInterfaceDialog>();
+            view.Setup(v => v.ShowDialog()).Returns(DialogResult.Cancel);
 
             var factory = new ExtractInterfacePresenterFactory(vbe.Object, state, view.Object);
 
@@ -436,8 +418,6 @@ End Sub";
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Extract Interface")]
         public void Presenter_NullTarget_ReturnsNull()
         {
             //Input
@@ -454,16 +434,41 @@ End Sub";
 
             var model = new ExtractInterfaceModel(state, qualifiedSelection);
 
-            var view = new Mock<IRefactoringDialog<ExtractInterfaceViewModel>>();
-            view.SetupGet(v => v.ViewModel).Returns(new ExtractInterfaceViewModel());
+            var view = new Mock<IExtractInterfaceDialog>();
             var presenter = new ExtractInterfacePresenter(view.Object, model);
 
             Assert.AreEqual(null, presenter.Show());
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Extract Interface")]
+        public void Presenter_Accept_ReturnsUpdatedModel()
+        {
+            //Input
+            const string inputCode =
+@"Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub";
+            var selection = new Selection(1, 15, 1, 15);
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+            var model = new ExtractInterfaceModel(state, qualifiedSelection);
+            model.Members.ElementAt(0).IsSelected = true;
+
+            var view = new Mock<IExtractInterfaceDialog>();
+            view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
+            view.Setup(v => v.InterfaceName).Returns("Class1");
+
+            var factory = new ExtractInterfacePresenterFactory(vbe.Object, state, view.Object);
+            var presenter = factory.Create();
+
+            Assert.AreEqual("Class1", presenter.Show().InterfaceName);
+        }
+
+        [TestMethod]
         public void Factory_NoMembersInTarget_ReturnsNull()
         {
             //Input
@@ -482,8 +487,6 @@ End Sub";
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Extract Interface")]
         public void Factory_NullSelectionNullReturnsNullPresenter()
         {
             //Input

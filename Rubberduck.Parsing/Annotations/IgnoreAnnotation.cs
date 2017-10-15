@@ -4,9 +4,6 @@ using System.Linq;
 
 namespace Rubberduck.Parsing.Annotations
 {
-    /// <summary>
-    /// Used for ignoring specific inspection results from a specified set of inspections.
-    /// </summary>
     public sealed class IgnoreAnnotation : AnnotationBase
     {
         private readonly IEnumerable<string> _inspectionNames;
@@ -19,7 +16,13 @@ namespace Rubberduck.Parsing.Annotations
             _inspectionNames = parameters;
         }
 
-        public IEnumerable<string> InspectionNames => _inspectionNames;
+        public IEnumerable<string> InspectionNames
+        {
+            get
+            {
+                return _inspectionNames;
+            }
+        }
 
         public bool IsIgnored(string inspectionName)
         {
@@ -28,7 +31,7 @@ namespace Rubberduck.Parsing.Annotations
 
         public override string ToString()
         {
-            return $"Ignored inspections: {string.Join(", ", _inspectionNames)}";
+            return string.Format("Ignored inspections: {0}", string.Join(", ", _inspectionNames));
         }
     }
 }
