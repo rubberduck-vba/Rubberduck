@@ -14,7 +14,7 @@ namespace Rubberduck.UI.Command.MenuItems
         }
 
         private readonly CommandBase _command;
-        public CommandBase Command { get { return _command; } }
+        public CommandBase Command => _command;
 
         public abstract string Key { get; }
 
@@ -47,15 +47,15 @@ namespace Rubberduck.UI.Command.MenuItems
         /// <remarks>Returns <c>true</c> if not overridden.</remarks>
         public virtual bool EvaluateCanExecute(RubberduckParserState state)
         {
-            return state != null && _command.CanExecute(state);
+            return state != null && (_command?.CanExecute(state) ?? false);
         }
 
-        public virtual ButtonStyle ButtonStyle { get { return ButtonStyle.IconAndCaption; } }
-        public virtual bool HiddenWhenDisabled { get { return false; } }
-        public virtual bool IsVisible { get { return true; } }
-        public virtual bool BeginGroup { get { return false; } }
-        public virtual int DisplayOrder { get { return default(int); } }
-        public virtual Image Image { get { return null; } }
-        public virtual Image Mask { get { return null; } }
+        public virtual ButtonStyle ButtonStyle => ButtonStyle.IconAndCaption;
+        public virtual bool HiddenWhenDisabled => false;
+        public virtual bool IsVisible => true;
+        public virtual bool BeginGroup => false;
+        public virtual int DisplayOrder => default(int);
+        public virtual Image Image => null;
+        public virtual Image Mask => null;
     }
 }

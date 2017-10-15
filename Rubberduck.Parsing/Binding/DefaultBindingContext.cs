@@ -44,18 +44,18 @@ namespace Rubberduck.Parsing.Binding
             // which requires us to use an IndexDefaultBinding.
             if (expression.CALL() == null)
             {
-                dynamic lexpr = expression.expression();
+                dynamic lexpr = expression.lExpression();
                 var lexprBinding = Visit(module, parent, lexpr, withBlockVariable, StatementResolutionContext.Undefined);
                 var argList = VisitArgumentList(module, parent, expression.argumentList(), withBlockVariable, StatementResolutionContext.Undefined);
                 SetLeftMatch(lexprBinding, argList.Arguments.Count);
-                return new IndexDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression.expression(), lexprBinding, argList);
+                return new IndexDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression.lExpression(), lexprBinding, argList);
             }
             else
             {
-                var lexprBinding = Visit(module, parent, (dynamic)expression.expression(), withBlockVariable, StatementResolutionContext.Undefined);
+                var lexprBinding = Visit(module, parent, (dynamic)expression.lExpression(), withBlockVariable, StatementResolutionContext.Undefined);
                 if (!(lexprBinding is IndexDefaultBinding))
                 {
-                    return new IndexDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression.expression(), lexprBinding, new ArgumentList());
+                    return new IndexDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression.lExpression(), lexprBinding, new ArgumentList());
                 }
                 else
                 {
@@ -139,6 +139,15 @@ namespace Rubberduck.Parsing.Binding
             return new IndexDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, lExpressionBinding, argumentListBinding);
         }
 
+        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.WhitespaceIndexExprContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
+        {
+            dynamic lExpression = expression.lExpression();
+            var lExpressionBinding = Visit(module, parent, lExpression, withBlockVariable, StatementResolutionContext.Undefined);
+            var argumentListBinding = VisitArgumentList(module, parent, expression.argumentList(), withBlockVariable, StatementResolutionContext.Undefined);
+            SetLeftMatch(lExpressionBinding, argumentListBinding.Arguments.Count);
+            return new IndexDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, lExpressionBinding, argumentListBinding);
+        }
+
         private ArgumentList VisitArgumentList(Declaration module, Declaration parent, VBAParser.ArgumentListContext argumentList, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
         {
             var convertedList = new ArgumentList();
@@ -146,37 +155,25 @@ namespace Rubberduck.Parsing.Binding
             {
                 return convertedList;
             }
-            var list = argumentList.positionalOrNamedArgumentList();
+            var list = argumentList;
             // TODO: positionalArgumentOrMissing is there as preparation for argument compatibility checking.
-            if (list.positionalArgumentOrMissing() != null)
+            if (list.argument() != null)
             {
-                foreach (var expr in list.positionalArgumentOrMissing())
+                foreach (var expr in list.argument())
                 {
-                    if (expr is VBAParser.SpecifiedPositionalArgumentContext)
+                    if (expr.positionalArgument() != null)
                     {
                         convertedList.AddArgument(new ArgumentListArgument(
-                            VisitArgumentBinding(module, parent, ((VBAParser.SpecifiedPositionalArgumentContext)expr).positionalArgument().argumentExpression(), withBlockVariable,
+                            VisitArgumentBinding(module, parent, expr.positionalArgument().argumentExpression(), withBlockVariable,
                             StatementResolutionContext.Undefined), ArgumentListArgumentType.Positional));
                     }
-                }
-            }
-            if (list.requiredPositionalArgument() != null)
-            {
-                convertedList.AddArgument(new ArgumentListArgument(
-                    VisitArgumentBinding(module, parent, list.requiredPositionalArgument().argumentExpression(),
-                    withBlockVariable, StatementResolutionContext.Undefined),
-                    ArgumentListArgumentType.Positional));
-            }
-            if (list.namedArgumentList() != null)
-            {
-                foreach (var expr in list.namedArgumentList().namedArgument())
-                {
-                    convertedList.AddArgument(new ArgumentListArgument(
-                        VisitArgumentBinding(module, parent, expr.argumentExpression(),
-                        withBlockVariable,
-                        StatementResolutionContext.Undefined),
-                        ArgumentListArgumentType.Named,
-                        CreateNamedArgumentExpressionCreator(expr.unrestrictedIdentifier().GetText(), expr.unrestrictedIdentifier())));
+                    else if (expr.namedArgument() != null)
+                    {
+                        convertedList.AddArgument(new ArgumentListArgument(
+                            VisitArgumentBinding(module, parent, expr.namedArgument().argumentExpression(), withBlockVariable,
+                            StatementResolutionContext.Undefined), ArgumentListArgumentType.Named,
+                            CreateNamedArgumentExpressionCreator(expr.namedArgument().unrestrictedIdentifier().GetText(), expr.namedArgument().unrestrictedIdentifier())));
+                    }
                 }
             }
             return convertedList;

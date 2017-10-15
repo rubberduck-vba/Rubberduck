@@ -11,7 +11,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
     {
         public OpenDesignerCommand() : base(LogManager.GetCurrentClassLogger()) { }
 
-        protected override bool CanExecuteImpl(object parameter)
+        protected override bool EvaluateCanExecute(object parameter)
         {
             if (parameter == null)
             {
@@ -31,7 +31,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             }
         }
 
-        protected override void ExecuteImpl(object parameter)
+        protected override void OnExecute(object parameter)
         {
             var designer = ((ICodeExplorerDeclarationViewModel) parameter).Declaration.QualifiedName.QualifiedModuleName.Component.DesignerWindow();
             {

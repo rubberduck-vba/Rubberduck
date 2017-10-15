@@ -1,9 +1,8 @@
 using System.Linq;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck.Inspections;
-using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Inspections.Resources;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing.Inspections.Resources;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
@@ -21,13 +20,12 @@ namespace RubberduckTests.Inspections
     As _
     Integer)
 End Sub";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new MultilineParameterInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.AreEqual(1, inspectionResults.Count());
         }
@@ -39,13 +37,12 @@ End Sub";
             const string inputCode =
 @"Public Sub Foo(ByVal Var1 As Integer)
 End Sub";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new MultilineParameterInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.AreEqual(0, inspectionResults.Count());
         }
@@ -65,13 +62,12 @@ End Sub";
     As _
     Date)
 End Sub";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new MultilineParameterInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.AreEqual(2, inspectionResults.Count());
         }
@@ -86,13 +82,12 @@ End Sub";
     As _
     Integer, ByVal Var2 As Date)
 End Sub";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new MultilineParameterInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.AreEqual(1, inspectionResults.Count());
         }
@@ -108,75 +103,14 @@ Public Sub Foo(ByVal _
     As _
     Integer)
 End Sub";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new MultilineParameterInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.IsFalse(inspectionResults.Any());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void MultilineParameter_QuickFixWorks()
-        {
-            const string inputCode =
-@"Public Sub Foo( _
-    ByVal _
-    Var1 _
-    As _
-    Integer)
-End Sub";
-
-            const string expectedCode =
-@"Public Sub Foo( _
-    ByVal Var1 As Integer)
-End Sub";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new MultilineParameterInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            inspectionResults.First().QuickFixes.First().Fix();
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void MultilineParameter_IgnoreQuickFixWorks()
-        {
-            const string inputCode =
-@"Public Sub Foo( _
-    ByVal _
-    Var1 _
-    As _
-    Integer)
-End Sub";
-
-            const string expectedCode =
-@"'@Ignore MultilineParameter
-Public Sub Foo( _
-    ByVal _
-    Var1 _
-    As _
-    Integer)
-End Sub";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new MultilineParameterInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]

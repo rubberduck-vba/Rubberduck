@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using Rubberduck.Parsing.VBA;
@@ -26,7 +27,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
         public ICommandBarControls Parent { get; set; }
         public ICommandBarPopup Item { get; private set; }
 
-        public string Key { get { return Item == null ? null : Item.Tag; } }
+        public string Key => Item?.Tag;
 
         public Func<string> Caption { get { return () => Key == null ? null : RubberduckUI.ResourceManager.GetString(Key, Settings.Settings.Culture); } }
 
@@ -41,8 +42,8 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             }
         }
 
-        public virtual bool BeginGroup { get { return false; } }
-        public virtual int DisplayOrder { get { return default(int); } }
+        public virtual bool BeginGroup => false;
+        public virtual int DisplayOrder => default(int);
 
         public void Localize()
         {
@@ -62,10 +63,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
                 }
 
                 var childMenu = kvp.Key as ParentMenuItemBase;
-                if (childMenu != null)
-                {
-                    childMenu.Localize();
-                }
+                childMenu?.Localize();
             }
         }
 
@@ -91,19 +89,24 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             EvaluateCanExecute(null);
         }
 
-        public void RemoveChildren()
+        public void RemoveMenu()
+        {
+            Logger.Debug($"Removing menu {_key}.");
+            RemoveChildren();
+            Item?.Delete();
+            Item = null;
+        }
+
+        private void RemoveChildren()
         {
             foreach (var child in _items.Keys.Select(item => item as IParentMenuItem).Where(child => child != null))
             {
-                child.RemoveChildren();
-                //var item = _items[child];
-                //Debug.Assert(item is CommandBarPopup);
-                //(item as CommandBarPopup).Delete();
+                child.RemoveMenu();
             }
-            foreach (var child in _items.Values.Select(item => item as CommandBarButton).Where(child => child != null))
+            foreach (var child in _items.Values.Select(item => item as ICommandBarButton).Where(child => child != null))
             {
                 child.Click -= child_Click;
-                //child.Delete();
+                child.Delete();
             }
         }
 
@@ -121,7 +124,16 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
                 var commandItem = kvp.Key as ICommandMenuItem;
                 if (commandItem != null && kvp.Value != null)
                 {
-                     kvp.Value.IsEnabled = commandItem.EvaluateCanExecute(state);
+                    try
+                    {
+                        kvp.Value.IsEnabled = commandItem.EvaluateCanExecute(state);
+                    }
+                    catch (Exception exception)
+                    {
+                        kvp.Value.IsEnabled = false;
+                        Logger.Error(exception, "Could not evaluate availability of commmand menu item {0}.", kvp.Value.Tag ?? "{Unknown}");
+                    }
+                     
                 }
             }
         }

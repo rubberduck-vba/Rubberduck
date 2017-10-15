@@ -2,7 +2,9 @@ using NLog;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Binding;
 using Rubberduck.Parsing.VBA;
-using System.Diagnostics;
+using Rubberduck.VBEditor;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -28,14 +30,16 @@ namespace Rubberduck.Parsing.Symbols
             _expressionParser = expressionParser;
         }
 
-        public void Execute()
+        public void Execute(IReadOnlyCollection<QualifiedModuleName> modules)
         {
-            var stopwatch = Stopwatch.StartNew();
-            foreach (var declaration in _declarationFinder.Classes)
+            var toRelsolveSupertypesFor = _declarationFinder
+                                            .UserDeclarations(DeclarationType.ClassModule)
+                                            .Where(decl => modules.Contains(decl.QualifiedName.QualifiedModuleName))
+                                            .Concat(_declarationFinder.BuiltInDeclarations(DeclarationType.ClassModule));
+            foreach (var declaration in toRelsolveSupertypesFor)
             {
                 AddImplementedInterface(declaration);
             }
-            stopwatch.Stop();
         }
 
         private void AddImplementedInterface(Declaration potentialClassModule)
@@ -52,7 +56,6 @@ namespace Rubberduck.Parsing.Symbols
                 if (implementedInterface.Classification != ExpressionClassification.ResolutionFailed)
                 {
                     classModule.AddSupertype(implementedInterface.ReferencedDeclaration);
-                    ((ClassModuleDeclaration)implementedInterface.ReferencedDeclaration).AddSubtype(classModule);
                 }
                 else
                 {

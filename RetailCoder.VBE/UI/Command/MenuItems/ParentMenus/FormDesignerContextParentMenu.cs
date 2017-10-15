@@ -9,7 +9,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
         {
         }
 
-        public override bool BeginGroup { get { return true; } }
+        public override bool BeginGroup => true;
     }
 
     public class FormDesignerControlContextParentMenu : ParentMenuItemBase
@@ -19,6 +19,6 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
         {
         }
 
-        public override bool BeginGroup { get { return true; } }
+        public override bool BeginGroup => true;
     }
 }

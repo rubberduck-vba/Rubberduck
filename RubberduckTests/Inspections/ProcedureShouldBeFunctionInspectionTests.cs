@@ -1,16 +1,10 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using Rubberduck.Inspections;
 using RubberduckTests.Mocks;
-using Rubberduck.Settings;
 using System.Threading;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Concrete.Rubberduck.Inspections;
-using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Inspections.Resources;
+using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Inspections
 {
@@ -25,17 +19,11 @@ namespace RubberduckTests.Inspections
 @"Private Sub Foo(ByRef foo As Boolean)
 End Sub";
 
-            var settings = new Mock<IGeneralConfigService>();
-            var config = GetTestConfig();
-            settings.Setup(x => x.LoadConfiguration()).Returns(config);
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
-
-            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+            var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.AreEqual(1, inspectionResults.Count());
@@ -52,17 +40,11 @@ End Sub
 Private Sub Goo(ByRef foo As Integer)
 End Sub";
 
-            var settings = new Mock<IGeneralConfigService>();
-            var config = GetTestConfig();
-            settings.Setup(x => x.LoadConfiguration()).Returns(config);
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
-            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
-
+            var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.AreEqual(2, inspectionResults.Count());
@@ -77,17 +59,11 @@ End Sub";
     Foo = bar
 End Function";
 
-            var settings = new Mock<IGeneralConfigService>();
-            var config = GetTestConfig();
-            settings.Setup(x => x.LoadConfiguration()).Returns(config);
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
-            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
-
+            var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.AreEqual(0, inspectionResults.Count());
@@ -101,17 +77,11 @@ End Function";
 @"Private Sub Foo(ByVal foo As Integer)
 End Sub";
 
-            var settings = new Mock<IGeneralConfigService>();
-            var config = GetTestConfig();
-            settings.Setup(x => x.LoadConfiguration()).Returns(config);
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
-            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
-
+            var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.AreEqual(0, inspectionResults.Count());
@@ -125,17 +95,11 @@ End Sub";
 @"Private Sub Foo(ByVal foo As Integer, ByVal goo As Integer)
 End Sub";
 
-            var settings = new Mock<IGeneralConfigService>();
-            var config = GetTestConfig();
-            settings.Setup(x => x.LoadConfiguration()).Returns(config);
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
-            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
-
+            var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.AreEqual(0, inspectionResults.Count());
@@ -149,17 +113,11 @@ End Sub";
 @"Private Sub Foo(ByRef foo As Integer, ByRef goo As Integer)
 End Sub";
 
-            var settings = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
-            var config = GetTestConfig();
-            settings.Setup(x => x.LoadConfiguration()).Returns(config);
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
-            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
-
+            var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.AreEqual(0, inspectionResults.Count());
@@ -179,22 +137,17 @@ End Sub";
 Private Sub IClass1_DoSomething(ByRef a As Integer)
 End Sub";
 
-            var settings = new Mock<IGeneralConfigService>();
-            var config = GetTestConfig();
-            settings.Setup(x => x.LoadConfiguration()).Returns(config);
-
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
-            
+
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
-            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
-
+            var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.AreEqual(0, inspectionResults.Count());
@@ -213,22 +166,17 @@ End Sub";
 Private Sub abc_Foo(ByRef arg1 As Integer)
 End Sub";
 
-            var settings = new Mock<IGeneralConfigService>();
-            var config = GetTestConfig();
-            settings.Setup(x => x.LoadConfiguration()).Returns(config);
-
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
                 .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
-            
+
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
-            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
-
+            var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.AreEqual(0, inspectionResults.Count());
@@ -243,304 +191,14 @@ End Sub";
 Private Sub Foo(ByRef foo As Boolean)
 End Sub";
 
-            var settings = new Mock<IGeneralConfigService>();
-            var config = GetTestConfig();
-            settings.Setup(x => x.LoadConfiguration()).Returns(config);
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
-
-            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
+            var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             Assert.IsFalse(inspectionResults.Any());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void ProcedureShouldBeFunction_QuickFixWorks()
-        {
-            const string inputCode =
-@"Private Sub Foo(ByRef arg1 As Integer)
-End Sub";
-
-            const string expectedCode =
-@"Private Function Foo(ByVal arg1 As Integer) As Integer
-    Foo = arg1
-End Function";
-
-            var settings = new Mock<IGeneralConfigService>();
-            var config = GetTestConfig();
-            settings.Setup(x => x.LoadConfiguration()).Returns(config);
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
-            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
-
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            inspectionResults.First().QuickFixes.First().Fix();
-
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void ProcedureShouldBeFunction_QuickFixWorks_NoAsTypeClauseInParam()
-        {
-            const string inputCode =
-@"Private Sub Foo(ByRef arg1)
-End Sub";
-
-            const string expectedCode =
-@"Private Function Foo(ByVal arg1) As Variant
-    Foo = arg1
-End Function";
-
-            var settings = new Mock<IGeneralConfigService>();
-            var config = GetTestConfig();
-            settings.Setup(x => x.LoadConfiguration()).Returns(config);
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
-            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
-
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            inspectionResults.First().QuickFixes.First().Fix();
-
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void ProcedureShouldBeFunction_QuickFixWorks_DoesNotInterfereWithBody()
-        {
-            const string inputCode =
-@"Private Sub Foo(ByRef arg1 As Integer)
-    arg1 = 6
-    Goo arg1
-End Sub
-
-Sub Goo(ByVal a As Integer)
-End Sub";
-
-            const string expectedCode =
-@"Private Function Foo(ByVal arg1 As Integer) As Integer
-    arg1 = 6
-    Goo arg1
-    Foo = arg1
-End Function
-
-Sub Goo(ByVal a As Integer)
-End Sub";
-
-            var settings = new Mock<IGeneralConfigService>();
-            var config = GetTestConfig();
-            settings.Setup(x => x.LoadConfiguration()).Returns(config);
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
-            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
-
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            inspectionResults.First().QuickFixes.First().Fix();
-
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void ProcedureShouldBeFunction_QuickFixWorks_DoesNotInterfereWithBody_BodyOnSingleLine()
-        {
-            const string inputCode =
-@"Private Sub Foo(ByRef arg1 As Integer): arg1 = 6: Goo arg1: End Sub
-
-Sub Goo(ByVal a As Integer)
-End Sub";
-
-            const string expectedCode =
-@"Private Function Foo(ByVal arg1 As Integer) As Integer
- arg1 = 6
- Goo arg1
-    Foo = arg1
- End Function
-
-Sub Goo(ByVal a As Integer)
-End Sub";
-
-            var settings = new Mock<IGeneralConfigService>();
-            var config = GetTestConfig();
-            settings.Setup(x => x.LoadConfiguration()).Returns(config);
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
-            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
-
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            inspectionResults.First().QuickFixes.First().Fix();
-
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void ProcedureShouldBeFunction_QuickFixWorks_DoesNotInterfereWithBody_BodyOnSingleLine_BodyHasStringLiteralContainingColon()
-        {
-            const string inputCode =
-@"Private Sub Foo(ByRef arg1 As Integer): arg1 = 6: Goo ""test: test"": End Sub
-
-Sub Goo(ByVal a As String)
-End Sub";
-
-            const string expectedCode =
-@"Private Function Foo(ByVal arg1 As Integer) As Integer
- arg1 = 6
- Goo ""test: test""
-    Foo = arg1
- End Function
-
-Sub Goo(ByVal a As String)
-End Sub";
-
-            var settings = new Mock<IGeneralConfigService>();
-            var config = GetTestConfig();
-            settings.Setup(x => x.LoadConfiguration()).Returns(config);
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
-            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
-
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            inspectionResults.First().QuickFixes.First().Fix();
-
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void ProcedureShouldBeFunction_QuickFixWorks_UpdatesCallsAbove()
-        {
-            const string inputCode =
-@"Sub Goo(ByVal a As Integer)
-    Dim fizz As Integer
-    Foo fizz
-End Sub
-
-Private Sub Foo(ByRef arg1 As Integer)
-End Sub";
-
-            const string expectedCode =
-@"Sub Goo(ByVal a As Integer)
-    Dim fizz As Integer
-    fizz = Foo(fizz)
-End Sub
-
-Private Function Foo(ByVal arg1 As Integer) As Integer
-    Foo = arg1
-End Function";
-
-            var settings = new Mock<IGeneralConfigService>();
-            var config = GetTestConfig();
-            settings.Setup(x => x.LoadConfiguration()).Returns(config);
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
-            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
-
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            inspectionResults.First().QuickFixes.First().Fix();
-
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void ProcedureShouldBeFunction_QuickFixWorks_UpdatesCallsBelow()
-        {
-            const string inputCode =
-@"Private Sub Foo(ByRef arg1 As Integer)
-End Sub
-
-Sub Goo(ByVal a As Integer)
-    Dim fizz As Integer
-    Foo fizz
-End Sub";
-
-            const string expectedCode =
-@"Private Function Foo(ByVal arg1 As Integer) As Integer
-    Foo = arg1
-End Function
-
-Sub Goo(ByVal a As Integer)
-    Dim fizz As Integer
-    fizz = Foo(fizz)
-End Sub";
-
-            var settings = new Mock<IGeneralConfigService>();
-            var config = GetTestConfig();
-            settings.Setup(x => x.LoadConfiguration()).Returns(config);
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
-            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
-
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            inspectionResults.First().QuickFixes.First().Fix();
-
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void ProcedureShouldBeFunction_IgnoreQuickFixWorks()
-        {
-            const string inputCode =
-@"Private Sub Foo(ByRef arg1 As Integer)
-End Sub";
-
-            const string expectedCode =
-@"'@Ignore ProcedureCanBeWrittenAsFunction
-Private Sub Foo(ByRef arg1 As Integer)
-End Sub";
-
-            var settings = new Mock<IGeneralConfigService>();
-            var config = GetTestConfig();
-            settings.Setup(x => x.LoadConfiguration()).Returns(config);
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
-            var inspector = new Inspector(settings.Object, new IInspection[] { inspection });
-
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
-
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]
@@ -552,26 +210,13 @@ End Sub";
         }
 
         [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "ProcedureCanBeWrittenAsFunctionInspection";
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
-        }
-
-        private Configuration GetTestConfig()
-        {
-            var settings = new CodeInspectionSettings();
-            settings.CodeInspections.Add(new CodeInspectionSetting
-            {
-                Description = new ProcedureCanBeWrittenAsFunctionInspection(null).Description,
-                Severity = CodeInspectionSeverity.Suggestion
-            });
-            return new Configuration
-            {
-                UserSettings = new UserSettings(null, null, null, settings, null, null, null)
-            };
         }
     }
 }

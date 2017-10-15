@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using Rubberduck.Common.WinAPI;
 
 namespace Rubberduck.VBEditor.WindowsApi
 {
@@ -40,10 +39,18 @@ namespace Rubberduck.VBEditor.WindowsApi
             AssignHandle();
         }
 
+        private bool _disposed = false;
         public void Dispose()
         {
+            if (_disposed)
+            {
+                return;
+            }
+
             ReleaseHandle();
             _thisHandle.Free();
+
+            _disposed = true;
         }
 
         private void AssignHandle()

@@ -18,6 +18,7 @@ namespace RubberduckTests.Binding
         private const string TestClassName = "TestClass";
         private const string ReferencedProjectFilepath = @"C:\Temp\ReferencedProjectA";
 
+        [TestCategory("Binding")]
         [TestMethod]
         public void EnclosingProcedureComesBeforeEnclosingModule()
         {
@@ -38,6 +39,7 @@ End Sub", BindingTargetName);
             Assert.AreEqual(1, declaration.References.Count());
         }
 
+        [TestCategory("Binding")]
         [TestMethod]
         public void EnclosingModuleComesBeforeEnclosingProject()
         {
@@ -53,7 +55,7 @@ End Sub", BindingTargetName);
             Assert.AreEqual(1, declaration.References.Count());
         }
 
-        [Ignore] // todo: figure out why this test randomly fails
+        [TestCategory("Binding")]
         [TestMethod]
         public void EnclosingProjectComesBeforeOtherModuleInEnclosingProject()
         {
@@ -71,6 +73,7 @@ End Sub", BindingTargetName);
             Assert.AreEqual(1, declaration.References.Count());
         }
 
+        [TestCategory("Binding")]
         [TestMethod]
         public void OtherModuleInEnclosingProjectComesBeforeReferencedProjectModule()
         {
@@ -97,6 +100,7 @@ End Sub", BindingTargetName);
             Assert.AreEqual(1, declaration.References.Count());
         }
 
+        [TestCategory("Binding")]
         [TestMethod]
         public void ReferencedProjectModuleComesBeforeReferencedProjectType()
         {
@@ -124,6 +128,7 @@ End Sub", BindingTargetName);
             Assert.AreEqual(1, declaration.References.Count());
         }
 
+        [TestCategory("Binding")]
         [TestMethod]
         public void ReferencedProjectClassNotMarkedAsGlobalClassModuleIsNotReferenced()
         {
@@ -151,7 +156,7 @@ End Sub", BindingTargetName);
 
         private static RubberduckParserState Parse(Mock<IVBE> vbe)
         {
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object);
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status != ParserState.Ready)
             {

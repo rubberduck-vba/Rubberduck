@@ -7,7 +7,7 @@ using System.Linq;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Rubberduck.Inspections.Resources;
+using Rubberduck.Parsing.Inspections.Resources;
 
 namespace Rubberduck.UI.Inspections
 {
@@ -35,7 +35,7 @@ namespace Rubberduck.UI.Inspections
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return Icons.First(f => f.Value == value).Key;
+            return Icons.First(f => Equals(f.Value, value)).Key;
         }
 
         private static ImageSource ToImageSource(Image source)

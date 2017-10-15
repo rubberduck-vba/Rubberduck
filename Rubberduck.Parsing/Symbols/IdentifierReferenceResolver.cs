@@ -96,6 +96,16 @@ namespace Rubberduck.Parsing.Symbols
             _withBlockExpressions.Pop();
         }
 
+        public void Resolve(VBAParser.ArgDefaultValueContext context)
+        {
+            var expression = context.expression();
+            if (expression == null)
+            {
+                return;
+            }
+            ResolveDefault(expression);
+        }
+
         public void Resolve(VBAParser.ArrayDimContext context)
         {
             if (context.boundsList() == null)
@@ -150,7 +160,8 @@ namespace Rubberduck.Parsing.Symbols
             ParserRuleContext expression,
             StatementResolutionContext statementContext = StatementResolutionContext.Undefined,
             bool isAssignmentTarget = false,
-            bool hasExplicitLetStatement = false)
+            bool hasExplicitLetStatement = false,
+            bool isSetAssignment = false)
         {
             var withExpression = GetInnerMostWithExpression();
             var boundExpression = _bindingService.ResolveDefault(
@@ -161,17 +172,19 @@ namespace Rubberduck.Parsing.Symbols
                 statementContext);
             if (boundExpression.Classification == ExpressionClassification.ResolutionFailed)
             {
-                var lexpr = expression as VBAParser.LExprContext ?? expression.GetChild<VBAParser.LExprContext>(0);
-                if (lexpr != null)
+                var lexpression = expression as VBAParser.LExpressionContext
+                                    ?? expression.GetChild<VBAParser.LExpressionContext>(0)
+                                    ?? (expression as VBAParser.LExprContext 
+                                        ?? expression.GetChild<VBAParser.LExprContext>(0))?.lExpression();
+
+                if (lexpression != null)
                 {
-                    _declarationFinder.AddUnboundContext(_currentParent, lexpr, withExpression);
+                    _declarationFinder.AddUnboundContext(_currentParent, lexpression, withExpression);
                 }
                 else
                 {
                     Logger.Warn(
-                        string.Format(
-                            "Default Context: Failed to resolve {0}. Binding as much as we can.",
-                            expression.GetText()));
+                        $"Default Context: Failed to resolve {expression.GetText()}. Binding as much as we can.");
                 }
             }
 
@@ -182,9 +195,9 @@ namespace Rubberduck.Parsing.Symbols
             {
                 var module = boundExpression.ReferencedDeclaration.AsTypeDeclaration;
                 var members = _declarationFinder.Members(module);
-                hasDefaultMember = members.Any(m => m.Attributes.Any(kvp => kvp.Key == m.IdentifierName + ".VB_UserMemId" && kvp.Value.FirstOrDefault() == "0"));
+                hasDefaultMember = members.Any(m => m.Attributes.Any(a => a.Name == $"{m.IdentifierName}.VB_UserMemId" && a.Values.SingleOrDefault() == "0"));
             }
-            _boundExpressionVisitor.AddIdentifierReferences(boundExpression, _qualifiedModuleName, _currentScope, _currentParent, !hasDefaultMember && isAssignmentTarget, hasExplicitLetStatement);
+            _boundExpressionVisitor.AddIdentifierReferences(boundExpression, _qualifiedModuleName, _currentScope, _currentParent, (!hasDefaultMember || isSetAssignment) && isAssignmentTarget, hasExplicitLetStatement);
         }
 
         private void ResolveType(ParserRuleContext expression)
@@ -240,16 +253,14 @@ namespace Rubberduck.Parsing.Symbols
                 // We can't treat it as a normal index expression because the semantics are different.
                 // It's not actually a function call but a special statement.
                 ResolveDefault(indexExpr.lExpression());
-                var positionalOrNamedArgumentList = indexExpr.argumentList().positionalOrNamedArgumentList();
-                // There is always at least one argument
-                ResolveRedimArgument(positionalOrNamedArgumentList.requiredPositionalArgument().argumentExpression());
-                if (positionalOrNamedArgumentList.positionalArgumentOrMissing() != null)
+                var argumentList = indexExpr.argumentList();
+                if (argumentList.argument() != null)
                 {
-                    foreach (var positionalArgumentOrMissing in positionalOrNamedArgumentList.positionalArgumentOrMissing())
+                    foreach (var positionalArgument in argumentList.argument())
                     {
-                        if (positionalArgumentOrMissing is VBAParser.SpecifiedPositionalArgumentContext)
+                        if (positionalArgument.positionalArgument() != null)
                         {
-                            ResolveRedimArgument(((VBAParser.SpecifiedPositionalArgumentContext)positionalArgumentOrMissing).positionalArgument().argumentExpression());
+                            ResolveRedimArgument(positionalArgument.positionalArgument().argumentExpression());
                         }
                     }
                 }
@@ -318,7 +329,7 @@ namespace Rubberduck.Parsing.Symbols
 
         private void ResolveListOrLabel(VBAParser.ListOrLabelContext listOrLabel)
         {
-            if (listOrLabel == null || listOrLabel.lineNumberLabel() == null)
+            if (listOrLabel?.lineNumberLabel() == null)
             {
                 return;
             }
@@ -356,7 +367,8 @@ namespace Rubberduck.Parsing.Symbols
                 context.lExpression(),
                 StatementResolutionContext.LetStatement,
                 true,
-                letStatement != null);
+                letStatement != null,
+                false);
             ResolveDefault(context.expression());
         }
 
@@ -366,7 +378,8 @@ namespace Rubberduck.Parsing.Symbols
                 context.lExpression(),
                 StatementResolutionContext.SetStatement,
                 true,
-                false);
+                false,
+                true);
             ResolveDefault(context.expression());
         }
 

@@ -8,22 +8,22 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from C:\Users\hosch\Documents\Visual Studio 2015\Projects\Rubberduck\Rubberduck.Parsing\Preprocessing\VBAConditionalCompilationParser.g4 by ANTLR 4.3
+// Generated from H:\Repositories\Rubberduck\Rubberduck.Parsing\PreProcessing\VBAConditionalCompilationParser.g4 by ANTLR 4.3
 
 // Unreachable code detected
-
-using Antlr4.Runtime.Misc;
-
 #pragma warning disable 0162
 // The variable '...' is assigned but its value is never used
 #pragma warning disable 0219
 // Missing XML comment for publicly visible type or member '...'
 #pragma warning disable 1591
 
-namespace Rubberduck.Parsing.Preprocessing {
-    using IErrorNode = Antlr4.Runtime.Tree.IErrorNode;
+namespace Rubberduck.Parsing.PreProcessing {
+
+using Antlr4.Runtime.Misc;
+using IErrorNode = Antlr4.Runtime.Tree.IErrorNode;
 using ITerminalNode = Antlr4.Runtime.Tree.ITerminalNode;
-    using ParserRuleContext = Antlr4.Runtime.ParserRuleContext;
+using IToken = Antlr4.Runtime.IToken;
+using ParserRuleContext = Antlr4.Runtime.ParserRuleContext;
 
 /// <summary>
 /// This class provides an empty implementation of <see cref="IVBAConditionalCompilationParserListener"/>,

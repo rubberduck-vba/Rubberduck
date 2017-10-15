@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Antlr4.Runtime;
+using System;
+using System.Collections.Generic;
 
-namespace Rubberduck.Parsing.Preprocessing
+namespace Rubberduck.Parsing.PreProcessing
 {
     public sealed class EmptyValue : IValue
     {
@@ -51,6 +53,14 @@ namespace Rubberduck.Parsing.Preprocessing
             get
             {
                 return string.Empty;
+            }
+        }
+
+        public IEnumerable<IToken> AsTokens
+        {
+            get
+            {
+                return new List<IToken>();
             }
         }
 

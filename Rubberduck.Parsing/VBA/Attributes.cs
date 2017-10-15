@@ -1,4 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -14,14 +19,91 @@ namespace Rubberduck.Parsing.VBA
         GlobalMultiUse = 6
     }
 
+    public class AttributeNode : IEquatable<AttributeNode>
+    {
+        private readonly string _name;
+        private readonly IList<string> _values;
+
+        public AttributeNode(VBAParser.AttributeStmtContext context)
+        {
+            Context = context;
+        }
+
+        public AttributeNode(string name, IEnumerable<string> values)
+        {
+            _name = name;
+            _values = values.ToList();
+        }
+
+        public VBAParser.AttributeStmtContext Context { get; }
+
+        public string Name => Context?.attributeName().GetText() ?? _name;
+
+        public void AddValue(string value)
+        {
+            _values.Add(value);
+        }
+
+        public IReadOnlyList<string> Values
+        {
+            get { return Context?.attributeValue().Select(a => a.GetText()).ToArray() ?? _values.ToArray(); }
+        }
+
+        public bool HasValue(string value)
+        {
+            return _values.Any(item => item.Equals(value, StringComparison.OrdinalIgnoreCase));
+        }
+
+        public bool Equals(AttributeNode other)
+        {
+            return other != null && string.Equals(Name, other.Name, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as AttributeNode);
+        }
+
+        public override int GetHashCode()
+        {
+            return Name.GetHashCode();
+        }
+    }
+
     /// <summary>
     /// A dictionary storing values for a given attribute.
     /// </summary>
     /// <remarks>
     /// Dictionary key is the attribute name/identifier.
     /// </remarks>
-    public class Attributes : Dictionary<string, IEnumerable<string>>
+    public class Attributes : HashSet<AttributeNode>
     {
+        public bool HasAttributeFor(AnnotationType annotationType, string memberName = null)
+        {
+            if (!annotationType.HasFlag(AnnotationType.Attribute))
+            {
+                return false;
+            }
+
+            var name = "VB_" + annotationType;
+
+            if (annotationType.HasFlag(AnnotationType.MemberAnnotation))
+            {
+                //Debug.Assert(memberName != null);
+                return this.Any(a => a.Name.Equals($"{memberName}{name}", StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (annotationType.HasFlag(AnnotationType.ModuleAnnotation))
+            {
+                //Debug.Assert(memberName == null);
+                return this
+                    .Any(a => a.Name.Equals(name, StringComparison.OrdinalIgnoreCase)
+                           && a.Values.Any(v => v.Equals("True", StringComparison.OrdinalIgnoreCase)));
+            }
+
+            return false;
+        }
+
         /// <summary>
         /// Specifies that a member is the type's default member.
         /// Only one member in the type is allowed to have this attribute.
@@ -29,17 +111,31 @@ namespace Rubberduck.Parsing.VBA
         /// <param name="identifierName"></param>
         public void AddDefaultMemberAttribute(string identifierName)
         {
-            Add(identifierName + ".VB_UserMemId", new[] {"0"});
+            Add(new AttributeNode(identifierName + ".VB_UserMemId", new[] {"0"}));
+        }
+
+        public bool HasDefaultMemberAttribute(string identifierName, out AttributeNode attribute)
+        {
+            attribute = this.SingleOrDefault(a => a.HasValue("0") &&
+                a.Name.Equals($"{identifierName}.VB_UserMemId", StringComparison.OrdinalIgnoreCase));
+            return attribute != null;
         }
 
         public void AddHiddenMemberAttribute(string identifierName)
         {
-            Add(identifierName + ".VB_UserMemId", new[] {"40"});
+            Add(new AttributeNode(identifierName + ".VB_UserMemId", new[] {"40"}));
+        }
+
+        public bool HasHiddenMemberAttribute(string identifierName, out AttributeNode attribute)
+        {
+            attribute = this.SingleOrDefault(a => a.HasValue("-4") &&
+                a.Name.Equals($"{identifierName}.VB_UserMemId", StringComparison.OrdinalIgnoreCase));
+            return attribute != null;
         }
 
         public void AddEnumeratorMemberAttribute(string identifierName)
         {
-            Add(identifierName + ".VB_UserMemId", new[] {"-4"});
+            Add(new AttributeNode(identifierName + ".VB_UserMemId", new[] {"-4"}));
         }
 
         /// <summary>
@@ -48,12 +144,18 @@ namespace Rubberduck.Parsing.VBA
         /// <param name="identifierName"></param>
         public void AddEvaluateMemberAttribute(string identifierName)
         {
-            Add(identifierName + ".VB_UserMemId", new[] { "-5" });
+            Add(new AttributeNode(identifierName + ".VB_UserMemId", new[] { "-5" }));
         }
 
         public void AddMemberDescriptionAttribute(string identifierName, string description)
         {
-            Add(identifierName + ".VB_Description", new[] {description});
+            Add(new AttributeNode(identifierName + ".VB_Description", new[] {description}));
+        }
+
+        public bool HasMemberDescriptionAttribute(string identifierName, out AttributeNode attribute)
+        {
+            attribute = this.SingleOrDefault(a => a.Name.Equals($"{identifierName}.VB_Description", StringComparison.OrdinalIgnoreCase));
+            return attribute != null;
         }
 
         /// <summary>
@@ -61,7 +163,29 @@ namespace Rubberduck.Parsing.VBA
         /// </summary>
         public void AddPredeclaredIdTypeAttribute()
         {
-            Add("VB_PredeclaredId", new[] {"True"});
+            Add(new AttributeNode("VB_PredeclaredId", new[] {"True"}));
+        }
+
+        public AttributeNode PredeclaredIdAttribute
+        {
+            get
+            {
+                return this.SingleOrDefault(a => a.Name.Equals("VB_PredeclaredId", StringComparison.OrdinalIgnoreCase));
+            }
+        }
+
+        public AttributeNode ExposedAttribute
+        {
+            get
+            {
+                return this.SingleOrDefault(a => a.Name.Equals("VB_Exposed", StringComparison.OrdinalIgnoreCase));
+            }
+        }
+
+        public bool HasPredeclaredIdAttribute(out AttributeNode attribute)
+        {
+            attribute = this.SingleOrDefault(a => a.Name.Equals("VB_PredeclaredId", StringComparison.OrdinalIgnoreCase) && a.HasValue("True"));
+            return attribute != null;
         }
 
         /// <summary>
@@ -69,12 +193,24 @@ namespace Rubberduck.Parsing.VBA
         /// </summary>
         public void AddGlobalClassAttribute()
         {
-            Add("VB_GlobalNamespace", new[] {"True"});
+            Add(new AttributeNode("VB_GlobalNamespace", new[] {"True"}));
+        }
+
+        public bool HasGlobalAttribute(out AttributeNode attribute)
+        {
+            attribute = this.SingleOrDefault(a => a.Name.Equals("VB_GlobalNamespace", StringComparison.OrdinalIgnoreCase) && a.HasValue("True"));
+            return attribute != null;
         }
 
         public void AddExposedClassAttribute()
         {
-            Add("VB_Exposed", new[] { "True" });
+            Add(new AttributeNode("VB_Exposed", new[] { "True" }));
+        }
+
+        public bool HasExposedAttribute(out AttributeNode attribute)
+        {
+            attribute = this.SingleOrDefault(a => a.Name.Equals("VB_Exposed", StringComparison.OrdinalIgnoreCase) && a.HasValue("True"));
+            return attribute != null;
         }
 
         /// <summary>
@@ -82,7 +218,13 @@ namespace Rubberduck.Parsing.VBA
         /// </summary>
         public void AddExtensibledClassAttribute()
         {
-            Add("VB_Customizable", new[] { "True" });
+            Add(new AttributeNode("VB_Customizable", new[] { "True" }));
+        }
+
+        public bool HasExtensibleAttribute(out AttributeNode attribute)
+        {
+            attribute = this.SingleOrDefault(a => a.Name.Equals("VB_Customizable", StringComparison.OrdinalIgnoreCase) && a.HasValue("True"));
+            return attribute != null;
         }
     }
 }

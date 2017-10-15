@@ -31,7 +31,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _messageBox = messageBox;
         }
 
-        protected override bool CanExecuteImpl(object parameter)
+        protected override bool EvaluateCanExecute(object parameter)
         {
             if (!(parameter is CodeExplorerComponentViewModel))
             {
@@ -43,7 +43,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             return _exportableFileExtensions.Select(s => s.Key).Contains(componentType);
         }
 
-        protected override void ExecuteImpl(object parameter)
+        protected override void OnExecute(object parameter)
         {
             var message = string.Format("Do you want to export '{0}' before removing?", ((CodeExplorerComponentViewModel)parameter).Name);
             var result = _messageBox.Show(message, "Rubberduck Export Prompt", MessageBoxButtons.YesNoCancel,

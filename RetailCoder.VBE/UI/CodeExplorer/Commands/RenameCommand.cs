@@ -4,6 +4,7 @@ using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI.Command;
+using Rubberduck.UI.Refactorings;
 using Rubberduck.UI.Refactorings.Rename;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -14,10 +15,10 @@ namespace Rubberduck.UI.CodeExplorer.Commands
     {
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
-        private readonly RenameDialog _view;
+        private readonly IRefactoringDialog<RenameViewModel> _view;
         private readonly IMessageBox _msgBox;
 
-        public RenameCommand(IVBE vbe, RenameDialog view, RubberduckParserState state, IMessageBox msgBox) : base(LogManager.GetCurrentClassLogger())
+        public RenameCommand(IVBE vbe, IRefactoringDialog<RenameViewModel> view, RubberduckParserState state, IMessageBox msgBox) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
             _state = state;
@@ -25,14 +26,14 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _msgBox = msgBox;
         }
 
-        protected override bool CanExecuteImpl(object parameter)
+        protected override bool EvaluateCanExecute(object parameter)
         {
             return _state.Status == ParserState.Ready && parameter is ICodeExplorerDeclarationViewModel;
         }
 
-        protected override void ExecuteImpl(object parameter)
+        protected override void OnExecute(object parameter)
         {
-            var factory = new RenamePresenterFactory(_vbe, _view, _state, _msgBox);
+            var factory = new RenamePresenterFactory(_vbe, _view, _state);
             var refactoring = new RenameRefactoring(_vbe, factory, _msgBox, _state);
 
             refactoring.Refactor(((ICodeExplorerDeclarationViewModel)parameter).Declaration);

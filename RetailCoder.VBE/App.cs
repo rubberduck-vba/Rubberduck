@@ -10,7 +10,7 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.Windows.Forms;
-using Rubberduck.Inspections.Resources;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VersionCheck;
@@ -21,7 +21,6 @@ namespace Rubberduck
     public sealed class App : IDisposable
     {
         private readonly IMessageBox _messageBox;
-        private readonly AutoSave.AutoSave _autoSave;
         private readonly IGeneralConfigService _configService;
         private readonly IAppMenu _appMenus;
         private readonly IRubberduckHooks _hooks;
@@ -42,7 +41,6 @@ namespace Rubberduck
         {
             _messageBox = messageBox;
             _configService = configService;
-            _autoSave = new AutoSave.AutoSave(vbe, _configService);
             _appMenus = appMenus;
             _hooks = hooks;
             _version = version;
@@ -91,7 +89,8 @@ namespace Rubberduck
             }
             // The parser swallows the error if deletions fail - clean up any temp files on startup
             foreach (var file in new DirectoryInfo(ApplicationConstants.RUBBERDUCK_TEMP_PATH).GetFiles())
-            {            try
+            {
+                try
                 {
                         file.Delete();
                 }
@@ -111,14 +110,15 @@ namespace Rubberduck
         {
             EnsureLogFolderPathExists();
             EnsureTempPathExists();
-            LogRubberduckSart();
             LoadConfig();
+
+            LogRubberduckStart();
+            UpdateLoggingLevel();
+            
             CheckForLegacyIndenterSettings();
             _appMenus.Initialize();
             _hooks.HookHotkeys(); // need to hook hotkeys before we localize menus, to correctly display ShortcutTexts
             _appMenus.Localize();
-
-            UpdateLoggingLevel();
 
             if (_config.UserSettings.GeneralSettings.CheckVersion)
             {
@@ -142,7 +142,6 @@ namespace Rubberduck
         private void LoadConfig()
         {
             _config = _configService.LoadConfiguration();
-            _autoSave.ConfigServiceSettingsChanged(this, EventArgs.Empty);
 
             var currentCulture = RubberduckUI.Culture;
             try
@@ -187,19 +186,19 @@ namespace Rubberduck
             }
         }
 
-        private void LogRubberduckSart()
+        public void LogRubberduckStart()
         {
             var version = _version.CurrentVersion;
             GlobalDiagnosticsContext.Set("RubberduckVersion", version.ToString());
             var headers = new List<string>
             {
-                string.Format("Rubberduck version {0} loading:", version),
+                string.Format("\r\n\tRubberduck version {0} loading:", version),
                 string.Format("\tOperating System: {0} {1}", Environment.OSVersion.VersionString, Environment.Is64BitOperatingSystem ? "x64" : "x86"),
                 string.Format("\tHost Product: {0} {1}", Application.ProductName, Environment.Is64BitProcess ? "x64" : "x86"),
                 string.Format("\tHost Version: {0}", Application.ProductVersion),
                 string.Format("\tHost Executable: {0}", Path.GetFileName(Application.ExecutablePath)),
             };
-            Logger.Log(LogLevel.Info, string.Join(Environment.NewLine, headers));
+            LogLevelHelper.SetDebugInfo(string.Join(Environment.NewLine, headers));
         }
 
         private bool _disposed;
@@ -213,11 +212,6 @@ namespace Rubberduck
             if (_configService != null)
             {
                 _configService.SettingsChanged -= _configService_SettingsChanged;
-            }
-
-            if (_autoSave != null)
-            {
-                _autoSave.Dispose();
             }
 
             UiDispatcher.Shutdown();

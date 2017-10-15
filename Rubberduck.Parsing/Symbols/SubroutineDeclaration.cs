@@ -20,7 +20,7 @@ namespace Rubberduck.Parsing.Symbols
             Accessibility accessibility,
             ParserRuleContext context,
             Selection selection,
-            bool isBuiltIn,
+            bool isUserDefined,
             IEnumerable<IAnnotation> annotations,
             Attributes attributes)
             : base(
@@ -37,7 +37,7 @@ namespace Rubberduck.Parsing.Symbols
                   selection,
                   false,
                   null,
-                  isBuiltIn,
+                  isUserDefined,
                   annotations,
                   attributes)
         {
@@ -60,7 +60,7 @@ namespace Rubberduck.Parsing.Symbols
                   Selection.Home,
                   false,
                   null,
-                  true,
+                  false,
                   null,
                   attributes)
         {
@@ -70,13 +70,7 @@ namespace Rubberduck.Parsing.Symbols
                     .ToList();          
         }
 
-        public IEnumerable<Declaration> Parameters
-        {
-            get
-            {
-                return _parameters.ToList();
-            }
-        }
+        public IEnumerable<Declaration> Parameters => _parameters.ToList();
 
         public void AddParameter(Declaration parameter)
         {
@@ -88,18 +82,6 @@ namespace Rubberduck.Parsing.Symbols
         /// If this value is true, any reference to an instance of the class it's the default member of,
         /// should count as a member call to this member.
         /// </summary>
-        public bool IsDefaultMember
-        {
-            get
-            {
-                IEnumerable<string> value;
-                if (Attributes.TryGetValue(IdentifierName + ".VB_UserMemId", out value))
-                {
-                    return value.Single() == "0";
-                }
-
-                return false;
-            }
-        }
+        public bool IsDefaultMember => Attributes.Any(a => a.Name == $"{IdentifierName}.VB_UserMemId" && a.Values.Single() == "0");
     }
 }

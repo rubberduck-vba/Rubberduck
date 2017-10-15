@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Windows.Forms;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -17,6 +16,8 @@ namespace RubberduckTests.Refactoring
     public class MoveCloserToUsageTests
     {
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Move Closer")]
         public void MoveCloserToUsageRefactoring_Field()
         {
             //Input
@@ -25,14 +26,13 @@ namespace RubberduckTests.Refactoring
 Private Sub Foo()
     bar = True
 End Sub";
-            var selection = new Selection(1, 1, 1, 1);
+            var selection = new Selection(1, 1);
 
             //Expectation
             const string expectedCode =
 @"Private Sub Foo()
-
     Dim bar As Boolean
-    bar = True
+bar = True
 End Sub";
 
             IVBComponent component;
@@ -44,10 +44,13 @@ End Sub";
             var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null);
             refactoring.Refactor(qualifiedSelection);
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            var rewriter = state.GetRewriter(component);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Move Closer")]
         public void MoveCloserToUsageRefactoring_Field_MultipleLines()
         {
             //Input
@@ -59,14 +62,13 @@ Boolean
 Private Sub Foo()
     bar = True
 End Sub";
-            var selection = new Selection(1, 1, 1, 1);
+            var selection = new Selection(1, 1);
 
             //Expectation
             const string expectedCode =
 @"Private Sub Foo()
-
     Dim bar As Boolean
-    bar = True
+bar = True
 End Sub";
 
             IVBComponent component;
@@ -78,10 +80,13 @@ End Sub";
             var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null);
             refactoring.Refactor(qualifiedSelection);
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            var rewriter = state.GetRewriter(component);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Move Closer")]
         public void MoveCloserToUsageRefactoring_FieldInOtherClass()
         {
             //Input
@@ -90,9 +95,9 @@ End Sub";
 
             const string inputCode2 =
 @"Private Sub Foo()
-    Module1.bar = True
+Module1.bar = True
 End Sub";
-            var selection = new Selection(1, 1, 1, 1);
+            var selection = new Selection(1, 1);
 
             //Expectation
             const string expectedCode1 =
@@ -100,9 +105,8 @@ End Sub";
 
             const string expectedCode2 =
 @"Private Sub Foo()
-
-    Dim bar As Boolean
-    bar = True
+Dim bar As Boolean
+bar = True
 End Sub";
 
             var builder = new MockVbeBuilder();
@@ -115,17 +119,22 @@ End Sub";
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(project.Object.VBComponents[0]), selection);
-            var module1 = project.Object.VBComponents[0].CodeModule;
-            var module2 = project.Object.VBComponents[1].CodeModule;
+            var module1 = project.Object.VBComponents[0];
+            var module2 = project.Object.VBComponents[1];
 
             var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null);
             refactoring.Refactor(qualifiedSelection);
 
-            Assert.AreEqual(expectedCode1, module1.Content());
-            Assert.AreEqual(expectedCode2, module2.Content());
+            var rewriter1 = state.GetRewriter(module1);
+            Assert.AreEqual(expectedCode1, rewriter1.GetText());
+
+            var rewriter2 = state.GetRewriter(module2);
+            Assert.AreEqual(expectedCode2, rewriter2.GetText());
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Move Closer")]
         public void MoveCloserToUsageRefactoring_Variable()
         {
             //Input
@@ -141,9 +150,8 @@ End Sub";
             const string expectedCode =
 @"Private Sub Foo()
     Dim bat As Integer
-
     Dim bar As Boolean
-    bar = True
+bar = True
 End Sub";
 
             IVBComponent component;
@@ -155,10 +163,13 @@ End Sub";
             var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null);
             refactoring.Refactor(qualifiedSelection);
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            var rewriter = state.GetRewriter(component);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Move Closer")]
         public void MoveCloserToUsageRefactoring_Variable_MultipleLines()
         {
             //Input
@@ -177,9 +188,8 @@ End Sub";
             const string expectedCode =
 @"Private Sub Foo()
     Dim bat As Integer
-
     Dim bar As Boolean
-    bar = True
+bar = True
 End Sub";
 
             IVBComponent component;
@@ -191,10 +201,13 @@ End Sub";
             var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null);
             refactoring.Refactor(qualifiedSelection);
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            var rewriter = state.GetRewriter(component);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Move Closer")]
         public void MoveCloserToUsageRefactoring_MultipleFields_MoveSecond()
         {
             //Input
@@ -206,7 +219,7 @@ Private bay As Date
 Private Sub Foo()
     bat = True
 End Sub";
-            var selection = new Selection(2, 1, 2, 1);
+            var selection = new Selection(2, 1);
 
             //Expectation
             const string expectedCode =
@@ -214,9 +227,8 @@ End Sub";
 Private bay As Date
 
 Private Sub Foo()
-
     Dim bat As Boolean
-    bat = True
+bat = True
 End Sub";
 
             IVBComponent component;
@@ -228,10 +240,13 @@ End Sub";
             var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null);
             refactoring.Refactor(qualifiedSelection);
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            var rewriter = state.GetRewriter(component);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Move Closer")]
         public void MoveCloserToUsageRefactoring_MultipleFieldsOneStatement_MoveFirst()
         {
             //Input
@@ -243,17 +258,17 @@ End Sub";
 Private Sub Foo()
     bar = 3
 End Sub";
-            var selection = new Selection(6, 6, 6, 6);
+            var selection = new Selection(6, 6);
 
             //Expectation
             const string expectedCode =
-@"Private           bat As Boolean,          bay As Date
+@"Private bat As Boolean, _
+          bay As Date
 
 Private Sub Foo()
-
     Dim bar As Integer
-    bar = 3
-End Sub";   // note: VBE will remove extra spaces
+bar = 3
+End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
@@ -264,10 +279,13 @@ End Sub";   // note: VBE will remove extra spaces
             var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null);
             refactoring.Refactor(qualifiedSelection);
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            var rewriter = state.GetRewriter(component);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Move Closer")]
         public void MoveCloserToUsageRefactoring_MultipleFieldsOneStatement_MoveSecond()
         {
             //Input
@@ -279,17 +297,17 @@ End Sub";   // note: VBE will remove extra spaces
 Private Sub Foo()
     bat = True
 End Sub";
-            var selection = new Selection(6, 6, 6, 6);
+            var selection = new Selection(6, 6);
 
             //Expectation
             const string expectedCode =
-@"Private bar As Integer,          bay As Date
+@"Private bar As Integer, _
+          bay As Date
 
 Private Sub Foo()
-
     Dim bat As Boolean
-    bat = True
-End Sub";   // note: VBE will remove extra spaces
+bat = True
+End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
@@ -300,10 +318,13 @@ End Sub";   // note: VBE will remove extra spaces
             var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null);
             refactoring.Refactor(qualifiedSelection);
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            var rewriter = state.GetRewriter(component);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Move Closer")]
         public void MoveCloserToUsageRefactoring_MultipleFieldsOneStatement_MoveLast()
         {
             //Input
@@ -315,17 +336,17 @@ End Sub";   // note: VBE will remove extra spaces
 Private Sub Foo()
     bay = #1/13/2004#
 End Sub";
-            var selection = new Selection(6, 6, 6, 6);
+            var selection = new Selection(6, 6);
 
             //Expectation
             const string expectedCode =
-@"Private bar As Integer,          bat As Boolean
+@"Private bar As Integer, _
+          bat As Boolean
 
 Private Sub Foo()
-
     Dim bay As Date
-    bay = #1/13/2004#
-End Sub";   // note: VBE will remove extra spaces
+bay = #1/13/2004#
+End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
@@ -336,10 +357,13 @@ End Sub";   // note: VBE will remove extra spaces
             var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null);
             refactoring.Refactor(qualifiedSelection);
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            var rewriter = state.GetRewriter(component);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Move Closer")]
         public void MoveCloserToUsageRefactoring_MultipleVariablesOneStatement_MoveFirst()
         {
             //Input
@@ -352,18 +376,18 @@ End Sub";   // note: VBE will remove extra spaces
     bat = True
     bar = 3
 End Sub";
-            var selection = new Selection(2, 16, 2, 16);
+            var selection = new Selection(2, 16);
 
             //Expectation
             const string expectedCode =
 @"Private Sub Foo()
-    Dim         bat As Boolean,        bay As Date
+    Dim bat As Boolean, _
+        bay As Date
 
     bat = True
-
     Dim bar As Integer
-    bar = 3
-End Sub";   // note: VBE will remove extra spaces
+bar = 3
+End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
@@ -374,10 +398,13 @@ End Sub";   // note: VBE will remove extra spaces
             var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null);
             refactoring.Refactor(qualifiedSelection);
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            var rewriter = state.GetRewriter(component);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Move Closer")]
         public void MoveCloserToUsageRefactoring_MultipleVariablesOneStatement_MoveSecond()
         {
             //Input
@@ -390,18 +417,18 @@ End Sub";   // note: VBE will remove extra spaces
     bar = 1
     bat = True
 End Sub";
-            var selection = new Selection(3, 16, 3, 16);
+            var selection = new Selection(3, 16);
 
             //Expectation
             const string expectedCode =
 @"Private Sub Foo()
-    Dim bar As Integer,        bay As Date
+    Dim bar As Integer, _
+        bay As Date
 
     bar = 1
-
     Dim bat As Boolean
-    bat = True
-End Sub";   // note: VBE will remove extra spaces
+bat = True
+End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
@@ -412,10 +439,13 @@ End Sub";   // note: VBE will remove extra spaces
             var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null);
             refactoring.Refactor(qualifiedSelection);
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            var rewriter = state.GetRewriter(component);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Move Closer")]
         public void MoveCloserToUsageRefactoring_MultipleVariablesOneStatement_MoveLast()
         {
             //Input
@@ -428,18 +458,18 @@ End Sub";   // note: VBE will remove extra spaces
     bar = 4
     bay = #1/13/2004#
 End Sub";
-            var selection = new Selection(4, 16, 4, 16);
+            var selection = new Selection(4, 16);
 
             //Expectation
             const string expectedCode =
 @"Private Sub Foo()
-    Dim bar As Integer,        bat As Boolean
+    Dim bar As Integer, _
+        bat As Boolean
 
     bar = 4
-
     Dim bay As Date
-    bay = #1/13/2004#
-End Sub";   // note: VBE will remove extra spaces
+bay = #1/13/2004#
+End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
@@ -450,10 +480,13 @@ End Sub";   // note: VBE will remove extra spaces
             var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null);
             refactoring.Refactor(qualifiedSelection);
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            var rewriter = state.GetRewriter(component);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Move Closer")]
         public void MoveCloserToUsageRefactoring_NoReferences()
         {
             //Input
@@ -461,7 +494,7 @@ End Sub";   // note: VBE will remove extra spaces
 @"Private bar As Boolean
 Private Sub Foo()
 End Sub";
-            var selection = new Selection(1, 1, 1, 1);
+            var selection = new Selection(1, 1);
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
@@ -479,10 +512,14 @@ End Sub";
 
             messageBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
                 It.IsAny<MessageBoxIcon>()), Times.Once);
-            Assert.AreEqual(inputCode, component.CodeModule.Content());
+
+            var rewriter = state.GetRewriter(component);
+            Assert.AreEqual(inputCode, rewriter.GetText());
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Move Closer")]
         public void MoveCloserToUsageRefactoring_ReferencedInMultipleProcedures()
         {
             //Input
@@ -494,7 +531,7 @@ End Sub
 Private Sub Bar()
     bar = True
 End Sub";
-            var selection = new Selection(1, 1, 1, 1);
+            var selection = new Selection(1, 1);
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
@@ -512,10 +549,13 @@ End Sub";
 
             messageBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
                 It.IsAny<MessageBoxIcon>()), Times.Once);
-            Assert.AreEqual(inputCode, component.CodeModule.Content());
+            var rewriter = state.GetRewriter(component);
+            Assert.AreEqual(inputCode, rewriter.GetText());
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Move Closer")]
         public void MoveCloserToUsageRefactoring_ReferenceIsNotBeginningOfStatement_Assignment()
         {
             //Input
@@ -527,11 +567,10 @@ End Sub";
 
             const string expectedCode =
 @"Private Sub Foo(ByRef bat As Boolean)
-
     Dim bar As Boolean
-    bat = bar
+bat = bar
 End Sub";
-            var selection = new Selection(1, 1, 1, 1);
+            var selection = new Selection(1, 1);
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
@@ -542,10 +581,13 @@ End Sub";
             var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null);
             refactoring.Refactor(qualifiedSelection);
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            var rewriter = state.GetRewriter(component);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Move Closer")]
         public void MoveCloserToUsageRefactoring_ReferenceIsNotBeginningOfStatement_PassAsParam()
         {
             //Input
@@ -559,13 +601,12 @@ End Sub";
 
             const string expectedCode =
 @"Private Sub Foo()
-
     Dim bar As Boolean
-    Baz bar
+Baz bar
 End Sub
 Sub Baz(ByVal bat As Boolean)
 End Sub";
-            var selection = new Selection(1, 1, 1, 1);
+            var selection = new Selection(1, 1);
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
@@ -576,10 +617,13 @@ End Sub";
             var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null);
             refactoring.Refactor(qualifiedSelection);
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            var rewriter = state.GetRewriter(component);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Move Closer")]
         public void MoveCloserToUsageRefactoring_ReferenceIsNotBeginningOfStatement_PassAsParam_ReferenceIsNotFirstLine()
         {
             //Input
@@ -595,15 +639,14 @@ End Sub";
 
             const string expectedCode =
 @"Private Sub Foo()
-
     Dim bar As Boolean
-    Baz True, _
+Baz True, _
         True, _
         bar
 End Sub
 Sub Baz(ByVal bat As Boolean, ByVal bas As Boolean, ByVal bac As Boolean)
 End Sub";
-            var selection = new Selection(1, 1, 1, 1);
+            var selection = new Selection(1, 1);
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
@@ -614,10 +657,13 @@ End Sub";
             var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null);
             refactoring.Refactor(qualifiedSelection);
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            var rewriter = state.GetRewriter(component);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Move Closer")]
         public void MoveCloserToUsageRefactoring_ReferenceIsSeparatedWithColon()
         {
             //Input
@@ -626,15 +672,12 @@ End Sub";
 Private Sub Foo(): Baz True, True, bar: End Sub
 Private Sub Baz(ByVal bat As Boolean, ByVal bas As Boolean, ByVal bac As Boolean): End Sub";
 
-            var selection = new Selection(1, 1, 1, 1);
+            var selection = new Selection(1, 1);
 
             // Yeah, this code is a mess.  That is why we got the SmartIndenter
             const string expectedCode =
-@"Private Sub Foo()
-    Dim bar As Boolean
-
-Baz True, True, bar
-End Sub
+@"Private Sub Foo(): Dim bar As Boolean
+Baz True, True, bar: End Sub
 Private Sub Baz(ByVal bat As Boolean, ByVal bas As Boolean, ByVal bac As Boolean): End Sub";
 
             IVBComponent component;
@@ -646,15 +689,19 @@ Private Sub Baz(ByVal bat As Boolean, ByVal bas As Boolean, ByVal bac As Boolean
             var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null);
             refactoring.Refactor(qualifiedSelection);
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            var rewriter = state.GetRewriter(component);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Move Closer")]
         public void MoveCloserToUsageRefactoring_WorksWithNamedParameters()
         {
             //Input
             const string inputCode =
-@"Private foo As Long
+@"
+Private foo As Long
 
 Public Sub Test()
     SomeSub someParam:=foo
@@ -664,50 +711,11 @@ Public Sub SomeSub(ByVal someParam As Long)
     Debug.Print someParam
 End Sub";
 
-            var selection = new Selection(1, 1, 1, 1);
-            const string expectedCode =
-@"
-Public Sub Test()
-
-    Dim foo As Long
-    SomeSub someParam:=foo
-End Sub
-
-Public Sub SomeSub(ByVal someParam As Long)
-    Debug.Print someParam
-End Sub";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-
-            var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null);
-            refactoring.Refactor(qualifiedSelection);
-
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
-        }
-
-        [TestMethod]
-        public void MoveCloserToUsageRefactoring_WorksWithNamedParametersAndStatementSeparaters()
-        {
-            //Input
-            const string inputCode =
-@"Private foo As Long
-
-Public Sub Test(): SomeSub someParam:=foo: End Sub
-
-Public Sub SomeSub(ByVal someParam As Long)
-    Debug.Print someParam
-End Sub";
-
-            var selection = new Selection(1, 1, 1, 1);
+            var selection = new Selection(2, 1);
             const string expectedCode =
 @"
 Public Sub Test()
     Dim foo As Long
-
 SomeSub someParam:=foo
 End Sub
 
@@ -724,10 +732,50 @@ End Sub";
             var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null);
             refactoring.Refactor(qualifiedSelection);
 
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            var rewriter = state.GetRewriter(component);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Move Closer")]
+        public void MoveCloserToUsageRefactoring_WorksWithNamedParametersAndStatementSeparaters()
+        {
+            //Input
+            const string inputCode =
+@"Private foo As Long
+
+Public Sub Test(): SomeSub someParam:=foo: End Sub
+
+Public Sub SomeSub(ByVal someParam As Long)
+    Debug.Print someParam
+End Sub";
+
+            var selection = new Selection(1, 1);
+            const string expectedCode =
+@"Public Sub Test(): Dim foo As Long
+SomeSub someParam:=foo: End Sub
+
+Public Sub SomeSub(ByVal someParam As Long)
+    Debug.Print someParam
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+            var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null);
+            refactoring.Refactor(qualifiedSelection);
+
+            var rewriter = state.GetRewriter(component);
+            Assert.AreEqual(expectedCode, rewriter.GetText());
+        }
+
+        [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Move Closer")]
         public void IntroduceFieldRefactoring_PassInTarget_Nonvariable()
         {
             //Input
@@ -746,25 +794,18 @@ End Sub";
                       .Returns(DialogResult.OK);
 
             var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, messageBox.Object);
+            refactoring.Refactor(state.AllUserDeclarations.First(d => d.DeclarationType != DeclarationType.Variable));
+            var rewriter = state.GetRewriter(component);
+            Assert.AreEqual(inputCode, rewriter.GetText());
 
-            try
-            {
-                refactoring.Refactor(state.AllUserDeclarations.First(d => d.DeclarationType != DeclarationType.Variable));
-            }
-            catch (ArgumentException e)
-            {
-                Assert.AreEqual("target", e.ParamName);
-                Assert.AreEqual(inputCode, component.CodeModule.Content());
-                messageBox.Verify(m =>
+            messageBox.Verify(m =>
                     m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
                         It.IsAny<MessageBoxIcon>()), Times.Once);
-                return;
-            }
-
-            Assert.Fail();
         }
 
         [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Move Closer")]
         public void IntroduceFieldRefactoring_InvalidSelection()
         {
             //Input
@@ -773,7 +814,7 @@ End Sub";
 Private Sub Foo()
     bar = True
 End Sub";
-            var selection = new Selection(2, 15, 2, 15);
+            var selection = new Selection(2, 15);
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
@@ -792,7 +833,8 @@ End Sub";
                     m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
                     It.IsAny<MessageBoxIcon>()), Times.Once);
 
-            Assert.AreEqual(inputCode, component.CodeModule.Content());
+            var rewriter = state.GetRewriter(component);
+            Assert.AreEqual(inputCode, rewriter.GetText());
         }
     }
 }

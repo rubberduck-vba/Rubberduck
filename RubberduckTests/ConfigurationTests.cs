@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Resources;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Settings;
 
 namespace RubberduckTests
@@ -12,6 +12,7 @@ namespace RubberduckTests
     public class ConfigurationTests
     {
         [TestMethod]
+        [TestCategory("Settings")]
         public void GetDefaultTodoMarkersTest()
         {
             var settings = new ToDoListSettings();
@@ -23,6 +24,7 @@ namespace RubberduckTests
         }
 
         [TestMethod]
+        [TestCategory("Settings")]
         public void DefaultCodeInspectionsIsAsSpecified()
         {
             var inspection = new Mock<IInspection>();
@@ -39,6 +41,7 @@ namespace RubberduckTests
         }
 
         [TestMethod]
+        [TestCategory("Settings")]
         public void ToStringIsAsExpected()
         {
             var expected = "FixMe:";

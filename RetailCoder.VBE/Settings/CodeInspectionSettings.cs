@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Xml.Serialization;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Resources;
-using Rubberduck.UI;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 
 namespace Rubberduck.Settings
 {
@@ -27,13 +26,13 @@ namespace Rubberduck.Settings
 
         public bool RunInspectionsOnSuccessfulParse { get; set; }
 
-        public CodeInspectionSettings() : this(new HashSet<CodeInspectionSetting>(), new WhitelistedIdentifierSetting[] {}, true)
+        public CodeInspectionSettings() : this(Enumerable.Empty<CodeInspectionSetting>(), new WhitelistedIdentifierSetting[] { }, true)
         {
         }
 
-        public CodeInspectionSettings(HashSet<CodeInspectionSetting> inspections, WhitelistedIdentifierSetting[] whitelistedNames, bool runInspectionsOnParse)
+        public CodeInspectionSettings(IEnumerable<CodeInspectionSetting> inspections, WhitelistedIdentifierSetting[] whitelistedNames, bool runInspectionsOnParse)
         {
-            CodeInspections = inspections;
+            CodeInspections = new HashSet<CodeInspectionSetting>(inspections);
             WhitelistedIdentifiers = whitelistedNames;
             RunInspectionsOnSuccessfulParse = runInspectionsOnParse;
         }
@@ -44,13 +43,16 @@ namespace Rubberduck.Settings
                 ?? GetSetting(typeof(TInspection));
         }
 
-        public CodeInspectionSetting GetSetting(Type inspection)
+        public CodeInspectionSetting GetSetting(Type inspectionType)
         {
             try
             {
-                var proto = Convert.ChangeType(Activator.CreateInstance(inspection), inspection);
-                var existing = CodeInspections.FirstOrDefault(s => proto.GetType().ToString().Equals(s.Name));
-                if (existing != null) return existing;
+                var existing = CodeInspections.FirstOrDefault(s => inspectionType.ToString().Equals(s.Name));
+                if (existing != null)
+                {
+                    return existing;
+                }
+                var proto = Convert.ChangeType(Activator.CreateInstance(inspectionType), inspectionType);
                 var setting = new CodeInspectionSetting(proto as IInspectionModel);
                 CodeInspections.Add(setting);
                 return setting;
@@ -77,19 +79,19 @@ namespace Rubberduck.Settings
         public string Name { get; set; }
 
         [XmlIgnore]
-        public string Description { get; set; } // not serialized because culture-dependent
-
+        private string _description;
         [XmlIgnore]
-        public string LocalizedName
+        public string Description
         {
-            get
-            {
-                return InspectionsUI.ResourceManager.GetString(Name + "Name", CultureInfo.CurrentUICulture);
-            }
-        } // not serialized because culture-dependent
+            get => _description ?? (_description = InspectionsUI.ResourceManager.GetString(Name + "Name"));
+            set => _description = value;
+        }// not serialized because culture-dependent
 
         [XmlIgnore]
-        public string AnnotationName { get; set; }
+        public string LocalizedName => InspectionsUI.ResourceManager.GetString(Name + "Name", CultureInfo.CurrentUICulture); // not serialized because culture-dependent
+
+        [XmlIgnore]
+        public string AnnotationName => Name.Replace("Inspection", string.Empty);
 
         [XmlIgnore]
         public CodeInspectionSeverity DefaultSeverity { get; private set; }
@@ -98,29 +100,21 @@ namespace Rubberduck.Settings
         public CodeInspectionSeverity Severity { get; set; }
 
         [XmlIgnore]
-        public string Meta
-        {
-            get
-            {
-                return InspectionsUI.ResourceManager.GetString(Name + "Meta", CultureInfo.CurrentUICulture);
-            }
-        }
+        public string Meta => InspectionsUI.ResourceManager.GetString(Name + "Meta", CultureInfo.CurrentUICulture);
 
         [XmlIgnore]
-        public string TypeLabel
-        {
-            get { return RubberduckUI.ResourceManager.GetString("CodeInspectionSettings_" + InspectionType, CultureInfo.CurrentUICulture); }
-        }
+        // ReSharper disable once UnusedMember.Global; used in string literal to define collection groupings
+        public string TypeLabel => InspectionsUI.ResourceManager.GetString("CodeInspectionSettings_" + InspectionType, CultureInfo.CurrentUICulture);
 
         [XmlIgnore]
         public string SeverityLabel
         {
-            get { return RubberduckUI.ResourceManager.GetString("CodeInspectionSeverity_" + Severity, CultureInfo.CurrentUICulture); }
+            get => InspectionsUI.ResourceManager.GetString("CodeInspectionSeverity_" + Severity, CultureInfo.CurrentUICulture);
             set
             {
-                foreach (var severity in Enum.GetValues(typeof (CodeInspectionSeverity)))
+                foreach (var severity in Enum.GetValues(typeof(CodeInspectionSeverity)))
                 {
-                    if (value == RubberduckUI.ResourceManager.GetString("CodeInspectionSeverity_" + severity, CultureInfo.CurrentUICulture))
+                    if (value == InspectionsUI.ResourceManager.GetString("CodeInspectionSeverity_" + severity, CultureInfo.CurrentUICulture))
                     {
                         Severity = (CodeInspectionSeverity)severity;
                         return;
@@ -137,7 +131,11 @@ namespace Rubberduck.Settings
             //default constructor required for serialization
         }
 
-        public CodeInspectionSetting(string name, string description, CodeInspectionType type, CodeInspectionSeverity defaultSeverity, CodeInspectionSeverity severity)
+        public CodeInspectionSetting(string name, CodeInspectionType type, CodeInspectionSeverity defaultSeverity = CodeInspectionSeverity.Warning)
+            : this(name, string.Empty, type, defaultSeverity, defaultSeverity)
+        { }
+
+        public CodeInspectionSetting(string name, string description, CodeInspectionType type, CodeInspectionSeverity defaultSeverity = CodeInspectionSeverity.Warning, CodeInspectionSeverity severity = CodeInspectionSeverity.Warning)
         {
             Name = name;
             Description = description;
@@ -164,9 +162,9 @@ namespace Rubberduck.Settings
         {
             unchecked
             {
-                var hashCode = (Name != null ? Name.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (int) Severity;
-                hashCode = (hashCode * 397) ^ (int) InspectionType;
+                var hashCode = Name?.GetHashCode() ?? 0;
+                hashCode = (hashCode * 397) ^ (int)Severity;
+                hashCode = (hashCode * 397) ^ (int)InspectionType;
                 return hashCode;
             }
         }

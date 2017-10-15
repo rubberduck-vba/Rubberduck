@@ -1,92 +1,92 @@
-﻿using System;
+﻿using Antlr4.Runtime;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
-namespace Rubberduck.Parsing.Preprocessing
+namespace Rubberduck.Parsing.PreProcessing
 {
     public sealed class ConditionalCompilationIfExpression : Expression
     {
-        private readonly IExpression _ifCondCode;
+        private readonly IExpression _ifCondTokens;
         private readonly IExpression _ifCond;
-        private readonly IExpression _ifBlock;
+        private readonly IExpression _ifBlockTokens;
         private readonly IEnumerable<Tuple<IExpression, IExpression, IExpression>> _elseIfCodeCondBlocks;
-        private readonly IExpression _elseCondCode;
-        private readonly IExpression _elseBlock;
-        private readonly IExpression _endIfCode;
+        private readonly IExpression _elseCondTokens;
+        private readonly IExpression _elseBlockTokens;
+        private readonly IExpression _endIfTokens;
 
         public ConditionalCompilationIfExpression(
-            IExpression ifCondCode,
+            IExpression ifCondTokens,
             IExpression ifCond,
-            IExpression ifBlock,
+            IExpression ifBlockTokens,
             IEnumerable<Tuple<IExpression, IExpression, IExpression>> elseIfCodeCondBlocks,
-            IExpression elseCondCode,
-            IExpression elseBlock,
-            IExpression endIfCode)
+            IExpression elseCondTokens,
+            IExpression elseBlockTokens,
+            IExpression endIfTokens)
         {
-            _ifCondCode = ifCondCode;
+            _ifCondTokens = ifCondTokens;
             _ifCond = ifCond;
-            _ifBlock = ifBlock;
+            _ifBlockTokens = ifBlockTokens;
             _elseIfCodeCondBlocks = elseIfCodeCondBlocks;
-            _elseCondCode = elseCondCode;
-            _elseBlock = elseBlock;
-            _endIfCode = endIfCode;
+            _elseCondTokens = elseCondTokens;
+            _elseBlockTokens = elseBlockTokens;
+            _endIfTokens = endIfTokens;
         }
 
         public override IValue Evaluate()
         {
-            StringBuilder builder = new StringBuilder();
-            List<bool> conditions = new List<bool>();
-            builder.Append(
+            var tokens = new List<IToken>();
+            var conditions = new List<bool>();
+            tokens.AddRange(
                 new LivelinessExpression(
                     new ConstantExpression(new BoolValue(false)),
-                    _ifCondCode)
-                    .Evaluate().AsString);
+                    _ifCondTokens)
+                    .Evaluate().AsTokens);
 
             var ifIsAlive = _ifCond.EvaluateCondition();
             conditions.Add(ifIsAlive);
-            builder.Append(
+            tokens.AddRange(
                 new LivelinessExpression(
                     new ConstantExpression(new BoolValue(ifIsAlive)),
-                    _ifBlock)
-                    .Evaluate().AsString);
+                    _ifBlockTokens)
+                    .Evaluate().AsTokens);
 
             foreach (var elseIf in _elseIfCodeCondBlocks)
             {
-                builder.Append(
+                tokens.AddRange(
                    new LivelinessExpression(
                        new ConstantExpression(new BoolValue(false)),
                        elseIf.Item1)
-                       .Evaluate().AsString);
+                       .Evaluate().AsTokens);
                 var elseIfIsAlive = !ifIsAlive && elseIf.Item2.EvaluateCondition();
                 conditions.Add(elseIfIsAlive);
-                builder.Append(
+                tokens.AddRange(
                     new LivelinessExpression(
                         new ConstantExpression(new BoolValue(elseIfIsAlive)),
                         elseIf.Item3)
-                        .Evaluate().AsString);
+                        .Evaluate().AsTokens);
             }
 
-            if (_elseCondCode != null)
+            if (_elseCondTokens != null)
             {
-                builder.Append(
+                tokens.AddRange(
                    new LivelinessExpression(
                        new ConstantExpression(new BoolValue(false)),
-                       _elseCondCode)
-                       .Evaluate().AsString);
+                       _elseCondTokens)
+                       .Evaluate().AsTokens);
                 var elseIsAlive = conditions.All(condition => !condition);
-                builder.Append(
+                tokens.AddRange(
                     new LivelinessExpression(
                         new ConstantExpression(new BoolValue(elseIsAlive)),
-                        _elseBlock)
-                        .Evaluate().AsString);
+                        _elseBlockTokens)
+                        .Evaluate().AsTokens);
             }
-            builder.Append(
+            tokens.AddRange(
                   new LivelinessExpression(
                       new ConstantExpression(new BoolValue(false)),
-                      _endIfCode)
-                      .Evaluate().AsString);
-            return new StringValue(builder.ToString());
+                      _endIfTokens)
+                      .Evaluate().AsTokens);
+            return new TokensValue(tokens);
         }
     }
 }

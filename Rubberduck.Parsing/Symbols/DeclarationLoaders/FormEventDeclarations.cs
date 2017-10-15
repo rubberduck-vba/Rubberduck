@@ -1,24 +1,27 @@
 using System.Collections.Generic;
-using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
+using System.Linq;
+using Rubberduck.Parsing.Annotations;
 
 namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
 {
     public class FormEventDeclarations : ICustomDeclarationLoader
     {
-        private readonly RubberduckParserState _state;
+        private readonly IDeclarationFinderProvider _finderProvider;
 
-        public FormEventDeclarations(RubberduckParserState state)
+        public FormEventDeclarations(IDeclarationFinderProvider finderProvider)
         {
-            _state = state;
+            _finderProvider = finderProvider;
         }
 
         public IReadOnlyList<Declaration> Load()
         {
-            var formsClassModule = FormsClassModuleFromParserState(_state);
+            var finder = _finderProvider.DeclarationFinder;
 
-            if (formsClassModule == null)
+            var formsClassModule = FormsClassModuleFromParserState(finder);
+
+            if (formsClassModule == null || WeHaveAlreadyLoadedTheDeclarationsBefore(finder, formsClassModule))
             {
                 return new List<Declaration>();
             }
@@ -26,10 +29,8 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
             return AddHiddenMSFormDeclarations(formsClassModule);
         }
 
-        private static Declaration FormsClassModuleFromParserState(RubberduckParserState state)
+        private static Declaration FormsClassModuleFromParserState(DeclarationFinder finder)
         {
-            var finder = state.DeclarationFinder;
-
             var msForms = finder.FindProject("MSForms");
             if (msForms == null)
             {
@@ -40,6 +41,17 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
             return finder.FindClassModule("FormEvents", msForms, true);
         }
 
+        private static bool WeHaveAlreadyLoadedTheDeclarationsBefore(DeclarationFinder finder, Declaration formsClassModule)
+        {
+            return TheFormsActivateEventIsAlreadyThere(finder, formsClassModule);
+        }
+
+        private static bool TheFormsActivateEventIsAlreadyThere(DeclarationFinder finder, Declaration formsClassModule)
+        {
+            var userFormActivateEvent = UserFormActivateEvent(formsClassModule);
+            return finder.MatchName(userFormActivateEvent.IdentifierName)
+                            .Any(declaration => declaration.Equals(userFormActivateEvent));
+        }
 
         private IReadOnlyList<Declaration> AddHiddenMSFormDeclarations(Declaration formsClassModule)
         {
@@ -79,7 +91,10 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 Accessibility.Global,
                 DeclarationType.Event,
                 false,
-                null);
+                null,
+                false,
+                new List<IAnnotation>(),
+                new Attributes());
         }
 
         private static Declaration UserFormDeactivateEvent(Declaration formsClassModule)
@@ -95,7 +110,10 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 Accessibility.Global,
                 DeclarationType.Event,
                 false,
-                null);
+                null,
+                false,
+                new List<IAnnotation>(),
+                new Attributes());
         }
 
         private static Declaration UserFormInitializeEvent(Declaration formsClassModule)
@@ -111,7 +129,10 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 Accessibility.Global,
                 DeclarationType.Event,
                 false,
-                null);
+                null,
+                false,
+                new List<IAnnotation>(),
+                new Attributes());
         }
 
         private static Declaration UserFormQueryCloseEvent(Declaration formsClassModule)
@@ -127,7 +148,10 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 Accessibility.Global,
                 DeclarationType.Event,
                 false,
-                null);
+                null,
+                false,
+                new List<IAnnotation>(),
+                new Attributes());
         }
 
         private static ParameterDeclaration UserFormQueryCloseEventCancelParameter(Declaration userFormQueryCloseEvent)
@@ -135,14 +159,9 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
             return new ParameterDeclaration(
                 new QualifiedMemberName(userFormQueryCloseEvent.QualifiedName.QualifiedModuleName, "Cancel"),
                 userFormQueryCloseEvent,
-                null,
-                new Selection(),
                 "Integer",
                 null,
                 string.Empty,
-                false,
-                true,
-                false,
                 false,
                 true);
         }
@@ -152,14 +171,9 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
             return new ParameterDeclaration(
                 new QualifiedMemberName(userFormQueryCloseEvent.QualifiedName.QualifiedModuleName, "CloseMode"),
                 userFormQueryCloseEvent,
-                null,
-                new Selection(),
                 "Integer",
                 null,
                 string.Empty,
-                false,
-                true,
-                false,
                 false,
                 true);
         }
@@ -177,7 +191,10 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 Accessibility.Global,
                 DeclarationType.Event,
                 false,
-                null);
+                null,
+                false,
+                new List<IAnnotation>(),
+                new Attributes());
         }
 
         private static Declaration UserFormTerminateEvent(Declaration formsClassModule)
@@ -193,7 +210,10 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 Accessibility.Global,
                 DeclarationType.Event,
                 false,
-                null);
+                null,
+                false,
+                new List<IAnnotation>(),
+                new Attributes());
         }
 
     }

@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.Parsing.Preprocessing
+﻿namespace Rubberduck.Parsing.PreProcessing
 {
     public enum ValueType
     {
@@ -7,6 +7,7 @@
         Byte,
         Decimal,
         Date,
-        String
+        String,
+        Tokens
     }
 }

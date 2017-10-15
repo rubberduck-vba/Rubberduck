@@ -5,7 +5,7 @@ namespace Rubberduck.Common
 {
     public static class StringExtensions
     {
-        public static string Captialize(this string input)
+        public static string Capitalize(this string input)
         {
             var tokens = input.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             if (tokens.Length == 0)
@@ -21,7 +21,7 @@ namespace Rubberduck.Common
             {
                 return string.Empty;
             }
-            return input.Captialize().Substring(0, 1) + input.Substring(1);
+            return input.Capitalize().Substring(0, 1) + input.Substring(1);
          }
     }
 }

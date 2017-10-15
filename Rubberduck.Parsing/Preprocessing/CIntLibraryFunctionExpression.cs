@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.Parsing.Preprocessing
+﻿namespace Rubberduck.Parsing.PreProcessing
 {
     public sealed class CIntLibraryFunctionExpression : Expression
     {

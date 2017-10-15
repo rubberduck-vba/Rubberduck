@@ -74,7 +74,7 @@ namespace Rubberduck.UI.Command
             }
         }
 
-        protected override void ExecuteImpl(object parameter)
+        protected override void OnExecute(object parameter)
         {
             if (_viewModel == null)
             {
@@ -120,7 +120,7 @@ namespace Rubberduck.UI.Command
                     && (item.DeclarationType == DeclarationType.ClassModule || item.DeclarationType == DeclarationType.ProceduralModule));
 
                 // FIXME dirty hack for project.Scope in case project is null. Clean up!
-                var declaration = new Declaration(new QualifiedMemberName(new QualifiedModuleName(component), component.Name), project, project == null ? null : project.Scope, component.Name, null, false, false, Accessibility.Global, DeclarationType.ProceduralModule, false, null, false);
+                var declaration = new Declaration(new QualifiedMemberName(new QualifiedModuleName(component), component.Name), project, project?.Scope, component.Name, null, false, false, Accessibility.Global, DeclarationType.ProceduralModule, false, null, true);
                 return result ?? declaration; // module isn't in parser state - give it a dummy declaration, just so the ViewModel has something to chew on
             }
         }

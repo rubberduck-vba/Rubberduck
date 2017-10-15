@@ -8,11 +8,12 @@ namespace RubberduckTests.Symbols
     public class ConstantDeclarationTests
     {
         [TestMethod]
+        [TestCategory("Resolver")]
         public void ExpressionReturnsTheContructorInjectedValue()
         {
             var value = "testtest";
             var constantName =  new QualifiedMemberName(StubQualifiedModuleName(),"testConstant");
-            var constantDeclaration = new ConstantDeclaration(constantName, null, "test", "test", null, "test", null, Accessibility.Implicit, DeclarationType.Constant, value, null, Selection.Home, false);
+            var constantDeclaration = new ConstantDeclaration(constantName, null, "test", "test", null, "test", null, Accessibility.Implicit, DeclarationType.Constant, value, null, Selection.Home, true);
 
             Assert.AreEqual<string>(value, constantDeclaration.Expression);
         }

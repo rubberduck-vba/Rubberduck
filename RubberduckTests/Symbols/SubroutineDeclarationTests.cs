@@ -10,6 +10,7 @@ namespace RubberduckTests.Symbols
     public class SubroutineDeclarationTests
     {
         [TestMethod]
+        [TestCategory("Resolver")]
         public void SubroutinesHaveDeclarationTypeProcedure()
         {
             var subroutine = GetTestSub("testSub", null);
@@ -20,7 +21,7 @@ namespace RubberduckTests.Symbols
             private static SubroutineDeclaration GetTestSub(string name, Attributes attributes)
             {
                 var qualifiedName = new QualifiedMemberName(StubQualifiedModuleName(), name);
-                return new SubroutineDeclaration(qualifiedName, null, null, "test", Accessibility.Implicit, null, Selection.Home, false, null, attributes);
+                return new SubroutineDeclaration(qualifiedName, null, null, "test", Accessibility.Implicit, null, Selection.Home, true, null, attributes);
             }
 
                 private static QualifiedModuleName StubQualifiedModuleName()
@@ -30,6 +31,7 @@ namespace RubberduckTests.Symbols
 
 
         [TestMethod]
+        [TestCategory("Resolver")]
         public void ByDefaultSubroutinesDoNotHaveParameters()
         {
             var subroutine = GetTestSub("testSub", null);
@@ -39,6 +41,7 @@ namespace RubberduckTests.Symbols
 
 
         [TestMethod]
+        [TestCategory("Resolver")]
         public void ParametersReturnsTheParametersAddedViaAddParameters()
         {
             var subroutine = GetTestSub("testSub", null);
@@ -57,6 +60,7 @@ namespace RubberduckTests.Symbols
 
 
         [TestMethod]
+        [TestCategory("Resolver")]
         public void ByDefaultSubroutinesAreNotDefaultMembers()
         {
             var subroutine = GetTestSub("testSub", null);
@@ -66,6 +70,7 @@ namespace RubberduckTests.Symbols
 
 
         [TestMethod]
+        [TestCategory("Resolver")]
         public void SubroutinesAreDefaultMembersIfTheyHaveTheDefaultMemberAttribute()
         {
             var attributes = new Attributes();

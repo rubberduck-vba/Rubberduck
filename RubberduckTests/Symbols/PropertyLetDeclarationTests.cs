@@ -10,6 +10,7 @@ namespace RubberduckTests.Symbols
     public class PropertyLetDeclarationTests
     {
         [TestMethod]
+        [TestCategory("Resolver")]
         public void PropertyLetsHaveDeclarationTypePropertyLet()
         {
             var propertyLet = GetTestPropertyLet("test", null);
@@ -20,7 +21,7 @@ namespace RubberduckTests.Symbols
             private static PropertyLetDeclaration GetTestPropertyLet(string name, Attributes attributes)
             {
                 var qualifiedName = new QualifiedMemberName(StubQualifiedModuleName(), name);
-                return new PropertyLetDeclaration(qualifiedName, null, null, "test", Accessibility.Implicit, null, Selection.Home, false, null, attributes);
+                return new PropertyLetDeclaration(qualifiedName, null, null, "test", Accessibility.Implicit, null, Selection.Home, true, null, attributes);
             }
 
                 private static QualifiedModuleName StubQualifiedModuleName()
@@ -30,6 +31,7 @@ namespace RubberduckTests.Symbols
 
 
         [TestMethod]
+        [TestCategory("Resolver")]
         public void ByDefaultPropertyLetsDoNotHaveParameters()
         {
             var propertyLet = GetTestPropertyLet("test", null);
@@ -39,6 +41,7 @@ namespace RubberduckTests.Symbols
 
 
         [TestMethod]
+        [TestCategory("Resolver")]
         public void ParametersReturnsTheParametersAddedViaAddParameters()
         {
             var propertyLet = GetTestPropertyLet("test", null);
@@ -57,6 +60,7 @@ namespace RubberduckTests.Symbols
 
 
         [TestMethod]
+        [TestCategory("Resolver")]
         public void ByDefaultPropertyLetsAreNotDefaultMembers()
         {
             var propertyLet = GetTestPropertyLet("test", null);
@@ -66,6 +70,7 @@ namespace RubberduckTests.Symbols
 
 
         [TestMethod]
+        [TestCategory("Resolver")]
         public void PropertyLetsAreDefaultMembersIfTheyHaveTheDefaultMemberAttribute()
         {
             var attributes = new Attributes();

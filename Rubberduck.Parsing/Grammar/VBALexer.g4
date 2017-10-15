@@ -17,6 +17,7 @@
 
 lexer grammar VBALexer;
 
+
 ABS : A B S;
 ANY : A N Y;
 ARRAY : A R R A Y;
@@ -50,8 +51,6 @@ LENB : L E N B;
 LONGLONG : L O N G L O N G;
 LONGPTR : L O N G P T R;
 MIDB : M I D B;
-// MIDBTYPESUFFIX : M I D B '$';
-// MIDTYPESUFFIX : M I D '$';
 OPTION : O P T I O N;
 PSET : P S E T;
 SCALE : S C A L E;
@@ -298,7 +297,7 @@ SINGLEQUOTE : '\'';
 UNDERSCORE : '_';
 WS : [ \t];
 GUIDLITERAL : '{' [0-9A-F]+ '-' [0-9A-F]+ '-' [0-9A-F]+ '-' [0-9A-F]+ '-' [0-9A-F]+ '}';
-IDENTIFIER :  ~[\[\]\(\)\r\n\t.,'"|!@#$%^&*\-+:=; 0-9-/\\] ~[\[\]\(\)\r\n\t.,'"|!@#$%^&*\-+:=; ]*;
+IDENTIFIER :  ~[[\]()\r\n\t.,'"|!@#$%^&*\-+:=; 0-9-/\\] ~[[\]()\r\n\t.,'"|!@#$%^&*\-+:=; ]*;
 LINE_CONTINUATION : [ \t]* UNDERSCORE [ \t]* '\r'? '\n';
 fragment LETTER : [a-zA-Z_‰ˆ¸ƒ÷‹];
 fragment DIGIT : [0-9];

@@ -1,7 +1,6 @@
 ﻿using Extensibility;
 using Ninject;
 using Ninject.Extensions.Factory;
-using Rubberduck.Common.WinAPI;
 using Rubberduck.Root;
 using Rubberduck.UI;
 using System;
@@ -20,8 +19,10 @@ using NLog;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor.Events;
-using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.WindowsApi;
+using User32 = Rubberduck.Common.WinAPI.User32;
+using Windows = Rubberduck.VBEditor.SafeComWrappers.VBA.Windows;
 
 namespace Rubberduck
 {
@@ -29,15 +30,12 @@ namespace Rubberduck
     /// Special thanks to Carlos Quintero (MZ-Tools) for providing the general structure here.
     /// </remarks>
     [ComVisible(true)]
-    [Guid(ClassId)]
-    [ProgId(ProgId)]
+    [Guid(RubberduckGuid.ExtensionGuid)]
+    [ProgId(RubberduckProgId.ExtensionProgId)]
     [EditorBrowsable(EditorBrowsableState.Never)]
     // ReSharper disable once InconsistentNaming // note: underscore prefix hides class from COM API
     public class _Extension : IDTExtensibility2
     {
-        private const string ClassId = "8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66";
-        private const string ProgId = "Rubberduck.Extension";
-
         private IVBE _ide;
         private IAddIn _addin;
         private bool _isInitialized;
@@ -54,7 +52,7 @@ namespace Rubberduck
         {
             try
             {
-                if (Application is VBE)
+                if (Application is Microsoft.Vbe.Interop.VBE)
                 {
                     var vbe = (VBE) Application;                  
                     _ide = new VBEditor.SafeComWrappers.VBA.VBE(vbe);
@@ -177,7 +175,7 @@ namespace Rubberduck
                 splash = new Splash
                 {
                     // note: IVersionCheck.CurrentVersion could return this string.
-                    Version = string.Format("version {0}", Assembly.GetExecutingAssembly().GetName().Version)
+                    Version = $"version {Assembly.GetExecutingAssembly().GetName().Version}"
                 };
                 splash.Show();
                 splash.Refresh();
@@ -200,55 +198,89 @@ namespace Rubberduck
             }
             finally
             {
-                if (splash != null)
-                {
-                    splash.Dispose();
-                }
+                splash?.Dispose();
             }
         }
 
         private void Startup()
         {
-            var currentDomain = AppDomain.CurrentDomain;
-            currentDomain.AssemblyResolve += LoadFromSameFolder;
+            try
+            {
+                var currentDomain = AppDomain.CurrentDomain;
+                currentDomain.UnhandledException += HandlAppDomainException;
+                currentDomain.AssemblyResolve += LoadFromSameFolder;
 
-            _kernel = new StandardKernel(new NinjectSettings {LoadExtensions = true}, new FuncModule(), new DynamicProxyModule());
-            _kernel.Load(new RubberduckModule(_ide, _addin));
+                _kernel = new StandardKernel(new NinjectSettings {LoadExtensions = true}, new FuncModule(), new DynamicProxyModule());
+                _kernel.Load(new RubberduckModule(_ide, _addin));
 
-            _app = _kernel.Get<App>();
-            _app.Startup();
+                _app = _kernel.Get<App>();
+                _app.Startup();
 
-            _isInitialized = true;
+                _isInitialized = true;
+
+            }
+            catch (Exception e)
+            {
+                _logger.Log(LogLevel.Fatal, e, "Startup sequence threw an unexpected exception.");
+                //throw; // <<~ uncomment to crash the process
+            }
+        }
+
+        private void HandlAppDomainException(object sender, UnhandledExceptionEventArgs e)
+        {
+            _logger.Log(LogLevel.Fatal, e);
         }
 
         private void ShutdownAddIn()
         {
-            Debug.WriteLine("Extension unhooking VBENativeServices events.");
-            VBENativeServices.UnhookEvents();
-
             var currentDomain = AppDomain.CurrentDomain;
-            currentDomain.AssemblyResolve -= LoadFromSameFolder;
-            Debug.WriteLine("Extension broadcasting shutdown.");
-            User32.EnumChildWindows(_ide.MainWindow.Handle(), EnumCallback, new IntPtr(0));
-
-            Debug.WriteLine("Extension calling ReleaseDockableHosts.");
-            VBEditor.SafeComWrappers.VBA.Windows.ReleaseDockableHosts();
-
-            if (_app != null)
+            try
             {
-                Debug.WriteLine("Extension calling App.Shutdown.");
-                _app.Shutdown();
-                _app = null;
-            }
+                _logger.Log(LogLevel.Info, "Rubberduck is shutting down.");
+                _logger.Log(LogLevel.Trace, "Unhooking VBENativeServices events...");
+                VBENativeServices.UnhookEvents();
 
-            if (_kernel != null)
+                _logger.Log(LogLevel.Trace, "Broadcasting shutdown...");
+                User32.EnumChildWindows(_ide.MainWindow.Handle(), EnumCallback, new IntPtr(0));
+
+                _logger.Log(LogLevel.Trace, "Releasing dockable hosts...");
+                Windows.ReleaseDockableHosts();
+
+                if (_app != null)
+                {
+                    _logger.Log(LogLevel.Trace, "Initiating App.Shutdown...");
+                    _app.Shutdown();
+                    _app = null;
+                }
+
+                if (_kernel != null)
+                {
+                    _logger.Log(LogLevel.Trace, "Disposing IoC container...");
+                    _kernel.Dispose();
+                    _kernel = null;
+                }
+
+                _isInitialized = false;
+                _logger.Log(LogLevel.Info, "No exceptions were thrown.");
+            }
+            catch (Exception e)
             {
-                Debug.WriteLine("Extension calling Kernel.Dispose.");
-                _kernel.Dispose();
-                _kernel = null;
+                _logger.Error(e);
+                _logger.Log(LogLevel.Warn, "Exception is swallowed.");
+                //throw; // <<~ uncomment to crash the process
             }
-
-            _isInitialized = false;
+            finally
+            {
+                _logger.Log(LogLevel.Trace, "Unregistering AppDomain handlers....");
+                currentDomain.AssemblyResolve -= LoadFromSameFolder;
+                currentDomain.UnhandledException -= HandlAppDomainException;
+                _logger.Log(LogLevel.Trace, "Done. Initiating garbage collection...");
+                GC.Collect();
+                _logger.Log(LogLevel.Trace, "Done. Waiting for pending finalizers...");
+                GC.WaitForPendingFinalizers();
+                _logger.Log(LogLevel.Trace, "Done. Shutdown completed. Quack!");
+                _isInitialized = false;
+            }
         }
 
         private static int EnumCallback(IntPtr hwnd, IntPtr lparam)

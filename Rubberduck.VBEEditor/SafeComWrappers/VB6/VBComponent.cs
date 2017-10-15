@@ -15,76 +15,29 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         {
         }
 
-        public ComponentType Type
-        {
-            get { return IsWrappingNullReference ? 0 : (ComponentType)Target.Type; }
-        }
+        public ComponentType Type => IsWrappingNullReference ? 0 : (ComponentType)Target.Type;
 
-        public ICodeModule CodeModule
-        {
-            get { return new CodeModule(IsWrappingNullReference ? null : Target.CodeModule); }
-        }
+        public ICodeModule CodeModule => new CodeModule(IsWrappingNullReference ? null : Target.CodeModule);
 
-        public IVBE VBE
-        {
-            get { return new VBE(IsWrappingNullReference ? null : Target.VBE); }
-        }
+        public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
 
-        public IVBComponents Collection
-        {
-            get { return new VBComponents(IsWrappingNullReference ? null : Target.Collection); }
-        }
+        public IVBComponents Collection => new VBComponents(IsWrappingNullReference ? null : Target.Collection);
 
-        public IProperties Properties
-        {
-            get { return new Properties(IsWrappingNullReference ? null : Target.Properties); }
-        }
+        public IProperties Properties => new Properties(IsWrappingNullReference ? null : Target.Properties);
 
-        public bool HasOpenDesigner
-        {
-            get { return !IsWrappingNullReference && Target.HasOpenDesigner; }
-        }
+        public bool HasOpenDesigner => !IsWrappingNullReference && Target.HasOpenDesigner;
 
-        public string DesignerId
-        {
-            get { return IsWrappingNullReference ? string.Empty : Target.DesignerID; }
-        }
+        public string DesignerId => IsWrappingNullReference ? string.Empty : Target.DesignerID;
 
         public string Name
         {
-            get { return IsWrappingNullReference ? string.Empty : Target.Name; }
-            set { Target.Name = value; }
+            get => IsWrappingNullReference ? string.Empty : Target.Name;
+            set => Target.Name = value;
         }
 
-        public IControls Controls
-        {
-            get
-            {
-                throw new NotImplementedException();
-                //var designer = IsWrappingNullReference
-                //    ? null
-                //    : Target.Designer as VB.UserForm;
+        public IControls Controls => throw new NotImplementedException();
 
-                //return designer == null 
-                //    ? new Controls(null) 
-                //    : new Controls(designer.Controls);
-            }
-        }
-
-        public IControls SelectedControls
-        {
-            get
-            {
-                throw new NotImplementedException();
-                //var designer = IsWrappingNullReference
-                //    ? null
-                //    : Target.Designer as VB.UserForm;
-
-                //return designer == null 
-                //    ? new Controls(null) 
-                //    : new Controls(designer.Selected);
-            }
-        }
+        public IControls SelectedControls => throw new NotImplementedException();
 
         public bool HasDesigner
         {
@@ -110,14 +63,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             Target.Activate();
         }
 
-        public bool IsSaved
-        {
-            get
-            {
-                throw new NotImplementedException();
-                /*return !IsWrappingNullReference && Target.Saved;*/
-            }
-        }
+        public bool IsSaved => throw new NotImplementedException();
 
         public void Export(string path)
         {
