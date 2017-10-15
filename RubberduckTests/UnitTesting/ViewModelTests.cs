@@ -14,7 +14,6 @@ namespace RubberduckTests.UnitTesting
     public class ViewModelTests
     {
         [TestMethod]
-        [TestCategory("Unit Testing")]
         public void UIDiscoversAnnotatedTestMethods()
         {
             var testMethods = @"'@TestMethod
@@ -28,7 +27,7 @@ End Sub";
 
             var vbe = builder.Build().Object;
 
-            var parser = MockParser.Create(vbe);
+            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
             var model = new TestExplorerModel(vbe, parser.State);
 
             parser.Parse(new CancellationTokenSource());
@@ -38,7 +37,6 @@ End Sub";
         }
 
         [TestMethod]
-        [TestCategory("Unit Testing")]
         public void UIRemovesRemovedTestMethods()
         {
             var testMethods = @"'@TestMethod
@@ -52,7 +50,7 @@ End Sub";
             builder.AddProject(project.Build());
 
             var vbe = builder.Build().Object;
-            var parser = MockParser.Create(vbe);
+            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
 
             var model = new TestExplorerModel(vbe, parser.State);
 
@@ -70,7 +68,6 @@ End Sub";
         }
 
         [TestMethod]
-        [TestCategory("Unit Testing")]
         public void UISetsProgressBarColor_LimeGreenForSuccess()
         {
             var testMethods = @"'@TestMethod
@@ -83,7 +80,7 @@ End Sub";
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
-            var parser = MockParser.Create(vbe);
+            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
 
             var model = new TestExplorerModel(vbe, parser.State);
 
@@ -97,7 +94,6 @@ End Sub";
         }
 
         [TestMethod]
-        [TestCategory("Unit Testing")]
         public void UISetsProgressBarColor_RedForFailure()
         {
             var testMethods = @"'@TestMethod
@@ -109,7 +105,7 @@ End Sub";
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
-            var parser = MockParser.Create(vbe);
+            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
 
             var model = new TestExplorerModel(vbe, parser.State);
 
@@ -123,7 +119,6 @@ End Sub";
         }
 
         [TestMethod]
-        [TestCategory("Unit Testing")]
         public void UISetsProgressBarColor_GoldForInconclusive()
         {
             var testMethods = @"'@TestMethod
@@ -135,7 +130,7 @@ End Sub";
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
-            var parser = MockParser.Create(vbe);
+            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
 
             var model = new TestExplorerModel(vbe, parser.State);
 
@@ -149,7 +144,6 @@ End Sub";
         }
 
         [TestMethod]
-        [TestCategory("Unit Testing")]
         public void UISetsProgressBarColor_RedForFailure_IncludesNonFailingTests()
         {
             var testMethods = @"'@TestMethod
@@ -173,7 +167,7 @@ End Sub";
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
-            var parser = MockParser.Create(vbe);
+            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
 
             var model = new TestExplorerModel(vbe, parser.State);
 
@@ -194,7 +188,6 @@ End Sub";
         }
 
         [TestMethod]
-        [TestCategory("Unit Testing")]
         public void UISetsProgressBarColor_GoldForInconclusive_IncludesNonFailingAndNonInconclusiveTests()
         {
             var testMethods = @"'@TestMethod
@@ -214,7 +207,7 @@ End Sub";
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
-            var parser = MockParser.Create(vbe);
+            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
 
             var model = new TestExplorerModel(vbe, parser.State);
 
@@ -233,7 +226,6 @@ End Sub";
         }
 
         [TestMethod]
-        [TestCategory("Unit Testing")]
         public void UISetsProgressBarColor_LimeGreenForSuccess_IncludesIgnoredTests()
         {
             var testMethods = @"'@TestMethod
@@ -249,7 +241,7 @@ End Sub";
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
-            var parser = MockParser.Create(vbe);
+            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
 
             var model = new TestExplorerModel(vbe, parser.State);
 
@@ -266,7 +258,6 @@ End Sub";
         }
 
         [TestMethod]
-        [TestCategory("Unit Testing")]
         public void AddingExecutedTestUpdatesExecutedCount()
         {
             var testMethods = @"'@TestMethod
@@ -278,7 +269,7 @@ End Sub";
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
-            var parser = MockParser.Create(vbe);
+            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
 
             var model = new TestExplorerModel(vbe, parser.State);
 
@@ -294,7 +285,6 @@ End Sub";
         }
 
         [TestMethod]
-        [TestCategory("Unit Testing")]
         public void AddingExecutedTestUpdatesLastRun()
         {
             var testMethods = @"'@TestMethod
@@ -306,7 +296,7 @@ End Sub";
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
-            var parser = MockParser.Create(vbe);
+            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
 
             var model = new TestExplorerModel(vbe, parser.State);
 
@@ -322,7 +312,6 @@ End Sub";
         }
 
         [TestMethod]
-        [TestCategory("Unit Testing")]
         public void ClearLastRun()
         {
             var testMethods = @"'@TestMethod
@@ -334,7 +323,7 @@ End Sub";
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
-            var parser = MockParser.Create(vbe);
+            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
 
             var model = new TestExplorerModel(vbe, parser.State);
 

@@ -1,8 +1,6 @@
-﻿using Antlr4.Runtime;
-using System;
-using System.Collections.Generic;
+﻿using System;
 
-namespace Rubberduck.Parsing.PreProcessing
+namespace Rubberduck.Parsing.Preprocessing
 {
     public sealed class DateValue : IValue
     {
@@ -62,14 +60,6 @@ namespace Rubberduck.Parsing.PreProcessing
                     return _value.ToLongTimeString();
                 }
                 return _value.ToShortDateString();
-            }
-        }
-
-        public IEnumerable<IToken> AsTokens
-        {
-            get
-            {
-                return new List<IToken>();
             }
         }
 

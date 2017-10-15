@@ -70,15 +70,12 @@ namespace Rubberduck
             _parser.State.StateChanged -= OnParserStateChanged;
             _selectionService.SelectedDeclarationChanged -= OnSelectedDeclarationChange;
 
-            RemoveMenus();
-        }
-
-        private void RemoveMenus()
-        {
-            foreach (var menu in _menus.Where(menu => menu.Item != null))
-            {
-                menu.RemoveMenu();
-            }
+            // note: doing this wrecks the teardown process. counter-intuitive? sure. but hey it works.
+            //foreach (var menu in _menus.Where(menu => menu.Item != null))
+            //{
+            //    menu.RemoveChildren();
+            //    menu.Item.Delete();
+            //}
         }
     }
 }

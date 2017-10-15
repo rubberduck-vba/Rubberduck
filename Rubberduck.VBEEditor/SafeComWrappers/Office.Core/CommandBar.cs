@@ -11,61 +11,76 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
         {
         }
 
-        public int Id => IsWrappingNullReference ? 0 : Target.Id;
+        public int Id
+        {
+            get { return IsWrappingNullReference ? 0 : Target.Id; }
+        }
 
-        public bool IsBuiltIn => !IsWrappingNullReference && Target.BuiltIn;
+        public bool IsBuiltIn
+        {
+            get { return !IsWrappingNullReference && Target.BuiltIn; }
+        }
 
-        public ICommandBarControls Controls => new CommandBarControls(IsWrappingNullReference ? null : Target.Controls);
+        public ICommandBarControls Controls
+        {
+            get { return new CommandBarControls(IsWrappingNullReference ? null : Target.Controls); }
+        }
 
         public bool IsEnabled
         {
-            get => !IsWrappingNullReference && Target.Enabled;
+            get { return !IsWrappingNullReference && Target.Enabled; }
             set { if (!IsWrappingNullReference) Target.Enabled = value; }
         }
 
         public int Height
         {
-            get => IsWrappingNullReference ? 0 : Target.Height;
+            get { return IsWrappingNullReference ? 0 : Target.Height; }
             set { if (!IsWrappingNullReference) Target.Height = value; }
         }
 
-        public int Index => IsWrappingNullReference ? 0 : Target.Index;
+        public int Index
+        {
+            get { return IsWrappingNullReference ? 0 : Target.Index; }
+        }
 
         public int Left
         {
-            get => IsWrappingNullReference ? 0 : Target.Left;
+            get { return IsWrappingNullReference ? 0 : Target.Left; }
             set { if (!IsWrappingNullReference) Target.Left = value; }
         }
 
         public string Name
         {
-            get => IsWrappingNullReference ? string.Empty : Target.Name;
+            get { return IsWrappingNullReference ? string.Empty : Target.Name; }
             set { if (!IsWrappingNullReference) Target.Name = value; }
         }
 
         public CommandBarPosition Position
         {
-            get => IsWrappingNullReference ? 0 : (CommandBarPosition)Target.Position;
+            get { return IsWrappingNullReference ? 0 : (CommandBarPosition)Target.Position; }
             set { if (!IsWrappingNullReference) Target.Position = (Microsoft.Office.Core.MsoBarPosition)value; }
         }
 
         public int Top
         {
-            get => IsWrappingNullReference ? 0 : Target.Top;
+            get { return IsWrappingNullReference ? 0 : Target.Top; }
             set { if (!IsWrappingNullReference) Target.Top = value; }
         }
 
-        public CommandBarType Type => IsWrappingNullReference ? 0 : (CommandBarType)Target.Type;
+        public CommandBarType Type
+        {
+            get { return IsWrappingNullReference ? 0 : (CommandBarType)Target.Type; }
+        }
 
         public bool IsVisible
         {
-            get => !IsWrappingNullReference && Target.Visible;
+            get { return !IsWrappingNullReference && Target.Visible; }
             set { if (!IsWrappingNullReference) Target.Visible = value; }
         }
 
         public int Width
         {
-            get => IsWrappingNullReference ? 0 : Target.Width;
+            get { return IsWrappingNullReference ? 0 : Target.Width; }
             set { if (!IsWrappingNullReference) Target.Width = value; }
         }
 

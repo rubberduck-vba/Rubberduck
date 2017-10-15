@@ -17,10 +17,6 @@ namespace Rubberduck.Settings
         bool TestExplorerVisibleOnStartup { get; set; }
         bool TodoExplorerVisibleOnStartup { get; set; }
 
-        bool CodeExplorer_SortByName { get; set; }
-        bool CodeExplorer_SortByCodeOrder { get; set; }
-        bool CodeExplorer_GroupByType { get; set; }
-
         bool IsWindowVisible(DockableToolwindowPresenter candidate);
     }
 
@@ -28,25 +24,18 @@ namespace Rubberduck.Settings
     public class WindowSettings : IWindowSettings, IEquatable<WindowSettings>
     {
         public WindowSettings()
-            : this(false, false, false, false, false, true, false, false)
-            // SortByName and SortByLocation are opposites; SortByName should start as True.
+            : this(false, false, false, false, false)
         {
             //empty constructor needed for serialization
         }
 
-        public WindowSettings(bool codeExplorerVisibleOnStartup, bool codeInspectionsVisibleOnStartup, 
-            bool sourceControlVisibleOnStartup, bool testExplorerVisibleOnStartup, bool todoExplorerVisibleOnStartup, 
-            bool codeExplorer_SortByName, bool codeExplorer_SortByCodeOrder, bool codeExplorer_GroupByType)
+        public WindowSettings(bool codeExplorerVisibleOnStartup, bool codeInspectionsVisibleOnStartup, bool sourceControlVisibleOnStartup, bool testExplorerVisibleOnStartup, bool todoExplorerVisibleOnStartup)
         {
             CodeExplorerVisibleOnStartup = codeExplorerVisibleOnStartup;
             CodeInspectionsVisibleOnStartup = codeInspectionsVisibleOnStartup;
             SourceControlVisibleOnStartup = sourceControlVisibleOnStartup;
             TestExplorerVisibleOnStartup = testExplorerVisibleOnStartup;
             TodoExplorerVisibleOnStartup = todoExplorerVisibleOnStartup;
-
-            CodeExplorer_SortByName = codeExplorer_SortByName;
-            CodeExplorer_SortByCodeOrder = codeExplorer_SortByCodeOrder;
-            CodeExplorer_GroupByType = codeExplorer_GroupByType;
         }
 
         public bool CodeExplorerVisibleOnStartup { get; set; }
@@ -54,10 +43,6 @@ namespace Rubberduck.Settings
         public bool SourceControlVisibleOnStartup { get; set; }
         public bool TestExplorerVisibleOnStartup { get; set; }
         public bool TodoExplorerVisibleOnStartup { get; set; }
-
-        public bool CodeExplorer_SortByName { get; set; }
-        public bool CodeExplorer_SortByCodeOrder { get; set; }
-        public bool CodeExplorer_GroupByType { get; set; }
 
         public bool IsWindowVisible(DockableToolwindowPresenter candidate)
         {
@@ -67,7 +52,7 @@ namespace Rubberduck.Settings
             {
                 return CodeExplorerVisibleOnStartup;
             }
-            if (candidate is InspectionResultsDockablePresenter)
+            if (candidate is CodeInspectionsDockablePresenter)
             {
                 return CodeInspectionsVisibleOnStartup;
             }
@@ -94,10 +79,7 @@ namespace Rubberduck.Settings
                    CodeInspectionsVisibleOnStartup == other.CodeInspectionsVisibleOnStartup &&
                    SourceControlVisibleOnStartup == other.SourceControlVisibleOnStartup &&
                    TestExplorerVisibleOnStartup == other.TestExplorerVisibleOnStartup &&
-                   TodoExplorerVisibleOnStartup == other.TodoExplorerVisibleOnStartup &&
-                   CodeExplorer_SortByName == other.CodeExplorer_SortByName &&
-                   CodeExplorer_SortByCodeOrder == other.CodeExplorer_SortByCodeOrder &&
-                   CodeExplorer_GroupByType == other.CodeExplorer_GroupByType;
+                   TodoExplorerVisibleOnStartup == other.TodoExplorerVisibleOnStartup;
         }
     }
 }

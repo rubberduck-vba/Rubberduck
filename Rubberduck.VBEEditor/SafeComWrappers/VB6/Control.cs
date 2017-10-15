@@ -1,3 +1,5 @@
+using VB = Microsoft.VB6.Interop.VBIDE;
+
 namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 {
     //public class Control : SafeComWrapper<VB.Control>, IControl

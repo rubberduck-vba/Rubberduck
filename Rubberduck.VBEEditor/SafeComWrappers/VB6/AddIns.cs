@@ -12,14 +12,25 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         {
         }
 
-        public int Count => IsWrappingNullReference ? 0 : Target.Count;
+        public int Count
+        {
+            get { return IsWrappingNullReference ? 0 : Target.Count; }
+        }
 
         public object Parent // todo: verify if this could be 'public Application Parent' instead
-            => IsWrappingNullReference ? null : Target.Parent;
+        {
+            get { return IsWrappingNullReference ? null : Target.Parent; }
+        }
 
-        public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
+        public IVBE VBE
+        {
+            get { return new VBE(IsWrappingNullReference ? null : Target.VBE); }
+        }
 
-        public IAddIn this[object index] => new AddIn(IsWrappingNullReference ? null : Target.Item(index));
+        public IAddIn this[object index]
+        {
+            get { return new AddIn(IsWrappingNullReference ? null : Target.Item(index)); }
+        }
 
         public void Update()
         {

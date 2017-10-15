@@ -9,6 +9,6 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
         {
         }
 
-        public override bool BeginGroup => true;
+        public override bool BeginGroup { get { return true; } }        
     }
 }

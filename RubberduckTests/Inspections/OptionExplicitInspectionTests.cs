@@ -1,9 +1,10 @@
 using System.Linq;
-using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Inspections;
+using Rubberduck.Inspections.QuickFixes;
+using Rubberduck.Inspections.Resources;
 using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
@@ -17,12 +18,12 @@ namespace RubberduckTests.Inspections
         {
             const string inputCode = @"";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new OptionExplicitInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+            var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
         }
@@ -33,12 +34,12 @@ namespace RubberduckTests.Inspections
         {
             const string inputCode = @"Option Explicit";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new OptionExplicitInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+            var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(0, inspectionResults.Count());
         }
@@ -55,12 +56,11 @@ namespace RubberduckTests.Inspections
                 .AddComponent("Class2", ComponentType.ClassModule, inputCode)
                 .Build();
             var vbe = builder.AddProject(project).Build();
-
+            
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new OptionExplicitInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+            var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(2, inspectionResults.Count());
         }
@@ -78,14 +78,48 @@ namespace RubberduckTests.Inspections
                 .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
-
+            
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new OptionExplicitInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+            var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void NotAlreadySpecified_QuickFixWorks()
+        {
+            const string inputCode = @"";
+            const string expectedCode =
+@"Option Explicit
+
+";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new OptionExplicitInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            inspectionResults.First().QuickFixes.First().Fix();
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void OptionExplicit_NoIgnoreQuickFix()
+        {
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleModule(string.Empty, ComponentType.ClassModule, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new OptionExplicitInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            Assert.IsFalse(inspectionResults.ElementAt(0).QuickFixes.Any(q => q is IgnoreOnceQuickFix));
         }
 
         [TestMethod]

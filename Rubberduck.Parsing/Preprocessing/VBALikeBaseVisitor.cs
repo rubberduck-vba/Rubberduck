@@ -21,7 +21,7 @@ using Antlr4.Runtime.Tree;
 // Missing XML comment for publicly visible type or member '...'
 #pragma warning disable 1591
 
-namespace Rubberduck.Parsing.PreProcessing {
+namespace Rubberduck.Parsing.Preprocessing {
     /// <summary>
 /// This class provides an empty implementation of <see cref="IVBALikeVisitor{Result}"/>,
 /// which can be extended to create a visitor which only needs to handle a subset

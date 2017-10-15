@@ -33,7 +33,7 @@ namespace Rubberduck.UI.Command.Refactorings
             DeclarationType.PropertySet
         };
 
-        protected override bool EvaluateCanExecute(object parameter)
+        protected override bool CanExecuteImpl(object parameter)
         {
             var pane = Vbe.ActiveCodePane;
             {
@@ -58,7 +58,7 @@ namespace Rubberduck.UI.Command.Refactorings
             }
         }
 
-        protected override void OnExecute(object parameter)
+        protected override void ExecuteImpl(object parameter)
         {
             var pane = Vbe.ActiveCodePane;
             var module = pane.CodeModule;

@@ -69,11 +69,10 @@ namespace Rubberduck.UI.Refactorings.Rename
 
                 var tokenValues = typeof(Tokens).GetFields().Select(item => item.GetValue(null)).Cast<string>().Select(item => item);
 
-                return !(NewName.Equals(Target.IdentifierName, StringComparison.InvariantCultureIgnoreCase)) &&
+                return NewName != Target.IdentifierName &&
                        char.IsLetter(NewName.FirstOrDefault()) &&
                        !tokenValues.Contains(NewName, StringComparer.InvariantCultureIgnoreCase) &&
-                       !NewName.Any(c => !char.IsLetterOrDigit(c) && c != '_') &&
-                       NewName.Length <= (Target.DeclarationType.HasFlag(DeclarationType.Module) ? Declaration.MaxModuleNameLength : Declaration.MaxMemberNameLength);
+                       !NewName.Any(c => !char.IsLetterOrDigit(c) && c != '_');
             }
         }
 

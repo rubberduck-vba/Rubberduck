@@ -53,7 +53,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             base.EvaluateCanExecute(state);
         }
 
-        private void OnSelectionChange(object sender, DeclarationChangedEventArgs e)
+        public void OnSelectionChange(object sender, DeclarationChangedEventArgs e)
         {
             var caption = e.ActivePane != null
                 ? _formatter.Format(e.ActivePane, e.Declaration)
@@ -62,12 +62,11 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             if (string.IsNullOrEmpty(caption) && e.VBComponent != null)
             {
                 //Fallback caption for selections in the Project window.
-                caption = $"{e.VBComponent.ParentProject.Name}.{e.VBComponent.Name} ({e.VBComponent.Type})";
+                caption = string.Format("{0}.{1} ({2})", e.VBComponent.ParentProject.Name, e.VBComponent.Name, e.VBComponent.Type);
             }
 
-            var refCount = e.Declaration?.References.Count() ?? 0;
-            var description = e.Declaration?.DescriptionString ?? string.Empty;
-            SetContextSelectionCaption(caption, refCount, description);
+            var refCount = e.Declaration == null ? 0 : e.Declaration.References.Count();
+            SetContextSelectionCaption(caption, refCount);
             EvaluateCanExecute(_parser.State, e.Declaration);
         }
 
@@ -97,7 +96,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             SetStatusLabelCaption(caption, errorCount);
         }
 
-        private void SetStatusLabelCaption(string caption, int? errorCount = null)
+        public void SetStatusLabelCaption(string caption, int? errorCount = null)
         {
             var reparseCommandButton = FindChildByTag(typeof(ReparseCommandMenuItem).FullName) as ReparseCommandMenuItem;
             if (reparseCommandButton == null) { return; }
@@ -117,17 +116,18 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             Localize();
         }
 
-        private void SetContextSelectionCaption(string caption, int contextReferenceCount, string description)
+        public void SetContextSelectionCaption(string caption, int contextReferenceCount)
         {
             var contextLabel = FindChildByTag(typeof(ContextSelectionLabelMenuItem).FullName) as ContextSelectionLabelMenuItem;
+            if (contextLabel == null) { return; }
+
             var contextReferences = FindChildByTag(typeof(ReferenceCounterLabelMenuItem).FullName) as ReferenceCounterLabelMenuItem;
-            var contextDescription = FindChildByTag(typeof(ContextDescriptionLabelMenuItem).FullName) as ContextDescriptionLabelMenuItem;
+            if (contextReferences == null) { return; }
 
             UiDispatcher.Invoke(() =>
             {
-                contextLabel?.SetCaption(caption);
-                contextReferences?.SetCaption(contextReferenceCount);
-                contextDescription?.SetCaption(description);
+                contextLabel.SetCaption(caption);
+                contextReferences.SetCaption(contextReferenceCount);
             });
             Localize();
         }
@@ -138,7 +138,10 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             _parser.State.StateChanged -= OnParserStateChanged;
             _parser.State.StatusMessageUpdate -= OnParserStatusMessageUpdate;
 
-            RemoveCommandBar();
+            //note: doing this wrecks the teardown process. counter-intuitive? sure. but hey it works.
+            //RemoveChildren();
+            //Item.Delete();
+            //Item.Release(true);
         }
     }
 
@@ -147,7 +150,6 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
         RequestReparse,
         ShowErrors,
         ContextStatus,
-        ContextDescription,
         ContextRefCount,
     }
 }

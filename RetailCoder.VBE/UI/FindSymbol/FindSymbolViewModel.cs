@@ -14,7 +14,8 @@ namespace Rubberduck.UI.FindSymbol
     {
         private static readonly DeclarationType[] ExcludedTypes =
         {
-            DeclarationType.Control,
+            DeclarationType.Control, 
+            DeclarationType.ModuleOption,
             DeclarationType.Project
         };
 
@@ -59,13 +60,6 @@ namespace Rubberduck.UI.FindSymbol
                 return;
             }
 
-            var results = GetSearchResultCollectionOfString(value);
-
-            MatchResults = new ObservableCollection<SearchResult>(results);
-        }
-
-        private IEnumerable<SearchResult> GetSearchResultCollectionOfString(string value)
-        {
             var lower = value.ToLowerInvariant();
             var results = _declarations
                 .Where(declaration => !ExcludedTypes.Contains(declaration.DeclarationType)
@@ -73,7 +67,7 @@ namespace Rubberduck.UI.FindSymbol
                 .OrderBy(declaration => declaration.IdentifierName.ToLowerInvariant())
                 .Select(declaration => new SearchResult(declaration, _cache[declaration]));
 
-            return results;
+            MatchResults = new ObservableCollection<SearchResult>(results);
         }
 
         private string _searchString;
@@ -82,9 +76,6 @@ namespace Rubberduck.UI.FindSymbol
             get { return _searchString; }
             set
             {
-                SearchResult firstResult = GetSearchResultCollectionOfString(value).FirstOrDefault();
-                SelectedItem = firstResult;
-
                 if (_searchString != value)
                 {
                     _searchString = value;

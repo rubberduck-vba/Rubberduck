@@ -8,12 +8,13 @@ namespace Rubberduck.Refactorings.ExtractInterface
 {
     public class ExtractInterfaceModel
     {
-        public RubberduckParserState State { get; }
-        public Declaration TargetDeclaration { get; }
+        private readonly Declaration _targetDeclaration;
+        public Declaration TargetDeclaration { get { return _targetDeclaration; } }
 
         public string InterfaceName { get; set; }
 
-        public IEnumerable<InterfaceMember> Members { get; set; } = new List<InterfaceMember>();
+        private IEnumerable<InterfaceMember> _members = new List<InterfaceMember>();
+        public IEnumerable<InterfaceMember> Members { get { return _members; } set { _members = value; } }
 
         private static readonly DeclarationType[] ModuleTypes =
         {
@@ -22,7 +23,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
             DeclarationType.UserForm
         };
 
-        public static readonly DeclarationType[] MemberTypes =
+        private static readonly DeclarationType[] MemberTypes =
         {
             DeclarationType.Procedure,
             DeclarationType.Function,
@@ -33,27 +34,27 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
         public ExtractInterfaceModel(RubberduckParserState state, QualifiedSelection selection)
         {
-            State = state;
-            var declarations = state.AllUserDeclarations.ToList();
-            var candidates = declarations.Where(item => ModuleTypes.Contains(item.DeclarationType)).ToList();
+            var declarations = state.AllDeclarations.ToList();
+            var candidates = declarations.Where(item => !item.IsBuiltIn && ModuleTypes.Contains(item.DeclarationType)).ToList();
 
-            TargetDeclaration = candidates.SingleOrDefault(item => 
+            _targetDeclaration = candidates.SingleOrDefault(item => 
                         item.QualifiedSelection.QualifiedName.Equals(selection.QualifiedName));
 
-            if (TargetDeclaration == null)
+            if (_targetDeclaration == null)
             {
                 return;
             }
 
             InterfaceName = "I" + TargetDeclaration.IdentifierName;
 
-            Members = declarations.Where(item => item.ProjectId == TargetDeclaration.ProjectId
-                                                 && item.ComponentName == TargetDeclaration.ComponentName
-                                                 && (item.Accessibility == Accessibility.Public || item.Accessibility == Accessibility.Implicit)
-                                                 && MemberTypes.Contains(item.DeclarationType))
+            _members = declarations.Where(item => !item.IsBuiltIn
+                                                  && item.ProjectId == _targetDeclaration.ProjectId
+                                                  && item.ComponentName == _targetDeclaration.ComponentName
+                                                  && (item.Accessibility == Accessibility.Public || item.Accessibility == Accessibility.Implicit)
+                                                  && MemberTypes.Contains(item.DeclarationType))
                                    .OrderBy(o => o.Selection.StartLine)
                                    .ThenBy(t => t.Selection.StartColumn)
-                                   .Select(d => new InterfaceMember(d))
+                                   .Select(d => new InterfaceMember(d, declarations))
                                    .ToList();
         }
     }

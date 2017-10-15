@@ -5,11 +5,13 @@ namespace Rubberduck.VBEditor.SafeComWrappers
 {
     public class ReferenceEventArgs : EventArgs
     {
+        private readonly IReference _reference;
+
         public ReferenceEventArgs(IReference reference)
         {
-            Reference = reference;
+            _reference = reference;
         }
 
-        public IReference Reference { get; }
+        public IReference Reference { get { return _reference; } }
     }
 }

@@ -48,7 +48,7 @@ namespace Rubberduck.UI.Command
             "End Sub\r\n"
             );
 
-        protected override bool EvaluateCanExecute(object parameter)
+        protected override bool CanExecuteImpl(object parameter)
         {
             var pane = _vbe.ActiveCodePane;
             {
@@ -78,7 +78,7 @@ namespace Rubberduck.UI.Command
             }
         }
 
-        protected override void OnExecute(object parameter)
+        protected override void ExecuteImpl(object parameter)
         {
             var pane = _vbe.ActiveCodePane;
             if (pane.IsWrappingNullReference)

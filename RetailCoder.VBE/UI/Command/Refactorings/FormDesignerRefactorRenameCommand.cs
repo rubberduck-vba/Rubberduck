@@ -1,11 +1,10 @@
 using System.Linq;
 using System.Runtime.InteropServices;
-using Rubberduck.Parsing.Grammar;
+using System.Windows.Forms;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI.Refactorings.Rename;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command.Refactorings
@@ -13,26 +12,28 @@ namespace Rubberduck.UI.Command.Refactorings
     [ComVisible(false)]
     public class FormDesignerRefactorRenameCommand : RefactorCommandBase
     {
+        private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
 
         public FormDesignerRefactorRenameCommand(IVBE vbe, RubberduckParserState state, IMessageBox messageBox) 
             : base (vbe)
         {
+            _vbe = vbe;
             _state = state;
             _messageBox = messageBox;
         }
 
-        protected override bool EvaluateCanExecute(object parameter)
+        protected override bool CanExecuteImpl(object parameter)
         {
-            return _state.Status == ParserState.Ready && GetTarget() != null;
+            return _state.Status == ParserState.Ready;
         }
 
-        protected override void OnExecute(object parameter)
+        protected override void ExecuteImpl(object parameter)
         {
             using (var view = new RenameDialog(new RenameViewModel(_state)))
             {
-                var factory = new RenamePresenterFactory(Vbe, view, _state);
+                var factory = new RenamePresenterFactory(Vbe, view, _state, _messageBox);
                 var refactoring = new RenameRefactoring(Vbe, factory, _messageBox, _state);
 
                 var target = GetTarget();
@@ -44,37 +45,35 @@ namespace Rubberduck.UI.Command.Refactorings
             }
         }
 
-        private Declaration GetTarget(QualifiedModuleName? qualifiedModuleName = null)
+        private Declaration GetTarget()
         {
-            (var projectId, var component) = qualifiedModuleName.HasValue 
-                ? (qualifiedModuleName.Value.ProjectId, qualifiedModuleName.Value.Component)
-                : (Vbe.ActiveVBProject.ProjectId, Vbe.SelectedVBComponent);
-                        
-            if (component?.HasDesigner ?? false)
+            var project = _vbe.ActiveVBProject;
+            var component = _vbe.SelectedVBComponent;
             {
-                if (qualifiedModuleName.HasValue)
+                if (Vbe.SelectedVBComponent != null && Vbe.SelectedVBComponent.HasDesigner)
                 {
-                    return _state.DeclarationFinder
-                        .MatchName(qualifiedModuleName.Value.Name)
-                        .SingleOrDefault(m => m.ProjectId == projectId
-                            && m.DeclarationType.HasFlag(qualifiedModuleName.Value.ComponentType)
-                            && m.ComponentName == component.Name);
+                    var designer = ((dynamic)component.Target).Designer;
+
+                    if (designer.selected.count == 1)
+                    {
+                        var control = designer.selected.item(0);
+                        var result = _state.AllUserDeclarations
+                            .FirstOrDefault(item => item.DeclarationType == DeclarationType.Control
+                                                    && project.HelpFile == item.ProjectId
+                                                    && item.ComponentName == component.Name
+                                                    && item.IdentifierName == control.Name);
+
+                        Marshal.ReleaseComObject(control);
+                        Marshal.ReleaseComObject(designer);
+                        return result;
+                    } else {
+                        var message = string.Format(RubberduckUI.RenameDialog_AmbiguousSelection);
+                        _messageBox.Show(message, RubberduckUI.RenameDialog_Caption, MessageBoxButtons.OK,
+                            MessageBoxIcon.Exclamation);
+                    }
                 }
-                
-                var selectedCount = component.SelectedControls.Count;
-                if (selectedCount > 1) { return null; }
-                
-                // Cannot use DeclarationType.UserForm, parser only assigns UserForms the ClassModule flag
-                (var selectedType, var selectedName) = selectedCount == 0
-                    ? (DeclarationType.ClassModule, component.Name)
-                    : (DeclarationType.Control, component.SelectedControls[0].Name);
-                
-                return _state.DeclarationFinder
-                    .MatchName(selectedName)
-                    .SingleOrDefault(m => m.ProjectId == projectId
-                        && m.DeclarationType.HasFlag(selectedType)
-                        && m.ComponentName == component.Name);
-             }
+            }
+
             return null;
         }
     }

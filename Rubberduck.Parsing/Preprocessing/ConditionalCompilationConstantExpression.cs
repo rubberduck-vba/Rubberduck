@@ -1,22 +1,19 @@
-﻿using Antlr4.Runtime;
-using System.Collections.Generic;
-
-namespace Rubberduck.Parsing.PreProcessing
+﻿namespace Rubberduck.Parsing.Preprocessing
 {
     public sealed class ConditionalCompilationConstantExpression : Expression
     {
-        private readonly IExpression _tokens;
+        private readonly IExpression _tokenText;
         private readonly IExpression _identifier;
         private readonly IExpression _expression;
         private readonly SymbolTable<string, IValue> _symbolTable;
 
         public ConditionalCompilationConstantExpression(
-            IExpression tokens,
+            IExpression tokenText,
             IExpression identifier, 
             IExpression expression,
             SymbolTable<string, IValue> symbolTable)
         {
-            _tokens = tokens;
+            _tokenText = tokenText;
             _identifier = identifier;
             _expression = expression;
             _symbolTable = symbolTable;
@@ -30,7 +27,7 @@ namespace Rubberduck.Parsing.PreProcessing
             _symbolTable.Add(identifier, constantValue);
             return new LivelinessExpression(
                 isAlive: new ConstantExpression(new BoolValue(false)),
-                tokens: _tokens).Evaluate();
+                code: _tokenText).Evaluate();
         }
     }
 }

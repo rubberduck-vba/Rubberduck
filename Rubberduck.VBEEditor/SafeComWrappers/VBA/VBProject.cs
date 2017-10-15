@@ -13,43 +13,70 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
         }
 
-        public IApplication Application => new Application(IsWrappingNullReference ? null : Target.Application);
+        public IApplication Application
+        {
+            get { return new Application(IsWrappingNullReference ? null : Target.Application); }
+        }
 
-        public IApplication Parent => new Application(IsWrappingNullReference ? null : Target.Parent);
+        public IApplication Parent
+        {
+            get { return new Application(IsWrappingNullReference ? null : Target.Parent); }
+        }
 
-        public string ProjectId => HelpFile;
+        public string ProjectId { get { return HelpFile; } }
 
         public string HelpFile
         {
-            get => IsWrappingNullReference ? string.Empty : Target.HelpFile;
+            get { return IsWrappingNullReference ? string.Empty : Target.HelpFile; }
             set { if (!IsWrappingNullReference) Target.HelpFile = value; }
         }
 
         public string Description 
         {
-            get => IsWrappingNullReference ? string.Empty : Target.Description;
+            get { return IsWrappingNullReference ? string.Empty : Target.Description; }
             set { if (!IsWrappingNullReference) Target.Description = value; } 
         }
 
         public string Name
         {
-            get => IsWrappingNullReference ? string.Empty : Target.Name;
+            get { return IsWrappingNullReference ? string.Empty : Target.Name; }
             set { if (!IsWrappingNullReference) Target.Name = value; }
         }
 
-        public EnvironmentMode Mode => IsWrappingNullReference ? 0 : (EnvironmentMode)Target.Mode;
+        public EnvironmentMode Mode
+        {
+            get { return IsWrappingNullReference ? 0 : (EnvironmentMode)Target.Mode; }
+        }
 
-        public IVBProjects Collection => new VBProjects(IsWrappingNullReference ? null : Target.Collection);
+        public IVBProjects Collection
+        {
+            get { return new VBProjects(IsWrappingNullReference ? null : Target.Collection); }
+        }
 
-        public IReferences References => new References(IsWrappingNullReference ? null : Target.References);
+        public IReferences References
+        {
+            get { return new References(IsWrappingNullReference ? null : Target.References); }
+        }
 
-        public IVBComponents VBComponents => new VBComponents(IsWrappingNullReference || Protection == ProjectProtection.Locked ? null : Target.VBComponents);
+        public IVBComponents VBComponents
+        {
+            get { return new VBComponents(IsWrappingNullReference ? null : Target.VBComponents); }
+        }
 
-        public ProjectProtection Protection => IsWrappingNullReference ? 0 : (ProjectProtection)Target.Protection;
+        public ProjectProtection Protection
+        {
+            get { return IsWrappingNullReference ? 0 : (ProjectProtection)Target.Protection; }
+        }
 
-        public bool IsSaved => !IsWrappingNullReference && Target.Saved;
+        public bool IsSaved
+        {
+            get { return !IsWrappingNullReference && Target.Saved; }
+        }
 
-        public ProjectType Type => IsWrappingNullReference ? 0 : (ProjectType)Target.Type;
+        public ProjectType Type
+        {
+            get { return IsWrappingNullReference ? 0 : (ProjectType)Target.Type; }
+        }
 
         public string FileName
         {
@@ -67,9 +94,15 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             }
         }
 
-        public string BuildFileName => IsWrappingNullReference ? string.Empty : Target.BuildFileName;
+        public string BuildFileName
+        {
+            get { return IsWrappingNullReference ? string.Empty : Target.BuildFileName; }
+        }
 
-        public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
+        public IVBE VBE
+        {
+            get { return new VBE(IsWrappingNullReference ? null : Target.VBE); }
+        }
 
         public void SaveAs(string fileName)
         {

@@ -434,7 +434,6 @@ end sub
         {
 
             [TestMethod]
-            [TestCategory("ExtractMethodModelTests")]
             public void testSelection()
             {
                 IEnumerable<int> list = new List<int> { 2, 3, 4, 6, 8, 9, 10, 12, 13, 15 };
@@ -443,7 +442,6 @@ end sub
 
             [TestMethod]
             [ExpectedException(typeof(ArgumentException))]
-            [TestCategory("ExtractMethodModelTests")]
             public void isUnordered()
             {
                 IEnumerable<int> list = new List<int> { 2, 3, 4, 6, 7, 9, 8, 12, 13, 15 };
@@ -451,7 +449,6 @@ end sub
             }
 
             [TestMethod]
-            [TestCategory("ExtractMethodModelTests")]
             public void emptyList()
             {
                 IEnumerable<int> list = new List<int> { };
@@ -460,7 +457,6 @@ end sub
             }
 
             [TestMethod]
-            [TestCategory("ExtractMethodModelTests")]
             public void listOfSingleItem()
             {
                 IEnumerable<int> list = new List<int> { 2 };
@@ -475,7 +471,6 @@ end sub
             }
 
             [TestMethod]
-            [TestCategory("ExtractMethodModelTests")]
             public void testingUsefulList()
             {
                 IEnumerable<int> list = new List<int> { 2, 3, 4, 6, 8, 9, 10, 12, 13, 15 };

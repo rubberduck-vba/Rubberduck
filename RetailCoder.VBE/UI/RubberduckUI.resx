@@ -181,6 +181,9 @@
     <value>Please specify new name for {0} '{1}'.</value>
     <comment>0: DeclarationType; 1: IdentifierName</comment>
   </data>
+  <data name="RenameDialog_ModuleRenameError" xml:space="preserve">
+    <value>Could not rename module.</value>
+  </data>
   <data name="RenameDialog_TitleText" xml:space="preserve">
     <value>Rename identifier</value>
   </data>
@@ -201,6 +204,9 @@
   </data>
   <data name="SettingsInstructions_TodoSettings" xml:space="preserve">
     <value>Configure markers to be recognized in comments.</value>
+  </data>
+  <data name="RenameDialog_ProjectRenameError" xml:space="preserve">
+    <value>Could not rename project.</value>
   </data>
   <data name="DeclarationType_LineLabel" xml:space="preserve">
     <value>line label</value>
@@ -503,7 +509,7 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
     <value>Class module (.cls)</value>
   </data>
   <data name="CodeExplorer_AddFormText" xml:space="preserve">
-    <value>UserForm (.frm)</value>
+    <value>User form (.frm)</value>
     <comment>TC</comment>
   </data>
   <data name="CodeExplorer_AddStdModuleText" xml:space="preserve">
@@ -662,6 +668,15 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   </data>
   <data name="TodoSettings_TokenListLabel" xml:space="preserve">
     <value>Token List:</value>
+  </data>
+  <data name="CodeInspectionSettings_CodeQualityIssues" xml:space="preserve">
+    <value>Code Quality Issues</value>
+  </data>
+  <data name="CodeInspectionSettings_LanguageOpportunities" xml:space="preserve">
+    <value>Language Opportunities</value>
+  </data>
+  <data name="CodeInspectionSettings_MaintainabilityAndReadabilityIssues" xml:space="preserve">
+    <value>Maintainability and Readability Issues</value>
   </data>
   <data name="Navigation" xml:space="preserve">
     <value>Navigation</value>
@@ -849,6 +864,21 @@ Are you sure you want to proceed with this rename?</value>
   </data>
   <data name="SourceControl_MergeFormTitle" xml:space="preserve">
     <value>Merge branches</value>
+  </data>
+  <data name="CodeInspectionSeverity_DoNotShow" xml:space="preserve">
+    <value>Do Not Show</value>
+  </data>
+  <data name="CodeInspectionSeverity_Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="CodeInspectionSeverity_Hint" xml:space="preserve">
+    <value>Hint</value>
+  </data>
+  <data name="CodeInspectionSeverity_Suggestion" xml:space="preserve">
+    <value>Suggestion</value>
+  </data>
+  <data name="CodeInspectionSeverity_Warning" xml:space="preserve">
+    <value>Warning</value>
   </data>
   <data name="SourceControl_NoRepoFound" xml:space="preserve">
     <value>No repository found.</value>
@@ -1227,8 +1257,14 @@ Are you sure you want to proceed with this rename?</value>
   <data name="GroupingStyle_ByOutcome" xml:space="preserve">
     <value>By outcome</value>
   </data>
+  <data name="GeneralSettings_AutoSaveLabel" xml:space="preserve">
+    <value>Auto Save:</value>
+  </data>
   <data name="GeneralSettings_HotkeysLabel" xml:space="preserve">
     <value>Hotkeys:</value>
+  </data>
+  <data name="GeneralSettings_AutoSaveEnabled" xml:space="preserve">
+    <value>Enable Auto Save</value>
   </data>
   <data name="Settings" xml:space="preserve">
     <value>Settings</value>
@@ -1237,7 +1273,6 @@ Are you sure you want to proceed with this rename?</value>
     <value>Parsing powered by ANTLR
 GitHub integration powered by LibGit2Sharp
 Syntax highlighting powered by AvalonEdit
-Native hooks powered by EasyHook
 Fugue icons by Yusuke Kamiyamane
 IDE icons from SharpDevelop
 WPF localization support by Grant Frisken</value>
@@ -1470,7 +1505,7 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
     <value>By marker</value>
   </data>
   <data name="DeclarationType_LibraryProcedure" xml:space="preserve">
-    <value>library procedure</value>
+    <value>Library procedure</value>
   </data>
   <data name="CodeExplorer_ShowSignaturesToolTip" xml:space="preserve">
     <value>Toggle signatures</value>
@@ -1529,13 +1564,13 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="CodeExplorer_Sort" xml:space="preserve">
     <value>Sort</value>
   </data>
-  <data name="CodeExplorer_SortStyle_ByName" xml:space="preserve">
-    <value>by Name</value>
+  <data name="SortStyle_ByName" xml:space="preserve">
+    <value>By name</value>
   </data>
-  <data name="CodeExplorer_SortStyle_ByType" xml:space="preserve">
-    <value>Group by Type</value>
+  <data name="SortStyle_ByType" xml:space="preserve">
+    <value>By type</value>
   </data>
-  <data name="CodeExplorer_SortStyle_ByCodeOrder" xml:space="preserve">
+  <data name="SortStyle_ByCodeOrder" xml:space="preserve">
     <value>As in module</value>
   </data>
   <data name="TestOutcome_Ignored" xml:space="preserve">
@@ -1659,25 +1694,25 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
     <value>Untracked</value>
   </data>
   <data name="SourceControl_CloneRepositoryDescription" xml:space="preserve">
-    <value>Clone a remote repository from a provided URL to the local disk. The repository will then be loaded into the active project.</value>
+    <value>Clones remote repository from provided URI. Have an (empty) project active in the editor.</value>
   </data>
   <data name="SourceControl_CloneRepositoryTitle" xml:space="preserve">
     <value>Clone Remote Repository</value>
   </data>
   <data name="SourceControl_InitializeRepositoryDescription" xml:space="preserve">
-    <value>Creates a new local repository from the active project.</value>
+    <value>Creates a new repository from the active project.</value>
   </data>
   <data name="SourceControl_InitializeRepositoryTitle" xml:space="preserve">
-    <value>Create New Local Repository</value>
+    <value>Initialize New Repository</value>
   </data>
   <data name="SourceControl_ManageRepositories" xml:space="preserve">
     <value>Manage</value>
   </data>
   <data name="SourceControl_OpenRepositoryDescription" xml:space="preserve">
-    <value>Open local repository from disk. The active project will host the source code.</value>
+    <value>Open repository from disk. The active project will host the source code.</value>
   </data>
   <data name="SourceControl_OpenRepositoryTitle" xml:space="preserve">
-    <value>Open Local Repository</value>
+    <value>Open Existing Repository</value>
   </data>
   <data name="SourceControl_OpenWorkingDirectory" xml:space="preserve">
     <value>Open Working Directory</value>
@@ -1738,6 +1773,9 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   </data>
   <data name="CodeInspectionSettings_WhitelistedIdentifiersLabel" xml:space="preserve">
     <value>Whitelisted Identifiers</value>
+  </data>
+  <data name="CodeInspectionSettings_InspectionSeveritySettingsLabel" xml:space="preserve">
+    <value>Inspection Severities</value>
   </data>
   <data name="CodeInspectionSettings_WhitelistedIdentifiersDescription" xml:space="preserve">
     <value>These identifiers will be ignored by the 'Use meaningful names' inspection</value>
@@ -1926,200 +1964,7 @@ Would you like to import them to Rubberduck?</value>
   <data name="ConfirmRemoveAssignmentWithUnusedDeclaration" xml:space="preserve">
     <value>Variable '{0}' is assigned. Remove assignment instruction(s)?</value>
   </data>
-  <data name="TestExplorer_RunInconclusiveTests" xml:space="preserve">
-    <value>Inconclusive Tests</value>
-  </data>
-  <data name="Assert_DimensionMismatchFormat" xml:space="preserve">
-    <value>expected has {0} dimensions; actual has {1} dimensions. {2}</value>
-    <comment>{0} and {1} are dimension numbers (1, 2, etc.), {2} = message parameter.  This should always be at the end.</comment>
-  </data>
-  <data name="Assert_FailedMessageFormat" xml:space="preserve">
-    <value>{0} assertion failed. {1}</value>
-    <comment>{0} = method placeholder (i.e. AreEqual), {1} = message parameter.  This should always be at the end.</comment>
-  </data>
-  <data name="Assert_LBoundMismatchFormat" xml:space="preserve">
-    <value>Dimension {0}: expected has an LBound of {1}; actual has an LBound of {2}. {3}</value>
-    <comment>{0} = dimension number, {1} and {2} = LBound numbers, {3} = message parameter.  This should always be at the end.</comment>
-  </data>
-  <data name="Assert_MismatchedTypes" xml:space="preserve">
-    <value>[expected] and [actual] values are not the same type.</value>
-  </data>
-  <data name="Assert_NeitherParameterIsArray" xml:space="preserve">
-    <value>Neither [expected] or [actual] is an array.</value>
-  </data>
-  <data name="Assert_ParameterIsNotArrayFormat" xml:space="preserve">
-    <value>{0} is not an array.</value>
-    <comment>{0} is either [expected] or [actual]</comment>
-  </data>
-  <data name="Assert_ReferenceValueMismatch" xml:space="preserve">
-    <value>[expected] is a reference type and [actual] is a value type.</value>
-  </data>
-  <data name="Assert_UBoundMismatchFormat" xml:space="preserve">
-    <value>Dimension {0}: expected has a UBound of {1}; actual has a UBound of {2}. {3}</value>
-    <comment>{0} = dimension number, {1} and {2} = UBound numbers, {3} = message parameter.  This should always be at the end.</comment>
-  </data>
-  <data name="Assert_UnexpectedArrayFormat" xml:space="preserve">
-    <value>[expected] and [actual] are arrays. Consider using {0}.</value>
-    <comment>{0} is either Assert.SequenceEquals or Assert.NotSequenceEquals.</comment>
-  </data>
-  <data name="Assert_UnexpectedNullArraysFormat" xml:space="preserve">
-    <value>[expected] and [actual] are Nothing. Consider using {0}.</value>
-    <comment>{0} is either Assert.AreSame or Assert.AreNotSame.</comment>
-  </data>
-  <data name="Assert_UnexpectedReferenceComparisonFormat" xml:space="preserve">
-    <value>[expected] and [actual] are reference types. Consider using {0}.</value>
-    <comment>{0} is either Assert.AreSame or Assert.AreNotSame.</comment>
-  </data>
-  <data name="Assert_UnexpectedValueComparisonFormat" xml:space="preserve">
-    <value>[expected] and [actual] are value types. Consider using {0}.</value>
-    <comment>{0} is either Assert.AreEqual or Assert.AreNotEqual.</comment>
-  </data>
-  <data name="Assert_ValueReferenceMismatch" xml:space="preserve">
-    <value>[expected] is a value type and [actual] is a reference type.</value>
-  </data>
-  <data name="Assert_ComException" xml:space="preserve">
-    <value>Unexpected COM exception while running tests.</value>
-  </data>
-  <data name="Assert_EasterEggAssertClassPassed" xml:space="preserve">
-    <value>OK, Rubberduck asserted.  Now what?</value>
-    <comment>Reported when an AssertClass is passed as a parameter to a faked function.</comment>
-  </data>
-  <data name="Assert_EasterEggIFakePassed" xml:space="preserve">
-    <value>Expected: Stack overflow?; Actual: Guard clause.</value>
-    <comment>Reported when an IFake interface is passed as a parameter to a faked function.</comment>
-  </data>
-  <data name="Assert_EasterEggIVerifyPassed" xml:space="preserve">
-    <value>IVerify too.</value>
-    <comment>Reported when an IVerify interface is passed as a parameter to a faked function.</comment>
-  </data>
-  <data name="Assert_GenericException" xml:space="preserve">
-    <value>Unexpected exception while running tests.</value>
-  </data>
-  <data name="Assert_NotImplemented" xml:space="preserve">
-    <value>Not implemented.</value>
-    <comment>Placeholder text for planned functionality.</comment>
-  </data>
-  <data name="Assert_ParameterResultFormat" xml:space="preserve">
-    <value>Expected: {0}; Actual: {1}. {2}</value>
-    <comment>{0} = expected value, {1} = actual value, {2} = optional user supplied message (always last)</comment>
-  </data>
-  <data name="Assert_VerifyInternalErrorMessage" xml:space="preserve">
-    <value>Rubberduck could not process the invocation results.</value>
-  </data>
-  <data name="Assert_VerifyNoInvocationFormat" xml:space="preserve">
-    <value>No matching invocation for parameter {0}; Only {1} invocations. {2}</value>
-    <comment>{0} = parameter name, {1} = number of invokes, {2} = optional user supplied message (always last)</comment>
-  </data>
-  <data name="Assert_VerifyParameterNonNumeric" xml:space="preserve">
-    <value>Parameter {0} was not a numeric value on invocation {1}. {2}</value>
-    <comment>{0} = parameter name, {1} = invocation under test, {2} = optional user supplied message (always last)</comment>
-  </data>
-  <data name="Assert_VerifyParameterNotPassed" xml:space="preserve">
-    <value>Parameter {0} was not passed on invocation {1}. {2}</value>
-    <comment>{0} = parameter name, {1} = invocation under test, {2} = optional user supplied message (always last)</comment>
-  </data>
   <data name="Preview" xml:space="preserve">
     <value>Preview</value>
-  </data>
-  <data name="Assert_InvalidFakePassThrough" xml:space="preserve">
-    <value>Invalid setup of IFake {0}. PassThrough property must be False.</value>
-    <comment>{0} = name of the function being faked.</comment>
-  </data>
-  <data name="RefactorRename_TargetNotDefinedError" xml:space="preserve">
-    <value>Unable To Detect Selected Rename Target</value>
-  </data>
-  <data name="RefactorRename_TargetNotUserDefinedError" xml:space="preserve">
-    <value>Identifier {0} cannot be renamed.</value>
-  </data>
-  <data name="RenameDialog_DefaultRenameError" xml:space="preserve">
-    <value>Could not rename {0}.</value>
-  </data>
-  <data name="RenameDialog_InterfaceRenameError" xml:space="preserve">
-    <value>Could not rename Interface Member {0}.</value>
-  </data>
-  <data name="RenameDialog_BuiltInNameError" xml:space="preserve">
-    <value>{0} {1} cannot be changed.</value>
-    <comment>0: DeclarationType; 1: IdentifierName</comment>
-  </data>
-  <data name="CodeInspectionSettings_InspectionSeveritySettingsLabel" xml:space="preserve">
-    <value>Inspection Severities</value>
-  </data>
-  <data name="RenamePresenter_TargetIsControlEventHandler" xml:space="preserve">
-    <value>Method '{0}' is an EventHandler for control '{1}'.  Only the control can be renamed.  Rename '{1}' instead?</value>
-    <comment>0: Selected target Identifier; 1: Control Name</comment>
-  </data>
-  <data name="RenamePresenter_TargetIsEventHandlerImplementation" xml:space="preserve">
-    <value>Method '{0}' is an implementation of event '{1}.{2}'.  Rename event '{2}' instead?</value>
-    <comment>0: Selected target Identifier; 1: Event Parent; 2: Event name</comment>
-  </data>
-  <data name="GeneralSettings_EnableSourceControl" xml:space="preserve">
-    <value>Enable Source Control. Requires a restart to take effect.</value>
-  </data>
-  <data name="GeneralSettings_ExperimentalFeaturesWarning" xml:space="preserve">
-    <value>Only enable these if you know what you're doing. Enabling and/or using features from this section may result in things breaking unexpectedly and irrevocable data loss.</value>
-  </data>
-  <data name="GeneralSettings_ExperimentalFeatures" xml:space="preserve">
-    <value>Experimental Features:</value>
-  </data>
-  <data name="ToolsMenu_ExportProject" xml:space="preserve">
-    <value>Export Active Project...</value>
-  </data>
-  <data name="ExportAllCommand_SaveAsDialog_Title" xml:space="preserve">
-    <value>Choose a folder to export the source of {0} to:</value>
-    <comment>{0} VBProject.Name</comment>
-  </data>
-  <data name="CodeExplorer_ExportAll" xml:space="preserve">
-    <value>Export Project...</value>
-  </data>
-  <data name="HotkeyDescription_ExportActiveProject" xml:space="preserve">
-    <value>Export Active Project</value>
-  </data>
-  <data name="CodeExplorer_Open" xml:space="preserve">
-    <value>Open</value>
-  </data>
-  <data name="CodeExplorer_OpenDesigner" xml:space="preserve">
-    <value>Open Designer</value>
-  </data>
-  <data name="ImportCommand_OpenDialog_Filter_AllFiles" xml:space="preserve">
-    <value>All Files</value>
-  </data>
-  <data name="ImportCommand_OpenDialog_Filter_VBFiles" xml:space="preserve">
-    <value>VB Files</value>
-  </data>
-  <data name="ImportCommand_OpenDialog_Title" xml:space="preserve">
-    <value>Import Source Files</value>
-  </data>
-  <data name="CodeExplorer_AddModule" xml:space="preserve">
-    <value>Add Module</value>
-  </data>
-  <data name="EmptyUIRefreshMessage" xml:space="preserve">
-    <value>to parse and process the projects in the VBE.</value>
-    <comment>Follows the text for "Refresh"</comment>
-  </data>
-  <data name="EmptyUIRefreshMessage_Title" xml:space="preserve">
-    <value>Rubberduck doesn't see anything yet.</value>
-  </data>
-  <data name="CodeExplorer_AddTestModuleWithStubsText" xml:space="preserve">
-    <value>Test module with stubs</value>
-    <comment>TC</comment>
-  </data>
-  <data name="RubberduckMenu_Refresh" xml:space="preserve">
-    <value>Refresh</value>
-  </data>
-  <data name="ToDoExplorer_NumberOfIssuesFound_Plural" xml:space="preserve">
-    <value>Rubberduck ToDo Items - {0}
-{1} items found.</value>
-    <comment>{0}=timestamp; {1}=number</comment>
-  </data>
-  <data name="ToDoExplorer_NumberOfIssuesFound_Singular" xml:space="preserve">
-    <value>Rubberduck ToDo Items - {0}
-{1} items found.</value>
-    <comment>{0}=timestamp; {1}=number</comment>
-  </data>
-  <data name="ToDoExplorerToDoItemFormat" xml:space="preserve">
-    <value>{0}: {1} - {2}.{3} line {4}.</value>
-  </data>
-  <data name="ToDoExplorer_CopyToolTip" xml:space="preserve">
-    <value>Copy to clipboard</value>
   </data>
 </root>

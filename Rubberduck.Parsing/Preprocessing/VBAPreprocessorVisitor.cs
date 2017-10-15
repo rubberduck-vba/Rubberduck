@@ -1,54 +1,29 @@
-﻿using System;
-using System.Linq;
-using Antlr4.Runtime;
+﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Rubberduck.Parsing.Symbols;
+using System;
+using System.Linq;
 
-namespace Rubberduck.Parsing.PreProcessing
+namespace Rubberduck.Parsing.Preprocessing
 {
     public sealed class VBAPreprocessorVisitor : VBAConditionalCompilationParserBaseVisitor<IExpression>
     {
         private readonly SymbolTable<string, IValue> _symbolTable;
         private readonly ICharStream _stream;
-        private readonly CommonTokenStream _tokenStream;
 
         public VBAPreprocessorVisitor(
             SymbolTable<string, IValue> symbolTable, 
             VBAPredefinedCompilationConstants predefinedConstants,
-            ICharStream stream,
-            CommonTokenStream tokenStream)
+            ICharStream stream)
         {
-            if (stream == null)
-            {
-                throw new ArgumentNullException(nameof(stream));
-            }
-            if (tokenStream == null)
-            {
-                throw new ArgumentNullException(nameof(tokenStream));
-            }
-            if (symbolTable == null)
-            {
-                throw new ArgumentNullException(nameof(symbolTable));
-            }
-            if (predefinedConstants == null)
-            {
-                throw new ArgumentNullException(nameof(predefinedConstants));
-            }
-
-            _stream = stream;
-            _tokenStream = tokenStream;
             _symbolTable = symbolTable;
-            AddPredefinedConstantsToSymbolTable(predefinedConstants);
-        }
-
-        private void AddPredefinedConstantsToSymbolTable(VBAPredefinedCompilationConstants predefinedConstants)
-        {
             _symbolTable.Add(VBAPredefinedCompilationConstants.VBA6_NAME, new BoolValue(predefinedConstants.VBA6));
             _symbolTable.Add(VBAPredefinedCompilationConstants.VBA7_NAME, new BoolValue(predefinedConstants.VBA7));
             _symbolTable.Add(VBAPredefinedCompilationConstants.WIN64_NAME, new BoolValue(predefinedConstants.Win64));
             _symbolTable.Add(VBAPredefinedCompilationConstants.WIN32_NAME, new BoolValue(predefinedConstants.Win32));
             _symbolTable.Add(VBAPredefinedCompilationConstants.WIN16_NAME, new BoolValue(predefinedConstants.Win16));
             _symbolTable.Add(VBAPredefinedCompilationConstants.MAC_NAME, new BoolValue(predefinedConstants.Mac));
+            _stream = stream;
         }
 
         public override IExpression VisitCompilationUnit([NotNull] VBAConditionalCompilationParser.CompilationUnitContext context)
@@ -58,7 +33,7 @@ namespace Rubberduck.Parsing.PreProcessing
 
         public override IExpression VisitPhysicalLine([NotNull] VBAConditionalCompilationParser.PhysicalLineContext context)
         {
-            return new ConstantExpression(new TokensValue(ParserRuleContextHelper.GetTokens(context, _tokenStream)));
+            return new ConstantExpression(new StringValue(ParserRuleContextHelper.GetText(context, _stream)));
         }
 
         public override IExpression VisitCcBlock([NotNull] VBAConditionalCompilationParser.CcBlockContext context)
@@ -73,7 +48,7 @@ namespace Rubberduck.Parsing.PreProcessing
         public override IExpression VisitCcConst([NotNull] VBAConditionalCompilationParser.CcConstContext context)
         {
             return new ConditionalCompilationConstantExpression(
-                    new ConstantExpression(new TokensValue(ParserRuleContextHelper.GetTokens(context, _tokenStream))),
+                    new ConstantExpression(new StringValue(ParserRuleContextHelper.GetText(context, _stream))),
                     new ConstantExpression(new StringValue(Identifier.GetName(context.ccVarLhs().name()))),
                     Visit(context.ccExpression()),
                     _symbolTable);
@@ -81,34 +56,33 @@ namespace Rubberduck.Parsing.PreProcessing
 
         public override IExpression VisitCcIfBlock([NotNull] VBAConditionalCompilationParser.CcIfBlockContext context)
         {
-            var ifCondTokens = new ConstantExpression(new TokensValue(ParserRuleContextHelper.GetTokens(context.ccIf(), _tokenStream)));
+            var ifCondCode = new ConstantExpression(new StringValue(ParserRuleContextHelper.GetText(context.ccIf(), _stream)));
             var ifCond = Visit(context.ccIf().ccExpression());
             var ifBlock = Visit(context.ccBlock());
             var elseIfCodeCondBlocks = context
                 .ccElseIfBlock()
                 .Select(elseIf =>
                         Tuple.Create<IExpression, IExpression, IExpression>(
-                            new ConstantExpression(new TokensValue(ParserRuleContextHelper.GetTokens(elseIf.ccElseIf(), _tokenStream))),
+                            new ConstantExpression(new StringValue(ParserRuleContextHelper.GetText(elseIf.ccElseIf(), _stream))),
                             Visit(elseIf.ccElseIf().ccExpression()),
-                            Visit(elseIf.ccBlock())))
-                .ToList();
+                            Visit(elseIf.ccBlock()))).ToList();
 
-            IExpression elseCondTokens = null;
+            IExpression elseCondCode = null;
             IExpression elseBlock = null;
             if (context.ccElseBlock() != null)
             {
-                elseCondTokens = new ConstantExpression(new TokensValue(ParserRuleContextHelper.GetTokens(context.ccElseBlock().ccElse(), _tokenStream)));
+                elseCondCode = new ConstantExpression(new StringValue(ParserRuleContextHelper.GetText(context.ccElseBlock().ccElse(), _stream)));
                 elseBlock = Visit(context.ccElseBlock().ccBlock());
             }
-            var endIfTokens = new ConstantExpression(new TokensValue(ParserRuleContextHelper.GetTokens(context.ccEndIf(), _tokenStream)));
+            IExpression endIf = new ConstantExpression(new StringValue(ParserRuleContextHelper.GetText(context.ccEndIf(), _stream)));
             return new ConditionalCompilationIfExpression(
-                    ifCondTokens,
+                    ifCondCode,
                     ifCond,
                     ifBlock,
                     elseIfCodeCondBlocks,
-                    elseCondTokens,
+                    elseCondCode,
                     elseBlock,
-                    endIfTokens);
+                    endIf);
         }
 
         private IExpression Visit(VBAConditionalCompilationParser.NameContext context)

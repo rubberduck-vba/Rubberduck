@@ -1,7 +1,9 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Inspections;
+using Rubberduck.Inspections.QuickFixes;
+using Rubberduck.Inspections.Resources;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
@@ -17,7 +19,9 @@ namespace RubberduckTests.Inspections
 Sub Foo()
 End Sub
 ";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ImplicitPublicMemberInspection(state);
@@ -34,7 +38,9 @@ End Sub
 @"Function Foo() As Boolean
     Foo = True
 End Function";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ImplicitPublicMemberInspection(state);
@@ -53,7 +59,9 @@ End Sub
 
 Sub Goo()
 End Sub";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ImplicitPublicMemberInspection(state);
@@ -69,7 +77,9 @@ End Sub";
             const string inputCode =
 @"Private Sub Foo()
 End Sub";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ImplicitPublicMemberInspection(state);
@@ -87,7 +97,9 @@ End Sub";
 Sub Foo()
 End Sub
 ";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ImplicitPublicMemberInspection(state);
@@ -106,7 +118,9 @@ End Sub
 
 Sub Goo()
 End Sub";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new ImplicitPublicMemberInspection(state);
@@ -117,10 +131,65 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
+        public void ImplicitPublicMember_QuickFixWorks()
+        {
+            const string inputCode =
+@"Sub Foo(ByVal arg1 as Integer)
+'Just an inoffensive little comment
+
+End Sub";
+
+            const string expectedCode =
+@"Public Sub Foo(ByVal arg1 as Integer)
+'Just an inoffensive little comment
+
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new ImplicitPublicMemberInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            inspectionResults.First().QuickFixes.First().Fix();
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ImplicitPublicMember_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+@"Sub Foo(ByVal arg1 as Integer)
+'Just an inoffensive little comment
+
+End Sub";
+
+            const string expectedCode =
+@"'@Ignore ImplicitPublicMember
+Sub Foo(ByVal arg1 as Integer)
+'Just an inoffensive little comment
+
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new ImplicitPublicMemberInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void InspectionType()
         {
             var inspection = new ImplicitPublicMemberInspection(null);
-            Assert.AreEqual(CodeInspectionType.LanguageOpportunities, inspection.InspectionType);
+            Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
         }
 
         [TestMethod]

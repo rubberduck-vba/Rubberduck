@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers
@@ -5,9 +6,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers
     public abstract class SafeComWrapper<T> : ISafeComWrapper<T>
         where T : class
     {
+        private readonly T _target;
+
         protected SafeComWrapper(T target)
         {
-            Target = target;
+            _target = target;
         }
 
         //private bool _isReleased;
@@ -36,9 +39,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers
         //    }
         //}
 
-        public bool IsWrappingNullReference => Target == null;
-        object INullObjectWrapper.Target => Target;
-        public T Target { get; }
+        public bool IsWrappingNullReference { get { return _target == null; } }
+        object INullObjectWrapper.Target { get { return _target; } }
+        public T Target { get { return _target; } }
 
         /// <summary>
         /// <c>true</c> when wrapping a <c>null</c> reference and <see cref="other"/> is either <c>null</c> or wrapping a <c>null</c> reference.

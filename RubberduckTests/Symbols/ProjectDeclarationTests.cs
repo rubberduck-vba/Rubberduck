@@ -9,7 +9,6 @@ namespace RubberduckTests.Symbols
     public class ProjectDeclarationTests
     {
         [TestMethod]
-        [TestCategory("Resolver")]
         public void ProjectsHaveDeclarationTypeProject()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -20,7 +19,7 @@ namespace RubberduckTests.Symbols
             private static ProjectDeclaration GetTestProject(string name)
             {
                 var qualifiedProjectName = new QualifiedMemberName(StubQualifiedModuleName(), name);
-                return new ProjectDeclaration(qualifiedProjectName, name, true, null);
+                return new ProjectDeclaration(qualifiedProjectName, name, false, null);
             }
 
                 private static QualifiedModuleName StubQualifiedModuleName()
@@ -30,7 +29,6 @@ namespace RubberduckTests.Symbols
 
 
         [TestMethod]
-        [TestCategory("Resolver")]
         public void ByDefaultProjectsReferenceNoOtherProjects()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -40,7 +38,6 @@ namespace RubberduckTests.Symbols
 
 
         [TestMethod]
-        [TestCategory("Resolver")]
         public void ProjectsReferencesReturnsTheReferencesAddedViaAddProjectReference()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -54,22 +51,6 @@ namespace RubberduckTests.Symbols
 
 
         [TestMethod]
-        [TestCategory("Resolver")]
-        public void ClearProjectsReferencesClearsTheProjectReferences()
-        {
-            var projectDeclaration = GetTestProject("testProject");
-            var projectId = "test";
-            var priority = 12;
-            projectDeclaration.AddProjectReference(projectId, priority);
-            projectDeclaration.ClearProjectReferences();
-            var projectReferences = projectDeclaration.ProjectReferences;
-
-            Assert.IsFalse(projectReferences.Any());
-        }
-
-
-        [TestMethod]
-        [TestCategory("Resolver")]
         public void ProjectsReferencesIgnoresReferencesWithTheSameIDAsOneAlreadyPresent()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -85,7 +66,6 @@ namespace RubberduckTests.Symbols
 
 
         [TestMethod]
-        [TestCategory("Resolver")]
         public void ProjectsReferencesReturnsTheReferencesInOrderOfAscendingPriority()
         {
             var projectDeclaration = GetTestProject("testProject");

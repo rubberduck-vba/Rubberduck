@@ -10,7 +10,6 @@ namespace RubberduckTests.Symbols
     public class FunctionDeclarationTests
     {
         [TestMethod]
-        [TestCategory("Resolver")]
         public void FunctionsHaveDeclarationTypeFunction()
         {
             var function = GetTestFunction("testFoo", null);
@@ -21,7 +20,7 @@ namespace RubberduckTests.Symbols
             private static FunctionDeclaration GetTestFunction(string name, Attributes attributes)
             {
                 var qualifiedName = new QualifiedMemberName(StubQualifiedModuleName(), name);
-                return new FunctionDeclaration(qualifiedName, null, null, "test", null, "test", Accessibility.Implicit, null, Selection.Home, false, true, null, attributes);
+                return new FunctionDeclaration(qualifiedName, null, null, "test", null, "test", Accessibility.Implicit, null, Selection.Home, false, false, null, attributes);
             }
 
                 private static QualifiedModuleName StubQualifiedModuleName()
@@ -31,7 +30,6 @@ namespace RubberduckTests.Symbols
 
 
         [TestMethod]
-        [TestCategory("Resolver")]
         public void ByDefaultFunctionsDoNotHaveParameters()
         {
             var function = GetTestFunction("testFoo", null);
@@ -41,7 +39,6 @@ namespace RubberduckTests.Symbols
 
 
         [TestMethod]
-        [TestCategory("Resolver")]
         public void ParametersReturnsTheParametersAddedViaAddParameters()
         {
             var function = GetTestFunction("testFoo", null);
@@ -60,7 +57,6 @@ namespace RubberduckTests.Symbols
 
 
         [TestMethod]
-        [TestCategory("Resolver")]
         public void ByDefaultFunctionsAreNotDefaultMembers()
         {
             var function = GetTestFunction("testFoo", null);
@@ -70,7 +66,6 @@ namespace RubberduckTests.Symbols
 
 
         [TestMethod]
-        [TestCategory("Resolver")]
         public void FunctionsAreDefaultMembersIfTheyHaveTheDefaultMemberAttribute()
         {
             var attributes = new Attributes();

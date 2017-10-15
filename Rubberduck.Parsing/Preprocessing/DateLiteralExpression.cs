@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Rubberduck.Parsing.VBA;
+using System;
 using System.Globalization;
-using Rubberduck.Parsing.VBA;
 
-namespace Rubberduck.Parsing.PreProcessing
+namespace Rubberduck.Parsing.Preprocessing
 {
     public sealed class DateLiteralExpression : Expression
     {

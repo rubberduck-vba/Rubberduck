@@ -1,8 +1,10 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Inspections;
+using Rubberduck.Inspections.QuickFixes;
+using Rubberduck.Inspections.Resources;
 using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
@@ -21,7 +23,8 @@ namespace RubberduckTests.Inspections
     bb = b
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _);
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new UnassignedVariableUsageInspection(state);
@@ -52,13 +55,14 @@ Sub DoSomething(ByVal foo As Variant)
 End Sub
 ";
 
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _);
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new UnassignedVariableUsageInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(2, inspectionResults.Count());
+            Assert.AreEqual(1, inspectionResults.Count());
         }
 
         [TestMethod]
@@ -73,7 +77,8 @@ End Sub
     bb = b
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _);
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new UnassignedVariableUsageInspection(state);
@@ -95,7 +100,8 @@ End Sub";
     bb = b
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _);
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new UnassignedVariableUsageInspection(state);
@@ -105,7 +111,6 @@ End Sub";
         }
 
         [TestMethod]
-        [TestCategory("Inspections")]
         public void UnassignedVariableUsage_NoResultIfNoReferences()
         {
             const string inputCode =
@@ -113,13 +118,75 @@ End Sub";
     Dim foo
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _);
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new UnassignedVariableUsageInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.IsFalse(inspectionResults.Any());
+        }
+
+        //Ignored until we can reinstate the quick fix on a specific reference
+        [Ignore]
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void UnassignedVariableUsage_QuickFixWorks()
+        {
+            const string inputCode =
+@"Sub Foo()
+    Dim b As Boolean
+    Dim bb As Boolean
+    bb = b
+End Sub";
+
+            const string expectedCode =
+@"Sub Foo()
+    Dim b As Boolean
+    Dim bb As Boolean
+    TODOTODO = TODO
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new UnassignedVariableUsageInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            inspectionResults.First().QuickFixes.First().Fix();
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void UnassignedVariableUsage_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+@"Sub Foo()
+    Dim b As Boolean
+    Dim bb As Boolean
+    bb = b
+End Sub";
+
+            const string expectedCode =
+@"Sub Foo()
+'@Ignore UnassignedVariableUsage
+    Dim b As Boolean
+    Dim bb As Boolean
+    bb = b
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new UnassignedVariableUsageInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]

@@ -18,8 +18,6 @@ namespace RubberduckTests.Binding
         private const string BINDING_TARGET_UNRESTRICTEDNAME = "UnrestrictedName";
         private const string TEST_CLASS_NAME = "TestClass";
         private const string REFERENCED_PROJECT_FILEPATH = @"C:\Temp\ReferencedProjectA";
-
-        [TestCategory("Binding")]
         [TestMethod]
         public void LExpressionIsVariablePropertyOrFunction()
         {
@@ -38,7 +36,6 @@ namespace RubberduckTests.Binding
             Assert.AreEqual(1, declaration.References.Count());
         }
 
-        [TestCategory("Binding")]
         [TestMethod]
         public void LExpressionIsProject()
         {
@@ -58,7 +55,6 @@ namespace RubberduckTests.Binding
             Assert.AreEqual(1, declaration.References.Count());
         }
 
-        [TestCategory("Binding")]
         [TestMethod]
         public void LExpressionIsProceduralModule()
         {
@@ -78,7 +74,6 @@ namespace RubberduckTests.Binding
             Assert.AreEqual(1, declaration.References.Count());
         }
 
-        [TestCategory("Binding")]
         [TestMethod]
         public void LExpressionIsEnum()
         {
@@ -100,7 +95,7 @@ namespace RubberduckTests.Binding
 
         private static RubberduckParserState Parse(Mock<IVBE> vbe)
         {
-            var parser = MockParser.Create(vbe.Object);
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status != ParserState.Ready)
             {

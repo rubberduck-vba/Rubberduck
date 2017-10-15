@@ -24,7 +24,7 @@ namespace Rubberduck.Parsing.Symbols
             ParserRuleContext context,
             Selection selection,
             bool isArray,
-            bool isUserDefined,
+            bool isBuiltIn,
             IEnumerable<IAnnotation> annotations,
             Attributes attributes)
             : base(
@@ -41,7 +41,7 @@ namespace Rubberduck.Parsing.Symbols
                   selection,
                   isArray,
                   asTypeContext,
-                  isUserDefined,
+                  isBuiltIn,
                   annotations,
                   attributes)
         {
@@ -61,7 +61,7 @@ namespace Rubberduck.Parsing.Symbols
                 null,
                 Selection.Home,
                 member.ReturnType.IsArray,
-                false,
+                true,
                 null,
                 attributes)
         {
@@ -71,7 +71,13 @@ namespace Rubberduck.Parsing.Symbols
                     .ToList();
         } 
 
-        public IEnumerable<Declaration> Parameters => _parameters.ToList();
+        public IEnumerable<Declaration> Parameters
+        {
+            get
+            {
+                return _parameters.ToList();
+            }
+        }
 
         public void AddParameter(Declaration parameter)
         {
@@ -83,6 +89,18 @@ namespace Rubberduck.Parsing.Symbols
         /// If this value is true, any reference to an instance of the class it's the default member of,
         /// should count as a member call to this member.
         /// </summary>
-        public bool IsDefaultMember => Attributes.Any(a => a.Name == $"{IdentifierName}.VB_UserMemId" && a.Values.Single() == "0");
+        public bool IsDefaultMember
+        {
+            get
+            {
+                IEnumerable<string> value;
+                if (Attributes.TryGetValue(IdentifierName + ".VB_UserMemId", out value))
+                {
+                    return value.Single() == "0";
+                }
+
+                return false;
+            }
+        }
     }
 }

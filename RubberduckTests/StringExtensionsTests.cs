@@ -9,7 +9,6 @@ namespace RubberduckTests
     public class StringExtensionsTests
     {
         [TestMethod]
-        [TestCategory("Refactorings")]
         public void StripsStringLiteral()
         {
             var value = "\"Hello, World!\"";
@@ -22,7 +21,6 @@ namespace RubberduckTests
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
         public void StripsAllStringLiterals()
         {
             var value = "\"Hello, World!\"";
@@ -35,7 +33,6 @@ namespace RubberduckTests
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
         public void IsComment_StartLineWithSingleQuoteMarker()
         {
             var instruction = "'Debug.Print mwahaha this is just a comment.";
@@ -48,7 +45,6 @@ namespace RubberduckTests
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
         public void HasComment_EndOfLineSingleQuoteMarkerWithStringLiteral()
         {
             var comment = "'but this is one.";
@@ -62,7 +58,6 @@ namespace RubberduckTests
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
         public void HasComment_RemMarkerWithWhitespace()
         {
             var comment = "Rem this is a comment.";
@@ -76,7 +71,6 @@ namespace RubberduckTests
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
         public void HasComment_RemMarkerWithQuestionMark()
         {
             var comment = "Rem?this is a comment.";
@@ -90,7 +84,6 @@ namespace RubberduckTests
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
         public void CaseInsensitiveContainsShouldReturnTrue()
         {
             var searchFor = "tExt";
@@ -99,7 +92,6 @@ namespace RubberduckTests
         }
 
         [TestMethod]
-        [TestCategory("Refactorings")]
         public void CaseInsensitiveContainsShouldReturnFalse()
         {
             var searchFor = "tExt";

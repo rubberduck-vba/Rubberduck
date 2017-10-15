@@ -14,7 +14,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers
         public ComWrapperEnumerator(IEnumerable source, Func<object, TWrapperItem> itemWrapper)
         {
             _itemWrapper = itemWrapper;
-            _internal = source?.GetEnumerator() ?? Enumerable.Empty<TWrapperItem>().GetEnumerator();
+            _internal = source == null 
+                ? Enumerable.Empty<TWrapperItem>().GetEnumerator() 
+                : source.GetEnumerator();
         }
 
         public void Dispose()
@@ -32,8 +34,17 @@ namespace Rubberduck.VBEditor.SafeComWrappers
             _internal.Reset();
         }
 
-        public TWrapperItem Current => _itemWrapper.Invoke(_internal.Current);
+        public TWrapperItem Current
+        {
+            get
+            {
+                return _itemWrapper.Invoke(_internal.Current);
+            }
+        }
 
-        object IEnumerator.Current => Current;
+        object IEnumerator.Current
+        {
+            get { return Current; }
+        }
     }
 }

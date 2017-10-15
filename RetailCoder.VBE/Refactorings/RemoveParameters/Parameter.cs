@@ -9,9 +9,9 @@ namespace Rubberduck.Refactorings.RemoveParameters
     /// </summary>
     public class Parameter : ViewModelBase
     {
-        public ParameterDeclaration Declaration { get; }
-        public string Name { get; }
-        public bool IsParamArray => Declaration.IsParamArray;
+        public Declaration Declaration { get; private set; }
+        public string Name { get; private set; }
+        public int Index { get; private set; }
 
         private bool _isRemoved;
         public bool IsRemoved
@@ -24,10 +24,11 @@ namespace Rubberduck.Refactorings.RemoveParameters
             }
         }
 
-        public Parameter(Declaration declaration, bool isRemoved = false)
+        public Parameter(Declaration declaration, int index, bool isRemoved = false)
         {
-            Declaration = (ParameterDeclaration)declaration;
+            Declaration = declaration;
             Name = declaration.Context.GetText().RemoveExtraSpacesLeavingIndentation();
+            Index = index;
             IsRemoved = isRemoved;
         }
     }

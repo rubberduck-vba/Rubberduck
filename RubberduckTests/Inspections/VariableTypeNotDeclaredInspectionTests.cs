@@ -1,7 +1,9 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Inspections;
+using Rubberduck.Inspections.QuickFixes;
+using Rubberduck.Inspections.Resources;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
@@ -16,7 +18,9 @@ namespace RubberduckTests.Inspections
             const string inputCode =
 @"Sub Foo(arg1)
 End Sub";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new VariableTypeNotDeclaredInspection(state);
@@ -32,7 +36,9 @@ End Sub";
             const string inputCode =
 @"Sub Foo(arg1, arg2)
 End Sub";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new VariableTypeNotDeclaredInspection(state);
@@ -48,7 +54,9 @@ End Sub";
             const string inputCode =
 @"Sub Foo(arg1 As Date)
 End Sub";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new VariableTypeNotDeclaredInspection(state);
@@ -64,7 +72,9 @@ End Sub";
             const string inputCode =
 @"Sub Foo(arg1, arg2 As String)
 End Sub";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new VariableTypeNotDeclaredInspection(state);
@@ -82,7 +92,9 @@ End Sub";
     Dim var1
     Dim var2 As Date
 End Sub";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new VariableTypeNotDeclaredInspection(state);
@@ -99,7 +111,9 @@ End Sub";
 @"Sub Foo()
     Dim var1
 End Sub";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new VariableTypeNotDeclaredInspection(state);
@@ -117,7 +131,9 @@ End Sub";
     Dim var1
     Dim var2
 End Sub";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new VariableTypeNotDeclaredInspection(state);
@@ -134,7 +150,9 @@ End Sub";
 @"Sub Foo()
     Dim var1 As Integer
 End Sub";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new VariableTypeNotDeclaredInspection(state);
@@ -151,13 +169,150 @@ End Sub";
 @"'@Ignore VariableTypeNotDeclared
 Sub Foo(arg1)
 End Sub";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new VariableTypeNotDeclaredInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.IsFalse(inspectionResults.Any());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void VariableTypeNotDeclared_QuickFixWorks_Parameter()
+        {
+            const string inputCode =
+@"Sub Foo(arg1)
+End Sub";
+
+            const string expectedCode =
+@"Sub Foo(arg1 As Variant)
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new VariableTypeNotDeclaredInspection(state);
+            inspection.GetInspectionResults().First().QuickFixes.First().Fix();
+            
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void VariableTypeNotDeclared_QuickFixWorks_SubNameContainsParameterName()
+        {
+            const string inputCode =
+@"Sub Foo(Foo)
+End Sub";
+
+            const string expectedCode =
+@"Sub Foo(Foo As Variant)
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new VariableTypeNotDeclaredInspection(state);
+            inspection.GetInspectionResults().First().QuickFixes.First().Fix();
+            
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void VariableTypeNotDeclared_QuickFixWorks_Variable()
+        {
+            const string inputCode =
+@"Sub Foo()
+    Dim var1
+End Sub";
+
+            const string expectedCode =
+@"Sub Foo()
+    Dim var1 As Variant
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new VariableTypeNotDeclaredInspection(state);
+            inspection.GetInspectionResults().First().QuickFixes.First().Fix();
+
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void VariableTypeNotDeclared_QuickFixWorks_ParameterWithoutDefaultValue()
+        {
+            const string inputCode =
+@"Sub Foo(ByVal Fizz)
+End Sub";
+
+            const string expectedCode =
+@"Sub Foo(ByVal Fizz As Variant)
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new VariableTypeNotDeclaredInspection(state);
+            inspection.GetInspectionResults().First().QuickFixes.First().Fix();
+
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void VariableTypeNotDeclared_QuickFixWorks_ParameterWithDefaultValue()
+        {
+            const string inputCode =
+@"Sub Foo(ByVal Fizz = False)
+End Sub";
+
+            const string expectedCode =
+@"Sub Foo(ByVal Fizz As Variant = False)
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new VariableTypeNotDeclaredInspection(state);
+            inspection.GetInspectionResults().First().QuickFixes.First().Fix();
+
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void VariableTypeNotDeclared_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+@"Sub Foo(arg1)
+End Sub";
+
+            const string expectedCode =
+@"'@Ignore VariableTypeNotDeclared
+Sub Foo(arg1)
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new VariableTypeNotDeclaredInspection(state);
+            inspection.GetInspectionResults().First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
+
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]

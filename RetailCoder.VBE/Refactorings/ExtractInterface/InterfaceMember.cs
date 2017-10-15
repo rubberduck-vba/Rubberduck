@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.UI;
 
 namespace Rubberduck.Refactorings.ExtractInterface
 {
@@ -19,26 +18,15 @@ namespace Rubberduck.Refactorings.ExtractInterface
         }
     }
 
-    public class InterfaceMember : ViewModelBase
+    public class InterfaceMember
     {
-        public Declaration Member { get; }
-        public IEnumerable<Parameter> MemberParams { get; }
-        private string Type { get; }
+        private Declaration Member { get; set; }
+        private IEnumerable<Parameter> MemberParams { get; set; }
+        private string Type { get; set; }
 
         private string MemberType { get; set; }
 
-        private bool _isSelected;
-        public bool IsSelected
-        {
-            get { return _isSelected; }
-            set
-            {
-                _isSelected = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public string Identifier { get; }
+        public bool IsSelected { get; set; }
 
         public string FullMemberSignature
         {
@@ -51,10 +39,9 @@ namespace Rubberduck.Refactorings.ExtractInterface
             }
         }
 
-        public InterfaceMember(Declaration member)
+        public InterfaceMember(Declaration member, IEnumerable<Declaration> declarations)
         {
             Member = member;
-            Identifier = member.IdentifierName;
             Type = member.AsTypeName;
             
             GetMethodType();
@@ -122,7 +109,13 @@ namespace Rubberduck.Refactorings.ExtractInterface
             }
         }
 
-        public string Body => "Public " + FullMemberSignature + Environment.NewLine +
-                              "End " + MemberType.Split(' ').First() + Environment.NewLine;
+        public string Body
+        {
+            get
+            {
+                return "Public " + FullMemberSignature + Environment.NewLine +
+                "End " + MemberType.Split(' ').First() + Environment.NewLine;
+            }
+        }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Rubberduck.UI.Refactorings.RemoveParameters
 {
-    public sealed partial class RemoveParametersDialog : Form, IRefactoringDialog<RemoveParametersViewModel>
+    public partial class RemoveParametersDialog : Form
     {
         public RemoveParametersViewModel ViewModel { get; }
 

@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.Parsing.PreProcessing
+﻿namespace Rubberduck.Parsing.Preprocessing
 {
     public abstract class Expression : IExpression
     {

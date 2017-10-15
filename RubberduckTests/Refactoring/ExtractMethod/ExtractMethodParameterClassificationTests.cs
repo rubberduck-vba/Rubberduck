@@ -3,6 +3,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.VBEditor;
 using RubberduckTests.Mocks;
@@ -18,16 +19,13 @@ namespace RubberduckTests.Refactoring.ExtractMethod
         string codeSnippet = @"
 Option explicit
 Public Sub CodeWithDeclaration()
-    Dim x As Long
-    Dim z As Long
+    Dim x as long
+    Dim z as long
 
     z = 1
     x = 1 + 2
-    DoNothing x
+    Debug.Print x
 
-End Sub
-
-Public Sub DoNothing(n As Long)
 End Sub
 ";
         #endregion
@@ -37,7 +35,6 @@ End Sub
         {
 
             [TestMethod]
-            [TestCategory("Extract Method")]
             public void shouldUseEachRuleInRulesCollectionToCheckEachReference()
             {
                 QualifiedModuleName qualifiedModuleName;
@@ -68,7 +65,6 @@ End Sub
         {
 
             [TestMethod]
-            [TestCategory("Extract Method")]
             public void shouldIncludeByValParams()
             {
 
@@ -96,7 +92,6 @@ End Sub
             }
 
             [TestMethod]
-            [TestCategory("Extract Method")]
             public void shouldIncludeByRefParams()
             {
 

@@ -88,7 +88,7 @@ namespace Rubberduck.UI.Command
             }
         }
 
-        protected override bool EvaluateCanExecute(object parameter)
+        protected override bool CanExecuteImpl(object parameter)
         {
             if (_vbe.ActiveCodePane == null || _state.Status != ParserState.Ready)
             {
@@ -101,7 +101,7 @@ namespace Rubberduck.UI.Command
             return canExecute;
         }
 
-        protected override void OnExecute(object parameter)
+        protected override void ExecuteImpl(object parameter)
         {
             if (_state.Status != ParserState.Ready)
             {
