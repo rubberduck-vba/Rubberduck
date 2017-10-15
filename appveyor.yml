@@ -1,14 +1,22 @@
-version: 2.1.0
+version: 2.1.1
 for:
 -
   branches:
     only:
       - master
       - next
-  version: 2.1.0.{build}
+  version: {version}.{build}
   after_test:
   - cmd: iscc /q "Installer Build Script.iss" 
   - cmd: move Installers\Rubberduck.Setup.exe Installers\Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%-pre.exe
+-
+  branches:
+    only: 
+      - master
+    version: {version}
+    after_test:
+    - cmd: iscc /q "Installer Build Script.iss"
+    - cmd: move Installers\Rubberduck.Setup.exe Installers\Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%.exe
 skip_commits:
   files:
   - docs/*
