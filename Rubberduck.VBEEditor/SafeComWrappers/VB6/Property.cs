@@ -12,40 +12,22 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         {
         }
 
-        public string Name
-        {
-            get { return IsWrappingNullReference ? string.Empty : Target.Name; }
-        }
+        public string Name => IsWrappingNullReference ? string.Empty : Target.Name;
 
-        public int IndexCount
-        {
-            get { return IsWrappingNullReference ? 0 : Target.NumIndices; }
-        }
+        public int IndexCount => IsWrappingNullReference ? 0 : Target.NumIndices;
 
-        public IProperties Collection
-        {
-            get { return new Properties(IsWrappingNullReference ? null : Target.Collection); }
-        }
+        public IProperties Collection => new Properties(IsWrappingNullReference ? null : Target.Collection);
 
-        public IProperties Parent
-        {
-            get { return new Properties(IsWrappingNullReference ? null : Target.Parent); }
-        }
+        public IProperties Parent => new Properties(IsWrappingNullReference ? null : Target.Parent);
 
-        public IApplication Application
-        {
-            get { return new Application((VB.Application) (IsWrappingNullReference ? null : Target.Application)); }
-        }
+        public IApplication Application => new Application((VB.Application) (IsWrappingNullReference ? null : Target.Application));
 
-        public IVBE VBE
-        {
-            get { return new VBE(IsWrappingNullReference ? null : Target.VBE); }
-        }
+        public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
 
         public object Value
         {
-            get { return IsWrappingNullReference ? null : Target.Value; }
-            set { Target.Value = value; }
+            get => IsWrappingNullReference ? null : Target.Value;
+            set => Target.Value = value;
         }
 
         /// <summary>
@@ -66,8 +48,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         /// </summary>
         public object Object
         {
-            get { return IsWrappingNullReference ? null : Target.Object; }
-            set { Target.Object = value; }
+            get => IsWrappingNullReference ? null : Target.Object;
+            set => Target.Object = value;
         }
 
         public override bool Equals(ISafeComWrapper<VB.Property> other)

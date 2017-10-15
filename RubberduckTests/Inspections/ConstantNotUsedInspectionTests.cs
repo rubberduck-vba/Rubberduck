@@ -1,11 +1,7 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using Rubberduck.Inspections;
-using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Inspections.Resources;
-using Rubberduck.UI;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing.Inspections.Resources;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
@@ -22,11 +18,10 @@ namespace RubberduckTests.Inspections
     Const const1 As Integer = 9
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new ConstantNotUsedInspection(state, new Mock<IMessageBox>().Object);
+            var inspection = new ConstantNotUsedInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
@@ -42,11 +37,10 @@ End Sub";
     Const const2 As String = ""test""
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new ConstantNotUsedInspection(state, new Mock<IMessageBox>().Object);
+            var inspection = new ConstantNotUsedInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(2, inspectionResults.Count());
@@ -67,11 +61,10 @@ End Sub
 Public Sub Goo(ByVal arg1 As Integer)
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new ConstantNotUsedInspection(state, new Mock<IMessageBox>().Object);
+            var inspection = new ConstantNotUsedInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(1, inspectionResults.Count());
@@ -90,11 +83,10 @@ End Sub
 Public Sub Goo(ByVal arg1 As Integer)
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new ConstantNotUsedInspection(state, new Mock<IMessageBox>().Object);
+            var inspection = new ConstantNotUsedInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.AreEqual(0, inspectionResults.Count());
@@ -111,11 +103,10 @@ Public Sub Foo()
     Const const1 As Integer = 9
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new ConstantNotUsedInspection(state, new Mock<IMessageBox>().Object);
+            var inspection = new ConstantNotUsedInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.IsFalse(inspectionResults.Any());
@@ -132,11 +123,10 @@ Public Sub Foo()
     Const const1 As Integer = 9
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new ConstantNotUsedInspection(state, new Mock<IMessageBox>().Object);
+            var inspection = new ConstantNotUsedInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.IsFalse(inspectionResults.Any());
@@ -153,11 +143,10 @@ Public Sub Foo()
     Const const1 As Integer = 9
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new ConstantNotUsedInspection(state, new Mock<IMessageBox>().Object);
+            var inspection = new ConstantNotUsedInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.IsTrue(inspectionResults.Any());
@@ -173,11 +162,10 @@ End Sub";
     Const const1 As Integer = 9
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new ConstantNotUsedInspection(state, new Mock<IMessageBox>().Object);
+            var inspection = new ConstantNotUsedInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.IsFalse(inspectionResults.Any());
@@ -185,61 +173,9 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ConstantNotUsed_QuickFixWorks()
-        {
-            const string inputCode =
-@"Public Sub Foo()
-    Const const1 As Integer = 9
-End Sub";
-
-            const string expectedCode =
-@"Public Sub Foo()
-End Sub";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new ConstantNotUsedInspection(state, new Mock<IMessageBox>().Object);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            inspectionResults.First().QuickFixes.First().Fix();
-
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void ConstantNotUsed_IgnoreQuickFixWorks()
-        {
-            const string inputCode =
-@"Public Sub Foo()
-    Const const1 As Integer = 9
-End Sub";
-
-            const string expectedCode =
-@"Public Sub Foo()
-'@Ignore ConstantNotUsed
-    Const const1 As Integer = 9
-End Sub";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new ConstantNotUsedInspection(state, new Mock<IMessageBox>().Object);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
-
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
         public void InspectionType()
         {
-            var inspection = new ConstantNotUsedInspection(null, new Mock<IMessageBox>().Object);
+            var inspection = new ConstantNotUsedInspection(null);
             Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
         }
 
@@ -248,7 +184,7 @@ End Sub";
         public void InspectionName()
         {
             const string inspectionName = "ConstantNotUsedInspection";
-            var inspection = new ConstantNotUsedInspection(null, new Mock<IMessageBox>().Object);
+            var inspection = new ConstantNotUsedInspection(null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
         }

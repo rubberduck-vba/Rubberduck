@@ -28,6 +28,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>true</UseVSHostingProcess>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -36,6 +37,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Antlr4.Runtime.net45">
@@ -61,6 +63,9 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
+    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.4.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="WindowsBase" />
@@ -73,7 +78,9 @@
     </When>
     <Otherwise>
       <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework">
+          <Private>False</Private>
+        </Reference>
       </ItemGroup>
     </Otherwise>
   </Choose>
@@ -86,23 +93,85 @@
     <Compile Include="Binding\SimpleNameDefaultBindingTests.cs" />
     <Compile Include="Binding\SimpleNameTypeBindingTests.cs" />
     <Compile Include="CodeExplorer\CodeExplorerTests.cs" />
+    <Compile Include="Commands\ExportAllCommandTests.cs" />
     <Compile Include="Commands\RefactorCommandTests.cs" />
     <Compile Include="Commands\IndentCommandTests.cs" />
     <Compile Include="Commands\UnitTestCommandTests.cs" />
     <Compile Include="Grammar\ParserRuleContextExtensionTests.cs" />
+    <Compile Include="Grammar\SelectionExtensionsTests.cs" />
     <Compile Include="Inspections\ApplicationWorksheetFunctionInspectionTests.cs" />
-    <Compile Include="Inspections\AssignedByValParameterMakeLocalCopyQuickFixTests.cs" />
+    <Compile Include="Inspections\EmptyCaseBlockInspectionTests.cs" />
+    <Compile Include="Inspections\EmptyDoWhileBlockInspectionTests.cs" />
+    <Compile Include="Inspections\EmptyElseBlockInspectionTests.cs" />
+    <Compile Include="Inspections\EmptyForEachBlockInspectionTests.cs" />
+    <Compile Include="Inspections\EmptyForLoopBlockInspectionTests.cs" />
+    <Compile Include="Inspections\EmptyIfBlockInspectionTests.cs" />
+    <Compile Include="Inspections\EmptyWhileWendBlockInspectionTests.cs" />
+    <Compile Include="Inspections\InspectionsHelper.cs" />
+    <Compile Include="Inspections\IntegerDataTypeInspectionTests.cs" />
+    <Compile Include="Inspections\MissingAnnotationInspectionTests.cs" />
+    <Compile Include="Inspections\MissingAttributeInspectionTests.cs" />
+    <Compile Include="Inspections\ModuleScopeDimKeywordInspectionTests.cs" />
     <Compile Include="Inspections\HostSpecificExpressionInspectionTests.cs" />
     <Compile Include="Inspections\HungarianNotationInspectionTests.cs" />
-    <Compile Include="Inspections\IgnoreOnceQuickFixTests.cs" />
     <Compile Include="Inspections\ImplicitActiveWorkbookReferenceInspectionTests.cs" />
     <Compile Include="Inspections\MemberNotOnInterfaceInspectionTests.cs" />
+    <Compile Include="Inspections\ObsoleteErrorSyntaxInspectionTests.cs" />
+    <Compile Include="Inspections\ShadowedDeclarationInspectionTests.cs" />
+    <Compile Include="Inspections\StopKeywordInspectionTests.cs" />
     <Compile Include="Inspections\OptionBaseZeroInspectionTests.cs" />
-    <Compile Include="Inspections\PassParameterByReferenceQuickFixTests.cs" />
+    <Compile Include="QuickFixes\AssignedByValParameterMakeLocalCopyQuickFixTests.cs" />
+    <Compile Include="QuickFixes\ChangeProcedureToFunctionQuickFixTests.cs" />
+    <Compile Include="QuickFixes\DeclareAsExplicitVariantQuickFixTests.cs" />
+    <Compile Include="QuickFixes\PassParameterByReferenceQuickFixTests.cs" />
+    <Compile Include="QuickFixes\QuickFixProviderTests.cs" />
+    <Compile Include="QuickFixes\RemoveUnassignedIdentifierQuickFixTests.cs" />
+    <Compile Include="QuickFixes\RemoveUnassignedVariableUsageQuickFix.cs" />
+    <Compile Include="QuickFixes\ReplaceObsoleteErrorStatementQuickFixTests.cs" />
+    <Compile Include="QuickFixes\SynchronizeAttributesQuickFixTests.cs" />
+    <Compile Include="Inspections\RedundantByRefModifierInspectionTests.cs" />
     <Compile Include="Inspections\UndeclaredVariableInspectionTests.cs" />
+    <Compile Include="Inspections\LineLabelNotUsedInspectionTests.cs" />
+    <Compile Include="Mocks\TestAttributeParser.cs" />
+    <Compile Include="Parsing\Coordination\IModuleToModuleReferenceManagerTestBase.cs" />
+    <Compile Include="Parsing\Coordination\StandAloneModuleToModuleReferenceManagerTests.cs" />
+    <Compile Include="PostProcessing\ModuleRewriterTests.cs" />
+    <Compile Include="QuickFixes\ApplicationWorksheetFunctionQuickFixTests.cs" />
+    <Compile Include="QuickFixes\ChangeDimToPrivateQuickFixTests.cs" />
+    <Compile Include="QuickFixes\ChangeIntegerToLongQuickFixTests.cs" />
+    <Compile Include="QuickFixes\ConvertToProcedureQuickFixTests.cs" />
+    <Compile Include="QuickFixes\IgnoreOnceQuickFixTests.cs" />
+    <Compile Include="QuickFixes\MakeSingleLineParamegerQuickFixTests.cs" />
+    <Compile Include="QuickFixes\MoveFieldCloserToUsageQuickFixTests.cs" />
+    <Compile Include="QuickFixes\OptionExplicitQuickFixTests.cs" />
+    <Compile Include="QuickFixes\PassParameterByValueQuickFixTests.cs" />
+    <Compile Include="QuickFixes\RemoveCommentQuickFixTests.cs" />
+    <Compile Include="QuickFixes\RemoveEmptyElseBlockQuickFixTests.cs" />
+    <Compile Include="QuickFixes\RemoveEmptyIfBlockQuickFixTests.cs" />
+    <Compile Include="QuickFixes\RemoveExplicitByRefModifierQuickFixTests.cs" />
+    <Compile Include="QuickFixes\RemoveExplicitCallStatementQuickFixTests.cs" />
+    <Compile Include="QuickFixes\RemoveExplicitLetStatementQuickFixTests.cs" />
+    <Compile Include="QuickFixes\RemoveOptionBaseStatementQuickFixTests.cs" />
+    <Compile Include="QuickFixes\RemoveStopKeywordQuickFixTests.cs" />
+    <Compile Include="QuickFixes\RemoveUnusedParameterQuickFixTests.cs" />
+    <Compile Include="QuickFixes\RemoveTypeHintsQuickFixTests.cs" />
+    <Compile Include="QuickFixes\RemoveUnusedDeclarationQuickFixTests.cs" />
+    <Compile Include="QuickFixes\ReplaceEmptyStringLiteralStatementQuickFixTests.cs" />
+    <Compile Include="QuickFixes\ReplaceGlobalModifierQuickFixTests.cs" />
+    <Compile Include="QuickFixes\ReplaceObsoleteCommentMarkerQuickFixTests.cs" />
+    <Compile Include="QuickFixes\SetExplicitVariantReturnTypeQuickFixTests.cs" />
+    <Compile Include="QuickFixes\SpecifyExplicitByRefModifierQuickFixTests.cs" />
+    <Compile Include="QuickFixes\SpecifyExplicitPublicModifierQuickFixTests.cs" />
+    <Compile Include="QuickFixes\SplitMultipleDeclarationsQuickFixTests.cs" />
+    <Compile Include="QuickFixes\UntypedFunctionUsageQuickFixTests.cs" />
+    <Compile Include="QuickFixes\UseSetKeywordForObjectAssignmentQuickFixTests.cs" />
+    <Compile Include="QuickFixes\WriteOnlyPropertyQuickFixTests.cs" />
+    <Compile Include="QuickFixes\QuickFixBaseTests.cs" />
     <Compile Include="SmartIndenter\VerticalSpacingTests.cs" />
+    <Compile Include="SourceControl\SynchrounouslyConstructedDeclarationFinderFactory.cs" />
     <Compile Include="Symbols\AccessibilityCheckTests.cs" />
     <Compile Include="Symbols\ClassModuleDeclarationTests.cs" />
+    <Compile Include="Symbols\CommandBarControlCaptionGuardTests.cs" />
     <Compile Include="Symbols\DeclarationFinderTests.cs" />
     <Compile Include="Symbols\ProjectDeclarationTests.cs" />
     <Compile Include="Symbols\ConstantDeclarationTests.cs" />
@@ -125,8 +194,8 @@
     <Compile Include="Inspections\FunctionReturnValueNotUsedInspectionTests.cs" />
     <Compile Include="Inspections\GeneralInspectionTests.cs" />
     <Compile Include="Inspections\ImplicitActiveSheetReferenceInspectionTests.cs" />
-    <Compile Include="Inspections\MultipleFolderAnnotationsInspectionTests.cs" />
-    <Compile Include="Inspections\ObjectVariableNotSetInpsectionTests.cs" />
+    <Compile Include="Inspections\IllegalAnnotationsInspectionTests.cs" />
+    <Compile Include="Inspections\ObjectVariableNotSetInspectionTests.cs" />
     <Compile Include="Inspections\MalformedAnnotationInspectionTests.cs" />
     <Compile Include="Inspections\SelfAssignedDeclarationInspectionTests.cs" />
     <Compile Include="Inspections\UntypedFunctionUsageInspectionTests.cs" />
@@ -142,7 +211,7 @@
     <Compile Include="Inspections\UseMeaningfulNameInspectionTests.cs" />
     <Compile Include="Inspections\DefaultProjectNameInspectionTests.cs" />
     <Compile Include="Inspections\EmptyStringLiteralInspectionTests.cs" />
-    <Compile Include="Inspections\ImplicitByRefParameterInspectionTests.cs" />
+    <Compile Include="Inspections\ImplicitByRefModifierInspectionTests.cs" />
     <Compile Include="Inspections\ImplicitPublicMemberInspectionTests.cs" />
     <Compile Include="Inspections\ImplicitVariantReturnTypeInspectionTests.cs" />
     <Compile Include="Inspections\MultilineParameterInspectionTests.cs" />
@@ -164,8 +233,8 @@
     <Compile Include="Mocks\MockVbeBuilder.cs" />
     <Compile Include="Mocks\Windows.cs" />
     <Compile Include="MultiAssert.cs" />
-    <Compile Include="Preprocessing\VBAPreprocessorTests.cs" />
-    <Compile Include="Preprocessing\VBAPreprocessorVisitorTests.cs" />
+    <Compile Include="PreProcessing\VBAPreprocessorTests.cs" />
+    <Compile Include="PreProcessing\VBAPreprocessorVisitorTests.cs" />
     <Compile Include="Refactoring\EncapsulateFieldTests.cs" />
     <Compile Include="Refactoring\ExtractInterfaceTests.cs" />
     <Compile Include="Refactoring\ExtractMethod\ExtractedMethodRefactoringTests.cs" />
@@ -222,6 +291,10 @@
       <Project>{20589DE8-432E-4359-9232-69EB070B7185}</Project>
       <Name>Rubberduck</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.Inspections\Rubberduck.Inspections.csproj">
+      <Project>{ac4f1d22-d74b-45ff-ab0c-cc2a104fe023}</Project>
+      <Name>Rubberduck.Inspections</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
       <Project>{a4a618e1-cbca-435f-9c6c-5181e030adfc}</Project>
       <Name>Rubberduck.Parsing</Name>
@@ -245,6 +318,8 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <None Include="IntegrationTests\FakeTests.bas" />
+    <None Include="IntegrationTests\StubTests.bas" />
     <Content Include="Testfiles\Grammar\Reference_Module_1.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

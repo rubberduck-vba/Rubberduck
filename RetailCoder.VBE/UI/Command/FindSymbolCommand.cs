@@ -32,9 +32,9 @@ namespace Rubberduck.UI.Command
             get { return RubberduckHotkey.FindSymbol; }
         }
 
-        protected override void ExecuteImpl(object parameter)
+        protected override void OnExecute(object parameter)
         {
-            var viewModel = new FindSymbolViewModel(_state.AllDeclarations.Where(item => !item.IsBuiltIn), _iconCache);
+            var viewModel = new FindSymbolViewModel(_state.AllUserDeclarations, _iconCache);
             var view = new FindSymbolDialog(viewModel);
             {
                 viewModel.Navigate += (sender, e) => { view.Hide(); };

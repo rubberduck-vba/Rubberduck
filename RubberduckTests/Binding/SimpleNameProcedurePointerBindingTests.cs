@@ -17,6 +17,7 @@ namespace RubberduckTests.Binding
         private const string BINDING_TARGET_NAME = "BindingTarget";
         private const string TEST_CLASS_NAME = "TestClass";
 
+        [TestCategory("Binding")]
         [TestMethod]
         public void EnclosingModuleComesBeforeEnclosingProject()
         {
@@ -34,7 +35,7 @@ namespace RubberduckTests.Binding
             Assert.AreEqual(1, declaration.References.Count());
         }
 
-        [Ignore] // todo: figure out why this test randomly fails
+        [TestCategory("Binding")]
         [TestMethod]
         public void EnclosingProjectComesBeforeOtherProceduralModule()
         {
@@ -53,6 +54,7 @@ namespace RubberduckTests.Binding
             Assert.AreEqual(1, declaration.References.Count());
         }
 
+        [TestCategory("Binding")]
         [TestMethod]
         public void OtherProceduralModule()
         {
@@ -72,7 +74,7 @@ namespace RubberduckTests.Binding
 
         private static RubberduckParserState Parse(Mock<IVBE> vbe)
         {
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object);
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status != ParserState.Ready)
             {

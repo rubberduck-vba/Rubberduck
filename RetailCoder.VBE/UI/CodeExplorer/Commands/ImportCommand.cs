@@ -22,20 +22,22 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _openFileDialog.AddExtension = true;
             _openFileDialog.AutoUpgradeEnabled = true;
             _openFileDialog.CheckFileExists = true;
+            _openFileDialog.CheckPathExists = true;
             _openFileDialog.Multiselect = true;
             _openFileDialog.ShowHelp = false;   // we don't want 1996's file picker.
-            _openFileDialog.Filter = @"VB Files|*.cls;*.bas;*.frm";
-            _openFileDialog.CheckFileExists = true;
+            _openFileDialog.Filter = string.Concat(RubberduckUI.ImportCommand_OpenDialog_Filter_VBFiles, @" (*.cls, *.bas, *.frm, *.doccls)|*.cls; *.bas; *.frm; *.doccls|", RubberduckUI.ImportCommand_OpenDialog_Filter_AllFiles, @" (*.*)|*.*");
+            _openFileDialog.Title = RubberduckUI.ImportCommand_OpenDialog_Title;
         }
 
-        protected override bool CanExecuteImpl(object parameter)
+        protected override bool EvaluateCanExecute(object parameter)
         {
             return parameter != null || _vbe.VBProjects.Count == 1 || _vbe.ActiveVBProject != null;
         }
 
-        protected override void ExecuteImpl(object parameter)
+        protected override void OnExecute(object parameter)
         {
-            var project = GetNodeProject((CodeExplorerItemViewModel)parameter);
+            var project = GetNodeProject(parameter as CodeExplorerItemViewModel) ?? _vbe.ActiveVBProject;
+
             if (project == null)
             {
                 if (_vbe.VBProjects.Count == 1)
@@ -67,6 +69,11 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         private IVBProject GetNodeProject(CodeExplorerItemViewModel parameter)
         {
+            if (parameter == null)
+            {
+                return null;
+            }
+
             if (parameter is ICodeExplorerDeclarationViewModel)
             {
                 return parameter.GetSelectedDeclaration().Project;

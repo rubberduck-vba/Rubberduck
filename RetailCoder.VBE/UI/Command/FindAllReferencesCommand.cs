@@ -7,6 +7,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Controls;
+using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command
@@ -41,12 +42,12 @@ namespace Rubberduck.UI.Command
 
         private Declaration FindNewDeclaration(Declaration declaration)
         {
-            return _state.AllUserDeclarations.SingleOrDefault(item =>
-                        item.ProjectId == declaration.ProjectId && 
-                        item.ComponentName == declaration.ComponentName &&
-                        item.ParentScope == declaration.ParentScope &&
-                        item.IdentifierName == declaration.IdentifierName && 
-                        item.DeclarationType == declaration.DeclarationType);
+            return _state.DeclarationFinder
+                .MatchName(declaration.IdentifierName)
+                .SingleOrDefault(d => d.ProjectId == declaration.ProjectId
+                    && d.ComponentName == declaration.ComponentName
+                    && d.ParentScope == declaration.ParentScope
+                    && d.DeclarationType == declaration.DeclarationType);            
         }
 
         private void _state_StateChanged(object sender, ParserStateEventArgs e)
@@ -85,9 +86,10 @@ namespace Rubberduck.UI.Command
             }
         }
 
-        protected override bool CanExecuteImpl(object parameter)
+        protected override bool EvaluateCanExecute(object parameter)
         {
-            if (_vbe.ActiveCodePane == null || _state.Status != ParserState.Ready)
+            if (_state.Status != ParserState.Ready ||
+                (_vbe.ActiveCodePane == null && !(_vbe.SelectedVBComponent?.HasDesigner ?? false)))
             {
                 return false;
             }
@@ -98,7 +100,7 @@ namespace Rubberduck.UI.Command
             return canExecute;
         }
 
-        protected override void ExecuteImpl(object parameter)
+        protected override void OnExecute(object parameter)
         {
             if (_state.Status != ParserState.Ready)
             {
@@ -134,7 +136,7 @@ namespace Rubberduck.UI.Command
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.Error(e);
             }
         }
 
@@ -154,14 +156,55 @@ namespace Rubberduck.UI.Command
 
         private Declaration FindTarget(object parameter)
         {
-            var declaration = parameter as Declaration;
-            if (declaration != null)
+            if (parameter is Declaration declaration)
             {
                 return declaration;
             }
 
+            return _vbe.ActiveCodePane != null && (_vbe.SelectedVBComponent?.HasDesigner ?? false)
+                ? FindFormDesignerTarget()
+                : FindCodePaneTarget();
+        }
+
+        private Declaration FindCodePaneTarget()
+        {
             return _state.FindSelectedDeclaration(_vbe.ActiveCodePane);
         }
+
+        private Declaration FindFormDesignerTarget(QualifiedModuleName? qualifiedModuleName = null)
+        {            
+            (var projectId, var component) = qualifiedModuleName.HasValue
+                ? (qualifiedModuleName.Value.ProjectId, qualifiedModuleName.Value.Component)
+                : (_vbe.ActiveVBProject.ProjectId, _vbe.SelectedVBComponent);
+
+            if (component?.HasDesigner ?? false)
+            {
+                if (qualifiedModuleName.HasValue)
+                {
+                    return _state.DeclarationFinder
+                        .MatchName(qualifiedModuleName.Value.Name)
+                        .SingleOrDefault(m => m.ProjectId == projectId
+                            && m.DeclarationType.HasFlag(qualifiedModuleName.Value.ComponentType)
+                            && m.ComponentName == component.Name);
+                }
+
+                var selectedCount = component.SelectedControls.Count;                
+                if (selectedCount > 1) { return null; }
+
+                // Cannot use DeclarationType.UserForm, parser only assigns UserForms the ClassModule flag
+                (var selectedType, var selectedName) = selectedCount == 0
+                    ? (DeclarationType.ClassModule, component.Name)
+                    : (DeclarationType.Control, component.SelectedControls[0].Name);
+                
+                return _state.DeclarationFinder
+                    .MatchName(selectedName)
+                    .SingleOrDefault(m => m.ProjectId == projectId
+                        && m.DeclarationType.HasFlag(selectedType)
+                        && m.ComponentName == component.Name);                
+            }
+            return null;
+        }
+
 
         public void Dispose()
         {

@@ -20,7 +20,7 @@ namespace Rubberduck.UI.Command
             _operatingSystem = operatingSystem;
         }
 
-        protected override void ExecuteImpl(object parameter)
+        protected override void OnExecute(object parameter)
         {
             using (var window = new SettingsForm(_service, _operatingSystem))
             {

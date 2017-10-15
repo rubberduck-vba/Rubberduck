@@ -2,10 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck.Inspections;
-using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Inspections.Resources;
+using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
@@ -34,7 +33,7 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object);
 
             GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
 
@@ -63,7 +62,7 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object);
 
             GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
 
@@ -95,7 +94,7 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object);
 
             GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
 
@@ -106,85 +105,6 @@ End Sub";
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.IsFalse(inspectionResults.Any());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void UntypedFunctionUsage_QuickFixWorks()
-        {
-            const string inputCode =
-@"Sub Foo()
-    Dim str As String
-    str = Left(""test"", 1)
-End Sub";
-
-            const string expectedCode =
-@"Sub Foo()
-    Dim str As String
-    str = Left$(""test"", 1)
-End Sub";
-
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
-                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
-                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 1, true)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-
-            var module = project.Object.VBComponents[0].CodeModule;
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new UntypedFunctionUsageInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            inspectionResults.First().QuickFixes.First().Fix();
-
-            Assert.AreEqual(expectedCode, module.Content());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void UntypedFunctionUsage_IgnoreQuickFixWorks()
-        {
-            const string inputCode =
-@"Sub Foo()
-    Dim str As String
-    str = Left(""test"", 1)
-End Sub";
-
-            const string expectedCode =
-@"Sub Foo()
-    Dim str As String
-'@Ignore UntypedFunctionUsage
-    str = Left(""test"", 1)
-End Sub";
-
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
-                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
-                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 1, true)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-
-            var module = project.Object.VBComponents[0].CodeModule;
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new UntypedFunctionUsageInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
-
-            Assert.AreEqual(expectedCode, module.Content());
         }
 
         [TestMethod]
@@ -210,13 +130,13 @@ End Sub";
             var vbaDeclaration = new ProjectDeclaration(
                 new QualifiedMemberName(new QualifiedModuleName("VBA", MockVbeBuilder.LibraryPathVBA, "VBA"), "VBA"),
                 "VBA",
-                true, null);
+                false, null);
 
             var conversionModule = new ProceduralModuleDeclaration(
                 new QualifiedMemberName(new QualifiedModuleName("VBA", MockVbeBuilder.LibraryPathVBA, "Conversion"), "Conversion"),
                 vbaDeclaration,
                 "Conversion",
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -224,7 +144,7 @@ End Sub";
                 new QualifiedMemberName(new QualifiedModuleName("VBA", MockVbeBuilder.LibraryPathVBA, "FileSystem"), "FileSystem"),
                 vbaDeclaration,
                 "FileSystem",
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -232,7 +152,7 @@ End Sub";
                 new QualifiedMemberName(new QualifiedModuleName("VBA", MockVbeBuilder.LibraryPathVBA, "Interaction"), "Interaction"),
                 vbaDeclaration,
                 "Interaction",
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -240,7 +160,7 @@ End Sub";
                 new QualifiedMemberName(new QualifiedModuleName("VBA", MockVbeBuilder.LibraryPathVBA, "Strings"), "Strings"),
                 vbaDeclaration,
                 "Strings",
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -248,7 +168,7 @@ End Sub";
                 new QualifiedMemberName(new QualifiedModuleName("VBA", MockVbeBuilder.LibraryPathVBA, "DateTime"), "DateTime"),
                 vbaDeclaration,
                 "Strings",
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -256,7 +176,7 @@ End Sub";
                 new QualifiedMemberName(new QualifiedModuleName("VBA", MockVbeBuilder.LibraryPathVBA, "_HiddenModule"), "_HiddenModule"),
                 vbaDeclaration,
                 "_HiddenModule",
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -272,7 +192,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -287,7 +207,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -302,7 +222,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -317,7 +237,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -332,7 +252,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -378,7 +298,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -404,7 +324,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -419,7 +339,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -445,7 +365,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -460,7 +380,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -486,7 +406,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -512,7 +432,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -548,7 +468,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -563,7 +483,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -578,7 +498,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -593,7 +513,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -629,7 +549,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -644,7 +564,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -659,7 +579,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -674,7 +594,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -689,7 +609,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -704,10 +624,10 @@ End Sub";
                 null,
                 new Selection(),
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
-        
+
 
             var timePropertyGet = new PropertyGetDeclaration(
                 new QualifiedMemberName(dateTimeModule.QualifiedName.QualifiedModuleName, "Time"),
@@ -720,7 +640,7 @@ End Sub";
                 null,
                 new Selection(),
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -735,7 +655,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -771,7 +691,7 @@ End Sub";
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 

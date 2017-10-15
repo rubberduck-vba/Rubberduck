@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.ComTypes;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using VB = Microsoft.VB6.Interop.VBIDE;
@@ -11,10 +10,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 {
     public class VBProjects : SafeComWrapper<VB.VBProjects>, IVBProjects
     {
-        //TODO - This is currently the VBA Guid, and it need to be updated when VB6 support is added.
-        private static readonly Guid VBProjectsEventsGuid = new Guid("0002E103-0000-0000-C000-000000000046");
+        private static readonly Guid VBProjectsEventsGuid = new Guid("0002E190-0000-0000-C000-000000000046");
 
-        //TODO - These *should* be the same, but this should be verified.
         private enum ProjectEventDispId
         {
             ItemAdded = 1,
@@ -28,20 +25,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             AttachEvents();
         }
 
-        public int Count
-        {
-            get { return IsWrappingNullReference ? 0 : Target.Count; }
-        }
+        public int Count => IsWrappingNullReference ? 0 : Target.Count;
 
-        public IVBE VBE
-        {
-            get { return new VBE(IsWrappingNullReference ? null : Target.VBE); }
-        }
+        public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
 
-        public IVBE Parent
-        {
-            get { return new VBE(IsWrappingNullReference ? null : Target.Parent); }
-        }
+        public IVBE Parent => new VBE(IsWrappingNullReference ? null : Target.Parent);
 
         public IVBProject Add(ProjectType type)
         {
@@ -59,10 +47,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             throw new NotImplementedException();
         }
 
-        public IVBProject this[object index]
-        {
-            get { return new VBProject(IsWrappingNullReference ? null : Target.Item(index)); }
-        }
+        public IVBProject this[object index] => new VBProject(IsWrappingNullReference ? null : Target.Item(index));
 
         IEnumerator<IVBProject> IEnumerable<IVBProject>.GetEnumerator()
         {
@@ -112,7 +97,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         private bool _eventsAttached;
         private void AttachEvents()
         {
-            throw new NotImplementedException("Correct the Guid (see comment above), verify the DispIds, then remove this throw.");
             if (!_eventsAttached && !IsWrappingNullReference)
             {
                 _projectAdded = OnProjectAdded;
@@ -165,10 +149,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             var projectId = project.ProjectId;
 
             var handler = ProjectRenamed;
-            if (handler != null)
-            {
-                handler(this, new ProjectRenamedEventArgs(projectId, project, oldName));
-            }
+            handler?.Invoke(this, new ProjectRenamedEventArgs(projectId, project, oldName));
         }
 
         public event EventHandler<ProjectEventArgs> ProjectActivated;

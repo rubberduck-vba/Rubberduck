@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using Rubberduck.Parsing;
@@ -8,12 +9,11 @@ using Rubberduck.UI;
 using Rubberduck.UI.Controls;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Application;
-using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UnitTesting
 {
+    [SuppressMessage("ReSharper", "ExplicitCallerInfoArgument")]
     public class TestMethod : ViewModelBase, IEquatable<TestMethod>, INavigateSource
     {
         private readonly ICollection<AssertCompletedEventArgs> _assertResults = new List<AssertCompletedEventArgs>();
@@ -26,7 +26,7 @@ namespace Rubberduck.UnitTesting
         }
 
         private Declaration _declaration;
-        public Declaration Declaration { get { return _declaration; } }
+        public Declaration Declaration => _declaration;
 
         public void SetDeclaration(Declaration declaration)
         {
@@ -100,13 +100,13 @@ namespace Rubberduck.UnitTesting
 
         public bool Equals(TestMethod other)
         {
-            return Declaration.QualifiedName.Equals(other.Declaration.QualifiedName);
+            return other != null && Declaration.QualifiedName.Equals(other.Declaration.QualifiedName);
         }
 
         public override bool Equals(object obj)
         {
-            return obj is TestMethod
-                && ((TestMethod)obj).Declaration.QualifiedName.Equals(Declaration.QualifiedName);
+            var method = obj as TestMethod;
+            return method != null && method.Declaration.QualifiedName.Equals(Declaration.QualifiedName);
         }
 
         public override int GetHashCode()
@@ -116,7 +116,7 @@ namespace Rubberduck.UnitTesting
 
         public override string ToString()
         {
-            return string.Format("{0}: {1} ({2}ms) {3}", Declaration.QualifiedName, Result.Outcome, Result.Duration, Result.Output);
+            return $"{Declaration.QualifiedName}: {Result.Outcome} ({Result.Duration}ms) {Result.Output}";
         }
     }
 }

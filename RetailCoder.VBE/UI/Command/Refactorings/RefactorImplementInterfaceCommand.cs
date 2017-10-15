@@ -21,7 +21,7 @@ namespace Rubberduck.UI.Command.Refactorings
             _msgBox = msgBox;
         }
 
-        protected override bool CanExecuteImpl(object parameter)
+        protected override bool EvaluateCanExecute(object parameter)
         {
             var pane = Vbe.ActiveCodePane;
             {
@@ -39,14 +39,14 @@ namespace Rubberduck.UI.Command.Refactorings
                 var targetInterface = _state.AllUserDeclarations.FindInterface(selection.Value);
 
                 var targetClass = _state.AllUserDeclarations.SingleOrDefault(d =>
-                    !d.IsBuiltIn && d.DeclarationType == DeclarationType.ClassModule &&
+                    d.DeclarationType == DeclarationType.ClassModule &&
                     d.QualifiedSelection.QualifiedName.Equals(selection.Value.QualifiedName));
 
                 return targetInterface != null && targetClass != null;
             }
         }
 
-        protected override void ExecuteImpl(object parameter)
+        protected override void OnExecute(object parameter)
         {
             var pane = Vbe.ActiveCodePane;
             {

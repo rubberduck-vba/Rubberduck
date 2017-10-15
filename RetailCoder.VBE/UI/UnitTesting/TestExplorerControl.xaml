@@ -492,6 +492,11 @@
                                 <Image Height="16" Source="../../Resources/question-white.png" />
                             </MenuItem.Icon>
                         </MenuItem>
+                        <MenuItem Command="{Binding RunInconclusiveTestsCommand}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_RunInconclusiveTests}" >
+                            <MenuItem.Icon>
+                                <Image Height="16" Source="../../Resources/flask--exclamation.png" />
+                            </MenuItem.Icon>
+                        </MenuItem>
                         <MenuItem Command="{Binding RunPassedTestsCommand}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_RunPassedTests}" >
                             <MenuItem.Icon>
                                 <Image Height="16" Source="../../Resources/tick-circle.png" />
@@ -625,6 +630,6 @@
                 </Grid>
             </ScrollViewer>
         </Border>
-        <controls:BusyIndicator Grid.Row="2" Width="36" Height="36" Visibility="{Binding Model.IsBusy, Converter={StaticResource BoolToVisibility}}" />
+        <controls:BusyIndicator Grid.Row="2" Width="120" Height="120" Visibility="{Binding Model.IsBusy, Converter={StaticResource BoolToVisibility}}" />
     </Grid>
 </UserControl>

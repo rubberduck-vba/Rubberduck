@@ -9,7 +9,7 @@ namespace Rubberduck.UI.Command.MenuItems
         {
         }
 
-        public override string Key { get { return "TestMenu_TextExplorer"; } }
-        public override int DisplayOrder { get { return (int)UnitTestingMenuItemDisplayOrder.TestExplorer; } }
+        public override string Key => "TestMenu_TextExplorer";
+        public override int DisplayOrder => (int)UnitTestingMenuItemDisplayOrder.TestExplorer;
     }
 }

@@ -19,7 +19,7 @@ namespace RubberduckTests.Grammar
         {
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleModule(code, moduleType, out component, Selection.Empty, loadStdLib);
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object);
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status != ParserState.Ready)
@@ -43,7 +43,7 @@ namespace RubberduckTests.Grammar
             builder.AddProject(project);
             var vbe = builder.Build();
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object);
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status == ParserState.ResolverError)
@@ -71,7 +71,7 @@ namespace RubberduckTests.Grammar
             builder.AddProject(project);
             var vbe = builder.Build();
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object);
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status == ParserState.ResolverError)
@@ -86,6 +86,8 @@ namespace RubberduckTests.Grammar
             return parser.State;
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void FunctionReturnValueAssignment_IsReferenceToFunctionDeclaration()
         {
@@ -102,6 +104,25 @@ End Function
             Assert.AreEqual(1, declaration.References.Count(item => item.IsAssignment));
         }
 
+        [TestCategory("Resolver")]
+        [TestMethod]
+        public void OptionalParameterDefaultConstValue_IsReferenceToDeclaredConst()
+        {
+            var code = @"
+Public Const Foo As Long = 42
+Public Sub DoSomething(Optional ByVal bar As Long = Foo)
+End Sub
+";
+            var state = Resolve(code);
+
+            var declaration = state.AllUserDeclarations.Single(item =>
+                item.DeclarationType == DeclarationType.Constant && item.IdentifierName == "Foo");
+
+            Assert.AreEqual(1, declaration.References.Count());
+        }
+
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void TypeOfIsExpression_BooleanExpressionIsReferenceToLocalVariable()
         {
@@ -122,6 +143,8 @@ End Function
             Assert.AreEqual(1, declaration.References.Count());
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void TypeOfIsExpression_TypeExpressionIsReferenceToClass()
         {
@@ -142,6 +165,8 @@ End Function
             Assert.AreEqual(1, declaration.References.Count());
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void FunctionCall_IsReferenceToFunctionDeclaration()
         {
@@ -164,6 +189,37 @@ End Function
             Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
+        [TestMethod]
+        public void FunctionCallWithParensOnNextContinuedLine_IsReferenceToFunctionDeclaration()
+        {
+            var code = @"
+Public Sub DoSomething()
+    Bar Foo _
+  ()
+End Sub
+
+Public Sub Bar()
+End Sub
+
+Private Function Foo() As String
+    Foo = 42
+End Function
+";
+            var state = Resolve(code);
+
+            var declaration = state.DeclarationFinder
+                                .UserDeclarations(DeclarationType.Function)
+                                .Single(item => item.IdentifierName == "Foo");
+
+            var reference = declaration.References.SingleOrDefault(item => !item.IsAssignment);
+            Assert.IsNotNull(reference);
+            Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
+        }
+
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void LocalVariableCall_IsReferenceToVariableDeclaration()
         {
@@ -183,6 +239,8 @@ End Sub
             Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void LocalVariableForeignNameCall_IsReferenceToVariableDeclaration()
         {
@@ -202,6 +260,8 @@ End Sub
             Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void LocalVariableAssignment_IsReferenceToVariableDeclaration()
         {
@@ -221,6 +281,8 @@ End Sub
             Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void SingleLineIfStatementLabel_IsReferenceToLabel_NumberLabelHasColon()
         {
@@ -240,6 +302,8 @@ End Sub
             Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void SingleLineIfStatementLabel_IsReferenceToLabel_NumberLabelNoColon()
         {
@@ -263,6 +327,8 @@ End Sub
             Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void SingleLineIfStatementLabel_IsReferenceToLabel_IdentifierLabel()
         {
@@ -282,6 +348,8 @@ End Sub
             Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void ProjectUdtSameNameFirstProjectThenUdt_FirstReferenceIsToProject()
         {
@@ -304,6 +372,8 @@ End Sub
             Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void ProjectUdtSameNameUdtOnly_IsReferenceToUdt()
         {
@@ -326,6 +396,8 @@ End Sub
             Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void EncapsulatedVariableAssignment_DoesNotResolve()
         {
@@ -349,6 +421,8 @@ Public foo As Integer
             Assert.IsNull(reference);
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void PublicVariableCall_IsReferenceToVariableDeclaration()
         {
@@ -373,6 +447,8 @@ Public foo As Integer
             Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void PublicVariableAssignment_IsReferenceToVariableDeclaration()
         {
@@ -398,6 +474,8 @@ Public foo As Integer
             Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void UserDefinedTypeVariableAsTypeClause_IsReferenceToUserDefinedTypeDeclaration()
         {
@@ -415,6 +493,8 @@ Private this As TFoo
             Assert.IsNotNull(declaration.References.SingleOrDefault());
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void ObjectVariableAsTypeClause_IsReferenceToClassModuleDeclaration()
         {
@@ -435,6 +515,8 @@ Option Explicit
             Assert.IsNotNull(declaration.References.SingleOrDefault());
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void ParameterCall_IsReferenceToParameterDeclaration()
         {
@@ -451,6 +533,8 @@ End Sub
             Assert.IsNotNull(declaration.References.SingleOrDefault());
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void ParameterAssignment_IsAssignmentReferenceToParameterDeclaration()
         {
@@ -467,6 +551,8 @@ End Sub
             Assert.IsNotNull(declaration.References.SingleOrDefault(item => item.IsAssignment));
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void NamedParameterCall_IsReferenceToParameterDeclaration()
         {
@@ -487,6 +573,8 @@ End Sub
                 item.ParentScoping.IdentifierName == "DoSomething"));
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void UserDefinedTypeMemberCall_IsReferenceToUserDefinedTypeMemberDeclaration()
         {
@@ -510,6 +598,8 @@ End Property
                 && item.ParentScoping.IdentifierName == "Bar"));
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void UserDefinedTypeVariableCall_IsReferenceToVariableDeclaration()
         {
@@ -533,6 +623,8 @@ End Property
                 && item.ParentScoping.IdentifierName == "Bar"));
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void WithVariableMemberCall_IsReferenceToMemberDeclaration()
         {
@@ -558,6 +650,8 @@ End Sub
                 && item.ParentScoping.IdentifierName == "DoSomething"));
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void NestedWithVariableMemberCall_IsReferenceToMemberDeclaration()
         {
@@ -591,6 +685,8 @@ End Sub
                 && item.ParentScoping.IdentifierName == "DoSomething"));
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void ResolvesLocalVariableToSmallestScopeIdentifier()
         {
@@ -619,6 +715,8 @@ End Sub
             Assert.IsNull(fieldDeclaration.References.SingleOrDefault());
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void Implements_IsReferenceToClassDeclaration()
         {
@@ -641,6 +739,8 @@ End Sub
                 item.ParentScoping.IdentifierName == "Class2"));
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void NestedMemberCall_IsReferenceToMember()
         {
@@ -669,6 +769,8 @@ End Sub
                 && item.ParentScoping.IdentifierName == "DoSomething"));
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void MemberCallParent_IsReferenceToParent()
         {
@@ -692,6 +794,8 @@ End Sub
                 && item.ParentScoping.IdentifierName == "DoSomething"));
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void ForLoop_IsAssignmentReferenceToIteratorDeclaration()
         {
@@ -713,6 +817,8 @@ End Sub
                 && item.IsAssignment));
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void ForLoop_AddsReferenceEvenIfAssignmentResolutionFailure()
         {
@@ -734,6 +840,8 @@ End Sub
                 && item.IsAssignment));
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void ForEachLoop_IsReferenceToIteratorDeclaration()
         {
@@ -755,6 +863,8 @@ End Sub
                 && item.IsAssignment));
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void ForEachLoop_InClauseIsReferenceToIteratedDeclaration()
         {
@@ -776,6 +886,8 @@ End Sub
                 && !item.IsAssignment));
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void ArraySubscriptAccess_IsReferenceToArrayDeclaration()
         {
@@ -800,6 +912,8 @@ End Sub
                 && !item.IsAssignment));
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void SubscriptWrite_IsNotAssignmentReferenceToObjectDeclaration()
         {
@@ -822,6 +936,8 @@ End Sub
                 && !item.IsAssignment));
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void ArraySubscriptWrite_IsAssignmentReferenceToArrayDeclaration()
         {
@@ -846,6 +962,8 @@ End Sub
                 && item.IsAssignment));
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void PropertyGetCall_IsReferenceToPropertyGetDeclaration()
         {
@@ -879,6 +997,8 @@ End Sub
                 && item.ParentScoping.DeclarationType == DeclarationType.Procedure));
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void PropertySetCall_IsReferenceToPropertySetDeclaration()
         {
@@ -912,6 +1032,8 @@ End Sub
                 && item.ParentScoping.DeclarationType == DeclarationType.Procedure));
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void PropertyLetCall_IsReferenceToPropertyLetDeclaration()
         {
@@ -945,6 +1067,8 @@ End Sub
                 && item.ParentScoping.DeclarationType == DeclarationType.Procedure));
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void EnumMemberCall_IsReferenceToEnumMemberDeclaration()
         {
@@ -975,6 +1099,8 @@ End Sub
 
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void QualifiedEnumMemberCall_IsReferenceToEnumMemberDeclaration()
         {
@@ -1004,6 +1130,8 @@ End Sub
                 && item.ParentScoping.DeclarationType == DeclarationType.Procedure));
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void EnumParameterAsTypeName_ResolvesToEnumTypeDeclaration()
         {
@@ -1031,6 +1159,8 @@ End Sub
                 && item.ParentScoping.DeclarationType == DeclarationType.Procedure));
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void FunctionWithSameNameAsEnumReturnAssignment_DoesntResolveToEnum()
         {
@@ -1055,6 +1185,8 @@ End Function
             Assert.IsTrue(declaration.References.All(item => item.Selection.StartLine != 9));
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void UserDefinedTypeParameterAsTypeName_ResolvesToUserDefinedTypeDeclaration()
         {
@@ -1079,6 +1211,8 @@ End Sub
                 && item.ParentScoping.DeclarationType == DeclarationType.Procedure));
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void LocalArrayOrFunctionCall_ResolvesToSmallestScopedDeclaration()
         {
@@ -1103,6 +1237,8 @@ End Function";
             Assert.IsNotNull(declaration.References.SingleOrDefault(item => !item.IsAssignment));
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void AnnotatedReference_LineAbove_HasAnnotations()
         {
@@ -1127,6 +1263,8 @@ End Sub
                 && annotation.InspectionNames.First() == "UnassignedVariableUsage");
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void AnnotatedReference_LinesAbove_HaveAnnotations()
         {
@@ -1156,6 +1294,8 @@ End Sub
             Assert.IsTrue(usage.Annotations.Any(a => ((IgnoreAnnotation)a).InspectionNames.First() == "UnassignedVariableUsage"));
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void AnnotatedDeclaration_LinesAbove_HaveAnnotations()
         {
@@ -1174,6 +1314,8 @@ End Sub";
             Assert.IsTrue(declaration.Annotations.Any(a => a.AnnotationType == AnnotationType.IgnoreTest));
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void AnnotatedReference_SameLine_HasNoAnnotations()
         {
@@ -1193,6 +1335,8 @@ End Sub
             Assert.IsTrue(!usage.Annotations.Any());
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void GivenUDT_NamedAfterProject_LocalResolvesToUDT()
         {
@@ -1223,6 +1367,8 @@ End Sub
             Assert.IsNotNull(usage);
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void GivenUDT_NamedAfterProject_FieldResolvesToUDT_EvenIfHiddenByLocal()
         {
@@ -1255,6 +1401,8 @@ End Sub
             Assert.AreEqual(2, usages.Count());
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void GivenLocalVariable_NamedAfterUDTMember_ResolvesToLocalVariable()
         {
@@ -1284,6 +1432,8 @@ End Sub
             Assert.AreEqual(2, usages.Count());
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void GivenLocalVariable_NamedAfterUDTMember_MemberCallResolvesToUDTMember()
         {
@@ -1311,6 +1461,8 @@ End Sub
             Assert.AreEqual(1, usages.Count());
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void GivenUDTMember_OfUDTType_ResolvesToDeclaredUDT()
         {
@@ -1344,6 +1496,8 @@ End Sub
             Assert.AreEqual(2, usages.Count());
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void GivenUDT_NamedAfterModule_LocalAsTypeResolvesToUDT()
         {
@@ -1375,6 +1529,8 @@ End Sub
             Assert.AreEqual(1, usages.Count());
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void GivenUDTMember_NamedAfterUDTType_NamedAfterModule_LocalAsTypeResolvesToUDT()
         {
@@ -1406,6 +1562,8 @@ End Sub
             Assert.AreEqual(1, usages.Count());
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void GivenField_NamedUnambiguously_FieldAssignmentCallResolvesToFieldDeclaration()
         {
@@ -1432,6 +1590,8 @@ End Sub
             Assert.AreEqual(1, usages.Count());
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void GivenField_NamedUnambiguously_InStatementFieldCallResolvesToFieldDeclaration()
         {
@@ -1458,6 +1618,8 @@ End Sub
             Assert.AreEqual(1, usages.Count());
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void GivenField_NamedAmbiguously_FieldAssignmentCallResolvesToFieldDeclaration()
         {
@@ -1484,6 +1646,8 @@ End Sub
             Assert.AreEqual(1, usages.Count());
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void GivenUDTField_NamedAmbiguously_MemberAssignmentCallResolvesToUDTMember()
         {
@@ -1510,6 +1674,8 @@ End Sub
             Assert.AreEqual(1, usages.Count());
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void GivenFullyReferencedUDTFieldMemberCall_ProjectParentMember_ResolvesToProject()
         {
@@ -1536,6 +1702,8 @@ End Sub
             Assert.AreEqual(1, usages.Count());
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void GivenFullyQualifiedUDTFieldMemberCall_ModuleParentMember_ResolvesToModule()
         {
@@ -1562,6 +1730,8 @@ End Sub
             Assert.AreEqual(1, usages.Count());
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void GivenFullyQualifiedUDTFieldMemberCall_FieldParentMember_ResolvesToVariable()
         {
@@ -1588,6 +1758,8 @@ End Sub
             Assert.AreEqual(1, usages.Count());
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void GivenGlobalVariable_QualifiedUsageInOtherModule_AssignmentCallResolvesToVariable()
         {
@@ -1620,6 +1792,8 @@ End Sub";
             Assert.AreEqual(1, usages.Count());
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void GivenGlobalVariable_QualifiedUsageInOtherModule_CallResolvesToVariable()
         {
@@ -1653,6 +1827,8 @@ End Sub
             Assert.AreEqual(1, usages.Count());
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void RedimStmt_RedimVariableDeclarationIsReferenceToLocalVariable()
         {
@@ -1670,6 +1846,8 @@ End Sub
             Assert.AreEqual(6, declaration.References.Count());
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void OpenStmt_IsReferenceToLocalVariable()
         {
@@ -1687,6 +1865,8 @@ End Sub
             Assert.AreEqual(3, declaration.References.Count());
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void CloseStmt_IsReferenceToLocalVariable()
         {
@@ -1704,6 +1884,8 @@ End Sub
             Assert.AreEqual(2, declaration.References.Count());
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void SeekStmt_IsReferenceToLocalVariable()
         {
@@ -1721,6 +1903,8 @@ End Sub
             Assert.AreEqual(2, declaration.References.Count());
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void LockStmt_IsReferenceToLocalVariable()
         {
@@ -1738,6 +1922,8 @@ End Sub
             Assert.AreEqual(3, declaration.References.Count());
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void UnlockStmt_IsReferenceToLocalVariable()
         {
@@ -1755,6 +1941,8 @@ End Sub
             Assert.AreEqual(3, declaration.References.Count());
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void LineInputStmt_IsReferenceToLocalVariable()
         {
@@ -1772,6 +1960,8 @@ End Sub
             Assert.AreEqual(2, declaration.References.Count());
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void LineInputStmt_ReferenceIsAssignment()
         {
@@ -1789,6 +1979,8 @@ End Sub
             Assert.IsTrue(declaration.References.Single().IsAssignment);
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void WidthStmt_IsReferenceToLocalVariable()
         {
@@ -1806,6 +1998,8 @@ End Sub
             Assert.AreEqual(2, declaration.References.Count());
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void PrintStmt_IsReferenceToLocalVariable()
         {
@@ -1823,6 +2017,8 @@ End Sub
             Assert.AreEqual(4, declaration.References.Count());
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void WriteStmt_IsReferenceToLocalVariable()
         {
@@ -1840,6 +2036,8 @@ End Sub
             Assert.AreEqual(4, declaration.References.Count());
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void InputStmt_IsReferenceToLocalVariable()
         {
@@ -1857,6 +2055,8 @@ End Sub
             Assert.AreEqual(2, declaration.References.Count());
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void InputStmt_ReferenceIsAssignment()
         {
@@ -1887,6 +2087,8 @@ End Sub
             Assert.IsTrue(zCoordDeclaration.References.Single().IsAssignment);
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void PutStmt_IsReferenceToLocalVariable()
         {
@@ -1904,6 +2106,8 @@ End Sub
             Assert.AreEqual(3, declaration.References.Count());
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void GetStmt_IsReferenceToLocalVariable()
         {
@@ -1921,6 +2125,8 @@ End Sub
             Assert.AreEqual(3, declaration.References.Count());
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void GetStmt_ReferenceIsAssignment()
         {
@@ -1938,6 +2144,8 @@ End Sub
             Assert.IsTrue(variableDeclaration.References.Single().IsAssignment);
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void LineSpecialForm_IsReferenceToLocalVariable()
         {
@@ -1955,6 +2163,8 @@ End Sub
             Assert.AreEqual(4, declaration.References.Count());
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void CircleSpecialForm_IsReferenceToLocalVariable()
         {
@@ -1972,6 +2182,8 @@ End Sub
             Assert.AreEqual(7, declaration.References.Count());
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void ScaleSpecialForm_IsReferenceToLocalVariable()
         {
@@ -1989,6 +2201,8 @@ End Sub
             Assert.AreEqual(4, declaration.References.Count());
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void FieldLengthStmt_IsReferenceToLocalVariable()
         {
@@ -2006,6 +2220,8 @@ End Sub
             Assert.AreEqual(1, declaration.References.Count());
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void GivenControlDeclaration_ResolvesUsageInCodeBehind()
         {
@@ -2021,7 +2237,7 @@ End Sub
             builder.AddProject(project.Build());
             var vbe = builder.Build();
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object);
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status == ParserState.ResolverError)
@@ -2043,8 +2259,9 @@ End Sub
             Assert.AreEqual(1, usages.Count());
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
-        [Ignore] // todo: figure out why test is randomly failing
         public void GivenLocalDeclarationAsQualifiedClassName_ResolvesFirstPartToProject()
         {
             var code_class1 = @"
@@ -2076,6 +2293,8 @@ End Property
             Assert.AreEqual(1, usages.Count());
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void GivenLocalDeclarationAsQualifiedClassName_ResolvesSecondPartToClassModule()
         {
@@ -2107,6 +2326,8 @@ End Property
             Assert.AreEqual(1, usages.Count());
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void GivenLocalDeclarationAsQualifiedClassName_ResolvesThirdPartToUDT()
         {
@@ -2138,6 +2359,8 @@ End Property
             Assert.AreEqual(1, usages.Count());
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void QualifiedSetStatement_FirstSectionDoesNotHaveAssignmentFlag()
         {
@@ -2163,6 +2386,8 @@ End Sub
             Assert.IsFalse(declaration.References.ElementAt(0).IsAssignment);
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void QualifiedSetStatement_MiddleSectionDoesNotHaveAssignmentFlag()
         {
@@ -2188,6 +2413,8 @@ End Sub
             Assert.IsFalse(declaration.References.ElementAt(0).IsAssignment);
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void QualifiedSetStatement_LastSectionHasAssignmentFlag()
         {
@@ -2213,6 +2440,8 @@ End Sub
             Assert.IsTrue(declaration.References.ElementAt(0).IsAssignment);
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void SetStatement_HasAssignmentFlag()
         {
@@ -2231,6 +2460,8 @@ End Sub
             Assert.IsTrue(declaration.References.ElementAt(0).IsAssignment);
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void ImplicitLetStatement_HasAssignmentFlag()
         {
@@ -2249,6 +2480,8 @@ End Sub
             Assert.IsTrue(declaration.References.ElementAt(0).IsAssignment);
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void ExplicitLetStatement_HasAssignmentFlag()
         {
@@ -2267,6 +2500,8 @@ End Sub
             Assert.IsTrue(declaration.References.ElementAt(0).IsAssignment);
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         //https://github.com/rubberduck-vba/Rubberduck/issues/2478
         [TestMethod]
         public void VariableNamedBfResolvesAsAVariable()
@@ -2285,6 +2520,8 @@ End Sub
             Assert.IsNotNull(declaration);
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         //https://github.com/rubberduck-vba/Rubberduck/issues/2478
         [TestMethod]
         public void ProcedureNamedBfResolvesAsAProcedure()
@@ -2302,6 +2539,8 @@ End Sub
             Assert.IsNotNull(declaration);
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         //https://github.com/rubberduck-vba/Rubberduck/issues/2478
         [TestMethod]
         public void TypeNamedBfResolvesAsAType()
@@ -2320,6 +2559,8 @@ End Type
             Assert.IsNotNull(declaration);
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         //https://github.com/rubberduck-vba/Rubberduck/issues/2523
         [TestMethod]
         public void AnnotationFollowedByCommentAnnotatesDeclaration()
@@ -2341,6 +2582,8 @@ End Sub
             Assert.IsTrue(results.SequenceEqual(((IgnoreAnnotation)annotation).InspectionNames));
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         //https://github.com/rubberduck-vba/Rubberduck/issues/2523
         [TestMethod]
         public void AnnotationListFollowedByCommentAnnotatesDeclaration()
@@ -2363,6 +2606,8 @@ End Sub
             Assert.IsTrue(results.SequenceEqual(((IgnoreAnnotation)annotation).InspectionNames));
         }
 
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
         [TestMethod]
         public void MemberReferenceIsAssignmentTarget_NotTheParentObject()
         {
@@ -2393,6 +2638,106 @@ End Sub
             var call = member.References.Single();
 
             Assert.IsTrue(call.IsAssignment, "LHS member call on object is not flagging member reference as assignment target.");
+        }
+
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
+        [TestMethod]
+        public void AttributeFollowingSubGetsAssignedToSub()
+        {
+            var code = @"
+Public Sub Foo(): End Sub
+Attribute Foo.VB_Description = ""Foo description""
+
+Public Sub Bar()
+End Sub
+";
+            var state = Resolve(code);
+            var declaration = state.DeclarationFinder.MatchName("Foo").Single(item => item.DeclarationType == DeclarationType.Procedure);
+
+            var expectedDescription = "Foo description";
+            var actualDescription = declaration.DescriptionString;
+            Assert.AreEqual(expectedDescription, actualDescription);
+        }
+
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
+        [TestMethod]
+        public void AttributeFollowingFunctionGetsAssignedToFunction()
+        {
+            var code = @"
+Public Function Foo(): End Function
+Attribute Foo.VB_Description = ""Foo description""
+
+Public Sub Bar()
+End Sub
+";
+            var state = Resolve(code);
+            var declaration = state.DeclarationFinder.MatchName("Foo").Single(item => item.DeclarationType == DeclarationType.Function);
+
+            var expectedDescription = "Foo description";
+            var actualDescription = declaration.DescriptionString;
+            Assert.AreEqual(expectedDescription, actualDescription);
+        }
+
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
+        [TestMethod]
+        public void AttributeFollowingPropertyGetGetsAssignedToPropertyGet()
+        {
+            var code = @"
+Public Property Get Foo(): End Property
+Attribute Foo.VB_Description = ""Foo description""
+
+Public Sub Bar()
+End Sub
+";
+            var state = Resolve(code);
+            var declaration = state.DeclarationFinder.MatchName("Foo").Single(item => item.DeclarationType == DeclarationType.PropertyGet);
+
+            var expectedDescription = "Foo description";
+            var actualDescription = declaration.DescriptionString;
+            Assert.AreEqual(expectedDescription, actualDescription);
+        }
+
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
+        [TestMethod]
+        public void AttributeFollowingPropertyLetGetsAssignedToPropertyLet()
+        {
+            var code = @"
+Public Property Let Foo(): End Property
+Attribute Foo.VB_Description = ""Foo description""
+
+Public Sub Bar()
+End Sub
+";
+            var state = Resolve(code);
+            var declaration = state.DeclarationFinder.MatchName("Foo").Single(item => item.DeclarationType == DeclarationType.PropertyLet);
+
+            var expectedDescription = "Foo description";
+            var actualDescription = declaration.DescriptionString;
+            Assert.AreEqual(expectedDescription, actualDescription);
+        }
+
+        [TestCategory("Grammar")]
+        [TestCategory("Resolver")]
+        [TestMethod]
+        public void AttributeFollowingPropertySetGetsAssignedToPropertySet()
+        {
+            var code = @"
+Public Property Set Foo(): End Property
+Attribute Foo.VB_Description = ""Foo description""
+
+Public Sub Bar()
+End Sub
+";
+            var state = Resolve(code);
+            var declaration = state.DeclarationFinder.MatchName("Foo").Single(item => item.DeclarationType == DeclarationType.PropertySet);
+
+            var expectedDescription = "Foo description";
+            var actualDescription = declaration.DescriptionString;
+            Assert.AreEqual(expectedDescription, actualDescription);
         }
     }
 }

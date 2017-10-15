@@ -1,6 +1,7 @@
-﻿using System.Threading;
+﻿using Antlr4.Runtime;
+using System.Threading;
 
-namespace Rubberduck.Parsing.Preprocessing
+namespace Rubberduck.Parsing.PreProcessing
 {
     public sealed class VBAPreprocessor : IVBAPreprocessor
     {
@@ -13,16 +14,17 @@ namespace Rubberduck.Parsing.Preprocessing
             _parser = new VBAPrecompilationParser();
         }
 
-        public string Execute(string moduleName, string unprocessedCode, CancellationToken token)
+        public void PreprocessTokenStream(string moduleName, CommonTokenStream tokenStream, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
             var symbolTable = new SymbolTable<string, IValue>();
-            var tree = _parser.Parse(moduleName, unprocessedCode);
+            var tree = _parser.Parse(moduleName, tokenStream);
             token.ThrowIfCancellationRequested();
-            var stream = tree.Start.InputStream;
-            var evaluator = new VBAPreprocessorVisitor(symbolTable, new VBAPredefinedCompilationConstants(_vbaVersion), stream);
+            var stream = tokenStream.TokenSource.InputStream;
+            var evaluator = new VBAPreprocessorVisitor(symbolTable, new VBAPredefinedCompilationConstants(_vbaVersion), stream, tokenStream);
             var expr = evaluator.Visit(tree);
-            return expr.Evaluate().AsString;
+            var processedTokens = expr.Evaluate(); //This does the actual preprocessing of the token stream as a side effect.
+            tokenStream.Reset();
         }
     }
 }

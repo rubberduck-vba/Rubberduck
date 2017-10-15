@@ -31,18 +31,21 @@ namespace Rubberduck.Navigation.CodeExplorer
     {
         private static readonly Dictionary<DeclarationType, int> SortOrder = new Dictionary<DeclarationType, int>
         {
+            // Some DeclarationTypes we want to treat the same, like Subs and Functions,
+            // or Property Gets, Lets, and Sets.
+            // Give them the same number.
             {DeclarationType.LibraryFunction, 0},
-            {DeclarationType.LibraryProcedure, 1},
-            {DeclarationType.UserDefinedType, 2},
-            {DeclarationType.Enumeration, 3},
-            {DeclarationType.Event, 4},
-            {DeclarationType.Constant, 5},
-            {DeclarationType.Variable, 6},
-            {DeclarationType.PropertyGet, 7},
-            {DeclarationType.PropertyLet, 8},
-            {DeclarationType.PropertySet, 9},
-            {DeclarationType.Function, 10},
-            {DeclarationType.Procedure, 11}
+            {DeclarationType.LibraryProcedure, 0},
+            {DeclarationType.UserDefinedType, 1},
+            {DeclarationType.Enumeration, 2},
+            {DeclarationType.Event, 3},
+            {DeclarationType.Constant, 4},
+            {DeclarationType.Variable, 5},
+            {DeclarationType.PropertyGet, 6},
+            {DeclarationType.PropertyLet, 6},
+            {DeclarationType.PropertySet, 6},
+            {DeclarationType.Function, 7},
+            {DeclarationType.Procedure, 7}
         };
 
         public override int Compare(CodeExplorerItemViewModel x, CodeExplorerItemViewModel y)
@@ -69,17 +72,21 @@ namespace Rubberduck.Navigation.CodeExplorer
                 if (SortOrder.TryGetValue(xNode.Declaration.DeclarationType, out xValue) &&
                     SortOrder.TryGetValue(yNode.Declaration.DeclarationType, out yValue))
                 {
-                    return xValue < yValue ? -1 : 1;
+                    if (xValue != yValue)
+                    { return xValue < yValue ? -1 : 1; }
                 }
-
-                return xNode.Declaration.DeclarationType < yNode.Declaration.DeclarationType ? -1 : 1;
             }
 
-            if (xNode.Declaration.Accessibility != yNode.Declaration.Accessibility)
+            // The Tree shows Public and Private Subs/Functions with a seperate icon.
+            // But Public and Implicit Subs/Functions appear the same, so treat Implicts like Publics.
+            var xNodeAcc = xNode.Declaration.Accessibility == Accessibility.Implicit ? Accessibility.Public : xNode.Declaration.Accessibility;
+            var yNodeAcc = yNode.Declaration.Accessibility == Accessibility.Implicit ? Accessibility.Public : yNode.Declaration.Accessibility;
+
+            if (xNodeAcc != yNodeAcc)
             {
-                return xNode.Declaration.Accessibility < yNode.Declaration.Accessibility ? -1 : 1;
+                return xNodeAcc > yNodeAcc ? -1 : 1;
             }
-            
+
             if (x.ExpandedIcon != y.ExpandedIcon)
             {
                 // ReSharper disable PossibleInvalidOperationException - this will have a component
@@ -121,12 +128,12 @@ namespace Rubberduck.Navigation.CodeExplorer
                 return x.QualifiedSelection.HasValue ? -1 : 1;
             }
 
-            if (x.QualifiedSelection.Value.Selection == y.QualifiedSelection.Value.Selection)
+            if (x.QualifiedSelection.Value.Selection.StartLine == y.QualifiedSelection.Value.Selection.StartLine)
             {
                 return 0;
             }
 
-            return x.QualifiedSelection.Value.Selection < y.QualifiedSelection.Value.Selection ? -1 : 1;
+            return x.QualifiedSelection.Value.Selection.StartLine < y.QualifiedSelection.Value.Selection.StartLine ? -1 : 1;
         }
     }
 
@@ -183,6 +190,17 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public bool IsSelected { get; set; }
 
+        private bool _isVisisble = true;
+        public bool IsVisible
+        {
+            get { return _isVisisble; }
+            set
+            {
+                _isVisisble = value;
+                OnPropertyChanged();
+            }
+        }
+
         public abstract string Name { get; }
         public abstract string NameWithSignature { get; }
         public abstract BitmapImage CollapsedIcon { get; }
@@ -221,9 +239,9 @@ namespace Rubberduck.Navigation.CodeExplorer
             _items.Add(item);
         }
 
-        public void ReorderItems(bool sortByName, bool sortByType)
+        public void ReorderItems(bool sortByName, bool groupByType)
         {
-            if (sortByType)
+            if (groupByType)
             {
                 Items = sortByName
                     ? Items.OrderBy(o => o, new CompareByType()).ThenBy(t => t, new CompareByName()).ToList()

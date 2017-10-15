@@ -1,11 +1,11 @@
 ﻿using System;
-using Rubberduck.Common;
+using System.Collections.Generic;
+using System.Linq;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Selection = Rubberduck.VBEditor.Selection;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
@@ -15,6 +15,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private readonly IIndenter _indenter;
         private readonly IRefactoringPresenterFactory<IEncapsulateFieldPresenter> _factory;
         private EncapsulateFieldModel _model;
+
+        private readonly HashSet<IModuleRewriter> _referenceRewriters = new HashSet<IModuleRewriter>();
 
         public EncapsulateFieldRefactoring(IVBE vbe, IIndenter indenter, IRefactoringPresenterFactory<IEncapsulateFieldPresenter> factory)
         {
@@ -26,183 +28,91 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public void Refactor()
         {
             var presenter = _factory.Create();
-            if (presenter == null)
-            {
-                return;
-            }
+            if (presenter == null) { return; }
 
             _model = presenter.Show();
             if (_model == null) { return; }
 
-            QualifiedSelection? oldSelection = null;
-            if (_vbe.ActiveCodePane != null)
+            var target = _model.TargetDeclaration;
+            var rewriter = _model.State.GetRewriter(target);
+            AddProperty(rewriter);
+
+            rewriter.Rewrite();
+            foreach (var referenceRewriter in _referenceRewriters)
             {
-                oldSelection = _vbe.ActiveCodePane.CodeModule.GetQualifiedSelection();
+                referenceRewriter.Rewrite();
             }
-
-            AddProperty();
-
-            if (oldSelection.HasValue)
-            {
-                var module = oldSelection.Value.QualifiedName.Component.CodeModule;
-                var pane = module.CodePane;
-                {
-                    pane.Selection = oldSelection.Value.Selection;
-                }
-            }
-
-            _model.State.OnParseRequested(this);
         }
 
         public void Refactor(QualifiedSelection target)
         {
             var pane = _vbe.ActiveCodePane;
-            {
-                pane.Selection = target.Selection;
-            }
+            pane.Selection = target.Selection;
             Refactor();
         }
 
         public void Refactor(Declaration target)
         {
             var pane = _vbe.ActiveCodePane;
-            {
-                pane.Selection = target.QualifiedSelection.Selection;
-            }
+            pane.Selection = target.QualifiedSelection.Selection;
             Refactor();
         }
 
-        private void AddProperty()
+        private void AddProperty(IModuleRewriter rewriter)
         {
             UpdateReferences();
+            SetFieldToPrivate(rewriter);
 
-            var module = _model.TargetDeclaration.QualifiedName.QualifiedModuleName.Component.CodeModule;
-            SetFieldToPrivate(module);
+            var members = _model.State.DeclarationFinder
+                .Members(_model.TargetDeclaration.QualifiedName.QualifiedModuleName)
+                .OrderBy(declaration => declaration.QualifiedSelection);
 
-            module.InsertLines(module.CountOfDeclarationLines + 1, Environment.NewLine + GetPropertyText());
+            var fields = members.Where(d => d.DeclarationType == DeclarationType.Variable && !d.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member)).ToList();
+
+            var property = Environment.NewLine + Environment.NewLine + GetPropertyText();
+            if (members.Any(m => m.DeclarationType.HasFlag(DeclarationType.Member)))
+            {
+                property += Environment.NewLine;
+            }
+
+            if (_model.TargetDeclaration.Accessibility != Accessibility.Private)
+            {
+                var newField = "Private " + _model.TargetDeclaration.IdentifierName + " As " + _model.TargetDeclaration.AsTypeName;
+                if (fields.Count > 1)
+                {
+                    newField = Environment.NewLine + newField;
+                }
+
+                property = newField + property;
+            }
+
+            if (_model.TargetDeclaration.Accessibility == Accessibility.Private || fields.Count > 1)
+            {
+                rewriter.InsertAfter(fields.Last().Context.Stop.TokenIndex, property);
+            }
+            else
+            {
+                rewriter.InsertBefore(0, property);
+            }
         }
 
         private void UpdateReferences()
         {
             foreach (var reference in _model.TargetDeclaration.References)
             {
-                var module = reference.QualifiedModuleName.Component.CodeModule;
-                {
-                    var oldLine = module.GetLines(reference.Selection.StartLine, 1);
-                    oldLine = oldLine.Remove(reference.Selection.StartColumn - 1, reference.Selection.EndColumn - reference.Selection.StartColumn);
-                    var newLine = oldLine.Insert(reference.Selection.StartColumn - 1, _model.PropertyName);
+                var rewriter = _model.State.GetRewriter(reference.QualifiedModuleName);
+                rewriter.Replace(reference.Context, _model.PropertyName);
 
-                    module.ReplaceLine(reference.Selection.StartLine, newLine);
-                }
+                _referenceRewriters.Add(rewriter);
             }
         }
 
-        private void SetFieldToPrivate(ICodeModule module)
+        private void SetFieldToPrivate(IModuleRewriter rewriter)
         {
-            if (_model.TargetDeclaration.Accessibility == Accessibility.Private)
+            if (_model.TargetDeclaration.Accessibility != Accessibility.Private)
             {
-                return;
+                rewriter.Remove(_model.TargetDeclaration);
             }
-
-            RemoveField(_model.TargetDeclaration);
-
-            var newField = "Private " + _model.TargetDeclaration.IdentifierName + " As " +
-                           _model.TargetDeclaration.AsTypeName;
-
-            module.InsertLines(module.CountOfDeclarationLines + 1, newField);
-            var pane = module.CodePane;
-            {
-                pane.Selection = _model.TargetDeclaration.QualifiedSelection.Selection;
-            }
-
-            for (var index = 1; index <= module.CountOfDeclarationLines; index++)
-            {
-                if (module.GetLines(index, 1).Trim() == string.Empty)
-                {
-                    module.DeleteLines(new Selection(index, 0, index, 0));
-                }
-            }
-        }
-
-        private void RemoveField(Declaration target)
-        {
-            Selection selection;
-            var declarationText = target.Context.GetText().Replace(" _" + Environment.NewLine, string.Empty);
-            var multipleDeclarations = target.HasMultipleDeclarationsInStatement();
-
-            var variableStmtContext = target.GetVariableStmtContext();
-
-            if (!multipleDeclarations)
-            {
-                declarationText = variableStmtContext.GetText().Replace(" _" + Environment.NewLine, string.Empty);
-                selection = target.GetVariableStmtContextSelection();
-            }
-            else
-            {
-                selection = new Selection(target.Context.Start.Line, target.Context.Start.Column,
-                    target.Context.Stop.Line, target.Context.Stop.Column);
-            }
-
-            var pane = _vbe.ActiveCodePane;
-            var module = pane.CodeModule;
-            {
-                var oldLines = module.GetLines(selection);
-
-                var newLines = oldLines.Replace(" _" + Environment.NewLine, string.Empty)
-                    .Remove(selection.StartColumn, declarationText.Length);
-
-                if (multipleDeclarations)
-                {
-                    selection = target.GetVariableStmtContextSelection();
-                    newLines = RemoveExtraComma(module.GetLines(selection).Replace(oldLines, newLines),
-                        target.CountOfDeclarationsInStatement(), target.IndexOfVariableDeclarationInStatement());
-                }
-
-                newLines = newLines.Replace(" _" + Environment.NewLine, string.Empty);
-
-                module.DeleteLines(selection);
-
-                if (newLines.Trim() != string.Empty)
-                {
-                    module.InsertLines(selection.StartLine, newLines);
-                }
-            }
-        }
-
-        private string RemoveExtraComma(string str, int numParams, int indexRemoved)
-        {
-            // Example use cases for this method (fields and variables):
-            // Dim fizz as Boolean, dizz as Double
-            // Private fizz as Boolean, dizz as Double
-            // Public fizz as Boolean, _
-            //        dizz as Double
-            // Private fizz as Boolean _
-            //         , dizz as Double _
-            //         , iizz as Integer
-
-            // Before this method is called, the parameter to be removed has 
-            // already been removed.  This means 'str' will look like:
-            // Dim fizz as Boolean, 
-            // Private , dizz as Double
-            // Public fizz as Boolean, _
-            //        
-            // Private  _
-            //         , dizz as Double _
-            //         , iizz as Integer
-
-            // This method is responsible for removing the redundant comma
-            // and returning a string similar to:
-            // Dim fizz as Boolean
-            // Private dizz as Double
-            // Public fizz as Boolean _
-            //        
-            // Private  _
-            //          dizz as Double _
-            //         , iizz as Integer
-
-            var commaToRemove = numParams == indexRemoved ? indexRemoved - 1 : indexRemoved;
-
-            return str.Remove(str.NthIndexOf(',', commaToRemove), 1);
         }
 
         private string GetPropertyText()

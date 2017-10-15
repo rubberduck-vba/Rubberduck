@@ -1,5 +1,6 @@
 ﻿using System.Windows.Forms;
 using Rubberduck.UI;
+using Rubberduck.UI.Refactorings;
 using Rubberduck.UI.Refactorings.RemoveParameters;
 
 namespace Rubberduck.Refactorings.RemoveParameters
@@ -11,11 +12,11 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
     public class RemoveParametersPresenter : IRemoveParametersPresenter
     {
-        private readonly RemoveParametersDialog _view;
+        private readonly IRefactoringDialog<RemoveParametersViewModel> _view;
         private readonly RemoveParametersModel _model;
         private readonly IMessageBox _messageBox;
 
-        public RemoveParametersPresenter(RemoveParametersDialog view, RemoveParametersModel model, IMessageBox messageBox)
+        public RemoveParametersPresenter(IRefactoringDialog<RemoveParametersViewModel> view, RemoveParametersModel model, IMessageBox messageBox)
         {
             _view = view;
             _model = model;

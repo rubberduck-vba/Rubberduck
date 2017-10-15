@@ -9,12 +9,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
         private AxHostConverter() 
             : base(string.Empty) { }
 
-        static public IPictureDisp ImageToPictureDisp(Image image)
+        public static IPictureDisp ImageToPictureDisp(Image image)
         {
             return (IPictureDisp)GetIPictureDispFromPicture(image);
         }
 
-        static public Image PictureDispToImage(IPictureDisp pictureDisp)
+        public static Image PictureDispToImage(IPictureDisp pictureDisp)
         {
             return GetPictureFromIPicture(pictureDisp);
         }

@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Runtime.InteropServices;
 using NLog;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Settings;
 using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -27,15 +21,18 @@ namespace Rubberduck.UI.Command
             _state = state;
         }
 
-        protected override bool CanExecuteImpl(object parameter)
+        protected override bool EvaluateCanExecute(object parameter)
         {
             return !_vbe.ActiveVBProject.IsWrappingNullReference && _vbe.ActiveVBProject.Protection != ProjectProtection.Locked;
         }
 
-        protected override void ExecuteImpl(object parameter)
+        protected override void OnExecute(object parameter)
         {
             _indenter.IndentCurrentProject();
-            _state.OnParseRequested(this);
+            if (_state.Status >= ParserState.Ready || _state.Status == ParserState.Pending)
+            {
+                _state.OnParseRequested(this);
+            }
         }
     }
 }

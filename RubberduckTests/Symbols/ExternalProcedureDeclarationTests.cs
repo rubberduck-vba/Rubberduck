@@ -9,6 +9,7 @@ namespace RubberduckTests.Symbols
     public class ExternalProcedureDeclarationTests
     {
         [TestMethod]
+        [TestCategory("Resolver")]
         public void ByDefaultExternalProceduresDoNotHaveParameters()
         {
             var externalProcedure = GetTestExternalProcedure("testProcedure");
@@ -19,7 +20,7 @@ namespace RubberduckTests.Symbols
             private static ExternalProcedureDeclaration GetTestExternalProcedure(string name)
             {
                 var qualifiedProcedureName = new QualifiedMemberName(StubQualifiedModuleName(), name);
-                return new ExternalProcedureDeclaration(qualifiedProcedureName, null, null, DeclarationType.Procedure, "test", null, Accessibility.Public, null, Selection.Home, false, null);
+                return new ExternalProcedureDeclaration(qualifiedProcedureName, null, null, DeclarationType.Procedure, "test", null, Accessibility.Public, null, Selection.Home, true, null);
             }
 
                 private static QualifiedModuleName StubQualifiedModuleName()
@@ -29,6 +30,7 @@ namespace RubberduckTests.Symbols
 
 
         [TestMethod]
+        [TestCategory("Resolver")]
         public void ParametersReturnsTheParametersAddedViaAddParameters()
         {
             var externalProcedure = GetTestExternalProcedure("testProcedure");

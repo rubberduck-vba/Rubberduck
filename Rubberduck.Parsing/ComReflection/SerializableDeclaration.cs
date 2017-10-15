@@ -152,14 +152,14 @@ namespace Rubberduck.Parsing.ComReflection
             IdentifierName = declaration.IdentifierName;
 
             Attributes = declaration.Attributes
-                .Select(a => new SerializableMemberAttribute(a.Key, a.Value))
+                .Select(a => new SerializableMemberAttribute(a.Name, a.Values))
                 .ToList();
 
             ParentScope = declaration.ParentScope;
             TypeHint = declaration.TypeHint;
             AsTypeName = declaration.AsTypeName;
             IsArray = declaration.IsArray;
-            IsBuiltIn = declaration.IsBuiltIn;
+            IsUserDefined = declaration.IsUserDefined;
             IsSelfAssigned = declaration.IsSelfAssigned;
             IsWithEvents = declaration.IsWithEvents;
             Accessibility = declaration.Accessibility;
@@ -193,14 +193,14 @@ namespace Rubberduck.Parsing.ComReflection
         public string ProjectPath { get; set; }
         public string ComponentName { get; set; }
 
-        public QualifiedModuleName QualifiedModuleName { get { return new QualifiedModuleName(ProjectName, ProjectPath, ComponentName); } }
-        public QualifiedMemberName QualifiedMemberName { get { return new QualifiedMemberName(QualifiedModuleName, MemberName); } }
+        public QualifiedModuleName QualifiedModuleName => new QualifiedModuleName(ProjectName, ProjectPath, ComponentName);
+        public QualifiedMemberName QualifiedMemberName => new QualifiedMemberName(QualifiedModuleName, MemberName);
 
         public string ParentScope { get; set; }
         public string AsTypeName { get; set; }
         public string TypeHint { get; set; }
         public bool IsArray { get; set; }
-        public bool IsBuiltIn { get; set; }
+        public bool IsUserDefined { get; set; }
         public bool IsSelfAssigned { get; set; }
         public bool IsWithEvents { get; set; }
         public bool IsExtensible { get; set; }
@@ -218,34 +218,34 @@ namespace Rubberduck.Parsing.ComReflection
             var attributes = new Attributes();
             foreach (var attribute in Attributes)
             {
-                attributes.Add(attribute.Name, attribute.Values);
+                attributes.Add(new AttributeNode(attribute.Name, attribute.Values));
             }
 
             switch (DeclarationType)
             {
                 case DeclarationType.Project:
-                    return new ProjectDeclaration(QualifiedMemberName, IdentifierName, true, null);                    
+                    return new ProjectDeclaration(QualifiedMemberName, IdentifierName, false, null);                    
                 case DeclarationType.ClassModule:
-                    return new ClassModuleDeclaration(QualifiedMemberName, parent, IdentifierName, true, annotations, attributes, false, IsControl);
+                    return new ClassModuleDeclaration(QualifiedMemberName, parent, IdentifierName, false, annotations, attributes, false, IsControl);
                 case DeclarationType.ProceduralModule:
-                    return new ProceduralModuleDeclaration(QualifiedMemberName, parent, IdentifierName, true, annotations, attributes);
+                    return new ProceduralModuleDeclaration(QualifiedMemberName, parent, IdentifierName, false, annotations, attributes);
                 case DeclarationType.Procedure:
-                    return new SubroutineDeclaration(QualifiedMemberName, parent, parent, AsTypeName, Accessibility, null, Selection.Empty, true, annotations, attributes);
+                    return new SubroutineDeclaration(QualifiedMemberName, parent, parent, AsTypeName, Accessibility, null, Selection.Empty, false, annotations, attributes);
                 case DeclarationType.Function:
-                    return new FunctionDeclaration(QualifiedMemberName, parent, parent, AsTypeName, null, TypeHint, Accessibility, null, Selection.Empty, IsArray, true, annotations, attributes);
+                    return new FunctionDeclaration(QualifiedMemberName, parent, parent, AsTypeName, null, TypeHint, Accessibility, null, Selection.Empty, IsArray, false, annotations, attributes);
                 case DeclarationType.Event:
-                    return new EventDeclaration(QualifiedMemberName, parent, parent, AsTypeName, null, TypeHint, Accessibility, null, Selection.Empty, IsArray, true, annotations, attributes);
+                    return new EventDeclaration(QualifiedMemberName, parent, parent, AsTypeName, null, TypeHint, Accessibility, null, Selection.Empty, IsArray, false, annotations, attributes);
                 case DeclarationType.PropertyGet:
-                    return new PropertyGetDeclaration(QualifiedMemberName, parent, parent, AsTypeName, null, TypeHint, Accessibility, null, Selection.Empty, IsArray, true, annotations, attributes);
+                    return new PropertyGetDeclaration(QualifiedMemberName, parent, parent, AsTypeName, null, TypeHint, Accessibility, null, Selection.Empty, IsArray, false, annotations, attributes);
                 case DeclarationType.PropertyLet:
-                    return new PropertyLetDeclaration(QualifiedMemberName, parent, parent, AsTypeName, Accessibility, null, Selection.Empty, true, annotations, attributes);
+                    return new PropertyLetDeclaration(QualifiedMemberName, parent, parent, AsTypeName, Accessibility, null, Selection.Empty, false, annotations, attributes);
                 case DeclarationType.PropertySet:
-                    return new PropertySetDeclaration(QualifiedMemberName, parent, parent, AsTypeName, Accessibility, null, Selection.Empty, true, annotations, attributes);
+                    return new PropertySetDeclaration(QualifiedMemberName, parent, parent, AsTypeName, Accessibility, null, Selection.Empty, false, annotations, attributes);
                 case DeclarationType.Parameter:
                     return new ParameterDeclaration(QualifiedMemberName, parent, AsTypeName, null, TypeHint, IsOptionalParam, IsByRefParam, IsArray, IsParamArray);
 
                 default:
-                    return new Declaration(QualifiedMemberName, parent, ParentScope, AsTypeName, TypeHint, IsSelfAssigned, IsWithEvents, Accessibility, DeclarationType, null, Selection.Empty, IsArray, null, IsBuiltIn, null, attributes);
+                    return new Declaration(QualifiedMemberName, parent, ParentScope, AsTypeName, TypeHint, IsSelfAssigned, IsWithEvents, Accessibility, DeclarationType, null, Selection.Empty, IsArray, null, IsUserDefined, null, attributes);
             }
         }
     }

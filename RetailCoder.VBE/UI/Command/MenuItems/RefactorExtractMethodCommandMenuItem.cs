@@ -12,16 +12,13 @@ namespace Rubberduck.UI.Command.MenuItems
         {
         }
 
-        public override string Key { get { return "RefactorMenu_ExtractMethod"; } }
-        public override int DisplayOrder { get { return (int)RefactoringsMenuItemDisplayOrder.ExtractMethod; } }
+        public override string Key => "RefactorMenu_ExtractMethod";
+        public override int DisplayOrder => (int)RefactoringsMenuItemDisplayOrder.ExtractMethod;
 
-        public override bool BeginGroup
-        {
-            get { return true; }
-        }
+        public override bool BeginGroup => true;
 
-        public override Image Image { get { return Resources.ExtractMethod; } }
-        public override Image Mask { get { return Resources.ExtractMethodMask; } }
+        public override Image Image => Resources.ExtractMethod;
+        public override Image Mask => Resources.ExtractMethodMask;
 
         public override bool EvaluateCanExecute(RubberduckParserState state)
         {

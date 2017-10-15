@@ -9,9 +9,9 @@ namespace Rubberduck.UI.Command.MenuItems
         {
         }
 
-        public override string Key { get { return "RubberduckMenu_About"; } }
-        public override bool BeginGroup { get { return true; } }
-        public override int DisplayOrder { get { return (int)RubberduckMenuItemDisplayOrder.About; } }
+        public override string Key => "RubberduckMenu_About";
+        public override bool BeginGroup => true;
+        public override int DisplayOrder => (int)RubberduckMenuItemDisplayOrder.About;
 
         public override bool EvaluateCanExecute(RubberduckParserState state)
         {

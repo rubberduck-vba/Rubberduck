@@ -1,30 +1,39 @@
-﻿using System.Diagnostics;
-using System.Linq;
-using System.Runtime.InteropServices;
+﻿using System.Linq;
 using System.Windows.Forms;
-using Antlr4.Runtime;
-using Antlr4.Runtime.Misc;
-using Microsoft.CSharp.RuntimeBinder;
-using Rubberduck.Common;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using System;
+using System.Diagnostics;
+using Microsoft.CSharp.RuntimeBinder;
+using System.Runtime.InteropServices;
+using System.Collections.Generic;
+using Rubberduck.Parsing.Grammar;
+using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Refactorings.Rename
 {
     public class RenameRefactoring : IRefactoring
     {
+        private const string _appendUnderscoreFormat = "{0}_";
+        private const string _prependUnderscoreFormat = "_{0}";
+
         private readonly IVBE _vbe;
         private readonly IRefactoringPresenterFactory<IRenamePresenter> _factory;
         private readonly IMessageBox _messageBox;
         private readonly RubberduckParserState _state;
         private RenameModel _model;
+        private Tuple<ICodePane, Selection> _initialSelection;
+        private List<QualifiedModuleName> _modulesToRewrite;
+        private Dictionary<DeclarationType, Action> _renameActions;
+        private List<string> _neverRenameIdentifiers;
+
+        private bool IsInterfaceMemberRename { set; get; }
+        private bool IsControlEventHandlerRename { set; get; }
+        private bool IsUserEventHandlerRename { set; get; }
+        private bool RequestParseAfterRename { set; get; }
 
         public RenameRefactoring(IVBE vbe, IRefactoringPresenterFactory<IRenamePresenter> factory, IMessageBox messageBox, RubberduckParserState state)
         {
@@ -32,494 +41,526 @@ namespace Rubberduck.Refactorings.Rename
             _factory = factory;
             _messageBox = messageBox;
             _state = state;
+            _model = null;
+            _initialSelection = new Tuple<ICodePane, Selection>(_vbe.ActiveCodePane, _vbe.ActiveCodePane.IsWrappingNullReference ? Selection.Empty : _vbe.ActiveCodePane.Selection);
+            _modulesToRewrite = new List<QualifiedModuleName>();
+            _renameActions = new Dictionary<DeclarationType, Action>
+            {
+                {DeclarationType.Member, new Action(RenameMember)},
+                {DeclarationType.Parameter, new Action(RenameParameter)},
+                {DeclarationType.Event, new Action(RenameEvent)},
+                {DeclarationType.Variable, new Action(RenameVariable)},
+                {DeclarationType.Module, new Action(RenameModule)},
+                {DeclarationType.Project, new Action(RenameProject)}
+            };
+            IsInterfaceMemberRename = false;
+            RequestParseAfterRename = true;
+            _neverRenameIdentifiers = NeverRenameList();
+        }
+
+        public void Refactor(QualifiedSelection qualifiedSelection)
+        {
+            CacheInitialSelection(qualifiedSelection);
+            Refactor();
         }
 
         public void Refactor()
         {
-            var presenter = _factory.Create();
-            _model = presenter.Show();
-
-            QualifiedSelection? oldSelection = null;
-            var pane = _vbe.ActiveCodePane;
-            var module = pane.CodeModule;
-            if (!pane.IsWrappingNullReference)
+            var presenter = CreateRenamePresenter();
+            if (presenter != null)
             {
-                oldSelection = module.GetQualifiedSelection();
+                RefactorImpl(presenter.Model.Target, presenter);
+                RestoreInitialSelection();
             }
-
-            if (_model != null && _model.Declarations != null)
-            {
-                Rename();
-            }
-
-            if (oldSelection.HasValue)
-            {
-                pane.Selection = oldSelection.Value.Selection;
-            }
-        }
-
-        public void Refactor(QualifiedSelection target)
-        {
-            var pane = _vbe.ActiveCodePane;
-            if (pane.IsWrappingNullReference)
-            {
-                return;
-            }
-            pane.Selection = target.Selection;
-            Refactor();
         }
 
         public void Refactor(Declaration target)
         {
-            if (target.IsBuiltIn) { return; }
-
-            var presenter = _factory.Create();
-            _model = presenter.Show(target);
-
-            var oldSelection = Selection.Home;
-            var pane = _vbe.ActiveCodePane;
-            if (!pane.IsWrappingNullReference)
+            var presenter = CreateRenamePresenter();
+            if (presenter != null)
             {
-                oldSelection = pane.Selection;
-            }
-
-            if (_model != null && _model.Declarations != null)
-            {
-                Rename();
-            }
-
-            if (!pane.IsWrappingNullReference)
-            {
-                pane.Selection = oldSelection;
+                RefactorImpl(target, presenter);
+                RestoreInitialSelection();
             }
         }
-        private static readonly DeclarationType[] ModuleDeclarationTypes =
+
+        private void RefactorImpl(Declaration inputTarget, IRenamePresenter presenter)
         {
-            DeclarationType.ClassModule,
-            DeclarationType.ProceduralModule
-        };
+            try
+            {
+                if (!TrySetRenameTargetFromInputTarget(inputTarget)) { return; }
+
+                if (TrySetNewName(presenter))
+                {
+                    Rename();
+                    Rewrite();
+                    Reparse();
+                }
+            }
+            catch (RuntimeBinderException rbEx)
+            {
+                PresentRenameErrorMessage($"{BuildDefaultErrorMessage(_model.Target)}: {rbEx.Message}");
+            }
+            catch (COMException comEx)
+            {
+                PresentRenameErrorMessage($"{BuildDefaultErrorMessage(_model.Target)}: {comEx.Message}");
+            }
+            catch (Exception unhandledEx)
+            {
+                PresentRenameErrorMessage($"{BuildDefaultErrorMessage(_model.Target)}: {unhandledEx.Message}");
+            }
+        }
+
+        private IRenamePresenter CreateRenamePresenter()
+        {
+            var presenter = _factory.Create();
+            if (presenter != null)
+            {
+                _model = presenter.Model;
+            }
+            if (presenter == null || _model == null)
+            {
+                PresentRenameErrorMessage(RubberduckUI.RefactorRename_TargetNotDefinedError);
+                return null;
+            }
+            return presenter;
+        }
+
+        private bool TrySetRenameTargetFromInputTarget(Declaration inputTarget)
+        {
+            if (!IsValidTarget(inputTarget)) { return false; }
+
+            if (!inputTarget.DeclarationType.HasFlag(DeclarationType.Member))
+            {
+                _model.Target = inputTarget;
+                return true;
+            }
+
+            if (_neverRenameIdentifiers.Contains(inputTarget.IdentifierName))
+            {
+                PresentRenameErrorMessage(string.Format(RubberduckUI.RenameDialog_BuiltInNameError, $"{inputTarget.ComponentName}: {inputTarget.DeclarationType}", inputTarget.IdentifierName));
+                return false;
+            }
+
+            _model.Target = ResolveRenameTargetIfEventHandlerSelected(inputTarget) ??
+                            ResolveRenameTargetIfInterfaceImplementationSelected(inputTarget) ??
+                            inputTarget;
+
+            if (inputTarget != _model.Target)
+            {
+                //Resolved to a target other than the input target selected by the user.
+                //Check that the resolved target is valid and that the user wants to continue with the rename 
+                if (!IsValidTarget(_model.Target)) { return false; }
+
+                if (IsControlEventHandlerRename)
+                {
+                    var message = string.Format(RubberduckUI.RenamePresenter_TargetIsControlEventHandler, inputTarget.IdentifierName, _model.Target.DeclarationType, _model.Target.IdentifierName);
+                    return UserConfirmsRenameOfResolvedTarget(message);
+                }
+                else if (IsUserEventHandlerRename)
+                {
+                    var message = string.Format(RubberduckUI.RenamePresenter_TargetIsEventHandlerImplementation, inputTarget.IdentifierName, _model.Target.DeclarationType, _model.Target.IdentifierName);
+                    return UserConfirmsRenameOfResolvedTarget(message);
+                }
+                else if (IsInterfaceMemberRename)
+                {
+                    var message = string.Format(RubberduckUI.RenamePresenter_TargetIsInterfaceMemberImplementation, inputTarget.IdentifierName, _model.Target.ComponentName, _model.Target.IdentifierName);
+                    return UserConfirmsRenameOfResolvedTarget(message);
+                }
+                Debug.Assert(false, $"Resolved rename target ({_model.Target.Scope}) unhandled");
+            }
+            return true;
+        }
+
+        private bool UserConfirmsRenameOfResolvedTarget(string message)
+        {
+            var confirm = _messageBox?.Show(message, RubberduckUI.RenameDialog_TitleText, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+            return confirm.HasValue ? confirm.Value == DialogResult.Yes : false;
+        }
+
+        private Declaration ResolveRenameTargetIfEventHandlerSelected(Declaration selectedTarget)
+        {
+            if (selectedTarget.DeclarationType.HasFlag(DeclarationType.Procedure) && selectedTarget.IdentifierName.Contains("_"))
+            {
+                return ResolveEventHandlerToControl(selectedTarget) ??
+                       ResolveEventHandlerToUserEvent(selectedTarget);
+            }
+            return null;
+        }
+
+        private bool IsValidTarget(Declaration target)
+        {
+            if (target == null)
+            {
+                PresentRenameErrorMessage(RubberduckUI.RefactorRename_TargetNotDefinedError);
+                return false;
+            }
+
+            if (!target.IsUserDefined)
+            {
+                PresentRenameErrorMessage(string.Format(RubberduckUI.RefactorRename_TargetNotUserDefinedError, target.QualifiedName));
+                return false;
+            }
+
+            if (target.DeclarationType.HasFlag(DeclarationType.Control))
+            {
+                var module = target.QualifiedName.QualifiedModuleName.Component.CodeModule;
+                var control = module.Parent.Controls.Where(item => item.Name == target.IdentifierName).FirstOrDefault();
+                if (control == null)
+                {
+                    PresentRenameErrorMessage($"{BuildDefaultErrorMessage(target)} - Null control reference");
+                    return false;
+                }
+            }
+            else if (target.DeclarationType.HasFlag(DeclarationType.Module))
+            {
+                var module = target.QualifiedName.QualifiedModuleName.Component.CodeModule;
+                if (module.IsWrappingNullReference)
+                {
+                    PresentRenameErrorMessage($"{BuildDefaultErrorMessage(target)} - Null Module reference");
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private bool TrySetNewName(IRenamePresenter presenter)
+        {
+            var result = presenter.Show(_model.Target);
+            if (result == null) { return false; }
+
+            var conflictDeclarations = _state.DeclarationFinder.GetDeclarationsWithIdentifiersToAvoid(_model.Target)
+                .Where(d => d.IdentifierName.Equals(_model.NewName, StringComparison.InvariantCultureIgnoreCase));
+
+            if (conflictDeclarations.Any())
+            {
+                var message = string.Format(RubberduckUI.RenameDialog_ConflictingNames, _model.NewName,
+                    conflictDeclarations.FirstOrDefault().IdentifierName);
+
+                var rename = _messageBox?.Show(message, RubberduckUI.RenameDialog_Caption, MessageBoxButtons.YesNo,
+                MessageBoxIcon.Exclamation);
+
+                return rename.HasValue ? rename.Value == DialogResult.Yes : false;
+            }
+
+            return true;
+        }
+
+        private Declaration ResolveEventHandlerToControl(Declaration userTarget)
+        {
+            var control = _state.DeclarationFinder.UserDeclarations(DeclarationType.Control)
+                .Where(ctrl => userTarget.Scope.StartsWith($"{ctrl.ParentScope}.{ctrl.IdentifierName}_")).FirstOrDefault();
+
+            IsControlEventHandlerRename = control != null;
+
+            return FindEventHandlersForControl(control).Contains(userTarget) ? control : null;
+        }
+
+        private Declaration ResolveEventHandlerToUserEvent(Declaration userTarget)
+        {
+            var withEventsDeclarations = _state.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
+                .Where(varDec => varDec.IsWithEvents);
+
+            if (!withEventsDeclarations.Any()) { return null; }
+
+            foreach (var withEvent in withEventsDeclarations)
+            {
+                if (userTarget.IdentifierName.StartsWith($"{withEvent.IdentifierName}_"))
+                {
+                    if (_state.DeclarationFinder.FindHandlersForWithEventsField(withEvent).Contains(userTarget))
+                    {
+                        var eventName = userTarget.IdentifierName.Remove(0, $"{withEvent.IdentifierName}_".Length);
+
+                        var eventDeclaration = _state.DeclarationFinder.UserDeclarations(DeclarationType.Event)
+                            .Where(ev => ev.IdentifierName.Equals(eventName)
+                                && withEvent.AsTypeName.Equals(ev.ParentDeclaration.IdentifierName)).FirstOrDefault();
+
+                        IsUserEventHandlerRename = eventDeclaration != null;
+
+                        return eventDeclaration;
+                    }
+                }
+            }
+            return null;
+        }
+
+        private Declaration ResolveRenameTargetIfInterfaceImplementationSelected(Declaration userTarget)
+        {
+            var interfaceMember = _state.DeclarationFinder.FindAllInterfaceMembers()
+                .Where(member => member.Equals(userTarget)
+                    || (member.ProjectId.Equals(userTarget.ProjectId)
+                        && member.DeclarationType == userTarget.DeclarationType
+                        && $"{member.ParentDeclaration.IdentifierName}_{member.IdentifierName}".Equals(userTarget.IdentifierName))).FirstOrDefault();
+
+            IsInterfaceMemberRename = interfaceMember != null;
+            return interfaceMember;
+        }
 
         private void Rename()
         {
-            var declaration = _state.DeclarationFinder.GetDeclarationsWithIdentifiersToAvoid(_model.Target)
-                .Where(d => d.IdentifierName.Equals(_model.NewName, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
-            if (declaration != null)
+            Debug.Assert(!_model.NewName.Equals(_model.Target.IdentifierName, StringComparison.InvariantCultureIgnoreCase),
+                            $"input validation fail: New Name equals Original Name ({_model.Target.IdentifierName})");
+
+            var actionKeys = _renameActions.Keys.Where(decType => _model.Target.DeclarationType.HasFlag(decType));
+            if (actionKeys.Any())
             {
-                var message = string.Format(RubberduckUI.RenameDialog_ConflictingNames, _model.NewName,
-                    declaration);
-                var rename = _messageBox.Show(message, RubberduckUI.RenameDialog_Caption, MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Exclamation);
-
-                if (rename == DialogResult.No)
-                {
-                    return;
-                }
+                Debug.Assert(actionKeys.Count() == 1, $"{actionKeys.Count()} Rename Actions have flag '{_model.Target.DeclarationType.ToString()}'");
+                _renameActions[actionKeys.FirstOrDefault()]();
             }
-            else if(_model.Target == null)
+            else
             {
-                return;
+                RenameStandardElements(_model.Target, _model.NewName);
             }
+        }
 
-            // must rename usages first; if target is a module or a project,
-            // then renaming the declaration first would invalidate the parse results.
-            Debug.Assert(_model.Target != null);
-
+        private void RenameMember()
+        {
             if (_model.Target.DeclarationType.HasFlag(DeclarationType.Property))
             {
-                // properties can have more than 1 member.
-                var members = _model.Declarations.Named(_model.Target.IdentifierName)
+                var members = _state.DeclarationFinder.MatchName(_model.Target.IdentifierName)
                     .Where(item => item.ProjectId == _model.Target.ProjectId
                         && item.ComponentName == _model.Target.ComponentName
                         && item.DeclarationType.HasFlag(DeclarationType.Property));
+
                 foreach (var member in members)
                 {
-                    RenameUsages(member);
+                    RenameStandardElements(member, _model.NewName);
                 }
             }
-            else if (_model.Target.DeclarationType == DeclarationType.Parameter && _model.Target.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Property))
+            else
             {
-                var getter = _model.Target.DeclarationType == DeclarationType.PropertyGet
-                    ? _model.Target
-                    : GetProperty(_model.Target.ParentDeclaration, DeclarationType.PropertyGet);
+                RenameStandardElements(_model.Target, _model.NewName);
+            }
 
-                var letter = _model.Target.DeclarationType == DeclarationType.PropertyLet
-                    ? _model.Target
-                    : GetProperty(_model.Target.ParentDeclaration, DeclarationType.PropertyLet);
+            if (IsInterfaceMemberRename)
+            {
+                var implementations = _state.DeclarationFinder.FindAllInterfaceImplementingMembers()
+                    .Where(member => member.ProjectId == _model.Target.ProjectId
+                        && member.IdentifierName.Equals($"{_model.Target.ComponentName}_{_model.Target.IdentifierName}"));
 
-                var setter = _model.Target.DeclarationType == DeclarationType.PropertySet
-                    ? _model.Target
-                    : GetProperty(_model.Target.ParentDeclaration, DeclarationType.PropertySet);
+                RenameDefinedFormatMembers(implementations, _prependUnderscoreFormat);
+            }
+        }
 
-                var properties = new[] {getter, letter, setter};
-
-                var parameters = _model.Declarations.Where(d =>
-                    d.DeclarationType == DeclarationType.Parameter &&
-                    properties.Contains(d.ParentDeclaration) &&
-                    d.IdentifierName == _model.Target.IdentifierName);
+        private void RenameParameter()
+        {
+            if (_model.Target.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Property))
+            {
+                var parameters = _state.DeclarationFinder.MatchName(_model.Target.IdentifierName).Where(param =>
+                   param.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Property)
+                   && param.DeclarationType == DeclarationType.Parameter);
 
                 foreach (var param in parameters)
                 {
-                    RenameUsages(param);
-                    RenameDeclaration(param, _model.NewName);
+                    RenameStandardElements(param, _model.NewName);
                 }
             }
             else
             {
-                RenameUsages(_model.Target);
+                RenameStandardElements(_model.Target, _model.NewName);
             }
-
-            if (ModuleDeclarationTypes.Contains(_model.Target.DeclarationType))
-            {
-                RenameModule();
-                return; // renaming a component automatically triggers a reparse
-            }
-            else if (_model.Target.DeclarationType == DeclarationType.Project)
-            {
-                RenameProject();
-                return; // renaming a project automatically triggers a reparse
-            }
-            else
-            {
-                // we handled properties above
-                if (!_model.Target.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Property))
-                {
-                    RenameDeclaration(_model.Target, _model.NewName);
-                }
-            }
-
-            _state.OnParseRequested(this);
         }
-        
-        private Declaration GetProperty(Declaration declaration, DeclarationType declarationType)
+
+        private void RenameEvent()
         {
-            return _model.Declarations.FirstOrDefault(item => item.Scope == declaration.Scope &&
-                              item.IdentifierName == declaration.IdentifierName &&
-                              item.DeclarationType == declarationType);
+            RenameStandardElements(_model.Target, _model.NewName);
+
+            var withEventsDeclarations = _state.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
+                .Where(varDec => varDec.IsWithEvents && varDec.AsTypeName.Equals(_model.Target.ParentDeclaration.IdentifierName));
+
+            var eventHandlers = withEventsDeclarations.SelectMany(we => _state.DeclarationFinder.FindHandlersForWithEventsField(we));
+            RenameDefinedFormatMembers(eventHandlers, _prependUnderscoreFormat);
+        }
+
+        private void RenameVariable()
+        {
+            if (_model.Target.DeclarationType.HasFlag(DeclarationType.Control))
+            {
+                var module = _model.Target.QualifiedName.QualifiedModuleName.Component.CodeModule;
+                var control = module.Parent.Controls.SingleOrDefault(item => item.Name == _model.Target.IdentifierName);
+                Debug.Assert(control != null, $"input validation fail: unable to locate '{_model.Target.IdentifierName}' in Controls collection");
+
+                control.Name = _model.NewName;
+                RenameReferences(_model.Target, _model.NewName);
+
+                var controlEventHandlers = FindEventHandlersForControl(_model.Target);
+                RenameDefinedFormatMembers(controlEventHandlers, _appendUnderscoreFormat);
+            }
+            else
+            {
+                RenameStandardElements(_model.Target, _model.NewName);
+                if (_model.Target.IsWithEvents)
+                {
+                    var eventHandlers = _state.DeclarationFinder.FindHandlersForWithEventsField(_model.Target);
+                    RenameDefinedFormatMembers(eventHandlers, _appendUnderscoreFormat);
+                }
+            }
         }
 
         private void RenameModule()
         {
-            try
-            {
-                var component = _model.Target.QualifiedName.QualifiedModuleName.Component;
-                var module = component.CodeModule;
-                {
-                    if (module.IsWrappingNullReference)
-                    {
-                        return;
-                    }
+            RequestParseAfterRename = false;
 
-                    if (component.Type == ComponentType.Document)
+            RenameReferences(_model.Target, _model.NewName);
+
+            if (_model.Target.DeclarationType.HasFlag(DeclarationType.ClassModule))
+            {
+                foreach (var reference in _model.Target.References)
+                {
+                    var ctxt = ParserRuleContextHelper.GetParent<VBAParser.ImplementsStmtContext>(reference.Context);
+                    if (ctxt != null)
                     {
-                        var properties = component.Properties;
-                        var property = properties["_CodeName"];
-                        {
-                            property.Value = _model.NewName;
-                        }
-                    }
-                    else if (component.Type == ComponentType.UserForm)
-                    {
-                        var properties = component.Properties;
-                        var property = properties["Caption"];
-                        {
-                            if ((string)property.Value == _model.Target.IdentifierName)
-                            {
-                                property.Value = _model.NewName;
-                            }
-                            component.Name = _model.NewName;
-                        }
-                    }
-                    else
-                    {
-                        module.Name = _model.NewName;
+                        RenameDefinedFormatMembers(_state.DeclarationFinder.FindInterfaceMembersForImplementsContext(ctxt), _appendUnderscoreFormat);
                     }
                 }
             }
-            catch (COMException)
+
+            var component = _model.Target.QualifiedName.QualifiedModuleName.Component;
+            if (component.Type == ComponentType.Document)
             {
-                _messageBox.Show(RubberduckUI.RenameDialog_ModuleRenameError, RubberduckUI.RenameDialog_Caption);
+                var properties = component.Properties;
+                var property = properties["_CodeName"];
+                {
+                    property.Value = _model.NewName;
+                }
+            }
+            else if (component.Type == ComponentType.UserForm)
+            {
+                var properties = component.Properties;
+                var property = properties["Caption"];
+                {
+                    if ((string)property.Value == _model.Target.IdentifierName)
+                    {
+                        property.Value = _model.NewName;
+                    }
+                    component.Name = _model.NewName;
+                }
+            }
+            else
+            {
+                Debug.Assert(!component.CodeModule.IsWrappingNullReference, "input validation fail: Attempting to rename an ICodeModule wrapping a null reference");
+                component.CodeModule.Name = _model.NewName;
             }
         }
 
         private void RenameProject()
         {
-            try
+            RequestParseAfterRename = false;
+            var projects = _model.VBE.VBProjects;
+            var project = projects.SingleOrDefault(p => p.ProjectId == _model.Target.ProjectId);
+
+            if (project != null)
             {
-                var projects = _vbe.VBProjects;
-                var project = projects.SingleOrDefault(p => p.HelpFile == _model.Target.ProjectId);
-                {
-                    if (project != null)
-                    {
-                        project.Name = _model.NewName;
-                    }
-                }
+                project.Name = _model.NewName;
             }
-            catch (COMException)
+        }
+
+        private void RenameDefinedFormatMembers(IEnumerable<Declaration> members, string underscoreFormat)
+        {
+            if (!members.Any()) { return; }
+
+            var targetFragment = string.Format(underscoreFormat, _model.Target.IdentifierName);
+            var replacementFragment = string.Format(underscoreFormat, _model.NewName);
+            foreach (var member in members)
             {
-                _messageBox.Show(RubberduckUI.RenameDialog_ProjectRenameError, RubberduckUI.RenameDialog_Caption);
+                var newMemberName = member.IdentifierName.Replace(targetFragment, replacementFragment);
+                RenameStandardElements(member, newMemberName);
+            }
+        }
+
+        private void RenameStandardElements(Declaration target, string newName)
+        {
+            RenameReferences(target, newName);
+            RenameDeclaration(target, newName);
+        }
+
+        private void RenameReferences(Declaration target, string newName)
+        {
+            var modules = target.References.GroupBy(r => r.QualifiedModuleName);
+            foreach (var grouping in modules)
+            {
+                _modulesToRewrite.Add(grouping.Key);
+                var rewriter = _state.GetRewriter(grouping.Key);
+                foreach (var reference in grouping)
+                {
+                    rewriter.Replace(reference.Context, newName);
+                }
             }
         }
 
         private void RenameDeclaration(Declaration target, string newName)
         {
-            if (target.DeclarationType == DeclarationType.Control)
+            _modulesToRewrite.Add(target.QualifiedName.QualifiedModuleName);
+            var rewriter = _state.GetRewriter(target.QualifiedName.QualifiedModuleName);
+
+            var context = target.Context as IIdentifierContext;
+            if (null != context)
             {
-                RenameControl();
-                return;
-            }
-
-            var component = target.QualifiedName.QualifiedModuleName.Component;
-            var module = component.CodeModule;
-            {
-                var newContent = GetReplacementLine(module, target, newName);
-
-                if (target.DeclarationType == DeclarationType.Parameter)
-                {
-                    var argList = (VBAParser.ArgListContext)target.Context.Parent;
-                    var lineNum = argList.GetSelection().LineCount;
-
-                    // delete excess lines to prevent removing our own changes
-                    module.DeleteLines(argList.Start.Line + 1, lineNum - 1);
-                    module.ReplaceLine(argList.Start.Line, newContent);
-                    
-                }
-                else if (!target.DeclarationType.HasFlag(DeclarationType.Property))
-                {
-                    module.ReplaceLine(target.Selection.StartLine, newContent);
-                }
-                else
-                {
-                    var members = _model.Declarations.Named(target.IdentifierName)
-                        .Where(item => item.ProjectId == target.ProjectId
-                            && item.ComponentName == target.ComponentName
-                            && item.DeclarationType.HasFlag(DeclarationType.Property));
-
-                    foreach (var member in members)
-                    {
-                        newContent = GetReplacementLine(module, member, newName);
-                        module.ReplaceLine(member.Selection.StartLine, newContent);
-                    }
-                }
+                rewriter.Replace(context.IdentifierTokens, newName);
             }
         }
 
-        private void RenameControl()
+        private void Rewrite()
         {
-            try
+            foreach (var module in _modulesToRewrite.Distinct())
             {
-                var module = _model.Target.QualifiedName.QualifiedModuleName.Component.CodeModule;
-                var component = module.Parent;
-                var control = component.Controls.SingleOrDefault(item => item.Name == _model.Target.IdentifierName);
-                {
-                    if (control == null)
-                    {
-                        return;
-                    }
-
-                    foreach (var handler in _model.Declarations.FindEventHandlers(_model.Target).OrderByDescending(h => h.Selection.StartColumn))
-                    {
-                        var newMemberName = handler.IdentifierName.Replace(control.Name + '_', _model.NewName + '_');
-                        var project = handler.Project;
-                        var components = project.VBComponents;
-                        var refComponent = components[handler.ComponentName];
-                        var refModule = refComponent.CodeModule;
-                        {
-                            var content = refModule.GetLines(handler.Selection.StartLine, 1);
-                            var newContent = GetReplacementLine(content, newMemberName, handler.Selection);
-                            refModule.ReplaceLine(handler.Selection.StartLine, newContent);
-                        }
-                    }
-
-                    control.Name = _model.NewName;
-                }
-            }
-            catch (RuntimeBinderException)
-            {
-            }
-            catch (COMException)
-            {
+                _state.GetRewriter(module).Rewrite();
             }
         }
 
-        private void RenameUsages(Declaration target, string interfaceName = null)
+        private void Reparse()
         {
-            // todo: refactor
-
-
-            if (target.DeclarationType == DeclarationType.Event)
+            if (RequestParseAfterRename)
             {
-                var handlers = _model.Declarations.FindHandlersForEvent(target);
-                foreach (var handler in handlers)
-                {
-                    RenameDeclaration(handler.Item2, handler.Item1.IdentifierName + '_' + _model.NewName);
-                }
-            }
-
-            // rename interface member
-            if (_model.Declarations.FindInterfaceMembers().Contains(target))
-            {
-                var implementations = _model.Declarations.FindInterfaceImplementationMembers()
-                    .Where(m => m.IdentifierName == target.ComponentName + '_' + target.IdentifierName);
-
-                foreach (var member in implementations.OrderByDescending(m => m.Selection.StartColumn))
-                {
-                    try
-                    {
-                        var newMemberName = target.ComponentName + '_' + _model.NewName;
-                        var project = member.Project;
-                        var components = project.VBComponents;
-                        var component = components[member.ComponentName];
-                        var module = component.CodeModule;
-                        {
-                            var content = module.GetLines(member.Selection.StartLine, 1);
-                            var newContent = GetReplacementLine(content, newMemberName, member.Selection);
-                            module.ReplaceLine(member.Selection.StartLine, newContent);
-                            RenameUsages(member, target.ComponentName);
-                        }
-                    }
-                    catch (COMException)
-                    {
-                        // gulp
-                    }
-                }
-
-                return;
-            }
-
-            var modules = target.References.GroupBy(r => r.QualifiedModuleName);
-            foreach (var grouping in modules)
-            {
-                var module = grouping.Key.Component.CodeModule;
-                {
-                    foreach (var line in grouping.GroupBy(reference => reference.Selection.StartLine))
-                    {
-                        var lastSelection = Selection.Empty;
-                        foreach (var reference in line.OrderByDescending(l => l.Selection.StartColumn))
-                        {
-                            if (reference.Selection == lastSelection)
-                            {
-                                continue;
-                            }
-
-                            var content = module.GetLines(line.Key, 1);
-                            string newContent;
-
-                            if (interfaceName == null)
-                            {
-                                newContent = GetReplacementLine(content, _model.NewName, reference.Selection);
-                            }
-                            else
-                            {
-                                newContent = GetReplacementLine(content, interfaceName + "_" + _model.NewName, reference.Selection);
-                            }
-
-                            module.ReplaceLine(line.Key, newContent);
-                            lastSelection = reference.Selection;
-                        }
-                    }
-
-                    // renaming interface
-                    if (grouping.Any(reference => reference.Context.Parent is VBAParser.ImplementsStmtContext))
-                    {
-                        var members = _model.Declarations.InScope(target).OrderByDescending(m => m.Selection.StartColumn);
-                        foreach (var member in members)
-                        {
-                            var oldMemberName = target.IdentifierName + '_' + member.IdentifierName;
-                            var newMemberName = _model.NewName + '_' + member.IdentifierName;
-                            var method = _model.Declarations.Named(oldMemberName).SingleOrDefault(m => m.QualifiedName.QualifiedModuleName == grouping.Key);
-                            if (method == null)
-                            {
-                                continue;
-                            }
-
-                            var content = module.GetLines(method.Selection.StartLine, 1);
-                            var newContent = GetReplacementLine(content, newMemberName, member.Selection);
-                            module.ReplaceLine(method.Selection.StartLine, newContent);
-                        }
-                    }
-                }
+                _state.OnParseRequested(this);
             }
         }
 
-        private string GetReplacementLine(string content, string newName, Selection selection)
+        private IEnumerable<Declaration> FindEventHandlersForControl(Declaration control)
         {
-            var contentWithoutOldName = content.Remove(selection.StartColumn - 1, selection.EndColumn - selection.StartColumn);
-            return contentWithoutOldName.Insert(selection.StartColumn - 1, newName);
+            if (control != null && control.DeclarationType.HasFlag(DeclarationType.Control))
+            {
+                return _state.DeclarationFinder.FindEventHandlers()
+                    .Where(ev => ev.Scope.StartsWith($"{control.ParentScope}.{control.IdentifierName}_"));
+            }
+            return Enumerable.Empty<Declaration>();
         }
 
-        private string GetReplacementLine(ICodeModule module, Declaration target, string newName)
+        private void CacheInitialSelection(QualifiedSelection qSelection)
         {
-            var content = module.GetLines(target.Selection.StartLine, 1);
-
-            if (target.DeclarationType == DeclarationType.Parameter)
+            if (!qSelection.QualifiedName.Component.CodeModule.CodePane.IsWrappingNullReference)
             {
-                var argContext = (VBAParser.ArgContext)target.Context;
-                var rewriter = _model.State.GetRewriter(target.QualifiedName.QualifiedModuleName.Component);
-                rewriter.Replace(argContext.unrestrictedIdentifier().Start.TokenIndex, _model.NewName);
-
-                // Target.Context is an ArgContext, its parent is an ArgsListContext;
-                // the ArgsListContext's parent is the procedure context and it includes the body.
-                var context = (ParserRuleContext)target.Context.Parent.Parent;
-                var firstTokenIndex = context.Start.TokenIndex;
-                var lastTokenIndex = -1; // will blow up if this code runs for any context other than below
-
-                var subStmtContext = context as VBAParser.SubStmtContext;
-                if (subStmtContext != null)
-                {
-                    lastTokenIndex = subStmtContext.argList().RPAREN().Symbol.TokenIndex;
-                }
-
-                var functionStmtContext = context as VBAParser.FunctionStmtContext;
-                if (functionStmtContext != null)
-                {
-                    lastTokenIndex = functionStmtContext.asTypeClause() != null
-                        ? functionStmtContext.asTypeClause().Stop.TokenIndex
-                        : functionStmtContext.argList().RPAREN().Symbol.TokenIndex;
-                }
-
-                var propertyGetStmtContext = context as VBAParser.PropertyGetStmtContext;
-                if (propertyGetStmtContext != null)
-                {
-                    lastTokenIndex = propertyGetStmtContext.asTypeClause() != null
-                        ? propertyGetStmtContext.asTypeClause().Stop.TokenIndex
-                        : propertyGetStmtContext.argList().RPAREN().Symbol.TokenIndex;
-                }
-
-                var propertyLetStmtContext = context as VBAParser.PropertyLetStmtContext;
-                if (propertyLetStmtContext != null)
-                {
-                    lastTokenIndex = propertyLetStmtContext.argList().RPAREN().Symbol.TokenIndex;
-                }
-
-                var propertySetStmtContext = context as VBAParser.PropertySetStmtContext;
-                if (propertySetStmtContext != null)
-                {
-                    lastTokenIndex = propertySetStmtContext.argList().RPAREN().Symbol.TokenIndex;
-                }
-
-                var declareStmtContext = context as VBAParser.DeclareStmtContext;
-                if (declareStmtContext != null)
-                {
-                    lastTokenIndex = declareStmtContext.STRINGLITERAL().Last().Symbol.TokenIndex;
-                    if (declareStmtContext.argList() != null)
-                    {
-                        lastTokenIndex = declareStmtContext.argList().RPAREN().Symbol.TokenIndex;
-                    }
-                    if (declareStmtContext.asTypeClause() != null)
-                    {
-                        lastTokenIndex = declareStmtContext.asTypeClause().Stop.TokenIndex;
-                    }
-                }
-
-                var eventStmtContext = context as VBAParser.EventStmtContext;
-                if (eventStmtContext != null)
-                {
-                    lastTokenIndex = eventStmtContext.argList().RPAREN().Symbol.TokenIndex;
-                }
-
-                return rewriter.GetText(new Interval(firstTokenIndex, lastTokenIndex));
+                _initialSelection = new Tuple<ICodePane, Selection>(qSelection.QualifiedName.Component.CodeModule.CodePane, qSelection.QualifiedName.Component.CodeModule.CodePane.Selection);
             }
-            return GetReplacementLine(content, newName, target.Selection);
+        }
+
+        private void RestoreInitialSelection()
+        {
+            if (!_initialSelection.Item1.IsWrappingNullReference)
+            {
+                _initialSelection.Item1.Selection = _initialSelection.Item2;
+            }
+        }
+
+        private void PresentRenameErrorMessage(string errorMsg)
+        {
+            _messageBox?.Show(errorMsg, RubberduckUI.RenameDialog_Caption, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+        }
+
+        private string BuildDefaultErrorMessage(Declaration target)
+        {
+            var messageFormat = IsInterfaceMemberRename ? RubberduckUI.RenameDialog_InterfaceRenameError : RubberduckUI.RenameDialog_DefaultRenameError;
+            return string.Format(messageFormat, target.DeclarationType.ToString(), target.IdentifierName);
+        }
+
+        private List<string> NeverRenameList()
+        {
+            return _state.DeclarationFinder.FindEventHandlers()
+                    .Where(ev => ev.IdentifierName.StartsWith("Class_")
+                            || ev.IdentifierName.StartsWith("UserForm_")
+                            || ev.IdentifierName.StartsWith("auto_"))
+                    .Select(dec => dec.IdentifierName).ToList();
         }
     }
 }
+
