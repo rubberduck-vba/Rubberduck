@@ -11,16 +11,19 @@ using User32 = Rubberduck.Common.WinAPI.User32;
 
 namespace Rubberduck.UI
 {
+    [Guid(ClassId)]
+    [ProgId(ProgId)]
     [ComVisible(true)]
-    [Guid(RubberduckGuid.DockableWindowHostGuid)]
-    [ProgId(RubberduckProgId.DockableWindowHostProgId)]    
     [EditorBrowsable(EditorBrowsableState.Never)]
+
     //Nothing breaks because we declare a ProgId
     // ReSharper disable once InconsistentNaming
     //Underscores make classes invisible to VB6 object explorer
     public partial class _DockableWindowHost : UserControl
-    {       
-        public static string RegisteredProgId => RubberduckProgId.DockableWindowHostProgId;
+    {
+        private const string ClassId = "9CF1392A-2DC9-48A6-AC0B-E601A9802608";
+        private const string ProgId = "Rubberduck.UI.DockableWindowHost";
+        public static string RegisteredProgId { get { return ProgId; } }
 
         // ReSharper disable UnusedAutoPropertyAccessor.Local
         [StructLayout(LayoutKind.Sequential)]

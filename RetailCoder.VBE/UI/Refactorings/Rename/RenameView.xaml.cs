@@ -5,12 +5,6 @@
         public RenameView()
         {
             InitializeComponent();
-
-            Loaded += (o, e) =>
-                {
-                    RenameTextBox.Focus();
-                    RenameTextBox.SelectAll();
-                };
         }
     }
 }

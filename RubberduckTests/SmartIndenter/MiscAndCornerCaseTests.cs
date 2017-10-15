@@ -300,33 +300,6 @@ namespace RubberduckTests.SmartIndenter
 
         [TestMethod]
         [TestCategory("Indenter")]
-        public void LineNumbersWithColonWork()
-        {
-            var code = new[]
-           {
-                "Private Sub Test()",
-                "5: If Foo Then",
-                "10: Debug.Print",
-                "15: End If",
-                "End Sub"
-            };
-
-            var expected = new[]
-            {
-                "Private Sub Test()",
-                "5:  If Foo Then",
-                "10:     Debug.Print",
-                "15: End If",
-                "End Sub"
-            };
-
-            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
-            var actual = indenter.Indent(code);
-            Assert.IsTrue(expected.SequenceEqual(actual));
-        }
-
-        [TestMethod]
-        [TestCategory("Indenter")]
         public void LineNumberLongerThanIndentFallsBackToOneSpace()
         {
             var code = new[]

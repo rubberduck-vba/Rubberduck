@@ -50,7 +50,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void ViewIsPopulatedOnRefresh()
         {
-            var vm = new SettingsPanelViewModel(_configService.Object, _folderBrowserFactory.Object, _openFileDialog.Object);
+            var vm = new SettingsViewViewModel(_configService.Object, _folderBrowserFactory.Object, _openFileDialog.Object);
 
             vm.RefreshView();
 
@@ -64,7 +64,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void ConfigIsPopulatedFromViewOnSave()
         {
-            var vm = new SettingsPanelViewModel(_configService.Object, _folderBrowserFactory.Object, _openFileDialog.Object);
+            var vm = new SettingsViewViewModel(_configService.Object, _folderBrowserFactory.Object, _openFileDialog.Object);
 
             //simulate user input
             vm.UserName = OtherName;
@@ -85,7 +85,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void ConfigIsSavedOnSave()
         {
-            var vm = new SettingsPanelViewModel(_configService.Object, _folderBrowserFactory.Object, _openFileDialog.Object);
+            var vm = new SettingsViewViewModel(_configService.Object, _folderBrowserFactory.Object, _openFileDialog.Object);
 
             //simulate Update button click
             vm.UpdateSettingsCommand.Execute(null);
@@ -97,7 +97,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void ChangesToViewAreRevertedOnCancel()
         {
-            var vm = new SettingsPanelViewModel(_configService.Object, _folderBrowserFactory.Object, _openFileDialog.Object);
+            var vm = new SettingsViewViewModel(_configService.Object, _folderBrowserFactory.Object, _openFileDialog.Object);
 
             //simulate user input
             vm.UserName = OtherName;
@@ -118,7 +118,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void OnBrowseDefaultRepoLocation_WhenUserConfirms_ViewMatchesSelectedPath()
         {
-            var vm = new SettingsPanelViewModel(_configService.Object, _folderBrowserFactory.Object, _openFileDialog.Object)
+            var vm = new SettingsViewViewModel(_configService.Object, _folderBrowserFactory.Object, _openFileDialog.Object)
             {
                 DefaultRepositoryLocation = RepoLocation
             };
@@ -134,7 +134,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void OnBrowseDefaultRepoLocation_WhenUserCancels_ViewRemainsUnchanged()
         {
-            var vm = new SettingsPanelViewModel(_configService.Object, _folderBrowserFactory.Object, _openFileDialog.Object)
+            var vm = new SettingsViewViewModel(_configService.Object, _folderBrowserFactory.Object, _openFileDialog.Object)
             {
                 DefaultRepositoryLocation = RepoLocation
             };
@@ -150,7 +150,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void OnBrowseCommandPromptLocation_WhenUserConfirms_ViewMatchesSelectedPath()
         {
-            var vm = new SettingsPanelViewModel(_configService.Object, _folderBrowserFactory.Object, _openFileDialog.Object)
+            var vm = new SettingsViewViewModel(_configService.Object, _folderBrowserFactory.Object, _openFileDialog.Object)
             {
                 CommandPromptLocation = CommandPromptLocation
             };
@@ -166,7 +166,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void OnBrowseCommandPromptLocation_WhenUserCancels_ViewRemainsUnchanged()
         {
-            var vm = new SettingsPanelViewModel(_configService.Object, _folderBrowserFactory.Object, _openFileDialog.Object)
+            var vm = new SettingsViewViewModel(_configService.Object, _folderBrowserFactory.Object, _openFileDialog.Object)
             {
                 CommandPromptLocation = CommandPromptLocation
             };

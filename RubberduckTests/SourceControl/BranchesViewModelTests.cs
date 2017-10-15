@@ -44,7 +44,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void SelectedBranchShouldBeCurrentBranchAfterRefresh()
         {
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object
             };
@@ -60,7 +60,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void PublishedBranchesAreListed()
         {
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object
             };
@@ -73,7 +73,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void UnPublishedBranchesAreListed()
         {
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object
             };
@@ -86,7 +86,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void OnlyLocalBranchesInBranches()
         { 
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object
             };
@@ -99,7 +99,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void HeadIsNotIncludedInPublishedBranches()
         {
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object
             };
@@ -111,7 +111,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void DeleteBranchDisabled_BranchIsActive()
         {
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object,
                 CurrentPublishedBranch = "master"
@@ -124,7 +124,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void DeleteBranchEnabled_BranchIsNotActive()
         {
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object,
                 CurrentPublishedBranch = "bugbranch"
@@ -140,7 +140,7 @@ namespace RubberduckTests.SourceControl
             var firstBranchName = "master";
             var secondBranchName = "bugBranch";
 
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object
             };
@@ -168,7 +168,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void CreateBranchViewIsShownOnCreateBranch()
         {
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object
             };
@@ -182,7 +182,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void MergeBranchViewIsShownOnCreateBranch()
         {
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object
             };
@@ -196,7 +196,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void CreateBranch_BranchExists()
         {
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object
             };
@@ -208,7 +208,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void CreateBranch_ValidBranchName()
         {
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object,
                 NewBranchName = "bugBranch"
@@ -221,7 +221,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void CreateBranch_NameContainsSpace()
         {
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object,
                 NewBranchName = "bug branch"
@@ -234,7 +234,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void CreateBranch_NameContainsTwoConsecutiveDots()
         {
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object,
                 NewBranchName = "bug..branch"
@@ -247,7 +247,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void CreateBranch_NameContainsTilde()
         {
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object,
                 NewBranchName = "bug~branch"
@@ -260,7 +260,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void CreateBranch_NameContainsCaret()
         {
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object,
                 NewBranchName = "bug^branch"
@@ -273,7 +273,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void CreateBranch_NameContainsColon()
         {
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object,
                 NewBranchName = "bug:branch"
@@ -286,7 +286,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void CreateBranch_NameContainsQuestionMark()
         {
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object,
                 NewBranchName = "bug?branch"
@@ -299,7 +299,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void CreateBranch_NameContainsAsteriks()
         {
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object,
                 NewBranchName = "bug*branch"
@@ -312,7 +312,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void CreateBranch_NameContainsOpenBracket()
         {
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object,
                 NewBranchName = "bug[branch"
@@ -325,7 +325,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void CreateBranch_NameContainsTwoConsecutiveSlashes()
         {
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object,
                 NewBranchName = "bug//branch"
@@ -338,7 +338,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void CreateBranch_NameStartsWithSlash()
         {
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object,
                 NewBranchName = "/bugBranch"
@@ -351,7 +351,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void CreateBranch_NameEndsWithSlash()
         {            //arrange
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object,
                 NewBranchName = "bugBranch/"
@@ -364,7 +364,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void CreateBranch_NameEndsWithDot()
         {
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object,
                 NewBranchName = "bugBranch."
@@ -377,7 +377,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void CreateBranch_NameIsAtSign()
         {
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object,
                 NewBranchName = "@"
@@ -390,7 +390,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void CreateBranch_NameContainsConsecutiveAtSignAndOpenBrace()
         {
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object,
                 NewBranchName = "bug@{branch"
@@ -403,7 +403,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void CreateBranch_NameContainsBackslash()
         {
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object,
                 NewBranchName = "bug\\branch"
@@ -416,7 +416,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void CreateBranch_NameContainsSlashSectionStartingWithDot()
         {
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object,
                 NewBranchName = "bug/.branch"
@@ -429,7 +429,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void CreateBranch_NameContainsSlashSectionEndingWithDotlock()
         {
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object,
                 NewBranchName = "bug/branch.lock"
@@ -442,7 +442,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void CreateBranchViewIsNotShownWhenLocal_IsNull()
         {
-            var vm = new BranchesPanelViewModel();
+            var vm = new BranchesViewViewModel();
 
             Assert.IsFalse(vm.NewBranchCommand.CanExecute(null));
         }
@@ -451,7 +451,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void ProviderCallsCreateBranchOnCreateBranchConfirm()
         {
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object,
                 NewBranchName = "bugBranch"
@@ -466,7 +466,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void CreateBranchViewIshiddenAfterSubmit()
         {
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object,
                 DisplayCreateBranchGrid = true
@@ -481,7 +481,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void CreateBranchViewIshiddenAfterCancel()
         {
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object,
                 DisplayCreateBranchGrid = true
@@ -496,7 +496,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void CreateBranchUserInputIsClearedAfterSubmit()
         {
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object,
                 NewBranchName = "newBranch"
@@ -511,7 +511,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void CreateBranchUserInputIsClearedAfterCancel()
         {
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object,
                 NewBranchName = "newBranch"
@@ -526,7 +526,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void MergeViewIsShownOnMergeClick()
         {
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object
             };
@@ -540,7 +540,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void MergeViewIsNotShownWhenLocal_IsNull()
         {
-            var vm = new BranchesPanelViewModel();
+            var vm = new BranchesViewViewModel();
 
             Assert.IsFalse(vm.MergeBranchCommand.CanExecute(null));
         }
@@ -549,7 +549,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void MergeViewSelectedDestinationBranchIsCurrentBranch()
         {
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object
             };
@@ -561,7 +561,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void ProviderMergesOnMergeViewSubmit()
         {
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object,
                 SourceBranch = "dev",
@@ -577,7 +577,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void MergeViewIsHiddenOnSuccessfulMerge()
         {
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object,
                 SourceBranch = "fizz",
@@ -594,7 +594,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void MergeViewIsHiddenOnCancel()
         {
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object,
                 DisplayMergeBranchesGrid = true
@@ -609,7 +609,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void ChangingSelectedBranchChecksOutThatBranch()
         {
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object,
                 CurrentBranch = "dev"
@@ -622,7 +622,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void RefreshingViewShouldNotCheckoutBranch()
         {
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object,
             };
@@ -636,7 +636,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void OnBranchChange_WhenCheckoutFails_ActionFailedEventIsRaised()
         {
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object
             };
@@ -659,7 +659,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void OnMergeBranch_WhenCheckoutFails_ActionFailedEventIsRaised()
         {
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object
             };
@@ -685,7 +685,7 @@ namespace RubberduckTests.SourceControl
             var branchName = "dev";
 
             var wasRaised = false;
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object,
                 CurrentPublishedBranch = branchName
@@ -711,7 +711,7 @@ namespace RubberduckTests.SourceControl
             var wasRaised = false;
             var branchName = "dev";
 
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object,
                 NewBranchName = branchName
@@ -735,7 +735,7 @@ namespace RubberduckTests.SourceControl
         public void PublishPublishesBranch()
         {
             var branch = "dev";
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object,
                 CurrentUnpublishedBranch = branch
@@ -751,7 +751,7 @@ namespace RubberduckTests.SourceControl
         public void UnpublishUnpublishesBranch()
         {
             var branch = "master";
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object,
                 CurrentPublishedBranch = branch
@@ -766,7 +766,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void PublishBranch_ActionFailedEventIsRaised()
         {
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object
             };
@@ -789,7 +789,7 @@ namespace RubberduckTests.SourceControl
         [TestMethod]
         public void UnpublishBranch_ActionFailedEventIsRaised()
         {
-            var vm = new BranchesPanelViewModel
+            var vm = new BranchesViewViewModel
             {
                 Provider = _provider.Object,
                 CurrentPublishedBranch = "master"

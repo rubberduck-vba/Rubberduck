@@ -1,10 +1,9 @@
-﻿using Antlr4.Runtime;
-using System.Threading;
+﻿using System.Threading;
 
-namespace Rubberduck.Parsing.PreProcessing
+namespace Rubberduck.Parsing.Preprocessing
 {
     public interface IVBAPreprocessor
     {
-        void PreprocessTokenStream(string moduleName, CommonTokenStream unprocessedTokenStream, CancellationToken token);
+        string Execute(string moduleName, string unprocessedCode, CancellationToken token);
     }
 }

@@ -25,14 +25,15 @@ namespace Rubberduck.UI
         private readonly IAddIn _addin;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly IWindow _window;
+        private readonly UserControl _userControl;
         private readonly WindowSettings _settings;  //Storing this really doesn't matter - it's only checked on startup and never persisted.
 
         protected DockableToolwindowPresenter(IVBE vbe, IAddIn addin, IDockableUserControl view, IConfigProvider<WindowSettings> settingsProvider)
         {
             _vbe = vbe;
             _addin = addin;
-            Logger.Trace($"Initializing Dockable Panel ({GetType().Name})");
-            UserControl = view as UserControl;
+            Logger.Trace(string.Format("Initializing Dockable Panel ({0})", GetType().Name));
+            _userControl = view as UserControl;
             if (settingsProvider != null)
             {
                 _settings = settingsProvider.Create();
@@ -40,10 +41,12 @@ namespace Rubberduck.UI
             _window = CreateToolWindow(view);
         }
 
-        public UserControl UserControl { get; }
+        public UserControl UserControl { get { return _userControl; } }
+
+        private readonly IVBE _vbe;
+        protected IVBE VBE { get { return _vbe; } }
 
         private object _userControlObject;
-        private readonly IVBE _vbe;
 
         private IWindow CreateToolWindow(IDockableUserControl control)
         {
@@ -97,12 +100,18 @@ namespace Rubberduck.UI
             }
         }
 
-        public virtual void Show() => _window.IsVisible = true;
-        public virtual void Hide() => _window.IsVisible = false;
+        public virtual void Show()
+        {
+            _window.IsVisible = true;
+        }
+
+        public void Hide()
+        {
+            _window.IsVisible = false;
+        }
 
         ~DockableToolwindowPresenter()
         {
-            // destructor for tracking purposes only - do not suppress unless 
             Debug.WriteLine("DockableToolwindowPresenter finalized.");
         }
     }

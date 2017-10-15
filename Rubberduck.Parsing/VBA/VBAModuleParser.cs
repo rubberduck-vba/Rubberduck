@@ -11,10 +11,12 @@ namespace Rubberduck.Parsing.VBA
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public IParseTree Parse(string moduleName, CommonTokenStream moduleTokens, IParseTreeListener[] listeners, BaseErrorListener errorListener, out ITokenStream outStream)
+        public IParseTree Parse(string moduleName, string moduleCode, IParseTreeListener[] listeners, BaseErrorListener errorListener, out ITokenStream outStream)
         {
-            moduleTokens.Reset();
-            var parser = new VBAParser(moduleTokens);
+            var stream = new AntlrInputStream(moduleCode);
+            var lexer = new VBALexer(stream);
+            var tokens = new CommonTokenStream(lexer);
+            var parser = new VBAParser(tokens);
             parser.AddErrorListener(errorListener);
             ParserRuleContext tree;
             try
@@ -25,7 +27,7 @@ namespace Rubberduck.Parsing.VBA
             catch (Exception ex)
             {
                 Logger.Warn(ex, "SLL mode failed in module {0}. Retrying using LL.", moduleName);
-                moduleTokens.Reset();
+                tokens.Reset();
                 parser.Reset();
                 parser.Interpreter.PredictionMode = PredictionMode.Ll;
                 tree = parser.startRule();
@@ -34,7 +36,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 ParseTreeWalker.Default.Walk(listener, tree);
             }
-            outStream = moduleTokens;
+            outStream = tokens;
             return tree;
         }
     }

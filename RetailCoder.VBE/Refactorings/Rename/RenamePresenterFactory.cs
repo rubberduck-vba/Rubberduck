@@ -1,5 +1,5 @@
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI.Refactorings;
+using Rubberduck.UI;
 using Rubberduck.UI.Refactorings.Rename;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -9,14 +9,16 @@ namespace Rubberduck.Refactorings.Rename
     public class RenamePresenterFactory : IRefactoringPresenterFactory<RenamePresenter>
     {
         private readonly IVBE _vbe;
-        private readonly IRefactoringDialog<RenameViewModel> _view;
+        private readonly RenameDialog _view;
         private readonly RubberduckParserState _state;
+        private readonly IMessageBox _messageBox;
 
-        public RenamePresenterFactory(IVBE vbe, IRefactoringDialog<RenameViewModel> view, RubberduckParserState state)
+        public RenamePresenterFactory(IVBE vbe, RenameDialog view, RubberduckParserState state, IMessageBox messageBox)
         {
             _vbe = vbe;
             _view = view;
             _state = state;
+            _messageBox = messageBox;
         }
 
         public RenamePresenter Create()
@@ -26,7 +28,7 @@ namespace Rubberduck.Refactorings.Rename
                 ? new QualifiedSelection()
                 : new QualifiedSelection(new QualifiedModuleName(codePane.CodeModule.Parent), codePane.Selection);
 
-            return new RenamePresenter(_view, new RenameModel(_vbe, _state, qualifiedSelection));
+            return new RenamePresenter(_view, new RenameModel(_vbe, _state, qualifiedSelection, _messageBox));
         }
     }
 }

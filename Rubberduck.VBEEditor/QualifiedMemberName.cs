@@ -6,21 +6,24 @@ namespace Rubberduck.VBEditor
     {
         public QualifiedMemberName(QualifiedModuleName qualifiedModuleName, string memberName)
         {
-            QualifiedModuleName = qualifiedModuleName;
-            MemberName = memberName;
+            _qualifiedModuleName = qualifiedModuleName;
+            _memberName = memberName;
         }
-        
-        public QualifiedModuleName QualifiedModuleName { get; }
-        public string MemberName { get; }
+
+        private readonly QualifiedModuleName _qualifiedModuleName;
+        public QualifiedModuleName QualifiedModuleName { get { return _qualifiedModuleName; } }
+
+        private readonly string _memberName;
+        public string MemberName { get { return _memberName; } }
 
         public override string ToString()
         {
-            return QualifiedModuleName + "." + MemberName;
+            return _qualifiedModuleName + "." + _memberName;
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Compute(QualifiedModuleName, MemberName);
+            return HashCode.Compute(_qualifiedModuleName, _memberName);
         }
 
         public override bool Equals(object obj)
@@ -28,7 +31,7 @@ namespace Rubberduck.VBEditor
             try
             {
                 var other = (QualifiedMemberName)obj;
-                return QualifiedModuleName.Equals(other.QualifiedModuleName) && MemberName == other.MemberName;
+                return _qualifiedModuleName.Equals(other.QualifiedModuleName) && _memberName == other.MemberName;
             }
             catch (InvalidCastException)
             {

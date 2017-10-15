@@ -21,16 +21,16 @@ namespace Rubberduck.UI.Command.Refactorings
             _msgBox = msgBox;
         }
 
-        protected override bool EvaluateCanExecute(object parameter)
+        protected override bool CanExecuteImpl(object parameter)
         {
             return _state.Status == ParserState.Ready;
         }
 
-        protected override void OnExecute(object parameter)
+        protected override void ExecuteImpl(object parameter)
         {
             using (var view = new RenameDialog(new RenameViewModel(_state)))
             {
-                var factory = new RenamePresenterFactory(Vbe, view, _state);
+                var factory = new RenamePresenterFactory(Vbe, view, _state, _msgBox);
                 var refactoring = new RenameRefactoring(Vbe, factory, _msgBox, _state);
 
                 var target = GetTarget();

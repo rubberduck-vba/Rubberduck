@@ -2,7 +2,7 @@ using System.Linq;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Rubberduck.Inspections.Concrete;
+using Rubberduck.Inspections;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -34,7 +34,7 @@ End Sub
             mockHost.SetupGet(m => m.ApplicationName).Returns("Excel");
             vbe.Setup(m => m.HostApplication()).Returns(() => mockHost.Object);
 
-            var parser = MockParser.Create(vbe.Object);
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
             parser.State.AddTestLibrary("VBA.4.2.xml");
             parser.State.AddTestLibrary("Excel.1.8.xml");
             parser.Parse(new CancellationTokenSource());

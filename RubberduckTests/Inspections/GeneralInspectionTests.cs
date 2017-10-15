@@ -4,9 +4,9 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Rubberduck.Inspections;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Inspections.Resources;
 using Rubberduck.UI;
 
 namespace RubberduckTests.Inspections
@@ -29,11 +29,11 @@ namespace RubberduckTests.Inspections
         public void InspectionNameStringsExist()
         {
             var inspections = typeof(InspectionBase).Assembly.GetTypes()
-                          .Where(type => type.BaseType == typeof(InspectionBase) && !type.IsAbstract)
+                          .Where(type => type.BaseType == typeof(InspectionBase))
                           .Where(i => string.IsNullOrEmpty(InspectionsUI.ResourceManager.GetString(i.Name + "Name")))
                           .Select(i => i.Name)
                           .ToList();
-            
+
             Assert.IsFalse(inspections.Any(), string.Join(Environment.NewLine, inspections));
         }
 
@@ -42,11 +42,11 @@ namespace RubberduckTests.Inspections
         public void InspectionMetaStringsExist()
         {
             var inspections = typeof(InspectionBase).Assembly.GetTypes()
-                          .Where(type => type.BaseType == typeof(InspectionBase) && !type.IsAbstract)
+                          .Where(type => type.BaseType == typeof(InspectionBase))
                           .Where(i => string.IsNullOrEmpty(InspectionsUI.ResourceManager.GetString(i.Name + "Meta")))
                           .Select(i => i.Name)
                           .ToList();
-            
+
             Assert.IsFalse(inspections.Any(), string.Join(Environment.NewLine, inspections));
         }
 
@@ -61,13 +61,12 @@ namespace RubberduckTests.Inspections
                 typeof(ParameterNotUsedInspection).Name,
                 typeof(ProcedureNotUsedInspection).Name,
                 typeof(VariableNotUsedInspection).Name,
-                typeof(LineLabelNotUsedInspection).Name,
                 typeof(UseMeaningfulNameInspection).Name,
                 typeof(HungarianNotationInspection).Name
             };
 
             var inspections = typeof(InspectionBase).Assembly.GetTypes()
-                          .Where(type => type.BaseType == typeof(InspectionBase) && !type.IsAbstract)
+                          .Where(type => type.BaseType == typeof(InspectionBase))
                           .Where(i => !inspectionsWithSharedResultFormat.Contains(i.Name) &&
                                       string.IsNullOrEmpty(InspectionsUI.ResourceManager.GetString(i.Name + "ResultFormat")))
                           .Select(i => i.Name)

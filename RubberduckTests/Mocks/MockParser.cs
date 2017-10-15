@@ -9,13 +9,10 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.Symbols.DeclarationLoaders;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
+using Rubberduck.Parsing.Preprocessing;
 using System.Globalization;
 using System.Reflection;
 using System.Threading;
-using Antlr4.Runtime;
-using Antlr4.Runtime.Tree;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Mocks
@@ -28,7 +25,7 @@ namespace RubberduckTests.Mocks
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             qualifiedModuleName = new QualifiedModuleName(component);
-            var parser = Create(vbe.Object);
+            var parser = Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
@@ -36,84 +33,33 @@ namespace RubberduckTests.Mocks
 
         }
 
-        public static ParseCoordinator Create(IVBE vbe, string serializedDeclarationsPath = null)
-        {
-            var declarationFinderFactory = new DeclarationFinderFactory();
-            var state = new RubberduckParserState(vbe, declarationFinderFactory);
-            return Create(vbe, state, serializedDeclarationsPath);
-        }
-
         public static ParseCoordinator Create(IVBE vbe, RubberduckParserState state, string serializedDeclarationsPath = null)
         {
-            var attributeParser = new TestAttributeParser(() => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture)));
-            var exporter = new Mock<IModuleExporter>().Object;
-            return Create(vbe, state, attributeParser, exporter, serializedDeclarationsPath);
+            var attributeParser = new Mock<IAttributeParser>();
+            attributeParser.Setup(m => m.Parse(It.IsAny<IVBComponent>(), It.IsAny<CancellationToken>()))
+                           .Returns(() => new Dictionary<Tuple<string, DeclarationType>, Attributes>());
+            return Create(vbe, state, attributeParser.Object, serializedDeclarationsPath);
         }
 
-        public static ParseCoordinator Create(IVBE vbe, RubberduckParserState state, IAttributeParser attributeParser, IModuleExporter exporter, string serializedDeclarationsPath = null)
+        public static ParseCoordinator Create(IVBE vbe, RubberduckParserState state, IAttributeParser attributeParser, string serializedDeclarationsPath = null)
         {
             var path = serializedDeclarationsPath ??
                        Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(typeof(MockParser)).Location), "TestFiles", "Resolver");
-            Func<IVBAPreprocessor> preprocessorFactory = () => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture));
-            var projectManager = new SynchronousProjectManager(state, vbe);
-            var moduleToModuleReferenceManager = new ModuleToModuleReferenceManager();
-            var supertypeClearer = new SynchronousSupertypeClearer(state); 
-            var parserStateManager = new SynchronousParserStateManager(state);
-            var referenceRemover = new SynchronousReferenceRemover(state, moduleToModuleReferenceManager);
-            var comSynchronizer = new SynchronousCOMReferenceSynchronizer(
-                state, 
-                parserStateManager, 
-                path);
-            var builtInDeclarationLoader = new BuiltInDeclarationLoader(
-                state,
+
+            return new ParseCoordinator(vbe, state, attributeParser,
+                () => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture)),
                 new List<ICustomDeclarationLoader>
                 {
-                    new DebugDeclarations(state),
-                    new SpecialFormDeclarations(state),
-                    new FormEventDeclarations(state),
+                    new DebugDeclarations(state), 
+                    new SpecialFormDeclarations(state), 
+                    new FormEventDeclarations(state), 
                     new AliasDeclarations(state),
-                });
-            var parseRunner = new SynchronousParseRunner(
-                state,
-                parserStateManager,
-                preprocessorFactory,
-                attributeParser,
-                exporter);
-            var declarationResolveRunner = new SynchronousDeclarationResolveRunner(
-                state, 
-                parserStateManager, 
-                comSynchronizer);
-            var referenceResolveRunner = new SynchronousReferenceResolveRunner(
-                state,
-                parserStateManager,
-                moduleToModuleReferenceManager,
-                referenceRemover);
-            var parsingStageService = new ParsingStageService(
-                comSynchronizer,
-                builtInDeclarationLoader,
-                parseRunner,
-                declarationResolveRunner,
-                referenceResolveRunner
-                );
-            var parsingCacheService = new ParsingCacheService(
-                state,
-                moduleToModuleReferenceManager,
-                referenceRemover,
-                supertypeClearer
-                );
-
-            return new ParseCoordinator(
-                state,
-                parsingStageService,
-                parsingCacheService,
-                projectManager,
-                parserStateManager,
-                true);
+                }, true, path);
         }
 
         public static RubberduckParserState CreateAndParse(IVBE vbe, string serializedDeclarationsPath = null)
         {
-            var parser = Create(vbe);
+            var parser = Create(vbe, new RubberduckParserState(vbe));
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -158,16 +104,6 @@ namespace RubberduckTests.Mocks
             {
                 state.AddDeclaration(declaration);
             }
-        }
-
-        public static RubberduckParserState CreateAndParse(IVBE vbe, IInspectionListener listener)
-        {
-            var parser = Create(vbe);
-            parser.Parse(new CancellationTokenSource());
-            if(parser.State.Status >= ParserState.Error)
-            { Assert.Inconclusive("Parser Error"); }
-
-            return parser.State;
         }
     }
 }

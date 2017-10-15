@@ -2,12 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices;
-using NLog;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -16,42 +13,42 @@ namespace Rubberduck.UnitTesting
 {
     public class TestEngine : ITestEngine
     {
+        private readonly TestExplorerModel _model;
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
-        private readonly IFakesProviderFactory _fakesFactory;
 
         // can't be assigned from constructor because ActiveVBProject is null at startup:
-        private IHostApplication _hostApplication;
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private IHostApplication _hostApplication; 
 
-        public TestEngine(TestExplorerModel model, IVBE vbe, RubberduckParserState state, IFakesProviderFactory fakesFactory)
+        public TestEngine(TestExplorerModel model, IVBE vbe, RubberduckParserState state)
         {
-            Debug.WriteLine("TestEngine created.");
-            Model = model;
+            _model = model;
             _vbe = vbe;
             _state = state;
-            _fakesFactory = fakesFactory;
         }
 
-        public TestExplorerModel Model { get; }
+        public TestExplorerModel Model { get { return _model; } }
 
         public event EventHandler TestCompleted;
 
         private void OnTestCompleted()
         {
             var handler = TestCompleted;
-            handler?.Invoke(this, EventArgs.Empty);
+            if (handler != null)
+            {
+                handler.Invoke(this, EventArgs.Empty);
+            }
         }
 
         public void Refresh()
         {
-            Model.Refresh();
+            _model.Refresh();
         }
 
         public void Run()
         {
             Refresh();
-            Run(Model.LastRun);
+            Run(_model.LastRun);
         }
 
         public void Run(IEnumerable<TestMethod> tests)
@@ -73,8 +70,6 @@ namespace Rubberduck.UnitTesting
                     .Where(test => test.Declaration.QualifiedName.QualifiedModuleName.ProjectId == capturedModule.Key.ProjectId
                                 && test.Declaration.QualifiedName.QualifiedModuleName.ComponentName == capturedModule.Key.ComponentName);
 
-                var fakes = _fakesFactory.GetFakesProvider();
-
                 Run(module.Key.FindModuleInitializeMethods(_state));
                 foreach (var test in moduleTestMethods)
                 {
@@ -89,28 +84,15 @@ namespace Rubberduck.UnitTesting
                     var stopwatch = new Stopwatch();
                     stopwatch.Start();
 
-                    try
-                    {
-                        fakes.StartTest();
-                        Run(testInitialize);                        
-                        test.Run();
-                        Run(testCleanup);
-                    }
-                    catch (COMException ex)
-                    {
-                        Logger.Error(ex, "Unexpected COM exception while running tests.", test.Declaration?.QualifiedName);
-                        test.UpdateResult(TestOutcome.Inconclusive, RubberduckUI.Assert_ComException);
-                    }
-                    finally
-                    {
-                        fakes.StopTest();
-                    }
+                    Run(testInitialize);
+                    test.Run();
+                    Run(testCleanup);
 
                     stopwatch.Stop();
                     test.Result.SetDuration(stopwatch.ElapsedMilliseconds);
 
                     OnTestCompleted();
-                    Model.AddExecutedTest(test);
+                    _model.AddExecutedTest(test);
                 }
                 Run(module.Key.FindModuleCleanupMethods(_state));
             }
@@ -122,17 +104,10 @@ namespace Rubberduck.UnitTesting
             {
                 _hostApplication = _vbe.HostApplication();
             }
-            
+
             foreach (var member in members)
             {
-                try
-                {
-                    _hostApplication.Run(member);
-                }
-                catch (COMException ex)
-                {
-                    Logger.Error(ex, "Unexpected COM exception while running tests.", member?.QualifiedName);
-                }
+                _hostApplication.Run(member);
             }
         }
     }

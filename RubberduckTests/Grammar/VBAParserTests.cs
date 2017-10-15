@@ -6,183 +6,12 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Parsing.Grammar;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace RubberduckTests.Grammar
 {
     [TestClass]
     public class VBAParserTests
     {
-        [TestCategory("Parser")]
-        [TestMethod]
-        public void ParsesWithLineNumbers_EndSub()
-        {
-            var code = @"
-Sub DoSomething()
-10 End Sub
-";
-            var result = Parse(code);
-            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition");
-            AssertTree(result.Item1, result.Item2, "//subStmt");
-        }
-
-        [TestCategory("Parser")]
-        [TestMethod]
-        public void ParsesWithLineNumbers_EndFunction()
-        {
-            var code = @"
-Function DoSomething()
-10 End Function
-";
-            var result = Parse(code);
-            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition");
-            AssertTree(result.Item1, result.Item2, "//functionStmt");
-        }
-
-        [TestCategory("Parser")]
-        [TestMethod]
-        public void ParsesWithLineNumbers_EndProperty()
-        {
-            var code = @"
-Property Get DoSomething()
-10 End Property
-";
-            var result = Parse(code);
-            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition");
-            AssertTree(result.Item1, result.Item2, "//propertyGetStmt");
-        }
-
-        [TestCategory("Parser")]
-        [TestMethod]
-        public void ParsesWithLineNumbers_IfStmt()
-        {
-            var code = @"
-Sub DoSomething()
-10 If True Then Debug.Print 42
-End Sub
-";
-            var result = Parse(code);
-            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition");
-            AssertTree(result.Item1, result.Item2, "//singleLineIfStmt");
-        }
-
-        [TestCategory("Parser")]
-        [TestMethod]
-        public void ParsesWithLineNumbers_ElseStmt()
-        {
-            var code = @"
-Sub DoSomething()
-10 If True Then
-11     Debug.Print 42
-20 Else
-21     Debug.Print 42
-30 End If
-End Sub
-";
-            var result = Parse(code);
-            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", matches => matches.Count == 5);
-            AssertTree(result.Item1, result.Item2, "//elseBlock");
-        }
-
-        [TestCategory("Parser")]
-        [TestMethod]
-        public void ParsesWithLineNumbers_SelectCaseStmt()
-        {
-            var code = @"
-Sub DoSomething()
-10 Select Case False
-20 Case True
-21     Debug.Print 42
-30 Case False
-31     Debug.Print 42
-40 End Select
-End Sub
-";
-            var result = Parse(code);
-            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", matches => matches.Count == 6);
-            AssertTree(result.Item1, result.Item2, "//caseClause", matches => matches.Count == 2);
-        }
-
-        [TestCategory("Parser")]
-        [TestMethod]
-        public void ParsesWithLineNumbers_ForNextLoop()
-        {
-            var code = @"
-Sub DoSomething()
-10 For i = 1 To 10
-20     Debug.Print 42
-30 Next
-End Sub
-";
-            var result = Parse(code);
-            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", matches => matches.Count == 3);
-            AssertTree(result.Item1, result.Item2, "//forNextStmt");
-        }
-
-        [TestCategory("Parser")]
-        [TestMethod]
-        public void ParsesWithLineNumbers_ForEachLoop()
-        {
-            var code = @"
-Sub DoSomething()
-10 For Each foo In bar
-20     Debug.Print 42
-30 Next
-End Sub
-";
-            var result = Parse(code);
-            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", matches => matches.Count == 3);
-            AssertTree(result.Item1, result.Item2, "//forEachStmt");
-        }
-
-        [TestCategory("Parser")]
-        [TestMethod]
-        public void ParsesWithLineNumbers_DoLoop()
-        {
-            var code = @"
-Sub DoSomething()
-10 Do
-20     Debug.Print 42
-30 Loop While False
-End Sub
-";
-            var result = Parse(code);
-            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", matches => matches.Count == 3);
-            AssertTree(result.Item1, result.Item2, "//doLoopStmt");
-        }
-
-        [TestCategory("Parser")]
-        [TestMethod]
-        public void ParsesWithLineNumbers_WithBlock()
-        {
-            var code = @"
-Sub DoSomething()
-10 With New Collection
-20     Debug.Print 42
-30 End With
-End Sub
-";
-            var result = Parse(code);
-            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", matches => matches.Count == 3);
-            AssertTree(result.Item1, result.Item2, "//withStmt");
-        }
-
-        [TestCategory("Parser")]
-        [TestMethod]
-        public void ParsesWithLineNumbers_WhileLoop()
-        {
-            var code = @"
-Sub DoSomething()
-10 While False
-20     Debug.Print 42
-30 Wend
-End Sub
-";
-            var result = Parse(code);
-            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", matches => matches.Count == 3);
-            AssertTree(result.Item1, result.Item2, "//whileWendStmt");
-        }
-
         [TestCategory("Parser")]
         [TestMethod]
         public void TestParsesEmptyForm()
@@ -1008,40 +837,12 @@ End Sub";
         {
             string code = @"
 Sub Test()
-a:
-10:
-154
-12 b:
-52'comment
-644 _
-
-71Rem stupid Rem comment
-22 
-
-77 _
- : 
-42whatever
+    a:
+    10:
+    15
 End Sub";
             var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//statementLabelDefinition", matches => matches.Count == 10);
-        }
-
-        [TestCategory("Parser")]
-        [TestMethod]
-        public void TestLineLabelStatementWithCodeOnSameLine()
-        {
-            string code = @"
-Sub Test()
-a: foo
-10: bar: foo
-15 bar
-12 b: foo: bar
-77 _
- : bar
-End Sub";
-            var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//statementLabelDefinition", matches => matches.Count == 5);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//callStmt", matches => matches.Count == 7);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//statementLabelDefinition", matches => matches.Count == 3);
         }
 
         [TestCategory("Parser")]
@@ -1868,135 +1669,6 @@ End Sub
 
         [TestCategory("Parser")]
         [TestMethod]
-        public void TestDefaultMemberAccessCallStmtOnFunctionReturnValue_Single()
-        {
-            const string code = @"
-Sub Test()
-    SomeFunction(foo) bar
-End Sub
-";
-            var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//callStmt", matches => matches.Count == 1);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//argumentExpression", matches => matches.Count == 2);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//argumentList", matches => matches.Count == 2);
-        }
-
-        [TestCategory("Parser")]
-        [TestMethod]
-        public void TestDefaultMemberAccessCallStmtOnFunctionReturnValue_Multiple()
-        {
-            const string code = @"
-Sub Test()   
-    SomeFunction(foo, bar) foobar
-End Sub
-";
-            var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//callStmt", matches => matches.Count == 1);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//argumentExpression", matches => matches.Count == 3);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//argumentList", matches => matches.Count == 2);
-        }
-
-        [TestCategory("Parser")]
-        [TestMethod]
-        public void TestFunctionArgumentsOnContinuedLine_Multiple()
-        {
-            const string code = @"
-Sub Test()
-    Dim x As Long    
-    x = SomeFunction _
-    (foo, bar)
-End Sub
-";
-            var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//letStmt", matches => matches.Count == 1);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//argumentExpression", matches => matches.Count == 2);
-        }
-
-        [TestCategory("Parser")]
-        [TestMethod]
-        public void TestFunctionArgumentsOnContinuedLine_Single()
-        {
-            const string code = @"
-Sub Test()
-    Dim x As Long    
-    x = SomeFunction _
-    (foo)
-End Sub
-";
-            var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//letStmt", matches => matches.Count == 1);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//argumentExpression", matches => matches.Count == 1);
-        }
-
-        [TestCategory("Parser")]
-        [TestMethod]
-        public void TestDefaultMemberAccessCallStmtOnFunctionReturnValue_FunctionArgumentsOnContinuedLine_Single()
-        {
-            const string code = @"
-Sub Test() 
-    SomeFunction _
-    (foo) bar
-End Sub
-";
-            var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//callStmt", matches => matches.Count == 1);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//argumentExpression", matches => matches.Count == 2);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//argumentList", matches => matches.Count == 2);
-        }
-
-        [TestCategory("Parser")]
-        [TestMethod]
-        public void TestDefaultMemberAccessCallStmtOnFunctionReturnValue_FunctionArgumentsOnContinuedLine_Multiple()
-        {
-            const string code = @"
-Sub Test()   
-    SomeFunction _
-    (foo, bar) foobar
-End Sub
-";
-            var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//callStmt", matches => matches.Count == 1);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//argumentExpression", matches => matches.Count == 3);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//argumentList", matches => matches.Count == 2);
-        }
-
-        [TestCategory("Parser")]
-        [TestMethod]
-        public void LeftOutOptionalArgumentsAreCountedAsMissingArguments()
-        {
-            const string code = @"
-Public Sub Test()
-    Dim x As Long
-    x = Foo(1, , 5)
-End Sub
-
-Public Function Foo(a, Optional b, Optional c) As Long
-    Foo = 42
-End Function
-";
-            var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//missingArgument", matches => matches.Count == 1);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//argumentList", matches => matches.Count == 1);
-        }
-
-        [TestCategory("Parser")]
-        [TestMethod]
-        public void TestReDimWithLineContinuation()
-        {
-            const string code = @"
-Sub Test()
-    Dim x() As Long    
-    Redim x _
-    (1, 2)
-End Sub
-";
-            var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//redimStmt", matches => matches.Count == 1);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//argumentExpression", matches => matches.Count == 2);
-        }
-
-        [TestCategory("Parser")]
-        [TestMethod]
         public void TestCaseIsEqExpressionWithLiteral()
         {
             const string code = @"
@@ -2027,115 +1699,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//rangeClause", matches => matches.Count == 1);
         }
 
-        [TestCategory("Parser")]
-        [TestMethod]
-        public void TestRaiseEventByValParameter()
-        {
-            const string code = @"
-Public Event Foo(ByRef Bar As Boolean, ByVal Baz As String)
-
-Public Sub Test()
-    Dim arg As String
-    arg = ""Foo""
-    RaiseEvent Foo(True, ByVal 42)
-End Sub
-";
-            var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//raiseEventStmt", matches => matches.Count == 1);
-        }
-
-        [TestCategory("Parser")]
-        [TestMethod]
-        public void TestRaiseEvent()
-        {
-            const string code = @"
-Public Event Foo(ByRef Bar As Boolean, ByVal Baz As String)
-
-Public Sub Test()
-    Dim arg As Boolean
-    RaiseEvent Foo(arg, ""Foo"")
-End Sub
-";
-            var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//raiseEventStmt", matches => matches.Count == 1);
-        }
-
-        [TestCategory("Parser")]
-        [TestMethod]
-        public void TestAttributeAfterSub()
-        {
-            const string code = @"
-Public Sub Foo(): End Sub
-Attribute Foo.VB_Description = ""Foo description""
-
-Public Sub Bar()
-End Sub
-";
-            var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//attributeStmt", matches => matches.Count == 1);
-        }
-
-        [TestCategory("Parser")]
-        [TestMethod]
-        public void TestAttributeAfterFunction()
-        {
-            const string code = @"
-Public Function Foo(): End Function
-Attribute Foo.VB_Description = ""Foo description""
-
-Public Sub Bar()
-End Sub
-";
-            var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//attributeStmt", matches => matches.Count == 1);
-        }
-
-        [TestCategory("Parser")]
-        [TestMethod]
-        public void TestAttributeAfterPropertyGet()
-        {
-            const string code = @"
-Public Property Get Foo(): End Property
-Attribute Foo.VB_Description = ""Foo description""
-
-Public Sub Bar()
-End Sub
-";
-            var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//attributeStmt", matches => matches.Count == 1);
-        }
-
-        [TestCategory("Parser")]
-        [TestMethod]
-        public void TestAttributeAfterPropertyLet()
-        {
-            const string code = @"
-Public Property Let Foo(): End Property
-Attribute Foo.VB_Description = ""Foo description""
-
-Public Sub Bar()
-End Sub
-";
-            var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//attributeStmt", matches => matches.Count == 1);
-        }
-
-        [TestCategory("Parser")]
-        [TestMethod]
-        public void TestAttributeAfterPropertySet()
-        {
-            const string code = @"
-Public Property Set Foo(): End Property
-Attribute Foo.VB_Description = ""Foo description""
-
-Public Sub Bar()
-End Sub
-";
-            var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//attributeStmt", matches => matches.Count == 1);
-        }
-
-        private Tuple<VBAParser, ParserRuleContext> Parse(string code, PredictionMode predictionMode = null)
+        private Tuple<VBAParser, ParserRuleContext> Parse(string code)
         {
             var stream = new AntlrInputStream(code);
             var lexer = new VBALexer(stream);
@@ -2144,24 +1708,9 @@ End Sub
             // Don't remove this line otherwise we won't get notified of parser failures.
             parser.ErrorHandler = new BailErrorStrategy();
             //parser.AddErrorListener(new ExceptionErrorListener());
-            parser.Interpreter.PredictionMode = predictionMode ?? PredictionMode.Sll;
-            ParserRuleContext tree = null;
-            try
-            {
-                tree = parser.startRule();
-            }
-            catch (Exception exception)
-            {
-                if (predictionMode == null || predictionMode == PredictionMode.Ll)
-                {
-                    // If SLL fails we want to get notified ASAP so we can fix it, that's why we don't retry using LL.
-                    // If LL mode fails, we're done.
-                    throw;
-                }
-
-                Debug.WriteLine(exception, "SLL Parser Exception");
-                return Parse(code, PredictionMode.Ll);
-            }
+            // If SLL fails we want to get notified ASAP so we can fix it, that's why we don't retry using LL.
+            parser.Interpreter.PredictionMode = PredictionMode.Sll;
+            var tree = parser.startRule();
             return Tuple.Create<VBAParser, ParserRuleContext>(parser, tree);
         }
 
@@ -2174,7 +1723,7 @@ End Sub
         {
             var matches = new XPath(parser, xpath).Evaluate(root);
             var actual = matches.Count;
-            Assert.IsTrue(assertion(matches), $"{actual} matches found.");
+            Assert.IsTrue(assertion(matches), string.Format("{0} matches found.", actual));
         }
     }
 }

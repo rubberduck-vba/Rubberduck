@@ -5,13 +5,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 {
     public class CommandBarButtonClickEventArgs : EventArgs
     {
+        private readonly ICommandBarButton _control;
+
         internal CommandBarButtonClickEventArgs(ICommandBarButton control)
         {
-            Control = control;
+            _control = control;
         }
 
-        public ICommandBarButton Control { get; }
-
+        public ICommandBarButton Control { get { return _control; } }
         public bool Cancel { get; set; }
     }
 }

@@ -30,11 +30,20 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             }          
         }
 
-        public int Count => IsWrappingNullReference ? 0 : Target.Count;
+        public int Count
+        {
+            get { return IsWrappingNullReference ? 0 : Target.Count; }
+        }
 
-        public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
+        public IVBE VBE
+        {
+            get { return new VBE(IsWrappingNullReference ? null : Target.VBE); }
+        }
 
-        public IVBE Parent => new VBE(IsWrappingNullReference ? null : Target.Parent);
+        public IVBE Parent
+        {
+            get { return new VBE(IsWrappingNullReference ? null : Target.Parent); }
+        }
 
         public IVBProject Add(ProjectType type)
         {
@@ -52,7 +61,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return new VBProject(IsWrappingNullReference ? null : Target.Open(path));
         }
 
-        public IVBProject this[object index] => new VBProject(IsWrappingNullReference ? null : Target.Item(index));
+        public IVBProject this[object index]
+        {
+            get { return new VBProject(IsWrappingNullReference ? null : Target.Item(index)); }
+        }
 
         IEnumerator<IVBProject> IEnumerable<IVBProject>.GetEnumerator()
         {

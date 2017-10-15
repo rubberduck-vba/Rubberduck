@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
 namespace Rubberduck.UnitTesting
-{	
+{
+	
     [ComVisible(true)]
     [ComDefaultInterface(typeof(IAssert))]
-    [Guid(RubberduckGuid.PermissiveAssertClassGuid)]
-    [ProgId(RubberduckProgId.PermissiveAssertClassProgId)]
+    [Guid(ClassId)]
+    [ProgId(ProgId)]
     public class PermissiveAssertClass : AssertClass
-    {       
-        private static readonly IEqualityComparer<object> PermissiveComparer = new PermissiveObjectComparer();
+    {
+        private const string ClassId = "40F71F29-D63F-4481-8A7D-E04A4B054501";
+        private const string ProgId = "Rubberduck.PermissiveAssertClass";
 
         /// <summary>
         /// Verifies that two specified objects are equal as considered equal under the loose terms of VBA equality.
@@ -22,48 +22,94 @@ namespace Rubberduck.UnitTesting
         /// <remarks>
         /// contrary to <see cref="AssertClass.AreEqual"/> <paramref name="expected"/> and <paramref name="actual"/> are not required to be of the same type
         /// </remarks>
-        public override void AreEqual(object expected, object actual, string message = "")
+        public override void AreEqual(object expected, object actual, string message = null)
         {
             // vbNullString is marshalled as null. assume value semantics:
             expected = expected ?? string.Empty;
             actual = actual ?? string.Empty;
 
-            if (!PermissiveComparer.Equals(expected, actual))
+            if (expected.GetType() != actual.GetType())
             {
-                AssertHandler.OnAssertFailed(message);
+                if (!RunTypePromotions(ref expected, ref actual))
+                {
+                    AssertHandler.OnAssertFailed("AreEqual", message);
+                }
             }
-            AssertHandler.OnAssertSucceeded();
+
+            if (expected.Equals(actual))
+            {
+                AssertHandler.OnAssertSucceeded();
+            }
         }
 
-        public override void AreNotEqual(object expected, object actual, string message = "")
+        public override void AreNotEqual(object expected, object actual, string message = null)
         {
             // vbNullString is marshalled as null. assume value semantics:
             expected = expected ?? string.Empty;
             actual = actual ?? string.Empty;
 
-            if (PermissiveComparer.Equals(expected, actual))
+            if (expected.GetType() != actual.GetType())
             {
-                AssertHandler.OnAssertFailed(message);
+                if (!RunTypePromotions(ref expected, ref actual))
+                {
+                    AssertHandler.OnAssertFailed("AreNotEqual", message);
+                }
             }
-            AssertHandler.OnAssertSucceeded();
+
+            if (!expected.Equals(actual))
+            {
+                AssertHandler.OnAssertSucceeded();
+            }
         }
 
-        public override void SequenceEquals(object expected, object actual, string message = "")
+        /// <summary>
+        /// Runs applicable type promotions for number types.
+        /// </summary>
+        /// <returns><c>true</c>, if any type promotion was run, <c>false</c> otherwise.</returns>
+        /// <param name="expected">the expected value given to the test-method</param>
+        /// <param name="actual">the actual value given to the test method</param>
+        static bool RunTypePromotions(ref object expected, ref object actual)
         {
-            if (!SequenceEquityParametersAreArrays(expected, actual, true))
+            // try promoting integral types first.
+            if (expected is ulong && actual is ulong)
             {
-                return;
+                expected = (ulong)expected;
+                actual = (ulong)actual;
             }
-            TestArraySequenceEquity((Array)expected, (Array)actual, message, true, PermissiveComparer);
-        }
-
-        public override void NotSequenceEquals(object expected, object actual, string message = "")
-        {
-            if (!SequenceEquityParametersAreArrays(expected, actual, false))
+            // then try promoting to floating point
+            else if (expected is double && actual is double)
             {
-                return;
+                expected = (double)expected;
+                actual = (double)actual;
             }
-            TestArraySequenceEquity((Array)expected, (Array)actual, message, false, PermissiveComparer);
+            // that shouldn't actually happen, since decimal is the only numeric ValueType in it's category
+            // this means we should've gotten the same types earlier in the Assert method
+            else if (expected is decimal && actual is decimal)
+            {
+                expected = (decimal)expected;
+                actual = (decimal)actual;
+            }
+            // worst case scenario for numbers
+            // since we're inside VBA though, double is the more appropriate type to compare, 
+            // because that is what's used internally anyways, see https://support.microsoft.com/en-us/kb/78113
+            else if ((expected is decimal && actual is double) || (expected is double && actual is decimal))
+            {
+                expected = (double)expected;
+                actual = (double)actual;
+            }
+            // no number-type promotions are applicable.
+            else
+            {
+                // last staw: string "promotion"
+                if (expected is string || actual is string)
+                {
+                    expected = expected.ToString();
+                    actual = actual.ToString();
+                    return true;
+                }
+                return false;
+            }
+            return true;
         }
     }
 }

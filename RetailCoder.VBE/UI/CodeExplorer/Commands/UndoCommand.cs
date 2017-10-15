@@ -22,7 +22,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _messageBox = messageBox;
         }
 
-        protected override bool EvaluateCanExecute(object parameter)
+        protected override bool CanExecuteImpl(object parameter)
         {
             var node = parameter as CodeExplorerComponentViewModel;
             if (node == null)
@@ -40,13 +40,13 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             }
 
             panelViewModel.SetTab(SourceControlTab.Changes);
-            var viewModel = panelViewModel.SelectedItem.ViewModel as ChangesPanelViewModel;
+            var viewModel = panelViewModel.SelectedItem.ViewModel as ChangesViewViewModel;
 
             return viewModel != null && viewModel.IncludedChanges != null &&
                    viewModel.IncludedChanges.Select(s => s.FilePath).Contains(GetFileName(node));
         }
 
-        protected override void OnExecute(object parameter)
+        protected override void ExecuteImpl(object parameter)
         {
             var panel = _presenter.UserControl as SourceControlPanel;
             Debug.Assert(panel != null);
@@ -58,7 +58,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             }
 
             panelViewModel.SetTab(SourceControlTab.Changes);
-            var viewModel = panelViewModel.SelectedItem.ViewModel as ChangesPanelViewModel;
+            var viewModel = panelViewModel.SelectedItem.ViewModel as ChangesViewViewModel;
             if (viewModel == null)
             {
                 return;

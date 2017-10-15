@@ -5,16 +5,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor;
 
-namespace RubberduckTests.PreProcessing
+namespace RubberduckTests.Preprocessing
 {
     [TestClass]
     public class VBAPreprocessorTests
     {
         [TestMethod]
         [DeploymentItem(@"Testfiles\")]
-        [TestCategory("Preprocessor")]
         public void TestPreprocessor()
         {
             foreach (var testfile in GetTestFiles())
@@ -29,7 +27,7 @@ namespace RubberduckTests.PreProcessing
 
         private void AssertParseResult(string filename, string originalCode, string materializedParseTree)
         {
-            Assert.AreEqual(originalCode, materializedParseTree, $"{filename} mismatch detected.");
+            Assert.AreEqual(originalCode, materializedParseTree, string.Format("{0} mismatch detected.", filename));
         }
 
         private IEnumerable<Tuple<string, string, string>> GetTestFiles()
@@ -51,13 +49,9 @@ namespace RubberduckTests.PreProcessing
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(code, out component);
             
             var state = MockParser.CreateAndParse(vbe.Object);
-            var tree = state.GetParseTree(new QualifiedModuleName(component));
+            var tree = state.GetParseTree(component);
             var parsed = tree.GetText();
-            var withoutEOF = parsed;
-            while (withoutEOF.Length >= 5 && String.Equals(withoutEOF.Substring(withoutEOF.Length - 5, 5), "<EOF>"))
-            {
-                withoutEOF = withoutEOF.Substring(0, withoutEOF.Length - 5);
-            }
+            var withoutEOF = parsed.Substring(0, parsed.Length - 5);
             return withoutEOF;
         }
     }

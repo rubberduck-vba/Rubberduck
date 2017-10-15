@@ -15,7 +15,6 @@ namespace RubberduckTests.TodoExplorer
     public class TodoExplorerTests
     {
         [TestMethod]
-        [TestCategory("Annotations")]
         public void PicksUpComments()
         {
             var content =
@@ -29,7 +28,7 @@ namespace RubberduckTests.TodoExplorer
                 .AddComponent("Module1", ComponentType.StandardModule, content);
 
             var vbe = builder.AddProject(project.Build()).Build();
-            var parser = MockParser.Create(vbe.Object);
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             var vm = new ToDoExplorerViewModel(parser.State, GetConfigService(), GetOperatingSystemMock().Object);
 
@@ -42,7 +41,6 @@ namespace RubberduckTests.TodoExplorer
         }
 
         [TestMethod]
-        [TestCategory("Annotations")]
         public void PicksUpComments_StrangeCasing()
         {
             var content =
@@ -57,7 +55,7 @@ namespace RubberduckTests.TodoExplorer
                 .AddComponent("Module1", ComponentType.StandardModule, content);
 
             var vbe = builder.AddProject(project.Build()).Build();
-            var parser = MockParser.Create(vbe.Object);
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             var vm = new ToDoExplorerViewModel(parser.State, GetConfigService(), GetOperatingSystemMock().Object);
 
@@ -70,7 +68,6 @@ namespace RubberduckTests.TodoExplorer
         }
 
         [TestMethod]
-        [TestCategory("Annotations")]
         public void RemoveRemovesComment()
         {
             var input =
@@ -85,7 +82,7 @@ namespace RubberduckTests.TodoExplorer
                 .Build();
 
             var vbe = builder.AddProject(project).Build();
-            var parser = MockParser.Create(vbe.Object);
+            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
 
             var vm = new ToDoExplorerViewModel(parser.State, GetConfigService(), GetOperatingSystemMock().Object);
 

@@ -1,7 +1,9 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Inspections;
+using Rubberduck.Inspections.QuickFixes;
+using Rubberduck.Inspections.Resources;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
@@ -18,7 +20,9 @@ namespace RubberduckTests.Inspections
 Public Sub Foo()
     bar = ""test""
 End Sub";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new MoveFieldCloserToUsageInspection(state);
@@ -39,7 +43,9 @@ End Sub
 Public Sub For2()
     Let bar = ""test""
 End Sub";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new MoveFieldCloserToUsageInspection(state);
@@ -57,7 +63,9 @@ End Sub";
     Dim bar As String
     bar = ""test""
 End Sub";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new MoveFieldCloserToUsageInspection(state);
@@ -74,7 +82,9 @@ End Sub";
 @"Private bar As String
 Public Sub Foo()
 End Sub";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new MoveFieldCloserToUsageInspection(state);
@@ -92,7 +102,9 @@ End Sub";
 Public Property Get Foo() As String
     Foo = bar
 End Property";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new MoveFieldCloserToUsageInspection(state);
@@ -113,7 +125,9 @@ End Property
 Public Property Let Foo(ByVal value As String)
     bar = value
 End Property";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new MoveFieldCloserToUsageInspection(state);
@@ -134,7 +148,9 @@ End Property
 Public Property Set Foo(ByVal value As Variant)
     bar = value
 End Property";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new MoveFieldCloserToUsageInspection(state);
@@ -153,13 +169,71 @@ Private bar As String
 Public Sub Foo()
     bar = ""test""
 End Sub";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
             var inspection = new MoveFieldCloserToUsageInspection(state);
             var inspectionResults = inspection.GetInspectionResults();
 
             Assert.IsFalse(inspectionResults.Any());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void MoveFieldCloserToUsage_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+@"Private bar As String
+Public Sub Foo()
+    bar = ""test""
+End Sub";
+
+            const string expectedCode =
+@"'@Ignore MoveFieldCloserToUsage
+Private bar As String
+Public Sub Foo()
+    bar = ""test""
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new MoveFieldCloserToUsageInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void MoveFieldCloserToUsage_QuickFixWorks()
+        {
+            const string inputCode =
+@"Private bar As String
+Public Sub Foo()
+    bar = ""test""
+End Sub";
+
+            const string expectedCode =
+@"Public Sub Foo()
+
+    Dim bar As String
+    bar = ""test""
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new MoveFieldCloserToUsageInspection(state);
+            var inspectionResults = inspection.GetInspectionResults();
+
+            inspectionResults.First().QuickFixes.First().Fix();
+            Assert.AreEqual(expectedCode, component.CodeModule.Content());
         }
 
         [TestMethod]

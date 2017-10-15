@@ -4,21 +4,29 @@ using System.Linq;
 
 namespace Rubberduck.Parsing.Annotations
 {
-    /// <summary>
-    /// Used for specifying the Code Explorer folder a appears under.
-    /// </summary>
     public sealed class FolderAnnotation : AnnotationBase
     {
+        private readonly string _folderName;
+
         public FolderAnnotation(
             QualifiedSelection qualifiedSelection,
             IEnumerable<string> parameters)
             : base(AnnotationType.Folder, qualifiedSelection)
         {
-            FolderName = parameters.FirstOrDefault() ?? string.Empty;
+            _folderName = parameters.FirstOrDefault() ?? string.Empty;
         }
 
-        public string FolderName { get; }
+        public string FolderName
+        {
+            get
+            {
+                return _folderName;
+            }
+        }
 
-        public override string ToString() => $"Folder: {FolderName}";
+        public override string ToString()
+        {
+            return string.Format("Folder: {0}", _folderName);
+        }
     }
 }

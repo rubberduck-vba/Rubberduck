@@ -22,20 +22,20 @@ namespace Rubberduck.UI.Command
             _state = state;
         }
 
-        public override RubberduckHotkey Hotkey => RubberduckHotkey.IndentProcedure;
+        public override RubberduckHotkey Hotkey
+        {
+            get { return RubberduckHotkey.IndentProcedure; }
+        }
 
-        protected override bool EvaluateCanExecute(object parameter)
+        protected override bool CanExecuteImpl(object parameter)
         {
             return _vbe.ActiveCodePane != null;
         }
 
-        protected override void OnExecute(object parameter)
+        protected override void ExecuteImpl(object parameter)
         {
             _indenter.IndentCurrentProcedure();
-            if (_state.Status >= ParserState.Ready || _state.Status == ParserState.Pending)
-            {
-                _state.OnParseRequested(this, _vbe.ActiveCodePane.CodeModule.Parent);
-            }
+            _state.OnParseRequested(this, _vbe.ActiveCodePane.CodeModule.Parent);
         }
     }
 }

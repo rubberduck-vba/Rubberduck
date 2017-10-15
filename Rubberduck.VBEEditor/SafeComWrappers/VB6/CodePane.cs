@@ -12,27 +12,49 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         {
         }
 
-        public ICodePanes Collection => new CodePanes(IsWrappingNullReference ? null : Target.Collection);
+        public ICodePanes Collection
+        {
+            get { return new CodePanes(IsWrappingNullReference ? null : Target.Collection); }
+        }
 
-        public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
+        public IVBE VBE
+        {
+            get { return new VBE(IsWrappingNullReference ? null : Target.VBE); }
+        }
 
-        public IWindow Window => new Window(IsWrappingNullReference ? null : Target.Window);
+        public IWindow Window
+        {
+            get { return new Window(IsWrappingNullReference ? null : Target.Window); }
+        }
 
         public int TopLine
         {
-            get => IsWrappingNullReference ? 0 : Target.TopLine;
-            set => Target.TopLine = value;
+            get { return IsWrappingNullReference ? 0 : Target.TopLine; }
+            set { Target.TopLine = value; }
         }
 
-        public int CountOfVisibleLines => IsWrappingNullReference ? 0 : Target.CountOfVisibleLines;
+        public int CountOfVisibleLines
+        {
+            get { return IsWrappingNullReference ? 0 : Target.CountOfVisibleLines; }
+        }
+        
+        public ICodeModule CodeModule
+        {
+            get { return new CodeModule(IsWrappingNullReference ? null : Target.CodeModule); }
+        }
 
-        public ICodeModule CodeModule => new CodeModule(IsWrappingNullReference ? null : Target.CodeModule);
-
-        public CodePaneView CodePaneView => IsWrappingNullReference ? 0 : (CodePaneView)Target.CodePaneView;
+        public CodePaneView CodePaneView
+        {
+            get { return IsWrappingNullReference ? 0 : (CodePaneView)Target.CodePaneView; }
+        }
 
         private Selection GetSelection()
         {
-            Target.GetSelection(out var startLine, out var startColumn, out var endLine, out var endColumn);
+            int startLine;
+            int startColumn;
+            int endLine;
+            int endColumn;
+            Target.GetSelection(out startLine, out startColumn, out endLine, out endColumn);
 
             if (endLine > startLine && endColumn == 1)
             {
@@ -45,8 +67,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         public Selection Selection
         {
-            get => GetSelection();
-            set => SetSelection(value.StartLine, value.StartColumn, value.EndLine, value.EndColumn);
+            get { return GetSelection(); }
+            set { SetSelection(value.StartLine, value.StartColumn, value.EndLine, value.EndColumn); }
         }
 
         public QualifiedSelection? GetQualifiedSelection()

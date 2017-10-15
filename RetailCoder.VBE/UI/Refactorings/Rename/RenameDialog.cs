@@ -2,7 +2,7 @@
 
 namespace Rubberduck.UI.Refactorings.Rename
 {
-    public sealed partial class RenameDialog : Form, IRefactoringDialog<RenameViewModel>
+    public partial class RenameDialog : Form
     {
         public RenameViewModel ViewModel { get; }
 

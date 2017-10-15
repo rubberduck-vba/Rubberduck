@@ -10,7 +10,6 @@ namespace RubberduckTests.Symbols
     public class PropertyGetDeclarationTests
     {
         [TestMethod]
-        [TestCategory("Resolver")]
         public void PropertyGetsHaveDeclarationTypePropertyGet()
         {
             var propertyGet = GetTestPropertyGet("test", null);
@@ -21,7 +20,7 @@ namespace RubberduckTests.Symbols
             private static PropertyGetDeclaration GetTestPropertyGet(string name, Attributes attributes)
             {
                 var qualifiedName = new QualifiedMemberName(StubQualifiedModuleName(), name);
-                return new PropertyGetDeclaration(qualifiedName, null, null, "test", null, "test", Accessibility.Implicit, null, Selection.Home, false, true, null, attributes);
+                return new PropertyGetDeclaration(qualifiedName, null, null, "test", null, "test", Accessibility.Implicit, null, Selection.Home, false, false, null, attributes);
             }
 
                 private static QualifiedModuleName StubQualifiedModuleName()
@@ -31,7 +30,6 @@ namespace RubberduckTests.Symbols
 
 
         [TestMethod]
-        [TestCategory("Resolver")]
         public void ByDefaultPropertyGetsDoNotHaveParameters()
         {
             var propertyGet = GetTestPropertyGet("test", null);
@@ -41,7 +39,6 @@ namespace RubberduckTests.Symbols
 
 
         [TestMethod]
-        [TestCategory("Resolver")]
         public void ParametersReturnsTheParametersAddedViaAddParameters()
         {
             var propertyGet = GetTestPropertyGet("test", null);
@@ -60,7 +57,6 @@ namespace RubberduckTests.Symbols
 
 
         [TestMethod]
-        [TestCategory("Resolver")]
         public void ByDefaultPropertyGetsAreNotDefaultMembers()
         {
             var propertyGet = GetTestPropertyGet("test", null);
@@ -70,7 +66,6 @@ namespace RubberduckTests.Symbols
 
 
         [TestMethod]
-        [TestCategory("Resolver")]
         public void PropertyGetsAreDefaultMembersIfTheyHaveTheDefaultMemberAttribute()
         {
             var attributes = new Attributes();

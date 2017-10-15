@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
@@ -64,7 +63,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
             _targetInterface = _declarations.FindInterface(selection);
 
             _targetClass = _declarations.SingleOrDefault(d =>
-                        ImplementingModuleTypes.Contains(d.DeclarationType) &&
+                        !d.IsBuiltIn && ImplementingModuleTypes.Contains(d.DeclarationType) &&
                         d.QualifiedSelection.QualifiedName.Equals(selection.QualifiedName));
 
             if (_targetClass == null || _targetInterface == null)
@@ -80,7 +79,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
                 oldSelection = _vbe.ActiveCodePane.CodeModule.GetQualifiedSelection();
             }
 
-            ImplementMissingMembers(_state.GetRewriter(_targetClass));
+            ImplementMissingMembers();
 
             if (oldSelection.HasValue)
             {
@@ -97,98 +96,102 @@ namespace Rubberduck.Refactorings.ImplementInterface
             throw new NotSupportedException();
         }
 
-        internal void Refactor(List<Declaration> members, IModuleRewriter rewriter, string interfaceName)
-        {
-            AddItems(members, rewriter, interfaceName);
-        }
-
-        private void ImplementMissingMembers(IModuleRewriter rewriter)
+        private void ImplementMissingMembers()
         {
             var interfaceMembers = GetInterfaceMembers();
             var implementedMembers = GetImplementedMembers();
             var nonImplementedMembers = GetNonImplementedMembers(interfaceMembers, implementedMembers);
 
-            AddItems(nonImplementedMembers, rewriter, _targetInterface.IdentifierName);
+            AddItems(nonImplementedMembers);
         }
 
-        private void AddItems(List<Declaration> missingMembers, IModuleRewriter rewriter, string interfaceName)
+        private void AddItems(List<Declaration> members)
         {
-            var missingMembersText = missingMembers.Aggregate(string.Empty,
-                (current, member) => current + Environment.NewLine + GetInterfaceMember(member, interfaceName));
-            
-            rewriter.InsertAfter(rewriter.TokenStream.Size, Environment.NewLine + missingMembersText);
-
-            rewriter.Rewrite();
-        }
-
-        private string GetInterfaceMember(Declaration member, string interfaceName)
-        {
-            switch (member.DeclarationType)
+            var module = _targetClass.QualifiedSelection.QualifiedName.Component.CodeModule;
             {
-                case DeclarationType.Procedure:
-                    return SubStmt(member, interfaceName);
+                var missingMembersText = members.Aggregate(string.Empty, (current, member) => current + Environment.NewLine + GetInterfaceMember(member));
+                module.InsertLines(module.CountOfDeclarationLines + 1, missingMembersText);
+            }
+        }
 
-                case DeclarationType.Function:
-                    return FunctionStmt(member, interfaceName);
+        private string GetInterfaceMember(Declaration member)
+        {
+            switch (GetMemberType(member))
+            {
+                case "Sub":
+                    return SubStmt(member);
 
-                case DeclarationType.PropertyGet:
-                    return PropertyGetStmt(member, interfaceName);
+                case "Function":
+                    return FunctionStmt(member);
 
-                case DeclarationType.PropertyLet:
-                    return PropertyLetStmt(member, interfaceName);
+                case "Property Get":
+                    return PropertyGetStmt(member);
 
-                case DeclarationType.PropertySet:
-                    return PropertySetStmt(member, interfaceName);
+                case "Property Let":
+                    return PropertyLetStmt(member);
+
+                case "Property Set":
+                    return PropertySetStmt(member);
             }
 
             return string.Empty;
         }
 
-        private string SubStmt(Declaration member, string interfaceName)
+        private string SubStmt(Declaration member)
         {
             var memberParams = GetParameters(member);
 
-            var memberSignature = $"Private Sub {interfaceName}_{member.IdentifierName}({string.Join(", ", memberParams)})";
+            var memberSignature = "Private Sub " + _targetInterface.IdentifierName + "_" + member.IdentifierName + "(" +
+                                  string.Join(", ", memberParams) + ")";
+
             var memberCloseStatement = "End Sub" + Environment.NewLine;
 
             return string.Join(Environment.NewLine, memberSignature, MemberBody, memberCloseStatement);
         }
 
-        private string FunctionStmt(Declaration member, string interfaceName)
+        private string FunctionStmt(Declaration member)
         {
             var memberParams = GetParameters(member);
 
-            var memberSignature = $"Private Function {interfaceName}_{member.IdentifierName}({string.Join(", ", memberParams)}) As {member.AsTypeName}";
+            var memberSignature = "Private Function " + _targetInterface.IdentifierName + "_" + member.IdentifierName + "(" +
+                                  string.Join(", ", memberParams) + ")" + " As " + member.AsTypeName;
+
             var memberCloseStatement = "End Function" + Environment.NewLine;
 
             return string.Join(Environment.NewLine, memberSignature, MemberBody, memberCloseStatement);
         }
 
-        private string PropertyGetStmt(Declaration member, string interfaceName)
+        private string PropertyGetStmt(Declaration member)
         {
             var memberParams = GetParameters(member);
 
-            var memberSignature = $"Private Property Get {interfaceName}_{member.IdentifierName}({string.Join(", ", memberParams)}) As {member.AsTypeName}";
+            var memberSignature = "Private Property Get " + _targetInterface.IdentifierName + "_" + member.IdentifierName + "(" +
+                                  string.Join(", ", memberParams) + ")" + " As " + member.AsTypeName;
+
             var memberCloseStatement = "End Property" + Environment.NewLine;
 
             return string.Join(Environment.NewLine, memberSignature, MemberBody, memberCloseStatement);
         }
 
-        private string PropertyLetStmt(Declaration member, string interfaceName)
+        private string PropertyLetStmt(Declaration member)
         {
             var memberParams = GetParameters(member);
 
-            var memberSignature = $"Private Property Let {interfaceName}_{member.IdentifierName}({string.Join(", ", memberParams)})";
+            var memberSignature = "Private Property Let " + _targetInterface.IdentifierName + "_" + member.IdentifierName +
+                                  "(" + string.Join(", ", memberParams) + ")";
+
             var memberCloseStatement = "End Property" + Environment.NewLine;
 
             return string.Join(Environment.NewLine, memberSignature, MemberBody, memberCloseStatement);
         }
 
-        private string PropertySetStmt(Declaration member, string interfaceName)
+        private string PropertySetStmt(Declaration member)
         {
             var memberParams = GetParameters(member);
 
-            var memberSignature = $"Private Property Set {interfaceName}_{member.IdentifierName}({string.Join(", ", memberParams)})";
+            var memberSignature = "Private Property Set " + _targetInterface.IdentifierName + "_" + member.IdentifierName +
+                                  "(" + string.Join(", ", memberParams) + ")";
+
             var memberCloseStatement = "End Property" + Environment.NewLine;
 
             return string.Join(Environment.NewLine, memberSignature, MemberBody, memberCloseStatement);
@@ -240,6 +243,43 @@ namespace Rubberduck.Refactorings.ImplementInterface
                                     .OrderBy(o => o.Selection.StartLine)
                                     .ThenBy(t => t.Selection.StartColumn)
                                     .ToList();
+        }
+
+        private string GetMemberType(Declaration member)
+        {
+            var context = member.Context;
+
+            var subStmtContext = context as VBAParser.SubStmtContext;
+            if (subStmtContext != null)
+            {
+                return Tokens.Sub;
+            }
+
+            var functionStmtContext = context as VBAParser.FunctionStmtContext;
+            if (functionStmtContext != null)
+            {
+                return Tokens.Function;
+            }
+
+            var propertyGetStmtContext = context as VBAParser.PropertyGetStmtContext;
+            if (propertyGetStmtContext != null)
+            {
+                return Tokens.Property + " " + Tokens.Get;
+            }
+
+            var propertyLetStmtContext = context as VBAParser.PropertyLetStmtContext;
+            if (propertyLetStmtContext != null)
+            {
+                return Tokens.Property + " " + Tokens.Let;
+            }
+
+            var propertySetStmtContext = context as VBAParser.PropertySetStmtContext;
+            if (propertySetStmtContext != null)
+            {
+                return Tokens.Property + " " + Tokens.Set;
+            }
+
+            return string.Empty;
         }
     }
 }

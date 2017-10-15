@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Vbe.Interop;
 using Moq;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
@@ -45,17 +46,6 @@ namespace RubberduckTests.Mocks
         }
 
         public MockProjectBuilder(string name, string filename, ProjectProtection protection, Func<IVBE> getVbe, MockVbeBuilder mockVbeBuilder)
-        :this(
-            name,
-            filename,
-            Guid.NewGuid().ToString(),
-            protection,
-            getVbe,
-            mockVbeBuilder
-            )
-        { }
-
-        public MockProjectBuilder(string name, string filename, string projectId, ProjectProtection protection, Func<IVBE> getVbe, MockVbeBuilder mockVbeBuilder)
         {
             _getVbe = getVbe;
             _mockVbeBuilder = mockVbeBuilder;
@@ -65,7 +55,7 @@ namespace RubberduckTests.Mocks
             _project.SetupProperty(m => m.HelpFile);
             _project.SetupGet(m => m.ProjectId).Returns(() => _project.Object.HelpFile);
             _project.Setup(m => m.AssignProjectId())
-                .Callback(() => _project.Object.HelpFile = projectId);
+                .Callback(() => _project.Object.HelpFile = Guid.NewGuid().ToString());
 
             _vbComponents = CreateComponentsMock();
             _project.SetupGet(m => m.VBComponents).Returns(_vbComponents.Object);
@@ -266,7 +256,7 @@ namespace RubberduckTests.Mocks
             result.SetupGet(m => m.VBE).Returns(_getVbe);
             result.SetupGet(m => m.Parent).Returns(() => component.Object);
             result.SetupGet(m => m.CodePane).Returns(() => codePane.Object);
-            
+
             codePane.SetupGet(m => m.CodeModule).Returns(() => result.Object);
 
             result.Setup(m => m.AddFromFile(It.IsAny<string>()));
@@ -283,7 +273,6 @@ namespace RubberduckTests.Mocks
             var lines = content.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
 
             var codeModule = new Mock<ICodeModule>();
-            codeModule.Setup(m => m.Clear()).Callback(() => lines = new List<string>());
             codeModule.SetupGet(c => c.CountOfLines).Returns(() => lines.Count);
             codeModule.SetupGet(c => c.CountOfDeclarationLines).Returns(() =>
                 lines.TakeWhile(line => line.Contains(Tokens.Declare + ' ') || !ModuleBodyTokens.Any(line.Contains)).Count());

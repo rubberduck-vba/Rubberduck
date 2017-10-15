@@ -9,16 +9,21 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
     public class DebugDeclarations : ICustomDeclarationLoader
     {
         public static Declaration DebugPrint;
-        private readonly IDeclarationFinderProvider _finderProvider;
+        private readonly RubberduckParserState _state;
 
-        public DebugDeclarations(IDeclarationFinderProvider finderProvider)
+        public DebugDeclarations(RubberduckParserState state)
         {
-            _finderProvider = finderProvider;
+            _state = state;
         }
 
         public IReadOnlyList<Declaration> Load()
         {
-            var finder = _finderProvider.DeclarationFinder;
+            var finder = _state.DeclarationFinder;;
+
+            if (WeHaveAlreadyLoadedTheDeclarationsBefore(finder))
+            {
+                return new List<Declaration>();
+            }
 
             var vba = finder.FindProject("VBA");
             if (vba == null)
@@ -28,25 +33,20 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 return new List<Declaration>();
             }
 
-            if (WeHaveAlreadyLoadedTheDeclarationsBefore(finder, vba))
-            {
-                return new List<Declaration>();
-            }
-
             return LoadDebugDeclarations(vba);
         }
 
-        private static bool WeHaveAlreadyLoadedTheDeclarationsBefore(DeclarationFinder finder, Declaration vbaProject)
+        private static bool WeHaveAlreadyLoadedTheDeclarationsBefore(DeclarationFinder finder)
         {
-            return ThereIsADebugModule(finder, vbaProject);
+            return ThereIsAGlobalBuiltInErrVariableDeclaration(finder);
         }
 
-        private static bool ThereIsADebugModule(DeclarationFinder finder, Declaration vbaProject) 
-        {
-            var debugModule = DebugModuleDeclaration(vbaProject);
-            return finder.MatchName(debugModule.IdentifierName)
-                            .Any(declaration => declaration.Equals(debugModule));
-        }
+            private static bool ThereIsAGlobalBuiltInErrVariableDeclaration(DeclarationFinder finder) 
+            {
+                return finder.MatchName(Grammar.Tokens.Err).Any(declaration => declaration.IsBuiltIn
+                                                                        && declaration.DeclarationType == DeclarationType.Variable
+                                                                        && declaration.Accessibility == Accessibility.Global);
+            }
 
 
         private List<Declaration> LoadDebugDeclarations(Declaration parentProject)
@@ -73,92 +73,91 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
         }
 
 
-        private static ProceduralModuleDeclaration DebugModuleDeclaration(Declaration parentProject)
-        {
-            return new ProceduralModuleDeclaration(
-                new QualifiedMemberName(DebugModuleName(parentProject), "DebugModule"),
-                parentProject,
-                "DebugModule",
-                false,
-                new List<IAnnotation>(),
-                new Attributes());
+            private static ProceduralModuleDeclaration DebugModuleDeclaration(Declaration parentProject)
+            {
+                return new ProceduralModuleDeclaration(
+                    new QualifiedMemberName(DebugModuleName(parentProject), "DebugModule"),
+                    parentProject,
+                    "DebugModule",
+                    true,
+                    new List<IAnnotation>(),
+                    new Attributes());
 }
                 
-            private static QualifiedModuleName DebugModuleName(Declaration parentProject)
+                private static QualifiedModuleName DebugModuleName(Declaration parentProject)
+                {
+                    return new QualifiedModuleName(
+                        parentProject.QualifiedName.QualifiedModuleName.ProjectName,
+                        parentProject.QualifiedName.QualifiedModuleName.ProjectPath,
+                        "DebugClass");
+                }
+
+
+            private static ClassModuleDeclaration DebugClassDeclaration(Declaration parentProject)
             {
-                return new QualifiedModuleName(
-                    parentProject.QualifiedName.QualifiedModuleName.ProjectName,
-                    parentProject.QualifiedName.QualifiedModuleName.ProjectPath,
-                    "DebugModule");
+                return new ClassModuleDeclaration(
+                    new QualifiedMemberName(DebugClassName(parentProject), "DebugClass"), 
+                    parentProject, 
+                    "DebugClass", 
+                    true, 
+                    new List<IAnnotation>(), 
+                    new Attributes(), 
+                    true);
             }
 
+                private static QualifiedModuleName DebugClassName(Declaration parentProject)
+                {
+                    return new QualifiedModuleName(
+                        parentProject.QualifiedName.QualifiedModuleName.ProjectName,
+                        parentProject.QualifiedName.QualifiedModuleName.ProjectPath,
+                        "DebugClass");
+                }
 
-        private static ClassModuleDeclaration DebugClassDeclaration(Declaration parentProject)
-        {
-            return new ClassModuleDeclaration(
-                new QualifiedMemberName(DebugClassName(parentProject), "DebugClass"), 
-                parentProject, 
-                "DebugClass", 
-                false, 
-                new List<IAnnotation>(), 
-                new Attributes(), 
-                true);
-        }
+            private static Declaration DebugObjectDeclaration(ProceduralModuleDeclaration debugModule)
+            {
 
-        private static QualifiedModuleName DebugClassName(Declaration parentProject)
-        {
-            return new QualifiedModuleName(
-                parentProject.QualifiedName.QualifiedModuleName.ProjectName,
-                parentProject.QualifiedName.QualifiedModuleName.ProjectPath,
-                "DebugClass");
-        }
+                return new Declaration(
+                    new QualifiedMemberName(debugModule.QualifiedName.QualifiedModuleName, "Debug"), 
+                    debugModule, 
+                    "Global", 
+                    "DebugClass", 
+                    null, 
+                    true, 
+                    false, 
+                    Accessibility.Global, 
+                    DeclarationType.Variable, 
+                    false, 
+                    null);
+            }
 
-        private static Declaration DebugObjectDeclaration(ProceduralModuleDeclaration debugModule)
-        {
-            return new Declaration(
-                new QualifiedMemberName(debugModule.QualifiedName.QualifiedModuleName, "Debug"), 
-                debugModule, 
-                "Global", 
-                "DebugClass", 
-                null, 
-                true, 
-                false, 
-                Accessibility.Global, 
-                DeclarationType.Variable, 
-                false, 
-                null,
-                false,
-                new List<IAnnotation>(),
-                new Attributes());
-        }
+            private static SubroutineDeclaration DebugAssertDeclaration(ClassModuleDeclaration debugClass)
+            {
+                return new SubroutineDeclaration(
+                    new QualifiedMemberName(debugClass.QualifiedName.QualifiedModuleName, "Assert"), 
+                    debugClass, 
+                    debugClass, 
+                    null, 
+                    Accessibility.Global, 
+                    null, 
+                    Selection.Home, 
+                    true, 
+                    null, 
+                    new Attributes());
+            }
 
-        private static SubroutineDeclaration DebugAssertDeclaration(ClassModuleDeclaration debugClass)
-        {
-            return new SubroutineDeclaration(
-                new QualifiedMemberName(debugClass.QualifiedName.QualifiedModuleName, "Assert"), 
-                debugClass, 
-                debugClass, 
-                null, 
-                Accessibility.Global, 
-                null, 
-                Selection.Home, 
-                false,
-                new List<IAnnotation>(), 
-                new Attributes());
-        }
+            private static SubroutineDeclaration DebugPrintDeclaration(ClassModuleDeclaration debugClass)
+            {
+                return new SubroutineDeclaration(
+                    new QualifiedMemberName(debugClass.QualifiedName.QualifiedModuleName, "Print"), 
+                    debugClass, 
+                    debugClass, 
+                    null, 
+                    Accessibility.Global, 
+                    null, Selection.Home, 
+                    true, 
+                    null, 
+                    new Attributes());
+            }
 
-        private static SubroutineDeclaration DebugPrintDeclaration(ClassModuleDeclaration debugClass)
-        {
-            return new SubroutineDeclaration(
-                new QualifiedMemberName(debugClass.QualifiedName.QualifiedModuleName, "Print"), 
-                debugClass, 
-                debugClass, 
-                null, 
-                Accessibility.Global, 
-                null, Selection.Home, 
-                false,
-                new List<IAnnotation>(), 
-                new Attributes());
-        }
     }
 }

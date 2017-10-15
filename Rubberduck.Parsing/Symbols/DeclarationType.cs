@@ -7,33 +7,63 @@ namespace Rubberduck.Parsing.Symbols
     [Flags]
     public enum DeclarationType
     {
+        [DebuggerDisplay("Project")]
         Project = 1 << 0,
+        [DebuggerDisplay("Module")]
         Module = 1 << 1,
+        [DebuggerDisplay("ProceduralModule")]
         ProceduralModule = 1 << 2 | Module,
+        [DebuggerDisplay("ClassModule")]
         ClassModule = 1 << 3 | Module,
+        [DebuggerDisplay("UserForm")]
         UserForm = 1 << 4 | ClassModule,
+        [DebuggerDisplay("Document")]
         Document = 1 << 5 | ClassModule,
+        [DebuggerDisplay("ModuleOption")]
+        ModuleOption = 1 << 6,
+        [DebuggerDisplay("Member")]
         Member = 1 << 7,
+        [DebuggerDisplay("Procedure")]
         Procedure = 1 << 8 | Member,
+        [DebuggerDisplay("Function")]
         Function = 1 << 9 | Member,
+        [DebuggerDisplay("Property")]
         Property = 1 << 10 | Member,
+        [DebuggerDisplay("PropertyGet")]
         PropertyGet = 1 << 11 | Property | Function,
+        [DebuggerDisplay("PropertyLet")]
         PropertyLet = 1 << 12 | Property | Procedure,
+        [DebuggerDisplay("PropertySet")]
         PropertySet = 1 << 13 | Property | Procedure,
+        [DebuggerDisplay("Parameter")]
         Parameter = 1 << 14,
+        [DebuggerDisplay("Variable")]
         Variable = 1 << 15,
+        [DebuggerDisplay("Control")]
         Control = 1 << 16 | Variable,
+        [DebuggerDisplay("Constant")]
         Constant = 1 << 17,
+        [DebuggerDisplay("Enumeration")]
         Enumeration = 1 << 18,
+        [DebuggerDisplay("EnumerationMember")]
         EnumerationMember = 1 << 19,
+        [DebuggerDisplay("Event")]
         Event = 1 << 20,
+        [DebuggerDisplay("UserDefinedType")]
         UserDefinedType = 1 << 21,
+        [DebuggerDisplay("UserDefinedTypeMember")]
         UserDefinedTypeMember = 1 << 22,
+        [DebuggerDisplay("LibraryFunction")]
         LibraryFunction = 1 << 23 | Function,
+        [DebuggerDisplay("LibraryProcedure")]
         LibraryProcedure = 1 << 24 | Procedure,
+        [DebuggerDisplay("LineLabel")]
         LineLabel = 1 << 25,
+        [DebuggerDisplay("UnresolvedMember")]
         UnresolvedMember = 1 << 26,
+        [DebuggerDisplay("BracketedExpression")]
         BracketedExpression = 1 << 27,
+        [DebuggerDisplay("ComAlias")]
         ComAlias = 1 << 28
     }
 
