@@ -9,8 +9,8 @@ skip_commits:
   - License.rtf
 branches:
   only:
-  - master
-  - next
+    - master
+    - next
 skip_tags: true
 
 image: Visual Studio 2017
@@ -21,10 +21,10 @@ install:
 init:
   - git config --global core.autocrlf true
 before_build:
-- choco install innosetup
-- choco install opencover.portable
-- choco install codecov
-- nuget restore
+  - choco install innosetup
+  - choco install opencover.portable
+  - choco install codecov
+  - nuget restore
 build:
   verbosity: minimal
 assembly_info:
@@ -34,7 +34,7 @@ assembly_info:
 hosts:
   api.nuget.org: 93.184.221.200
 before_package:
-- cmd: copy Rubberduck.Inspections\bin\Release\Rubberduck.Inspections.dll RetailCoder.VBE\bin\Release\Rubberduck.Inspections.dll
+  cmd: copy Rubberduck.Inspections\bin\Release\Rubberduck.Inspections.dll RetailCoder.VBE\bin\Release\Rubberduck.Inspections.dll
 
 for:
 - branches:
@@ -51,34 +51,34 @@ for:
     - cmd: move Installers\Rubberduck.Setup.exe Installers\Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%.exe
     
 test_script:
-- OpenCover.Console.exe -register:user -target:"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\MSTest.exe" -targetargs:"/testcontainer:"".\RubberduckTests\bin\Release\RubberduckTests.dll" -output:".\Rubberduck_Coverage.xml"
-- codecov -f "Rubberduck_Coverage.xml"
+  - OpenCover.Console.exe -register:user -target:"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\MSTest.exe" -targetargs:"/testcontainer:"".\RubberduckTests\bin\Release\RubberduckTests.dll" -output:".\Rubberduck_Coverage.xml"
+  - codecov -f "Rubberduck_Coverage.xml"
 artifacts:
-- path: Installers\Rubberduck.Setup.*.exe
+  path: Installers\Rubberduck.Setup.*.exe
   name: Rubberduck
 deploy:
-- provider: GitHub
-  tag: Rubberduck v$(appveyor_build_version)
-  release: Rubberduck v$(appveyor_build_version)
-  description: AppVeyor build on [master] - https://ci.appveyor.com/project/retailcoder/rubberduck/build/$(appveyor_build_version)
-  auth_token:
-    secure: oh0SRnZVt0ABeWqFr7ut5TZkxFJjHmS/DZnJnp2HErQTCmX3O8RASJH3ZiYl11gz
-  artifact: Installers\Rubberduck.Setup.$(appveyor_build_version).exe
-  draft: true
-  prerelease: false
-  on:
-    branch: master
-- provider: GitHub
-  tag: Rubberduck v$(appveyor_build_version)
-  release: Rubberduck v$(appveyor_build_version)-pre
-  description: AppVeyor build on [next] - https://ci.appveyor.com/project/retailcoder/rubberduck/build/$(appveyor_build_version)
-  auth_token:
-    secure: oh0SRnZVt0ABeWqFr7ut5TZkxFJjHmS/DZnJnp2HErQTCmX3O8RASJH3ZiYl11gz
-  artifact: Installers\Rubberduck.Setup.$(appveyor_build_version)-pre.exe
-  draft: false
-  prerelease: true
-  on:
-    branch: next
+  - provider: GitHub
+    tag: Rubberduck v$(appveyor_build_version)
+    release: Rubberduck v$(appveyor_build_version)
+    description: AppVeyor build on [master] - https://ci.appveyor.com/project/retailcoder/rubberduck/build/$(appveyor_build_version)
+    auth_token:
+      secure: oh0SRnZVt0ABeWqFr7ut5TZkxFJjHmS/DZnJnp2HErQTCmX3O8RASJH3ZiYl11gz
+    artifact: Installers\Rubberduck.Setup.$(appveyor_build_version).exe
+    draft: true
+    prerelease: false
+    on:
+      branch: master
+  - provider: GitHub
+    tag: Rubberduck v$(appveyor_build_version)
+    release: Rubberduck v$(appveyor_build_version)-pre
+    description: AppVeyor build on [next] - https://ci.appveyor.com/project/retailcoder/rubberduck/build/$(appveyor_build_version)
+    auth_token:
+      secure: oh0SRnZVt0ABeWqFr7ut5TZkxFJjHmS/DZnJnp2HErQTCmX3O8RASJH3ZiYl11gz
+    artifact: Installers\Rubberduck.Setup.$(appveyor_build_version)-pre.exe
+    draft: false
+    prerelease: true
+    on:
+      branch: next
 notifications:
 - provider: Webhook
   url: http://stats.zomis.net/GithubHookSEChatService/hooks/github/payload?roomId=14929
