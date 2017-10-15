@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using NLog;
@@ -21,6 +22,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using System.Windows;
 
 // ReSharper disable CanBeReplacedWithTryCastAndCheckForNull
+// ReSharper disable ExplicitCallerInfoArgument
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
@@ -99,39 +101,32 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             SetNameSortCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
             {
-                if ((bool)param == true)
+                if ((bool)param)
                 {
                     SortByName = (bool)param;
                     SortByCodeOrder = !(bool)param;
                 }
-            }, param =>
-            {
-                return SortByName ? false : true;
-            });
+            }, param => !SortByName);
 
             SetCodeOrderSortCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
             {
-                if ((bool)param == true)
+                if ((bool)param)
                 {
                     SortByCodeOrder = (bool)param;
                     SortByName = !(bool)param;
-                };
-            }, param => 
-            {
-                return SortByCodeOrder ? false : true;
-            });
+                }
+            }, param => !SortByCodeOrder);
         }
 
         private CodeExplorerItemViewModel _selectedItem;
         public CodeExplorerItemViewModel SelectedItem
         {
-            get { return _selectedItem; }
+            get => _selectedItem;
             set
             {
                 _selectedItem = value;
                 OnPropertyChanged();
 
-                // ReSharper disable ExplicitCallerInfoArgument
                 OnPropertyChanged("CanExecuteIndenterCommand");
                 OnPropertyChanged("CanExecuteRenameCommand");
                 OnPropertyChanged("CanExecuteFindAllReferencesCommand");
@@ -139,14 +134,12 @@ namespace Rubberduck.Navigation.CodeExplorer
                 OnPropertyChanged("ExportAllVisibility");
                 OnPropertyChanged("PanelTitle");
                 OnPropertyChanged("Description");
-
-                // ReSharper restore ExplicitCallerInfoArgument
             }
         }
 
         public bool SortByName
         {
-            get { return _windowSettings.CodeExplorer_SortByName; }
+            get => _windowSettings.CodeExplorer_SortByName;
             set
             {
                 if (_windowSettings.CodeExplorer_SortByName == value)
@@ -166,7 +159,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public bool SortByCodeOrder
         {
-            get { return _windowSettings.CodeExplorer_SortByCodeOrder; }
+            get => _windowSettings.CodeExplorer_SortByCodeOrder;
             set
             {
                 if (_windowSettings.CodeExplorer_SortByCodeOrder == value)
@@ -192,7 +185,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public bool GroupByType
         {
-            get { return _windowSettings.CodeExplorer_GroupByType; }
+            get => _windowSettings.CodeExplorer_GroupByType;
             set
             {
                 if (_windowSettings.CodeExplorer_GroupByType != value)
@@ -207,10 +200,22 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
+        private bool _canSearch;
+
+        public bool CanSearch
+        {
+            get => _canSearch;
+            set
+            {
+                _canSearch = value;
+                OnPropertyChanged();
+            }
+        }
+
         private bool _isBusy;
         public bool IsBusy
         {
-            get { return _isBusy; }
+            get => _isBusy;
             set
             {
                 _isBusy = value;
@@ -277,15 +282,17 @@ namespace Rubberduck.Navigation.CodeExplorer
         private ObservableCollection<CodeExplorerItemViewModel> _projects;
         public ObservableCollection<CodeExplorerItemViewModel> Projects
         {
-            get { return _projects; }
+            get => _projects;
             set
             {
                 ReorderChildNodes(value);
                 _projects = new ObservableCollection<CodeExplorerItemViewModel>(value.OrderBy(o => o.NameWithSignature));
-                
+                CanSearch = _projects.Any();
+
                 OnPropertyChanged();
                 // Once a Project has been set, show the TreeView
                 OnPropertyChanged("TreeViewVisibility");
+                OnPropertyChanged("CanSearch");
             }
         }
 
