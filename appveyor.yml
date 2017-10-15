@@ -3,6 +3,7 @@ for:
 -
   branches:
     only:
+      - master
       - next
   version: 2.1.0.{build}
   after_test:
