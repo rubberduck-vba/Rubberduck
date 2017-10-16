@@ -52,8 +52,8 @@ for:
     
 test_script:
   - OpenCover.Console.exe -register:user 
-      -target:"vstest.console" 
-      -targetargs:"/Logger:Appveyor .\RubberduckTests\bin\Release\RubberduckTests.dll /Enablecodecoverage /Platform:x64 /InIsolation" 
+      -target:"F:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe" 
+      -targetargs:".\RubberduckTests\bin\Release\RubberduckTests.dll /Logger:Appveyor /Enablecodecoverage /Platform:x64 /InIsolation" 
       -output:".\Rubberduck_Coverage.xml"
   - codecov -f "Rubberduck_Coverage.xml"
 artifacts:
