@@ -120,6 +120,23 @@ namespace Rubberduck.Parsing.Symbols
             return GetName(context.identifier());
         }
 
+        public static string GetName(VBAParser.UdtDeclarationContext context, out Interval tokenInterval)
+        {
+            return GetName(context.untypedIdentifier(), out tokenInterval);
+        }
+
+        public static string GetName(VBAParser.UdtMemberContext context, out Interval tokenInterval)
+        {
+            var untypedIdentifier = context.untypedNameMemberDeclaration()?.untypedIdentifier();
+            if (untypedIdentifier != null)
+            {
+                return GetName(untypedIdentifier, out tokenInterval);
+            }
+
+            var unrestrictedIdentifier = context.reservedNameMemberDeclaration().unrestrictedIdentifier();
+            return GetName(unrestrictedIdentifier, out tokenInterval);
+        }
+
         public static string GetName(VBAParser.EnumerationStmt_ConstantContext context, out Interval tokenInterval)
         {
             var nameContext = context.identifier();
