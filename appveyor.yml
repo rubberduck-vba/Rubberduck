@@ -26,10 +26,7 @@ skip_tags: true
 # build-matrix: all Release CPUs on VS2017
 image: Visual Studio 2017
 configuration: Release
-platform:
-  - Any CPU
-  - x64
-  - x86
+platform: Any CPU
 
 # cache the nuget packages unless something changed there
 cache:
