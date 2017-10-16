@@ -51,7 +51,10 @@ for:
     - cmd: move Installers\Rubberduck.Setup.exe Installers\Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%.exe
     
 test_script:
-  - OpenCover.Console.exe -register:user -target:"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\MSTest.exe" -targetargs:"/testcontainer:"".\RubberduckTests\bin\Release\RubberduckTests.dll" -output:".\Rubberduck_Coverage.xml"
+  - OpenCover.Console.exe -register:user 
+      -target:"$(vstest.console)" 
+      -targetargs:"/Logger:Appveyor .\RubberduckTests\bin\Release\RubberduckTests.dll /Enablecodecoverage /Platform:x64 /InIsolation" 
+      -output:".\Rubberduck_Coverage.xml"
   - codecov -f "Rubberduck_Coverage.xml"
 artifacts:
   path: Installers\Rubberduck.Setup.*.exe
