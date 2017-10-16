@@ -52,7 +52,7 @@ for:
     
 test_script:
   - OpenCover.Console.exe -register:user 
-      -target:"$(vstest.console)" 
+      -target:"vstest.console" 
       -targetargs:"/Logger:Appveyor .\RubberduckTests\bin\Release\RubberduckTests.dll /Enablecodecoverage /Platform:x64 /InIsolation" 
       -output:".\Rubberduck_Coverage.xml"
   - codecov -f "Rubberduck_Coverage.xml"
