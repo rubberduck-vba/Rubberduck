@@ -15,7 +15,7 @@ namespace RubberduckTests.Inspections
         public void EmptyForLoopBlock_InspectionType()
         {
             var inspection = new EmptyForLoopBlockInspection(null);
-            var expectedInspection = CodeInspectionType.CodeQualityIssues;
+            var expectedInspection = CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
             Assert.AreEqual(expectedInspection, inspection.InspectionType);
         }

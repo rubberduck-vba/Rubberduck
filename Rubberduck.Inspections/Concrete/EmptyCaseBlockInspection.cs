@@ -19,7 +19,7 @@ namespace Rubberduck.Inspections.Concrete
         public override IInspectionListener Listener { get; } =
             new EmptyCaseBlockListener();
 
-        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
+        public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
