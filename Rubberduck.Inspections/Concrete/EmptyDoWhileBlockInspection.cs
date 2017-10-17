@@ -16,7 +16,7 @@ namespace Rubberduck.Inspections.Concrete
         public EmptyDoWhileBlockInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Suggestion) { }
 
-        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
+        public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {

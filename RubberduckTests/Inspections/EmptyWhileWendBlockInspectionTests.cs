@@ -15,7 +15,7 @@ namespace RubberduckTests.Inspections
         public void EmptyWhileWendBlock_InspectionType()
         {
             var inspection = new EmptyWhileWendBlockInspection(null);
-            var expectedInspection = CodeInspectionType.CodeQualityIssues;
+            var expectedInspection = CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
             Assert.AreEqual(expectedInspection, inspection.InspectionType);
         }
