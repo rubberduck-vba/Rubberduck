@@ -2106,4 +2106,20 @@ Would you like to import them to Rubberduck?</value>
   <data name="RubberduckMenu_Refresh" xml:space="preserve">
     <value>Refresh</value>
   </data>
+  <data name="ToDoExplorer_NumberOfIssuesFound_Plural" xml:space="preserve">
+    <value>Rubberduck TODO Items - {0}
+{1} items found.</value>
+    <comment>{0}=timestamp; {1}=number</comment>
+  </data>
+  <data name="ToDoExplorer_NumberOfIssuesFound_Singular" xml:space="preserve">
+    <value>Rubberduck TODO Items - {0}
+{1} items found.</value>
+    <comment>{0}=timestamp; {1}=number</comment>
+  </data>
+  <data name="ToDoExplorerToDoItemFormat" xml:space="preserve">
+    <value>{0}: {1} - {2}.{3} line {4}.</value>
+  </data>
+  <data name="ToDoExplorer_CopyToolTip" xml:space="preserve">
+    <value>Copy to clipboard</value>
+  </data>
 </root>
