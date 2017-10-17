@@ -67,7 +67,7 @@ namespace Rubberduck.Root
 
         //Guidelines and words of caution:
 
-        //1) Please always specify the Lisfestyle. The default is singleton, which can be confusing.
+        //1) Please always specify the Lifestyle. The default is singleton, which can be confusing.
         //2) Before adding conventions, please read the Castle Windsor online documentation; there are a few gotchas.
         //3) The first binding wins; all further bindings are only used in multibinding, unless named.
         //4) The standard name of a binding is the full type name of the implementing class.
@@ -136,7 +136,7 @@ namespace Rubberduck.Root
 
             var assembliesToRegister = AssembliesToRegister().ToArray();
 
-            RegisterConfiguartion(container, assembliesToRegister);
+            RegisterConfiguration(container, assembliesToRegister);
 
             RegisterParseTreeInspections(container, assembliesToRegister);
             RegisterInspections(container, assembliesToRegister);
@@ -149,7 +149,7 @@ namespace Rubberduck.Root
         }
 
         // note: settings namespace classes are injected in singleton scope
-        private void RegisterConfiguartion(IWindsorContainer container, Assembly[] assembliesToRegister)
+        private void RegisterConfiguration(IWindsorContainer container, Assembly[] assembliesToRegister)
         {
             foreach (var assembly in assembliesToRegister)
             {
@@ -457,7 +457,9 @@ namespace Rubberduck.Root
             return new Type[]
             {
                 typeof(CodeExplorerCommandMenuItem),
-                //typeof(RegexSearchReplaceCommandMenuItem),
+#if DEBUG
+                typeof(RegexSearchReplaceCommandMenuItem),
+#endif
                 typeof(FindSymbolCommandMenuItem),
                 typeof(FindAllReferencesCommandMenuItem),
                 typeof(FindAllImplementationsCommandMenuItem)
