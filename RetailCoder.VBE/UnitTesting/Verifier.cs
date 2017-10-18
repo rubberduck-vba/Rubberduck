@@ -142,7 +142,7 @@ namespace Rubberduck.UnitTesting
 
         public void AtMostOnce(string message = "")
         {
-            if (Asserted || InvocationCount > 1)
+            if (Asserted || InvocationCount <= 1)
             {
                 return;
             }
@@ -162,7 +162,7 @@ namespace Rubberduck.UnitTesting
 
         public void Exactly(int invocations, string message = "")
         {
-            if (Asserted || InvocationCount != invocations)
+            if (Asserted || InvocationCount == invocations)
             {
                 return;
             }
@@ -172,7 +172,7 @@ namespace Rubberduck.UnitTesting
 
         public void Never(string message = "")
         {
-            if (Asserted || InvocationCount > 0)
+            if (Asserted || InvocationCount == 0)
             {
                 return;
             }
