@@ -859,12 +859,12 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>Ersetze If/Else mit einer einfachen Zuordnung </value>
   </data>
   <data name="BooleanAssignedInIfElseInspectionResultFormat" xml:space="preserve">
-    <value>Boolean Ausdruck '{0}' wurde optional zugewiesen </value>
+    <value>Boolean Ausdruck '{0}' wurde in einer trivialen If/Else-Verzweigung zugewiesen</value>
   </data>
   <data name="BooleanAssignedInIfElseInspectionName" xml:space="preserve">
-    <value>Boolean Ausdruck als optionale Zuordnung</value>
+    <value>Boolean Ausdruck in einer trivialen If/Else-Verzweigung zugewiesen</value>
   </data>
   <data name="BooleanAssignedInIfElseInspectionMeta" xml:space="preserve">
-    <value>Ein Element wurde mit True/False in verschiedenen Zweigen einer If-Bedinung ohne weitere optionale Bedingungen zu gewiesen. Benutze statt dessen die Bedingung direkt mit dem Element. </value>
+    <value>Ein Element wurde mit True/False in verschiedenen Zweigen einer If-Bedingung ohne weitere optionale Bedingungen zugewiesen. Benutze stattdessen die Bedingung direkt mit dem Element. </value>
   </data>
 </root>
