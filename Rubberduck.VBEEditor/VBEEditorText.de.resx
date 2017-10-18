@@ -104,6 +104,6 @@
     <value>Z{0}S{1} - Z{2}S{3}</value>
   </data>
   <data name="NonexistentComponentErrorText" xml:space="preserve">
-    <value>Dokumenttypenkomponente {0} existiert nicht. Es kann kein Code vom Repository importiert werden.</value>
+    <value>Dokumenttypenkomponente {0} existiert nicht. Es kann kein Code aus dem Repository importiert werden.</value>
   </data>
 </root>
