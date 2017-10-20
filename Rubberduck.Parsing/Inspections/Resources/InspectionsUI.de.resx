@@ -133,7 +133,7 @@
     <value>Konstante wird nicht verwendet</value>
   </data>
   <data name="DefaultProjectNameInspectionMeta" xml:space="preserve">
-    <value>Erwäge dem VBAProjekt einen Namen zu egeben.</value>
+    <value>Erwäge dem VBA-Projekt einen Namen zu egeben.</value>
   </data>
   <data name="DefaultProjectNameInspectionName" xml:space="preserve">
     <value>Das Projekt hat den Standard-Projektnamen.</value>
@@ -418,7 +418,7 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>Konvertiere Funktion zu Prozedur</value>
   </data>
   <data name="DeclareAsExplicitVariantQuickFix" xml:space="preserve">
-    <value>Deklariere explizit als 'Variant'</value>
+    <value>Deklariere als explizit 'Variant'</value>
   </data>
   <data name="ImplicitByRefParameterQuickFix" xml:space="preserve">
     <value>Parameter explizit als Referenz angeben</value>
@@ -778,7 +778,7 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>Modul oder Element '{0}' hat eine '{1}' Annotation, aber das zugehörige Attribut fehlt.</value>
   </data>
   <data name="EmptyCaseBlockInspectionResultFormat">
-    <value>Case block has no executable statements</value>
+    <value>'Case' Block enthält keine ausführbaren Anweisungen</value>
   </data>
   <data name="IntegerDataTypeInspectionName">
     <value>Verwendung von 16-bit Ganzzahl</value>
@@ -787,7 +787,7 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>A Loop block should have executable statements</value>
   </data>
   <data name="EmptyCaseBlockInspectionName">
-    <value>Empty Case block</value>
+    <value>Leerer 'Case' Block</value>
   </data>
   <data name="ShadowedDeclarationInspectionMeta">
     <value>Zwei Deklarationen sind aktiv und haben denselben Namen. Dies bedeutet, dass nur eine von ihnen zur Verwendung verfügbar ist.</value>
@@ -802,7 +802,6 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>'Error' durch 'Err.Raise' ersetzen</value>
   </data>
   <data name="EmptyCaseBlockInspectionMeta">
-    <value>A Case block should have executable statements</value>
   </data>
   <data name="StopKeywordInspectionResultFormat">
     <value>Stop keyword detected</value>
@@ -875,5 +874,17 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
   </data>
   <data name="StopKeywordInspectionName">
     <value>Stop keyword</value>
+  </data>
+  <data name="ReplaceIfElseWithConditionalStatementQuickFix">
+    <value>Replace If/Else with single assignment</value>
+  </data>
+  <data name="BooleanAssignedInIfElseInspectionResultFormat">
+    <value>Boolsche Zeichenkette '{0}' wird in Bedingung zugewiesen</value>
+  </data>
+  <data name="BooleanAssignedInIfElseInspectionMeta">
+    <value>Ein Mitglied wird in verschiedenen Zweigen einer if-Anweisung mit True / False zugewiesen, wobei keine anderen Anweisungen in der Bedingung enthalten sind. Verwenden Sie die Bedingung stattdessen direkt für das Mitglied.</value>
+  </data>
+  <data name="BooleanAssignedInIfElseInspectionName">
+    <value>Boolsche Zeichenkette wird in Bedingung zugewiesen</value>
   </data>
 </root>
