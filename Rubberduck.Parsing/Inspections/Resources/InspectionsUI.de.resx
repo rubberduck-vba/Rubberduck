@@ -802,6 +802,7 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>'Error' durch 'Err.Raise' ersetzen</value>
   </data>
   <data name="EmptyCaseBlockInspectionMeta">
+    <value>Ein leerer 'Case' Block ohne ausführbare Anweisungen lässt andere Entwickler über die Absicht des Codes im unklaren. Vermeiden Sie das Schreiben von unnötigem Code.</value>
   </data>
   <data name="StopKeywordInspectionResultFormat">
     <value>Stop keyword detected</value>
