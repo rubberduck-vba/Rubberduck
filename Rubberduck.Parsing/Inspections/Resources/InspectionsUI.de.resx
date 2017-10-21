@@ -181,7 +181,7 @@
     <value>Implizierte öffentliche Methode</value>
   </data>
   <data name="ImplicitVariantReturnTypeInspectionMeta" xml:space="preserve">
-    <value>Methoden mit einem Rückgabewet geben, wenn nicht nanders angegeben, implizit 'Variant' zurück. Überlege ob es nicht besser ist, den Rückgabewert explizit als 'Variant' zu definieren, wenn der Typ des Rückgabewertes nicht bekannt ist.</value>
+    <value>Methoden mit einem Rückgabewert geben, wenn nicht anders angegeben, implizit 'Variant' zurück. Überlege, ob es nicht besser ist, den Rückgabewert explizit als 'Variant' zu definieren, wenn der Typ des Rückgabewertes nicht bekannt ist.</value>
   </data>
   <data name="ImplicitVariantReturnTypeInspectionName" xml:space="preserve">
     <value>Rückgabewert der Methode ist implizit 'Variant'</value>
