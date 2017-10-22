@@ -114,7 +114,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
             var tempFile = ExportToTempFile();
             var tempFilePath = Directory.GetParent(tempFile).FullName;
-            var contents = File.ReadAllLines(tempFile);
+            var contents = File.ReadAllLines(tempFile, System.Text.Encoding.UTF7);
             var nonAttributeLines = contents.TakeWhile(line => !line.StartsWith("Attribute")).Count();
             var attributeLines = contents.Skip(nonAttributeLines).TakeWhile(line => line.StartsWith("Attribute")).Count();
             var declarationsStartLine = nonAttributeLines + attributeLines + 1;
