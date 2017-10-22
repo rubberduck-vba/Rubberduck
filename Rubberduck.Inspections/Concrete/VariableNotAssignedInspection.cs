@@ -15,11 +15,9 @@ namespace Rubberduck.Inspections.Concrete
         public VariableNotAssignedInspection(RubberduckParserState state)
             : base(state) { }
 
-        public override Type Type => typeof(VariableNotAssignedInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             // ignore arrays. todo: ArrayIndicesNotAccessedInspection
             var arrays = State.DeclarationFinder.UserDeclarations(DeclarationType.Variable).Where(declaration => declaration.IsArray);

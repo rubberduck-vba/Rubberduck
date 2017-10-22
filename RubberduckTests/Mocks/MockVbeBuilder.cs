@@ -6,6 +6,7 @@ using Moq;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 
 namespace RubberduckTests.Mocks
 {
@@ -41,7 +42,13 @@ namespace RubberduckTests.Mocks
         private readonly ICollection<IVBProject> _projects = new List<IVBProject>();
         
         private Mock<ICodePanes> _vbCodePanes;
-        private readonly ICollection<ICodePane> _codePanes = new List<ICodePane>(); 
+        private readonly ICollection<ICodePane> _codePanes = new List<ICodePane>();
+
+        private const int MenuBar = 1;
+        private const int CodeWindow = 9;
+        private const int ProjectWindow = 14;
+        private const int MsForms = 17;
+        private const int MsFormsControl = 18;
 
         public MockVbeBuilder()
         {
@@ -180,7 +187,7 @@ namespace RubberduckTests.Mocks
             vbe.SetupProperty(m => m.ActiveCodePane);
             vbe.SetupProperty(m => m.ActiveVBProject);
             
-            vbe.SetupGet(m => m.SelectedVBComponent).Returns(() => vbe.Object.ActiveCodePane.CodeModule.Parent);
+            vbe.SetupGet(m => m.SelectedVBComponent).Returns(() => vbe.Object.ActiveCodePane?.CodeModule?.Parent);
             vbe.SetupGet(m => m.ActiveWindow).Returns(() => vbe.Object.ActiveCodePane.Window);
 
             var mainWindow = new Mock<IWindow>();
@@ -193,8 +200,52 @@ namespace RubberduckTests.Mocks
 
             _vbCodePanes = CreateCodePanesMock();
             vbe.SetupGet(m => m.CodePanes).Returns(() => _vbCodePanes.Object);
+
+            var commandBars = DummyCommandBars();
+            vbe.SetupGet(m => m.CommandBars).Returns(() => commandBars);
             
             return vbe;
+        }
+
+        private static ICommandBars DummyCommandBars()
+        {
+            var commandBars = new Mock<ICommandBars>(); 
+ 
+            var dummyCommandBar = DummyCommandBar();
+
+            commandBars.SetupGet(m => m[MenuBar]).Returns(dummyCommandBar);
+            commandBars.SetupGet(m => m[CodeWindow]).Returns(dummyCommandBar);
+            commandBars.SetupGet(m => m[ProjectWindow]).Returns(dummyCommandBar);
+            commandBars.SetupGet(m => m[MsForms]).Returns(dummyCommandBar);
+            commandBars.SetupGet(m => m[MsFormsControl]).Returns(dummyCommandBar);
+
+            return commandBars.Object;
+        }
+
+        private static ICommandBar DummyCommandBar()
+        {
+            var commandBar = new Mock<ICommandBar>();
+
+            var commandBarControlCollection = new List<ICommandBarControl>();
+            var commandBarControls = CommandBarControlsFromCollection(commandBarControlCollection);
+
+            commandBar.SetupGet(m => m.Controls).Returns(commandBarControls.Object);
+
+            return commandBar.Object;
+        }
+
+        private static Mock<ICommandBarControls> CommandBarControlsFromCollection(IList<ICommandBarControl> commandBarControlCollection)
+        {
+            var commandBarControls = new Mock<ICommandBarControls>();
+
+            commandBarControls.Setup(m => m.GetEnumerator()).Returns(() => commandBarControlCollection.GetEnumerator());
+            commandBarControls.As<IEnumerable>().Setup(m => m.GetEnumerator())
+                .Returns(() => commandBarControlCollection.GetEnumerator());
+
+            commandBarControls.Setup(m => m[It.IsAny<int>()])
+                .Returns<int>(value => commandBarControlCollection.ElementAt(value));
+            commandBarControls.SetupGet(m => m.Count).Returns(() => commandBarControlCollection.Count);
+            return commandBarControls;
         }
 
         private Mock<IVBProjects> CreateProjectsMock()

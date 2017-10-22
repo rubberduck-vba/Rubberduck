@@ -142,6 +142,33 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A member is assigned True/False in different branches of an if statement with no other statements in the conditional. Use the condition directly to the member instead..
+        /// </summary>
+        public static string BooleanAssignedInIfElseInspectionMeta {
+            get {
+                return ResourceManager.GetString("BooleanAssignedInIfElseInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Boolean literal assignment in conditional.
+        /// </summary>
+        public static string BooleanAssignedInIfElseInspectionName {
+            get {
+                return ResourceManager.GetString("BooleanAssignedInIfElseInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Boolean literal &apos;{0}&apos; assigned in conditional.
+        /// </summary>
+        public static string BooleanAssignedInIfElseInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("BooleanAssignedInIfElseInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Replace &apos;Dim&apos; with &apos;Private&apos;.
         /// </summary>
         public static string ChangeDimToPrivateQuickFix {
@@ -313,7 +340,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A Case block should have executable statements.
+        ///   Looks up a localized string similar to An empty &apos;Case&apos; block without any executable statements, leaves a maintainer wondering about the intent of the code. Avoid writing code that doesn&apos;t need to be written..
         /// </summary>
         public static string EmptyCaseBlockInspectionMeta {
             get {
@@ -322,7 +349,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Empty Case block.
+        ///   Looks up a localized string similar to Empty &apos;Case&apos; block.
         /// </summary>
         public static string EmptyCaseBlockInspectionName {
             get {
@@ -331,7 +358,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Case block has no executable statements.
+        ///   Looks up a localized string similar to &apos;Case&apos; block contains no executable statements.
         /// </summary>
         public static string EmptyCaseBlockInspectionResultFormat {
             get {
@@ -340,7 +367,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A Loop block should have executable statements.
+        ///   Looks up a localized string similar to An empty &apos;Case&apos; block without any executable statements, leaves a maintainer wondering about the intent of the code. Avoid writing code that doesn&apos;t need to be written..
         /// </summary>
         public static string EmptyDoWhileBlockInspectionMeta {
             get {
@@ -349,7 +376,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Empty Do-While Loop.
+        ///   Looks up a localized string similar to Empty &apos;Do...While&apos; Loop.
         /// </summary>
         public static string EmptyDoWhileBlockInspectionName {
             get {
@@ -358,7 +385,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Do-While Loop has no executable statements.
+        ///   Looks up a localized string similar to An empty &apos;Do...While&apos; loop without any executable statements, leaves a maintainer wondering about the intent of the code. Avoid writing code that doesn&apos;t need to be written..
         /// </summary>
         public static string EmptyDoWhileBlockInspectionResultFormat {
             get {
@@ -367,7 +394,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An Else block should have executable statements.
+        ///   Looks up a localized string similar to An empty &apos;Else&apos; loop without any executable statements, leaves a maintainer wondering about the intent of the code. Avoid writing code that doesn&apos;t need to be written..
         /// </summary>
         public static string EmptyElseBlockInspectionMeta {
             get {
@@ -376,7 +403,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Empty Else block.
+        ///   Looks up a localized string similar to Empty &apos;Else&apos; block.
         /// </summary>
         public static string EmptyElseBlockInspectionName {
             get {
@@ -385,7 +412,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Else block has no executable statements.
+        ///   Looks up a localized string similar to &apos;Else&apos; block contains no executable statements.
         /// </summary>
         public static string EmptyElseBlockInspectionResultFormat {
             get {
@@ -394,7 +421,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A Loop block should have executable statements.
+        ///   Looks up a localized string similar to An empty &apos;Loop&apos; block without any executable statements, leaves a maintainer wondering about the intent of the code. Avoid writing code that doesn&apos;t need to be written..
         /// </summary>
         public static string EmptyForEachBlockInspectionMeta {
             get {
@@ -403,7 +430,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Empty For-Each Loop.
+        ///   Looks up a localized string similar to Empty &apos;For Each...Next&apos; Loop.
         /// </summary>
         public static string EmptyForEachBlockInspectionName {
             get {
@@ -412,7 +439,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to For-Each Loop has no executable statements.
+        ///   Looks up a localized string similar to &apos;For-Each loop contains no executable statements.
         /// </summary>
         public static string EmptyForEachBlockInspectionResultFormat {
             get {
@@ -421,7 +448,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A Loop block should have executable statements.
+        ///   Looks up a localized string similar to An empty &apos;For...Next&apos; loop without any executable statements, leaves a maintainer wondering about the intent of the code. Avoid writing code that doesn&apos;t need to be written..
         /// </summary>
         public static string EmptyForLoopBlockInspectionMeta {
             get {
@@ -430,7 +457,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Empty For Loop.
+        ///   Looks up a localized string similar to Empty &apos;For...Next&apos; Loop.
         /// </summary>
         public static string EmptyForLoopBlockInspectionName {
             get {
@@ -439,7 +466,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to For Loop has no executable statements.
+        ///   Looks up a localized string similar to &apos;For...Next&apos; loop contains no executable statements..
         /// </summary>
         public static string EmptyForLoopBlockInspectionResultFormat {
             get {
@@ -448,7 +475,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An If block should have executable statements.
+        ///   Looks up a localized string similar to An empty conditional branch without any executable statements, leaves a maintainer wondering about the intent of the code. Avoid writing code that doesn&apos;t need to be written..
         /// </summary>
         public static string EmptyIfBlockInspectionMeta {
             get {
@@ -457,7 +484,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Empty If block.
+        ///   Looks up a localized string similar to Empty conditional branch.
         /// </summary>
         public static string EmptyIfBlockInspectionName {
             get {
@@ -466,7 +493,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If block has no executable statements.
+        ///   Looks up a localized string similar to &apos;If&apos; block contains no executable statements..
         /// </summary>
         public static string EmptyIfBlockInspectionResultFormat {
             get {
@@ -520,7 +547,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A Loop block should have executable statements.
+        ///   Looks up a localized string similar to An empty &apos;Loop&apos; block without any executable statements, leaves a maintainer wondering about the intent of the code. Avoid writing code that doesn&apos;t need to be written..
         /// </summary>
         public static string EmptyWhileWendBlockInspectionMeta {
             get {
@@ -529,7 +556,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Empty While-Wend block.
+        ///   Looks up a localized string similar to Empty &apos;While...Wend&apos; loop.
         /// </summary>
         public static string EmptyWhileWendBlockInspectionName {
             get {
@@ -538,7 +565,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to While-Wend block has no executable statements.
+        ///   Looks up a localized string similar to &apos;While...Wend&apos; loop contains no executable statements..
         /// </summary>
         public static string EmptyWhileWendBlockInspectionResultFormat {
             get {
@@ -943,7 +970,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Change declaration type to Long.
+        ///   Looks up a localized string similar to Change type to &apos;Long&apos;.
         /// </summary>
         public static string IntegerDataTypeQuickFix {
             get {
@@ -970,7 +997,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rubberduck could not find a corresponding Resume or GoTo statement for a line label.  Consider removing it..
+        ///   Looks up a localized string similar to A line label that is never jumpted to (&apos;GoTo&apos;, &apos;Resume&apos;, ...), serves no purpose. Consider removing it..
         /// </summary>
         public static string LineLabelNotUsedInspectionMeta {
             get {
@@ -979,7 +1006,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Line label is not referred to.
+        ///   Looks up a localized string similar to Line label is not used.
         /// </summary>
         public static string LineLabelNotUsedInspectionName {
             get {
@@ -1078,7 +1105,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Module or member &apos;{0}&apos; has a &apos;{1}&apos; attribute, but no corresponding annotation..
+        ///   Looks up a localized string similar to Module or member &apos;{0}&apos; has a &apos;{1}&apos; attribute, but no corresponding annotation.
         /// </summary>
         public static string MissingAnnotationInspectionResultFormat {
             get {
@@ -1087,7 +1114,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A Rubberduck annotation is specified for a module or member, but the corresponding attribute isn&apos;t present. Module needs to be synchronized..
+        ///   Looks up a localized string similar to A Rubberduck annotation is specified for a module or member, but the corresponding attribute isn&apos;t present. Module attributes and annotations need to be synchronized..
         /// </summary>
         public static string MissingAttributeInspectionMeta {
             get {
@@ -1105,7 +1132,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Module or member &apos;{0}&apos; has a &apos;{1}&apos; annotation, but no corresponding attribute..
+        ///   Looks up a localized string similar to Module or member &apos;{0}&apos; has a &apos;{1}&apos; annotation, but no corresponding attribute.
         /// </summary>
         public static string MissingAttributeInspectionResultFormat {
             get {
@@ -1353,6 +1380,24 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         public static string ObsoleteCommentSyntaxInspectionResultFormat {
             get {
                 return ResourceManager.GetString("ObsoleteCommentSyntaxInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;Error&apos; statement only exists in the language to support legacy code that required it; prefer using &apos;Err.Raise&apos; instead..
+        /// </summary>
+        public static string ObsoleteErrorSyntaxInspectionMeta {
+            get {
+                return ResourceManager.GetString("ObsoleteErrorSyntaxInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A run-time error is raised using the obsolete &apos;Error&apos; statement.
+        /// </summary>
+        public static string ObsoleteErrorSyntaxInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("ObsoleteErrorSyntaxInspectionResultFormat", resourceCulture);
             }
         }
         
@@ -1726,7 +1771,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to By default, all parameters are passed by reference, so it is not necessary to include the ByRef modifier declaration.
+        ///   Looks up a localized string similar to By default, all parameters are passed by reference, so it is not necessary to include the &apos;ByRef&apos; modifier..
         /// </summary>
         public static string RedundantByRefModifierInspectionMeta {
             get {
@@ -1735,7 +1780,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Redundant ByRef modifier.
+        ///   Looks up a localized string similar to Redundant &apos;ByRef&apos; modifier.
         /// </summary>
         public static string RedundantByRefModifierInspectionName {
             get {
@@ -1753,7 +1798,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Remove redundant ByRef modifier.
+        ///   Looks up a localized string similar to Remove &apos;ByRef&apos; modifier.
         /// </summary>
         public static string RedundantByRefModifierQuickFix {
             get {
@@ -1780,7 +1825,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; has no effect..
+        ///   Looks up a localized string similar to &apos;{0}&apos; has no effect.
         /// </summary>
         public static string RedundantOptionInspectionResultFormat {
             get {
@@ -1798,7 +1843,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Remove empty Else block.
+        ///   Looks up a localized string similar to Remove empty &apos;Else&apos; block.
         /// </summary>
         public static string RemoveEmptyElseBlockQuickFix {
             get {
@@ -1834,7 +1879,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Remove usage of the &apos;stop&apos; keyword.
+        ///   Looks up a localized string similar to Remove usage of the &apos;Stop&apos; keyword.
         /// </summary>
         public static string RemoveStopKeywordQuickFix {
             get {
@@ -1893,6 +1938,24 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         public static string ReplaceCommentMarkerQuickFix {
             get {
                 return ResourceManager.GetString("ReplaceCommentMarkerQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replace If/Else with single assignment.
+        /// </summary>
+        public static string ReplaceIfElseWithConditionalStatementQuickFix {
+            get {
+                return ResourceManager.GetString("ReplaceIfElseWithConditionalStatementQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replace &apos;Error&apos; with &apos;Err.Raise&apos;.
+        /// </summary>
+        public static string ReplaceObsoleteErrorStatementQuickFix {
+            get {
+                return ResourceManager.GetString("ReplaceObsoleteErrorStatementQuickFix", resourceCulture);
             }
         }
         
@@ -1987,7 +2050,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The &apos;stop&apos; keyword halts execution and brings up the debugger. Avoid its usage..
+        ///   Looks up a localized string similar to The &apos;Stop&apos; keyword halts execution and brings up the debugger. Avoid its use in distributed code..
         /// </summary>
         public static string StopKeywordInspectionMeta {
             get {
@@ -1996,7 +2059,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Stop keyword.
+        ///   Looks up a localized string similar to &apos;Stop&apos; keyword.
         /// </summary>
         public static string StopKeywordInspectionName {
             get {
@@ -2005,7 +2068,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Stop keyword detected.
+        ///   Looks up a localized string similar to &apos;Stop&apos; keyword halts execution.
         /// </summary>
         public static string StopKeywordInspectionResultFormat {
             get {
@@ -2123,7 +2186,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Variable does not seem to be assigned. If Rubberduck is correct, the variable could probably be safely removed..
+        ///   Looks up a localized string similar to Variable is not assigned. If this isn&apos;t intended, there&apos;s probably a bug. Ignore this inspection result if the variable is assigned in another procedure via a ByRef parameter..
         /// </summary>
         public static string VariableNotAssignedInspectionMeta {
             get {

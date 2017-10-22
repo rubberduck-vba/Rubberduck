@@ -86,5 +86,15 @@ namespace Rubberduck.UnitTesting
         }
 
         #endregion
+
+        #region StubBase
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            ReturnValues.Clear();
+        }
+
+        #endregion
     }
 }

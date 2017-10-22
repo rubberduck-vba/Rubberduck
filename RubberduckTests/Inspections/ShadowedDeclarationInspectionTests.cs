@@ -223,7 +223,7 @@ End Property";
                 [ProceduralModuleName] = 1,
                 [ClassModuleName] = 0,
                 [UserFormName] = 1,
-                [DocumentName] = 1,
+                [DocumentName] = 0,
                 [ProcedureName] = 1,
                 [FunctionName] = 1,
                 [PropertyGetName] = 1,
@@ -575,7 +575,7 @@ End Property";
                 [ProceduralModuleName] = 1,
                 [ClassModuleName] = 0,
                 [UserFormName] = 1,
-                [DocumentName] = 1,
+                [DocumentName] = 0,
                 [ProcedureName] = 1,
                 [FunctionName] = 1,
                 [PropertyGetName] = 1,
@@ -837,7 +837,7 @@ End Property";
                 [ProceduralModuleName] = 1,
                 [ClassModuleName] = 0,
                 [UserFormName] = 1,
-                [DocumentName] = 1,
+                [DocumentName] = 0,
                 [ProcedureName] = 1,
                 [FunctionName] = 1,
                 [PropertyGetName] = 1,
@@ -1099,7 +1099,7 @@ End Property";
                 [ProceduralModuleName] = 1,
                 [ClassModuleName] = 0,
                 [UserFormName] = 1,
-                [DocumentName] = 1,
+                [DocumentName] = 0,
                 [ProcedureName] = 1,
                 [FunctionName] = 1,
                 [PropertyGetName] = 1,
@@ -1361,7 +1361,7 @@ End Property";
                 [ProceduralModuleName] = 1,
                 [ClassModuleName] = 0,
                 [UserFormName] = 1,
-                [DocumentName] = 1,
+                [DocumentName] = 0,
                 [ProcedureName] = 1,
                 [FunctionName] = 1,
                 [PropertyGetName] = 1,
@@ -1623,7 +1623,7 @@ End Property";
                 [ProceduralModuleName] = 1,
                 [ClassModuleName] = 0,
                 [UserFormName] = 1,
-                [DocumentName] = 1,
+                [DocumentName] = 0,
                 [ProcedureName] = 1,
                 [FunctionName] = 1,
                 [PropertyGetName] = 1,
@@ -2072,7 +2072,7 @@ End Property";
                 [ProceduralModuleName] = 1,
                 [ClassModuleName] = 0,
                 [UserFormName] = 1,
-                [DocumentName] = 1,
+                [DocumentName] = 0,
                 [ProcedureName] = 1,
                 [FunctionName] = 1,
                 [PropertyGetName] = 1,
@@ -2528,7 +2528,7 @@ End Property";
                 [ProceduralModuleName] = 1,
                 [ClassModuleName] = 0,
                 [UserFormName] = 1,
-                [DocumentName] = 1,
+                [DocumentName] = 0,
                 [ProcedureName] = 1,
                 [FunctionName] = 1,
                 [PropertyGetName] = 1,
@@ -2984,7 +2984,7 @@ End Property";
                 [ProceduralModuleName] = 1,
                 [ClassModuleName] = 0,
                 [UserFormName] = 1,
-                [DocumentName] = 1,
+                [DocumentName] = 0,
                 [ProcedureName] = 1,
                 [FunctionName] = 1,
                 [PropertyGetName] = 1,
@@ -3219,7 +3219,7 @@ End Enum";
                 [ProceduralModuleName] = 1,
                 [ClassModuleName] = 0,
                 [UserFormName] = 1,
-                [DocumentName] = 1,
+                [DocumentName] = 0,
                 [ProcedureName] = 1,
                 [FunctionName] = 1,
                 [PropertyGetName] = 1,
@@ -3449,7 +3449,7 @@ End Enum";
         public void ShadowedDeclaration_ReturnsResult_EnumerationWithSameNameAsEnumerationMember()
         {
             var code =
-                $@"Public enum SameName
+                @"Public enum SameName
     Baz
 End Enum
 
@@ -3477,7 +3477,7 @@ End Enum";
         public void ShadowedDeclaration_ReturnsResult_EnumerationMemberWithSameNameAsEnumeration()
         {
             var code =
-                $@"Public enum Baz
+                @"Public enum Baz
     SameName
 End Enum
 
@@ -3505,7 +3505,7 @@ End Enum";
         public void ShadowedDeclaration_DoesNotReturnResult_EnumerationMemberWithSameNameAsEnumerationMember()
         {
             var code =
-                $@"Public enum Baz
+                @"Public enum Baz
     SameName
 End Enum
 
@@ -3533,7 +3533,7 @@ End Enum";
         public void ShadowedDeclaration_DoesNotReturnResult_EnumerationWithSameNameAsOwnMember()
         {
             var code =
-                $@"Public enum SameName
+                @"Public enum SameName
     SameName
 End Enum";
 
@@ -3987,7 +3987,7 @@ End Type";
                 [ProceduralModuleName] = 1,
                 [ClassModuleName] = 0,
                 [UserFormName] = 1,
-                [DocumentName] = 1,
+                [DocumentName] = 0,
                 [ProcedureName] = 1,
                 [FunctionName] = 1,
                 [PropertyGetName] = 1,
@@ -4209,7 +4209,7 @@ End Type";
                 [ProceduralModuleName] = 1,
                 [ClassModuleName] = 0,
                 [UserFormName] = 1,
-                [DocumentName] = 1,
+                [DocumentName] = 0,
                 [ProcedureName] = 1,
                 [FunctionName] = 1,
                 [PropertyGetName] = 1,

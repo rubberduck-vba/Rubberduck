@@ -633,6 +633,31 @@ Rem test1";
             Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
         }
 
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void ObsoleteErrorSyntax_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+@"Sub Foo()
+    Error 91
+End Sub";
+
+            const string expectedCode =
+@"Sub Foo()
+'@Ignore ObsoleteErrorSyntax
+    Error 91
+End Sub";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var inspection = new ObsoleteErrorSyntaxInspection(state);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+        }
 
         [TestMethod]
         [TestCategory("QuickFixes")]
@@ -1103,6 +1128,52 @@ End Property";
 
             var inspection = new WriteOnlyPropertyInspection(parser.State);
             var inspectionResults = inspection.GetInspectionResults();
+
+            new IgnoreOnceQuickFix(parser.State, new[] { inspection }).Fix(inspectionResults.First());
+
+            Assert.AreEqual(expectedCode, parser.State.GetRewriter(component).GetText());
+        }
+
+        [TestMethod]
+        [TestCategory("QuickFixes")]
+        public void BooleanAssignedInIfElseInspection_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+@"Sub Foo()
+    Dim d As Boolean
+    If True Then
+        d = True
+    Else
+        d = False
+    EndIf
+End Sub";
+
+            const string expectedCode =
+@"Sub Foo()
+    Dim d As Boolean
+'@Ignore BooleanAssignedInIfElse
+    If True Then
+        d = True
+    Else
+        d = False
+    EndIf
+End Sub";
+
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
+                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
+                .Build();
+            var component = project.Object.VBComponents[0];
+            var vbe = builder.AddProject(project).Build();
+
+            var parser = MockParser.Create(vbe.Object);
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+            var inspection = new BooleanAssignedInIfElseInspection(parser.State);
+            var inspector = InspectionsHelper.GetInspector(inspection);
+            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
 
             new IgnoreOnceQuickFix(parser.State, new[] { inspection }).Fix(inspectionResults.First());
 

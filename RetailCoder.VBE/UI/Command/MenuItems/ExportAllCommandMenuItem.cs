@@ -3,7 +3,7 @@ using Rubberduck.UI.Command.MenuItems.ParentMenus;
 
 namespace Rubberduck.UI.Command.MenuItems
 {
-    class ExportAllCommandMenuItem : CommandMenuItemBase
+    public class ExportAllCommandMenuItem : CommandMenuItemBase
     {
         public ExportAllCommandMenuItem(CommandBase command) : base(command)
         {

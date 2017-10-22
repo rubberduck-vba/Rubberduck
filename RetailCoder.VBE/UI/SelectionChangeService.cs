@@ -109,25 +109,25 @@ namespace Rubberduck.UI
                 return;
             }
 
-            var selected = component.SelectedControls.Count;
-            if (selected == 1)
+            var selectedCount = component.SelectedControls.Count;
+            if (selectedCount == 1)
             {
-                var name = component.SelectedControls.First().Name;
+                var name = component.SelectedControls.Single().Name;
                 var control =
-                    _parser.State.DeclarationFinder.UserDeclarations(DeclarationType.Control).SingleOrDefault(decl =>
-                            decl.IdentifierName.Equals(name) &&
-                            decl.ParentDeclaration.IdentifierName.Equals(component.Name) &&
-                            decl.ProjectId.Equals(component.ParentProject.ProjectId));
+                    _parser.State.DeclarationFinder.MatchName(name)
+                        .SingleOrDefault(d => d.DeclarationType == DeclarationType.Control
+                                              && d.ProjectId == component.ParentProject.ProjectId
+                                              && d.ParentDeclaration.IdentifierName == component.Name);
 
                 DispatchSelectedDeclaration(new DeclarationChangedEventArgs(null, control, component));            
                 return;
             }
             var form =
-                _parser.State.DeclarationFinder.UserDeclarations(DeclarationType.UserForm).SingleOrDefault(decl =>
-                    decl.IdentifierName.Equals(component.Name) &&
-                    decl.ProjectId.Equals(component.ParentProject.ProjectId));
+                _parser.State.DeclarationFinder.MatchName(component.Name)
+                    .SingleOrDefault(d => d.DeclarationType.HasFlag(DeclarationType.ClassModule)
+                                          && d.ProjectId == component.ParentProject.ProjectId);
 
-            DispatchSelectedDeclaration(new DeclarationChangedEventArgs(null, form, component, selected > 1));
+            DispatchSelectedDeclaration(new DeclarationChangedEventArgs(null, form, component, selectedCount > 1));
         }
 
         private void DispatchSelectedProjectNodeDeclaration(IVBComponent component)
@@ -166,7 +166,7 @@ namespace Rubberduck.UI
         private bool DeclarationChanged(Declaration current)
         {
             if ((_lastSelectedDeclaration == null && current == null) ||
-                ((_lastSelectedDeclaration != null && current != null) && !_lastSelectedDeclaration.Equals(current)))
+                ((_lastSelectedDeclaration != null && current != null) && _lastSelectedDeclaration.Equals(current)))
             {
                 return false;
             }

@@ -19,11 +19,9 @@ namespace Rubberduck.Inspections.Concrete
         public UnassignedVariableUsageInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Error) { }
 
-        public override Type Type => typeof(UnassignedVariableUsageInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var declarations = State.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
                 .Where(result => !IsIgnoringInspectionResultFor(result, AnnotationName))
