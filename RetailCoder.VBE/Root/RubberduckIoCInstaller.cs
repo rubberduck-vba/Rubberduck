@@ -223,6 +223,8 @@ namespace Rubberduck.Root
             {
                 container.Register(Classes.FromAssembly(assembly)
                     .BasedOn<IQuickFix>()
+                    .WithService.Base()
+                    .WithService.Self()
                     .LifestyleSingleton());
             }
         }
@@ -245,6 +247,7 @@ namespace Rubberduck.Root
                 container.Register(Classes.FromAssembly(assembly)
                     .BasedOn<IParseTreeInspection>()
                     .WithService.Base()
+                    .WithService.Select(new[]{typeof(IInspection)})
                     .LifestyleTransient());
             }
         }
