@@ -2,8 +2,7 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 
@@ -100,7 +99,7 @@ End Property";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsReferencedProject()
         {
-            var expectedDeclarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 0,
                 [ProceduralModuleName] = 0,
@@ -129,44 +128,35 @@ End Property";
 
             var builder = new MockVbeBuilder();
             var userProjectBuilder = CreateUserProject(builder);
-            foreach (var expextedResult in expectedDeclarationResults)
+            foreach (var expectedResultCount in expectedResultCountsByDeclarationIdentifierName)
             {
-                var referencedProject = builder.ProjectBuilder(expextedResult.Key, ProjectProtection.Unprotected)
-                    .AddComponent("Foo", ComponentType.StandardModule, "")
+                var referencedProject = builder.ProjectBuilder(expectedResultCount.Key, ProjectProtection.Unprotected)
+                    .AddComponent("Foo" + expectedResultCount.Key, ComponentType.StandardModule, "")
                     .Build();
                 builder.AddProject(referencedProject);
-                userProjectBuilder = userProjectBuilder.AddReference(expextedResult.Key, "");
+                userProjectBuilder = userProjectBuilder.AddReference(expectedResultCount.Key, "");
             }
 
             var userProject = userProjectBuilder.Build();
             builder.AddProject(userProject);
 
             var vbe = builder.Build();
+
+            Dictionary<string, int> inspectionResultCounts;
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new ShadowedDeclarationInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
-                var inspectionResultNameCounts = inspectionResults.GroupBy(result => result.Target.IdentifierName)
-                    .ToDictionary(group => group.Key, group => group.Count());
-
-                foreach (var expectedResult in expectedDeclarationResults)
-                {
-                    var expectedCount = expectedResult.Value;
-                    int actualCount;
-                    if (!inspectionResultNameCounts.TryGetValue(expectedResult.Key, out actualCount))
-                    {
-                        actualCount = 0;
-                    }
-                    Assert.AreEqual(expectedCount, actualCount, $"Wrong inspection result for {expectedResult.Key}");
-                }
+                inspectionResultCounts = InspectionResultCountsByTargetIdentifierName(inspection);
             }
+
+            AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsUserProject()
+        public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsContainingProject()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 0,
                 [ProceduralModuleName] = 0,
@@ -192,10 +182,10 @@ End Property";
                 [LineLabelName] = 0
             };
 
-            foreach (var result in declarationResults)
+            foreach (var expectedResultCount in expectedResultCountsByDeclarationIdentifierName)
             {
                 var builder = new MockVbeBuilder();
-                var userProject = CreateUserProject(builder, result.Key).Build();
+                var userProject = CreateUserProject(builder, expectedResultCount.Key).Build();
                 builder.AddProject(userProject);
 
                 var vbe = builder.Build();
@@ -204,11 +194,7 @@ End Property";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults().ToList();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count, $"Wrong inspection result for {result.Key}");
-                    foreach (var inspectionresult in inspectionResults)
-                    {
-                        Assert.AreEqual(DeclarationType.Project, inspectionresult.Target.DeclarationType);
-                    }
+                    Assert.AreEqual(expectedResultCount.Value, inspectionResults.Count, $"Wrong number of inspection results for {expectedResultCount.Key}");
                 }
             }
         }
@@ -217,7 +203,7 @@ End Property";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsProceduralModuleInReferencedProject()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 1,
                 [ProceduralModuleName] = 1,
@@ -242,33 +228,36 @@ End Property";
                 [LineLabelName] = 0
             };
 
-            foreach (var result in declarationResults)
+            var builder = new MockVbeBuilder();
+            var referencedProjectBuilder = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected);
+
+            foreach (var expectedResultCount in expectedResultCountsByDeclarationIdentifierName)
             {
-                var builder = new MockVbeBuilder();
-                var referencedProject = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected)
-                    .AddComponent(result.Key, ComponentType.StandardModule, "")
-                    .Build();
-                builder.AddProject(referencedProject);
-                var userProject = CreateUserProject(builder).AddReference("Foo", "").Build();
-                builder.AddProject(userProject);
-
-                var vbe = builder.Build();
-                using (var state = MockParser.CreateAndParse(vbe.Object))
-                {
-                    var inspection = new ShadowedDeclarationInspection(state);
-                    var inspectionResults = inspection.GetInspectionResults();
-
-                    Assert.AreEqual(result.Value, inspectionResults.Count(),
-                        $"Wrong inspection result for {result.Key}");
-                }
+                referencedProjectBuilder.AddComponent(expectedResultCount.Key, ComponentType.StandardModule, "");
             }
+
+            var referencedProject = referencedProjectBuilder.Build();
+            builder.AddProject(referencedProject);
+            var userProject = CreateUserProject(builder).AddReference("Foo", "").Build();
+            builder.AddProject(userProject);
+
+            var vbe = builder.Build();
+
+            Dictionary<string, int> inspectionResultCounts;
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new ShadowedDeclarationInspection(state);
+                inspectionResultCounts = InspectionResultCountsByTargetIdentifierName(inspection);
+            }
+
+            AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsProceduralModuleInUserProject()
+        public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsProceduralModuleInContainingProject()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 0,
                 [ProceduralModuleName] = 0,
@@ -294,30 +283,34 @@ End Property";
                 [LineLabelName] = 0
             };
 
-            foreach (var result in declarationResults)
+            var builder = new MockVbeBuilder();
+            var userProjectBuilder = CreateUserProject(builder);
+
+            foreach (var expectedResultCount in expectedResultCountsByDeclarationIdentifierName)
             {
-                var builder = new MockVbeBuilder();
-                var userProject = CreateUserProject(builder).AddComponent(result.Key, ComponentType.StandardModule, "")
-                    .Build();
-                builder.AddProject(userProject);
-
-                var vbe = builder.Build();
-                using (var state = MockParser.CreateAndParse(vbe.Object))
-                {
-                    var inspection = new ShadowedDeclarationInspection(state);
-                    var inspectionResults = inspection.GetInspectionResults();
-
-                    Assert.AreEqual(result.Value, inspectionResults.Count(),
-                        $"Wrong inspection result for {result.Key}");
-                }
+                userProjectBuilder.AddComponent(expectedResultCount.Key, ComponentType.StandardModule, "");
             }
+
+            var userProject = userProjectBuilder.Build();
+            builder.AddProject(userProject);
+
+            var vbe = builder.Build();
+
+            Dictionary<string, int> inspectionResultCounts;
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new ShadowedDeclarationInspection(state);
+                inspectionResultCounts = InspectionResultCountsByTargetIdentifierName(inspection);
+            }
+
+            AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
         [TestMethod]
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsNonExposedClassModuleInReferencedProject()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 0,
                 [ProceduralModuleName] = 0,
@@ -343,33 +336,35 @@ End Property";
                 [LineLabelName] = 0
             };
 
-            foreach (var result in declarationResults)
+            var builder = new MockVbeBuilder();
+            var referencedProjectBuilder = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected);
+
+            foreach (var expectedResultCount in expectedResultCountsByDeclarationIdentifierName)
             {
-                var builder = new MockVbeBuilder();
-                var referencedProject = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected)
-                    .AddComponent(result.Key, ComponentType.ClassModule, "")
-                    .Build();
-                builder.AddProject(referencedProject);
-                var userProject = CreateUserProject(builder).AddReference("Foo", "").Build();
-                builder.AddProject(userProject);
-
-                var vbe = builder.Build();
-                using (var state = MockParser.CreateAndParse(vbe.Object))
-                {
-
-                    var inspection = new ShadowedDeclarationInspection(state);
-                    var inspectionResults = inspection.GetInspectionResults();
-
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for {result.Key}");
-                }
+                referencedProjectBuilder.AddComponent(expectedResultCount.Key, ComponentType.ClassModule, "");
             }
+            var referencedProject = referencedProjectBuilder.Build();
+            builder.AddProject(referencedProject);
+            var userProject = CreateUserProject(builder).AddReference("Foo", "").Build();
+            builder.AddProject(userProject);
+
+            var vbe = builder.Build();
+
+            Dictionary<string, int> inspectionResultCounts;
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new ShadowedDeclarationInspection(state);
+                inspectionResultCounts = InspectionResultCountsByTargetIdentifierName(inspection);
+            }
+
+            AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
         [TestMethod]
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsUserFormInReferencedProject()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 0,
                 [ProceduralModuleName] = 0,
@@ -395,33 +390,35 @@ End Property";
                 [LineLabelName] = 0
             };
 
-            foreach (var result in declarationResults)
+            var builder = new MockVbeBuilder();
+            var referencedProjectBuilder = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected);
+
+            foreach (var expectedResultCount in expectedResultCountsByDeclarationIdentifierName)
             {
-                var builder = new MockVbeBuilder();
-                var referencedProject = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected)
-                    .AddComponent(result.Key, ComponentType.UserForm, "")
-                    .Build();
-                builder.AddProject(referencedProject);
-                var userProject = CreateUserProject(builder).AddReference("Foo", "").Build();
-                builder.AddProject(userProject);
-
-                var vbe = builder.Build();
-                using (var state = MockParser.CreateAndParse(vbe.Object))
-                {
-
-                    var inspection = new ShadowedDeclarationInspection(state);
-                    var inspectionResults = inspection.GetInspectionResults();
-
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for {result.Key}");
-                }
+                referencedProjectBuilder.AddComponent(expectedResultCount.Key, ComponentType.UserForm, "");
             }
+            var referencedProject = referencedProjectBuilder.Build();
+            builder.AddProject(referencedProject);
+            var userProject = CreateUserProject(builder).AddReference("Foo", "").Build();
+            builder.AddProject(userProject);
+
+            var vbe = builder.Build();
+
+            Dictionary<string, int> inspectionResultCounts;
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new ShadowedDeclarationInspection(state);
+                inspectionResultCounts = InspectionResultCountsByTargetIdentifierName(inspection);
+            }
+
+            AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsUserFormInUserProject()
+        public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsUserFormInContainingProject()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 0,
                 [ProceduralModuleName] = 0,
@@ -447,29 +444,34 @@ End Property";
                 [LineLabelName] = 0
             };
 
-            foreach (var result in declarationResults)
+            var builder = new MockVbeBuilder();
+            var userProjectBuilder = CreateUserProject(builder);
+
+            foreach (var expectedResultCount in expectedResultCountsByDeclarationIdentifierName)
             {
-                var builder = new MockVbeBuilder();
-                var userProject = CreateUserProject(builder).AddComponent(result.Key, ComponentType.UserForm, "").Build();
-                builder.AddProject(userProject);
-
-                var vbe = builder.Build();
-                using (var state = MockParser.CreateAndParse(vbe.Object))
-                {
-
-                    var inspection = new ShadowedDeclarationInspection(state);
-                    var inspectionResults = inspection.GetInspectionResults();
-
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for {result.Key}");
-                }
+                userProjectBuilder.AddComponent(expectedResultCount.Key, ComponentType.UserForm, "");
             }
+
+            var userProject = userProjectBuilder.Build();
+            builder.AddProject(userProject);
+
+            var vbe = builder.Build();
+
+            Dictionary<string, int> inspectionResultCounts;
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new ShadowedDeclarationInspection(state);
+                inspectionResultCounts = InspectionResultCountsByTargetIdentifierName(inspection);
+            }
+
+            AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
         [TestMethod]
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsDocumentInReferencedProject()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 0,
                 [ProceduralModuleName] = 0,
@@ -495,33 +497,35 @@ End Property";
                 [LineLabelName] = 0
             };
 
-            foreach (var result in declarationResults)
+            var builder = new MockVbeBuilder();
+            var referencedProjectBuilder = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected);
+
+            foreach (var expectedResultCount in expectedResultCountsByDeclarationIdentifierName)
             {
-                var builder = new MockVbeBuilder();
-                var referencedProject = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected)
-                    .AddComponent(result.Key, ComponentType.Document, "")
-                    .Build();
-                builder.AddProject(referencedProject);
-                var userProject = CreateUserProject(builder).AddReference("Foo", "").Build();
-                builder.AddProject(userProject);
-
-                var vbe = builder.Build();
-                using (var state = MockParser.CreateAndParse(vbe.Object))
-                {
-
-                    var inspection = new ShadowedDeclarationInspection(state);
-                    var inspectionResults = inspection.GetInspectionResults();
-
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for {result.Key}");
-                }
+                referencedProjectBuilder.AddComponent(expectedResultCount.Key, ComponentType.Document, "");
             }
+            var referencedProject = referencedProjectBuilder.Build();
+            builder.AddProject(referencedProject);
+            var userProject = CreateUserProject(builder).AddReference("Foo", "").Build();
+            builder.AddProject(userProject);
+
+            var vbe = builder.Build();
+
+            Dictionary<string, int> inspectionResultCounts;
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new ShadowedDeclarationInspection(state);
+                inspectionResultCounts = InspectionResultCountsByTargetIdentifierName(inspection);
+            }
+
+            AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsDocumentInUserProject()
+        public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsDocumentInContainingProject()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 0,
                 [ProceduralModuleName] = 0,
@@ -547,29 +551,34 @@ End Property";
                 [LineLabelName] = 0
             };
 
-            foreach (var result in declarationResults)
+            var builder = new MockVbeBuilder();
+            var userProjectBuilder = CreateUserProject(builder);
+
+            foreach (var expectedResultCount in expectedResultCountsByDeclarationIdentifierName)
             {
-                var builder = new MockVbeBuilder();
-                var userProject = CreateUserProject(builder).AddComponent(result.Key, ComponentType.Document, "").Build();
-                builder.AddProject(userProject);
-
-                var vbe = builder.Build();
-                using (var state = MockParser.CreateAndParse(vbe.Object))
-                {
-
-                    var inspection = new ShadowedDeclarationInspection(state);
-                    var inspectionResults = inspection.GetInspectionResults();
-
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for {result.Key}");
-                }
+                userProjectBuilder.AddComponent(expectedResultCount.Key, ComponentType.Document, "");
             }
+
+            var userProject = userProjectBuilder.Build();
+            builder.AddProject(userProject);
+
+            var vbe = builder.Build();
+
+            Dictionary<string, int> inspectionResultCounts;
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new ShadowedDeclarationInspection(state);
+                inspectionResultCounts = InspectionResultCountsByTargetIdentifierName(inspection);
+            }
+
+            AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
         [TestMethod]
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsProcedureInReferencedProject()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 1,
                 [ProceduralModuleName] = 1,
@@ -596,7 +605,7 @@ End Property";
             };
 
             // Public
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var referencedModuleCode =
                     $@"Public Sub {result.Key}()
@@ -617,12 +626,12 @@ End Sub";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for public {result.Key}");
                 }
             }
 
             // Private
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var referencedModuleCode =
                     $@"Private Sub {result.Key}()
@@ -643,7 +652,7 @@ End Sub";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(0, inspectionResults.Count(), $"Wrong inspection result for private {result.Key}");
+                    Assert.AreEqual(0, inspectionResults.Count(), $"Wrong number of inspection results for private {result.Key}");
                 }
             }
         }
@@ -652,7 +661,7 @@ End Sub";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsProcedureInUserProject()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 1,
                 [ProceduralModuleName] = 1,
@@ -679,7 +688,7 @@ End Sub";
             };
 
             // Public
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var userModuleCode =
                     $@"Public Sub {result.Key}()
@@ -696,11 +705,11 @@ End Sub";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for public {result.Key}");
                 }
             }
 
-            declarationResults = new Dictionary<string, int>
+            expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 1,
                 [ProceduralModuleName] = 1,
@@ -727,7 +736,7 @@ End Sub";
             };
 
             // Private
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var userModuleCode =
                     $@"Private Sub {result.Key}()
@@ -744,7 +753,7 @@ End Sub";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for private {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for private {result.Key}");
                 }
             }
         }
@@ -753,7 +762,7 @@ End Sub";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsProcedureInSameComponent()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProceduralModuleName] = 0,
                 [FunctionName] = 0,
@@ -774,7 +783,7 @@ End Sub";
                 [LineLabelName] = 0
             };
 
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var code =
                     $@"Public Type {UserDefinedTypeName}
@@ -822,7 +831,7 @@ End Property";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for public {result.Key}");
                 }
             }
         }
@@ -831,7 +840,7 @@ End Property";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsFunctionInReferencedProject()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 1,
                 [ProceduralModuleName] = 1,
@@ -858,7 +867,7 @@ End Property";
             };
 
             // Public
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var referencedModuleCode =
                     $@"Public Function {result.Key}()
@@ -879,12 +888,12 @@ End Function";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for public {result.Key}");
                 }
             }
 
             // Private
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var referencedModuleCode =
                     $@"Private Function {result.Key}()
@@ -905,7 +914,7 @@ End Function";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(0, inspectionResults.Count(), $"Wrong inspection result for private {result.Key}");
+                    Assert.AreEqual(0, inspectionResults.Count(), $"Wrong number of inspection results for private {result.Key}");
                 }
             }
         }
@@ -914,7 +923,7 @@ End Function";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsFunctionInUserProject()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 1,
                 [ProceduralModuleName] = 1,
@@ -941,7 +950,7 @@ End Function";
             };
 
             // Public
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var userModuleCode =
                     $@"Public Function {result.Key}()
@@ -958,11 +967,11 @@ End Function";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for public {result.Key}");
                 }
             }
 
-            declarationResults = new Dictionary<string, int>
+            expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 1,
                 [ProceduralModuleName] = 1,
@@ -989,7 +998,7 @@ End Function";
             };
 
             // Private
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var userModuleCode =
                     $@"Private Function {result.Key}()
@@ -1006,7 +1015,7 @@ End Function";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for private {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for private {result.Key}");
                 }
             }
         }
@@ -1015,7 +1024,7 @@ End Function";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsFunctionInSameComponent()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProceduralModuleName] = 0,
                 [ProcedureName] = 0,
@@ -1036,7 +1045,7 @@ End Function";
                 [LineLabelName] = 0
             };
 
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var code =
                     $@"Public Type {UserDefinedTypeName}
@@ -1084,7 +1093,7 @@ End Property";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for public {result.Key}");
                 }
             }
         }
@@ -1093,7 +1102,7 @@ End Property";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPropertyGetInReferencedProject()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 1,
                 [ProceduralModuleName] = 1,
@@ -1120,7 +1129,7 @@ End Property";
             };
 
             // Public
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var referencedModuleCode =
                     $@"Public Property Get {result.Key}() As String
@@ -1141,12 +1150,12 @@ End Property";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for public {result.Key}");
                 }
             }
 
             // Private
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var referencedModuleCode =
                     $@"Private Property Get {result.Key}() As String
@@ -1167,7 +1176,7 @@ End Property";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(0, inspectionResults.Count(), $"Wrong inspection result for private {result.Key}");
+                    Assert.AreEqual(0, inspectionResults.Count(), $"Wrong number of inspection results for private {result.Key}");
                 }
             }
         }
@@ -1176,7 +1185,7 @@ End Property";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPropertyGetInUserProject()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 1,
                 [ProceduralModuleName] = 1,
@@ -1203,7 +1212,7 @@ End Property";
             };
 
             // Public
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var userModuleCode =
                     $@"Public Property Get {result.Key}() As String
@@ -1220,11 +1229,11 @@ End Property";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for public {result.Key}");
                 }
             }
 
-            declarationResults = new Dictionary<string, int>
+            expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 1,
                 [ProceduralModuleName] = 1,
@@ -1251,7 +1260,7 @@ End Property";
             };
 
             // Private
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var userModuleCode =
                     $@"Private Property Get {result.Key}() As String
@@ -1268,7 +1277,7 @@ End Property";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for private {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for private {result.Key}");
                 }
             }
         }
@@ -1277,7 +1286,7 @@ End Property";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPropertyGetInSameComponent()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProceduralModuleName] = 0,
                 [ProcedureName] = 0,
@@ -1298,7 +1307,7 @@ End Property";
                 [LineLabelName] = 0
             };
 
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var code =
                     $@"Public Type {UserDefinedTypeName}
@@ -1346,7 +1355,7 @@ End Property";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for public {result.Key}");
                 }
             }
         }
@@ -1355,7 +1364,7 @@ End Property";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPropertySetInReferencedProject()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 1,
                 [ProceduralModuleName] = 1,
@@ -1382,7 +1391,7 @@ End Property";
             };
 
             // Public
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var referencedModuleCode =
                     $@"Public Property Set {result.Key}(v As Variant)
@@ -1403,12 +1412,12 @@ End Property";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for public {result.Key}");
                 }
             }
 
             // Private
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var referencedModuleCode =
                     $@"Private Property Set {result.Key}(v As Variant)
@@ -1429,7 +1438,7 @@ End Property";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(0, inspectionResults.Count(), $"Wrong inspection result for private {result.Key}");
+                    Assert.AreEqual(0, inspectionResults.Count(), $"Wrong number of inspection results for private {result.Key}");
                 }
             }
         }
@@ -1438,7 +1447,7 @@ End Property";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPropertySetInUserProject()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 1,
                 [ProceduralModuleName] = 1,
@@ -1465,7 +1474,7 @@ End Property";
             };
 
             // Public
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var userModuleCode =
                     $@"Public Property Set {result.Key}(v As Variant)
@@ -1482,11 +1491,11 @@ End Property";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for public {result.Key}");
                 }
             }
 
-            declarationResults = new Dictionary<string, int>
+            expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 1,
                 [ProceduralModuleName] = 1,
@@ -1513,7 +1522,7 @@ End Property";
             };
 
             // Private
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var userModuleCode =
                     $@"Private Property Set {result.Key}(v As Variant)
@@ -1530,7 +1539,7 @@ End Property";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for private {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for private {result.Key}");
                 }
             }
         }
@@ -1539,7 +1548,7 @@ End Property";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPropertySetInSameComponent()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProceduralModuleName] = 0,
                 [ProcedureName] = 0,
@@ -1560,7 +1569,7 @@ End Property";
                 [LineLabelName] = 0
             };
 
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var code =
                     $@"Public Type {UserDefinedTypeName}
@@ -1608,7 +1617,7 @@ End Property";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for public {result.Key}");
                 }
             }
         }
@@ -1617,7 +1626,7 @@ End Property";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPropertyLetInReferencedProject()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 1,
                 [ProceduralModuleName] = 1,
@@ -1644,7 +1653,7 @@ End Property";
             };
 
             // Public
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var referencedModuleCode =
                     $@"Public Property Let {result.Key}(s As String)
@@ -1665,12 +1674,12 @@ End Property";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for public {result.Key}");
                 }
             }
 
             // Private
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var referencedModuleCode =
                     $@"Private Property Let {result.Key}(s As String)
@@ -1691,7 +1700,7 @@ End Property";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(0, inspectionResults.Count(), $"Wrong inspection result for private {result.Key}");
+                    Assert.AreEqual(0, inspectionResults.Count(), $"Wrong number of inspection results for private {result.Key}");
                 }
             }
         }
@@ -1700,7 +1709,7 @@ End Property";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPropertyLetInUserProject()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 1,
                 [ProceduralModuleName] = 1,
@@ -1727,7 +1736,7 @@ End Property";
             };
 
             // Public
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var userModuleCode =
                     $@"Public Property Let {result.Key}(s As String)
@@ -1744,11 +1753,11 @@ End Property";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for public {result.Key}");
                 }
             }
 
-            declarationResults = new Dictionary<string, int>
+            expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 1,
                 [ProceduralModuleName] = 1,
@@ -1775,7 +1784,7 @@ End Property";
             };
 
             // Private
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var userModuleCode =
                     $@"Private Property Let {result.Key}(s As String)
@@ -1792,7 +1801,7 @@ End Property";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for private {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for private {result.Key}");
                 }
             }
         }
@@ -1801,7 +1810,7 @@ End Property";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPropertyLetInSameComponent()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProceduralModuleName] = 0,
                 [ProcedureName] = 0,
@@ -1822,7 +1831,7 @@ End Property";
                 [LineLabelName] = 0
             };
 
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var code =
                     $@"Public Type {UserDefinedTypeName}
@@ -1870,7 +1879,7 @@ End Property";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for public {result.Key}");
                 }
             }
         }
@@ -1879,7 +1888,7 @@ End Property";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsParameterInReferencedProject()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 0,
                 [ProceduralModuleName] = 0,
@@ -1905,7 +1914,7 @@ End Property";
                 [LineLabelName] = 0
             };
 
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var referencedModuleCode =
                     $@"Public Sub Qux({result.Key} As String)
@@ -1926,7 +1935,7 @@ End Sub";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for {result.Key}");
                 }
             }
         }
@@ -1935,7 +1944,7 @@ End Sub";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsParameterInUserProject()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 1,
                 [ProceduralModuleName] = 1,
@@ -1961,7 +1970,7 @@ End Sub";
                 [LineLabelName] = 0
             };
 
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var userModuleCode =
                     $@"Public Sub Qux({result.Key} As String)
@@ -1978,7 +1987,7 @@ End Sub";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for {result.Key}");
                 }
             }
         }
@@ -1987,7 +1996,7 @@ End Sub";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsParameterInSameComponent()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProceduralModuleName] = 0,
                 [ProcedureName] = 1,
@@ -2009,7 +2018,7 @@ End Sub";
                 [LineLabelName] = 0
             };
 
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var code =
                     $@"Public Type {UserDefinedTypeName}
@@ -2057,7 +2066,7 @@ End Property";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for public {result.Key}");
                 }
             }
         }
@@ -2066,7 +2075,7 @@ End Property";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsVariableInReferencedProject()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 1,
                 [ProceduralModuleName] = 1,
@@ -2093,7 +2102,7 @@ End Property";
             };
 
             // Global
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var referencedModuleCode = $"Global {result.Key} As String";
 
@@ -2112,12 +2121,12 @@ End Property";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for global {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for global {result.Key}");
                 }
             }
 
             // Public
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var referencedModuleCode = $"Public {result.Key} As String";
 
@@ -2136,12 +2145,12 @@ End Property";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for public {result.Key}");
                 }
             }
 
             // Private
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var referencedModuleCode = $"Private {result.Key} As String";
 
@@ -2160,7 +2169,7 @@ End Property";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(0, inspectionResults.Count(), $"Wrong inspection result for private {result.Key}");
+                    Assert.AreEqual(0, inspectionResults.Count(), $"Wrong number of inspection results for private {result.Key}");
                 }
             }
         }
@@ -2169,7 +2178,7 @@ End Property";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsVariableInUserProject()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 1,
                 [ProceduralModuleName] = 1,
@@ -2196,7 +2205,7 @@ End Property";
             };
 
             // Global
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var userModuleCode = $"Global {result.Key} As String";
 
@@ -2211,12 +2220,12 @@ End Property";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for global {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for global {result.Key}");
                 }
             }
 
             // Public
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var userModuleCode = $"Public {result.Key} As String";
 
@@ -2231,11 +2240,11 @@ End Property";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for public {result.Key}");
                 }
             }
 
-            declarationResults = new Dictionary<string, int>
+            expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 1,
                 [ProceduralModuleName] = 1,
@@ -2262,7 +2271,7 @@ End Property";
             };
 
             // Private
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var userModuleCode = $"Private {result.Key} As String";
 
@@ -2277,7 +2286,7 @@ End Property";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for private {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for private {result.Key}");
                 }
             }
         }
@@ -2286,7 +2295,7 @@ End Property";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsVariableInSameComponent()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProceduralModuleName] = 0,
                 [ProcedureName] = 0,
@@ -2308,7 +2317,7 @@ End Property";
                 [LineLabelName] = 0
             };
 
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var declarationCode = $"Public {result.Key} As String";
 
@@ -2323,7 +2332,7 @@ End Property";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for public {result.Key}");
                 }
             }
         }
@@ -2332,7 +2341,7 @@ End Property";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsLocalVariableInReferencedProject()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 0,
                 [ProceduralModuleName] = 0,
@@ -2358,7 +2367,7 @@ End Property";
                 [LineLabelName] = 0
             };
 
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var referencedModuleCode =
                     $@"Public Sub Qux()
@@ -2380,7 +2389,7 @@ End Sub";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for global {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for global {result.Key}");
                 }
             }
         }
@@ -2389,7 +2398,7 @@ End Sub";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsLocalVariableInUserProject()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 1,
                 [ProceduralModuleName] = 1,
@@ -2415,7 +2424,7 @@ End Sub";
                 [LineLabelName] = 0
             };
 
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var userModuleCode =
                     $@"Public Sub Qux()
@@ -2433,7 +2442,7 @@ End Sub";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for global {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for global {result.Key}");
                 }
             }
         }
@@ -2442,7 +2451,7 @@ End Sub";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsLocalVariableInSameComponent()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProceduralModuleName] = 0,
                 [ProcedureName] = 1,
@@ -2464,7 +2473,7 @@ End Sub";
                 [LineLabelName] = 0
             };
 
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var code =
                     $@"Public Type {UserDefinedTypeName}
@@ -2513,7 +2522,7 @@ End Property";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for public {result.Key}");
                 }
             }
         }
@@ -2522,7 +2531,7 @@ End Property";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsConstantInReferencedProject()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 1,
                 [ProceduralModuleName] = 1,
@@ -2549,7 +2558,7 @@ End Property";
             };
 
             // Global
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var referencedModuleCode = $"Global Const {result.Key} As String = \"\"";
 
@@ -2568,12 +2577,12 @@ End Property";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for global {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for global {result.Key}");
                 }
             }
 
             // Public
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var referencedModuleCode = $"Public Const {result.Key} As String= \"\"";
 
@@ -2592,12 +2601,12 @@ End Property";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for public {result.Key}");
                 }
             }
 
             // Private
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var referencedModuleCode = $"Private Const {result.Key} As String= \"\"";
 
@@ -2616,7 +2625,7 @@ End Property";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(0, inspectionResults.Count(), $"Wrong inspection result for private {result.Key}");
+                    Assert.AreEqual(0, inspectionResults.Count(), $"Wrong number of inspection results for private {result.Key}");
                 }
             }
         }
@@ -2625,7 +2634,7 @@ End Property";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsConstantInUserProject()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 1,
                 [ProceduralModuleName] = 1,
@@ -2652,7 +2661,7 @@ End Property";
             };
 
             // Global
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var userModuleCode = $"Global Const {result.Key} As String = \"\"";
 
@@ -2667,12 +2676,12 @@ End Property";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for global {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for global {result.Key}");
                 }
             }
 
             // Public
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var userModuleCode = $"Public Const {result.Key} As String= \"\"";
 
@@ -2687,11 +2696,11 @@ End Property";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for public {result.Key}");
                 }
             }
 
-            declarationResults = new Dictionary<string, int>
+            expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 1,
                 [ProceduralModuleName] = 1,
@@ -2718,7 +2727,7 @@ End Property";
             };
 
             // Private
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var userModuleCode = $"Private Const {result.Key} As String= \"\"";
 
@@ -2733,7 +2742,7 @@ End Property";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for private {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for private {result.Key}");
                 }
             }
         }
@@ -2742,7 +2751,7 @@ End Property";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsConstantInSameComponent()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProceduralModuleName] = 0,
                 [ProcedureName] = 0,
@@ -2764,7 +2773,7 @@ End Property";
                 [LineLabelName] = 0
             };
 
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var declarationCode = $"Public Const {result.Key} As String= \"\"";
 
@@ -2779,7 +2788,7 @@ End Property";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for public {result.Key}");
                 }
             }
         }
@@ -2788,7 +2797,7 @@ End Property";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsLocalConstantInReferencedProject()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 0,
                 [ProceduralModuleName] = 0,
@@ -2814,7 +2823,7 @@ End Property";
                 [LineLabelName] = 0
             };
 
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var referencedModuleCode =
                     $@"Public Sub Qux()
@@ -2836,7 +2845,7 @@ End Sub";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for global {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for global {result.Key}");
                 }
             }
         }
@@ -2845,7 +2854,7 @@ End Sub";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsLocalConstantInUserProject()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 1,
                 [ProceduralModuleName] = 1,
@@ -2871,7 +2880,7 @@ End Sub";
                 [LineLabelName] = 0
             };
 
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var userModuleCode =
                     $@"Public Sub Qux()
@@ -2889,7 +2898,7 @@ End Sub";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for global {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for global {result.Key}");
                 }
             }
         }
@@ -2898,7 +2907,7 @@ End Sub";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsLocalConstantInSameComponent()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProceduralModuleName] = 0,
                 [ProcedureName] = 1,
@@ -2920,7 +2929,7 @@ End Sub";
                 [LineLabelName] = 0
             };
 
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var code =
                     $@"Public Type {UserDefinedTypeName}
@@ -2969,7 +2978,7 @@ End Property";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for public {result.Key}");
                 }
             }
         }
@@ -2978,7 +2987,7 @@ End Property";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsEnumerationInReferencedProject()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 1,
                 [ProceduralModuleName] = 1,
@@ -3005,7 +3014,7 @@ End Property";
             };
 
             // Public
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var referencedModuleCode =
                     $@"Public Enum {result.Key}
@@ -3027,12 +3036,12 @@ End Enum";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for public {result.Key}");
                 }
             }
 
             // Private
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var referencedModuleCode =
                     $@"Private Enum {result.Key}
@@ -3054,7 +3063,7 @@ End Enum";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(0, inspectionResults.Count(), $"Wrong inspection result for private {result.Key}");
+                    Assert.AreEqual(0, inspectionResults.Count(), $"Wrong number of inspection results for private {result.Key}");
                 }
             }
         }
@@ -3063,7 +3072,7 @@ End Enum";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsEnumerationInUserProject()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 0,
                 [ProceduralModuleName] = 0,
@@ -3090,7 +3099,7 @@ End Enum";
             };
 
             // Public
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var userModuleCode =
                     $@"Public Enum {result.Key}
@@ -3108,11 +3117,11 @@ End Enum";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for public {result.Key}");
                 }
             }
 
-            declarationResults = new Dictionary<string, int>
+            expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 0,
                 [ProceduralModuleName] = 0,
@@ -3139,7 +3148,7 @@ End Enum";
             };
 
             // Private
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var userModuleCode =
                     $@"Private Enum {result.Key}
@@ -3157,7 +3166,7 @@ End Enum";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for private {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for private {result.Key}");
                 }
             }
         }
@@ -3166,7 +3175,7 @@ End Enum";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsEnumerationInSameComponent()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProceduralModuleName] = 0,
                 [ProcedureName] = 1,
@@ -3186,7 +3195,7 @@ End Enum";
                 [LineLabelName] = 0
             };
 
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var declarationCode =
                     $@"Public Enum {result.Key}
@@ -3204,7 +3213,7 @@ End Enum";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for public {result.Key}");
                 }
             }
         }
@@ -3213,7 +3222,7 @@ End Enum";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsEnumerationMemberInReferencedProject()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 1,
                 [ProceduralModuleName] = 1,
@@ -3240,7 +3249,7 @@ End Enum";
             };
 
             // Public
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var referencedModuleCode =
                     $@"Public Enum Baz
@@ -3262,12 +3271,12 @@ End Enum";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for public {result.Key}");
                 }
             }
 
             // Private
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var referencedModuleCode =
                     $@"Private Enum Baz
@@ -3289,7 +3298,7 @@ End Enum";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(0, inspectionResults.Count(), $"Wrong inspection result for private {result.Key}");
+                    Assert.AreEqual(0, inspectionResults.Count(), $"Wrong number of inspection results for private {result.Key}");
                 }
             }
         }
@@ -3298,7 +3307,7 @@ End Enum";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsEnumerationMemberInUserProject()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 1,
                 [ProceduralModuleName] = 1,
@@ -3325,7 +3334,7 @@ End Enum";
             };
 
             // Public
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var userModuleCode =
                     $@"Public Enum Baz
@@ -3343,11 +3352,11 @@ End Enum";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for public {result.Key}");
                 }
             }
 
-            declarationResults = new Dictionary<string, int>
+            expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 1,
                 [ProceduralModuleName] = 1,
@@ -3374,7 +3383,7 @@ End Enum";
             };
 
             // Private
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var userModuleCode =
                     $@"Private Enum Baz
@@ -3392,7 +3401,7 @@ End Enum";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for private {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for private {result.Key}");
                 }
             }
         }
@@ -3401,7 +3410,7 @@ End Enum";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsEnumerationMemberInSameComponent()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProceduralModuleName] = 0,
                 [ProcedureName] = 0,
@@ -3421,7 +3430,7 @@ End Enum";
                 [LineLabelName] = 0
             };
 
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var declarationCode =
                     $@"Public Enum Baz
@@ -3439,7 +3448,7 @@ End Enum";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for public {result.Key}");
                 }
             }
         }
@@ -3556,7 +3565,7 @@ End Enum";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsUserDefinedTypeInReferencedProject()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 0,
                 [ProceduralModuleName] = 0,
@@ -3583,7 +3592,7 @@ End Enum";
             };
 
             // Public
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var referencedModuleCode =
                     $@"Public Type {result.Key}
@@ -3605,12 +3614,12 @@ End Type";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for public {result.Key}");
                 }
             }
 
             // Private
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var referencedModuleCode =
                     $@"Private Type {result.Key}
@@ -3632,7 +3641,7 @@ End Type";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(0, inspectionResults.Count(), $"Wrong inspection result for private {result.Key}");
+                    Assert.AreEqual(0, inspectionResults.Count(), $"Wrong number of inspection results for private {result.Key}");
                 }
             }
         }
@@ -3641,7 +3650,7 @@ End Type";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsUserDefinedTypeInUserProject()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 0,
                 [ProceduralModuleName] = 0,
@@ -3668,7 +3677,7 @@ End Type";
             };
 
             // Public
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var userModuleCode =
                     $@"Public Type {result.Key}
@@ -3686,11 +3695,11 @@ End Type";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for public {result.Key}");
                 }
             }
 
-            declarationResults = new Dictionary<string, int>
+            expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 0,
                 [ProceduralModuleName] = 0,
@@ -3717,7 +3726,7 @@ End Type";
             };
 
             // Private
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var userModuleCode =
                     $@"Private Type {result.Key}
@@ -3735,7 +3744,7 @@ End Type";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for private {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for private {result.Key}");
                 }
             }
         }
@@ -3744,7 +3753,7 @@ End Type";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsUserDefinedTypeInSameComponent()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProceduralModuleName] = 0,
                 [ProcedureName] = 0,
@@ -3765,7 +3774,7 @@ End Type";
                 [LineLabelName] = 0
             };
 
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var code =
                     $@"Public Type {result.Key}
@@ -3813,7 +3822,7 @@ End Property";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for public {result.Key}");
                 }
             }
         }
@@ -3822,7 +3831,7 @@ End Property";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsUserDefinedTypeMemberInReferencedProject()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 0,
                 [ProceduralModuleName] = 0,
@@ -3848,7 +3857,7 @@ End Property";
                 [LineLabelName] = 0
             };
 
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var referencedModuleCode =
                     $@"Public Type T
@@ -3870,7 +3879,7 @@ End Type";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for {result.Key}");
                 }
             }
         }
@@ -3879,7 +3888,7 @@ End Type";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsUserDefinedTypeMemberInUserProject()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 0,
                 [ProceduralModuleName] = 0,
@@ -3905,7 +3914,7 @@ End Type";
                 [LineLabelName] = 0
             };
 
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var userModuleCode =
                     $@"Public Type T
@@ -3923,7 +3932,7 @@ End Type";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for {result.Key}");
                 }
             }
         }
@@ -3932,7 +3941,7 @@ End Type";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsUserDefinedTypeMemberInSameComponent()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProceduralModuleName] = 0,
                 [ProcedureName] = 0,
@@ -3954,7 +3963,7 @@ End Type";
                 [LineLabelName] = 0
             };
 
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var declarationCode =
                     $@"Public Type T
@@ -3972,7 +3981,7 @@ End Type";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for public {result.Key}");
                 }
             }
         }
@@ -3981,7 +3990,7 @@ End Type";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsLibraryProcedureInReferencedProject()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 1,
                 [ProceduralModuleName] = 1,
@@ -4008,7 +4017,7 @@ End Type";
             };
 
             // Public
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var referencedModuleCode = $"Public Declare PtrSafe Sub {result.Key} Lib \"lib.dll\" ()";
 
@@ -4027,12 +4036,12 @@ End Type";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for public {result.Key}");
                 }
             }
 
             // Private
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var referencedModuleCode = $"Private Declare PtrSafe Sub {result.Key} Lib \"lib.dll\" ()";
 
@@ -4051,7 +4060,7 @@ End Type";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(0, inspectionResults.Count(), $"Wrong inspection result for private {result.Key}");
+                    Assert.AreEqual(0, inspectionResults.Count(), $"Wrong number of inspection results for private {result.Key}");
                 }
             }
         }
@@ -4060,7 +4069,7 @@ End Type";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsLibraryProcedureInUserProject()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 1,
                 [ProceduralModuleName] = 1,
@@ -4087,7 +4096,7 @@ End Type";
             };
 
             // Public
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var userModuleCode = $"Public Declare PtrSafe Sub {result.Key} Lib \"lib.dll\" ()";
 
@@ -4102,11 +4111,11 @@ End Type";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for public {result.Key}");
                 }
             }
 
-            declarationResults = new Dictionary<string, int>
+            expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 1,
                 [ProceduralModuleName] = 1,
@@ -4133,7 +4142,7 @@ End Type";
             };
 
             // Private
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var userModuleCode = $"Private Declare PtrSafe Sub {result.Key} Lib \"lib.dll\" ()";
 
@@ -4148,7 +4157,7 @@ End Type";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for private {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for private {result.Key}");
                 }
             }
         }
@@ -4157,7 +4166,7 @@ End Type";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsLibraryProcedureInSameComponent()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProceduralModuleName] = 0,
                 [ProcedureName] = 0,
@@ -4179,7 +4188,7 @@ End Type";
                 [LineLabelName] = 0
             };
 
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var declarationCode = $"Public Declare PtrSafe Sub {result.Key} Lib \"lib.dll\" ()";
 
@@ -4194,7 +4203,7 @@ End Type";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for public {result.Key}");
                 }
             }
         }
@@ -4203,7 +4212,7 @@ End Type";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsLibraryFunctionInReferencedProject()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 1,
                 [ProceduralModuleName] = 1,
@@ -4230,7 +4239,7 @@ End Type";
             };
 
             // Public
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var referencedModuleCode = $"Public Declare PtrSafe Function {result.Key} Lib \"lib.dll\" ()";
 
@@ -4249,12 +4258,12 @@ End Type";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for public {result.Key}");
                 }
             }
 
             // Private
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var referencedModuleCode = $"Private Declare PtrSafe Function {result.Key} Lib \"lib.dll\" ()";
 
@@ -4273,7 +4282,7 @@ End Type";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(0, inspectionResults.Count(), $"Wrong inspection result for private {result.Key}");
+                    Assert.AreEqual(0, inspectionResults.Count(), $"Wrong number of inspection results for private {result.Key}");
                 }
             }
         }
@@ -4282,7 +4291,7 @@ End Type";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsLibraryFunctionInUserProject()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 1,
                 [ProceduralModuleName] = 1,
@@ -4309,7 +4318,7 @@ End Type";
             };
 
             // Public
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var userModuleCode = $"Public Declare PtrSafe Function {result.Key} Lib \"lib.dll\" ()";
 
@@ -4324,11 +4333,11 @@ End Type";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for public {result.Key}");
                 }
             }
 
-            declarationResults = new Dictionary<string, int>
+            expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 1,
                 [ProceduralModuleName] = 1,
@@ -4355,7 +4364,7 @@ End Type";
             };
 
             // Private
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var userModuleCode = $"Private Declare PtrSafe Function {result.Key} Lib \"lib.dll\" ()";
 
@@ -4370,7 +4379,7 @@ End Type";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for private {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for private {result.Key}");
                 }
             }
         }
@@ -4379,7 +4388,7 @@ End Type";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsLibraryFunctionInSameComponent()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProceduralModuleName] = 0,
                 [ProcedureName] = 0,
@@ -4401,7 +4410,7 @@ End Type";
                 [LineLabelName] = 0
             };
 
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var declarationCode = $"Public Declare PtrSafe Function {result.Key} Lib \"lib.dll\" ()";
 
@@ -4416,7 +4425,7 @@ End Type";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for public {result.Key}");
                 }
             }
         }
@@ -4425,7 +4434,7 @@ End Type";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsLineLabelInReferencedProject()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 0,
                 [ProceduralModuleName] = 0,
@@ -4451,7 +4460,7 @@ End Type";
                 [LineLabelName] = 0
             };
 
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var referencedModuleCode =
                     $@"Public Sub Qux()
@@ -4473,7 +4482,7 @@ End Sub";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for {result.Key}");
                 }
             }
         }
@@ -4482,7 +4491,7 @@ End Sub";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsLineLabelInUserProject()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 0,
                 [ProceduralModuleName] = 0,
@@ -4508,7 +4517,7 @@ End Sub";
                 [LineLabelName] = 0
             };
 
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var userModuleCode =
                     $@"Public Sub Qux()
@@ -4526,7 +4535,7 @@ End Sub";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for {result.Key}");
                 }
             }
         }
@@ -4535,7 +4544,7 @@ End Sub";
         [TestCategory("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsLineLabelInSameComponent()
         {
-            var declarationResults = new Dictionary<string, int>
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProceduralModuleName] = 0,
                 [ProcedureName] = 0,
@@ -4557,7 +4566,7 @@ End Sub";
                 [LineLabelName] = 0
             };
 
-            foreach (var result in declarationResults)
+            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
             {
                 var code =
                     $@"Public Type {UserDefinedTypeName}
@@ -4606,7 +4615,7 @@ End Property";
                     var inspection = new ShadowedDeclarationInspection(state);
                     var inspectionResults = inspection.GetInspectionResults();
 
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong inspection result for public {result.Key}");
+                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for public {result.Key}");
                 }
             }
         }
@@ -4891,6 +4900,34 @@ End Sub";
 
                 Assert.AreEqual(0, inspectionResults.Count());
             }
+        }
+
+        private void AssertResultCountsEqualForThoseWithExpectation(Dictionary<string, int> expectedResultCounts,
+            Dictionary<string, int> actualResultCounts)
+        {
+            foreach (var expectedResultCount in expectedResultCounts)
+            {
+                var expectedCount = expectedResultCount.Value;
+                int actualCount;
+                if (!actualResultCounts.TryGetValue(expectedResultCount.Key, out actualCount))
+                {
+                    actualCount = 0;
+                }
+                Assert.AreEqual(expectedCount, actualCount,
+                    $"Wrong number of inspection results for {expectedResultCount.Key}");
+            }
+        }
+
+        private Dictionary<string, int> InspectionResultCountsByTargetIdentifierName(IInspection inspection)
+        {
+            var inspectionResults = inspection.GetInspectionResults();
+            return InspectionResultCountsByTargetIdentifierName(inspectionResults);
+        }
+
+        private Dictionary<string, int> InspectionResultCountsByTargetIdentifierName(IEnumerable<IInspectionResult> inspectionResults)
+        {
+            return inspectionResults.GroupBy(result => result.Target.IdentifierName)
+                .ToDictionary(group => group.Key, group => group.Count());
         }
 
         private MockProjectBuilder CreateUserProject(MockVbeBuilder builder, string projectName = ProjectName)
