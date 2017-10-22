@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections.Concrete;
@@ -189,13 +190,15 @@ End Property";
                 builder.AddProject(userProject);
 
                 var vbe = builder.Build();
+
+                IEnumerable<IInspectionResult> inspectionResults;
                 using (var state = MockParser.CreateAndParse(vbe.Object))
                 {
                     var inspection = new ShadowedDeclarationInspection(state);
-                    var inspectionResults = inspection.GetInspectionResults().ToList();
-
-                    Assert.AreEqual(expectedResultCount.Value, inspectionResults.Count, $"Wrong number of inspection results for {expectedResultCount.Key}");
+                    inspectionResults = inspection.GetInspectionResults();
                 }
+
+                Assert.AreEqual(expectedResultCount.Value, inspectionResults.Count(), $"Wrong number of inspection results for {expectedResultCount.Key}");
             }
         }
 
@@ -228,19 +231,12 @@ End Property";
                 [LineLabelName] = 0
             };
 
-            var builder = new MockVbeBuilder();
-            var referencedProjectBuilder = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected);
-
-            foreach (var expectedResultCount in expectedResultCountsByDeclarationIdentifierName)
-            {
-                referencedProjectBuilder.AddComponent(expectedResultCount.Key, ComponentType.StandardModule, "");
-            }
-
-            var referencedProject = referencedProjectBuilder.Build();
-            builder.AddProject(referencedProject);
-            var userProject = CreateUserProject(builder).AddReference("Foo", "").Build();
-            builder.AddProject(userProject);
-
+            var builder = TestVbeWithUserProjectAndReferencedProjectWithComponentsOfOneType(
+                referencedProjectName: "Foo",
+                testBaseNames: expectedResultCountsByDeclarationIdentifierName.Keys,
+                referencedComponentsComponentType: ComponentType.StandardModule,
+                componentNameSelector: key => key, 
+                componentCodeSelector: key => string.Empty);
             var vbe = builder.Build();
 
             Dictionary<string, int> inspectionResultCounts;
@@ -283,17 +279,11 @@ End Property";
                 [LineLabelName] = 0
             };
 
-            var builder = new MockVbeBuilder();
-            var userProjectBuilder = CreateUserProject(builder);
-
-            foreach (var expectedResultCount in expectedResultCountsByDeclarationIdentifierName)
-            {
-                userProjectBuilder.AddComponent(expectedResultCount.Key, ComponentType.StandardModule, "");
-            }
-
-            var userProject = userProjectBuilder.Build();
-            builder.AddProject(userProject);
-
+            var builder = TestVbeWithUserProjectWithAdditionalComponentsOfOneType(
+                testBaseNames: expectedResultCountsByDeclarationIdentifierName.Keys,
+                additionalComponentsComponentType: ComponentType.StandardModule,
+                componentNameSelector: key => key,
+                componentCodeSelector: key => string.Empty);
             var vbe = builder.Build();
 
             Dictionary<string, int> inspectionResultCounts;
@@ -336,18 +326,12 @@ End Property";
                 [LineLabelName] = 0
             };
 
-            var builder = new MockVbeBuilder();
-            var referencedProjectBuilder = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected);
-
-            foreach (var expectedResultCount in expectedResultCountsByDeclarationIdentifierName)
-            {
-                referencedProjectBuilder.AddComponent(expectedResultCount.Key, ComponentType.ClassModule, "");
-            }
-            var referencedProject = referencedProjectBuilder.Build();
-            builder.AddProject(referencedProject);
-            var userProject = CreateUserProject(builder).AddReference("Foo", "").Build();
-            builder.AddProject(userProject);
-
+            var builder = TestVbeWithUserProjectAndReferencedProjectWithComponentsOfOneType(
+                referencedProjectName: "Foo",
+                testBaseNames: expectedResultCountsByDeclarationIdentifierName.Keys,
+                referencedComponentsComponentType: ComponentType.ClassModule,
+                componentNameSelector: key => key,
+                componentCodeSelector: key => string.Empty);
             var vbe = builder.Build();
 
             Dictionary<string, int> inspectionResultCounts;
@@ -390,18 +374,12 @@ End Property";
                 [LineLabelName] = 0
             };
 
-            var builder = new MockVbeBuilder();
-            var referencedProjectBuilder = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected);
-
-            foreach (var expectedResultCount in expectedResultCountsByDeclarationIdentifierName)
-            {
-                referencedProjectBuilder.AddComponent(expectedResultCount.Key, ComponentType.UserForm, "");
-            }
-            var referencedProject = referencedProjectBuilder.Build();
-            builder.AddProject(referencedProject);
-            var userProject = CreateUserProject(builder).AddReference("Foo", "").Build();
-            builder.AddProject(userProject);
-
+            var builder = TestVbeWithUserProjectAndReferencedProjectWithComponentsOfOneType(
+                referencedProjectName: "Foo",
+                testBaseNames: expectedResultCountsByDeclarationIdentifierName.Keys,
+                referencedComponentsComponentType: ComponentType.UserForm,
+                componentNameSelector: key => key,
+                componentCodeSelector: key => string.Empty);
             var vbe = builder.Build();
 
             Dictionary<string, int> inspectionResultCounts;
@@ -444,17 +422,11 @@ End Property";
                 [LineLabelName] = 0
             };
 
-            var builder = new MockVbeBuilder();
-            var userProjectBuilder = CreateUserProject(builder);
-
-            foreach (var expectedResultCount in expectedResultCountsByDeclarationIdentifierName)
-            {
-                userProjectBuilder.AddComponent(expectedResultCount.Key, ComponentType.UserForm, "");
-            }
-
-            var userProject = userProjectBuilder.Build();
-            builder.AddProject(userProject);
-
+            var builder = TestVbeWithUserProjectWithAdditionalComponentsOfOneType(
+                testBaseNames: expectedResultCountsByDeclarationIdentifierName.Keys,
+                additionalComponentsComponentType: ComponentType.UserForm,
+                componentNameSelector: key => key,
+                componentCodeSelector: key => string.Empty);
             var vbe = builder.Build();
 
             Dictionary<string, int> inspectionResultCounts;
@@ -497,18 +469,12 @@ End Property";
                 [LineLabelName] = 0
             };
 
-            var builder = new MockVbeBuilder();
-            var referencedProjectBuilder = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected);
-
-            foreach (var expectedResultCount in expectedResultCountsByDeclarationIdentifierName)
-            {
-                referencedProjectBuilder.AddComponent(expectedResultCount.Key, ComponentType.Document, "");
-            }
-            var referencedProject = referencedProjectBuilder.Build();
-            builder.AddProject(referencedProject);
-            var userProject = CreateUserProject(builder).AddReference("Foo", "").Build();
-            builder.AddProject(userProject);
-
+            var builder = TestVbeWithUserProjectAndReferencedProjectWithComponentsOfOneType(
+                referencedProjectName: "Foo",
+                testBaseNames: expectedResultCountsByDeclarationIdentifierName.Keys,
+                referencedComponentsComponentType: ComponentType.Document,
+                componentNameSelector: key => key,
+                componentCodeSelector: key => string.Empty);
             var vbe = builder.Build();
 
             Dictionary<string, int> inspectionResultCounts;
@@ -551,17 +517,11 @@ End Property";
                 [LineLabelName] = 0
             };
 
-            var builder = new MockVbeBuilder();
-            var userProjectBuilder = CreateUserProject(builder);
-
-            foreach (var expectedResultCount in expectedResultCountsByDeclarationIdentifierName)
-            {
-                userProjectBuilder.AddComponent(expectedResultCount.Key, ComponentType.Document, "");
-            }
-
-            var userProject = userProjectBuilder.Build();
-            builder.AddProject(userProject);
-
+            var builder = TestVbeWithUserProjectWithAdditionalComponentsOfOneType(
+                testBaseNames: expectedResultCountsByDeclarationIdentifierName.Keys,
+                additionalComponentsComponentType: ComponentType.Document,
+                componentNameSelector: key => key,
+                componentCodeSelector: key => string.Empty);
             var vbe = builder.Build();
 
             Dictionary<string, int> inspectionResultCounts;
@@ -605,21 +565,12 @@ End Property";
                 [LineLabelName] = 0
             };
 
-            var builder = new MockVbeBuilder();
-            var referencedProjectBuilder = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected);
-
-            foreach (var expectedResultCount in expectedResultCountsByDeclarationIdentifierName)
-            {
-                var referencedModuleCode =
-                    $@"Public Sub {expectedResultCount.Key}()
-End Sub";
-                referencedProjectBuilder.AddComponent("Bar" + expectedResultCount.Key, ComponentType.StandardModule, referencedModuleCode);
-            }
-            var referencedProject = referencedProjectBuilder.Build();
-            builder.AddProject(referencedProject);
-            var userProject = CreateUserProject(builder).AddReference("Foo", "").Build();
-            builder.AddProject(userProject);
-
+            var builder = TestVbeWithUserProjectAndReferencedProjectWithComponentsOfOneType(
+                referencedProjectName: "Foo",
+                testBaseNames: expectedResultCountsByDeclarationIdentifierName.Keys,
+                referencedComponentsComponentType: ComponentType.StandardModule,
+                componentNameSelector: key => "Bar" + key, componentCodeSelector: key => $@"Public Sub {key}()
+End Sub");
             var vbe = builder.Build();
 
             Dictionary<string, int> inspectionResultCounts;
@@ -663,21 +614,12 @@ End Sub";
                 [LineLabelName] = 0
             };
 
-            var builder = new MockVbeBuilder();
-            var referencedProjectBuilder = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected);
-
-            foreach (var expectedResultCount in expectedResultCountsByDeclarationIdentifierName)
-            {
-                var referencedModuleCode =
-                    $@"Private Sub {expectedResultCount.Key}()
-End Sub";
-                referencedProjectBuilder.AddComponent("Bar" + expectedResultCount.Key, ComponentType.StandardModule, referencedModuleCode);
-            }
-            var referencedProject = referencedProjectBuilder.Build();
-            builder.AddProject(referencedProject);
-            var userProject = CreateUserProject(builder).AddReference("Foo", "").Build();
-            builder.AddProject(userProject);
-
+            var builder = TestVbeWithUserProjectAndReferencedProjectWithComponentsOfOneType(
+                referencedProjectName: "Foo",
+                testBaseNames: expectedResultCountsByDeclarationIdentifierName.Keys,
+                referencedComponentsComponentType: ComponentType.StandardModule,
+                componentNameSelector: key => "Bar" + key, componentCodeSelector: key => $@"Private Sub {key}()
+End Sub");
             var vbe = builder.Build();
 
             Dictionary<string, int> inspectionResultCounts;
@@ -720,28 +662,22 @@ End Sub";
                 [LineLabelName] = 0
             };
 
-            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
+            var builder = TestVbeWithUserProjectWithAdditionalComponentsOfOneType(
+                testBaseNames: expectedResultCountsByDeclarationIdentifierName.Keys,
+                additionalComponentsComponentType: ComponentType.StandardModule,
+                componentNameSelector: key => "Foo" + key, 
+                componentCodeSelector: key => $@"Public Sub {key}()
+End Sub");
+            var vbe = builder.Build();
+
+            Dictionary<string, int> inspectionResultCounts;
+            using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                var userModuleCode =
-                    $@"Public Sub {result.Key}()
-End Sub";
-
-                var builder = new MockVbeBuilder();
-                var userProject = CreateUserProject(builder)
-                    .AddComponent("Foo", ComponentType.StandardModule, userModuleCode).Build();
-                builder.AddProject(userProject);
-
-                var vbe = builder.Build();
-                using (var state = MockParser.CreateAndParse(vbe.Object))
-                {
-
-                    var inspection = new ShadowedDeclarationInspection(state);
-                    var inspectionResults = inspection.GetInspectionResults();
-
-                    Assert.AreEqual(result.Value, inspectionResults.Count(),
-                        $"Wrong number of inspection results for public {result.Key}");
-                }
+                var inspection = new ShadowedDeclarationInspection(state);
+                inspectionResultCounts = InspectionResultCountsByTargetIdentifierName(inspection);
             }
+
+            AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
         [TestMethod]
@@ -774,26 +710,22 @@ End Sub";
                 [LineLabelName] = 0
             };
 
-            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
+            var builder = TestVbeWithUserProjectWithAdditionalComponentsOfOneType(
+                testBaseNames: expectedResultCountsByDeclarationIdentifierName.Keys,
+                additionalComponentsComponentType: ComponentType.StandardModule,
+                componentNameSelector: key => "Foo" + key,
+                componentCodeSelector: key => $@"Private Sub {key}()
+End Sub");
+            var vbe = builder.Build();
+
+            Dictionary<string, int> inspectionResultCounts;
+            using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                var userModuleCode =
-                    $@"Private Sub {result.Key}()
-End Sub";
-
-                var builder = new MockVbeBuilder();
-                var userProject = CreateUserProject(builder).AddComponent("Foo", ComponentType.StandardModule, userModuleCode).Build();
-                builder.AddProject(userProject);
-
-                var vbe = builder.Build();
-                using (var state = MockParser.CreateAndParse(vbe.Object))
-                {
-
-                    var inspection = new ShadowedDeclarationInspection(state);
-                    var inspectionResults = inspection.GetInspectionResults();
-
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for private {result.Key}");
-                }
+                var inspection = new ShadowedDeclarationInspection(state);
+                inspectionResultCounts = InspectionResultCountsByTargetIdentifierName(inspection);
             }
+
+            AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
         [TestMethod]
@@ -858,18 +790,16 @@ End Property
 Public Property Set {PropertyLetName}(s As String)
 End Property";
 
-                var builder = new MockVbeBuilder();
-                var project = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected)
-                    .AddComponent(ProceduralModuleName, ComponentType.StandardModule, code).Build();
+                var vbe = MockVbeBuilder.BuildFromSingleStandardModule(code, out _);
 
-                var vbe = builder.AddProject(project).Build();
+                IEnumerable<IInspectionResult> inspectionResults;
                 using (var state = MockParser.CreateAndParse(vbe.Object))
                 {
                     var inspection = new ShadowedDeclarationInspection(state);
-                    var inspectionResults = inspection.GetInspectionResults();
-
-                    Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for public {result.Key}");
+                    inspectionResults = inspection.GetInspectionResults();
                 }
+
+                Assert.AreEqual(result.Value, inspectionResults.Count(), $"Wrong number of inspection results for public {result.Key}");
             }
         }
 
@@ -904,31 +834,31 @@ End Property";
                 [LineLabelName] = 0
             };
 
-            foreach (var result in expectedResultCountsByDeclarationIdentifierName)
+            var builder = new MockVbeBuilder();
+            var referencedProjectBuilder = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected);
+
+            foreach (var expectedResultCount in expectedResultCountsByDeclarationIdentifierName)
             {
                 var referencedModuleCode =
-                    $@"Public Function {result.Key}()
+                    $@"Public Function {expectedResultCount.Key}()
 End Function";
-
-                var builder = new MockVbeBuilder();
-                var referencedProject = builder.ProjectBuilder("Foo", ProjectProtection.Unprotected)
-                    .AddComponent("Bar", ComponentType.StandardModule, referencedModuleCode)
-                    .Build();
-                builder.AddProject(referencedProject);
-                var userProject = CreateUserProject(builder).AddReference("Foo", "").Build();
-                builder.AddProject(userProject);
-
-                var vbe = builder.Build();
-                using (var state = MockParser.CreateAndParse(vbe.Object))
-                {
-
-                    var inspection = new ShadowedDeclarationInspection(state);
-                    var inspectionResults = inspection.GetInspectionResults();
-
-                    Assert.AreEqual(result.Value, inspectionResults.Count(),
-                        $"Wrong number of inspection results for public {result.Key}");
-                }
+                referencedProjectBuilder.AddComponent("Bar" + expectedResultCount.Key, ComponentType.StandardModule, referencedModuleCode);
             }
+            var referencedProject = referencedProjectBuilder.Build();
+            builder.AddProject(referencedProject);
+            var userProject = CreateUserProject(builder).AddReference("Foo", "").Build();
+            builder.AddProject(userProject);
+
+            var vbe = builder.Build();
+
+            Dictionary<string, int> inspectionResultCounts;
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new ShadowedDeclarationInspection(state);
+                inspectionResultCounts = InspectionResultCountsByTargetIdentifierName(inspection);
+            }
+
+            AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
         [TestMethod]
@@ -5120,6 +5050,39 @@ End Sub";
                 .AddComponent(ClassModuleName, ComponentType.ClassModule, $"Public Event {EventName}()")
                 .AddComponent(UserFormName, ComponentType.UserForm, "")
                 .AddComponent(DocumentName, ComponentType.Document, "");
+        }
+
+        private MockVbeBuilder TestVbeWithUserProjectAndReferencedProjectWithComponentsOfOneType(string referencedProjectName, IEnumerable<string> testBaseNames, ComponentType referencedComponentsComponentType, Func<string, string> componentNameSelector, Func<string, string> componentCodeSelector, string userProjectName = ProjectName)
+        {
+            var builder = new MockVbeBuilder();
+            var referencedProjectBuilder = builder.ProjectBuilder(referencedProjectName, ProjectProtection.Unprotected);
+
+            foreach (var baseName in testBaseNames)
+            {
+                referencedProjectBuilder.AddComponent(componentNameSelector(baseName), referencedComponentsComponentType, componentCodeSelector(baseName));
+            }
+            var referencedProject = referencedProjectBuilder.Build();
+            builder.AddProject(referencedProject);
+            var userProject = CreateUserProject(builder, userProjectName).AddReference(referencedProjectName, string.Empty).Build();
+            builder.AddProject(userProject);
+
+            return builder;
+        }
+
+        private MockVbeBuilder TestVbeWithUserProjectWithAdditionalComponentsOfOneType(IEnumerable<string> testBaseNames, ComponentType additionalComponentsComponentType, Func<string, string> componentNameSelector, Func<string, string> componentCodeSelector, string userProjectName = ProjectName)
+        {
+            var builder = new MockVbeBuilder();
+            var userProjectBuilder = CreateUserProject(builder, userProjectName);
+
+            foreach (var baseName in testBaseNames)
+            {
+                userProjectBuilder.AddComponent(componentNameSelector(baseName), additionalComponentsComponentType, componentCodeSelector(baseName));
+            }
+
+            var userProject = userProjectBuilder.Build();
+            builder.AddProject(userProject);
+
+            return builder;
         }
     }
 }
