@@ -98,9 +98,12 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="SelectionLocationPosition">
-    <value />
+    <value>Z{0}S{1}</value>
   </data>
   <data name="SelectionLocationRange">
-    <value />
+    <value>Z{0}S{1} - Z{2}S{3}</value>
+  </data>
+  <data name="NonexistentComponentErrorText" xml:space="preserve">
+    <value>Dokumenttypenkomponente {0} existiert nicht. Es kann kein Code aus dem Repository importiert werden.</value>
   </data>
 </root>
