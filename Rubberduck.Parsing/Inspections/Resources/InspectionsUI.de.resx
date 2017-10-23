@@ -123,9 +123,6 @@
   <data name="AssignedByValParameterInspectionName" xml:space="preserve">
     <value>ByVal Parameter ist zugewiesen</value>
   </data>
-  <data name="CodeQualityIssues" xml:space="preserve">
-    <value>Code Qualitätsproblem</value>
-  </data>
   <data name="ConstantNotUsedInspectionMeta" xml:space="preserve">
     <value>Rubberduck konnte keine Referenz auf eine Konstante finden. Überlegen Sie eine Entfernung der nicht verwendeten Deklaration.</value>
   </data>
@@ -177,12 +174,6 @@
   <data name="ImplicitActiveWorkbookReferenceInspectionName" xml:space="preserve">
     <value>Impliziete Referenz zum ' ActiveWorkbook'</value>
   </data>
-  <data name="ImplicitByRefParameterInspectionMeta" xml:space="preserve">
-    <value>Parameter werden als Referenz übergeben, wenn diese speziell übergene werden. Dies ist verwirrend und fehleranfällig. Deshalb sollten Parameter als Wert übergeben werden und nur in speziellen Fällen als Referenz.</value>
-  </data>
-  <data name="ImplicitByRefParameterInspectionName" xml:space="preserve">
-    <value>Implizierter ByRef Parameter</value>
-  </data>
   <data name="ImplicitPublicMemberInspectionMeta" xml:space="preserve">
     <value>Die Methoden eines Moduls sind standardmäßig öffentlich, was irreführend sein kann. Besser ist es, den Gültigkeitsbereich der Methoden explizit zu definieren.</value>
   </data>
@@ -190,7 +181,7 @@
     <value>Implizierte öffentliche Methode</value>
   </data>
   <data name="ImplicitVariantReturnTypeInspectionMeta" xml:space="preserve">
-    <value>Methoden mit einem Rückgabewet geben, wenn nicht nanders angegeben, implizit 'Variant' zurück. Überlege ob es nicht besser ist, den Rückgabewert explizit als 'Variant' zu definieren, wenn der Typ des Rückgabewertes nicht bekannt ist.</value>
+    <value>Methoden mit einem Rückgabewert geben, wenn nicht anders angegeben, implizit 'Variant' zurück. Überlege, ob es nicht besser ist, den Rückgabewert explizit als 'Variant' zu definieren, wenn der Typ des Rückgabewertes nicht bekannt ist.</value>
   </data>
   <data name="ImplicitVariantReturnTypeInspectionName" xml:space="preserve">
     <value>Rückgabewert der Methode ist implizit 'Variant'</value>
@@ -203,12 +194,6 @@
   </data>
   <data name="MoveFieldCloserToUsageInspectionResultFormat" xml:space="preserve">
     <value>Veringere die Größe der Modulvariable '{0}'.</value>
-  </data>
-  <data name="LanguageOpportunities" xml:space="preserve">
-    <value>Sprachmöglichkeiten</value>
-  </data>
-  <data name="MaintainabilityAndReadabilityIssues" xml:space="preserve">
-    <value>Wartungs- und Lesbarkeitsproblem</value>
   </data>
   <data name="MultilineParameterInspectionMeta" xml:space="preserve">
     <value>Überlege lange Parameterdeklarationen zusammenzuhalten. Das Aufteilen einer Parameterdeklaration über mehrere Zeilen sollte zugunsten der besseren Lesbarkeit vermieden werden.</value>
@@ -381,9 +366,6 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
   <data name="IdentifierNotUsedInspectionResultFormat" xml:space="preserve">
     <value>{0} '{1}' wird nicht genutzt</value>
   </data>
-  <data name="ImplicitByRefParameterInspectionResultFormat" xml:space="preserve">
-    <value>Der Parameter '{0}' wird implizit als Referenz übergeben.</value>
-  </data>
   <data name="ImplicitPublicMemberInspectionResultFormat" xml:space="preserve">
     <value>Methode '{0}' ist implizit 'Public'</value>
   </data>
@@ -419,9 +401,6 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
   </data>
   <data name="DeclareAsExplicitVariantQuickFix" xml:space="preserve">
     <value>Deklariere als explizit 'Variant'</value>
-  </data>
-  <data name="ImplicitByRefParameterQuickFix" xml:space="preserve">
-    <value>Parameter explizit als Referenz angeben</value>
   </data>
   <data name="Inspections_UnassignedVariableTodo" xml:space="preserve">
     <value>TODO</value>
@@ -876,16 +855,16 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
   <data name="StopKeywordInspectionName">
     <value>Stop keyword</value>
   </data>
-  <data name="ReplaceIfElseWithConditionalStatementQuickFix">
-    <value>Replace If/Else with single assignment</value>
-  </data>
-  <data name="BooleanAssignedInIfElseInspectionResultFormat">
-    <value>Boolsche Zeichenkette '{0}' wird in Bedingung zugewiesen</value>
-  </data>
   <data name="BooleanAssignedInIfElseInspectionMeta">
     <value>Ein Mitglied wird in verschiedenen Zweigen einer if-Anweisung mit True / False zugewiesen, wobei keine anderen Anweisungen in der Bedingung enthalten sind. Verwenden Sie die Bedingung stattdessen direkt für das Mitglied.</value>
   </data>
   <data name="BooleanAssignedInIfElseInspectionName">
     <value>Boolsche Zeichenkette wird in Bedingung zugewiesen</value>
+  </data>
+  <data name="ReplaceIfElseWithConditionalStatementQuickFix" xml:space="preserve">
+    <value>Ersetze If/Else mit einer einfachen Zuordnung </value>
+  </data>
+  <data name="BooleanAssignedInIfElseInspectionResultFormat" xml:space="preserve">
+    <value>Boolean Ausdruck '{0}' wurde in einer trivialen If/Else-Verzweigung zugewiesen</value>
   </data>
 </root>

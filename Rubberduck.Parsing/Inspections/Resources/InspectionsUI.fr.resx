@@ -123,9 +123,6 @@
   <data name="AssignedByValParameterInspectionName" xml:space="preserve">
     <value>Assignation d'un paramètre passé par valeur (ByVal)</value>
   </data>
-  <data name="CodeQualityIssues" xml:space="preserve">
-    <value>Qualité du code</value>
-  </data>
   <data name="ConstantNotUsedInspectionMeta" xml:space="preserve">
     <value>La constante est déclarée, mais Rubberduck n'a pu trouver aucune référence; la déclaration pourrait être supprimée.</value>
   </data>
@@ -177,12 +174,6 @@
   <data name="ImplicitActiveWorkbookReferenceInspectionName" xml:space="preserve">
     <value>Référence implicite au classeur actif</value>
   </data>
-  <data name="ImplicitByRefParameterInspectionMeta" xml:space="preserve">
-    <value>Les paramètres sont passés par référence à moins qu'ils soient spécifiés autrement, ce qui peut être déroutant et rendre le code plus enclin à introduire des bogues. Passer les paramètres par valeur (ByVal) de préférence, et spécifier ByRef explicitement lorsque les paramètres sont passés par référence.</value>
-  </data>
-  <data name="ImplicitByRefParameterInspectionName" xml:space="preserve">
-    <value>Paramètre ByRef implicite</value>
-  </data>
   <data name="ImplicitPublicMemberInspectionMeta" xml:space="preserve">
     <value>Les membres d'un module sont publics par défaut, ce qui peut être contre-intuitif. Considérez spécifier les modificateurs d'accès explicitement pour éviter toute ambiguïté.</value>
   </data>
@@ -203,12 +194,6 @@
   </data>
   <data name="MoveFieldCloserToUsageInspectionResultFormat" xml:space="preserve">
     <value>Restreindre la portée du champ '{0}'</value>
-  </data>
-  <data name="LanguageOpportunities" xml:space="preserve">
-    <value>Opportunités du language</value>
-  </data>
-  <data name="MaintainabilityAndReadabilityIssues" xml:space="preserve">
-    <value>Maintenance et lisibilité</value>
   </data>
   <data name="MultilineParameterInspectionMeta" xml:space="preserve">
     <value>Considérez insérer les continuations entre les paramètres d'une longue signature. Séparer la déclaraion d'un paramètre sur plusieurs lignes rend plus difficile la lecture du code.</value>
@@ -380,9 +365,6 @@
   <data name="IdentifierNotUsedInspectionResultFormat" xml:space="preserve">
     <value>{0} '{1}' n'est pas utilisé(e).</value>
   </data>
-  <data name="ImplicitByRefParameterInspectionResultFormat" xml:space="preserve">
-    <value>Le paramètre '{0}' est passé par référence implicitement</value>
-  </data>
   <data name="ImplicitPublicMemberInspectionResultFormat" xml:space="preserve">
     <value>Le membre '{0}' est implicitement public</value>
   </data>
@@ -418,9 +400,6 @@
   </data>
   <data name="DeclareAsExplicitVariantQuickFix" xml:space="preserve">
     <value>Déclarer explicitement comme Variant</value>
-  </data>
-  <data name="ImplicitByRefParameterQuickFix" xml:space="preserve">
-    <value>Passer le paramètre par référence explicitement</value>
   </data>
   <data name="Inspections_UnassignedVariableTodo" xml:space="preserve">
     <value>TODO</value>
