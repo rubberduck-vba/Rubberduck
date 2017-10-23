@@ -4842,8 +4842,34 @@ End Function");
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ShadowedDeclaration_DoesNotReturnResult_DeclarationsInsideClassModuleInContainingProject()
+        public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsInsideClassModuleInContainingProject()
         {
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
+            {
+                [ProjectName] = 0,
+                [ProceduralModuleName] = 0,
+                [ClassModuleName] = 0,
+                [UserFormName] = 0,
+                [DocumentName] = 0,
+                [ProcedureName] = 1,
+                [FunctionName] = 1,
+                [PropertyGetName] = 1,
+                [PropertySetName] = 1,
+                [PropertyLetName] = 1,
+                [ParameterName] = 0,
+                [VariableName] = 1,
+                [LocalVariableName] = 0,
+                [ConstantName] = 0,
+                [LocalConstantName] = 0,
+                [EnumerationName] = 1,
+                [EnumerationMemberName] = 1,
+                [UserDefinedTypeName] = 0,
+                [UserDefinedTypeMemberName] = 0,
+                [LibraryProcedureName] = 0,
+                [LibraryFunctionName] = 0,
+                [LineLabelName] = 0
+            };
+            
             var builder = TestVbeWithUserProjectWithAdditionalComponent(
                 additionalComponentName: "Foo",
                 additionalComponentComponentType: ComponentType.ClassModule,
@@ -4854,10 +4880,13 @@ End Function");
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new ShadowedDeclarationInspection(state);
-                inspectionResults = inspection.GetInspectionResults();
+                inspectionResults = inspection.GetInspectionResults().ToList();
             }
+            var inspectionResultCounts = InspectionResultCountsByTargetIdentifierName(inspectionResults);
 
-            Assert.IsFalse(inspectionResults.Any());
+            AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
+            //All shadowing happens inside the class module.
+            Assert.IsTrue(inspectionResults.All(result => result.Target.QualifiedName.QualifiedModuleName.ComponentName == "Foo"));
         }
 
         [TestMethod]
@@ -4883,8 +4912,34 @@ End Function");
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ShadowedDeclaration_DoesNotReturnResult_DeclarationsInsideUserFormInContainingProject()
+        public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsInsideUserFormInContainingProject()
         {
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
+            {
+                [ProjectName] = 0,
+                [ProceduralModuleName] = 0,
+                [ClassModuleName] = 0,
+                [UserFormName] = 0,
+                [DocumentName] = 0,
+                [ProcedureName] = 1,
+                [FunctionName] = 1,
+                [PropertyGetName] = 1,
+                [PropertySetName] = 1,
+                [PropertyLetName] = 1,
+                [ParameterName] = 0,
+                [VariableName] = 1,
+                [LocalVariableName] = 0,
+                [ConstantName] = 0,
+                [LocalConstantName] = 0,
+                [EnumerationName] = 1,
+                [EnumerationMemberName] = 1,
+                [UserDefinedTypeName] = 0,
+                [UserDefinedTypeMemberName] = 0,
+                [LibraryProcedureName] = 0,
+                [LibraryFunctionName] = 0,
+                [LineLabelName] = 0
+            };
+
             var builder = TestVbeWithUserProjectWithAdditionalComponent(
                 additionalComponentName: "Foo",
                 additionalComponentComponentType: ComponentType.UserForm,
@@ -4895,10 +4950,13 @@ End Function");
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new ShadowedDeclarationInspection(state);
-                inspectionResults = inspection.GetInspectionResults();
+                inspectionResults = inspection.GetInspectionResults().ToList();
             }
+            var inspectionResultCounts = InspectionResultCountsByTargetIdentifierName(inspectionResults);
 
-            Assert.IsFalse(inspectionResults.Any());
+            AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
+            //All shadowing happens inside the user form.
+            Assert.IsTrue(inspectionResults.All(result => result.Target.QualifiedName.QualifiedModuleName.ComponentName == "Foo"));
         }
 
         [TestMethod]
@@ -4924,8 +4982,34 @@ End Function");
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void ShadowedDeclaration_DoesNotReturnResult_DeclarationsInsideDocumentInContainingProject()
+        public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsInsideDocumentInContainingProject()
         {
+            var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
+            {
+                [ProjectName] = 0,
+                [ProceduralModuleName] = 0,
+                [ClassModuleName] = 0,
+                [UserFormName] = 0,
+                [DocumentName] = 0,
+                [ProcedureName] = 1,
+                [FunctionName] = 1,
+                [PropertyGetName] = 1,
+                [PropertySetName] = 1,
+                [PropertyLetName] = 1,
+                [ParameterName] = 0,
+                [VariableName] = 1,
+                [LocalVariableName] = 0,
+                [ConstantName] = 0,
+                [LocalConstantName] = 0,
+                [EnumerationName] = 1,
+                [EnumerationMemberName] = 1,
+                [UserDefinedTypeName] = 0,
+                [UserDefinedTypeMemberName] = 0,
+                [LibraryProcedureName] = 0,
+                [LibraryFunctionName] = 0,
+                [LineLabelName] = 0
+            };
+
             var builder = TestVbeWithUserProjectWithAdditionalComponent(
                 additionalComponentName: "Foo",
                 additionalComponentComponentType: ComponentType.Document,
@@ -4936,10 +5020,13 @@ End Function");
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new ShadowedDeclarationInspection(state);
-                inspectionResults = inspection.GetInspectionResults();
+                inspectionResults = inspection.GetInspectionResults().ToList();
             }
+            var inspectionResultCounts = InspectionResultCountsByTargetIdentifierName(inspectionResults);
 
-            Assert.IsFalse(inspectionResults.Any());
+            AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
+            //All shadowing happens inside the document module.
+            Assert.IsTrue(inspectionResults.All(result => result.Target.QualifiedName.QualifiedModuleName.ComponentName == "Foo"));
         }
 
         [TestMethod]
