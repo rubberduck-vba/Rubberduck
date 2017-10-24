@@ -14,17 +14,19 @@ namespace RubberduckTests.Inspections
         public void VariableNotUsed_ReturnsResult()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
     Dim var1 As String
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new VariableNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new VariableNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(1, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -32,18 +34,20 @@ End Sub";
         public void VariableNotUsed_ReturnsResult_MultipleVariables()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
     Dim var1 As String
     Dim var2 As Date
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new VariableNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new VariableNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(2, inspectionResults.Count());
+                Assert.AreEqual(2, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -51,7 +55,7 @@ End Sub";
         public void VariableUsed_DoesNotReturnResult()
         {
             const string inputCode =
-@"Function Foo() As Boolean
+                @"Function Foo() As Boolean
     Dim var1 as String
     var1 = ""test""
 
@@ -62,12 +66,14 @@ Sub Goo(ByVal arg1 As String)
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new VariableNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new VariableNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(0, inspectionResults.Count());
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -75,7 +81,7 @@ End Sub";
         public void VariableNotUsed_ReturnsResult_MultipleVariables_SomeAssigned()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
     Dim var1 as Integer
     var1 = 8
 
@@ -88,12 +94,14 @@ Sub Goo(ByVal arg1 As Integer)
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new VariableNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new VariableNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(1, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -101,18 +109,20 @@ End Sub";
         public void VariableNotUsed_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
     '@Ignore VariableNotUsed
     Dim var1 As String
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new VariableNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new VariableNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.IsFalse(inspectionResults.Any());
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
 
         [TestMethod]
@@ -120,18 +130,20 @@ End Sub";
         public void VariableNotUsed_DoesNotReturnsResult_UsedInNameStatement()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
     Dim var1 As String
     Name ""foo"" As var1
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new VariableNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new VariableNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.IsFalse(inspectionResults.Any());
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
 
         [TestMethod]

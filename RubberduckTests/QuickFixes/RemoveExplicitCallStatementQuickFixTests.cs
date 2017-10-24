@@ -16,7 +16,7 @@ namespace RubberduckTests.QuickFixes
         public void ObsoleteCallStatement_QuickFixWorks_RemoveCallStatement()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
     Call Goo(1, ""test"")
 End Sub
 
@@ -25,7 +25,7 @@ Sub Goo(arg1 As Integer, arg1 As String)
 End Sub";
 
             const string expectedCode =
-@"Sub Foo()
+                @"Sub Foo()
     Goo 1, ""test""
 End Sub
 
@@ -34,19 +34,20 @@ Sub Goo(arg1 As Integer, arg1 As String)
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new ObsoleteCallStatementInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-            var fix = new RemoveExplicitCallStatmentQuickFix(state);
-            foreach (var result in inspectionResults)
+            using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                fix.Fix(result);
-            }
+                var inspection = new ObsoleteCallStatementInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                var fix = new RemoveExplicitCallStatmentQuickFix(state);
+                foreach (var result in inspectionResults)
+                {
+                    fix.Fix(result);
+                }
+
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
     }

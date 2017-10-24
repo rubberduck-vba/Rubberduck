@@ -2145,7 +2145,7 @@ End Sub
             parser.ErrorHandler = new BailErrorStrategy();
             //parser.AddErrorListener(new ExceptionErrorListener());
             parser.Interpreter.PredictionMode = predictionMode ?? PredictionMode.Sll;
-            ParserRuleContext tree = null;
+            ParserRuleContext tree;
             try
             {
                 tree = parser.startRule();
@@ -2162,7 +2162,7 @@ End Sub
                 Debug.WriteLine(exception, "SLL Parser Exception");
                 return Parse(code, PredictionMode.Ll);
             }
-            return Tuple.Create<VBAParser, ParserRuleContext>(parser, tree);
+            return Tuple.Create(parser, tree);
         }
 
         private void AssertTree(VBAParser parser, ParserRuleContext root, string xpath)

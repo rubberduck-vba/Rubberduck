@@ -43,22 +43,24 @@ Sub DoSomething()
 End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out _);
 
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var inspection = new MissingAnnotationInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var result = inspector.FindIssuesAsync(state, CancellationToken.None).Result?.SingleOrDefault();
-            if (result?.Context.GetType() != typeof(VBAParser.AttributeStmtContext))
+            using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                Assert.Inconclusive("Inspection failed to return a result.");
+                var inspection = new MissingAnnotationInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var result = inspector.FindIssuesAsync(state, CancellationToken.None).Result?.SingleOrDefault();
+                if (result?.Context.GetType() != typeof(VBAParser.AttributeStmtContext))
+                {
+                    Assert.Inconclusive("Inspection failed to return a result.");
+                }
+
+                var fix = new SynchronizeAttributesQuickFix(state);
+                fix.Fix(result);
+
+                var rewriter = state.GetRewriter(result.QualifiedSelection.QualifiedName);
+                var actual = rewriter.GetText();
+
+                Assert.AreEqual(expectedCode, actual);
             }
-
-            var fix = new SynchronizeAttributesQuickFix(state);
-            fix.Fix(result);
-
-            var rewriter = state.GetRewriter(result.QualifiedSelection.QualifiedName);
-            var actual = rewriter.GetText();
-
-            Assert.AreEqual(expectedCode, actual);
         }
 
         [TestMethod]
@@ -91,22 +93,24 @@ Attribute DoSomething.VB_Description = ""Does something""
 End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out _);
 
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var inspection = new MissingAnnotationInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var result = inspector.FindIssuesAsync(state, CancellationToken.None).Result?.SingleOrDefault();
-            if (result?.Context.GetType() != typeof(VBAParser.AttributeStmtContext))
+            using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                Assert.Inconclusive("Inspection failed to return a result.");
+                var inspection = new MissingAnnotationInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var result = inspector.FindIssuesAsync(state, CancellationToken.None).Result?.SingleOrDefault();
+                if (result?.Context.GetType() != typeof(VBAParser.AttributeStmtContext))
+                {
+                    Assert.Inconclusive("Inspection failed to return a result.");
+                }
+
+                var fix = new SynchronizeAttributesQuickFix(state);
+                fix.Fix(result);
+
+                var rewriter = state.GetRewriter(result.QualifiedSelection.QualifiedName);
+                var actual = rewriter.GetText();
+
+                Assert.AreEqual(expectedCode, actual);
             }
-
-            var fix = new SynchronizeAttributesQuickFix(state);
-            fix.Fix(result);
-
-            var rewriter = state.GetRewriter(result.QualifiedSelection.QualifiedName);
-            var actual = rewriter.GetText();
-
-            Assert.AreEqual(expectedCode, actual);
         }
 
         [TestMethod]
@@ -139,22 +143,24 @@ Attribute DoSomething.VB_UserMemId = 0
 End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out _);
 
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var inspection = new MissingAnnotationInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var result = inspector.FindIssuesAsync(state, CancellationToken.None).Result?.SingleOrDefault();
-            if (result?.Context.GetType() != typeof(VBAParser.AttributeStmtContext))
+            using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                Assert.Inconclusive("Inspection failed to return a result.");
+                var inspection = new MissingAnnotationInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var result = inspector.FindIssuesAsync(state, CancellationToken.None).Result?.SingleOrDefault();
+                if (result?.Context.GetType() != typeof(VBAParser.AttributeStmtContext))
+                {
+                    Assert.Inconclusive("Inspection failed to return a result.");
+                }
+
+                var fix = new SynchronizeAttributesQuickFix(state);
+                fix.Fix(result);
+
+                var rewriter = state.GetRewriter(result.QualifiedSelection.QualifiedName);
+                var actual = rewriter.GetText();
+
+                Assert.AreEqual(expectedCode, actual);
             }
-
-            var fix = new SynchronizeAttributesQuickFix(state);
-            fix.Fix(result);
-
-            var rewriter = state.GetRewriter(result.QualifiedSelection.QualifiedName);
-            var actual = rewriter.GetText();
-
-            Assert.AreEqual(expectedCode, actual);
         }
 
         [TestMethod]
@@ -187,22 +193,24 @@ Attribute NewEnum.VB_UserMemId = -4
 End Property";
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out _);
 
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var inspection = new MissingAnnotationInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var result = inspector.FindIssuesAsync(state, CancellationToken.None).Result?.SingleOrDefault();
-            if (result?.Context.GetType() != typeof(VBAParser.AttributeStmtContext))
+            using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                Assert.Inconclusive("Inspection failed to return a result.");
+                var inspection = new MissingAnnotationInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var result = inspector.FindIssuesAsync(state, CancellationToken.None).Result?.SingleOrDefault();
+                if (result?.Context.GetType() != typeof(VBAParser.AttributeStmtContext))
+                {
+                    Assert.Inconclusive("Inspection failed to return a result.");
+                }
+
+                var fix = new SynchronizeAttributesQuickFix(state);
+                fix.Fix(result);
+
+                var rewriter = state.GetRewriter(result.QualifiedSelection.QualifiedName);
+                var actual = rewriter.GetText();
+
+                Assert.AreEqual(expectedCode, actual);
             }
-
-            var fix = new SynchronizeAttributesQuickFix(state);
-            fix.Fix(result);
-
-            var rewriter = state.GetRewriter(result.QualifiedSelection.QualifiedName);
-            var actual = rewriter.GetText();
-
-            Assert.AreEqual(expectedCode, actual);
         }
 
         [TestMethod]
@@ -239,22 +247,24 @@ Option Explicit
 
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out _);
 
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var inspection = new MissingAttributeInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var result = inspector.FindIssuesAsync(state, CancellationToken.None).Result?.SingleOrDefault();
-            if (result?.Context.GetType() != typeof(VBAParser.AnnotationContext))
+            using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                Assert.Inconclusive("Inspection failed to return a result.");
+                var inspection = new MissingAttributeInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var result = inspector.FindIssuesAsync(state, CancellationToken.None).Result?.SingleOrDefault();
+                if (result?.Context.GetType() != typeof(VBAParser.AnnotationContext))
+                {
+                    Assert.Inconclusive("Inspection failed to return a result.");
+                }
+
+                var fix = new SynchronizeAttributesQuickFix(state);
+                fix.Fix(result);
+
+                var rewriter = state.GetAttributeRewriter(result.QualifiedSelection.QualifiedName);
+                var actual = rewriter.GetText();
+
+                Assert.AreEqual(expectedCode, actual);
             }
-
-            var fix = new SynchronizeAttributesQuickFix(state);
-            fix.Fix(result);
-
-            var rewriter = state.GetAttributeRewriter(result.QualifiedSelection.QualifiedName);
-            var actual = rewriter.GetText();
-
-            Assert.AreEqual(expectedCode, actual);
         }
 
         [TestMethod]
@@ -291,22 +301,24 @@ Option Explicit
 
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out _);
 
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var inspection = new MissingAttributeInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var result = inspector.FindIssuesAsync(state, CancellationToken.None).Result?.SingleOrDefault();
-            if (result?.Context.GetType() != typeof(VBAParser.AnnotationContext))
+            using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                Assert.Inconclusive("Inspection failed to return a result.");
+                var inspection = new MissingAttributeInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var result = inspector.FindIssuesAsync(state, CancellationToken.None).Result?.SingleOrDefault();
+                if (result?.Context.GetType() != typeof(VBAParser.AnnotationContext))
+                {
+                    Assert.Inconclusive("Inspection failed to return a result.");
+                }
+
+                var fix = new SynchronizeAttributesQuickFix(state);
+                fix.Fix(result);
+
+                var rewriter = state.GetAttributeRewriter(result.QualifiedSelection.QualifiedName);
+                var actual = rewriter.GetText();
+
+                Assert.AreEqual(expectedCode, actual);
             }
-
-            var fix = new SynchronizeAttributesQuickFix(state);
-            fix.Fix(result);
-
-            var rewriter = state.GetAttributeRewriter(result.QualifiedSelection.QualifiedName);
-            var actual = rewriter.GetText();
-
-            Assert.AreEqual(expectedCode, actual);
         }
     }
 }

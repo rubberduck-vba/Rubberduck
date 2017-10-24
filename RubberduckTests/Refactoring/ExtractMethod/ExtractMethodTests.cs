@@ -51,19 +51,21 @@ Private Sub Foo()
 End Sub";
 
                 QualifiedModuleName qualifiedModuleName;
-                var state = MockParser.ParseString(inputCode, out qualifiedModuleName);
-                var declarations = state.AllDeclarations;
+                using (var state = MockParser.ParseString(inputCode, out qualifiedModuleName))
+                {
+                    var declarations = state.AllDeclarations;
 
-                var SUT = new ExtractedMethod();
+                    var SUT = new ExtractedMethod();
 
-                var expected = "NewMethod";
-                //Act
-                var actual = SUT.getNewMethodName(declarations);
+                    var expected = "NewMethod";
+                    //Act
+                    var actual = SUT.getNewMethodName(declarations);
 
-                //Assert
+                    //Assert
 
-                Assert.AreEqual(expected, actual);
+                    Assert.AreEqual(expected, actual);
 
+                }
             }
 
         }
@@ -89,18 +91,20 @@ End Sub";
                 #endregion inputCode
 
                 QualifiedModuleName qualifiedModuleName;
-                var state = MockParser.ParseString(inputCode, out qualifiedModuleName);
-                var declarations = state.AllDeclarations;
+                using (var state = MockParser.ParseString(inputCode, out qualifiedModuleName))
+                {
+                    var declarations = state.AllDeclarations;
 
-                var SUT = new ExtractedMethod();
+                    var SUT = new ExtractedMethod();
 
-                var expected = "NewMethod1";
-                //Act
-                var actual = SUT.getNewMethodName(declarations);
+                    var expected = "NewMethod1";
+                    //Act
+                    var actual = SUT.getNewMethodName(declarations);
 
-                //Assert
-                Assert.AreEqual(expected, actual);
+                    //Assert
+                    Assert.AreEqual(expected, actual);
 
+                }
             }
 
         }
@@ -134,18 +138,20 @@ End Sub";
                 #endregion inputCode
 
                 QualifiedModuleName qualifiedModuleName;
-                var state = MockParser.ParseString(inputCode, out qualifiedModuleName);
-                var declarations = state.AllDeclarations;
+                using (var state = MockParser.ParseString(inputCode, out qualifiedModuleName))
+                {
+                    var declarations = state.AllDeclarations;
 
-                var SUT = new ExtractedMethod();
+                    var SUT = new ExtractedMethod();
 
-                var expected = "NewMethod2";
-                //Act
-                var actual = SUT.getNewMethodName(declarations);
+                    var expected = "NewMethod2";
+                    //Act
+                    var actual = SUT.getNewMethodName(declarations);
 
-                //Assert
-                Assert.AreEqual(expected, actual);
+                    //Assert
+                    Assert.AreEqual(expected, actual);
 
+                }
             }
 
         }
