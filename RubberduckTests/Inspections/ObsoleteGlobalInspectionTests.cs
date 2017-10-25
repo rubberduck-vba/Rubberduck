@@ -14,14 +14,16 @@ namespace RubberduckTests.Inspections
         public void ObsoleteGlobal_ReturnsResult()
         {
             const string inputCode =
-@"Global var1 As Integer";
+                @"Global var1 As Integer";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ObsoleteGlobalInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new ObsoleteGlobalInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(1, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -29,15 +31,17 @@ namespace RubberduckTests.Inspections
         public void ObsoleteGlobal_ReturnsResult_MultipleGlobals()
         {
             const string inputCode =
-@"Global var1 As Integer
+                @"Global var1 As Integer
 Global var2 As String";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ObsoleteGlobalInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new ObsoleteGlobalInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(2, inspectionResults.Count());
+                Assert.AreEqual(2, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -45,14 +49,16 @@ Global var2 As String";
         public void ObsoleteGlobal_DoesNotReturnResult()
         {
             const string inputCode =
-@"Public var1 As Integer";
+                @"Public var1 As Integer";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ObsoleteGlobalInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new ObsoleteGlobalInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(0, inspectionResults.Count());
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -60,15 +66,17 @@ Global var2 As String";
         public void ObsoleteGlobal_ReturnsResult_SomeConstantsUsed()
         {
             const string inputCode =
-@"Public var1 As Integer
+                @"Public var1 As Integer
 Global var2 As Date";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ObsoleteGlobalInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new ObsoleteGlobalInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(1, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -76,15 +84,17 @@ Global var2 As Date";
         public void ObsoleteGlobal_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
-@"'@Ignore ObsoleteGlobal
+                @"'@Ignore ObsoleteGlobal
 Global var1 As Integer";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ObsoleteGlobalInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new ObsoleteGlobalInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.IsFalse(inspectionResults.Any());
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
 
         [TestMethod]

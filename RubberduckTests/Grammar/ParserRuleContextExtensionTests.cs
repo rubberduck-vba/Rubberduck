@@ -18,7 +18,7 @@ namespace RubberduckTests.Grammar
         public void Evil_Code_Selection_Not_Evil()
         {
             const string inputCode =
-@" _
+                @" _
  _
  Function _
  _
@@ -37,14 +37,16 @@ namespace RubberduckTests.Grammar
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var declaration = state.AllDeclarations.Single(d => d.IdentifierName.Equals("Foo"));
+                var declaration = state.AllDeclarations.Single(d => d.IdentifierName.Equals("Foo"));
 
-            var actual = ((VBAParser.FunctionStmtContext)declaration.Context).GetProcedureSelection();
-            var expected = new Selection(3, 2, 11, 14);
+                var actual = ((VBAParser.FunctionStmtContext)declaration.Context).GetProcedureSelection();
+                var expected = new Selection(3, 2, 11, 14);
 
-            Assert.AreEqual(actual, expected);
+                Assert.AreEqual(actual, expected);
+            }
         }
     }
 }

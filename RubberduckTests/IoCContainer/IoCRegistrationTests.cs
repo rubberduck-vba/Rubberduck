@@ -19,7 +19,10 @@ namespace RubberduckTests.IoCContainer
             var addin = new Mock<IAddIn>().Object;
             var initialSettings = new GeneralSettings {SourceControlEnabled = true};
 
-            var container = new WindsorContainer().Install(new RubberduckIoCInstaller(ide, addin, initialSettings));
+            using (var container =
+                new WindsorContainer().Install(new RubberduckIoCInstaller(ide, addin, initialSettings)))
+            {
+            }
 
             //This test does not need an assert because it tests that no exception has been thrown.
         }
@@ -32,7 +35,10 @@ namespace RubberduckTests.IoCContainer
             var addin = new Mock<IAddIn>().Object;
             var initialSettings = new GeneralSettings {SourceControlEnabled = false};
 
-            var container = new WindsorContainer().Install(new RubberduckIoCInstaller(ide, addin, initialSettings));
+            using (var container =
+                new WindsorContainer().Install(new RubberduckIoCInstaller(ide, addin, initialSettings)))
+            {
+            }
 
             //This test does not need an assert because it tests that no exception has been thrown.
         }

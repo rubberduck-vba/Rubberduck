@@ -12,8 +12,6 @@ using Rubberduck.VBEditor;
 using System.Globalization;
 using System.Reflection;
 using System.Threading;
-using Antlr4.Runtime;
-using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
