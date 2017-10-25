@@ -8,12 +8,16 @@ using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
+using System.Diagnostics;
+using NLog;
 
 namespace Rubberduck.Inspections.Abstract
 {
     public abstract class InspectionBase : IInspection
     {
         protected readonly RubberduckParserState State;
+
+        private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
         private readonly CodeInspectionSeverity _defaultSeverity;
 
         protected InspectionBase(RubberduckParserState state, CodeInspectionSeverity defaultSeverity = CodeInspectionSeverity.Warning)
@@ -23,11 +27,6 @@ namespace Rubberduck.Inspections.Abstract
             Severity = _defaultSeverity;
             Name = GetType().Name;
         }
-
-        /// <summary>
-        /// Gets the type of the inspection class. GetType() returns an interceptor proxy type.
-        /// </summary>
-        public abstract Type Type { get; }
 
         /// <summary>
         /// Gets a value the severity level to reset to, the "factory default" setting.
@@ -43,12 +42,6 @@ namespace Rubberduck.Inspections.Abstract
         /// Gets the type of inspection; used for regrouping inspections.
         /// </summary>
         public abstract CodeInspectionType InspectionType { get; }
-
-        /// <summary>
-        /// A method that inspects the parser state and returns all issues it can find.
-        /// </summary>
-        /// <returns></returns>
-        public abstract IEnumerable<IInspectionResult> GetInspectionResults();
 
         /// <summary>
         /// The inspection type name, obtained by reflection.
@@ -165,6 +158,22 @@ namespace Rubberduck.Inspections.Abstract
         public int CompareTo(object obj)
         {
             return CompareTo(obj as IInspection);
+        }
+        protected abstract IEnumerable<IInspectionResult> DoGetInspectionResults();
+
+        /// <summary>
+        /// A method that inspects the parser state and returns all issues it can find.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<IInspectionResult> GetInspectionResults()
+        {
+            var _stopwatch = new Stopwatch();
+            _stopwatch.Start();
+            var result = DoGetInspectionResults();
+            _stopwatch.Stop();
+            _logger.Trace("Intercepted invocation of '{0}.{1}' returned {2} objects.", GetType().Name, nameof(DoGetInspectionResults), result.Count());
+            _logger.Trace("Intercepted invocation of '{0}.{1}' ran for {2}ms", GetType().Name, nameof(DoGetInspectionResults), _stopwatch.ElapsedMilliseconds);
+            return result;
         }
     }
 }

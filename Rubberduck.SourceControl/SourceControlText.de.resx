@@ -158,6 +158,6 @@
     <value>Unpublish fehlgeschlagen.</value>
   </data>
   <data name="NoProjectOpen">
-    <value>There must be a project open for Rubberduck to successfully initialize a repository.</value>
+    <value>Es muss ein geöffnetes Projekt vorhanden sein, um ein Repository erfolgreich zu initialisieren.</value>
   </data>
 </root>

@@ -1,6 +1,6 @@
-﻿using NLog;
+﻿using System.Runtime.InteropServices;
+using NLog;
 using Rubberduck.UI.RegexAssistant;
-using System.Runtime.InteropServices;
 
 namespace Rubberduck.UI.Command
 {
@@ -8,13 +8,13 @@ namespace Rubberduck.UI.Command
     /// A command that displays the RegexAssistantDialog
     /// </summary>
     [ComVisible(false)]
-    class RegexAssistantCommand : CommandBase
+    public class RegexAssistantCommand : CommandBase
     {
         public RegexAssistantCommand() : base (LogManager.GetCurrentClassLogger())
         {
         }
 
-        protected override void ExecuteImpl(object parameter)
+        protected override void OnExecute(object parameter)
         {
             using (var window = new RegexAssistantDialog())
             {

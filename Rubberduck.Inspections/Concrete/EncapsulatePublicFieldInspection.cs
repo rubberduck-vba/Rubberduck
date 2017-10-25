@@ -15,11 +15,9 @@ namespace Rubberduck.Inspections.Concrete
         public EncapsulatePublicFieldInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Suggestion) { }
 
-        public override Type Type => typeof(EncapsulatePublicFieldInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             // we're creating a public field for every control on a form, needs to be ignored.
             var fields = State.DeclarationFinder.UserDeclarations(DeclarationType.Variable)

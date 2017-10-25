@@ -27,11 +27,9 @@ namespace Rubberduck.Inspections.Concrete
         {
         }
 
-        public override Type Type => typeof(ShadowedDeclarationInspection);
-
         public override CodeInspectionType InspectionType { get; } = CodeInspectionType.CodeQualityIssues;
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var builtInEventHandlers = State.DeclarationFinder.FindEventHandlers().ToHashSet();
 
@@ -203,15 +201,27 @@ namespace Rubberduck.Inspections.Concrete
 
             var originalDeclarationComponentType = originalDeclaration.QualifiedName.QualifiedModuleName.ComponentType;
 
-            // It is not possible to directly access a Parameter, UDT Member or Label declared in another component
+            // It is not possible to directly access a Parameter, UDT Member or Label declared in another component.
             if (originalDeclaration.DeclarationType == DeclarationType.Parameter || originalDeclaration.DeclarationType == DeclarationType.UserDefinedTypeMember ||
                 originalDeclaration.DeclarationType == DeclarationType.LineLabel)
             {
                 return false;
             }
 
-            // It is not possible to directly access any declarations placed inside a Class Module
+            // It is not possible to directly access any declarations placed inside a Class Module.
             if (originalDeclaration.DeclarationType != DeclarationType.ClassModule && originalDeclarationComponentType == ComponentType.ClassModule)
+            {
+                return false;
+            }
+
+            // It is not possible to directly access any declarations placed inside a Document Module. (Document Modules have DeclarationType ClassMoodule.)
+            if (originalDeclaration.DeclarationType != DeclarationType.ClassModule && originalDeclarationComponentType == ComponentType.Document)
+            {
+                return false;
+            }
+
+            // It is not possible to directly access any declarations placed inside a User Form. (User Forms have DeclarationType ClassMoodule.)
+            if (originalDeclaration.DeclarationType != DeclarationType.ClassModule && originalDeclarationComponentType == ComponentType.UserForm)
             {
                 return false;
             }
@@ -236,9 +246,15 @@ namespace Rubberduck.Inspections.Concrete
                     return false;
                 }
             }
-            else if (!OtherComponentTypeShadowingRelations[originalDeclaration.DeclarationType].Contains(userDeclaration.DeclarationType))
+            else
             {
-                return false;
+                HashSet<DeclarationType> shadowedTypes;
+                if (!OtherComponentTypeShadowingRelations.TryGetValue(originalDeclaration.DeclarationType,
+                        out shadowedTypes)
+                    || !shadowedTypes.Contains(userDeclaration.DeclarationType))
+                {
+                    return false;
+                }
             }
 
             // Events don't have a body, so their parameters can't be accessed

@@ -13,20 +13,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
         {
         }
 
-        public int Count
-        {
-            get { return IsWrappingNullReference ? 0 : Target.Count; }
-        }
+        public int Count => IsWrappingNullReference ? 0 : Target.Count;
 
-        public ICommandBar Parent
-        {
-            get { return new CommandBar(IsWrappingNullReference ? null : Target.Parent); }
-        }
+        public ICommandBar Parent => new CommandBar(IsWrappingNullReference ? null : Target.Parent);
 
-        public ICommandBarControl this[object index]
-        {
-            get { return new CommandBarControl(!IsWrappingNullReference ? Target[index] : null); }
-        }
+        public ICommandBarControl this[object index] => new CommandBarControl(!IsWrappingNullReference ? Target[index] : null);
 
         public ICommandBarControl Add(ControlType type)
         {

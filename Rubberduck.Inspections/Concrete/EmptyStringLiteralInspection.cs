@@ -18,14 +18,12 @@ namespace Rubberduck.Inspections.Concrete
         public EmptyStringLiteralInspection(RubberduckParserState state)
             : base(state) { }
 
-        public override Type Type => typeof(EmptyStringLiteralInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
 
         public override IInspectionListener Listener { get; } =
             new EmptyStringLiteralListener();
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             return Listener.Contexts
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))

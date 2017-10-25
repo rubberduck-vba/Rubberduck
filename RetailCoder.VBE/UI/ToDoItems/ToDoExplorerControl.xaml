@@ -510,6 +510,12 @@
                                   controls:MenuItemGroup.GroupName="ToDoExplorer_GroupingStyle" />
                     </MenuItem>
                 </Menu>
+                <Button Command="{Binding CopyResultsCommand}">
+                    <Image Height="16" Source="../../Resources/document-copy.png" />
+                    <Button.ToolTip>
+                        <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ToDoExplorer_CopyToolTip}" />
+                    </Button.ToolTip>
+                </Button>
                 <Button ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Settings}" Command="{Binding OpenTodoSettings}" BorderThickness="0" Background="Transparent">
                     <Image Source="{StaticResource SettingsImage}" />
                 </Button>

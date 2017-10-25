@@ -123,9 +123,6 @@
   <data name="AssignedByValParameterInspectionName" xml:space="preserve">
     <value>Assignation d'un paramètre passé par valeur (ByVal)</value>
   </data>
-  <data name="CodeQualityIssues" xml:space="preserve">
-    <value>Qualité du code</value>
-  </data>
   <data name="ConstantNotUsedInspectionMeta" xml:space="preserve">
     <value>La constante est déclarée, mais Rubberduck n'a pu trouver aucune référence; la déclaration pourrait être supprimée.</value>
   </data>
@@ -177,12 +174,6 @@
   <data name="ImplicitActiveWorkbookReferenceInspectionName" xml:space="preserve">
     <value>Référence implicite au classeur actif</value>
   </data>
-  <data name="ImplicitByRefParameterInspectionMeta" xml:space="preserve">
-    <value>Les paramètres sont passés par référence à moins qu'ils soient spécifiés autrement, ce qui peut être déroutant et rendre le code plus enclin à introduire des bogues. Passer les paramètres par valeur (ByVal) de préférence, et spécifier ByRef explicitement lorsque les paramètres sont passés par référence.</value>
-  </data>
-  <data name="ImplicitByRefParameterInspectionName" xml:space="preserve">
-    <value>Paramètre ByRef implicite</value>
-  </data>
   <data name="ImplicitPublicMemberInspectionMeta" xml:space="preserve">
     <value>Les membres d'un module sont publics par défaut, ce qui peut être contre-intuitif. Considérez spécifier les modificateurs d'accès explicitement pour éviter toute ambiguïté.</value>
   </data>
@@ -203,12 +194,6 @@
   </data>
   <data name="MoveFieldCloserToUsageInspectionResultFormat" xml:space="preserve">
     <value>Restreindre la portée du champ '{0}'</value>
-  </data>
-  <data name="LanguageOpportunities" xml:space="preserve">
-    <value>Opportunités du language</value>
-  </data>
-  <data name="MaintainabilityAndReadabilityIssues" xml:space="preserve">
-    <value>Maintenance et lisibilité</value>
   </data>
   <data name="MultilineParameterInspectionMeta" xml:space="preserve">
     <value>Considérez insérer les continuations entre les paramètres d'une longue signature. Séparer la déclaraion d'un paramètre sur plusieurs lignes rend plus difficile la lecture du code.</value>
@@ -323,7 +308,7 @@
     <value>Utilisez un nom significatif</value>
   </data>
   <data name="VariableNotAssignedInspectionMeta" xml:space="preserve">
-    <value>Une variable est déclarée, mais aucune valeur ou référence n'y est assignée. Si Rubberduck ne se trompe pas, la variable pourrait être supprimée.</value>
+    <value>Une variable n'est pas assignée. Si ceci n'est pas intentionnel, il s'agit probablement d'un bogue. Ignorez ce résultat d'inspection si la variable est passée par référence à une procédure.</value>
   </data>
   <data name="VariableNotAssignedInspectionName" xml:space="preserve">
     <value>Une variable est déclarée, mais pas assignée</value>
@@ -380,9 +365,6 @@
   <data name="IdentifierNotUsedInspectionResultFormat" xml:space="preserve">
     <value>{0} '{1}' n'est pas utilisé(e).</value>
   </data>
-  <data name="ImplicitByRefParameterInspectionResultFormat" xml:space="preserve">
-    <value>Le paramètre '{0}' est passé par référence implicitement</value>
-  </data>
   <data name="ImplicitPublicMemberInspectionResultFormat" xml:space="preserve">
     <value>Le membre '{0}' est implicitement public</value>
   </data>
@@ -418,9 +400,6 @@
   </data>
   <data name="DeclareAsExplicitVariantQuickFix" xml:space="preserve">
     <value>Déclarer explicitement comme Variant</value>
-  </data>
-  <data name="ImplicitByRefParameterQuickFix" xml:space="preserve">
-    <value>Passer le paramètre par référence explicitement</value>
   </data>
   <data name="Inspections_UnassignedVariableTodo" xml:space="preserve">
     <value>TODO</value>
@@ -645,5 +624,236 @@ Si le paramètre peut être nul, ignorer ce résultat; passer une valeur nulle �
   </data>
   <data name="HostSpecificExpressionInspectionMeta">
     <value>L'expression est évaluée par l'application hôte au moment de l'exécution, ce qui implique que VBA ne peut valider l'expression lors de la compilation. Considérez utiliser plutôt le modèle d'objet de l'application hôte.</value>
+  </data>
+  <data name="EmptyCaseBlockInspectionResultFormat">
+    <value>Un block 'Case' ne contient aucune instruction exécutable</value>
+  </data>
+  <data name="IntegerDataTypeInspectionName">
+    <value>Utilisation d'un entier 16-bits</value>
+  </data>
+  <data name="EmptyForLoopBlockInspectionMeta">
+    <value>Une boucle 'For...Next' vide, qui ne contient aucune instruction exécutable, laisse songeur quant aux intentions de l'auteur. Évitez d'écrire du code qui n'a pas besoin d'être écrit.</value>
+  </data>
+  <data name="SynchronizeAttributesQuickFix">
+    <value>Synchroniser les attributs et annotations dans le module</value>
+  </data>
+  <data name="EmptyCaseBlockInspectionName">
+    <value>Bloc 'Case' vide</value>
+  </data>
+  <data name="CodeInspectionSettings_RubberduckOpportunities">
+    <value>Opportunités Rubberduck</value>
+  </data>
+  <data name="LineLabelNotUsedInspectionName">
+    <value>Étiquette de ligne inutilisée</value>
+  </data>
+  <data name="ShadowedDeclarationInspectionMeta">
+    <value>Deux déclarations ont le même nom dans le même espace-nom: une seule d'entre elles peut être utilisée.</value>
+  </data>
+  <data name="EmptyIfBlockInspectionName">
+    <value>Branche conditionelle vide</value>
+  </data>
+  <data name="MissingAnnotationInspectionMeta">
+    <value>Les attributs du module et de ses membres n'apparaissent pas dans l'éditeur. En ajoutant une annotation, vous rendez ces attributs plus explicite, et Rubberduck peut synchroniser annotations et attributs.</value>
+  </data>
+  <data name="IllegalAnnotationInspectionMeta">
+    <value>Une annotation devant être spécifiée au niveau du module ne peut être utilisée pour annoter de membres; les annotations devant être spécifiées au niveau des membres du module, ne peuvent être utilisées au niveau du module; toutes les annotations ne devrait être spécifiées qu'une seule fois par module/membre.</value>
+  </data>
+  <data name="CodeInspectionSettings_Performance">
+    <value>Performance</value>
+  </data>
+  <data name="RedundantByRefModifierQuickFix">
+    <value>Supprimer le modificateur 'ByRef'</value>
+  </data>
+  <data name="RedundantByRefModifierInspectionName">
+    <value>Modificateur 'ByRef' redondant</value>
+  </data>
+  <data name="CodeInspectionSeverity_DoNotShow">
+    <value>Ne pas afficher</value>
+  </data>
+  <data name="ImplicitByRefModifierInspectionResultFormat">
+    <value>Le paramètre '{0}' est passé implicitement par référence</value>
+  </data>
+  <data name="OptionBaseZeroInspectionName">
+    <value>'Option Base 0' est redondant</value>
+  </data>
+  <data name="RedundantOptionInspectionMeta">
+    <value>Cette instruction correspondant aux paramètres par défaut et peut être supprimée sans effet.</value>
+  </data>
+  <data name="StopKeywordInspectionMeta">
+    <value>Le mot-clé 'Stop' halte l'exécution et ouvre l'éditeur VBA; évitez de livrer du code qui l'utilise.</value>
+  </data>
+  <data name="EmptyForLoopBlockInspectionName">
+    <value>Boucle 'For...Next' vide</value>
+  </data>
+  <data name="ImplicitByRefModifierInspectionName">
+    <value>Paramètre ByRef implicite</value>
+  </data>
+  <data name="CodeInspectionSettings_MaintainabilityAndReadabilityIssues">
+    <value>Lecture et facilité d'entretient</value>
+  </data>
+  <data name="ReplaceObsoleteErrorStatementQuickFix">
+    <value>Remplacer 'Error' par 'Err.Raise'</value>
+  </data>
+  <data name="EmptyCaseBlockInspectionMeta">
+    <value>Un bloc 'Case' vide, qui ne contient aucune instruction exécutable, laisse songeur quant aux intentions de l'auteur. Évitez d'écrire du code qui n'a pas besoin d'être écrit.</value>
+  </data>
+  <data name="LineLabelNotUsedInspectionResultFormat">
+    <value>L'étiquette de ligne '{0}' n'est pas utilisée</value>
+  </data>
+  <data name="StopKeywordInspectionResultFormat">
+    <value>Le mot-clé 'Stop' halte l'exécution</value>
+  </data>
+  <data name="CodeInspectionSeverity_Warning">
+    <value>Avertissement</value>
+  </data>
+  <data name="EmptyForEachBlockInspectionMeta">
+    <value>Une boucle 'Loop' vide, qui ne contient aucune instruction exécutable, laisse songeur quant aux intentions de l'auteur. Évitez d'écrire du code qui n'a pas besoin d'être écrit.</value>
+  </data>
+  <data name="EmptyElseBlockInspectionMeta">
+    <value>Un block 'Else' vide, qui ne contient aucune instruction exécutable, laisse songeur quant aux intentions de l'auteur. Évitez d'écrire du code qui n'a pas besoin d'être écrit.</value>
+  </data>
+  <data name="RemoveEmptyElseBlockQuickFix">
+    <value>Supprimer le bloc 'Else' vide</value>
+  </data>
+  <data name="ShadowedDeclarationInspectionResultFormat">
+    <value>{0} '{1}' cache {2} '{3}'</value>
+  </data>
+  <data name="RemoveStopKeywordQuickFix">
+    <value>Supprimer l'usage du mot-clé 'Stop'</value>
+  </data>
+  <data name="ObsoleteErrorSyntaxInspectionResultFormat">
+    <value>Une erreur d'exécution est générée à l'aide de l'instruction obsolète 'Error'</value>
+  </data>
+  <data name="RedundantByRefModifierInspectionResultFormat">
+    <value>Le paramètre '{0}' a un modificateur 'ByRef' redondant.</value>
+  </data>
+  <data name="EmptyForEachBlockInspectionResultFormat">
+    <value>Boucle 'For Each...Next' n'exécute aucune instruction.</value>
+  </data>
+  <data name="MissingAnnotationInspectionName">
+    <value>Annotation manquante</value>
+  </data>
+  <data name="RedundantByRefModifierInspectionMeta">
+    <value>Les paramètres sont passés par référence par défaut; il n'est donc pas nécessaire d'inclure le modificateur 'ByRef'.</value>
+  </data>
+  <data name="OptionBaseZeroInspectionMeta">
+    <value>Comme il s'agit du comportement par défaut, nul besoin de le spécifier.</value>
+  </data>
+  <data name="IllegalAnnotationInspectionName">
+    <value>Annotation illégale</value>
+  </data>
+  <data name="EmptyElseBlockInspectionResultFormat">
+    <value>Bloc 'Else' n'exécute aucune instruction</value>
+  </data>
+  <data name="RemoveEmptyIfBlockQuickFix">
+    <value>Supprimer le bloc conditionnel vide</value>
+  </data>
+  <data name="ImplicitByRefModifierInspectionMeta">
+    <value>Les paramètres sont passés par référence à moins d'avis contraire explicite, ce qui peut être confondant et fragiliser le code. Préférez passer les paramètres par valeur, et spécifiez 'ByRef' explicitement quand des paramètres doivent être passés par référence.</value>
+  </data>
+  <data name="ImplicitByRefModifierQuickFix">
+    <value>Passer le paramètre par référence explicitement</value>
+  </data>
+  <data name="IntegerDataTypeQuickFix">
+    <value>Changer le type pour 'Long'</value>
+  </data>
+  <data name="MissingAttributeInspectionMeta">
+    <value>Une annotation Rubberduck est spécifiée pour un module ou un membre, mais l'attribut correspondant n'est pas présent. Les attributs et annotations du module doivent être synchronisés.</value>
+  </data>
+  <data name="EmptyForEachBlockInspectionName">
+    <value>Boucle 'For Each...Next' vide</value>
+  </data>
+  <data name="CodeInspectionSeverity_Hint">
+    <value>Allusion</value>
+  </data>
+  <data name="EmptyDoWhileBlockInspectionName">
+    <value>Boucle 'Do...While' vide</value>
+  </data>
+  <data name="EmptyElseBlockInspectionName">
+    <value>Bloc 'Else' vide</value>
+  </data>
+  <data name="EmptyIfBlockInspectionMeta">
+    <value>Une branche conditionelle vide, qui ne contient aucune instruction exécutable, laisse songeur quant aux intentions de l'auteur. Évitez d'écrire du code qui n'a pas besoin d'être écrit.</value>
+  </data>
+  <data name="EmptyForLoopBlockInspectionResultFormat">
+    <value>Boucle 'For...Next' n'exécute aucune instruction</value>
+  </data>
+  <data name="EmptyWhileWendBlockInspectionMeta">
+    <value>Une boucle 'Loop' vide, qui ne contient aucune instruction exécutable, laisse songeur quant aux intentions de l'auteur. Évitez d'écrire du code qui n'a pas besoin d'être écrit.</value>
+  </data>
+  <data name="ObsoleteErrorSyntaxInspectionMeta">
+    <value>L'instruction 'Error' n'existe que pour permettre au code plus ancien de pouvoir s'exécuter; 'Error' peut être remplacé par 'Err.Raise'.</value>
+  </data>
+  <data name="IntegerDataTypeInspectionMeta">
+    <value>La valeur maximale d'un nombre entier 16-bits signé est de 32,767 - utiliser un entier 32-bit (Long) où c'est possible, aide à prévenir certaines erreurs 'Overflow'. Les processurs modernes travaillent aussi plus efficacement avec des entiers 32-bits.</value>
+  </data>
+  <data name="IntegerDataTypeInspectionResultFormat">
+    <value>{0} '{1}' est déclarée 'As Integer'</value>
+  </data>
+  <data name="EmptyWhileWendBlockInspectionResultFormat">
+    <value>Boucle 'While...Wend' n'exécute aucune instruction.</value>
+  </data>
+  <data name="EmptyIfBlockInspectionResultFormat">
+    <value>Bloc 'If' n'exécute aucune instruction</value>
+  </data>
+  <data name="CodeInspectionSettings_LanguageOpportunities">
+    <value>Opportunités du langage</value>
+  </data>
+  <data name="OptionBaseZeroInspectionResultFormat">
+    <value>Le module '{0}' spécifie 'Option Base 0'</value>
+  </data>
+  <data name="EmptyDoWhileBlockInspectionResultFormat">
+    <value>Une boucle 'Do...While' vide, qui ne contient aucune instruction exécutable, laisse songeur quant aux intentions de l'auteur. Évitez d'écrire du code qui n'a pas besoin d'être écrit.</value>
+  </data>
+  <data name="CodeInspectionSeverity_Suggestion">
+    <value>Suggestion</value>
+  </data>
+  <data name="QuickFix_All">
+    <value>Corriger partout</value>
+  </data>
+  <data name="EmptyWhileWendBlockInspectionName">
+    <value>Boucle 'While...Wend' vide</value>
+  </data>
+  <data name="ShadowedDeclarationInspectionName">
+    <value>Déclaration cachée</value>
+  </data>
+  <data name="LineLabelNotUsedInspectionMeta">
+    <value>Une étiquette de ligne qui n'est pas utilisée ('GoTo', 'Resume', ...), n'a pas d'utilité. Considerez les supprimer.</value>
+  </data>
+  <data name="EmptyDoWhileBlockInspectionMeta">
+    <value>Un bloc 'Loop' vide, qui ne contient aucune instruction exécutable, laisse songeur quant aux intentions de l'auteur. Évitez d'écrire du code qui n'a pas besoin d'être écrit.</value>
+  </data>
+  <data name="MissingAttributeInspectionName">
+    <value>Attribut manquant</value>
+  </data>
+  <data name="QuickFix_ThisProcedure">
+    <value>Corriger dans la procédure</value>
+  </data>
+  <data name="RedundantOptionInspectionName">
+    <value>Option de module redondante</value>
+  </data>
+  <data name="CodeInspectionSettings_CodeQualityIssues">
+    <value>Qualité du code</value>
+  </data>
+  <data name="IllegalAnnotationInspectionResultFormat">
+    <value>L'annotation '{0}' est illégale dans ce contexte.</value>
+  </data>
+  <data name="RedundantOptionInspectionResultFormat">
+    <value>'{0}' n'a aucun effet</value>
+  </data>
+  <data name="CodeInspectionSeverity_Error">
+    <value>Erreur</value>
+  </data>
+  <data name="MissingAnnotationInspectionResultFormat">
+    <value>Le module ou membre '{0}' a un attribut '{1}', mais pas l'annotation correspondante</value>
+  </data>
+  <data name="MissingAttributeInspectionResultFormat">
+    <value>Le module ou membre '{0}' a l'annotation '{1}', mais pas l'attribut correspondant</value>
+  </data>
+  <data name="StopKeywordInspectionName">
+    <value>Mot-clé 'Stop'</value>
+  </data>
+  <data name="RemoveOptionBaseStatementQuickFix">
+    <value>Supprimer l'instruction 'Option Base'</value>
   </data>
 </root>

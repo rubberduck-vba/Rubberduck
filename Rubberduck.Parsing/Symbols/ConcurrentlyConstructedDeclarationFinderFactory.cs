@@ -10,5 +10,9 @@ namespace Rubberduck.Parsing.Symbols
         {
             return new ConcurrentlyConstructedDeclarationFinder(declarations, annotations, unresolvedMemberDeclarations, hostApp);
         }
+
+        public void Release(DeclarationFinder declarationFinder)
+        {
+        }
     }
 }

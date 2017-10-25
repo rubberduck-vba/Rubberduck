@@ -21,47 +21,29 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
         }
 
-        public object HardReference
-        {
-            get { return Target; }
-        }
+        public object HardReference => Target;
 
-        public string Version
-        {
-            get { return IsWrappingNullReference ? string.Empty : Target.Version; }
-        }
+        public string Version => IsWrappingNullReference ? string.Empty : Target.Version;
 
         public ICodePane ActiveCodePane
         {
-            get { return new CodePane(IsWrappingNullReference ? null : Target.ActiveCodePane); }
+            get => new CodePane(IsWrappingNullReference ? null : Target.ActiveCodePane);
             set { if (!IsWrappingNullReference) Target.ActiveCodePane = (VB.CodePane)value.Target; }
         }
 
         public IVBProject ActiveVBProject
         {
-            get { return new VBProject(IsWrappingNullReference ? null : Target.ActiveVBProject); }
+            get => new VBProject(IsWrappingNullReference ? null : Target.ActiveVBProject);
             set { if (!IsWrappingNullReference) Target.ActiveVBProject = (VB.VBProject)value.Target; }
         }
 
-        public IWindow ActiveWindow
-        {
-            get { return new Window(IsWrappingNullReference ? null : Target.ActiveWindow); }
-        }
+        public IWindow ActiveWindow => new Window(IsWrappingNullReference ? null : Target.ActiveWindow);
 
-        public IAddIns AddIns
-        {
-            get { return new AddIns(IsWrappingNullReference ? null : Target.Addins); }
-        }
+        public IAddIns AddIns => new AddIns(IsWrappingNullReference ? null : Target.Addins);
 
-        public ICodePanes CodePanes
-        {
-            get { return new CodePanes(IsWrappingNullReference ? null : Target.CodePanes); }
-        }
+        public ICodePanes CodePanes => new CodePanes(IsWrappingNullReference ? null : Target.CodePanes);
 
-        public ICommandBars CommandBars
-        {
-            get { return new CommandBars(IsWrappingNullReference ? null : Target.CommandBars); }
-        }
+        public ICommandBars CommandBars => new CommandBars(IsWrappingNullReference ? null : Target.CommandBars);
 
         public IWindow MainWindow
         {
@@ -78,22 +60,13 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             }
         }
 
-        public IVBComponent SelectedVBComponent
-        {
-            get { return new VBComponent(IsWrappingNullReference ? null : Target.SelectedVBComponent); }
-        }
+        public IVBComponent SelectedVBComponent => new VBComponent(IsWrappingNullReference ? null : Target.SelectedVBComponent);
 
-        public IVBProjects VBProjects
-        {
-            get { return new VBProjects(IsWrappingNullReference ? null : Target.VBProjects); }
-        }
+        public IVBProjects VBProjects => new VBProjects(IsWrappingNullReference ? null : Target.VBProjects);
 
-        public IWindows Windows
-        {
-            get { return new Windows(IsWrappingNullReference ? null : Target.Windows); }
-        }
+        public IWindows Windows => new Windows(IsWrappingNullReference ? null : Target.Windows);
 
-        public Guid EventsInterfaceId { get { throw new NotImplementedException(); } }
+        public Guid EventsInterfaceId => throw new NotImplementedException();
 
         //public override void Release(bool final = false)
         //{

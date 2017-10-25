@@ -424,6 +424,78 @@ namespace Rubberduck.Parsing.Grammar
             #endregion
         }
 
+        public partial class UdtDeclarationContext : IIdentifierContext, IAnnotatedContext
+        {
+            #region IIdentifierContext
+            public Interval IdentifierTokens
+            {
+                get
+                {
+                    Interval tokenInterval;
+                    Identifier.GetName(this, out tokenInterval);
+                    return tokenInterval;
+                }
+            }
+            #endregion
+
+            #region IAnnotatedContext
+            public Attributes Attributes { get; } = new Attributes();
+            public int AttributeTokenIndex => Start.TokenIndex - 1;
+
+            private readonly List<AnnotationContext> _annotations = new List<AnnotationContext>();
+            public IEnumerable<AnnotationContext> Annotations => _annotations;
+
+            public void Annotate(AnnotationContext annotation)
+            {
+                _annotations.Add(annotation);
+            }
+
+            public void AddAttributes(Attributes attributes)
+            {
+                foreach (var attribute in attributes)
+                {
+                    Attributes.Add(new AttributeNode(attribute.Name, attribute.Values));
+                }
+            }
+            #endregion
+        }
+
+        public partial class UdtMemberContext : IIdentifierContext, IAnnotatedContext
+        {
+            #region IIdentifierContext
+            public Interval IdentifierTokens
+            {
+                get
+                {
+                    Interval tokenInterval;
+                    Identifier.GetName(this, out tokenInterval);
+                    return tokenInterval;
+                }
+            }
+            #endregion
+
+            #region IAnnotatedContext
+            public Attributes Attributes { get; } = new Attributes();
+            public int AttributeTokenIndex => Start.TokenIndex - 1;
+
+            private readonly List<AnnotationContext> _annotations = new List<AnnotationContext>();
+            public IEnumerable<AnnotationContext> Annotations => _annotations;
+
+            public void Annotate(AnnotationContext annotation)
+            {
+                _annotations.Add(annotation);
+            }
+
+            public void AddAttributes(Attributes attributes)
+            {
+                foreach (var attribute in attributes)
+                {
+                    Attributes.Add(new AttributeNode(attribute.Name, attribute.Values));
+                }
+            }
+            #endregion
+        }
+
         public partial class IdentifierStatementLabelContext : IIdentifierContext, IAnnotatedContext
         {
             #region IIdentifierContext

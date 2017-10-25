@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -2045,11 +2045,11 @@ Would you like to import them to Rubberduck?</value>
     <value>Inspection Severities</value>
   </data>
   <data name="RenamePresenter_TargetIsControlEventHandler" xml:space="preserve">
-    <value>Method {0} is an EventHandler for control '{1}'.  Only the control can be renamed.  Rename '{1}'?</value>
+    <value>Method '{0}' is an EventHandler for control '{1}'.  Only the control can be renamed.  Rename '{1}' instead?</value>
     <comment>0: Selected target Identifier; 1: Control Name</comment>
   </data>
   <data name="RenamePresenter_TargetIsEventHandlerImplementation" xml:space="preserve">
-    <value>Method '{0}' is an implementation of event '{1}.{2}'.  Rename event '{2}'?</value>
+    <value>Method '{0}' is an implementation of event '{1}.{2}'.  Rename event '{2}' instead?</value>
     <comment>0: Selected target Identifier; 1: Event Parent; 2: Event name</comment>
   </data>
   <data name="GeneralSettings_EnableSourceControl" xml:space="preserve">
@@ -2093,8 +2093,7 @@ Would you like to import them to Rubberduck?</value>
     <value>Add Module</value>
   </data>
   <data name="EmptyUIRefreshMessage" xml:space="preserve">
-    <value>to parse and process
-the projects in the VBE.</value>
+    <value>to parse and process the projects in the VBE.</value>
     <comment>Follows the text for "Refresh"</comment>
   </data>
   <data name="EmptyUIRefreshMessage_Title" xml:space="preserve">
@@ -2103,5 +2102,24 @@ the projects in the VBE.</value>
   <data name="CodeExplorer_AddTestModuleWithStubsText" xml:space="preserve">
     <value>Test module with stubs</value>
     <comment>TC</comment>
+  </data>
+  <data name="RubberduckMenu_Refresh" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="ToDoExplorer_NumberOfIssuesFound_Plural" xml:space="preserve">
+    <value>Rubberduck TODO Items - {0}
+{1} items found.</value>
+    <comment>{0}=timestamp; {1}=number</comment>
+  </data>
+  <data name="ToDoExplorer_NumberOfIssuesFound_Singular" xml:space="preserve">
+    <value>Rubberduck TODO Items - {0}
+{1} items found.</value>
+    <comment>{0}=timestamp; {1}=number</comment>
+  </data>
+  <data name="ToDoExplorerToDoItemFormat" xml:space="preserve">
+    <value>{0}: {1} - {2}.{3} line {4}.</value>
+  </data>
+  <data name="ToDoExplorer_CopyToolTip" xml:space="preserve">
+    <value>Copy to clipboard</value>
   </data>
 </root>
