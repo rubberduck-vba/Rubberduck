@@ -15,8 +15,8 @@ namespace RubberduckTests.QuickFixes
         [TestCategory("QuickFixes")]
         public void Simple()
         {
-            const string inputCode = 
-@"Sub Foo()
+            const string inputCode =
+                @"Sub Foo()
     Dim d As Boolean
     If True Then
         d = True
@@ -26,20 +26,22 @@ namespace RubberduckTests.QuickFixes
 End Sub";
 
             const string expectedCode =
-@"Sub Foo()
+                @"Sub Foo()
     Dim d As Boolean
     d = True
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new BooleanAssignedInIfElseInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new BooleanAssignedInIfElseInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new ReplaceIfElseWithConditionalStatementQuickFix(state).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                new ReplaceIfElseWithConditionalStatementQuickFix(state).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
         [TestMethod]
@@ -47,7 +49,7 @@ End Sub";
         public void ComplexCondition()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
     Dim d As Boolean
     If True Or False And False Xor True Then
         d = True
@@ -57,20 +59,22 @@ End Sub";
 End Sub";
 
             const string expectedCode =
-@"Sub Foo()
+                @"Sub Foo()
     Dim d As Boolean
     d = True Or False And False Xor True
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new BooleanAssignedInIfElseInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new BooleanAssignedInIfElseInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new ReplaceIfElseWithConditionalStatementQuickFix(state).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                new ReplaceIfElseWithConditionalStatementQuickFix(state).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
         [TestMethod]
@@ -78,7 +82,7 @@ End Sub";
         public void InvertedCondition()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
     Dim d As Boolean
     If True Then
         d = False
@@ -88,20 +92,22 @@ End Sub";
 End Sub";
 
             const string expectedCode =
-@"Sub Foo()
+                @"Sub Foo()
     Dim d As Boolean
     d = Not (True)
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new BooleanAssignedInIfElseInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new BooleanAssignedInIfElseInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new ReplaceIfElseWithConditionalStatementQuickFix(state).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                new ReplaceIfElseWithConditionalStatementQuickFix(state).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
         [TestMethod]
@@ -109,7 +115,7 @@ End Sub";
         public void QualifiedName()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
     If True Then
         Fizz.Buzz = True
     Else
@@ -118,19 +124,21 @@ End Sub";
 End Sub";
 
             const string expectedCode =
-@"Sub Foo()
+                @"Sub Foo()
     Fizz.Buzz = True
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new BooleanAssignedInIfElseInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new BooleanAssignedInIfElseInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new ReplaceIfElseWithConditionalStatementQuickFix(state).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                new ReplaceIfElseWithConditionalStatementQuickFix(state).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
     }
 }

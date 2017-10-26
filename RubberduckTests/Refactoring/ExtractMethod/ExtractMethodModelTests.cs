@@ -54,33 +54,35 @@ End Sub";
         #endregion
 
         List<IExtractMethodRule> emRules = new List<IExtractMethodRule>(){
-                        new ExtractMethodRuleInSelection(),
-                        new ExtractMethodRuleIsAssignedInSelection(),
-                        new ExtractMethodRuleUsedBefore(),
-                        new ExtractMethodRuleUsedAfter(),
-                        new ExtractMethodRuleExternalReference()};
+            new ExtractMethodRuleInSelection(),
+            new ExtractMethodRuleIsAssignedInSelection(),
+            new ExtractMethodRuleUsedBefore(),
+            new ExtractMethodRuleUsedAfter(),
+            new ExtractMethodRuleExternalReference()};
 
         [TestMethod]
         [TestCategory("ExtractMethodModelTests")]
         public void shouldClassifyDeclarations()
         {
             QualifiedModuleName qualifiedModuleName;
-            var state = MockParser.ParseString(internalVariable, out qualifiedModuleName);
-            var declarations = state.AllDeclarations;
+            using (var state = MockParser.ParseString(internalVariable, out qualifiedModuleName))
+            {
+                var declarations = state.AllDeclarations;
 
-            var selection = new Selection(8, 1, 12, 24);
-            QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
+                var selection = new Selection(8, 1, 12, 24);
+                QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
 
-            var extractedMethod = new Mock<IExtractedMethod>();
-            var extractedMethodProc = new Mock<IExtractMethodProc>();
-            var paramClassify = new Mock<IExtractMethodParameterClassification>();
+                var extractedMethod = new Mock<IExtractedMethod>();
+                var extractedMethodProc = new Mock<IExtractMethodProc>();
+                var paramClassify = new Mock<IExtractMethodParameterClassification>();
 
-            var SUT = new ExtractMethodModel(extractedMethod.Object, paramClassify.Object);
-            SUT.extract(declarations, qSelection.Value, selectedCode);
+                var SUT = new ExtractMethodModel(extractedMethod.Object, paramClassify.Object);
+                SUT.extract(declarations, qSelection.Value, selectedCode);
 
-            paramClassify.Verify(
-                pc => pc.classifyDeclarations(qSelection.Value, It.IsAny<Declaration>()),
-                Times.Exactly(3));
+                paramClassify.Verify(
+                    pc => pc.classifyDeclarations(qSelection.Value, It.IsAny<Declaration>()),
+                    Times.Exactly(3));
+            }
         }
 
         [TestClass]
@@ -133,22 +135,24 @@ End Sub";
                 public void shouldThrowAnException()
                 {
                     QualifiedModuleName qualifiedModuleName;
-                    var state = MockParser.ParseString(inputCode, out qualifiedModuleName);
-                    var declarations = state.AllDeclarations;
+                    using (var state = MockParser.ParseString(inputCode, out qualifiedModuleName))
+                    {
+                        var declarations = state.AllDeclarations;
 
-                    var selection = new Selection(21, 1, 22, 17);
-                    QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
+                        var selection = new Selection(21, 1, 22, 17);
+                        QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
 
-                    var emr = new Mock<IExtractMethodRule>();
-                    var extractedMethod = new Mock<IExtractedMethod>();
-                    var paramClassify = new Mock<IExtractMethodParameterClassification>();
-                    var SUT = new ExtractMethodModel(extractedMethod.Object, paramClassify.Object);
+                        var emr = new Mock<IExtractMethodRule>();
+                        var extractedMethod = new Mock<IExtractedMethod>();
+                        var paramClassify = new Mock<IExtractMethodParameterClassification>();
+                        var SUT = new ExtractMethodModel(extractedMethod.Object, paramClassify.Object);
 
-                    //Act
-                    SUT.extract(declarations, qSelection.Value, selectedCode);
+                        //Act
+                        SUT.extract(declarations, qSelection.Value, selectedCode);
 
-                    //Assert
-                    // ExpectedException
+                        //Assert
+                        // ExpectedException
+                    }
                 }
 
             }
@@ -158,23 +162,25 @@ End Sub";
             public void shouldProvideAListOfDimsNoLongerNeededInTheContainingMethod()
             {
                 QualifiedModuleName qualifiedModuleName;
-                var state = MockParser.ParseString(inputCode, out qualifiedModuleName);
-                var declarations = state.AllDeclarations;
+                using (var state = MockParser.ParseString(inputCode, out qualifiedModuleName))
+                {
+                    var declarations = state.AllDeclarations;
 
-                var selection = new Selection(10, 1, 12, 17);
-                QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
-                var extractDecl = declarations.Where(x => x.IdentifierName.Equals("y"));
+                    var selection = new Selection(10, 1, 12, 17);
+                    QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
+                    var extractDecl = declarations.Where(x => x.IdentifierName.Equals("y"));
 
-                var emr = new Mock<IExtractMethodRule>();
-                var extractedMethod = new Mock<IExtractedMethod>();
-                var paramClassify = new Mock<IExtractMethodParameterClassification>();
-                paramClassify.Setup(pc => pc.DeclarationsToMove).Returns(extractDecl);
-                var SUT = new ExtractMethodModel(extractedMethod.Object, paramClassify.Object);
-                SUT.extract(declarations, qSelection.Value, selectedCode);
+                    var emr = new Mock<IExtractMethodRule>();
+                    var extractedMethod = new Mock<IExtractedMethod>();
+                    var paramClassify = new Mock<IExtractMethodParameterClassification>();
+                    paramClassify.Setup(pc => pc.DeclarationsToMove).Returns(extractDecl);
+                    var SUT = new ExtractMethodModel(extractedMethod.Object, paramClassify.Object);
+                    SUT.extract(declarations, qSelection.Value, selectedCode);
 
-                Assert.AreEqual(1, SUT.DeclarationsToMove.Count());
-                Assert.IsTrue(SUT.DeclarationsToMove.Contains(extractDecl.First()), "The selectionToRemove should contain the Declaration being moved");
+                    Assert.AreEqual(1, SUT.DeclarationsToMove.Count());
+                    Assert.IsTrue(SUT.DeclarationsToMove.Contains(extractDecl.First()), "The selectionToRemove should contain the Declaration being moved");
 
+                }
             }
 
             [TestMethod]
@@ -182,35 +188,37 @@ End Sub";
             public void shouldProvideTheSelectionOfLinesOfToRemove()
             {
                 QualifiedModuleName qualifiedModuleName;
-                var state = MockParser.ParseString(inputCode, out qualifiedModuleName);
-                var declarations = state.AllDeclarations;
+                using (var state = MockParser.ParseString(inputCode, out qualifiedModuleName))
+                {
+                    var declarations = state.AllDeclarations;
 
-                var selection = new Selection(10, 2, 12, 17);
-                QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
+                    var selection = new Selection(10, 2, 12, 17);
+                    QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
 
-                var emr = new Mock<IExtractMethodRule>();
-                var extractedMethod = new Mock<IExtractedMethod>();
-                var paramClassify = new Mock<IExtractMethodParameterClassification>();
-                var extractDecl = declarations.Where(x => x.IdentifierName.Equals("y"));
-                paramClassify.Setup(pc => pc.DeclarationsToMove).Returns(extractDecl);
-                var extractedMethodModel = new ExtractMethodModel(extractedMethod.Object, paramClassify.Object);
+                    var emr = new Mock<IExtractMethodRule>();
+                    var extractedMethod = new Mock<IExtractedMethod>();
+                    var paramClassify = new Mock<IExtractMethodParameterClassification>();
+                    var extractDecl = declarations.Where(x => x.IdentifierName.Equals("y"));
+                    paramClassify.Setup(pc => pc.DeclarationsToMove).Returns(extractDecl);
+                    var extractedMethodModel = new ExtractMethodModel(extractedMethod.Object, paramClassify.Object);
 
-                //Act
-                extractedMethodModel.extract(declarations, qSelection.Value, selectedCode);
+                    //Act
+                    extractedMethodModel.extract(declarations, qSelection.Value, selectedCode);
 
-                //Assert
-                var actual = extractedMethodModel.RowsToRemove;
-                var yDimSelection = new Selection(5, 9, 5, 10);
-                var expected = new[] { selection, yDimSelection }
-                    .Select(x => new Selection(x.StartLine, 1, x.EndLine, 1));
-                var missing = expected.Except(actual);
-                var extra = actual.Except(expected);
-                missing.ToList().ForEach(x => Trace.WriteLine(string.Format("missing item {0}", x)));
-                extra.ToList().ForEach(x => Trace.WriteLine(string.Format("extra item {0}", x)));
+                    //Assert
+                    var actual = extractedMethodModel.RowsToRemove;
+                    var yDimSelection = new Selection(5, 9, 5, 10);
+                    var expected = new[] { selection, yDimSelection }
+                        .Select(x => new Selection(x.StartLine, 1, x.EndLine, 1));
+                    var missing = expected.Except(actual);
+                    var extra = actual.Except(expected);
+                    missing.ToList().ForEach(x => Trace.WriteLine(string.Format("missing item {0}", x)));
+                    extra.ToList().ForEach(x => Trace.WriteLine(string.Format("extra item {0}", x)));
 
-                Assert.AreEqual(expected.Count(), actual.Count(), "Selection To Remove doesn't have the right number of members");
-                expected.ToList().ForEach(s => Assert.IsTrue(actual.Contains(s), string.Format("selection {0} missing from actual SelectionToRemove", s)));
+                    Assert.AreEqual(expected.Count(), actual.Count(), "Selection To Remove doesn't have the right number of members");
+                    expected.ToList().ForEach(s => Assert.IsTrue(actual.Contains(s), string.Format("selection {0} missing from actual SelectionToRemove", s)));
 
+                }
             }
 
             [TestMethod]
@@ -218,23 +226,25 @@ End Sub";
             public void shouldProvideTheExtractMethodCaller()
             {
                 QualifiedModuleName qualifiedModuleName;
-                var state = MockParser.ParseString(inputCode, out qualifiedModuleName);
-                var declarations = state.AllDeclarations;
+                using (var state = MockParser.ParseString(inputCode, out qualifiedModuleName))
+                {
+                    var declarations = state.AllDeclarations;
 
-                var selection = new Selection(10, 1, 12, 17);
-                QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
+                    var selection = new Selection(10, 1, 12, 17);
+                    QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
 
-                var emr = new Mock<IExtractMethodRule>();
-                var extractedMethod = new Mock<IExtractedMethod>();
-                var paramClassify = new Mock<IExtractMethodParameterClassification>();
-                var SUT = new ExtractMethodModel(extractedMethod.Object, paramClassify.Object);
-
-
-                var x = SUT.NewMethodCall;
-
-                extractedMethod.Verify(em => em.NewMethodCall());
+                    var emr = new Mock<IExtractMethodRule>();
+                    var extractedMethod = new Mock<IExtractedMethod>();
+                    var paramClassify = new Mock<IExtractMethodParameterClassification>();
+                    var SUT = new ExtractMethodModel(extractedMethod.Object, paramClassify.Object);
 
 
+                    var x = SUT.NewMethodCall;
+
+                    extractedMethod.Verify(em => em.NewMethodCall());
+
+
+                }
             }
 
             [TestMethod]
@@ -242,22 +252,24 @@ End Sub";
             public void shouldProvideThePositionForTheMethodCall()
             {
                 QualifiedModuleName qualifiedModuleName;
-                var state = MockParser.ParseString(inputCode, out qualifiedModuleName);
-                var declarations = state.AllDeclarations;
+                using (var state = MockParser.ParseString(inputCode, out qualifiedModuleName))
+                {
+                    var declarations = state.AllDeclarations;
 
-                var selection = new Selection(10, 1, 12, 17);
-                QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
+                    var selection = new Selection(10, 1, 12, 17);
+                    QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
 
-                var emr = new Mock<IExtractMethodRule>();
-                var extractedMethod = new Mock<IExtractedMethod>();
-                var paramClassify = new Mock<IExtractMethodParameterClassification>();
-                var SUT = new ExtractMethodModel(extractedMethod.Object, paramClassify.Object);
-                SUT.extract(declarations, qSelection.Value, selectedCode);
+                    var emr = new Mock<IExtractMethodRule>();
+                    var extractedMethod = new Mock<IExtractedMethod>();
+                    var paramClassify = new Mock<IExtractMethodParameterClassification>();
+                    var SUT = new ExtractMethodModel(extractedMethod.Object, paramClassify.Object);
+                    SUT.extract(declarations, qSelection.Value, selectedCode);
 
-                var expected = new Selection(10, 1, 10, 1);
-                var actual = SUT.PositionForMethodCall;
+                    var expected = new Selection(10, 1, 10, 1);
+                    var actual = SUT.PositionForMethodCall;
 
-                Assert.AreEqual(expected, actual, "Call should have been at row " + expected + " but is at " + actual);
+                    Assert.AreEqual(expected, actual, "Call should have been at row " + expected + " but is at " + actual);
+                }
             }
 
             [TestMethod]
@@ -265,26 +277,28 @@ End Sub";
             public void shouldProvideThePositionForTheNewMethod()
             {
                 QualifiedModuleName qualifiedModuleName;
-                var state = MockParser.ParseString(inputCode, out qualifiedModuleName);
-                var declarations = state.AllDeclarations;
+                using (var state = MockParser.ParseString(inputCode, out qualifiedModuleName))
+                {
+                    var declarations = state.AllDeclarations;
 
-                var selection = new Selection(10, 1, 12, 17);
-                QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
+                    var selection = new Selection(10, 1, 12, 17);
+                    QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
 
-                var emr = new Mock<IExtractMethodRule>();
-                var extractedMethod = new Mock<IExtractedMethod>();
-                var extractedMethodProc = new Mock<IExtractMethodProc>();
-                var paramClassify = new Mock<IExtractMethodParameterClassification>();
-                var SUT = new ExtractMethodModel(extractedMethod.Object, paramClassify.Object);
-                //Act
-                SUT.extract(declarations, qSelection.Value, selectedCode);
+                    var emr = new Mock<IExtractMethodRule>();
+                    var extractedMethod = new Mock<IExtractedMethod>();
+                    var extractedMethodProc = new Mock<IExtractMethodProc>();
+                    var paramClassify = new Mock<IExtractMethodParameterClassification>();
+                    var SUT = new ExtractMethodModel(extractedMethod.Object, paramClassify.Object);
+                    //Act
+                    SUT.extract(declarations, qSelection.Value, selectedCode);
 
-                //Assert
-                var expected = new Selection(18, 1, 18, 1);
-                var actual = SUT.PositionForNewMethod;
+                    //Assert
+                    var expected = new Selection(18, 1, 18, 1);
+                    var actual = SUT.PositionForNewMethod;
 
-                Assert.AreEqual(expected, actual, "Call should have been at row " + expected + " but is at " + actual);
+                    Assert.AreEqual(expected, actual, "Call should have been at row " + expected + " but is at " + actual);
 
+                }
             }
 
         }
@@ -329,26 +343,28 @@ Debug.Print y";
                 #endregion
 
                 QualifiedModuleName qualifiedModuleName;
-                var state = MockParser.ParseString(inputCode, out qualifiedModuleName);
-                var declarations = state.AllDeclarations;
+                using (var state = MockParser.ParseString(inputCode, out qualifiedModuleName))
+                {
+                    var declarations = state.AllDeclarations;
 
-                var selection = new Selection(10, 1, 12, 17);
-                QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
-                var extractedMethod = new Mock<IExtractedMethod>();
-                extractedMethod.Setup(em => em.NewMethodCall())
-                    .Returns("NewMethod x");
-                var paramClassify = new Mock<IExtractMethodParameterClassification>();
+                    var selection = new Selection(10, 1, 12, 17);
+                    QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
+                    var extractedMethod = new Mock<IExtractedMethod>();
+                    extractedMethod.Setup(em => em.NewMethodCall())
+                        .Returns("NewMethod x");
+                    var paramClassify = new Mock<IExtractMethodParameterClassification>();
 
-                var SUT = new ExtractMethodModel(extractedMethod.Object, paramClassify.Object);
+                    var SUT = new ExtractMethodModel(extractedMethod.Object, paramClassify.Object);
 
-                //Act
-                SUT.extract(declarations, qSelection.Value, selectedCode);
+                    //Act
+                    SUT.extract(declarations, qSelection.Value, selectedCode);
 
-                //Assert
-                var actual = SUT.Method.NewMethodCall();
-                var expected = "NewMethod x";
+                    //Assert
+                    var actual = SUT.Method.NewMethodCall();
+                    var expected = "NewMethod x";
 
-                Assert.AreEqual(expected, actual);
+                    Assert.AreEqual(expected, actual);
+                }
             }
 
         }
@@ -407,23 +423,25 @@ end sub
                 #endregion
 
                 QualifiedModuleName qualifiedModuleName;
-                var state = MockParser.ParseString(inputCode, out qualifiedModuleName);
-                var declarations = state.AllDeclarations;
-                var selection = new Selection(8, 1, 12, 50);
-                QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
-                var extractedMethod = new Mock<IExtractedMethod>();
-                var paramClassify = new Mock<IExtractMethodParameterClassification>();
-                var yDecl = declarations.Where(decl => decl.IdentifierName.Equals("z"));
-                var SUT = new ExtractMethodModel(extractedMethod.Object, paramClassify.Object);
-                //Act
-                var actual = SUT.splitSelection(selection, declarations);
-                //Assert
-                var selection1 = new Selection(8, 1, 9, 1);
-                var selection2 = new Selection(11, 1, 12, 1);
+                using (var state = MockParser.ParseString(inputCode, out qualifiedModuleName))
+                {
+                    var declarations = state.AllDeclarations;
+                    var selection = new Selection(8, 1, 12, 50);
+                    QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
+                    var extractedMethod = new Mock<IExtractedMethod>();
+                    var paramClassify = new Mock<IExtractMethodParameterClassification>();
+                    var yDecl = declarations.Where(decl => decl.IdentifierName.Equals("z"));
+                    var SUT = new ExtractMethodModel(extractedMethod.Object, paramClassify.Object);
+                    //Act
+                    var actual = SUT.splitSelection(selection, declarations);
+                    //Assert
+                    var selection1 = new Selection(8, 1, 9, 1);
+                    var selection2 = new Selection(11, 1, 12, 1);
 
-                Assert.AreEqual(selection1, actual.First(), "Top selection does not match");
-                Assert.AreEqual(selection2, actual.Skip(1).First(), "Bottom selection does not match");
+                    Assert.AreEqual(selection1, actual.First(), "Top selection does not match");
+                    Assert.AreEqual(selection2, actual.Skip(1).First(), "Bottom selection does not match");
 
+                }
             }
 
 

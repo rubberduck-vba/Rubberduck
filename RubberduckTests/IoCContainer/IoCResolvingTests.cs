@@ -25,16 +25,23 @@ namespace RubberduckTests.IoCContainer
             IWindsorContainer container = null;
             try
             {
-                container = new WindsorContainer().Install(new RubberduckIoCInstaller(ide, addin, initialSettings));
+                try
+                {
+                    container = new WindsorContainer().Install(new RubberduckIoCInstaller(ide, addin, initialSettings));
+                }
+                catch (Exception exception)
+                {
+                    Assert.Inconclusive($"Unable to register. {Environment.NewLine} {exception}");
+                }
+
+                var inspections = container.ResolveAll<IInspection>();
+
+                //This test does not need an assert because it tests that no exception has been thrown.
             }
-            catch(Exception exception)
+            finally
             {
-                Assert.Inconclusive($"Unable to register. {Environment.NewLine} {exception}");
+                container?.Dispose();
             }
-
-            var inspections = container.ResolveAll<IInspection>();
-
-            //This test does not need an assert because it tests that no exception has been thrown.
         }
 
         [TestMethod]
@@ -48,6 +55,8 @@ namespace RubberduckTests.IoCContainer
             IWindsorContainer container = null;
             try
             {
+                try
+            {
                 container = new WindsorContainer().Install(new RubberduckIoCInstaller(ide, addin, initialSettings));
             }
             catch (Exception exception)
@@ -57,7 +66,12 @@ namespace RubberduckTests.IoCContainer
 
             var state = container.ResolveAll<RubberduckParserState>();
 
-            //This test does not need an assert because it tests that no exception has been thrown.
+                //This test does not need an assert because it tests that no exception has been thrown.
+            }
+            finally
+            {
+                container?.Dispose();
+            }
         }
     }
 }

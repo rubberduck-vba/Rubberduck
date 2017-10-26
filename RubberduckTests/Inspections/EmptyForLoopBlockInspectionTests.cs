@@ -35,7 +35,7 @@ namespace RubberduckTests.Inspections
         public void EmptyForLoopBlock_DoesNotFiresOnImplementedLoopBlocks()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
     Dim idx As Integer
     for idx = 1 to 100
         idx = idx + 2
@@ -49,7 +49,7 @@ End Sub";
         public void EmptyForLoopBlock_FiresOnEmptyLoopBlocks()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
     Dim idx As Integer
     for idx = 1 to 100
     next idx
@@ -60,13 +60,15 @@ End Sub";
         private void CheckActualEmptyBlockCountEqualsExpected(string inputCode, int expectedCount)
         {
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new EmptyForLoopBlockInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new EmptyForLoopBlockInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.AreEqual(expectedCount, actualResults.Count());
+                Assert.AreEqual(expectedCount, actualResults.Count());
+            }
         }
     }
 }

@@ -15,16 +15,18 @@ namespace RubberduckTests.Inspections
         public void ParameterNotUsed_ReturnsResult()
         {
             const string inputCode =
-@"Private Sub Foo(ByVal arg1 as Integer)
+                @"Private Sub Foo(ByVal arg1 as Integer)
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ParameterNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new ParameterNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(1, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -32,19 +34,21 @@ End Sub";
         public void ParameterNotUsed_ReturnsResult_MultipleSubs()
         {
             const string inputCode =
-@"Private Sub Foo(ByVal arg1 as Integer)
+                @"Private Sub Foo(ByVal arg1 as Integer)
 End Sub
 
 Private Sub Goo(ByVal arg1 as Integer)
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ParameterNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new ParameterNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(2, inspectionResults.Count());
+                Assert.AreEqual(2, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -52,17 +56,19 @@ End Sub";
         public void ParameterUsed_DoesNotReturnResult()
         {
             const string inputCode =
-@"Private Sub Foo(ByVal arg1 as Integer)
+                @"Private Sub Foo(ByVal arg1 as Integer)
     arg1 = 9
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ParameterNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new ParameterNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(0, inspectionResults.Count());
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -70,17 +76,19 @@ End Sub";
         public void ParameterNotUsed_ReturnsResult_SomeParamsUsed()
         {
             const string inputCode =
-@"Private Sub Foo(ByVal arg1 as Integer, ByVal arg2 as String)
+                @"Private Sub Foo(ByVal arg1 as Integer, ByVal arg2 as String)
     arg1 = 9
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ParameterNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new ParameterNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(1, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -89,10 +97,10 @@ End Sub";
         {
             //Input
             const string inputCode1 =
-@"Public Sub DoSomething(ByVal a As Integer)
+                @"Public Sub DoSomething(ByVal a As Integer)
 End Sub";
             const string inputCode2 =
-@"Implements IClass1
+                @"Implements IClass1
 
 Private Sub IClass1_DoSomething(ByVal a As Integer)
 End Sub";
@@ -104,13 +112,15 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ParameterNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults().ToList();
+                var inspection = new ParameterNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults().ToList();
 
-            Assert.AreEqual(1, inspectionResults.Count);
+                Assert.AreEqual(1, inspectionResults.Count);
 
+            }
         }
 
         [TestMethod]
@@ -118,17 +128,19 @@ End Sub";
         public void ParameterNotUsed_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
-@"'@Ignore ParameterNotUsed
+                @"'@Ignore ParameterNotUsed
 Private Sub Foo(ByVal arg1 as Integer)
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ParameterNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new ParameterNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.IsFalse(inspectionResults.Any());
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
 
         [TestMethod]

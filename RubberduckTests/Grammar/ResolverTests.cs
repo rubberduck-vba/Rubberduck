@@ -20,14 +20,19 @@ namespace RubberduckTests.Grammar
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleModule(code, moduleType, out component, Selection.Empty, loadStdLib);
             var parser = MockParser.Create(vbe.Object);
-
+            var state = parser.State;
             parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status != ParserState.Ready)
+
+            if (state.Status == ParserState.ResolverError)
             {
-                Assert.Inconclusive("Parser state should be 'Ready', but returns '{0}'.", parser.State.Status);
+                Assert.Fail("Parser state should be 'Ready', but returns '{0}'.", state.Status);
+            }
+            if (state.Status != ParserState.Ready)
+            {
+                Assert.Inconclusive("Parser state should be 'Ready', but returns '{0}'.", state.Status);
             }
 
-            return parser.State;
+            return state;
         }
 
         private RubberduckParserState Resolve(params string[] classes)
@@ -44,18 +49,19 @@ namespace RubberduckTests.Grammar
             var vbe = builder.Build();
 
             var parser = MockParser.Create(vbe.Object);
-
+            var state = parser.State;
             parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status == ParserState.ResolverError)
+
+            if (state.Status == ParserState.ResolverError)
             {
-                Assert.Fail("Parser state should be 'Ready', but returns '{0}'.", parser.State.Status);
+                Assert.Fail("Parser state should be 'Ready', but returns '{0}'.", state.Status);
             }
-            if (parser.State.Status != ParserState.Ready)
+            if (state.Status != ParserState.Ready)
             {
-                Assert.Inconclusive("Parser state should be 'Ready', but returns '{0}'.", parser.State.Status);
+                Assert.Inconclusive("Parser state should be 'Ready', but returns '{0}'.", state.Status);
             }
 
-            return parser.State;
+            return state;
         }
 
         private RubberduckParserState Resolve(params Tuple<string, ComponentType>[] components)
@@ -70,20 +76,20 @@ namespace RubberduckTests.Grammar
             var project = projectBuilder.Build();
             builder.AddProject(project);
             var vbe = builder.Build();
-
             var parser = MockParser.Create(vbe.Object);
-
+            var state = parser.State;
             parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status == ParserState.ResolverError)
+
+            if (state.Status == ParserState.ResolverError)
             {
-                Assert.Fail("Parser state should be 'Ready', but returns '{0}'.", parser.State.Status);
+                Assert.Fail("Parser state should be 'Ready', but returns '{0}'.", state.Status);
             }
-            if (parser.State.Status != ParserState.Ready)
+            if (state.Status != ParserState.Ready)
             {
-                Assert.Inconclusive("Parser state should be 'Ready', but returns '{0}'.", parser.State.Status);
+                Assert.Inconclusive("Parser state should be 'Ready', but returns '{0}'.", state.Status);
             }
 
-            return parser.State;
+            return state;
         }
 
         [TestCategory("Grammar")]
@@ -96,12 +102,14 @@ Public Function Foo() As String
     Foo = 42
 End Function
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Function && item.IdentifierName == "Foo");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Function && item.IdentifierName == "Foo");
 
-            Assert.AreEqual(1, declaration.References.Count(item => item.IsAssignment));
+                Assert.AreEqual(1, declaration.References.Count(item => item.IsAssignment));
+            }
         }
 
         [TestCategory("Resolver")]
@@ -113,12 +121,14 @@ Public Const Foo As Long = 42
 Public Sub DoSomething(Optional ByVal bar As Long = Foo)
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Constant && item.IdentifierName == "Foo");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Constant && item.IdentifierName == "Foo");
 
-            Assert.AreEqual(1, declaration.References.Count());
+                Assert.AreEqual(1, declaration.References.Count());
+            }
         }
 
         [TestCategory("Grammar")]
@@ -135,12 +145,14 @@ End Function
             // We only use the second class as as target of the type expression, its contents don't matter.
             var code_class2 = string.Empty;
 
-            var state = Resolve(code_class1, code_class2);
+            using (var state = Resolve(code_class1, code_class2))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "a");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "a");
 
-            Assert.AreEqual(1, declaration.References.Count());
+                Assert.AreEqual(1, declaration.References.Count());
+            }
         }
 
         [TestCategory("Grammar")]
@@ -157,12 +169,14 @@ End Function
             // We only use the second class as as target of the type expression, its contents don't matter.
             var code_class2 = string.Empty;
 
-            var state = Resolve(code_class1, code_class2);
+            using (var state = Resolve(code_class1, code_class2))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.ClassModule && item.IdentifierName == "Class2");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.ClassModule && item.IdentifierName == "Class2");
 
-            Assert.AreEqual(1, declaration.References.Count());
+                Assert.AreEqual(1, declaration.References.Count());
+            }
         }
 
         [TestCategory("Grammar")]
@@ -179,14 +193,16 @@ Private Function Foo() As String
     Foo = 42
 End Function
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Function && item.IdentifierName == "Foo");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Function && item.IdentifierName == "Foo");
 
-            var reference = declaration.References.SingleOrDefault(item => !item.IsAssignment);
-            Assert.IsNotNull(reference);
-            Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
+                var reference = declaration.References.SingleOrDefault(item => !item.IsAssignment);
+                Assert.IsNotNull(reference);
+                Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
+            }
         }
 
         [TestCategory("Grammar")]
@@ -207,15 +223,17 @@ Private Function Foo() As String
     Foo = 42
 End Function
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.DeclarationFinder
-                                .UserDeclarations(DeclarationType.Function)
-                                .Single(item => item.IdentifierName == "Foo");
+                var declaration = state.DeclarationFinder
+                    .UserDeclarations(DeclarationType.Function)
+                    .Single(item => item.IdentifierName == "Foo");
 
-            var reference = declaration.References.SingleOrDefault(item => !item.IsAssignment);
-            Assert.IsNotNull(reference);
-            Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
+                var reference = declaration.References.SingleOrDefault(item => !item.IsAssignment);
+                Assert.IsNotNull(reference);
+                Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
+            }
         }
 
         [TestCategory("Grammar")]
@@ -229,14 +247,16 @@ Public Sub DoSomething()
     a = foo
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo");
 
-            var reference = declaration.References.SingleOrDefault(item => !item.IsAssignment);
-            Assert.IsNotNull(reference);
-            Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
+                var reference = declaration.References.SingleOrDefault(item => !item.IsAssignment);
+                Assert.IsNotNull(reference);
+                Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
+            }
         }
 
         [TestCategory("Grammar")]
@@ -250,14 +270,16 @@ Public Sub DoSomething()
     a = [foo]
 End Sub
 ";
-            var state = Resolve(code, true);
+            using (var state = Resolve(code, true))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo");
 
-            var reference = declaration.References.SingleOrDefault(item => !item.IsAssignment);
-            Assert.IsNotNull(reference);
-            Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
+                var reference = declaration.References.SingleOrDefault(item => !item.IsAssignment);
+                Assert.IsNotNull(reference);
+                Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
+            }
         }
 
         [TestCategory("Grammar")]
@@ -271,14 +293,16 @@ Public Sub DoSomething()
     foo = 42
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo");
 
-            var reference = declaration.References.SingleOrDefault(item => item.IsAssignment);
-            Assert.IsNotNull(reference);
-            Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
+                var reference = declaration.References.SingleOrDefault(item => item.IsAssignment);
+                Assert.IsNotNull(reference);
+                Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
+            }
         }
 
         [TestCategory("Grammar")]
@@ -292,14 +316,16 @@ Public Sub DoSomething()
 5:
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.LineLabel && item.IdentifierName == "5");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.LineLabel && item.IdentifierName == "5");
 
-            var reference = declaration.References.SingleOrDefault();
-            Assert.IsNotNull(reference);
-            Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
+                var reference = declaration.References.SingleOrDefault();
+                Assert.IsNotNull(reference);
+                Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
+            }
         }
 
         [TestCategory("Grammar")]
@@ -317,14 +343,16 @@ Public Sub DoSomething()
 5
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.LineLabel && item.IdentifierName == "5");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.LineLabel && item.IdentifierName == "5");
 
-            var reference = declaration.References.SingleOrDefault();
-            Assert.IsNotNull(reference);
-            Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
+                var reference = declaration.References.SingleOrDefault();
+                Assert.IsNotNull(reference);
+                Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
+            }
         }
 
         [TestCategory("Grammar")]
@@ -338,14 +366,16 @@ Public Sub DoSomething()
 foo:
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.LineLabel && item.IdentifierName == "foo");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.LineLabel && item.IdentifierName == "foo");
 
-            var reference = declaration.References.SingleOrDefault();
-            Assert.IsNotNull(reference);
-            Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
+                var reference = declaration.References.SingleOrDefault();
+                Assert.IsNotNull(reference);
+                Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
+            }
         }
 
         [TestCategory("Grammar")]
@@ -362,14 +392,16 @@ Public Sub DoSomething()
     Dim a As {0}.{1}.{0}
 End Sub
 ", MockVbeBuilder.TestProjectName, MockVbeBuilder.TestModuleName);
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Project && item.IdentifierName == MockVbeBuilder.TestProjectName);
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Project && item.IdentifierName == MockVbeBuilder.TestProjectName);
 
-            var reference = declaration.References.SingleOrDefault();
-            Assert.IsNotNull(reference);
-            Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
+                var reference = declaration.References.SingleOrDefault();
+                Assert.IsNotNull(reference);
+                Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
+            }
         }
 
         [TestCategory("Grammar")]
@@ -386,14 +418,16 @@ Public Sub DoSomething()
     Dim a As {1}.{0}
 End Sub
 ", MockVbeBuilder.TestProjectName, MockVbeBuilder.TestModuleName);
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.UserDefinedType && item.IdentifierName == MockVbeBuilder.TestProjectName);
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.UserDefinedType && item.IdentifierName == MockVbeBuilder.TestProjectName);
 
-            var reference = declaration.References.SingleOrDefault();
-            Assert.IsNotNull(reference);
-            Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
+                var reference = declaration.References.SingleOrDefault();
+                Assert.IsNotNull(reference);
+                Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
+            }
         }
 
         [TestCategory("Grammar")]
@@ -413,12 +447,14 @@ Public foo As Integer
             var class1 = Tuple.Create(code_class1, ComponentType.ClassModule);
             var class2 = Tuple.Create(code_class2, ComponentType.ClassModule);
 
-            var state = Resolve(class1, class2);
+            using (var state = Resolve(class1, class2))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item => item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo" && !item.IsUndeclared);
+                var declaration = state.AllUserDeclarations.Single(item => item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo" && !item.IsUndeclared);
 
-            var reference = declaration.References.SingleOrDefault(item => item.IsAssignment);
-            Assert.IsNull(reference);
+                var reference = declaration.References.SingleOrDefault(item => item.IsAssignment);
+                Assert.IsNull(reference);
+            }
         }
 
         [TestCategory("Grammar")]
@@ -435,16 +471,17 @@ End Sub
 Option Explicit
 Public foo As Integer
 ";
-            var state = Resolve(
+            using (var state = Resolve(
                 Tuple.Create(code_class1, ComponentType.ClassModule),
-                Tuple.Create(code_class2, ComponentType.StandardModule));
+                Tuple.Create(code_class2, ComponentType.StandardModule)))
+            {
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo");
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo");
-
-            var reference = declaration.References.SingleOrDefault(item => !item.IsAssignment);
-            Assert.IsNotNull(reference);
-            Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
+                var reference = declaration.References.SingleOrDefault(item => !item.IsAssignment);
+                Assert.IsNotNull(reference);
+                Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
+            }
         }
 
         [TestCategory("Grammar")]
@@ -464,14 +501,16 @@ Public foo As Integer
             var class1 = Tuple.Create(code_class1, ComponentType.ClassModule);
             var module1 = Tuple.Create(code_module1, ComponentType.StandardModule);
 
-            var state = Resolve(class1, module1);
+            using (var state = Resolve(class1, module1))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo");
 
-            var reference = declaration.References.SingleOrDefault(item => item.IsAssignment);
-            Assert.IsNotNull(reference);
-            Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
+                var reference = declaration.References.SingleOrDefault(item => item.IsAssignment);
+                Assert.IsNotNull(reference);
+                Assert.AreEqual("DoSomething", reference.ParentScoping.IdentifierName);
+            }
         }
 
         [TestCategory("Grammar")]
@@ -485,12 +524,14 @@ Private Type TFoo
 End Type
 Private this As TFoo
 ";
-            var state = Resolve(code, false, ComponentType.ClassModule);
+            using (var state = Resolve(code, false, ComponentType.ClassModule))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.UserDefinedType && item.IdentifierName == "TFoo");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.UserDefinedType && item.IdentifierName == "TFoo");
 
-            Assert.IsNotNull(declaration.References.SingleOrDefault());
+                Assert.IsNotNull(declaration.References.SingleOrDefault());
+            }
         }
 
         [TestCategory("Grammar")]
@@ -507,12 +548,14 @@ End Sub
 Option Explicit
 ";
 
-            var state = Resolve(code_class1, code_class2);
+            using (var state = Resolve(code_class1, code_class2))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.ClassModule && item.IdentifierName == "Class2");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.ClassModule && item.IdentifierName == "Class2");
 
-            Assert.IsNotNull(declaration.References.SingleOrDefault());
+                Assert.IsNotNull(declaration.References.SingleOrDefault());
+            }
         }
 
         [TestCategory("Grammar")]
@@ -525,12 +568,14 @@ Public Sub DoSomething(ByVal foo As Integer)
     a = foo
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Parameter && item.IdentifierName == "foo");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Parameter && item.IdentifierName == "foo");
 
-            Assert.IsNotNull(declaration.References.SingleOrDefault());
+                Assert.IsNotNull(declaration.References.SingleOrDefault());
+            }
         }
 
         [TestCategory("Grammar")]
@@ -543,12 +588,14 @@ Public Sub DoSomething(ByRef foo As Integer)
     foo = 42
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Parameter && item.IdentifierName == "foo");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Parameter && item.IdentifierName == "foo");
 
-            Assert.IsNotNull(declaration.References.SingleOrDefault(item => item.IsAssignment));
+                Assert.IsNotNull(declaration.References.SingleOrDefault(item => item.IsAssignment));
+            }
         }
 
         [TestCategory("Grammar")]
@@ -564,13 +611,15 @@ End Sub
 Private Sub DoSomethingElse(ByVal foo As Integer)
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Parameter && item.IdentifierName == "foo");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Parameter && item.IdentifierName == "foo");
 
-            Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
-                item.ParentScoping.IdentifierName == "DoSomething"));
+                Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
+                    item.ParentScoping.IdentifierName == "DoSomething"));
+            }
         }
 
         [TestCategory("Grammar")]
@@ -588,14 +637,16 @@ Public Property Get Bar() As Integer
     Bar = this.Bar
 End Property
 ";
-            var state = Resolve(code, false, ComponentType.ClassModule);
+            using (var state = Resolve(code, false, ComponentType.ClassModule))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.UserDefinedTypeMember && item.IdentifierName == "Bar");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.UserDefinedTypeMember && item.IdentifierName == "Bar");
 
-            Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
-                item.ParentScoping.DeclarationType == DeclarationType.PropertyGet
-                && item.ParentScoping.IdentifierName == "Bar"));
+                Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
+                    item.ParentScoping.DeclarationType == DeclarationType.PropertyGet
+                    && item.ParentScoping.IdentifierName == "Bar"));
+            }
         }
 
         [TestCategory("Grammar")]
@@ -613,14 +664,16 @@ Public Property Get Bar() As Integer
     Bar = this.Bar
 End Property
 ";
-            var state = Resolve(code, false, ComponentType.ClassModule);
+            using (var state = Resolve(code, false, ComponentType.ClassModule))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "this");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "this");
 
-            Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
-                item.ParentScoping.DeclarationType == DeclarationType.PropertyGet
-                && item.ParentScoping.IdentifierName == "Bar"));
+                Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
+                    item.ParentScoping.DeclarationType == DeclarationType.PropertyGet
+                    && item.ParentScoping.IdentifierName == "Bar"));
+            }
         }
 
         [TestCategory("Grammar")]
@@ -640,14 +693,16 @@ Public Sub DoSomething()
     End With
 End Sub
 ";
-            var state = Resolve(code_class1, code_class2);
+            using (var state = Resolve(code_class1, code_class2))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.PropertyGet && item.IdentifierName == "Foo");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.PropertyGet && item.IdentifierName == "Foo");
 
-            Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
-                item.ParentScoping.DeclarationType == DeclarationType.Procedure
-                && item.ParentScoping.IdentifierName == "DoSomething"));
+                Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
+                    item.ParentScoping.DeclarationType == DeclarationType.Procedure
+                    && item.ParentScoping.IdentifierName == "DoSomething"));
+            }
         }
 
         [TestCategory("Grammar")]
@@ -675,14 +730,16 @@ Public Sub DoSomething()
 End Sub
 ";
 
-            var state = Resolve(code_class1, code_class2, code_class3);
+            using (var state = Resolve(code_class1, code_class2, code_class3))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.PropertyGet && item.IdentifierName == "Bar");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.PropertyGet && item.IdentifierName == "Bar");
 
-            Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
-                item.ParentScoping.DeclarationType == DeclarationType.Procedure
-                && item.ParentScoping.IdentifierName == "DoSomething"));
+                Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
+                    item.ParentScoping.DeclarationType == DeclarationType.Procedure
+                    && item.ParentScoping.IdentifierName == "DoSomething"));
+            }
         }
 
         [TestCategory("Grammar")]
@@ -698,21 +755,23 @@ Private Sub DoSomething()
     foo = 42
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable
-                && item.ParentScopeDeclaration.IdentifierName == "DoSomething"
-                && item.IdentifierName == "foo");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable
+                    && item.ParentScopeDeclaration.IdentifierName == "DoSomething"
+                    && item.IdentifierName == "foo");
 
-            Assert.IsNotNull(declaration.References.SingleOrDefault());
+                Assert.IsNotNull(declaration.References.SingleOrDefault());
 
-            var fieldDeclaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable
-                && item.ParentScopeDeclaration.DeclarationType == DeclarationType.ProceduralModule
-                && item.IdentifierName == "foo");
+                var fieldDeclaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable
+                    && item.ParentScopeDeclaration.DeclarationType == DeclarationType.ProceduralModule
+                    && item.IdentifierName == "foo");
 
-            Assert.IsNull(fieldDeclaration.References.SingleOrDefault());
+                Assert.IsNull(fieldDeclaration.References.SingleOrDefault());
+            }
         }
 
         [TestCategory("Grammar")]
@@ -730,13 +789,15 @@ Implements Class1
 Private Sub Class1_DoSomething()
 End Sub
 ";
-            var state = Resolve(code_class1, code_class2);
+            using (var state = Resolve(code_class1, code_class2))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.ClassModule && item.IdentifierName == "Class1");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.ClassModule && item.IdentifierName == "Class1");
 
-            Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
-                item.ParentScoping.IdentifierName == "Class2"));
+                Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
+                    item.ParentScoping.IdentifierName == "Class2"));
+            }
         }
 
         [TestCategory("Grammar")]
@@ -759,14 +820,16 @@ Public Sub DoSomething(ByVal a As Class1)
     a = a.Foo.Bar
 End Sub
 ";
-            var state = Resolve(code_class1, code_class2, code_class3);
+            using (var state = Resolve(code_class1, code_class2, code_class3))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.PropertyGet && item.IdentifierName == "Bar");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.PropertyGet && item.IdentifierName == "Bar");
 
-            Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
-                item.ParentScoping.DeclarationType == DeclarationType.Procedure
-                && item.ParentScoping.IdentifierName == "DoSomething"));
+                Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
+                    item.ParentScoping.DeclarationType == DeclarationType.Procedure
+                    && item.ParentScoping.IdentifierName == "DoSomething"));
+            }
         }
 
         [TestCategory("Grammar")]
@@ -784,14 +847,16 @@ Public Sub DoSomething(ByVal a As Class1)
     b = a.Foo
 End Sub
 ";
-            var state = Resolve(code_class1, code_class2);
+            using (var state = Resolve(code_class1, code_class2))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Parameter && item.IdentifierName == "a");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Parameter && item.IdentifierName == "a");
 
-            Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
-                item.ParentScoping.DeclarationType == DeclarationType.Procedure
-                && item.ParentScoping.IdentifierName == "DoSomething"));
+                Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
+                    item.ParentScoping.DeclarationType == DeclarationType.Procedure
+                    && item.ParentScoping.IdentifierName == "DoSomething"));
+            }
         }
 
         [TestCategory("Grammar")]
@@ -806,15 +871,17 @@ Public Sub DoSomething()
     Next
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "i");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "i");
 
-            Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
-                item.ParentScoping.DeclarationType == DeclarationType.Procedure
-                && item.ParentScoping.IdentifierName == "DoSomething"
-                && item.IsAssignment));
+                Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
+                    item.ParentScoping.DeclarationType == DeclarationType.Procedure
+                    && item.ParentScoping.IdentifierName == "DoSomething"
+                    && item.IsAssignment));
+            }
         }
 
         [TestCategory("Grammar")]
@@ -829,15 +896,17 @@ Public Sub DoSomething()
     Next
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "i");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "i");
 
-            Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
-                item.ParentScoping.DeclarationType == DeclarationType.Procedure
-                && item.ParentScoping.IdentifierName == "DoSomething"
-                && item.IsAssignment));
+                Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
+                    item.ParentScoping.DeclarationType == DeclarationType.Procedure
+                    && item.ParentScoping.IdentifierName == "DoSomething"
+                    && item.IsAssignment));
+            }
         }
 
         [TestCategory("Grammar")]
@@ -852,15 +921,17 @@ Public Sub DoSomething(ByVal c As Collection)
     Next
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "i");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "i");
 
-            Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
-                item.ParentScoping.DeclarationType == DeclarationType.Procedure
-                && item.ParentScoping.IdentifierName == "DoSomething"
-                && item.IsAssignment));
+                Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
+                    item.ParentScoping.DeclarationType == DeclarationType.Procedure
+                    && item.ParentScoping.IdentifierName == "DoSomething"
+                    && item.IsAssignment));
+            }
         }
 
         [TestCategory("Grammar")]
@@ -875,15 +946,17 @@ Public Sub DoSomething(ByVal c As Collection)
     Next
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Parameter && item.IdentifierName == "c");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Parameter && item.IdentifierName == "c");
 
-            Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
-                item.ParentScoping.DeclarationType == DeclarationType.Procedure
-                && item.ParentScoping.IdentifierName == "DoSomething"
-                && !item.IsAssignment));
+                Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
+                    item.ParentScoping.DeclarationType == DeclarationType.Procedure
+                    && item.ParentScoping.IdentifierName == "DoSomething"
+                    && !item.IsAssignment));
+            }
         }
 
         [TestCategory("Grammar")]
@@ -899,17 +972,19 @@ Public Sub DoSomething(ParamArray values())
     Next
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Parameter
-                && item.IdentifierName == "values"
-                && item.IsArray);
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Parameter
+                    && item.IdentifierName == "values"
+                    && item.IsArray);
 
-            Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
-                item.ParentScoping.DeclarationType == DeclarationType.Procedure
-                && item.ParentScoping.IdentifierName == "DoSomething"
-                && !item.IsAssignment));
+                Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
+                    item.ParentScoping.DeclarationType == DeclarationType.Procedure
+                    && item.ParentScoping.IdentifierName == "DoSomething"
+                    && !item.IsAssignment));
+            }
         }
 
         [TestCategory("Grammar")]
@@ -924,16 +999,18 @@ Public Sub DoSomething()
     foo(""key"") = 42
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable
-                && item.IdentifierName == "foo");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable
+                    && item.IdentifierName == "foo");
 
-            Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
-                item.ParentScoping.DeclarationType == DeclarationType.Procedure
-                && item.ParentScoping.IdentifierName == "DoSomething"
-                && !item.IsAssignment));
+                Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
+                    item.ParentScoping.DeclarationType == DeclarationType.Procedure
+                    && item.ParentScoping.IdentifierName == "DoSomething"
+                    && !item.IsAssignment));
+            }
         }
 
         [TestCategory("Grammar")]
@@ -949,17 +1026,19 @@ Public Sub DoSomething(ParamArray values())
     Next
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Parameter
-                && item.IdentifierName == "values"
-                && item.IsArray);
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Parameter
+                    && item.IdentifierName == "values"
+                    && item.IsArray);
 
-            Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
-                item.ParentScoping.DeclarationType == DeclarationType.Procedure
-                && item.ParentScoping.IdentifierName == "DoSomething"
-                && item.IsAssignment));
+                Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
+                    item.ParentScoping.DeclarationType == DeclarationType.Procedure
+                    && item.ParentScoping.IdentifierName == "DoSomething"
+                    && item.IsAssignment));
+            }
         }
 
         [TestCategory("Grammar")]
@@ -985,16 +1064,18 @@ Public Sub DoSomething()
 End Sub
 ";
 
-            var state = Resolve(code_class1, code_class2);
+            using (var state = Resolve(code_class1, code_class2))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.PropertyGet
-                && item.IdentifierName == "Foo");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.PropertyGet
+                    && item.IdentifierName == "Foo");
 
-            Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
-                !item.IsAssignment
-                && item.ParentScoping.IdentifierName == "DoSomething"
-                && item.ParentScoping.DeclarationType == DeclarationType.Procedure));
+                Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
+                    !item.IsAssignment
+                    && item.ParentScoping.IdentifierName == "DoSomething"
+                    && item.ParentScoping.DeclarationType == DeclarationType.Procedure));
+            }
         }
 
         [TestCategory("Grammar")]
@@ -1020,16 +1101,18 @@ Public Sub DoSomething()
 End Sub
 ";
 
-            var state = Resolve(code_class1, code_class2);
+            using (var state = Resolve(code_class1, code_class2))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.PropertySet
-                && item.IdentifierName == "Foo");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.PropertySet
+                    && item.IdentifierName == "Foo");
 
-            Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
-                item.IsAssignment
-                && item.ParentScoping.IdentifierName == "DoSomething"
-                && item.ParentScoping.DeclarationType == DeclarationType.Procedure));
+                Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
+                    item.IsAssignment
+                    && item.ParentScoping.IdentifierName == "DoSomething"
+                    && item.ParentScoping.DeclarationType == DeclarationType.Procedure));
+            }
         }
 
         [TestCategory("Grammar")]
@@ -1055,16 +1138,18 @@ Public Sub DoSomething()
 End Sub
 ";
 
-            var state = Resolve(code_class1, code_class2);
+            using (var state = Resolve(code_class1, code_class2))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.PropertyLet
-                && item.IdentifierName == "Foo");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.PropertyLet
+                    && item.IdentifierName == "Foo");
 
-            Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
-                item.IsAssignment
-                && item.ParentScoping.IdentifierName == "DoSomething"
-                && item.ParentScoping.DeclarationType == DeclarationType.Procedure));
+                Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
+                    item.IsAssignment
+                    && item.ParentScoping.IdentifierName == "DoSomething"
+                    && item.ParentScoping.DeclarationType == DeclarationType.Procedure));
+            }
         }
 
         [TestCategory("Grammar")]
@@ -1085,18 +1170,20 @@ Public Sub DoSomething()
     a = Foo
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.EnumerationMember
-                && item.IdentifierName == "Foo"
-                && item.ParentDeclaration.IdentifierName == "FooBarBaz");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.EnumerationMember
+                    && item.IdentifierName == "Foo"
+                    && item.ParentDeclaration.IdentifierName == "FooBarBaz");
 
-            Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
-                !item.IsAssignment
-                && item.ParentScoping.IdentifierName == "DoSomething"
-                && item.ParentScoping.DeclarationType == DeclarationType.Procedure));
+                Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
+                    !item.IsAssignment
+                    && item.ParentScoping.IdentifierName == "DoSomething"
+                    && item.ParentScoping.DeclarationType == DeclarationType.Procedure));
 
+            }
         }
 
         [TestCategory("Grammar")]
@@ -1117,17 +1204,19 @@ Public Sub DoSomething()
     a = FooBarBaz.Foo
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.EnumerationMember
-                && item.IdentifierName == "Foo"
-                && item.ParentDeclaration.IdentifierName == "FooBarBaz");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.EnumerationMember
+                    && item.IdentifierName == "Foo"
+                    && item.ParentDeclaration.IdentifierName == "FooBarBaz");
 
-            Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
-                !item.IsAssignment
-                && item.ParentScoping.IdentifierName == "DoSomething"
-                && item.ParentScoping.DeclarationType == DeclarationType.Procedure));
+                Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
+                    !item.IsAssignment
+                    && item.ParentScoping.IdentifierName == "DoSomething"
+                    && item.ParentScoping.DeclarationType == DeclarationType.Procedure));
+            }
         }
 
         [TestCategory("Grammar")]
@@ -1148,15 +1237,17 @@ Public Sub DoSomething(ByVal a As FooBarBaz)
 End Sub
 ";
 
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Enumeration
-                && item.IdentifierName == "FooBarBaz");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Enumeration
+                    && item.IdentifierName == "FooBarBaz");
 
-            Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
-                item.ParentScoping.IdentifierName == "DoSomething"
-                && item.ParentScoping.DeclarationType == DeclarationType.Procedure));
+                Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
+                    item.ParentScoping.IdentifierName == "DoSomething"
+                    && item.ParentScoping.DeclarationType == DeclarationType.Procedure));
+            }
         }
 
         [TestCategory("Grammar")]
@@ -1176,13 +1267,15 @@ Public Function Foos() As Foos
 End Function
 ";
 
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Enumeration
-                && item.IdentifierName == "Foos");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Enumeration
+                    && item.IdentifierName == "Foos");
 
-            Assert.IsTrue(declaration.References.All(item => item.Selection.StartLine != 9));
+                Assert.IsTrue(declaration.References.All(item => item.Selection.StartLine != 9));
+            }
         }
 
         [TestCategory("Grammar")]
@@ -1200,15 +1293,17 @@ Public Sub DoSomething(ByVal a As TFoo)
 End Sub
 ";
 
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.UserDefinedType
-                && item.IdentifierName == "TFoo");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.UserDefinedType
+                    && item.IdentifierName == "TFoo");
 
-            Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
-                item.ParentScoping.IdentifierName == "DoSomething"
-                && item.ParentScoping.DeclarationType == DeclarationType.Procedure));
+                Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
+                    item.ParentScoping.IdentifierName == "DoSomething"
+                    && item.ParentScoping.DeclarationType == DeclarationType.Procedure));
+            }
         }
 
         [TestCategory("Grammar")]
@@ -1227,14 +1322,16 @@ Private Function Foo(ByVal bar As Integer)
     Foo = bar + 42
 End Function";
 
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable
-                && item.IsArray
-                && item.ParentScopeDeclaration.IdentifierName == "DoSomething");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable
+                    && item.IsArray
+                    && item.ParentScopeDeclaration.IdentifierName == "DoSomething");
 
-            Assert.IsNotNull(declaration.References.SingleOrDefault(item => !item.IsAssignment));
+                Assert.IsNotNull(declaration.References.SingleOrDefault(item => !item.IsAssignment));
+            }
         }
 
         [TestCategory("Grammar")]
@@ -1249,18 +1346,20 @@ Public Sub DoSomething()
     a = foo
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable && !item.IsUndeclared);
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && !item.IsUndeclared);
 
-            var usage = declaration.References.Single();
-            var annotation = (IgnoreAnnotation)usage.Annotations.First();
-            Assert.IsTrue(
-                usage.Annotations.Count() == 1
-                && annotation.AnnotationType == AnnotationType.Ignore
-                && annotation.InspectionNames.Count() == 1
-                && annotation.InspectionNames.First() == "UnassignedVariableUsage");
+                var usage = declaration.References.Single();
+                var annotation = (IgnoreAnnotation)usage.Annotations.First();
+                Assert.IsTrue(
+                    usage.Annotations.Count() == 1
+                    && annotation.AnnotationType == AnnotationType.Ignore
+                    && annotation.InspectionNames.Count() == 1
+                    && annotation.InspectionNames.First() == "UnassignedVariableUsage");
+            }
         }
 
         [TestCategory("Grammar")]
@@ -1276,22 +1375,24 @@ Public Sub DoSomething()
     a = foo
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable && !item.IsUndeclared);
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && !item.IsUndeclared);
 
-            var usage = declaration.References.Single();
+                var usage = declaration.References.Single();
 
-            var annotation1 = (IgnoreAnnotation)usage.Annotations.ElementAt(0);
-            var annotation2 = (IgnoreAnnotation)usage.Annotations.ElementAt(1);
+                var annotation1 = (IgnoreAnnotation)usage.Annotations.ElementAt(0);
+                var annotation2 = (IgnoreAnnotation)usage.Annotations.ElementAt(1);
 
-            Assert.AreEqual(2, usage.Annotations.Count());
-            Assert.AreEqual(AnnotationType.Ignore, annotation1.AnnotationType);
-            Assert.AreEqual(AnnotationType.Ignore, annotation2.AnnotationType);
+                Assert.AreEqual(2, usage.Annotations.Count());
+                Assert.AreEqual(AnnotationType.Ignore, annotation1.AnnotationType);
+                Assert.AreEqual(AnnotationType.Ignore, annotation2.AnnotationType);
 
-            Assert.IsTrue(usage.Annotations.Any(a => ((IgnoreAnnotation)a).InspectionNames.First() == "UseMeaningfulName"));
-            Assert.IsTrue(usage.Annotations.Any(a => ((IgnoreAnnotation)a).InspectionNames.First() == "UnassignedVariableUsage"));
+                Assert.IsTrue(usage.Annotations.Any(a => ((IgnoreAnnotation)a).InspectionNames.First() == "UseMeaningfulName"));
+                Assert.IsTrue(usage.Annotations.Any(a => ((IgnoreAnnotation)a).InspectionNames.First() == "UnassignedVariableUsage"));
+            }
         }
 
         [TestCategory("Grammar")]
@@ -1300,18 +1401,20 @@ End Sub
         public void AnnotatedDeclaration_LinesAbove_HaveAnnotations()
         {
             var code =
-@"'@TestMethod
+                @"'@TestMethod
 '@IgnoreTest
 Public Sub Foo()
 End Sub";
 
 
-            var state = Resolve(code);
-            var declaration = state.AllUserDeclarations.First(f => f.DeclarationType == DeclarationType.Procedure);
+            using (var state = Resolve(code))
+            {
+                var declaration = state.AllUserDeclarations.First(f => f.DeclarationType == DeclarationType.Procedure);
 
-            Assert.IsTrue(declaration.Annotations.Count() == 2);
-            Assert.IsTrue(declaration.Annotations.Any(a => a.AnnotationType == AnnotationType.TestMethod));
-            Assert.IsTrue(declaration.Annotations.Any(a => a.AnnotationType == AnnotationType.IgnoreTest));
+                Assert.IsTrue(declaration.Annotations.Count() == 2);
+                Assert.IsTrue(declaration.Annotations.Any(a => a.AnnotationType == AnnotationType.TestMethod));
+                Assert.IsTrue(declaration.Annotations.Any(a => a.AnnotationType == AnnotationType.IgnoreTest));
+            }
         }
 
         [TestCategory("Grammar")]
@@ -1325,14 +1428,16 @@ Public Sub DoSomething()
     a = foo '@Ignore UnassignedVariableUsage 
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable && !item.IsUndeclared);
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && !item.IsUndeclared);
 
-            var usage = declaration.References.Single();
+                var usage = declaration.References.Single();
 
-            Assert.IsTrue(!usage.Annotations.Any());
+                Assert.IsTrue(!usage.Annotations.Any());
+            }
         }
 
         [TestCategory("Grammar")]
@@ -1352,19 +1457,21 @@ Public Sub DoSomething()
     Foo.Foo = 42
 End Sub
 ";
-            var state = Resolve(code);
-
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.UserDefinedType);
-
-            if (declaration.Project.Name != declaration.IdentifierName)
+            using (var state = Resolve(code))
             {
-                Assert.Inconclusive("UDT should be named after project.");
+
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.UserDefinedType);
+
+                if (declaration.Project.Name != declaration.IdentifierName)
+                {
+                    Assert.Inconclusive("UDT should be named after project.");
+                }
+
+                var usage = declaration.References.SingleOrDefault();
+
+                Assert.IsNotNull(usage);
             }
-
-            var usage = declaration.References.SingleOrDefault();
-
-            Assert.IsNotNull(usage);
         }
 
         [TestCategory("Grammar")]
@@ -1386,19 +1493,21 @@ Public Sub DoSomething()
     Foo.Foo = 42
 End Sub
 ";
-            var state = Resolve(code);
-
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.UserDefinedType);
-
-            if (declaration.Project.Name != declaration.IdentifierName)
+            using (var state = Resolve(code))
             {
-                Assert.Inconclusive("UDT should be named after project.");
+
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.UserDefinedType);
+
+                if (declaration.Project.Name != declaration.IdentifierName)
+                {
+                    Assert.Inconclusive("UDT should be named after project.");
+                }
+
+                var usages = declaration.References;
+
+                Assert.AreEqual(2, usages.Count());
             }
-
-            var usages = declaration.References;
-
-            Assert.AreEqual(2, usages.Count());
         }
 
         [TestCategory("Grammar")]
@@ -1418,18 +1527,20 @@ Public Sub DoSomething()
     Foo.Foo = 42
 End Sub
 ";
-            var state = Resolve(code);
-
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable);
-
-            if (declaration.Project.Name != declaration.AsTypeName)
+            using (var state = Resolve(code))
             {
-                Assert.Inconclusive("variable should be named after project.");
-            }
-            var usages = declaration.References;
 
-            Assert.AreEqual(2, usages.Count());
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable);
+
+                if (declaration.Project.Name != declaration.AsTypeName)
+                {
+                    Assert.Inconclusive("variable should be named after project.");
+                }
+                var usages = declaration.References;
+
+                Assert.AreEqual(2, usages.Count());
+            }
         }
 
         [TestCategory("Grammar")]
@@ -1449,16 +1560,18 @@ Public Sub DoSomething()
     Foo.Foo = 42
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.UserDefinedTypeMember
-                && item.IdentifierName == "Foo");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.UserDefinedTypeMember
+                    && item.IdentifierName == "Foo");
 
-            var usages = declaration.References.Where(item =>
-                item.ParentScoping.IdentifierName == "DoSomething");
+                var usages = declaration.References.Where(item =>
+                    item.ParentScoping.IdentifierName == "DoSomething");
 
-            Assert.AreEqual(1, usages.Count());
+                Assert.AreEqual(1, usages.Count());
+            }
         }
 
         [TestCategory("Grammar")]
@@ -1482,18 +1595,20 @@ Public Sub DoSomething()
     Foo.Foo.Foo = 42
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.UserDefinedTypeMember
-                && item.IdentifierName == "Foo"
-                && item.AsTypeName == item.Project.Name
-                && item.IdentifierName == item.ParentDeclaration.IdentifierName);
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.UserDefinedTypeMember
+                    && item.IdentifierName == "Foo"
+                    && item.AsTypeName == item.Project.Name
+                    && item.IdentifierName == item.ParentDeclaration.IdentifierName);
 
-            var usages = declaration.References.Where(item =>
-                item.ParentScoping.IdentifierName == "DoSomething");
+                var usages = declaration.References.Where(item =>
+                    item.ParentScoping.IdentifierName == "DoSomething");
 
-            Assert.AreEqual(2, usages.Count());
+                Assert.AreEqual(2, usages.Count());
+            }
         }
 
         [TestCategory("Grammar")]
@@ -1517,16 +1632,18 @@ Public Sub DoSomething()
     Foo.Foo.Foo = 42
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.UserDefinedType
-                && item.IdentifierName == item.ComponentName);
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.UserDefinedType
+                    && item.IdentifierName == item.ComponentName);
 
-            var usages = declaration.References.Where(item =>
-                item.ParentScoping.IdentifierName == "DoSomething");
+                var usages = declaration.References.Where(item =>
+                    item.ParentScoping.IdentifierName == "DoSomething");
 
-            Assert.AreEqual(1, usages.Count());
+                Assert.AreEqual(1, usages.Count());
+            }
         }
 
         [TestCategory("Grammar")]
@@ -1550,16 +1667,18 @@ Public Sub DoSomething()
     TestModule1.TestModule1.Foo = 42
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.UserDefinedType
-                && item.IdentifierName == item.ComponentName);
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.UserDefinedType
+                    && item.IdentifierName == item.ComponentName);
 
-            var usages = declaration.References.Where(item =>
-                item.ParentScoping.IdentifierName == "DoSomething");
+                var usages = declaration.References.Where(item =>
+                    item.ParentScoping.IdentifierName == "DoSomething");
 
-            Assert.AreEqual(1, usages.Count());
+                Assert.AreEqual(1, usages.Count());
+            }
         }
 
         [TestCategory("Grammar")]
@@ -1578,16 +1697,18 @@ Public Sub DoSomething()
     Bar.Foo = 42
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable
-                && item.IdentifierName == "Bar");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable
+                    && item.IdentifierName == "Bar");
 
-            var usages = declaration.References.Where(item =>
-                item.ParentScoping.IdentifierName == "DoSomething");
+                var usages = declaration.References.Where(item =>
+                    item.ParentScoping.IdentifierName == "DoSomething");
 
-            Assert.AreEqual(1, usages.Count());
+                Assert.AreEqual(1, usages.Count());
+            }
         }
 
         [TestCategory("Grammar")]
@@ -1606,16 +1727,18 @@ Public Sub DoSomething()
     a = Bar.Foo
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable
-                && item.IdentifierName == "Bar");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable
+                    && item.IdentifierName == "Bar");
 
-            var usages = declaration.References.Where(item =>
-                item.ParentScoping.IdentifierName == "DoSomething");
+                var usages = declaration.References.Where(item =>
+                    item.ParentScoping.IdentifierName == "DoSomething");
 
-            Assert.AreEqual(1, usages.Count());
+                Assert.AreEqual(1, usages.Count());
+            }
         }
 
         [TestCategory("Grammar")]
@@ -1634,16 +1757,18 @@ Public Sub DoSomething()
     TestModule1.Foo = 42
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable
-                && item.IdentifierName == item.ComponentName);
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable
+                    && item.IdentifierName == item.ComponentName);
 
-            var usages = declaration.References.Where(item =>
-                item.ParentScoping.IdentifierName == "DoSomething");
+                var usages = declaration.References.Where(item =>
+                    item.ParentScoping.IdentifierName == "DoSomething");
 
-            Assert.AreEqual(1, usages.Count());
+                Assert.AreEqual(1, usages.Count());
+            }
         }
 
         [TestCategory("Grammar")]
@@ -1662,16 +1787,18 @@ Public Sub DoSomething()
     TestModule1.Foo = 42
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.UserDefinedTypeMember
-                && item.IdentifierName == "Foo");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.UserDefinedTypeMember
+                    && item.IdentifierName == "Foo");
 
-            var usages = declaration.References.Where(item =>
-                item.ParentScoping.IdentifierName == "DoSomething");
+                var usages = declaration.References.Where(item =>
+                    item.ParentScoping.IdentifierName == "DoSomething");
 
-            Assert.AreEqual(1, usages.Count());
+                Assert.AreEqual(1, usages.Count());
+            }
         }
 
         [TestCategory("Grammar")]
@@ -1690,16 +1817,18 @@ Public Sub DoSomething()
     TestProject1.TestModule1.TestModule1.Foo = 42
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Project
-                && item.IdentifierName == item.Project.Name);
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Project
+                    && item.IdentifierName == item.Project.Name);
 
-            var usages = declaration.References.Where(item =>
-                item.ParentScoping.IdentifierName == "DoSomething");
+                var usages = declaration.References.Where(item =>
+                    item.ParentScoping.IdentifierName == "DoSomething");
 
-            Assert.AreEqual(1, usages.Count());
+                Assert.AreEqual(1, usages.Count());
+            }
         }
 
         [TestCategory("Grammar")]
@@ -1718,16 +1847,18 @@ Public Sub DoSomething()
     TestProject1.TestModule1.TestModule1.Foo = 42
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.ProceduralModule
-                && item.IdentifierName == item.ComponentName);
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.ProceduralModule
+                    && item.IdentifierName == item.ComponentName);
 
-            var usages = declaration.References.Where(item =>
-                item.ParentScoping.IdentifierName == "DoSomething");
+                var usages = declaration.References.Where(item =>
+                    item.ParentScoping.IdentifierName == "DoSomething");
 
-            Assert.AreEqual(1, usages.Count());
+                Assert.AreEqual(1, usages.Count());
+            }
         }
 
         [TestCategory("Grammar")]
@@ -1746,16 +1877,18 @@ Public Sub DoSomething()
     TestProject1.TestModule1.TestModule1.Foo = 42
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable
-                && item.IdentifierName == item.ComponentName);
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable
+                    && item.IdentifierName == item.ComponentName);
 
-            var usages = declaration.References.Where(item =>
-                item.ParentScoping.IdentifierName == "DoSomething");
+                var usages = declaration.References.Where(item =>
+                    item.ParentScoping.IdentifierName == "DoSomething");
 
-            Assert.AreEqual(1, usages.Count());
+                Assert.AreEqual(1, usages.Count());
+            }
         }
 
         [TestCategory("Grammar")]
@@ -1779,17 +1912,19 @@ End Sub";
 
             var module1 = Tuple.Create(code_module1, ComponentType.StandardModule);
             var module2 = Tuple.Create(code_module2, ComponentType.StandardModule);
-            var state = Resolve(module1, module2);
+            using (var state = Resolve(module1, module2))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable
-                && item.Accessibility == Accessibility.Public
-                && item.IdentifierName == "Something");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable
+                    && item.Accessibility == Accessibility.Public
+                    && item.IdentifierName == "Something");
 
-            var usages = declaration.References.Where(item =>
-                item.ParentScoping.IdentifierName == "DoSomething");
+                var usages = declaration.References.Where(item =>
+                    item.ParentScoping.IdentifierName == "DoSomething");
 
-            Assert.AreEqual(1, usages.Count());
+                Assert.AreEqual(1, usages.Count());
+            }
         }
 
         [TestCategory("Grammar")]
@@ -1814,17 +1949,19 @@ End Sub
 
             var module1 = Tuple.Create(code_module1, ComponentType.StandardModule);
             var module2 = Tuple.Create(code_module2, ComponentType.StandardModule);
-            var state = Resolve(module1, module2);
+            using (var state = Resolve(module1, module2))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable
-                && item.Accessibility == Accessibility.Public
-                && item.IdentifierName == "Something");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable
+                    && item.Accessibility == Accessibility.Public
+                    && item.IdentifierName == "Something");
 
-            var usages = declaration.References.Where(item =>
-                item.ParentScoping.IdentifierName == "DoSomething");
+                var usages = declaration.References.Where(item =>
+                    item.ParentScoping.IdentifierName == "DoSomething");
 
-            Assert.AreEqual(1, usages.Count());
+                Assert.AreEqual(1, usages.Count());
+            }
         }
 
         [TestCategory("Grammar")]
@@ -1838,12 +1975,14 @@ Public Sub Test()
     ReDim referenced(referenced TO referenced, referenced), referenced(referenced)
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
 
-            Assert.AreEqual(6, declaration.References.Count());
+                Assert.AreEqual(6, declaration.References.Count());
+            }
         }
 
         [TestCategory("Grammar")]
@@ -1857,12 +1996,14 @@ Public Sub Test()
     Open referenced For Binary Access Read Lock Read As #referenced Len = referenced
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
 
-            Assert.AreEqual(3, declaration.References.Count());
+                Assert.AreEqual(3, declaration.References.Count());
+            }
         }
 
         [TestCategory("Grammar")]
@@ -1876,12 +2017,14 @@ Public Sub Test()
     Close referenced, referenced
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
 
-            Assert.AreEqual(2, declaration.References.Count());
+                Assert.AreEqual(2, declaration.References.Count());
+            }
         }
 
         [TestCategory("Grammar")]
@@ -1895,12 +2038,14 @@ Public Sub Test()
     Seek #referenced, referenced
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
 
-            Assert.AreEqual(2, declaration.References.Count());
+                Assert.AreEqual(2, declaration.References.Count());
+            }
         }
 
         [TestCategory("Grammar")]
@@ -1914,12 +2059,14 @@ Public Sub Test()
     Lock referenced, referenced To referenced
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
 
-            Assert.AreEqual(3, declaration.References.Count());
+                Assert.AreEqual(3, declaration.References.Count());
+            }
         }
 
         [TestCategory("Grammar")]
@@ -1933,12 +2080,14 @@ Public Sub Test()
     Unlock referenced, referenced To referenced
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
 
-            Assert.AreEqual(3, declaration.References.Count());
+                Assert.AreEqual(3, declaration.References.Count());
+            }
         }
 
         [TestCategory("Grammar")]
@@ -1952,12 +2101,14 @@ Public Sub Test()
     Line Input #referenced, referenced
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
 
-            Assert.AreEqual(2, declaration.References.Count());
+                Assert.AreEqual(2, declaration.References.Count());
+            }
         }
 
         [TestCategory("Grammar")]
@@ -1971,12 +2122,14 @@ Public Sub Test()
     Line Input #file, content
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "content");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "content");
 
-            Assert.IsTrue(declaration.References.Single().IsAssignment);
+                Assert.IsTrue(declaration.References.Single().IsAssignment);
+            }
         }
 
         [TestCategory("Grammar")]
@@ -1990,12 +2143,14 @@ Public Sub Test()
     Width #referenced, referenced
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
 
-            Assert.AreEqual(2, declaration.References.Count());
+                Assert.AreEqual(2, declaration.References.Count());
+            }
         }
 
         [TestCategory("Grammar")]
@@ -2009,12 +2164,14 @@ Public Sub Test()
     Print #referenced,,referenced; SPC(referenced), TAB(referenced)
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
 
-            Assert.AreEqual(4, declaration.References.Count());
+                Assert.AreEqual(4, declaration.References.Count());
+            }
         }
 
         [TestCategory("Grammar")]
@@ -2028,12 +2185,14 @@ Public Sub Test()
     Write #referenced,,referenced; SPC(referenced), TAB(referenced)
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
 
-            Assert.AreEqual(4, declaration.References.Count());
+                Assert.AreEqual(4, declaration.References.Count());
+            }
         }
 
         [TestCategory("Grammar")]
@@ -2047,12 +2206,14 @@ Public Sub Test()
     Input #referenced,referenced
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
 
-            Assert.AreEqual(2, declaration.References.Count());
+                Assert.AreEqual(2, declaration.References.Count());
+            }
         }
 
         [TestCategory("Grammar")]
@@ -2067,24 +2228,26 @@ Public Sub Test()
     Input #1, str, xCoord, yCoord, zCoord
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var strDeclaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "str");
+                var strDeclaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "str");
 
-            var xCoordDeclaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "xCoord");
+                var xCoordDeclaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "xCoord");
 
-            var yCoordDeclaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "yCoord");
+                var yCoordDeclaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "yCoord");
 
-            var zCoordDeclaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "zCoord");
+                var zCoordDeclaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "zCoord");
 
-            Assert.IsTrue(strDeclaration.References.Single().IsAssignment);
-            Assert.IsTrue(xCoordDeclaration.References.Single().IsAssignment);
-            Assert.IsTrue(yCoordDeclaration.References.Single().IsAssignment);
-            Assert.IsTrue(zCoordDeclaration.References.Single().IsAssignment);
+                Assert.IsTrue(strDeclaration.References.Single().IsAssignment);
+                Assert.IsTrue(xCoordDeclaration.References.Single().IsAssignment);
+                Assert.IsTrue(yCoordDeclaration.References.Single().IsAssignment);
+                Assert.IsTrue(zCoordDeclaration.References.Single().IsAssignment);
+            }
         }
 
         [TestCategory("Grammar")]
@@ -2098,12 +2261,14 @@ Public Sub Test()
     Put referenced,referenced,referenced
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
 
-            Assert.AreEqual(3, declaration.References.Count());
+                Assert.AreEqual(3, declaration.References.Count());
+            }
         }
 
         [TestCategory("Grammar")]
@@ -2117,12 +2282,14 @@ Public Sub Test()
     Get #referenced,referenced,referenced
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
 
-            Assert.AreEqual(3, declaration.References.Count());
+                Assert.AreEqual(3, declaration.References.Count());
+            }
         }
 
         [TestCategory("Grammar")]
@@ -2136,12 +2303,14 @@ Public Sub Test()
     Get #fileNumber, recordNumber, variable
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var variableDeclaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "variable");
+                var variableDeclaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "variable");
 
-            Assert.IsTrue(variableDeclaration.References.Single().IsAssignment);
+                Assert.IsTrue(variableDeclaration.References.Single().IsAssignment);
+            }
         }
 
         [TestCategory("Grammar")]
@@ -2155,12 +2324,14 @@ Public Sub Test()
     Me.Line (referenced, referenced)-(referenced, referenced)
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
 
-            Assert.AreEqual(4, declaration.References.Count());
+                Assert.AreEqual(4, declaration.References.Count());
+            }
         }
 
         [TestCategory("Grammar")]
@@ -2174,12 +2345,14 @@ Public Sub Test()
     Me.Circle Step(referenced, referenced), referenced, referenced, referenced, referenced, referenced
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
 
-            Assert.AreEqual(7, declaration.References.Count());
+                Assert.AreEqual(7, declaration.References.Count());
+            }
         }
 
         [TestCategory("Grammar")]
@@ -2193,12 +2366,14 @@ Public Sub Test()
     Scale (referenced, referenced)-(referenced, referenced)
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
 
-            Assert.AreEqual(4, declaration.References.Count());
+                Assert.AreEqual(4, declaration.References.Count());
+            }
         }
 
         [TestCategory("Grammar")]
@@ -2212,12 +2387,14 @@ Public Sub Test()
     Dim a As String * Len
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Constant && item.IdentifierName == "Len");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Constant && item.IdentifierName == "Len");
 
-            Assert.AreEqual(1, declaration.References.Count());
+                Assert.AreEqual(1, declaration.References.Count());
+            }
         }
 
         [TestCategory("Grammar")]
@@ -2237,26 +2414,26 @@ End Sub
             builder.AddProject(project.Build());
             var vbe = builder.Build();
 
-            var parser = MockParser.Create(vbe.Object);
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status == ParserState.ResolverError)
+            using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                Assert.Fail("Parser state should be 'Ready', but returns '{0}'.", parser.State.Status);
+                if (state.Status == ParserState.ResolverError)
+                {
+                    Assert.Fail("Parser state should be 'Ready', but returns '{0}'.", state.Status);
+                }
+                if (state.Status != ParserState.Ready)
+                {
+                    Assert.Inconclusive("Parser state should be 'Ready', but returns '{0}'.", state.Status);
+                }
+
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Control
+                    && item.IdentifierName == "TextBox1");
+
+                var usages = declaration.References.Where(item =>
+                    item.ParentNonScoping.IdentifierName == "DoSomething");
+
+                Assert.AreEqual(1, usages.Count());
             }
-            if (parser.State.Status != ParserState.Ready)
-            {
-                Assert.Inconclusive("Parser state should be 'Ready', but returns '{0}'.", parser.State.Status);
-            }
-
-            var declaration = parser.State.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Control
-                && item.IdentifierName == "TextBox1");
-
-            var usages = declaration.References.Where(item =>
-                item.ParentNonScoping.IdentifierName == "DoSomething");
-
-            Assert.AreEqual(1, usages.Count());
         }
 
         [TestCategory("Grammar")]
@@ -2280,17 +2457,19 @@ Public Property Get Bar() As Integer
     Bar = this.Bar
 End Property
 ";
-            var state = Resolve(code_class1, code_class2);
+            using (var state = Resolve(code_class1, code_class2))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Project
-                && item.IdentifierName == "TestProject1");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Project
+                    && item.IdentifierName == "TestProject1");
 
-            var usages = declaration.References.Where(item =>
-                item.ParentNonScoping.IdentifierName == "DoSomething");
+                var usages = declaration.References.Where(item =>
+                    item.ParentNonScoping.IdentifierName == "DoSomething");
 
-            Assert.AreEqual(state.Status, ParserState.Ready);
-            Assert.AreEqual(1, usages.Count());
+                Assert.AreEqual(state.Status, ParserState.Ready);
+                Assert.AreEqual(1, usages.Count());
+            }
         }
 
         [TestCategory("Grammar")]
@@ -2314,16 +2493,18 @@ Public Property Get Bar() As Integer
     Bar = this.Bar
 End Property
 ";
-            var state = Resolve(code_class1, code_class2);
+            using (var state = Resolve(code_class1, code_class2))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.ClassModule
-                && item.IdentifierName == "Class2");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.ClassModule
+                    && item.IdentifierName == "Class2");
 
-            var usages = declaration.References.Where(item =>
-                item.ParentNonScoping.IdentifierName == "DoSomething");
+                var usages = declaration.References.Where(item =>
+                    item.ParentNonScoping.IdentifierName == "DoSomething");
 
-            Assert.AreEqual(1, usages.Count());
+                Assert.AreEqual(1, usages.Count());
+            }
         }
 
         [TestCategory("Grammar")]
@@ -2347,16 +2528,18 @@ Public Property Get Bar() As Integer
     Bar = this.Bar
 End Property
 ";
-            var state = Resolve(code_class1, code_class2);
+            using (var state = Resolve(code_class1, code_class2))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.UserDefinedType
-                && item.IdentifierName == "TFoo");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.UserDefinedType
+                    && item.IdentifierName == "TFoo");
 
-            var usages = declaration.References.Where(item =>
-                item.ParentNonScoping.IdentifierName == "DoSomething");
+                var usages = declaration.References.Where(item =>
+                    item.ParentNonScoping.IdentifierName == "DoSomething");
 
-            Assert.AreEqual(1, usages.Count());
+                Assert.AreEqual(1, usages.Count());
+            }
         }
 
         [TestCategory("Grammar")]
@@ -2378,12 +2561,14 @@ Public Sub bar()
     Set myClassN.myClass.foo = True
 End Sub
 ";
-            var state = Resolve(variableDeclarationClass, classVariableDeclarationClass, variableCallClass);
+            using (var state = Resolve(variableDeclarationClass, classVariableDeclarationClass, variableCallClass))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "myClassN");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "myClassN");
 
-            Assert.IsFalse(declaration.References.ElementAt(0).IsAssignment);
+                Assert.IsFalse(declaration.References.ElementAt(0).IsAssignment);
+            }
         }
 
         [TestCategory("Grammar")]
@@ -2405,12 +2590,14 @@ Public Sub bar()
     Set myClassN.myClass.foo = True
 End Sub
 ";
-            var state = Resolve(variableDeclarationClass, classVariableDeclarationClass, variableCallClass);
+            using (var state = Resolve(variableDeclarationClass, classVariableDeclarationClass, variableCallClass))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "myClass");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "myClass");
 
-            Assert.IsFalse(declaration.References.ElementAt(0).IsAssignment);
+                Assert.IsFalse(declaration.References.ElementAt(0).IsAssignment);
+            }
         }
 
         [TestCategory("Grammar")]
@@ -2432,12 +2619,14 @@ Public Sub bar()
     Set myClassN.myClass.foo = True
 End Sub
 ";
-            var state = Resolve(variableDeclarationClass, classVariableDeclarationClass, variableCallClass);
+            using (var state = Resolve(variableDeclarationClass, classVariableDeclarationClass, variableCallClass))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo");
 
-            Assert.IsTrue(declaration.References.ElementAt(0).IsAssignment);
+                Assert.IsTrue(declaration.References.ElementAt(0).IsAssignment);
+            }
         }
 
         [TestCategory("Grammar")]
@@ -2452,12 +2641,14 @@ Public Sub bar()
     Set foo = New Class2
 End Sub
 ";
-            var state = Resolve(variableDeclarationClass, string.Empty);
+            using (var state = Resolve(variableDeclarationClass, string.Empty))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo");
 
-            Assert.IsTrue(declaration.References.ElementAt(0).IsAssignment);
+                Assert.IsTrue(declaration.References.ElementAt(0).IsAssignment);
+            }
         }
 
         [TestCategory("Grammar")]
@@ -2472,12 +2663,14 @@ Public Sub bar()
     foo = True
 End Sub
 ";
-            var state = Resolve(variableDeclarationClass);
+            using (var state = Resolve(variableDeclarationClass))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo");
 
-            Assert.IsTrue(declaration.References.ElementAt(0).IsAssignment);
+                Assert.IsTrue(declaration.References.ElementAt(0).IsAssignment);
+            }
         }
 
         [TestCategory("Grammar")]
@@ -2492,12 +2685,14 @@ Public Sub bar()
     Let foo = True
 End Sub
 ";
-            var state = Resolve(variableDeclarationClass);
+            using (var state = Resolve(variableDeclarationClass))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item =>
-                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo");
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "foo");
 
-            Assert.IsTrue(declaration.References.ElementAt(0).IsAssignment);
+                Assert.IsTrue(declaration.References.ElementAt(0).IsAssignment);
+            }
         }
 
         [TestCategory("Grammar")]
@@ -2512,12 +2707,14 @@ Public Sub Test()
     Debug.Print bf
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.SingleOrDefault(item =>
-                item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "bf");
+                var declaration = state.AllUserDeclarations.SingleOrDefault(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "bf");
 
-            Assert.IsNotNull(declaration);
+                Assert.IsNotNull(declaration);
+            }
         }
 
         [TestCategory("Grammar")]
@@ -2531,12 +2728,14 @@ Public Sub Bf()
     Debug.Print ""I'm cool with that""
 End Sub
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.SingleOrDefault(item =>
-                item.DeclarationType == DeclarationType.Procedure && item.IdentifierName == "Bf");
+                var declaration = state.AllUserDeclarations.SingleOrDefault(item =>
+                    item.DeclarationType == DeclarationType.Procedure && item.IdentifierName == "Bf");
 
-            Assert.IsNotNull(declaration);
+                Assert.IsNotNull(declaration);
+            }
         }
 
         [TestCategory("Grammar")]
@@ -2551,12 +2750,14 @@ Private Type Bf
     f As Long
 End Type
 ";
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.SingleOrDefault(item =>
-                item.DeclarationType == DeclarationType.UserDefinedType && item.IdentifierName == "Bf");
+                var declaration = state.AllUserDeclarations.SingleOrDefault(item =>
+                    item.DeclarationType == DeclarationType.UserDefinedType && item.IdentifierName == "Bf");
 
-            Assert.IsNotNull(declaration);
+                Assert.IsNotNull(declaration);
+            }
         }
 
         [TestCategory("Grammar")]
@@ -2573,13 +2774,15 @@ End Sub
 ";
             var results = new[] { "VariableNotAssigned" };
 
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item => item.IdentifierName == "orgs");
+                var declaration = state.AllUserDeclarations.Single(item => item.IdentifierName == "orgs");
 
-            var annotation = declaration.Annotations.SingleOrDefault(item => item.AnnotationType == AnnotationType.Ignore);
-            Assert.IsNotNull(annotation);
-            Assert.IsTrue(results.SequenceEqual(((IgnoreAnnotation)annotation).InspectionNames));
+                var annotation = declaration.Annotations.SingleOrDefault(item => item.AnnotationType == AnnotationType.Ignore);
+                Assert.IsNotNull(annotation);
+                Assert.IsTrue(results.SequenceEqual(((IgnoreAnnotation)annotation).InspectionNames));
+            }
         }
 
         [TestCategory("Grammar")]
@@ -2597,13 +2800,15 @@ End Sub
 
             var results = new[] { "VariableNotAssigned", "UndeclaredVariable", "VariableNotUsed" };
 
-            var state = Resolve(code);
+            using (var state = Resolve(code))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item => item.IdentifierName == "orgs");
+                var declaration = state.AllUserDeclarations.Single(item => item.IdentifierName == "orgs");
 
-            var annotation = declaration.Annotations.SingleOrDefault(item => item.AnnotationType == AnnotationType.Ignore);
-            Assert.IsNotNull(annotation);
-            Assert.IsTrue(results.SequenceEqual(((IgnoreAnnotation)annotation).InspectionNames));
+                var annotation = declaration.Annotations.SingleOrDefault(item => item.AnnotationType == AnnotationType.Ignore);
+                Assert.IsNotNull(annotation);
+                Assert.IsTrue(results.SequenceEqual(((IgnoreAnnotation)annotation).InspectionNames));
+            }
         }
 
         [TestCategory("Grammar")]
@@ -2627,17 +2832,19 @@ Private Sub DoSomething(ByVal foo As Class1)
     foo.Something = 42
 End Sub
 ";
-            var state = Resolve(class1, caller);
+            using (var state = Resolve(class1, caller))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(item => item.IdentifierName == "foo" && item.DeclarationType == DeclarationType.Parameter);
-            var reference = declaration.References.Single();
+                var declaration = state.AllUserDeclarations.Single(item => item.IdentifierName == "foo" && item.DeclarationType == DeclarationType.Parameter);
+                var reference = declaration.References.Single();
 
-            Assert.IsFalse(reference.IsAssignment, "LHS member call on object is treating the object itself as an assignment target.");
+                Assert.IsFalse(reference.IsAssignment, "LHS member call on object is treating the object itself as an assignment target.");
 
-            var member = state.AllUserDeclarations.Single(item => item.IdentifierName == "Something" && item.DeclarationType == DeclarationType.PropertyLet);
-            var call = member.References.Single();
+                var member = state.AllUserDeclarations.Single(item => item.IdentifierName == "Something" && item.DeclarationType == DeclarationType.PropertyLet);
+                var call = member.References.Single();
 
-            Assert.IsTrue(call.IsAssignment, "LHS member call on object is not flagging member reference as assignment target.");
+                Assert.IsTrue(call.IsAssignment, "LHS member call on object is not flagging member reference as assignment target.");
+            }
         }
 
         [TestCategory("Grammar")]
@@ -2652,12 +2859,14 @@ Attribute Foo.VB_Description = ""Foo description""
 Public Sub Bar()
 End Sub
 ";
-            var state = Resolve(code);
-            var declaration = state.DeclarationFinder.MatchName("Foo").Single(item => item.DeclarationType == DeclarationType.Procedure);
+            using (var state = Resolve(code))
+            {
+                var declaration = state.DeclarationFinder.MatchName("Foo").Single(item => item.DeclarationType == DeclarationType.Procedure);
 
-            var expectedDescription = "Foo description";
-            var actualDescription = declaration.DescriptionString;
-            Assert.AreEqual(expectedDescription, actualDescription);
+                var expectedDescription = "Foo description";
+                var actualDescription = declaration.DescriptionString;
+                Assert.AreEqual(expectedDescription, actualDescription);
+            }
         }
 
         [TestCategory("Grammar")]
@@ -2672,12 +2881,14 @@ Attribute Foo.VB_Description = ""Foo description""
 Public Sub Bar()
 End Sub
 ";
-            var state = Resolve(code);
-            var declaration = state.DeclarationFinder.MatchName("Foo").Single(item => item.DeclarationType == DeclarationType.Function);
+            using (var state = Resolve(code))
+            {
+                var declaration = state.DeclarationFinder.MatchName("Foo").Single(item => item.DeclarationType == DeclarationType.Function);
 
-            var expectedDescription = "Foo description";
-            var actualDescription = declaration.DescriptionString;
-            Assert.AreEqual(expectedDescription, actualDescription);
+                var expectedDescription = "Foo description";
+                var actualDescription = declaration.DescriptionString;
+                Assert.AreEqual(expectedDescription, actualDescription);
+            }
         }
 
         [TestCategory("Grammar")]
@@ -2692,12 +2903,14 @@ Attribute Foo.VB_Description = ""Foo description""
 Public Sub Bar()
 End Sub
 ";
-            var state = Resolve(code);
-            var declaration = state.DeclarationFinder.MatchName("Foo").Single(item => item.DeclarationType == DeclarationType.PropertyGet);
+            using (var state = Resolve(code))
+            {
+                var declaration = state.DeclarationFinder.MatchName("Foo").Single(item => item.DeclarationType == DeclarationType.PropertyGet);
 
-            var expectedDescription = "Foo description";
-            var actualDescription = declaration.DescriptionString;
-            Assert.AreEqual(expectedDescription, actualDescription);
+                var expectedDescription = "Foo description";
+                var actualDescription = declaration.DescriptionString;
+                Assert.AreEqual(expectedDescription, actualDescription);
+            }
         }
 
         [TestCategory("Grammar")]
@@ -2712,12 +2925,14 @@ Attribute Foo.VB_Description = ""Foo description""
 Public Sub Bar()
 End Sub
 ";
-            var state = Resolve(code);
-            var declaration = state.DeclarationFinder.MatchName("Foo").Single(item => item.DeclarationType == DeclarationType.PropertyLet);
+            using (var state = Resolve(code))
+            {
+                var declaration = state.DeclarationFinder.MatchName("Foo").Single(item => item.DeclarationType == DeclarationType.PropertyLet);
 
-            var expectedDescription = "Foo description";
-            var actualDescription = declaration.DescriptionString;
-            Assert.AreEqual(expectedDescription, actualDescription);
+                var expectedDescription = "Foo description";
+                var actualDescription = declaration.DescriptionString;
+                Assert.AreEqual(expectedDescription, actualDescription);
+            }
         }
 
         [TestCategory("Grammar")]
@@ -2732,12 +2947,14 @@ Attribute Foo.VB_Description = ""Foo description""
 Public Sub Bar()
 End Sub
 ";
-            var state = Resolve(code);
-            var declaration = state.DeclarationFinder.MatchName("Foo").Single(item => item.DeclarationType == DeclarationType.PropertySet);
+            using (var state = Resolve(code))
+            {
+                var declaration = state.DeclarationFinder.MatchName("Foo").Single(item => item.DeclarationType == DeclarationType.PropertySet);
 
-            var expectedDescription = "Foo description";
-            var actualDescription = declaration.DescriptionString;
-            Assert.AreEqual(expectedDescription, actualDescription);
+                var expectedDescription = "Foo description";
+                var actualDescription = declaration.DescriptionString;
+                Assert.AreEqual(expectedDescription, actualDescription);
+            }
         }
     }
 }
