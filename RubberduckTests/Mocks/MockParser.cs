@@ -29,7 +29,14 @@ namespace RubberduckTests.Mocks
             var parser = Create(vbe.Object);
 
             parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status == ParserState.Error) {
+                SyntaxErrorException ex = null;
+                foreach (var exception in parser.State.ModuleExceptions)
+                {
+                    ex = exception.Item2;
+                }
+                Assert.Inconclusive("Parser Error: {0}", ex?.Message ?? "None?");
+            }
             return parser.State;
 
         }
