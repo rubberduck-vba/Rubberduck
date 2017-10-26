@@ -513,12 +513,13 @@ End Sub";
         private void AssertInputCodeYieldsExpectedInspectionResultCount(string inputCode, int expected)
         {
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using(var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new ObjectVariableNotSetInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            var inspection = new ObjectVariableNotSetInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(expected, inspectionResults.Count());
+                Assert.AreEqual(expected, inspectionResults.Count());
+            }
         }
     }
 }

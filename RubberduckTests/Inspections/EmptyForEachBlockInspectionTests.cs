@@ -36,7 +36,7 @@ namespace RubberduckTests.Inspections
         public void EmptyForEachBlock_DoesNotFiresOnImplementedLoopBlocks()
         {
             const string inputCode =
-@"Sub Foo(results As Collection)
+                @"Sub Foo(results As Collection)
     For Each var in results
         Msgbox Cstr(var)
     next var
@@ -49,7 +49,7 @@ End Sub";
         public void EmptyForLoopBlock_FiresOnEmptyLoopBlocks()
         {
             const string inputCode =
-@"Sub Foo(results As Collection)
+                @"Sub Foo(results As Collection)
     For Each var in results
         'Msgbox Cstr(var)
     next var
@@ -61,13 +61,15 @@ End Sub";
         {
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new EmptyForEachBlockInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new EmptyForEachBlockInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.AreEqual(expectedCount, actualResults.Count());
+                Assert.AreEqual(expectedCount, actualResults.Count());
+            }
         }
     }
 }

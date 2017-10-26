@@ -15,15 +15,17 @@ namespace RubberduckTests.Inspections
         public void ModuleScopeDimKeyword_ReturnsResult()
         {
             const string inputCode =
-@"Dim foo As String";
+                @"Dim foo As String";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ModuleScopeDimKeywordInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new ModuleScopeDimKeywordInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.AreEqual(1, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -31,16 +33,18 @@ namespace RubberduckTests.Inspections
         public void ModuleScopeDimKeyword_ReturnsResult_Multiple()
         {
             const string inputCode =
-@"Dim foo
+                @"Dim foo
 Dim bar";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ModuleScopeDimKeywordInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new ModuleScopeDimKeywordInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.AreEqual(2, inspectionResults.Count());
+                Assert.AreEqual(2, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -48,15 +52,17 @@ Dim bar";
         public void ModuleScopeDimKeyword_DoesNotReturnResult()
         {
             const string inputCode =
-@"Private foo";
+                @"Private foo";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ModuleScopeDimKeywordInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new ModuleScopeDimKeywordInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.IsFalse(inspectionResults.Any());
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
 
         [TestMethod]
@@ -64,17 +70,19 @@ Dim bar";
         public void ModuleScopeDimKeyword_IgnoreModule_All_YieldsNoResult()
         {
             const string inputCode =
-@"'@IgnoreModule
+                @"'@IgnoreModule
 
 Dim foo";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ModuleScopeDimKeywordInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new ModuleScopeDimKeywordInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.IsFalse(inspectionResults.Any());
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
 
         [TestMethod]
@@ -82,17 +90,19 @@ Dim foo";
         public void ModuleScopeDimKeyword_IgnoreModule_AnnotationName_YieldsNoResult()
         {
             const string inputCode =
-@"'@IgnoreModule ModuleScopeDimKeyword
+                @"'@IgnoreModule ModuleScopeDimKeyword
 
 Dim foo";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ModuleScopeDimKeywordInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new ModuleScopeDimKeywordInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.IsFalse(inspectionResults.Any());
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
 
         [TestMethod]
@@ -100,17 +110,19 @@ Dim foo";
         public void ModuleScopeDimKeyword_IgnoreModule_OtherAnnotationName_YieldsResults()
         {
             const string inputCode =
-@"'@IgnoreModule VariableNotUsed
+                @"'@IgnoreModule VariableNotUsed
 
 Dim foo";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ModuleScopeDimKeywordInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new ModuleScopeDimKeywordInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.IsTrue(inspectionResults.Any());
+                Assert.IsTrue(inspectionResults.Any());
+            }
         }
 
         [TestMethod]
@@ -118,16 +130,18 @@ Dim foo";
         public void ModuleScopeDimKeyword_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
-@"'@Ignore ModuleScopeDimKeyword
+                @"'@Ignore ModuleScopeDimKeyword
 Dim foo";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ModuleScopeDimKeywordInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new ModuleScopeDimKeywordInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.IsFalse(inspectionResults.Any());
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
 
         [TestMethod]

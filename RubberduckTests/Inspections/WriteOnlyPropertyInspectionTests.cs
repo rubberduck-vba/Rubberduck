@@ -17,7 +17,7 @@ namespace RubberduckTests.Inspections
         public void WriteOnlyProperty_ReturnsResult_Let()
         {
             const string inputCode =
-@"Property Let Foo(value)
+                @"Property Let Foo(value)
 End Property";
 
             var builder = new MockVbeBuilder();
@@ -26,15 +26,13 @@ End Property";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var parser = MockParser.Create(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new WriteOnlyPropertyInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new WriteOnlyPropertyInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(1, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -42,7 +40,7 @@ End Property";
         public void WriteOnlyProperty_ReturnsResult_Set()
         {
             const string inputCode =
-@"Property Set Foo(value)
+                @"Property Set Foo(value)
 End Property";
 
             var builder = new MockVbeBuilder();
@@ -51,15 +49,13 @@ End Property";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var parser = MockParser.Create(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new WriteOnlyPropertyInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new WriteOnlyPropertyInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(1, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -67,7 +63,7 @@ End Property";
         public void WriteOnlyProperty_ReturnsResult_LetAndSet()
         {
             const string inputCode =
-@"Property Let Foo(value)
+                @"Property Let Foo(value)
 End Property
 
 Property Set Foo(value)
@@ -79,15 +75,13 @@ End Property";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var parser = MockParser.Create(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new WriteOnlyPropertyInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new WriteOnlyPropertyInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(2, inspectionResults.Count());
+                Assert.AreEqual(2, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -95,7 +89,7 @@ End Property";
         public void WriteOnlyProperty_DoesNotReturnsResult_Get()
         {
             const string inputCode =
-@"Property Get Foo()
+                @"Property Get Foo()
 End Property";
 
             var builder = new MockVbeBuilder();
@@ -104,15 +98,13 @@ End Property";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var parser = MockParser.Create(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new WriteOnlyPropertyInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new WriteOnlyPropertyInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.IsFalse(inspectionResults.Any());
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
 
         [TestMethod]
@@ -120,7 +112,7 @@ End Property";
         public void WriteOnlyProperty_DoesNotReturnsResult_GetAndLetAndSet()
         {
             const string inputCode =
-@"Property Get Foo()
+                @"Property Get Foo()
 End Property
 
 Property Let Foo(value)
@@ -135,15 +127,13 @@ End Property";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var parser = MockParser.Create(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new WriteOnlyPropertyInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new WriteOnlyPropertyInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.IsFalse(inspectionResults.Any());
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
 
         [TestMethod]
@@ -151,7 +141,7 @@ End Property";
         public void WriteOnlyProperty_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
-@"'@Ignore WriteOnlyProperty
+                @"'@Ignore WriteOnlyProperty
 Property Let Foo(value)
 End Property";
 
@@ -161,15 +151,13 @@ End Property";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var parser = MockParser.Create(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new WriteOnlyPropertyInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new WriteOnlyPropertyInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.IsFalse(inspectionResults.Any());
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
 
         [TestMethod]

@@ -50,15 +50,17 @@ namespace RubberduckTests.PreProcessing
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(code, out component);
             
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var tree = state.GetParseTree(new QualifiedModuleName(component));
-            var parsed = tree.GetText();
-            var withoutEOF = parsed;
-            while (withoutEOF.Length >= 5 && String.Equals(withoutEOF.Substring(withoutEOF.Length - 5, 5), "<EOF>"))
+            using(var state = MockParser.CreateAndParse(vbe.Object))
             {
-                withoutEOF = withoutEOF.Substring(0, withoutEOF.Length - 5);
+                var tree = state.GetParseTree(new QualifiedModuleName(component));
+                var parsed = tree.GetText();
+                var withoutEOF = parsed;
+                while (withoutEOF.Length >= 5 && String.Equals(withoutEOF.Substring(withoutEOF.Length - 5, 5), "<EOF>"))
+                {
+                    withoutEOF = withoutEOF.Substring(0, withoutEOF.Length - 5);
+                }
+                return withoutEOF;
             }
-            return withoutEOF;
         }
     }
 }
