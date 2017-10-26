@@ -45,14 +45,21 @@ namespace RubberduckTests.Grammar
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(code, out component);
 
-            var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
-            var parser = MockParser.Create(vbe.Object, state);
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error: " + filename); }
+            string parsedCode;
+            var parser = MockParser.Create(vbe.Object);
+            using (var state = parser.State)
+            {
+                parser.Parse(new CancellationTokenSource());
 
-            var tree = state.GetParseTree(new QualifiedModuleName(component));
-            var parsed = tree.GetText();
-            var withoutEOF = parsed;
+                if (state.Status == ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error: " + filename);
+                }
+
+                var tree = state.GetParseTree(new QualifiedModuleName(component));
+                parsedCode = tree.GetText();
+            }
+            var withoutEOF = parsedCode;
             while (withoutEOF.Length >= 5 && String.Equals(withoutEOF.Substring(withoutEOF.Length - 5, 5), "<EOF>"))
             {
                 withoutEOF = withoutEOF.Substring(0, withoutEOF.Length - 5);

@@ -31,17 +31,22 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-
             var parser = MockParser.Create(vbe.Object);
-            parser.State.AddTestLibrary("Excel.1.8.xml");
+            using (var state = parser.State)
+            {
+                state.AddTestLibrary("Excel.1.8.xml");
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                parser.Parse(new CancellationTokenSource());
+                if (state.Status >= ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
 
-            var inspection = new ImplicitActiveWorkbookReferenceInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new ImplicitActiveWorkbookReferenceInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(1, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -65,17 +70,22 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-
             var parser = MockParser.Create(vbe.Object);
-            parser.State.AddTestLibrary("Excel.1.8.xml");
+            using (var state = parser.State)
+            {
+                state.AddTestLibrary("Excel.1.8.xml");
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                parser.Parse(new CancellationTokenSource());
+                if (state.Status >= ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
 
-            var inspection = new ImplicitActiveWorkbookReferenceInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new ImplicitActiveWorkbookReferenceInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(0, inspectionResults.Count());
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
         }
 
         [TestMethod]

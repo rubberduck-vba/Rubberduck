@@ -34,16 +34,21 @@ End Sub";
             var vbe = builder.AddProject(project).Build();
 
             var parser = MockParser.Create(vbe.Object);
+            using (var state = parser.State)
+            {
+                GetBuiltInDeclarations().ForEach(d => state.AddDeclaration(d));
 
-            GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
+                parser.Parse(new CancellationTokenSource());
+                if (state.Status >= ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                var inspection = new UntypedFunctionUsageInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            var inspection = new UntypedFunctionUsageInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(1, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -63,16 +68,21 @@ End Sub";
             var vbe = builder.AddProject(project).Build();
 
             var parser = MockParser.Create(vbe.Object);
+            using (var state = parser.State)
+            {
+                GetBuiltInDeclarations().ForEach(d => state.AddDeclaration(d));
 
-            GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
+                parser.Parse(new CancellationTokenSource());
+                if (state.Status >= ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                var inspection = new UntypedFunctionUsageInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            var inspection = new UntypedFunctionUsageInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.IsFalse(inspectionResults.Any());
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
 
         [TestMethod]
@@ -95,16 +105,21 @@ End Sub";
             var vbe = builder.AddProject(project).Build();
 
             var parser = MockParser.Create(vbe.Object);
+            using (var state = parser.State)
+            {
+                GetBuiltInDeclarations().ForEach(d => state.AddDeclaration(d));
 
-            GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
+                parser.Parse(new CancellationTokenSource());
+                if (state.Status >= ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                var inspection = new UntypedFunctionUsageInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            var inspection = new UntypedFunctionUsageInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.IsFalse(inspectionResults.Any());
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
 
         [TestMethod]

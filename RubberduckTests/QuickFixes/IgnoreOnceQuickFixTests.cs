@@ -21,13 +21,13 @@ namespace RubberduckTests.QuickFixes
         public void ApplicationWorksheetFunction_IgnoreQuickFixWorks()
         {
             const string inputCode =
-@"Sub ExcelSub()
+                @"Sub ExcelSub()
     Dim foo As Double
     foo = Application.Pi
 End Sub";
 
             const string expectedCode =
-@"Sub ExcelSub()
+                @"Sub ExcelSub()
     Dim foo As Double
 '@Ignore ApplicationWorksheetFunction
     foo = Application.Pi
@@ -43,18 +43,23 @@ End Sub";
             var component = vbe.Object.SelectedVBComponent;
 
             var parser = MockParser.Create(vbe.Object);
+            using (var state = parser.State)
+            {
+                state.AddTestLibrary("Excel.1.8.xml");
 
-            parser.State.AddTestLibrary("Excel.1.8.xml");
+                parser.Parse(new CancellationTokenSource());
+                if (state.Status >= ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                var inspection = new ApplicationWorksheetFunctionInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            var inspection = new ApplicationWorksheetFunctionInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
 
-            new IgnoreOnceQuickFix(parser.State, new[] { inspection }).Fix(inspectionResults.First());
-
-            Assert.AreEqual(expectedCode, parser.State.GetRewriter(component).GetText());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
         [TestMethod]
@@ -62,24 +67,26 @@ End Sub";
         public void AssignedByValParameter_IgnoreQuickFixWorks()
         {
             const string inputCode =
-@"Public Sub Foo(ByVal arg1 As String)
+                @"Public Sub Foo(ByVal arg1 As String)
     Let arg1 = ""test""
 End Sub";
 
             const string expectedCode =
-@"'@Ignore AssignedByValParameter
+                @"'@Ignore AssignedByValParameter
 Public Sub Foo(ByVal arg1 As String)
     Let arg1 = ""test""
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
 
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var inspection = new AssignedByValParameterInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new AssignedByValParameterInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
         [TestMethod]
@@ -87,25 +94,27 @@ End Sub";
         public void ConstantNotUsed_IgnoreQuickFixWorks()
         {
             const string inputCode =
-@"Public Sub Foo()
+                @"Public Sub Foo()
     Const const1 As Integer = 9
 End Sub";
 
             const string expectedCode =
-@"Public Sub Foo()
+                @"Public Sub Foo()
 '@Ignore ConstantNotUsed
     Const const1 As Integer = 9
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ConstantNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new ConstantNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
         [TestMethod]
@@ -113,25 +122,27 @@ End Sub";
         public void EmptyStringLiteral_IgnoreQuickFixWorks()
         {
             const string inputCode =
-@"Public Sub Foo(ByRef arg1 As String)
+                @"Public Sub Foo(ByRef arg1 As String)
     arg1 = """"
 End Sub";
 
             const string expectedCode =
-@"Public Sub Foo(ByRef arg1 As String)
+                @"Public Sub Foo(ByRef arg1 As String)
 '@Ignore EmptyStringLiteral
     arg1 = """"
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new EmptyStringLiteralInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new EmptyStringLiteralInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
         [TestMethod]
@@ -139,20 +150,22 @@ End Sub";
         public void EncapsulatePublicField_IgnoreQuickFixWorks()
         {
             const string inputCode =
-@"Public fizz As Boolean";
+                @"Public fizz As Boolean";
 
             const string expectedCode =
-@"'@Ignore EncapsulatePublicField
+                @"'@Ignore EncapsulatePublicField
 Public fizz As Boolean";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new EncapsulatePublicFieldInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new EncapsulatePublicFieldInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
         [TestMethod]
@@ -161,7 +174,7 @@ Public fizz As Boolean";
         public void FunctionReturnValueNotUsed_IgnoreQuickFixWorks()
         {
             const string inputCode =
-@"Public Function Foo(ByVal bar As String) As Boolean
+                @"Public Function Foo(ByVal bar As String) As Boolean
 End Function
 
 Public Sub Goo()
@@ -169,7 +182,7 @@ Public Sub Goo()
 End Sub";
 
             const string expectedCode =
-@"'@Ignore FunctionReturnValueNotUsed
+                @"'@Ignore FunctionReturnValueNotUsed
 Public Function Foo(ByVal bar As String) As Boolean
 End Function
 
@@ -178,13 +191,15 @@ Public Sub Goo()
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new FunctionReturnValueNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new FunctionReturnValueNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
         [TestMethod]
@@ -208,13 +223,15 @@ End Function
 ";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new VariableTypeNotDeclaredInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new VariableTypeNotDeclaredInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
         [TestMethod]
@@ -223,13 +240,13 @@ End Function
         public void ImplicitActiveSheetReference_IgnoreQuickFixWorks()
         {
             const string inputCode =
-@"Sub foo()
+                @"Sub foo()
     Dim arr1() As Variant
     arr1 = Range(""A1:B2"")
 End Sub";
 
             const string expectedCode =
-@"Sub foo()
+                @"Sub foo()
     Dim arr1() As Variant
 '@Ignore ImplicitActiveSheetReference
     arr1 = Range(""A1:B2"")
@@ -243,18 +260,23 @@ End Sub";
             var component = project.Object.VBComponents[0];
             var vbe = builder.AddProject(project).Build();
 
-
             var parser = MockParser.Create(vbe.Object);
-            parser.State.AddTestLibrary("Excel.1.8.xml");
+            using (var state = parser.State)
+            {
+                state.AddTestLibrary("Excel.1.8.xml");
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                parser.Parse(new CancellationTokenSource());
+                if (state.Status >= ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
 
-            var inspection = new ImplicitActiveSheetReferenceInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new ImplicitActiveSheetReferenceInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            new IgnoreOnceQuickFix(parser.State, new[] { inspection }).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, parser.State.GetRewriter(component).GetText());
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
         [TestMethod]
@@ -287,16 +309,22 @@ End Sub";
 
 
             var parser = MockParser.Create(vbe.Object);
-            parser.State.AddTestLibrary("Excel.1.8.xml");
+            using (var state = parser.State)
+            {
+                state.AddTestLibrary("Excel.1.8.xml");
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                parser.Parse(new CancellationTokenSource());
+                if (state.Status >= ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
 
-            var inspection = new ImplicitActiveWorkbookReferenceInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new ImplicitActiveWorkbookReferenceInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            new IgnoreOnceQuickFix(parser.State, new[] { inspection }).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, parser.State.GetRewriter(component).GetText());
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
 
@@ -305,24 +333,26 @@ End Sub";
         public void ImplicitByRefModifier_IgnoredQuickFixWorks()
         {
             const string inputCode =
-@"Sub Foo(arg1 As Integer)
+                @"Sub Foo(arg1 As Integer)
 End Sub";
 
             const string expectedCode =
-@"'@Ignore ImplicitByRefModifier
+                @"'@Ignore ImplicitByRefModifier
 Sub Foo(arg1 As Integer)
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ImplicitByRefModifierInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new ImplicitByRefModifierInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
 
@@ -332,26 +362,28 @@ End Sub";
         public void ImplicitPublicMember_IgnoreQuickFixWorks()
         {
             const string inputCode =
-@"Sub Foo(ByVal arg1 as Integer)
+                @"Sub Foo(ByVal arg1 as Integer)
 'Just an inoffensive little comment
 
 End Sub";
 
             const string expectedCode =
-@"'@Ignore ImplicitPublicMember
+                @"'@Ignore ImplicitPublicMember
 Sub Foo(ByVal arg1 as Integer)
 'Just an inoffensive little comment
 
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ImplicitPublicMemberInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new ImplicitPublicMemberInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
         [TestMethod]
@@ -359,22 +391,24 @@ End Sub";
         public void ImplicitVariantReturnType_IgnoreQuickFixWorks()
         {
             const string inputCode =
-@"Function Foo()
+                @"Function Foo()
 End Function";
 
             const string expectedCode =
-@"'@Ignore ImplicitVariantReturnType
+                @"'@Ignore ImplicitVariantReturnType
 Function Foo()
 End Function";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ImplicitVariantReturnTypeInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new ImplicitVariantReturnTypeInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
         [TestMethod]
@@ -383,23 +417,25 @@ End Function";
         public void LabelNotUsed_IgnoreQuickFixWorks()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
 label1:
 End Sub";
 
             const string expectedCode =
-@"Sub Foo()
+                @"Sub Foo()
 '@Ignore LineLabelNotUsed
 label1:
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new LineLabelNotUsedInspection(state);
-            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspection.GetInspectionResults().First());
+                var inspection = new LineLabelNotUsedInspection(state);
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspection.GetInspectionResults().First());
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
         [TestMethod]
@@ -407,21 +443,23 @@ End Sub";
         public void ModuleScopeDimKeyword_IgnoreQuickFixWorks()
         {
             const string inputCode =
-@"Dim foo";
+                @"Dim foo";
 
             const string expectedCode =
-@"'@Ignore ModuleScopeDimKeyword
+                @"'@Ignore ModuleScopeDimKeyword
 Dim foo";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ModuleScopeDimKeywordInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new ModuleScopeDimKeywordInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
         [TestMethod]
@@ -429,26 +467,28 @@ Dim foo";
         public void MoveFieldCloserToUsage_IgnoreQuickFixWorks()
         {
             const string inputCode =
-@"Private bar As String
+                @"Private bar As String
 Public Sub Foo()
     bar = ""test""
 End Sub";
 
             const string expectedCode =
-@"'@Ignore MoveFieldCloserToUsage
+                @"'@Ignore MoveFieldCloserToUsage
 Private bar As String
 Public Sub Foo()
     bar = ""test""
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new MoveFieldCloserToUsageInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new MoveFieldCloserToUsageInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
         [TestMethod]
@@ -456,7 +496,7 @@ End Sub";
         public void MultilineParameter_IgnoreQuickFixWorks()
         {
             const string inputCode =
-@"Public Sub Foo( _
+                @"Public Sub Foo( _
     ByVal _
     Var1 _
     As _
@@ -464,7 +504,7 @@ End Sub";
 End Sub";
 
             const string expectedCode =
-@"'@Ignore MultilineParameter
+                @"'@Ignore MultilineParameter
 Public Sub Foo( _
     ByVal _
     Var1 _
@@ -473,14 +513,16 @@ Public Sub Foo( _
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new MultilineParameterInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new MultilineParameterInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
 
@@ -489,25 +531,27 @@ End Sub";
         public void MultipleDeclarations_IgnoreQuickFixWorks()
         {
             const string inputCode =
-@"Public Sub Foo()
+                @"Public Sub Foo()
     Dim var1 As Integer, var2 As String
 End Sub";
 
             const string expectedCode =
-@"Public Sub Foo()
+                @"Public Sub Foo()
 '@Ignore MultipleDeclarations
     Dim var1 As Integer, var2 As String
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new MultipleDeclarationsInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new MultipleDeclarationsInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
         [TestMethod]
@@ -515,22 +559,24 @@ End Sub";
         public void NonReturningFunction_IgnoreQuickFixWorks()
         {
             const string inputCode =
-@"Function Foo() As Boolean
+                @"Function Foo() As Boolean
 End Function";
 
             const string expectedCode =
-@"'@Ignore NonReturningFunction
+                @"'@Ignore NonReturningFunction
 Function Foo() As Boolean
 End Function";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new NonReturningFunctionInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new NonReturningFunctionInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
 
@@ -539,7 +585,7 @@ End Function";
         public void ObjectVariableNotSet_IgnoreQuickFixWorks()
         {
             var inputCode =
-            @"
+                @"
 Private Sub Workbook_Open()
     
     Dim target As Range
@@ -549,7 +595,7 @@ Private Sub Workbook_Open()
 
 End Sub";
             var expectedCode =
-            @"
+                @"
 Private Sub Workbook_Open()
     
     Dim target As Range
@@ -561,13 +607,15 @@ Private Sub Workbook_Open()
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ObjectVariableNotSetInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new ObjectVariableNotSetInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
 
@@ -576,7 +624,7 @@ End Sub";
         public void ObsoleteCallStatement_IgnoreQuickFixWorks()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
     Call Goo(1, ""test"")
 End Sub
 
@@ -585,7 +633,7 @@ Sub Goo(arg1 As Integer, arg1 As String)
 End Sub";
 
             const string expectedCode =
-@"Sub Foo()
+                @"Sub Foo()
 '@Ignore ObsoleteCallStatement
     Call Goo(1, ""test"")
 End Sub
@@ -596,19 +644,21 @@ Sub Goo(arg1 As Integer, arg1 As String)
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new ObsoleteCallStatementInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-            var fix = new IgnoreOnceQuickFix(state, new[] { inspection });
-            foreach (var result in inspectionResults)
+            using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                fix.Fix(result);
-            }
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                var inspection = new ObsoleteCallStatementInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+                var fix = new IgnoreOnceQuickFix(state, new[] { inspection });
+                foreach (var result in inspectionResults)
+                {
+                    fix.Fix(result);
+                }
+
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
         [TestMethod]
@@ -616,21 +666,23 @@ End Sub";
         public void ObsoleteCommentSyntax_IgnoreQuickFixWorks()
         {
             const string inputCode =
-@"Rem test1";
+                @"Rem test1";
 
             const string expectedCode =
-@"'@Ignore ObsoleteCommentSyntax
+                @"'@Ignore ObsoleteCommentSyntax
 Rem test1";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ObsoleteCommentSyntaxInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new ObsoleteCommentSyntaxInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
         [TestMethod]
@@ -638,25 +690,27 @@ Rem test1";
         public void ObsoleteErrorSyntax_IgnoreQuickFixWorks()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
     Error 91
 End Sub";
 
             const string expectedCode =
-@"Sub Foo()
+                @"Sub Foo()
 '@Ignore ObsoleteErrorSyntax
     Error 91
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ObsoleteErrorSyntaxInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new ObsoleteErrorSyntaxInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
         [TestMethod]
@@ -664,20 +718,22 @@ End Sub";
         public void ObsoleteGlobal_IgnoreQuickFixWorks()
         {
             const string inputCode =
-@"Global var1 As Integer";
+                @"Global var1 As Integer";
 
             const string expectedCode =
-@"'@Ignore ObsoleteGlobal
+                @"'@Ignore ObsoleteGlobal
 Global var1 As Integer";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ObsoleteGlobalInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new ObsoleteGlobalInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
 
@@ -686,7 +742,7 @@ Global var1 As Integer";
         public void ObsoleteLetStatement_IgnoreQuickFixWorks()
         {
             const string inputCode =
-@"Public Sub Foo()
+                @"Public Sub Foo()
     Dim var1 As Integer
     Dim var2 As Integer
     
@@ -694,7 +750,7 @@ Global var1 As Integer";
 End Sub";
 
             const string expectedCode =
-@"Public Sub Foo()
+                @"Public Sub Foo()
     Dim var1 As Integer
     Dim var2 As Integer
     
@@ -703,14 +759,16 @@ End Sub";
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ObsoleteLetStatementInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new ObsoleteLetStatementInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
 
@@ -719,29 +777,31 @@ End Sub";
         public void ObsoleteTypeHint_IgnoreQuickFixWorks()
         {
             const string inputCode =
-@"Public Function Foo$(ByVal fizz As Integer)
+                @"Public Function Foo$(ByVal fizz As Integer)
     Foo = ""test""
 End Function";
 
             const string expectedCode =
-@"'@Ignore ObsoleteTypeHint
+                @"'@Ignore ObsoleteTypeHint
 Public Function Foo$(ByVal fizz As Integer)
     Foo = ""test""
 End Function";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new ObsoleteTypeHintInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            var fix = new IgnoreOnceQuickFix(state, new[] { inspection });
-            foreach (var result in inspectionResults)
+            using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                fix.Fix(result);
-            }
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                var inspection = new ObsoleteTypeHintInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
+
+                var fix = new IgnoreOnceQuickFix(state, new[] { inspection });
+                foreach (var result in inspectionResults)
+                {
+                    fix.Fix(result);
+                }
+
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
         [TestMethod]
@@ -749,21 +809,23 @@ End Function";
         public void OptionBaseOneSpecified_IgnoreQuickFixWorks()
         {
             const string inputCode =
-@"Option Base 1";
+                @"Option Base 1";
 
             const string expectedCode =
-@"'@Ignore OptionBase
+                @"'@Ignore OptionBase
 Option Base 1";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new OptionBaseInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new OptionBaseInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
 
@@ -772,23 +834,25 @@ Option Base 1";
         public void ParameterCanBeByVal_IgnoreQuickFixWorks()
         {
             const string inputCode =
-@"Sub Foo(ByRef _
+                @"Sub Foo(ByRef _
 arg1 As String)
 End Sub";
 
             const string expectedCode =
-@"'@Ignore ParameterCanBeByVal
+                @"'@Ignore ParameterCanBeByVal
 Sub Foo(ByRef _
 arg1 As String)
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ParameterCanBeByValInspection(state);
-            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspection.GetInspectionResults().First());
+                var inspection = new ParameterCanBeByValInspection(state);
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspection.GetInspectionResults().First());
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
 
@@ -797,22 +861,24 @@ End Sub";
         public void GivenPrivateSub_IgnoreQuickFixWorks()
         {
             const string inputCode =
-@"Private Sub Foo(ByVal arg1 as Integer)
+                @"Private Sub Foo(ByVal arg1 as Integer)
 End Sub";
 
             const string expectedCode =
-@"'@Ignore ParameterNotUsed
+                @"'@Ignore ParameterNotUsed
 Private Sub Foo(ByVal arg1 as Integer)
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ParameterNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new ParameterNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
 
@@ -821,22 +887,24 @@ End Sub";
         public void ProcedureNotUsed_IgnoreQuickFixWorks()
         {
             const string inputCode =
-@"Private Sub Foo(ByVal arg1 as Integer)
+                @"Private Sub Foo(ByVal arg1 as Integer)
 End Sub";
 
             const string expectedCode =
-@"'@Ignore ProcedureNotUsed
+                @"'@Ignore ProcedureNotUsed
 Private Sub Foo(ByVal arg1 as Integer)
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ProcedureNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new ProcedureNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
 
@@ -845,23 +913,25 @@ End Sub";
         public void ProcedureShouldBeFunction_IgnoreQuickFixWorks()
         {
             const string inputCode =
-@"Private Sub Foo(ByRef arg1 As Integer)
+                @"Private Sub Foo(ByRef arg1 As Integer)
 End Sub";
 
             const string expectedCode =
-@"'@Ignore ProcedureCanBeWrittenAsFunction
+                @"'@Ignore ProcedureCanBeWrittenAsFunction
 Private Sub Foo(ByRef arg1 As Integer)
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
 
@@ -870,24 +940,26 @@ End Sub";
         public void RedundantByRefModifier_IgnoredQuickFixWorks()
         {
             const string inputCode =
-@"Sub Foo(ByRef arg1 As Integer)
+                @"Sub Foo(ByRef arg1 As Integer)
 End Sub";
 
             const string expectedCode =
-@"'@Ignore RedundantByRefModifier
+                @"'@Ignore RedundantByRefModifier
 Sub Foo(ByRef arg1 As Integer)
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new RedundantByRefModifierInspection(state) { Severity = CodeInspectionSeverity.Hint };
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new RedundantByRefModifierInspection(state) { Severity = CodeInspectionSeverity.Hint };
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
 
@@ -896,12 +968,12 @@ End Sub";
         public void SelfAssignedDeclaration_IgnoreQuickFixWorks()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
     Dim b As New Collection
 End Sub";
 
             const string expectedCode =
-@"Sub Foo()
+                @"Sub Foo()
 '@Ignore SelfAssignedDeclaration
     Dim b As New Collection
 End Sub";
@@ -913,16 +985,15 @@ End Sub";
             var component = project.Object.VBComponents[0];
             var vbe = builder.AddProject(project).Build();
 
-            var parser = MockParser.Create(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                var inspection = new SelfAssignedDeclarationInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            var inspection = new SelfAssignedDeclarationInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            new IgnoreOnceQuickFix(parser.State, new[] { inspection }).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, parser.State.GetRewriter(component).GetText());
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
 
@@ -931,14 +1002,14 @@ End Sub";
         public void UnassignedVariableUsage_IgnoreQuickFixWorks()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
     Dim b As Boolean
     Dim bb As Boolean
     bb = b
 End Sub";
 
             const string expectedCode =
-@"Sub Foo()
+                @"Sub Foo()
     Dim b As Boolean
     Dim bb As Boolean
 '@Ignore UnassignedVariableUsage
@@ -946,13 +1017,15 @@ End Sub";
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new UnassignedVariableUsageInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new UnassignedVariableUsageInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
         [TestMethod]
@@ -961,13 +1034,13 @@ End Sub";
         public void UntypedFunctionUsage_IgnoreQuickFixWorks()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
     Dim str As String
     str = Left(""test"", 1)
 End Sub";
 
             const string expectedCode =
-@"Sub Foo()
+                @"Sub Foo()
     Dim str As String
 '@Ignore UntypedFunctionUsage
     str = Left(""test"", 1)
@@ -982,19 +1055,24 @@ End Sub";
 
             var component = project.Object.VBComponents[0];
             var parser = MockParser.Create(vbe.Object);
+            using (var state = parser.State)
+            {
+                // FIXME reinstate and unignore tests
+                // refers to "UntypedFunctionUsageInspectionTests.GetBuiltInDeclarations()"
+                //GetBuiltInDeclarations().ForEach(d => state.AddDeclaration(d));
 
-            // FIXME reinstate and unignore tests
-            // refers to "UntypedFunctionUsageInspectionTests.GetBuiltInDeclarations()"
-            //GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
+                parser.Parse(new CancellationTokenSource());
+                if (state.Status >= ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                var inspection = new UntypedFunctionUsageInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            var inspection = new UntypedFunctionUsageInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            new IgnoreOnceQuickFix(parser.State, new[] { inspection }).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, parser.State.GetRewriter(component).GetText());
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
         [TestMethod]
@@ -1002,11 +1080,11 @@ End Sub";
         public void UseMeaningfulName_IgnoreQuickFixWorks()
         {
             const string inputCode =
-@"Sub Ffffff()
+                @"Sub Ffffff()
 End Sub";
 
             const string expectedCode =
-@"'@Ignore UseMeaningfulName
+                @"'@Ignore UseMeaningfulName
 Sub Ffffff()
 End Sub";
 
@@ -1017,16 +1095,14 @@ End Sub";
             var component = project.Object.VBComponents[0];
             var vbe = builder.AddProject(project).Build();
 
-            var parser = MockParser.Create(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new UseMeaningfulNameInspection(state, UseMeaningfulNameInspectionTests.GetInspectionSettings().Object);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new UseMeaningfulNameInspection(parser.State, UseMeaningfulNameInspectionTests.GetInspectionSettings().Object);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            new IgnoreOnceQuickFix(parser.State, new[] { inspection }).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, parser.State.GetRewriter(component).GetText());
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
 
@@ -1035,23 +1111,25 @@ End Sub";
         public void UnassignedVariable_IgnoreQuickFixWorks()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
 Dim var1 as Integer
 End Sub";
 
             const string expectedCode =
-@"Sub Foo()
+                @"Sub Foo()
 '@Ignore VariableNotAssigned
 Dim var1 as Integer
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new VariableNotAssignedInspection(state);
-            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspection.GetInspectionResults().First());
+                var inspection = new VariableNotAssignedInspection(state);
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspection.GetInspectionResults().First());
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
         [TestMethod]
@@ -1059,23 +1137,25 @@ End Sub";
         public void UnusedVariable_IgnoreQuickFixWorks()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
 Dim var1 As String
 End Sub";
 
             const string expectedCode =
-@"Sub Foo()
+                @"Sub Foo()
 '@Ignore VariableNotUsed
 Dim var1 As String
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new VariableNotUsedInspection(state);
-            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspection.GetInspectionResults().First());
+                var inspection = new VariableNotUsedInspection(state);
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspection.GetInspectionResults().First());
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
 
@@ -1084,21 +1164,23 @@ End Sub";
         public void VariableTypeNotDeclared_IgnoreQuickFixWorks()
         {
             const string inputCode =
-@"Sub Foo(arg1)
+                @"Sub Foo(arg1)
 End Sub";
 
             const string expectedCode =
-@"'@Ignore VariableTypeNotDeclared
+                @"'@Ignore VariableTypeNotDeclared
 Sub Foo(arg1)
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new VariableTypeNotDeclaredInspection(state);
-            new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspection.GetInspectionResults().First());
+                var inspection = new VariableTypeNotDeclaredInspection(state);
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspection.GetInspectionResults().First());
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
         [TestMethod]
@@ -1106,11 +1188,11 @@ End Sub";
         public void WriteOnlyProperty_IgnoreQuickFixWorks()
         {
             const string inputCode =
-@"Property Let Foo(value)
+                @"Property Let Foo(value)
 End Property";
 
             const string expectedCode =
-@"'@Ignore WriteOnlyProperty
+                @"'@Ignore WriteOnlyProperty
 Property Let Foo(value)
 End Property";
 
@@ -1121,17 +1203,16 @@ End Property";
             var component = project.Object.VBComponents[0];
             var vbe = builder.AddProject(project).Build();
 
-            var parser = MockParser.Create(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                var inspection = new WriteOnlyPropertyInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            var inspection = new WriteOnlyPropertyInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
 
-            new IgnoreOnceQuickFix(parser.State, new[] { inspection }).Fix(inspectionResults.First());
-
-            Assert.AreEqual(expectedCode, parser.State.GetRewriter(component).GetText());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
         [TestMethod]
@@ -1139,7 +1220,7 @@ End Property";
         public void BooleanAssignedInIfElseInspection_IgnoreQuickFixWorks()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
     Dim d As Boolean
     If True Then
         d = True
@@ -1149,7 +1230,7 @@ End Property";
 End Sub";
 
             const string expectedCode =
-@"Sub Foo()
+                @"Sub Foo()
     Dim d As Boolean
 '@Ignore BooleanAssignedInIfElse
     If True Then
@@ -1166,20 +1247,17 @@ End Sub";
             var component = project.Object.VBComponents[0];
             var vbe = builder.AddProject(project).Build();
 
-            var parser = MockParser.Create(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new BooleanAssignedInIfElseInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
 
-            var inspection = new BooleanAssignedInIfElseInspection(parser.State);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(parser.State, CancellationToken.None).Result;
-
-            new IgnoreOnceQuickFix(parser.State, new[] { inspection }).Fix(inspectionResults.First());
-
-            Assert.AreEqual(expectedCode, parser.State.GetRewriter(component).GetText());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
     }
 }
- 

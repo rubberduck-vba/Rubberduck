@@ -16,12 +16,14 @@ namespace RubberduckTests.Commands
         {
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule("", out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var noIndentAnnotationCommand = new NoIndentAnnotationCommand(vbe.Object, state);
-            noIndentAnnotationCommand.Execute(null);
+                var noIndentAnnotationCommand = new NoIndentAnnotationCommand(vbe.Object, state);
+                noIndentAnnotationCommand.Execute(null);
 
-            Assert.AreEqual("'@NoIndent\r\n", component.CodeModule.Content());
+                Assert.AreEqual("'@NoIndent\r\n", component.CodeModule.Content());
+            }
         }
 
         [TestCategory("Commands")]
@@ -29,28 +31,30 @@ namespace RubberduckTests.Commands
         public void AddNoIndentAnnotation_ModuleContainsCode()
         {
             var input =
-@"Option Explicit
+                @"Option Explicit
 Public Foo As Boolean
 
 Sub Foo()
 End Sub";
 
             var expected =
-@"'@NoIndent
+                @"'@NoIndent
 Option Explicit
 Public Foo As Boolean
 
 Sub Foo()
 End Sub";
-            
+
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-            
-            var noIndentAnnotationCommand = new NoIndentAnnotationCommand(vbe.Object, state);
-            noIndentAnnotationCommand.Execute(null);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            Assert.AreEqual(expected, component.CodeModule.Content());
+                var noIndentAnnotationCommand = new NoIndentAnnotationCommand(vbe.Object, state);
+                noIndentAnnotationCommand.Execute(null);
+
+                Assert.AreEqual(expected, component.CodeModule.Content());
+            }
         }
 
         [TestCategory("Commands")]
@@ -61,10 +65,12 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule("", out component);
             vbe.Setup(v => v.ActiveCodePane).Returns((ICodePane)null);
 
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var noIndentAnnotationCommand = new NoIndentAnnotationCommand(vbe.Object, state);
-            Assert.IsFalse(noIndentAnnotationCommand.CanExecute(null));
+                var noIndentAnnotationCommand = new NoIndentAnnotationCommand(vbe.Object, state);
+                Assert.IsFalse(noIndentAnnotationCommand.CanExecute(null));
+            }
         }
 
         [TestCategory("Commands")]
@@ -75,10 +81,12 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule("'@NoIndent\r\n", out component);
             vbe.Setup(v => v.ActiveCodePane).Returns((ICodePane)null);
 
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var noIndentAnnotationCommand = new NoIndentAnnotationCommand(vbe.Object, state);
-            Assert.IsFalse(noIndentAnnotationCommand.CanExecute(null));
+                var noIndentAnnotationCommand = new NoIndentAnnotationCommand(vbe.Object, state);
+                Assert.IsFalse(noIndentAnnotationCommand.CanExecute(null));
+            }
         }
 
         [TestCategory("Commands")]
@@ -86,7 +94,7 @@ End Sub";
         public void IndentModule_IndentsModule()
         {
             var input =
-@"    Option Explicit   ' at least I used it...
+                @"    Option Explicit   ' at least I used it...
     Sub InverseIndent()
 Dim d As Boolean
 Dim s As Integer
@@ -101,7 +109,7 @@ Dim d As Boolean
 ";
 
             var expected =
-@"Option Explicit                                  ' at least I used it...
+                @"Option Explicit                                  ' at least I used it...
 Sub InverseIndent()
     Dim d As Boolean
     Dim s As Integer
@@ -124,16 +132,18 @@ End Sub
             var vbe = builder.AddProject(project).Build();
             vbe.Setup(s => s.ActiveCodePane).Returns(project.Object.VBComponents["Comp2"].CodeModule.CodePane);
 
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var indentCommand = new IndentCurrentModuleCommand(vbe.Object, CreateIndenter(vbe.Object), state);
-            indentCommand.Execute(null);
+                var indentCommand = new IndentCurrentModuleCommand(vbe.Object, CreateIndenter(vbe.Object), state);
+                indentCommand.Execute(null);
 
-            var module1 = project.Object.VBComponents["Comp1"].CodeModule;
-            var module2 = project.Object.VBComponents["Comp2"].CodeModule;
+                var module1 = project.Object.VBComponents["Comp1"].CodeModule;
+                var module2 = project.Object.VBComponents["Comp2"].CodeModule;
 
-            Assert.AreEqual(input, module1.Content());
-            Assert.AreEqual(expected, module2.Content());
+                Assert.AreEqual(input, module1.Content());
+                Assert.AreEqual(expected, module2.Content());
+            }
         }
 
         [TestCategory("Commands")]
@@ -144,10 +154,12 @@ End Sub
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule("", out component);
             vbe.Setup(v => v.ActiveCodePane).Returns((ICodePane)null);
 
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var indentCommand = new IndentCurrentModuleCommand(vbe.Object, CreateIndenter(vbe.Object), state);
-            Assert.IsFalse(indentCommand.CanExecute(null));
+                var indentCommand = new IndentCurrentModuleCommand(vbe.Object, CreateIndenter(vbe.Object), state);
+                Assert.IsFalse(indentCommand.CanExecute(null));
+            }
         }
 
         [TestCategory("Commands")]
@@ -156,10 +168,12 @@ End Sub
         {
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule("", out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var indentCommand = new IndentCurrentModuleCommand(vbe.Object, CreateIndenter(vbe.Object), state);
-            Assert.IsTrue(indentCommand.CanExecute(null));
+                var indentCommand = new IndentCurrentModuleCommand(vbe.Object, CreateIndenter(vbe.Object), state);
+                Assert.IsTrue(indentCommand.CanExecute(null));
+            }
         }
 
         private static IIndenter CreateIndenter(IVBE vbe)
