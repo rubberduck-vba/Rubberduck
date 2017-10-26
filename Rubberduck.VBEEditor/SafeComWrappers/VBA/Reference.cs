@@ -44,19 +44,15 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
             get
             {
-                string fullPath;
-
                 try
                 {
-                    fullPath = IsBroken ? string.Empty : Target.FullPath;
+                    return IsBroken ? string.Empty : Target.FullPath;
                 }
                 catch (System.Runtime.InteropServices.COMException)
                 {
 
-                    fullPath = string.Empty;
+                    return string.Empty;
                 }
-
-                return fullPath;
             }
         }
 
