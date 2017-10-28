@@ -11,7 +11,7 @@ namespace Rubberduck.Parsing.VBA
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public IParseTree Parse(string moduleName, CommonTokenStream moduleTokens, IParseTreeListener[] listeners, BaseErrorListener errorListener, out ITokenStream outStream)
+        public (IParseTree tree, ITokenStream tokenStream) Parse(string moduleName, CommonTokenStream moduleTokens, IParseTreeListener[] listeners, BaseErrorListener errorListener)
         {
             moduleTokens.Reset();
             var parser = new VBAParser(moduleTokens);
@@ -34,8 +34,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 ParseTreeWalker.Default.Walk(listener, tree);
             }
-            outStream = moduleTokens;
-            return tree;
+            return (tree, moduleTokens);
         }
     }
 }
