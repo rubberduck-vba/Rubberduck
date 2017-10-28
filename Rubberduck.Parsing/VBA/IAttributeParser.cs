@@ -10,6 +10,6 @@ namespace Rubberduck.Parsing.VBA
 {
     public interface IAttributeParser
     {
-        IDictionary<Tuple<string, DeclarationType>, Attributes> Parse(IVBComponent component, CancellationToken token, out ITokenStream stream, out IParseTree tree);
+        (IParseTree tree, ITokenStream tokenStream, IDictionary<Tuple<string, DeclarationType>, Attributes> attributes) Parse(IVBComponent component, CancellationToken cancellationToken);
     }
 }
