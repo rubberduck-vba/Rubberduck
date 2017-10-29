@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -64,9 +65,8 @@ namespace Rubberduck.Parsing.VBA
         }
 
         // Do not access this from anywhere but ReparseRequested.
-        // ReparseRequested needs to have a reference to all the cancellation tokens,
-        // but the cancelees need to use their own token.
-        private readonly List<CancellationTokenSource> _cancellationTokens = new List<CancellationTokenSource> { new CancellationTokenSource() };
+        // ReparseRequested needs to have a reference to the cancellation token.
+        private CancellationTokenSource _currentCancellationTokenSource = new CancellationTokenSource();
 
         private readonly object _cancellationSyncObject = new object();
         private readonly object _parsingRunSyncObject = new object();
@@ -77,8 +77,16 @@ namespace Rubberduck.Parsing.VBA
             lock (_cancellationSyncObject)
             {
                 Cancel();
-                token = _cancellationTokens[0].Token;
+
+                if (_currentCancellationTokenSource == null)
+                {
+                    Logger.Error("Tried to request a parse after the final cancellation.");
+                    return;
+                }
+
+                token = _currentCancellationTokenSource.Token;
             }
+
 
             if (!_isTestScope)
             {
@@ -92,15 +100,19 @@ namespace Rubberduck.Parsing.VBA
 
         private void Cancel(bool createNewTokenSource = true)
         {
-            lock (_cancellationTokens[0])
+            lock (_cancellationSyncObject)
             {
-                _cancellationTokens[0].Cancel();
-                _cancellationTokens[0].Dispose();
-                if (createNewTokenSource)
+                if (_currentCancellationTokenSource == null)
                 {
-                    _cancellationTokens.Add(new CancellationTokenSource());
+                    Logger.Error("Tried to cancel a parse after the final cancellation.");
+                    return;
                 }
-                _cancellationTokens.RemoveAt(0);
+
+                var oldTokenSource = _currentCancellationTokenSource;
+                _currentCancellationTokenSource = createNewTokenSource ? new CancellationTokenSource() : null;
+
+                oldTokenSource.Cancel();
+                oldTokenSource.Dispose();
             }
         }
 
@@ -114,18 +126,17 @@ namespace Rubberduck.Parsing.VBA
             ParseInternal(token.Token);
         }
 
-        private void SetSavedCancellationTokenSource(CancellationTokenSource token)
+        /// <summary>
+        /// For the use of tests only
+        /// </summary>
+        /// 
+        private void SetSavedCancellationTokenSource(CancellationTokenSource tokenSource)
         {
-            if (_cancellationTokens.Any())
-            {
-                _cancellationTokens[0].Cancel();
-                _cancellationTokens[0].Dispose();
-                _cancellationTokens[0] = token;
-            }
-            else
-            {
-                _cancellationTokens.Add(token);
-            }
+            var oldTokenSource = _currentCancellationTokenSource;
+            _currentCancellationTokenSource = tokenSource;
+
+            oldTokenSource?.Cancel();
+            oldTokenSource?.Dispose();
         }
 
         private void ParseInternal(CancellationToken token)
