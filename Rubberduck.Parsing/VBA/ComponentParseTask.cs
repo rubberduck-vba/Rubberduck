@@ -87,7 +87,7 @@ namespace Rubberduck.Parsing.VBA
             }
             catch (COMException exception)
             {
-                Logger.Error(exception, $"Exception thrown in thread {Thread.CurrentThread.ManagedThreadId} while parsing module {_qualifiedName.Name}, ParseTaskID {_taskId}.");
+                Logger.Error(exception, $"COM Exception thrown in thread {Thread.CurrentThread.ManagedThreadId} while parsing module {_qualifiedName.Name}, ParseTaskID {_taskId}.");
                 var failedHandler = ParseFailure;
                 failedHandler?.Invoke(this, new ParseFailureArgs
                 {
@@ -96,8 +96,8 @@ namespace Rubberduck.Parsing.VBA
             }
             catch (SyntaxErrorException exception)
             {
-                Logger.Warn($"Syntax error; offending token '{exception.OffendingSymbol.Text}' at line {exception.LineNumber}, column {exception.Position} in module {_qualifiedName}.");
-                Logger.Error(exception, $"Exception thrown in thread {Thread.CurrentThread.ManagedThreadId}, ParseTaskID {_taskId}.");
+                Logger.Error($"Syntax error; offending token '{exception.OffendingSymbol.Text}' at line {exception.LineNumber}, column {exception.Position} in module {_qualifiedName}.");
+                Logger.Debug(exception, $"SyntaxErrorException thrown in thread {Thread.CurrentThread.ManagedThreadId}, ParseTaskID {_taskId}.");
                 var failedHandler = ParseFailure;
                 failedHandler?.Invoke(this, new ParseFailureArgs
                 {
@@ -115,7 +115,7 @@ namespace Rubberduck.Parsing.VBA
             }
             catch (Exception exception)
             {
-                Logger.Error(exception, $"Exception thrown in thread {Thread.CurrentThread.ManagedThreadId} while parsing module {_qualifiedName.Name}, ParseTaskID {_taskId}.");
+                Logger.Error(exception, $" Unexpected exception thrown in thread {Thread.CurrentThread.ManagedThreadId} while parsing module {_qualifiedName.Name}, ParseTaskID {_taskId}.");
                 var failedHandler = ParseFailure;
                 failedHandler?.Invoke(this, new ParseFailureArgs
                 {

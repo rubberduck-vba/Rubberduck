@@ -1,6 +1,5 @@
 using System;
 using Antlr4.Runtime;
-using NLog;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -11,8 +10,6 @@ namespace Rubberduck.Parsing.Symbols
     [Serializable]
     public class SyntaxErrorException : Exception
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
         public SyntaxErrorException(SyntaxErrorInfo info)
             : this(info.Message, info.Exception, info.OffendingSymbol, info.LineNumber, info.Position) { }
 
@@ -22,17 +19,27 @@ namespace Rubberduck.Parsing.Symbols
             _token = offendingSymbol;
             _line = line;
             _position = position;
-            Logger.Debug(innerException == null ? "" : innerException.ToString());
-            Logger.Debug("Token: {0} (L{1}C{2})", offendingSymbol.Text, line, position);
+            _innerException = innerException;
         }
 
         private readonly IToken _token;
-        public IToken OffendingSymbol { get { return _token; } }
+        public IToken OffendingSymbol => _token;
 
         private readonly int _line;
-        public int LineNumber { get { return _line; } }
+        public int LineNumber => _line;
 
         private readonly int _position;
-        public int Position { get { return _position; } }
+        public int Position => _position;
+
+        private readonly RecognitionException _innerException;
+
+        public override string ToString()
+        {
+            var exceptionText = 
+$@"RecognitionException: {_innerException?.ToString() ?? string.Empty}
+Token: {_token.Text} (L{_line}C{_position})
+{base.ToString()}";
+            return exceptionText;
+        }
     }
 }
