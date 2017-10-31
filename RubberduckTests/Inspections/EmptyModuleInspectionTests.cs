@@ -288,7 +288,7 @@ End Type
         {
             const string inputCode = "";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.Document, out _);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
