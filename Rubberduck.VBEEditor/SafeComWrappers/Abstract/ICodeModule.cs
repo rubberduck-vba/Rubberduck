@@ -20,8 +20,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         string ContentHash();
 
         /// <summary>
-        /// Adds the specified code to the module after the VBE inserted Option Explicit and an
-        /// extra empty line if "require variable declaration is enabled.
+        /// Adds the specified code to the module. If "require variable declaration" is on, code is added under Option Explicit and an extraneous empty line.
         /// </summary>
         void AddFromString(string content);
         void AddFromFile(string path);
