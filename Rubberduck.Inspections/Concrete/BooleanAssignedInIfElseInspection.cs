@@ -48,7 +48,12 @@ namespace Rubberduck.Inspections.Concrete
 
             public override void ExitIfStmt(VBAParser.IfStmtContext context)
             {
-                if (context.elseIfBlock().Any())
+                if (context.elseIfBlock() != null && context.elseIfBlock().Any())
+                {
+                    return;
+                }
+
+                if (context.elseBlock() == null)
                 {
                     return;
                 }
@@ -60,6 +65,7 @@ namespace Rubberduck.Inspections.Concrete
                 }
 
                 // make sure the assignments are the opposite
+
                 if (!(ParserRuleContextHelper.GetDescendent<VBAParser.BooleanLiteralIdentifierContext>(context.block()).GetText() == Tokens.True ^
                       ParserRuleContextHelper.GetDescendent<VBAParser.BooleanLiteralIdentifierContext>(context.elseBlock().block()).GetText() == Tokens.True))
                 {

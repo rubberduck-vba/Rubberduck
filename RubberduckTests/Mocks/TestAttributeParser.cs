@@ -19,7 +19,7 @@ namespace RubberduckTests.Mocks
             _preprocessorFactory = preprocessorFactory;
         }
 
-        public IDictionary<Tuple<string, DeclarationType>, Attributes> Parse(IVBComponent component, CancellationToken token, out ITokenStream stream, out IParseTree tree)
+        public (IParseTree tree, ITokenStream tokenStream, IDictionary<Tuple<string, DeclarationType>, Attributes> attributes) Parse(IVBComponent component, CancellationToken cancellationToken)
         {
             var code = component.CodeModule.Content();
             var type = component.Type == ComponentType.StandardModule
@@ -28,16 +28,16 @@ namespace RubberduckTests.Mocks
             var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();
             var tokens = tokenStreamProvider.Tokens(code);
             var preprocessor = _preprocessorFactory();
-            preprocessor.PreprocessTokenStream(component.Name, tokens, token);
+            preprocessor.PreprocessTokenStream(component.Name, tokens, cancellationToken);
             var listener = new AttributeListener(Tuple.Create(component.Name, type));
             // parse tree isn't usable for declarations because
             // line numbers are offset due to module header and attributes
             // (these don't show up in the VBE, that's why we're parsing an exported file)
 
-            tree = new VBAModuleParser().Parse(component.Name, tokens, new IParseTreeListener[] { listener }, new ExceptionErrorListener(), out stream);
+            var parseResults = new VBAModuleParser().Parse(component.Name, tokens, new IParseTreeListener[] { listener }, new ExceptionErrorListener());
 
-            token.ThrowIfCancellationRequested();
-            return listener.Attributes;
+            cancellationToken.ThrowIfCancellationRequested();
+            return (parseResults.tree, parseResults.tokenStream, listener.Attributes);
         }
     }
 }

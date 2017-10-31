@@ -47,20 +47,14 @@ namespace Rubberduck.Parsing.VBA
             _parser = new VBAModuleParser();
         }
         
-        public void Start(CancellationToken token)
+        public void Start(CancellationToken cancellationToken)
         {
             try
             {
                 Logger.Trace($"Starting ParseTaskID {_taskId} on thread {Thread.CurrentThread.ManagedThreadId}.");
 
-                var tokenStream = RewriteAndPreprocess(token);
-                token.ThrowIfCancellationRequested();
-
-                IParseTree attributesTree;
-                IDictionary<Tuple<string, DeclarationType>, Attributes> attributes;
-                var attributesTokenStream = RunAttributesPass(token, out attributesTree, out attributes);
-
-                var rewriter = new MemberAttributesRewriter(_exporter, _component.CodeModule, new TokenStreamRewriter(attributesTokenStream ?? tokenStream));
+                var tokenStream = RewriteAndPreprocess(cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();  
 
                 // temporal coupling... comments must be acquired before we walk the parse tree for declarations
                 // otherwise none of the annotations get associated to their respective Declaration
@@ -68,23 +62,25 @@ namespace Rubberduck.Parsing.VBA
                 var annotationListener = new AnnotationListener(new VBAParserAnnotationFactory(), _qualifiedName);
 
                 var stopwatch = Stopwatch.StartNew();
-                ITokenStream stream;
-                var tree = ParseInternal(_component.Name, tokenStream, new IParseTreeListener[]{ commentListener, annotationListener }, out stream);
+                var codePaneParseResults = ParseInternal(_component.Name, tokenStream, new IParseTreeListener[]{ commentListener, annotationListener });
                 stopwatch.Stop();
-                token.ThrowIfCancellationRequested();
+                cancellationToken.ThrowIfCancellationRequested();
 
                 var comments = QualifyAndUnionComments(_qualifiedName, commentListener.Comments, commentListener.RemComments);
-                token.ThrowIfCancellationRequested();
+                cancellationToken.ThrowIfCancellationRequested();
+
+                var attributesPassParseResults = RunAttributesPass(cancellationToken);
+                var rewriter = new MemberAttributesRewriter(_exporter, _component.CodeModule, new TokenStreamRewriter(attributesPassParseResults.tokenStream ?? tokenStream));
 
                 var completedHandler = ParseCompleted;
-                if (completedHandler != null && !token.IsCancellationRequested)
+                if (completedHandler != null && !cancellationToken.IsCancellationRequested)
                     completedHandler.Invoke(this, new ParseCompletionArgs
                     {
-                        ParseTree = tree,
-                        AttributesTree = attributesTree,
-                        Tokens = stream,
+                        ParseTree = codePaneParseResults.tree,
+                        AttributesTree = attributesPassParseResults.tree,
+                        Tokens = codePaneParseResults.tokenStream,
                         AttributesRewriter = rewriter,
-                        Attributes = attributes,
+                        Attributes = attributesPassParseResults.attributes,
                         Comments = comments,
                         Annotations = annotationListener.Annotations
                     });
@@ -128,14 +124,12 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private ITokenStream RunAttributesPass(CancellationToken token, out IParseTree attributesTree,
-            out IDictionary<Tuple<string, DeclarationType>, Attributes> attributes)
+        private (IParseTree tree, ITokenStream tokenStream, IDictionary<Tuple<string, DeclarationType>, Attributes> attributes) RunAttributesPass(CancellationToken cancellationToken)
         {
             Logger.Trace($"ParseTaskID {_taskId} begins attributes pass.");
-            ITokenStream attributesTokenStream;
-            attributes = _attributeParser.Parse(_component, token, out attributesTokenStream, out attributesTree);
+            var attributesParseResults = _attributeParser.Parse(_component, cancellationToken);
             Logger.Trace($"ParseTaskID {_taskId} finished attributes pass.");
-            return attributesTokenStream;
+            return attributesParseResults;
         }
 
         private static string GetCode(ICodeModule module)
@@ -152,20 +146,20 @@ namespace Rubberduck.Parsing.VBA
             return code;
         }
 
-        private CommonTokenStream RewriteAndPreprocess(CancellationToken token)
+        private CommonTokenStream RewriteAndPreprocess(CancellationToken cancellationToken)
         {
-            var code = _rewriter == null ? string.Join(Environment.NewLine, GetCode(_component.CodeModule)) : _rewriter.GetText();
+            var code = _rewriter?.GetText() ?? string.Join(Environment.NewLine, GetCode(_component.CodeModule));
             var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();
             var tokens = tokenStreamProvider.Tokens(code);
-            _preprocessor.PreprocessTokenStream(_component.Name, tokens, token);
+            _preprocessor.PreprocessTokenStream(_component.Name, tokens, cancellationToken);
             return tokens;
         }
 
-        private IParseTree ParseInternal(string moduleName, CommonTokenStream tokenStream, IParseTreeListener[] listeners, out ITokenStream outStream)
+        private (IParseTree tree, ITokenStream tokenStream) ParseInternal(string moduleName, CommonTokenStream tokenStream, IParseTreeListener[] listeners)
         {
             //var errorNotifier = new SyntaxErrorNotificationListener();
             //errorNotifier.OnSyntaxError += ParserSyntaxError;
-            return _parser.Parse(moduleName, tokenStream, listeners, new ExceptionErrorListener(), out outStream);
+            return _parser.Parse(moduleName, tokenStream, listeners, new ExceptionErrorListener());
         }
 
         private IEnumerable<CommentNode> QualifyAndUnionComments(QualifiedModuleName qualifiedName, IEnumerable<VBAParser.CommentContext> comments, IEnumerable<VBAParser.RemCommentContext> remComments)

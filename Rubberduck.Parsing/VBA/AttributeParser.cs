@@ -26,18 +26,15 @@ namespace Rubberduck.Parsing.VBA
         /// Exports the specified component to a temporary file, loads, and then parses the exported file.
         /// </summary>
         /// <param name="component"></param>
-        /// <param name="token"></param>
-        /// <param name="stream"></param>
-        public IDictionary<Tuple<string, DeclarationType>, Attributes> Parse(IVBComponent component, CancellationToken token, out ITokenStream stream, out IParseTree tree)
+        /// <param name="cancellationToken"></param>
+        public (IParseTree tree, ITokenStream tokenStream, IDictionary<Tuple<string, DeclarationType>, Attributes> attributes) Parse(IVBComponent component, CancellationToken cancellationToken)
         {
-            token.ThrowIfCancellationRequested();
+            cancellationToken.ThrowIfCancellationRequested();
             var path = _exporter.Export(component);
             if (!File.Exists(path))
             {
                 // a document component without any code wouldn't be exported (file would be empty anyway).
-                stream = null;
-                tree = null;
-                return new Dictionary<Tuple<string, DeclarationType>, Attributes>();
+                return (null, null, new Dictionary<Tuple<string, DeclarationType>, Attributes>());
             }
             var code = File.ReadAllText(path);
             try
@@ -49,7 +46,7 @@ namespace Rubberduck.Parsing.VBA
                 // Meh.
             }
            
-            token.ThrowIfCancellationRequested();
+            cancellationToken.ThrowIfCancellationRequested();
 
             var type = component.Type == ComponentType.StandardModule
                 ? DeclarationType.ProceduralModule
@@ -57,16 +54,16 @@ namespace Rubberduck.Parsing.VBA
             var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();
             var tokens = tokenStreamProvider.Tokens(code);
             var preprocessor = _preprocessorFactory();
-            preprocessor.PreprocessTokenStream(component.Name, tokens, token);
+            preprocessor.PreprocessTokenStream(component.Name, tokens, cancellationToken);
             var listener = new AttributeListener(Tuple.Create(component.Name, type));
             // parse tree isn't usable for declarations because
             // line numbers are offset due to module header and attributes
             // (these don't show up in the VBE, that's why we're parsing an exported file)
 
-            tree = new VBAModuleParser().Parse(component.Name, tokens, new IParseTreeListener[] { listener }, new ExceptionErrorListener(), out stream);
+            var parseResults = new VBAModuleParser().Parse(component.Name, tokens, new IParseTreeListener[] { listener }, new ExceptionErrorListener());
 
-            token.ThrowIfCancellationRequested();
-            return listener.Attributes;
+            cancellationToken.ThrowIfCancellationRequested();
+            return (parseResults.tree, parseResults.tokenStream, listener.Attributes);
         }
     }
 }
