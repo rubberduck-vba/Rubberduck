@@ -154,6 +154,13 @@
     <Compile Include="Inspections\Abstract\IInspector.cs" />
     <Compile Include="Inspections\Abstract\IParseTreeInspection.cs" />
     <Compile Include="Inspections\Abstract\IQuickFix.cs" />
+    <Compile Include="Symbols\ParsingExceptions\MainParseExceptionErrorListener.cs" />
+    <Compile Include="Symbols\ParsingExceptions\PreprocessorExceptionErrorListener.cs" />
+    <Compile Include="Symbols\ParsingExceptions\ParsePassExceptionErrorListener.cs" />
+    <Compile Include="Symbols\ParsingExceptions\ParsePassSyntaxErrorException.cs" />
+    <Compile Include="Symbols\ParsingExceptions\ParsePassSyntaxErrorInfo.cs" />
+    <Compile Include="Symbols\ParsingExceptions\MainParseSyntaxErrorException.cs" />
+    <Compile Include="Symbols\ParsingExceptions\PreprosessorSyntaxErrorException.cs" />
     <Compile Include="VBA\ParsePass.cs" />
     <Compile Include="Inspections\CannotAnnotateAttribute.cs" />
     <Compile Include="Inspections\RequiredLibraryAttribute.cs" />
@@ -316,7 +323,7 @@
     <Compile Include="Symbols\CommentExtensions.cs" />
     <Compile Include="Symbols\DeclarationEventArgs.cs" />
     <Compile Include="Symbols\DeclarationFinder.cs" />
-    <Compile Include="Symbols\ExceptionErrorListener.cs" />
+    <Compile Include="Symbols\ParsingExceptions\ExceptionErrorListener.cs" />
     <Compile Include="Symbols\ICanBeDefaultMember.cs" />
     <Compile Include="Symbols\IParameterizedDeclaration.cs" />
     <Compile Include="Symbols\PropertyLetDeclaration.cs" />
@@ -328,8 +335,8 @@
     <Compile Include="Symbols\SquareBracketedNameComparer.cs" />
     <Compile Include="Symbols\SubroutineDeclaration.cs" />
     <Compile Include="Symbols\ProjectReferencePass.cs" />
-    <Compile Include="Symbols\SyntaxErrorInfo.cs" />
-    <Compile Include="Symbols\SyntaxErrorNotificationListener.cs" />
+    <Compile Include="Symbols\ParsingExceptions\SyntaxErrorInfo.cs" />
+    <Compile Include="Symbols\ParsingExceptions\SyntaxErrorNotificationListener.cs" />
     <Compile Include="Symbols\TypeHierarchyPass.cs" />
     <Compile Include="Symbols\TypeAnnotationPass.cs" />
     <Compile Include="Symbols\IdentifierReferenceResolver.cs" />
@@ -339,7 +346,7 @@
     <Compile Include="Symbols\ProjectDeclaration.cs" />
     <Compile Include="Symbols\ProjectReference.cs" />
     <Compile Include="ComReflection\ReferencedDeclarationsCollector.cs" />
-    <Compile Include="Symbols\SyntaxErrorException.cs" />
+    <Compile Include="Symbols\ParsingExceptions\SyntaxErrorException.cs" />
     <Compile Include="ParserRuleContextExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QualifiedContext.cs" />

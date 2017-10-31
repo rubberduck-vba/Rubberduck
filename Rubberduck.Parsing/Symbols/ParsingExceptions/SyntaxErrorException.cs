@@ -1,7 +1,7 @@
 using System;
 using Antlr4.Runtime;
 
-namespace Rubberduck.Parsing.Symbols
+namespace Rubberduck.Parsing.Symbols.ParsingExceptions
 {
     /// <summary>
     /// An exception that is thrown when the parser encounters a syntax error.
@@ -16,29 +16,20 @@ namespace Rubberduck.Parsing.Symbols
         public SyntaxErrorException(string message, RecognitionException innerException, IToken offendingSymbol, int line, int position)
             : base(message, innerException)
         {
-            _token = offendingSymbol;
-            _line = line;
-            _position = position;
-            _innerException = innerException;
+            OffendingSymbol = offendingSymbol;
+            LineNumber = line;
+            Position = position;
         }
 
-        private readonly IToken _token;
-        public IToken OffendingSymbol => _token;
-
-        private readonly int _line;
-        public int LineNumber => _line;
-
-        private readonly int _position;
-        public int Position => _position;
-
-        private readonly RecognitionException _innerException;
+        public IToken OffendingSymbol { get; }
+        public int LineNumber { get; }
+        public int Position { get; }
 
         public override string ToString()
         {
             var exceptionText = 
-$@"RecognitionException: {_innerException?.ToString() ?? string.Empty}
-Token: {_token.Text} (L{_line}C{_position})
-{base.ToString()}";
+$@"{base.ToString()}
+Token: {OffendingSymbol.Text} at L{LineNumber}C{Position}";
             return exceptionText;
         }
     }

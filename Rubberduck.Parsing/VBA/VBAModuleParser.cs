@@ -5,6 +5,7 @@ using NLog;
 using Rubberduck.Parsing.Grammar;
 using System;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.Symbols.ParsingExceptions;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -23,9 +24,12 @@ namespace Rubberduck.Parsing.VBA
                 parser.Interpreter.PredictionMode = PredictionMode.Sll;
                 tree = parser.startRule();
             }
-            catch (SyntaxErrorException syntaxErrorException)
+            catch (ParsePassSyntaxErrorException syntaxErrorException)
             {
-                Logger.Warn($"SLL mode failed in module {moduleName} at symbol {syntaxErrorException.OffendingSymbol.Text} at L{syntaxErrorException.LineNumber}C{syntaxErrorException.Position}. Retrying using LL.");
+                var parsePassText = syntaxErrorException.ParsePass == ParsePass.CodePanePass
+                    ? "code pane"
+                    : "exported";
+                Logger.Warn($"SLL mode failed while parsing the {parsePassText} version of module {moduleName} at symbol {syntaxErrorException.OffendingSymbol.Text} at L{syntaxErrorException.LineNumber}C{syntaxErrorException.Position}. Retrying using LL.");
                 Logger.Debug(syntaxErrorException, "SLL mode exception");
                 moduleTokens.Reset();
                 parser.Reset();
@@ -34,7 +38,7 @@ namespace Rubberduck.Parsing.VBA
             }
             catch (Exception exception)
             {
-                Logger.Warn($"SLL mode failed in module {moduleName}. Retrying using LL.");
+                Logger.Warn($"SLL mode failed while parsing module {moduleName}. Retrying using LL.");
                 Logger.Debug(exception, "SLL mode exception");
                 moduleTokens.Reset();
                 parser.Reset();
