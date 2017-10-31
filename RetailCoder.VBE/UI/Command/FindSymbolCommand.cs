@@ -27,10 +27,12 @@ namespace Rubberduck.UI.Command
             _iconCache = iconCache;
         }
 
-        public override RubberduckHotkey Hotkey
+        public override HotkeySetting DefaultHotkey => new HotkeySetting(typeof(FindSymbolCommand))
         {
-            get { return RubberduckHotkey.FindSymbol; }
-        }
+            IsEnabled = true,
+            HasCtrlModifier = true,
+            Key1 = "T"
+        };
 
         protected override void OnExecute(object parameter)
         {

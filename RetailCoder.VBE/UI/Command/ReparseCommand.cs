@@ -17,10 +17,12 @@ namespace Rubberduck.UI.Command
             _state = state;
         }
 
-        public override RubberduckHotkey Hotkey
+        public override HotkeySetting DefaultHotkey => new HotkeySetting(typeof(ReparseCommand))
         {
-            get { return RubberduckHotkey.ParseAll; }
-        }
+            IsEnabled = true,
+            HasCtrlModifier = true,
+            Key1 = "`"
+        };
 
         protected override bool EvaluateCanExecute(object parameter)
         {

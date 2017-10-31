@@ -22,9 +22,12 @@ namespace Rubberduck.UI.Command
             _presenter.Show();
         }
 
-        public override RubberduckHotkey Hotkey
+        public override HotkeySetting DefaultHotkey => new HotkeySetting(typeof(SourceControlCommand))
         {
-            get { return RubberduckHotkey.SourceControl; }
-        }
+            IsEnabled = true,
+            HasCtrlModifier = true,
+            HasShiftModifier = true,
+            Key1 = "D6"
+        };
     }
 }

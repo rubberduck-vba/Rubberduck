@@ -2107,117 +2107,117 @@ namespace Rubberduck.UI {
         /// <summary>
         ///   Looks up a localized string similar to Code Explorer.
         /// </summary>
-        public static string HotkeyDescription_CodeExplorer {
+        public static string HotkeyDescription_CodeExplorerCommand {
             get {
-                return ResourceManager.GetString("HotkeyDescription_CodeExplorer", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Export Active Project.
-        /// </summary>
-        public static string HotkeyDescription_ExportActiveProject {
-            get {
-                return ResourceManager.GetString("HotkeyDescription_ExportActiveProject", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Find symbol.
-        /// </summary>
-        public static string HotkeyDescription_FindSymbol {
-            get {
-                return ResourceManager.GetString("HotkeyDescription_FindSymbol", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Indent Module.
-        /// </summary>
-        public static string HotkeyDescription_IndentModule {
-            get {
-                return ResourceManager.GetString("HotkeyDescription_IndentModule", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Indent Procedure.
-        /// </summary>
-        public static string HotkeyDescription_IndentProcedure {
-            get {
-                return ResourceManager.GetString("HotkeyDescription_IndentProcedure", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Code Inspections.
-        /// </summary>
-        public static string HotkeyDescription_InspectionResults {
-            get {
-                return ResourceManager.GetString("HotkeyDescription_InspectionResults", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Refresh parser state.
-        /// </summary>
-        public static string HotkeyDescription_ParseAll {
-            get {
-                return ResourceManager.GetString("HotkeyDescription_ParseAll", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Refactor / Encapsulate Field.
-        /// </summary>
-        public static string HotkeyDescription_RefactorEncapsulateField {
-            get {
-                return ResourceManager.GetString("HotkeyDescription_RefactorEncapsulateField", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Refactor / Extract Method.
-        /// </summary>
-        public static string HotkeyDescription_RefactorExtractMethod {
-            get {
-                return ResourceManager.GetString("HotkeyDescription_RefactorExtractMethod", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Refactor / Move declaration closer to usage.
-        /// </summary>
-        public static string HotkeyDescription_RefactorMoveCloserToUsage {
-            get {
-                return ResourceManager.GetString("HotkeyDescription_RefactorMoveCloserToUsage", resourceCulture);
+                return ResourceManager.GetString("HotkeyDescription_CodeExplorerCommand", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Refactor / Rename.
         /// </summary>
-        public static string HotkeyDescription_RefactorRename {
+        public static string HotkeyDescription_CodePaneRefactorRenameCommand {
             get {
-                return ResourceManager.GetString("HotkeyDescription_RefactorRename", resourceCulture);
+                return ResourceManager.GetString("HotkeyDescription_CodePaneRefactorRenameCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export Active Project.
+        /// </summary>
+        public static string HotkeyDescription_ExportAllCommand {
+            get {
+                return ResourceManager.GetString("HotkeyDescription_ExportAllCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find symbol.
+        /// </summary>
+        public static string HotkeyDescription_FindSymbolCommand {
+            get {
+                return ResourceManager.GetString("HotkeyDescription_FindSymbolCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indent Module.
+        /// </summary>
+        public static string HotkeyDescription_IndentCurrentModuleCommand {
+            get {
+                return ResourceManager.GetString("HotkeyDescription_IndentCurrentModuleCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indent Procedure.
+        /// </summary>
+        public static string HotkeyDescription_IndentCurrentProcedureCommand {
+            get {
+                return ResourceManager.GetString("HotkeyDescription_IndentCurrentProcedureCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Code Inspections.
+        /// </summary>
+        public static string HotkeyDescription_InspectionResultsCommand {
+            get {
+                return ResourceManager.GetString("HotkeyDescription_InspectionResultsCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refactor / Encapsulate Field.
+        /// </summary>
+        public static string HotkeyDescription_RefactorEncapsulateFieldCommand {
+            get {
+                return ResourceManager.GetString("HotkeyDescription_RefactorEncapsulateFieldCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refactor / Extract Method.
+        /// </summary>
+        public static string HotkeyDescription_RefactorExtractMethodCommand {
+            get {
+                return ResourceManager.GetString("HotkeyDescription_RefactorExtractMethodCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refactor / Move declaration closer to usage.
+        /// </summary>
+        public static string HotkeyDescription_RefactorMoveCloserToUsageCommand {
+            get {
+                return ResourceManager.GetString("HotkeyDescription_RefactorMoveCloserToUsageCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh parser state.
+        /// </summary>
+        public static string HotkeyDescription_ReparseCommand {
+            get {
+                return ResourceManager.GetString("HotkeyDescription_ReparseCommand", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Source Control.
         /// </summary>
-        public static string HotkeyDescription_SourceControl {
+        public static string HotkeyDescription_SourceControlCommand {
             get {
-                return ResourceManager.GetString("HotkeyDescription_SourceControl", resourceCulture);
+                return ResourceManager.GetString("HotkeyDescription_SourceControlCommand", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Test Explorer.
         /// </summary>
-        public static string HotkeyDescription_TestExplorer {
+        public static string HotkeyDescription_TestExplorerCommand {
             get {
-                return ResourceManager.GetString("HotkeyDescription_TestExplorer", resourceCulture);
+                return ResourceManager.GetString("HotkeyDescription_TestExplorerCommand", resourceCulture);
             }
         }
         
@@ -5411,7 +5411,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rubberduck ToDo Items - {0}
+        ///   Looks up a localized string similar to Rubberduck TODO Items - {0}
         ///{1} items found..
         /// </summary>
         public static string ToDoExplorer_NumberOfIssuesFound_Plural {
@@ -5421,7 +5421,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rubberduck ToDo Items - {0}
+        ///   Looks up a localized string similar to Rubberduck TODO Items - {0}
         ///{1} items found..
         /// </summary>
         public static string ToDoExplorer_NumberOfIssuesFound_Singular {

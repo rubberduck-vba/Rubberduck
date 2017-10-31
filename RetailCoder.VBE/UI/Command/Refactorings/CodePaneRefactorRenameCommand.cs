@@ -21,10 +21,13 @@ namespace Rubberduck.UI.Command.Refactorings
             _messageBox = messageBox;
         }
 
-        public override RubberduckHotkey Hotkey
+        public override HotkeySetting DefaultHotkey => new HotkeySetting(typeof(CodePaneRefactorRenameCommand))
         {
-            get { return RubberduckHotkey.RefactorRename; }
-        }
+            IsEnabled = true,
+            HasCtrlModifier = true,
+            HasShiftModifier = true,
+            Key1 = "R"
+        };
 
         protected override bool EvaluateCanExecute(object parameter)
         {

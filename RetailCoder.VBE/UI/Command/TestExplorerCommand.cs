@@ -15,10 +15,13 @@ namespace Rubberduck.UI.Command
             _presenter = presenter;
         }
 
-        public override RubberduckHotkey Hotkey
+        public override HotkeySetting DefaultHotkey => new HotkeySetting(typeof(TestExplorerCommand))
         {
-            get { return RubberduckHotkey.TestExplorer; }
-        }
+            IsEnabled = true,
+            HasCtrlModifier = true,
+            HasShiftModifier = true,
+            Key1 = "T"
+        };
 
         protected override void OnExecute(object parameter)
         {

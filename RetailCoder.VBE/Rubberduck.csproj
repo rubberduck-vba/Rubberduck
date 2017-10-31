@@ -365,7 +365,6 @@
     <Compile Include="Settings\HotkeySettings.cs" />
     <Compile Include="Settings\HotkeyConfigProvider.cs" />
     <Compile Include="Settings\MinimumLogLevel.cs" />
-    <Compile Include="Settings\RubberduckHotkey.cs" />
     <Compile Include="Settings\ToDoListConfigProvider.cs" />
     <Compile Include="Settings\UnitTestConfigProvider.cs" />
     <Compile Include="Settings\WhitelistedIdentifierSetting.cs" />

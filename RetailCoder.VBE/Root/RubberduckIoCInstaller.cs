@@ -134,6 +134,8 @@ namespace Rubberduck.Root
 
             RegisterWindowsHooks(container);
 
+            RegisterHotkeySettings(container);
+
             var assembliesToRegister = AssembliesToRegister().ToArray();
 
             RegisterConfiguration(container, assembliesToRegister);
@@ -841,6 +843,13 @@ namespace Rubberduck.Root
             container.Register(Component.For<IVBE>().Instance(_vbe));
             container.Register(Component.For<IAddIn>().Instance(_addin));
             container.Register(Component.For<ICommandBars>().Instance(_vbe.CommandBars)); //note: This registration makes Castle Windsor inject _vbe_CommandBars in all ICommandBars Parent properties.
+        }
+
+        private static void RegisterHotkeySettings(IWindsorContainer container)
+        {
+            container.Register(Component.For<HotkeySettings>()
+                .OnCreate((kernel, item) => item.Commands = kernel.Resolve<IEnumerable<CommandBase>>())
+                .LifestyleTransient());
         }
     }
 }

@@ -18,10 +18,12 @@ namespace Rubberduck.UI.Command
             _presenter = presenter;
         }
 
-        public override RubberduckHotkey Hotkey
+        public override HotkeySetting DefaultHotkey => new HotkeySetting(typeof(CodeExplorerCommand))
         {
-            get { return RubberduckHotkey.CodeExplorer; }
-        }
+            IsEnabled = true,
+            HasCtrlModifier = true,
+            Key1 = "R"
+        };
 
         protected override void OnExecute(object parameter)
         {

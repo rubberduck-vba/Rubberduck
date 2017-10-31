@@ -18,10 +18,13 @@ namespace Rubberduck.UI.Command
             _presenter = presenter;
         }
 
-        public override RubberduckHotkey Hotkey
+        public override HotkeySetting DefaultHotkey => new HotkeySetting(typeof(InspectionResultsCommand))
         {
-            get { return RubberduckHotkey.InspectionResults; }
-        }
+            IsEnabled = true,
+            HasCtrlModifier = true,
+            HasShiftModifier = true,
+            Key1 = "I"
+        };
 
         /// <summary>
         /// Runs code inspections 

@@ -20,10 +20,13 @@ namespace Rubberduck.UI.Command.Refactorings
             _msgbox = msgbox;
         }
 
-        public override RubberduckHotkey Hotkey
+        public override HotkeySetting DefaultHotkey => new HotkeySetting(typeof(RefactorMoveCloserToUsageCommand))
         {
-            get { return RubberduckHotkey.RefactorMoveCloserToUsage; }
-        }
+            IsEnabled = true,
+            HasCtrlModifier = true,
+            HasShiftModifier = true,
+            Key1 = "C"
+        };
 
         protected override bool EvaluateCanExecute(object parameter)
         {

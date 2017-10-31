@@ -7,8 +7,10 @@ namespace Rubberduck.Settings
         private readonly IPersistanceService<HotkeySettings> _persister;
 
         public HotkeyConfigProvider(IPersistanceService<HotkeySettings> persister)
+        //public HotkeyConfigProvider(IPersistanceService<HotkeySettings> persister, IEnumerable<CommandBase> commands)
+        //public HotkeyConfigProvider(IPersistanceService<HotkeySettings> persister, HotkeySettings hotkeySettings)
         {
-            _persister = persister;          
+            _persister = persister;
         }
 
         public HotkeySettings Create()
