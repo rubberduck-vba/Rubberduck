@@ -123,7 +123,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 var component = this[name];
                 component.CodeModule.Clear();
 
-                var codeString = File.ReadAllText(path);
+                var codeString = File.ReadAllText(path, Encoding.UTF8);
                 component.CodeModule.AddFromString(codeString);
             }
             else if (ext == ComponentTypeExtensions.FormExtension)

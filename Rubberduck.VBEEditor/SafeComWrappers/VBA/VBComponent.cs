@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
@@ -167,9 +168,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             if (lineCount > 0)
             {
                 //One cannot reimport document modules as such in the VBE; so we simply export and import the contents of the code pane.
-                //Because of this, it is OK, and actually preferable, to use the standard UTF8 encoding.
+                //Because of this, it is OK, and actually preferable, to use the default UTF8 encoding.
                 var text = CodeModule.GetLines(1, lineCount);
-                File.WriteAllText(path, text);  
+                File.WriteAllText(path, text, Encoding.UTF8);  
             }
         }
 
