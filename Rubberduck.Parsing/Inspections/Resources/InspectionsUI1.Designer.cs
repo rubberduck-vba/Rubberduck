@@ -502,6 +502,33 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Empty modules and classes either point to not yet implemented functionality or represent unnecessary baggage that can hurt the maintainability of a project..
+        /// </summary>
+        public static string EmptyModuleInspectionMeta {
+            get {
+                return ResourceManager.GetString("EmptyModuleInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Empty module.
+        /// </summary>
+        public static string EmptyModuleInspectionName {
+            get {
+                return ResourceManager.GetString("EmptyModuleInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Module/class {0} is empty..
+        /// </summary>
+        public static string EmptyModuleInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("EmptyModuleInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Prefer &apos;vbNullString&apos; to an empty string literal.
         /// </summary>
         public static string EmptyStringLiteralInspection {
