@@ -212,7 +212,7 @@ namespace Rubberduck.UI.Command
             }
 
             component.Activate();
-            _state.OnParseRequested(this, component);
+            _state.OnParseRequested(this);
         }
 
         private string GetNextTestModuleName(IVBProject project)

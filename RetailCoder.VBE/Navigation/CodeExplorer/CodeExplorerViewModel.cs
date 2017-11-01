@@ -374,7 +374,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 return;
             }
 
-            var components = e.Component.Collection;
+            var components = e.Module.Component.Collection;
             var componentProject = components.Parent;
             {
                 var projectNode = Projects.OfType<CodeExplorerProjectViewModel>()
@@ -385,7 +385,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                     return;
                 }
 
-                SetErrorState(projectNode, e.Component);
+                SetErrorState(projectNode, e.Module);
 
                 if (_errorStateSet) { return; }
 
@@ -401,7 +401,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                         projectNode.AddChild(folderNode);
                     }
 
-                    var declaration = CreateDeclaration(e.Component);
+                    var declaration = CreateDeclaration(e.Module);
                     var newNode = new CodeExplorerComponentViewModel(folderNode, declaration, new List<Declaration>())
                     {
                         IsErrorState = true
@@ -415,22 +415,21 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        private Declaration CreateDeclaration(IVBComponent component)
+        private Declaration CreateDeclaration(QualifiedModuleName module)
         {
             var projectDeclaration =
-                _state.AllUserDeclarations.FirstOrDefault(item =>
-                        item.DeclarationType == DeclarationType.Project &&
-                        item.Project.VBComponents.Contains(component));
+                _state.DeclarationFinder.UserDeclarations(DeclarationType.Project)
+                    .FirstOrDefault(item => item.Project.VBComponents.Contains(module.Component));
 
-            if (component.Type == ComponentType.StandardModule)
+            if (module.ComponentType == ComponentType.StandardModule)
             {
                 return new ProceduralModuleDeclaration(
-                        new QualifiedMemberName(new QualifiedModuleName(component), component.Name), projectDeclaration,
-                        component.Name, true, new List<IAnnotation>(), null);
+                        new QualifiedMemberName(module, module.ComponentName), projectDeclaration,
+                        module.ComponentName, true, new List<IAnnotation>(), null);
             }
 
-            return new ClassModuleDeclaration(new QualifiedMemberName(new QualifiedModuleName(component), component.Name),
-                    projectDeclaration, component.Name, true, new List<IAnnotation>(), null);
+            return new ClassModuleDeclaration(new QualifiedMemberName(module, module.ComponentName),
+                    projectDeclaration, module.ComponentName, true, new List<IAnnotation>(), null);
         }
 
         private void ReorderChildNodes(IEnumerable<CodeExplorerItemViewModel> nodes)
@@ -443,7 +442,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         }
 
         private bool _errorStateSet;
-        private void SetErrorState(CodeExplorerItemViewModel itemNode, IVBComponent component)
+        private void SetErrorState(CodeExplorerItemViewModel itemNode, QualifiedModuleName module)
         {
             _errorStateSet = false;
 
@@ -451,7 +450,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             {
                 if (node is CodeExplorerCustomFolderViewModel)
                 {
-                    SetErrorState(node, component);
+                    SetErrorState(node, module);
                 }
 
                 if (_errorStateSet)
@@ -460,7 +459,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 }
 
                 var componentNode = node as CodeExplorerComponentViewModel;
-                if (componentNode?.GetSelectedDeclaration().QualifiedName.QualifiedModuleName.Component.Equals(component) == true)
+                if (componentNode?.GetSelectedDeclaration().QualifiedName.QualifiedModuleName.Equals(module) == true)
                 {
                     componentNode.IsErrorState = true;
                     _errorStateSet = true;

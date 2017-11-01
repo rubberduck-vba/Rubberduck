@@ -1,23 +1,23 @@
 ﻿using System;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing
 {
     public class ParseProgressEventArgs : EventArgs
     {
-        private readonly IVBComponent _component;
+        private readonly QualifiedModuleName _module;
         private readonly ParserState _state;
         private readonly ParserState _oldState;
 
-        public ParseProgressEventArgs(IVBComponent component, ParserState state, ParserState oldState)
+        public ParseProgressEventArgs(QualifiedModuleName module, ParserState state, ParserState oldState)
         {
-            _component = component;
+            _module = module;
             _state = state;
             _oldState = oldState;
         }
 
-        public IVBComponent Component { get { return _component; } }
+        public QualifiedModuleName Module { get { return _module; } }
         public ParserState State { get { return _state; } }
         public ParserState OldState { get { return _oldState; } }
     }
