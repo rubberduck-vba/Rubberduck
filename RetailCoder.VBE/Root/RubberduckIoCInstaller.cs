@@ -134,7 +134,7 @@ namespace Rubberduck.Root
 
             RegisterWindowsHooks(container);
 
-            RegisterHotkeySettings(container);
+            //RegisterHotkeySettings(container);
 
             var assembliesToRegister = AssembliesToRegister().ToArray();
 
@@ -157,6 +157,7 @@ namespace Rubberduck.Root
             {
                 container.Register(Classes.FromAssembly(assembly)
                     .InSameNamespaceAs<Configuration>()
+                    .Unless(x => x == typeof(HotkeyConfigProvider))
                     .WithService.AllInterfaces()
                     .LifestyleSingleton());
             }
@@ -174,6 +175,13 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
             container.Register(Component.For<IConfigProvider<SourceControlSettings>>()
                 .ImplementedBy<SourceControlConfigProvider>()
+                .LifestyleSingleton());
+
+            container.Register(Component.For<IConfigProvider<HotkeySettings>>()
+                .ImplementedBy<HotkeyConfigProvider>()
+                .DynamicParameters((kernel, parameters) => parameters["defaultHotkeys"] = kernel.Resolve<IEnumerable<CommandBase>>()
+                        .Where(command => command.DefaultHotkey != null)
+                        .Select(command => command.DefaultHotkey))
                 .LifestyleSingleton());
 
             container.Register(Component.For<ISourceControlSettings>()
@@ -845,11 +853,19 @@ namespace Rubberduck.Root
             container.Register(Component.For<ICommandBars>().Instance(_vbe.CommandBars)); //note: This registration makes Castle Windsor inject _vbe_CommandBars in all ICommandBars Parent properties.
         }
 
+        // TODO: Change name if it works
         private static void RegisterHotkeySettings(IWindsorContainer container)
         {
-            container.Register(Component.For<HotkeySettings>()
-                .OnCreate((kernel, item) => item.Commands = kernel.Resolve<IEnumerable<CommandBase>>())
-                .LifestyleTransient());
+            //container.Register(Component.For<HotkeySettings>()
+            //    .OnCreate((kernel, item) => item.DefaultSettings = kernel.Resolve<IEnumerable<CommandBase>>()
+            //        .Where(command => command.DefaultHotkey != null)
+            //        .Select(command => command.DefaultHotkey))
+            //    .LifestyleTransient());
+            //container.Register(Component.For<HotkeyConfigProvider>()
+            //    .OnCreate((kernel, item) => item.DefaultHotkeys = kernel.Resolve<IEnumerable<CommandBase>>()
+            //        .Where(command => command.DefaultHotkey != null)
+            //        .Select(command => command.DefaultHotkey))
+            //    .LifestyleTransient());
         }
     }
 }

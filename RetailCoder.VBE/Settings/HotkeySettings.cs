@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Common.Hotkeys;
-using Rubberduck.UI.Command;
 
 namespace Rubberduck.Settings
 {
@@ -13,18 +12,15 @@ namespace Rubberduck.Settings
 
     public class HotkeySettings : IHotkeySettings, IEquatable<HotkeySettings>
     {
-        public IEnumerable<CommandBase> Commands { get; set; }
-
+        private readonly IEnumerable<HotkeySetting> _defaultSettings;
         private HashSet<HotkeySetting> _settings;
 
         public HotkeySetting[] Settings
         {
-            get => _settings?.ToArray() ??
-                   Commands?.Where(command => command.DefaultHotkey != null).Select(command => command.DefaultHotkey).ToArray() ??
-                   new HotkeySetting[0];
+            get => _settings?.ToArray() ?? _defaultSettings.ToArray();
             set
-            { 
-                var defaults = Commands.Where(command => command.DefaultHotkey != null).Select(command => command.DefaultHotkey).ToArray();
+            {
+                var defaults = _defaultSettings.ToArray();
 
                 if (value == null || value.Length == 0)
                 {
@@ -52,6 +48,15 @@ namespace Rubberduck.Settings
                     _settings.Add(setting);
                 }
             }
+        }
+
+        public HotkeySettings()
+        {
+        }
+
+        public HotkeySettings(IEnumerable<HotkeySetting> defaultSettings)
+        {
+            _defaultSettings = defaultSettings;
         }
 
         private bool IsDuplicate(HotkeySetting candidate)
