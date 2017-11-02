@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -108,8 +109,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 return;
             }
 
-            var codeString = File.ReadAllText(path);
-            var codeLines = codeString.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
             if (ext == ComponentTypeExtensions.DocClassExtension)
             {
                 try
@@ -123,6 +122,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
                 var component = this[name];
                 component.CodeModule.Clear();
+
+                var codeString = File.ReadAllText(path, Encoding.UTF8);
                 component.CodeModule.AddFromString(codeString);
             }
             else if (ext == ComponentTypeExtensions.FormExtension)
@@ -137,6 +138,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 }
 
                 var component = this[name];
+
+                var codeString = File.ReadAllText(path, Encoding.Default);  //The VBE uses the current ANSI codepage from the windows settings to export and import.
+                var codeLines = codeString.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 
                 var nonAttributeLines = codeLines.TakeWhile(line => !line.StartsWith("Attribute")).Count();
                 var attributeLines = codeLines.Skip(nonAttributeLines).TakeWhile(line => line.StartsWith("Attribute")).Count();
