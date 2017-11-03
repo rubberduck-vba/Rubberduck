@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
@@ -114,7 +115,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
             var tempFile = ExportToTempFile();
             var tempFilePath = Directory.GetParent(tempFile).FullName;
-            var contents = File.ReadAllLines(tempFile, System.Text.Encoding.UTF7);
+            var fileEncoding = System.Text.Encoding.Default;    //We use the current ANSI codepage because that is what the VBE does.
+            var contents = File.ReadAllLines(tempFile, fileEncoding);
             var nonAttributeLines = contents.TakeWhile(line => !line.StartsWith("Attribute")).Count();
             var attributeLines = contents.Skip(nonAttributeLines).TakeWhile(line => line.StartsWith("Attribute")).Count();
             var declarationsStartLine = nonAttributeLines + attributeLines + 1;
@@ -130,7 +132,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                        contents.Skip(declarationsStartLine + emptyLineCount - legitEmptyLineCount))
                                .ToArray();
             }
-            File.WriteAllLines(path, code);
+            File.WriteAllLines(path, code, fileEncoding);
 
             // LINQ hates this search, therefore, iterate the long way
             foreach (string line in contents)
@@ -165,8 +167,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             var lineCount = CodeModule.CountOfLines;
             if (lineCount > 0)
             {
+                //One cannot reimport document modules as such in the VBE; so we simply export and import the contents of the code pane.
+                //Because of this, it is OK, and actually preferable, to use the default UTF8 encoding.
                 var text = CodeModule.GetLines(1, lineCount);
-                File.WriteAllText(path, text);
+                File.WriteAllText(path, text, Encoding.UTF8);  
             }
         }
 

@@ -105,7 +105,7 @@ namespace Rubberduck.UI.Command.Refactorings
 
                 var extraction = new ExtractMethodExtraction();
                 // bug: access to disposed closure - todo: make ExtractMethodRefactoring request reparse like everyone else.
-                Action<object> parseRequest = obj => _state.OnParseRequested(obj, component); 
+                Action<object> parseRequest = obj => _state.OnParseRequested(obj); 
 
                 var refactoring = new ExtractMethodRefactoring(module, parseRequest, createMethodModel, extraction);
                 refactoring.InvalidSelection += HandleInvalidSelection;
