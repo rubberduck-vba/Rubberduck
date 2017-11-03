@@ -232,5 +232,55 @@ End Sub
                 Assert.AreEqual(blockCount + 1, metrics.Result.CyclomaticComplexity);
             }
         }
+
+        [TestMethod]
+        [TestCategory("Code Metrics")]
+        public void PropertyGet_HasCyclomaticComplexity_One()
+        {
+            var code = @"
+Public Property Get Complexity() As Long
+    Complexity = 1
+End Property
+";
+            var state = MockParser.ParseString(code, out var _);
+            var metrics = cut.ModuleMetrics(state, cts.Token).First();
+            Assert.AreEqual(1, metrics.Result.CyclomaticComplexity);
+        }
+
+        [TestMethod]
+        [TestCategory("Code Metrics")]
+        public void PropertyLet_HasCyclomaticComplexity_One()
+        {
+            var code = @"
+Option Explicit
+
+Private mComplexity As Long
+
+Public Property Let Complexity(ByVal complexity As Long)
+    mComplexity = complexity
+End Property
+";
+            var state = MockParser.ParseString(code, out var _);
+            var metrics = cut.ModuleMetrics(state, cts.Token).First();
+            Assert.AreEqual(1, metrics.Result.CyclomaticComplexity);
+        }
+
+        [TestMethod]
+        [TestCategory("Code Metrics")]
+        public void PropertySet_HasCyclomaticComplexity_One()
+        {
+            var code = @"
+Option Explicit
+
+Private mComplexity As Object
+
+Public Property Set Complexity(ByRef complexity As Object)
+    mComplexity = complexity
+End Property
+";
+            var state = MockParser.ParseString(code, out var _);
+            var metrics = cut.ModuleMetrics(state, cts.Token).First();
+            Assert.AreEqual(1, metrics.Result.CyclomaticComplexity);
+        }
     }
 }

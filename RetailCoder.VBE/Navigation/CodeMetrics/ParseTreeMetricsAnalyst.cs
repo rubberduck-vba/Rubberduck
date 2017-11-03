@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Rubberduck.Parsing.VBA;
 using Antlr4.Runtime.Tree;
-using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
 using Antlr4.Runtime.Misc;
@@ -109,9 +105,7 @@ namespace Rubberduck.Navigation.CodeMetrics
             public override void ExitSubStmt([NotNull] VBAParser.SubStmtContext context)
             {
                 // well, we're done here
-                memberResults.Add(new MemberMetricsResult(currentMember, results));
-                results = new List<CodeMetricsResult>(); // reinitialize to drop results
-                currentMember = null;
+                ExitMeasurableMember();
             }
 
             public override void EnterFunctionStmt([NotNull] VBAParser.FunctionStmtContext context)
@@ -126,9 +120,46 @@ namespace Rubberduck.Navigation.CodeMetrics
             public override void ExitFunctionStmt([NotNull] VBAParser.FunctionStmtContext context)
             {
                 // well, we're done here
-                memberResults.Add(new MemberMetricsResult(currentMember, results));
-                results = new List<CodeMetricsResult>(); // reinitialize to drop results
-                currentMember = null;
+                ExitMeasurableMember();
+            }
+
+            public override void EnterPropertyGetStmt([NotNull] VBAParser.PropertyGetStmtContext context)
+            {
+                results.Add(new CodeMetricsResult(0, 1, 0));
+
+                currentMember = _finder.DeclarationsWithType(DeclarationType.PropertyGet).Where(d => d.Context == context).First();
+            }
+
+            public override void ExitPropertyGetStmt([NotNull] VBAParser.PropertyGetStmtContext context)
+            {
+                // well, we're done here
+                ExitMeasurableMember();
+            }
+
+            public override void EnterPropertyLetStmt([NotNull] VBAParser.PropertyLetStmtContext context)
+            {
+                results.Add(new CodeMetricsResult(0, 1, 0));
+
+                currentMember = _finder.DeclarationsWithType(DeclarationType.PropertyLet).Where(d => d.Context == context).First();
+            }
+
+            public override void ExitPropertyLetStmt([NotNull] VBAParser.PropertyLetStmtContext context)
+            {
+                // well, we're done here
+                ExitMeasurableMember();
+            }
+
+            public override void EnterPropertySetStmt([NotNull] VBAParser.PropertySetStmtContext context)
+            {
+                results.Add(new CodeMetricsResult(0, 1, 0));
+
+                currentMember = _finder.DeclarationsWithType(DeclarationType.PropertySet).Where(d => d.Context == context).First();
+            }
+
+            public override void ExitPropertySetStmt([NotNull] VBAParser.PropertySetStmtContext context)
+            {
+                // well, we're done here
+                ExitMeasurableMember();
             }
 
             public override void EnterBlockStmt([NotNull] VBAParser.BlockStmtContext context)
@@ -138,8 +169,14 @@ namespace Rubberduck.Navigation.CodeMetrics
                 // FIXME LINE_CONTINUATION might interfere here
                 //results.Add(new CodeMetricsResult(0, 0, ws.ChildCount / 4));
             }
-
             // FIXME also check if we need to do something about `mandatoryLineContinuation`?
+
+            private void ExitMeasurableMember()
+            {
+                memberResults.Add(new MemberMetricsResult(currentMember, results));
+                results = new List<CodeMetricsResult>(); // reinitialize to drop results
+                currentMember = null;
+            }
 
             internal ModuleMetricsResult GetMetricsResult(QualifiedModuleName qmn)
             {
