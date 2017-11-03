@@ -9,8 +9,8 @@ namespace Rubberduck.SmartIndenter
         public const char StringPlaceholder = '\a';
         public const char BracketPlaceholder = '\x02';
 
-        private static readonly Regex StringReplaceRegex = new Regex("\a+");
-        private static readonly Regex BracketReplaceRegex = new Regex("\x02+");
+        private static readonly Regex StringReplaceRegex = new Regex("\a+", RegexOptions.IgnoreCase);
+        private static readonly Regex BracketReplaceRegex = new Regex("\x02+", RegexOptions.IgnoreCase);
 
         private readonly List<string> _strings = new List<string>();
         private readonly List<string> _brackets = new List<string>();
