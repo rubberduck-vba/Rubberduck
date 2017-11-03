@@ -29,8 +29,8 @@ namespace RubberduckTests.Stats
         {
             var code = @"";
             var state = MockParser.ParseString(code, out var qmn);
-            var metrics = cut.GetResult(state, cts.Token).Result;
-            Assert.AreEqual(new CodeMetricsResult(), metrics);
+            var metrics = cut.ModuleMetrics(state, cts.Token).First();
+            Assert.AreEqual(new CodeMetricsResult(), metrics.Result);
         }
 
         [TestMethod]
@@ -42,8 +42,8 @@ Sub NoCode()
 End Sub
 ";
             var state = MockParser.ParseString(code, out var _);
-            var metrics = cut.GetResult(state, cts.Token).Result;
-            Assert.AreEqual(1, metrics.CyclomaticComplexity);
+            var metrics = cut.ModuleMetrics(state, cts.Token).First();
+            Assert.AreEqual(1, metrics.Result.CyclomaticComplexity);
         }
 
         [TestMethod]
@@ -56,8 +56,8 @@ End Function
 ";
 
             var state = MockParser.ParseString(code, out var _);
-            var metrics = cut.GetResult(state, cts.Token).Result;
-            Assert.AreEqual(1, metrics.CyclomaticComplexity);
+            var metrics = cut.ModuleMetrics(state, cts.Token).First();
+            Assert.AreEqual(1, metrics.Result.CyclomaticComplexity);
         }
 
         [TestMethod]
@@ -74,8 +74,8 @@ End Function
                 var code = builder.ToString();
 
                 var state = MockParser.ParseString(code, out var _);
-                var metric = cut.GetResult(state, cts.Token).Result;
-                Assert.AreEqual(lineCount, metric.Lines);
+                var metric = cut.ModuleMetrics(state, cts.Token).First();
+                Assert.AreEqual(lineCount, metric.Result.Lines);
             }
         }
 
@@ -90,8 +90,8 @@ Sub IfStatement()
 End Sub
 ";
             var state = MockParser.ParseString(code, out var _);
-            var metrics = cut.GetResult(state, cts.Token).Result;
-            Assert.AreEqual(2, metrics.CyclomaticComplexity);
+            var metrics = cut.ModuleMetrics(state, cts.Token).First();
+            Assert.AreEqual(2, metrics.Result.CyclomaticComplexity);
         }
 
         [TestMethod]
@@ -106,8 +106,8 @@ Sub IfElseStatement()
 End Sub
 ";
             var state = MockParser.ParseString(code, out var _);
-            var metrics = cut.GetResult(state, cts.Token).Result;
-            Assert.AreEqual(2, metrics.CyclomaticComplexity);
+            var metrics = cut.ModuleMetrics(state, cts.Token).First();
+            Assert.AreEqual(2, metrics.Result.CyclomaticComplexity);
         }
 
         [TestMethod]
@@ -122,8 +122,8 @@ Sub IfElseifStatement()
 End Sub
 ";
             var state = MockParser.ParseString(code, out var _);
-            var metrics = cut.GetResult(state, cts.Token).Result;
-            Assert.AreEqual(3, metrics.CyclomaticComplexity);
+            var metrics = cut.ModuleMetrics(state, cts.Token).First();
+            Assert.AreEqual(3, metrics.Result.CyclomaticComplexity);
         }
 
         [TestMethod]
@@ -139,8 +139,8 @@ Sub IfElseifStatement()
 End Sub
 ";
             var state = MockParser.ParseString(code, out var _);
-            var metrics = cut.GetResult(state, cts.Token).Result;
-            Assert.AreEqual(3, metrics.CyclomaticComplexity);
+            var metrics = cut.ModuleMetrics(state, cts.Token).First();
+            Assert.AreEqual(3, metrics.Result.CyclomaticComplexity);
         }
 
         [TestMethod]
@@ -156,8 +156,8 @@ Sub IfElseifStatement()
 End Sub
 ";
             var state = MockParser.ParseString(code, out var _);
-            var metrics = cut.GetResult(state, cts.Token).Result;
-            Assert.AreEqual(3, metrics.CyclomaticComplexity);
+            var metrics = cut.ModuleMetrics(state, cts.Token).First();
+            Assert.AreEqual(3, metrics.Result.CyclomaticComplexity);
         }
 
         [TestMethod]
@@ -172,8 +172,8 @@ Sub ForeachLoop(ByRef iterable As Object)
 End Sub
 ";
             var state = MockParser.ParseString(code, out var _);
-            var metrics = cut.GetResult(state, cts.Token).Result;
-            Assert.AreEqual(2, metrics.CyclomaticComplexity);
+            var metrics = cut.ModuleMetrics(state, cts.Token).First();
+            Assert.AreEqual(2, metrics.Result.CyclomaticComplexity);
         }
 
         [TestMethod]
@@ -189,8 +189,8 @@ Sub ForToNextLoop(ByVal ubound As Long)
 End Sub
 ";
             var state = MockParser.ParseString(code, out var _);
-            var metrics = cut.GetResult(state, cts.Token).Result;
-            Assert.AreEqual(2, metrics.CyclomaticComplexity);
+            var metrics = cut.ModuleMetrics(state, cts.Token).First();
+            Assert.AreEqual(2, metrics.Result.CyclomaticComplexity);
         }
 
         [TestMethod]
@@ -205,8 +205,8 @@ Sub CaseOnlyElse(ByVal number As Long)
 End Sub
 ";
             var state = MockParser.ParseString(code, out var _);
-            var metrics = cut.GetResult(state, cts.Token).Result;
-            Assert.AreEqual(1, metrics.CyclomaticComplexity);
+            var metrics = cut.ModuleMetrics(state, cts.Token).First();
+            Assert.AreEqual(1, metrics.Result.CyclomaticComplexity);
         }
 
         [TestMethod]
@@ -228,9 +228,8 @@ Sub CaseBlockWithCounts(ByVal number As Long)
 End Sub
 ";
                 var state = MockParser.ParseString(code, out var _);
-                var metrics = cut.GetResult(state, cts.Token).Result;
-                Assert.AreEqual(blockCount + 1, metrics.CyclomaticComplexity);
-
+                var metrics = cut.ModuleMetrics(state, cts.Token).First();
+                Assert.AreEqual(blockCount + 1, metrics.Result.CyclomaticComplexity);
             }
         }
     }

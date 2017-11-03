@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Rubberduck.Parsing.Symbols;
+using Rubberduck.VBEditor;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rubberduck.Navigation.CodeMetrics
 {
@@ -21,11 +21,36 @@ namespace Rubberduck.Navigation.CodeMetrics
             CyclomaticComplexity = cyclomaticComplexity + childScopeMetric.CyclomaticComplexity;
             MaximumNesting = Math.Max(nesting, childScopeMetric.MaximumNesting);
         }
-
-        // possibly refer to a selection?
+        
         public int Lines { get; private set; }
         public int CyclomaticComplexity { get; private set; }
         public int MaximumNesting { get; private set; }
 
+    }
+
+    public struct MemberMetricsResult
+    {
+        public Declaration Member { get; private set; }
+        public CodeMetricsResult Result { get; private set; }
+
+        public MemberMetricsResult(Declaration member, IEnumerable<CodeMetricsResult> contextResults)
+        {
+            Member = member;
+            Result = new CodeMetricsResult(0, 0, 0, contextResults);
+        }
+    }
+
+    public struct ModuleMetricsResult
+    {
+        public QualifiedModuleName ModuleName { get; private set; }
+        public CodeMetricsResult Result { get; private set; }
+        public IReadOnlyDictionary<Declaration, CodeMetricsResult> MemberResults { get; private set; }
+
+        public ModuleMetricsResult(QualifiedModuleName moduleName, IEnumerable<MemberMetricsResult> memberMetricsResult, IEnumerable<CodeMetricsResult> nonMemberResults)
+        {
+            ModuleName = moduleName;
+            MemberResults = memberMetricsResult.ToDictionary(mmr => mmr.Member, mmr => mmr.Result);
+            Result = new CodeMetricsResult(0, 0, 0, nonMemberResults.Concat(MemberResults.Values));
+        }
     }
 }

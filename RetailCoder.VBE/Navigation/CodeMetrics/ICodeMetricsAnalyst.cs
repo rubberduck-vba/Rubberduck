@@ -10,6 +10,6 @@ namespace Rubberduck.Navigation.CodeMetrics
 {
     public interface ICodeMetricsAnalyst
     {
-        Task<CodeMetricsResult> GetResult(RubberduckParserState state, CancellationToken token);
+        IEnumerable<ModuleMetricsResult> ModuleMetrics(RubberduckParserState state, CancellationToken token);
     }
 }
