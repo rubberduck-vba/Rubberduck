@@ -16,29 +16,22 @@ namespace Rubberduck.Inspections.Concrete
 
     public class RangeClauseExtent<T> : IRangeClause
     {
+        private T _extent;
+        private string _compareSymbol;
+
         public RangeClauseExtent(T extent, string compareSymbol)
         {
             _extent = extent;
             _compareSymbol = compareSymbol;
         }
 
-        private T _extent;
-        private string _compareSymbol;
-
         public bool IsSingleVal => true;
-
         public bool IsRange => false;
-
         public bool UsesIsClause => true;
-
         public bool IsRangeExtent => true;
-
         public string ValueAsString => _extent.ToString();
-
         public string CompareSymbol => _compareSymbol;
-
         public string ValueMinAsString => ValueAsString;
-
         public string ValueMaxAsString => ValueAsString;
     }
 }

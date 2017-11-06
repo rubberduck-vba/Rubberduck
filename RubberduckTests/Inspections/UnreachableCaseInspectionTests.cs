@@ -183,6 +183,46 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
+        public void UnreachableCaseInspection_NumberRange2()
+        {
+            const string inputCode =
+@"Sub Foo()
+
+Const x as Long = 7
+
+Select Case x
+  Case 100 To 1
+    'Do FooBar
+  Case 50
+    'Unreachable
+End Select
+
+End Sub";
+            CheckActualUnreachableBlockCountEqualsExpected(inputCode, 1);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void UnreachableCaseInspection_NumberRange3()
+        {
+            const string inputCode =
+@"Sub Foo()
+
+Const x as Long = 7
+
+Select Case x
+  Case 1 To 100
+    'Do FooBar
+  Case Is <= 150
+    'Conflict
+End Select
+
+End Sub";
+            CheckActualUnreachableBlockCountEqualsExpected(inputCode, 1);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void UnreachableCaseInspection_NumberRangeInverted()
         {
             const string inputCode =
@@ -356,16 +396,16 @@ End Sub";
 @"Sub Foo(x As Long)
 
 Select Case x
-  Case 98
+ ' Case 98
     'OK
   Case 5 To 25, 50, 80
     'OK
+  Case 214#
+    'OK
   Case 2147486648#
     'Unreachable
-  Case -2147486647#
+  Case -2147486649#
     'Unreachable
-  Case Is < -5000
-    'OK
 End Select
 
 End Sub";
@@ -545,7 +585,7 @@ End Sub";
 @"Sub Foo(x As Boolean)
 
 Select Case VBA.Rnd() > 0.5
-  Case False To True    'wrong order (0 > -1), but VBE allows it
+  Case False To True 
     'OK
   Case True
     'Unreachable
@@ -621,9 +661,9 @@ End Sub";
 @"Sub Foo(x As Long)
 
 Select Case x
-  Case 1 To 49
+'  Case 1 To 49
     'Do FooBar
-  Case 50
+'  Case 50
     'Reachable
   Case ""Test""
     'Unreachable
@@ -665,13 +705,13 @@ End Sub";
 
 Select Case x
   Case 88.55
-    'Unreachable
+    'OK - but may not get what you expect
   Case Else
     'OK
 End Select
 
 End Sub";
-            CheckActualUnreachableBlockCountEqualsExpected(inputCode, 1);
+            CheckActualUnreachableBlockCountEqualsExpected(inputCode, 0);
         }
 
         [TestMethod]
@@ -802,7 +842,7 @@ Const z As Long = 7
 Select Case z
   Case Is > 5000 
     'Do FooBar
-  Case Is <= 10000
+  Case Is < 10000
     'Conflict
   Case Else
     'Unreachable
@@ -815,6 +855,28 @@ End Sub";
         [TestMethod]
         [TestCategory("Inspections")]
         public void UnreachableCaseInspection_IsStmtToIsStmtCaseElseUnreachable2()
+        {
+            const string inputCode =
+@"Sub Foo()
+
+Const z As Long = 7
+
+Select Case z
+  Case Is > 5000 
+    'Do FooBar
+  Case Is <= 10000
+    'Conflict
+  Case Else
+    'Unreachable
+End Select
+
+End Sub";
+            CheckActualUnreachableBlockCountEqualsExpected(inputCode, 2);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void UnreachableCaseInspection_IsStmtToIsStmtCaseElseUnreachable3()
         {
             const string inputCode =
 @"Sub Foo()
@@ -1250,7 +1312,7 @@ Select Case z
     'Do FooBar
   Case 8
     'Unreachable
-  Case 5001
+'  Case 5001
     'Reachable
 End Select
 
@@ -1270,18 +1332,18 @@ Const z As Long = 7
 Select Case z
   Case Is > 8
     'Do FooBar
-  Case 8
+'  Case 8
     'OK
-  Case Is = 9
+  Case  Is = 9
     'Unreachable
-  Case Is < 100
+'  Case Is < 100
     'Conflict
-  Case Is < 5
+'  Case Is < 5
     'Unreachable
 End Select
 
 End Sub";
-            CheckActualUnreachableBlockCountEqualsExpected(inputCode, 3);
+            CheckActualUnreachableBlockCountEqualsExpected(inputCode, 1);
         }
 
         [TestMethod]
