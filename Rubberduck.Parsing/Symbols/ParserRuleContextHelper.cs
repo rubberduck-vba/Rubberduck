@@ -150,6 +150,7 @@ namespace Rubberduck.Parsing.Symbols
                 }
             }
             return descendents;
+        }
 
 		public static IEnumerable<IParseTree> GetDescendents(IParseTree context)
         {
