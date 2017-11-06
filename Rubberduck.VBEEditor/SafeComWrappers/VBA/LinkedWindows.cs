@@ -22,13 +22,21 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public void Remove(IWindow window)
         {
-            if (IsWrappingNullReference) return;
+            if (IsWrappingNullReference)
+            {
+                return;
+            }
+
             Target.Remove(((Window)window).Target);
         }
 
         public void Add(IWindow window)
         {
-            if (IsWrappingNullReference) return;
+            if (IsWrappingNullReference)
+            {
+                return;
+            }
+
             Target.Add(((Window)window).Target);
         }
 

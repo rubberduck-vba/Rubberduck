@@ -15,19 +15,21 @@ namespace RubberduckTests.Inspections
         public void UnassignedVariableUsage_ReturnsResult()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
     Dim b As Boolean
     Dim bb As Boolean
     bb = b
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new UnassignedVariableUsageInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new UnassignedVariableUsageInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(1, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
         // this test will eventually be removed once we can fire the inspection on a specific reference
@@ -36,7 +38,7 @@ End Sub";
         public void UnassignedVariableUsage_ReturnsSingleResult_MultipleReferences()
         {
             const string inputCode =
-@"Sub tester()
+                @"Sub tester()
     Dim myarr() As Variant
     Dim i As Long
 
@@ -53,12 +55,14 @@ End Sub
 ";
 
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new UnassignedVariableUsageInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new UnassignedVariableUsageInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(2, inspectionResults.Count());
+                Assert.AreEqual(2, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -66,7 +70,7 @@ End Sub
         public void UnassignedVariableUsage_DoesNotReturnResult()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
     Dim b As Boolean
     Dim bb As Boolean
     b = True
@@ -74,12 +78,14 @@ End Sub
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new UnassignedVariableUsageInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new UnassignedVariableUsageInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.IsFalse(inspectionResults.Any());
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
 
         [TestMethod]
@@ -87,7 +93,7 @@ End Sub";
         public void UnassignedVariableUsage_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
     '@Ignore UnassignedVariableUsage
     Dim b As Boolean
     Dim bb As Boolean
@@ -96,12 +102,14 @@ End Sub";
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new UnassignedVariableUsageInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new UnassignedVariableUsageInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.IsFalse(inspectionResults.Any());
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
 
         [TestMethod]
@@ -109,17 +117,19 @@ End Sub";
         public void UnassignedVariableUsage_NoResultIfNoReferences()
         {
             const string inputCode =
-@"Sub DoSomething()
+                @"Sub DoSomething()
     Dim foo
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new UnassignedVariableUsageInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new UnassignedVariableUsageInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.IsFalse(inspectionResults.Any());
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
 
         [TestMethod]

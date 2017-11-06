@@ -21,6 +21,8 @@ namespace Rubberduck.Inspections
     {
         public class Inspector : IInspector
         {
+            private const int _maxDegreeOfInspectionParallelism = -1;
+
             private readonly IGeneralConfigService _configService;
             private readonly List<IInspection> _inspections;
             private readonly int AGGREGATION_THRESHOLD = 128;
@@ -90,29 +92,22 @@ namespace Rubberduck.Inspections
                     }
                 }
 
-                var inspections = _inspections.Where(inspection => inspection.Severity != CodeInspectionSeverity.DoNotShow)
-                    .Select(inspection =>
-                        Task.Run(() =>
-                        {
-                            token.ThrowIfCancellationRequested();
-                            try
-                            {
-                                var inspectionResults = inspection.GetInspectionResults();
-                            
-                                foreach (var inspectionResult in inspectionResults)
-                                {
-                                    allIssues.Add(inspectionResult);
-                                }
-                            }
-                            catch(Exception e)
-                            {
-                                LogManager.GetCurrentClassLogger().Warn(e);
-                            }
-                        }, token)).ToList();
+                var inspectionsToRun = _inspections.Where(inspection => inspection.Severity != CodeInspectionSeverity.DoNotShow);
 
                 try
                 {
-                    await Task.WhenAll(inspections);
+                    await Task.Run(() => RunInspectionsInParallel(inspectionsToRun, allIssues, token));
+                }
+                catch (AggregateException exception)
+                {
+                    if (exception.Flatten().InnerExceptions.All(ex => ex is OperationCanceledException))
+                    {
+                        LogManager.GetCurrentClassLogger().Debug("Inspections got canceled.");
+                    }
+                    else
+                    {
+                        LogManager.GetCurrentClassLogger().Error(exception);
+                    }
                 }
                 catch (Exception e)
                 {
@@ -129,6 +124,38 @@ namespace Rubberduck.Inspections
 
                 state.OnStatusMessageUpdate(RubberduckUI.ResourceManager.GetString("ParserState_" + state.Status, CultureInfo.CurrentUICulture)); // should be "Ready"
                 return results;
+            }
+
+            private static void RunInspectionsInParallel(IEnumerable<IInspection> inspectionsToRun,
+                ConcurrentBag<IInspectionResult> allIssues, CancellationToken token)
+            {
+                var options = new ParallelOptions
+                {
+                    CancellationToken = token,
+                    MaxDegreeOfParallelism = _maxDegreeOfInspectionParallelism
+                };
+
+                Parallel.ForEach(inspectionsToRun,
+                    options,
+                    inspection => RunInspection(inspection, allIssues)
+                );
+            }
+
+            private static void RunInspection(IInspection inspection, ConcurrentBag<IInspectionResult> allIssues)
+            {
+                try
+                {
+                    var inspectionResults = inspection.GetInspectionResults();
+
+                    foreach (var inspectionResult in inspectionResults)
+                    {
+                        allIssues.Add(inspectionResult);
+                    }
+                }
+                catch (Exception e)
+                {
+                    LogManager.GetCurrentClassLogger().Warn(e);
+                }
             }
 
             private void WalkTrees(CodeInspectionSettings settings, RubberduckParserState state, IEnumerable<IParseTreeInspection> inspections, ParsePass pass)

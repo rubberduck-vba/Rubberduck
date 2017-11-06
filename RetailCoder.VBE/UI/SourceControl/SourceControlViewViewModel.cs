@@ -604,7 +604,9 @@ namespace Rubberduck.UI.SourceControl
         {
             if (!_isCloning)
             {
+                var oldProvider = Provider;
                 Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject, Provider.CurrentRepository, credentials);
+                _providerFactory.Release(oldProvider);
             }
             else
             {
@@ -625,9 +627,13 @@ namespace Rubberduck.UI.SourceControl
 
                 try
                 {
+                    var oldProvider = _provider;
                     _provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject);
+                    _providerFactory.Release(oldProvider);
                     var repo = _provider.InitVBAProject(folderPicker.SelectedPath);
+                    oldProvider = Provider;
                     Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject, repo);
+                    _providerFactory.Release(oldProvider);
 
                     AddOrUpdateLocalPathConfig((Repository) repo);
                     Status = RubberduckUI.Online;
@@ -709,7 +715,9 @@ namespace Rubberduck.UI.SourceControl
                 _listening = false;
                 try
                 {
+                    var oldProvider = Provider;
                     Provider = _providerFactory.CreateProvider(project, repo);
+                    _providerFactory.Release(oldProvider);
                 }
                 catch (SourceControlException ex)
                 {
@@ -740,9 +748,12 @@ namespace Rubberduck.UI.SourceControl
             _listening = false;
 
             Logger.Trace("Cloning repo");
+            ISourceControlProvider oldProvider;
             try
             {
+                oldProvider = _provider;
                 _provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject);
+                _providerFactory.Release(oldProvider);
                 var repo = _provider.Clone(CloneRemotePath, LocalDirectory, credentials);
                 AddOrUpdateLocalPathConfig(new Repository
                 {
@@ -750,8 +761,9 @@ namespace Rubberduck.UI.SourceControl
                     LocalLocation = repo.LocalLocation,
                     RemoteLocation = repo.RemoteLocation
                 });
-
+                oldProvider = Provider;
                 Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject, repo);
+                _providerFactory.Release(oldProvider);
             }
             catch (SourceControlException ex)
             {
@@ -862,8 +874,10 @@ namespace Rubberduck.UI.SourceControl
             try
             {
                 _listening = false;
+                var oldProvider = Provider;
                 Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject,
                     _config.Repositories.First(repo => repo.Id == _vbe.ActiveVBProject.HelpFile));
+                _providerFactory.Release(oldProvider);
                 Status = RubberduckUI.Online;
             }
             catch (SourceControlException ex)

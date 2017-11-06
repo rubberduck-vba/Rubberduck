@@ -27,14 +27,13 @@ End Sub
 ";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
 
-            var parser = MockParser.Create(vbe.Object);
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            using(var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new UseMeaningfulNameInspection(state, GetInspectionSettings().Object);
+                var inspectionResults = inspection.GetInspectionResults().Where(i => i.Target.DeclarationType == DeclarationType.LineLabel);
 
-            var inspection = new UseMeaningfulNameInspection(parser.State, GetInspectionSettings().Object);
-            var inspectionResults = inspection.GetInspectionResults().Where(i => i.Target.DeclarationType == DeclarationType.LineLabel);
-
-            Assert.IsFalse(inspectionResults.Any());
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
 
         [TestMethod]
@@ -173,14 +172,13 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var parser = MockParser.Create(vbe.Object);
+            using(var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new UseMeaningfulNameInspection(state, GetInspectionSettings().Object);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new UseMeaningfulNameInspection(parser.State, GetInspectionSettings().Object);
-            var inspectionResults = inspection.GetInspectionResults();
-            Assert.AreEqual(expectedCount, inspectionResults.Count());
+                Assert.AreEqual(expectedCount, inspectionResults.Count());
+            }
         }
 
         internal static Mock<IPersistanceService<CodeInspectionSettings>> GetInspectionSettings()

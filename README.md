@@ -16,7 +16,7 @@ Branch     | Description | Build Status |
 [nextBuildStatus]:https://ci.appveyor.com/api/projects/status/we3pdnkeebo4nlck/branch/next?svg=true
 [masterBuildStatus]:https://ci.appveyor.com/api/projects/status/we3pdnkeebo4nlck/branch/master?svg=true
 
-[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/rubberduck-vba/rubberduck.svg)](http://isitmaintained.com/project/rubberduck-vba/rubberduck "Average time to resolve an issue") [![Percentage of issues still open](http://isitmaintained.com/badge/open/rubberduck-vba/rubberduck.svg)](http://isitmaintained.com/project/rubberduck-vba/rubberduck "Percentage of issues still open") 
+[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/rubberduck-vba/Rubberduck.svg)](http://isitmaintained.com/project/rubberduck-vba/Rubberduck "Average time to resolve an issue") [![Percentage of issues still open](http://isitmaintained.com/badge/open/rubberduck-vba/Rubberduck.svg)](http://isitmaintained.com/project/rubberduck-vba/Rubberduck "Percentage of issues still open")
 
 > **[rubberduckvba.com](http://rubberduckvba.com)** [Wiki](https://github.com/retailcoder/Rubberduck/wiki) [Rubberduck News](https://rubberduckvba.wordpress.com/) 
 > contact@rubberduckvba.com  

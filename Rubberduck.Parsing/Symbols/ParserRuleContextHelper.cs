@@ -3,6 +3,7 @@ using Antlr4.Runtime.Misc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Antlr4.Runtime.Tree;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -149,6 +150,24 @@ namespace Rubberduck.Parsing.Symbols
                 }
             }
             return descendents;
+
+		public static IEnumerable<IParseTree> GetDescendents(IParseTree context)
+        {
+            if (context == null)
+            {
+                yield break;
+            }
+
+            for (var index = 0; index < context.ChildCount; index++)
+            {
+                var child = context.GetChild(index);
+                yield return child;
+
+                foreach (var node in GetDescendents(child))
+                {
+                    yield return node;
+                }
+            }
         }
     }
 }

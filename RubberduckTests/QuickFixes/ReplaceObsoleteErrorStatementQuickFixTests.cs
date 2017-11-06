@@ -16,31 +16,33 @@ namespace RubberduckTests.QuickFixes
         public void ObsoleteCommentSyntax_QuickFixWorks()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
     Error 91
 End Sub";
 
             const string expectedCode =
-@"Sub Foo()
+                @"Sub Foo()
     Err.Raise 91
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ObsoleteErrorSyntaxInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new ObsoleteErrorSyntaxInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new ReplaceObsoleteErrorStatementQuickFix(state).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                new ReplaceObsoleteErrorStatementQuickFix(state).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
         [TestMethod]
         [TestCategory("QuickFixes")]
         public void ObsoleteCommentSyntax_QuickFixWorks_ProcNamedError()
         {
             const string inputCode =
-@"Sub Error(val as Integer)
+                @"Sub Error(val as Integer)
 End Sub
 
 Sub Foo()
@@ -48,7 +50,7 @@ Sub Foo()
 End Sub";
 
             const string expectedCode =
-@"Sub Error(val as Integer)
+                @"Sub Error(val as Integer)
 End Sub
 
 Sub Foo()
@@ -56,14 +58,16 @@ Sub Foo()
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ObsoleteErrorSyntaxInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new ObsoleteErrorSyntaxInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new ReplaceObsoleteErrorStatementQuickFix(state).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                new ReplaceObsoleteErrorStatementQuickFix(state).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
         [TestMethod]
@@ -71,26 +75,28 @@ End Sub";
         public void ObsoleteCommentSyntax_QuickFixWorks_UpdateCommentHasContinuation()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
     Error _
     91
 End Sub";
 
             const string expectedCode =
-@"Sub Foo()
+                @"Sub Foo()
     Err.Raise _
     91
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ObsoleteErrorSyntaxInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new ObsoleteErrorSyntaxInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new ReplaceObsoleteErrorStatementQuickFix(state).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                new ReplaceObsoleteErrorStatementQuickFix(state).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
 
@@ -99,24 +105,26 @@ End Sub";
         public void ObsoleteCommentSyntax_QuickFixWorks_UpdateComment_LineHasCode()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
     Dim foo: Error 91
 End Sub";
 
             const string expectedCode =
-@"Sub Foo()
+                @"Sub Foo()
     Dim foo: Err.Raise 91
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ObsoleteErrorSyntaxInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new ObsoleteErrorSyntaxInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            new ReplaceObsoleteErrorStatementQuickFix(state).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                new ReplaceObsoleteErrorStatementQuickFix(state).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
     }
 }

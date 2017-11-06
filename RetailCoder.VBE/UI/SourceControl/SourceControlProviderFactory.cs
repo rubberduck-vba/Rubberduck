@@ -8,5 +8,6 @@ namespace Rubberduck.UI.SourceControl
         ISourceControlProvider CreateProvider(IVBProject project);
         ISourceControlProvider CreateProvider(IVBProject project, IRepository repository);
         ISourceControlProvider CreateProvider(IVBProject project, IRepository repository, SecureCredentials secureCredentials);
+        void Release(ISourceControlProvider provider);
     }
 }

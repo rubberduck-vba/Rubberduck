@@ -37,7 +37,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             var folderAnnotation = $"'@Folder(\"{GetFolder(node)}\")";
 
             var newComponent = components.Add(type);
-            newComponent.CodeModule.AddFromString(folderAnnotation);
+            newComponent.CodeModule.InsertLines(1, folderAnnotation);
         }
 
         private Declaration GetDeclaration(CodeExplorerItemViewModel node)

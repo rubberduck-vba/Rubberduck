@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -865,5 +865,26 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   </data>
   <data name="ReplaceObsoleteErrorStatementQuickFix" xml:space="preserve">
     <value>Replace 'Error' with 'Err.Raise'</value>
+  </data>
+  <data name="BooleanAssignedInIfElseInspectionMeta" xml:space="preserve">
+    <value>A member is assigned True/False in different branches of an if statement with no other statements in the conditional. Use the condition directly to the member instead.</value>
+  </data>
+  <data name="BooleanAssignedInIfElseInspectionName" xml:space="preserve">
+    <value>Boolean literal assignment in conditional</value>
+  </data>
+  <data name="BooleanAssignedInIfElseInspectionResultFormat" xml:space="preserve">
+    <value>Boolean literal '{0}' assigned in conditional</value>
+  </data>
+  <data name="ReplaceIfElseWithConditionalStatementQuickFix" xml:space="preserve">
+    <value>Replace If/Else with single assignment</value>
+  </data>
+  <data name="EmptyModuleInspectionName" xml:space="preserve">
+    <value>Empty module</value>
+  </data>
+  <data name="EmptyModuleInspectionMeta" xml:space="preserve">
+    <value>Empty modules and classes either point to not yet implemented functionality or represent unnecessary baggage that can hurt the maintainability of a project.</value>
+  </data>
+  <data name="EmptyModuleInspectionResultFormat" xml:space="preserve">
+    <value>Module/class {0} is empty.</value>
   </data>
 </root>

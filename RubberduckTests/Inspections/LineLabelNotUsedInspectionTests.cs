@@ -30,12 +30,14 @@ buzz: Beep   'Line-label and instruction
 End Sub
 ";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new LineLabelNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new LineLabelNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(5, inspectionResults.Count());
+                Assert.AreEqual(5, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -43,16 +45,18 @@ End Sub
         public void LabelNotUsed_ReturnsResult()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
 label1:
 End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new LineLabelNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new LineLabelNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(1, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -60,17 +64,19 @@ End Sub";
         public void LabelNotUsed_ReturnsResult_MultipleLabels()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
 label1:
 label2:
 End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new LineLabelNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new LineLabelNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(2, inspectionResults.Count());
+                Assert.AreEqual(2, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -78,17 +84,19 @@ End Sub";
         public void GivenGoToStatement_LabelUsed_YieldsNoResult()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
 label1:
     GoTo label1
 End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new LineLabelNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new LineLabelNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(0, inspectionResults.Count());
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -96,17 +104,19 @@ End Sub";
         public void GivenGoToStatement_GoToBeforeLabel_LabelUsed_YieldsNoResult()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
     GoTo label1
 label1:
 End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new LineLabelNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new LineLabelNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(0, inspectionResults.Count());
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -114,19 +124,21 @@ End Sub";
         public void GivenMultipleGoToStatements_BothLabelsUsed_YieldsNoResult()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
 label1:
     GoTo label1
 label2:
     Goto label2
 End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new LineLabelNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new LineLabelNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(0, inspectionResults.Count());
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -134,7 +146,7 @@ End Sub";
         public void LabelNotUsed_ReturnsResult_WithUsedLabelThatDoesNotReturnResult()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
     GoTo Label1:
 
 label2:
@@ -145,12 +157,14 @@ End Sub
 Sub Goo(ByVal arg1 As Integer)
 End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new LineLabelNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new LineLabelNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(1, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -158,16 +172,18 @@ End Sub";
         public void LabelNotUsed_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
 '@Ignore label1
 End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new LineLabelNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new LineLabelNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.IsFalse(inspectionResults.Any());
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
 
         [TestMethod]

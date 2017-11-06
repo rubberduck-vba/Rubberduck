@@ -2,22 +2,6 @@
 
 ## Software & Libraries
 
-### [Ninject](http://www.ninject.org)
-
-**What is Ninject?**
-
-> *Ninject is a lightning-fast, ultra-lightweight dependency injector for .NET applications. It helps you split your application into a collection of loosely-coupled, highly-cohesive pieces, and then glue them back together in a flexible manner. By using Ninject to support your software's architecture, your code will become easier to write, reuse, test, and modify.*
-
-If you're into *Dependency Injection* and *Inversion of Control*, you'll appreciate Ninject's simple configuration API. Other than in the very specialized startup code, Ninject seems absent of Rubberduck's code base, which indeed knows nothing of Ninject or any IoC framework: don't let it fool you - Ninject is responsible for instantiating essentially.. every single class in the solution.
-
-Rubberduck uses the following Ninject [extensions](http://www.ninject.org/extensions):
-
- - Ninject.Extensions.Conventions
- - Ninject.Extensions.Factory
- - Ninject.Extensions.Interception
- - Ninject.Extensions.Interception.DynamicProxy
- - Ninject.Extensions.NamedScope
-
 ### [ANTLR](http://www.antlr.org/)
 
 As of v1.2, Rubberduck is empowered by the awesomeness of ANTLR.

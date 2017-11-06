@@ -29,12 +29,18 @@ End Sub";
             var vbe = builder.Build().Object;
 
             var parser = MockParser.Create(vbe);
-            var model = new TestExplorerModel(vbe, parser.State);
+            using (var state = parser.State)
+            {
+                var model = new TestExplorerModel(vbe, state);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-            
-            Assert.AreEqual(1, model.Tests.Count);
+                parser.Parse(new CancellationTokenSource());
+                if (state.Status >= ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
+
+                Assert.AreEqual(1, model.Tests.Count);
+            }
         }
 
         [TestMethod]
@@ -53,20 +59,28 @@ End Sub";
 
             var vbe = builder.Build().Object;
             var parser = MockParser.Create(vbe);
+            using (var state = parser.State)
+            {
+                var model = new TestExplorerModel(vbe, state);
 
-            var model = new TestExplorerModel(vbe, parser.State);
+                parser.Parse(new CancellationTokenSource());
+                if (state.Status >= ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-            
-            Assert.AreEqual(2, model.Tests.Count);
+                Assert.AreEqual(2, model.Tests.Count);
 
-            project.RemoveComponent(project.MockComponents[1]);
-            
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-            
-            Assert.AreEqual(1, model.Tests.Count);
+                project.RemoveComponent(project.MockComponents[1]);
+
+                parser.Parse(new CancellationTokenSource());
+                if (state.Status >= ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
+
+                Assert.AreEqual(1, model.Tests.Count);
+            }
         }
 
         [TestMethod]
@@ -84,16 +98,21 @@ End Sub";
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
             var parser = MockParser.Create(vbe);
+            using (var state = parser.State)
+            {
+                var model = new TestExplorerModel(vbe, state);
 
-            var model = new TestExplorerModel(vbe, parser.State);
+                parser.Parse(new CancellationTokenSource());
+                if (state.Status >= ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                model.Tests.First().Result = new TestResult(TestOutcome.Succeeded);
+                model.AddExecutedTest(model.Tests.First());
 
-            model.Tests.First().Result = new TestResult(TestOutcome.Succeeded);
-            model.AddExecutedTest(model.Tests.First());
-
-            Assert.AreEqual(model.ProgressBarColor, Colors.LimeGreen);
+                Assert.AreEqual(model.ProgressBarColor, Colors.LimeGreen);
+            }
         }
 
         [TestMethod]
@@ -110,16 +129,21 @@ End Sub";
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
             var parser = MockParser.Create(vbe);
+            using (var state = parser.State)
+            {
+                var model = new TestExplorerModel(vbe, parser.State);
 
-            var model = new TestExplorerModel(vbe, parser.State);
+                parser.Parse(new CancellationTokenSource());
+                if (state.Status >= ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                model.Tests.First().Result = new TestResult(TestOutcome.Failed);
+                model.AddExecutedTest(model.Tests.First());
 
-            model.Tests.First().Result = new TestResult(TestOutcome.Failed);
-            model.AddExecutedTest(model.Tests.First());
-
-            Assert.AreEqual(model.ProgressBarColor, Colors.Red);
+                Assert.AreEqual(model.ProgressBarColor, Colors.Red);
+            }
         }
 
         [TestMethod]
@@ -136,16 +160,21 @@ End Sub";
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
             var parser = MockParser.Create(vbe);
+            using (var state = parser.State)
+            {
+                var model = new TestExplorerModel(vbe, state);
 
-            var model = new TestExplorerModel(vbe, parser.State);
+                parser.Parse(new CancellationTokenSource());
+                if (state.Status >= ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                model.Tests.First().Result = new TestResult(TestOutcome.Inconclusive);
+                model.AddExecutedTest(model.Tests.First());
 
-            model.Tests.First().Result = new TestResult(TestOutcome.Inconclusive);
-            model.AddExecutedTest(model.Tests.First());
-
-            Assert.AreEqual(model.ProgressBarColor, Colors.Gold);
+                Assert.AreEqual(model.ProgressBarColor, Colors.Gold);
+            }
         }
 
         [TestMethod]
@@ -174,23 +203,28 @@ End Sub";
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
             var parser = MockParser.Create(vbe);
+            using (var state = parser.State)
+            {
+                var model = new TestExplorerModel(vbe, state);
 
-            var model = new TestExplorerModel(vbe, parser.State);
+                parser.Parse(new CancellationTokenSource());
+                if (state.Status >= ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                model.Tests[0].Result = new TestResult(TestOutcome.Succeeded);
+                model.Tests[1].Result = new TestResult(TestOutcome.Inconclusive);
+                model.Tests[2].Result = new TestResult(TestOutcome.Failed);
+                model.Tests[3].Result = new TestResult(TestOutcome.Ignored);
 
-            model.Tests[0].Result = new TestResult(TestOutcome.Succeeded);
-            model.Tests[1].Result = new TestResult(TestOutcome.Inconclusive);
-            model.Tests[2].Result = new TestResult(TestOutcome.Failed);
-            model.Tests[3].Result = new TestResult(TestOutcome.Ignored);
+                model.AddExecutedTest(model.Tests[0]);
+                model.AddExecutedTest(model.Tests[1]);
+                model.AddExecutedTest(model.Tests[2]);
+                model.AddExecutedTest(model.Tests[3]);
 
-            model.AddExecutedTest(model.Tests[0]);
-            model.AddExecutedTest(model.Tests[1]);
-            model.AddExecutedTest(model.Tests[2]);
-            model.AddExecutedTest(model.Tests[3]);
-
-            Assert.AreEqual(model.ProgressBarColor, Colors.Red);
+                Assert.AreEqual(model.ProgressBarColor, Colors.Red);
+            }
         }
 
         [TestMethod]
@@ -215,21 +249,26 @@ End Sub";
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
             var parser = MockParser.Create(vbe);
+            using (var state = parser.State)
+            {
+                var model = new TestExplorerModel(vbe, state);
 
-            var model = new TestExplorerModel(vbe, parser.State);
+                parser.Parse(new CancellationTokenSource());
+                if (state.Status >= ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                model.Tests[0].Result = new TestResult(TestOutcome.Succeeded);
+                model.Tests[1].Result = new TestResult(TestOutcome.Inconclusive);
+                model.Tests[2].Result = new TestResult(TestOutcome.Ignored);
 
-            model.Tests[0].Result = new TestResult(TestOutcome.Succeeded);
-            model.Tests[1].Result = new TestResult(TestOutcome.Inconclusive);
-            model.Tests[2].Result = new TestResult(TestOutcome.Ignored);
+                model.AddExecutedTest(model.Tests[0]);
+                model.AddExecutedTest(model.Tests[1]);
+                model.AddExecutedTest(model.Tests[2]);
 
-            model.AddExecutedTest(model.Tests[0]);
-            model.AddExecutedTest(model.Tests[1]);
-            model.AddExecutedTest(model.Tests[2]);
-
-            Assert.AreEqual(model.ProgressBarColor, Colors.Gold);
+                Assert.AreEqual(model.ProgressBarColor, Colors.Gold);
+            }
         }
 
         [TestMethod]
@@ -250,19 +289,24 @@ End Sub";
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
             var parser = MockParser.Create(vbe);
+            using (var state = parser.State)
+            {
+                var model = new TestExplorerModel(vbe, state);
 
-            var model = new TestExplorerModel(vbe, parser.State);
+                parser.Parse(new CancellationTokenSource());
+                if (state.Status >= ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                model.Tests[0].Result = new TestResult(TestOutcome.Succeeded);
+                model.Tests[1].Result = new TestResult(TestOutcome.Ignored);
 
-            model.Tests[0].Result = new TestResult(TestOutcome.Succeeded);
-            model.Tests[1].Result = new TestResult(TestOutcome.Ignored);
+                model.AddExecutedTest(model.Tests[0]);
+                model.AddExecutedTest(model.Tests[1]);
 
-            model.AddExecutedTest(model.Tests[0]);
-            model.AddExecutedTest(model.Tests[1]);
-
-            Assert.AreEqual(model.ProgressBarColor, Colors.LimeGreen);
+                Assert.AreEqual(model.ProgressBarColor, Colors.LimeGreen);
+            }
         }
 
         [TestMethod]
@@ -279,18 +323,23 @@ End Sub";
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
             var parser = MockParser.Create(vbe);
+            using (var state = parser.State)
+            {
+                var model = new TestExplorerModel(vbe, state);
 
-            var model = new TestExplorerModel(vbe, parser.State);
+                parser.Parse(new CancellationTokenSource());
+                if (state.Status >= ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                Assert.AreEqual(0, model.ExecutedCount);
 
-            Assert.AreEqual(0, model.ExecutedCount);
+                model.Tests[0].Result = new TestResult(TestOutcome.Succeeded);
+                model.AddExecutedTest(model.Tests[0]);
 
-            model.Tests[0].Result = new TestResult(TestOutcome.Succeeded);
-            model.AddExecutedTest(model.Tests[0]);
-
-            Assert.AreEqual(1, model.ExecutedCount);
+                Assert.AreEqual(1, model.ExecutedCount);
+            }
         }
 
         [TestMethod]
@@ -307,18 +356,23 @@ End Sub";
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
             var parser = MockParser.Create(vbe);
+            using (var state = parser.State)
+            {
+                var model = new TestExplorerModel(vbe, state);
 
-            var model = new TestExplorerModel(vbe, parser.State);
+                parser.Parse(new CancellationTokenSource());
+                if (state.Status >= ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                Assert.AreEqual(0, model.LastRun.Count);
 
-            Assert.AreEqual(0, model.LastRun.Count);
+                model.Tests[0].Result = new TestResult(TestOutcome.Succeeded);
+                model.AddExecutedTest(model.Tests[0]);
 
-            model.Tests[0].Result = new TestResult(TestOutcome.Succeeded);
-            model.AddExecutedTest(model.Tests[0]);
-
-            Assert.AreEqual(1, model.LastRun.Count);
+                Assert.AreEqual(1, model.LastRun.Count);
+            }
         }
 
         [TestMethod]
@@ -335,20 +389,25 @@ End Sub";
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
             var parser = MockParser.Create(vbe);
+            using (var state = parser.State)
+            {
+                var model = new TestExplorerModel(vbe, state);
 
-            var model = new TestExplorerModel(vbe, parser.State);
+                parser.Parse(new CancellationTokenSource());
+                if (state.Status >= ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                model.Tests[0].Result = new TestResult(TestOutcome.Succeeded);
+                model.AddExecutedTest(model.Tests[0]);
 
-            model.Tests[0].Result = new TestResult(TestOutcome.Succeeded);
-            model.AddExecutedTest(model.Tests[0]);
+                Assert.AreEqual(1, model.LastRun.Count);
 
-            Assert.AreEqual(1, model.LastRun.Count);
+                model.ClearLastRun();
 
-            model.ClearLastRun();
-
-            Assert.AreEqual(0, model.LastRun.Count);
+                Assert.AreEqual(0, model.LastRun.Count);
+            }
         }
 
         private const string RawInput = @"Option Explicit

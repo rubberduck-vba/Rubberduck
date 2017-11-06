@@ -62,11 +62,13 @@
     <Compile Include="Abstract\ParseTreeInspectionBase.cs" />
     <Compile Include="Concrete\ApplicationWorksheetFunctionInspection.cs" />
     <Compile Include="Concrete\AssignedByValParameterInspection.cs" />
+    <Compile Include="Concrete\EmptyModuleInspection.cs" />
     <Compile Include="Concrete\EmptyBlockInspectionListenerBase.cs" />
     <Compile Include="Concrete\EmptyCaseBlockInspection.cs" />
     <Compile Include="Concrete\EmptyDoWhileBlockInspection.cs" />
     <Compile Include="Concrete\EmptyForEachBlockInspection.cs" />
     <Compile Include="Concrete\EmptyForLoopBlockInspection.cs" />
+    <Compile Include="Concrete\BooleanAssignedInIfElseInspection.cs" />
     <Compile Include="Concrete\EmptyWhileWendBlockInspection.cs" />
     <Compile Include="Concrete\RangeClause.cs" />
     <Compile Include="Concrete\RangeClauseExtent.cs" />
@@ -119,6 +121,7 @@
     <Compile Include="Concrete\ProcedureCanBeWrittenAsFunctionInspection.cs" />
     <Compile Include="Concrete\ProcedureNotUsedInspection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QuickFixes\ReplaceIfElseWithConditionalStatementQuickFix.cs" />
     <Compile Include="QuickFixes\AddIdentifierToWhiteListQuickFix.cs" />
     <Compile Include="QuickFixes\ApplicationWorksheetFunctionQuickFix.cs" />
     <Compile Include="QuickFixes\AssignedByValParameterMakeLocalCopyQuickFix.cs" />
@@ -205,6 +208,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />

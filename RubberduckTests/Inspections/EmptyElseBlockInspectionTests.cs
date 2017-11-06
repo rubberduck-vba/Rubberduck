@@ -15,7 +15,7 @@ namespace RubberduckTests.Inspections
         public void InspectionType()
         {
             var inspection = new EmptyElseBlockInspection(null);
-            var expectedInspection = CodeInspectionType.CodeQualityIssues;
+            var expectedInspection = CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
             Assert.AreEqual(expectedInspection, inspection.InspectionType);
         }
@@ -35,19 +35,21 @@ namespace RubberduckTests.Inspections
         public void EmptyElseBlock_DoesntFireOnEmptyIfBlock()
         {
             const string inputcode =
-@"Sub Foo()
+                @"Sub Foo()
     If True Then
     EndIf
 End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputcode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new EmptyElseBlockInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            const int expectedCount = 0;
+                var inspection = new EmptyElseBlockInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                const int expectedCount = 0;
 
-            Assert.AreEqual(expectedCount, actualResults.Count());
+                Assert.AreEqual(expectedCount, actualResults.Count());
+            }
         }
 
         [TestMethod]
@@ -55,21 +57,23 @@ End Sub";
         public void EmptyElseBlock_HasNoContent()
         {
             const string inputcode =
-@"Sub Foo()
+                @"Sub Foo()
     If True Then
     Else
     End If
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputcode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new EmptyElseBlockInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            const int expectedCount = 1;
+                var inspection = new EmptyElseBlockInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                const int expectedCount = 1;
 
-            Assert.AreEqual(expectedCount, actualResults.Count());
+                Assert.AreEqual(expectedCount, actualResults.Count());
+            }
         }
 
         [TestMethod]
@@ -77,21 +81,23 @@ End Sub";
         public void EmptyElseBlock_HasQuoteComment()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
     If True Then
     Else
         'Some Comment
     End If
 End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new EmptyElseBlockInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            const int expectedCount = 1;
+                var inspection = new EmptyElseBlockInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                const int expectedCount = 1;
 
-            Assert.AreEqual(expectedCount, actualResults.Count());
+                Assert.AreEqual(expectedCount, actualResults.Count());
+            }
         }
 
         [TestMethod]
@@ -99,7 +105,7 @@ End Sub";
         public void EmptyElseBlock_HasRemComment()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
     If True Then
     Else
         Rem Some Comment
@@ -107,14 +113,16 @@ End Sub";
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new EmptyElseBlockInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            const int expectedCount = 1;
+                var inspection = new EmptyElseBlockInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                const int expectedCount = 1;
 
-            Assert.AreEqual(expectedCount, actualResults.Count());
+                Assert.AreEqual(expectedCount, actualResults.Count());
+            }
         }
 
         [TestMethod]
@@ -122,7 +130,7 @@ End Sub";
         public void EmptyElseBlock_HasVariableDeclaration()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
     If True Then
     Else
         Dim d
@@ -130,14 +138,16 @@ End Sub";
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new EmptyElseBlockInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            const int expectedCount = 1;
+                var inspection = new EmptyElseBlockInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                const int expectedCount = 1;
 
-            Assert.AreEqual(expectedCount, actualResults.Count());
+                Assert.AreEqual(expectedCount, actualResults.Count());
+            }
         }
 
         [TestMethod]
@@ -145,7 +155,7 @@ End Sub";
         public void EmptyElseBlock_HasConstDeclaration()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
     If True Then
     Else
         Const c = 0
@@ -153,14 +163,16 @@ End Sub";
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new EmptyElseBlockInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            const int expectedCount = 1;
+                var inspection = new EmptyElseBlockInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                const int expectedCount = 1;
 
-            Assert.AreEqual(expectedCount, actualResults.Count());
+                Assert.AreEqual(expectedCount, actualResults.Count());
+            }
         }
 
         [TestMethod]
@@ -168,7 +180,7 @@ End Sub";
         public void EmptyElseBlock_HasWhitespace()
         {
             const string inputcode =
-@"Sub Foo()
+                @"Sub Foo()
     If True Then
     Else
     
@@ -177,14 +189,16 @@ End Sub";
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputcode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new EmptyElseBlockInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            const int expectedCount = 1;
+                var inspection = new EmptyElseBlockInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                const int expectedCount = 1;
 
-            Assert.AreEqual(expectedCount, actualResults.Count());
+                Assert.AreEqual(expectedCount, actualResults.Count());
+            }
         }
 
         [TestMethod]
@@ -192,7 +206,7 @@ End Sub";
         public void EmptyElseBlock_HasDeclarationStatement()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
     If True Then
     Else
         Dim d
@@ -200,14 +214,16 @@ End Sub";
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new EmptyElseBlockInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            const int expectedCount = 1;
+                var inspection = new EmptyElseBlockInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                const int expectedCount = 1;
 
-            Assert.AreEqual(expectedCount, actualResults.Count());
+                Assert.AreEqual(expectedCount, actualResults.Count());
+            }
         }
 
         [TestMethod]
@@ -215,7 +231,7 @@ End Sub";
         public void EmptyElseBlock_HasExecutableStatement()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
     If True Then
     Else
         Dim d
@@ -224,14 +240,15 @@ End Sub";
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new EmptyElseBlockInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                const int expectedCount = 0;
 
-            var inspection = new EmptyElseBlockInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            const int expectedCount = 0;
-
-            Assert.AreEqual(expectedCount, actualResults.Count());
+                Assert.AreEqual(expectedCount, actualResults.Count());
+            }
         }
     }
 }
