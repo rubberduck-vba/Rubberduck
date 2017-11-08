@@ -192,13 +192,25 @@ namespace Rubberduck
             GlobalDiagnosticsContext.Set("RubberduckVersion", version.ToString());
             var headers = new List<string>
             {
-                string.Format("\r\n\tRubberduck version {0} loading:", version),
-                string.Format("\tOperating System: {0} {1}", Environment.OSVersion.VersionString, Environment.Is64BitOperatingSystem ? "x64" : "x86"),
-                string.Format("\tHost Product: {0} {1}", Application.ProductName, Environment.Is64BitProcess ? "x64" : "x86"),
-                string.Format("\tHost Version: {0}", Application.ProductVersion),
-                string.Format("\tHost Executable: {0}", Path.GetFileName(Application.ExecutablePath)),
+                $"\r\n\tRubberduck version {version} loading:",
+                $"\tOperating System: {Environment.OSVersion.VersionString} {GetBitness(Environment.Is64BitOperatingSystem)}",
+                $"\tHost Product: {Application.ProductName} {GetBitness(Environment.Is64BitProcess)}",
+                $"\tHost Version: {Application.ProductVersion}",
+                $"\tHost Executable: {Path.GetFileName(Application.ExecutablePath)}",
             };
             LogLevelHelper.SetDebugInfo(string.Join(Environment.NewLine, headers));
+
+            string GetBitness(bool is64Bit)
+            {
+                if (is64Bit)
+                {
+                    return "x64";
+                }
+                else
+                {
+                    return "x86";
+                }
+            }
         }
 
         private bool _disposed;

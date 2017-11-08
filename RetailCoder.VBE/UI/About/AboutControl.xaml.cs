@@ -1,5 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Input;
+using System;
+using Application = System.Windows.Forms.Application;
 
 namespace Rubberduck.UI.About
 {
@@ -22,15 +24,34 @@ namespace Rubberduck.UI.About
             }
         }
 
-        private void CopyVersionInfoToClipboard()
-        {
-            Clipboard.SetText(this.Version.Text);
-            System.Windows.MessageBox.Show("Version information copied to clipboard.", "Copy successfull");
-        }
-
         private void CopyVersionInfo_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             CopyVersionInfoToClipboard();
+        }
+
+        private void CopyVersionInfoToClipboard()
+        {
+            System.Text.StringBuilder sb = new System.Text.StringBuilder();
+            sb.AppendLine($"Rubberduck version: {this.Version.Text}");
+            sb.AppendLine($"Operating System: {Environment.OSVersion.VersionString}, {GetBitness(Environment.Is64BitOperatingSystem)}");
+            sb.AppendLine($"Host Product: {Application.ProductName} {GetBitness(Environment.Is64BitProcess)}");
+            sb.AppendLine($"Host Version: {Application.ProductVersion}");
+            sb.AppendFormat($"Host Executable: {System.IO.Path.GetFileName(Application.ExecutablePath)}");
+
+            Clipboard.SetText(sb.ToString());
+            System.Windows.MessageBox.Show("Version information copied to clipboard.", "Copy successfull");
+
+            string GetBitness(bool is64Bit)
+            {
+                if (is64Bit)
+                {
+                    return "x64";
+                }
+                else
+                {
+                    return "x86";
+                }
+            }
         }
     }
 }
