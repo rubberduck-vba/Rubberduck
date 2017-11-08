@@ -209,9 +209,16 @@ namespace Rubberduck.UI.SourceControl
 
             UiDispatcher.InvokeAsync(() =>
             {
-                foreach (var tab in _tabItems)
+                try
                 {
-                    tab.ViewModel.ResetView();
+                    foreach (var tab in _tabItems)
+                    {
+                        tab.ViewModel.ResetView();
+                    }
+                }
+                catch (Exception exception)
+                {
+                    Logger.Error(exception, "Exception thrown while trying to reset the source control view on the UI thread.");
                 }
             });
         }
@@ -901,25 +908,33 @@ namespace Rubberduck.UI.SourceControl
 
         private void Refresh()
         {
-            _fileSystemWatcher.EnableRaisingEvents = false;
-            Logger.Trace("FileSystemWatcher.EnableRaisingEvents is disabled.");
-
-            if(Provider == null)
+            try
             {
-                OpenRepoAssignedToProject();
+                _fileSystemWatcher.EnableRaisingEvents = false;
+                Logger.Trace("FileSystemWatcher.EnableRaisingEvents is disabled.");
+
+                if (Provider == null)
+                {
+                    OpenRepoAssignedToProject();
+                }
+                else
+                {
+                    foreach (var tab in TabItems)
+                    {
+                        tab.ViewModel.RefreshView();
+                    }
+
+                    if (Directory.Exists(Provider.CurrentRepository.LocalLocation))
+                    {
+                        _fileSystemWatcher.EnableRaisingEvents = true;
+                        Logger.Trace("FileSystemWatcher.EnableRaisingEvents is enabled.");
+                    }
+                }
             }
-            else
+            catch (Exception exception)
             {
-                foreach (var tab in TabItems)
-                {
-                    tab.ViewModel.RefreshView();
-                }
-
-                if(Directory.Exists(Provider.CurrentRepository.LocalLocation))
-                {
-                    _fileSystemWatcher.EnableRaisingEvents = true;
-                    Logger.Trace("FileSystemWatcher.EnableRaisingEvents is enabled.");
-                }
+                //We catch and log everything since this generally gets dispatched to the UI thread.
+                Logger.Error(exception, "Exception while trying to refresh th source control view.");
             }
         }
 
