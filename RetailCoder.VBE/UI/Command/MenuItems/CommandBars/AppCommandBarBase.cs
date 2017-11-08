@@ -15,7 +15,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
         private readonly string _name;
         private readonly CommandBarPosition _position;
         private readonly IDictionary<ICommandMenuItem, ICommandBarControl> _items;
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         protected AppCommandBarBase(string name, CommandBarPosition position, IEnumerable<ICommandMenuItem> items)
         {
@@ -26,10 +26,18 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
 
         protected ICommandMenuItem FindChildByTag(string tag)
         {
-            var child = _items.FirstOrDefault(kvp => kvp.Value != null && kvp.Value.Tag == tag);
-            return Equals(child, default(KeyValuePair<ICommandMenuItem, ICommandBarControl>)) 
-                ? null 
-                : child.Key;
+            try
+            {
+                var child = _items.FirstOrDefault(kvp => kvp.Value != null && kvp.Value.Tag == tag);
+                return Equals(child, default(KeyValuePair<ICommandMenuItem, ICommandBarControl>))
+                    ? null
+                    : child.Key;
+            }
+            catch (COMException exception)
+            {
+                Logger.Error(exception,$"COMException while finding child with tag '{tag}'.");
+            }
+            return null;
         }
 
         public void Localize()
@@ -39,34 +47,52 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
                 return;
             }
 
-            foreach (var kvp in _items.Where(kv => kv.Key != null && kv.Value != null))
+            foreach (var kvp in _items.Where(kv => kv.Key != null && kv.Value != null && !kv.Value.IsWrappingNullReference))
             {
                 try
                 {
                     var item = kvp;
-                    UiDispatcher.Invoke(() =>
-                    {
-                        item.Value.Caption = item.Key.Caption.Invoke();
-                        item.Value.TooltipText = item.Key.ToolTipText.Invoke();
-                    });
+                    UiDispatcher.Invoke(() => LocalizeInternal(item, kvp));
 
                 }
                 catch (Exception e)
                 {
-                    Logger.Error(e, $"Assignment of {kvp.Value.GetType().Name}.Caption or .TooltipText for {kvp.Key.GetType().Name} threw an exception.");
+                    Logger.Error(e, $"Failed to dispatch assignment of {kvp.Value.GetType().Name}.Caption and .TooltipText for {kvp.Key.GetType().Name} to the UI thread.");
                 }
+            }
+        }
+
+        private static void LocalizeInternal(KeyValuePair<ICommandMenuItem, ICommandBarControl> item, KeyValuePair<ICommandMenuItem, ICommandBarControl> kvp)
+        {
+            try
+            {
+                item.Value.Caption = item.Key.Caption.Invoke();
+                item.Value.TooltipText = item.Key.ToolTipText.Invoke();
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e,
+                    $"Assignment of {kvp.Value.GetType().Name}.Caption or .TooltipText for {kvp.Key.GetType().Name} threw an exception.");
             }
         }
 
         public virtual void Initialize()
         {
-            if (Parent == null)
+            if (Parent == null  || Parent.IsWrappingNullReference)
             {
                 return;
             }
 
-            Item = Parent.Add(_name, _position);
-            Item.IsVisible = true;
+            try
+            {
+                Item = Parent.Add(_name, _position);
+                Item.IsVisible = true;
+            }
+            catch (COMException exception)
+            {
+                Logger.Error(exception, $"Failed to add the command bar {_name}.");
+                return;
+            }
             foreach (var item in _items.Keys.OrderBy(item => item.DisplayOrder))
             {
                 try
@@ -109,7 +135,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
 
         public void EvaluateCanExecute(RubberduckParserState state)
         {
-            foreach (var kvp in _items.Where(kv => kv.Key != null && kv.Value != null))
+            foreach (var kvp in _items.Where(kv => kv.Key != null && kv.Value != null && !kv.Value.IsWrappingNullReference))
             {
                 var commandItem = kvp.Key;
                 var canExecute = false;
@@ -122,10 +148,17 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
                 {
                     Logger.Error(e, $"{commandItem?.GetType().Name ?? nameof(ICommandMenuItem)}.EvaluateCanExecute(RubberduckParserState) threw an exception.");
                 }
-                kvp.Value.IsEnabled = canExecute;
-                if (commandItem?.HiddenWhenDisabled ?? false)
+                try
                 {
-                    kvp.Value.IsVisible = canExecute;
+                    kvp.Value.IsEnabled = canExecute;
+                    if (commandItem?.HiddenWhenDisabled ?? false)
+                    {
+                        kvp.Value.IsVisible = canExecute;
+                    }
+                }
+                catch (COMException exception)
+                {
+                    Logger.Error(exception,$"COMException while trying to set IsEnabled and IsVisible on {commandItem?.GetType().Name ?? nameof(ICommandMenuItem)}");
                 }
             }
         }
@@ -135,11 +168,18 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
 
         public void RemoveCommandBar()
         {
-            Logger.Debug("Removing commandbar.");
-            RemoveChildren();
-            Item?.Delete();
-            Item = null;
-            Parent = null;
+            try
+            {
+                Logger.Debug("Removing commandbar.");
+                RemoveChildren();
+                Item?.Delete();
+                Item = null;
+                Parent = null;
+            }
+            catch (COMException exception)
+            {
+                Logger.Error(exception, "COM exception while trying to delee the commandbar");
+            }
         }
 
         private void RemoveChildren()
@@ -169,7 +209,16 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
 
         private void child_Click(object sender, CommandBarButtonClickEventArgs e)
         {
-            var item = _items.Select(kvp => kvp.Key).SingleOrDefault(menu => menu.GetType().FullName == e.Control.Tag);
+            ICommandMenuItem item;
+            try
+            {
+                item = _items.Select(kvp => kvp.Key).SingleOrDefault(menu => menu.GetType().FullName == e.Control.Tag);
+            }
+            catch (COMException exception)
+            {
+                Logger.Error(exception, "COM exception finding command for a control.");
+                item = null;
+            }
             if (item == null)
             {
                 return;
