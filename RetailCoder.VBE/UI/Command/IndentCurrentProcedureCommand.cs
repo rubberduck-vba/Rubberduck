@@ -34,7 +34,7 @@ namespace Rubberduck.UI.Command
             _indenter.IndentCurrentProcedure();
             if (_state.Status >= ParserState.Ready || _state.Status == ParserState.Pending)
             {
-                _state.OnParseRequested(this, _vbe.ActiveCodePane.CodeModule.Parent);
+                _state.OnParseRequested(this);
             }
         }
     }

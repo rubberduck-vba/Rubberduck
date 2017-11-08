@@ -5,9 +5,10 @@ using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.Symbols.ParsingExceptions;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Mocks
 {
@@ -19,25 +20,27 @@ namespace RubberduckTests.Mocks
             _preprocessorFactory = preprocessorFactory;
         }
 
-        public IDictionary<Tuple<string, DeclarationType>, Attributes> Parse(IVBComponent component, CancellationToken token, out ITokenStream stream, out IParseTree tree)
+        public (IParseTree tree, ITokenStream tokenStream, IDictionary<Tuple<string, DeclarationType>, Attributes> attributes) Parse(QualifiedModuleName module, CancellationToken cancellationToken)
         {
-            var code = component.CodeModule.Content();
-            var type = component.Type == ComponentType.StandardModule
+            var code = module.Component.CodeModule.Content();
+            var type = module.ComponentType == ComponentType.StandardModule
                 ? DeclarationType.ProceduralModule
                 : DeclarationType.ClassModule;
             var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();
             var tokens = tokenStreamProvider.Tokens(code);
             var preprocessor = _preprocessorFactory();
-            preprocessor.PreprocessTokenStream(component.Name, tokens, token);
-            var listener = new AttributeListener(Tuple.Create(component.Name, type));
+            var preprocessingErrorListener = new PreprocessorExceptionErrorListener(module.ComponentName, ParsePass.AttributesPass);
+            preprocessor.PreprocessTokenStream(module.ComponentName, tokens, preprocessingErrorListener, cancellationToken);
+            var listener = new AttributeListener(Tuple.Create(module.ComponentName, type));
             // parse tree isn't usable for declarations because
             // line numbers are offset due to module header and attributes
             // (these don't show up in the VBE, that's why we're parsing an exported file)
 
-            tree = new VBAModuleParser().Parse(component.Name, tokens, new IParseTreeListener[] { listener }, new ExceptionErrorListener(), out stream);
+            var mainParseErrorListener = new MainParseExceptionErrorListener(module.ComponentName, ParsePass.AttributesPass);
+            var parseResults = new VBAModuleParser().Parse(module.Name, tokens, new IParseTreeListener[] { listener }, mainParseErrorListener);
 
-            token.ThrowIfCancellationRequested();
-            return listener.Attributes;
+            cancellationToken.ThrowIfCancellationRequested();
+            return (parseResults.tree, parseResults.tokenStream, listener.Attributes);
         }
     }
 }
