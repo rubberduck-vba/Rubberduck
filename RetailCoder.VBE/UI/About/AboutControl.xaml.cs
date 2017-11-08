@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 using System;
+using System.IO;
 using Application = System.Windows.Forms.Application;
 
 namespace Rubberduck.UI.About
@@ -31,27 +32,15 @@ namespace Rubberduck.UI.About
 
         private void CopyVersionInfoToClipboard()
         {
-            System.Text.StringBuilder sb = new System.Text.StringBuilder();
+            var sb = new System.Text.StringBuilder();
             sb.AppendLine($"Rubberduck version: {this.Version.Text}");
-            sb.AppendLine($"Operating System: {Environment.OSVersion.VersionString}, {GetBitness(Environment.Is64BitOperatingSystem)}");
-            sb.AppendLine($"Host Product: {Application.ProductName} {GetBitness(Environment.Is64BitProcess)}");
+            sb.AppendLine($"Operating System: {Environment.OSVersion.VersionString}, {(Environment.Is64BitOperatingSystem ? "x64" : "x86")}");
+            sb.AppendLine($"Host Product: {Application.ProductName} {(Environment.Is64BitProcess ? "x64" : "x86")}");
             sb.AppendLine($"Host Version: {Application.ProductVersion}");
-            sb.AppendFormat($"Host Executable: {System.IO.Path.GetFileName(Application.ExecutablePath)}");
+            sb.AppendFormat($"Host Executable: {Path.GetFileName(Application.ExecutablePath).ToUpper()}"); // .ToUpper() used to convert ExceL.EXE -> EXCEL.EXE
 
             Clipboard.SetText(sb.ToString());
             System.Windows.MessageBox.Show("Version information copied to clipboard.", "Copy successfull");
-
-            string GetBitness(bool is64Bit)
-            {
-                if (is64Bit)
-                {
-                    return "x64";
-                }
-                else
-                {
-                    return "x86";
-                }
-            }
         }
     }
 }
