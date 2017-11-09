@@ -3,23 +3,20 @@ using Rubberduck.Navigation.CodeMetrics;
 using RubberduckTests.Mocks;
 using RubberduckTests.Settings;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace RubberduckTests.Stats
 {
     [TestClass]
     public class ParseTreeMetricsAnalystTests
     {
-        private ParseTreeMetricsAnalyst cut;
+        private CodeMetricsAnalyst cut;
 
         [TestInitialize]
         public void Setup()
         {
-            cut = new ParseTreeMetricsAnalyst(IndenterSettingsTests.GetMockIndenterSettings());
+            cut = new CodeMetricsAnalyst(IndenterSettingsTests.GetMockIndenterSettings());
         }
 
         [TestMethod]

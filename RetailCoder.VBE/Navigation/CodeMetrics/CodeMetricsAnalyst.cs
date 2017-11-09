@@ -10,11 +10,11 @@ using Rubberduck.SmartIndenter;
 
 namespace Rubberduck.Navigation.CodeMetrics
 {
-    public class ParseTreeMetricsAnalyst : ICodeMetricsAnalyst
+    public class CodeMetricsAnalyst : ICodeMetricsAnalyst
     {
         private readonly IIndenterSettings indenterSettings;
     
-        public ParseTreeMetricsAnalyst(IIndenterSettings indenterSettings)
+        public CodeMetricsAnalyst(IIndenterSettings indenterSettings)
         {
             this.indenterSettings = indenterSettings;
         }

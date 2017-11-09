@@ -344,9 +344,9 @@
     <Compile Include="Common\WindowsOperatingSystem.cs" />
     <Compile Include="Common\UndocumentedAttribute.cs" />
     <Compile Include="Navigation\CodeExplorer\ICodeExplorerDeclarationViewModel.cs" />
+    <Compile Include="Navigation\CodeMetrics\CodeMetricsAnalyst.cs" />
     <Compile Include="Navigation\CodeMetrics\CodeMetricsResult.cs" />
     <Compile Include="Navigation\CodeMetrics\ICodeMetricsAnalyst.cs" />
-    <Compile Include="Navigation\CodeMetrics\ParseTreeMetricsAnalyst.cs" />
     <Compile Include="Navigation\Folders\FolderHelper.cs" />
     <Compile Include="Refactorings\EncapsulateField\PropertyGenerator.cs" />
     <Compile Include="Refactorings\ExtractMethod\ExtractedMethod.cs" />
