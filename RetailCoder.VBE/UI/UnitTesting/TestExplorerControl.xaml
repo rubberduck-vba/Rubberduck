@@ -16,7 +16,7 @@
 
     <UserControl.Resources>
         <BitmapImage x:Key="SettingsImage" UriSource="../../Resources/gear.png" />
-        
+
         <local:TestOutcomeImageSourceConverter x:Key="OutcomeIconConverter" />
         <local:TestResultToOutcomeTextConverter x:Key="OutcomeTextConverter" />
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
@@ -273,8 +273,6 @@
                 <PropertyGroupDescription PropertyName="Result" Converter="{StaticResource OutcomeTextConverter}" />
             </CollectionViewSource.GroupDescriptions>
         </CollectionViewSource>
-        
-        <SolidColorBrush x:Key="ToolBarHorizontalBackground" Color="#FFEEF5FD"/>
         <SolidColorBrush x:Key="ToolBarToggleButtonVerticalBackground" Color="#FFEEF5FD"/>
         <SolidColorBrush x:Key="ToolBarButtonHover" Color="#210080FF"/>
         <SolidColorBrush x:Key="ToolBarGripper" Color="#FF6D6D6D"/>
@@ -389,7 +387,6 @@
             </Style.Triggers>
         </Style>
         <Style x:Key="ToolBarWithOverflowOnlyShowingWhenNeededStyle" TargetType="{x:Type ToolBar}">
-            <Setter Property="Background" Value="{StaticResource ToolBarHorizontalBackground}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ToolBar}">
@@ -608,7 +605,7 @@
                             <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_Duration}" Binding="{Binding Result.Duration, StringFormat={}{0}ms}" />
                         </DataGrid.Columns>
                     </controls:GroupingGrid>
-                    
+
                     <controls:GroupingGrid ItemsSource="{Binding Source={StaticResource ResultsByModule}}"
                                            SelectedItem="{Binding SelectedTest}"
                                            ShowGroupingItemCount="True"
