@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using Rubberduck.Parsing.VBA;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Grammar;
@@ -12,7 +11,7 @@ namespace Rubberduck.Navigation.CodeMetrics
 {
     public class ParseTreeMetricsAnalyst : ICodeMetricsAnalyst
     {
-        public IEnumerable<ModuleMetricsResult> ModuleMetrics(RubberduckParserState state, CancellationToken token)
+        public IEnumerable<ModuleMetricsResult> ModuleMetrics(RubberduckParserState state)
         {
             if (state == null || !state.AllUserDeclarations.Any())
             {
@@ -24,10 +23,6 @@ namespace Rubberduck.Navigation.CodeMetrics
 
             foreach (var moduleTree in trees)
             {
-                if (token.IsCancellationRequested)
-                {
-                    yield break;
-                }
                 yield return GetModuleResult(moduleTree.Key, moduleTree.Value, state.DeclarationFinder);
             };
         }
