@@ -4,7 +4,6 @@ using RubberduckTests.Mocks;
 using System.Threading;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Inspections
 {
@@ -16,18 +15,20 @@ namespace RubberduckTests.Inspections
         public void ObsoleteCallStatement_ReturnsResult()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
     Call Foo
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ObsoleteCallStatementInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new ObsoleteCallStatementInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.AreEqual(1, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -35,18 +36,20 @@ End Sub";
         public void ObsoleteCallStatement_DoesNotReturnResult()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
     Foo
 End Sub";
-            
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
-            var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new ObsoleteCallStatementInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            Assert.AreEqual(0, inspectionResults.Count());
+                var inspection = new ObsoleteCallStatementInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -54,19 +57,20 @@ End Sub";
         public void ObsoleteCallStatement_DoesNotReturnResult_InstructionSeparator()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
     Call Foo: Foo
 End Sub";
-            
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new ObsoleteCallStatementInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            Assert.AreEqual(0, inspectionResults.Count());
+                var inspection = new ObsoleteCallStatementInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -74,18 +78,20 @@ End Sub";
         public void ObsoleteCallStatement_ReturnsResult_ColonInComment()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
     Call Foo ' I''ve got a colon: see?
 End Sub";
-            
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
-            var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new ObsoleteCallStatementInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            Assert.AreEqual(1, inspectionResults.Count());
+                var inspection = new ObsoleteCallStatementInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -93,18 +99,20 @@ End Sub";
         public void ObsoleteCallStatement_ReturnsResult_ColonInStringLiteral()
         {
             const string inputCode =
-@"Sub Foo(ByVal str As String)
+                @"Sub Foo(ByVal str As String)
     Call Foo("":"")
 End Sub";
-            
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
-            var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new ObsoleteCallStatementInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            Assert.AreEqual(1, inspectionResults.Count());
+                var inspection = new ObsoleteCallStatementInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -112,22 +120,24 @@ End Sub";
         public void ObsoleteCallStatement_ReturnsMultipleResults()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
     Call Goo(1, ""test"")
 End Sub
 
 Sub Goo(arg1 As Integer, arg1 As String)
     Call Foo
 End Sub";
-            
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
-            var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new ObsoleteCallStatementInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            Assert.AreEqual(2, inspectionResults.Count());
+                var inspection = new ObsoleteCallStatementInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+                Assert.AreEqual(2, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -135,22 +145,24 @@ End Sub";
         public void ObsoleteCallStatement_ReturnsResults_SomeObsoleteCallStatements()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
     Call Goo(1, ""test"")
 End Sub
 
 Sub Goo(arg1 As Integer, arg1 As String)
     Foo
 End Sub";
-            
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
-            var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new ObsoleteCallStatementInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            Assert.AreEqual(1, inspectionResults.Count());
+                var inspection = new ObsoleteCallStatementInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -158,19 +170,21 @@ End Sub";
         public void ObsoleteCallStatement_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
     '@Ignore ObsoleteCallStatement
     Call Foo
 End Sub";
-            
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
-            var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new ObsoleteCallStatementInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            Assert.IsFalse(inspectionResults.Any());
+                var inspection = new ObsoleteCallStatementInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
 
 

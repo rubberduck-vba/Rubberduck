@@ -2,7 +2,6 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
@@ -18,15 +17,15 @@ namespace RubberduckTests.Inspections
 Sub Foo()
 End Sub
 ";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+                var inspection = new ImplicitPublicMemberInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            var inspection = new ImplicitPublicMemberInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(1, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -34,18 +33,18 @@ End Sub
         public void ImplicitPublicMember_ReturnsResult_Function()
         {
             const string inputCode =
-@"Function Foo() As Boolean
+                @"Function Foo() As Boolean
     Foo = True
 End Function";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+                var inspection = new ImplicitPublicMemberInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            var inspection = new ImplicitPublicMemberInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(1, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -53,20 +52,20 @@ End Function";
         public void ImplicitPublicMember_ReturnsResult_MultipleSubs()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
 End Sub
 
 Sub Goo()
 End Sub";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+                var inspection = new ImplicitPublicMemberInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            var inspection = new ImplicitPublicMemberInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(2, inspectionResults.Count());
+                Assert.AreEqual(2, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -74,17 +73,17 @@ End Sub";
         public void ImplicitPublicMember_DoesNotReturnResult()
         {
             const string inputCode =
-@"Private Sub Foo()
+                @"Private Sub Foo()
 End Sub";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+                var inspection = new ImplicitPublicMemberInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            var inspection = new ImplicitPublicMemberInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(0, inspectionResults.Count());
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -96,15 +95,15 @@ End Sub";
 Sub Foo()
 End Sub
 ";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+                var inspection = new ImplicitPublicMemberInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            var inspection = new ImplicitPublicMemberInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.IsFalse(inspectionResults.Any());
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
 
         [TestMethod]
@@ -112,20 +111,20 @@ End Sub
         public void ImplicitPublicMember_ReturnsResult_SomeImplicitlyPublicSubs()
         {
             const string inputCode =
-@"Private Sub Foo()
+                @"Private Sub Foo()
 End Sub
 
 Sub Goo()
 End Sub";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+                var inspection = new ImplicitPublicMemberInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            var inspection = new ImplicitPublicMemberInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(1, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
         [TestMethod]

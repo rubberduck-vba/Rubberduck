@@ -7,6 +7,7 @@ using Rubberduck.Common;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using Antlr4.Runtime;
+using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -15,21 +16,19 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public sealed class AssignedByValParameterMakeLocalCopyQuickFix : IQuickFix
+    public sealed class AssignedByValParameterMakeLocalCopyQuickFix : QuickFixBase
     {
         private readonly IAssignedByValParameterQuickFixDialogFactory _dialogFactory;
         private readonly RubberduckParserState _parserState;
-        private static readonly HashSet<Type> _supportedInspections = new HashSet<Type> { typeof(AssignedByValParameterInspection) };
 
-        public AssignedByValParameterMakeLocalCopyQuickFix(RubberduckParserState parserState, IAssignedByValParameterQuickFixDialogFactory dialogFactory)
+        public AssignedByValParameterMakeLocalCopyQuickFix(RubberduckParserState state, IAssignedByValParameterQuickFixDialogFactory dialogFactory)
+            : base(typeof(AssignedByValParameterInspection))
         {
             _dialogFactory = dialogFactory;
-            _parserState = parserState;
+            _parserState = state;
         }
 
-        public IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
-
-        public void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result)
         {
             var forbiddenNames = _parserState.DeclarationFinder.GetDeclarationsWithIdentifiersToAvoid(result.Target).Select(n => n.IdentifierName);
 
@@ -44,28 +43,34 @@ namespace Rubberduck.Inspections.QuickFixes
             InsertLocalVariableDeclarationAndAssignment(rewriter, result.Target, localIdentifier);
         }
 
-        public string Description(IInspectionResult result)
+        public override string Description(IInspectionResult result)
         {
             return InspectionsUI.AssignedByValParameterMakeLocalCopyQuickFix;
         }
 
-        public bool CanFixInProcedure { get; } = false;
-        public bool CanFixInModule { get; } = false;
-        public bool CanFixInProject { get; } = false;
+        public override bool CanFixInProcedure { get; } = false;
+        public override bool CanFixInModule { get; } = false;
+        public override bool CanFixInProject { get; } = false;
 
         private string PromptForLocalVariableName(Declaration target, List<string> forbiddenNames)
         {
-            using (var view = _dialogFactory.Create(target.IdentifierName, target.DeclarationType.ToString(), forbiddenNames))
+            IAssignedByValParameterQuickFixDialog view = null;
+            try
             {
+                view = _dialogFactory.Create(target.IdentifierName, target.DeclarationType.ToString(), forbiddenNames);
                 view.NewName = GetDefaultLocalIdentifier(target, forbiddenNames);
                 view.ShowDialog();
-                
+
                 if (view.DialogResult == DialogResult.Cancel || !IsValidVariableName(view.NewName, forbiddenNames))
                 {
                     return string.Empty;
                 }
 
                 return view.NewName;
+            }
+            finally
+            {
+                _dialogFactory.Release(view);
             }
         }
 

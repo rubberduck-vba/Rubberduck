@@ -12,25 +12,13 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
         }
 
-        public int Count
-        {
-            get { return IsWrappingNullReference ? 0 : Target.Count; }
-        }
+        public int Count => IsWrappingNullReference ? 0 : Target.Count;
 
-        public IVBE VBE
-        {
-            get { return new VBE(IsWrappingNullReference ? null : Target.VBE); }
-        }
+        public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
 
-        public IApplication Parent
-        {
-            get { return new Application(IsWrappingNullReference ? null : Target.Parent); }
-        }
+        public IApplication Parent => new Application(IsWrappingNullReference ? null : Target.Parent);
 
-        public IWindow this[object index]
-        {
-            get { return new Window(IsWrappingNullReference ? null : Target.Item(index)); }
-        }
+        public IWindow this[object index] => new Window(IsWrappingNullReference ? null : Target.Item(index));
 
 
         private static readonly Dictionary<VB.Window, object> _dockableHosts = new Dictionary<VB.Window, object>();

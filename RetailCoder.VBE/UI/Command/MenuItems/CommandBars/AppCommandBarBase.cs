@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -38,14 +39,22 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
                 return;
             }
 
-            foreach (var kvp in _items)
+            foreach (var kvp in _items.Where(kv => kv.Key != null && kv.Value != null))
             {
-                var item = kvp;
-                UiDispatcher.Invoke(() =>
+                try
                 {
-                    item.Value.Caption = item.Key.Caption.Invoke();
-                    item.Value.TooltipText = item.Key.ToolTipText.Invoke();
-                });
+                    var item = kvp;
+                    UiDispatcher.Invoke(() =>
+                    {
+                        item.Value.Caption = item.Key.Caption.Invoke();
+                        item.Value.TooltipText = item.Key.ToolTipText.Invoke();
+                    });
+
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e, $"Assignment of {kvp.Value.GetType().Name}.Caption or .TooltipText for {kvp.Key.GetType().Name} threw an exception.");
+                }
             }
         }
 
@@ -60,7 +69,15 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             Item.IsVisible = true;
             foreach (var item in _items.Keys.OrderBy(item => item.DisplayOrder))
             {
-                _items[item] = InitializeChildControl(item);
+                try
+                {
+                    _items[item] = InitializeChildControl(item);
+
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e, $"Initialization of the menu item for {item.Command.GetType().Name} threw an exception.");
+                }
             }
         }
 
@@ -92,17 +109,23 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
 
         public void EvaluateCanExecute(RubberduckParserState state)
         {
-            foreach (var kvp in _items)
+            foreach (var kvp in _items.Where(kv => kv.Key != null && kv.Value != null))
             {
                 var commandItem = kvp.Key;
-                if (commandItem != null && kvp.Value != null)
+                var canExecute = false;
+                try
                 {
-                    var canExecute = commandItem.EvaluateCanExecute(state);
-                    kvp.Value.IsEnabled = canExecute;
-                    if (commandItem.HiddenWhenDisabled)
-                    {
-                        kvp.Value.IsVisible = canExecute;
-                    }
+                    canExecute = commandItem.EvaluateCanExecute(state);
+
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e, $"{commandItem?.GetType().Name ?? nameof(ICommandMenuItem)}.EvaluateCanExecute(RubberduckParserState) threw an exception.");
+                }
+                kvp.Value.IsEnabled = canExecute;
+                if (commandItem?.HiddenWhenDisabled ?? false)
+                {
+                    kvp.Value.IsVisible = canExecute;
                 }
             }
         }
@@ -144,20 +167,13 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             _items.Clear();
         }
 
-        // note: HAAAAACK!!!
-        private static int _lastHashCode;
-
         private void child_Click(object sender, CommandBarButtonClickEventArgs e)
         {
             var item = _items.Select(kvp => kvp.Key).SingleOrDefault(menu => menu.GetType().FullName == e.Control.Tag);
-            if (item == null || e.Control.Target.GetHashCode() == _lastHashCode)
+            if (item == null)
             {
                 return;
             }
-
-            // without this hack, handler runs once for each menu item that's hooked up to the command.
-            // hash code is different on every frakkin' click. go figure. I've had it, this is the fix.
-            _lastHashCode = e.Control.Target.GetHashCode();
 
             Logger.Debug("({0}) Executing click handler for commandbar item '{1}', hash code {2}", GetHashCode(), e.Control.Caption, e.Control.Target.GetHashCode());
             item.Command.Execute(null);

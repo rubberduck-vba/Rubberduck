@@ -14,15 +14,11 @@ namespace Rubberduck.Inspections.Concrete
     {
         public AssignedByValParameterInspection(RubberduckParserState state)
             : base(state)
-        {
-            Severity = DefaultSeverity;
-        }
-
-        public override Type Type => typeof(AssignedByValParameterInspection);
-
+        { }
+        
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var parameters = State.DeclarationFinder.UserDeclarations(DeclarationType.Parameter)
                 .Cast<ParameterDeclaration>()

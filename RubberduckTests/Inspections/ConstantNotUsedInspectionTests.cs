@@ -1,9 +1,7 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
@@ -16,18 +14,19 @@ namespace RubberduckTests.Inspections
         public void ConstantNotUsed_ReturnsResult()
         {
             const string inputCode =
-@"Public Sub Foo()
+                @"Public Sub Foo()
     Const const1 As Integer = 9
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ConstantNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new ConstantNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(1, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -35,19 +34,20 @@ End Sub";
         public void ConstantNotUsed_ReturnsResult_MultipleConsts()
         {
             const string inputCode =
-@"Public Sub Foo()
+                @"Public Sub Foo()
     Const const1 As Integer = 9
     Const const2 As String = ""test""
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ConstantNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new ConstantNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(2, inspectionResults.Count());
+                Assert.AreEqual(2, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -55,7 +55,7 @@ End Sub";
         public void ConstantNotUsed_ReturnsResult_UnusedConstant()
         {
             const string inputCode =
-@"Public Sub Foo()
+                @"Public Sub Foo()
     Const const1 As Integer = 9
     Goo const1
 
@@ -65,14 +65,15 @@ End Sub
 Public Sub Goo(ByVal arg1 As Integer)
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ConstantNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new ConstantNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(1, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -80,7 +81,7 @@ End Sub";
         public void ConstantNotUsed_DoesNotReturnResult()
         {
             const string inputCode =
-@"Public Sub Foo()
+                @"Public Sub Foo()
     Const const1 As Integer = 9
     Goo const1
 End Sub
@@ -88,14 +89,15 @@ End Sub
 Public Sub Goo(ByVal arg1 As Integer)
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ConstantNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new ConstantNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(0, inspectionResults.Count());
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -103,20 +105,21 @@ End Sub";
         public void ConstantNotUsed_IgnoreModule_All_YieldsNoResult()
         {
             const string inputCode =
-@"'@IgnoreModule
+                @"'@IgnoreModule
 
 Public Sub Foo()
     Const const1 As Integer = 9
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ConstantNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new ConstantNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.IsFalse(inspectionResults.Any());
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
 
         [TestMethod]
@@ -124,20 +127,21 @@ End Sub";
         public void ConstantNotUsed_IgnoreModule_AnnotationName_YieldsNoResult()
         {
             const string inputCode =
-@"'@IgnoreModule ConstantNotUsed
+                @"'@IgnoreModule ConstantNotUsed
 
 Public Sub Foo()
     Const const1 As Integer = 9
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ConstantNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new ConstantNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.IsFalse(inspectionResults.Any());
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
 
         [TestMethod]
@@ -145,20 +149,21 @@ End Sub";
         public void ConstantNotUsed_IgnoreModule_OtherAnnotationName_YieldsResults()
         {
             const string inputCode =
-@"'@IgnoreModule VariableNotUsed
+                @"'@IgnoreModule VariableNotUsed
 
 Public Sub Foo()
     Const const1 As Integer = 9
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ConstantNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new ConstantNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.IsTrue(inspectionResults.Any());
+                Assert.IsTrue(inspectionResults.Any());
+            }
         }
 
         [TestMethod]
@@ -166,19 +171,20 @@ End Sub";
         public void ConstantNotUsed_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
-@"Public Sub Foo()
+                @"Public Sub Foo()
     '@Ignore ConstantNotUsed
     Const const1 As Integer = 9
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ConstantNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new ConstantNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.IsFalse(inspectionResults.Any());
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
 
         [TestMethod]

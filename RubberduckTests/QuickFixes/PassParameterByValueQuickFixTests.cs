@@ -3,7 +3,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.QuickFixes
@@ -16,21 +15,22 @@ namespace RubberduckTests.QuickFixes
         public void ParameterCanBeByVal_QuickFixWorks_SubNameStartsWithParamName()
         {
             const string inputCode =
-@"Sub foo(f)
+                @"Sub foo(f)
 End Sub";
 
             const string expectedCode =
-@"Sub foo(ByVal f)
+                @"Sub foo(ByVal f)
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ParameterCanBeByValInspection(state);
-            new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                var inspection = new ParameterCanBeByValInspection(state);
+                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
         [TestMethod]
@@ -38,21 +38,22 @@ End Sub";
         public void ParameterCanBeByVal_QuickFixWorks_PassedByUnspecified()
         {
             const string inputCode =
-@"Sub Foo(arg1 As String)
+                @"Sub Foo(arg1 As String)
 End Sub";
 
             const string expectedCode =
-@"Sub Foo(ByVal arg1 As String)
+                @"Sub Foo(ByVal arg1 As String)
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ParameterCanBeByValInspection(state);
-            new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                var inspection = new ParameterCanBeByValInspection(state);
+                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
         [TestMethod]
@@ -60,21 +61,22 @@ End Sub";
         public void ParameterCanBeByVal_QuickFixWorks_PassedByRef()
         {
             const string inputCode =
-@"Sub Foo(ByRef arg1 As String)
+                @"Sub Foo(ByRef arg1 As String)
 End Sub";
 
             const string expectedCode =
-@"Sub Foo(ByVal arg1 As String)
+                @"Sub Foo(ByVal arg1 As String)
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ParameterCanBeByValInspection(state);
-            new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                var inspection = new ParameterCanBeByValInspection(state);
+                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
         [TestMethod]
@@ -82,23 +84,24 @@ End Sub";
         public void ParameterCanBeByVal_QuickFixWorks_PassedByUnspecified_MultilineParameter()
         {
             const string inputCode =
-@"Sub Foo( _
+                @"Sub Foo( _
 arg1 As String)
 End Sub";
 
             const string expectedCode =
-@"Sub Foo( _
+                @"Sub Foo( _
 ByVal arg1 As String)
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ParameterCanBeByValInspection(state);
-            new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                var inspection = new ParameterCanBeByValInspection(state);
+                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
         [TestMethod]
@@ -106,23 +109,24 @@ End Sub";
         public void ParameterCanBeByVal_QuickFixWorks_PassedByRef_MultilineParameter()
         {
             const string inputCode =
-@"Sub Foo(ByRef _
+                @"Sub Foo(ByRef _
 arg1 As String)
 End Sub";
 
             const string expectedCode =
-@"Sub Foo(ByVal _
+                @"Sub Foo(ByVal _
 arg1 As String)
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ParameterCanBeByValInspection(state);
-            new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                var inspection = new ParameterCanBeByValInspection(state);
+                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
         [TestMethod]
@@ -131,32 +135,32 @@ End Sub";
         {
             //Input
             const string inputCode1 =
-@"Public Sub DoSomething(ByRef a As Integer, ByRef b As Integer)
+                @"Public Sub DoSomething(ByRef a As Integer, ByRef b As Integer)
 End Sub";
             const string inputCode2 =
-@"Implements IClass1
+                @"Implements IClass1
 
 Private Sub IClass1_DoSomething(ByRef a As Integer, ByRef b As Integer)
     b = 42
 End Sub";
             const string inputCode3 =
-@"Implements IClass1
+                @"Implements IClass1
 
 Private Sub IClass1_DoSomething(ByRef a As Integer, ByRef b As Integer)
 End Sub";
 
             //Expected
             const string expectedCode1 =
-@"Public Sub DoSomething(ByVal a As Integer, ByRef b As Integer)
+                @"Public Sub DoSomething(ByVal a As Integer, ByRef b As Integer)
 End Sub";
             const string expectedCode2 =
-@"Implements IClass1
+                @"Implements IClass1
 
 Private Sub IClass1_DoSomething(ByVal a As Integer, ByRef b As Integer)
     b = 42
 End Sub";
             const string expectedCode3 =
-@"Implements IClass1
+                @"Implements IClass1
 
 Private Sub IClass1_DoSomething(ByVal a As Integer, ByRef b As Integer)
 End Sub";
@@ -173,14 +177,16 @@ End Sub";
             var component3 = project.Object.VBComponents["Class2"];
             var vbe = builder.AddProject(project).Build();
 
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ParameterCanBeByValInspection(state);
-            new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                var inspection = new ParameterCanBeByValInspection(state);
+                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
-            Assert.AreEqual(expectedCode1, state.GetRewriter(component1).GetText());
-            Assert.AreEqual(expectedCode2, state.GetRewriter(component2).GetText());
-            Assert.AreEqual(expectedCode3, state.GetRewriter(component3).GetText());
+                Assert.AreEqual(expectedCode1, state.GetRewriter(component1).GetText());
+                Assert.AreEqual(expectedCode2, state.GetRewriter(component2).GetText());
+                Assert.AreEqual(expectedCode3, state.GetRewriter(component3).GetText());
+            }
         }
 
         [TestMethod]
@@ -189,30 +195,30 @@ End Sub";
         {
             //Input
             const string inputCode1 =
-@"Public Event Foo(ByRef a As Integer, ByRef b As Integer)";
+                @"Public Event Foo(ByRef a As Integer, ByRef b As Integer)";
             const string inputCode2 =
-@"Private WithEvents abc As Class1
+                @"Private WithEvents abc As Class1
 
 Private Sub abc_Foo(ByRef a As Integer, ByRef b As Integer)
     a = 42
 End Sub";
             const string inputCode3 =
-@"Private WithEvents abc As Class1
+                @"Private WithEvents abc As Class1
 
 Private Sub abc_Foo(ByRef a As Integer, ByRef b As Integer)
 End Sub";
 
             //Expected
             const string expectedCode1 =
-@"Public Event Foo(ByRef a As Integer, ByVal b As Integer)";
+                @"Public Event Foo(ByRef a As Integer, ByVal b As Integer)";
             const string expectedCode2 =
-@"Private WithEvents abc As Class1
+                @"Private WithEvents abc As Class1
 
 Private Sub abc_Foo(ByRef a As Integer, ByVal b As Integer)
     a = 42
 End Sub";
             const string expectedCode3 =
-@"Private WithEvents abc As Class1
+                @"Private WithEvents abc As Class1
 
 Private Sub abc_Foo(ByRef a As Integer, ByVal b As Integer)
 End Sub";
@@ -229,14 +235,16 @@ End Sub";
             var component3 = project.Object.VBComponents["Class3"];
             var vbe = builder.AddProject(project).Build();
 
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ParameterCanBeByValInspection(state);
-            new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                var inspection = new ParameterCanBeByValInspection(state);
+                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
-            Assert.AreEqual(expectedCode1, state.GetRewriter(component1).GetText());
-            Assert.AreEqual(expectedCode2, state.GetRewriter(component2).GetText());
-            Assert.AreEqual(expectedCode3, state.GetRewriter(component3).GetText());
+                Assert.AreEqual(expectedCode1, state.GetRewriter(component1).GetText());
+                Assert.AreEqual(expectedCode2, state.GetRewriter(component2).GetText());
+                Assert.AreEqual(expectedCode3, state.GetRewriter(component3).GetText());
+            }
         }
 
         //https://github.com/rubberduck-vba/Rubberduck/issues/2408
@@ -245,23 +253,24 @@ End Sub";
         public void ParameterCanBeByVal_QuickFixWithOptionalWorks()
         {
             const string inputCode =
-@"Sub Test(Optional foo As String = ""bar"")
+                @"Sub Test(Optional foo As String = ""bar"")
     Debug.Print foo
 End Sub";
 
             const string expectedCode =
-@"Sub Test(Optional ByVal foo As String = ""bar"")
+                @"Sub Test(Optional ByVal foo As String = ""bar"")
     Debug.Print foo
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ParameterCanBeByValInspection(state);
-            new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                var inspection = new ParameterCanBeByValInspection(state);
+                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
         //https://github.com/rubberduck-vba/Rubberduck/issues/2408
@@ -270,23 +279,24 @@ End Sub";
         public void ParameterCanBeByVal_QuickFixWithOptionalByRefWorks()
         {
             const string inputCode =
-@"Sub Test(Optional ByRef foo As String = ""bar"")
+                @"Sub Test(Optional ByRef foo As String = ""bar"")
     Debug.Print foo
 End Sub";
 
             const string expectedCode =
-@"Sub Test(Optional ByVal foo As String = ""bar"")
+                @"Sub Test(Optional ByVal foo As String = ""bar"")
     Debug.Print foo
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ParameterCanBeByValInspection(state);
-            new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                var inspection = new ParameterCanBeByValInspection(state);
+                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
         //https://github.com/rubberduck-vba/Rubberduck/issues/2408
@@ -295,7 +305,7 @@ End Sub";
         public void ParameterCanBeByVal_QuickFixWithOptional_LineContinuationsWorks()
         {
             const string inputCode =
-@"Sub foo(Optional _
+                @"Sub foo(Optional _
   ByRef _
   foo _
   As _
@@ -305,7 +315,7 @@ End Sub";
 End Sub";
 
             const string expectedCode =
-@"Sub foo(Optional _
+                @"Sub foo(Optional _
   ByVal _
   foo _
   As _
@@ -314,14 +324,15 @@ End Sub";
   Debug.Print foo
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ParameterCanBeByValInspection(state);
-            new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                var inspection = new ParameterCanBeByValInspection(state);
+                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
     }

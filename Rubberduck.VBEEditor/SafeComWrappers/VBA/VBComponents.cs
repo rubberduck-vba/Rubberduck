@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -99,6 +100,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public void ImportSourceFile(string path)
         {
+            if (IsWrappingNullReference) { return; }
+
             var ext = Path.GetExtension(path);
             var name = Path.GetFileNameWithoutExtension(path);
             if (!File.Exists(path))
@@ -106,8 +109,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 return;
             }
 
-            var codeString = File.ReadAllText(path);
-            var codeLines = codeString.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
             if (ext == ComponentTypeExtensions.DocClassExtension)
             {
                 try
@@ -116,11 +117,13 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 }
                 catch
                 {
-                    throw new IndexOutOfRangeException(string.Format("Could not find document component named '{0}'.  Try adding a document component with the same name and try again.", name));
+                    throw new IndexOutOfRangeException($"Could not find document component named '{name}'.  Try adding a document component with the same name and try again.");
                 }
 
                 var component = this[name];
                 component.CodeModule.Clear();
+
+                var codeString = File.ReadAllText(path, Encoding.UTF8);
                 component.CodeModule.AddFromString(codeString);
             }
             else if (ext == ComponentTypeExtensions.FormExtension)
@@ -135,6 +138,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 }
 
                 var component = this[name];
+
+                var codeString = File.ReadAllText(path, Encoding.Default);  //The VBE uses the current ANSI codepage from the windows settings to export and import.
+                var codeLines = codeString.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 
                 var nonAttributeLines = codeLines.TakeWhile(line => !line.StartsWith("Attribute")).Count();
                 var attributeLines = codeLines.Skip(nonAttributeLines).TakeWhile(line => line.StartsWith("Attribute")).Count();
@@ -152,6 +158,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public void RemoveSafely(IVBComponent component)
         {
+            if (component.IsWrappingNullReference) { return; }
+
             switch (component.Type)
             {
                 case ComponentType.ClassModule:
@@ -174,7 +182,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
             lock (Locker)
             {
-                if (_components == null)
+                if (_components == null && components != null)
                 {
                     _components = components;
                     _componentAdded = OnComponentAdded;

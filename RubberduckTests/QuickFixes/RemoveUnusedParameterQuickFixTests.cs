@@ -4,7 +4,6 @@ using Moq;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.UI;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.QuickFixes
@@ -25,16 +24,16 @@ End Sub";
 Private Sub Foo()
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
+            using(var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new ParameterNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            var inspection = new ParameterNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            new RemoveUnusedParameterQuickFix(vbe.Object, state, new Mock<IMessageBox>().Object).Fix(
-                inspectionResults.First());
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+                new RemoveUnusedParameterQuickFix(vbe.Object, state, new Mock<IMessageBox>().Object).Fix(
+                    inspectionResults.First());
+                Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            }
         }
 
     }

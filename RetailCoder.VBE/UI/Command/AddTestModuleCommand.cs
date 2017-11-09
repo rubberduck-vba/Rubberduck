@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using NLog;
@@ -9,6 +10,7 @@ using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 using System.Text;
+using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.UI.Command
 {
@@ -138,7 +140,11 @@ namespace Rubberduck.UI.Command
 
         protected override void OnExecute(object parameter)
         {
-            var project = parameter as IVBProject ?? GetProject();
+            var parameterIsModuleDeclaration = parameter is ProceduralModuleDeclaration || parameter is ClassModuleDeclaration;
+
+            var project = parameter as IVBProject ??
+                          (parameterIsModuleDeclaration ? ((Declaration) parameter).Project : GetProject());
+
             if (project.IsWrappingNullReference)
             {
                 return;
@@ -164,16 +170,49 @@ namespace Rubberduck.UI.Command
             var options = string.Concat(hasOptionExplicit ? string.Empty : "Option Explicit\r\n",
                 "Option Private Module\r\n\r\n");
 
-            var defaultTestMethod = string.Empty;
-            if (settings.DefaultTestStubInNewModule)
+            if (parameterIsModuleDeclaration)
             {
-                defaultTestMethod = AddTestMethodCommand.TestMethodTemplate.Replace(
-                    AddTestMethodCommand.NamePlaceholder, "TestMethod1");
+                var moduleCodeBuilder = new StringBuilder();
+                var declarationsToStub = GetDeclarationsToStub((Declaration)parameter);
+
+                foreach (var declaration in declarationsToStub)
+                {
+                    var name = string.Empty;
+
+                    switch (declaration.DeclarationType)
+                    {
+                        case DeclarationType.Procedure:
+                        case DeclarationType.Function:
+                            name = declaration.IdentifierName;
+                            break;
+                        case DeclarationType.PropertyGet:
+                            name = $"Get{declaration.IdentifierName}";
+                            break;
+                        case DeclarationType.PropertyLet:
+                            name = $"Let{declaration.IdentifierName}";
+                            break;
+                        case DeclarationType.PropertySet:
+                            name = $"Set{declaration.IdentifierName}";
+                            break;
+                    }
+
+                    var stub = AddTestMethodCommand.TestMethodTemplate.Replace(AddTestMethodCommand.NamePlaceholder, $"{name}_Test");
+                    moduleCodeBuilder.AppendLine(stub);
+                }
+
+                module.AddFromString(options + GetTestModule(settings) + moduleCodeBuilder);
+            }
+            else
+            {
+                var defaultTestMethod = settings.DefaultTestStubInNewModule
+                    ? AddTestMethodCommand.TestMethodTemplate.Replace(AddTestMethodCommand.NamePlaceholder, "TestMethod1")
+                    : string.Empty;
+
+                module.AddFromString(options + GetTestModule(settings) + defaultTestMethod);
             }
 
-            module.AddFromString(options + GetTestModule(settings) + defaultTestMethod);
             component.Activate();
-            _state.OnParseRequested(this, component);
+            _state.OnParseRequested(this);
         }
 
         private string GetNextTestModuleName(IVBProject project)
@@ -182,6 +221,14 @@ namespace Rubberduck.UI.Command
             var index = names.Count(n => n.StartsWith(TestModuleBaseName)) + 1;
 
             return string.Concat(TestModuleBaseName, index);
+        }
+
+        private IEnumerable<Declaration> GetDeclarationsToStub(Declaration parentDeclaration)
+        {
+            return _state.DeclarationFinder.Members(parentDeclaration)
+                .Where(d => Equals(d.ParentDeclaration, parentDeclaration) && d.Accessibility == Accessibility.Public &&
+                            (d.DeclarationType == DeclarationType.Procedure || d.DeclarationType == DeclarationType.Function || d.DeclarationType.HasFlag(DeclarationType.Property)))
+                .OrderBy(d => d.Context.Start.TokenIndex);
         }
     }
 }

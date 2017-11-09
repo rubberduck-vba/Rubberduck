@@ -26,7 +26,7 @@ It's possible you encounter (or write!) code that VBA has no problem with, but t
 
 Clicking the button brings up a tab in the *Search Results* toolwindow, from which you can double-click to navigate to the exact problematic position in the code:
 
-![Parser errors are all displayed in a "Parser Errors" search results tab](https://cloud.githubusercontent.com/assets/5751684/21708348/86e64b72-d3a5-11e6-9aa8-60cd8d0bec33.png)
+![Parser errors are all displayed in a "Parser Errors" search results tab](https://cloud.githubusercontent.com/assets/5751684/21708348/86e64b72-d3a5-11e6-9aa8-60cd8d0bec33.png).
 
 The *Code Explorer* will also be displaying the corresponding module node with a red cross icon:
 

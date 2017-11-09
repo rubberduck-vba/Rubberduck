@@ -15,9 +15,13 @@ namespace Rubberduck.Parsing
         /// <returns>Zero-based column position</returns>
         public static int EndColumn(this IToken token)
         {
-            if (token.Text.Contains(Environment.NewLine))
+            if (token.Text == Environment.NewLine)
             {
-                var splitStrings = token.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+                return token.Column;
+            }
+            else if (token.Text.Contains(Environment.NewLine))
+            {
+                var splitStrings = token.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
                 var lastOccupiedLine = splitStrings[splitStrings.Length - 1];
 
                 return lastOccupiedLine.Length;
@@ -37,9 +41,9 @@ namespace Rubberduck.Parsing
         /// <returns>One-based line position</returns>
         public static int EndLine(this IToken token)
         {
-            if (token.Text.Contains(Environment.NewLine))
+            if (token.Text != Environment.NewLine && token.Text.Contains(Environment.NewLine))
             {
-                var splitStrings = token.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+                var splitStrings = token.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
 
                 return token.Line + (splitStrings.Length - 1);
             }

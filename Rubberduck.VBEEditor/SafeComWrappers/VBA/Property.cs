@@ -12,39 +12,21 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
         }
 
-        public string Name
-        {
-            get { return IsWrappingNullReference ? string.Empty : Target.Name; }
-        }
+        public string Name => IsWrappingNullReference ? string.Empty : Target.Name;
 
-        public int IndexCount
-        {
-            get { return IsWrappingNullReference ? 0 : Target.NumIndices; }
-        }
+        public int IndexCount => IsWrappingNullReference ? 0 : Target.NumIndices;
 
-        public IProperties Collection
-        {
-            get { return new Properties(IsWrappingNullReference ? null : Target.Collection); }
-        }
+        public IProperties Collection => new Properties(IsWrappingNullReference ? null : Target.Collection);
 
-        public IProperties Parent
-        {
-            get { return new Properties(IsWrappingNullReference ? null : Target.Parent); }
-        }
+        public IProperties Parent => new Properties(IsWrappingNullReference ? null : Target.Parent);
 
-        public IApplication Application
-        {
-            get { return new Application(IsWrappingNullReference ? null : Target.Application); }
-        }
+        public IApplication Application => new Application(IsWrappingNullReference ? null : Target.Application);
 
-        public IVBE VBE
-        {
-            get { return new VBE(IsWrappingNullReference ? null : Target.VBE); }
-        }
+        public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
 
         public object Value
         {
-            get { return IsWrappingNullReference ? null : Target.Value; }
+            get => IsWrappingNullReference ? null : Target.Value;
             set { if (!IsWrappingNullReference) Target.Value = value; }
         }
 
@@ -58,7 +40,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public void SetIndexedValue(object value, object index1, object index2 = null, object index3 = null, object index4 = null)
         {
-            if (!IsWrappingNullReference) Target.set_IndexedValue(index1, index2, index3, index4, value);
+            if (!IsWrappingNullReference)
+            {
+                Target.set_IndexedValue(index1, index2, index3, index4, value);
+            }
         }
 
         /// <summary>
@@ -66,7 +51,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         /// </summary>
         public object Object
         {
-            get { return IsWrappingNullReference ? null : Target.Object; }
+            get => IsWrappingNullReference ? null : Target.Object;
             set { if (!IsWrappingNullReference) Target.Object = value; }
         }
 

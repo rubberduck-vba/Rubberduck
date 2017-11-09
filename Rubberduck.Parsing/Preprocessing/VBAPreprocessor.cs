@@ -1,5 +1,7 @@
 ﻿using Antlr4.Runtime;
 using System.Threading;
+using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Parsing.PreProcessing
 {
@@ -14,11 +16,11 @@ namespace Rubberduck.Parsing.PreProcessing
             _parser = new VBAPrecompilationParser();
         }
 
-        public void PreprocessTokenStream(string moduleName, CommonTokenStream tokenStream, CancellationToken token)
+        public void PreprocessTokenStream(string moduleName, CommonTokenStream tokenStream, BaseErrorListener errorListener, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
             var symbolTable = new SymbolTable<string, IValue>();
-            var tree = _parser.Parse(moduleName, tokenStream);
+            var tree = _parser.Parse(moduleName, tokenStream, errorListener);
             token.ThrowIfCancellationRequested();
             var stream = tokenStream.TokenSource.InputStream;
             var evaluator = new VBAPreprocessorVisitor(symbolTable, new VBAPredefinedCompilationConstants(_vbaVersion), stream, tokenStream);

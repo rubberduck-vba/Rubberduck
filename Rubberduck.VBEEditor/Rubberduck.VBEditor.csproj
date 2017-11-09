@@ -21,6 +21,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>true</UseVSHostingProcess>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,6 +30,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Interop.SldWorks.Extensibility">
@@ -272,12 +274,12 @@
     <Compile Include="WindowsApi\WM.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="VBEEditorText.de.resx" />
     <EmbeddedResource Include="VBEEditorText.fr.resx" />
     <EmbeddedResource Include="VBEEditorText.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>VBEEditorText.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="VBEEditorText.sv.resx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

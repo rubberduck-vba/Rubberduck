@@ -1,6 +1,5 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -16,18 +15,19 @@ namespace RubberduckTests.Inspections
         public void AssignedByValParameter_ReturnsResult_Sub()
         {
             const string inputCode =
-@"Public Sub Foo(ByVal arg1 As String)
+                @"Public Sub Foo(ByVal arg1 As String)
     Let arg1 = ""test""
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
 
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var inspection = new AssignedByValParameterInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new AssignedByValParameterInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(1, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -35,18 +35,19 @@ End Sub";
         public void AssignedByValParameter_ReturnsResult_Function()
         {
             const string inputCode =
-@"Function Foo(ByVal arg1 As Integer) As Boolean
+                @"Function Foo(ByVal arg1 As Integer) As Boolean
     Let arg1 = 9
 End Function";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
 
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var inspection = new AssignedByValParameterInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new AssignedByValParameterInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(1, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -54,19 +55,20 @@ End Function";
         public void AssignedByValParameter_ReturnsResult_MultipleParams()
         {
             const string inputCode =
-@"Public Sub Foo(ByVal arg1 As String, ByVal arg2 As Integer)
+                @"Public Sub Foo(ByVal arg1 As String, ByVal arg2 As Integer)
     Let arg1 = ""test""
     Let arg2 = 9
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
 
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var inspection = new AssignedByValParameterInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new AssignedByValParameterInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(2, inspectionResults.Count());
+                Assert.AreEqual(2, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -74,17 +76,18 @@ End Sub";
         public void AssignedByValParameter_DoesNotReturnResult()
         {
             const string inputCode =
-@"Public Sub Foo(ByVal arg1 As String)
+                @"Public Sub Foo(ByVal arg1 As String)
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
 
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var inspection = new AssignedByValParameterInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new AssignedByValParameterInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.IsFalse(inspectionResults.Any());
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
 
         [TestMethod]
@@ -92,19 +95,20 @@ End Sub";
         public void AssignedByValParameter_Ignored_DoesNotReturnResult_Sub()
         {
             const string inputCode =
-@"'@Ignore AssignedByValParameter
+                @"'@Ignore AssignedByValParameter
 Public Sub Foo(ByVal arg1 As String)
     Let arg1 = ""test""
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
 
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var inspection = new AssignedByValParameterInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new AssignedByValParameterInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.IsFalse(inspectionResults.Any());
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
 
         [TestMethod]
@@ -112,21 +116,22 @@ End Sub";
         public void AssignedByValParameter_ReturnsResult_SomeAssignedByValParams()
         {
             const string inputCode =
-@"Public Sub Foo(ByVal arg1 As String, ByVal arg2 As Integer)
+                @"Public Sub Foo(ByVal arg1 As String, ByVal arg2 As Integer)
     Let arg1 = ""test""
     
     Dim var1 As Integer
     var1 = arg2
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
 
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var inspection = new AssignedByValParameterInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new AssignedByValParameterInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(1, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -155,12 +160,14 @@ End Sub
                 .AddComponent("Module1", ComponentType.StandardModule, caller)
                 .MockVbeBuilder()
                 .Build();
-            
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var inspection = new AssignedByValParameterInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-            
-            Assert.IsFalse(inspectionResults.Any());
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new AssignedByValParameterInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
+
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
 
         [TestMethod]

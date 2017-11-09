@@ -2,7 +2,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
 
@@ -16,20 +15,20 @@ namespace RubberduckTests.QuickFixes
         public void ObsoleteGlobal_QuickFixWorks()
         {
             const string inputCode =
-@"Global var1 As Integer";
+                @"Global var1 As Integer";
 
             const string expectedCode =
-@"Public var1 As Integer";
+                @"Public var1 As Integer";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new ObsoleteGlobalInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            var inspection = new ObsoleteGlobalInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            new ReplaceGlobalModifierQuickFix(state).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                new ReplaceGlobalModifierQuickFix(state).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
     }

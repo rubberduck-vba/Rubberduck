@@ -10,12 +10,45 @@ namespace RubberduckTests.SmartIndenter
     {
         [TestMethod]
         [TestCategory("Indenter")]
+        public void LowerCaseKeywordNext()
+        {
+            var code = new[]
+            {
+                "Dim i As Long",
+                "Dim maxRow As Long",
+                "",
+                "maxRow = 120",
+                "For i = 20 To maxRow Step 19",
+                "",
+                "Sheet5.Range(Rows(i), Rows(i + 4)).Cut Sheet61.Range(Rows(i))",
+                "next i"
+            };
+
+            var output = new[]
+            {
+                "Dim i As Long",
+                "Dim maxRow As Long",
+                "",
+                "maxRow = 120",
+                "For i = 20 To maxRow Step 19",
+                "",
+                "    Sheet5.Range(Rows(i), Rows(i + 4)).Cut Sheet61.Range(Rows(i))",
+                "next i"
+            };
+
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
+            var actual = indenter.Indent(code);
+            Assert.IsTrue(output.SequenceEqual(actual));
+        }
+
+        [TestMethod]
+        [TestCategory("Indenter")]
         public void DeclareFunctionsDoNotIndentNextLine()
         {
             var code = new[]
             {
-               @"Public Declare Function Foo Lib ""bar.dll"" (X As Any) As Variant",
-               @"Public Declare Sub Bar Lib ""bar.dll"" (Y As Integer)"
+                @"Public Declare Function Foo Lib ""bar.dll"" (X As Any) As Variant",
+                @"Public Declare Sub Bar Lib ""bar.dll"" (Y As Integer)"
             };
 
             var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
@@ -290,6 +323,33 @@ namespace RubberduckTests.SmartIndenter
                 "2730 If Foo Then",
                 "2750    Debug.Print",
                 "2770 End If",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
+            var actual = indenter.Indent(code);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        [TestMethod]
+        [TestCategory("Indenter")]
+        public void LineNumbersWithColonWork()
+        {
+            var code = new[]
+           {
+                "Private Sub Test()",
+                "5: If Foo Then",
+                "10: Debug.Print",
+                "15: End If",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Private Sub Test()",
+                "5:  If Foo Then",
+                "10:     Debug.Print",
+                "15: End If",
                 "End Sub"
             };
 

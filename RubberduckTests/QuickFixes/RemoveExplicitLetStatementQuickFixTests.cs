@@ -4,7 +4,6 @@ using RubberduckTests.Mocks;
 using System.Threading;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Inspections;
 
 namespace RubberduckTests.QuickFixes
@@ -18,7 +17,7 @@ namespace RubberduckTests.QuickFixes
         public void ObsoleteLetStatement_QuickFixWorks()
         {
             const string inputCode =
-@"Public Sub Foo()
+                @"Public Sub Foo()
     Dim var1 As Integer
     Dim var2 As Integer
     
@@ -26,23 +25,23 @@ namespace RubberduckTests.QuickFixes
 End Sub";
 
             const string expectedCode =
-@"Public Sub Foo()
+                @"Public Sub Foo()
     Dim var1 As Integer
     Dim var2 As Integer
     
     var2 = var1
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new ObsoleteLetStatementInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            var inspection = new ObsoleteLetStatementInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-            new RemoveExplicitLetStatementQuickFix(state).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                new RemoveExplicitLetStatementQuickFix(state).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
     }

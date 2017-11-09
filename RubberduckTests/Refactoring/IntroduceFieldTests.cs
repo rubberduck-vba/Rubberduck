@@ -23,28 +23,30 @@ namespace RubberduckTests.Refactoring
         {
             //Input
             const string inputCode =
-@"Private Sub Foo()
+                @"Private Sub Foo()
 Dim bar As Boolean
 End Sub";
             var selection = new Selection(2, 10, 2, 13);
 
             //Expectation
             const string expectedCode =
-@"Private bar As Boolean
+                @"Private bar As Boolean
 Private Sub Foo()
 End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, null);
-            refactoring.Refactor(qualifiedSelection);
+                var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, null);
+                refactoring.Refactor(qualifiedSelection);
 
-            var actual = state.GetRewriter(component).GetText();
-            Assert.AreEqual(expectedCode, actual);
+                var actual = state.GetRewriter(component).GetText();
+                Assert.AreEqual(expectedCode, actual);
+            }
         }
 
         [TestMethod]
@@ -54,7 +56,7 @@ End Sub";
         {
             //Input
             const string inputCode =
-@"Private Function Foo() As Boolean
+                @"Private Function Foo() As Boolean
 Dim bar As Boolean
 Foo = True
 End Function";
@@ -62,22 +64,24 @@ End Function";
 
             //Expectation
             const string expectedCode =
-@"Private bar As Boolean
+                @"Private bar As Boolean
 Private Function Foo() As Boolean
 Foo = True
 End Function";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, null);
-            refactoring.Refactor(qualifiedSelection);
+                var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, null);
+                refactoring.Refactor(qualifiedSelection);
 
-            var actual = state.GetRewriter(component).GetText();
-            Assert.AreEqual(expectedCode, actual);
+                var actual = state.GetRewriter(component).GetText();
+                Assert.AreEqual(expectedCode, actual);
+            }
         }
 
         [TestMethod]
@@ -87,7 +91,7 @@ End Function";
         {
             //Input
             const string inputCode =
-@"Public fizz As Integer
+                @"Public fizz As Integer
 Private Sub Foo(ByVal buz As Integer)
 Dim bar As Boolean
 End Sub";
@@ -95,22 +99,24 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-@"Public fizz As Integer
+                @"Public fizz As Integer
 Private bar As Boolean
 Private Sub Foo(ByVal buz As Integer)
 End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, null);
-            refactoring.Refactor(qualifiedSelection);
+                var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, null);
+                refactoring.Refactor(qualifiedSelection);
 
-            var actual = state.GetRewriter(component).GetText();
-            Assert.AreEqual(expectedCode, actual);
+                var actual = state.GetRewriter(component).GetText();
+                Assert.AreEqual(expectedCode, actual);
+            }
         }
 
         [TestMethod]
@@ -120,7 +126,7 @@ End Sub";
         {
             //Input
             const string inputCode =
-@"Public fizz As Integer
+                @"Public fizz As Integer
 Private Sub Foo(ByVal buz As Integer)
 Dim _
 bar _
@@ -131,22 +137,24 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-@"Public fizz As Integer
+                @"Public fizz As Integer
 Private bar As Boolean
 Private Sub Foo(ByVal buz As Integer)
 End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, null);
-            refactoring.Refactor(qualifiedSelection);
+                var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, null);
+                refactoring.Refactor(qualifiedSelection);
 
-            var actual = state.GetRewriter(component).GetText();
-            Assert.AreEqual(expectedCode, actual);
+                var actual = state.GetRewriter(component).GetText();
+                Assert.AreEqual(expectedCode, actual);
+            }
         }
 
         [TestMethod]
@@ -156,7 +164,7 @@ End Sub";
         {
             //Input
             const string inputCode =
-@"Public fizz As Integer
+                @"Public fizz As Integer
 Public buzz As Integer
 Private Sub Foo(ByVal buz As Integer, _
 ByRef baz As Date)
@@ -166,7 +174,7 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-@"Public fizz As Integer
+                @"Public fizz As Integer
 Public buzz As Integer
 Private bar As Boolean
 Private Sub Foo(ByVal buz As Integer, _
@@ -175,15 +183,17 @@ End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, null);
-            refactoring.Refactor(qualifiedSelection);
+                var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, null);
+                refactoring.Refactor(qualifiedSelection);
 
-            var actual = state.GetRewriter(component).GetText();
-            Assert.AreEqual(expectedCode, actual);
+                var actual = state.GetRewriter(component).GetText();
+                Assert.AreEqual(expectedCode, actual);
+            }
         }
 
         [TestMethod]
@@ -193,7 +203,7 @@ End Sub";
         {
             //Input
             const string inputCode =
-@"Private Sub Foo(ByVal buz As Integer, _
+                @"Private Sub Foo(ByVal buz As Integer, _
 ByRef baz As Date)
 Dim bar As Boolean, _
 bat As Date, _
@@ -203,7 +213,7 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-@"Private bar As Boolean
+                @"Private bar As Boolean
 Private Sub Foo(ByVal buz As Integer, _
 ByRef baz As Date)
 Dim bat As Date, _
@@ -212,15 +222,17 @@ End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, null);
-            refactoring.Refactor(qualifiedSelection);
+                var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, null);
+                refactoring.Refactor(qualifiedSelection);
 
-            var actual = state.GetRewriter(component).GetText();
-            Assert.AreEqual(expectedCode, actual);
+                var actual = state.GetRewriter(component).GetText();
+                Assert.AreEqual(expectedCode, actual);
+            }
         }
 
         [TestMethod]
@@ -247,15 +259,17 @@ End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var target = state.AllUserDeclarations.SingleOrDefault(e => e.IdentifierName == "bat");
+                var target = state.AllUserDeclarations.SingleOrDefault(e => e.IdentifierName == "bat");
 
-            var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, new Mock<IMessageBox>().Object);
-            refactoring.Refactor(target);
+                var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, new Mock<IMessageBox>().Object);
+                refactoring.Refactor(target);
 
-            var actual = state.GetRewriter(component).GetText();
-            Assert.AreEqual(expectedCode, actual);
+                var actual = state.GetRewriter(component).GetText();
+                Assert.AreEqual(expectedCode, actual);
+            }
         }
 
         [TestMethod]
@@ -265,7 +279,7 @@ End Sub";
         {
             //Input
             const string inputCode =
-@"Private Sub Foo(ByVal buz As Integer, _
+                @"Private Sub Foo(ByVal buz As Integer, _
 ByRef baz As Date)
 Dim bar As Boolean, _
 bat As Date, _
@@ -275,7 +289,7 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-@"Private bap As Integer
+                @"Private bap As Integer
 Private Sub Foo(ByVal buz As Integer, _
 ByRef baz As Date)
 Dim bar As Boolean, _
@@ -284,15 +298,17 @@ End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, null);
-            refactoring.Refactor(qualifiedSelection);
+                var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, null);
+                refactoring.Refactor(qualifiedSelection);
 
-            var actual = state.GetRewriter(component).GetText();
-            Assert.AreEqual(expectedCode, actual);
+                var actual = state.GetRewriter(component).GetText();
+                Assert.AreEqual(expectedCode, actual);
+            }
         }
 
         [TestMethod]
@@ -302,7 +318,7 @@ End Sub";
         {
             //Input
             const string inputCode =
-@"Private Sub Foo(ByVal buz As Integer, _
+                @"Private Sub Foo(ByVal buz As Integer, _
 ByRef baz As Date)
 Dim bar As Boolean, bat As Date, bap As Integer
 End Sub";
@@ -310,7 +326,7 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-@"Private bar As Boolean
+                @"Private bar As Boolean
 Private Sub Foo(ByVal buz As Integer, _
 ByRef baz As Date)
 Dim bat As Date, bap As Integer
@@ -318,15 +334,17 @@ End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, null);
-            refactoring.Refactor(qualifiedSelection);
+                var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, null);
+                refactoring.Refactor(qualifiedSelection);
 
-            var actual = state.GetRewriter(component).GetText();
-            Assert.AreEqual(expectedCode, actual);
+                var actual = state.GetRewriter(component).GetText();
+                Assert.AreEqual(expectedCode, actual);
+            }
         }
 
         [TestMethod]
@@ -336,7 +354,7 @@ End Sub";
         {
             //Input
             const string inputCode =
-@"Private fizz As Boolean
+                @"Private fizz As Boolean
 
 Private Sub Foo()
 End Sub";
@@ -344,21 +362,23 @@ End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var messageBox = new Mock<IMessageBox>();
-            messageBox.Setup(m =>
+                var messageBox = new Mock<IMessageBox>();
+                messageBox.Setup(m =>
                     m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
                         It.IsAny<MessageBoxIcon>())).Returns(DialogResult.OK);
 
-            var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, messageBox.Object);
-            refactoring.Refactor(qualifiedSelection);
+                var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, messageBox.Object);
+                refactoring.Refactor(qualifiedSelection);
 
-            messageBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
-                It.IsAny<MessageBoxIcon>()), Times.Once);
-            Assert.AreEqual(inputCode, component.CodeModule.Content());
+                messageBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
+                    It.IsAny<MessageBoxIcon>()), Times.Once);
+                Assert.AreEqual(inputCode, component.CodeModule.Content());
+            }
         }
 
         [TestMethod]
@@ -368,7 +388,7 @@ End Sub";
         {
             //Input
             const string inputCode =
-@"Private fizz As Boolean
+                @"Private fizz As Boolean
 
 Private Sub Foo()
 End Sub";
@@ -376,23 +396,25 @@ End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var messageBox = new Mock<IMessageBox>();
-            messageBox.Setup(m =>
+                var messageBox = new Mock<IMessageBox>();
+                messageBox.Setup(m =>
                     m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
                         It.IsAny<MessageBoxIcon>())).Returns(DialogResult.OK);
 
-            var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, messageBox.Object);
-            refactoring.Refactor(qualifiedSelection);
+                var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, messageBox.Object);
+                refactoring.Refactor(qualifiedSelection);
 
-            messageBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
-                It.IsAny<MessageBoxIcon>()), Times.Once);
+                messageBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
+                    It.IsAny<MessageBoxIcon>()), Times.Once);
 
-            var actual = state.GetRewriter(component).GetText();
-            Assert.AreEqual(inputCode, actual);
+                var actual = state.GetRewriter(component).GetText();
+                Assert.AreEqual(inputCode, actual);
+            }
         }
 
         [TestMethod]
@@ -402,28 +424,30 @@ End Sub";
         {
             //Input
             const string inputCode =
-@"Private Sub Foo()
+                @"Private Sub Foo()
 Dim bar As Boolean
 End Sub";
             var selection = new Selection(2, 10, 2, 13);
 
             //Expectation
             const string expectedCode =
-@"Private bar As Boolean
+                @"Private bar As Boolean
 Private Sub Foo()
 End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var refactoring = new IntroduceFieldRefactoring((vbe.Object), state, null);
-            refactoring.Refactor(state.AllUserDeclarations.FindVariable(qualifiedSelection));
+                var refactoring = new IntroduceFieldRefactoring((vbe.Object), state, null);
+                refactoring.Refactor(state.AllUserDeclarations.FindVariable(qualifiedSelection));
 
-            var actual = state.GetRewriter(component).GetText();
-            Assert.AreEqual(expectedCode, actual);
+                var actual = state.GetRewriter(component).GetText();
+                Assert.AreEqual(expectedCode, actual);
+            }
         }
 
         [TestMethod]
@@ -433,37 +457,39 @@ End Sub";
         {
             //Input
             const string inputCode =
-@"Private Sub Foo()
+                @"Private Sub Foo()
 Dim bar As Boolean
 End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var messageBox = new Mock<IMessageBox>();
-            messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
-                      .Returns(DialogResult.OK);
-
-            var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, messageBox.Object);
-
-            try
+            using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                refactoring.Refactor(state.AllUserDeclarations.First(d => d.DeclarationType != DeclarationType.Variable));
-            }
-            catch (ArgumentException e)
-            {
-                messageBox.Verify(m =>
-                    m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
-                    It.IsAny<MessageBoxIcon>()), Times.Once);
 
-                Assert.AreEqual("target", e.ParamName);
-                var actual = state.GetRewriter(component).GetText();
-                Assert.AreEqual(inputCode, actual);
-                return;
-            }
+                var messageBox = new Mock<IMessageBox>();
+                messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
+                    .Returns(DialogResult.OK);
 
-            Assert.Fail();
+                var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, messageBox.Object);
+
+                try
+                {
+                    refactoring.Refactor(state.AllUserDeclarations.First(d => d.DeclarationType != DeclarationType.Variable));
+                }
+                catch (ArgumentException e)
+                {
+                    messageBox.Verify(m =>
+                        m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
+                            It.IsAny<MessageBoxIcon>()), Times.Once);
+
+                    Assert.AreEqual("target", e.ParamName);
+                    var actual = state.GetRewriter(component).GetText();
+                    Assert.AreEqual(inputCode, actual);
+                    return;
+                }
+
+                Assert.Fail();
+            }
         }
     }
 }

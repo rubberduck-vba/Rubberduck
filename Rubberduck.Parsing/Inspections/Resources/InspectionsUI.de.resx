@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -123,9 +123,6 @@
   <data name="AssignedByValParameterInspectionName" xml:space="preserve">
     <value>ByVal Parameter ist zugewiesen</value>
   </data>
-  <data name="CodeQualityIssues" xml:space="preserve">
-    <value>Code Qualitätsproblem</value>
-  </data>
   <data name="ConstantNotUsedInspectionMeta" xml:space="preserve">
     <value>Rubberduck konnte keine Referenz auf eine Konstante finden. Überlegen Sie eine Entfernung der nicht verwendeten Deklaration.</value>
   </data>
@@ -133,7 +130,7 @@
     <value>Konstante wird nicht verwendet</value>
   </data>
   <data name="DefaultProjectNameInspectionMeta" xml:space="preserve">
-    <value>Erwäge dem VBAProjekt einen Namen zu egeben.</value>
+    <value>Erwäge dem VBA-Projekt einen Namen zu geben.</value>
   </data>
   <data name="DefaultProjectNameInspectionName" xml:space="preserve">
     <value>Das Projekt hat den Standard-Projektnamen.</value>
@@ -177,12 +174,6 @@
   <data name="ImplicitActiveWorkbookReferenceInspectionName" xml:space="preserve">
     <value>Impliziete Referenz zum ' ActiveWorkbook'</value>
   </data>
-  <data name="ImplicitByRefParameterInspectionMeta" xml:space="preserve">
-    <value>Parameter werden als Referenz übergeben, wenn diese speziell übergene werden. Dies ist verwirrend und fehleranfällig. Deshalb sollten Parameter als Wert übergeben werden und nur in speziellen Fällen als Referenz.</value>
-  </data>
-  <data name="ImplicitByRefParameterInspectionName" xml:space="preserve">
-    <value>Implizierter ByRef Parameter</value>
-  </data>
   <data name="ImplicitPublicMemberInspectionMeta" xml:space="preserve">
     <value>Die Methoden eines Moduls sind standardmäßig öffentlich, was irreführend sein kann. Besser ist es, den Gültigkeitsbereich der Methoden explizit zu definieren.</value>
   </data>
@@ -190,7 +181,7 @@
     <value>Implizierte öffentliche Methode</value>
   </data>
   <data name="ImplicitVariantReturnTypeInspectionMeta" xml:space="preserve">
-    <value>Methoden mit einem Rückgabewet geben, wenn nicht nanders angegeben, implizit 'Variant' zurück. Überlege ob es nicht besser ist, den Rückgabewert explizit als 'Variant' zu definieren, wenn der Typ des Rückgabewertes nicht bekannt ist.</value>
+    <value>Methoden mit einem Rückgabewert geben, wenn nicht anders angegeben, implizit 'Variant' zurück. Überlege, ob es nicht besser ist, den Rückgabewert explizit als 'Variant' zu definieren, wenn der Typ des Rückgabewertes nicht bekannt ist.</value>
   </data>
   <data name="ImplicitVariantReturnTypeInspectionName" xml:space="preserve">
     <value>Rückgabewert der Methode ist implizit 'Variant'</value>
@@ -203,12 +194,6 @@
   </data>
   <data name="MoveFieldCloserToUsageInspectionResultFormat" xml:space="preserve">
     <value>Veringere die Größe der Modulvariable '{0}'.</value>
-  </data>
-  <data name="LanguageOpportunities" xml:space="preserve">
-    <value>Sprachmöglichkeiten</value>
-  </data>
-  <data name="MaintainabilityAndReadabilityIssues" xml:space="preserve">
-    <value>Wartungs- und Lesbarkeitsproblem</value>
   </data>
   <data name="MultilineParameterInspectionMeta" xml:space="preserve">
     <value>Überlege lange Parameterdeklarationen zusammenzuhalten. Das Aufteilen einer Parameterdeklaration über mehrere Zeilen sollte zugunsten der besseren Lesbarkeit vermieden werden.</value>
@@ -304,7 +289,7 @@
     <value>Variable wird genutzt ohne das ihr ein Wert zugewiesen wurde.</value>
   </data>
   <data name="UntypedFunctionUsageInspectionMeta" xml:space="preserve">
-    <value>Eine gibt eine Funktion, die einen String Äquivalent zurückgibt. Diese sollte bevorzugt genutzt werden, um implitizite Typumwandlungen zu vermeiden.
+    <value>Es gibt eine äquivalente Funktion, die einen String zurückgibt. Diese sollte bevorzugt genutzt werden, um implitizite Typumwandlungen zu vermeiden.
 Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' an die Funktion zu übergeben, die einen String erwartet würde zu einem "Type Mismatch"-Laufzeitfehler führen.</value>
   </data>
   <data name="UntypedFunctionUsageInspectionName" xml:space="preserve">
@@ -381,9 +366,6 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
   <data name="IdentifierNotUsedInspectionResultFormat" xml:space="preserve">
     <value>{0} '{1}' wird nicht genutzt</value>
   </data>
-  <data name="ImplicitByRefParameterInspectionResultFormat" xml:space="preserve">
-    <value>Der Parameter '{0}' wird implizit als Referenz übergeben.</value>
-  </data>
   <data name="ImplicitPublicMemberInspectionResultFormat" xml:space="preserve">
     <value>Methode '{0}' ist implizit 'Public'</value>
   </data>
@@ -418,10 +400,7 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>Konvertiere Funktion zu Prozedur</value>
   </data>
   <data name="DeclareAsExplicitVariantQuickFix" xml:space="preserve">
-    <value>Deklariere explizit als 'Variant'</value>
-  </data>
-  <data name="ImplicitByRefParameterQuickFix" xml:space="preserve">
-    <value>Parameter explizit als Referenz angeben</value>
+    <value>Deklariere als explizit 'Variant'</value>
   </data>
   <data name="Inspections_UnassignedVariableTodo" xml:space="preserve">
     <value>TODO</value>
@@ -776,5 +755,125 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
   </data>
   <data name="MissingAttributeInspectionResultFormat">
     <value>Modul oder Element '{0}' hat eine '{1}' Annotation, aber das zugehörige Attribut fehlt.</value>
+  </data>
+  <data name="EmptyCaseBlockInspectionResultFormat">
+    <value>'Case' Block enthält keine ausführbaren Anweisungen</value>
+  </data>
+  <data name="IntegerDataTypeInspectionName">
+    <value>Verwendung von 16-bit Ganzzahl</value>
+  </data>
+  <data name="EmptyForLoopBlockInspectionMeta">
+    <value>A Loop block should have executable statements</value>
+  </data>
+  <data name="EmptyCaseBlockInspectionName">
+    <value>Leerer 'Case' Block</value>
+  </data>
+  <data name="ShadowedDeclarationInspectionMeta">
+    <value>Zwei Deklarationen sind aktiv und haben denselben Namen. Dies bedeutet, dass nur eine von ihnen zur Verwendung verfügbar ist.</value>
+  </data>
+  <data name="StopKeywordInspectionMeta">
+    <value>The 'stop' keyword halts execution and brings up the debugger. Avoid its usage.</value>
+  </data>
+  <data name="EmptyForLoopBlockInspectionName">
+    <value>Empty For Loop</value>
+  </data>
+  <data name="ReplaceObsoleteErrorStatementQuickFix">
+    <value>'Error' durch 'Err.Raise' ersetzen</value>
+  </data>
+  <data name="EmptyCaseBlockInspectionMeta">
+    <value>Ein leerer 'Case' Block ohne ausführbare Anweisungen lässt andere Entwickler über die Absicht des Codes im unklaren. Vermeiden Sie das Schreiben von unnötigem Code.</value>
+  </data>
+  <data name="StopKeywordInspectionResultFormat">
+    <value>Stop keyword detected</value>
+  </data>
+  <data name="EmptyForEachBlockInspectionMeta">
+    <value>A Loop block should have executable statements</value>
+  </data>
+  <data name="EmptyElseBlockInspectionMeta">
+    <value>An Else block should have executable statements</value>
+  </data>
+  <data name="RemoveEmptyElseBlockQuickFix">
+    <value>Remove empty Else block</value>
+  </data>
+  <data name="ShadowedDeclarationInspectionResultFormat">
+    <value>{0} '{1}' überschattet {2} '{3}'</value>
+  </data>
+  <data name="RemoveStopKeywordQuickFix">
+    <value>Remove usage of the 'stop' keyword</value>
+  </data>
+  <data name="ObsoleteErrorSyntaxInspectionResultFormat">
+    <value>Ein Laufzeitfehler wird mit der veralteten 'Error'-Anweisung ausgelöst</value>
+  </data>
+  <data name="EmptyForEachBlockInspectionResultFormat">
+    <value>For-Each Loop has no executable statements</value>
+  </data>
+  <data name="EmptyElseBlockInspectionResultFormat">
+    <value>Else block has no executable statements</value>
+  </data>
+  <data name="IntegerDataTypeQuickFix">
+    <value>Change declaration type to Long</value>
+  </data>
+  <data name="EmptyForEachBlockInspectionName">
+    <value>Empty For-Each Loop</value>
+  </data>
+  <data name="EmptyDoWhileBlockInspectionName">
+    <value>Empty Do-While Loop</value>
+  </data>
+  <data name="EmptyElseBlockInspectionName">
+    <value>Empty Else block</value>
+  </data>
+  <data name="EmptyForLoopBlockInspectionResultFormat">
+    <value>For Loop has no executable statements</value>
+  </data>
+  <data name="EmptyWhileWendBlockInspectionMeta">
+    <value>A Loop block should have executable statements</value>
+  </data>
+  <data name="ObsoleteErrorSyntaxInspectionMeta">
+    <value>Die 'Error'-Anweisung existiert in der Sprache nur um Legacy-Programme zu unterstützen, die sie benötigten; Bevorzugen Sie stattdessen 'Err.Raise'.</value>
+  </data>
+  <data name="IntegerDataTypeInspectionMeta">
+    <value>Der größte Wert einer vorzeichenbehafteten 16-bit Ganzzahl ist 32.767 - Eine 32-bit Ganzzahl (Long) zu verwenden, wo es möglich ist, kann Überlauffehler zur Laufzeit verhindern und ist für moderne CPUs einfacher.</value>
+  </data>
+  <data name="IntegerDataTypeInspectionResultFormat">
+    <value>{0} '{1}' ist als Integer deklariert</value>
+  </data>
+  <data name="EmptyWhileWendBlockInspectionResultFormat">
+    <value>While-Wend block has no executable statements</value>
+  </data>
+  <data name="EmptyDoWhileBlockInspectionResultFormat">
+    <value>Do-While Loop has no executable statements</value>
+  </data>
+  <data name="EmptyWhileWendBlockInspectionName">
+    <value>Empty While-Wend block</value>
+  </data>
+  <data name="ShadowedDeclarationInspectionName">
+    <value>Überschattete Deklaration</value>
+  </data>
+  <data name="EmptyDoWhileBlockInspectionMeta">
+    <value>A Loop block should have executable statements</value>
+  </data>
+  <data name="StopKeywordInspectionName">
+    <value>Stop keyword</value>
+  </data>
+  <data name="BooleanAssignedInIfElseInspectionMeta">
+    <value>Ein Mitglied wird in verschiedenen Zweigen einer if-Anweisung mit True / False zugewiesen, wobei keine anderen Anweisungen in der Bedingung enthalten sind. Verwenden Sie die Bedingung stattdessen direkt für das Mitglied.</value>
+  </data>
+  <data name="BooleanAssignedInIfElseInspectionName">
+    <value>Boolsche Zeichenkette wird in Bedingung zugewiesen</value>
+  </data>
+  <data name="ReplaceIfElseWithConditionalStatementQuickFix" xml:space="preserve">
+    <value>Ersetze If/Else mit einer einfachen Zuordnung </value>
+  </data>
+  <data name="BooleanAssignedInIfElseInspectionResultFormat" xml:space="preserve">
+    <value>Boolean Ausdruck '{0}' wurde in einer trivialen If/Else-Verzweigung zugewiesen</value>
+  </data>
+  <data name="EmptyModuleInspectionName" xml:space="preserve">
+    <value>Leeres Modul</value>
+  </data>
+  <data name="EmptyModuleInspectionMeta" xml:space="preserve">
+    <value>Leere Module und Klassen weisen entweder auf noch nicht implementierte Funktionalitäten hin oder stellen unnötigen Ballast dar, der die Wartbarkeit eines Projekts behindern kann.</value>
+  </data>
+  <data name="EmptyModuleInspectionResultFormat" xml:space="preserve">
+    <value>Modul/Klasse {0} ist leer.</value>
   </data>
 </root>

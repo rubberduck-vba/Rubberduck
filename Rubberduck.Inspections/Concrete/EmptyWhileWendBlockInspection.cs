@@ -14,13 +14,11 @@ namespace Rubberduck.Inspections.Concrete
     internal class EmptyWhileWendBlockInspection : ParseTreeInspectionBase
     {
         public EmptyWhileWendBlockInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Suggestion) { }
+            : base(state, CodeInspectionSeverity.DoNotShow) { }
 
-        public override Type Type => typeof(EmptyWhileWendBlockInspection);
+        public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
-        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
-
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             return Listener.Contexts
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))

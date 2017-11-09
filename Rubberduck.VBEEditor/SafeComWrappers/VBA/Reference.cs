@@ -32,7 +32,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public string Version
         {
-            get { return string.Format("{0}.{1}", Major, Minor); }
+            get { return string.Format($"{Major}.{Minor}"); }
         }
 
         public string Description
@@ -42,7 +42,18 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public string FullPath
         {
-            get { return IsBroken ? string.Empty : Target.FullPath; }
+            get
+            {
+                try
+                {
+                    return IsBroken ? string.Empty : Target.FullPath;
+                }
+                catch (System.Runtime.InteropServices.COMException)
+                {
+
+                    return string.Empty;
+                }
+            }
         }
 
         public bool IsBuiltIn

@@ -318,7 +318,8 @@
                                                     SortMemberPath="{Binding LocalizedName}">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding LocalizedName}">
+                                        <TextBlock Text="{Binding LocalizedName}"
+                                                   ToolTipService.ShowDuration="30000">
                                             <TextBlock.ToolTip>
                                                 <StackPanel>
                                                     <TextBlock Text="{Binding LocalizedName}"

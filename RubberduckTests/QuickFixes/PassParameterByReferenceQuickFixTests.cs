@@ -1,15 +1,15 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using RubberduckTests.Mocks;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using Rubberduck.Inspections.Concrete;
+using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using RubberduckTests.Mocks;
 
-namespace RubberduckTests.Inspections
+namespace RubberduckTests.QuickFixes
 {
     [TestClass]
     public class PassParameterByReferenceQuickFixTests
@@ -165,25 +165,19 @@ End Sub
         private string ApplyPassParameterByReferenceQuickFixToVBAFragment(string inputCode)
         {
             var vbe = BuildMockVBEStandardModuleForVBAFragment(inputCode);
-            RubberduckParserState state;
-            var inspectionResults = GetAssignedByValParameterInspectionResults(vbe.Object, out state);
+            using(var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new AssignedByValParameterInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            new PassParameterByReferenceQuickFix(state).Fix(inspectionResults.First());
-            return state.GetRewriter(vbe.Object.ActiveVBProject.VBComponents[0]).GetText();
-        }
-
-        private IEnumerable<IInspectionResult> GetAssignedByValParameterInspectionResults(IVBE vbe, out RubberduckParserState state)
-        {
-            state = MockParser.CreateAndParse(vbe);
-
-            var inspection = new AssignedByValParameterInspection(state);
-            return inspection.GetInspectionResults();
+                new PassParameterByReferenceQuickFix(state).Fix(inspectionResults.First());
+                return state.GetRewriter(vbe.Object.ActiveVBProject.VBComponents[0]).GetText();
+            }
         }
 
         private Mock<IVBE> BuildMockVBEStandardModuleForVBAFragment(string inputCode)
         {
-            IVBComponent component;
-            return MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            return MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
         }
     }
 }

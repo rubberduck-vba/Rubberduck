@@ -31,11 +31,13 @@ namespace RubberduckTests.Binding
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);
             var vbe = builder.Build();
-            var state = Parse(vbe);
+            using (var state = Parse(vbe))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Function && d.IdentifierName == BINDING_TARGET_UNRESTRICTEDNAME);
+                var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Function && d.IdentifierName == BINDING_TARGET_UNRESTRICTEDNAME);
 
-            Assert.AreEqual(1, declaration.References.Count());
+                Assert.AreEqual(1, declaration.References.Count());
+            }
         }
 
         [TestCategory("Binding")]
@@ -51,11 +53,12 @@ namespace RubberduckTests.Binding
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);
             var vbe = builder.Build();
-            var state = Parse(vbe);
+            using (var state = Parse(vbe))
+            {
+                var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Function && d.IdentifierName == BINDING_TARGET_UNRESTRICTEDNAME);
 
-            var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Function && d.IdentifierName == BINDING_TARGET_UNRESTRICTEDNAME);
-
-            Assert.AreEqual(1, declaration.References.Count());
+                Assert.AreEqual(1, declaration.References.Count());
+            }
         }
 
         [TestCategory("Binding")]
@@ -71,11 +74,12 @@ namespace RubberduckTests.Binding
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);
             var vbe = builder.Build();
-            var state = Parse(vbe);
+            using (var state = Parse(vbe))
+            {
+                var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Function && d.IdentifierName == BINDING_TARGET_UNRESTRICTEDNAME);
 
-            var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Function && d.IdentifierName == BINDING_TARGET_UNRESTRICTEDNAME);
-
-            Assert.AreEqual(1, declaration.References.Count());
+                Assert.AreEqual(1, declaration.References.Count());
+            }
         }
 
         [TestCategory("Binding")]
@@ -91,11 +95,12 @@ namespace RubberduckTests.Binding
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);
             var vbe = builder.Build();
-            var state = Parse(vbe);
+            using (var state = Parse(vbe))
+            {
+                var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.EnumerationMember && d.IdentifierName == BINDING_TARGET_UNRESTRICTEDNAME);
 
-            var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.EnumerationMember && d.IdentifierName == BINDING_TARGET_UNRESTRICTEDNAME);
-
-            Assert.AreEqual(1, declaration.References.Count());
+                Assert.AreEqual(1, declaration.References.Count());
+            }
         }
 
         private static RubberduckParserState Parse(Mock<IVBE> vbe)
@@ -112,20 +117,20 @@ namespace RubberduckTests.Binding
 
         private string CreateFunction(string functionName)
         {
-            return string.Format(@"
-Public Function {0}() As Variant
+            return $@"
+Public Function {functionName}() As Variant
     TestEnumMember
 End Function
-", functionName);
+";
         }
 
         private string CreateEnumType(string typeName, string memberName)
         {
-            return string.Format(@"
-Public Enum {0}
-    {1}
+            return $@"
+Public Enum {typeName}
+    {memberName}
 End Enum
-", typeName, memberName);
+";
         }
     }
 }

@@ -2,8 +2,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.QuickFixes
@@ -16,22 +14,23 @@ namespace RubberduckTests.QuickFixes
         public void ImplicitVariantReturnType_QuickFixWorks_Function()
         {
             const string inputCode =
-@"Function Foo()
+                @"Function Foo()
 End Function";
 
             const string expectedCode =
-@"Function Foo() As Variant
+                @"Function Foo() As Variant
 End Function";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ImplicitVariantReturnTypeInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new ImplicitVariantReturnTypeInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            new SetExplicitVariantReturnTypeQuickFix(state).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                new SetExplicitVariantReturnTypeQuickFix(state).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
         [TestMethod]
@@ -39,23 +38,24 @@ End Function";
         public void ImplicitVariantReturnType_QuickFixWorks_PropertyGet()
         {
             const string inputCode =
-@"Property Get Foo()
+                @"Property Get Foo()
 End Property";
 
             const string expectedCode =
-@"Property Get Foo() As Variant
+                @"Property Get Foo() As Variant
 End Property";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ImplicitVariantReturnTypeInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new ImplicitVariantReturnTypeInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            new SetExplicitVariantReturnTypeQuickFix(state).Fix(inspectionResults.First());
+                new SetExplicitVariantReturnTypeQuickFix(state).Fix(inspectionResults.First());
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
         [TestMethod]
@@ -63,7 +63,7 @@ End Property";
         public void ImplicitVariantReturnType_QuickFixWorks_LibraryFunction()
         {
             const string inputCode =
-@"Declare PtrSafe Function CreateProcess Lib ""kernel32"" _
+                @"Declare PtrSafe Function CreateProcess Lib ""kernel32"" _
                                    Alias ""CreateProcessA""(ByVal lpApplicationName As String, _
                                                            ByVal lpCommandLine As String, _
                                                            lpProcessAttributes As SECURITY_ATTRIBUTES, _
@@ -76,7 +76,7 @@ End Property";
                                                            lpProcessInformation As PROCESS_INFORMATION)";
 
             const string expectedCode =
-@"Declare PtrSafe Function CreateProcess Lib ""kernel32"" _
+                @"Declare PtrSafe Function CreateProcess Lib ""kernel32"" _
                                    Alias ""CreateProcessA""(ByVal lpApplicationName As String, _
                                                            ByVal lpCommandLine As String, _
                                                            lpProcessAttributes As SECURITY_ATTRIBUTES, _
@@ -88,16 +88,17 @@ End Property";
                                                            lpStartupInfo As STARTUPINFO, _
                                                            lpProcessInformation As PROCESS_INFORMATION) As Variant";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ImplicitVariantReturnTypeInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new ImplicitVariantReturnTypeInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            new SetExplicitVariantReturnTypeQuickFix(state).Fix(inspectionResults.First());
+                new SetExplicitVariantReturnTypeQuickFix(state).Fix(inspectionResults.First());
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
         [TestMethod]
@@ -105,23 +106,24 @@ End Property";
         public void ImplicitVariantReturnType_QuickFixWorks_Function_HasComment()
         {
             const string inputCode =
-@"Function Foo()    ' comment
+                @"Function Foo()    ' comment
 End Function";
 
             const string expectedCode =
-@"Function Foo() As Variant    ' comment
+                @"Function Foo() As Variant    ' comment
 End Function";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ImplicitVariantReturnTypeInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new ImplicitVariantReturnTypeInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            new SetExplicitVariantReturnTypeQuickFix(state).Fix(inspectionResults.First());
+                new SetExplicitVariantReturnTypeQuickFix(state).Fix(inspectionResults.First());
 
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
     }
 }

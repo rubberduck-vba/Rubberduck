@@ -25,12 +25,10 @@ End Sub";
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
-            var parser = MockParser.Create(vbe);
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            Assert.AreEqual(1, UnitTestUtils.GetAllTests(vbe, parser.State).Count());
+            using (var state = MockParser.CreateAndParse(vbe))
+            {
+                Assert.AreEqual(1, UnitTestUtils.GetAllTests(vbe, state).Count());
+            }
         }
 
         [TestMethod]
@@ -45,12 +43,10 @@ End Sub";
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
-            var parser = MockParser.Create(vbe);
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            Assert.IsFalse(UnitTestUtils.GetAllTests(vbe, parser.State).Any());
+            using (var state = MockParser.CreateAndParse(vbe))
+            {
+                Assert.IsFalse(UnitTestUtils.GetAllTests(vbe, state).Any());
+            }
         }
 
         [TestMethod]
@@ -66,12 +62,10 @@ End Sub";
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetNormalModuleInput + testMethods);
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
-            var parser = MockParser.Create(vbe);
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            Assert.IsFalse(UnitTestUtils.GetAllTests(vbe, parser.State).Any());
+            using (var state = MockParser.CreateAndParse(vbe))
+            {
+                Assert.IsFalse(UnitTestUtils.GetAllTests(vbe, state).Any());
+            }
         }
 
         [TestMethod]
@@ -88,15 +82,13 @@ End Sub";
                 .AddComponent("TestModule2", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
-            var parser = MockParser.Create(vbe);
+            using (var state = MockParser.CreateAndParse(vbe))
+            {
+                var tests = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object.GetTests(vbe, state).ToList();
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var tests = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object.GetTests(vbe, parser.State).ToList();
-
-            Assert.AreEqual(1, tests.Count);
-            Assert.AreEqual("TestModule1", tests.ElementAt(0).Declaration.ComponentName);
+                Assert.AreEqual(1, tests.Count);
+                Assert.AreEqual("TestModule1", tests.ElementAt(0).Declaration.ComponentName);
+            }
         }
 
         [TestMethod]
@@ -109,19 +101,17 @@ End Sub";
                 .AddComponent("TestModule2", ComponentType.StandardModule, GetTestModuleInput);
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
-            var parser = MockParser.Create(vbe);
+            using (var state = MockParser.CreateAndParse(vbe))
+            {
+                var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
+                var qualifiedModuleName = new QualifiedModuleName(component);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                var initMethods = qualifiedModuleName.FindTestInitializeMethods(state).ToList();
 
-            var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
-            var qualifiedModuleName = new QualifiedModuleName(component);
-
-            var initMethods = qualifiedModuleName.FindTestInitializeMethods(parser.State).ToList();
-
-            Assert.AreEqual(1, initMethods.Count);
-            Assert.AreEqual("TestModule1", initMethods.ElementAt(0).QualifiedName.QualifiedModuleName.ComponentName);
-            Assert.AreEqual("TestInitialize", initMethods.ElementAt(0).QualifiedName.MemberName);
+                Assert.AreEqual(1, initMethods.Count);
+                Assert.AreEqual("TestModule1", initMethods.ElementAt(0).QualifiedName.QualifiedModuleName.ComponentName);
+                Assert.AreEqual("TestInitialize", initMethods.ElementAt(0).QualifiedName.MemberName);
+            }
         }
 
         [TestMethod]
@@ -134,19 +124,17 @@ End Sub";
                 .AddComponent("TestModule2", ComponentType.StandardModule, GetTestModuleInput);
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
-            var parser = MockParser.Create(vbe);
+            using (var state = MockParser.CreateAndParse(vbe))
+            {
+                var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
+                var qualifiedModuleName = new QualifiedModuleName(component);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                var initMethods = qualifiedModuleName.FindTestCleanupMethods(state).ToList();
 
-            var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
-            var qualifiedModuleName = new QualifiedModuleName(component);
-
-            var initMethods = qualifiedModuleName.FindTestCleanupMethods(parser.State).ToList();
-
-            Assert.AreEqual(1, initMethods.Count);
-            Assert.AreEqual("TestModule1", initMethods.ElementAt(0).QualifiedName.QualifiedModuleName.ComponentName);
-            Assert.AreEqual("TestCleanup", initMethods.ElementAt(0).QualifiedName.MemberName);
+                Assert.AreEqual(1, initMethods.Count);
+                Assert.AreEqual("TestModule1", initMethods.ElementAt(0).QualifiedName.QualifiedModuleName.ComponentName);
+                Assert.AreEqual("TestCleanup", initMethods.ElementAt(0).QualifiedName.MemberName);
+            }
         }
 
         [TestMethod]
@@ -158,16 +146,14 @@ End Sub";
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput.Replace("'@TestInitialize", string.Empty));
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
-            var parser = MockParser.Create(vbe);
+            using (var state = MockParser.CreateAndParse(vbe))
+            {
+                var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
+                var qualifiedModuleName = new QualifiedModuleName(component);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
-            var qualifiedModuleName = new QualifiedModuleName(component);
-
-            var initMethods = qualifiedModuleName.FindTestInitializeMethods(parser.State);
-            Assert.IsFalse(initMethods.Any());
+                var initMethods = qualifiedModuleName.FindTestInitializeMethods(state);
+                Assert.IsFalse(initMethods.Any());
+            }
         }
 
         [TestMethod]
@@ -179,16 +165,14 @@ End Sub";
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput.Replace("'@TestCleanup", string.Empty));
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
-            var parser = MockParser.Create(vbe);
+            using (var state = MockParser.CreateAndParse(vbe))
+            {
+                var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
+                var qualifiedModuleName = new QualifiedModuleName(component);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
-            var qualifiedModuleName = new QualifiedModuleName(component);
-
-            var initMethods = qualifiedModuleName.FindTestCleanupMethods(parser.State);
-            Assert.IsFalse(initMethods.Any());
+                var initMethods = qualifiedModuleName.FindTestCleanupMethods(state);
+                Assert.IsFalse(initMethods.Any());
+            }
         }
 
         [TestMethod]
@@ -200,16 +184,14 @@ End Sub";
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetNormalModuleInput.Replace("'@TestInitialize", string.Empty));
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
-            var parser = MockParser.Create(vbe);
+            using (var state = MockParser.CreateAndParse(vbe))
+            {
+                var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
+                var qualifiedModuleName = new QualifiedModuleName(component);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
-            var qualifiedModuleName = new QualifiedModuleName(component);
-
-            var initMethods = qualifiedModuleName.FindTestInitializeMethods(parser.State);
-            Assert.IsFalse(initMethods.Any());
+                var initMethods = qualifiedModuleName.FindTestInitializeMethods(state);
+                Assert.IsFalse(initMethods.Any());
+            }
         }
 
         [TestMethod]
@@ -221,16 +203,14 @@ End Sub";
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetNormalModuleInput.Replace("'@TestCleanup", string.Empty));
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
-            var parser = MockParser.Create(vbe);
+            using (var state = MockParser.CreateAndParse(vbe))
+            {
+                var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
+                var qualifiedModuleName = new QualifiedModuleName(component);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
-            var qualifiedModuleName = new QualifiedModuleName(component);
-
-            var initMethods = qualifiedModuleName.FindTestCleanupMethods(parser.State);
-            Assert.IsFalse(initMethods.Any());
+                var initMethods = qualifiedModuleName.FindTestCleanupMethods(state);
+                Assert.IsFalse(initMethods.Any());
+            }
         }
 
         [TestMethod]
@@ -243,19 +223,17 @@ End Sub";
                 .AddComponent("TestModule2", ComponentType.StandardModule, GetTestModuleInput);
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
-            var parser = MockParser.Create(vbe);
+            using (var state = MockParser.CreateAndParse(vbe))
+            {
+                var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
+                var qualifiedModuleName = new QualifiedModuleName(component);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                var initMethods = qualifiedModuleName.FindModuleInitializeMethods(state).ToList();
 
-            var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
-            var qualifiedModuleName = new QualifiedModuleName(component);
-
-            var initMethods = qualifiedModuleName.FindModuleInitializeMethods(parser.State).ToList();
-
-            Assert.AreEqual(1, initMethods.Count);
-            Assert.AreEqual("TestModule1", initMethods.ElementAt(0).QualifiedName.QualifiedModuleName.ComponentName);
-            Assert.AreEqual("ModuleInitialize", initMethods.ElementAt(0).QualifiedName.MemberName);
+                Assert.AreEqual(1, initMethods.Count);
+                Assert.AreEqual("TestModule1", initMethods.ElementAt(0).QualifiedName.QualifiedModuleName.ComponentName);
+                Assert.AreEqual("ModuleInitialize", initMethods.ElementAt(0).QualifiedName.MemberName);
+            }
         }
 
         [TestMethod]
@@ -268,19 +246,17 @@ End Sub";
                 .AddComponent("TestModule2", ComponentType.StandardModule, GetTestModuleInput);
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
-            var parser = MockParser.Create(vbe);
+            using (var state = MockParser.CreateAndParse(vbe))
+            {
+                var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
+                var qualifiedModuleName = new QualifiedModuleName(component);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                var initMethods = qualifiedModuleName.FindModuleCleanupMethods(state).ToList();
 
-            var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
-            var qualifiedModuleName = new QualifiedModuleName(component);
-
-            var initMethods = qualifiedModuleName.FindModuleCleanupMethods(parser.State).ToList();
-
-            Assert.AreEqual(1, initMethods.Count);
-            Assert.AreEqual("TestModule1", initMethods.ElementAt(0).QualifiedName.QualifiedModuleName.ComponentName);
-            Assert.AreEqual("ModuleCleanup", initMethods.ElementAt(0).QualifiedName.MemberName);
+                Assert.AreEqual(1, initMethods.Count);
+                Assert.AreEqual("TestModule1", initMethods.ElementAt(0).QualifiedName.QualifiedModuleName.ComponentName);
+                Assert.AreEqual("ModuleCleanup", initMethods.ElementAt(0).QualifiedName.MemberName);
+            }
         }
 
         [TestMethod]
@@ -292,16 +268,14 @@ End Sub";
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput.Replace("'@ModuleInitialize", string.Empty));
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
-            var parser = MockParser.Create(vbe);
+            using (var state = MockParser.CreateAndParse(vbe))
+            {
+                var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
+                var qualifiedModuleName = new QualifiedModuleName(component);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
-            var qualifiedModuleName = new QualifiedModuleName(component);
-
-            var initMethods = qualifiedModuleName.FindModuleInitializeMethods(parser.State);
-            Assert.IsFalse(initMethods.Any());
+                var initMethods = qualifiedModuleName.FindModuleInitializeMethods(state);
+                Assert.IsFalse(initMethods.Any());
+            }
         }
 
         [TestMethod]
@@ -313,16 +287,14 @@ End Sub";
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput.Replace("'@ModuleCleanup", string.Empty));
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
-            var parser = MockParser.Create(vbe);
+            using (var state = MockParser.CreateAndParse(vbe))
+            {
+                var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
+                var qualifiedModuleName = new QualifiedModuleName(component);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
-            var qualifiedModuleName = new QualifiedModuleName(component);
-
-            var initMethods = qualifiedModuleName.FindModuleCleanupMethods(parser.State);
-            Assert.IsFalse(initMethods.Any());
+                var initMethods = qualifiedModuleName.FindModuleCleanupMethods(state);
+                Assert.IsFalse(initMethods.Any());
+            }
         }
 
         [TestMethod]
@@ -334,16 +306,14 @@ End Sub";
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetNormalModuleInput.Replace("'@ModuleInitialize", string.Empty));
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
-            var parser = MockParser.Create(vbe);
+            using (var state = MockParser.CreateAndParse(vbe))
+            {
+                var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
+                var qualifiedModuleName = new QualifiedModuleName(component);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
-            var qualifiedModuleName = new QualifiedModuleName(component);
-
-            var initMethods = qualifiedModuleName.FindModuleInitializeMethods(parser.State);
-            Assert.IsFalse(initMethods.Any());
+                var initMethods = qualifiedModuleName.FindModuleInitializeMethods(state);
+                Assert.IsFalse(initMethods.Any());
+            }
         }
 
         [TestMethod]
@@ -355,16 +325,14 @@ End Sub";
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetNormalModuleInput.Replace("'@ModuleCleanup", string.Empty));
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
-            var parser = MockParser.Create(vbe);
+            using (var state = MockParser.CreateAndParse(vbe))
+            {
+                var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
+                var qualifiedModuleName = new QualifiedModuleName(component);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
-            var qualifiedModuleName = new QualifiedModuleName(component);
-
-            var initMethods = qualifiedModuleName.FindModuleCleanupMethods(parser.State);
-            Assert.IsFalse(initMethods.Any());
+                var initMethods = qualifiedModuleName.FindModuleCleanupMethods(state);
+                Assert.IsFalse(initMethods.Any());
+            }
         }
 
         private const string RawInput = @"Option Explicit

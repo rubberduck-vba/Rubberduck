@@ -26,19 +26,16 @@ namespace Rubberduck.Inspections.Concrete
             _settings = settings;
         }
 
-        public override Type Type => typeof(UseMeaningfulNameInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
         private static readonly DeclarationType[] IgnoreDeclarationTypes = 
         {
-            DeclarationType.ModuleOption,
             DeclarationType.BracketedExpression, 
             DeclarationType.LibraryFunction,
             DeclarationType.LibraryProcedure, 
         };
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var settings = _settings.Load(new CodeInspectionSettings()) ?? new CodeInspectionSettings();
             var whitelistedNames = settings.WhitelistedIdentifiers.Select(s => s.Identifier).ToArray();

@@ -16,11 +16,9 @@ namespace Rubberduck.Inspections.Concrete
         public ObjectVariableNotSetInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Error) {  }
 
-        public override Type Type => typeof(ObjectVariableNotSetInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var allInterestingDeclarations =
                 VariableRequiresSetAssignmentEvaluator.GetDeclarationsPotentiallyRequiringSetAssignment(State.AllUserDeclarations);
@@ -36,17 +34,20 @@ namespace Rubberduck.Inspections.Concrete
 
             var objectVariableNotSetReferences = referencesRequiringSetAssignment.Where(FlagIfObjectVariableNotSet);
 
-            return objectVariableNotSetReferences.Select(reference =>
+            return objectVariableNotSetReferences
+                .Select(reference =>
                 new IdentifierReferenceInspectionResult(this,
-                                     string.Format(InspectionsUI.ObjectVariableNotSetInspectionResultFormat, reference.Declaration.IdentifierName),
-                                     State,
-                                     reference));
+                    string.Format(InspectionsUI.ObjectVariableNotSetInspectionResultFormat, reference.Declaration.IdentifierName),
+                    State, reference));
         }
 
         private bool FlagIfObjectVariableNotSet(IdentifierReference reference)
         {
+            var allrefs = reference.Declaration.References;
             var letStmtContext = ParserRuleContextHelper.GetParent<VBAParser.LetStmtContext>(reference.Context);
-            return (reference.IsAssignment && letStmtContext != null);
+
+            return reference.IsAssignment && (letStmtContext != null 
+                   || allrefs.Where(r => r.IsAssignment).All(r => ParserRuleContextHelper.GetParent<VBAParser.SetStmtContext>(r.Context)?.expression()?.GetText().Equals(Tokens.Nothing, StringComparison.InvariantCultureIgnoreCase) ?? false));
         }
     }
 }

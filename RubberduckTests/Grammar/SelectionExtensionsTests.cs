@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Symbols;
 using static Rubberduck.Parsing.Grammar.VBAParser;
 using Rubberduck.VBEditor;
 using RubberduckTests.Mocks;
@@ -56,16 +57,18 @@ Debug.Print ""foo""
     End _
   Sub : 'Lame comment!
 ";
-            
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var tree = state.GetParseTree(new QualifiedModuleName(component));
-            var visitor = new SubStmtContextElementCollectorVisitor();
-            var context = visitor.Visit(tree).First();
-            var selection = new Selection(3, 0, 10, 5);
 
-            Assert.IsFalse(selection.Contains(context));
-            Assert.IsFalse(selection.IsContainedIn(context));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var tree = state.GetParseTree(new QualifiedModuleName(component));
+                var visitor = new SubStmtContextElementCollectorVisitor();
+                var context = visitor.Visit(tree).First();
+                var selection = new Selection(3, 0, 10, 5);
+
+                Assert.IsFalse(selection.Contains(context));
+                Assert.IsFalse(selection.IsContainedIn(context));
+            }
         }
 
         [TestMethod]
@@ -87,14 +90,16 @@ Debug.Print ""foo""
 ";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var tree = state.GetParseTree(new QualifiedModuleName(component));
-            var visitor = new SubStmtContextElementCollectorVisitor();
-            var context = visitor.Visit(tree).First();
-            var selection = new Selection(4, 1, 11, 8);
-            
-            Assert.IsTrue(selection.Contains(context));
-            Assert.IsFalse(selection.IsContainedIn(context));
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var tree = state.GetParseTree(new QualifiedModuleName(component));
+                var visitor = new SubStmtContextElementCollectorVisitor();
+                var context = visitor.Visit(tree).First();
+                var selection = new Selection(4, 1, 11, 8);
+
+                Assert.IsTrue(selection.Contains(context));
+                Assert.IsFalse(selection.IsContainedIn(context));
+            }
         }
 
         [TestMethod]
@@ -116,14 +121,16 @@ Debug.Print ""foo""
 ";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var tree = state.GetParseTree(new QualifiedModuleName(component));
-            var visitor = new SubStmtContextElementCollectorVisitor();
-            var context = visitor.Visit(tree).First();
-            var selection = new Selection(5, 1, 11, 8);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var tree = state.GetParseTree(new QualifiedModuleName(component));
+                var visitor = new SubStmtContextElementCollectorVisitor();
+                var context = visitor.Visit(tree).First();
+                var selection = new Selection(5, 1, 11, 8);
 
-            Assert.IsFalse(selection.Contains(context));
-            Assert.IsFalse(selection.IsContainedIn(context));
+                Assert.IsFalse(selection.Contains(context));
+                Assert.IsFalse(selection.IsContainedIn(context));
+            }
         }
 
         [TestMethod]
@@ -145,14 +152,16 @@ Debug.Print ""foo""
 ";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var tree = state.GetParseTree(new QualifiedModuleName(component));
-            var visitor = new SubStmtContextElementCollectorVisitor();
-            var context = visitor.Visit(tree).First();
-            var selection = new Selection(4, 1, 10, 8);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var tree = state.GetParseTree(new QualifiedModuleName(component));
+                var visitor = new SubStmtContextElementCollectorVisitor();
+                var context = visitor.Visit(tree).First();
+                var selection = new Selection(4, 1, 10, 8);
 
-            Assert.IsFalse(selection.Contains(context));
-            Assert.IsTrue(selection.IsContainedIn(context));
+                Assert.IsFalse(selection.Contains(context));
+                Assert.IsTrue(selection.IsContainedIn(context));
+            }
         }
 
         [TestMethod]
@@ -175,15 +184,17 @@ Debug.Print ""foo""
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var pane = component.CodeModule.CodePane;
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var tree = state.GetParseTree(new QualifiedModuleName(component));
-            var visitor = new SubStmtContextElementCollectorVisitor();
-            var context = visitor.Visit(tree).First();
-            pane.Selection = new Selection(4, 1, 11, 6);
-            
-            Assert.IsTrue(context.GetSelection().Contains(pane.Selection));
-            Assert.IsTrue(pane.Selection.IsContainedIn(context));
-            Assert.IsTrue(pane.Selection.Contains(context));
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var tree = state.GetParseTree(new QualifiedModuleName(component));
+                var visitor = new SubStmtContextElementCollectorVisitor();
+                var context = visitor.Visit(tree).First();
+                pane.Selection = new Selection(4, 1, 11, 6);
+
+                Assert.IsTrue(context.GetSelection().Contains(pane.Selection));
+                Assert.IsTrue(pane.Selection.IsContainedIn(context));
+                Assert.IsTrue(pane.Selection.Contains(context));
+            }
         }
 
         [TestMethod]
@@ -203,15 +214,17 @@ End Sub : 'Lame comment!
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var pane = component.CodeModule.CodePane;
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var tree = state.GetParseTree(new QualifiedModuleName(component));
-            var visitor = new SubStmtContextElementCollectorVisitor();
-            var context = visitor.Visit(tree).First();
-            pane.Selection = new Selection(3, 0, 7, 7);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var tree = state.GetParseTree(new QualifiedModuleName(component));
+                var visitor = new SubStmtContextElementCollectorVisitor();
+                var context = visitor.Visit(tree).First();
+                pane.Selection = new Selection(3, 0, 7, 7);
 
-            Assert.IsFalse(context.GetSelection().Contains(pane.Selection));
-            Assert.IsFalse(pane.Selection.IsContainedIn(context));
-            Assert.IsFalse(pane.Selection.Contains(context));
+                Assert.IsFalse(context.GetSelection().Contains(pane.Selection));
+                Assert.IsFalse(pane.Selection.IsContainedIn(context));
+                Assert.IsFalse(pane.Selection.Contains(context));
+            }
         }
 
         [TestMethod]
@@ -231,15 +244,17 @@ End Sub : 'Lame comment!
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var pane = component.CodeModule.CodePane;
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var tree = state.GetParseTree(new QualifiedModuleName(component));
-            var visitor = new SubStmtContextElementCollectorVisitor();
-            var context = visitor.Visit(tree).First();
-            pane.Selection = new Selection(4, 1, 8, 8);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var tree = state.GetParseTree(new QualifiedModuleName(component));
+                var visitor = new SubStmtContextElementCollectorVisitor();
+                var context = visitor.Visit(tree).First();
+                pane.Selection = new Selection(4, 1, 8, 8);
 
-            Assert.IsTrue(context.GetSelection().Contains(pane.Selection));
-            Assert.IsTrue(pane.Selection.IsContainedIn(context));
-            Assert.IsTrue(pane.Selection.Contains(context));
+                Assert.IsTrue(context.GetSelection().Contains(pane.Selection));
+                Assert.IsTrue(pane.Selection.IsContainedIn(context));
+                Assert.IsTrue(pane.Selection.Contains(context));
+            }
         }
 
         [TestMethod]
@@ -259,14 +274,16 @@ End Sub : 'Lame comment!
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var pane = component.CodeModule.CodePane;
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var tree = state.GetParseTree(new QualifiedModuleName(component));
-            var visitor = new SubStmtContextElementCollectorVisitor();
-            var context = visitor.Visit(tree).First();
-            var selection = new Selection(4, 1, 8, 8);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var tree = state.GetParseTree(new QualifiedModuleName(component));
+                var visitor = new SubStmtContextElementCollectorVisitor();
+                var context = visitor.Visit(tree).First();
+                var selection = new Selection(4, 1, 8, 8);
 
-            Assert.IsTrue(selection.Contains(context));
-            Assert.IsTrue(selection.IsContainedIn(context));
+                Assert.IsTrue(selection.Contains(context));
+                Assert.IsTrue(selection.IsContainedIn(context));
+            }
         }
 
         [TestMethod]
@@ -286,14 +303,16 @@ End Sub : 'Lame comment!
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var pane = component.CodeModule.CodePane;
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var tree = state.GetParseTree(new QualifiedModuleName(component));
-            var visitor = new SubStmtContextElementCollectorVisitor();
-            var context = visitor.Visit(tree).First();
-            var selection = new Selection(4, 2, 8, 8);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var tree = state.GetParseTree(new QualifiedModuleName(component));
+                var visitor = new SubStmtContextElementCollectorVisitor();
+                var context = visitor.Visit(tree).First();
+                var selection = new Selection(4, 2, 8, 8);
 
-            Assert.IsFalse(selection.Contains(context));
-            Assert.IsTrue(selection.IsContainedIn(context));
+                Assert.IsFalse(selection.Contains(context));
+                Assert.IsTrue(selection.IsContainedIn(context));
+            }
         }
 
         [TestMethod]
@@ -313,14 +332,16 @@ End Sub : 'Lame comment!
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var pane = component.CodeModule.CodePane;
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var tree = state.GetParseTree(new QualifiedModuleName(component));
-            var visitor = new SubStmtContextElementCollectorVisitor();
-            var context = visitor.Visit(tree).First();
-            var selection = new Selection(4, 1, 8, 7);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var tree = state.GetParseTree(new QualifiedModuleName(component));
+                var visitor = new SubStmtContextElementCollectorVisitor();
+                var context = visitor.Visit(tree).First();
+                var selection = new Selection(4, 1, 8, 7);
 
-            Assert.IsFalse(selection.Contains(context));
-            Assert.IsTrue(selection.IsContainedIn(context));
+                Assert.IsFalse(selection.Contains(context));
+                Assert.IsTrue(selection.IsContainedIn(context));
+            }
         }
 
         [TestMethod]
@@ -349,14 +370,16 @@ End Sub : 'Lame comment!
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var pane = component.CodeModule.CodePane;
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var tree = state.GetParseTree(new QualifiedModuleName(component));
-            var visitor = new IfStmtContextElementCollectorVisitor();
-            var contexts = visitor.Visit(tree);
-            var selection = new Selection(6, 1, 10, 7);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var tree = state.GetParseTree(new QualifiedModuleName(component));
+                var visitor = new IfStmtContextElementCollectorVisitor();
+                var contexts = visitor.Visit(tree);
+                var selection = new Selection(6, 1, 10, 7);
 
-            Assert.IsTrue(selection.Contains(contexts.ElementAt(0)));   // first If block
-            Assert.IsFalse(selection.Contains(contexts.ElementAt(1)));  // second If block
+                Assert.IsTrue(selection.Contains(contexts.ElementAt(0)));   // first If block
+                Assert.IsFalse(selection.Contains(contexts.ElementAt(1)));  // second If block
+            }
         }
 
         [TestMethod]
@@ -386,14 +409,16 @@ End Sub : 'Lame comment!
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var pane = component.CodeModule.CodePane;
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var tree = state.GetParseTree(new QualifiedModuleName(component));
-            var visitor = new IfStmtContextElementCollectorVisitor();
-            var contexts = visitor.Visit(tree);
-            var selection = new Selection(6, 1, 10, 7);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var tree = state.GetParseTree(new QualifiedModuleName(component));
+                var visitor = new IfStmtContextElementCollectorVisitor();
+                var contexts = visitor.Visit(tree);
+                var selection = new Selection(6, 1, 10, 7);
 
-            Assert.IsTrue(selection.Contains(contexts.ElementAt(0)));   // first If block
-            Assert.IsFalse(selection.Contains(contexts.ElementAt(1)));  // second If block
+                Assert.IsTrue(selection.Contains(contexts.ElementAt(0)));   // first If block
+                Assert.IsFalse(selection.Contains(contexts.ElementAt(1)));  // second If block
+            }
         }
 
         [TestMethod]
@@ -423,14 +448,16 @@ End Sub : 'Lame comment!
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var pane = component.CodeModule.CodePane;
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var tree = state.GetParseTree(new QualifiedModuleName(component));
-            var visitor = new IfStmtContextElementCollectorVisitor();
-            var contexts = visitor.Visit(tree);
-            var selection = new Selection(12, 1, 16, 7);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var tree = state.GetParseTree(new QualifiedModuleName(component));
+                var visitor = new IfStmtContextElementCollectorVisitor();
+                var contexts = visitor.Visit(tree);
+                var selection = new Selection(12, 1, 16, 7);
 
-            Assert.IsFalse(selection.Contains(contexts.ElementAt(0)));  // first If block
-            Assert.IsTrue(selection.Contains(contexts.ElementAt(1)));   // second If block
+                Assert.IsFalse(selection.Contains(contexts.ElementAt(0)));  // first If block
+                Assert.IsTrue(selection.Contains(contexts.ElementAt(1)));   // second If block
+            }
         }
 
         [TestMethod]
@@ -460,16 +487,18 @@ End Sub : 'Lame comment!
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var pane = component.CodeModule.CodePane;
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var tree = state.GetParseTree(new QualifiedModuleName(component));
-            var visitor = new IfStmtContextElementCollectorVisitor();
-            var contexts = visitor.Visit(tree);
-            var token = contexts.ElementAt(1).Stop;
-            var selection = new Selection(12, 1, 16, 7);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var tree = state.GetParseTree(new QualifiedModuleName(component));
+                var visitor = new IfStmtContextElementCollectorVisitor();
+                var contexts = visitor.Visit(tree);
+                var token = contexts.ElementAt(1).Stop;
+                var selection = new Selection(12, 1, 16, 7);
 
-            Assert.IsTrue(selection.Contains(token));                   // last token in second If block
-            Assert.IsFalse(selection.Contains(contexts.ElementAt(0)));  // first If block
-            Assert.IsTrue(selection.Contains(contexts.ElementAt(1)));   // second If block
+                Assert.IsTrue(selection.Contains(token));                   // last token in second If block
+                Assert.IsFalse(selection.Contains(contexts.ElementAt(0)));  // first If block
+                Assert.IsTrue(selection.Contains(contexts.ElementAt(1)));   // second If block
+            }
         }
 
         [TestMethod]
@@ -499,14 +528,16 @@ End Sub : 'Lame comment!
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var pane = component.CodeModule.CodePane;
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var tree = state.GetParseTree(new QualifiedModuleName(component));
-            var visitor = new IfStmtContextElementCollectorVisitor();
-            var context = visitor.Visit(tree).Last();
-            var token = context.Stop;
-            var selection = new Selection(12, 1, 14, 1);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var tree = state.GetParseTree(new QualifiedModuleName(component));
+                var visitor = new IfStmtContextElementCollectorVisitor();
+                var context = visitor.Visit(tree).Last();
+                var token = context.Stop;
+                var selection = new Selection(12, 1, 14, 1);
 
-            Assert.IsFalse(selection.Contains(token));
+                Assert.IsFalse(selection.Contains(token));
+            }
         }
 
         [TestMethod]
@@ -539,17 +570,19 @@ End Sub : 'Lame comment!
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var pane = component.CodeModule.CodePane;
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var tree = state.GetParseTree(new QualifiedModuleName(component));
-            var visitor = new IfStmtContextElementCollectorVisitor();
-            var contexts = visitor.Visit(tree); 
-            var token = contexts.ElementAt(0).Stop; 
-            var selection = new Selection(8, 1, 10, 9);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var tree = state.GetParseTree(new QualifiedModuleName(component));
+                var visitor = new IfStmtContextElementCollectorVisitor();
+                var contexts = visitor.Visit(tree);
+                var token = contexts.ElementAt(0).Stop;
+                var selection = new Selection(8, 1, 10, 9);
 
-            Assert.IsTrue(selection.Contains(token));                   // last token in innermost If block
-            Assert.IsTrue(selection.Contains(contexts.ElementAt(0)));   // innermost If block
-            Assert.IsFalse(selection.Contains(contexts.ElementAt(1)));  // first outer If block
-            Assert.IsFalse(selection.Contains(contexts.ElementAt(2)));  // second outer If block
+                Assert.IsTrue(selection.Contains(token));                   // last token in innermost If block
+                Assert.IsTrue(selection.Contains(contexts.ElementAt(0)));   // innermost If block
+                Assert.IsFalse(selection.Contains(contexts.ElementAt(1)));  // first outer If block
+                Assert.IsFalse(selection.Contains(contexts.ElementAt(2)));  // second outer If block
+            }
         }
 
         [TestMethod]
@@ -582,17 +615,19 @@ End Sub : 'Lame comment!
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var pane = component.CodeModule.CodePane;
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var tree = state.GetParseTree(new QualifiedModuleName(component));
-            var visitor = new IfStmtContextElementCollectorVisitor();
-            var contexts = visitor.Visit(tree); //returns innermost statement first then topmost consecutively
-            var token = contexts.ElementAt(0).Stop;
-            var selection = new Selection(6, 1, 13, 7);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var tree = state.GetParseTree(new QualifiedModuleName(component));
+                var visitor = new IfStmtContextElementCollectorVisitor();
+                var contexts = visitor.Visit(tree); //returns innermost statement first then topmost consecutively
+                var token = contexts.ElementAt(0).Stop;
+                var selection = new Selection(6, 1, 13, 7);
 
-            Assert.IsTrue(selection.Contains(token));                   // last token in innermost If block
-            Assert.IsTrue(selection.Contains(contexts.ElementAt(0)));   // innermost If block
-            Assert.IsTrue(selection.Contains(contexts.ElementAt(1)));   // first outer If block
-            Assert.IsFalse(selection.Contains(contexts.ElementAt(2)));  // second outer If block
+                Assert.IsTrue(selection.Contains(token));                   // last token in innermost If block
+                Assert.IsTrue(selection.Contains(contexts.ElementAt(0)));   // innermost If block
+                Assert.IsTrue(selection.Contains(contexts.ElementAt(1)));   // first outer If block
+                Assert.IsFalse(selection.Contains(contexts.ElementAt(2)));  // second outer If block
+            }
         }
 
         [TestMethod]
@@ -625,17 +660,125 @@ End Sub : 'Lame comment!
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var pane = component.CodeModule.CodePane;
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var tree = state.GetParseTree(new QualifiedModuleName(component));
-            var visitor = new IfStmtContextElementCollectorVisitor();
-            var contexts = visitor.Visit(tree); //returns innermost statement first then topmost consecutively
-            var token = contexts.ElementAt(0).Stop;
-            var selection = new Selection(15, 1, 19, 7);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var tree = state.GetParseTree(new QualifiedModuleName(component));
+                var visitor = new IfStmtContextElementCollectorVisitor();
+                var contexts = visitor.Visit(tree); //returns innermost statement first then topmost consecutively
+                var token = contexts.ElementAt(0).Stop;
+                var selection = new Selection(15, 1, 19, 7);
 
-            Assert.IsFalse(selection.Contains(token));                  // last token in innermost If block
-            Assert.IsFalse(selection.Contains(contexts.ElementAt(0)));  // innermost If block
-            Assert.IsFalse(selection.Contains(contexts.ElementAt(1)));  // first outer if block
-            Assert.IsTrue(selection.Contains(contexts.ElementAt(2)));   // second outer If block
+                Assert.IsFalse(selection.Contains(token));                  // last token in innermost If block
+                Assert.IsFalse(selection.Contains(contexts.ElementAt(0)));  // innermost If block
+                Assert.IsFalse(selection.Contains(contexts.ElementAt(1)));  // first outer if block
+                Assert.IsTrue(selection.Contains(contexts.ElementAt(2)));   // second outer If block
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("Grammar")]
+        [TestCategory("Selection")]
+        public void GivenOnlyBlankLines_EndColumn_Works()
+        {
+            const string inputCode = @"
+
+
+
+";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
+            var pane = component.CodeModule.CodePane;
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+
+                var tree = (Antlr4.Runtime.ParserRuleContext)state.GetParseTree(new QualifiedModuleName(component));
+                var startToken = tree.Start;
+                var endToken = tree.Stop;
+
+                // Reminder: token columns are zero-based but lines are one-based
+                Assert.IsTrue(startToken.EndColumn() == 0);
+                Assert.IsTrue(endToken.EndColumn() == 0);
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("Grammar")]
+        [TestCategory("Selection")]
+        public void GivenOnlyBlankLines_EndLine_Works()
+        {
+            const string inputCode = @"
+
+
+
+";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
+            var pane = component.CodeModule.CodePane;
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+
+                var tree = (Antlr4.Runtime.ParserRuleContext)state.GetParseTree(new QualifiedModuleName(component));
+                var startToken = tree.Start;
+                var endToken = tree.Stop;
+
+                // Reminder: token columns are zero-based but lines are one-based
+                Assert.IsTrue(startToken.EndLine() == 1);
+                Assert.IsTrue(endToken.EndLine() == 4);
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("Grammar")]
+        [TestCategory("Selection")]
+        public void GivenBlankLinesWithLeadingSpaces_EndColumn_Works()
+        {
+            const string inputCode = @"
+
+   
+";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
+            var pane = component.CodeModule.CodePane;
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+
+                var tree = (Antlr4.Runtime.ParserRuleContext)state.GetParseTree(new QualifiedModuleName(component));
+                var startToken = tree.Start;
+                var endToken = tree.Stop;
+
+                // Reminder: token columns are zero-based but lines are one-based
+                Assert.IsTrue(startToken.EndColumn() == 0);
+                Assert.IsTrue(endToken.EndColumn() == 3);
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("Grammar")]
+        [TestCategory("Selection")]
+        public void GivenBlankLinesWithLeadingSpaces_EndLine_Works()
+        {
+            const string inputCode = @"
+
+   
+";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
+            var pane = component.CodeModule.CodePane;
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+
+                var tree = (Antlr4.Runtime.ParserRuleContext)state.GetParseTree(new QualifiedModuleName(component));
+                var startToken = tree.Start;
+                var endToken = tree.Stop;
+
+                // Reminder: token columns are zero-based but lines are one-based
+                Assert.IsTrue(startToken.EndLine() == 1);
+                Assert.IsTrue(endToken.EndLine() == 3);
+            }
         }
         
         [TestMethod]

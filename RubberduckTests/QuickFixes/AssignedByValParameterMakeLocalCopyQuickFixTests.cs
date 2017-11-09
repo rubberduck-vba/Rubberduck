@@ -8,8 +8,6 @@ using RubberduckTests.Mocks;
 using Rubberduck.UI.Refactorings;
 using System.Windows.Forms;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.QuickFixes
 {
@@ -21,11 +19,11 @@ namespace RubberduckTests.QuickFixes
         public void AssignedByValParameter_LocalVariableAssignment()
         {
             var inputCode =
-@"Public Sub Foo(ByVal arg1 As String)
+                @"Public Sub Foo(ByVal arg1 As String)
     Let arg1 = ""test""
 End Sub";
             var expectedCode =
-@"Public Sub Foo(ByVal arg1 As String)
+                @"Public Sub Foo(ByVal arg1 As String)
 Dim localArg1 As String
 localArg1 = arg1
     Let localArg1 = ""test""
@@ -34,13 +32,13 @@ End Sub";
             var quickFixResult = ApplyLocalVariableQuickFixToCodeFragment(inputCode);
             Assert.AreEqual(expectedCode, quickFixResult);
         }
-        
+
         [TestMethod]
         [TestCategory("QuickFixes")]
         public void AssignedByValParameter_LocalVariableAssignment_ComplexFormat()
         {
             var inputCode =
-            @"Sub DoSomething(_
+                @"Sub DoSomething(_
     ByVal foo As Long, _
     ByRef _
         bar, _
@@ -52,7 +50,7 @@ End Sub";
 End Sub
 ";
             var expectedCode =
-            @"Sub DoSomething(_
+                @"Sub DoSomething(_
     ByVal foo As Long, _
     ByRef _
         bar, _
@@ -75,15 +73,15 @@ End Sub
         public void AssignedByValParameter_LocalVariableAssignment_ComputedNameAvoidsCollision()
         {
             var inputCode =
-            @"
+                    @"
 Public Sub Foo(ByVal arg1 As String)
     Dim fooVar, _
         localArg1 As Long
     Let arg1 = ""test""
 End Sub"
-;
+                ;
             var expectedCode =
-@"
+                    @"
 Public Sub Foo(ByVal arg1 As String)
 Dim localArg12 As String
 localArg12 = arg1
@@ -91,7 +89,7 @@ localArg12 = arg1
         localArg1 As Long
     Let localArg12 = ""test""
 End Sub"
-            ;
+                ;
 
             var quickFixResult = ApplyLocalVariableQuickFixToCodeFragment(inputCode);
             Assert.AreEqual(expectedCode, quickFixResult);
@@ -103,7 +101,7 @@ End Sub"
         {
             //Make sure the modified code stays within the specific method under repair
             var inputCode =
-            @"
+                    @"
 Public Function Bar2(ByVal arg2 As String) As String
     Dim arg1 As String
     Let arg1 = ""Test1""
@@ -119,7 +117,7 @@ Public Sub Bar(ByVal arg2 As String)
     Dim arg1 As String
     Let arg1 = ""Test2""
 End Sub"
-;
+                ;
             string[] splitToken = { "'VerifyNoChangeBelowThisLine" };
             var expectedCode = inputCode.Split(splitToken, System.StringSplitOptions.None)[1];
 
@@ -135,7 +133,7 @@ End Sub"
         {
             //Make sure the modified code stays within the specific method under repair
             var inputCode =
-@"
+                @"
 Option Explicit
 Private mBar as Long
 Public Property Let Foo(ByVal bar As Long)
@@ -172,19 +170,19 @@ End Function
         public void AssignedByValParameter_LocalVariableAssignment_UsesSet()
         {
             var inputCode =
-            @"
+                    @"
 Public Sub Foo(ByVal target As Range)
     Set target = Selection
 End Sub"
-;
+                ;
             var expectedCode =
-@"
+                    @"
 Public Sub Foo(ByVal target As Range)
 Dim localTarget As Range
 Set localTarget = target
     Set localTarget = Selection
 End Sub"
-;
+                ;
 
             var quickFixResult = ApplyLocalVariableQuickFixToCodeFragment(inputCode);
             Assert.AreEqual(expectedCode, quickFixResult);
@@ -195,19 +193,19 @@ End Sub"
         public void AssignedByValParameter_LocalVariableAssignment_NoAsTypeClause()
         {
             var inputCode =
-@"
+                    @"
 Public Sub Foo(FirstArg As Long, ByVal arg1)
     arg1 = Range(""A1: C4"")
 End Sub"
-;
+                ;
             var expectedCode =
-@"
+                    @"
 Public Sub Foo(FirstArg As Long, ByVal arg1)
 Dim localArg1 As Variant
 localArg1 = arg1
     localArg1 = Range(""A1: C4"")
 End Sub"
-;
+                ;
 
             var quickFixResult = ApplyLocalVariableQuickFixToCodeFragment(inputCode);
             Assert.AreEqual(expectedCode, quickFixResult);
@@ -218,7 +216,7 @@ End Sub"
         public void AssignedByValParameter_LocalVariableAssignment_EnumType()
         {
             var inputCode =
-@"
+                    @"
 Enum TestEnum
     EnumOne
     EnumTwo
@@ -228,9 +226,9 @@ End Enum
 Public Sub Foo(FirstArg As Long, ByVal arg1 As TestEnum)
     arg1 = EnumThree
 End Sub"
-;
+                ;
             var expectedCode =
-@"
+                    @"
 Enum TestEnum
     EnumOne
     EnumTwo
@@ -242,7 +240,7 @@ Dim localArg1 As TestEnum
 localArg1 = arg1
     localArg1 = EnumThree
 End Sub"
-;
+                ;
 
             var quickFixResult = ApplyLocalVariableQuickFixToCodeFragment(inputCode);
             Assert.AreEqual(expectedCode, quickFixResult);
@@ -254,30 +252,25 @@ End Sub"
 
             var mockDialogFactory = BuildMockDialogFactory(userEnteredName);
 
-            RubberduckParserState state;
-            var inspectionResults = GetInspectionResults(vbe.Object, out state);
-            var result = inspectionResults.FirstOrDefault();
-            if (result == null)
+            using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                Assert.Inconclusive("Inspection yielded no results.");
+
+                var inspection = new AssignedByValParameterInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
+                var result = inspectionResults.FirstOrDefault();
+                if (result == null)
+                {
+                    Assert.Inconclusive("Inspection yielded no results.");
+                }
+
+                new AssignedByValParameterMakeLocalCopyQuickFix(state, mockDialogFactory.Object).Fix(result);
+                return state.GetRewriter(vbe.Object.ActiveVBProject.VBComponents[0]).GetText();
             }
-            
-            new AssignedByValParameterMakeLocalCopyQuickFix(state, mockDialogFactory.Object).Fix(result);
-            return state.GetRewriter(vbe.Object.ActiveVBProject.VBComponents[0]).GetText();
         }
 
         private Mock<IVBE> BuildMockVBE(string inputCode)
         {
-            IVBComponent component;
-            return MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-        }
-
-        private IEnumerable<IInspectionResult> GetInspectionResults(IVBE vbe, out RubberduckParserState state)
-        {
-            state = MockParser.CreateAndParse(vbe);
-
-            var inspection = new AssignedByValParameterInspection(state);
-            return inspection.GetInspectionResults();
+            return MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
         }
 
         private Mock<IAssignedByValParameterQuickFixDialogFactory> BuildMockDialogFactory(string userEnteredName)

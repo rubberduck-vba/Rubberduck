@@ -4,7 +4,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
@@ -12,6 +11,39 @@ namespace RubberduckTests.Inspections
     [TestClass]
     public class ObjectVariableNotSetInspectionTests
     {
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ObjectVariableNotSet_OnlyAssignedToNothing_ReturnsResult()
+        {
+            var expectResultCount = 1;
+            var input =
+                @"
+Private Sub DoSomething()
+    Dim target As Object
+    target.DoSomething ' error 91
+    Set target = Nothing
+End Sub
+";
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void ObjectVariableNotSet_AlsoAssignedToNothing_ReturnsNoResult()
+        {
+            var expectResultCount = 0;
+            var input =
+                @"
+Private Sub DoSomething()
+    Dim target As Object
+    Set target = New Object
+    target.DoSomething
+    Set target = Nothing
+End Sub
+";
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+        }
+
         [TestMethod]
         [TestCategory("Inspections")]
         public void ObjectVariableNotSet_GivenIndexerObjectAccess_ReturnsNoResult()
@@ -480,14 +512,14 @@ End Sub";
 
         private void AssertInputCodeYieldsExpectedInspectionResultCount(string inputCode, int expected)
         {
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using(var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new ObjectVariableNotSetInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            var inspection = new ObjectVariableNotSetInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(expected, inspectionResults.Count());
+                Assert.AreEqual(expected, inspectionResults.Count());
+            }
         }
     }
 }

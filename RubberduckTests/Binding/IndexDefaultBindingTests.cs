@@ -50,11 +50,14 @@ End Property
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);
             var vbe = builder.Build();
-            var state = Parse(vbe);
+            using (var state = Parse(vbe))
+            {
+                var declaration =
+                    state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.PropertyGet &&
+                                                          d.IdentifierName == "Test2");
 
-            var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.PropertyGet && d.IdentifierName == "Test2");
-
-            Assert.AreEqual(1, declaration.References.Count());
+                Assert.AreEqual(1, declaration.References.Count());
+            }
         }
 
         [TestCategory("Binding")]
@@ -79,11 +82,15 @@ End Property
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);
             var vbe = builder.Build();
-            var state = Parse(vbe);
 
-            var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.PropertyGet && d.IdentifierName == "Test1");
+            using (var state = Parse(vbe))
+            {
+                var declaration =
+                    state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.PropertyGet &&
+                                                          d.IdentifierName == "Test1");
 
-            Assert.AreEqual(1, declaration.References.Count());
+                Assert.AreEqual(1, declaration.References.Count());
+            }
         }
 
         private static RubberduckParserState Parse(Mock<IVBE> vbe)

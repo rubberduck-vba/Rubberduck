@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.ComTypes;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using VB = Microsoft.VB6.Interop.VBIDE;
@@ -26,20 +25,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             AttachEvents();
         }
 
-        public int Count
-        {
-            get { return IsWrappingNullReference ? 0 : Target.Count; }
-        }
+        public int Count => IsWrappingNullReference ? 0 : Target.Count;
 
-        public IVBE VBE
-        {
-            get { return new VBE(IsWrappingNullReference ? null : Target.VBE); }
-        }
+        public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
 
-        public IVBE Parent
-        {
-            get { return new VBE(IsWrappingNullReference ? null : Target.Parent); }
-        }
+        public IVBE Parent => new VBE(IsWrappingNullReference ? null : Target.Parent);
 
         public IVBProject Add(ProjectType type)
         {
@@ -48,7 +38,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         public void Remove(IVBProject project)
         {
-            if (IsWrappingNullReference) return;
+            if (IsWrappingNullReference)
+            {
+                return;
+            }
             Target.Remove((VB.VBProject)project.Target);
         }
 
@@ -57,10 +50,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             throw new NotImplementedException();
         }
 
-        public IVBProject this[object index]
-        {
-            get { return new VBProject(IsWrappingNullReference ? null : Target.Item(index)); }
-        }
+        public IVBProject this[object index] => new VBProject(IsWrappingNullReference ? null : Target.Item(index));
 
         IEnumerator<IVBProject> IEnumerable<IVBProject>.GetEnumerator()
         {
@@ -162,10 +152,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             var projectId = project.ProjectId;
 
             var handler = ProjectRenamed;
-            if (handler != null)
-            {
-                handler(this, new ProjectRenamedEventArgs(projectId, project, oldName));
-            }
+            handler?.Invoke(this, new ProjectRenamedEventArgs(projectId, project, oldName));
         }
 
         public event EventHandler<ProjectEventArgs> ProjectActivated;

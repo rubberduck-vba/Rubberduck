@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using NLog;
@@ -21,6 +22,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using System.Windows;
 
 // ReSharper disable CanBeReplacedWithTryCastAndCheckForNull
+// ReSharper disable ExplicitCallerInfoArgument
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
@@ -64,6 +66,8 @@ namespace Rubberduck.Navigation.CodeExplorer
             OpenDesignerCommand = commands.OfType<OpenDesignerCommand>().SingleOrDefault();
 
             AddTestModuleCommand = commands.OfType<UI.CodeExplorer.Commands.AddTestModuleCommand>().SingleOrDefault();
+            AddTestModuleWithStubsCommand = commands.OfType<AddTestModuleWithStubsCommand>().SingleOrDefault();
+
             AddStdModuleCommand = commands.OfType<AddStdModuleCommand>().SingleOrDefault();
             AddClassModuleCommand = commands.OfType<AddClassModuleCommand>().SingleOrDefault();
             AddUserFormCommand = commands.OfType<AddUserFormCommand>().SingleOrDefault();
@@ -97,39 +101,32 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             SetNameSortCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
             {
-                if ((bool)param == true)
+                if ((bool)param)
                 {
                     SortByName = (bool)param;
                     SortByCodeOrder = !(bool)param;
                 }
-            }, param =>
-            {
-                return SortByName ? false : true;
-            });
+            }, param => !SortByName);
 
             SetCodeOrderSortCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
             {
-                if ((bool)param == true)
+                if ((bool)param)
                 {
                     SortByCodeOrder = (bool)param;
                     SortByName = !(bool)param;
-                };
-            }, param => 
-            {
-                return SortByCodeOrder ? false : true;
-            });
+                }
+            }, param => !SortByCodeOrder);
         }
 
         private CodeExplorerItemViewModel _selectedItem;
         public CodeExplorerItemViewModel SelectedItem
         {
-            get { return _selectedItem; }
+            get => _selectedItem;
             set
             {
                 _selectedItem = value;
                 OnPropertyChanged();
 
-                // ReSharper disable ExplicitCallerInfoArgument
                 OnPropertyChanged("CanExecuteIndenterCommand");
                 OnPropertyChanged("CanExecuteRenameCommand");
                 OnPropertyChanged("CanExecuteFindAllReferencesCommand");
@@ -137,14 +134,12 @@ namespace Rubberduck.Navigation.CodeExplorer
                 OnPropertyChanged("ExportAllVisibility");
                 OnPropertyChanged("PanelTitle");
                 OnPropertyChanged("Description");
-
-                // ReSharper restore ExplicitCallerInfoArgument
             }
         }
 
         public bool SortByName
         {
-            get { return _windowSettings.CodeExplorer_SortByName; }
+            get => _windowSettings.CodeExplorer_SortByName;
             set
             {
                 if (_windowSettings.CodeExplorer_SortByName == value)
@@ -164,7 +159,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public bool SortByCodeOrder
         {
-            get { return _windowSettings.CodeExplorer_SortByCodeOrder; }
+            get => _windowSettings.CodeExplorer_SortByCodeOrder;
             set
             {
                 if (_windowSettings.CodeExplorer_SortByCodeOrder == value)
@@ -190,7 +185,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public bool GroupByType
         {
-            get { return _windowSettings.CodeExplorer_GroupByType; }
+            get => _windowSettings.CodeExplorer_GroupByType;
             set
             {
                 if (_windowSettings.CodeExplorer_GroupByType != value)
@@ -205,10 +200,22 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
+        private bool _canSearch;
+
+        public bool CanSearch
+        {
+            get => _canSearch;
+            set
+            {
+                _canSearch = value;
+                OnPropertyChanged();
+            }
+        }
+
         private bool _isBusy;
         public bool IsBusy
         {
-            get { return _isBusy; }
+            get => _isBusy;
             set
             {
                 _isBusy = value;
@@ -275,15 +282,17 @@ namespace Rubberduck.Navigation.CodeExplorer
         private ObservableCollection<CodeExplorerItemViewModel> _projects;
         public ObservableCollection<CodeExplorerItemViewModel> Projects
         {
-            get { return _projects; }
+            get => _projects;
             set
             {
                 ReorderChildNodes(value);
                 _projects = new ObservableCollection<CodeExplorerItemViewModel>(value.OrderBy(o => o.NameWithSignature));
-                
+                CanSearch = _projects.Any();
+
                 OnPropertyChanged();
                 // Once a Project has been set, show the TreeView
                 OnPropertyChanged("TreeViewVisibility");
+                OnPropertyChanged("CanSearch");
             }
         }
 
@@ -365,7 +374,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 return;
             }
 
-            var components = e.Component.Collection;
+            var components = e.Module.Component.Collection;
             var componentProject = components.Parent;
             {
                 var projectNode = Projects.OfType<CodeExplorerProjectViewModel>()
@@ -376,7 +385,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                     return;
                 }
 
-                SetErrorState(projectNode, e.Component);
+                SetErrorState(projectNode, e.Module);
 
                 if (_errorStateSet) { return; }
 
@@ -392,7 +401,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                         projectNode.AddChild(folderNode);
                     }
 
-                    var declaration = CreateDeclaration(e.Component);
+                    var declaration = CreateDeclaration(e.Module);
                     var newNode = new CodeExplorerComponentViewModel(folderNode, declaration, new List<Declaration>())
                     {
                         IsErrorState = true
@@ -406,22 +415,21 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        private Declaration CreateDeclaration(IVBComponent component)
+        private Declaration CreateDeclaration(QualifiedModuleName module)
         {
             var projectDeclaration =
-                _state.AllUserDeclarations.FirstOrDefault(item =>
-                        item.DeclarationType == DeclarationType.Project &&
-                        item.Project.VBComponents.Contains(component));
+                _state.DeclarationFinder.UserDeclarations(DeclarationType.Project)
+                    .FirstOrDefault(item => item.Project.VBComponents.Contains(module.Component));
 
-            if (component.Type == ComponentType.StandardModule)
+            if (module.ComponentType == ComponentType.StandardModule)
             {
                 return new ProceduralModuleDeclaration(
-                        new QualifiedMemberName(new QualifiedModuleName(component), component.Name), projectDeclaration,
-                        component.Name, true, new List<IAnnotation>(), null);
+                        new QualifiedMemberName(module, module.ComponentName), projectDeclaration,
+                        module.ComponentName, true, new List<IAnnotation>(), null);
             }
 
-            return new ClassModuleDeclaration(new QualifiedMemberName(new QualifiedModuleName(component), component.Name),
-                    projectDeclaration, component.Name, true, new List<IAnnotation>(), null);
+            return new ClassModuleDeclaration(new QualifiedMemberName(module, module.ComponentName),
+                    projectDeclaration, module.ComponentName, true, new List<IAnnotation>(), null);
         }
 
         private void ReorderChildNodes(IEnumerable<CodeExplorerItemViewModel> nodes)
@@ -434,7 +442,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         }
 
         private bool _errorStateSet;
-        private void SetErrorState(CodeExplorerItemViewModel itemNode, IVBComponent component)
+        private void SetErrorState(CodeExplorerItemViewModel itemNode, QualifiedModuleName module)
         {
             _errorStateSet = false;
 
@@ -442,7 +450,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             {
                 if (node is CodeExplorerCustomFolderViewModel)
                 {
-                    SetErrorState(node, component);
+                    SetErrorState(node, module);
                 }
 
                 if (_errorStateSet)
@@ -451,7 +459,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 }
 
                 var componentNode = node as CodeExplorerComponentViewModel;
-                if (componentNode?.GetSelectedDeclaration().QualifiedName.QualifiedModuleName.Component.Equals(component) == true)
+                if (componentNode?.GetSelectedDeclaration().QualifiedName.QualifiedModuleName.Equals(module) == true)
                 {
                     componentNode.IsErrorState = true;
                     _errorStateSet = true;
@@ -491,6 +499,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         public CommandBase OpenCommand { get; }
 
         public CommandBase AddTestModuleCommand { get; }
+        public CommandBase AddTestModuleWithStubsCommand { get; }
         public CommandBase AddStdModuleCommand { get; }
         public CommandBase AddClassModuleCommand { get; }
         public CommandBase AddUserFormCommand { get; }
@@ -571,6 +580,23 @@ namespace Rubberduck.Navigation.CodeExplorer
             get
             {
                 return _isBusy ? Visibility.Hidden : Visibility.Visible;
+            }
+        }
+
+        public void FilterByName(IEnumerable<CodeExplorerItemViewModel> nodes, string searchString)
+        {
+            foreach (var item in nodes)
+            {
+                if (item == null) { continue; }
+                
+                if (item.Items.Any())
+                {
+                    FilterByName(item.Items, searchString);
+                }
+                
+                item.IsVisible = item.Items.Any(c => c.IsVisible) ||
+                                 item.Name.ToLowerInvariant().Contains(searchString.ToLowerInvariant()) ||
+                                 string.IsNullOrEmpty(searchString);
             }
         }
 

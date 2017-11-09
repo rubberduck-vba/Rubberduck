@@ -13,5 +13,8 @@ namespace Rubberduck.Parsing.Inspections.Abstract
         bool CanFixInProject { get; }
 
         IReadOnlyCollection<Type> SupportedInspections { get; }
+
+        void RegisterInspections(params Type[] inspections);
+        void RemoveInspections(params Type[] inspections);
     }
 }
