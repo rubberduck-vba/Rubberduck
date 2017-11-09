@@ -91,7 +91,7 @@ End Sub
                 Assert.IsTrue(SUT.ExtractedParameters.Count() > 0);
 
                 //Assert
-                Assert.AreEqual(extractedParameter.Passed, ExtractedParameter.PassedBy.ByVal);
+                Assert.AreEqual(extractedParameter.Passed, PassedBy.ByVal);
 
             }
 
@@ -120,7 +120,7 @@ End Sub
                 Assert.IsTrue(SUT.ExtractedParameters.Count() > 0);
 
                 //Assert
-                Assert.AreEqual(extractedParameter.Passed, ExtractedParameter.PassedBy.ByRef);
+                Assert.AreEqual(extractedParameter.Passed, PassedBy.ByRef);
 
             }
         }

@@ -25,7 +25,7 @@ namespace RubberduckTests.Refactoring.ExtractMethod
                 method.MethodName = "Bar";
                 method.ReturnValue = null;
                 var insertCode = "Bar x";
-                var newParam = new ExtractedParameter("Integer", ExtractedParameter.PassedBy.ByVal, "x");
+                var newParam = new ExtractedParameter("Integer", PassedBy.ByVal, "x");
                 method.Parameters = new List<ExtractedParameter>() { newParam };
 
                 var actual = method.NewMethodCall();

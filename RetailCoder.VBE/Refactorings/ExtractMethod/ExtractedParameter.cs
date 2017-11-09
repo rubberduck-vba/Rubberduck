@@ -3,14 +3,14 @@ using Rubberduck.UI;
 
 namespace Rubberduck.Refactorings.ExtractMethod
 {
+    public enum PassedBy
+    {
+        ByRef,
+        ByVal
+    }
+
     public class ExtractedParameter
     {
-        public enum PassedBy
-        {
-            ByRef,
-            ByVal
-        }
-
         public static readonly string None = RubberduckUI.ExtractMethod_OutputNone;
 
         private readonly string _name;

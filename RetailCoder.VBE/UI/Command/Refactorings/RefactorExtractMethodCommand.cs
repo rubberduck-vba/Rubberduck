@@ -74,11 +74,11 @@ namespace Rubberduck.UI.Command.Refactorings
 
             var module = pane.CodeModule;
             var component = module.Parent;
-            
+
             using (var view = new ExtractMethodDialog(new ExtractMethodViewModel()))
             {
-                var factory = new ExtractMethodPresenterFactory(_indenter);
-                var refactoring = new ExtractMethodRefactoring(_state, factory);
+                //var factory = new ExtractMethodPresenterFactory(_indenter, _state, (QualifiedSelection)qualifiedSelection);
+                var refactoring = new ExtractMethodRefactoring(module, _indenter, _state);
                 refactoring.Refactor();
 
                 //var refactoring = new ExtractMethodRefactoring(Vbe, _messageBox, factory);

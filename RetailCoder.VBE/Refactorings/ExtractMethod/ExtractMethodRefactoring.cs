@@ -3,6 +3,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Refactorings.ExtractMethod
 {
@@ -14,33 +15,31 @@ namespace Rubberduck.Refactorings.ExtractMethod
     public class ExtractMethodRefactoring : IRefactoring
     {
         private readonly ICodeModule _codeModule;
-        private readonly IRefactoringPresenterFactory<IExtractMethodPresenter> _factory;
-        private Func<QualifiedSelection?, string, IExtractMethodModel> _createMethodModel;
-        private IExtractMethodExtraction _extraction;
-        private Action<object> _onParseRequest;
         private IIndenter _indenter;
+        private RubberduckParserState _state;
 
         public ExtractMethodRefactoring(
             ICodeModule codeModule,
-            IIndenter indenter
-                //,
-                //Action<Object> onParseRequest,
-                //Func<QualifiedSelection?, string, IExtractMethodModel> createMethodModel,
-                //IExtractMethodExtraction extraction
+            IIndenter indenter,
+            RubberduckParserState state
         )
         {
             _codeModule = codeModule;
             _indenter = indenter;
-            //_createMethodModel = createMethodModel;
-            //_extraction = extraction;
-            //_onParseRequest = onParseRequest;
+            _state = state;
         }
 
         public void Refactor()
         {
-            var factory = new ExtractMethodPresenterFactory(_indenter);
-            //IRefactoringPresenterFactory<IExtractMethodPresenter> factory
-            var presenter = _factory.Create();
+            var selection = _codeModule.GetQualifiedSelection();
+            if (!selection.HasValue)
+            {
+                OnInvalidSelection();
+                return;
+            }
+
+            var factory = new ExtractMethodPresenterFactory(_indenter, _state, (QualifiedSelection)selection);
+            var presenter = factory.Create();
             if (presenter == null)
             {
                 return;
@@ -51,7 +50,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 return;
             }
-            
+
             QualifiedSelection? oldSelection;
             if (!_codeModule.IsWrappingNullReference)
             {
@@ -61,45 +60,13 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 return;
             }
-            
+
             if (oldSelection.HasValue)
             {
                 _codeModule.CodePane.Selection = oldSelection.Value.Selection;
             }
 
             model.State.OnParseRequested(this);
-            /*
-            var presenter = _factory.Create();
-            if (presenter == null)
-            {
-                OnInvalidSelection();
-                return;
-            }
-            
-            var qualifiedSelection = _codeModule.GetQualifiedSelection();
-            if (!qualifiedSelection.HasValue)
-            {
-                return;
-            }
-            
-            var selection = qualifiedSelection.Value.Selection;
-            var selectedCode = _codeModule.GetLines(selection);
-            var model = _createMethodModel(qualifiedSelection, selectedCode);
-            if (model == null)
-            {
-                return;
-            }
-            
-            var success = presenter.Show(model,_createProc);
-            if (!success)
-            {
-                return;
-            }
-            
-            _extraction.Apply(_codeModule, model, selection);
-
-            _onParseRequest(this);
-            */
         }
 
         public void Refactor(QualifiedSelection target)
