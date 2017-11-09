@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Navigation.CodeMetrics;
 using RubberduckTests.Mocks;
+using RubberduckTests.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace RubberduckTests.Stats
         [TestInitialize]
         public void Setup()
         {
-            cut = new ParseTreeMetricsAnalyst();
+            cut = new ParseTreeMetricsAnalyst(IndenterSettingsTests.GetMockIndenterSettings());
         }
 
         [TestMethod]

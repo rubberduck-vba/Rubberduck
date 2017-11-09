@@ -6,11 +6,19 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
 using Antlr4.Runtime.Misc;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.SmartIndenter;
 
 namespace Rubberduck.Navigation.CodeMetrics
 {
     public class ParseTreeMetricsAnalyst : ICodeMetricsAnalyst
     {
+        private readonly IIndenterSettings indenterSettings;
+    
+        public ParseTreeMetricsAnalyst(IIndenterSettings indenterSettings)
+        {
+            this.indenterSettings = indenterSettings;
+        }
+
         public IEnumerable<ModuleMetricsResult> ModuleMetrics(RubberduckParserState state)
         {
             if (state == null || !state.AllUserDeclarations.Any())
@@ -35,7 +43,7 @@ namespace Rubberduck.Navigation.CodeMetrics
         private ModuleMetricsResult GetModuleResult(QualifiedModuleName qmn, IParseTree moduleTree, DeclarationFinder declarationFinder)
         {
             // Consider rewrite as visitor? That should make subtrees easier and allow us to expand metrics
-            var cmListener = new CodeMetricsListener(declarationFinder);
+            var cmListener = new CodeMetricsListener(declarationFinder, indenterSettings);
             ParseTreeWalker.Default.Walk(cmListener, moduleTree);
             return cmListener.GetMetricsResult(qmn);
         }
@@ -43,16 +51,19 @@ namespace Rubberduck.Navigation.CodeMetrics
 
         private class CodeMetricsListener : VBAParserBaseListener
         {
-            private Declaration currentMember;
             private readonly DeclarationFinder _finder;
+            private readonly IIndenterSettings _indenterSettings;
+
+            private Declaration currentMember;
             private List<CodeMetricsResult> results = new List<CodeMetricsResult>();
             private List<CodeMetricsResult> moduleResults = new List<CodeMetricsResult>();
 
             private List<MemberMetricsResult> memberResults = new List<MemberMetricsResult>();
 
-            public CodeMetricsListener(DeclarationFinder finder)
+            public CodeMetricsListener(DeclarationFinder finder, IIndenterSettings indenterSettings)
             {
                 _finder = finder;
+                _indenterSettings = indenterSettings;
             }
 
             public override void EnterEndOfLine([NotNull] VBAParser.EndOfLineContext context)
@@ -160,11 +171,9 @@ namespace Rubberduck.Navigation.CodeMetrics
             public override void EnterBlockStmt([NotNull] VBAParser.BlockStmtContext context)
             {
                 var ws = context.whiteSpace();
-                // FIXME divide by indent size and assume we're indented?
-                // FIXME LINE_CONTINUATION might interfere here
-                //results.Add(new CodeMetricsResult(0, 0, ws.ChildCount / 4));
+                // FIXME only take the last contiguous non-linebreak into account
+                results.Add(new CodeMetricsResult(0, 0, ws.ChildCount / _indenterSettings.IndentSpaces));
             }
-            // FIXME also check if we need to do something about `mandatoryLineContinuation`?
 
             private void ExitMeasurableMember()
             {
