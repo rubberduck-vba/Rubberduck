@@ -35,6 +35,8 @@ namespace Rubberduck.Navigation.CodeExplorer
         private GeneralSettings _generalSettings;
         private WindowSettings _windowSettings;
 
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         public CodeExplorerViewModel(FolderHelper folderHelper, RubberduckParserState state, List<CommandBase> commands,
             IConfigProvider<GeneralSettings> generalSettingsProvider, IConfigProvider<WindowSettings> windowSettingsProvider)
         {
@@ -395,22 +397,30 @@ namespace Rubberduck.Navigation.CodeExplorer
 
                 UiDispatcher.Invoke(() =>
                 {
-                    if (folderNode == null)
+                    try
                     {
-                        folderNode = new CodeExplorerCustomFolderViewModel(projectNode, projectName, projectName);
-                        projectNode.AddChild(folderNode);
+                        if (folderNode == null)
+                        {
+                            folderNode = new CodeExplorerCustomFolderViewModel(projectNode, projectName, projectName);
+                            projectNode.AddChild(folderNode);
+                        }
+
+                        var declaration = CreateDeclaration(e.Module);
+                        var newNode =
+                            new CodeExplorerComponentViewModel(folderNode, declaration, new List<Declaration>())
+                            {
+                                IsErrorState = true
+                            };
+
+                        folderNode.AddChild(newNode);
+
+                        // Force a refresh. OnPropertyChanged("Projects") didn't work.
+                        Projects = Projects;
                     }
-
-                    var declaration = CreateDeclaration(e.Module);
-                    var newNode = new CodeExplorerComponentViewModel(folderNode, declaration, new List<Declaration>())
+                    catch (Exception exception)
                     {
-                        IsErrorState = true
-                    };
-
-                    folderNode.AddChild(newNode);
-
-                    // Force a refresh. OnPropertyChanged("Projects") didn't work.
-                    Projects = Projects;
+                        Logger.Error(exception, "Exception thrown trying to refresh the code explorer view on the UI thread.");
+                    }
                 });
             }
         }
