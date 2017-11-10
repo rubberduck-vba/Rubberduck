@@ -346,6 +346,7 @@
     <Compile Include="Navigation\CodeExplorer\ICodeExplorerDeclarationViewModel.cs" />
     <Compile Include="Navigation\CodeMetrics\CodeMetricsAnalyst.cs" />
     <Compile Include="Navigation\CodeMetrics\CodeMetricsResult.cs" />
+    <Compile Include="Navigation\CodeMetrics\CodeMetricsViewModel.cs" />
     <Compile Include="Navigation\CodeMetrics\ICodeMetricsAnalyst.cs" />
     <Compile Include="Navigation\Folders\FolderHelper.cs" />
     <Compile Include="Refactorings\EncapsulateField\PropertyGenerator.cs" />
@@ -389,8 +390,20 @@
     <Compile Include="UI\CodeExplorer\Commands\CommitCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddUserFormCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CopyResultsCommand.cs" />
-    <Compile Include="UI\CodeExplorer\Converters\StringHasNoValueToVisibilityConverter.cs" />
-    <Compile Include="UI\CodeExplorer\Converters\StringHasValueToVisibilityConverter.cs" />
+    <Compile Include="UI\CodeMetrics\CodeMetricsWindow.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\CodeMetrics\CodeMetricsWindow.Designer.cs">
+      <DependentUpon>CodeMetricsWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\CodeMetrics\CodeMetricsDockablePresenter.cs" />
+    <Compile Include="UI\Command\CodeMetricsCommand.cs" />
+    <Compile Include="UI\Command\MenuItems\CodeMetricsCommandMenuItem.cs" />
+    <Compile Include="UI\Converters\StringHasNoValueToVisibilityConverter.cs" />
+    <Compile Include="UI\Converters\StringHasValueToVisibilityConverter.cs" />
+    <Compile Include="UI\CodeMetrics\CodeMetricsControl.xaml.cs">
+      <DependentUpon>CodeMetricsControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Command\ExportAllCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\OpenProjectPropertiesCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\RenameCommand.cs" />
@@ -972,6 +985,9 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\CodeMetrics\CodeMetricsWindow.resx">
+      <DependentUpon>CodeMetricsWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\Inspections\InspectionResultsWindow.resx">
       <DependentUpon>InspectionResultsWindow.cs</DependentUpon>
     </EmbeddedResource>
@@ -1358,6 +1374,10 @@
     <Page Include="UI\About\AboutControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\CodeMetrics\CodeMetricsControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\Controls\GroupingGrid.xaml">
       <SubType>Designer</SubType>

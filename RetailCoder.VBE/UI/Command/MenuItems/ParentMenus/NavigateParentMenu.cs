@@ -16,6 +16,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
     {
         CodeExplorer,
         RegexSearchReplace,
+        CodeMetrics,
         FindSymbol,
         FindAllReferences,
         FindImplementations
