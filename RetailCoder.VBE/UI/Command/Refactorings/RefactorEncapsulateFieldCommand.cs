@@ -54,12 +54,12 @@ namespace Rubberduck.UI.Command.Refactorings
             }
         }
 
-        public override HotkeySetting DefaultHotkey => new HotkeySetting(typeof(RefactorEncapsulateFieldCommand))
-        {
-            IsEnabled = true,
-            HasCtrlModifier = true,
-            HasShiftModifier = true,
-            Key1 = "F"
-        };
+        //public override HotkeySetting DefaultHotkey => new HotkeySetting(typeof(RefactorEncapsulateFieldCommand))
+        //{
+        //    IsEnabled = true,
+        //    HasCtrlModifier = true,
+        //    HasShiftModifier = true,
+        //    Key1 = "F"
+        //};
     }
 }

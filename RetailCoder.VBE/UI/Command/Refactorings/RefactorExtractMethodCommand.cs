@@ -23,13 +23,13 @@ namespace Rubberduck.UI.Command.Refactorings
             _indenter = indenter;
         }
 
-        public override HotkeySetting DefaultHotkey => new HotkeySetting(typeof(RefactorExtractMethodCommand))
-        {
-            IsEnabled = true,
-            HasCtrlModifier = true,
-            HasShiftModifier = true,
-            Key1 = "M"
-        };
+        //public override HotkeySetting DefaultHotkey => new HotkeySetting(typeof(RefactorExtractMethodCommand))
+        //{
+        //    IsEnabled = true,
+        //    HasCtrlModifier = true,
+        //    HasShiftModifier = true,
+        //    Key1 = "M"
+        //};
 
         protected override bool EvaluateCanExecute(object parameter)
         {

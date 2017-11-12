@@ -20,13 +20,13 @@ namespace Rubberduck.UI.Command
             _factory = folderBrowserFactory;
         }
 
-        public override HotkeySetting DefaultHotkey => new HotkeySetting(typeof(ExportAllCommand))
-        {
-            IsEnabled = true,
-            HasCtrlModifier = true,
-            HasShiftModifier = true,
-            Key1 = "E"
-        };
+        //public override HotkeySetting DefaultHotkey => new HotkeySetting(typeof(ExportAllCommand))
+        //{
+        //    IsEnabled = true,
+        //    HasCtrlModifier = true,
+        //    HasShiftModifier = true,
+        //    Key1 = "E"
+        //};
 
         protected override bool EvaluateCanExecute(object parameter)
         {

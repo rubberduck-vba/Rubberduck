@@ -1,7 +1,7 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Xml.Serialization;
 using Rubberduck.UI;
+using Rubberduck.UI.Command;
 
 namespace Rubberduck.Settings
 {
@@ -22,6 +22,8 @@ namespace Rubberduck.Settings
         public bool HasAltModifier { get; set; }
         public bool HasCtrlModifier { get; set; }
 
+        public CommandBase Command { get; set; }
+
         [XmlIgnore]
         public string Prompt => RubberduckUI.ResourceManager.GetString("HotkeyDescription_" + Name, CultureInfo.CurrentUICulture);
 
@@ -29,9 +31,9 @@ namespace Rubberduck.Settings
         {
         }
 
-        public HotkeySetting(Type commandType)
+        public HotkeySetting(CommandBase command)
         {
-            Name = commandType.Name;
+            Command = command;
         }
 
         public override string ToString()

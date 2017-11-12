@@ -60,8 +60,6 @@ namespace Rubberduck.UI.Command
 
         public string ShortcutText { get; set; }
 
-        public virtual HotkeySetting DefaultHotkey => null;
-
         public event EventHandler CanExecuteChanged
         {
             add => CommandManager.RequerySuggested += value;

@@ -21,12 +21,12 @@ namespace Rubberduck.UI.Command
             _state = state;
         }
 
-        public override HotkeySetting DefaultHotkey => new HotkeySetting(typeof(IndentCurrentModuleCommand))
-        {
-            IsEnabled = true,
-            HasCtrlModifier = true,
-            Key1 = "M"
-        };
+        //public override HotkeySetting DefaultHotkey => new HotkeySetting(typeof(IndentCurrentModuleCommand))
+        //{
+        //    IsEnabled = true,
+        //    HasCtrlModifier = true,
+        //    Key1 = "M"
+        //};
 
         protected override bool EvaluateCanExecute(object parameter)
         {

@@ -21,13 +21,13 @@ namespace Rubberduck.UI.Command.Refactorings
             _messageBox = messageBox;
         }
 
-        public override HotkeySetting DefaultHotkey => new HotkeySetting(typeof(CodePaneRefactorRenameCommand))
-        {
-            IsEnabled = true,
-            HasCtrlModifier = true,
-            HasShiftModifier = true,
-            Key1 = "R"
-        };
+        //public override HotkeySetting DefaultHotkey => new HotkeySetting(typeof(CodePaneRefactorRenameCommand))
+        //{
+        //    IsEnabled = true,
+        //    HasCtrlModifier = true,
+        //    HasShiftModifier = true,
+        //    Key1 = "R"
+        //};
 
         protected override bool EvaluateCanExecute(object parameter)
         {

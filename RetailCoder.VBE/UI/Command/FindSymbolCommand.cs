@@ -27,12 +27,12 @@ namespace Rubberduck.UI.Command
             _iconCache = iconCache;
         }
 
-        public override HotkeySetting DefaultHotkey => new HotkeySetting(typeof(FindSymbolCommand))
-        {
-            IsEnabled = true,
-            HasCtrlModifier = true,
-            Key1 = "T"
-        };
+        //public override HotkeySetting DefaultHotkey => new HotkeySetting(typeof(FindSymbolCommand))
+        //{
+        //    IsEnabled = true,
+        //    HasCtrlModifier = true,
+        //    Key1 = "T"
+        //};
 
         protected override void OnExecute(object parameter)
         {

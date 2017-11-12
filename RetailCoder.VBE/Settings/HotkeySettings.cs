@@ -17,7 +17,7 @@ namespace Rubberduck.Settings
 
         public HotkeySetting[] Settings
         {
-            get => _settings?.ToArray() ?? _defaultSettings.ToArray();
+            get => _settings?.ToArray() ?? _defaultSettings?.ToArray() ?? new HotkeySetting[0];
             set
             {
                 var defaults = _defaultSettings.ToArray();

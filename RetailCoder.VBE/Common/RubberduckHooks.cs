@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Linq;
 using Rubberduck.Common.Hotkeys;
 using Rubberduck.Settings;
-using Rubberduck.UI.Command;
 using NLog;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.WindowsApi;
@@ -14,14 +13,13 @@ namespace Rubberduck.Common
     public class RubberduckHooks : SubclassingWindow, IRubberduckHooks
     {
         private readonly IGeneralConfigService _config;
-        private readonly IEnumerable<CommandBase> _commands;
         private readonly IList<IAttachable> _hooks = new List<IAttachable>();
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public RubberduckHooks(IVBE vbe, IGeneralConfigService config, IEnumerable<CommandBase> commands)
+        public RubberduckHooks(IVBE vbe, IGeneralConfigService config)
             : base((IntPtr)vbe.MainWindow.HWnd, (IntPtr)vbe.MainWindow.HWnd)
         {
-            _commands = commands;
+            //_commands = commands;
             _config = config;
         }
 
@@ -35,8 +33,9 @@ namespace Rubberduck.Common
 
             foreach (var hotkey in settings.Settings.Where(hotkey => hotkey.IsEnabled))
             {
-                var command = _commands.FirstOrDefault(c => hotkey.Equals(c.DefaultHotkey));
+                var command = hotkey.Command;
 
+                // TODO: Is this check needed?
                 if (command != null)
                 {
                     AddHook(new Hotkey(Hwnd, hotkey.ToString(), command));
