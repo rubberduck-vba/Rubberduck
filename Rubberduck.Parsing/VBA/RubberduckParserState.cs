@@ -71,17 +71,8 @@ namespace Rubberduck.Parsing.VBA
 
         public RubberduckParserState(IVBE vbe, IDeclarationFinderFactory declarationFinderFactory)
         {
-            if(vbe == null)
-            {
-                throw new ArgumentNullException(nameof(vbe));
-            }
-            if (declarationFinderFactory == null)
-            {
-                throw new ArgumentNullException(nameof(declarationFinderFactory));
-            }
-
-            _vbe = vbe;
-            _declarationFinderFactory = declarationFinderFactory;
+            _vbe = vbe ?? throw new ArgumentNullException(nameof(vbe));
+            _declarationFinderFactory = declarationFinderFactory ?? throw new ArgumentNullException(nameof(declarationFinderFactory));
 
             var values = Enum.GetValues(typeof(ParserState));
             foreach (var value in values)
@@ -436,12 +427,12 @@ namespace Rubberduck.Parsing.VBA
             {
                 if (moduleState != moduleStates[0])
                 {
-                    state = default(ParserState);
+                    state = default;
                     break;
                 }
             }
 
-            if (state != default(ParserState))
+            if (state != default)
             {
                 // if all modules are in the same state, we have our result.
                 return state;
@@ -600,8 +591,7 @@ namespace Rubberduck.Parsing.VBA
 
         public IEnumerable<IAnnotation> GetModuleAnnotations(QualifiedModuleName module)
         {
-            ModuleState result;
-            if (_moduleStates.TryGetValue(module, out result))
+            if (_moduleStates.TryGetValue(module, out var result))
             {
                 return result.Annotations;
             }
@@ -732,8 +722,7 @@ namespace Rubberduck.Parsing.VBA
                     {
                         // store project module name
                         var qualifiedModuleName = moduleState.Key;
-                        ModuleState state;
-                        if (_moduleStates.TryRemove(qualifiedModuleName, out state))
+                        if (_moduleStates.TryRemove(qualifiedModuleName, out var state))
                         {
                             state.Dispose();
                         }
@@ -943,8 +932,7 @@ namespace Rubberduck.Parsing.VBA
 
         public bool IsNewOrModified(QualifiedModuleName key)
         {
-            ModuleState moduleState;
-            if (_moduleStates.TryGetValue(key, out moduleState))
+            if (_moduleStates.TryGetValue(key, out var moduleState))
             {
                 // existing/modified
                 return moduleState.IsNew || key.ContentHashCode != moduleState.ModuleContentHashCode;
@@ -964,8 +952,7 @@ namespace Rubberduck.Parsing.VBA
             var projectName = reference.Name;
             var key = new QualifiedModuleName(projectName, reference.FullPath, projectName);
             ClearAsTypeDeclarationPointingToReference(key);
-            ModuleState moduleState;
-            if (_moduleStates.TryRemove(key, out moduleState))
+            if (_moduleStates.TryRemove(key, out var moduleState))
             {
                 moduleState?.Dispose();
                 Logger.Warn("Could not remove declarations for removed reference '{0}' ({1}).", reference.Name, QualifiedModuleName.GetProjectId(reference));
