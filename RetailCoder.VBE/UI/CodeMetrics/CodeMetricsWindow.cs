@@ -7,9 +7,9 @@ namespace Rubberduck.UI.CodeMetrics
     [ExcludeFromCodeCoverage]
     public partial class CodeMetricsWindow : UserControl, IDockableUserControl
     {
-        private const string ClassId = "C5318B59-172F-417C-88E3-B377CDA2D80A";
-        string IDockableUserControl.ClassId { get { return ClassId; } }
-        string IDockableUserControl.Caption { get { return RubberduckUI.CodeExplorerDockablePresenter_Caption; } }
+        private const string ClassId = "C5318B5A-172F-417C-88E3-B377CDA2D809";
+        string IDockableUserControl.ClassId => ClassId;
+        string IDockableUserControl.Caption => RubberduckUI.CodeMetricsDockablePresenter_Caption;
 
         private CodeMetricsWindow()
         {

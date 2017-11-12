@@ -3,7 +3,7 @@ using Rubberduck.UI.Command.MenuItems.ParentMenus;
 
 namespace Rubberduck.UI.Command.MenuItems
 {
-    class CodeMetricsCommandMenuItem : CommandMenuItemBase
+    public class CodeMetricsCommandMenuItem : CommandMenuItemBase
     {
         public CodeMetricsCommandMenuItem(CommandBase command) 
             : base(command)
@@ -12,6 +12,6 @@ namespace Rubberduck.UI.Command.MenuItems
         public override bool EvaluateCanExecute(RubberduckParserState state) => true;
 
         public override string Key => "RubberduckMenu_CodeMetrics";
-        public override int DisplayOrder => (int)NavigationMenuItemDisplayOrder.CodeMetrics;
+        public override int DisplayOrder => (int)ToolsMenuItemDisplayOrder.CodeMetrics;
     }
 }

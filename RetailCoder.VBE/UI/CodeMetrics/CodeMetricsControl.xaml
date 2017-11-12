@@ -10,7 +10,7 @@
              ResxExtension.DefaultResxName="Rubberduck.UI.RubberduckUI" 
              Language="{UICulture}"
              Name="CodeMetrics"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance codeMetrics:CodeMetricsViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -100,15 +100,15 @@
 
     <Grid UseLayoutRounding="True">
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
+            <!--<RowDefinition Height="30"/>-->
             <RowDefinition Height="20"/>
             <RowDefinition Height="*" MinHeight="64" />
         </Grid.RowDefinitions>
 
-        <ToolBarTray Grid.Row="0" IsLocked="True">
+        <!--<ToolBarTray Grid.Row="0" IsLocked="True">
             <ToolBar Style="{DynamicResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}">
 
-                <Button Command="{Binding RefreshCommand}">
+                <Button>
                     <Image Height="16" Source="../../Resources/arrow-circle-double.png">
                         <Image.Style>
                             <Style TargetType="Image">
@@ -125,7 +125,7 @@
                     </Button.ToolTip>
                 </Button>
             </ToolBar>
-        </ToolBarTray>
+        </ToolBarTray>-->
 
         <Border Grid.Row="1" 
                 BorderBrush="{StaticResource {x:Static SystemColors.ControlBrushKey}}" 

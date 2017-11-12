@@ -12,16 +12,11 @@ namespace Rubberduck.Navigation.CodeMetrics
     {
         private readonly RubberduckParserState _state;
 
-        public CodeMetricsViewModel(RubberduckParserState state, List<CommandBase> commands, ICodeMetricsAnalyst analyst)
+        public CodeMetricsViewModel(RubberduckParserState state, ICodeMetricsAnalyst analyst)
 
         {
             _state = state;
-            var reparseCommand = commands.OfType<ReparseCommand>().SingleOrDefault();
-            RefreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(),
-                reparseCommand == null ? (Action<object>)(o => { }) :
-                o => reparseCommand.Execute(o),
-                o => !IsBusy && reparseCommand != null && reparseCommand.CanExecute(o));
-            
+            // FIXME deregister event on destruction
             _state.StateChanged += (_, change) =>
             {
                 if (change.State == ParserState.Ready)
@@ -47,7 +42,7 @@ namespace Rubberduck.Navigation.CodeMetrics
         }
 
         
-        public CommandBase RefreshCommand { get; set; }
+        //public CommandBase RefreshCommand { get; set; }
 
 
         private bool _canSearch;
