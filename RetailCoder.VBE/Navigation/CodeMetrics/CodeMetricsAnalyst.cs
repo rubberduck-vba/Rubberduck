@@ -172,7 +172,7 @@ namespace Rubberduck.Navigation.CodeMetrics
             {
                 var ws = context.whiteSpace();
                 // FIXME only take the last contiguous non-linebreak into account
-                results.Add(new CodeMetricsResult(0, 0, ws.ChildCount / _indenterSettings.IndentSpaces));
+                results.Add(new CodeMetricsResult(0, 0, (ws?.ChildCount ?? 0) / _indenterSettings.IndentSpaces));
             }
 
             private void ExitMeasurableMember()
