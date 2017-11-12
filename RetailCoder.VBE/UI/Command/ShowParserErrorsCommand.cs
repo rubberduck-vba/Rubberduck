@@ -47,29 +47,36 @@ namespace Rubberduck.UI.Command
 
         private void UpdateTab()
         {
-            if (_viewModel == null)
+            try
             {
-                return;
-            }
-
-            var vm = CreateViewModel();
-
-            var tab = _viewModel.Tabs.FirstOrDefault(t => t.Header == RubberduckUI.Parser_ParserError);
-            if (tab != null)
-            {
-                if (_state.Status != ParserState.Error)
+                if (_viewModel == null)
                 {
-                    tab.CloseCommand.Execute(null);
+                    return;
                 }
-                else
+
+                var vm = CreateViewModel();
+
+                var tab = _viewModel.Tabs.FirstOrDefault(t => t.Header == RubberduckUI.Parser_ParserError);
+                if (tab != null)
                 {
-                    tab.SearchResults = vm.SearchResults;
+                    if (_state.Status != ParserState.Error)
+                    {
+                        tab.CloseCommand.Execute(null);
+                    }
+                    else
+                    {
+                        tab.SearchResults = vm.SearchResults;
+                    }
+                }
+                else if (_state.Status == ParserState.Error)
+                {
+                    _viewModel.AddTab(vm);
+                    _viewModel.SelectedTab = vm;
                 }
             }
-            else if (_state.Status == ParserState.Error)
+            catch (Exception exception)
             {
-                _viewModel.AddTab(vm);
-                _viewModel.SelectedTab = vm;
+                Logger.Error(exception, "Exception thrown while trying to update the parser errors tab.");
             }
         }
 

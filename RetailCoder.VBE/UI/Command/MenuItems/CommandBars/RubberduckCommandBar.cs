@@ -107,11 +107,19 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
 
             UiDispatcher.Invoke(() =>
             {
-                reparseCommandButton.SetCaption(caption);
-                reparseCommandButton.SetToolTip(string.Format(RubberduckUI.ReparseToolTipText, caption));
-                if (errorCount.HasValue && errorCount.Value > 0)
+                try
                 {
-                    showErrorsCommandButton.SetToolTip(string.Format(RubberduckUI.ParserErrorToolTipText, errorCount.Value));
+                    reparseCommandButton.SetCaption(caption);
+                    reparseCommandButton.SetToolTip(string.Format(RubberduckUI.ReparseToolTipText, caption));
+                    if (errorCount.HasValue && errorCount.Value > 0)
+                    {
+                        showErrorsCommandButton.SetToolTip(
+                            string.Format(RubberduckUI.ParserErrorToolTipText, errorCount.Value));
+                    }
+                }
+                catch (Exception exception)
+                {
+                    Logger.Error(exception, "Exception thrown trying to set the status label caption on the UI thread.");
                 }
             });
             Localize();
@@ -125,9 +133,16 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
 
             UiDispatcher.Invoke(() =>
             {
-                contextLabel?.SetCaption(caption);
-                contextReferences?.SetCaption(contextReferenceCount);
-                contextDescription?.SetCaption(description);
+                try
+                {
+                    contextLabel?.SetCaption(caption);
+                    contextReferences?.SetCaption(contextReferenceCount);
+                    contextDescription?.SetCaption(description);
+                }
+                catch (Exception exception)
+                {
+                    Logger.Error(exception, "Exception thrown trying to set the context selection caption on the UI thread.");
+                }
             });
             Localize();
         }

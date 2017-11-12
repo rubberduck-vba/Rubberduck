@@ -126,7 +126,7 @@ namespace Rubberduck.SmartIndenter
             get { return _lines.All(x => x.ContainsOnlyComment); }
         }
 
-        private static readonly Regex OperatorIgnoreRegex = new Regex(@"^(\d*\s)?\s*[+&]\s");
+        private static readonly Regex OperatorIgnoreRegex = new Regex(@"^(\d*\s)?\s*[+&]\s", RegexOptions.IgnoreCase);
 
         public string Indented()
         {
@@ -180,7 +180,7 @@ namespace Rubberduck.SmartIndenter
             return _lines.Aggregate(string.Empty, (x, y) => x + y.ToString());
         }
 
-        private static readonly Regex StartIgnoreRegex = new Regex(@"^(\d*\s)?\s*[LR]?Set\s|^(\d*\s)?\s*Let\s|^(\d*\s)?\s*(Public|Private)\sDeclare\s(Function|Sub)|^(\d*\s+)");
+        private static readonly Regex StartIgnoreRegex = new Regex(@"^(\d*\s)?\s*[LR]?Set\s|^(\d*\s)?\s*Let\s|^(\d*\s)?\s*(Public|Private)\sDeclare\s(Function|Sub)|^(\d*\s+)", RegexOptions.IgnoreCase);
         private readonly Stack<AlignmentToken> _alignment = new Stack<AlignmentToken>();
 
         //The splitNamed parameter is a straight up hack for fixing https://github.com/rubberduck-vba/Rubberduck/issues/2402
