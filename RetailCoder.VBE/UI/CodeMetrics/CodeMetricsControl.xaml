@@ -159,24 +159,28 @@
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate>
                     <Grid>
-                        <TextBlock Grid.Column="0" Text="{Binding Path=ModuleName}"/>
-                        <TextBlock Grid.Column="1" Text="{Binding Path=Result.Lines}" />
-                        <TextBlock Grid.Column="2" Text="{Binding Path=Result.CyclomaticComplexity}" />
-                        <TextBlock Grid.Column="3" Text="{Binding Path=Result.MaximumNesting}" />
+                        <TextBlock Grid.Column="0" Grid.Row="0" Text="{Binding Path=ModuleName}"/>
+                        <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding Path=Result.Lines}" />
+                        <TextBlock Grid.Column="2" Grid.Row="0" Text="{Binding Path=Result.CyclomaticComplexity}" />
+                        <TextBlock Grid.Column="3" Grid.Row="0" Text="{Binding Path=Result.MaximumNesting}" />
+
+                        <ListView Grid.ColumnSpan="4" Grid.Row="1" ItemsSource="{Binding Path=MemberResults}">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <TextBlock Grid.Column="0" Text="{Binding Path=Key}"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding Path=Value.Lines}" />
+                                        <TextBlock Grid.Column="2" Text="{Binding Path=Value.CyclomaticComplexity}" />
+                                        <TextBlock Grid.Column="3" Text="{Binding Path=Value.MaximumNesting}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
                     </Grid>
-                    <HierarchicalDataTemplate.ItemTemplate ItemsSource="{Binding MemberResults}">
-                        <DataTemplate>
-                            <Grid>
-                                <TextBlock Grid.Column="0" Text="{Binding Path=Key}"/>
-                                <TextBlock Grid.Column="1" Text="{Binding Path=Value.Lines}" />
-                                <TextBlock Grid.Column="2" Text="{Binding Path=Value.CyclomaticComplexity}" />
-                                <TextBlock Grid.Column="3" Text="{Binding Path=Value.MaximumNesting}" />
-                            </Grid>
-                        </DataTemplate>
-                    </HierarchicalDataTemplate.ItemTemplate>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>
         <controls:BusyIndicator Grid.Row="2" Width="120" Height="120" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
     </Grid>
 </UserControl>
+
