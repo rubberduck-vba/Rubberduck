@@ -28,7 +28,7 @@ namespace Rubberduck.Inspections.Concrete
         public static string CaseElse => "The Case Else clause is unreachable";
     }
 
-    internal class UnreachableCaseInspection : ParseTreeInspectionBase
+    public sealed class UnreachableCaseInspection : ParseTreeInspectionBase
     {
         private readonly string _unreachableCaseInspectionResultFormat
         = CaseInspectionMessages.Unreachable;
