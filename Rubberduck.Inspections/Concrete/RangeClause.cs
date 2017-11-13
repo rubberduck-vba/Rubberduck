@@ -10,7 +10,7 @@ using static Rubberduck.Inspections.Concrete.UnreachableCaseInspection;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    public struct RangeClauseEvaluationResults
+    public struct CompareResults
     {
         public bool IsReachable;
         public bool IsParseable;
@@ -43,7 +43,7 @@ namespace Rubberduck.Inspections.Concrete
         private string _valueMinAsString;
         private string _valueMaxAsString;
         private string _valueAsString;
-        private RangeClauseEvaluationResults _evalResults;
+        private CompareResults _evalResults;
 
         internal RangeClause(CaseClauseWrapper caseClause, VBAParser.RangeClauseContext ctxt)
         {
@@ -58,7 +58,7 @@ namespace Rubberduck.Inspections.Concrete
                 var startValueAsString = GetText(ParserRuleContextHelper.GetChild<VBAParser.SelectStartValueContext>(_ctxt));
                 var endValueAsString = GetText(ParserRuleContextHelper.GetChild<VBAParser.SelectEndValueContext>(_ctxt));
 
-                var endIsGreaterThanStart = CreateVBAValue(startValueAsString) > CreateVBAValue(endValueAsString);
+                var endIsGreaterThanStart = CreateVBAValue(endValueAsString) > CreateVBAValue(startValueAsString);
                 _valueMinAsString = endIsGreaterThanStart ? startValueAsString : endValueAsString;
                 _valueMaxAsString = endIsGreaterThanStart ? endValueAsString : startValueAsString;
                 _valueAsString = _valueMinAsString;
@@ -70,22 +70,26 @@ namespace Rubberduck.Inspections.Concrete
                 _valueMaxAsString = _valueAsString;
             }
 
-            _evalResults = new RangeClauseEvaluationResults
+            _evalResults = new CompareResults
             {
                 IsFullyEquivalent = false,
                 IsPartiallyEquivalent = false,
                 IsReachable = true,
-                IsStringLiteral = IsStringLiteral,
+                IsStringLiteral = IsStringLiteral(ctxt.GetText()),
                 IsIndeterminant = false,
                 TargetTypename = caseClause.Parent.TypeName,
                 IsParseable = CanParseTo(caseClause.Parent.TypeName),
                 NativeTypeName = EvaluateRangeClauseTypeName(caseClause)
             };
+
+            _evalResults.IsIndeterminant = !IsParseable && _evalResults.NativeTypeName.Equals(_evalResults.TargetTypename);
         }
 
         public bool IsParseable => _evalResults.IsParseable;
+        public bool CompareByTextOnly => _evalResults.IsIndeterminant;
         public bool MatchesSelectCaseType => _evalResults.NativeTypeName.Equals(_evalResults.TargetTypename);
         public string RangeClauseTypeName => _evalResults.NativeTypeName;
+        public VBAParser.RangeClauseContext Context => _ctxt;
 
         //IRangeClause implementation
         public bool IsSingleVal => !IsRange;
@@ -100,22 +104,39 @@ namespace Rubberduck.Inspections.Concrete
         private VBAValue CreateVBAValue(string AsString) => new VBAValue(AsString, SelectCaseTypeName);
         private string SelectCaseTypeName => _parent.Parent.TypeName;
         private bool IsSelectCaseBoolean => _parent.Parent.TypeName.Equals(Tokens.Boolean);
-        private bool IsStringLiteral => _ctxt.GetText().StartsWith("\"") && _ctxt.GetText().EndsWith("\"");
+        private bool IsStringLiteral(string text) => text.StartsWith("\"") && _ctxt.GetText().EndsWith("\"");
 
         private string EvaluateRangeClauseTypeName(CaseClauseWrapper caseClause)
         {
             var textValue = _ctxt.GetText();
-            if (IsStringLiteral)
+            if (IsStringLiteral(textValue))
             {
                 return Tokens.String;
             }
             else if (textValue.EndsWith("#"))
             {
-                return Tokens.Double;
+                var modified = textValue.Substring(0,textValue.Length -1);
+                long LHS;
+                if (long.TryParse(modified,out LHS))
+                {
+                    return Tokens.Double;
+                }
+                return Tokens.String;
             }
             else if (textValue.Contains("."))
             {
-                return caseClause.Parent.TypeName.Equals(Tokens.Currency) ? Tokens.Currency : Tokens.Double;
+                double result;
+                if(double.TryParse(textValue, out result))
+                {
+                    return Tokens.Double;
+                }
+
+                decimal currency;
+                if (decimal.TryParse(textValue, out currency))
+                {
+                    return Tokens.Currency;
+                }
+                return caseClause.Parent.TypeName;
             }
             else if (textValue.Equals(Tokens.True) || textValue.Equals(Tokens.False))
             {
@@ -192,7 +213,8 @@ namespace Rubberduck.Inspections.Concrete
                 {
                     lExprCtxtIndices.Add(idx);
                 }
-                else if (relationalOpCtxt.children[idx] is VBAParser.LiteralExprContext)
+                else if (relationalOpCtxt.children[idx] is VBAParser.UnaryMinusOpContext
+                        || relationalOpCtxt.children[idx] is VBAParser.LiteralExprContext)
                 {
                     literalExprCtxtIndices.Add(idx);
                 }
@@ -241,8 +263,16 @@ namespace Rubberduck.Inspections.Concrete
                 if (lExprCtxt.GetText().Equals(_parent.Parent.IdReference.IdentifierName))
                 {
                     _usesIsClause = true;
-                    var theValueCtxt = (VBAParser.LiteralExprContext)relationalOpCtxt.children[literalExprCtxtIndices.First()];
-                    return theValueCtxt.GetText();
+                    if (relationalOpCtxt.children[literalExprCtxtIndices.First()] is VBAParser.LiteralExprContext)
+                    {
+                        var theValueCtxt = (VBAParser.LiteralExprContext)relationalOpCtxt.children[literalExprCtxtIndices.First()];
+                        return theValueCtxt.GetText();
+                    }
+                    else if (relationalOpCtxt.children[literalExprCtxtIndices.First()] is VBAParser.UnaryMinusOpContext)
+                    {
+                        var theValueCtxt = (VBAParser.UnaryMinusOpContext)relationalOpCtxt.children[literalExprCtxtIndices.First()];
+                        return theValueCtxt.GetText();
+                    }
                 }
             }
             return string.Empty;
@@ -330,8 +360,7 @@ namespace Rubberduck.Inspections.Concrete
 
     public class RangeClauseComparer
     {
-
-        public struct RangeCompareData
+        internal struct RangeCompareData
         {
             public IRangeClause Current;
             public IRangeClause Prior;
@@ -361,6 +390,13 @@ namespace Rubberduck.Inspections.Concrete
                 PriorValueMin = prior.IsSingleVal ? PriorValue : new VBAValue(prior.ValueMinAsString, SelectCaseTypename);
                 PriorValueMax = prior.IsSingleVal ? PriorValue : new VBAValue(prior.ValueMaxAsString, SelectCaseTypename);
             }
+        }
+
+        public struct CompareResultData
+        {
+            public bool IsRedundant;
+            public bool HasInternalConflict;
+            public bool MakesAllRemainingCasesUnreachable;
         }
 
         private static Dictionary<string, string> _compareInversions = new Dictionary<string, string>()
@@ -395,6 +431,7 @@ namespace Rubberduck.Inspections.Concrete
 
         private string _targetTypeName;
         private bool IsBooleanSelectCase => _targetTypeName.Equals(Tokens.Boolean);
+        private CompareResultData _results;
 
         public bool IsFullyEquivalent { set; get; }
         public bool IsPartiallyEquivalent { set; get; }
@@ -407,7 +444,7 @@ namespace Rubberduck.Inspections.Concrete
             return IsComparisonOperator(theOperator) ? _compareInversions[theOperator] : theOperator;
         }
 
-        public void Compare(IRangeClause current, IRangeClause prior, string targetTypeName)
+        public CompareResultData Compare(IRangeClause current, IRangeClause prior, string targetTypeName)
         {
             _targetTypeName = targetTypeName;
             IsFullyEquivalent = false;
@@ -430,15 +467,27 @@ namespace Rubberduck.Inspections.Concrete
             {
                 CompareRangeValues(dto);
             }
+            _results.IsRedundant = IsFullyEquivalent;
+            _results.HasInternalConflict = IsPartiallyEquivalent;
+            _results.MakesAllRemainingCasesUnreachable = CausesUnreachableCaseElse;
+            return _results;
+        }
+
+        private void CompareSingleValuesSimple(RangeCompareData dto)
+        {
+            IsFullyEquivalent = dto.CurrentValue == dto.PriorValue;
+
+            CausesUnreachableCaseElse = IsBooleanSelectCase && !IsFullyEquivalent;
         }
 
         private void CompareSingleValues(RangeCompareData dto)
         {
+            var current = dto.CurrentValue.AsLong();
+            var prior = dto.PriorValue.AsLong();
+
             if (!dto.Current.UsesIsClause && !dto.Prior.UsesIsClause)
             {
-                IsFullyEquivalent = dto.CurrentValue == dto.PriorValue;
-
-                CausesUnreachableCaseElse = IsBooleanSelectCase && !IsFullyEquivalent;
+                CompareSingleValuesSimple(dto);
             }
             else if (!dto.Current.UsesIsClause && dto.Prior.UsesIsClause)
             {
@@ -456,14 +505,29 @@ namespace Rubberduck.Inspections.Concrete
             }
             else if (dto.Current.UsesIsClause && !dto.Prior.UsesIsClause)
             {
-                var compareOP = CompareOps[GetCompareSymbolInverse(dto.CurrentCompareSymbol)];
-                IsPartiallyEquivalent = compareOP(dto.CurrentValue, dto.PriorValue);
+
+                if (dto.CurrentCompareSymbol.Equals(CompareSymbols.EQ))
+                {
+                    CompareSingleValuesSimple(dto);
+                }
+                else if (dto.CurrentCompareSymbol.Equals(CompareSymbols.NEQ))
+                {
+                    IsPartiallyEquivalent = dto.CurrentValue != dto.PriorValue;
+
+                    CausesUnreachableCaseElse = !IsPartiallyEquivalent;
+                }
+                else
+                {
+                    var compareOP = CompareOps[GetCompareSymbolInverse(dto.CurrentCompareSymbol)];
+                    IsPartiallyEquivalent = compareOP(dto.CurrentValue, dto.PriorValue);
+                }
                 if (IsBooleanSelectCase)
                 {
                     CausesUnreachableCaseElse = dto.CurrentValue != dto.PriorValue;
                 }
                 else if (dto.CurrentCompareSymbol.Equals(GetCompareSymbolInverse(dto.PriorCompareSymbol)))
                 {
+                    var compareOP = CompareOps[GetCompareSymbolInverse(dto.CurrentCompareSymbol)];
                     CausesUnreachableCaseElse = compareOP(dto.CurrentValue, dto.PriorValue);
                 }
             }
@@ -602,15 +666,28 @@ namespace Rubberduck.Inspections.Concrete
                 }
             }
             /*
+            * Current Case Is = 5 Prior Is < 10 : Fully
             * Current Case Is > 5 Prior Is < 10 : Partial
             * Current Case Is < 5 Prior Is > 10 : No conflict
             * Current Case Is > 10 Prior Is < 5 : No conflict
             * Current Case Is < 10 Prior Is > 5 : Partial
+            * Current Case Is < 10 Prior Is = 5 : Partial
             * */
             else
             {
-                var compareOp = CompareOps[GetCompareSymbolInverse(dto.CurrentCompareSymbol)];
-                IsPartiallyEquivalent = compareOp(dto.CurrentValue, dto.PriorValue);
+                if (dto.CurrentCompareSymbol.Equals(CompareSymbols.EQ))
+                {
+                    CompareSingleValueToPriorIsClause(dto);
+                }
+                else if(dto.CurrentCompareSymbol.Equals(CompareSymbols.NEQ))
+                {
+                    IsPartiallyEquivalent = true;
+                }
+                else
+                {
+                    var compareOp = CompareOps[GetCompareSymbolInverse(dto.CurrentCompareSymbol)];
+                    IsPartiallyEquivalent = compareOp(dto.CurrentValue, dto.PriorValue);
+                }
             }
 
             if(dto.CurrentCompareSymbol.Equals(GetCompareSymbolInverse(dto.PriorCompareSymbol))
