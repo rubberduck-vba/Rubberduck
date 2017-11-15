@@ -137,14 +137,14 @@
                          MinHeight="20"
                          PreviewKeyDown="SearchBox_OnPreviewKeyDown"
                          TextChanged="SearchBox_OnTextChanged" />
-        
+
                 <Image Source="{StaticResource SearchImage}" 
                        HorizontalAlignment="Right" VerticalAlignment="Center" 
                        MaxHeight="16" Margin="0,0,1,0" 
                        IsEnabled="{Binding CanSearch}"
                        Visibility="{Binding ElementName=SearchBox, Path=Text.Length, Converter={StaticResource StringHasValueToVisibility}}"
                        MouseDown="SearchIcon_OnMouseDown" />
-        
+
                 <Button Style="{StaticResource XButtonStyle}" 
                         HorizontalAlignment="Right" VerticalAlignment="Center" 
                         Height="18" Width="18" Margin="0,1,1,0" 
@@ -155,31 +155,26 @@
         </Border>
         <controls:EmptyUIRefresh Grid.Row="2" />
 
-        <TreeView ItemsSource="{Binding ModuleMetrics}" Grid.Row="2" >
-            <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate>
-                    <Grid>
-                        <TextBlock Grid.Column="0" Grid.Row="0" Text="{Binding Path=ModuleName}"/>
-                        <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding Path=Result.Lines}" />
-                        <TextBlock Grid.Column="2" Grid.Row="0" Text="{Binding Path=Result.CyclomaticComplexity}" />
-                        <TextBlock Grid.Column="3" Grid.Row="0" Text="{Binding Path=Result.MaximumNesting}" />
-
-                        <ListView Grid.ColumnSpan="4" Grid.Row="1" ItemsSource="{Binding Path=MemberResults}">
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid>
-                                        <TextBlock Grid.Column="0" Text="{Binding Path=Key}"/>
-                                        <TextBlock Grid.Column="1" Text="{Binding Path=Value.Lines}" />
-                                        <TextBlock Grid.Column="2" Text="{Binding Path=Value.CyclomaticComplexity}" />
-                                        <TextBlock Grid.Column="3" Text="{Binding Path=Value.MaximumNesting}" />
-                                    </Grid>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
-                    </Grid>
-                </HierarchicalDataTemplate>
-            </TreeView.ItemTemplate>
-        </TreeView>
+        <DataGrid Grid.Row="2" ItemsSource="{Binding ModuleMetrics}" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Path=ModuleName}" Header="Declaration" Width="*"/>
+                <DataGridTextColumn Binding="{Binding Path=Result.Lines}" Header="Lines" Width="Auto"/>
+                <DataGridTextColumn Binding="{Binding Path=Result.CyclomaticComplexity}" Header="Cyclomatic Complexity" Width="Auto"/>
+                <DataGridTextColumn Binding="{Binding Path=Result.MaximumNesting}" Header="Nesting Level" Width="Auto"/>
+            </DataGrid.Columns>
+            <DataGrid.RowDetailsTemplate>
+                <DataTemplate>
+                    <DataGrid ItemsSource="{Binding Path=MemberResults}" AutoGenerateColumns="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Declaration" Binding="{Binding Path=Key.IdentifierName}" Width="*"/>
+                            <DataGridTextColumn Header="Lines" Binding="{Binding Path=Value.Lines}"  Width="Auto"/>
+                            <DataGridTextColumn Header="Cyclomatic Complexity" Binding="{Binding Path=Value.CyclomaticComplexity}" Width="Auto"/>
+                            <DataGridTextColumn Header="Nesting Level" Binding="{Binding Path=Value.MaximumNesting}" Width="Auto"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DataTemplate>
+            </DataGrid.RowDetailsTemplate>
+        </DataGrid>
         <controls:BusyIndicator Grid.Row="2" Width="120" Height="120" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
     </Grid>
 </UserControl>
