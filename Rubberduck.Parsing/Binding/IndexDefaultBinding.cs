@@ -127,7 +127,7 @@ namespace Rubberduck.Parsing.Binding
             bool isVariable = lExpression.Classification == ExpressionClassification.Variable;
             bool propertyWithParameters = lExpression.Classification == ExpressionClassification.Property && !((IParameterizedDeclaration)lExpression.ReferencedDeclaration).Parameters.Any();
             bool functionWithParameters = lExpression.Classification == ExpressionClassification.Function && !((IParameterizedDeclaration)lExpression.ReferencedDeclaration).Parameters.Any();
-            if (isVariable || ((propertyWithParameters || functionWithParameters) && _argumentList.HasArguments))
+            if (lExpression.ReferencedDeclaration != null && (isVariable || ((propertyWithParameters || functionWithParameters) && _argumentList.HasArguments)))
             {
                 IBoundExpression boundExpression = null;
                 var asTypeName = lExpression.ReferencedDeclaration.AsTypeName;
