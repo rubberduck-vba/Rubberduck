@@ -114,6 +114,32 @@ End Function
 
         [TestCategory("Resolver")]
         [TestMethod]
+        public void JaggedArrayReference_DoesNotBlowUp()
+        {
+            // see https://github.com/rubberduck-vba/Rubberduck/issues/3098
+            var code = @"Option Explicit
+
+Public Sub Test()
+    Dim varTemp() As Variant
+    
+    ReDim varTemp(0)
+    
+    varTemp(0) = Array(0)
+    varTemp(0)(0) = Array(0)
+    
+    Debug.Print varTemp(0)(0)
+End Sub
+";
+
+            using (var state = Resolve(code))
+            {
+                var declaration = state.AllUserDeclarations.Single(item => item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "varTemp");
+                Assert.IsTrue(declaration.IsArray);
+            }
+        }
+
+        [TestCategory("Resolver")]
+        [TestMethod]
         public void OptionalParameterDefaultConstValue_IsReferenceToDeclaredConst()
         {
             var code = @"
