@@ -130,6 +130,33 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Copy successful.
+        /// </summary>
+        public static string AboutWindow_CopyVersionCaption {
+            get {
+                return ResourceManager.GetString("AboutWindow_CopyVersionCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click here to copy version info to clipboard..
+        /// </summary>
+        public static string AboutWindow_CopyVersionLabel {
+            get {
+                return ResourceManager.GetString("AboutWindow_CopyVersionLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Version information copied to clipboard..
+        /// </summary>
+        public static string AboutWindow_CopyVersionMessage {
+            get {
+                return ResourceManager.GetString("AboutWindow_CopyVersionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to All contributors to our GitHub repository
         ///All our stargazers, likers &amp; followers, for the warm fuzzies
         ///...and anyone reading this!.
@@ -5411,7 +5438,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rubberduck ToDo Items - {0}
+        ///   Looks up a localized string similar to Rubberduck TODO Items - {0}
         ///{1} items found..
         /// </summary>
         public static string ToDoExplorer_NumberOfIssuesFound_Plural {
@@ -5421,7 +5448,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rubberduck ToDo Items - {0}
+        ///   Looks up a localized string similar to Rubberduck TODO Items - {0}
         ///{1} items found..
         /// </summary>
         public static string ToDoExplorer_NumberOfIssuesFound_Singular {

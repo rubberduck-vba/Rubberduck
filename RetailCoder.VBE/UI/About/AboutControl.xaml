@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignWidth="499"
              d:DataContext="{d:DesignInstance {x:Type about:AboutControlViewModel}, IsDesignTimeCreatable=False}"
-             KeyDown="OnKeyDownHandler" >
+             KeyDown="OnKeyDownHandler">
     <UserControl.Resources>
         <BitmapImage x:Key="Ducky" UriSource="../../Resources/AboutBanner.png" />
         <BitmapImage x:Key="RD" UriSource="../../Resources/Rubberduck.png" />
@@ -34,7 +34,7 @@
                        Foreground="Gray"
                        FontSize="8"
                        HorizontalAlignment="Center"
-                       Content="Click here to copy version info to clipboard."/>
+                       Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=AboutWindow_CopyVersionLabel}"/>
             </StackPanel>
         </Border>
         

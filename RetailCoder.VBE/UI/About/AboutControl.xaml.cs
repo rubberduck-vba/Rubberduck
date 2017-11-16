@@ -40,7 +40,7 @@ namespace Rubberduck.UI.About
             sb.AppendFormat($"Host Executable: {Path.GetFileName(Application.ExecutablePath).ToUpper()}"); // .ToUpper() used to convert ExceL.EXE -> EXCEL.EXE
 
             Clipboard.SetText(sb.ToString());
-            System.Windows.MessageBox.Show("Version information copied to clipboard.", "Copy successfull");
+            System.Windows.MessageBox.Show(RubberduckUI.AboutWindow_CopyVersionMessage, RubberduckUI.AboutWindow_CopyVersionCaption);
         }
     }
 }
