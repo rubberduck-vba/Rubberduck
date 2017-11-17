@@ -17,10 +17,12 @@
     <UserControl.Resources>
         <BitmapImage x:Key="SettingsImage" UriSource="../../Resources/gear.png" />
 
+        
         <local:TestOutcomeImageSourceConverter x:Key="OutcomeIconConverter" />
-
+        
+        
         <local:TestResultToOutcomeTextConverter x:Key="OutcomeTextConverter" />
-
+        
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
         <converters:InvertBoolValueConverter x:Key="InvertBoolValue" />
 
@@ -272,9 +274,9 @@
                 <componentModel:SortDescription PropertyName="Result.Outcome" />
             </CollectionViewSource.SortDescriptions>
             <CollectionViewSource.GroupDescriptions>
-                <!--
+                
                 <PropertyGroupDescription PropertyName="Result" Converter="{StaticResource OutcomeTextConverter}" />
-                -->
+                
             </CollectionViewSource.GroupDescriptions>
         </CollectionViewSource>
         <SolidColorBrush x:Key="ToolBarToggleButtonVerticalBackground" Color="#FFEEF5FD"/>
@@ -610,7 +612,6 @@
                             <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_Duration}" Binding="{Binding Result.Duration, StringFormat={}{0}ms}" />
                         </DataGrid.Columns>
                     </controls:GroupingGrid>
-                    <!--
                     <controls:GroupingGrid ItemsSource="{Binding Source={StaticResource ResultsByModule}}"
                                            SelectedItem="{Binding SelectedTest}"
                                            ShowGroupingItemCount="True"
@@ -629,7 +630,7 @@
                             <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_Duration}" Binding="{Binding Result.Duration, StringFormat={}{0}ms}" />
                         </DataGrid.Columns>
                     </controls:GroupingGrid>
-                    -->
+                    
                 </Grid>
             </ScrollViewer>
         </Border>
