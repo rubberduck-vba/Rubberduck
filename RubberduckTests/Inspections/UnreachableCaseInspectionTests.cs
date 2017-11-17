@@ -522,15 +522,15 @@ Select Case x
   Case 10,11,12
     'Do FooBar
   Case 40000
-    'Unreachable
+    'Exceeds Integer value
   Case x < 4
     'OK
   Case -50000
-    'Unreachable
+    'Exceeds Integer values
 End Select
 
 End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+            CheckActualResultsEqualsExpected(inputCode, outOfRange: 2);
         }
 
         [TestMethod]
@@ -554,7 +554,7 @@ Select Case x
 End Select
 
 End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+            CheckActualResultsEqualsExpected(inputCode, outOfRange: 2);
         }
 
 
@@ -599,7 +599,7 @@ Select Case x
 End Select
 
 End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+            CheckActualResultsEqualsExpected(inputCode, outOfRange: 2);
         }
 
         [TestMethod]
@@ -619,7 +619,7 @@ Select Case x
 End Select
 
 End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+            CheckActualResultsEqualsExpected(inputCode, outOfRange: 2);
         }
 
         [TestMethod]
@@ -750,16 +750,24 @@ End Sub";
 @"Sub Foo(x As Byte)
 
 Select Case x
-  Case 1,2,5
+  Case 2,5,7
     'Do FooBar
+  Case 254
+    'OK
+  Case 255
+    'OK
   Case 256
-    'Unreachable
+    'Out of Range
   Case -1
-    'Unreachable
+    'Out of Range
+  Case 0
+    'OK
+  Case 1
+    'OK
 End Select
 
 End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+            CheckActualResultsEqualsExpected(inputCode, outOfRange: 2);
         }
 
         [TestMethod]
@@ -1663,7 +1671,7 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, conflict: 1);
         }
 
-        private void CheckActualResultsEqualsExpected(string inputCode, int unreachable = 0, int conflict = 0, int internalOverlap = 0, int mismatch = 0, int caseElse = 0)
+        private void CheckActualResultsEqualsExpected(string inputCode, int unreachable = 0, int conflict = 0, int internalOverlap = 0, int mismatch = 0, int outOfRange = 0, int caseElse = 0)
         {
             var expected = new Dictionary<string, int>
             {
@@ -1671,13 +1679,14 @@ End Sub";
                 { CaseInspectionMessages.Conflict, conflict },
                 { CaseInspectionMessages.InternalConflict, internalOverlap },
                 { CaseInspectionMessages.Mismatch, mismatch },
+                { CaseInspectionMessages.ExceedsBoundary, outOfRange },
                 { CaseInspectionMessages.CaseElse, caseElse },
             };
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new UnreachableCaseInspection(state);
+            var inspection = new SelectCaseInspection(state);
             var inspector = InspectionsHelper.GetInspector(inspection);
             var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
@@ -1685,12 +1694,14 @@ End Sub";
             var actualConflicts = actualResults.Where(ar => ar.Description.Equals(CaseInspectionMessages.Conflict));
             var actualOverlaps = actualResults.Where(ar => ar.Description.Equals(CaseInspectionMessages.InternalConflict));
             var actualMismatches = actualResults.Where(ar => ar.Description.Equals(CaseInspectionMessages.Mismatch));
+            var actualOutOfRange = actualResults.Where(ar => ar.Description.Equals(CaseInspectionMessages.ExceedsBoundary));
             var actualUnreachableCaseElses = actualResults.Where(ar => ar.Description.Equals(CaseInspectionMessages.CaseElse));
 
             Assert.AreEqual(expected[CaseInspectionMessages.Unreachable], actualUnreachable.Count(), "Unreachable result");
             Assert.AreEqual(expected[CaseInspectionMessages.Conflict], actualConflicts.Count(), "Conflict result");
             Assert.AreEqual(expected[CaseInspectionMessages.InternalConflict], actualOverlaps.Count(), "Overlap result");
             Assert.AreEqual(expected[CaseInspectionMessages.Mismatch], actualMismatches.Count(), "Mismatch result");
+            Assert.AreEqual(expected[CaseInspectionMessages.ExceedsBoundary], actualOutOfRange.Count(), "Boundary Check result");
             Assert.AreEqual(expected[CaseInspectionMessages.CaseElse], actualUnreachableCaseElses.Count(), "CaseElse result");
         }
     }

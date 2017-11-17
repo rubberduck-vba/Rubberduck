@@ -25,15 +25,16 @@ namespace Rubberduck.Inspections.Concrete
         public static string Conflict => "The Select Case has already been partially handled by a previous case";
         public static string InternalConflict => "The Select Case contains redundant or overlapping criteria";
         public static string Mismatch => "The Select Case is of a different Type than the Select Statement";
+        public static string ExceedsBoundary => "The Select Case is not a valid value for the Select Statment type";
         public static string CaseElse => "The Case Else clause is unreachable";
     }
 
-    public sealed class UnreachableCaseInspection : ParseTreeInspectionBase
+    public sealed class SelectCaseInspection : ParseTreeInspectionBase
     {
         private readonly string _unreachableCaseInspectionResultFormat
         = CaseInspectionMessages.Unreachable;
 
-        private readonly string _conflictingCaseInspectionResultFormat
+        private readonly string _overlapCaseInspectionResultFormat
         = CaseInspectionMessages.Conflict;
 
         private readonly string _internalClauseConflictFormat
@@ -42,10 +43,13 @@ namespace Rubberduck.Inspections.Concrete
         private readonly string _typeMismatchCaseInspectionResultFormat
         = CaseInspectionMessages.Mismatch;
 
+        private readonly string _valueExceedsPossibleValues
+        = CaseInspectionMessages.ExceedsBoundary;
+
         private readonly string _unreachableCaseElse
         = CaseInspectionMessages.CaseElse;
 
-        public UnreachableCaseInspection(RubberduckParserState state)
+        public SelectCaseInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Suggestion){ }
 
         public override IInspectionListener Listener { get; } =
@@ -62,24 +66,24 @@ namespace Rubberduck.Inspections.Concrete
 
             foreach (var selectStmt in selectCaseContexts)
             {
-                SelectStmtWrapper wrapper = new SelectStmtWrapper(State, selectStmt);
-                if (wrapper.TypeName.Equals(string.Empty))
+                SelectStmtWrapper selectStmtWrapper = new SelectStmtWrapper(State, selectStmt);
+                if (selectStmtWrapper.TypeName.Equals(string.Empty))
                 {
                     continue;
                 }
 
-                var caseClauseResults = EvaluateSelectCaseClauses(wrapper);
+                var reportableCaseClauseResults = EvaluateSelectCaseClauses(selectStmtWrapper);
 
-                foreach(var clauseWrapper in caseClauseResults.Item2)
+                foreach(var clauseWrapper in reportableCaseClauseResults.Item2)
                 {
                     string msg = string.Empty;
-                    if (clauseWrapper.IsFullyHandled)
+                    if (clauseWrapper.IsHandledByPriorClause)
                     {
                         msg = _unreachableCaseInspectionResultFormat;
                     }
-                    else if (clauseWrapper.IsPartiallyHandled)
+                    else if (clauseWrapper.OverlapsWithPriorClause)
                     {
-                        msg = _conflictingCaseInspectionResultFormat;
+                        msg = _overlapCaseInspectionResultFormat;
                     }
                     else if (clauseWrapper.HasInternalConflict)
                     {
@@ -89,21 +93,18 @@ namespace Rubberduck.Inspections.Concrete
                     {
                         msg = _typeMismatchCaseInspectionResultFormat;
                     }
+                    else if (clauseWrapper.HasOutofRangeValue)
+                    {
+                        msg = _valueExceedsPossibleValues;
+                    }
                     inspResults.Add(CreateInspectionResult(selectStmt, clauseWrapper.Value, msg));
                 }
-                if (caseClauseResults.Item1 != null)
+                if (reportableCaseClauseResults.Item1 != null)
                 {
-                    inspResults.Add(CreateInspectionResult(selectStmt, caseClauseResults.Item1, _unreachableCaseElse));
+                    inspResults.Add(CreateInspectionResult(selectStmt, reportableCaseClauseResults.Item1, _unreachableCaseElse));
                 }
             }
             return inspResults;
-        }
-
-        private IInspectionResult CreateInspectionResult(QualifiedContext<ParserRuleContext> selectStmt, ParserRuleContext unreachableBlock)
-        {
-            return new QualifiedContextInspectionResult(this,
-                        _unreachableCaseInspectionResultFormat,
-                        new QualifiedContext<ParserRuleContext>(selectStmt.ModuleName, unreachableBlock));
         }
 
         private IInspectionResult CreateInspectionResult(QualifiedContext<ParserRuleContext> selectStmt, ParserRuleContext unreachableBlock, string message)
@@ -117,24 +118,27 @@ namespace Rubberduck.Inspections.Concrete
         {
             Debug.Assert(!selectCaseStmt.TypeName.Equals(string.Empty));
 
-            var caseClauseEvaluationResults = new List<CaseClauseWrapper>();
-            var priorRangeClauses = new List<IRangeClause>();
+            var reportableCaseClauseResults = new List<CaseClauseWrapper>();
+            var priorRangeClauses = new List<SelectCaseInspectionRangeClause>();
             foreach (var caseClause in selectCaseStmt.CaseClauses)
             {
-                if (caseClause.HasInconsistentType)
+                if (selectCaseStmt.CaseElseIsUnreachable)
                 {
-                    caseClauseEvaluationResults.Add(caseClause);
+                    caseClause.IsHandledByPriorClause = true;
+                    reportableCaseClauseResults.Add(caseClause);
                 }
-                else if (selectCaseStmt.CaseElseIsUnreachable)
+                else if (caseClause.HasInconsistentType)
                 {
-                    caseClause.IsFullyHandled = true;
-                    caseClauseEvaluationResults.Add(caseClause);
+                    reportableCaseClauseResults.Add(caseClause);
                 }
                 else
                 {
-                    caseClauseEvaluationResults = EvaluateCaseClauseAgainstRangeExtents(caseClause, caseClauseEvaluationResults);
-                    caseClauseEvaluationResults = EvaluateCaseClauseForInternalConflicts(caseClause, caseClauseEvaluationResults);
-                    caseClauseEvaluationResults = EvaluateCaseClauseAgainstPriorRangeContexts(caseClause, priorRangeClauses, caseClauseEvaluationResults);
+                    reportableCaseClauseResults = EvaluateCaseClauseAgainstRangeExtents(caseClause, reportableCaseClauseResults);
+                    if(!reportableCaseClauseResults.Where(cc => cc.HasOutofRangeValue && cc.Equals(caseClause)).Any())
+                    {
+                        reportableCaseClauseResults = EvaluateCaseClauseForInternalConflicts(caseClause, reportableCaseClauseResults);
+                        reportableCaseClauseResults = EvaluateCaseClauseAgainstPriorRangeContexts(caseClause, priorRangeClauses, reportableCaseClauseResults);
+                    }
                     priorRangeClauses.AddRange(caseClause.RangeClauses.Where(rg => rg.MatchesSelectCaseType));
                 }
             }
@@ -142,23 +146,26 @@ namespace Rubberduck.Inspections.Concrete
             return new Tuple<VBAParser.CaseElseClauseContext, List<CaseClauseWrapper>>
             (
                 selectCaseStmt.CaseElseIsUnreachable ? selectCaseStmt.CaseElseClause : null,
-                caseClauseEvaluationResults
+                reportableCaseClauseResults
             ); 
         }
 
         private List<CaseClauseWrapper> EvaluateCaseClauseAgainstRangeExtents(CaseClauseWrapper caseClause, List<CaseClauseWrapper> unreachableClauses)
         {
-            var rangeExtents = LoadBoundaryValueEvaluations(caseClause.Parent.TypeName, new List<IRangeClause>());
+            var rangeExtents = GetRangeExtentsForType(caseClause.Parent.TypeName);
             var allResults = new List<RangeClauseComparer.CompareResultData>();
 
             var comparer = new RangeClauseComparer();
             foreach (var rangeClause in caseClause.RangeClauses)
             {
+#if (DEBUG)
                 var text = rangeClause.Context.GetText();
-
-
+#endif
                 for (int idx = 0; idx < rangeExtents.Count(); idx++)
                 {
+#if (DEBUG)
+                    var priorVal = rangeExtents[idx].ValueAsString;
+#endif
                     var compResult = new RangeClauseComparer.CompareResultData();
                     if (!rangeClause.CompareByTextOnly)
                     {
@@ -167,9 +174,11 @@ namespace Rubberduck.Inspections.Concrete
                     allResults.Add(compResult);
                 }
 
-                caseClause.IsFullyHandled = allResults.Where(res => res.IsRedundant).Any();
-                if (caseClause.IsFullyHandled)
+                caseClause.IsHandledByPriorClause = allResults.Where(res => res.IsRedundant).Any();
+                if (caseClause.IsHandledByPriorClause)
                 {
+                    caseClause.HasOutofRangeValue = true;
+                    caseClause.IsHandledByPriorClause = false;
                     unreachableClauses.Add(caseClause);
                     return unreachableClauses;
                 }
@@ -178,9 +187,9 @@ namespace Rubberduck.Inspections.Concrete
         }
 
 
-        private List<CaseClauseWrapper> EvaluateCaseClauseAgainstPriorRangeContexts(CaseClauseWrapper caseClause, List<IRangeClause> priorRangeClauses, List<CaseClauseWrapper> unreachableClauses)
+        private List<CaseClauseWrapper> EvaluateCaseClauseAgainstPriorRangeContexts(CaseClauseWrapper caseClause, List<SelectCaseInspectionRangeClause> priorRangeClauses, List<CaseClauseWrapper> unreachableClauses)
         {
-            if (caseClause.IsFullyHandled)
+            if (caseClause.IsHandledByPriorClause)
             {
                 return unreachableClauses;
             }
@@ -195,9 +204,9 @@ namespace Rubberduck.Inspections.Concrete
                 for (int idx = 0; idx < priorRangeClauses.Count(); idx++)
                 {
                     var compResult = new RangeClauseComparer.CompareResultData();
-                    if (priorRangeClauses[idx] is RangeClause)
+                    if (priorRangeClauses[idx] is SelectCaseInspectionRangeClause)
                     {
-                        var priorRgClause = (RangeClause)priorRangeClauses[idx];
+                        var priorRgClause = (SelectCaseInspectionRangeClause)priorRangeClauses[idx];
                         var priorText = priorRgClause.Context.GetText();
                         if (rangeClause.CompareByTextOnly || priorRgClause.CompareByTextOnly)
                         {
@@ -214,8 +223,8 @@ namespace Rubberduck.Inspections.Concrete
                     allResults.Add(compResult);
                 }
 
-                caseClause.IsFullyHandled = allResults.Where(res => res.IsRedundant).Any();
-                caseClause.IsPartiallyHandled = allResults.Where(res => res.HasInternalConflict).Any();
+                caseClause.IsHandledByPriorClause = allResults.Where(res => res.IsRedundant).Any();
+                caseClause.OverlapsWithPriorClause = allResults.Where(res => res.HasConflict).Any();
             }
 
             if (!caseClause.Parent.CaseElseIsUnreachable)
@@ -223,7 +232,7 @@ namespace Rubberduck.Inspections.Concrete
                 caseClause.Parent.CaseElseIsUnreachable = allResults.Where(result => result.MakesAllRemainingCasesUnreachable).Any();
             }
 
-            if (caseClause.IsFullyHandled || caseClause.IsPartiallyHandled)
+            if (caseClause.IsHandledByPriorClause || caseClause.OverlapsWithPriorClause)
             {
                 unreachableClauses.Add(caseClause);
             }
@@ -233,6 +242,12 @@ namespace Rubberduck.Inspections.Concrete
 
         private List<CaseClauseWrapper> EvaluateCaseClauseForInternalConflicts(CaseClauseWrapper caseClause, List<CaseClauseWrapper> unreachableClauses)
         {
+            //If only one RangeClauseContext...no internal conflicts
+            if (caseClause.RangeClauses.Count() == 1)
+            {
+                return unreachableClauses;
+            }
+
             var allResults = new List<RangeClauseComparer.CompareResultData>();
 
             var comparer = new RangeClauseComparer();
@@ -240,7 +255,7 @@ namespace Rubberduck.Inspections.Concrete
             {
                 var rangeClause = caseClause.RangeClauses[currentIdx];
                 var text = rangeClause.Context.GetText();
-                var priorRangeClauses = new List<IRangeClause>();
+                var priorRangeClauses = new List<SelectCaseInspectionRangeClause>();
                 for (var idxPrior = 0; idxPrior < currentIdx; idxPrior++)
                 {
                     priorRangeClauses.Add(caseClause.RangeClauses[idxPrior]);
@@ -248,7 +263,7 @@ namespace Rubberduck.Inspections.Concrete
                 for(var idx = 0; idx < priorRangeClauses.Count; idx++)
                 {
                     var compResult = new RangeClauseComparer.CompareResultData();
-                    var priorRgClause = (RangeClause)priorRangeClauses[idx]; // caseClause.RangeClauses[idx];
+                    var priorRgClause = (SelectCaseInspectionRangeClause)priorRangeClauses[idx];
                         var priorText = priorRgClause.Context.GetText();
                         if (rangeClause.CompareByTextOnly || priorRgClause.CompareByTextOnly)
                         {
@@ -269,7 +284,7 @@ namespace Rubberduck.Inspections.Concrete
                     caseClause.HasInternalConflict = allResults.Where(res => res.IsRedundant).Any();
                     if (!caseClause.HasInternalConflict)
                     {
-                        caseClause.HasInternalConflict = allResults.Where(res => res.HasInternalConflict).Any();
+                        caseClause.HasInternalConflict = allResults.Where(res => res.HasConflict).Any();
                     }
                 }
             }
@@ -286,54 +301,53 @@ namespace Rubberduck.Inspections.Concrete
             return unreachableClauses;
         }
 
-        private static List<IRangeClause> LoadBoundaryValueEvaluations(string theTypeName, List<IRangeClause> rangeEvals)
+        private static List<SelectCaseInspectionRangeClause> GetRangeExtentsForType(string theTypeName)
         {
             if (theTypeName.Equals(Tokens.Long))
             {
                 long LONGMIN = -2147486648;
                 long LONGMAX = 2147486647;
-                return LoadRangeExtents(LONGMIN, LONGMAX, rangeEvals);
+                return LoadRangeExtents(LONGMIN, LONGMAX);
             }
             else if (theTypeName.Equals(Tokens.Integer))
             {
                 long INTEGERMIN = -32768;
                 long INTEGERMAX = 32767;
-                return LoadRangeExtents(INTEGERMIN, INTEGERMAX, rangeEvals);
+                return LoadRangeExtents(INTEGERMIN, INTEGERMAX);
             }
             else if (theTypeName.Equals(Tokens.Byte))
             {
                 long BYTEMIN = 0;
                 long BYTEMAX = 255;
-                return LoadRangeExtents(BYTEMIN, BYTEMAX, rangeEvals);
-            }
-            else if (theTypeName.Equals(Tokens.Boolean))
-            {
-                //If a value can be parsed to a Boolean, it's in range.
-                return rangeEvals;
+                return LoadRangeExtents(BYTEMIN, BYTEMAX);
             }
             else if (theTypeName.Equals(Tokens.Currency))
             {
                 decimal CURRENCYMIN = -922337203685477.5808M;
                 decimal CURRENCYMAX = 922337203685477.5807M;
-                return LoadRangeExtents(CURRENCYMIN, CURRENCYMAX, rangeEvals);
+                return LoadRangeExtents(CURRENCYMIN, CURRENCYMAX);
             }
             else if (theTypeName.Equals(Tokens.Single))
             {
                 double SINGLEMIN = -3402823E38;
                 double SINGLEMAX = 3402823E38;
-                return LoadRangeExtents(SINGLEMIN, SINGLEMAX, rangeEvals);
+                return LoadRangeExtents(SINGLEMIN, SINGLEMAX);
             }
+            //No extent checks for Boolean - if something can be parsed to a Boolean, it is in range
             //Decimal/Variant data type not supported by extent checks
 
-            return rangeEvals;
+            return new List<SelectCaseInspectionRangeClause>();
         }
 
-        private static List<IRangeClause> LoadRangeExtents<T>(T min, T max, List<IRangeClause> rangeEvals) where T : System.IComparable
+        private static List<SelectCaseInspectionRangeClause> LoadRangeExtents<T>(T min, T max)
         {
-            rangeEvals.Add(new RangeClauseExtent<T>(min, "<"));
-            rangeEvals.Add(new RangeClauseExtent<T>(max, ">"));
-            return rangeEvals;
+            return new List<SelectCaseInspectionRangeClause>
+            {
+                SelectCaseInspectionRangeClause.CreateBoundaryCheckRangeClause(min.ToString(), CompareSymbols.LT),
+                SelectCaseInspectionRangeClause.CreateBoundaryCheckRangeClause(max.ToString(), CompareSymbols.GT)
+            };
         }
+
         #region SelectStmtWrapper
 
         internal class SelectStmtWrapper
@@ -424,63 +438,63 @@ namespace Rubberduck.Inspections.Concrete
         {
             private VBAParser.CaseClauseContext _caseClause;
             private SelectStmtWrapper _parent;
-            private List<RangeClause> _rangeClauses;
-            private bool _isFullyEq;
-            private bool _isPartiallyEq;
-
+            private List<SelectCaseInspectionRangeClause> _rangeClauses;
+            private bool _isFullyEquivalent;
+            private bool _isPartiallyEquivalent;
             public CaseClauseWrapper(SelectStmtWrapper selectStmt, VBAParser.CaseClauseContext caseClause)
             {
                 _parent = selectStmt;
                 _caseClause = caseClause;
-                _rangeClauses = new List<RangeClause>();
+                _rangeClauses = new List<SelectCaseInspectionRangeClause>();
                 HasInternalConflict = false;
                 foreach (var rangeClauseCtxt in RangeClauseContexts)
                 {
+#if (DEBUG)
                     var test = rangeClauseCtxt.GetText();
-                    var rangeClause = new RangeClause(this, rangeClauseCtxt);
+#endif
+                    var rangeClause = new SelectCaseInspectionRangeClause(this, rangeClauseCtxt);
                     if (!rangeClause.IsParseable)
                     {
                         if (!rangeClause.MatchesSelectCaseType)
                         {
                             HasInconsistentType = true;
-                            IsUnreachable = true;
                         }
                     }
-                    _rangeClauses.Add(new RangeClause(this, rangeClauseCtxt));
+                    _rangeClauses.Add(new SelectCaseInspectionRangeClause(this, rangeClauseCtxt));
                 }
             }
 
             public VBAParser.CaseClauseContext Value => _caseClause;
             public SelectStmtWrapper Parent => _parent;
-            public List<RangeClause> RangeClauses => _rangeClauses;
+            public List<SelectCaseInspectionRangeClause> RangeClauses => _rangeClauses;
             public List<VBAParser.RangeClauseContext> RangeClauseContexts => ParserRuleContextHelper.GetChildren<VBAParser.RangeClauseContext>(_caseClause);
             public bool HasInternalConflict { set; get; }
-            public bool IsUnreachable { set; get; }
-            public bool IsFullyHandled
+            public bool IsHandledByPriorClause
             {
                 set
                 {
-                    _isFullyEq = value;
-                    if (_isFullyEq) { IsPartiallyHandled = false; }
+                    _isFullyEquivalent = value;
+                    if (_isFullyEquivalent) { OverlapsWithPriorClause = false; }
                 }
                 get
                 {
-                    return _isFullyEq;
+                    return _isFullyEquivalent;
                 }
             }
-            public bool IsPartiallyHandled
+            public bool OverlapsWithPriorClause
             {
                 set
                 {
-                    if (!IsFullyHandled) { _isPartiallyEq = value; } else { _isPartiallyEq = false; }
+                    if (!IsHandledByPriorClause) { _isPartiallyEquivalent = value; } else { _isPartiallyEquivalent = false; }
                 }
                 get
                 {
-                    return _isPartiallyEq;
+                    return _isPartiallyEquivalent;
                 }
             }
             public bool HasInconsistentType { set; get; }
-            public bool CausesUnreachableForRemainingClauses { set; get; }
+            public bool HasOutofRangeValue { set; get; }
+            public bool MakesRemainingClausesUnreachable { set; get; }
         }
 
         #endregion

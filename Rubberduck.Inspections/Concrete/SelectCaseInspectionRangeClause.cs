@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using static Rubberduck.Inspections.Concrete.UnreachableCaseInspection;
+using static Rubberduck.Inspections.Concrete.SelectCaseInspection;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -33,25 +33,28 @@ namespace Rubberduck.Inspections.Concrete
         public static readonly string GTE = ">=";
     }
 
-    public class RangeClause : IRangeClause
+    public class SelectCaseInspectionRangeClause
     {
         private readonly CaseClauseWrapper _parent;
         private readonly VBAParser.RangeClauseContext _ctxt;
         private bool _usesIsClause;
         private bool _isValueRange;
+        private bool _isRangeExtent;
         private string _compareSymbol;
         private string _valueMinAsString;
         private string _valueMaxAsString;
         private string _valueAsString;
         private CompareResults _evalResults;
 
-        internal RangeClause(CaseClauseWrapper caseClause, VBAParser.RangeClauseContext ctxt)
+        internal SelectCaseInspectionRangeClause(CaseClauseWrapper caseClause, VBAParser.RangeClauseContext ctxt)
         {
             _ctxt = ctxt;
             _parent = caseClause;
-            _compareSymbol = DetermineTheComparisonOperator(ctxt);
             _usesIsClause = HasChildToken(ctxt, Tokens.Is);
             _isValueRange = HasChildToken(ctxt, Tokens.To);
+            _compareSymbol = _usesIsClause ? GetTheCompareOperator(ctxt) : CompareSymbols.EQ;
+
+            _isRangeExtent = false;
 
             if (_isValueRange)
             {
@@ -85,17 +88,32 @@ namespace Rubberduck.Inspections.Concrete
             _evalResults.IsIndeterminant = !IsParseable && _evalResults.NativeTypeName.Equals(_evalResults.TargetTypename);
         }
 
+        public static SelectCaseInspectionRangeClause CreateBoundaryCheckRangeClause(string boundaryValue, string compareSymbol)
+        {
+            return new SelectCaseInspectionRangeClause(boundaryValue, compareSymbol);
+        }
+
+        private SelectCaseInspectionRangeClause(string typeBoundary, string compareSymbol)
+        {
+            _isRangeExtent = true;
+            _isValueRange = false;
+            _usesIsClause = true;
+            _valueAsString = typeBoundary;
+            _valueMinAsString = typeBoundary;
+            _valueMinAsString = typeBoundary;
+            _compareSymbol = compareSymbol;
+        }
+
         public bool IsParseable => _evalResults.IsParseable;
         public bool CompareByTextOnly => _evalResults.IsIndeterminant;
         public bool MatchesSelectCaseType => _evalResults.NativeTypeName.Equals(_evalResults.TargetTypename);
         public string RangeClauseTypeName => _evalResults.NativeTypeName;
         public VBAParser.RangeClauseContext Context => _ctxt;
 
-        //IRangeClause implementation
         public bool IsSingleVal => !IsRange;
         public bool IsRange => _isValueRange;
         public bool UsesIsClause => _usesIsClause;
-        public bool IsRangeExtent => false;
+        public bool IsRangeExtent => _isRangeExtent;
         public string ValueAsString => _valueAsString;
         public string ValueMinAsString => _valueMinAsString;
         public string ValueMaxAsString => _valueMaxAsString;
@@ -179,32 +197,34 @@ namespace Rubberduck.Inspections.Concrete
         private string GetRangeClauseText(VBAParser.RangeClauseContext ctxt)
         {
             VBAParser.RelationalOpContext relationalOpCtxt;
-            if (TryGetExprContext(ctxt, out relationalOpCtxt))
+            if (TryGetChildContext(ctxt, out relationalOpCtxt))
             {
+                _usesIsClause = true;
                 return GetTextForRelationalOpContext(relationalOpCtxt);
             }
 
             VBAParser.LExprContext lExprContext;
-            if (TryGetExprContext(ctxt, out lExprContext))
+            if (TryGetChildContext(ctxt, out lExprContext))
             {
                 string expressionValue;
                 return TryGetTheExpressionValue(lExprContext, out expressionValue) ? expressionValue : string.Empty;
             }
 
             VBAParser.UnaryMinusOpContext negativeCtxt;
-            if (TryGetExprContext(ctxt, out negativeCtxt))
+            if (TryGetChildContext(ctxt, out negativeCtxt))
             {
                 return negativeCtxt.GetText();
             }
 
             VBAParser.LiteralExprContext theValCtxt;
-            return TryGetExprContext(ctxt, out theValCtxt) ? GetText(theValCtxt) : string.Empty;
+            return TryGetChildContext(ctxt, out theValCtxt) ? GetText(theValCtxt) : string.Empty;
         }
 
         private string GetTextForRelationalOpContext(VBAParser.RelationalOpContext relationalOpCtxt)
         {
             var lExprCtxtIndices = new List<int>();
             var literalExprCtxtIndices = new List<int>();
+           // _usesIsClause = true;
 
             for (int idx = 0; idx < relationalOpCtxt.ChildCount; idx++)
             {
@@ -224,55 +244,32 @@ namespace Rubberduck.Inspections.Concrete
                 }
             }
 
-            if (lExprCtxtIndices.Count() == 2)
+            if (lExprCtxtIndices.Count() == 2)  //e.g., x > someConstantExpression
             {
-                var ctxt1 = (VBAParser.LExprContext)relationalOpCtxt.children[lExprCtxtIndices.First()];
-                var expr1 = GetText(ctxt1);
+                var ctxtLHS = (VBAParser.LExprContext)relationalOpCtxt.children[lExprCtxtIndices.First()];
+                var ctxtRHS = (VBAParser.LExprContext)relationalOpCtxt.children[lExprCtxtIndices.Last()];
 
-                var ctxt2 = (VBAParser.LExprContext)relationalOpCtxt.children[lExprCtxtIndices.Last()];
-                var expr2 = GetText(ctxt2);
-
-                _usesIsClause = true;
-                if (expr1.Equals(_parent.Parent.IdReference.IdentifierName))
+                string result;
+                if (GetText(ctxtLHS).Equals(_parent.Parent.IdReference.IdentifierName))
                 {
-                    string result;
-                    if (TryGetTheExpressionValue(ctxt2, out result))
-                    {
-                        return result;
-                    }
+                    return TryGetTheExpressionValue(ctxtRHS, out result) ? result : string.Empty;
                 }
-                else if (expr2.Equals(_parent.Parent.IdReference.IdentifierName))
+                else if (GetText(ctxtRHS).Equals(_parent.Parent.IdReference.IdentifierName))
                 {
-                    string result;
-                    _compareSymbol = RangeClauseComparer.GetCompareSymbolInverse(_compareSymbol);
-                    if (TryGetTheExpressionValue(ctxt1, out result))
-                    {
-                        return result;
-                    }
+                    _compareSymbol = RangeClauseComparer.GetInverse(_compareSymbol);
+                    return TryGetTheExpressionValue(ctxtLHS, out result) ? result : string.Empty;
                 }
             }
-            else if (lExprCtxtIndices.Count == 1 && literalExprCtxtIndices.Count == 1)
+            else if (lExprCtxtIndices.Count == 1 && literalExprCtxtIndices.Count == 1) // e.g., z < 10
             {
-                if (lExprCtxtIndices.First() > literalExprCtxtIndices.First())
+                var lExpIndex = lExprCtxtIndices.First();
+                var litExpIndex = literalExprCtxtIndices.First();
+                var lExprCtxt = (VBAParser.LExprContext)relationalOpCtxt.children[lExpIndex];
+                if (GetText(lExprCtxt).Equals(_parent.Parent.IdReference.IdentifierName))
                 {
-                    //A greater lExprCtxtIndex means the comparison is of the form '10 < z'...invert 
-                    //the operator to make the expression conform to 'z > 10' or 'Is > 10'
-                    _compareSymbol = RangeClauseComparer.GetCompareSymbolInverse(_compareSymbol);
-                }
-                var lExprCtxt = (VBAParser.LExprContext)relationalOpCtxt.children[lExprCtxtIndices.First()];
-                if (lExprCtxt.GetText().Equals(_parent.Parent.IdReference.IdentifierName))
-                {
-                    _usesIsClause = true;
-                    if (relationalOpCtxt.children[literalExprCtxtIndices.First()] is VBAParser.LiteralExprContext)
-                    {
-                        var theValueCtxt = (VBAParser.LiteralExprContext)relationalOpCtxt.children[literalExprCtxtIndices.First()];
-                        return theValueCtxt.GetText();
-                    }
-                    else if (relationalOpCtxt.children[literalExprCtxtIndices.First()] is VBAParser.UnaryMinusOpContext)
-                    {
-                        var theValueCtxt = (VBAParser.UnaryMinusOpContext)relationalOpCtxt.children[literalExprCtxtIndices.First()];
-                        return theValueCtxt.GetText();
-                    }
+                    _compareSymbol = lExpIndex > litExpIndex ? 
+                        RangeClauseComparer.GetInverse(_compareSymbol) : _compareSymbol;
+                    return GetText((ParserRuleContext)relationalOpCtxt.children[litExpIndex]);
                 }
             }
             return string.Empty;
@@ -324,17 +321,11 @@ namespace Rubberduck.Inspections.Concrete
             return text.Replace("\"", "");
         }
 
-        private string DetermineTheComparisonOperator(VBAParser.RangeClauseContext ctxt)
+        private string GetTheCompareOperator(VBAParser.RangeClauseContext ctxt)
         {
-            _usesIsClause = false;
-            //'VBAParser.ComparisonOperatorContext' - The 'Is' case
-            var opCtxt = ParserRuleContextHelper.GetChild<VBAParser.ComparisonOperatorContext>(ctxt);
-            if (opCtxt != null)
-            {
-                _usesIsClause = true;
-                return opCtxt.GetText();
-            }
-            return CompareSymbols.EQ;
+            VBAParser.ComparisonOperatorContext opCtxt;
+            _usesIsClause = TryGetChildContext(ctxt, out opCtxt);
+            return opCtxt != null ? opCtxt.GetText() : CompareSymbols.EQ;
         }
 
         private static bool HasChildToken<T>(T ctxt, string token) where T : ParserRuleContext
@@ -350,7 +341,7 @@ namespace Rubberduck.Inspections.Concrete
             return result;
         }
 
-        private static bool TryGetExprContext<T, U>(T ctxt, out U opCtxt) where T : ParserRuleContext where U : VBAParser.ExpressionContext
+        private static bool TryGetChildContext<T, U>(T ctxt, out U opCtxt) where T : ParserRuleContext where U : ParserRuleContext //VBAParser.ExpressionContext
         {
             opCtxt = null;
             opCtxt = ParserRuleContextHelper.GetChild<U>(ctxt);
@@ -362,8 +353,8 @@ namespace Rubberduck.Inspections.Concrete
     {
         internal struct RangeCompareData
         {
-            public IRangeClause Current;
-            public IRangeClause Prior;
+            public SelectCaseInspectionRangeClause Current;
+            public SelectCaseInspectionRangeClause Prior;
             public string CurrentCompareSymbol;
             public string PriorCompareSymbol;
             public VBAValue CurrentValue;
@@ -374,7 +365,7 @@ namespace Rubberduck.Inspections.Concrete
             public VBAValue PriorValueMax;
             public string SelectCaseTypename;
 
-            public RangeCompareData(IRangeClause current, IRangeClause prior, string targetTypeName)
+            public RangeCompareData(SelectCaseInspectionRangeClause current, SelectCaseInspectionRangeClause prior, string targetTypeName)
             {
                 Current = current;
                 Prior = prior;
@@ -395,7 +386,7 @@ namespace Rubberduck.Inspections.Concrete
         public struct CompareResultData
         {
             public bool IsRedundant;
-            public bool HasInternalConflict;
+            public bool HasConflict;
             public bool MakesAllRemainingCasesUnreachable;
         }
 
@@ -439,12 +430,12 @@ namespace Rubberduck.Inspections.Concrete
         public bool IsReachable => !IsFullyEquivalent && !IsPartiallyEquivalent;
 
         public static bool IsComparisonOperator(string opCandidate) => _compareInversions.Keys.Contains(opCandidate);
-        public static string GetCompareSymbolInverse(string theOperator)
+        public static string GetInverse(string theOperator)
         {
             return IsComparisonOperator(theOperator) ? _compareInversions[theOperator] : theOperator;
         }
 
-        public CompareResultData Compare(IRangeClause current, IRangeClause prior, string targetTypeName)
+        public CompareResultData Compare(SelectCaseInspectionRangeClause current, SelectCaseInspectionRangeClause prior, string targetTypeName)
         {
             _targetTypeName = targetTypeName;
             IsFullyEquivalent = false;
@@ -456,6 +447,11 @@ namespace Rubberduck.Inspections.Concrete
             {
                 if (current.IsSingleVal)
                 {
+#if (DEBUG)
+                    var currentVal = dto.CurrentValue.AsString();
+                    var priorVal = dto.PriorValue.AsString();
+                    var priorSymbol = dto.PriorCompareSymbol;
+#endif
                     IsFullyEquivalent = CompareOps[dto.PriorCompareSymbol](dto.CurrentValue, dto.PriorValue);
                 }
             }
@@ -468,7 +464,7 @@ namespace Rubberduck.Inspections.Concrete
                 CompareRangeValues(dto);
             }
             _results.IsRedundant = IsFullyEquivalent;
-            _results.HasInternalConflict = IsPartiallyEquivalent;
+            _results.HasConflict = IsPartiallyEquivalent;
             _results.MakesAllRemainingCasesUnreachable = CausesUnreachableCaseElse;
             return _results;
         }
@@ -518,16 +514,16 @@ namespace Rubberduck.Inspections.Concrete
                 }
                 else
                 {
-                    var compareOP = CompareOps[GetCompareSymbolInverse(dto.CurrentCompareSymbol)];
+                    var compareOP = CompareOps[GetInverse(dto.CurrentCompareSymbol)];
                     IsPartiallyEquivalent = compareOP(dto.CurrentValue, dto.PriorValue);
                 }
                 if (IsBooleanSelectCase)
                 {
                     CausesUnreachableCaseElse = dto.CurrentValue != dto.PriorValue;
                 }
-                else if (dto.CurrentCompareSymbol.Equals(GetCompareSymbolInverse(dto.PriorCompareSymbol)))
+                else if (dto.CurrentCompareSymbol.Equals(GetInverse(dto.PriorCompareSymbol)))
                 {
-                    var compareOP = CompareOps[GetCompareSymbolInverse(dto.CurrentCompareSymbol)];
+                    var compareOP = CompareOps[GetInverse(dto.CurrentCompareSymbol)];
                     CausesUnreachableCaseElse = compareOP(dto.CurrentValue, dto.PriorValue);
                 }
             }
@@ -643,7 +639,7 @@ namespace Rubberduck.Inspections.Concrete
         private void CompareIsClauseToPriorSingleValue(RangeCompareData dto)
         {
             //e.g. Current Case Is > 9, Prior Case 10
-            var compareOP = CompareOps[GetCompareSymbolInverse( dto.CurrentCompareSymbol )];
+            var compareOP = CompareOps[GetInverse( dto.CurrentCompareSymbol )];
             IsPartiallyEquivalent = compareOP(dto.CurrentValue, dto.PriorValue);
         }
 
@@ -661,7 +657,7 @@ namespace Rubberduck.Inspections.Concrete
                 IsFullyEquivalent = compareOp(dto.CurrentValue, dto.PriorValue);
                 if (!IsFullyEquivalent)
                 {
-                    compareOp = CompareOps[GetCompareSymbolInverse(dto.CurrentCompareSymbol)];
+                    compareOp = CompareOps[GetInverse(dto.CurrentCompareSymbol)];
                     IsPartiallyEquivalent = compareOp(dto.CurrentValue, dto.PriorValue);
                 }
             }
@@ -685,12 +681,12 @@ namespace Rubberduck.Inspections.Concrete
                 }
                 else
                 {
-                    var compareOp = CompareOps[GetCompareSymbolInverse(dto.CurrentCompareSymbol)];
+                    var compareOp = CompareOps[GetInverse(dto.CurrentCompareSymbol)];
                     IsPartiallyEquivalent = compareOp(dto.CurrentValue, dto.PriorValue);
                 }
             }
 
-            if(dto.CurrentCompareSymbol.Equals(GetCompareSymbolInverse(dto.PriorCompareSymbol))
+            if(dto.CurrentCompareSymbol.Equals(GetInverse(dto.PriorCompareSymbol))
                 || dto.CurrentCompareSymbol.Equals(_compareInversionsExtended[dto.PriorCompareSymbol]))
             {
                 CausesUnreachableCaseElse = IsPartiallyEquivalent 
@@ -735,7 +731,6 @@ namespace Rubberduck.Inspections.Concrete
         private long resultLong;
         private double resultDouble;
         private decimal resultDecimal;
-
 
         private static Dictionary<string, Func<VBAValue, VBAValue, bool>> OperatorsGT = new Dictionary<string, Func<VBAValue, VBAValue, bool>>()
         {
@@ -800,9 +795,7 @@ namespace Rubberduck.Inspections.Concrete
         }
 
         public string TargetTypeName => _targetTypeName;
-
         public bool IsParseableToTypeName(string typeName) => IsParseableTests.ContainsKey(typeName) ? IsParseableTests[typeName](this) : false;
-
         public bool IsWithin(VBAValue start, VBAValue end ) 
             => start > end ? this >= end && this <= start : this >= start && this <= end;
 
