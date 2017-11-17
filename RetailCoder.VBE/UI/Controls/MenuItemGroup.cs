@@ -30,31 +30,34 @@ namespace Rubberduck.UI.Controls
         private static void OnGroupNameChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             //Add an entry to the group name collection
-            var menuItem = d as MenuItem;
 
-            if (menuItem != null)
+            if (!(d is MenuItem menuItem))
             {
-                var newGroupName = e.NewValue.ToString();
-                var oldGroupName = e.OldValue.ToString();
-                if (string.IsNullOrEmpty(newGroupName))
+                return;
+            }
+
+            var newGroupName = e.NewValue.ToString();
+            var oldGroupName = e.OldValue.ToString();
+            if (string.IsNullOrEmpty(newGroupName))
+            {
+                //Removing the toggle button from grouping
+                RemoveCheckboxFromGrouping(menuItem);
+            }
+            else
+            {
+                //Switching to a new group
+                if (newGroupName == oldGroupName)
                 {
-                    //Removing the toggle button from grouping
+                    return;
+                }
+
+                if (!string.IsNullOrEmpty(oldGroupName))
+                {
+                    //Remove the old group mapping
                     RemoveCheckboxFromGrouping(menuItem);
                 }
-                else
-                {
-                    //Switching to a new group
-                    if (newGroupName != oldGroupName)
-                    {
-                        if (!string.IsNullOrEmpty(oldGroupName))
-                        {
-                            //Remove the old group mapping
-                            RemoveCheckboxFromGrouping(menuItem);
-                        }
-                        ElementToGroupNames.Add(menuItem, e.NewValue.ToString());
-                        menuItem.Checked += MenuItemChecked;
-                    }
-                }
+                ElementToGroupNames.Add(menuItem, e.NewValue.ToString());
+                menuItem.Checked += MenuItemChecked;
             }
         }
 
@@ -65,7 +68,7 @@ namespace Rubberduck.UI.Controls
         }
 
 
-        static void MenuItemChecked(object sender, RoutedEventArgs e)
+        private static void MenuItemChecked(object sender, RoutedEventArgs e)
         {
             var menuItem = e.OriginalSource as MenuItem;
             foreach (var item in ElementToGroupNames)

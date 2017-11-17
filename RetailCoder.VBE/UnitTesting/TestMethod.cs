@@ -66,11 +66,11 @@ namespace Rubberduck.UnitTesting
         private TestResult _result = new TestResult(TestOutcome.Unknown);
         public TestResult Result
         {
-            get { return _result; } 
+            get =>_result;
             set { _result = value; OnPropertyChanged(); }
         }
 
-        void HandleAssertCompleted(object sender, AssertCompletedEventArgs e)
+        private void HandleAssertCompleted(object sender, AssertCompletedEventArgs e)
         {
             _assertResults.Add(e);
         }
@@ -94,8 +94,15 @@ namespace Rubberduck.UnitTesting
 
         public object[] ToArray()
         {
-            return new object[] { Declaration.QualifiedName.QualifiedModuleName.ProjectName, Declaration.QualifiedName.QualifiedModuleName.ComponentName, Declaration.IdentifierName, 
-                _result.Outcome.ToString(), _result.Output, _result.StartTime.ToString(CultureInfo.InvariantCulture), _result.EndTime.ToString(CultureInfo.InvariantCulture), _result.Duration };
+            return new object[] {
+                Declaration.QualifiedName.QualifiedModuleName.ProjectName,
+                Declaration.QualifiedName.QualifiedModuleName.ComponentName,
+                Declaration.IdentifierName, 
+                _result.Outcome.ToString(),
+                _result.Output,
+                _result.StartTime.ToString(CultureInfo.InvariantCulture),
+                _result.EndTime.ToString(CultureInfo.InvariantCulture),
+                _result.Duration };
         }
 
         public bool Equals(TestMethod other)
@@ -105,8 +112,7 @@ namespace Rubberduck.UnitTesting
 
         public override bool Equals(object obj)
         {
-            var method = obj as TestMethod;
-            return method != null && method.Declaration.QualifiedName.Equals(Declaration.QualifiedName);
+            return obj is TestMethod method && method.Declaration.QualifiedName.Equals(Declaration.QualifiedName);
         }
 
         public override int GetHashCode()

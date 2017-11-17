@@ -52,20 +52,31 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         private string GetFolder(CodeExplorerItemViewModel node)
         {
-            if (node == null)
-            {
-                return DefaultFolder;
-            }
+            //if (node == null)
+            //{
+            //    return DefaultFolder;
+            //}
 
-            var declarationNode = node as ICodeExplorerDeclarationViewModel;
-            if (declarationNode != null)
-            {
-                return string.IsNullOrEmpty(declarationNode.Declaration.CustomFolder)
-                    ? DefaultFolder
-                    : declarationNode.Declaration.CustomFolder.Replace("\"", string.Empty);
-            }
+            //if (node is ICodeExplorerDeclarationViewModel declarationNode)
+            //{
+            //    return string.IsNullOrEmpty(declarationNode.Declaration.CustomFolder)
+            //        ? DefaultFolder
+            //        : declarationNode.Declaration.CustomFolder.Replace("\"", string.Empty);
+            //}
 
-            return ((CodeExplorerCustomFolderViewModel)node).FullPath;
+            //return ((CodeExplorerCustomFolderViewModel)node).FullPath;
+
+            switch (node)
+            {
+                case null:
+                    return DefaultFolder;
+                case ICodeExplorerDeclarationViewModel declarationNode:
+                    return string.IsNullOrEmpty(declarationNode.Declaration.CustomFolder)
+                        ? DefaultFolder
+                        : declarationNode.Declaration.CustomFolder.Replace("\"", string.Empty);
+                default:
+                    return ((CodeExplorerCustomFolderViewModel)node).FullPath;
+            }
         }
     }
 }
