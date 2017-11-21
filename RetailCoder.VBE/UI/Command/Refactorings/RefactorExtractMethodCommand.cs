@@ -2,7 +2,6 @@ using System.Runtime.InteropServices;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.SmartIndenter;
-using System;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using Rubberduck.Settings;
