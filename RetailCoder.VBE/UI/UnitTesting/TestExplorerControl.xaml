@@ -16,11 +16,8 @@
 
     <UserControl.Resources>
         <BitmapImage x:Key="SettingsImage" UriSource="../../Resources/gear.png" />
-
         
         <local:TestOutcomeImageSourceConverter x:Key="OutcomeIconConverter" />
-        
-        
         <local:TestResultToOutcomeTextConverter x:Key="OutcomeTextConverter" />
         
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
@@ -592,7 +589,6 @@
         <Border Grid.Row="2" Padding="2">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <Grid>
-                    
                     <controls:GroupingGrid ItemsSource="{Binding Source={StaticResource ResultsByOutcome}}"
                                            SelectedItem="{Binding SelectedTest}"
                                            ShowGroupingItemCount="True"
@@ -630,7 +626,6 @@
                             <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_Duration}" Binding="{Binding Result.Duration, StringFormat={}{0}ms}" />
                         </DataGrid.Columns>
                     </controls:GroupingGrid>
-                    
                 </Grid>
             </ScrollViewer>
         </Border>
