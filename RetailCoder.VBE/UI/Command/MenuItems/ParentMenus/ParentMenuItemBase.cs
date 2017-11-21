@@ -56,8 +56,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             foreach (var kvp in _items)
             {
                 kvp.Value.Caption = kvp.Key.Caption.Invoke();
-                var command = kvp.Key as CommandMenuItemBase;
-                if (command != null)
+                if (kvp.Key is CommandMenuItemBase command)
                 {
                     ((ICommandBarButton)kvp.Value).ShortcutText = command.Command.ShortcutText;
                 }
@@ -114,15 +113,13 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
         {
             foreach (var kvp in _items)
             {
-                var parentItem = kvp.Key as IParentMenuItem;
-                if (parentItem != null)
+                if (kvp.Key is IParentMenuItem parentItem)
                 {
                     parentItem.EvaluateCanExecute(state);
                     continue;
                 }
 
-                var commandItem = kvp.Key as ICommandMenuItem;
-                if (commandItem != null && kvp.Value != null)
+                if (kvp.Key is ICommandMenuItem commandItem && kvp.Value != null)
                 {
                     try
                     {
@@ -182,6 +179,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
                 return;
             }
 
+            //Logger.Debug("({0}) Executing click handler for menu item '{1}', hash code {2}", GetHashCode(), e.Control.Caption, e.Control.Target.GetHashCode());
             Logger.Debug("({0}) Executing click handler for menu item '{1}', hash code {2}", GetHashCode(), e.Control.Caption, e.Control.Target.GetHashCode());
             item.Command.Execute(null);
         }
