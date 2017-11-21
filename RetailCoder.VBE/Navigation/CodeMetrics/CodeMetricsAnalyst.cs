@@ -10,7 +10,7 @@ using Rubberduck.SmartIndenter;
 
 namespace Rubberduck.Navigation.CodeMetrics
 {
-    public class CodeMetricsAnalyst : ICodeMetricsAnalyst
+    internal class CodeMetricsAnalyst : ICodeMetricsAnalyst
     {
         private readonly IIndenterSettings indenterSettings;
     

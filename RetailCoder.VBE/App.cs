@@ -15,7 +15,9 @@ using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VersionCheck;
 using Application = System.Windows.Forms.Application;
+using System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleTo("RubberduckTests")]
 namespace Rubberduck
 {
     public sealed class App : IDisposable
