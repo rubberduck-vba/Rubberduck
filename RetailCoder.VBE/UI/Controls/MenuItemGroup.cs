@@ -31,33 +31,31 @@ namespace Rubberduck.UI.Controls
         {
             //Add an entry to the group name collection
 
-            if (!(d is MenuItem menuItem))
+            if (d is MenuItem menuItem)
             {
-                return;
-            }
-
-            var newGroupName = e.NewValue.ToString();
-            var oldGroupName = e.OldValue.ToString();
-            if (string.IsNullOrEmpty(newGroupName))
-            {
-                //Removing the toggle button from grouping
-                RemoveCheckboxFromGrouping(menuItem);
-            }
-            else
-            {
-                //Switching to a new group
-                if (newGroupName == oldGroupName)
+                var newGroupName = e.NewValue.ToString();
+                var oldGroupName = e.OldValue.ToString();
+                if (string.IsNullOrEmpty(newGroupName))
                 {
-                    return;
-                }
-
-                if (!string.IsNullOrEmpty(oldGroupName))
-                {
-                    //Remove the old group mapping
+                    //Removing the toggle button from grouping
                     RemoveCheckboxFromGrouping(menuItem);
                 }
-                ElementToGroupNames.Add(menuItem, e.NewValue.ToString());
-                menuItem.Checked += MenuItemChecked;
+                else
+                {
+                    //Switching to a new group
+                    if (newGroupName == oldGroupName)
+                    {
+                        return;
+                    }
+
+                    if (!string.IsNullOrEmpty(oldGroupName))
+                    {
+                        //Remove the old group mapping
+                        RemoveCheckboxFromGrouping(menuItem);
+                    }
+                    ElementToGroupNames.Add(menuItem, e.NewValue.ToString());
+                    menuItem.Checked += MenuItemChecked;
+                }
             }
         }
 

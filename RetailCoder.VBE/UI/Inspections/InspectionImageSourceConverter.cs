@@ -9,7 +9,8 @@ namespace Rubberduck.UI.Inspections
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (!(value is IInspection inspection))
+            var inspection = value as IInspection;
+            if (inspection == null )
             {
                 return null;
             }
