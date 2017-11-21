@@ -24,6 +24,11 @@ namespace Rubberduck.UI.Inspections
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if (value == null)
+            {
+                throw new ArgumentException("Value parameter must be non-null");
+            }
+
             if (value.GetType() != typeof(CodeInspectionSeverity))
             {
                 throw new ArgumentException("value must be a CodeInspectionSeverity");
