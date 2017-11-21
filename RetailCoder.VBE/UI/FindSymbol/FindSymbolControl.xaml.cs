@@ -14,10 +14,9 @@ namespace Rubberduck.UI.FindSymbol
             Loaded += FindSymbolControl_Loaded;
         }
 
-        private FindSymbolViewModel ViewModel { get { return (FindSymbolViewModel)DataContext; } }
+        private FindSymbolViewModel ViewModel => (FindSymbolViewModel)DataContext;
 
-        private static readonly ICommand _goCommand = new RoutedCommand();
-        public static ICommand GoCommand { get { return _goCommand; } }
+        public static ICommand GoCommand { get; } = new RoutedCommand();
 
         private void CommandBinding_OnExecuted(object sender, ExecutedRoutedEventArgs e)
         {
