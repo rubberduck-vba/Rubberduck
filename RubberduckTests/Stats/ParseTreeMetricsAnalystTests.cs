@@ -278,5 +278,47 @@ End Property
             var metrics = cut.ModuleMetrics(state).First();
             Assert.AreEqual(1, metrics.Result.CyclomaticComplexity);
         }
+
+        [TestMethod]
+        [TestCategory("Code Metrics")]
+        public void SimpleSub_HasNestingLevel_One()
+        {
+            var code = @"
+Option Explicit
+
+Public Sub SimpleSub()
+    'preceding comment just to check
+    Debug.Print ""this is a test""
+End Sub
+";
+
+            var state = MockParser.ParseString(code, out var _);
+            var metrics = cut.ModuleMetrics(state).First();
+            Assert.AreEqual(1, metrics.Result.MaximumNesting);
+        }
+
+        [TestMethod]
+        [TestCategory("Code Metrics")]
+        public void WeirdSub_HasNestingLevel_One()
+        {
+            var code = @"
+Option Explicit
+
+Public Sub WeirdSub()
+    ' some comments
+    Debug.Print ""An expression, that "" & _
+            ""extends across multiple lines, with "" _
+                & ""Line continuations that do weird stuff "" & _
+         ""but shouldn't account for nesting""
+    Debug.Print ""Just to confuse you""
+End Sub
+";
+            using (var state = MockParser.ParseString(code, out var _))
+            {
+                var metrics = cut.ModuleMetrics(state).First();
+                Assert.AreEqual(1, metrics.Result.MaximumNesting);
+            }
+        }
+
     }
 }

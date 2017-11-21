@@ -23,6 +23,7 @@ namespace Rubberduck.Navigation.CodeMetrics
         {
             if (state == null || !state.AllUserDeclarations.Any())
             {
+                // must not return Enumerable.Empty
                 yield break;
             }
 
@@ -68,24 +69,31 @@ namespace Rubberduck.Navigation.CodeMetrics
 
             public override void EnterEndOfLine([NotNull] VBAParser.EndOfLineContext context)
             {
-                (currentMember == null ? moduleResults : results).Add(new CodeMetricsResult(1, 0, 0));
+                int followingIndentationLevel = 0;
+                // we have a proper newline
+                if (context.NEWLINE() != null)
+                {
+                    // the last whitespace, which is the one in front of the next line's contents
+                    var followingWhitespace = context.whiteSpace().LastOrDefault();
+                    followingIndentationLevel = IndentationLevelFromWhitespace(followingWhitespace);
+                }
+                (currentMember == null ? moduleResults : results).Add(new CodeMetricsResult(1, 0, followingIndentationLevel));
             }
 
             public override void EnterIfStmt([NotNull] VBAParser.IfStmtContext context)
             {
-                // one additional path beside the default
                 results.Add(new CodeMetricsResult(0, 1, 0));
             }
 
             public override void EnterElseIfBlock([NotNull] VBAParser.ElseIfBlockContext context)
             {
-                // one additonal path beside the default
                 results.Add(new CodeMetricsResult(0, 1, 0));
             }
 
+            // notably: NO additional complexity for an Else-Block
+
             public override void EnterForEachStmt([NotNull] VBAParser.ForEachStmtContext context)
             {
-                // one additional path
                 results.Add(new CodeMetricsResult(0, 1, 0));
             }
 
@@ -101,78 +109,73 @@ namespace Rubberduck.Navigation.CodeMetrics
 
             public override void EnterSubStmt([NotNull] VBAParser.SubStmtContext context)
             {
-                // this is the default path through the sub
                 results.Add(new CodeMetricsResult(0, 1, 0));
-
-                // if First borks, we got a bigger problems
                 currentMember = _finder.DeclarationsWithType(DeclarationType.Procedure).Where(d => d.Context == context).First();
             }
 
             public override void ExitSubStmt([NotNull] VBAParser.SubStmtContext context)
             {
-                // well, we're done here
                 ExitMeasurableMember();
             }
 
             public override void EnterFunctionStmt([NotNull] VBAParser.FunctionStmtContext context)
             {
-                // this is the default path through the function
                 results.Add(new CodeMetricsResult(0, 1, 0));
-
-                // if First borks, we got bigger problems
                 currentMember = _finder.DeclarationsWithType(DeclarationType.Function).Where(d => d.Context == context).First();
             }
 
             public override void ExitFunctionStmt([NotNull] VBAParser.FunctionStmtContext context)
             {
-                // well, we're done here
                 ExitMeasurableMember();
             }
 
             public override void EnterPropertyGetStmt([NotNull] VBAParser.PropertyGetStmtContext context)
             {
                 results.Add(new CodeMetricsResult(0, 1, 0));
-
                 currentMember = _finder.DeclarationsWithType(DeclarationType.PropertyGet).Where(d => d.Context == context).First();
             }
 
             public override void ExitPropertyGetStmt([NotNull] VBAParser.PropertyGetStmtContext context)
             {
-                // well, we're done here
                 ExitMeasurableMember();
             }
 
             public override void EnterPropertyLetStmt([NotNull] VBAParser.PropertyLetStmtContext context)
             {
                 results.Add(new CodeMetricsResult(0, 1, 0));
-
                 currentMember = _finder.DeclarationsWithType(DeclarationType.PropertyLet).Where(d => d.Context == context).First();
             }
 
             public override void ExitPropertyLetStmt([NotNull] VBAParser.PropertyLetStmtContext context)
             {
-                // well, we're done here
                 ExitMeasurableMember();
             }
 
             public override void EnterPropertySetStmt([NotNull] VBAParser.PropertySetStmtContext context)
             {
                 results.Add(new CodeMetricsResult(0, 1, 0));
-
                 currentMember = _finder.DeclarationsWithType(DeclarationType.PropertySet).Where(d => d.Context == context).First();
             }
 
             public override void ExitPropertySetStmt([NotNull] VBAParser.PropertySetStmtContext context)
-            {
-                // well, we're done here
+            { 
                 ExitMeasurableMember();
             }
 
             public override void EnterBlockStmt([NotNull] VBAParser.BlockStmtContext context)
             {
-                var ws = context.whiteSpace();
-                // FIXME only take the last contiguous non-linebreak into account
-                results.Add(new CodeMetricsResult(0, 0, (ws?.ChildCount ?? 0) / _indenterSettings.IndentSpaces));
+                // there is a whitespace context here after the option of a statementLabel.
+                // we need to account for that
+                results.Add(new CodeMetricsResult(0, 0, IndentationLevelFromWhitespace(context.whiteSpace())));
+            }
+            
+            private int IndentationLevelFromWhitespace(VBAParser.WhiteSpaceContext wsContext)
+            {
+                if (wsContext == null) return 0;
+                // the only thing that contains underscores is the line-continuation at this point
+                var lineContinuation = wsContext.children.LastOrDefault((tree) => tree.GetText().Contains("_"));
+                var index = lineContinuation != null ? wsContext.children.IndexOf(lineContinuation) : 0;
+                return (wsContext?.ChildCount ?? 0 - index) / _indenterSettings.IndentSpaces;
             }
 
             private void ExitMeasurableMember()

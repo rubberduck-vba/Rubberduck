@@ -1124,6 +1124,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Code Metrics.
+        /// </summary>
+        public static string CodeMetricsDockablePresenter_Caption {
+            get {
+                return ResourceManager.GetString("CodeMetricsDockablePresenter_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hook is already attached..
         /// </summary>
         public static string CommonHotkey_HookAttached {
