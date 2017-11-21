@@ -10,8 +10,8 @@ namespace Rubberduck.UI.Controls
 
         public bool ShowGroupingItemCount
         {
-            get { return (bool) GetValue(ShowGroupingItemCountProperty); }
-            set { SetValue(ShowGroupingItemCountProperty, value); }
+            get => (bool) GetValue(ShowGroupingItemCountProperty);
+            set => SetValue(ShowGroupingItemCountProperty, value);
         }
 
         public GroupingGrid()
@@ -22,11 +22,8 @@ namespace Rubberduck.UI.Controls
         private void GroupingGridItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             var context = DataContext as INavigateSelection;
-            if (context == null)
-            {
-                return;
-            }
-            var selection = context.SelectedItem;
+            var selection = context?.SelectedItem;
+
             if (selection != null)
             {
                 context.NavigateCommand.Execute(selection.GetNavigationArgs());
