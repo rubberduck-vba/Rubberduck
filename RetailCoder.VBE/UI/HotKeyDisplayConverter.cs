@@ -36,7 +36,7 @@ namespace Rubberduck.UI
         public static string ConvertBack(string value)
         {
             var tuple = _keys.SingleOrDefault(k => k.Item2 == value);
-            return tuple == null ? value : tuple.Item1.ToString();
+            return tuple?.Item1.ToString() ?? value;
         }
     }
 }

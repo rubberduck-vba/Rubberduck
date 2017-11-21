@@ -52,7 +52,7 @@ namespace Rubberduck
         {
             try
             {
-                if (Application is Microsoft.Vbe.Interop.VBE)
+                if (Application is VBE)
                 {
                     var vbe = (VBE) Application;                  
                     _ide = new VBEditor.SafeComWrappers.VBA.VBE(vbe);
@@ -87,7 +87,7 @@ namespace Rubberduck
             }
         }
 
-        Assembly LoadFromSameFolder(object sender, ResolveEventArgs args)
+        private Assembly LoadFromSameFolder(object sender, ResolveEventArgs args)
         {
             var folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
             var assemblyPath = Path.Combine(folderPath, new AssemblyName(args.Name).Name + ".dll");
