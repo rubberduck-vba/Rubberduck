@@ -6,10 +6,9 @@ namespace Rubberduck.UI.IdentifierReferences
     {
         public ListItemActionEventArgs(object selectedItem)
         {
-            _selectedItem = selectedItem;
+            SelectedItem = selectedItem;
         }
 
-        private readonly object _selectedItem;
-        public object SelectedItem { get { return _selectedItem; } }
+        public object SelectedItem { get; }
     }
 }
