@@ -64,8 +64,17 @@ namespace Rubberduck.UI.Command.Refactorings
 
             var pane = Vbe.ActiveCodePane;
             var module = pane.CodeModule;
-            var component = module.Parent;
             {
+                var extraction = new ExtractMethodExtraction();
+                // bug: access to disposed closure - todo: make ExtractMethodRefactoring request reparse like everyone else.
+
+                var refactoring = new ExtractMethodRefactoring(module, ParseRequest, CreateMethodModel, extraction);
+                refactoring.InvalidSelection += HandleInvalidSelection;
+                refactoring.Refactor();
+
+
+                void ParseRequest(object obj) => _state.OnParseRequested(obj);
+
                 IExtractMethodModel CreateMethodModel(QualifiedSelection? qs, string code)
                 {
                     if (qs == null)
@@ -89,14 +98,6 @@ namespace Rubberduck.UI.Command.Refactorings
                     extractedMethodModel.extract(declarations, qs.Value, code);
                     return extractedMethodModel;
                 }
-
-                var extraction = new ExtractMethodExtraction();
-                // bug: access to disposed closure - todo: make ExtractMethodRefactoring request reparse like everyone else.
-                void ParseRequest(object obj) => _state.OnParseRequested(obj);
-
-                var refactoring = new ExtractMethodRefactoring(module, ParseRequest, CreateMethodModel, extraction);
-                refactoring.InvalidSelection += HandleInvalidSelection;
-                refactoring.Refactor();
             }
         }
     }
