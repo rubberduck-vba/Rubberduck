@@ -6,7 +6,6 @@ namespace Rubberduck.UI.ToDoItems
     /// </summary>
     public partial class ToDoExplorerControl
     {
-        //private ToDoExplorerViewModel ViewModel { get { return DataContext as ToDoExplorerViewModel; } }
         private ToDoExplorerViewModel ViewModel => DataContext as ToDoExplorerViewModel;
 
         public ToDoExplorerControl()

@@ -52,20 +52,6 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         private string GetFolder(CodeExplorerItemViewModel node)
         {
-            //if (node == null)
-            //{
-            //    return DefaultFolder;
-            //}
-
-            //if (node is ICodeExplorerDeclarationViewModel declarationNode)
-            //{
-            //    return string.IsNullOrEmpty(declarationNode.Declaration.CustomFolder)
-            //        ? DefaultFolder
-            //        : declarationNode.Declaration.CustomFolder.Replace("\"", string.Empty);
-            //}
-
-            //return ((CodeExplorerCustomFolderViewModel)node).FullPath;
-
             switch (node)
             {
                 case null:
