@@ -185,7 +185,6 @@ namespace Rubberduck.SourceControl
                 var status = repo.RetrieveStatus(new StatusOptions {DetectRenamesInWorkDir = true});
                 foreach (var stat in status.Untracked)
                 {
-                    // repo.Stage(stat.FilePath); //deprecated from LibGit2Sharp v0.24
                     LibGit2Sharp.Commands.Stage(repo, stat.FilePath);
                 }
 
@@ -247,13 +246,7 @@ namespace Rubberduck.SourceControl
 
                 if (remote != null)
                 {
-                    //_repo.Network.Fetch(remote); // deprecated on LibGit2Sharp from v0.24.0
-                    /* 
-                     * The new functionality requires a refSpec. 
-                     * As I suppose we're just tracking by default the whole remote,
-                     * then I choose to hardcode the refSpec here:
-                     */
-                     // NOTE: hardcoded string
+                     // FIXME: hardcoded string
                      IEnumerable<string> refSpec = new List<string>() {"+refs/heads/*:refs/remotes/origin/*"};
                     LibGit2Sharp.Commands.Fetch(_repo, remoteName, refSpec, null,"");
                 }
@@ -279,7 +272,6 @@ namespace Rubberduck.SourceControl
                 };
 
                 var signature = GetSignature();
-                //_repo.Network.Pull(signature, options); // deprecated on LibGit2Sharp from v0.24.0
                 LibGit2Sharp.Commands.Pull(_repo, signature, options);
 
                 base.Pull();
@@ -311,7 +303,6 @@ namespace Rubberduck.SourceControl
         {
             try
             {
-                // _repo.Stage(filePath); // deprecated on LibGit2Sharp from v0.24.0
                 LibGit2Sharp.Commands.Stage(_repo, filePath);
             }
             catch (LibGit2SharpException ex)
@@ -324,7 +315,6 @@ namespace Rubberduck.SourceControl
         {
             try
             {
-                //_repo.Stage(filePaths); // deprecated on LibGit2Sharp from v0.24.0
                 LibGit2Sharp.Commands.Stage(_repo, filePaths);
             }
             catch (LibGit2SharpException ex)
@@ -360,7 +350,6 @@ namespace Rubberduck.SourceControl
         {
             try
             {
-                //_repo.Checkout(_repo.Branches[branch]); // deprecated on LibGit2Sharp from v0.24.0
                 LibGit2Sharp.Commands.Checkout(_repo, branch);
                 base.Checkout(branch);
 
@@ -377,7 +366,6 @@ namespace Rubberduck.SourceControl
             try
             {
                 _repo.CreateBranch(branch);
-                //_repo.Checkout(branch); // deprecated on LibGit2Sharp from v0.24.0
                 LibGit2Sharp.Commands.Checkout(_repo,branch);
 
                 RequeryUnsyncedCommits();
@@ -393,7 +381,6 @@ namespace Rubberduck.SourceControl
             try
             {
                 _repo.CreateBranch(branch, _repo.Branches[sourceBranch].Commits.Last());
-                //_repo.Checkout(branch); // deprecated on LibGit2Sharp from v0.24.0
                 LibGit2Sharp.Commands.Checkout(_repo, branch);
 
                 RequeryUnsyncedCommits();
@@ -432,7 +419,6 @@ namespace Rubberduck.SourceControl
         {
             try
             {
-                //var remote = _repo.Branches[branch].Remote; // deprecated on LibGit2Sharp from v0.24.0
                 var remote = _repo.Network.Remotes[branch];
 
                 _repo.Branches.Update(_repo.Branches[branch], b => b.Remote = remote.Name,
@@ -498,7 +484,6 @@ namespace Rubberduck.SourceControl
             try
             {
                 NotifyExternalFileChanges = false;
-                //_repo.Remove(filePath, removeFromWorkingDirectory); // deprecated on LibGit2Sharp from v0.24.0
                 LibGit2Sharp.Commands.Remove(_repo, filePath, removeFromWorkingDirectory);
                 NotifyExternalFileChanges = true;
             }
@@ -572,7 +557,6 @@ namespace Rubberduck.SourceControl
                             };
                         }
 
-                        //_repo.Network.Push(branch.Remote, ":" + _repo.Branches[branchName].UpstreamBranchCanonicalName, options); // deprecated on LibGit2Sharp from v0.24.0
                         _repo.Network.Push(_repo.Network.Remotes[branchName], ":" + _repo.Branches[branchName].UpstreamBranchCanonicalName, options);
                     }
 
