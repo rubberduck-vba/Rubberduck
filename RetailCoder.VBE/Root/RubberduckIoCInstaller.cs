@@ -489,7 +489,7 @@ namespace Rubberduck.Root
                 typeof(ExportAllCommandMenuItem)
             };
 
-            if (_initialSettings.SourceControlEnabled)
+            if (_initialSettings.IsSourceControlEnabled)
             {
                 items.Add(typeof(SourceControlCommandMenuItem));
             }
@@ -556,7 +556,7 @@ namespace Rubberduck.Root
 
         private void RegisterCommandsWithPresenters(IWindsorContainer container)
         {
-            if (_initialSettings.SourceControlEnabled)
+            if (_initialSettings.IsSourceControlEnabled)
             {
                 container.Register(Component.For<CommandBase>()
                     .ImplementedBy<SourceControlCommand>()
