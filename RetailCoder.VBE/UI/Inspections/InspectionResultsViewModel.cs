@@ -256,8 +256,14 @@ namespace Rubberduck.UI.Inspections
         }
 
         private bool _isBusy;
-        public bool IsBusy { get => _isBusy;
-            set { _isBusy = value; OnPropertyChanged(); OnPropertyChanged("EmptyUIRefreshMessageVisibility"); } }
+        public bool IsBusy
+        {
+            get => _isBusy;
+            set
+            {
+                _isBusy = value; OnPropertyChanged(); OnPropertyChanged("EmptyUIRefreshMessageVisibility");
+            } 
+        }
 
         private bool _runInspectionsOnReparse;
         private void HandleStateChanged(object sender, EventArgs e)
@@ -364,7 +370,11 @@ namespace Rubberduck.UI.Inspections
         public bool CanExecuteQuickFixInModule
         {
             get => _canExecuteQuickFixInModule;
-            set { _canExecuteQuickFixInModule = value; OnPropertyChanged(); }
+            set
+            {
+                _canExecuteQuickFixInModule = value;
+                OnPropertyChanged();
+            }
         }
 
         private void ExecuteQuickFixInModuleCommand(object parameter)
@@ -388,7 +398,11 @@ namespace Rubberduck.UI.Inspections
         public bool CanExecuteQuickFixInProject
         {
             get => _canExecuteQuickFixInProject;
-            set { _canExecuteQuickFixInProject = value; OnPropertyChanged(); }
+            set
+            {
+                _canExecuteQuickFixInProject = value;
+                OnPropertyChanged();
+            }
         }
 
         private void ExecuteDisableInspectionCommand(object parameter)
