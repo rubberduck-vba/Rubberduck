@@ -30,7 +30,7 @@ namespace Rubberduck.Settings
         private int _logLevel;
         public int MinimumLogLevel
         {
-            get { return _logLevel; }
+            get => _logLevel;
             set
             {
                 if (value < LogLevelHelper.MinLogLevel())
