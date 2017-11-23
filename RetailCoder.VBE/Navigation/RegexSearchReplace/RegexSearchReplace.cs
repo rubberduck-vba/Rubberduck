@@ -35,15 +35,7 @@ namespace Rubberduck.Navigation.RegexSearchReplace
 
         public IEnumerable<RegexSearchResult> Search(string searchPattern, RegexSearchReplaceScope scope = RegexSearchReplaceScope.CurrentFile)
         {
-            Func<string,IEnumerable<RegexSearchResult>> searchFunc;
-            if (_search.TryGetValue(scope, out searchFunc))
-            {
-                return searchFunc.Invoke(searchPattern);
-            }
-            else
-            {
-                return new List<RegexSearchResult>();
-            }
+            return _search.TryGetValue(scope, out var searchFunc) ? searchFunc.Invoke(searchPattern) : new List<RegexSearchResult>();
         }
 
         public void Replace(string searchPattern, string replaceValue, RegexSearchReplaceScope scope)
