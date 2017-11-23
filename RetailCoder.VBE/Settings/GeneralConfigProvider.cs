@@ -42,7 +42,7 @@ namespace Rubberduck.Settings
                 OnLanguageChanged(EventArgs.Empty);
             }
             if (_current == null || 
-                other.AutoSaveEnabled != _current.AutoSaveEnabled || 
+                other.IsAutoSaveEnabled != _current.IsAutoSaveEnabled || 
                 other.AutoSavePeriod != _current.AutoSavePeriod)
             {
                 OnAutoSaveSettingsChanged(EventArgs.Empty);
