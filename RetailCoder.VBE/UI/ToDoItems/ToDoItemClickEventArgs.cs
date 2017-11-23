@@ -7,10 +7,9 @@ namespace Rubberduck.UI.ToDoItems
     {
         public ToDoItemClickEventArgs(ToDoItem selectedItem)
         {
-            _selectedItem = selectedItem;
+            SelectedItem = selectedItem;
         }
 
-        private readonly ToDoItem _selectedItem;
-        public ToDoItem SelectedItem { get { return _selectedItem; } }
+        public ToDoItem SelectedItem { get; }
     }
 }
