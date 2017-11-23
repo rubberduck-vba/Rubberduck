@@ -24,11 +24,13 @@ namespace Rubberduck.UI.Controls
             get => _resultText;
             set
             {
-                if (_resultText != value)
+                if (_resultText == value)
                 {
-                    _resultText = value;
-                    OnPropertyChanged();
+                    return;
                 }
+
+                _resultText = value;
+                OnPropertyChanged();
             }
         }
         

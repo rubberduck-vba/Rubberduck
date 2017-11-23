@@ -43,16 +43,18 @@ namespace Rubberduck.UI.Controls
                 else
                 {
                     //Switching to a new group
-                    if (newGroupName != oldGroupName)
+                    if (newGroupName == oldGroupName)
                     {
-                        if (!string.IsNullOrEmpty(oldGroupName))
-                        {
-                            //Remove the old group mapping
-                            RemoveCheckboxFromGrouping(menuItem);
-                        }
-                        ElementToGroupNames.Add(menuItem, e.NewValue.ToString());
-                        menuItem.Checked += MenuItemChecked;
+                        return;
                     }
+
+                    if (!string.IsNullOrEmpty(oldGroupName))
+                    {
+                        //Remove the old group mapping
+                        RemoveCheckboxFromGrouping(menuItem);
+                    }
+                    ElementToGroupNames.Add(menuItem, e.NewValue.ToString());
+                    menuItem.Checked += MenuItemChecked;
                 }
             }
         }

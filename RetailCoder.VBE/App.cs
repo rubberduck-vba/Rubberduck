@@ -192,11 +192,11 @@ namespace Rubberduck
             GlobalDiagnosticsContext.Set("RubberduckVersion", version.ToString());
             var headers = new List<string>
             {
-                string.Format("\r\n\tRubberduck version {0} loading:", version),
-                string.Format("\tOperating System: {0} {1}", Environment.OSVersion.VersionString, Environment.Is64BitOperatingSystem ? "x64" : "x86"),
-                string.Format("\tHost Product: {0} {1}", Application.ProductName, Environment.Is64BitProcess ? "x64" : "x86"),
-                string.Format("\tHost Version: {0}", Application.ProductVersion),
-                string.Format("\tHost Executable: {0}", Path.GetFileName(Application.ExecutablePath)),
+                $"\r\n\tRubberduck version {version} loading:",
+                $"\tOperating System: {Environment.OSVersion.VersionString} {(Environment.Is64BitOperatingSystem ? "x64" : "x86")}",
+                $"\tHost Product: {Application.ProductName} {(Environment.Is64BitProcess ? "x64" : "x86")}",
+                $"\tHost Version: {Application.ProductVersion}",
+                $"\tHost Executable: {Path.GetFileName(Application.ExecutablePath).ToUpper()}", // .ToUpper() used to convert ExceL.EXE -> EXCEL.EXE
             };
             LogLevelHelper.SetDebugInfo(string.Join(Environment.NewLine, headers));
         }

@@ -31,7 +31,7 @@ namespace Rubberduck.UI.Controls
 
         public new string Text
         {
-            get => base.Text;
+            get => base.Text; 
             set => base.Text = value;
         }
 

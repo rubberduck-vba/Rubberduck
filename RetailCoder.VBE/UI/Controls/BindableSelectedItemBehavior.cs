@@ -11,7 +11,7 @@ namespace Rubberduck.UI.Controls
     {
         public object SelectedItem
         {
-            get => GetValue(SelectedItemProperty);
+            get => (object) GetValue(SelectedItemProperty);
             set => SetValue(SelectedItemProperty, value);
         }
 

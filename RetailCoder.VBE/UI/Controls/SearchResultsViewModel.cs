@@ -56,11 +56,13 @@ namespace Rubberduck.UI.Controls
             get => _selectedItem;
             set
             {
-                if (_selectedItem != value)
+                if (_selectedItem == value)
                 {
-                    _selectedItem = value;
-                    OnPropertyChanged();
+                    return;
                 }
+
+                _selectedItem = value;
+                OnPropertyChanged();
             }
         }
 
