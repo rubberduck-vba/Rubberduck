@@ -12,8 +12,8 @@ namespace Rubberduck.Navigation.CodeExplorer
 {
     public class CodeExplorerProjectViewModel : CodeExplorerItemViewModel, ICodeExplorerDeclarationViewModel
     {
-        private readonly Declaration _declaration;
-        public Declaration Declaration { get { return _declaration; } }
+        public Declaration Declaration { get; }
+
         private readonly CodeExplorerCustomFolderViewModel _folderTree;
 
         private static readonly DeclarationType[] ComponentTypes =
@@ -26,8 +26,8 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public CodeExplorerProjectViewModel(FolderHelper folderHelper, Declaration declaration, IEnumerable<Declaration> declarations)
         {
-            _declaration = declaration;
-            _name = _declaration.IdentifierName;
+            Declaration = declaration;
+            _name = Declaration.IdentifierName;
             IsExpanded = true;
             _folderTree = folderHelper.GetFolderTree(declaration);
 
@@ -36,7 +36,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 FillFolders(declarations.ToList());
                 Items = _folderTree.Items.ToList();
 
-                _icon = _declaration.Project.Protection == ProjectProtection.Locked
+                _icon = Declaration.Project.Protection == ProjectProtection.Locked
                     ? GetImageSource(resx.lock__exclamation)
                     : GetImageSource(resx.ObjectLibrary);
             }
@@ -63,11 +63,11 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             foreach (var grouping in groupedItems)
             {
-                AddNodesToTree(_folderTree, items, grouping);
+                CanAddNodesToTree(_folderTree, items, grouping);
             }
         }
 
-        private bool AddNodesToTree(CodeExplorerCustomFolderViewModel tree, List<Declaration> items, IGrouping<string, Declaration> grouping)
+        private bool CanAddNodesToTree(CodeExplorerCustomFolderViewModel tree, List<Declaration> items, IGrouping<string, Declaration> grouping)
         {
             foreach (var folder in tree.Items.OfType<CodeExplorerCustomFolderViewModel>())
             {
@@ -88,20 +88,20 @@ namespace Rubberduck.Navigation.CodeExplorer
                 return true;
             }
 
-            return tree.Items.OfType<CodeExplorerCustomFolderViewModel>().Any(node => AddNodesToTree(node, items, grouping));
+            return tree.Items.OfType<CodeExplorerCustomFolderViewModel>().Any(node => CanAddNodesToTree(node, items, grouping));
         }
 
         private readonly BitmapImage _icon;
-        public override BitmapImage CollapsedIcon { get { return _icon; } }
-        public override BitmapImage ExpandedIcon { get { return _icon; } }
-        
+        public override BitmapImage CollapsedIcon => _icon;
+        public override BitmapImage ExpandedIcon => _icon;
+
         // projects are always at the top of the tree
-        public override CodeExplorerItemViewModel Parent { get { return null; } }
+        public override CodeExplorerItemViewModel Parent => null;
 
         private string _name;
-        public override string Name { get { return _name; } }
-        public override string NameWithSignature { get { return _name; } }
-        public override QualifiedSelection? QualifiedSelection { get { return _declaration.QualifiedSelection; } }
+        public override string Name => _name;
+        public override string NameWithSignature => _name;
+        public override QualifiedSelection? QualifiedSelection => Declaration.QualifiedSelection;
 
         public void SetParenthesizedName(string parenthesizedName)
         {
