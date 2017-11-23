@@ -10,8 +10,6 @@ namespace Rubberduck.Common.Hotkeys
 {
     public class Hotkey : IHotkey
     {
-        private readonly string _key;
-        private readonly CommandBase _command;
         private readonly IntPtr _hWndVbe;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -20,18 +18,20 @@ namespace Rubberduck.Common.Hotkeys
             _hWndVbe = hWndVbe;
 
             IsTwoStepHotkey = secondKey != Keys.None;
-            _key = key;
-            _command = command;
+            Key = key;
+            Command = command;
             Combo = GetCombo(key);
             SecondKey = secondKey;
         }
 
-        public CommandBase Command { get { return _command; } }
-        public string Key { get { return _key; } }
+        public CommandBase Command { get; }
+
+        public string Key { get; }
+
         public HotkeyInfo HotkeyInfo { get; private set; }
-        public Keys Combo { get; private set; }
-        public Keys SecondKey { get; private set; }
-        public bool IsTwoStepHotkey { get; private set; }
+        public Keys Combo { get; }
+        public Keys SecondKey { get; }
+        public bool IsTwoStepHotkey { get; }
         public bool IsAttached { get; private set; }
 
         public event EventHandler<HookEventArgs> MessageReceived;
@@ -48,13 +48,13 @@ namespace Rubberduck.Common.Hotkeys
 
         public void Attach()
         {
-            var hotKey = _key;
+            var hotKey = Key;
             var shift = GetModifierValue(ref hotKey);
             var key = GetKey(hotKey);
 
             if (key == Keys.None)
             {
-                throw new InvalidOperationException(Rubberduck.UI.RubberduckUI.CommonHotkey_InvalidKey);
+                throw new InvalidOperationException(RubberduckUI.CommonHotkey_InvalidKey);
             }
 
             HookKey(key, shift);
@@ -95,8 +95,7 @@ namespace Rubberduck.Common.Hotkeys
 
         private void SetCommandShortcutText()
         {
-            var command = Command as CommandBase;
-            if (command != null)
+            if (Command is CommandBase command)
             {
                 command.ShortcutText = HotkeyInfo.ToString();
             }
@@ -104,8 +103,7 @@ namespace Rubberduck.Common.Hotkeys
 
         private void ClearCommandShortcutText()
         {
-            var command = Command as CommandBase;
-            if (command != null)
+            if (Command is CommandBase command)
             {
                 command.ShortcutText = string.Empty;
             }
