@@ -8,7 +8,7 @@ namespace Rubberduck.UI.Settings.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value != null ? ((SettingsView)value).Control : null;
+            return ((SettingsView) value)?.Control;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
