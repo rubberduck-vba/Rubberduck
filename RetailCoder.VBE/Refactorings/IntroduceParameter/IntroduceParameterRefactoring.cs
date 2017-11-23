@@ -200,7 +200,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             _rewriters.Add(rewriter);
 
             var argList = paramList.arg();
-            var newParameter = Tokens.ByVal + " " + targetVariable.IdentifierName + " "+ Tokens.As + " " + targetVariable.AsTypeName;
+            var newParameter = Tokens.ByVal + " " + targetVariable.IdentifierName + " " + Tokens.As + " " + targetVariable.AsTypeName;
 
             if (!argList.Any())
             {
