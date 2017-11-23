@@ -33,7 +33,7 @@ namespace Rubberduck.UI.Settings
             LogLevels = new ObservableCollection<MinimumLogLevel>(LogLevelHelper.LogLevels.Select(l => new MinimumLogLevel(l.Ordinal, l.Name)));
             TransferSettingsToView(config.UserSettings.GeneralSettings, config.UserSettings.HotkeySettings);
 
-            _showLogFolderCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ShowLogFolder());
+            ShowLogFolderCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ShowLogFolder());
             ExportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ExportSettings());
             ImportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ImportSettings());
         }
@@ -43,7 +43,7 @@ namespace Rubberduck.UI.Settings
         private DisplayLanguageSetting _selectedLanguage;
         public DisplayLanguageSetting SelectedLanguage
         {
-            get { return _selectedLanguage; }
+            get => _selectedLanguage;
             set
             {
                 if (!Equals(_selectedLanguage, value))
@@ -57,7 +57,7 @@ namespace Rubberduck.UI.Settings
         private ObservableCollection<HotkeySetting> _hotkeys;
         public ObservableCollection<HotkeySetting> Hotkeys
         {
-            get { return _hotkeys; }
+            get => _hotkeys;
             set
             {
                 if (_hotkeys != value)
@@ -71,7 +71,7 @@ namespace Rubberduck.UI.Settings
         private bool _autoSaveEnabled;
         public bool AutoSaveEnabled
         {
-            get { return _autoSaveEnabled; }
+            get => _autoSaveEnabled;
             set
             {
                 if (_autoSaveEnabled != value)
@@ -85,7 +85,7 @@ namespace Rubberduck.UI.Settings
         private bool _showSplashAtStartup;
         public bool ShowSplashAtStartup
         {
-            get { return _showSplashAtStartup; }
+            get => _showSplashAtStartup;
             set
             {
                 if (_showSplashAtStartup != value)
@@ -99,7 +99,7 @@ namespace Rubberduck.UI.Settings
         private bool _checkVersionAtStartup;
         public bool CheckVersionAtStartup
         {
-            get { return _checkVersionAtStartup; }
+            get => _checkVersionAtStartup;
             set
             {
                 if (_checkVersionAtStartup != value)
@@ -113,7 +113,7 @@ namespace Rubberduck.UI.Settings
         private int _autoSavePeriod;
         public int AutoSavePeriod
         {
-            get { return _autoSavePeriod; }
+            get => _autoSavePeriod;
             set
             {
                 if (_autoSavePeriod != value)
@@ -127,7 +127,7 @@ namespace Rubberduck.UI.Settings
         private DelimiterOptions _delimiter;
         public DelimiterOptions Delimiter
         {
-            get { return _delimiter; }
+            get => _delimiter;
             set
             {
                 if (_delimiter != value)
@@ -142,7 +142,7 @@ namespace Rubberduck.UI.Settings
         private MinimumLogLevel _selectedLogLevel;
         public MinimumLogLevel SelectedLogLevel
         {
-            get { return _selectedLogLevel; }
+            get => _selectedLogLevel;
             set
             {
                 if (!Equals(_selectedLogLevel, value))
@@ -156,7 +156,7 @@ namespace Rubberduck.UI.Settings
         private bool _sourceControlEnabled;
         public bool SourceControlEnabled
         {
-            get { return _sourceControlEnabled; }
+            get => _sourceControlEnabled;
             set
             {
                 if (_sourceControlEnabled != value)
@@ -167,11 +167,7 @@ namespace Rubberduck.UI.Settings
             }
         }
 
-        private readonly CommandBase _showLogFolderCommand;
-        public CommandBase ShowLogFolderCommand
-        {
-            get { return _showLogFolderCommand; }
-        }
+        public CommandBase ShowLogFolderCommand { get; }
 
         private void ShowLogFolder()
         {
@@ -194,14 +190,14 @@ namespace Rubberduck.UI.Settings
             return new Rubberduck.Settings.GeneralSettings
             {
                 Language = SelectedLanguage,
-                ShowSplash = ShowSplashAtStartup,
-                CheckVersion = CheckVersionAtStartup,
-                SmartIndenterPrompted = _indenterPrompted,
-                AutoSaveEnabled = AutoSaveEnabled,
+                CanShowSplash = ShowSplashAtStartup,
+                CanCheckVersion = CheckVersionAtStartup,
+                IsSmartIndenterPrompted = _indenterPrompted,
+                IsAutoSaveEnabled = AutoSaveEnabled,
                 AutoSavePeriod = AutoSavePeriod,
                 //Delimiter = (char)Delimiter,
                 MinimumLogLevel = SelectedLogLevel.Ordinal,
-                SourceControlEnabled = SourceControlEnabled
+                IsSourceControlEnabled = SourceControlEnabled
             };
         }
 
@@ -209,14 +205,14 @@ namespace Rubberduck.UI.Settings
         {
             SelectedLanguage = Languages.First(l => l.Code == general.Language.Code);
             Hotkeys = new ObservableCollection<HotkeySetting>(hottkey.Settings);
-            ShowSplashAtStartup = general.ShowSplash;
-            CheckVersionAtStartup = general.CheckVersion;
-            _indenterPrompted = general.SmartIndenterPrompted;
-            AutoSaveEnabled = general.AutoSaveEnabled;
+            ShowSplashAtStartup = general.CanShowSplash;
+            CheckVersionAtStartup = general.CanCheckVersion;
+            _indenterPrompted = general.IsSmartIndenterPrompted;
+            AutoSaveEnabled = general.IsAutoSaveEnabled;
             AutoSavePeriod = general.AutoSavePeriod;
             //Delimiter = (DelimiterOptions)general.Delimiter;
             SelectedLogLevel = LogLevels.First(l => l.Ordinal == general.MinimumLogLevel);
-            SourceControlEnabled = general.SourceControlEnabled;
+            SourceControlEnabled = general.IsSourceControlEnabled;
         }
 
         private void ImportSettings()
@@ -234,7 +230,7 @@ namespace Rubberduck.UI.Settings
                 var hkService = new XmlPersistanceService<HotkeySettings> { FilePath = dialog.FileName };
                 var hotkey = hkService.Load(new HotkeySettings());
                 //Always assume Smart Indenter registry import has been prompted if importing.
-                general.SmartIndenterPrompted = true;
+                general.IsSmartIndenterPrompted = true;
                 TransferSettingsToView(general, hotkey);
             }
         }
