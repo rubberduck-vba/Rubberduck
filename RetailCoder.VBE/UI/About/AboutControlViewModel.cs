@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Reflection;
 using NLog;
 using Rubberduck.UI.Command;
 using Rubberduck.VersionCheck;
