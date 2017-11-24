@@ -2137,4 +2137,13 @@ Would you like to import them to Rubberduck?</value>
   <data name="RubberduckMenu_CodeMetrics" xml:space="preserve">
     <value>Code Metrics</value>
   </data>
+  <data name="CodeMetrics_Complexity" xml:space="preserve">
+    <value>Cyclomatic Complexity</value>
+  </data>
+  <data name="CodeMetrics_Lines" xml:space="preserve">
+    <value>Lines</value>
+  </data>
+  <data name="CodeMetrics_Nesting" xml:space="preserve">
+    <value>Maximum Nesting</value>
+  </data>
 </root>

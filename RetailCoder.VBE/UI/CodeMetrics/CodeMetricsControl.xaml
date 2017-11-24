@@ -157,19 +157,19 @@
 
         <DataGrid Grid.Row="2" ItemsSource="{Binding ModuleMetrics}" AutoGenerateColumns="False" IsReadOnly="True">
             <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding Path=ModuleName}" Header="Declaration" Width="*"/>
-                <DataGridTextColumn Binding="{Binding Path=Result.Lines}" Header="Lines" Width="Auto" x:Name="LinesColumn"/>
-                <DataGridTextColumn Binding="{Binding Path=Result.CyclomaticComplexity}" Header="Cyclomatic Complexity" Width="Auto" x:Name="CCColumn"/>
-                <DataGridTextColumn Binding="{Binding Path=Result.MaximumNesting}" Header="Nesting Level" Width="Auto" x:Name="NestingColumn"/>
+                <DataGridTextColumn Binding="{Binding Path=ModuleName}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SearchResults_ModuleName}" Width="*"/>
+                <DataGridTextColumn Binding="{Binding Path=Result.Lines}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeMetrics_Lines}" Width="Auto" x:Name="LinesColumn"/>
+                <DataGridTextColumn Binding="{Binding Path=Result.CyclomaticComplexity}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeMetrics_Complexity}" Width="Auto" x:Name="CCColumn"/>
+                <DataGridTextColumn Binding="{Binding Path=Result.MaximumNesting}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeMetrics_Nesting}" Width="Auto" x:Name="NestingColumn"/>
             </DataGrid.Columns>
             <DataGrid.RowDetailsTemplate>
                 <DataTemplate>
                     <DataGrid ItemsSource="{Binding Path=MemberResults}" AutoGenerateColumns="False" IsReadOnly="True" Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid,AncestorLevel=1}, Converter={StaticResource SubtractionConverter},ConverterParameter=25}">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Declaration" Binding="{Binding Path=Key.IdentifierName}" Width="*"/>
-                            <DataGridTextColumn Header="Lines" Binding="{Binding Path=Value.Lines}"  Width="{Binding Path=ActualWidth, Source={x:Reference LinesColumn}}"/>
-                            <DataGridTextColumn Header="Cyclomatic Complexity" Binding="{Binding Path=Value.CyclomaticComplexity}" Width="{Binding Path=ActualWidth, Source={x:Reference CCColumn}}"/>
-                            <DataGridTextColumn Header="Nesting Level" Binding="{Binding Path=Value.MaximumNesting}" Width="{Binding Path=ActualWidth, Source={x:Reference NestingColumn}}"/>
+                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SearchResults_MemberName}" Binding="{Binding Path=Key.IdentifierName}" Width="*"/>
+                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeMetrics_Lines}" Binding="{Binding Path=Value.Lines}"  Width="{Binding Path=ActualWidth, Source={x:Reference LinesColumn}}"/>
+                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeMetrics_Complexity}"  Binding="{Binding Path=Value.CyclomaticComplexity}" Width="{Binding Path=ActualWidth, Source={x:Reference CCColumn}}"/>
+                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeMetrics_Nesting}" Binding="{Binding Path=Value.MaximumNesting}" Width="{Binding Path=ActualWidth, Source={x:Reference NestingColumn}}"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </DataTemplate>
