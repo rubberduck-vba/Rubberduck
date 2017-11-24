@@ -28,6 +28,7 @@
             <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
             <converters:StringHasValueToVisibilityConverter x:Key="StringHasValueToVisibility" />
             <converters:StringHasNoValueToVisibilityConverter x:Key="StringHasNoValueToVisibility" />
+            <converters:SubractionConverter x:Key="SubtractionConverter" />
 
             <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
                 <GradientStop Color="#FFD9F4FF" Offset="0"/>
@@ -157,18 +158,18 @@
         <DataGrid Grid.Row="2" ItemsSource="{Binding ModuleMetrics}" AutoGenerateColumns="False" IsReadOnly="True">
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Path=ModuleName}" Header="Declaration" Width="*"/>
-                <DataGridTextColumn Binding="{Binding Path=Result.Lines}" Header="Lines" Width="Auto"/>
-                <DataGridTextColumn Binding="{Binding Path=Result.CyclomaticComplexity}" Header="Cyclomatic Complexity" Width="Auto"/>
-                <DataGridTextColumn Binding="{Binding Path=Result.MaximumNesting}" Header="Nesting Level" Width="Auto"/>
+                <DataGridTextColumn Binding="{Binding Path=Result.Lines}" Header="Lines" Width="Auto" x:Name="LinesColumn"/>
+                <DataGridTextColumn Binding="{Binding Path=Result.CyclomaticComplexity}" Header="Cyclomatic Complexity" Width="Auto" x:Name="CCColumn"/>
+                <DataGridTextColumn Binding="{Binding Path=Result.MaximumNesting}" Header="Nesting Level" Width="Auto" x:Name="NestingColumn"/>
             </DataGrid.Columns>
             <DataGrid.RowDetailsTemplate>
                 <DataTemplate>
-                    <DataGrid ItemsSource="{Binding Path=MemberResults}" AutoGenerateColumns="False" IsReadOnly="True" Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid,AncestorLevel=1}}">
+                    <DataGrid ItemsSource="{Binding Path=MemberResults}" AutoGenerateColumns="False" IsReadOnly="True" Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid,AncestorLevel=1}, Converter={StaticResource SubtractionConverter},ConverterParameter=25}">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Declaration" Binding="{Binding Path=Key.IdentifierName}" Width="*"/>
-                            <DataGridTextColumn Header="Lines" Binding="{Binding Path=Value.Lines}"  Width="Auto"/>
-                            <DataGridTextColumn Header="Cyclomatic Complexity" Binding="{Binding Path=Value.CyclomaticComplexity}" Width="Auto"/>
-                            <DataGridTextColumn Header="Nesting Level" Binding="{Binding Path=Value.MaximumNesting}" Width="Auto"/>
+                            <DataGridTextColumn Header="Lines" Binding="{Binding Path=Value.Lines}"  Width="{Binding Path=ActualWidth, Source={x:Reference LinesColumn}}"/>
+                            <DataGridTextColumn Header="Cyclomatic Complexity" Binding="{Binding Path=Value.CyclomaticComplexity}" Width="{Binding Path=ActualWidth, Source={x:Reference CCColumn}}"/>
+                            <DataGridTextColumn Header="Nesting Level" Binding="{Binding Path=Value.MaximumNesting}" Width="{Binding Path=ActualWidth, Source={x:Reference NestingColumn}}"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </DataTemplate>

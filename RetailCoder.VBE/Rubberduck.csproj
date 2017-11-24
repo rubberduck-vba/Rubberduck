@@ -431,6 +431,7 @@
     <Compile Include="UI\Controls\EmptyUIRefresh.xaml.cs">
       <DependentUpon>EmptyUIRefresh.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\Converters\SubractionConverter.cs" />
     <Compile Include="UI\EnvironmentProvider.cs" />
     <Compile Include="UI\Inspections\AggregateInspectionResult.cs" />
     <Compile Include="UI\ModernFolderBrowser.cs" />
