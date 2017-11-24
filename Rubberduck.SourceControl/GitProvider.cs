@@ -464,8 +464,6 @@ namespace Rubberduck.SourceControl
         {
             try
             {
-                // https://github.com/libgit2/libgit2sharp/wiki/Git-add
-                //_repo.Stage(filePath); // deprecated on LibGit2Sharp from v0.24.0
                 LibGit2Sharp.Commands.Stage(_repo, filePath);
             }
             catch (LibGit2SharpException ex)
