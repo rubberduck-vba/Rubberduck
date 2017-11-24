@@ -8,29 +8,38 @@ using System.Linq;
 
 namespace Rubberduck.Navigation.CodeMetrics
 {
-    public class CodeMetricsViewModel : ViewModelBase
+    public class CodeMetricsViewModel : ViewModelBase, IDisposable
     {
         private readonly RubberduckParserState _state;
+        private readonly ICodeMetricsAnalyst _analyst;
 
         public CodeMetricsViewModel(RubberduckParserState state, ICodeMetricsAnalyst analyst)
 
         {
             _state = state;
-            // FIXME deregister event on destruction
-            _state.StateChanged += (_, change) =>
+            _analyst = analyst;
+            _state.StateChanged += OnStateChanged;
+        }
+
+        private void OnStateChanged(object sender, ParserStateEventArgs e)
+        {
+            if (e.State == ParserState.Ready)
             {
-                if (change.State == ParserState.Ready)
-                {
-                    ModuleMetrics = analyst.ModuleMetrics(_state);
-                }
-            };
+                ModuleMetrics = _analyst.ModuleMetrics(_state);
+            }
         }
 
         public void FilterByName(object projects, string text)
         {
             throw new NotImplementedException();
         }
+
+        public void Dispose()
+        {
+            _state.StateChanged -= OnStateChanged;
+        }
         
+
         private IEnumerable<ModuleMetricsResult> _moduleMetrics;
         public IEnumerable<ModuleMetricsResult> ModuleMetrics {
             get => _moduleMetrics;
