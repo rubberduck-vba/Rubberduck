@@ -1834,6 +1834,15 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Remove step.
+        /// </summary>
+        public static string RemoveStepOneQuickFix {
+            get {
+                return ResourceManager.GetString("RemoveStepOneQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Remove usage of the &apos;stop&apos; keyword.
         /// </summary>
         public static string RemoveStopKeywordQuickFix {
@@ -1983,6 +1992,15 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         public static string SplitMultipleDeclarationsQuickFix {
             get {
                 return ResourceManager.GetString("SplitMultipleDeclarationsQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1 is the default step in a for-next loop and therefore is redundant..
+        /// </summary>
+        public static string StepOneIsRedundantInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("StepOneIsRedundantInspectionResultFormat", resourceCulture);
             }
         }
         

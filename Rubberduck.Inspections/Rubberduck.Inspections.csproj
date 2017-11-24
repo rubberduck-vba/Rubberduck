@@ -68,6 +68,7 @@
     <Compile Include="Concrete\EmptyForEachBlockInspection.cs" />
     <Compile Include="Concrete\EmptyForLoopBlockInspection.cs" />
     <Compile Include="Concrete\EmptyWhileWendBlockInspection.cs" />
+    <Compile Include="Concrete\StepOneIsRedundantInspection.cs" />
     <Compile Include="Concrete\StopKeywordInspection.cs" />
     <Compile Include="Concrete\LineLabelNotUsedInspection.cs" />
     <Compile Include="Concrete\IntegerDataTypeInspection.cs" />
@@ -121,6 +122,7 @@
     <Compile Include="QuickFixes\ChangeDimToPrivateQuickFix.cs" />
     <Compile Include="QuickFixes\ChangeIntegerToLongQuickFix.cs" />
     <Compile Include="Abstract\QuickFixBase.cs" />
+    <Compile Include="QuickFixes\RemoveStepOneQuickFix.cs" />
     <Compile Include="QuickFixes\RemoveStopKeywordQuickFix.cs" />
     <Compile Include="QuickFixes\SpecifyExplicitByRefModifierQuickFix.cs" />
     <Compile Include="QuickFixes\ChangeProcedureToFunctionQuickFix.cs" />

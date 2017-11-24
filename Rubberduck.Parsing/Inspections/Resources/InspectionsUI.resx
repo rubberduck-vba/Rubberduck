@@ -857,4 +857,10 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="ShadowedDeclarationInspectionResultFormat" xml:space="preserve">
     <value>{0} '{1}' hides {2} '{3}'</value>
   </data>
+  <data name="StepOneIsRedundantInspectionResultFormat" xml:space="preserve">
+    <value>1 is the default step in a for-next loop and therefore is redundant.</value>
+  </data>
+  <data name="RemoveStepOneQuickFix" xml:space="preserve">
+    <value>Remove step</value>
+  </data>
 </root>
