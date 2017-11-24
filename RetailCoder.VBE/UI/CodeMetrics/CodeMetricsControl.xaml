@@ -163,7 +163,7 @@
             </DataGrid.Columns>
             <DataGrid.RowDetailsTemplate>
                 <DataTemplate>
-                    <DataGrid ItemsSource="{Binding Path=MemberResults}" AutoGenerateColumns="False" IsReadOnly="True">
+                    <DataGrid ItemsSource="{Binding Path=MemberResults}" AutoGenerateColumns="False" IsReadOnly="True" Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid,AncestorLevel=1}}">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Declaration" Binding="{Binding Path=Key.IdentifierName}" Width="*"/>
                             <DataGridTextColumn Header="Lines" Binding="{Binding Path=Value.Lines}"  Width="Auto"/>
