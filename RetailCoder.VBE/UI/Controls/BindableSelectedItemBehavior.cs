@@ -11,8 +11,8 @@ namespace Rubberduck.UI.Controls
     {
         public object SelectedItem
         {
-            get { return (object) GetValue(SelectedItemProperty); }
-            set { SetValue(SelectedItemProperty, value); }
+            get => (object) GetValue(SelectedItemProperty);
+            set => SetValue(SelectedItemProperty, value);
         }
 
         public static readonly DependencyProperty SelectedItemProperty =
@@ -21,8 +21,7 @@ namespace Rubberduck.UI.Controls
 
         private static void OnSelectedItemChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
-            var item = e.NewValue as TreeViewItem;
-            if (item != null)
+            if (e.NewValue is TreeViewItem item)
             {
                 item.SetValue(TreeViewItem.IsSelectedProperty, true);
             }

@@ -18,16 +18,14 @@ namespace Rubberduck.UI.UnitTesting
             _dispatcher = Dispatcher.CurrentDispatcher;
         }
 
-        void TestExplorerControl_DataContextChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
+        private void TestExplorerControl_DataContextChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
         {
-            var oldContext = e.OldValue as TestExplorerViewModel;
-            if (oldContext != null)
+            if (e.OldValue is TestExplorerViewModel oldContext)
             {
                 oldContext.TestCompleted -= OnTestCompleted;
             }
 
-            var context = e.NewValue as TestExplorerViewModel;
-            if (context != null)
+            if (e.NewValue is TestExplorerViewModel context)
             {
                 context.TestCompleted += OnTestCompleted;
             }
@@ -37,8 +35,7 @@ namespace Rubberduck.UI.UnitTesting
         {
             _dispatcher.Invoke(() =>
             {
-                var resource = FindResource("ResultsByOutcome") as CollectionViewSource;
-                if (resource != null)
+                if (FindResource("ResultsByOutcome") is CollectionViewSource resource)
                 {
                     resource.View.Refresh();
                 }
