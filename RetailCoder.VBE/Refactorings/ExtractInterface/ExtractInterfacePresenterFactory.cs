@@ -32,14 +32,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
             }
 
             var model = new ExtractInterfaceModel(_state, selection.Value);
-            if (!model.Members.Any())
-            {
-                // don't show the UI if there's no member to extract
-                return null;
-            }
-
-            return new ExtractInterfacePresenter(_view, model);
-
+            return model.Members.Any() ? new ExtractInterfacePresenter(_view, model) : null;
         }
     }
 }
