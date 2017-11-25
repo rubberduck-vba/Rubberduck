@@ -177,3 +177,5 @@ $RECYCLE.BIN/
 *.xlsm
 Installers/
 *.xlsx
+
+CodeGraphData/
