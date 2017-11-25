@@ -193,7 +193,7 @@ namespace Rubberduck.SourceControl
                     //The default behavior of LibGit2Sharp.Repo.Commit is to throw an exception if no signature is found,
                     // but BuildSignature() does not throw if a signature is not found, it returns "unknown" instead.
                     // so we pass a signature that won't throw along to the commit.
-                    repo.Commit("Initial Commit", GetSignature(repo), GetSignature(repo));
+                    repo.Commit("Initial Commit", author: GetSignature(repo), committer: GetSignature(repo));
                 }
                 catch(LibGit2SharpException ex)
                 {
@@ -291,7 +291,7 @@ namespace Rubberduck.SourceControl
                 //The default behavior of LibGit2Sharp.Repo.Commit is to throw an exception if no signature is found,
                 // but BuildSignature() does not throw if a signature is not found, it returns "unknown" instead.
                 // so we pass a signature that won't throw along to the commit.
-                _repo.Commit(message, GetSignature(), GetSignature());
+                _repo.Commit(message, author: GetSignature(), committer: GetSignature());
             }
             catch (LibGit2SharpException ex)
             {
