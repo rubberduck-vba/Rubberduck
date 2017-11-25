@@ -12,11 +12,11 @@ namespace Rubberduck.Navigation.CodeMetrics
 {
     public class CodeMetricsAnalyst : ICodeMetricsAnalyst
     {
-        private readonly IIndenterSettings indenterSettings;
+        private readonly IIndenterSettings _indenterSettings;
     
         public CodeMetricsAnalyst(IIndenterSettings indenterSettings)
         {
-            this.indenterSettings = indenterSettings;
+            _indenterSettings = indenterSettings;
         }
 
         public IEnumerable<ModuleMetricsResult> ModuleMetrics(RubberduckParserState state)
@@ -28,7 +28,6 @@ namespace Rubberduck.Navigation.CodeMetrics
             }
 
             var trees = state.ParseTrees;
-            var results = new List<CodeMetricsResult>();
 
             foreach (var moduleTree in trees)
             {
@@ -44,7 +43,7 @@ namespace Rubberduck.Navigation.CodeMetrics
         private ModuleMetricsResult GetModuleResult(QualifiedModuleName qmn, IParseTree moduleTree, DeclarationFinder declarationFinder)
         {
             // Consider rewrite as visitor? That should make subtrees easier and allow us to expand metrics
-            var cmListener = new CodeMetricsListener(declarationFinder, indenterSettings);
+            var cmListener = new CodeMetricsListener(declarationFinder, _indenterSettings);
             ParseTreeWalker.Default.Walk(cmListener, moduleTree);
             return cmListener.GetMetricsResult(qmn);
         }

@@ -4,7 +4,7 @@ using System.Windows.Data;
 
 namespace Rubberduck.UI.Converters
 {
-    public class SubractionConverter : IValueConverter
+    public class SubtractionConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
