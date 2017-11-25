@@ -54,7 +54,7 @@ namespace Rubberduck.Navigation.CodeMetrics
             private readonly DeclarationFinder _finder;
             private readonly IIndenterSettings _indenterSettings;
 
-            private Declaration currentMember;
+            private Declaration _currentMember;
             private List<CodeMetricsResult> _results = new List<CodeMetricsResult>();
             private List<CodeMetricsResult> _moduleResults = new List<CodeMetricsResult>();
 
@@ -76,7 +76,7 @@ namespace Rubberduck.Navigation.CodeMetrics
                     var followingWhitespace = context.whiteSpace().LastOrDefault();
                     followingIndentationLevel = IndentationLevelFromWhitespace(followingWhitespace);
                 }
-                (currentMember == null ? _moduleResults : _results).Add(new CodeMetricsResult(1, 0, followingIndentationLevel));
+                (_currentMember == null ? _moduleResults : _results).Add(new CodeMetricsResult(1, 0, followingIndentationLevel));
             }
 
             public override void EnterIfStmt([NotNull] VBAParser.IfStmtContext context)
@@ -109,7 +109,7 @@ namespace Rubberduck.Navigation.CodeMetrics
             public override void EnterSubStmt([NotNull] VBAParser.SubStmtContext context)
             {
                 _results.Add(new CodeMetricsResult(0, 1, 0));
-                currentMember = _finder.DeclarationsWithType(DeclarationType.Procedure).Where(d => d.Context == context).First();
+                _currentMember = _finder.UserDeclarations(DeclarationType.Procedure).Where(d => d.Context == context).First();
             }
 
             public override void ExitSubStmt([NotNull] VBAParser.SubStmtContext context)
@@ -120,7 +120,7 @@ namespace Rubberduck.Navigation.CodeMetrics
             public override void EnterFunctionStmt([NotNull] VBAParser.FunctionStmtContext context)
             {
                 _results.Add(new CodeMetricsResult(0, 1, 0));
-                currentMember = _finder.DeclarationsWithType(DeclarationType.Function).Where(d => d.Context == context).First();
+                _currentMember = _finder.UserDeclarations(DeclarationType.Function).Where(d => d.Context == context).First();
             }
 
             public override void ExitFunctionStmt([NotNull] VBAParser.FunctionStmtContext context)
@@ -131,7 +131,7 @@ namespace Rubberduck.Navigation.CodeMetrics
             public override void EnterPropertyGetStmt([NotNull] VBAParser.PropertyGetStmtContext context)
             {
                 _results.Add(new CodeMetricsResult(0, 1, 0));
-                currentMember = _finder.DeclarationsWithType(DeclarationType.PropertyGet).Where(d => d.Context == context).First();
+                _currentMember = _finder.UserDeclarations(DeclarationType.PropertyGet).Where(d => d.Context == context).First();
             }
 
             public override void ExitPropertyGetStmt([NotNull] VBAParser.PropertyGetStmtContext context)
@@ -142,7 +142,7 @@ namespace Rubberduck.Navigation.CodeMetrics
             public override void EnterPropertyLetStmt([NotNull] VBAParser.PropertyLetStmtContext context)
             {
                 _results.Add(new CodeMetricsResult(0, 1, 0));
-                currentMember = _finder.DeclarationsWithType(DeclarationType.PropertyLet).Where(d => d.Context == context).First();
+                _currentMember = _finder.UserDeclarations(DeclarationType.PropertyLet).Where(d => d.Context == context).First();
             }
 
             public override void ExitPropertyLetStmt([NotNull] VBAParser.PropertyLetStmtContext context)
@@ -153,7 +153,7 @@ namespace Rubberduck.Navigation.CodeMetrics
             public override void EnterPropertySetStmt([NotNull] VBAParser.PropertySetStmtContext context)
             {
                 _results.Add(new CodeMetricsResult(0, 1, 0));
-                currentMember = _finder.DeclarationsWithType(DeclarationType.PropertySet).Where(d => d.Context == context).First();
+                _currentMember = _finder.UserDeclarations(DeclarationType.PropertySet).Where(d => d.Context == context).First();
             }
 
             public override void ExitPropertySetStmt([NotNull] VBAParser.PropertySetStmtContext context)
@@ -179,9 +179,9 @@ namespace Rubberduck.Navigation.CodeMetrics
 
             private void ExitMeasurableMember()
             {
-                _memberResults.Add(new MemberMetricsResult(currentMember, _results));
+                _memberResults.Add(new MemberMetricsResult(_currentMember, _results));
                 _results = new List<CodeMetricsResult>(); // reinitialize to drop results
-                currentMember = null;
+                _currentMember = null;
             }
 
             internal ModuleMetricsResult GetMetricsResult(QualifiedModuleName qmn)

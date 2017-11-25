@@ -9,7 +9,7 @@ using System.Text;
 namespace RubberduckTests.Stats
 {
     [TestClass]
-    public class ParseTreeMetricsAnalystTests
+    public class CodeMetricsAnalystTests
     {
         private CodeMetricsAnalyst cut;
 
