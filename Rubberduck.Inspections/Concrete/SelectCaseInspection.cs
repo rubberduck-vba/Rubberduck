@@ -21,33 +21,24 @@ namespace Rubberduck.Inspections.Concrete
     //TODO: Add replace with UI Resource
     public static class CaseInspectionMessages
     {
-        public static string Unreachable => "The Select Case is unreachable or handled by a previous case";
-        public static string Conflict => "The Select Case has already been partially handled by a previous case";
-        public static string InternalConflict => "The Select Case contains redundant or overlapping criteria";
-        public static string Mismatch => "The Select Case is of a different Type than the Select Statement";
-        public static string ExceedsBoundary => "The Select Case is not a valid value for the Select Statment type";
-        public static string CaseElse => "The Case Else clause is unreachable";
+        public static string Unreachable => "Unreachable Case Statement: Handled by previous Case statement(s)";
+        //public static string Overlap => "The Case is partially handled by a previous case";
+        //public static string InternalConflict => "The Case statment has redundant or overlapping criteria";
+        public static string Mismatch => "Unreachable Case Statement: Type does not match the Select Statement";
+        public static string ExceedsBoundary => "Unreachable Case Statement: Value is not valid for the Select Statement Type";
+        public static string CaseElse => "Unreachable Case Else Statement: All possible values are handled by previous Case statement(s)";
     }
 
     public sealed class SelectCaseInspection : ParseTreeInspectionBase
     {
-        private readonly string _unreachableCaseInspectionResultFormat
-        = CaseInspectionMessages.Unreachable;
-
-        private readonly string _overlapCaseInspectionResultFormat
-        = CaseInspectionMessages.Conflict;
-
-        private readonly string _internalClauseConflictFormat
-        = CaseInspectionMessages.InternalConflict;
-
-        private readonly string _typeMismatchCaseInspectionResultFormat
-        = CaseInspectionMessages.Mismatch;
-
-        private readonly string _valueExceedsPossibleValues
-        = CaseInspectionMessages.ExceedsBoundary;
-
-        private readonly string _unreachableCaseElse
-        = CaseInspectionMessages.CaseElse;
+        private struct PriorHandlers
+        {
+            public VBAValue GoverningIsLT;
+            public VBAValue GoverningIsGT;
+            public List<VBAValue> SingleValues;
+            public List<Tuple<VBAValue, VBAValue>> Ranges;
+            public List<string> Indeterminants;
+        }
 
         public SelectCaseInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Suggestion){ }
@@ -74,34 +65,30 @@ namespace Rubberduck.Inspections.Concrete
 
                 var reportableCaseClauseResults = EvaluateSelectCaseClauses(selectStmtWrapper);
 
-                foreach(var clauseWrapper in reportableCaseClauseResults.Item2)
+                foreach (var clauseWrapper in reportableCaseClauseResults)
                 {
                     string msg = string.Empty;
                     if (clauseWrapper.IsHandledByPriorClause)
                     {
-                        msg = _unreachableCaseInspectionResultFormat;
-                    }
-                    else if (clauseWrapper.OverlapsWithPriorClause)
-                    {
-                        msg = _overlapCaseInspectionResultFormat;
-                    }
-                    else if (clauseWrapper.HasInternalConflict)
-                    {
-                        msg = _internalClauseConflictFormat;
+                        msg = CaseInspectionMessages.Unreachable;
                     }
                     else if (clauseWrapper.HasInconsistentType)
                     {
-                        msg = _typeMismatchCaseInspectionResultFormat;
+                        msg = CaseInspectionMessages.Mismatch;
                     }
                     else if (clauseWrapper.HasOutofRangeValue)
                     {
-                        msg = _valueExceedsPossibleValues;
+                        msg = CaseInspectionMessages.ExceedsBoundary;
                     }
-                    inspResults.Add(CreateInspectionResult(selectStmt, clauseWrapper.Value, msg));
-                }
-                if (reportableCaseClauseResults.Item1 != null)
-                {
-                    inspResults.Add(CreateInspectionResult(selectStmt, reportableCaseClauseResults.Item1, _unreachableCaseElse));
+                    else if(clauseWrapper.IsCaseElse && selectStmtWrapper.CaseElseIsUnreachable)
+                    {
+                        msg = CaseInspectionMessages.CaseElse;
+                    }
+
+                    if (!msg.Equals(string.Empty))
+                    {
+                        inspResults.Add(CreateInspectionResult(selectStmt, clauseWrapper.CaseContext, msg));
+                    }
                 }
             }
             return inspResults;
@@ -114,238 +101,333 @@ namespace Rubberduck.Inspections.Concrete
                         new QualifiedContext<ParserRuleContext>(selectStmt.ModuleName, unreachableBlock));
         }
 
-        private Tuple<VBAParser.CaseElseClauseContext,List<CaseClauseWrapper>> EvaluateSelectCaseClauses(SelectStmtWrapper selectCaseStmt)
+        private List<CaseClauseWrapper> EvaluateSelectCaseClauses(SelectStmtWrapper selectCaseStmt)
         {
-            Debug.Assert(!selectCaseStmt.TypeName.Equals(string.Empty));
+            var currentHandlers = CheckBoundaries(selectCaseStmt);
 
             var reportableCaseClauseResults = new List<CaseClauseWrapper>();
-            var priorRangeClauses = new List<SelectCaseInspectionRangeClause>();
             foreach (var caseClause in selectCaseStmt.CaseClauses)
             {
-                if (selectCaseStmt.CaseElseIsUnreachable)
+                caseClause.IsHandledByPriorClause = selectCaseStmt.CaseElseIsUnreachable;
+
+                if (caseClause.HasInconsistentType
+                    || caseClause.HasOutofRangeValue
+                    || caseClause.IsHandledByPriorClause)
                 {
-                    caseClause.IsHandledByPriorClause = true;
                     reportableCaseClauseResults.Add(caseClause);
-                }
-                else if (caseClause.HasInconsistentType)
-                {
-                    reportableCaseClauseResults.Add(caseClause);
+                    continue;
                 }
                 else
                 {
-                    reportableCaseClauseResults = EvaluateCaseClauseAgainstRangeExtents(caseClause, reportableCaseClauseResults);
-                    if(!reportableCaseClauseResults.Where(cc => cc.HasOutofRangeValue && cc.Equals(caseClause)).Any())
+                    currentHandlers = EvaluateCaseClause(caseClause, currentHandlers);
+                    if (caseClause.IsHandledByPriorClause)
                     {
-                        reportableCaseClauseResults = EvaluateCaseClauseForInternalConflicts(caseClause, reportableCaseClauseResults);
-                        reportableCaseClauseResults = EvaluateCaseClauseAgainstPriorRangeContexts(caseClause, priorRangeClauses, reportableCaseClauseResults);
+                        reportableCaseClauseResults.Add(caseClause);
                     }
-                    priorRangeClauses.AddRange(caseClause.RangeClauses.Where(rg => rg.MatchesSelectCaseType));
+                    if (!caseClause.Parent.CaseElseIsUnreachable)
+                    {
+                        caseClause.Parent.CaseElseIsUnreachable = caseClause.MakesRemainingClausesUnreachable;
+                    }
                 }
             }
-
-            return new Tuple<VBAParser.CaseElseClauseContext, List<CaseClauseWrapper>>
-            (
-                selectCaseStmt.CaseElseIsUnreachable ? selectCaseStmt.CaseElseClause : null,
-                reportableCaseClauseResults
-            ); 
+            if (selectCaseStmt.CaseElseIsUnreachable)
+            {
+                reportableCaseClauseResults.Add(new CaseClauseWrapper(selectCaseStmt, selectCaseStmt.CaseElseClause));
+            }
+            return reportableCaseClauseResults;
         }
 
-        private List<CaseClauseWrapper> EvaluateCaseClauseAgainstRangeExtents(CaseClauseWrapper caseClause, List<CaseClauseWrapper> unreachableClauses)
+        private PriorHandlers EvaluateCaseClause(CaseClauseWrapper caseClause, PriorHandlers currentHandlers)
         {
-            var rangeExtents = GetRangeExtentsForType(caseClause.Parent.TypeName);
-            var allResults = new List<RangeClauseComparer.CompareResultData>();
-
-            var comparer = new RangeClauseComparer();
-            foreach (var rangeClause in caseClause.RangeClauses)
+            foreach (var range in caseClause.RangeClauses)
             {
-#if (DEBUG)
-                var text = rangeClause.Context.GetText();
-#endif
-                for (int idx = 0; idx < rangeExtents.Count(); idx++)
+                if (range.IsSingleVal)
                 {
-#if (DEBUG)
-                    var priorVal = rangeExtents[idx].ValueAsString;
-#endif
-                    var compResult = new RangeClauseComparer.CompareResultData();
-                    if (!rangeClause.CompareByTextOnly)
+                    if (range.CompareByTextOnly)
                     {
-                        compResult = comparer.Compare(rangeClause, rangeExtents[idx], caseClause.Parent.TypeName);
-                    }
-                    allResults.Add(compResult);
-                }
-
-                caseClause.IsHandledByPriorClause = allResults.Where(res => res.IsRedundant).Any();
-                if (caseClause.IsHandledByPriorClause)
-                {
-                    caseClause.HasOutofRangeValue = true;
-                    caseClause.IsHandledByPriorClause = false;
-                    unreachableClauses.Add(caseClause);
-                    return unreachableClauses;
-                }
-            }
-            return unreachableClauses;
-        }
-
-
-        private List<CaseClauseWrapper> EvaluateCaseClauseAgainstPriorRangeContexts(CaseClauseWrapper caseClause, List<SelectCaseInspectionRangeClause> priorRangeClauses, List<CaseClauseWrapper> unreachableClauses)
-        {
-            if (caseClause.IsHandledByPriorClause)
-            {
-                return unreachableClauses;
-            }
-
-            var allResults = new List<RangeClauseComparer.CompareResultData>();
-
-            var comparer = new RangeClauseComparer();
-            foreach (var rangeClause in caseClause.RangeClauses)
-            {
-                var text = rangeClause.Context.GetText();
-
-                for (int idx = 0; idx < priorRangeClauses.Count(); idx++)
-                {
-                    var compResult = new RangeClauseComparer.CompareResultData();
-                    if (priorRangeClauses[idx] is SelectCaseInspectionRangeClause)
-                    {
-                        var priorRgClause = (SelectCaseInspectionRangeClause)priorRangeClauses[idx];
-                        var priorText = priorRgClause.Context.GetText();
-                        if (rangeClause.CompareByTextOnly || priorRgClause.CompareByTextOnly)
+                        if (currentHandlers.Indeterminants.Contains(range.Context.GetText()))
                         {
-                            if (rangeClause.Context.GetText().Equals(priorRgClause.Context.GetText()))
-                            {
-                                compResult.IsRedundant = true;
-                            }
+                            range.IsPreviouslyHandled = true;
                         }
                         else
                         {
-                            compResult = comparer.Compare(rangeClause, priorRangeClauses[idx], caseClause.Parent.TypeName);
+                            currentHandlers.Indeterminants.Add(range.Context.GetText());
+                        }
+                        continue;
+                    }
+
+                    var theValue = new VBAValue(range.ValueAsString, caseClause.Parent.TypeName);
+                    if (!range.UsesIsClause)
+                    {
+                        currentHandlers = HandleSimpleSingleValueCompare(range, theValue, currentHandlers);
+                    }
+                    else  //Uses 'Is' clauses
+                    {
+                        if (new string[] { CompareSymbols.LT, CompareSymbols.LTE, CompareSymbols.GT, CompareSymbols.GTE }.Contains(range.CompareSymbol))
+                        {
+                            currentHandlers = SetGoverningRelationChecks(theValue, range.CompareSymbol, currentHandlers);
+                        }
+                        else if (CompareSymbols.EQ.Equals(range.CompareSymbol))
+                        {
+                            currentHandlers = HandleSimpleSingleValueCompare(range, theValue, currentHandlers);
+                        }
+                        else if (CompareSymbols.NEQ.Equals(range.CompareSymbol))
+                        {
+                            if(currentHandlers.SingleValues.Contains(theValue))
+                            {
+                                range.CausesUnreachableCaseElse = true;
+                            }
+
+                            currentHandlers = SetGoverningRelationChecks(theValue, CompareSymbols.LT, currentHandlers);
+                            currentHandlers = SetGoverningRelationChecks(theValue, CompareSymbols.GT, currentHandlers);
                         }
                     }
-                    allResults.Add(compResult);
                 }
-
-                caseClause.IsHandledByPriorClause = allResults.Where(res => res.IsRedundant).Any();
-                caseClause.OverlapsWithPriorClause = allResults.Where(res => res.HasConflict).Any();
-            }
-
-            if (!caseClause.Parent.CaseElseIsUnreachable)
-            {
-                caseClause.Parent.CaseElseIsUnreachable = allResults.Where(result => result.MakesAllRemainingCasesUnreachable).Any();
-            }
-
-            if (caseClause.IsHandledByPriorClause || caseClause.OverlapsWithPriorClause)
-            {
-                unreachableClauses.Add(caseClause);
-            }
-
-            return unreachableClauses;
-        }
-
-        private List<CaseClauseWrapper> EvaluateCaseClauseForInternalConflicts(CaseClauseWrapper caseClause, List<CaseClauseWrapper> unreachableClauses)
-        {
-            //If only one RangeClauseContext...no internal conflicts
-            if (caseClause.RangeClauses.Count() == 1)
-            {
-                return unreachableClauses;
-            }
-
-            var allResults = new List<RangeClauseComparer.CompareResultData>();
-
-            var comparer = new RangeClauseComparer();
-            for (var currentIdx = caseClause.RangeClauses.Count-1; currentIdx > 0; currentIdx--) // var rangeClause in caseClause.RangeClauses)
-            {
-                var rangeClause = caseClause.RangeClauses[currentIdx];
-                var text = rangeClause.Context.GetText();
-                var priorRangeClauses = new List<SelectCaseInspectionRangeClause>();
-                for (var idxPrior = 0; idxPrior < currentIdx; idxPrior++)
+                else  //It is a Case Statemnt like "Case 45 To 150"
                 {
-                    priorRangeClauses.Add(caseClause.RangeClauses[idxPrior]);
-                }
-                for(var idx = 0; idx < priorRangeClauses.Count; idx++)
-                {
-                    var compResult = new RangeClauseComparer.CompareResultData();
-                    var priorRgClause = (SelectCaseInspectionRangeClause)priorRangeClauses[idx];
-                        var priorText = priorRgClause.Context.GetText();
-                        if (rangeClause.CompareByTextOnly || priorRgClause.CompareByTextOnly)
+                    currentHandlers = AggregateRanges(currentHandlers);
+
+                    var theMinValue = new VBAValue(range.ValueMinAsString, caseClause.Parent.TypeName);
+                    var theMaxValue = new VBAValue(range.ValueMaxAsString, caseClause.Parent.TypeName);
+
+                    range.IsPreviouslyHandled = currentHandlers.Ranges.Where(rg => theMinValue.IsWithin(rg.Item1, rg.Item2) 
+                            && theMaxValue.IsWithin(rg.Item1, rg.Item2)).Any()
+                            || currentHandlers.GoverningIsLT != null && currentHandlers.GoverningIsLT > theMaxValue
+                            || currentHandlers.GoverningIsGT != null && currentHandlers.GoverningIsGT < theMinValue;
+
+                    if (!range.IsPreviouslyHandled)
+                    {
+                        var overlapsMin = currentHandlers.Ranges.Where(rg => theMinValue.IsWithin(rg.Item1, rg.Item2));
+                        var overlapsMax = currentHandlers.Ranges.Where(rg => theMaxValue.IsWithin(rg.Item1, rg.Item2));
+                        var updated = new List<Tuple<VBAValue, VBAValue>>();
+                        foreach (var rg in currentHandlers.Ranges)
                         {
-                            if (rangeClause.Context.GetText().Equals(priorRgClause.Context.GetText()))
+                            if (overlapsMin.Contains(rg))
                             {
-                                compResult.IsRedundant = true;
+                                updated.Add(new Tuple<VBAValue, VBAValue>(rg.Item1, theMaxValue));
+                            }
+                            else if (overlapsMax.Contains(rg))
+                            {
+                                updated.Add(new Tuple<VBAValue, VBAValue>(theMinValue, rg.Item2));
+                            }
+                            else
+                            {
+                                updated.Add(rg);
                             }
                         }
-                        else
-                        {
-                            compResult = comparer.Compare(rangeClause, priorRgClause, caseClause.Parent.TypeName);
-                        }
-                    allResults.Add(compResult);
-                }
 
-                if (!caseClause.HasInternalConflict)
-                {
-                    caseClause.HasInternalConflict = allResults.Where(res => res.IsRedundant).Any();
-                    if (!caseClause.HasInternalConflict)
+                        if (!overlapsMin.Any() && !overlapsMax.Any())
+                        {
+                            updated.Add(new Tuple<VBAValue, VBAValue>(theMinValue, theMaxValue));
+                        }
+                        currentHandlers.Ranges = updated;
+                    }
+
+                    if (caseClause.Parent.TypeName.Equals(Tokens.Boolean))
                     {
-                        caseClause.HasInternalConflict = allResults.Where(res => res.HasConflict).Any();
+                        range.CausesUnreachableCaseElse = theMinValue != theMaxValue;
                     }
                 }
             }
 
-            if (caseClause.HasInternalConflict)
+            caseClause.MakesRemainingClausesUnreachable = caseClause.RangeClauses.Where(rg => rg.CausesUnreachableCaseElse).Any();
+
+            if (!caseClause.MakesRemainingClausesUnreachable)
             {
-                unreachableClauses.Add(caseClause);
-            }
-            if (!caseClause.Parent.CaseElseIsUnreachable)
-            {
-                caseClause.Parent.CaseElseIsUnreachable = allResults.Where(result => result.MakesAllRemainingCasesUnreachable).Any();
+                caseClause.MakesRemainingClausesUnreachable = IsClausesCoverAllValues(currentHandlers);
             }
 
-            return unreachableClauses;
+            caseClause.IsHandledByPriorClause = caseClause.RangeClauses.Where(rg => rg.IsPreviouslyHandled).Count() == caseClause.RangeClauses.Count;
+            return currentHandlers;
         }
 
-        private static List<SelectCaseInspectionRangeClause> GetRangeExtentsForType(string theTypeName)
+        private bool IsClausesCoverAllValues(PriorHandlers currentHandlers)
         {
-            if (theTypeName.Equals(Tokens.Long))
+            if (currentHandlers.GoverningIsLT != null && currentHandlers.GoverningIsLT != null)
             {
-                long LONGMIN = -2147486648;
-                long LONGMAX = 2147486647;
-                return LoadRangeExtents(LONGMIN, LONGMAX);
+                return currentHandlers.GoverningIsLT > currentHandlers.GoverningIsGT
+                        || (currentHandlers.GoverningIsLT >= currentHandlers.GoverningIsGT 
+                        && currentHandlers.SingleValues.Contains(currentHandlers.GoverningIsLT));
             }
-            else if (theTypeName.Equals(Tokens.Integer))
-            {
-                long INTEGERMIN = -32768;
-                long INTEGERMAX = 32767;
-                return LoadRangeExtents(INTEGERMIN, INTEGERMAX);
-            }
-            else if (theTypeName.Equals(Tokens.Byte))
-            {
-                long BYTEMIN = 0;
-                long BYTEMAX = 255;
-                return LoadRangeExtents(BYTEMIN, BYTEMAX);
-            }
-            else if (theTypeName.Equals(Tokens.Currency))
-            {
-                decimal CURRENCYMIN = -922337203685477.5808M;
-                decimal CURRENCYMAX = 922337203685477.5807M;
-                return LoadRangeExtents(CURRENCYMIN, CURRENCYMAX);
-            }
-            else if (theTypeName.Equals(Tokens.Single))
-            {
-                double SINGLEMIN = -3402823E38;
-                double SINGLEMAX = 3402823E38;
-                return LoadRangeExtents(SINGLEMIN, SINGLEMAX);
-            }
-            //No extent checks for Boolean - if something can be parsed to a Boolean, it is in range
-            //Decimal/Variant data type not supported by extent checks
-
-            return new List<SelectCaseInspectionRangeClause>();
+            return false;
         }
 
-        private static List<SelectCaseInspectionRangeClause> LoadRangeExtents<T>(T min, T max)
+        private bool SingleValueIsHandledPreviously(VBAValue theValue, PriorHandlers current)
         {
-            return new List<SelectCaseInspectionRangeClause>
+            return current.GoverningIsLT != null && theValue < current.GoverningIsLT
+                || current.GoverningIsGT != null && theValue > current.GoverningIsGT
+                || current.SingleValues.Contains(theValue)
+                || current.Ranges.Where(rg => theValue.IsWithin(rg.Item1, rg.Item2)).Any();
+        }
+
+        private PriorHandlers SetGoverningRelationChecks(VBAValue theValue, string compareSymbol, PriorHandlers current)
+        {
+            if (!(new string[] { CompareSymbols.LT, CompareSymbols.LTE, CompareSymbols.GT, CompareSymbols.GTE }.Contains(compareSymbol)))
             {
-                SelectCaseInspectionRangeClause.CreateBoundaryCheckRangeClause(min.ToString(), CompareSymbols.LT),
-                SelectCaseInspectionRangeClause.CreateBoundaryCheckRangeClause(max.ToString(), CompareSymbols.GT)
+                return current;
+            }
+
+            if (new string[] { CompareSymbols.LT, CompareSymbols.LTE }.Contains(compareSymbol))
+            {
+                current.GoverningIsLT = current.GoverningIsGT == null ? theValue
+                    : current.GoverningIsLT < theValue ? theValue : current.GoverningIsLT;
+            }
+            else
+            {
+                current.GoverningIsGT = current.GoverningIsGT == null ? theValue 
+                    : current.GoverningIsGT > theValue ? theValue : current.GoverningIsGT;
+            }
+
+            if (new string[] { CompareSymbols.LTE, CompareSymbols.GTE }.Contains(compareSymbol))
+            {
+                if (!current.SingleValues.Contains(theValue))
+                {
+                    current.SingleValues.Add(theValue);
+                }
+            }
+            return current;
+        }
+
+        private PriorHandlers HandleSimpleSingleValueCompare(SelectCaseInspectionRangeClause range, VBAValue theValue,  PriorHandlers current)
+        {
+            range.IsPreviouslyHandled = SingleValueIsHandledPreviously(theValue, current);
+
+            if (theValue.TargetTypeName.Equals(Tokens.Boolean))
+            {
+                range.CausesUnreachableCaseElse = current.SingleValues.Any()
+                    && !current.SingleValues.Contains(theValue);
+            }
+
+            if (!range.IsPreviouslyHandled)
+            {
+                current.SingleValues.Add(theValue);
+            }
+            return current;
+        }
+
+        private PriorHandlers CheckBoundaries(SelectStmtWrapper selectCaseStmt)
+        {
+            var currentHandlers = new PriorHandlers
+            {
+                GoverningIsGT = VBAValue.CreateBoundaryMax(selectCaseStmt.TypeName),
+                GoverningIsLT = VBAValue.CreateBoundaryMin(selectCaseStmt.TypeName),
+                SingleValues = new List<VBAValue>(),
+                Ranges = new List<Tuple<VBAValue, VBAValue>>(),
+                Indeterminants = new List<string>()
             };
+
+            var reportableCaseClauseResults = new List<CaseClauseWrapper>   ();
+
+            if (currentHandlers.GoverningIsGT == null && currentHandlers.GoverningIsLT == null)
+            {
+                return currentHandlers;
+            }
+
+            foreach ( var caseClause in selectCaseStmt.CaseClauses)
+            {
+                foreach (var range in caseClause.RangeClauses)
+                {
+                    if (!range.IsParseable)
+                    {
+                        continue;
+                    }
+
+                    if (range.IsSingleVal)
+                    {
+                        var theValue = new VBAValue(range.ValueAsString, selectCaseStmt.TypeName);
+                        if (new string[] { CompareSymbols.EQ }.Contains(range.CompareSymbol))
+                        {
+                            range.HasOutOfBoundsValue = theValue < currentHandlers.GoverningIsLT || theValue > currentHandlers.GoverningIsGT;
+                        }
+                        else if (new string[] { CompareSymbols.GT, CompareSymbols.GTE }.Contains(range.CompareSymbol))
+                        {
+                            range.HasOutOfBoundsValue = theValue > currentHandlers.GoverningIsGT;
+                        }
+                        else if (new string[] { CompareSymbols.LT, CompareSymbols.LTE }.Contains(range.CompareSymbol))
+                        {
+                            range.HasOutOfBoundsValue = theValue < currentHandlers.GoverningIsLT;
+                        }
+                    }
+                    else
+                    {
+                        var theMinValue = new VBAValue(range.ValueMinAsString, selectCaseStmt.TypeName);
+                        var theMaxValue = new VBAValue(range.ValueMaxAsString, selectCaseStmt.TypeName);
+
+                        range.HasOutOfBoundsValue = theMinValue > currentHandlers.GoverningIsGT;
+                        if (!range.HasOutOfBoundsValue)
+                        {
+                            range.HasOutOfBoundsValue = theMaxValue < currentHandlers.GoverningIsLT;
+                        }
+                    }
+
+                }
+                caseClause.HasOutofRangeValue = caseClause.RangeClauses.Where(rg => rg.HasOutOfBoundsValue).Count() == caseClause.RangeClauses.Count;
+            }
+
+            return currentHandlers;
+        }
+
+        private PriorHandlers AggregateRanges(PriorHandlers currentHandlers)
+        {
+            var startingRangeCount = currentHandlers.Ranges.Count;
+            if (startingRangeCount > 1)
+            {
+                do
+                {
+                    startingRangeCount = currentHandlers.Ranges.Count();
+                    currentHandlers.Ranges = AppendRanges(currentHandlers.Ranges);
+                } while (currentHandlers.Ranges.Count() < startingRangeCount);
+            }
+            return currentHandlers;
+        }
+
+        private List<Tuple<VBAValue, VBAValue>> AppendRanges(List<Tuple<VBAValue, VBAValue>> ranges)
+        {
+            if (ranges.Count() <= 1)
+            {
+                return ranges;
+            }
+
+            if (!ranges.First().Item1.IsIntegerNumber)
+            {
+                return ranges;
+            }
+
+            var updated = new List<Tuple<VBAValue, VBAValue>>();
+            var combinedLastRange = false;
+
+            for (var idx = 0; idx < ranges.Count(); idx++)
+            {
+                if (idx + 1 >= ranges.Count())
+                {
+                    if (!combinedLastRange)
+                    {
+                        updated.Add(ranges[idx]);
+                    }
+                    continue;
+                }
+                combinedLastRange = false;
+                var theMin = ranges[idx].Item1;
+                var theMax = ranges[idx].Item2;
+                var theNextMin = ranges[idx+1].Item1;
+                var theNextMax = ranges[idx+1].Item2;
+                if(theMax.AsLong() == theNextMin.AsLong() - 1)
+                {
+                    updated.Add(new Tuple<VBAValue, VBAValue>(theMin,theNextMax));
+                    combinedLastRange = true;
+                }
+                else if(theMin.AsLong() == theNextMax.AsLong() + 1)
+                {
+                    updated.Add(new Tuple<VBAValue, VBAValue>(theNextMin, theMax));
+                    combinedLastRange = true;
+                }
+                else
+                {
+                    updated.Add(ranges[idx]);
+                }
+            }
+
+            return updated;
         }
 
         #region SelectStmtWrapper
@@ -357,7 +439,7 @@ namespace Rubberduck.Inspections.Concrete
             private readonly string _typeName;
 
             private IdentifierReference _idReference;
-            private readonly IEnumerable<CaseClauseWrapper> _caseClauses;
+            private List<CaseClauseWrapper> _caseClauses;
             private VBAParser.CaseElseClauseContext _caseElseClause;
             private bool _hasUnreachableCaseElse;
 
@@ -365,7 +447,7 @@ namespace Rubberduck.Inspections.Concrete
             private VBAParser.SelectExpressionContext SelectExprContext => ParserRuleContextHelper.GetChild<VBAParser.SelectExpressionContext>(_selectStmtCtxt.Context);
             public IdentifierReference IdReference => _idReference;
             public string TypeName => _typeName;
-            public IEnumerable<CaseClauseWrapper> CaseClauses => _caseClauses;
+            public List<CaseClauseWrapper> CaseClauses => _caseClauses;
             public VBAParser.CaseElseClauseContext CaseElseClause => _caseElseClause;
 
             public SelectStmtWrapper(RubberduckParserState state, QualifiedContext<ParserRuleContext> selectStmtCtxt)
@@ -376,7 +458,7 @@ namespace Rubberduck.Inspections.Concrete
                 _typeName = DetermineTheTypeName(SelectExprContext);
 
                 var caseClauseCtxts = ParserRuleContextHelper.GetChildren<VBAParser.CaseClauseContext>(_selectStmtCtxt.Context);
-                _caseClauses = caseClauseCtxts.Select(cc => new CaseClauseWrapper(this, cc));
+                _caseClauses = caseClauseCtxts.Select(cc => new CaseClauseWrapper(this, cc)).ToList();
                 _caseElseClause = ParserRuleContextHelper.GetChild<VBAParser.CaseElseClauseContext>(_selectStmtCtxt.Context);
             }
 
@@ -436,7 +518,7 @@ namespace Rubberduck.Inspections.Concrete
 #region CaseClauseWrapper
         internal class CaseClauseWrapper
         {
-            private VBAParser.CaseClauseContext _caseClause;
+            private ParserRuleContext _clauseCtxt;
             private SelectStmtWrapper _parent;
             private List<SelectCaseInspectionRangeClause> _rangeClauses;
             private bool _isFullyEquivalent;
@@ -444,7 +526,7 @@ namespace Rubberduck.Inspections.Concrete
             public CaseClauseWrapper(SelectStmtWrapper selectStmt, VBAParser.CaseClauseContext caseClause)
             {
                 _parent = selectStmt;
-                _caseClause = caseClause;
+                _clauseCtxt = caseClause;
                 _rangeClauses = new List<SelectCaseInspectionRangeClause>();
                 HasInternalConflict = false;
                 foreach (var rangeClauseCtxt in RangeClauseContexts)
@@ -464,11 +546,20 @@ namespace Rubberduck.Inspections.Concrete
                 }
             }
 
-            public VBAParser.CaseClauseContext Value => _caseClause;
+            public CaseClauseWrapper(SelectStmtWrapper selectStmt, VBAParser.CaseElseClauseContext caseElse)
+            {
+                _parent = selectStmt;
+                _clauseCtxt = caseElse;
+                _rangeClauses = new List<SelectCaseInspectionRangeClause>();
+                HasInternalConflict = false;
+            }
+
+            public ParserRuleContext CaseContext => _clauseCtxt;
             public SelectStmtWrapper Parent => _parent;
             public List<SelectCaseInspectionRangeClause> RangeClauses => _rangeClauses;
-            public List<VBAParser.RangeClauseContext> RangeClauseContexts => ParserRuleContextHelper.GetChildren<VBAParser.RangeClauseContext>(_caseClause);
+            public List<VBAParser.RangeClauseContext> RangeClauseContexts => ParserRuleContextHelper.GetChildren<VBAParser.RangeClauseContext>(_clauseCtxt);
             public bool HasInternalConflict { set; get; }
+            public bool IsCaseElse => _clauseCtxt is VBAParser.CaseElseClauseContext;
             public bool IsHandledByPriorClause
             {
                 set

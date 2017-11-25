@@ -48,7 +48,7 @@ Select Case x
 End Select
 
 End Sub";
-            CheckActualResultsEqualsExpected(inputCode, conflict: 1);
+            CheckActualResultsEqualsExpected(inputCode, conflict: 0);
         }
 
         [TestMethod]
@@ -112,7 +112,7 @@ Select Case x
 End Select
 
 End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 2, internalOverlap: 1, caseElse: 1);
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 2, internalOverlap: 0, caseElse: 1);
         }
 
         [TestMethod]
@@ -176,7 +176,27 @@ Select Case x
 End Select
                 
 End Sub";
-            CheckActualResultsEqualsExpected(inputCode, internalOverlap: 1);
+            CheckActualResultsEqualsExpected(inputCode, internalOverlap: 0);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void UnreachableCaseInspection_OverlapOnlyCaseStmt()
+        {
+            const string inputCode =
+@"Sub Foo(x As Long)
+
+Select Case x
+  Case 40
+    'OK
+  Case 1 To 45, 35, 85
+    'Internal Conflict but reachable
+  Case Else
+    'OK
+End Select
+                
+End Sub";
+            CheckActualResultsEqualsExpected(inputCode, /*conflict: 1,*/ internalOverlap: 0);
         }
 
         [TestMethod]
@@ -198,7 +218,29 @@ Select Case x
 End Select
                 
 End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 1, conflict: 1, caseElse: 1);
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 1, conflict: 0, caseElse: 1);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void UnreachableCaseInspection_CoverAllCasesSingleClause()
+        {
+            const string inputCode =
+@"Sub Foo(x As Long)
+
+Select Case x
+  Case  -5000, Is <> -5000
+    'OK
+  Case Is > 5
+    'Unreachable
+  Case 500 To 700
+    'Unreachable
+  Case Else
+    'Unreachable
+End Select
+                
+End Sub";
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 2, caseElse: 1);
         }
 
         [TestMethod]
@@ -220,7 +262,7 @@ Select Case x
 End Select
                 
 End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 2, caseElse: 1, internalOverlap: 1);
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 2, caseElse: 1, internalOverlap: 0);
         }
 
         [TestMethod]
@@ -242,7 +284,7 @@ Select Case x
 End Select
                 
 End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 2, caseElse: 1, internalOverlap: 1);
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 2, caseElse: 1, internalOverlap: 0);
         }
 
         [TestMethod]
@@ -276,34 +318,19 @@ End Sub";
 @"Sub Foo()
 
 Const x As String =""Bar""
+  
 Select Case x
   Case ""Foo"", ""Bar""
     'Do FooBar
   Case ""Foo""
-    'Unreachable
-  Case ""Bar""
-    'Unreachable
-  Case ""Foo""
-    'Unreachable
-End Select
-                
-Select Case x
-  Case ""Foo"", ""Bar""
-    'Do FooBar
-  Case ""Foo""
-    'Unreachable
-  Case ""Bar""
     'Unreachable
   Case ""Food""
+        'OK
 End Select
                 
-End Sub
+End Sub";
 
-Private Function AppendBar(x As String) As String
-    AppendBar = x + ""Bar""
-End Function";
-
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 5);
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
         [TestMethod]
@@ -319,6 +346,30 @@ Select Case x
   Case 1 To 100
     'Do FooBar
   Case 50
+    'Unreachable
+End Select
+
+End Sub";
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void UnreachableCaseInspection_NumberRange2()
+        {
+            const string inputCode =
+@"Sub Foo()
+
+Const x as Long = 7
+
+Select Case x
+  Case 150 To 250
+    'Do FooBar1
+  Case 1 To 100
+    'Do FooBar2
+  Case 101 To 149
+    'Do FooBar2
+  Case 25 To 249 
     'Unreachable
 End Select
 
@@ -363,7 +414,7 @@ Select Case x
 End Select
 
 End Sub";
-            CheckActualResultsEqualsExpected(inputCode, conflict: 1);
+            CheckActualResultsEqualsExpected(inputCode, conflict: 0);
         }
 
         [TestMethod]
@@ -405,7 +456,7 @@ Select Case x
 End Select
 
 End Sub";
-            CheckActualResultsEqualsExpected(inputCode, conflict: 1);
+            CheckActualResultsEqualsExpected(inputCode, conflict: 0);
         }
 
         [TestMethod]
@@ -425,7 +476,7 @@ Select Case x
 End Select
 
 End Sub";
-            CheckActualResultsEqualsExpected(inputCode, conflict: 1);
+            CheckActualResultsEqualsExpected(inputCode, conflict: 0);
         }
 
         [TestMethod]
@@ -912,7 +963,7 @@ Select Case LNumber
       LRegionName = ""West""
    End Select
 End Sub";
-            CheckActualResultsEqualsExpected(inputCode, conflict: 2);
+            CheckActualResultsEqualsExpected(inputCode, conflict: 0);
         }
 
         [TestMethod]
@@ -937,7 +988,7 @@ Select Case LNumber
       LRegionName = ""West""
    End Select
 End Sub";
-            CheckActualResultsEqualsExpected(inputCode, conflict: 2);
+            CheckActualResultsEqualsExpected(inputCode, conflict: 0);
         }
 
         [TestMethod]
@@ -981,7 +1032,7 @@ Select Case z
 End Select
 
 End Sub";
-            CheckActualResultsEqualsExpected(inputCode, conflict: 1);
+            CheckActualResultsEqualsExpected(inputCode, conflict: 0);
         }
 
         [TestMethod]
@@ -1003,7 +1054,7 @@ Select Case z
 End Select
 
 End Sub";
-            CheckActualResultsEqualsExpected(inputCode, conflict: 1, caseElse: 1);
+            CheckActualResultsEqualsExpected(inputCode, conflict: 0, caseElse: 1);
         }
 
         [TestMethod]
@@ -1025,7 +1076,7 @@ Select Case z
 End Select
 
 End Sub";
-            CheckActualResultsEqualsExpected(inputCode, conflict: 1, caseElse: 1);
+            CheckActualResultsEqualsExpected(inputCode, conflict: 0, caseElse: 1);
         }
 
         [TestMethod]
@@ -1072,7 +1123,7 @@ Select Case z
 End Select
 
 End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 1, conflict: 2);
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 1, conflict: 0);
         }
 
         [TestMethod]
@@ -1330,7 +1381,7 @@ Select Case z
 End Select
 
 End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 1, conflict: 1);
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 1, conflict: 0);
         }
 
         [TestMethod]
@@ -1354,7 +1405,7 @@ Select Case z
 End Select
 
 End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 1, conflict: 1);
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 1, conflict: 0);
         }
 
         [TestMethod]
@@ -1450,7 +1501,7 @@ Select Case z
 End Select
 
 End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 1, conflict: 1);
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 1, conflict: 0);
         }
 
         [TestMethod]
@@ -1494,7 +1545,7 @@ Select Case z
 End Select
 
 End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 1, conflict: 1);
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 1, conflict: 0);
         }
 
         [TestMethod]
@@ -1578,13 +1629,13 @@ Select Case z
   Case  Is = 9
     'Unreachable
   Case Is < 100
-    'Conflict
+    'OK
   Case Is < 5
     'Unreachable
 End Select
 
 End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable:2, conflict:1);
+            CheckActualResultsEqualsExpected(inputCode, unreachable:2, conflict: 0);
         }
 
         [TestMethod]
@@ -1604,7 +1655,7 @@ Select Case z
 End Select
 
 End Sub";
-            CheckActualResultsEqualsExpected(inputCode, conflict: 1);
+            CheckActualResultsEqualsExpected(inputCode, conflict: 0);
         }
 
         [TestMethod]
@@ -1648,7 +1699,7 @@ Select Case z
 End Select
 
 End Sub";
-            CheckActualResultsEqualsExpected(inputCode, conflict: 1);
+            CheckActualResultsEqualsExpected(inputCode, conflict: 0);
         }
 
         [TestMethod]
@@ -1668,7 +1719,7 @@ Select Case z
 End Select
 
 End Sub";
-            CheckActualResultsEqualsExpected(inputCode, conflict: 1);
+            CheckActualResultsEqualsExpected(inputCode, conflict: 0);
         }
 
         private void CheckActualResultsEqualsExpected(string inputCode, int unreachable = 0, int conflict = 0, int internalOverlap = 0, int mismatch = 0, int outOfRange = 0, int caseElse = 0)
@@ -1676,8 +1727,8 @@ End Sub";
             var expected = new Dictionary<string, int>
             {
                 { CaseInspectionMessages.Unreachable, unreachable },
-                { CaseInspectionMessages.Conflict, conflict },
-                { CaseInspectionMessages.InternalConflict, internalOverlap },
+                //{ CaseInspectionMessages.Overlap, conflict },
+                //{ CaseInspectionMessages.InternalConflict, internalOverlap },
                 { CaseInspectionMessages.Mismatch, mismatch },
                 { CaseInspectionMessages.ExceedsBoundary, outOfRange },
                 { CaseInspectionMessages.CaseElse, caseElse },
@@ -1691,15 +1742,15 @@ End Sub";
             var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             var actualUnreachable = actualResults.Where(ar => ar.Description.Equals(CaseInspectionMessages.Unreachable));
-            var actualConflicts = actualResults.Where(ar => ar.Description.Equals(CaseInspectionMessages.Conflict));
-            var actualOverlaps = actualResults.Where(ar => ar.Description.Equals(CaseInspectionMessages.InternalConflict));
+            //var actualConflicts = actualResults.Where(ar => ar.Description.Equals(CaseInspectionMessages.Overlap));
+            //var actualOverlaps = actualResults.Where(ar => ar.Description.Equals(CaseInspectionMessages.InternalConflict));
             var actualMismatches = actualResults.Where(ar => ar.Description.Equals(CaseInspectionMessages.Mismatch));
             var actualOutOfRange = actualResults.Where(ar => ar.Description.Equals(CaseInspectionMessages.ExceedsBoundary));
             var actualUnreachableCaseElses = actualResults.Where(ar => ar.Description.Equals(CaseInspectionMessages.CaseElse));
 
             Assert.AreEqual(expected[CaseInspectionMessages.Unreachable], actualUnreachable.Count(), "Unreachable result");
-            Assert.AreEqual(expected[CaseInspectionMessages.Conflict], actualConflicts.Count(), "Conflict result");
-            Assert.AreEqual(expected[CaseInspectionMessages.InternalConflict], actualOverlaps.Count(), "Overlap result");
+            //Assert.AreEqual(expected[CaseInspectionMessages.Overlap], actualConflicts.Count(), "Conflict result");
+            //Assert.AreEqual(expected[CaseInspectionMessages.InternalConflict], actualOverlaps.Count(), "Overlap result");
             Assert.AreEqual(expected[CaseInspectionMessages.Mismatch], actualMismatches.Count(), "Mismatch result");
             Assert.AreEqual(expected[CaseInspectionMessages.ExceedsBoundary], actualOutOfRange.Count(), "Boundary Check result");
             Assert.AreEqual(expected[CaseInspectionMessages.CaseElse], actualUnreachableCaseElses.Count(), "CaseElse result");
