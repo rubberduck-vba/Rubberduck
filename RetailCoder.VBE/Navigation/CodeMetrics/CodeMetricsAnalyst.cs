@@ -55,10 +55,10 @@ namespace Rubberduck.Navigation.CodeMetrics
             private readonly IIndenterSettings _indenterSettings;
 
             private Declaration currentMember;
-            private List<CodeMetricsResult> results = new List<CodeMetricsResult>();
-            private List<CodeMetricsResult> moduleResults = new List<CodeMetricsResult>();
+            private List<CodeMetricsResult> _results = new List<CodeMetricsResult>();
+            private List<CodeMetricsResult> _moduleResults = new List<CodeMetricsResult>();
 
-            private List<MemberMetricsResult> memberResults = new List<MemberMetricsResult>();
+            private List<MemberMetricsResult> _memberResults = new List<MemberMetricsResult>();
 
             public CodeMetricsListener(DeclarationFinder finder, IIndenterSettings indenterSettings)
             {
@@ -76,39 +76,39 @@ namespace Rubberduck.Navigation.CodeMetrics
                     var followingWhitespace = context.whiteSpace().LastOrDefault();
                     followingIndentationLevel = IndentationLevelFromWhitespace(followingWhitespace);
                 }
-                (currentMember == null ? moduleResults : results).Add(new CodeMetricsResult(1, 0, followingIndentationLevel));
+                (currentMember == null ? _moduleResults : _results).Add(new CodeMetricsResult(1, 0, followingIndentationLevel));
             }
 
             public override void EnterIfStmt([NotNull] VBAParser.IfStmtContext context)
             {
-                results.Add(new CodeMetricsResult(0, 1, 0));
+                _results.Add(new CodeMetricsResult(0, 1, 0));
             }
 
             public override void EnterElseIfBlock([NotNull] VBAParser.ElseIfBlockContext context)
             {
-                results.Add(new CodeMetricsResult(0, 1, 0));
+                _results.Add(new CodeMetricsResult(0, 1, 0));
             }
 
             // notably: NO additional complexity for an Else-Block
 
             public override void EnterForEachStmt([NotNull] VBAParser.ForEachStmtContext context)
             {
-                results.Add(new CodeMetricsResult(0, 1, 0));
+                _results.Add(new CodeMetricsResult(0, 1, 0));
             }
 
             public override void EnterForNextStmt([NotNull] VBAParser.ForNextStmtContext context)
             {
-                results.Add(new CodeMetricsResult(0, 1, 0));
+                _results.Add(new CodeMetricsResult(0, 1, 0));
             }
 
             public override void EnterCaseClause([NotNull] VBAParser.CaseClauseContext context)
             {
-                results.Add(new CodeMetricsResult(0, 1, 0));
+                _results.Add(new CodeMetricsResult(0, 1, 0));
             }
 
             public override void EnterSubStmt([NotNull] VBAParser.SubStmtContext context)
             {
-                results.Add(new CodeMetricsResult(0, 1, 0));
+                _results.Add(new CodeMetricsResult(0, 1, 0));
                 currentMember = _finder.DeclarationsWithType(DeclarationType.Procedure).Where(d => d.Context == context).First();
             }
 
@@ -119,7 +119,7 @@ namespace Rubberduck.Navigation.CodeMetrics
 
             public override void EnterFunctionStmt([NotNull] VBAParser.FunctionStmtContext context)
             {
-                results.Add(new CodeMetricsResult(0, 1, 0));
+                _results.Add(new CodeMetricsResult(0, 1, 0));
                 currentMember = _finder.DeclarationsWithType(DeclarationType.Function).Where(d => d.Context == context).First();
             }
 
@@ -130,7 +130,7 @@ namespace Rubberduck.Navigation.CodeMetrics
 
             public override void EnterPropertyGetStmt([NotNull] VBAParser.PropertyGetStmtContext context)
             {
-                results.Add(new CodeMetricsResult(0, 1, 0));
+                _results.Add(new CodeMetricsResult(0, 1, 0));
                 currentMember = _finder.DeclarationsWithType(DeclarationType.PropertyGet).Where(d => d.Context == context).First();
             }
 
@@ -141,7 +141,7 @@ namespace Rubberduck.Navigation.CodeMetrics
 
             public override void EnterPropertyLetStmt([NotNull] VBAParser.PropertyLetStmtContext context)
             {
-                results.Add(new CodeMetricsResult(0, 1, 0));
+                _results.Add(new CodeMetricsResult(0, 1, 0));
                 currentMember = _finder.DeclarationsWithType(DeclarationType.PropertyLet).Where(d => d.Context == context).First();
             }
 
@@ -152,7 +152,7 @@ namespace Rubberduck.Navigation.CodeMetrics
 
             public override void EnterPropertySetStmt([NotNull] VBAParser.PropertySetStmtContext context)
             {
-                results.Add(new CodeMetricsResult(0, 1, 0));
+                _results.Add(new CodeMetricsResult(0, 1, 0));
                 currentMember = _finder.DeclarationsWithType(DeclarationType.PropertySet).Where(d => d.Context == context).First();
             }
 
@@ -165,7 +165,7 @@ namespace Rubberduck.Navigation.CodeMetrics
             {
                 // there is a whitespace context here after the option of a statementLabel.
                 // we need to account for that
-                results.Add(new CodeMetricsResult(0, 0, IndentationLevelFromWhitespace(context.whiteSpace())));
+                _results.Add(new CodeMetricsResult(0, 0, IndentationLevelFromWhitespace(context.whiteSpace())));
             }
             
             private int IndentationLevelFromWhitespace(VBAParser.WhiteSpaceContext wsContext)
@@ -179,14 +179,14 @@ namespace Rubberduck.Navigation.CodeMetrics
 
             private void ExitMeasurableMember()
             {
-                memberResults.Add(new MemberMetricsResult(currentMember, results));
-                results = new List<CodeMetricsResult>(); // reinitialize to drop results
+                _memberResults.Add(new MemberMetricsResult(currentMember, _results));
+                _results = new List<CodeMetricsResult>(); // reinitialize to drop results
                 currentMember = null;
             }
 
             internal ModuleMetricsResult GetMetricsResult(QualifiedModuleName qmn)
             {
-                return new ModuleMetricsResult(qmn, memberResults, moduleResults);
+                return new ModuleMetricsResult(qmn, _memberResults, _moduleResults);
             }
         }
     }
