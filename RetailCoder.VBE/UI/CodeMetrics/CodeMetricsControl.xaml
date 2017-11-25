@@ -40,122 +40,17 @@
             </LinearGradientBrush>
             <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
             <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
-
-            <Style x:Key="XButtonStyle" TargetType="Button">
-                <Setter Property="Background" Value="Transparent"/>
-                <Setter Property="Content" Value="✕"/>
-                <Setter Property="BorderThickness" Value="0"/>
-                <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                <Setter Property="VerticalContentAlignment" Value="Center"/>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Button">
-                            <Grid>
-                                <VisualStateManager.VisualStateGroups>
-                                    <VisualStateGroup x:Name="CommonStates">
-                                        <VisualState x:Name="Normal"/>
-                                        <VisualState x:Name="MouseOver">
-                                            <Storyboard>
-                                                <ColorAnimation Duration="0" Storyboard.TargetName="Background" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" To="PaleGoldenrod"/>
-                                                <DoubleAnimation Duration="0" Storyboard.TargetName="BackgroundAnimation" Storyboard.TargetProperty="Opacity" To="1"/>
-                                            </Storyboard>
-                                        </VisualState>
-                                        <VisualState x:Name="Pressed">
-                                            <Storyboard>
-                                                <ColorAnimation Duration="0" Storyboard.TargetName="Background" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" To="PaleGoldenrod"/>
-                                                <DoubleAnimation Duration="0" Storyboard.TargetName="BackgroundAnimation" Storyboard.TargetProperty="Opacity" To="1"/>
-                                            </Storyboard>
-                                        </VisualState>
-                                    </VisualStateGroup>
-                                    <VisualStateGroup x:Name="FocusStates">
-                                        <VisualState x:Name="Focused">
-                                            <Storyboard>
-                                                <DoubleAnimation Duration="0" Storyboard.TargetName="FocusVisualElement" Storyboard.TargetProperty="Opacity" To="1"/>
-                                            </Storyboard>
-                                        </VisualState>
-                                        <VisualState x:Name="Unfocused" />
-                                    </VisualStateGroup>
-                                </VisualStateManager.VisualStateGroups>
-                                <Border x:Name="Background" CornerRadius="3" Background="White" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}">
-                                    <Grid Background="{TemplateBinding Background}"  Margin="1">
-                                        <Border Opacity="0" x:Name="BackgroundAnimation" Background="PaleGoldenrod" />
-                                    </Grid>
-                                </Border>
-                                <ContentPresenter
-                                  x:Name="contentPresenter"
-                                  Content="{TemplateBinding Content}"
-                                  ContentTemplate="{TemplateBinding ContentTemplate}"
-                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                  Margin="{TemplateBinding Padding}"/>
-                                <Rectangle x:Name="DisabledVisualElement" RadiusX="3" RadiusY="3" Fill="#FFFFFFFF" Opacity="0" IsHitTestVisible="false" />
-                                <Rectangle x:Name="FocusVisualElement" RadiusX="2" RadiusY="2" Margin="1" Stroke="PaleGoldenrod" StrokeThickness="1" Opacity="0" IsHitTestVisible="false" />
-                            </Grid>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid UseLayoutRounding="True">
         <Grid.RowDefinitions>
-            <!--<RowDefinition Height="30"/>-->
-            <RowDefinition Height="20"/>
             <RowDefinition Height="*" MinHeight="64" />
         </Grid.RowDefinitions>
 
-        <!--<ToolBarTray Grid.Row="0" IsLocked="True">
-            <ToolBar Style="{DynamicResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}">
+        <controls:EmptyUIRefresh Grid.Row="1" />
 
-                <Button>
-                    <Image Height="16" Source="../../Resources/arrow-circle-double.png">
-                        <Image.Style>
-                            <Style TargetType="Image">
-                                <Style.Triggers>
-                                    <Trigger Property="IsEnabled"  Value="False">
-                                        <Setter Property="Opacity" Value="0.3" />
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Image.Style>
-                    </Image>
-                    <Button.ToolTip>
-                        <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Refresh}" />
-                    </Button.ToolTip>
-                </Button>
-            </ToolBar>
-        </ToolBarTray>-->
-
-        <Border Grid.Row="1" 
-                BorderBrush="{StaticResource {x:Static SystemColors.ControlBrushKey}}" 
-                BorderThickness="1">
-            <Grid>
-                <TextBox x:Name="SearchBox"
-                         VerticalContentAlignment="Center"
-                         IsEnabled="{Binding CanSearch}"
-                         MinHeight="20"
-                         PreviewKeyDown="SearchBox_OnPreviewKeyDown"
-                         TextChanged="SearchBox_OnTextChanged" />
-
-                <Image Source="{StaticResource SearchImage}" 
-                       HorizontalAlignment="Right" VerticalAlignment="Center" 
-                       MaxHeight="16" Margin="0,0,1,0" 
-                       IsEnabled="{Binding CanSearch}"
-                       Visibility="{Binding ElementName=SearchBox, Path=Text.Length, Converter={StaticResource StringHasValueToVisibility}}"
-                       MouseDown="SearchIcon_OnMouseDown" />
-
-                <Button Style="{StaticResource XButtonStyle}" 
-                        HorizontalAlignment="Right" VerticalAlignment="Center" 
-                        Height="18" Width="18" Margin="0,1,1,0" 
-                        IsEnabled="{Binding CanSearch}"
-                        Visibility="{Binding ElementName=SearchBox, Path=Text.Length, Converter={StaticResource StringHasNoValueToVisibility}}" 
-                        Click="ButtonBase_OnClick" />
-            </Grid>
-        </Border>
-        <controls:EmptyUIRefresh Grid.Row="2" />
-
-        <DataGrid Grid.Row="2" ItemsSource="{Binding ModuleMetrics}" AutoGenerateColumns="False" IsReadOnly="True">
+        <DataGrid Grid.Row="1" ItemsSource="{Binding ModuleMetrics}" AutoGenerateColumns="False" IsReadOnly="True">
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Path=ModuleName}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SearchResults_ModuleName}" Width="*"/>
                 <DataGridTextColumn Binding="{Binding Path=Result.Lines}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeMetrics_Lines}" Width="Auto" x:Name="LinesColumn"/>

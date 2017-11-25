@@ -25,13 +25,10 @@ namespace Rubberduck.Navigation.CodeMetrics
         {
             if (e.State == ParserState.Ready)
             {
+                IsBusy = true;
                 ModuleMetrics = _analyst.ModuleMetrics(_state);
+                IsBusy = false;
             }
-        }
-
-        public void FilterByName(object projects, string text)
-        {
-            throw new NotImplementedException();
         }
 
         public void Dispose()
@@ -46,21 +43,6 @@ namespace Rubberduck.Navigation.CodeMetrics
             private set
             {
                 _moduleMetrics = value;
-                OnPropertyChanged();
-            }
-        }
-
-        
-        //public CommandBase RefreshCommand { get; set; }
-
-
-        private bool _canSearch;
-        public bool CanSearch
-        {
-            get => _canSearch;
-            set
-            {
-                _canSearch = value;
                 OnPropertyChanged();
             }
         }
