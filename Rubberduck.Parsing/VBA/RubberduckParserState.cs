@@ -71,8 +71,17 @@ namespace Rubberduck.Parsing.VBA
 
         public RubberduckParserState(IVBE vbe, IDeclarationFinderFactory declarationFinderFactory)
         {
-            _vbe = vbe ?? throw new ArgumentNullException(nameof(vbe));
-            _declarationFinderFactory = declarationFinderFactory ?? throw new ArgumentNullException(nameof(declarationFinderFactory));
+            if (vbe == null)
+            {
+                throw new ArgumentNullException(nameof(vbe));
+            }
+            if (declarationFinderFactory == null)
+            {
+                throw new ArgumentNullException(nameof(declarationFinderFactory));
+            }
+
+            _vbe = vbe;
+            _declarationFinderFactory = declarationFinderFactory;
 
             var values = Enum.GetValues(typeof(ParserState));
             foreach (var value in values)
