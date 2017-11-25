@@ -1962,6 +1962,48 @@ End Sub",
             Assert.IsFalse(renameViewModel.IsValidName);
         }
 
+
+        [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
+        public void RenameRefactoring_RenameClassModule_DoesNotChangeMeReferences()
+        {
+            const string newName = "RenamedClassModule";
+
+            //Input
+            const string inputCode =
+                @"Property Get Self() As IClassModule
+    Set Self = Me
+End Property";
+
+            var selection = new Selection(3, 27, 3, 27);
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, "ClassModule1", ComponentType.ClassModule, out component, selection);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+                var msgbox = new Mock<IMessageBox>();
+                msgbox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.YesNo, It.IsAny<MessageBoxIcon>()))
+                    .Returns(DialogResult.Yes);
+
+                var vbeWrapper = vbe.Object;
+                var model = new RenameModel(vbeWrapper, state, qualifiedSelection) { NewName = newName };
+                model.Target = model.Declarations.FirstOrDefault(i => i.DeclarationType == DeclarationType.ClassModule && i.IdentifierName == "ClassModule1");
+
+                //SetupFactory
+                var factory = SetupFactory(model);
+
+                var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, msgbox.Object, state);
+                refactoring.Refactor(model.Target);
+
+                Assert.AreSame(newName, component.CodeModule.Name);
+                Assert.AreEqual(inputCode, component.CodeModule.GetLines(0, component.CodeModule.CountOfLines));
+            }
+
+        }
         #endregion
 
         #region Test Execution
