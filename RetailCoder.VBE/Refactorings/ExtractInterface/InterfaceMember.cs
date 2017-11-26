@@ -44,12 +44,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
         {
             get
             {
-                //var signature = MemberType + " " + Member.IdentifierName + "(" +
-                //    string.Join(", ", MemberParams) + ")";
-                var signature = string.Format("{0} {1}({2})",
-                    MemberType, 
-                    Member.IdentifierName,
-                    string.Join(", ", MemberParams));
+                var signature = $"{MemberType} {Member.IdentifierName}({string.Join(", ", MemberParams)})";
 
                 return Type == null ? signature : $"{signature} As {Type}";
             }

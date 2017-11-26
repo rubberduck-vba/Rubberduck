@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using NLog;
@@ -18,7 +17,6 @@ using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using System.Windows;
 
 // ReSharper disable CanBeReplacedWithTryCastAndCheckForNull
@@ -479,8 +477,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private void ExecuteCollapseNodes(object parameter)
         {
-            var node = parameter as CodeExplorerItemViewModel;
-            if (node == null)
+            if (!(parameter is CodeExplorerItemViewModel node))
             {
                 return;
             }
@@ -490,8 +487,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private void ExecuteExpandNodes(object parameter)
         {
-            var node = parameter as CodeExplorerItemViewModel;
-            if (node == null)
+            if (!(parameter is CodeExplorerItemViewModel node))
             {
                 return;
             }
@@ -558,7 +554,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private bool CanExecuteExportAllCommand => ExportAllCommand.CanExecute(SelectedItem);
 
-        public Visibility ExportVisibility => CanExecuteExportAllCommand == false ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility ExportVisibility => CanExecuteExportAllCommand ? Visibility.Collapsed : Visibility.Visible;
 
         public Visibility ExportAllVisibility => CanExecuteExportAllCommand ? Visibility.Visible : Visibility.Collapsed;
 
