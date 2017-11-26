@@ -52,19 +52,17 @@ namespace Rubberduck
         {
             try
             {
-                if (Application is VBE)
+                if (Application is VBE vbe1)
                 {
-                    var vbe = (VBE) Application;                  
-                    _ide = new VBEditor.SafeComWrappers.VBA.VBE(vbe);
+                    _ide = new VBEditor.SafeComWrappers.VBA.VBE(vbe1);
                     VBENativeServices.HookEvents(_ide);
                     
                     var addin = (AddIn)AddInInst;
                     _addin = new VBEditor.SafeComWrappers.VBA.AddIn(addin) { Object = this };
                 }
-                else if (Application is Microsoft.VB6.Interop.VBIDE.VBE)
+                else if (Application is Microsoft.VB6.Interop.VBIDE.VBE vbe2)
                 {
-                    var vbe = Application as Microsoft.VB6.Interop.VBIDE.VBE;
-                    _ide = new VBEditor.SafeComWrappers.VB6.VBE(vbe);
+                    _ide = new VBEditor.SafeComWrappers.VB6.VBE(vbe2);
 
                     var addin = (Microsoft.VB6.Interop.VBIDE.AddIn) AddInInst;
                     _addin = new VBEditor.SafeComWrappers.VB6.AddIn(addin);

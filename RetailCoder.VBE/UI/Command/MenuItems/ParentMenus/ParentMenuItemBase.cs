@@ -160,7 +160,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             child.ApplyIcon();
 
             child.BeginsGroup = item.BeginGroup;
-            child.Tag = Item.Parent.Name + "::" + Item.Tag + "::" + item.GetType().Name;
+            child.Tag = $"{Item.Parent.Name}::{Item.Tag}::{item.GetType().Name}";
             child.Caption = item.Caption.Invoke();
             var command = item.Command; // todo: add 'ShortcutText' to a new 'interface CommandBase : System.Windows.Input.CommandBase'
             child.ShortcutText = command != null
@@ -179,7 +179,6 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
                 return;
             }
 
-            //Logger.Debug("({0}) Executing click handler for menu item '{1}', hash code {2}", GetHashCode(), e.Control.Caption, e.Control.Target.GetHashCode());
             Logger.Debug("({0}) Executing click handler for menu item '{1}', hash code {2}", GetHashCode(), e.Control.Caption, e.Control.Target.GetHashCode());
             item.Command.Execute(null);
         }

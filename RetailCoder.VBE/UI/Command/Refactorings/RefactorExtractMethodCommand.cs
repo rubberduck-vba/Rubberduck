@@ -65,8 +65,9 @@ namespace Rubberduck.UI.Command.Refactorings
             var module = pane.CodeModule;
             {
                 var extraction = new ExtractMethodExtraction();
-                // bug: access to disposed closure - todo: make ExtractMethodRefactoring request reparse like everyone else.
+                // bug: access to disposed closure
 
+                // todo: make ExtractMethodRefactoring request reparse like everyone else.
                 var refactoring = new ExtractMethodRefactoring(module, ParseRequest, CreateMethodModel, extraction);
                 refactoring.InvalidSelection += HandleInvalidSelection;
                 refactoring.Refactor();

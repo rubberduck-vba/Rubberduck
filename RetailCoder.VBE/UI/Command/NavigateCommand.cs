@@ -17,7 +17,7 @@ namespace Rubberduck.UI.Command
         protected override void OnExecute(object parameter)
         {
             var param = parameter as NavigateCodeEventArgs;
-            if (param?.QualifiedName.Component == null)
+            if (param == null || param.QualifiedName.Component == null)
             {
                 return;
             }
