@@ -14,7 +14,6 @@ namespace Rubberduck.Navigation.CodeMetrics
         private readonly ICodeMetricsAnalyst _analyst;
 
         public CodeMetricsViewModel(RubberduckParserState state, ICodeMetricsAnalyst analyst)
-
         {
             _state = state;
             _analyst = analyst;
@@ -35,7 +34,6 @@ namespace Rubberduck.Navigation.CodeMetrics
         {
             _state.StateChanged -= OnStateChanged;
         }
-        
 
         private IEnumerable<ModuleMetricsResult> _moduleMetrics;
         public IEnumerable<ModuleMetricsResult> ModuleMetrics {
