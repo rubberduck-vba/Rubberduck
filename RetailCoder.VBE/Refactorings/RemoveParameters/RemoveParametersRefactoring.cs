@@ -219,8 +219,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             var interfaceImplementations = _model.Declarations.FindInterfaceImplementationMembers().Where(item =>
                 item.ProjectId == _model.TargetDeclaration.ProjectId
                 &&
-                item.IdentifierName == $"{_model.TargetDeclaration.ComponentName} {_model.TargetDeclaration.IdentifierName}");
-
+                item.IdentifierName == $"{_model.TargetDeclaration.ComponentName}_{_model.TargetDeclaration.IdentifierName}");
 
             foreach (var interfaceImplentation in interfaceImplementations)
             {
