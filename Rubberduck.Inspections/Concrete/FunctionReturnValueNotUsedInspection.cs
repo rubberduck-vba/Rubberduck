@@ -77,35 +77,13 @@ namespace Rubberduck.Inspections.Concrete
 
         private bool IsReturnValueUsed(Declaration function)
         {
-            foreach (var usage in function.References)
-            {
-                if (IsAddressOfCall(usage))
-                {
-                    continue;
-                }
-                if (IsTypeOfExpression(usage))
-                {
-                    continue;
-                }
-                if (IsCallStmt(usage)) // IsIndexExprOrCallStmt(usage))
-                {
-                    continue;
-                }
-                if (IsLet(usage))
-                {
-                    continue;
-                }
-                if (IsSet(usage))
-                {
-                    continue;
-                }
-                if (IsReturnStatement(function, usage))
-                {
-                    continue;
-                }
-                return true;
-            }
-            return false;
+            return (from usage in function.References
+                    where !IsAddressOfCall(usage)
+                    where !IsTypeOfExpression(usage)
+                    where !IsCallStmt(usage)
+                    where !IsLet(usage)
+                    where !IsSet(usage)
+                    select usage).Any(usage => !IsReturnStatement(function, usage));
         }
 
         private bool IsAddressOfCall(IdentifierReference usage)
@@ -161,23 +139,15 @@ namespace Rubberduck.Inspections.Concrete
         private bool IsLet(IdentifierReference usage)
         {
             var letStmt = ParserRuleContextHelper.GetParent<VBAParser.LetStmtContext>(usage.Context);
-            if (letStmt == null)
-            {
-                return false;
-            }
-            bool isLetAssignmentTarget = letStmt == usage.Context;
-            return isLetAssignmentTarget;
+
+            return letStmt != null && letStmt == usage.Context;
         }
 
         private bool IsSet(IdentifierReference usage)
         {
             var setStmt = ParserRuleContextHelper.GetParent<VBAParser.SetStmtContext>(usage.Context);
-            if (setStmt == null)
-            {
-                return false;
-            }
-            bool isSetAssignmentTarget = setStmt == usage.Context;
-            return isSetAssignmentTarget;
+
+            return setStmt != null && setStmt == usage.Context;
         }
     }
 }
