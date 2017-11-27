@@ -59,10 +59,7 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
-        public override string Description(IInspectionResult result)
-        {
-            return InspectionsUI.RedundantByRefModifierQuickFix;
-        }
+        public override string Description(IInspectionResult result) => InspectionsUI.RedundantByRefModifierQuickFix;
 
         public override bool CanFixInProcedure => true;
         public override bool CanFixInModule => true;

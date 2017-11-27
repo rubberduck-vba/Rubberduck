@@ -35,10 +35,7 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
-        public override string Description(IInspectionResult result)
-        {
-            return InspectionsUI.RemoveUnusedParameterQuickFix;
-        }
+        public override string Description(IInspectionResult result) => InspectionsUI.RemoveUnusedParameterQuickFix;
 
         public override bool CanFixInProcedure => true;
         public override bool CanFixInModule => true;

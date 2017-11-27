@@ -29,10 +29,7 @@ namespace Rubberduck.Inspections.QuickFixes
             rewriter.Remove(assignmentContext);
         }
 
-        public override string Description(IInspectionResult result)
-        {
-            return InspectionsUI.RemoveUnassignedVariableUsageQuickFix;
-        }
+        public override string Description(IInspectionResult result) => InspectionsUI.RemoveUnassignedVariableUsageQuickFix;
 
         public override bool CanFixInProcedure => true;
         public override bool CanFixInModule => true;
