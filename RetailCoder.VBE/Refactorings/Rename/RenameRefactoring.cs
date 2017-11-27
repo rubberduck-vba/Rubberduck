@@ -476,7 +476,9 @@ namespace Rubberduck.Refactorings.Rename
 
         private void RenameReferences(Declaration target, string newName)
         {
-            var modules = target.References.GroupBy(r => r.QualifiedModuleName);
+            var modules = target.References
+                .Where(reference => reference.Context.GetText() != "Me")
+                .GroupBy(r => r.QualifiedModuleName);
             foreach (var grouping in modules)
             {
                 _modulesToRewrite.Add(grouping.Key);
