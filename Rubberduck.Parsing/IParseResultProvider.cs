@@ -6,19 +6,17 @@ namespace Rubberduck.Parsing
 {
     public class ParseProgressEventArgs : EventArgs
     {
-        private readonly QualifiedModuleName _module;
-        private readonly ParserState _state;
-        private readonly ParserState _oldState;
-
         public ParseProgressEventArgs(QualifiedModuleName module, ParserState state, ParserState oldState)
         {
-            _module = module;
-            _state = state;
-            _oldState = oldState;
+            Module = module;
+            State = state;
+            OldState = oldState;
         }
 
-        public QualifiedModuleName Module { get { return _module; } }
-        public ParserState State { get { return _state; } }
-        public ParserState OldState { get { return _oldState; } }
+        public QualifiedModuleName Module { get; }
+
+        public ParserState State { get; }
+
+        public ParserState OldState { get; }
     }
 }

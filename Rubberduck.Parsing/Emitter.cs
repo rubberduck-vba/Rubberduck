@@ -19,7 +19,7 @@ namespace Rubberduck.Parsing
             _state = state;
         }
 
-        private static readonly string GetTypeNameFunctionTemplate = @"
+        private const string GetTypeNameFunctionTemplate = @"
 Public Function GetTypeName() As String
     GetTypeName = TypeName({0})
 End Function

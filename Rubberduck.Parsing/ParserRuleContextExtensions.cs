@@ -55,8 +55,7 @@ namespace Rubberduck.Parsing
 
             public override void EnterEveryRule(ParserRuleContext context)
             {
-                var match = context as TContext;
-                if (match != null)
+                if (context is TContext match)
                 {
                     _matches.Add(match);
                 }

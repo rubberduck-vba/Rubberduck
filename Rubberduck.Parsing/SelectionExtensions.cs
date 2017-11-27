@@ -1,6 +1,5 @@
 ﻿using Antlr4.Runtime;
 using Rubberduck.VBEditor;
-using System;
 
 namespace Rubberduck.Parsing
 {
@@ -20,10 +19,12 @@ namespace Rubberduck.Parsing
         public static bool Contains(this Selection selection, IToken token)
         {
             return
-                (((selection.StartLine == token.Line) && (selection.StartColumn - 1) <= token.Column) 
-                    || (selection.StartLine < token.Line))
-             && (((selection.EndLine == token.EndLine()) && (selection.EndColumn - 1) >= (token.EndColumn())) 
-                    || (selection.EndLine > token.EndLine()));
+                (selection.StartLine == token.Line
+                    && selection.StartColumn - 1 <= token.Column
+                    || selection.StartLine < token.Line)
+             && (selection.EndLine == token.EndLine()
+                    && selection.EndColumn - 1 >= token.EndColumn()
+                    || selection.EndLine > token.EndLine());
         }
 
         /// <summary>
@@ -35,10 +36,12 @@ namespace Rubberduck.Parsing
         public static bool Contains(this Selection selection, ParserRuleContext context)
         {
             return
-               (((selection.StartLine == context.Start.Line) && (selection.StartColumn - 1) <= context.Start.Column) 
-                    || (selection.StartLine < context.Start.Line))
-            && (((selection.EndLine == context.Stop.EndLine()) && (selection.EndColumn - 1) >= (context.Stop.EndColumn())) 
-                    || (selection.EndLine > context.Stop.EndLine()));
+               (selection.StartLine == context.Start.Line
+                    && selection.StartColumn - 1 <= context.Start.Column
+                    || selection.StartLine < context.Start.Line)
+            && (selection.EndLine == context.Stop.EndLine()
+                    && selection.EndColumn - 1 >= context.Stop.EndColumn()
+                    || selection.EndLine > context.Stop.EndLine());
         }
 
         /// <summary>
