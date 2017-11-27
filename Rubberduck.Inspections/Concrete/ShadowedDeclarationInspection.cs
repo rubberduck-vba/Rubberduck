@@ -262,7 +262,6 @@ namespace Rubberduck.Inspections.Concrete
             switch (originalDeclaration.DeclarationType)
             {
                 case DeclarationType.UserDefinedType:
-                    return false;
                 case DeclarationType.Parameter:
                 case DeclarationType.UserDefinedTypeMember:
                 case DeclarationType.LineLabel:
