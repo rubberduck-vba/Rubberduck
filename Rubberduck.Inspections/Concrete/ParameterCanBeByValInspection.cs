@@ -134,7 +134,7 @@ namespace Rubberduck.Inspections.Concrete
 
                 foreach (var declaration in calledProcedureArgs)
                 {
-                    if (((VBAParser.ArgContext) declaration.Context).BYVAL() == null)
+                    if (((VBAParser.ArgContext) declaration.Context).BYVAL() != null)
                     {
                         continue;
                     }
