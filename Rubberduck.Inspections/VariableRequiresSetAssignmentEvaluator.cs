@@ -156,13 +156,13 @@ namespace Rubberduck.Inspections
         private static bool IsAlreadyAssignedUsingSet(IdentifierReference reference)
         {
             var setStmtContext = ParserRuleContextHelper.GetParent<VBAParser.SetStmtContext>(reference.Context);
-            return (reference.IsAssignment && setStmtContext != null && setStmtContext.SET() != null);
+            return (reference.IsAssignment && setStmtContext?.SET() != null);
         }
 
         private static string GetRHSIdentifierExpressionText(VBAParser.LetStmtContext letStmtContext)
         {
             var expression = letStmtContext.expression();
-            return expression != null && expression is VBAParser.LExprContext ? expression.GetText() : string.Empty;
+            return expression is VBAParser.LExprContext ? expression.GetText() : string.Empty;
         }
 
         private static bool RHSUsesNew(VBAParser.LetStmtContext letStmtContext)
