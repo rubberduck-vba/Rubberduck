@@ -124,16 +124,29 @@ namespace Rubberduck.Inspections.Concrete
                 .GroupBy(call => call.Declaration)
                 .ToList(); // only check a procedure once. its declaration doesn't change if it's called 20 times anyway.
 
-            //TODO convert to method syntax
-            return (from item in procedureCalls
-                        from declaration in items
-                            .Where(arg => arg.DeclarationType == DeclarationType.Parameter && arg.ParentScope == item.Key.Scope)
-                            .OrderBy(arg => arg.Selection.StartLine)
-                            .ThenBy(arg => arg.Selection.StartColumn)
-                            .ToArray()
-                        where ((VBAParser.ArgContext)declaration.Context).BYVAL() == null
-                        select declaration)
-                    .Any(dec => dec.References.Any(reference => reference.IsAssignment));
+            foreach (var item in procedureCalls)
+            {
+                var calledProcedureArgs = items
+                    .Where(arg => arg.DeclarationType == DeclarationType.Parameter && arg.ParentScope == item.Key.Scope)
+                    .OrderBy(arg => arg.Selection.StartLine)
+                    .ThenBy(arg => arg.Selection.StartColumn)
+                    .ToArray();
+
+                foreach (var declaration in calledProcedureArgs)
+                {
+                    if (((VBAParser.ArgContext) declaration.Context).BYVAL() == null)
+                    {
+                        continue;
+                    }
+
+                    if (declaration.References.Any(reference => reference.IsAssignment))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
     }
 }
