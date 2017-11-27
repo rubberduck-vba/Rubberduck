@@ -1,29 +1,12 @@
-﻿using System;
-using System.Linq;
-using System.Windows.Forms;
-using Rubberduck.SmartIndenter;
-using Rubberduck.UI.Refactorings;
+﻿using Rubberduck.UI.Refactorings;
 
 namespace Rubberduck.Refactorings.ExtractMethod
 {
-    public interface IExtractMethodPresenter
+    public class ExtractMethodPresenter : RefactoringPresenter<ExtractMethodModel, ExtractMethodDialog, ExtractMethodViewModel>
     {
-        ExtractMethodModel Show();
-    }
-
-    public class ExtractMethodPresenter : IExtractMethodPresenter
-    {
-        private readonly IRefactoringDialog<ExtractMethodViewModel> _view;
-        private readonly ExtractMethodModel _model;
-        private readonly IIndenter _indenter;
-
-        public ExtractMethodPresenter(IRefactoringDialog<ExtractMethodViewModel> view, ExtractMethodModel model, IIndenter indenter)
-        {
-            _view = view;
-            _model = model;
-            _indenter = indenter;
-        }
-
+        public ExtractMethodPresenter(ExtractMethodModel model, ExtractMethodDialog view, ExtractMethodViewModel viewModel) : base(model, view, viewModel) { }
+        
+        /*
         public ExtractMethodModel Show()
         {
             PrepareView(_model);
@@ -65,14 +48,15 @@ namespace Rubberduck.Refactorings.ExtractMethod
             extractMethodModel.Method.MethodName = _view.ViewModel.MethodName;
             extractMethodModel.Method.Accessibility = _view.ViewModel.Accessibility;
             extractMethodModel.Method.Parameters = _view.ViewModel.Parameters;
-            /*
-             * extractMethodModel.Method.ReturnValue = _view.ReturnValue;
-             * extractMethodModel.Method.SetReturnValue = _view.SetReturnValue;
-             */
+             //
+             // extractMethodModel.Method.ReturnValue = _view.ReturnValue;
+             // extractMethodModel.Method.SetReturnValue = _view.SetReturnValue;
+             //
             var extractedMethod = extractMethodProc.createProc(extractMethodModel);
             var code = extractedMethod.Split(new[]{Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries);
             code = _indenter.Indent(code).ToArray();
             _view.ViewModel.Preview = string.Join(Environment.NewLine, code);
         }
+        */
     }
 }

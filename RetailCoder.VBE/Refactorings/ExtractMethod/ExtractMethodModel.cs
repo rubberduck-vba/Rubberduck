@@ -4,9 +4,11 @@ using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.SmartIndenter;
 
 namespace Rubberduck.Refactorings.ExtractMethod
 {
@@ -63,16 +65,59 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
     public class ExtractMethodModel
     {
-        private List<Declaration> _extractDeclarations;
-
+        public IEnumerable<ParserRuleContext> SelectedContexts { get; }
         public RubberduckParserState State { get; }
+        public IIndenter Indenter { get; }
+        public QualifiedSelection Selection { get; }
 
-        public ExtractMethodModel(RubberduckParserState state, QualifiedSelection selection)
+        public string OriginalMethodName { get; private set; }
+
+        public ExtractMethodModel(RubberduckParserState state, QualifiedSelection selection,
+            IEnumerable<ParserRuleContext> selectedContexts, IIndenter indenter)
         {
             State = state;
-            _selection = selection;
+            Indenter = indenter;
+            Selection = selection;
+            SelectedContexts = selectedContexts;
+            Setup();
         }
-        
+
+        private void Setup()
+        {
+            var topContext = SelectedContexts.First();
+            ParserRuleContext stmtContext = null;
+            var currentContext = (RuleContext)topContext;
+            do {
+                switch (currentContext)
+                {
+                    case VBAParser.FunctionStmtContext stmt:
+                        stmtContext = stmt;
+                        OriginalMethodName = stmt.functionName().GetText();
+                        break;
+                    case VBAParser.SubStmtContext stmt:
+                        stmtContext = stmt;
+                        OriginalMethodName = stmt.subroutineName().GetText();
+                        break;
+                    case VBAParser.PropertyGetStmtContext stmt:
+                        stmtContext = stmt;
+                        OriginalMethodName = stmt.functionName().GetText();
+                        break;
+                    case VBAParser.PropertyLetStmtContext stmt:
+                        stmtContext = stmt;
+                        OriginalMethodName = stmt.subroutineName().GetText();
+                        break;
+                    case VBAParser.PropertySetStmtContext stmt:
+                        stmtContext = stmt;
+                        OriginalMethodName = stmt.subroutineName().GetText();
+                        break;
+                }
+                currentContext = currentContext.Parent;
+            }
+            while (currentContext != null && stmtContext == null) ;
+
+            
+        }
+
         public IEnumerable<Selection> splitSelection(Selection selection, IEnumerable<Declaration> declarations)
         {
             var tupleList = new List<Tuple<int, int>>();
@@ -84,52 +129,88 @@ namespace Rubberduck.Refactorings.ExtractMethod
                 .OrderBy(x => x)
                 .ToList();
 
-            var gappedSelectionRows = Enumerable.Range(selection.StartLine, selection.EndLine - selection.StartLine + 1).Except(declarationRows).ToList();
-            var returnList = gappedSelectionRows.GroupByMissing(x => (x + 1), (x, y) => new Selection(x, 1, y, 1), (x, y) => y - x);
+            var gappedSelectionRows = Enumerable.Range(selection.StartLine, selection.EndLine - selection.StartLine + 1)
+                .Except(declarationRows).ToList();
+            var returnList =
+                gappedSelectionRows.GroupByMissing(x => (x + 1), (x, y) => new Selection(x, 1, y, 1), (x, y) => y - x);
             return returnList;
         }
 
-        private Declaration _sourceMember;
-        public Declaration SourceMember { get { return _sourceMember; } }
-
-        private QualifiedSelection _selection;
-        public QualifiedSelection Selection { get { return _selection; } }
+        public Declaration SourceMember
+        {
+            get => null;
+        } // TODO: Remove from WPF
 
         private string _selectedCode;
-        public string SelectedCode { get { return _selectedCode; } }
+
+        public string SelectedCode
+        {
+            get { return _selectedCode; }
+        }
 
         private List<Declaration> _locals;
-        public IEnumerable<Declaration> Locals { get { return _locals; } }
+
+        public IEnumerable<Declaration> Locals
+        {
+            get { return _locals; }
+        }
 
         private IEnumerable<ExtractedParameter> _input;
-        public IEnumerable<ExtractedParameter> Inputs { get { return _input; } }
+
+        public IEnumerable<ExtractedParameter> Inputs
+        {
+            get { return _input; }
+        }
+
         private IEnumerable<ExtractedParameter> _output;
-        public IEnumerable<ExtractedParameter> Outputs { get { return _output; } }
+
+        public IEnumerable<ExtractedParameter> Outputs
+        {
+            get { return _output; }
+        }
 
         private List<Declaration> _declarationsToMove;
-        public IEnumerable<Declaration> DeclarationsToMove { get { return _declarationsToMove; } }
+
+        public IEnumerable<Declaration> DeclarationsToMove
+        {
+            get { return _declarationsToMove; }
+        }
 
         //public IExtractedMethod Method { get { return _extractedMethod; } }
 
         private Selection _positionForMethodCall;
-        public Selection PositionForMethodCall { get { return _positionForMethodCall; } }
+
+        public Selection PositionForMethodCall
+        {
+            get { return _positionForMethodCall; }
+        }
 
         //public string NewMethodCall { get { return _extractedMethod.NewMethodCall(); } }
 
         private Selection _positionForNewMethod;
-        public Selection PositionForNewMethod { get { return _positionForNewMethod; } }
+
+        public Selection PositionForNewMethod
+        {
+            get { return _positionForNewMethod; }
+        }
+
         IList<Selection> _rowsToRemove;
+
         public IEnumerable<Selection> RowsToRemove
         {
             // we need to split selectionToRemove around any declarations that
             // are within the selection.
-            get { return _declarationsToMove.Select(decl => decl.Selection).Union(_rowsToRemove)
-                .Select( x => new Selection(x.StartLine,1,x.EndLine,1)) ; }
+            get
+            {
+                return _declarationsToMove.Select(decl => decl.Selection).Union(_rowsToRemove)
+                    .Select(x => new Selection(x.StartLine, 1, x.EndLine, 1));
+            }
         }
 
         public IEnumerable<Declaration> DeclarationsToExtract
         {
-            get { return _extractDeclarations; }
+            // TODO: Remove from WPF
+            get => null;
         }
     }
 }

@@ -1,18 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Linq;
-using System.Windows.Forms;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Symbols;
-using Rubberduck.Refactorings.ExtractMethod;
+﻿using System.Windows.Forms;
 
 namespace Rubberduck.UI.Refactorings
 {
-    public partial class ExtractMethodDialog : Form, IRefactoringDialog<ExtractMethodViewModel>
+    public partial class ExtractMethodDialog : Form, IRefactoringDialog2<ExtractMethodViewModel>
     {
-        public ExtractMethodViewModel ViewModel { get; }
+        private ExtractMethodViewModel _viewModel;
+        public ExtractMethodViewModel ViewModel
+        {
+            get => _viewModel;
+
+            set
+            {
+                _viewModel = value;
+                ExtractMethodViewElement.DataContext = ViewModel;
+                ViewModel.OnWindowClosed += ViewModel_OnWindowClosed;
+            }
+        }
 
         public ExtractMethodDialog()
         {
@@ -22,11 +25,9 @@ namespace Rubberduck.UI.Refactorings
         public ExtractMethodDialog(ExtractMethodViewModel vm) : this()
         {
             ViewModel = vm;
-            ExtractMethodViewElement.DataContext = vm;
-            vm.OnWindowClosed += ViewModel_OnWindowClosed;
         }
 
-        void ViewModel_OnWindowClosed(object sender, DialogResult result)
+        private void ViewModel_OnWindowClosed(object sender, DialogResult result)
         {
             DialogResult = result;
             Close();

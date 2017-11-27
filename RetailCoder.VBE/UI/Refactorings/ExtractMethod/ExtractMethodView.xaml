@@ -64,7 +64,8 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="50" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="2*" />
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
         <StackPanel Background="White">
@@ -142,7 +143,16 @@
                 </DataGrid>
             </GroupBox>
         </StackPanel>
-        <Grid Grid.Row="2" Background="{x:Static SystemColors.ControlDarkBrush}" Grid.IsSharedSizeScope="True">
+        <Grid Grid.Row="2">
+            <Label Height="25" Margin="0,5,5,5" VerticalAlignment="Top"  Content="Code Preview"></Label>
+            <TextBox Margin="5,25,5,5"
+                     AllowDrop="False"
+                     IsReadOnly="True"
+                     HorizontalScrollBarVisibility="Auto"
+                     VerticalScrollBarVisibility="Auto"
+                     />
+        </Grid>
+        <Grid Grid.Row="3" Background="{x:Static SystemColors.ControlDarkBrush}" Grid.IsSharedSizeScope="True">
             <Grid HorizontalAlignment="Right"
                   Margin="5,0">
                 <Grid.ColumnDefinitions>

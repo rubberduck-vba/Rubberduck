@@ -19,6 +19,8 @@ using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.Symbols.DeclarationLoaders;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SmartIndenter;
@@ -510,6 +512,13 @@ namespace Rubberduck.Root
         {
             container.Register(Component.For<IRefactoringDialog<RenameViewModel>>()
                 .ImplementedBy<RenameDialog>()
+                .LifestyleTransient());
+
+            container.Register(Component.For<ExtractMethodRefactoring>()
+                .LifestyleTransient());
+
+            container.Register(Component.For<IRefactoringFactory<ExtractMethodRefactoring>>()
+                .AsFactory()
                 .LifestyleTransient());
         }
 

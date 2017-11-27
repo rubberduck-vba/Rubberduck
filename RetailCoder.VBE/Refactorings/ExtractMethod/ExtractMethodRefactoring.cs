@@ -14,38 +14,46 @@ namespace Rubberduck.Refactorings.ExtractMethod
     /// </summary>
     public class ExtractMethodRefactoring : IRefactoring
     {
+        private readonly IVBE _vbe;
         private readonly ICodeModule _codeModule;
-        private IIndenter _indenter;
-        private RubberduckParserState _state;
+        private readonly IIndenter _indenter;
+        private readonly RubberduckParserState _state;
+
+        // TODO: encapsulate the model. See the TODO in command class
+        private QualifiedSelection selection;
+        public ExtractMethodSelectionValidation Validator;
 
         public ExtractMethodRefactoring(
-            ICodeModule codeModule,
+            IVBE vbe,
             IIndenter indenter,
             RubberduckParserState state
         )
         {
-            _codeModule = codeModule;
+            _vbe = vbe;
+            _codeModule = _vbe.ActiveCodePane.CodeModule;
             _indenter = indenter;
             _state = state;
         }
 
         public void Refactor()
         {
-            var selection = _codeModule.GetQualifiedSelection();
-            if (!selection.HasValue)
+            if (!_codeModule.GetQualifiedSelection().HasValue)
             {
                 OnInvalidSelection();
                 return;
             }
 
-            var factory = new ExtractMethodPresenterFactory(_indenter, _state, (QualifiedSelection)selection);
-            var presenter = factory.Create();
+            selection = _codeModule.GetQualifiedSelection().Value;
+            
+            var model = new ExtractMethodModel(_state, selection, Validator.SelectedContexts, _indenter);
+            var presenter = ExtractMethodPresenter.Create(model);
+
             if (presenter == null)
             {
                 return;
             }
 
-            var model = presenter.Show();
+            model = presenter.Show();
             if (model == null)
             {
                 return;

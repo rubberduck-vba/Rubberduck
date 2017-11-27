@@ -1,13 +1,9 @@
 using System.Runtime.InteropServices;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ExtractMethod;
-using Rubberduck.SmartIndenter;
-using System;
-using Rubberduck.VBEditor;
-using System.Collections.Generic;
+using Rubberduck.Refactorings;
 using Rubberduck.Settings;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.UI.Refactorings;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
@@ -15,19 +11,19 @@ namespace Rubberduck.UI.Command.Refactorings
     public class RefactorExtractMethodCommand : RefactorCommandBase
     {
         private readonly RubberduckParserState _state;
-        private readonly IIndenter _indenter;
+        private readonly IRefactoringFactory<ExtractMethodRefactoring> _refactoringFactory;
 
-        public RefactorExtractMethodCommand(IVBE vbe, RubberduckParserState state, IIndenter indenter)
+        public RefactorExtractMethodCommand(
+            IVBE vbe, 
+            RubberduckParserState state, 
+            IRefactoringFactory<ExtractMethodRefactoring> refactoringFactory)
             : base (vbe)
         {
             _state = state;
-            _indenter = indenter;
+            _refactoringFactory = refactoringFactory;
         }
 
-        public override RubberduckHotkey Hotkey
-        {
-            get { return RubberduckHotkey.RefactorExtractMethod; }
-        }
+        public override RubberduckHotkey Hotkey => RubberduckHotkey.RefactorExtractMethod;
 
         protected override bool EvaluateCanExecute(object parameter)
         {
@@ -45,9 +41,8 @@ namespace Rubberduck.UI.Command.Refactorings
                     return false;
                 }
                 
-                var allDeclarations = _state.AllDeclarations;
-                var extractMethodValidation = new ExtractMethodSelectionValidation(allDeclarations);
-                var canExecute = extractMethodValidation.ValidateSelection(qualifiedSelection.Value);
+                var validator = new ExtractMethodSelectionValidation(_state.AllDeclarations);
+                var canExecute = validator.ValidateSelection(qualifiedSelection.Value);
 
                 return canExecute;
             }
@@ -55,35 +50,56 @@ namespace Rubberduck.UI.Command.Refactorings
 
         protected override void OnExecute(object parameter)
         {
-            var declarations = _state.AllDeclarations;
             var qualifiedSelection = Vbe.ActiveCodePane.GetQualifiedSelection();
 
-            var extractMethodValidation = new ExtractMethodSelectionValidation(declarations);
-            var canExecute = extractMethodValidation.ValidateSelection(qualifiedSelection.Value);
-            if (!canExecute)
+            if (qualifiedSelection == null)
             {
                 return;
             }
 
             var pane = Vbe.ActiveCodePane;
-
             if (pane == null)
             {
                 return;
             }
 
-            var module = pane.CodeModule;
-            var component = module.Parent;
+            var validator = new ExtractMethodSelectionValidation(_state.AllDeclarations);
+            var canExecute = validator.ValidateSelection(qualifiedSelection.Value);
 
+            if (!canExecute)
+            {
+                return;
+            }
+
+            var module = pane.CodeModule;
+            var selection = module.GetQualifiedSelection();
+
+            if (selection == null)
+            {
+                return;
+            }
+
+            /* TODO: Refactor the section to make command ignorant of data
+             * This section needs to be refactored. The way it is, the command knows too much
+             * about the validator and the refactoring. Getting data from validator should
+             * be refactoring's responsibility, which implies the validation is refactoring's
+             * responsiblity. Note where indicated.
+             */
+            
+
+            var refactoring = _refactoringFactory.Create();
+            refactoring.Validator = validator; //TODO: Refactor
+            refactoring.Refactor(selection.Value);
+            _refactoringFactory.Release(refactoring);
+
+            /*
             using (var view = new ExtractMethodDialog(new ExtractMethodViewModel()))
             {
-                //var factory = new ExtractMethodPresenterFactory(_indenter, _state, (QualifiedSelection)qualifiedSelection);
-                var refactoring = new ExtractMethodRefactoring(module, _indenter, _state);
-                refactoring.Refactor();
-
-                //var refactoring = new ExtractMethodRefactoring(Vbe, _messageBox, factory);
-                //refactoring.Refactor();
+                var factory = new ExtractMethodPresenterFactory(Vbe, view, _indenter, _state, qualifiedSelection.Value);
+                var refactoring = new ExtractMethodRefactoring(Vbe, module, factory);
+                refactoring.Refactor(qualifiedSelection.Value);
             }
+            */
 
             /*
             {

@@ -8,53 +8,54 @@ using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.ExtractMethod
 {
     public class ExtractMethodSelectionValidation : IExtractMethodSelectionValidation
     {
-        private IEnumerable<Declaration> _declarations;
+        private readonly IEnumerable<Declaration> _declarations;
         private List<Tuple<ParserRuleContext, string>> _invalidContexts = new List<Tuple<ParserRuleContext, string>>();
+        private List<VBAParser.BlockStmtContext> _finalResults = new List<VBAParser.BlockStmtContext>();
+
+        public ExtractMethodSelectionValidation(RubberduckParserState state)
+        {
+            _declarations = state.AllDeclarations;
+        }
 
         public ExtractMethodSelectionValidation(IEnumerable<Declaration> declarations)
         {
             _declarations = declarations;
         }
 
-        public IEnumerable<Tuple<ParserRuleContext, string>> InvalidContexts { get { return _invalidContexts; } }
+        public IEnumerable<Tuple<ParserRuleContext, string>> InvalidContexts => _invalidContexts;
+
+        public IEnumerable<VBAParser.BlockStmtContext> SelectedContexts => _finalResults;
 
         public bool ValidateSelection(QualifiedSelection qualifiedSelection)
         {
             var selection = qualifiedSelection.Selection;
-            IEnumerable<Declaration> procedures = _declarations.Where(d => d.IsUserDefined && (DeclarationExtensions.ProcedureTypes.Contains(d.DeclarationType)));
+            IEnumerable<Declaration> procedures = _declarations.Where(d => d.ComponentName == qualifiedSelection.QualifiedName.ComponentName && d.IsUserDefined && (DeclarationExtensions.ProcedureTypes.Contains(d.DeclarationType)));
             Func<int, dynamic> ProcOfLine = (sl) => procedures.FirstOrDefault(d => d.Context.Start.Line < sl && d.Context.Stop.EndLine() > sl);
 
             var startLine = selection.StartLine;
             var endLine = selection.EndLine;
 
             // End of line is easy
-            var procEnd = ProcOfLine(endLine);
+            var procEnd = ProcOfLine(endLine) as Declaration;
             if (procEnd == null)
             {
                 return false;
             }
 
-            var procEndContext = procEnd.Context as ParserRuleContext;
-            var procEndLine = procEndContext.Stop.EndLine();
-
-            /* Handle: function signature continuations
-             * public function(byval a as string _
-             *                 byval b as string) as integer
-             */
-            var procStart = ProcOfLine(startLine);
+            var procStart = ProcOfLine(startLine) as Declaration;
             if (procStart == null)
             {
                 return false;
             }
 
-            ParserRuleContext procStartContext;
-            procStartContext = procStart.Context;
+            var procStartContext = procStart.Context;
             VBAParser.EndOfStatementContext procEndOfSignature;
 
             switch (procStartContext)
@@ -77,12 +78,10 @@ namespace Rubberduck.Refactorings.ExtractMethod
                 default:
                     return false;
             }
-
-            var procSignatureLastLine = procEndOfSignature.Start.Line;
-
-            if (!(((procEnd as Declaration).QualifiedSelection.Equals((procStart as Declaration).QualifiedSelection))
-                && ((procEndOfSignature.Start.Line < selection.StartLine)
-                || (procEndOfSignature.Start.Line == selection.StartLine && procEndOfSignature.Start.Column < selection.StartColumn))
+            
+            if (!(procEnd.QualifiedSelection.Equals(procStart.QualifiedSelection)
+                && (procEndOfSignature.Start.Line < selection.StartLine
+                || procEndOfSignature.Start.Line == selection.StartLine && procEndOfSignature.Start.Column < selection.StartColumn)
                 ))
                 return false;
 
@@ -93,16 +92,15 @@ namespace Rubberduck.Refactorings.ExtractMethod
             var results = visitor.Visit(procStartContext);
             _invalidContexts = visitor.InvalidContexts;
 
-            if (_invalidContexts.Count() == 0)
+            if (!_invalidContexts.Any())
             {
                 // We've provved that there are no invalid statements contained in the selection. However, we need to analyze
                 // the statements to ensure they are not partial selections.
 
                 // The visitor will not return the results in a sorted manner, so we need to arrange the contexts in the same order.
                 var sorted = results.OrderBy(context => context.Start.StartIndex);
-                var finalResults = new List<VBAParser.BlockStmtContext>();
-                ContextIsContainedOnce(sorted, ref finalResults, qualifiedSelection);
-                return (results.Count() > 0 && _invalidContexts.Count() == 0);
+                ContextIsContainedOnce(sorted, ref _finalResults, qualifiedSelection);
+                return results.Any() && !_invalidContexts.Any();
             }
             return false;
         }
