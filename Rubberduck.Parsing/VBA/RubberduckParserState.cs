@@ -71,17 +71,8 @@ namespace Rubberduck.Parsing.VBA
 
         public RubberduckParserState(IVBE vbe, IDeclarationFinderFactory declarationFinderFactory)
         {
-            if(vbe == null)
-            {
-                throw new ArgumentNullException(nameof(vbe));
-            }
-            if (declarationFinderFactory == null)
-            {
-                throw new ArgumentNullException(nameof(declarationFinderFactory));
-            }
-
-            _vbe = vbe;
-            _declarationFinderFactory = declarationFinderFactory;
+            _vbe = vbe ?? throw new ArgumentNullException(nameof(vbe));
+            _declarationFinderFactory = declarationFinderFactory ?? throw new ArgumentNullException(nameof(declarationFinderFactory));
 
             var values = Enum.GetValues(typeof(ParserState));
             foreach (var value in values)
@@ -233,12 +224,7 @@ namespace Rubberduck.Parsing.VBA
 
         public void OnStatusMessageUpdate(string message)
         {
-            var handler = StatusMessageUpdate;
-            if (handler != null)
-            {
-                var args = new RubberduckStatusMessageEventArgs(message);
-                handler.Invoke(this, args);
-            }
+            StatusMessageUpdate?.Invoke(this, new RubberduckStatusMessageEventArgs(message));
         }
 
         #endregion
@@ -336,12 +322,7 @@ namespace Rubberduck.Parsing.VBA
         //Never spawn new threads changing module states in the handler! This will cause deadlocks. 
         private void OnModuleStateChanged(QualifiedModuleName module, ParserState state, ParserState oldState)
         {
-            var handler = ModuleStateChanged;
-            if (handler != null)
-            {
-                var args = new ParseProgressEventArgs(module, state, oldState);
-                handler.Invoke(this, args);
-            }
+            ModuleStateChanged?.Invoke(this, new ParseProgressEventArgs(module, state, oldState));
         }
 
         public void SetModuleState(QualifiedModuleName module, ParserState state, CancellationToken token, SyntaxErrorException parserError = null, bool evaluateOverallState = true)
@@ -357,7 +338,7 @@ namespace Rubberduck.Parsing.VBA
             if (AllUserDeclarations.Any())
             {
                 var projectId = module.ProjectId;
-                IVBProject project = GetProject(projectId);
+                var project = GetProject(projectId);
 
                 if (project == null)
                 {
@@ -387,16 +368,18 @@ namespace Rubberduck.Parsing.VBA
             {
                 foreach (var item in _projects)
                 {
-                    if (item.Value.HelpFile == projectId)
+                    if (item.Value.HelpFile != projectId)
                     {
-                        if (project != null)
-                        {
-                            // ghost project detected, abort project iteration
-                            project = null;
-                            break;
-                        }
-                        project = item.Value;
+                        continue;
                     }
+
+                    if (project != null)
+                    {
+                        // ghost project detected, abort project iteration
+                        project = null;
+                        break;
+                    }
+                    project = item.Value;
                 }
             }
 
@@ -434,11 +417,13 @@ namespace Rubberduck.Parsing.VBA
             var state = moduleStates[0];
             foreach (var moduleState in moduleStates)
             {
-                if (moduleState != moduleStates[0])
+                if (moduleState == moduleStates[0])
                 {
-                    state = default(ParserState);
-                    break;
+                    continue;
                 }
+
+                state = default(ParserState);
+                break;
             }
 
             if (state != default(ParserState))
@@ -537,7 +522,7 @@ namespace Rubberduck.Parsing.VBA
         private ParserState _status;
         public ParserState Status
         {
-            get { return _status; }
+            get => _status;
             private set
             {
                 if (_status != value)
@@ -600,13 +585,9 @@ namespace Rubberduck.Parsing.VBA
 
         public IEnumerable<IAnnotation> GetModuleAnnotations(QualifiedModuleName module)
         {
-            ModuleState result;
-            if (_moduleStates.TryGetValue(module, out result))
-            {
-                return result.Annotations;
-            }
-
-            return Enumerable.Empty<IAnnotation>();
+            return _moduleStates.TryGetValue(module, out var result) 
+                ? result.Annotations 
+                : Enumerable.Empty<IAnnotation>();
         }
 
         public void SetModuleAnnotations(QualifiedModuleName module, IEnumerable<IAnnotation> annotations)
@@ -659,7 +640,7 @@ namespace Rubberduck.Parsing.VBA
         }
 
         private readonly ConcurrentBag<SerializableProject> _builtInDeclarationTrees = new ConcurrentBag<SerializableProject>();
-        public IProducerConsumerCollection<SerializableProject> BuiltInDeclarationTrees { get { return _builtInDeclarationTrees; } }
+        public IProducerConsumerCollection<SerializableProject> BuiltInDeclarationTrees => _builtInDeclarationTrees;
 
         /// <summary>
         /// Gets a copy of the collected declarations, excluding the built-in ones.
@@ -681,8 +662,7 @@ namespace Rubberduck.Parsing.VBA
 
             if (declarations.ContainsKey(declaration))
             {
-                byte _;
-                while (!declarations.TryRemove(declaration, out _))
+                while (!declarations.TryRemove(declaration, out byte _))
                 {
                     Logger.Warn("Could not remove existing declaration for '{0}' ({1}). Retrying.", declaration.IdentifierName, declaration.DeclarationType);
                 }
@@ -703,8 +683,7 @@ namespace Rubberduck.Parsing.VBA
 
             if (declarations.ContainsKey(declaration))
             {
-                byte _;
-                while (!declarations.TryRemove(declaration, out _))
+                while (!declarations.TryRemove(declaration, out byte _))
                 {
                     Logger.Warn("Could not remove existing unresolved member declaration for '{0}' ({1}). Retrying.", declaration.IdentifierName, declaration.DeclarationType);
                 }
@@ -732,8 +711,7 @@ namespace Rubberduck.Parsing.VBA
                     {
                         // store project module name
                         var qualifiedModuleName = moduleState.Key;
-                        ModuleState state;
-                        if (_moduleStates.TryRemove(qualifiedModuleName, out state))
+                        if (_moduleStates.TryRemove(qualifiedModuleName, out var state))
                         {
                             state.Dispose();
                         }
@@ -913,8 +891,7 @@ namespace Rubberduck.Parsing.VBA
         {
             var key = declaration.QualifiedName.QualifiedModuleName;
 
-            byte _;
-            return _moduleStates[key].Declarations.TryRemove(declaration, out _);
+            return _moduleStates[key].Declarations.TryRemove(declaration, out byte _);
         }
 
         /// <summary>
@@ -943,8 +920,7 @@ namespace Rubberduck.Parsing.VBA
 
         public bool IsNewOrModified(QualifiedModuleName key)
         {
-            ModuleState moduleState;
-            if (_moduleStates.TryGetValue(key, out moduleState))
+            if (_moduleStates.TryGetValue(key, out var moduleState))
             {
                 // existing/modified
                 return moduleState.IsNew || key.ContentHashCode != moduleState.ModuleContentHashCode;
@@ -964,8 +940,7 @@ namespace Rubberduck.Parsing.VBA
             var projectName = reference.Name;
             var key = new QualifiedModuleName(projectName, reference.FullPath, projectName);
             ClearAsTypeDeclarationPointingToReference(key);
-            ModuleState moduleState;
-            if (_moduleStates.TryRemove(key, out moduleState))
+            if (_moduleStates.TryRemove(key, out var moduleState))
             {
                 moduleState?.Dispose();
                 Logger.Warn("Could not remove declarations for removed reference '{0}' ({1}).", reference.Name, QualifiedModuleName.GetProjectId(reference));

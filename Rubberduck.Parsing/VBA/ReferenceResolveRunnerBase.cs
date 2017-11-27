@@ -25,35 +25,20 @@ namespace Rubberduck.Parsing.VBA
         private readonly IModuleToModuleReferenceManager _moduleToModuleReferenceManager;
         private readonly IReferenceRemover _referenceRemover;
 
-        public ReferenceResolveRunnerBase(
+        protected ReferenceResolveRunnerBase(
             RubberduckParserState state,
             IParserStateManager parserStateManager,
             IModuleToModuleReferenceManager moduletToModuleReferenceManager,
             IReferenceRemover referenceRemover)
         {
-            if (state == null)
-            {
-                throw new ArgumentNullException(nameof(state));
-            }
-            if (parserStateManager == null)
-            {
-                throw new ArgumentNullException(nameof(parserStateManager));
-            }
-            if (moduletToModuleReferenceManager == null)
-            {
-                throw new ArgumentNullException(nameof(moduletToModuleReferenceManager));
-            }
-            if (referenceRemover == null)
-            {
-                throw new ArgumentNullException(nameof(referenceRemover));
-            }
+            _state = state ?? throw new ArgumentNullException(nameof(state));
 
-            _state = state;
-            _parserStateManager = parserStateManager;
-            _moduleToModuleReferenceManager = moduletToModuleReferenceManager;
-            _referenceRemover = referenceRemover;
+            _parserStateManager = parserStateManager ?? throw new ArgumentNullException(nameof(parserStateManager));
+
+            _moduleToModuleReferenceManager = moduletToModuleReferenceManager ?? throw new ArgumentNullException(nameof(moduletToModuleReferenceManager));
+
+            _referenceRemover = referenceRemover ?? throw new ArgumentNullException(nameof(referenceRemover));
         }
-
 
         protected abstract void ResolveReferences(ICollection<KeyValuePair<QualifiedModuleName, IParseTree>> toResolve, CancellationToken token);
         protected abstract void AddModuleToModuleReferences(DeclarationFinder finder, CancellationToken token);
@@ -138,7 +123,7 @@ namespace Rubberduck.Parsing.VBA
                 return null;
             }
 
-            int documentPropertyCount = 0;
+            var documentPropertyCount = 0;
             try
             {
                 if(module.Component.IsWrappingNullReference
@@ -159,8 +144,6 @@ namespace Rubberduck.Parsing.VBA
             {
                 try
                 {
-                    
-
                     if (coclass.Key.Count != documentPropertyCount)
                     {
                         continue;

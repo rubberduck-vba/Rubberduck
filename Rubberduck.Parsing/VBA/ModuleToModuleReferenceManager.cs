@@ -6,9 +6,8 @@ namespace Rubberduck.Parsing.VBA
 {
     public class ModuleToModuleReferenceManager : ModuleToModuleReferenceManagerBase
     {
-        private ConcurrentDictionary<QualifiedModuleName, ConcurrentDictionary<QualifiedModuleName, byte>> _referencesFrom = new ConcurrentDictionary<QualifiedModuleName, ConcurrentDictionary<QualifiedModuleName, byte>>();
-        private ConcurrentDictionary<QualifiedModuleName, ConcurrentDictionary<QualifiedModuleName, byte>> _referencesTo = new ConcurrentDictionary<QualifiedModuleName, ConcurrentDictionary<QualifiedModuleName, byte>>();
-
+        private readonly ConcurrentDictionary<QualifiedModuleName, ConcurrentDictionary<QualifiedModuleName, byte>> _referencesFrom = new ConcurrentDictionary<QualifiedModuleName, ConcurrentDictionary<QualifiedModuleName, byte>>();
+        private readonly ConcurrentDictionary<QualifiedModuleName, ConcurrentDictionary<QualifiedModuleName, byte>> _referencesTo = new ConcurrentDictionary<QualifiedModuleName, ConcurrentDictionary<QualifiedModuleName, byte>>();
 
         public override void AddModuleToModuleReference(QualifiedModuleName referencingModule, QualifiedModuleName referencedModule)
         {
@@ -29,66 +28,59 @@ namespace Rubberduck.Parsing.VBA
 
         public override void RemoveModuleToModuleReference(QualifiedModuleName referencedModule, QualifiedModuleName referencingModule)
         {
-            byte dummyOutValue;
-            ConcurrentDictionary<QualifiedModuleName, byte> referencedModules;
-            if (_referencesFrom.TryGetValue(referencingModule, out referencedModules))
+            if (_referencesFrom.TryGetValue(referencingModule, out var referencedModules))
             {
-                referencedModules.TryRemove(referencedModule, out dummyOutValue);
+                referencedModules.TryRemove(referencedModule, out var _);
             }
 
-            ConcurrentDictionary<QualifiedModuleName, byte> referencingModules;
-            if (_referencesTo.TryGetValue(referencedModule, out referencingModules))
+            if (_referencesTo.TryGetValue(referencedModule, out var referencingModules))
             {
-                referencingModules.TryRemove(referencingModule, out dummyOutValue);
+                referencingModules.TryRemove(referencingModule, out var _);
             }
         }
 
         public override void ClearModuleToModuleReferencesToModule(QualifiedModuleName referencedModule)
         {
-            ConcurrentDictionary<QualifiedModuleName, byte> referencingModules;
-            if (_referencesTo.TryRemove(referencedModule, out referencingModules))
+            if (!_referencesTo.TryRemove(referencedModule, out var referencingModules))
             {
-                byte dummyOutValue;
-                ConcurrentDictionary<QualifiedModuleName, byte> referencedModules;
-                foreach (var module in referencingModules.Keys)
+                return;
+            }
+
+            foreach (var module in referencingModules.Keys)
+            {
+                if (_referencesFrom.TryGetValue(module, out var referencedModules))
                 {
-                    if(_referencesFrom.TryGetValue(module, out referencedModules))
-                    {
-                        referencedModules.TryRemove(referencedModule, out dummyOutValue);
-                    }
+                    referencedModules.TryRemove(referencedModule, out var _);
                 }
             }
         }
 
         public override void ClearModuleToModuleReferencesFromModule(QualifiedModuleName referencingModule)
         {
-            ConcurrentDictionary<QualifiedModuleName, byte> referencedModules;
-            if (_referencesFrom.TryRemove(referencingModule, out referencedModules))
+            if (!_referencesFrom.TryRemove(referencingModule, out var referencedModules))
             {
-                byte dummyOutValue;
-                ConcurrentDictionary<QualifiedModuleName, byte> referencingModules;
-                foreach (var module in referencedModules.Keys)
+                return;
+            }
+
+            foreach (var module in referencedModules.Keys)
+            {
+                if (_referencesTo.TryGetValue(module, out var referencingModules))
                 {
-                    if (_referencesTo.TryGetValue(module, out referencingModules))
-                    {
-                        referencingModules.TryRemove(referencingModule, out dummyOutValue);
-                    }
+                    referencingModules.TryRemove(referencingModule, out var _);
                 }
             }
         }
 
         public override IReadOnlyCollection<QualifiedModuleName> ModulesReferencedBy(QualifiedModuleName referencingModule)
         {
-            ConcurrentDictionary<QualifiedModuleName, byte> referencedModules;
-            return _referencesFrom.TryGetValue(referencingModule, out referencedModules) 
+            return _referencesFrom.TryGetValue(referencingModule, out var referencedModules) 
                         ? referencedModules.Keys.ToHashSet().AsReadOnly()
                         : new HashSet<QualifiedModuleName>().AsReadOnly();
         }
 
         public override IReadOnlyCollection<QualifiedModuleName> ModulesReferencing(QualifiedModuleName referencedModule)
         {
-            ConcurrentDictionary<QualifiedModuleName, byte> referencingModules;
-            return _referencesTo.TryGetValue(referencedModule, out referencingModules)
+            return _referencesTo.TryGetValue(referencedModule, out var referencingModules)
                         ? referencingModules.Keys.ToHashSet().AsReadOnly()
                         : new HashSet<QualifiedModuleName>().AsReadOnly();
         }

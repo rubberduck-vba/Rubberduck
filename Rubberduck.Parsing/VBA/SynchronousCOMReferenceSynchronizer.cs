@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace Rubberduck.Parsing.VBA
 {
-    public class SynchronousCOMReferenceSynchronizer:COMReferenceSynchronizerBase 
+    public class SynchronousCOMReferenceSynchronizer : COMReferenceSynchronizerBase 
     {
         public SynchronousCOMReferenceSynchronizer(
             RubberduckParserState state,

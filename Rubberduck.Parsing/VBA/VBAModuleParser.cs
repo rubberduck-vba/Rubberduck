@@ -4,7 +4,6 @@ using Antlr4.Runtime.Tree;
 using NLog;
 using Rubberduck.Parsing.Grammar;
 using System;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.Symbols.ParsingExceptions;
 
 namespace Rubberduck.Parsing.VBA

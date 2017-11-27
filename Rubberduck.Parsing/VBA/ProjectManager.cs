@@ -23,8 +23,10 @@ namespace Rubberduck.Parsing.VBA
         {
             var components = Projects.SelectMany(project => project.VBComponents);
 
-            var options = new ParallelOptions();
-            options.MaxDegreeOfParallelism = _maxDegreeOfQMNCreationParallelism;
+            var options = new ParallelOptions
+            {
+                MaxDegreeOfParallelism = _maxDegreeOfQMNCreationParallelism
+            };
 
             var modules = new ConcurrentBag<QualifiedModuleName>();
             Parallel.ForEach(components,

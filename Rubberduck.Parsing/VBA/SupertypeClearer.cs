@@ -14,8 +14,10 @@ namespace Rubberduck.Parsing.VBA
 
         public override void ClearSupertypes(IEnumerable<QualifiedModuleName> modules)
         {
-            var options = new ParallelOptions();
-            options.MaxDegreeOfParallelism = _maxDegreeOfSupertypeClearingParallelism;
+            var options = new ParallelOptions
+            {
+                MaxDegreeOfParallelism = _maxDegreeOfSupertypeClearingParallelism
+            };
 
             Parallel.ForEach(
                    modules, 

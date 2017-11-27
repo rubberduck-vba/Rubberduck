@@ -1,7 +1,6 @@
 ﻿using Antlr4.Runtime.Tree;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
-using Rubberduck.Parsing.Inspections.Abstract;
 
 namespace Rubberduck.Parsing.VBA
 {

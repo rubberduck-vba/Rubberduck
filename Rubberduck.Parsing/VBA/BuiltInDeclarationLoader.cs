@@ -10,28 +10,18 @@ namespace Rubberduck.Parsing.VBA
     public class BuiltInDeclarationLoader : IBuiltInDeclarationLoader
     {
         private readonly IEnumerable<ICustomDeclarationLoader> _customDeclarationLoaders;
-        private RubberduckParserState _state;
+        private readonly RubberduckParserState _state;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public BuiltInDeclarationLoader(RubberduckParserState state, IEnumerable<ICustomDeclarationLoader> customDeclarationLoaders)
         {
-            if (state == null)
-            {
-                throw new ArgumentNullException(nameof(state));
-            }
-            if (customDeclarationLoaders == null)
-            {
-                throw new ArgumentNullException(nameof(customDeclarationLoaders));
-            }
+            _state = state ?? throw new ArgumentNullException(nameof(state));
 
-            _state = state;
-            _customDeclarationLoaders = customDeclarationLoaders;
+            _customDeclarationLoaders = customDeclarationLoaders ?? throw new ArgumentNullException(nameof(customDeclarationLoaders));
         }
 
-
         public bool LastLoadOfBuiltInDeclarationsLoadedDeclarations { get; private set; }
-
 
         public void LoadBuitInDeclarations()
         {
@@ -41,13 +31,15 @@ namespace Rubberduck.Parsing.VBA
                 try
                 {
                     var customDeclarations = customDeclarationLoader.Load();
-                    if (customDeclarations.Any())
+                    if (!customDeclarations.Any())
                     {
-                        LastLoadOfBuiltInDeclarationsLoadedDeclarations = true;
-                        foreach (var declaration in customDeclarations)
-                        {
-                            _state.AddDeclaration(declaration);
-                        }
+                        continue;
+                    }
+
+                    LastLoadOfBuiltInDeclarationsLoadedDeclarations = true;
+                    foreach (var declaration in customDeclarations)
+                    {
+                        _state.AddDeclaration(declaration);
                     }
                 }
                 catch (Exception exception)

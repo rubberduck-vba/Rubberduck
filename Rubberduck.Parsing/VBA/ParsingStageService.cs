@@ -21,58 +21,23 @@ namespace Rubberduck.Parsing.VBA
             IDeclarationResolveRunner declarationResolver,
             IReferenceResolveRunner referenceResolver)
         {
-            if(comSynchronizer == null)
-            {
-                throw new ArgumentNullException(nameof(comSynchronizer));
-            }
-            if (builtInDeclarationLoader == null)
-            {
-                throw new ArgumentNullException(nameof(builtInDeclarationLoader));
-            }
-            if (parseRunner == null)
-            {
-                throw new ArgumentNullException(nameof(parseRunner));
-            }
-            if (declarationResolver == null)
-            {
-                throw new ArgumentNullException(nameof(declarationResolver));
-            }
-            if (referenceResolver == null)
-            {
-                throw new ArgumentNullException(nameof(referenceResolver));
-            }
+            _comSynchronizer = comSynchronizer ?? throw new ArgumentNullException(nameof(comSynchronizer));
 
-            _comSynchronizer = comSynchronizer;
-            _builtInDeclarationLoader = builtInDeclarationLoader;
-            _parseRunner = parseRunner;
-            _declarationResolver = declarationResolver;
-            _referenceResolver = referenceResolver;
+            _builtInDeclarationLoader = builtInDeclarationLoader ?? throw new ArgumentNullException(nameof(builtInDeclarationLoader));
+
+            _parseRunner = parseRunner ?? throw new ArgumentNullException(nameof(parseRunner));
+
+            _declarationResolver = declarationResolver ?? throw new ArgumentNullException(nameof(declarationResolver));
+
+            _referenceResolver = referenceResolver ?? throw new ArgumentNullException(nameof(referenceResolver));
         }
 
 
-        public bool LastLoadOfBuiltInDeclarationsLoadedDeclarations
-        {
-            get
-            {
-                return _builtInDeclarationLoader.LastLoadOfBuiltInDeclarationsLoadedDeclarations;
-            }
-        }
+        public bool LastLoadOfBuiltInDeclarationsLoadedDeclarations => _builtInDeclarationLoader.LastLoadOfBuiltInDeclarationsLoadedDeclarations;
 
-        public bool LastSyncOfCOMReferencesLoadedReferences
-        {
-            get
-            {
-                return _comSynchronizer.LastSyncOfCOMReferencesLoadedReferences;
-            }
-        }
+        public bool LastSyncOfCOMReferencesLoadedReferences => _comSynchronizer.LastSyncOfCOMReferencesLoadedReferences;
 
-        public IEnumerable<QualifiedModuleName> COMReferencesUnloadedUnloadedInLastSync
-        {
-            get
-            {
-                return _comSynchronizer.COMReferencesUnloadedUnloadedInLastSync;
-            }
-        }
+        public IEnumerable<QualifiedModuleName> COMReferencesUnloadedUnloadedInLastSync => _comSynchronizer.COMReferencesUnloadedUnloadedInLastSync;
 
         public void LoadBuitInDeclarations()
         {

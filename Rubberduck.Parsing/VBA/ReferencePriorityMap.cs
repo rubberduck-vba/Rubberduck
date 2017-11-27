@@ -7,31 +7,28 @@ namespace Rubberduck.Parsing.VBA
     /// </summary>
     public class ReferencePriorityMap : Dictionary<string, int>
     {
-        private readonly string _referencedProjectId;
-
         public ReferencePriorityMap(string referencedProjectId)
         {
-            _referencedProjectId = referencedProjectId;
+            ReferencedProjectId = referencedProjectId;
         }
 
-        public string ReferencedProjectId
-        {
-            get { return _referencedProjectId; }
-        }
+        public string ReferencedProjectId { get; }
 
         public bool IsLoaded { get; set; }
 
         public override bool Equals(object obj)
         {
-            var other = obj as ReferencePriorityMap;
-            if (other == null) return false;
+            if (!(obj is ReferencePriorityMap other))
+            {
+                return false;
+            }
 
             return other.ReferencedProjectId == ReferencedProjectId;
         }
 
         public override int GetHashCode()
         {
-            return _referencedProjectId.GetHashCode();
+            return ReferencedProjectId.GetHashCode();
         }
     }
 }

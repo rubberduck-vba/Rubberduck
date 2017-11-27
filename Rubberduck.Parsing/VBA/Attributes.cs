@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
@@ -85,7 +84,7 @@ namespace Rubberduck.Parsing.VBA
                 return false;
             }
 
-            var name = "VB_" + annotationType;
+            var name = $"VB_{annotationType}";
 
             if (annotationType.HasFlag(AnnotationType.MemberAnnotation))
             {
@@ -111,7 +110,7 @@ namespace Rubberduck.Parsing.VBA
         /// <param name="identifierName"></param>
         public void AddDefaultMemberAttribute(string identifierName)
         {
-            Add(new AttributeNode(identifierName + ".VB_UserMemId", new[] {"0"}));
+            Add(new AttributeNode($"{identifierName}.VB_UserMemId", new[] {"0"}));
         }
 
         public bool HasDefaultMemberAttribute(string identifierName, out AttributeNode attribute)
@@ -123,7 +122,7 @@ namespace Rubberduck.Parsing.VBA
 
         public void AddHiddenMemberAttribute(string identifierName)
         {
-            Add(new AttributeNode(identifierName + ".VB_UserMemId", new[] {"40"}));
+            Add(new AttributeNode($"{identifierName}.VB_UserMemId", new[] {"40"}));
         }
 
         public bool HasHiddenMemberAttribute(string identifierName, out AttributeNode attribute)
@@ -135,7 +134,7 @@ namespace Rubberduck.Parsing.VBA
 
         public void AddEnumeratorMemberAttribute(string identifierName)
         {
-            Add(new AttributeNode(identifierName + ".VB_UserMemId", new[] {"-4"}));
+            Add(new AttributeNode($"{identifierName}.VB_UserMemId", new[] {"-4"}));
         }
 
         /// <summary>
@@ -144,12 +143,12 @@ namespace Rubberduck.Parsing.VBA
         /// <param name="identifierName"></param>
         public void AddEvaluateMemberAttribute(string identifierName)
         {
-            Add(new AttributeNode(identifierName + ".VB_UserMemId", new[] { "-5" }));
+            Add(new AttributeNode($"{identifierName}.VB_UserMemId", new[] { "-5" }));
         }
 
         public void AddMemberDescriptionAttribute(string identifierName, string description)
         {
-            Add(new AttributeNode(identifierName + ".VB_Description", new[] {description}));
+            Add(new AttributeNode($"{identifierName}.VB_Description", new[] {description}));
         }
 
         public bool HasMemberDescriptionAttribute(string identifierName, out AttributeNode attribute)

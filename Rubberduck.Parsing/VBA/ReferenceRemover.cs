@@ -26,9 +26,11 @@ namespace Rubberduck.Parsing.VBA
                 return;
             }
 
-            var options = new ParallelOptions();
-            options.CancellationToken = token;
-            options.MaxDegreeOfParallelism = _maxDegreeOfReferenceRemovalParallelism;
+            var options = new ParallelOptions
+            {
+                CancellationToken = token,
+                MaxDegreeOfParallelism = _maxDegreeOfReferenceRemovalParallelism
+            };
 
             Parallel.ForEach(modules, options, module => RemoveReferencesTo(module, token));
         }
@@ -40,9 +42,11 @@ namespace Rubberduck.Parsing.VBA
                 return;
             }
 
-            var options = new ParallelOptions();
-            options.CancellationToken = token;
-            options.MaxDegreeOfParallelism = _maxDegreeOfReferenceRemovalParallelism;
+            var options = new ParallelOptions
+            {
+                CancellationToken = token,
+                MaxDegreeOfParallelism = _maxDegreeOfReferenceRemovalParallelism
+            };
 
             Parallel.ForEach(targetModules, options, targetModule => RemoveReferencesByFromTargetModule(referencingModules, targetModule));
         }

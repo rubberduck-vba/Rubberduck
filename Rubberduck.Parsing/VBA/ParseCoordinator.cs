@@ -32,32 +32,16 @@ namespace Rubberduck.Parsing.VBA
             IParserStateManager parserStateManager,
             bool isTestScope = false)
         {
-            if (state == null)
-            {
-                throw new ArgumentNullException(nameof(state));
-            }
-            if (parsingStageService == null)
-            {
-                throw new ArgumentNullException(nameof(parsingStageService));
-            }
-            if (parsingStageService == null)
-            {
-                throw new ArgumentNullException(nameof(parsingStageService));
-            }
-            if (parsingCacheService == null)
-            {
-                throw new ArgumentNullException(nameof(parsingCacheService));
-            }
-            if (parserStateManager == null)
-            {
-                throw new ArgumentNullException(nameof(parserStateManager));
-            }
+            State = state ?? throw new ArgumentNullException(nameof(state));
 
-            State = state;
-            _parsingStageService = parsingStageService;
+            _parsingStageService = parsingStageService ?? throw new ArgumentNullException(nameof(parsingStageService));
+
             _projectManager = projectManager;
-            _parsingCacheService = parsingCacheService;
-            _parserStateManager = parserStateManager;
+
+            _parsingCacheService = parsingCacheService ?? throw new ArgumentNullException(nameof(parsingCacheService));
+
+            _parserStateManager = parserStateManager ?? throw new ArgumentNullException(nameof(parserStateManager));
+
             _isTestScope = isTestScope;
 
             state.ParseRequest += ReparseRequested;
@@ -438,7 +422,6 @@ namespace Rubberduck.Parsing.VBA
             var removedProjects = projectsWithProjectDeclarations.Where(project => !currentlyExistingProjects.Contains(project));
             return removedProjects.Select(tuple => tuple.Item1).ToHashSet().AsReadOnly();
         }
-
 
         public void Dispose()
         {

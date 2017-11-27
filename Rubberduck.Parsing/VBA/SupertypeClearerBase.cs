@@ -9,13 +9,9 @@ namespace Rubberduck.Parsing.VBA
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
 
-        public SupertypeClearerBase(IDeclarationFinderProvider declarationFinderProvider)
+        protected SupertypeClearerBase(IDeclarationFinderProvider declarationFinderProvider)
         {
-            if(declarationFinderProvider == null)
-            {
-                throw new ArgumentNullException(nameof(declarationFinderProvider));
-            }
-            _declarationFinderProvider = declarationFinderProvider;
+            _declarationFinderProvider = declarationFinderProvider ?? throw new ArgumentNullException(nameof(declarationFinderProvider));
         }
 
         public abstract void ClearSupertypes(IEnumerable<QualifiedModuleName> modules);
