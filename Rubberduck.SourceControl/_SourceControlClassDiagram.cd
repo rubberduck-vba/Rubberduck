@@ -1,0 +1,237 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Rubberduck.SourceControl.Branch" BaseTypeListCollapsed="true">
+    <Position X="8.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAAAAgAAAAAAAQAAAAAACAAAAAIAAAAAAA=</HashCode>
+      <FileName>Branch.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Rubberduck.SourceControl.Commit" BaseTypeListCollapsed="true">
+    <Position X="11.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Commit.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Rubberduck.SourceControl.CredentialsBase&lt;TPassword&gt;" Collapsed="true">
+    <Position X="4.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQAAAAAAAAAAAAACAAAAAAAAAAA=</HashCode>
+      <FileName>Credentials.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Rubberduck.SourceControl.Credentials">
+    <Position X="4.25" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Credentials.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rubberduck.SourceControl.SecureCredentials">
+    <Position X="6" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Credentials.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rubberduck.SourceControl.DefaultSettings" Collapsed="true">
+    <Position X="8.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAQA=</HashCode>
+      <FileName>DefaultSettings.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rubberduck.SourceControl.FileStatusEntry" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="11.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAIAAA=</HashCode>
+      <FileName>FileStatusEntry.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Rubberduck.SourceControl.GitProvider">
+    <Position X="2.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IIBAgEIEECAABCYAAEEEQAAAAAQAWQAAAMgCAAIQiBA=</HashCode>
+      <FileName>GitProvider.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Rubberduck.SourceControl.Repository" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="13.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgACAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Repository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Rubberduck.SourceControl.SourceControlConfigProvider" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="10" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAAAAAAAAAAAAAAAEAAAAQAIIAAAAA=</HashCode>
+      <FileName>SourceControlConfigProvider.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Rubberduck.SourceControl.SourceControlException" Collapsed="true">
+    <Position X="11.75" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SourceControlException.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rubberduck.SourceControl.SourceControlProviderBase">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IoBAgFAEEABABCYCAEEECIAAAAQASQAAAIgCAIIQiBA=</HashCode>
+      <FileName>SourceControlProviderBase.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Rubberduck.SourceControl.SourceControlSettings" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="13.5" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAAAAAAAAAgAAAAAQAIAAAAAAAAQAAAgAAAAA=</HashCode>
+      <FileName>SourceControlSettings.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Rubberduck.SourceControl.SourceControlText">
+    <Position X="8.25" Y="5.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAQAAAoAAgAkABEAIAEQAAIlQEABAgAEAAAIg=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rubberduck.SourceControl.Interop.Branches" BaseTypeListCollapsed="true">
+    <Position X="10" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interop\Branches.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Rubberduck.SourceControl.Interop.Credentials" BaseTypeListCollapsed="true">
+    <Position X="13.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQAAAAAAAAAAAAACAAAAAAAAAAA=</HashCode>
+      <FileName>Interop\Credentials.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Rubberduck.SourceControl.Interop.FileStatusEntries" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="10" Y="3.25" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAABAAAAAgAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interop\FileStatusEntries.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Rubberduck.SourceControl.Interop.GitProvider">
+    <Position X="4" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAEAEAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAABA=</HashCode>
+      <FileName>Interop\GitProvider.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Rubberduck.SourceControl.Interop.SourceControlClassFactory" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="8.25" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAAAAAAAgAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interop\SourceControlClassFactory.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Interface Name="Rubberduck.SourceControl.IBranch" Collapsed="true">
+    <Position X="12.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAAAAgAAAAAAAQAAAAAACAAAAAIAAAAAAA=</HashCode>
+      <FileName>Branch.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Rubberduck.SourceControl.ICommit" Collapsed="true">
+    <Position X="14" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Commit.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Rubberduck.SourceControl.ICredentials&lt;TPassword&gt;" Collapsed="true">
+    <Position X="16" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQAAAAAAAAAAAAACAAAAAAAAAAA=</HashCode>
+      <FileName>Credentials.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Rubberduck.SourceControl.IFileStatusEntry" Collapsed="true">
+    <Position X="12.25" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAIAAA=</HashCode>
+      <FileName>FileStatusEntry.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Rubberduck.SourceControl.IRepository" Collapsed="true">
+    <Position X="14" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgACAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Rubberduck.SourceControl.ISourceControlProvider" Collapsed="true">
+    <Position X="16" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IoBAgFAEEAAABCYCAEEEAIAAAAQASQAAAIgCAIIQiBA=</HashCode>
+      <FileName>ISourceControlProvider.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Rubberduck.SourceControl.ISourceControlSettings" Collapsed="true">
+    <Position X="12.25" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAAAAAAAAAAAAAAAQAIAAAAAAAAQAAAgAAAAA=</HashCode>
+      <FileName>SourceControlSettings.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Rubberduck.SourceControl.Interop.ICredentials" Collapsed="true">
+    <Position X="10.5" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQAAAAAAAAAAAAACAAAAAAAAAAA=</HashCode>
+      <FileName>Interop\Credentials.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Rubberduck.SourceControl.Interop.ISourceControlProvider" Collapsed="true">
+    <Position X="10.5" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IIBAAFAEEAAABAIAAAEAAAAAAAQAAQAAAAACAAIQiBA=</HashCode>
+      <FileName>Interop\ISourceControlProvider.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Rubberduck.SourceControl.Interop._ISourceControlClassFactory" Collapsed="true">
+    <Position X="10.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAAAAAAAgAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interop\SourceControlClassFactory.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="Rubberduck.SourceControl.GitSettingsFile" Collapsed="true">
+    <Position X="12.25" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DefaultSettings.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Rubberduck.SourceControl.FileStatus" Collapsed="true">
+    <Position X="10.5" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEgAAqAIAAEAAABAAAEABAACAAAAAAAgAAAAAEQA=</HashCode>
+      <FileName>FileStatus.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
