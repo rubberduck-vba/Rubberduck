@@ -24,9 +24,9 @@ namespace Rubberduck.UI.UnitTesting
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value.GetType() != typeof (TestOutcome))
+            if (value?.GetType() != typeof(TestOutcome))
             {
-                throw new ArgumentException("value must be a TestOutcome");
+                return null;
             }
 
             var outcome = (TestOutcome)value;

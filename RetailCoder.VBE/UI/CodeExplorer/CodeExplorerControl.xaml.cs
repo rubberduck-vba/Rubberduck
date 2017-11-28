@@ -15,7 +15,7 @@ namespace Rubberduck.UI.CodeExplorer
             InitializeComponent();
         }
 
-        private CodeExplorerViewModel ViewModel { get { return DataContext as CodeExplorerViewModel; } }
+        private CodeExplorerViewModel ViewModel => DataContext as CodeExplorerViewModel;
 
         private void TreeView_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {

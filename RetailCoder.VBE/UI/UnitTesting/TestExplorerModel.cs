@@ -114,7 +114,7 @@ namespace Rubberduck.UI.UnitTesting
         private int _executedCount;
         public int ExecutedCount
         {
-            get { return _executedCount; }
+            get => _executedCount;
             private set
             {
                 _executedCount = value;
@@ -125,7 +125,7 @@ namespace Rubberduck.UI.UnitTesting
         private Color _progressBarColor = Colors.DimGray;
         public Color ProgressBarColor
         {
-            get { return _progressBarColor; }
+            get => _progressBarColor;
             set
             {
                 _progressBarColor = value;
@@ -136,7 +136,7 @@ namespace Rubberduck.UI.UnitTesting
         private bool _isBusy;
         public bool IsBusy
         {
-            get { return _isBusy; }
+            get => _isBusy;
             set
             {
                 _isBusy = value;
@@ -149,7 +149,7 @@ namespace Rubberduck.UI.UnitTesting
         private bool _isReady = true;
         public bool IsReady
         {
-            get { return _isReady; }
+            get => _isReady;
             private set
             {
                 _isReady = value;
@@ -160,8 +160,7 @@ namespace Rubberduck.UI.UnitTesting
         public event EventHandler<EventArgs> TestsRefreshed;
         private void OnTestsRefreshed()
         {
-            var handler = TestsRefreshed;
-            handler?.Invoke(this, EventArgs.Empty);
+            TestsRefreshed?.Invoke(this, EventArgs.Empty);
         }
 
         public void Dispose()

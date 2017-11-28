@@ -29,13 +29,13 @@ namespace Rubberduck.UI.ToDoItems
             _operatingSystem = operatingSystem;
             _state.StateChanged += HandleStateChanged;
 
-            _setMarkerGroupingCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
+            SetMarkerGroupingCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
             {
                 GroupByMarker = (bool)param;
                 GroupByLocation = !(bool)param;
             });
 
-            _setLocationGroupingCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
+            SetLocationGroupingCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
             {
                 GroupByLocation = (bool)param;
                 GroupByMarker = !(bool)param;
@@ -45,50 +45,54 @@ namespace Rubberduck.UI.ToDoItems
         private ObservableCollection<ToDoItem> _items = new ObservableCollection<ToDoItem>();
         public ObservableCollection<ToDoItem> Items
         {
-            get { return _items; }
+            get => _items;
             set
             {
-                if (_items != value)
+                if (_items == value)
                 {
-                    _items = value;
-                    OnPropertyChanged();
+                    return;
                 }
+
+                _items = value;
+                OnPropertyChanged();
             }
         }
 
         private bool _groupByMarker = true;
         public bool GroupByMarker
         {
-            get { return _groupByMarker; }
+            get => _groupByMarker;
             set
             {
-                if (_groupByMarker != value)
+                if (_groupByMarker == value)
                 {
-                    _groupByMarker = value;
-                    OnPropertyChanged();
+                    return;
                 }
+
+                _groupByMarker = value;
+                OnPropertyChanged();
             }
         }
 
         private bool _groupByLocation;
         public bool GroupByLocation
         {
-            get { return _groupByLocation; }
+            get => _groupByLocation;
             set
             {
-                if (_groupByLocation != value)
+                if (_groupByLocation == value)
                 {
-                    _groupByLocation = value;
-                    OnPropertyChanged();
+                    return;
                 }
+
+                _groupByLocation = value;
+                OnPropertyChanged();
             }
         }
 
-        private readonly CommandBase _setMarkerGroupingCommand;
-        public CommandBase SetMarkerGroupingCommand { get { return _setMarkerGroupingCommand; } }
+        public CommandBase SetMarkerGroupingCommand { get; }
 
-        private readonly CommandBase _setLocationGroupingCommand;
-        public CommandBase SetLocationGroupingCommand { get { return _setLocationGroupingCommand; } }
+        public CommandBase SetLocationGroupingCommand { get; }
 
         private CommandBase _refreshCommand;
         public CommandBase RefreshCommand
@@ -120,7 +124,7 @@ namespace Rubberduck.UI.ToDoItems
         private ToDoItem _selectedItem;
         public INavigateSource SelectedItem
         {
-            get { return _selectedItem; }
+            get => _selectedItem;
             set
             {
                 _selectedItem = value as ToDoItem; 

@@ -10,7 +10,7 @@ namespace Rubberduck.UI.Controls
     {
         private readonly IVBE _vbe;
         private readonly IAddIn _addin;
-        private SearchResultWindow _view;
+        private readonly SearchResultWindow _view;
 
         public SearchResultPresenterInstanceManager(IVBE vbe, IAddIn addin)
         {

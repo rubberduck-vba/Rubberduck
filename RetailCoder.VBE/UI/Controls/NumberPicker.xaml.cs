@@ -14,10 +14,7 @@ namespace Rubberduck.UI.Controls
 
         public int NumValue
         {
-            get
-            {
-                return (int)GetValue(NumValueProperty);
-            }
+            get => (int)GetValue(NumValueProperty);
             set
             {
                 SetValue(NumValueProperty, value);
@@ -25,19 +22,9 @@ namespace Rubberduck.UI.Controls
             }
         }
 
-        private int _minNumber = int.MinValue;
-        public int MinNumber
-        {
-            get { return _minNumber; }
-            set { _minNumber = value; }
-        }
+        public int MinNumber { get; set; } = int.MinValue;
 
-        private int _maxNumber = int.MaxValue;
-        public int MaxNumber
-        {
-            get { return _maxNumber; }
-            set { _maxNumber = value; }
-        }
+        public int MaxNumber { get; set; } = int.MaxValue;
 
         public NumberPicker()
         {

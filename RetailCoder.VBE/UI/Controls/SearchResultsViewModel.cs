@@ -11,13 +11,10 @@ namespace Rubberduck.UI.Controls
 {
     public class SearchResultsViewModel : ViewModelBase, INavigateSelection
     {
-        private readonly INavigateCommand _navigateCommand;
-        private readonly string _header;
-
         public SearchResultsViewModel(INavigateCommand navigateCommand, string header, Declaration target, IEnumerable<SearchResultItem> searchResults)
         {
-            _navigateCommand = navigateCommand;
-            _header = header;
+            NavigateCommand = navigateCommand;
+            Header = header;
             Target = target;
             SearchResultsSource = new CollectionViewSource();
             SearchResultsSource.GroupDescriptions.Add(new PropertyGroupDescription("ParentScope.QualifiedName.QualifiedModuleName.Name"));
@@ -27,13 +24,13 @@ namespace Rubberduck.UI.Controls
 
             SearchResults = new ObservableCollection<SearchResultItem>(searchResults);
 
-            _closeCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCloseCommand);
+            CloseCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCloseCommand);
         }
 
         private ObservableCollection<SearchResultItem> _searchResults;
         public ObservableCollection<SearchResultItem> SearchResults
         {
-            get { return _searchResults; }
+            get => _searchResults;
             set
             {
                 _searchResults = value;
@@ -47,24 +44,25 @@ namespace Rubberduck.UI.Controls
 
         public CollectionViewSource SearchResultsSource { get; private set; }
 
-        public string Header { get { return _header; } }
+        public string Header { get; }
 
-        private readonly CommandBase _closeCommand;
-        public CommandBase CloseCommand { get { return _closeCommand; } }
+        public CommandBase CloseCommand { get; }
 
         public Declaration Target { get; set; }
 
         private SearchResultItem _selectedItem;
         public SearchResultItem SelectedItem
         {
-            get { return _selectedItem; }
+            get => _selectedItem;
             set
             {
-                if (_selectedItem != value)
+                if (_selectedItem == value)
                 {
-                    _selectedItem = value;
-                    OnPropertyChanged();
+                    return;
                 }
+
+                _selectedItem = value;
+                OnPropertyChanged();
             }
         }
 
@@ -76,14 +74,11 @@ namespace Rubberduck.UI.Controls
         public event EventHandler Close;
         private void OnClose()
         {
-            var handler = Close;
-            if (handler != null)
-            {
-                handler.Invoke(this, EventArgs.Empty);
-            }
+            Close?.Invoke(this, EventArgs.Empty);
         }
 
-        public INavigateCommand NavigateCommand { get { return _navigateCommand; } }
-        INavigateSource INavigateSelection.SelectedItem { get { return SelectedItem; } }
+        public INavigateCommand NavigateCommand { get; }
+
+        INavigateSource INavigateSelection.SelectedItem => SelectedItem;
     }
 }
