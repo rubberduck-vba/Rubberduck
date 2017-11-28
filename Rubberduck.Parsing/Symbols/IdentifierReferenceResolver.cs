@@ -84,11 +84,7 @@ namespace Rubberduck.Parsing.Symbols
 
         private IBoundExpression GetInnerMostWithExpression()
         {
-            if (_withBlockExpressions.Any())
-            {
-                return _withBlockExpressions.Peek();
-            }
-            return null;
+            return _withBlockExpressions.Any() ? _withBlockExpressions.Peek() : null;
         }
 
         public void ExitWithBlock()
@@ -205,10 +201,7 @@ namespace Rubberduck.Parsing.Symbols
             var boundExpression = _bindingService.ResolveType(_moduleDeclaration, _currentParent, expression);
             if (boundExpression.Classification == ExpressionClassification.ResolutionFailed)
             {
-                Logger.Warn(
-                   string.Format(
-                       "Type Context: Failed to resolve {0}. Binding as much as we can.",
-                       expression.GetText()));
+                Logger.Warn($"Type Context: Failed to resolve {expression.GetText()}. Binding as much as we can.");
             }
             _boundExpressionVisitor.AddIdentifierReferences(boundExpression, _qualifiedModuleName, _currentScope, _currentParent);
         }
@@ -254,14 +247,17 @@ namespace Rubberduck.Parsing.Symbols
                 // It's not actually a function call but a special statement.
                 ResolveDefault(indexExpr.lExpression());
                 var argumentList = indexExpr.argumentList();
-                if (argumentList.argument() != null)
+
+                if (argumentList.argument() == null)
                 {
-                    foreach (var positionalArgument in argumentList.argument())
+                    continue;
+                }
+
+                foreach (var positionalArgument in argumentList.argument())
+                {
+                    if (positionalArgument.positionalArgument() != null)
                     {
-                        if (positionalArgument.positionalArgument() != null)
-                        {
-                            ResolveRedimArgument(positionalArgument.positionalArgument().argumentExpression());
-                        }
+                        ResolveRedimArgument(positionalArgument.positionalArgument().argumentExpression());
                     }
                 }
             }
@@ -298,12 +294,14 @@ namespace Rubberduck.Parsing.Symbols
         public void Resolve(VBAParser.IfStmtContext context)
         {
             ResolveDefault(context.booleanExpression());
-            if (context.elseIfBlock() != null)
+            if (context.elseIfBlock() == null)
             {
-                foreach (var elseIfBlock in context.elseIfBlock())
-                {
-                    ResolveDefault(elseIfBlock.booleanExpression());
-                }
+                return;
+            }
+
+            foreach (var elseIfBlock in context.elseIfBlock())
+            {
+                ResolveDefault(elseIfBlock.booleanExpression());
             }
         }
 
@@ -414,14 +412,9 @@ namespace Rubberduck.Parsing.Symbols
 
         private void ResolveFileNumber(VBAParser.FileNumberContext fileNumber)
         {
-            if (fileNumber.markedFileNumber() != null)
-            {
-                ResolveDefault(fileNumber.markedFileNumber().expression());
-            }
-            else
-            {
-                ResolveDefault(fileNumber.unmarkedFileNumber().expression());
-            }
+            ResolveDefault(fileNumber.markedFileNumber() == null
+                ? fileNumber.unmarkedFileNumber().expression()
+                : fileNumber.markedFileNumber().expression());
         }
 
         public void Resolve(VBAParser.OpenStmtContext context)
@@ -436,12 +429,14 @@ namespace Rubberduck.Parsing.Symbols
 
         public void Resolve(VBAParser.CloseStmtContext context)
         {
-            if (context.fileNumberList() != null)
+            if (context.fileNumberList() == null)
             {
-                foreach (var fileNumber in context.fileNumberList().fileNumber())
-                {
-                    ResolveFileNumber(fileNumber);
-                }
+                return;
+            }
+
+            foreach (var fileNumber in context.fileNumberList().fileNumber())
+            {
+                ResolveFileNumber(fileNumber);
             }
         }
 
@@ -515,20 +510,22 @@ namespace Rubberduck.Parsing.Symbols
             }
             foreach (var outputItem in outputList.outputItem())
             {
-                if (outputItem.outputClause() != null)
+                if (outputItem.outputClause() == null)
                 {
-                    if (outputItem.outputClause().spcClause() != null)
-                    {
-                        ResolveDefault(outputItem.outputClause().spcClause().spcNumber().expression());
-                    }
-                    if (outputItem.outputClause().tabClause() != null && outputItem.outputClause().tabClause().tabNumberClause() != null)
-                    {
-                        ResolveDefault(outputItem.outputClause().tabClause().tabNumberClause().tabNumber().expression());
-                    }
-                    if (outputItem.outputClause().outputExpression() != null)
-                    {
-                        ResolveDefault(outputItem.outputClause().outputExpression().expression());
-                    }
+                    continue;
+                }
+
+                if (outputItem.outputClause().spcClause() != null)
+                {
+                    ResolveDefault(outputItem.outputClause().spcClause().spcNumber().expression());
+                }
+                if (outputItem.outputClause().tabClause() != null && outputItem.outputClause().tabClause().tabNumberClause() != null)
+                {
+                    ResolveDefault(outputItem.outputClause().tabClause().tabNumberClause().tabNumber().expression());
+                }
+                if (outputItem.outputClause().outputExpression() != null)
+                {
+                    ResolveDefault(outputItem.outputClause().outputExpression().expression());
                 }
             }
         }
@@ -596,7 +593,6 @@ namespace Rubberduck.Parsing.Symbols
             if (baseType != null)
             {
                 // Fixed-Length strings can have a constant-name as length that is a simple-name-expression that also has to be resolved.
-                var length = context.fieldLength();
                 if (context.fieldLength() != null && context.fieldLength().identifierValue() != null)
                 {
                     ResolveDefault(context.fieldLength().identifierValue());
@@ -644,7 +640,7 @@ namespace Rubberduck.Parsing.Symbols
                 _qualifiedModuleName,
                 _currentScope,
                 _currentParent);
-            for (int exprIndex = 1; exprIndex < context.expression().Count; exprIndex++)
+            for (var exprIndex = 1; exprIndex < context.expression().Count; exprIndex++)
             {
                 ResolveDefault(context.expression()[exprIndex]);
             }
@@ -682,7 +678,7 @@ namespace Rubberduck.Parsing.Symbols
                 //    _currentScope,
                 //    _currentParent);
             }
-            for (int exprIndex = 1; exprIndex < context.expression().Count; exprIndex++)
+            for (var exprIndex = 1; exprIndex < context.expression().Count; exprIndex++)
             {
                 ResolveDefault(context.expression()[exprIndex]);
             }
