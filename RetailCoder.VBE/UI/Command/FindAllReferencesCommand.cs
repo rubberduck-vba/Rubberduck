@@ -61,28 +61,35 @@ namespace Rubberduck.UI.Command
 
         private void UpdateTab()
         {
-            var findReferenceTabs = _viewModel.Tabs.Where(
-                t => t.Header.StartsWith(RubberduckUI.AllReferences_Caption.Replace("'{0}'", ""))).ToList();
-
-            foreach (var tab in findReferenceTabs)
+            try
             {
-                var newTarget = FindNewDeclaration(tab.Target);
-                if (newTarget == null)
-                {
-                    tab.CloseCommand.Execute(null);
-                    return;
-                }
+                var findReferenceTabs = _viewModel.Tabs.Where(
+                    t => t.Header.StartsWith(RubberduckUI.AllReferences_Caption.Replace("'{0}'", ""))).ToList();
 
-                var vm = CreateViewModel(newTarget);
-                if (vm.SearchResults.Any())
+                foreach (var tab in findReferenceTabs)
                 {
-                    tab.SearchResults = vm.SearchResults;
-                    tab.Target = vm.Target;
+                    var newTarget = FindNewDeclaration(tab.Target);
+                    if (newTarget == null)
+                    {
+                        tab.CloseCommand.Execute(null);
+                        return;
+                    }
+
+                    var vm = CreateViewModel(newTarget);
+                    if (vm.SearchResults.Any())
+                    {
+                        tab.SearchResults = vm.SearchResults;
+                        tab.Target = vm.Target;
+                    }
+                    else
+                    {
+                        tab.CloseCommand.Execute(null);
+                    }
                 }
-                else
-                {
-                    tab.CloseCommand.Execute(null);
-                }
+            }
+            catch (Exception exception)
+            {
+                Logger.Error(exception, "Exception thrown while trying to update the find all references tab.");
             }
         }
 

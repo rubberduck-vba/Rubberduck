@@ -16,7 +16,7 @@ namespace RubberduckTests.Inspections
         public void EmptyDoWhileBlock_InspectionType()
         {
             var inspection = new EmptyDoWhileBlockInspection(null);
-            var expectedInspection = CodeInspectionType.CodeQualityIssues;
+            var expectedInspection = CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
             Assert.AreEqual(expectedInspection, inspection.InspectionType);
         }
@@ -36,7 +36,7 @@ namespace RubberduckTests.Inspections
         public void EmptyDoWhileBlock_DoesNotFiresOnImplementedLoopBlocks()
         {
             const string inputCode =
-@"Sub Foo(results As Collection)
+                @"Sub Foo(results As Collection)
     Dim i As Integer
     i = 1
 
@@ -53,7 +53,7 @@ End Sub";
         public void EmptyDoWhileBlock_FiresOnEmptyLoopBlocks()
         {
             const string inputCode =
-@"Sub Foo(results As Collection)
+                @"Sub Foo(results As Collection)
     Dim i As Integer
     i = 1
 
@@ -69,13 +69,15 @@ End Sub";
         {
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new EmptyDoWhileBlockInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new EmptyDoWhileBlockInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.AreEqual(expectedCount, actualResults.Count());
+                Assert.AreEqual(expectedCount, actualResults.Count());
+            }
         }
     }
 }

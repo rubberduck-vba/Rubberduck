@@ -30,12 +30,14 @@ Option Explicit
 
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out _);
 
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var inspection = new MissingAttributeInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new MissingAttributeInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.IsFalse(inspectionResults.Any());
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
 
         [TestCategory("Inspections")]
@@ -62,12 +64,14 @@ End Sub
 
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out _);
 
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var inspection = new MissingAttributeInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new MissingAttributeInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.IsFalse(inspectionResults.Any());
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
 
         [TestCategory("Inspections")]
@@ -91,12 +95,14 @@ Option Explicit
 
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out _);
 
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var inspection = new MissingAttributeInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new MissingAttributeInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.AreEqual(1, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
         [TestCategory("Inspections")]
@@ -120,12 +126,14 @@ Option Explicit
 
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out _);
 
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var inspection = new MissingAttributeInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new MissingAttributeInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.IsFalse(inspectionResults.Any());
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
 
         [TestCategory("Inspections")]
@@ -148,12 +156,14 @@ Option Explicit
 
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out _);
 
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var inspection = new MissingAttributeInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new MissingAttributeInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.IsFalse(inspectionResults.Any());
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
 
         [TestCategory("Inspections")]
@@ -177,12 +187,14 @@ Option Explicit
 
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out _);
 
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var inspection = new MissingAttributeInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new MissingAttributeInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.AreEqual(1, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
         [TestCategory("Inspections")]
@@ -209,12 +221,14 @@ End Sub
 
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out _);
 
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var inspection = new MissingAttributeInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new MissingAttributeInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.IsFalse(inspectionResults.Any());
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
 
         [TestCategory("Inspections")]
@@ -241,12 +255,14 @@ End Sub
 
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, testModuleName, ComponentType.ClassModule, out _);
 
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var inspection = new MissingAttributeInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new MissingAttributeInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.AreEqual(1, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
     }
 }

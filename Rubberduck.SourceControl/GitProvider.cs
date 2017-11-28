@@ -185,7 +185,7 @@ namespace Rubberduck.SourceControl
                 var status = repo.RetrieveStatus(new StatusOptions {DetectRenamesInWorkDir = true});
                 foreach (var stat in status.Untracked)
                 {
-                    repo.Stage(stat.FilePath);
+                    LibGit2Sharp.Commands.Stage(repo, stat.FilePath);
                 }
 
                 try
@@ -193,7 +193,7 @@ namespace Rubberduck.SourceControl
                     //The default behavior of LibGit2Sharp.Repo.Commit is to throw an exception if no signature is found,
                     // but BuildSignature() does not throw if a signature is not found, it returns "unknown" instead.
                     // so we pass a signature that won't throw along to the commit.
-                    repo.Commit("Initial Commit", GetSignature(repo));
+                    repo.Commit("Initial Commit", author: GetSignature(repo), committer: GetSignature(repo));
                 }
                 catch(LibGit2SharpException ex)
                 {
@@ -246,7 +246,9 @@ namespace Rubberduck.SourceControl
 
                 if (remote != null)
                 {
-                    _repo.Network.Fetch(remote);
+                     // FIXME: hardcoded string
+                     IEnumerable<string> refSpec = new List<string>() {"+refs/heads/*:refs/remotes/origin/*"};
+                    LibGit2Sharp.Commands.Fetch(_repo, remoteName, refSpec, null,"");
                 }
 
                 RequeryUnsyncedCommits();
@@ -270,7 +272,7 @@ namespace Rubberduck.SourceControl
                 };
 
                 var signature = GetSignature();
-                _repo.Network.Pull(signature, options);
+                LibGit2Sharp.Commands.Pull(_repo, signature, options);
 
                 base.Pull();
 
@@ -289,7 +291,7 @@ namespace Rubberduck.SourceControl
                 //The default behavior of LibGit2Sharp.Repo.Commit is to throw an exception if no signature is found,
                 // but BuildSignature() does not throw if a signature is not found, it returns "unknown" instead.
                 // so we pass a signature that won't throw along to the commit.
-                _repo.Commit(message, GetSignature());
+                _repo.Commit(message, author: GetSignature(), committer: GetSignature());
             }
             catch (LibGit2SharpException ex)
             {
@@ -301,7 +303,7 @@ namespace Rubberduck.SourceControl
         {
             try
             {
-                _repo.Stage(filePath);
+                LibGit2Sharp.Commands.Stage(_repo, filePath);
             }
             catch (LibGit2SharpException ex)
             {
@@ -313,7 +315,7 @@ namespace Rubberduck.SourceControl
         {
             try
             {
-                _repo.Stage(filePaths);
+                LibGit2Sharp.Commands.Stage(_repo, filePaths);
             }
             catch (LibGit2SharpException ex)
             {
@@ -348,7 +350,7 @@ namespace Rubberduck.SourceControl
         {
             try
             {
-                _repo.Checkout(_repo.Branches[branch]);
+                LibGit2Sharp.Commands.Checkout(_repo, branch);
                 base.Checkout(branch);
 
                 RequeryUnsyncedCommits();
@@ -364,7 +366,7 @@ namespace Rubberduck.SourceControl
             try
             {
                 _repo.CreateBranch(branch);
-                _repo.Checkout(branch);
+                LibGit2Sharp.Commands.Checkout(_repo,branch);
 
                 RequeryUnsyncedCommits();
             }
@@ -379,7 +381,7 @@ namespace Rubberduck.SourceControl
             try
             {
                 _repo.CreateBranch(branch, _repo.Branches[sourceBranch].Commits.Last());
-                _repo.Checkout(branch);
+                LibGit2Sharp.Commands.Checkout(_repo, branch);
 
                 RequeryUnsyncedCommits();
             }
@@ -417,7 +419,7 @@ namespace Rubberduck.SourceControl
         {
             try
             {
-                var remote = _repo.Branches[branch].Remote;
+                var remote = _repo.Network.Remotes[branch];
 
                 _repo.Branches.Update(_repo.Branches[branch], b => b.Remote = remote.Name,
                     b => b.TrackedBranch = null, b => b.UpstreamBranch = null);
@@ -462,8 +464,7 @@ namespace Rubberduck.SourceControl
         {
             try
             {
-                // https://github.com/libgit2/libgit2sharp/wiki/Git-add
-                _repo.Stage(filePath);
+                LibGit2Sharp.Commands.Stage(_repo, filePath);
             }
             catch (LibGit2SharpException ex)
             {
@@ -481,7 +482,7 @@ namespace Rubberduck.SourceControl
             try
             {
                 NotifyExternalFileChanges = false;
-                _repo.Remove(filePath, removeFromWorkingDirectory);
+                LibGit2Sharp.Commands.Remove(_repo, filePath, removeFromWorkingDirectory);
                 NotifyExternalFileChanges = true;
             }
             catch (LibGit2SharpException ex)
@@ -554,7 +555,7 @@ namespace Rubberduck.SourceControl
                             };
                         }
 
-                        _repo.Network.Push(branch.Remote, ":" + _repo.Branches[branchName].UpstreamBranchCanonicalName, options);
+                        _repo.Network.Push(_repo.Network.Remotes[branchName], ":" + _repo.Branches[branchName].UpstreamBranchCanonicalName, options);
                     }
 
                     // remote local repo

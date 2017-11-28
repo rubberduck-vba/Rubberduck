@@ -33,11 +33,11 @@ namespace RubberduckTests.Refactoring
             var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
             {
                 Input =
-@"Private Sub Foo()
+                    @"Private Sub Foo()
     Dim va|l1 As Integer
 End Sub",
                 Expected =
-@"Private Sub Foo()
+                    @"Private Sub Foo()
     Dim val2 As Integer
 End Sub"
             };
@@ -53,12 +53,12 @@ End Sub"
             var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
             {
                 Input =
-@"Private Sub Foo()
+                    @"Private Sub Foo()
     Dim v|al1 As Integer
     val1 = val1 + 5
 End Sub",
                 Expected =
-@"Private Sub Foo()
+                    @"Private Sub Foo()
     Dim val2 As Integer
     val2 = val2 + 5
 End Sub"
@@ -78,10 +78,10 @@ End Sub"
             var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
             {
                 Input =
-@"Private Sub Foo(ByVal ar|g1 As String)
+                    @"Private Sub Foo(ByVal ar|g1 As String)
 End Sub",
                 Expected =
-@"Private Sub Foo(ByVal arg2 As String)
+                    @"Private Sub Foo(ByVal arg2 As String)
 End Sub"
             };
             PerformExpectedVersusActualRenameTests(tdo, inputOutput);
@@ -96,11 +96,11 @@ End Sub"
             var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
             {
                 Input =
-@"Private Sub Foo(ByVal arg1 As String, _
+                    @"Private Sub Foo(ByVal arg1 As String, _
         ByVal ar|g3 As String)
 End Sub",
                 Expected =
-@"Private Sub Foo(ByVal arg1 As String, _
+                    @"Private Sub Foo(ByVal arg1 As String, _
         ByVal arg2 As String)
 End Sub"
             };
@@ -116,11 +116,11 @@ End Sub"
             var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
             {
                 Input =
-@"Private Sub Foo(ByVal ar|g1 As String)
+                    @"Private Sub Foo(ByVal ar|g1 As String)
     arg1 = ""test""
 End Sub",
                 Expected =
-@"Private Sub Foo(ByVal arg2 As String)
+                    @"Private Sub Foo(ByVal arg2 As String)
     arg2 = ""test""
 End Sub"
             };
@@ -136,7 +136,7 @@ End Sub"
             var inputOutput = new RenameTestModuleDefinition("ClassFoo")
             {
                 Input =
-@"Property Get Foo(ByVal in|dex As Integer) As Variant
+                    @"Property Get Foo(ByVal in|dex As Integer) As Variant
     Dim d As Integer
     d = index
 End Property
@@ -152,7 +152,7 @@ Property Set Foo(ByVal index As Integer, ByVal value As Variant)
 End Property",
 
                 Expected =
-@"Property Get Foo(ByVal renamed As Integer) As Variant
+                    @"Property Get Foo(ByVal renamed As Integer) As Variant
     Dim d As Integer
     d = renamed
 End Property
@@ -179,7 +179,7 @@ End Property"
             var inputOutput = new RenameTestModuleDefinition("ClassFoo")
             {
                 Input =
-@"Property Let Foo(ByVal index As Integer, ByVal va|lue As Variant)
+                    @"Property Let Foo(ByVal index As Integer, ByVal va|lue As Variant)
     Dim d As Variant
     d = value
 End Property
@@ -189,7 +189,7 @@ Property Set Foo(ByVal index As Integer, ByVal value As Variant)
     d = value
 End Property",
                 Expected =
-@"Property Let Foo(ByVal index As Integer, ByVal renamed As Variant)
+                    @"Property Let Foo(ByVal index As Integer, ByVal renamed As Variant)
     Dim d As Variant
     d = renamed
 End Property
@@ -211,7 +211,7 @@ End Property"
             var inputOutput = new RenameTestModuleDefinition("ClassFoo")
             {
                 Input =
-@"Property Get Foo(ByVal index As Integer) As Variant
+                    @"Property Get Foo(ByVal index As Integer) As Variant
 End Property
 
 Property Let Foo(ByVal index As Integer, ByVal v|alue As Variant)
@@ -224,7 +224,7 @@ Property Set Foo(ByVal index As Integer, ByVal fizz As Variant)
     d = fizz
 End Property",
                 Expected =
-@"Property Get Foo(ByVal index As Integer) As Variant
+                    @"Property Get Foo(ByVal index As Integer) As Variant
 End Property
 
 Property Let Foo(ByVal index As Integer, ByVal renamed As Variant)
@@ -252,11 +252,11 @@ End Property"
             var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
             {
                 Input =
-@"Private Sub Fo|o()
+                    @"Private Sub Fo|o()
     Dim Goo As Integer
 End Sub",
                 Expected =
-@"Private Sub Foo()
+                    @"Private Sub Foo()
     Dim Goo As Integer
 End Sub"
             };
@@ -273,11 +273,11 @@ End Sub"
             var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
             {
                 Input =
-@"Private Sub Fo|o()
+                    @"Private Sub Fo|o()
     Dim Goo As Integer
 End Sub",
                 Expected =
-@"Private Sub Goo()
+                    @"Private Sub Goo()
     Dim Goo As Integer
 End Sub"
             };
@@ -293,14 +293,14 @@ End Sub"
             var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
             {
                 Input =
-@"Private Sub Fo|o()
+                    @"Private Sub Fo|o()
 End Sub
 
 Private Sub Goo()
     Foo
 End Sub",
                 Expected =
-@"Private Sub Hoo()
+                    @"Private Sub Hoo()
 End Sub
 
 Private Sub Goo()
@@ -318,14 +318,14 @@ End Sub"
             var inputOutput = new RenameTestModuleDefinition("ClassFoo")
             {
                 Input =
-@"Private Property Get F|oo(ByVal arg1 As Integer) As String
+                    @"Private Property Get F|oo(ByVal arg1 As Integer) As String
     Foo = ""Hello""
 End Property
 
 Private Property Set Foo(ByVal arg1 As Integer, ByVal arg2 As String) 
 End Property",
                 Expected =
-@"Private Property Get Goo(ByVal arg1 As Integer) As String
+                    @"Private Property Get Goo(ByVal arg1 As Integer) As String
     Goo = ""Hello""
 End Property
 
@@ -344,13 +344,13 @@ End Property"
             var inputOutput = new RenameTestModuleDefinition("ClassFoo")
             {
                 Input =
-@"Private Property Get Foo() 
+                    @"Private Property Get Foo() 
 End Property
 
 Private Property Let F|oo(ByVal arg1 As String) 
 End Property",
                 Expected =
-@"Private Property Get Goo() 
+                    @"Private Property Get Goo() 
 End Property
 
 Private Property Let Goo(ByVal arg1 As String) 
@@ -368,11 +368,11 @@ End Property"
             var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
             {
                 Input =
-@"Private Function Foo() As Boolean
+                    @"Private Function Foo() As Boolean
     Fo|o = True
 End Function",
                 Expected =
-@"Private Function Hoo() As Boolean
+                    @"Private Function Hoo() As Boolean
     Hoo = True
 End Function"
             };
@@ -388,7 +388,7 @@ End Function"
             var inputOutput = new RenameTestModuleDefinition("ClassFoo")
             {
                 Input =
-@"Private Function Fo|o() As Boolean
+                    @"Private Function Fo|o() As Boolean
     Foo = True
 End Function
 
@@ -397,7 +397,7 @@ Private Sub Goo()
     var1 = Foo()
 End Sub",
                 Expected =
-@"Private Function Hoo() As Boolean
+                    @"Private Function Hoo() As Boolean
     Hoo = True
 End Function
 
@@ -422,7 +422,7 @@ End Sub"
             var inputOutput = new RenameTestModuleDefinition("UserForm1", ComponentType.UserForm)
             {
                 Input =
-@"Private Sub cmdBtn1_Cl|ick()
+                    @"Private Sub cmdBtn1_Cl|ick()
 End Sub
 
 Private Sub tbEnterName_Change()
@@ -433,7 +433,7 @@ Private Sub UserForm_Click()
     cmdBtn1.Caption = ""Click This""
 End Sub",
                 Expected =
-@"Private Sub cmdBigButton_Click()
+                    @"Private Sub cmdBigButton_Click()
 End Sub
 
 Private Sub tbEnterName_Change()
@@ -455,7 +455,7 @@ End Sub"
             var inputOutput = new RenameTestModuleDefinition("UserForm1", ComponentType.UserForm)
             {
                 Input =
-@"Private Sub cmdBtn1_Cl|ick()
+                    @"Private Sub cmdBtn1_Cl|ick()
     cmdBtn1_PoorlyNamedHelper
 End Sub
 
@@ -467,7 +467,7 @@ Private Sub cmdBtn1_PoorlyNamedHelper()
     cmdBtn1.Caption = ""Click This""
 End Sub",
                 Expected =
-@"Private Sub cmdBigButton_Click()
+                    @"Private Sub cmdBigButton_Click()
     cmdBtn1_PoorlyNamedHelper
 End Sub
 
@@ -490,7 +490,7 @@ End Sub"
             var inputOutput = new RenameTestModuleDefinition("UserForm1", ComponentType.UserForm)
             {
                 Input =
-@"Private Sub cmdBtn1_Click()
+                    @"Private Sub cmdBtn1_Click()
 End Sub
 
 Private Sub tbEnterName_Change()
@@ -501,7 +501,7 @@ Private Sub UserForm_Click()
     cmd|Btn1.Caption = ""Click This""
 End Sub",
                 Expected =
-@"Private Sub cmdBigButton_Click()
+                    @"Private Sub cmdBigButton_Click()
 End Sub
 
 Private Sub tbEnterName_Change()
@@ -525,7 +525,7 @@ End Sub"
             var inputOutput = new RenameTestModuleDefinition("UserForm1", ComponentType.UserForm)
             {
                 Input =
-@"Private Sub cmdBtn1_Click()
+                    @"Private Sub cmdBtn1_Click()
 End Sub
 
 Private Sub tbEnterName_Change()
@@ -536,7 +536,7 @@ Private Sub UserForm_Click()
     cmdBtn1.Caption = ""Click This""
 End Sub",
                 Expected =
-@"Private Sub cmdBigButton_Click()
+                    @"Private Sub cmdBigButton_Click()
 End Sub
 
 Private Sub tbEnterName_Change()
@@ -560,10 +560,10 @@ End Sub"
             var inputOutput = new RenameTestModuleDefinition("UserForm1", ComponentType.UserForm)
             {
                 Input =
-@"Private Sub bigBut|ton_ClickAgain_Click()
+                    @"Private Sub bigBut|ton_ClickAgain_Click()
 End Sub",
                 Expected =
-@"Private Sub bigButton_ClickAgain_AndAgain_Click()
+                    @"Private Sub bigButton_ClickAgain_AndAgain_Click()
 End Sub"
             };
             inputOutput.ControlNames.Add("bigButton_ClickAgain");
@@ -577,7 +577,7 @@ End Sub"
             var inputOutput = new RenameTestModuleDefinition("UserForm1", ComponentType.UserForm)
             {
                 Input =
-@"Private Sub bigBu|tton_Click()
+                    @"Private Sub bigBu|tton_Click()
 End Sub
 
 Private Sub bigButton_Changed()
@@ -586,7 +586,7 @@ End Sub
 Private Sub bigButton_Click_Click()
 End Sub",
                 Expected =
-@"Private Sub smallButton_Click()
+                    @"Private Sub smallButton_Click()
 End Sub
 
 Private Sub smallButton_Changed()
@@ -612,10 +612,10 @@ End Sub"
             var inputOutput1 = new RenameTestModuleDefinition("Class1")
             {
                 Input =
-@"Public Event Fo|o(ByVal arg1 As Integer, ByVal arg2 As String)",
+                    @"Public Event Fo|o(ByVal arg1 As Integer, ByVal arg2 As String)",
 
                 Expected =
-@"Public Event Goo(ByVal arg1 As Integer, ByVal arg2 As String)"
+                    @"Public Event Goo(ByVal arg1 As Integer, ByVal arg2 As String)"
             };
             PerformExpectedVersusActualRenameTests(tdo, inputOutput1);
         }
@@ -629,20 +629,20 @@ End Sub"
             var inputOutput1 = new RenameTestModuleDefinition("Class1")
             {
                 Input =
-@"Public Event Fo|o(ByVal arg1 As Integer, ByVal arg2 As String)",
+                    @"Public Event Fo|o(ByVal arg1 As Integer, ByVal arg2 As String)",
 
                 Expected =
-@"Public Event Goo(ByVal arg1 As Integer, ByVal arg2 As String)"
+                    @"Public Event Goo(ByVal arg1 As Integer, ByVal arg2 As String)"
             };
             var inputOutput2 = new RenameTestModuleDefinition("Class2")
             {
                 Input =
-@"Private WithEvents abc As Class1
+                    @"Private WithEvents abc As Class1
 
 Private Sub abc_Foo(ByVal i As Integer, ByVal s As String)
 End Sub",
                 Expected =
-@"Private WithEvents abc As Class1
+                    @"Private WithEvents abc As Class1
 
 Private Sub abc_Goo(ByVal i As Integer, ByVal s As String)
 End Sub"
@@ -659,18 +659,18 @@ End Sub"
             var inputOutput1 = new RenameTestModuleDefinition("Class1")
             {
                 Input =
-@"Public Event Foo(ByVal arg1 As Integer, ByVal arg2 As String)",
+                    @"Public Event Foo(ByVal arg1 As Integer, ByVal arg2 As String)",
 
                 Expected =
-@"Public Event Foo(ByVal arg1 As Integer, ByVal arg2 As String)"
+                    @"Public Event Foo(ByVal arg1 As Integer, ByVal arg2 As String)"
             };
             var inputOutput2 = new RenameTestModuleDefinition("Class2")
             {   //Note: no withEvents declaration, abc_Foo is just a Sub
                 Input =
-@"Private Sub abc_Fo|o(ByVal i As Integer, ByVal s As String)
+                    @"Private Sub abc_Fo|o(ByVal i As Integer, ByVal s As String)
 End Sub",
                 Expected =
-@"Private Sub abc_Goo(ByVal i As Integer, ByVal s As String)
+                    @"Private Sub abc_Goo(ByVal i As Integer, ByVal s As String)
 End Sub"
             };
             PerformExpectedVersusActualRenameTests(tdo, inputOutput1, inputOutput2);
@@ -685,15 +685,15 @@ End Sub"
             var inputOutput1 = new RenameTestModuleDefinition("Class1")
             {
                 Input =
-@"Public Event Foo(ByVal arg1 As Integer, ByVal arg2 As String)",
+                    @"Public Event Foo(ByVal arg1 As Integer, ByVal arg2 As String)",
 
                 Expected =
-@"Public Event Foo(ByVal arg1 As Integer, ByVal arg2 As String)"
+                    @"Public Event Foo(ByVal arg1 As Integer, ByVal arg2 As String)"
             };
             var inputOutput2 = new RenameTestModuleDefinition("Class2")
             {
                 Input =
-@"Private WithEvents abc As Class1
+                    @"Private WithEvents abc As Class1
 
 Private Sub abc_Foo(ByVal i As Integer, ByVal s As String)
 End Sub
@@ -701,7 +701,7 @@ End Sub
 Private Sub def_F|oo(ByVal i As Integer, ByVal s As String)
 End Sub",
                 Expected =
-@"Private WithEvents abc As Class1
+                    @"Private WithEvents abc As Class1
 
 Private Sub abc_Foo(ByVal i As Integer, ByVal s As String)
 End Sub
@@ -721,25 +721,25 @@ End Sub"
             var inputOutputWithSelection = new RenameTestModuleDefinition("EventClass1")
             {
                 Input =
-@"Public Event Fo|o(ByVal arg1 As Integer, ByVal arg2 As String)
+                    @"Public Event Fo|o(ByVal arg1 As Integer, ByVal arg2 As String)
 Public Event Bar()",
 
                 Expected =
-@"Public Event Goo(ByVal arg1 As Integer, ByVal arg2 As String)
+                    @"Public Event Goo(ByVal arg1 As Integer, ByVal arg2 As String)
 Public Event Bar()"
             };
             var inputOutput2 = new RenameTestModuleDefinition("EventClass2")
             {
                 Input =
-@"Public Event Foo(ByVal arg1 As Integer, ByVal arg2 As String)",
+                    @"Public Event Foo(ByVal arg1 As Integer, ByVal arg2 As String)",
 
                 Expected =
-@"Public Event Foo(ByVal arg1 As Integer, ByVal arg2 As String)",
+                    @"Public Event Foo(ByVal arg1 As Integer, ByVal arg2 As String)",
             };
             var inputOutput3 = new RenameTestModuleDefinition("WithEvents1")
             {
                 Input =
-@"Private WithEvents abc As EventClass1
+                    @"Private WithEvents abc As EventClass1
 Private WithEvents otherEvents As EventClass2
 
 Private Sub abc_Foo(ByVal i As Integer, ByVal s As String)
@@ -751,7 +751,7 @@ End Sub
 Private Sub otherEvents_Foo(ByVal i As Integer, ByVal s As String)
 End Sub",
                 Expected =
-@"Private WithEvents abc As EventClass1
+                    @"Private WithEvents abc As EventClass1
 Private WithEvents otherEvents As EventClass2
 
 Private Sub abc_Goo(ByVal i As Integer, ByVal s As String)
@@ -766,7 +766,7 @@ End Sub"
             var inputOutput4 = new RenameTestModuleDefinition("WithEvents2")
             {
                 Input =
-@"Private WithEvents myEvents As EventClass1
+                    @"Private WithEvents myEvents As EventClass1
 Private WithEvents evenMoreEvents As EventClass2
 
 Private Sub myEvents_Foo(ByVal i As Integer, ByVal s As String)
@@ -778,7 +778,7 @@ End Sub
 Private Sub evenMoreEvents_Foo(ByVal i As Integer, ByVal s As String)
 End Sub",
                 Expected =
-@"Private WithEvents myEvents As EventClass1
+                    @"Private WithEvents myEvents As EventClass1
 Private WithEvents evenMoreEvents As EventClass2
 
 Private Sub myEvents_Goo(ByVal i As Integer, ByVal s As String)
@@ -802,14 +802,14 @@ End Sub"
             var inputOutput1 = new RenameTestModuleDefinition("CEventClass")
             {
                 Input =
-@"
+                    @"
 Public Event MyEv|ent(IDNumber As Long, ByRef Cancel As Boolean)
 
 Sub AAA()
     RaiseEvent MyEvent(1234, False)
 End Sub",
                 Expected =
-@"
+                    @"
 Public Event YourEvent(IDNumber As Long, ByRef Cancel As Boolean)
 
 Sub AAA()
@@ -819,7 +819,7 @@ End Sub"
             var inputOutput2 = new RenameTestModuleDefinition("Class2")
             {
                 Input =
-@"
+                    @"
 Private WithEvents XLEvents As CEventClass
 
 Private Sub Class_Initialize()
@@ -830,7 +830,7 @@ Private Sub XLEvents_MyEvent(IDNumber As Long, Cancel As Boolean)
     Cancel = True
 End Sub",
                 Expected =
-@"
+                    @"
 Private WithEvents XLEvents As CEventClass
 
 Private Sub Class_Initialize()
@@ -853,13 +853,13 @@ End Sub"
             var inputOutput1 = new RenameTestModuleDefinition("CEventClass")
             {
                 Input =
-@"Public Event MyEvent(IDNumber As Long, ByRef Cancel As Boolean)
+                    @"Public Event MyEvent(IDNumber As Long, ByRef Cancel As Boolean)
 
 Sub AAA()
     RaiseEvent MyEvent(1234, False)
 End Sub",
                 Expected =
-@"Public Event MyEvent(IDNumber As Long, ByRef Cancel As Boolean)
+                    @"Public Event MyEvent(IDNumber As Long, ByRef Cancel As Boolean)
 
 Sub AAA()
     RaiseEvent MyEvent(1234, False)
@@ -869,7 +869,7 @@ End Sub"
             var inputOutputWithRenameTarget = new RenameTestModuleDefinition("Class2")
             {
                 Input =
-@"Private WithEvents XLEve|nts As CEventClass
+                    @"Private WithEvents XLEve|nts As CEventClass
 
 Private Sub Class_Initialize()
     Set XLEvents = New CEventClass
@@ -879,7 +879,7 @@ Private Sub XLEvents_MyEvent(IDNumber As Long, Cancel As Boolean)
     Cancel = True
 End Sub",
                 Expected =
-@"Private WithEvents NewEventImpl As CEventClass
+                    @"Private WithEvents NewEventImpl As CEventClass
 
 Private Sub Class_Initialize()
     Set NewEventImpl = New CEventClass
@@ -901,15 +901,15 @@ End Sub"
             var inputOutput1 = new RenameTestModuleDefinition("Class1")
             {
                 Input =
-@"Public Event Foo(ByVal arg1 As Integer, ByVal arg2 As String)",
+                    @"Public Event Foo(ByVal arg1 As Integer, ByVal arg2 As String)",
 
                 Expected =
-@"Public Event Foo(ByVal arg1 As Integer, ByVal arg2 As String)"
+                    @"Public Event Foo(ByVal arg1 As Integer, ByVal arg2 As String)"
             };
             var inputOutput2 = new RenameTestModuleDefinition("Class2")
             {
                 Input =
-@"Private WithEvents a|bc As Class1
+                    @"Private WithEvents a|bc As Class1
 
 Private Sub abc_Foo(ByVal i As Integer, ByVal s As String)
 End Sub
@@ -917,7 +917,7 @@ End Sub
 Private Sub abc_HorriblyNamedSub()
 End Sub",
                 Expected =
-@"Private WithEvents def As Class1
+                    @"Private WithEvents def As Class1
 
 Private Sub def_Foo(ByVal i As Integer, ByVal s As String)
 End Sub
@@ -937,14 +937,14 @@ End Sub",
             var inputOutput1 = new RenameTestModuleDefinition("CEventClass")
             {
                 Input =
-@"
+                    @"
 Public Event MyEvent(IDNumber As Long, ByRef Cancel As Boolean)
 
 Sub AAA()
     RaiseEvent MyEvent(1234, False)
 End Sub",
                 Expected =
-@"
+                    @"
 Public Event YourEvent_withUnderscore(IDNumber As Long, ByRef Cancel As Boolean)
 
 Sub AAA()
@@ -955,7 +955,7 @@ End Sub"
             var inputOutput2 = new RenameTestModuleDefinition("Class2")
             {
                 Input =
-@"Private WithEvents XLEvents As CEventClass
+                    @"Private WithEvents XLEvents As CEventClass
 
 Private Sub Class_Initialize()
     Set XLEvents = New CEventClass
@@ -971,7 +971,7 @@ Private Function DumbFunction() As Long
 End Function",
 
                 Expected =
-@"Private WithEvents XLEvents As CEventClass
+                    @"Private WithEvents XLEvents As CEventClass
 
 Private Sub Class_Initialize()
     Set XLEvents = New CEventClass
@@ -998,14 +998,14 @@ End Function"
             var inputOutput1 = new RenameTestModuleDefinition("CEventClass")
             {
                 Input =
-@"
+                    @"
 Public Event MyEvent(IDNumber As Long, ByRef Cancel As Boolean)
 
 Sub AAA()
     RaiseEvent My|Event(1234, False)
 End Sub",
                 Expected =
-@"
+                    @"
 Public Event YourEvent(IDNumber As Long, ByRef Cancel As Boolean)
 
 Sub AAA()
@@ -1027,21 +1027,21 @@ End Sub"
             var inputOutput1 = new RenameTestModuleDefinition("IClass1")
             {
                 Input =
-@"Public Sub DoSo|mething(ByVal a As Integer, ByVal b As String)
+                    @"Public Sub DoSo|mething(ByVal a As Integer, ByVal b As String)
 End Sub",
                 Expected =
-@"Public Sub DoNothing(ByVal a As Integer, ByVal b As String)
+                    @"Public Sub DoNothing(ByVal a As Integer, ByVal b As String)
 End Sub"
             };
             var inputOutput2 = new RenameTestModuleDefinition("Class1")
             {
                 Input =
-@"Implements IClass1
+                    @"Implements IClass1
 
 Private Sub IClass1_DoSomething(ByVal a As Integer, ByVal b As String)
 End Sub",
                 Expected =
-@"Implements IClass1
+                    @"Implements IClass1
 
 Private Sub IClass1_DoNothing(ByVal a As Integer, ByVal b As String)
 End Sub"
@@ -1060,25 +1060,25 @@ End Sub"
             var inputOutput1 = new RenameTestModuleDefinition("IClass1")
             {
                 Input =
-@"Public Sub DoS|omething()
+                    @"Public Sub DoS|omething()
 End Sub",
                 Expected =
-@"Public Sub DoNothing()
+                    @"Public Sub DoNothing()
 End Sub"
             };
             var inputOutput2 = new RenameTestModuleDefinition("IClass2")
             {
                 Input =
-@"Public Sub DoSomething()
+                    @"Public Sub DoSomething()
 End Sub",
                 Expected =
-@"Public Sub DoSomething()
+                    @"Public Sub DoSomething()
 End Sub"
             };
             var inputOutput3 = new RenameTestModuleDefinition("Class1")
             {
                 Input =
-@"Implements IClass1
+                    @"Implements IClass1
 
 Private Sub IClass1_DoSomething()
 End Sub",
@@ -1087,7 +1087,7 @@ End Sub",
             var inputOutput4 = new RenameTestModuleDefinition("Class2")
             {
                 Input =
-@"Implements IClass2
+                    @"Implements IClass2
 
 Private Sub IClass2_DoSomething()
 End Sub",
@@ -1105,21 +1105,21 @@ End Sub",
             var inputOutputWithSelection = new RenameTestModuleDefinition("IClass1")
             {
                 Input =
-@"Public Sub DoS|omething()
+                    @"Public Sub DoS|omething()
 End Sub",
                 Expected =
-@"Public Sub DoNothing()
+                    @"Public Sub DoNothing()
 End Sub"
             };
             var inputOutput2 = new RenameTestModuleDefinition("Class1")
             {
                 Input =
-@"Implements IClass1
+                    @"Implements IClass1
 
 Private Sub IClass1_DoSomething()
 End Sub",
                 Expected =
-@"Implements IClass1
+                    @"Implements IClass1
 
 Private Sub IClass1_DoNothing()
 End Sub"
@@ -1127,7 +1127,7 @@ End Sub"
             var inputOutput3 = new RenameTestModuleDefinition("Class2")
             {
                 Input =
-@"Private Sub RefTheInterface()
+                    @"Private Sub RefTheInterface()
     Dim c1 As Class1
     Set c1 = new IClass1
     c1.DoSomething
@@ -1141,7 +1141,7 @@ Private Sub RefTheInterface2()
     c1.DoSomething
 End Sub",
                 Expected =
-@"Private Sub RefTheInterface()
+                    @"Private Sub RefTheInterface()
     Dim c1 As Class1
     Set c1 = new IClass1
     c1.DoNothing
@@ -1167,21 +1167,21 @@ End Sub"
             var inputOutput1 = new RenameTestModuleDefinition("IClass1")
             {
                 Input =
-@"Public Sub DoSomething()
+                    @"Public Sub DoSomething()
 End Sub",
                 Expected =
-@"Public Sub DoNothing()
+                    @"Public Sub DoNothing()
 End Sub"
             };
             var inputOutputWithSelection = new RenameTestModuleDefinition("Class1")
             {
                 Input =
-@"Implements IClass1
+                    @"Implements IClass1
 
 Private Sub IC|lass1_DoSomething()
 End Sub",
                 Expected =
-@"Implements IClass1
+                    @"Implements IClass1
 
 Private Sub IClass1_DoNothing()
 End Sub"
@@ -1189,7 +1189,7 @@ End Sub"
             var inputOutput3 = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
             {
                 Input =
-@"Private Sub RefTheInterface()
+                    @"Private Sub RefTheInterface()
     Dim c1 As Class1
     Set c1 = new IClass1
     c1.DoSomething
@@ -1203,7 +1203,7 @@ Private Sub RefTheInterface2()
     c1.DoSomething
 End Sub",
                 Expected =
-@"Private Sub RefTheInterface()
+                    @"Private Sub RefTheInterface()
     Dim c1 As Class1
     Set c1 = new IClass1
     c1.DoNothing
@@ -1231,13 +1231,13 @@ End Sub"
             var inputOutput1 = new RenameTestModuleDefinition("IClass1")
             {
                 Input =
-@"Public Property Set Something(arg1 As Long)
+                    @"Public Property Set Something(arg1 As Long)
 End Property
 
 Public Property Get Something() As Long
 End Property",
                 Expected =
-@"Public Property Set Nothing(arg1 As Long)
+                    @"Public Property Set Nothing(arg1 As Long)
 End Property
 
 Public Property Get Nothing() As Long
@@ -1247,7 +1247,7 @@ End Property"
             var inputOutputWithSelection = new RenameTestModuleDefinition("Class1")
             {
                 Input =
-@"Implements IClass1
+                    @"Implements IClass1
 
 Private Property Set IClass1_Some|thing(arg1 As Long)
 End Property
@@ -1255,7 +1255,7 @@ End Property
 Private Property Get IClass1_Something() As Long
 End Property",
                 Expected =
-@"Implements IClass1
+                    @"Implements IClass1
 
 Private Property Set IClass1_Nothing(arg1 As Long)
 End Property
@@ -1267,7 +1267,7 @@ End Property"
             var inputOutput3 = new RenameTestModuleDefinition("Class2")
             {
                 Input =
-@"Private Sub RefTheInterface()
+                    @"Private Sub RefTheInterface()
     Dim c1 As Class1
     Set c1 = new IClass1
     c1.Something 7
@@ -1281,7 +1281,7 @@ Private Sub RefTheInterface2()
     c1.Something 7
 End Sub",
                 Expected =
-@"Private Sub RefTheInterface()
+                    @"Private Sub RefTheInterface()
     Dim c1 As Class1
     Set c1 = new IClass1
     c1.Nothing 7
@@ -1309,10 +1309,10 @@ End Sub"
             var inputOutput1 = new RenameTestModuleDefinition("IClass1")
             {
                 Input =
-@"Public Sub Do|Something()
+                    @"Public Sub Do|Something()
 End Sub",
                 Expected =
-@"Public Sub DoNothing()
+                    @"Public Sub DoNothing()
 End Sub"
             };
             PerformExpectedVersusActualRenameTests(tdo, inputOutput1);
@@ -1329,22 +1329,22 @@ End Sub"
             var inputOutput1 = new RenameTestModuleDefinition("IClass1")
             {
                 Input =
-@"Public Sub DoSomething(arg1 As Long)
+                    @"Public Sub DoSomething(arg1 As Long)
 End Sub",
                 Expected =
-@"Public Sub DoNothing(arg1 As Long)
+                    @"Public Sub DoNothing(arg1 As Long)
 End Sub",
             };
 
             var inputOutput2 = new RenameTestModuleDefinition("Class1")
             {
                 Input =
-@"Implements IClass1
+                    @"Implements IClass1
 
 Private Sub IClass1_DoSomething(arg1 As Long)
 End Sub",
                 Expected =
-@"Implements IClass1
+                    @"Implements IClass1
 
 Private Sub IClass1_DoNothing(arg1 As Long)
 End Sub"
@@ -1353,7 +1353,7 @@ End Sub"
             var inputOutputWithSelection = new RenameTestModuleDefinition("Class2")
             {
                 Input =
-@"Private Sub RefTheInterface()
+                    @"Private Sub RefTheInterface()
     Dim c1 As Class1
     Set c1 = new IClass1
     c1.DoS|omething
@@ -1367,7 +1367,7 @@ Private Sub RefTheInterface2()
     c3.DoSomething
 End Sub",
                 Expected =
-@"Private Sub RefTheInterface()
+                    @"Private Sub RefTheInterface()
     Dim c1 As Class1
     Set c1 = new IClass1
     c1.DoNothing
@@ -1393,22 +1393,22 @@ End Sub"
             var inputOutputWithSelection = new RenameTestModuleDefinition("IClass1")
             {
                 Input =
-@"Public Sub DoSo|mething()
+                    @"Public Sub DoSo|mething()
 End Sub",
                 Expected =
-@"Public Sub DoNothing()
+                    @"Public Sub DoNothing()
 End Sub"
             };
 
             var inputOutput2 = new RenameTestModuleDefinition("Class1")
             {
                 Input =
-@"Implements IClass1
+                    @"Implements IClass1
 
 Private Sub IClass1_DoSomething()
 End Sub",
                 Expected =
-@"Implements IClass1
+                    @"Implements IClass1
 
 Private Sub IClass1_DoNothing()
 End Sub"
@@ -1417,7 +1417,7 @@ End Sub"
             var inputOutput3 = new RenameTestModuleDefinition("Class2")
             {
                 Input =
-@"Private Sub RefTheInterface()
+                    @"Private Sub RefTheInterface()
     Dim c1 As Class1
     Set c1 = new IClass1
     c1.DoSomething
@@ -1432,7 +1432,7 @@ Private Sub RefTheInterface2()
     c2.DoSomething
 End Sub",
                 Expected =
-@"Private Sub RefTheInterface()
+                    @"Private Sub RefTheInterface()
     Dim c1 As Class1
     Set c1 = new IClass1
     c1.DoNothing
@@ -1459,12 +1459,12 @@ End Sub"
             var inputOutput1 = new RenameTestModuleDefinition("Class1")
             {
                 Input =
-@"Implements IClass1
+                    @"Implements IClass1
 
 Private Sub ICla|ss1_DoSomething(ByVal a As Integer, ByVal b As String)
 End Sub",
                 Expected =
-@"Implements IClass1
+                    @"Implements IClass1
 
 Private Sub IClass1_DoNothing(ByVal a As Integer, ByVal b As String)
 End Sub"
@@ -1473,10 +1473,10 @@ End Sub"
             var inputOutput2 = new RenameTestModuleDefinition("IClass1")
             {
                 Input =
-@"Public Sub DoSomething(ByVal a As Integer, ByVal b As String)
+                    @"Public Sub DoSomething(ByVal a As Integer, ByVal b As String)
 End Sub",
                 Expected =
-@"Public Sub DoNothing(ByVal a As Integer, ByVal b As String)
+                    @"Public Sub DoNothing(ByVal a As Integer, ByVal b As String)
 End Sub"
             };
             PerformExpectedVersusActualRenameTests(tdo, inputOutput1, inputOutput2);
@@ -1493,7 +1493,7 @@ End Sub"
             var inputOutput1 = new RenameTestModuleDefinition("Class1")
             {
                 Input =
-@"Implements IClass1
+                    @"Implements IClass1
 
 Private Sub ICla|ss1_DoSomething(ByVal a As Integer, ByVal b As String)
 End Sub"
@@ -1503,7 +1503,7 @@ End Sub"
             var inputOutput2 = new RenameTestModuleDefinition("IClass1")
             {
                 Input =
-@"Public Sub DoSomething(ByVal a As Integer, ByVal b As String)
+                    @"Public Sub DoSomething(ByVal a As Integer, ByVal b As String)
 End Sub"
             };
             inputOutput2.Expected = inputOutput2.Input;
@@ -1526,19 +1526,19 @@ End Sub"
             var inputOutput1 = new RenameTestModuleDefinition("IClass1")
             {
                 Input =
-@"Public Sub DoSomething()
+                    @"Public Sub DoSomething()
 End Sub",
                 CheckExpectedEqualsActual = false
             };
             var inputOutputWithSelection = new RenameTestModuleDefinition("Class1")
             {
                 Input =
-@"Implements ICl|ass1
+                    @"Implements ICl|ass1
 
 Private Sub IClass1_DoSomething()
 End Sub",
                 Expected =
-@"Implements INewClass
+                    @"Implements INewClass
 
 Private Sub INewClass_DoSomething()
 End Sub"
@@ -1546,12 +1546,12 @@ End Sub"
             var inputOutput3 = new RenameTestModuleDefinition("Class2")
             {
                 Input =
-@"Implements IClass1
+                    @"Implements IClass1
 
 Private Sub IClass1_DoSomething()
 End Sub",
                 Expected =
-@"Implements INewClass
+                    @"Implements INewClass
 
 Private Sub INewClass_DoSomething()
 End Sub"
@@ -1568,7 +1568,7 @@ End Sub"
             var inputOutput1 = new RenameTestModuleDefinition("CTestClass")
             {
                 Input =
-@"
+                    @"
 Sub Foo()
 End Sub"
             };
@@ -1578,14 +1578,14 @@ End Sub"
             {
                 Input =
 
-@"
+                    @"
 Sub Foo2()
     Dim c1 As CTes|tClass
     Set c1 = new CTestClass
     c1.Foo
 End Sub",
                 Expected =
-@"
+                    @"
 Sub Foo2()
     Dim c1 As CMyTestClass
     Set c1 = new CMyTestClass
@@ -1608,32 +1608,34 @@ End Sub"
 
             //Input
             const string inputCode =
-@"Private Sub Foo(ByVal a As Integer, ByVal b As String)
+                @"Private Sub Foo(ByVal a As Integer, ByVal b As String)
 End Sub";
 
             var selection = new Selection(3, 27, 3, 27);
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, "Class1", ComponentType.ClassModule, out component, selection);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-            var msgbox = new Mock<IMessageBox>();
-            msgbox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.YesNo, It.IsAny<MessageBoxIcon>()))
-                  .Returns(DialogResult.Yes);
+                var msgbox = new Mock<IMessageBox>();
+                msgbox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.YesNo, It.IsAny<MessageBoxIcon>()))
+                    .Returns(DialogResult.Yes);
 
-            var vbeWrapper = vbe.Object;
-            var model = new RenameModel(vbeWrapper, state, qualifiedSelection) { NewName = newName };
-            model.Target = model.Declarations.FirstOrDefault(i => i.DeclarationType == DeclarationType.ClassModule && i.IdentifierName == "Class1");
+                var vbeWrapper = vbe.Object;
+                var model = new RenameModel(vbeWrapper, state, qualifiedSelection) { NewName = newName };
+                model.Target = model.Declarations.FirstOrDefault(i => i.DeclarationType == DeclarationType.ClassModule && i.IdentifierName == "Class1");
 
-            //SetupFactory
-            var factory = SetupFactory(model);
+                //SetupFactory
+                var factory = SetupFactory(model);
 
-            var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, msgbox.Object, state);
-            refactoring.Refactor(model.Target);
+                var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, msgbox.Object, state);
+                refactoring.Refactor(model.Target);
 
-            Assert.AreSame(newName, component.CodeModule.Name);
+                Assert.AreSame(newName, component.CodeModule.Name);
+            }
         }
 
         #endregion
@@ -1649,27 +1651,29 @@ End Sub";
 
             var builder = new MockVbeBuilder();
             var vbe = builder.ProjectBuilder(oldName, ProjectProtection.Unprotected)
-                             .AddComponent("Module1", ComponentType.StandardModule, string.Empty)
-                             .MockVbeBuilder()
-                             .Build();
+                .AddComponent("Module1", ComponentType.StandardModule, string.Empty)
+                .MockVbeBuilder()
+                .Build();
 
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var msgbox = new Mock<IMessageBox>();
-            msgbox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.YesNo, It.IsAny<MessageBoxIcon>()))
-                  .Returns(DialogResult.Yes);
+                var msgbox = new Mock<IMessageBox>();
+                msgbox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.YesNo, It.IsAny<MessageBoxIcon>()))
+                    .Returns(DialogResult.Yes);
 
-            var vbeWrapper = vbe.Object;
-            var model = new RenameModel(vbeWrapper, state, default(QualifiedSelection)) { NewName = newName };
-            model.Target = model.Declarations.First(i => i.DeclarationType == DeclarationType.Project && i.IsUserDefined);
+                var vbeWrapper = vbe.Object;
+                var model = new RenameModel(vbeWrapper, state, default(QualifiedSelection)) { NewName = newName };
+                model.Target = model.Declarations.First(i => i.DeclarationType == DeclarationType.Project && i.IsUserDefined);
 
-            //SetupFactory
-            var factory = SetupFactory(model);
+                //SetupFactory
+                var factory = SetupFactory(model);
 
-            var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, msgbox.Object, state);
-            refactoring.Refactor(model.Target);
+                var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, msgbox.Object, state);
+                refactoring.Refactor(model.Target);
 
-            Assert.AreEqual(newName, vbe.Object.VBProjects[0].Name);
+                Assert.AreEqual(newName, vbe.Object.VBProjects[0].Name);
+            }
         }
 
         #endregion
@@ -1684,7 +1688,7 @@ End Sub";
             var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
             {
                 Input =
-@"Option Explicit
+                    @"Option Explicit
 
 Public Enum Frui|tType
     Apple = 1
@@ -1696,7 +1700,7 @@ Sub DoSomething()
     MsgBox CStr(FruitType.Apple)
 End Sub",
                 Expected =
-@"Option Explicit
+                    @"Option Explicit
 
 Public Enum Fruits
     Apple = 1
@@ -1722,7 +1726,7 @@ End Sub"
             var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
             {
                 Input =
-@"Option Explicit
+                    @"Option Explicit
 
 Public Enum FruitType
     App|le = 1
@@ -1734,7 +1738,7 @@ Sub DoSomething()
     MsgBox CStr(Apple)
 End Sub",
                 Expected =
-@"Option Explicit
+                    @"Option Explicit
 
 Public Enum FruitType
     CranApple = 1
@@ -1762,7 +1766,7 @@ End Sub"
             var inputOutput1 = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
             {
                 Input =
-@"Option Explicit
+                    @"Option Explicit
 
 Sub DoSomething()
     On Error goto EH
@@ -1773,7 +1777,7 @@ E|H:
     MsgBox ""We had an error""
 End Sub",
                 Expected =
-@"Option Explicit
+                    @"Option Explicit
 
 Sub DoSomething()
     On Error goto ErrorHandler
@@ -1803,10 +1807,10 @@ End Sub"
                 var inputOutput = new RenameTestModuleDefinition("Class1")
                 {
                     Input =
-@"Private Sub F|oo()
+                        @"Private Sub F|oo()
 End Sub",
                     Expected =
-@"Private Sub Goo()
+                        @"Private Sub Goo()
 End Sub"
                 };
                 tdo.RefactorParamType = param;
@@ -1823,26 +1827,28 @@ End Sub"
         public void Rename_PresenterIsNull()
         {
             const string inputCode =
-@"Private Sub Foo()
+                @"Private Sub Foo()
 End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var codePaneMock = new Mock<ICodePane>();
-            codePaneMock.Setup(c => c.CodeModule).Returns(component.CodeModule);
-            codePaneMock.Setup(c => c.Selection);
-            vbe.Setup(v => v.ActiveCodePane).Returns(codePaneMock.Object);
+                var codePaneMock = new Mock<ICodePane>();
+                codePaneMock.Setup(c => c.CodeModule).Returns(component.CodeModule);
+                codePaneMock.Setup(c => c.Selection);
+                vbe.Setup(v => v.ActiveCodePane).Returns(codePaneMock.Object);
 
-            var vbeWrapper = vbe.Object;
-            var factory = new RenamePresenterFactory(vbeWrapper, null, state);
+                var vbeWrapper = vbe.Object;
+                var factory = new RenamePresenterFactory(vbeWrapper, null, state);
 
-            var refactoring = new RenameRefactoring(vbeWrapper, factory, null, state);
-            refactoring.Refactor();
+                var refactoring = new RenameRefactoring(vbeWrapper, factory, null, state);
+                refactoring.Refactor();
 
-            var rewriter = state.GetRewriter(component);
-            Assert.AreEqual(inputCode, rewriter.GetText());
+                var rewriter = state.GetRewriter(component);
+                Assert.AreEqual(inputCode, rewriter.GetText());
+            }
         }
 
         [TestMethod]
@@ -1851,25 +1857,27 @@ End Sub";
         public void Presenter_TargetIsNull()
         {
             const string inputCode =
-@"
+                @"
 Private Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var codePaneMock = new Mock<ICodePane>();
-            codePaneMock.Setup(c => c.CodeModule).Returns(component.CodeModule);
-            codePaneMock.Setup(c => c.Selection);
-            vbe.Setup(v => v.ActiveCodePane).Returns(codePaneMock.Object);
+                var codePaneMock = new Mock<ICodePane>();
+                codePaneMock.Setup(c => c.CodeModule).Returns(component.CodeModule);
+                codePaneMock.Setup(c => c.Selection);
+                vbe.Setup(v => v.ActiveCodePane).Returns(codePaneMock.Object);
 
-            var vbeWrapper = vbe.Object;
-            var factory = new RenamePresenterFactory(vbeWrapper, null, state);
+                var vbeWrapper = vbe.Object;
+                var factory = new RenamePresenterFactory(vbeWrapper, null, state);
 
-            var presenter = factory.Create();
+                var presenter = factory.Create();
 
-            Assert.AreEqual(null, presenter.Show());
+                Assert.AreEqual(null, presenter.Show());
+            }
         }
 
         [TestMethod]
@@ -1878,23 +1886,25 @@ End Sub";
         public void Factory_SelectionIsNull()
         {
             const string inputCode =
-@"Private Sub Foo()
+                @"Private Sub Foo()
 End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var codePaneMock = new Mock<ICodePane>();
-            codePaneMock.Setup(c => c.CodeModule).Returns(component.CodeModule);
-            codePaneMock.Setup(c => c.Selection);
-            vbe.Setup(v => v.ActiveCodePane).Returns(codePaneMock.Object);
+                var codePaneMock = new Mock<ICodePane>();
+                codePaneMock.Setup(c => c.CodeModule).Returns(component.CodeModule);
+                codePaneMock.Setup(c => c.Selection);
+                vbe.Setup(v => v.ActiveCodePane).Returns(codePaneMock.Object);
 
-            var vbeWrapper = vbe.Object;
-            var factory = new RenamePresenterFactory(vbeWrapper, null, state);
+                var vbeWrapper = vbe.Object;
+                var factory = new RenamePresenterFactory(vbeWrapper, null, state);
 
-            var presenter = factory.Create();
-            Assert.AreEqual(null, presenter.Show());
+                var presenter = factory.Create();
+                Assert.AreEqual(null, presenter.Show());
+            }
         }
 
         [TestMethod]
@@ -1906,7 +1916,7 @@ End Sub";
             var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
             {
                 Input =
-@"#Const Bar = 42
+                    @"#Const Bar = 42
 
 #If False Then
 Private Sub Goo(ByVal arg1 As String)
@@ -1917,7 +1927,7 @@ Private Sub Foo(ByVal arg1 As String, arg2 As String)
 #End If
 End Sub",
                 Expected =
-@"#Const Bar = 42
+                    @"#Const Bar = 42
 
 #If False Then
 Private Sub Goo(ByVal arg1 As String)
@@ -1940,7 +1950,7 @@ End Sub"
             var inputOutput = new RenameTestModuleDefinition("TestClass")
             {
                 Input =
-@"Private Sub Foo()
+                    @"Private Sub Foo()
     Dim va|l1 As Integer
 End Sub",
                 CheckExpectedEqualsActual = false
@@ -1952,6 +1962,48 @@ End Sub",
             Assert.IsFalse(renameViewModel.IsValidName);
         }
 
+
+        [TestMethod]
+        [TestCategory("Refactorings")]
+        [TestCategory("Rename")]
+        public void RenameRefactoring_RenameClassModule_DoesNotChangeMeReferences()
+        {
+            const string newName = "RenamedClassModule";
+
+            //Input
+            const string inputCode =
+                @"Property Get Self() As IClassModule
+    Set Self = Me
+End Property";
+
+            var selection = new Selection(3, 27, 3, 27);
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, "ClassModule1", ComponentType.ClassModule, out component, selection);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+                var msgbox = new Mock<IMessageBox>();
+                msgbox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.YesNo, It.IsAny<MessageBoxIcon>()))
+                    .Returns(DialogResult.Yes);
+
+                var vbeWrapper = vbe.Object;
+                var model = new RenameModel(vbeWrapper, state, qualifiedSelection) { NewName = newName };
+                model.Target = model.Declarations.FirstOrDefault(i => i.DeclarationType == DeclarationType.ClassModule && i.IdentifierName == "ClassModule1");
+
+                //SetupFactory
+                var factory = SetupFactory(model);
+
+                var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, msgbox.Object, state);
+                refactoring.Refactor(model.Target);
+
+                Assert.AreSame(newName, component.CodeModule.Name);
+                Assert.AreEqual(inputCode, component.CodeModule.GetLines(0, component.CodeModule.CountOfLines));
+            }
+
+        }
         #endregion
 
         #region Test Execution
@@ -1962,9 +2014,16 @@ End Sub",
             , RenameTestModuleDefinition? inputOutput3 = null
             , RenameTestModuleDefinition? inputOutput4 = null)
         {
-            InitializeTestDataObject(tdo, inputOutput1, inputOutput2, inputOutput3, inputOutput4);
-            RunRenameRefactorScenario(tdo);
-            CheckRenameRefactorTestResults(tdo);
+            try
+            {
+                InitializeTestDataObject(tdo, inputOutput1, inputOutput2, inputOutput3, inputOutput4);
+                RunRenameRefactorScenario(tdo);
+                CheckRenameRefactorTestResults(tdo);
+            }
+            finally
+            {
+                tdo.ParserState?.Dispose();
+            }
         }
 
         private static void InitializeTestDataObject(RenameTestsDataObject tdo
@@ -2009,7 +2068,7 @@ End Sub",
 
             tdo.MsgBox = new Mock<IMessageBox>();
             tdo.MsgBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
-                  .Returns(tdo.MsgBoxReturn);
+                .Returns(tdo.MsgBoxReturn);
 
             tdo.VBE = tdo.VBE ?? BuildProject(tdo.ProjectName, tdo.ModuleTestSetupDefs);
             tdo.ParserState = MockParser.CreateAndParse(tdo.VBE);

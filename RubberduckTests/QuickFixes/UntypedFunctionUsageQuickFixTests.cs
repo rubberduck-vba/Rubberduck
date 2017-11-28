@@ -1,14 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Parsing.Annotations;
-using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 
@@ -44,20 +39,25 @@ End Sub";
 
             var component = project.Object.VBComponents[0];
             var parser = MockParser.Create(vbe.Object);
+            using (var state = parser.State)
+            {
+                // FIXME reinstate and unignore tests
+                // refers to "UntypedFunctionUsageInspectionTests.GetBuiltInDeclarations()"
+                //GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
 
-            // FIXME reinstate and unignore tests
-            // refers to "UntypedFunctionUsageInspectionTests.GetBuiltInDeclarations()"
-            //GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
+                parser.Parse(new CancellationTokenSource());
+                if (state.Status >= ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                var inspection = new UntypedFunctionUsageInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            var inspection = new UntypedFunctionUsageInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
+                new UntypedFunctionUsageQuickFix(state).Fix(inspectionResults.First());
 
-            new UntypedFunctionUsageQuickFix(parser.State).Fix(inspectionResults.First());
-
-            Assert.AreEqual(expectedCode, parser.State.GetRewriter(component).GetText());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
     }

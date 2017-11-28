@@ -16,17 +16,19 @@ namespace RubberduckTests.Inspections
         public void RedundantByRefModifier_ReturnsResult()
         {
             const string inputCode =
-@"Sub Foo(ByRef arg1 As Integer)
+                @"Sub Foo(ByRef arg1 As Integer)
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new RedundantByRefModifierInspection(state) { Severity = CodeInspectionSeverity.Hint };
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new RedundantByRefModifierInspection(state) { Severity = CodeInspectionSeverity.Hint };
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.AreEqual(1, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -34,17 +36,19 @@ End Sub";
         public void RedundantByRefModifier_ReturnsResult_MultipleParameters()
         {
             const string inputCode =
-@"Sub Foo(ByRef arg1 As Integer, ByRef arg2 As Date)
+                @"Sub Foo(ByRef arg1 As Integer, ByRef arg2 As Date)
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new RedundantByRefModifierInspection(state) { Severity = CodeInspectionSeverity.Hint };
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new RedundantByRefModifierInspection(state) { Severity = CodeInspectionSeverity.Hint };
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.AreEqual(2, inspectionResults.Count());
+                Assert.AreEqual(2, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -52,17 +56,19 @@ End Sub";
         public void RedundantByRefModifier_DoesNotReturnResult_NoModifier()
         {
             const string inputCode =
-@"Sub Foo(arg1 As Integer)
+                @"Sub Foo(arg1 As Integer)
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new RedundantByRefModifierInspection(state) { Severity = CodeInspectionSeverity.Hint };
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new RedundantByRefModifierInspection(state) { Severity = CodeInspectionSeverity.Hint };
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.AreEqual(0, inspectionResults.Count());
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -70,17 +76,19 @@ End Sub";
         public void RedundantByRefModifier_DoesNotReturnResult_ByVal()
         {
             const string inputCode =
-@"Sub Foo(ByVal arg1 As Integer)
+                @"Sub Foo(ByVal arg1 As Integer)
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new RedundantByRefModifierInspection(state) { Severity = CodeInspectionSeverity.Hint };
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new RedundantByRefModifierInspection(state) { Severity = CodeInspectionSeverity.Hint };
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.AreEqual(0, inspectionResults.Count());
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -88,17 +96,19 @@ End Sub";
         public void RedundantByRefModifier_ReturnsResult_SomePassedByRef()
         {
             const string inputCode =
-@"Sub Foo(ByVal arg1 As Integer, ByRef arg2 As Date)
+                @"Sub Foo(ByVal arg1 As Integer, ByRef arg2 As Date)
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new RedundantByRefModifierInspection(state) { Severity = CodeInspectionSeverity.Hint };
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new RedundantByRefModifierInspection(state) { Severity = CodeInspectionSeverity.Hint };
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.AreEqual(1, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -106,11 +116,11 @@ End Sub";
         public void RedundantByRefModifier_ReturnsResult_InterfaceImplementation()
         {
             const string inputCode1 =
-@"Sub Foo(ByRef arg1 As Integer)
+                @"Sub Foo(ByRef arg1 As Integer)
 End Sub";
 
             const string inputCode2 =
-@"Implements IClass1
+                @"Implements IClass1
 
 Sub IClass1_Foo(ByRef arg1 As Integer)
 End Sub";
@@ -122,13 +132,15 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new RedundantByRefModifierInspection(state) { Severity = CodeInspectionSeverity.Hint };
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new RedundantByRefModifierInspection(state) { Severity = CodeInspectionSeverity.Hint };
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.AreEqual(1, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -136,17 +148,17 @@ End Sub";
         public void RedundantByRefModifier_ReturnsResult_MultipleInterfaceImplementation()
         {
             const string inputCode1 =
-@"Sub Foo(ByRef arg1 As Integer)
+                @"Sub Foo(ByRef arg1 As Integer)
 End Sub";
 
             const string inputCode2 =
-@"Implements IClass1
+                @"Implements IClass1
 
 Sub IClass1_Foo(ByRef arg1 As Integer)
 End Sub";
 
             const string inputCode3 =
-@"Implements IClass1
+                @"Implements IClass1
 
 Sub IClass1_Foo(ByRef arg1 As Integer)
 End Sub";
@@ -159,13 +171,15 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new RedundantByRefModifierInspection(state) { Severity = CodeInspectionSeverity.Hint };
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new RedundantByRefModifierInspection(state) { Severity = CodeInspectionSeverity.Hint };
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.AreEqual(1, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -173,18 +187,20 @@ End Sub";
         public void RedundantByRefModifier_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
-@"'@Ignore RedundantByRefModifier
+                @"'@Ignore RedundantByRefModifier
 Sub Foo(ByRef arg1 As Integer)
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new RedundantByRefModifierInspection(state) { Severity = CodeInspectionSeverity.Hint };
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new RedundantByRefModifierInspection(state) { Severity = CodeInspectionSeverity.Hint };
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.IsFalse(inspectionResults.Any());
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
 
         [TestMethod]

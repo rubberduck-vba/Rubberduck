@@ -1,7 +1,4 @@
 ﻿using Extensibility;
-using Ninject;
-using Ninject.Extensions.Factory;
-using Rubberduck.Root;
 using Rubberduck.UI;
 using System;
 using System.ComponentModel;
@@ -13,9 +10,10 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Windows.Threading;
+using Castle.Windsor;
 using Microsoft.Vbe.Interop;
-using Ninject.Extensions.Interception;
 using NLog;
+using Rubberduck.Root;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor.Events;
@@ -41,7 +39,9 @@ namespace Rubberduck
         private bool _isInitialized;
         private bool _isBeginShutdownExecuted;
 
-        private IKernel _kernel;
+        private GeneralSettings _initialSettings;
+
+        private IWindsorContainer _container;
         private App _app;
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
@@ -152,12 +152,12 @@ namespace Rubberduck
             };
             var configProvider = new GeneralConfigProvider(configLoader);
             
-            var settings = configProvider.Create();
-            if (settings != null)
+            _initialSettings = configProvider.Create();
+            if (_initialSettings != null)
             {
                 try
                 {
-                    var cultureInfo = CultureInfo.GetCultureInfo(settings.Language.Code);
+                    var cultureInfo = CultureInfo.GetCultureInfo(_initialSettings.Language.Code);
                     Dispatcher.CurrentDispatcher.Thread.CurrentUICulture = cultureInfo;
                 }
                 catch (CultureNotFoundException)
@@ -170,7 +170,7 @@ namespace Rubberduck
             }
 
             Splash splash = null;
-            if (settings.ShowSplash)
+            if (_initialSettings.ShowSplash)
             {
                 splash = new Splash
                 {
@@ -210,10 +210,9 @@ namespace Rubberduck
                 currentDomain.UnhandledException += HandlAppDomainException;
                 currentDomain.AssemblyResolve += LoadFromSameFolder;
 
-                _kernel = new StandardKernel(new NinjectSettings {LoadExtensions = true}, new FuncModule(), new DynamicProxyModule());
-                _kernel.Load(new RubberduckModule(_ide, _addin));
-
-                _app = _kernel.Get<App>();
+                _container = new WindsorContainer().Install(new RubberduckIoCInstaller(_ide, _addin, _initialSettings));
+                
+                _app = _container.Resolve<App>();
                 _app.Startup();
 
                 _isInitialized = true;
@@ -222,7 +221,9 @@ namespace Rubberduck
             catch (Exception e)
             {
                 _logger.Log(LogLevel.Fatal, e, "Startup sequence threw an unexpected exception.");
-                //throw; // <<~ uncomment to crash the process
+#if DEBUG
+                throw; // <<~ uncomment to crash the process
+#endif
             }
         }
 
@@ -253,11 +254,11 @@ namespace Rubberduck
                     _app = null;
                 }
 
-                if (_kernel != null)
+                if (_container != null)
                 {
                     _logger.Log(LogLevel.Trace, "Disposing IoC container...");
-                    _kernel.Dispose();
-                    _kernel = null;
+                    _container.Dispose();
+                    _container = null;
                 }
 
                 _isInitialized = false;

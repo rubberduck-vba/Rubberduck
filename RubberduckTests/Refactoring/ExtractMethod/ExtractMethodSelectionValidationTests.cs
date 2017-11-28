@@ -40,17 +40,19 @@ Private Sub NewMethod4
 End Sub";
 
                     QualifiedModuleName qualifiedModuleName;
-                    var state = MockParser.ParseString(inputCode, out qualifiedModuleName);
-                    var declarations = state.AllDeclarations;
-                    var selection = new Selection(4, 4, 10, 14);
-                    QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
+                    using (var state = MockParser.ParseString(inputCode, out qualifiedModuleName))
+                    {
+                        var declarations = state.AllDeclarations;
+                        var selection = new Selection(4, 4, 10, 14);
+                        QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
 
-                    var SUT = new ExtractMethodSelectionValidation(declarations);
+                        var SUT = new ExtractMethodSelectionValidation(declarations);
 
-                    var actual = SUT.withinSingleProcedure(qSelection.Value);
-                    var expected = false;
-                    Assert.AreEqual(expected, actual);
+                        var actual = SUT.withinSingleProcedure(qSelection.Value);
+                        var expected = false;
+                        Assert.AreEqual(expected, actual);
 
+                    }
                 }
             }
             [TestClass]
@@ -81,18 +83,20 @@ Private Sub NewMethod4
 End Sub";
 
                     QualifiedModuleName qualifiedModuleName;
-                    var state = MockParser.ParseString(inputCode, out qualifiedModuleName);
-                    var declarations = state.AllDeclarations;
-                    var selection = new Selection(4, 4, 5, 14);
-                    QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
+                    using (var state = MockParser.ParseString(inputCode, out qualifiedModuleName))
+                    {
+                        var declarations = state.AllDeclarations;
+                        var selection = new Selection(4, 4, 5, 14);
+                        QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
 
-                    var SUT = new ExtractMethodSelectionValidation(declarations);
+                        var SUT = new ExtractMethodSelectionValidation(declarations);
 
-                    var actual = SUT.withinSingleProcedure(qSelection.Value);
+                        var actual = SUT.withinSingleProcedure(qSelection.Value);
 
-                    var expected = true;
-                    Assert.AreEqual(expected, actual);
+                        var expected = true;
+                        Assert.AreEqual(expected, actual);
 
+                    }
                 }
 
                 [TestMethod]
@@ -114,17 +118,19 @@ End Sub";
 
 
                     QualifiedModuleName qualifiedModuleName;
-                    var state = MockParser.ParseString(inputCode, out qualifiedModuleName);
-                    var declarations = state.AllDeclarations;
-                    var selection = new Selection(4, 4, 7, 14);
-                    QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
+                    using (var state = MockParser.ParseString(inputCode, out qualifiedModuleName))
+                    {
+                        var declarations = state.AllDeclarations;
+                        var selection = new Selection(4, 4, 7, 14);
+                        QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
 
-                    var SUT = new ExtractMethodSelectionValidation(declarations);
+                        var SUT = new ExtractMethodSelectionValidation(declarations);
 
-                    var actual = SUT.withinSingleProcedure(qSelection.Value);
+                        var actual = SUT.withinSingleProcedure(qSelection.Value);
 
-                    var expected = false;
-                    Assert.AreEqual(expected, actual);
+                        var expected = false;
+                        Assert.AreEqual(expected, actual);
+                    }
                 }
             }
         }

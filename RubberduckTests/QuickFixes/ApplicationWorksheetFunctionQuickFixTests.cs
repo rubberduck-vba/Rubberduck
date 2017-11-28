@@ -40,17 +40,22 @@ End Sub
             var vbe = builder.AddProject(project).Build();
 
             var parser = MockParser.Create(vbe.Object);
+            using (var state = parser.State)
+            {
+                state.AddTestLibrary("Excel.1.8.xml");
 
-            parser.State.AddTestLibrary("Excel.1.8.xml");
+                parser.Parse(new CancellationTokenSource());
+                if (state.Status >= ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                var inspection = new ApplicationWorksheetFunctionInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            var inspection = new ApplicationWorksheetFunctionInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            new ApplicationWorksheetFunctionQuickFix(parser.State).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, parser.State.GetRewriter(project.Object.VBComponents.First()).GetText());
+                new ApplicationWorksheetFunctionQuickFix(state).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(project.Object.VBComponents.First()).GetText());
+            }
         }
 
         [TestMethod]
@@ -85,17 +90,22 @@ End Sub
             var vbe = builder.AddProject(project).Build();
 
             var parser = MockParser.Create(vbe.Object);
+            using (var state = parser.State)
+            {
+                state.AddTestLibrary("Excel.1.8.xml");
 
-            parser.State.AddTestLibrary("Excel.1.8.xml");
+                parser.Parse(new CancellationTokenSource());
+                if (state.Status >= ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                var inspection = new ApplicationWorksheetFunctionInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            var inspection = new ApplicationWorksheetFunctionInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            new ApplicationWorksheetFunctionQuickFix(parser.State).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, parser.State.GetRewriter(project.Object.VBComponents.First()).GetText());
+                new ApplicationWorksheetFunctionQuickFix(state).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(project.Object.VBComponents.First()).GetText());
+            }
         }
 
         [TestMethod]
@@ -126,17 +136,22 @@ End Sub
             var vbe = builder.AddProject(project).Build();
 
             var parser = MockParser.Create(vbe.Object);
+            using (var state = parser.State)
+            {
+                state.AddTestLibrary("Excel.1.8.xml");
 
-            parser.State.AddTestLibrary("Excel.1.8.xml");
+                parser.Parse(new CancellationTokenSource());
+                if (state.Status >= ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                var inspection = new ApplicationWorksheetFunctionInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            var inspection = new ApplicationWorksheetFunctionInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            new ApplicationWorksheetFunctionQuickFix(parser.State).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, parser.State.GetRewriter(project.Object.VBComponents.First()).GetText());
+                new ApplicationWorksheetFunctionQuickFix(state).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(project.Object.VBComponents.First()).GetText());
+            }
         }
     }
 }

@@ -95,4 +95,5 @@ If you contribute a translation for a brand new previously unsupported language,
 
 Well ... the eternal gratitude of all Rubberduck users for one :wink:
 Aside from that, all contributors are explicitly listed by name (or alias) in the "About Rubberduck" window.
-In addition to that, there is some [Contributor-only Rubberduck swag](https://gofundme.com/rubberduckvba), that can be sent to you, at the discretion of @retailcoder.. while supplies last.
+
+We ran a [fundraiser](https://gofundme.com/rubberduckvba) last summer, and had t-sihrts, mugs, pens, and stickers made - the goods are now unfortunately depleted; we'll probably run another campaign next year!

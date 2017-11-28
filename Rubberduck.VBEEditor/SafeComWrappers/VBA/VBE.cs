@@ -285,7 +285,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public bool HostSupportsUnitTests()
         {
             var host = Path.GetFileName(System.Windows.Forms.Application.ExecutablePath).ToUpperInvariant();
-            if (HostAppMap.ContainsKey(host)) return true;
+            if (HostAppMap.ContainsKey(host))
+            {
+                return true;
+            }
             //Guessing the above will work like 99.9999% of the time for supported applications.
 
             var project = ActiveVBProject;

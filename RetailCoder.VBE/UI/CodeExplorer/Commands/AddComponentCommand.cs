@@ -37,7 +37,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             var folderAnnotation = $"'@Folder(\"{GetFolder(node)}\")";
 
             var newComponent = components.Add(type);
-            newComponent.CodeModule.AddFromString(folderAnnotation);
+            newComponent.CodeModule.InsertLines(1, folderAnnotation);
         }
 
         private Declaration GetDeclaration(CodeExplorerItemViewModel node)
@@ -52,20 +52,17 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         private string GetFolder(CodeExplorerItemViewModel node)
         {
-            if (node == null)
+            switch (node)
             {
-                return DefaultFolder;
+                case null:
+                    return DefaultFolder;
+                case ICodeExplorerDeclarationViewModel declarationNode:
+                    return string.IsNullOrEmpty(declarationNode.Declaration.CustomFolder)
+                        ? DefaultFolder
+                        : declarationNode.Declaration.CustomFolder.Replace("\"", string.Empty);
+                default:
+                    return ((CodeExplorerCustomFolderViewModel)node).FullPath;
             }
-
-            var declarationNode = node as ICodeExplorerDeclarationViewModel;
-            if (declarationNode != null)
-            {
-                return string.IsNullOrEmpty(declarationNode.Declaration.CustomFolder)
-                    ? DefaultFolder
-                    : declarationNode.Declaration.CustomFolder.Replace("\"", string.Empty);
-            }
-
-            return ((CodeExplorerCustomFolderViewModel)node).FullPath;
         }
     }
 }

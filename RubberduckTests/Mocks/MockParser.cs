@@ -12,11 +12,10 @@ using Rubberduck.VBEditor;
 using System.Globalization;
 using System.Reflection;
 using System.Threading;
-using Antlr4.Runtime;
-using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.Parsing.Symbols.ParsingExceptions;
 
 namespace RubberduckTests.Mocks
 {
@@ -31,7 +30,10 @@ namespace RubberduckTests.Mocks
             var parser = Create(vbe.Object);
 
             parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status == ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error: {0}");
+            }
             return parser.State;
 
         }

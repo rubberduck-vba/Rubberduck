@@ -16,16 +16,18 @@ namespace RubberduckTests.Inspections
         public void ProcedureNotUsed_ReturnsResult()
         {
             const string inputCode =
-@"Private Sub Foo()
+                @"Private Sub Foo()
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ProcedureNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new ProcedureNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(1, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -33,19 +35,21 @@ End Sub";
         public void ProcedureNotUsed_ReturnsResult_MultipleSubs()
         {
             const string inputCode =
-@"Private Sub Foo()
+                @"Private Sub Foo()
 End Sub
 
 Private Sub Goo()
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ProcedureNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new ProcedureNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(2, inspectionResults.Count());
+                Assert.AreEqual(2, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -53,7 +57,7 @@ End Sub";
         public void ProcedureUsed_DoesNotReturnResult()
         {
             const string inputCode =
-@"Private Sub Foo()
+                @"Private Sub Foo()
     Goo
 End Sub
 
@@ -62,12 +66,14 @@ Private Sub Goo()
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ProcedureNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new ProcedureNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(0, inspectionResults.Count());
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -75,7 +81,7 @@ End Sub";
         public void ProcedureNotUsed_ReturnsResult_SomeProceduresUsed()
         {
             const string inputCode =
-@"Private Sub Foo()
+                @"Private Sub Foo()
 End Sub
 
 Private Sub Goo()
@@ -83,12 +89,14 @@ Private Sub Goo()
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ProcedureNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new ProcedureNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(1, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -97,10 +105,10 @@ End Sub";
         {
             //Input
             const string inputCode1 =
-@"Public Sub DoSomething(ByVal a As Integer)
+                @"Public Sub DoSomething(ByVal a As Integer)
 End Sub";
             const string inputCode2 =
-@"Implements IClass1
+                @"Implements IClass1
 
 Private Sub IClass1_DoSomething(ByVal a As Integer)
 End Sub";
@@ -112,12 +120,14 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ProcedureNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new ProcedureNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(0, inspectionResults.Count());
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -127,7 +137,7 @@ End Sub";
             //Input
             const string inputCode1 = @"Public Event Foo(ByVal arg1 As Integer, ByVal arg2 As String)";
             const string inputCode2 =
-@"Private WithEvents abc As Class1
+                @"Private WithEvents abc As Class1
 
 Private Sub abc_Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub";
@@ -139,12 +149,14 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ProcedureNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new ProcedureNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(0, inspectionResults.Count(result => result.Target.DeclarationType == DeclarationType.Procedure));
+                Assert.AreEqual(0, inspectionResults.Count(result => result.Target.DeclarationType == DeclarationType.Procedure));
+            }
         }
 
         [TestMethod]
@@ -153,16 +165,18 @@ End Sub";
         {
             //Input
             const string inputCode =
-@"Private Sub Class_Initialize()
+                @"Private Sub Class_Initialize()
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ProcedureNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new ProcedureNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(0, inspectionResults.Count());
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -171,16 +185,18 @@ End Sub";
         {
             //Input
             const string inputCode =
-@"Private Sub class_initialize()
+                @"Private Sub class_initialize()
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ProcedureNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new ProcedureNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(0, inspectionResults.Count());
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -189,16 +205,18 @@ End Sub";
         {
             //Input
             const string inputCode =
-@"Private Sub Class_Terminate()
+                @"Private Sub Class_Terminate()
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ProcedureNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new ProcedureNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(0, inspectionResults.Count());
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
         }
 
         [TestMethod]
@@ -207,16 +225,18 @@ End Sub";
         {
             //Input
             const string inputCode =
-@"Private Sub class_terminate()
+                @"Private Sub class_terminate()
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ProcedureNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new ProcedureNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(0, inspectionResults.Count());
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
         }
 
 
@@ -225,17 +245,19 @@ End Sub";
         public void ProcedureNotUsed_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
-@"'@Ignore ProcedureNotUsed
+                @"'@Ignore ProcedureNotUsed
 Private Sub Foo()
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ProcedureNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new ProcedureNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.IsFalse(inspectionResults.Any());
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
 
         [TestMethod]

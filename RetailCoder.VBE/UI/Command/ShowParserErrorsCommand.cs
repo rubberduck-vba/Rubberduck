@@ -9,7 +9,6 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Controls;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command
 {
@@ -48,29 +47,36 @@ namespace Rubberduck.UI.Command
 
         private void UpdateTab()
         {
-            if (_viewModel == null)
+            try
             {
-                return;
-            }
-
-            var vm = CreateViewModel();
-
-            var tab = _viewModel.Tabs.FirstOrDefault(t => t.Header == RubberduckUI.Parser_ParserError);
-            if (tab != null)
-            {
-                if (_state.Status != ParserState.Error)
+                if (_viewModel == null)
                 {
-                    tab.CloseCommand.Execute(null);
+                    return;
                 }
-                else
+
+                var vm = CreateViewModel();
+
+                var tab = _viewModel.Tabs.FirstOrDefault(t => t.Header == RubberduckUI.Parser_ParserError);
+                if (tab != null)
                 {
-                    tab.SearchResults = vm.SearchResults;
+                    if (_state.Status != ParserState.Error)
+                    {
+                        tab.CloseCommand.Execute(null);
+                    }
+                    else
+                    {
+                        tab.SearchResults = vm.SearchResults;
+                    }
+                }
+                else if (_state.Status == ParserState.Error)
+                {
+                    _viewModel.AddTab(vm);
+                    _viewModel.SelectedTab = vm;
                 }
             }
-            else if (_state.Status == ParserState.Error)
+            catch (Exception exception)
             {
-                _viewModel.AddTab(vm);
-                _viewModel.SelectedTab = vm;
+                Logger.Error(exception, "Exception thrown while trying to update the parser errors tab.");
             }
         }
 
@@ -105,24 +111,18 @@ namespace Rubberduck.UI.Command
             return viewModel;
         }
 
-        private Declaration FindModuleDeclaration(IVBComponent component)
+        private Declaration FindModuleDeclaration(QualifiedModuleName module)
         {
-            var components = component.Collection;
-            var refProject = components.Parent;
-            {
-                var projectId = refProject.HelpFile;
-                var project = _state.AllUserDeclarations.SingleOrDefault(item =>
-                    item.DeclarationType == DeclarationType.Project && item.ProjectId == projectId);
+            var projectId = module.ProjectId;
+            var project = _state.DeclarationFinder.UserDeclarations(DeclarationType.Project)
+                    .SingleOrDefault(item => item.ProjectId == projectId);
 
-                var result = _state.AllUserDeclarations.SingleOrDefault(item => 
-                    item.ProjectId == component.Collection.Parent.HelpFile
-                    && item.QualifiedName.QualifiedModuleName.ComponentName == component.Name
-                    && (item.DeclarationType == DeclarationType.ClassModule || item.DeclarationType == DeclarationType.ProceduralModule));
+            var result = _state.DeclarationFinder.UserDeclarations(DeclarationType.Module)
+                    .SingleOrDefault(item => item.QualifiedName.QualifiedModuleName.Equals(module));
 
-                // FIXME dirty hack for project.Scope in case project is null. Clean up!
-                var declaration = new Declaration(new QualifiedMemberName(new QualifiedModuleName(component), component.Name), project, project?.Scope, component.Name, null, false, false, Accessibility.Global, DeclarationType.ProceduralModule, false, null, true);
-                return result ?? declaration; // module isn't in parser state - give it a dummy declaration, just so the ViewModel has something to chew on
-            }
+            // FIXME dirty hack for project.Scope in case project is null. Clean up!
+            var declaration = new Declaration(new QualifiedMemberName(module, module.ComponentName), project, project?.Scope, module.ComponentName, null, false, false, Accessibility.Global, DeclarationType.ProceduralModule, false, null, true);
+            return result ?? declaration; // module isn't in parser state - give it a dummy declaration, just so the ViewModel has something to chew on
         }
 
         public void Dispose()

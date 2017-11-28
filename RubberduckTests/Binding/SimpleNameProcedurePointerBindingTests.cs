@@ -28,11 +28,13 @@ namespace RubberduckTests.Binding
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);
             var vbe = builder.Build();
-            var state = Parse(vbe);
+            using (var state = Parse(vbe))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Function && d.IdentifierName == BINDING_TARGET_NAME);
+                var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Function && d.IdentifierName == BINDING_TARGET_NAME);
 
-            Assert.AreEqual(1, declaration.References.Count());
+                Assert.AreEqual(1, declaration.References.Count());
+            }
         }
 
         [TestCategory("Binding")]
@@ -46,12 +48,14 @@ namespace RubberduckTests.Binding
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);
             var vbe = builder.Build();
-            var state = Parse(vbe);
+            using (var state = Parse(vbe))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Project && d.IdentifierName == BINDING_TARGET_NAME);
+                var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Project && d.IdentifierName == BINDING_TARGET_NAME);
 
-            Assert.AreEqual(state.Status, ParserState.Ready);
-            Assert.AreEqual(1, declaration.References.Count());
+                Assert.AreEqual(state.Status, ParserState.Ready);
+                Assert.AreEqual(1, declaration.References.Count());
+            }
         }
 
         [TestCategory("Binding")]
@@ -65,11 +69,13 @@ namespace RubberduckTests.Binding
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);
             var vbe = builder.Build();
-            var state = Parse(vbe);
+            using (var state = Parse(vbe))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Function && d.IdentifierName == BINDING_TARGET_NAME);
+                var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Function && d.IdentifierName == BINDING_TARGET_NAME);
 
-            Assert.AreEqual(1, declaration.References.Count());
+                Assert.AreEqual(1, declaration.References.Count());
+            }
         }
 
         private static RubberduckParserState Parse(Mock<IVBE> vbe)
@@ -86,21 +92,21 @@ namespace RubberduckTests.Binding
 
         private string CreateCaller()
         {
-            return string.Format(@"
+            return $@"
 Declare PtrSafe Function EnumWindows Lib ""user32"" (ByVal lpEnumFunc As LongPtr, ByVal lParam As LongPtr) As Long
 
 Public Sub Caller()
-    EnumWindows AddressOf {0}, 1
+    EnumWindows AddressOf {BINDING_TARGET_NAME}, 1
 End Sub
-", BINDING_TARGET_NAME);
+";
         }
 
         private string CreateCallee()
         {
-            return string.Format(@"
-Public Function {0}() As LongPtr
+            return $@"
+Public Function {BINDING_TARGET_NAME}() As LongPtr
 End Function
-", BINDING_TARGET_NAME);
+";
         }
     }
 }

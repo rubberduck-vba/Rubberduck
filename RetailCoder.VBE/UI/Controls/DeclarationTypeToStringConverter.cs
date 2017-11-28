@@ -9,9 +9,8 @@ namespace Rubberduck.UI.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is DeclarationType)
+            if (value is DeclarationType type)
             {
-                var type = (DeclarationType)value;
                 var text = RubberduckUI.ResourceManager.GetString("DeclarationType_" + type, CultureInfo.CurrentUICulture) ?? string.Empty;
                 return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(text);
             }

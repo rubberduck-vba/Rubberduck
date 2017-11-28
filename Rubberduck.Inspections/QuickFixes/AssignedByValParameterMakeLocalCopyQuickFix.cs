@@ -54,17 +54,23 @@ namespace Rubberduck.Inspections.QuickFixes
 
         private string PromptForLocalVariableName(Declaration target, List<string> forbiddenNames)
         {
-            using (var view = _dialogFactory.Create(target.IdentifierName, target.DeclarationType.ToString(), forbiddenNames))
+            IAssignedByValParameterQuickFixDialog view = null;
+            try
             {
+                view = _dialogFactory.Create(target.IdentifierName, target.DeclarationType.ToString(), forbiddenNames);
                 view.NewName = GetDefaultLocalIdentifier(target, forbiddenNames);
                 view.ShowDialog();
-                
+
                 if (view.DialogResult == DialogResult.Cancel || !IsValidVariableName(view.NewName, forbiddenNames))
                 {
                     return string.Empty;
                 }
 
                 return view.NewName;
+            }
+            finally
+            {
+                _dialogFactory.Release(view);
             }
         }
 
