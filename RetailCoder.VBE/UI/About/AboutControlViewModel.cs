@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Reflection;
 using NLog;
 using Rubberduck.UI.Command;
 using Rubberduck.VersionCheck;
@@ -33,5 +32,8 @@ namespace Rubberduck.UI.About
                 });
             }
         }
+
+        public string AboutCopyright =>
+            string.Format(RubberduckUI.AboutWindow_Copyright, DateTime.Now.Year);
     }
 }
