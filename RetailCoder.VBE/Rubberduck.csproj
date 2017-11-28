@@ -358,6 +358,7 @@
     <Compile Include="Refactorings\ExtractMethod\IExtractMethodProc.cs" />
     <Compile Include="Refactorings\ExtractMethod\IExtractMethodRule.cs" />
     <Compile Include="Refactorings\ExtractMethod\IExtractMethodSelectionValidation.cs" />
+    <Compile Include="Refactorings\IRefactoringViewModel.cs" />
     <Compile Include="Refactorings\RefactoringPresenter.cs" />
     <Compile Include="Root\RubberduckIoCInstaller.cs" />
     <Compile Include="RubberduckGuid.cs" />

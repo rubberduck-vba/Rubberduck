@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Forms;
+using Microsoft.VB6.Interop.VBIDE;
 using NLog;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.UI.Command;
 
-namespace Rubberduck.UI.Refactorings
+namespace Rubberduck.UI.Refactorings.ExtractMethod
 {
-    public class ExtractMethodViewModel : ViewModelBase
+    public class ExtractMethodViewModel : ViewModelBase, IRefactoringViewModel<ExtractMethodModel>
     {
         public ExtractMethodViewModel()
         {
@@ -18,10 +21,10 @@ namespace Rubberduck.UI.Refactorings
             CancelButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => DialogCancel());
         }
 
-        private List<ExtractedParameter> _parameters;
-        public List<ExtractedParameter> Parameters
+        private ObservableCollection<ExtractedParameter> _parameters;
+        public ObservableCollection<ExtractedParameter> Parameters
         {
-            get { return _parameters; }
+            get => _parameters;
             set
             {
                 _parameters = value;
@@ -29,32 +32,26 @@ namespace Rubberduck.UI.Refactorings
             }
         }
 
-        public List<string> ComponentNames { get; set; }
+        public IEnumerable<string> ComponentNames =>
+            Model.State.AllUserDeclarations
+                .Where(d => d.ComponentName == Model.CodeModule.Name && (d.DeclarationType & DeclarationType.Member) == DeclarationType.Member)
+                .Select(d => d.IdentifierName);
 
-        private string _methodName;
-        public string MethodName
+        public string NewMethodName
         {
-            get { return _methodName; }
+            get => Model.NewMethodName;
             set
             {
-                _methodName = value;
+                Model.NewMethodName = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsValidMethodName));
+                OnPropertyChanged(nameof(PreviewCode));
             }
         }
-
-        private string _oldMethodName;
-        public string OldMethodName
-        {
-            get { return _oldMethodName; }
-            set
-            {
-                if(string.IsNullOrWhiteSpace( _oldMethodName))
-                {
-                    _oldMethodName = value;
-                }
-            }
-        }
+        
+        public string SourceMethodName => Model.SourceMethodName;
+        public string PreviewCaption => $@"Code Preview extracted from {SourceMethodName}";
+        public string PreviewCode => Model.PreviewCode;
 
         public IEnumerable<ExtractedParameter> Inputs;
         public IEnumerable<ExtractedParameter> Outputs;
@@ -68,12 +65,11 @@ namespace Rubberduck.UI.Refactorings
             get
             {
                 var tokenValues = typeof(Tokens).GetFields().Select(item => item.GetValue(null)).Cast<string>().Select(item => item);
-
-                return !ComponentNames.Contains(MethodName)
-                       && MethodName.Length > 1
-                       && char.IsLetter(MethodName.FirstOrDefault())
-                       && !tokenValues.Contains(MethodName, StringComparer.InvariantCultureIgnoreCase)
-                       && !MethodName.Any(c => !char.IsLetterOrDigit(c) && c != '_');
+                return !string.IsNullOrWhiteSpace(NewMethodName)
+                       && char.IsLetter(NewMethodName.FirstOrDefault())
+                       && !NewMethodName.Any(c => !char.IsLetterOrDigit(c) && c != '_')
+                       && !ComponentNames.Contains(NewMethodName, StringComparer.InvariantCultureIgnoreCase)
+                       && !tokenValues.Contains(NewMethodName, StringComparer.InvariantCultureIgnoreCase);
             }
         }
 
@@ -83,5 +79,6 @@ namespace Rubberduck.UI.Refactorings
         
         public CommandBase OkButtonCommand { get; }
         public CommandBase CancelButtonCommand { get; }
+        public ExtractMethodModel Model { get; set; }
     }
 }

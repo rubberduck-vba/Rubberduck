@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:converters="clr-namespace:Rubberduck.UI.Converters"
+             xmlns:extractMethod="clr-namespace:Rubberduck.UI.Refactorings.ExtractMethod"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
@@ -86,7 +87,7 @@
                          Height="22"
                          VerticalAlignment="Top"
                          VerticalContentAlignment="Center"
-                         Text="{Binding MethodName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                         Text="{Binding NewMethodName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <Image Grid.Row="1"
                        Source="../../../Resources/cross-circle.png"
                        Height="16"
@@ -144,12 +145,13 @@
             </GroupBox>
         </StackPanel>
         <Grid Grid.Row="2">
-            <Label Height="25" Margin="0,5,5,5" VerticalAlignment="Top"  Content="Code Preview"></Label>
+            <Label Height="25" Margin="0,5,5,5" VerticalAlignment="Top"  Content="{Binding PreviewCaption}"></Label>
             <TextBox Margin="5,25,5,5"
                      AllowDrop="False"
                      IsReadOnly="True"
                      HorizontalScrollBarVisibility="Auto"
                      VerticalScrollBarVisibility="Auto"
+                     Text="{Binding PreviewCode, Mode=OneWay}"
                      />
         </Grid>
         <Grid Grid.Row="3" Background="{x:Static SystemColors.ControlDarkBrush}" Grid.IsSharedSizeScope="True">

@@ -7,9 +7,8 @@ namespace Rubberduck.Refactorings
     public class RefactoringPresenter<TModel, TView, TViewModel> : IDisposable
         where TModel : class
         where TView : Form, IRefactoringDialog2<TViewModel>, new()
-        where TViewModel : class, new()
+        where TViewModel : class, IRefactoringViewModel<TModel>, new()
     {
-        protected readonly TModel model;
         protected readonly TView view;
         protected DialogResult dialogResult;
         
@@ -20,12 +19,12 @@ namespace Rubberduck.Refactorings
         
         public RefactoringPresenter(TModel model, TView view, TViewModel viewModel)
         {
-            this.model = model;
             this.view = view;
             this.view.ViewModel = viewModel;
+            this.view.ViewModel.Model = model;
         }
-        
-        public TModel Model => model;
+
+        public TModel Model => view.ViewModel.Model;
         public TView View => view;
         public TViewModel ViewModel => view.ViewModel;
         public virtual DialogResult DialogResult => dialogResult;
@@ -35,7 +34,7 @@ namespace Rubberduck.Refactorings
             dialogResult = view.ShowDialog();
             if (dialogResult == DialogResult.OK || dialogResult == DialogResult.Yes)
             {
-                return model;
+                return view.ViewModel.Model;
             }
 
             return null;

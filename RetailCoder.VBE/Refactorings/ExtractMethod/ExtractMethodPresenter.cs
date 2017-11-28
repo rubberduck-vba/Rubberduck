@@ -1,4 +1,5 @@
 ﻿using Rubberduck.UI.Refactorings;
+using Rubberduck.UI.Refactorings.ExtractMethod;
 
 namespace Rubberduck.Refactorings.ExtractMethod
 {

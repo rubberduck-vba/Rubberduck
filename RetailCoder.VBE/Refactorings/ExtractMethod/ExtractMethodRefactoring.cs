@@ -45,7 +45,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
             selection = _codeModule.GetQualifiedSelection().Value;
             
-            var model = new ExtractMethodModel(_state, selection, Validator.SelectedContexts, _indenter);
+            var model = new ExtractMethodModel(_state, selection, Validator.SelectedContexts, _indenter, _codeModule);
             var presenter = ExtractMethodPresenter.Create(model);
 
             if (presenter == null)

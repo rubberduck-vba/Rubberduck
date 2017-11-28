@@ -1,4 +1,5 @@
 ﻿using System.Windows.Forms;
+using Rubberduck.UI.Refactorings.ExtractMethod;
 
 namespace Rubberduck.UI.Refactorings
 {
