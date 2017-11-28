@@ -322,6 +322,7 @@
     <Compile Include="Common\ClipboardWriter.cs" />
     <Compile Include="Common\DeclarationExtensions.cs" />
     <Compile Include="Common\HookEventArgs.cs" />
+    <Compile Include="Common\Hotkeys\HotkeyFactory.cs" />
     <Compile Include="Common\Hotkeys\HotkeyInfo.cs" />
     <Compile Include="Common\Hotkeys\Hotkey.cs" />
     <Compile Include="Common\IAttachable.cs" />
@@ -345,6 +346,11 @@
     <Compile Include="Common\UndocumentedAttribute.cs" />
     <Compile Include="Navigation\CodeExplorer\ICodeExplorerDeclarationViewModel.cs" />
     <Compile Include="Navigation\Folders\FolderHelper.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="Refactorings\EncapsulateField\PropertyGenerator.cs" />
     <Compile Include="Refactorings\ExtractMethod\ExtractedMethod.cs" />
     <Compile Include="Refactorings\ExtractMethod\ExtractMethodParameterClassification.cs" />
@@ -361,7 +367,7 @@
     <Compile Include="RubberduckGuid.cs" />
     <Compile Include="RubberduckProgId.cs" />
     <Compile Include="Settings\CodeInspectionConfigProvider.cs" />
-    <Compile Include="Settings\DefaultHotkeys.cs" />
+    <Compile Include="Settings\DefaultHotkeySettings.cs" />
     <Compile Include="Settings\GeneralConfigProvider.cs" />
     <Compile Include="Settings\HotkeySettings.cs" />
     <Compile Include="Settings\HotkeyConfigProvider.cs" />
@@ -1042,7 +1048,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="NLog.dll.nlog">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -1126,6 +1134,10 @@
     <Resource Include="Resources\blue-folder-horizontal-open.png" />
     <Resource Include="Resources\blue-folder-horizontal.png" />
     <Resource Include="Resources\lock--exclamation.png" />
+    <None Include="Properties\Settings.settings">
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
     <None Include="Resources\document-smiley-sad.png" />
     <None Include="Resources\document-word.png" />
     <None Include="Resources\document-office.png" />

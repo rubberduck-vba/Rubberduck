@@ -8,17 +8,23 @@ namespace Rubberduck.Settings
         private readonly IPersistanceService<HotkeySettings> _persister;
         private readonly IEnumerable<HotkeySetting> _defaultHotkeys;
 
-        public HotkeyConfigProvider(IPersistanceService<HotkeySettings> persister, DefaultHotkeys defaultHotkeys)
+        public HotkeyConfigProvider(IPersistanceService<HotkeySettings> persister)
         {
             _persister = persister;
-            _defaultHotkeys = defaultHotkeys.Hotkeys;
-            //_hotkeySettings = hotkeySettings;
+            _defaultHotkeys = new DefaultHotkeySettings().Hotkeys;
         }
 
         public HotkeySettings Create()
         {
             var prototype = new HotkeySettings(_defaultHotkeys);
-            return _persister.Load(prototype) ?? prototype;
+
+            var loaded = _persister.Load(prototype);
+            if (loaded != null)
+            {
+                prototype.Settings = loaded.Settings;
+            }
+
+            return prototype;
         }
 
         public HotkeySettings CreateDefaults()

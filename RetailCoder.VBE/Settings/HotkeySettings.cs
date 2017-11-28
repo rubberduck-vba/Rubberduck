@@ -17,9 +17,17 @@ namespace Rubberduck.Settings
 
         public HotkeySetting[] Settings
         {
+            // TODO: Awkward
             get => _settings?.ToArray() ?? _defaultSettings?.ToArray() ?? new HotkeySetting[0];
             set
             {
+                // Enable loading user settings during deserialization
+                if (_defaultSettings == null)
+                {
+                    _settings = new HashSet<HotkeySetting>(value);
+                    return;
+                }
+
                 var defaults = _defaultSettings.ToArray();
 
                 if (value == null || value.Length == 0)
@@ -30,11 +38,11 @@ namespace Rubberduck.Settings
                 _settings = new HashSet<HotkeySetting>();
                 var incoming = value.ToList();
                 //Make sure settings are valid to keep trash out of the config file.
-                var hotkeyNames = defaults.Select(h => h.Name);
-                incoming.RemoveAll(h => !hotkeyNames.Contains(h.Name) || !IsValid(h));
+                var hotkeyCommandTypeNames = defaults.Select(h => h.CommandTypeName);
+                incoming.RemoveAll(h => !hotkeyCommandTypeNames.Contains(h.CommandTypeName) || !IsValid(h));
 
                 //Only take the first setting if multiple definitions are found.
-                foreach (var setting in incoming.GroupBy(s => s.Name).Select(hotkey => hotkey.First()))
+                foreach (var setting in incoming.GroupBy(s => s.CommandTypeName).Select(hotkey => hotkey.First()))
                 {
                     //Only allow one hotkey to be enabled with the same key combination.
                     setting.IsEnabled &= !IsDuplicate(setting);
@@ -42,7 +50,7 @@ namespace Rubberduck.Settings
                 }
 
                 //Merge any hotkeys that weren't found in the input.
-                foreach (var setting in defaults.Where(setting => _settings.FirstOrDefault(s => s.Name.Equals(setting.Name)) == null))
+                foreach (var setting in defaults.Where(setting => _settings.FirstOrDefault(s => s.CommandTypeName.Equals(setting.CommandTypeName)) == null))
                 {
                     setting.IsEnabled &= !IsDuplicate(setting);
                     _settings.Add(setting);
@@ -50,6 +58,9 @@ namespace Rubberduck.Settings
             }
         }
 
+        /// <Summary>
+        /// Default constructor required for XML serialization.
+        /// </Summary>
         public HotkeySettings()
         {
         }

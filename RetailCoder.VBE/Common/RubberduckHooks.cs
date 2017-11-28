@@ -13,14 +13,15 @@ namespace Rubberduck.Common
     public class RubberduckHooks : SubclassingWindow, IRubberduckHooks
     {
         private readonly IGeneralConfigService _config;
+        private readonly HotkeyFactory _hotkeyFactory;
         private readonly IList<IAttachable> _hooks = new List<IAttachable>();
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public RubberduckHooks(IVBE vbe, IGeneralConfigService config)
+        public RubberduckHooks(IVBE vbe, IGeneralConfigService config, HotkeyFactory hotkeyFactory)
             : base((IntPtr)vbe.MainWindow.HWnd, (IntPtr)vbe.MainWindow.HWnd)
         {
-            //_commands = commands;
             _config = config;
+            _hotkeyFactory = hotkeyFactory;
         }
 
         public void HookHotkeys()
@@ -31,14 +32,12 @@ namespace Rubberduck.Common
             var config = _config.LoadConfiguration();
             var settings = config.UserSettings.HotkeySettings;
 
-            foreach (var hotkey in settings.Settings.Where(hotkey => hotkey.IsEnabled))
+            foreach (var hotkeySetting in settings.Settings.Where(hotkey => hotkey.IsEnabled))
             {
-                var command = hotkey.Command;
-
-                // TODO: Is this check needed?
-                if (command != null)
+                var hotkey = _hotkeyFactory.Create(hotkeySetting, Hwnd);
+                if (hotkey != null)
                 {
-                    AddHook(new Hotkey(Hwnd, hotkey.ToString(), command));
+                    AddHook(hotkey);
                 }
             }
 
