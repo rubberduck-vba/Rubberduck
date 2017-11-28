@@ -70,7 +70,7 @@
     <Compile Include="Concrete\EmptyForLoopBlockInspection.cs" />
     <Compile Include="Concrete\BooleanAssignedInIfElseInspection.cs" />
     <Compile Include="Concrete\EmptyWhileWendBlockInspection.cs" />
-    <Compile Include="Concrete\SelectCaseInspectionRangeClause.cs" />
+    <Compile Include="Concrete\SelectCaseInspectionValue.cs" />
     <Compile Include="Concrete\ObsoleteErrorSyntaxInspection.cs" />
     <Compile Include="Concrete\StopKeywordInspection.cs" />
     <Compile Include="Concrete\LineLabelNotUsedInspection.cs" />

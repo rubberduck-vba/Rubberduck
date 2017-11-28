@@ -849,9 +849,9 @@ End Sub";
 
 Select Case x
   Case 1 To 49
-    'Do FooBar
+    'OK
   Case 50
-    'Reachable
+    'OK
   Case ""Test""
     'Unreachable
   Case ""85""
@@ -871,13 +871,13 @@ End Sub";
 
 Select Case x
   Case 1 To 49
-    'Do FooBar
+    'OK
   Case ""51""
     'Reachable - VBA is happy to change this to 51
   Case ""Hello World""
     'Unreachable
   Case 50
-    'Reachable
+    'OK
 End Select
 
 End Sub";
@@ -1686,7 +1686,7 @@ End Sub";
             var expected = new Dictionary<string, int>
             {
                 { CaseInspectionMessages.Unreachable, unreachable },
-                { CaseInspectionMessages.Mismatch, mismatch },
+                { CaseInspectionMessages.MismatchType, mismatch },
                 { CaseInspectionMessages.ExceedsBoundary, outOfRange },
                 { CaseInspectionMessages.CaseElse, caseElse },
             };
@@ -1699,12 +1699,12 @@ End Sub";
             var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
             var actualUnreachable = actualResults.Where(ar => ar.Description.Equals(CaseInspectionMessages.Unreachable));
-            var actualMismatches = actualResults.Where(ar => ar.Description.Equals(CaseInspectionMessages.Mismatch));
+            var actualMismatches = actualResults.Where(ar => ar.Description.Equals(CaseInspectionMessages.MismatchType));
             var actualOutOfRange = actualResults.Where(ar => ar.Description.Equals(CaseInspectionMessages.ExceedsBoundary));
             var actualUnreachableCaseElses = actualResults.Where(ar => ar.Description.Equals(CaseInspectionMessages.CaseElse));
 
             Assert.AreEqual(expected[CaseInspectionMessages.Unreachable], actualUnreachable.Count(), "Unreachable result");
-            Assert.AreEqual(expected[CaseInspectionMessages.Mismatch], actualMismatches.Count(), "Mismatch result");
+            Assert.AreEqual(expected[CaseInspectionMessages.MismatchType], actualMismatches.Count(), "Mismatch result");
             Assert.AreEqual(expected[CaseInspectionMessages.ExceedsBoundary], actualOutOfRange.Count(), "Boundary Check result");
             Assert.AreEqual(expected[CaseInspectionMessages.CaseElse], actualUnreachableCaseElses.Count(), "CaseElse result");
         }
