@@ -43,6 +43,8 @@ using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 using Component = Castle.MicroKernel.Registration.Component;
+using Rubberduck.UI.CodeMetrics;
+using Rubberduck.Navigation.CodeMetrics;
 
 namespace Rubberduck.Root
 {
@@ -463,6 +465,7 @@ namespace Rubberduck.Root
 #if DEBUG
                 typeof(RegexSearchReplaceCommandMenuItem),
 #endif
+                
                 typeof(FindSymbolCommandMenuItem),
                 typeof(FindAllReferencesCommandMenuItem),
                 typeof(FindAllImplementationsCommandMenuItem)
@@ -486,6 +489,7 @@ namespace Rubberduck.Root
             {
                 typeof(RegexAssistantCommandMenuItem),
                 typeof(ToDoExplorerCommandMenuItem),
+                typeof(CodeMetricsCommandMenuItem),
                 typeof(ExportAllCommandMenuItem)
             };
 
@@ -597,6 +601,12 @@ namespace Rubberduck.Root
                 .DependsOn(Dependency.OnComponent<IDockablePresenter, CodeExplorerDockablePresenter>())
                 .LifestyleTransient()
                 .Named(typeof(CodeExplorerCommand).Name));
+
+            container.Register(Component.For<CommandBase>()
+                .ImplementedBy<CodeMetricsCommand>()
+                .DependsOn(Dependency.OnComponent<IDockablePresenter, CodeMetricsDockablePresenter>())
+                .LifestyleSingleton()
+                .Named(typeof(CodeMetricsCommand).Name));
 
             container.Register(Component.For<CommandBase>()
                 .ImplementedBy<ToDoExplorerCommand>()

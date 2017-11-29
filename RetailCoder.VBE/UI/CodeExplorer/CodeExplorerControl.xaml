@@ -8,7 +8,6 @@
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
              xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
              xmlns:converters="clr-namespace:Rubberduck.UI.Converters"
-             xmlns:codeExplorerConverters="clr-namespace:Rubberduck.UI.CodeExplorer.Converters"
              ResxExtension.DefaultResxName="Rubberduck.UI.RubberduckUI" 
              Language="{UICulture}"
              Name="CodeExplorer"
@@ -33,8 +32,8 @@
 
             <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
             <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
-            <codeExplorerConverters:StringHasValueToVisibilityConverter x:Key="StringHasValueToVisibility" />
-            <codeExplorerConverters:StringHasNoValueToVisibilityConverter x:Key="StringHasNoValueToVisibility" />
+            <converters:StringHasValueToVisibilityConverter x:Key="StringHasValueToVisibility" />
+            <converters:StringHasNoValueToVisibilityConverter x:Key="StringHasNoValueToVisibility" />
 
             <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
                 <GradientStop Color="#FFD9F4FF" Offset="0"/>
