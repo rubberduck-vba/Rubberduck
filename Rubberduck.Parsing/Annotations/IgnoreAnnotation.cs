@@ -9,26 +9,24 @@ namespace Rubberduck.Parsing.Annotations
     /// </summary>
     public sealed class IgnoreAnnotation : AnnotationBase
     {
-        private readonly IEnumerable<string> _inspectionNames;
-
         public IgnoreAnnotation(
             QualifiedSelection qualifiedSelection,
             IEnumerable<string> parameters)
             : base(AnnotationType.Ignore, qualifiedSelection)
         {
-            _inspectionNames = parameters;
+            InspectionNames = parameters;
         }
 
-        public IEnumerable<string> InspectionNames => _inspectionNames;
+        public IEnumerable<string> InspectionNames { get; }
 
         public bool IsIgnored(string inspectionName)
         {
-            return _inspectionNames.Contains(inspectionName);
+            return InspectionNames.Contains(inspectionName);
         }
 
         public override string ToString()
         {
-            return $"Ignored inspections: {string.Join(", ", _inspectionNames)}";
+            return $"Ignored inspections: {string.Join(", ", InspectionNames)}";
         }
     }
 }

@@ -51,12 +51,9 @@ namespace Rubberduck.Parsing.Annotations
 
             private IAnnotation CreateAnnotation(string annotationName, List<string> parameters, QualifiedSelection qualifiedSelection)
             {
-                Type annotationClrType;
-                if (_creators.TryGetValue(annotationName.ToUpperInvariant(), out annotationClrType))
-                {
-                    return (IAnnotation)Activator.CreateInstance(annotationClrType, qualifiedSelection, parameters);
-                }
-                return null;
+                return _creators.TryGetValue(annotationName.ToUpperInvariant(), out var annotationClrType)
+                    ? (IAnnotation) Activator.CreateInstance(annotationClrType, qualifiedSelection, parameters)
+                    : null;
             }
     }
 }

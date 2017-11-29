@@ -35,8 +35,7 @@ namespace Rubberduck.Parsing.Annotations
                                       // EndsWith the name, so we can match "VB_Description" to "DoSomething.VB_Description"
                 .SingleOrDefault(k => k.AttributeName.EndsWith(name) && (k.AttributeValue?.Equals(value, StringComparison.OrdinalIgnoreCase) ?? true));
 
-            AnnotationType result;
-            return key != null && AttributeAnnotationTypes.TryGetValue(key, out result)
+            return key != null && AttributeAnnotationTypes.TryGetValue(key, out var result)
                 ? (AnnotationType?) result
                 : null;
         }
