@@ -49,8 +49,7 @@ namespace Rubberduck.Parsing.Rewriter
 
         public void Remove(ParserRuleContext target)
         {
-            IRewriterInfoFinder finder;
-            var info = Finders.TryGetValue(target.GetType(), out finder)
+            var info = Finders.TryGetValue(target.GetType(), out var finder)
                 ? finder.GetRewriterInfo(target)
                 : new DefaultRewriterInfoFinder().GetRewriterInfo(target);
 
