@@ -24,8 +24,7 @@ namespace Rubberduck.Parsing.Rewriter.RewriterInfo
             var itemIndex = items.ToList().IndexOf(target);
             var count = items.Count;
 
-            var element = context.Parent as VBAParser.ModuleDeclarationsElementContext;
-            if (element != null)
+            if (context.Parent is VBAParser.ModuleDeclarationsElementContext element)
             {
                 return GetModuleConstantRemovalInfo(target, element, count, itemIndex, items);
             }
