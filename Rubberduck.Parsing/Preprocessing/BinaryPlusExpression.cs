@@ -19,15 +19,17 @@
             {
                 return null;
             }
+
             if (left.ValueType == ValueType.String || right.ValueType == ValueType.String)
             {
                 return new StringValue(left.AsString+ right.AsString);
             }
-            else if (left.ValueType == ValueType.Date || right.ValueType == ValueType.Date)
+
+            if (left.ValueType == ValueType.Date || right.ValueType == ValueType.Date)
             {
-                decimal leftValue = left.AsDecimal;
-                decimal rightValue = right.AsDecimal;
-                decimal sum = leftValue + rightValue;
+                var leftValue = left.AsDecimal;
+                var rightValue = right.AsDecimal;
+                var sum = leftValue + rightValue;
                 try
                 {
                     return new DateValue(new DecimalValue(sum).AsDate);

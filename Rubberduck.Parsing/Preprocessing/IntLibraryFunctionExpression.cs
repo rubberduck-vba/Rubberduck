@@ -18,22 +18,17 @@ namespace Rubberduck.Parsing.PreProcessing
             {
                 return null;
             }
-            if (expr.ValueType == ValueType.Decimal)
+            switch (expr.ValueType)
             {
-                return new DecimalValue(Math.Truncate(expr.AsDecimal));
-            }
-            else if (expr.ValueType == ValueType.String)
-            {
-                return new DecimalValue(Math.Truncate(expr.AsDecimal));
-            }
-            else if (expr.ValueType == ValueType.Date)
-            {
-                var truncated = new DecimalValue(Math.Truncate(expr.AsDecimal));
-                return new DateValue(truncated.AsDate);
-            }
-            else
-            {
-                return new DecimalValue(expr.AsDecimal);
+                case ValueType.Decimal:
+                    return new DecimalValue(Math.Truncate(expr.AsDecimal));
+                case ValueType.String:
+                    return new DecimalValue(Math.Truncate(expr.AsDecimal));
+                case ValueType.Date:
+                    var truncated = new DecimalValue(Math.Truncate(expr.AsDecimal));
+                    return new DateValue(truncated.AsDate);
+                default:
+                    return new DecimalValue(expr.AsDecimal);
             }
         }
     }

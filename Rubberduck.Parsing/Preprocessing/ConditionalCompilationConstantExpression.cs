@@ -1,6 +1,4 @@
-﻿using Antlr4.Runtime;
-using System.Collections.Generic;
-
+﻿
 namespace Rubberduck.Parsing.PreProcessing
 {
     public sealed class ConditionalCompilationConstantExpression : Expression
@@ -29,8 +27,8 @@ namespace Rubberduck.Parsing.PreProcessing
             var constantValue = _expression.Evaluate();
             _symbolTable.Add(identifier, constantValue);
             return new LivelinessExpression(
-                isAlive: new ConstantExpression(new BoolValue(false)),
-                tokens: _tokens).Evaluate();
+                new ConstantExpression(new BoolValue(false)),
+                _tokens).Evaluate();
         }
     }
 }

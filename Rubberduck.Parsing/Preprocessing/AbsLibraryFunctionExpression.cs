@@ -18,9 +18,10 @@ namespace Rubberduck.Parsing.PreProcessing
             {
                 return null;
             }
+
             if (expr.ValueType == ValueType.Date)
             {
-                decimal exprValue = expr.AsDecimal;
+                var exprValue = expr.AsDecimal;
                 exprValue = Math.Abs(exprValue);
                 try
                 {

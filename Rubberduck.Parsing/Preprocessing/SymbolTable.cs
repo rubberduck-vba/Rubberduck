@@ -28,7 +28,7 @@ namespace Rubberduck.Parsing.PreProcessing
             {
                 return _table[name];
             }
-            throw new InvalidOperationException(name + " not found in symbol table.");
+            throw new InvalidOperationException($"{name} not found in symbol table.");
         }
     }
 }

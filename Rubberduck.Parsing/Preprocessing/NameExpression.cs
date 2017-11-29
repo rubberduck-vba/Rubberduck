@@ -19,11 +19,9 @@
             // Special case, identifier that does not exist is Empty.
             // Could add them to the symbol table, but since they are all constants
             // they never change anyway.
-            if (!_symbolTable.HasSymbol(identifier))
-            {
-                return EmptyValue.Value;
-            }
-            return _symbolTable.Get(identifier);
+            return !_symbolTable.HasSymbol(identifier) 
+                ? EmptyValue.Value 
+                : _symbolTable.Get(identifier);
         }
     }
 }

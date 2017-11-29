@@ -15,7 +15,7 @@ namespace Rubberduck.Parsing.PreProcessing
 
         public override IValue Evaluate()
         {
-            string literal = _tokenText.Evaluate().AsString;
+            var literal = _tokenText.Evaluate().AsString;
             var parser = new VBADateLiteralParser();
             var dateLiteral = parser.Parse(literal);
             var dateOrTime = dateLiteral.dateOrTime();
@@ -29,12 +29,12 @@ namespace Rubberduck.Parsing.PreProcessing
             Predicate<int> legalMonth = (x) => x >= 0 && x <= 12;
             Func<int, int, int, bool> legalDay = (m, d, y) =>
             {
-                bool legalYear = y >= 0 && y <= 32767;
-                bool legalM = legalMonth(m);
-                bool legalD = false;
+                var legalYear = y >= 0 && y <= 32767;
+                var legalM = legalMonth(m);
+                var legalD = false;
                 if (legalYear && legalM)
                 {
-                    int daysInMonth = DateTime.DaysInMonth(y, m);
+                    var daysInMonth = DateTime.DaysInMonth(y, m);
                     legalD = d >= 1 && d <= daysInMonth;
                 }
                 return legalYear && legalM && legalD;
@@ -56,7 +56,7 @@ namespace Rubberduck.Parsing.PreProcessing
                 }
             };
 
-            int CY = DateTime.Now.Year;
+            var CY = DateTime.Now.Year;
 
             if (dateOrTime.dateValue() == null)
             {
@@ -67,7 +67,6 @@ namespace Rubberduck.Parsing.PreProcessing
             else
             {
                 var dateValue = dateOrTime.dateValue();
-                var txt = dateOrTime.GetText();
                 var L = dateValue.dateValuePart()[0];
                 var M = dateValue.dateValuePart()[1];
                 VBADateParser.DateValuePartContext R = null;
@@ -86,7 +85,7 @@ namespace Rubberduck.Parsing.PreProcessing
                         day = MNumber;
                         year = CY;
                     }
-                    else if ((legalMonth(MNumber) && legalDay(MNumber, LNumber, CY)))
+                    else if (legalMonth(MNumber) && legalDay(MNumber, LNumber, CY))
                     {
                         month = MNumber;
                         day = LNumber;
@@ -110,7 +109,7 @@ namespace Rubberduck.Parsing.PreProcessing
                     }
                 }
                 // "If L, M, and R are numbers:"
-                else if (L.dateValueNumber() != null && M.dateValueNumber() != null && R != null && R.dateValueNumber() != null)
+                else if (L.dateValueNumber() != null && M.dateValueNumber() != null && R?.dateValueNumber() != null)
                 {
                     var LNumber = int.Parse(L.GetText(), CultureInfo.InvariantCulture);
                     var MNumber = int.Parse(M.GetText(), CultureInfo.InvariantCulture);
@@ -153,15 +152,13 @@ namespace Rubberduck.Parsing.PreProcessing
                         N = int.Parse(M.GetText(), CultureInfo.InvariantCulture);
                         monthName = L.GetText();
                     }
-                    int monthNameNumber;
-                    if (monthName.Length == 3)
-                    {
-                        monthNameNumber = DateTime.ParseExact(monthName, "MMM", CultureInfo.InvariantCulture).Month;
-                    }
-                    else
-                    {
-                        monthNameNumber = DateTime.ParseExact(monthName, "MMMM", CultureInfo.InvariantCulture).Month;
-                    }
+
+                    var monthNameNumber = DateTime.ParseExact(monthName,
+                        monthName.Length == 3 
+                            ? "MMM" 
+                            : "MMMM",
+                        CultureInfo.InvariantCulture).Month;
+
                     if (legalDay(monthNameNumber, N, CY))
                     {
                         month = monthNameNumber;
@@ -199,15 +196,13 @@ namespace Rubberduck.Parsing.PreProcessing
                         N1 = int.Parse(L.GetText(), CultureInfo.InvariantCulture);
                         N2 = int.Parse(M.GetText(), CultureInfo.InvariantCulture);
                     }
-                    int monthNameNumber;
-                    if (monthName.Length == 3)
-                    {
-                        monthNameNumber = DateTime.ParseExact(monthName, "MMM", CultureInfo.InvariantCulture).Month;
-                    }
-                    else
-                    {
-                        monthNameNumber = DateTime.ParseExact(monthName, "MMMM", CultureInfo.InvariantCulture).Month;
-                    }
+
+                    var monthNameNumber = DateTime.ParseExact(monthName,
+                        monthName.Length == 3
+                            ? "MMM"
+                            : "MMMM",
+                        CultureInfo.InvariantCulture).Month;
+
                     if (legalDay(monthNameNumber, N1, yearFunc(N2)))
                     {
                         month = monthNameNumber;
@@ -222,7 +217,7 @@ namespace Rubberduck.Parsing.PreProcessing
                     }
                     else
                     {
-                        throw new Exception("Invalid date: " + dateLiteral.GetText());
+                        throw new Exception($"Invalid date: {dateLiteral.GetText()}");
                     }
                 }
             }
@@ -237,22 +232,15 @@ namespace Rubberduck.Parsing.PreProcessing
             {
                 var timeValue = dateOrTime.timeValue();
                 hours = int.Parse(timeValue.timeValuePart()[0].GetText(), CultureInfo.InvariantCulture);
-                if (timeValue.timeValuePart().Count == 1)
-                {
-                    mins = 0;
-                }
-                else
-                {
-                    mins = int.Parse(timeValue.timeValuePart()[1].GetText(), CultureInfo.InvariantCulture);
-                }
-                if (timeValue.timeValuePart().Count < 3)
-                {
-                    seconds = 0;
-                }
-                else
-                {
-                    seconds = int.Parse(timeValue.timeValuePart()[2].GetText(), CultureInfo.InvariantCulture);
-                }
+
+                mins = timeValue.timeValuePart().Count == 1
+                    ? 0
+                    : int.Parse(timeValue.timeValuePart()[1].GetText(), CultureInfo.InvariantCulture);
+
+                seconds = timeValue.timeValuePart().Count < 3
+                    ? 0
+                    : int.Parse(timeValue.timeValuePart()[2].GetText(), CultureInfo.InvariantCulture);
+
                 var amPm = timeValue.AMPM();
                 if (amPm != null && (amPm.GetText().ToUpper() == "P" || amPm.GetText().ToUpper() == "PM") && hours >= 0 && hours <= 11)
                 {
