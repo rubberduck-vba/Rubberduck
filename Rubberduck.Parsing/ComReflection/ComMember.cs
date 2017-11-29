@@ -24,16 +24,16 @@ namespace Rubberduck.Parsing.ComReflection
         Value = 0               //The default member for the object.
     }
 
-    [DebuggerDisplay("{MemberDeclaration}")]
+    [DebuggerDisplay("{" + nameof(MemberDeclaration) + "}")]
     public class ComMember : ComBase
     {
-        public bool IsHidden { get; private set; }
-        public bool IsRestricted { get; private set; }
-        public bool ReturnsWithEventsObject { get; private set; }
-        public bool IsDefault { get; private set; }
-        public bool IsEnumerator { get; private set; }
+        public bool IsHidden { get; }
+        public bool IsRestricted { get; }
+        public bool ReturnsWithEventsObject { get; }
+        public bool IsDefault { get; }
+        public bool IsEnumerator { get; }
         //This member is called on an interface when a bracketed expression is dereferenced.
-        public bool IsEvaluateFunction { get; private set; }
+        public bool IsEvaluateFunction { get; }
         public ComParameter ReturnType { get; private set; }
         public List<ComParameter> Parameters { get; set; }
 
@@ -84,8 +84,7 @@ namespace Rubberduck.Parsing.ComReflection
         {
             Parameters = new List<ComParameter>();
             var names = new string[255];
-            int count;
-            info.GetNames(Index, names, 255, out count);
+            info.GetNames(Index, names, 255, out var count);
 
             for (var index = 0; index < count - 1; index++)
             {

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
@@ -11,11 +10,8 @@ namespace Rubberduck.Parsing.ComReflection
 {
     public class ComStruct : ComType, IComTypeWithFields
     {
-        private readonly List<ComField> _fields = new List<ComField>();
-        public IEnumerable<ComField> Fields
-        {
-            get { return _fields; }
-        }
+        private readonly List<ComField> _fields;
+        public IEnumerable<ComField> Fields => _fields;
 
         public ComStruct(ITypeLib typeLib, ITypeInfo info, TYPEATTR attrib, int index)
             : base(typeLib, attrib, index)
@@ -30,11 +26,9 @@ namespace Rubberduck.Parsing.ComReflection
             var names = new string[255];
             for (var index = 0; index < attrib.cVars; index++)
             {
-                IntPtr varPtr;
-                info.GetVarDesc(index, out varPtr);
+                info.GetVarDesc(index, out var varPtr);
                 var desc = (VARDESC)Marshal.PtrToStructure(varPtr, typeof(VARDESC));
-                int length;
-                info.GetNames(desc.memid, names, 255, out length);
+                info.GetNames(desc.memid, names, 255, out var length);
                 Debug.Assert(length == 1);
 
                 _fields.Add(new ComField(names[0], desc, index, DeclarationType.UserDefinedTypeMember));

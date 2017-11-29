@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -16,7 +15,7 @@ namespace Rubberduck.Parsing.ComReflection
         private readonly Dictionary<ComInterface, bool> _interfaces = new Dictionary<ComInterface, bool>();
         private readonly List<ComInterface> _events = new List<ComInterface>();
 
-        public bool IsControl { get; private set; }
+        public bool IsControl { get; }
 
         public bool IsExtensible
         {
@@ -25,14 +24,9 @@ namespace Rubberduck.Parsing.ComReflection
 
         public ComInterface DefaultInterface { get; private set; }
 
-        public IEnumerable<ComInterface> EventInterfaces
-        {
-            get { return _events; }
-        }
-        public IEnumerable<ComInterface> ImplementedInterfaces
-        {
-            get { return _interfaces.Keys; }
-        }
+        public IEnumerable<ComInterface> EventInterfaces => _events;
+
+        public IEnumerable<ComInterface> ImplementedInterfaces => _interfaces.Keys;
 
         public IEnumerable<ComInterface> VisibleInterfaces
         {
@@ -44,20 +38,14 @@ namespace Rubberduck.Parsing.ComReflection
             get { return ImplementedInterfaces.Where(x => !_events.Contains(x)).SelectMany(i => i.Members); }
         }
 
-        public ComMember DefaultMember
-        {
-            get { return DefaultInterface.DefaultMember; }
-        }
+        public ComMember DefaultMember => DefaultInterface.DefaultMember;
 
         public IEnumerable<ComMember> SourceMembers
         {
             get { return _events.SelectMany(i => i.Members); }
         }
 
-        public bool WithEvents
-        {
-            get { return _events.Count > 0; }
-        }
+        public bool WithEvents => _events.Count > 0;
 
         public void AddInterface(ComInterface intrface, bool restricted = false)
         {
@@ -79,18 +67,14 @@ namespace Rubberduck.Parsing.ComReflection
         {
             for (var implIndex = 0; implIndex < typeAttr.cImplTypes; implIndex++)
             {
-                int href;
-                info.GetRefTypeOfImplType(implIndex, out href);
+                info.GetRefTypeOfImplType(implIndex, out var href);
 
-                ITypeInfo implemented;
-                info.GetRefTypeInfo(href, out implemented);
+                info.GetRefTypeInfo(href, out var implemented);
 
-                IntPtr attribPtr;
-                implemented.GetTypeAttr(out attribPtr);
+                implemented.GetTypeAttr(out var attribPtr);
                 var attribs = (TYPEATTR)Marshal.PtrToStructure(attribPtr, typeof(TYPEATTR));
 
-                ComType inherited;
-                ComProject.KnownTypes.TryGetValue(attribs.guid, out inherited);
+                ComProject.KnownTypes.TryGetValue(attribs.guid, out var inherited);
                 var intface = inherited as ComInterface ?? new ComInterface(implemented, attribs);                
                 ComProject.KnownTypes.TryAdd(attribs.guid, intface);
 

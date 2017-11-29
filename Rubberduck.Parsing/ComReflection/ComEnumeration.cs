@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using Rubberduck.Parsing.Symbols;
@@ -25,8 +24,7 @@ namespace Rubberduck.Parsing.ComReflection
             var count = attrib.cVars;
             for (var index = 0; index < count; index++)
             {
-                IntPtr varPtr;
-                info.GetVarDesc(index, out varPtr);
+                info.GetVarDesc(index, out var varPtr);
                 var desc = (VARDESC)Marshal.PtrToStructure(varPtr, typeof(VARDESC));
                 Members.Add(new ComEnumerationMember(info, desc));
                 info.ReleaseVarDesc(varPtr);

@@ -7,12 +7,12 @@ using VARFLAGS = System.Runtime.InteropServices.ComTypes.VARFLAGS;
 
 namespace Rubberduck.Parsing.ComReflection
 {
-    [DebuggerDisplay("{Name}")]
+    [DebuggerDisplay("{" + nameof(Name) + "}")]
     public class ComField
     {
-        public string Name { get; private set; }
-        public int Index { get; private set; }
-        public DeclarationType Type { get; private set; }
+        public string Name { get; }
+        public int Index { get; }
+        public DeclarationType Type { get; }
         public object DefaultValue { get; set; }
         public string ValueType { get; set; }
         public VARFLAGS Flags { get; set; }
@@ -29,14 +29,12 @@ namespace Rubberduck.Parsing.ComReflection
             {
                 var value = new ComVariant(varDesc.desc.lpvarValue);
                 DefaultValue = value.Value;
-                string typeName;
-                ValueType = ComVariant.TypeNames.TryGetValue(value.VariantType, out typeName) ? typeName : "Object";
+                ValueType = ComVariant.TypeNames.TryGetValue(value.VariantType, out var typeName) ? typeName : "Object";
             }
             else
             {
                 Debug.Assert(varDesc.varkind == VARKIND.VAR_PERINSTANCE);
-                string typeName;
-                ValueType = ComVariant.TypeNames.TryGetValue((VarEnum)varDesc.elemdescVar.tdesc.vt, out typeName) ? typeName : "Object";                
+                ValueType = ComVariant.TypeNames.TryGetValue((VarEnum)varDesc.elemdescVar.tdesc.vt, out var typeName) ? typeName : "Object";                
             }
         }
     }

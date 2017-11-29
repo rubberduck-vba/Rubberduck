@@ -11,7 +11,7 @@ using TYPELIBATTR = System.Runtime.InteropServices.ComTypes.TYPELIBATTR;
 
 namespace Rubberduck.Parsing.ComReflection
 {
-    [DebuggerDisplay("{Name}")]
+    [DebuggerDisplay("{" + nameof(Name) + "}")]
     public class ComProject : ComBase
     {
         public static readonly ConcurrentDictionary<Guid, ComType> KnownTypes = new ConcurrentDictionary<Guid, ComType>();
@@ -26,54 +26,28 @@ namespace Rubberduck.Parsing.ComReflection
         private TypeLibTypeFlags _flags;
 
         private readonly List<ComAlias> _aliases = new List<ComAlias>();
-        public IEnumerable<ComAlias> Aliases
-        {
-            get { return _aliases; }
-        }
+        public IEnumerable<ComAlias> Aliases => _aliases;
 
         private readonly List<ComInterface> _interfaces = new List<ComInterface>();
-        public IEnumerable<ComInterface> Interfaces
-        {
-            get { return _interfaces; }
-        }
+        public IEnumerable<ComInterface> Interfaces => _interfaces;
 
         private readonly List<ComEnumeration> _enumerations = new List<ComEnumeration>();
-        public IEnumerable<ComEnumeration> Enumerations
-        {
-            get { return _enumerations; }
-        }
+        public IEnumerable<ComEnumeration> Enumerations => _enumerations;
 
         private readonly List<ComCoClass> _classes = new List<ComCoClass>();
-        public IEnumerable<ComCoClass> CoClasses
-        {
-            get { return _classes; }
-        }
+        public IEnumerable<ComCoClass> CoClasses => _classes;
 
         private readonly List<ComModule> _modules = new List<ComModule>();
-        public IEnumerable<ComModule> Modules
-        {
-            get { return _modules; }
-        }
+        public IEnumerable<ComModule> Modules => _modules;
 
         private readonly List<ComStruct> _structs = new List<ComStruct>();
-        public IEnumerable<ComStruct> Structs
-        {
-            get { return _structs; }
-        }
+        public IEnumerable<ComStruct> Structs => _structs;
 
-        public IEnumerable<IComType> Members
-        {
-            get
-            {
-                //Note - Enums and Types should enumerate *last*. That will prevent a duplicate module in the unlikely(?)
-                //instance where the TypeLib defines a module named "Enums" or "Types".
-                return _modules.Cast<IComType>()
-                    .Union(_interfaces)
-                    .Union(_classes)
-                    .Union(_enumerations)
-                    .Union(_structs);
-            }
-        } 
+        public IEnumerable<IComType> Members => _modules.Cast<IComType>()
+            .Union(_interfaces)
+            .Union(_classes)
+            .Union(_enumerations)
+            .Union(_structs);
 
         public ComProject(ITypeLib typeLibrary) : base(typeLibrary, -1)
         {   
@@ -85,8 +59,7 @@ namespace Rubberduck.Parsing.ComReflection
         {
             try
             {
-                IntPtr attribPtr;
-                typeLibrary.GetLibAttr(out attribPtr);
+                typeLibrary.GetLibAttr(out var attribPtr);
                 var typeAttr = (TYPELIBATTR)Marshal.PtrToStructure(attribPtr, typeof(TYPELIBATTR));
 
                 MajorVersion = typeAttr.wMajorVerNum;
@@ -104,14 +77,11 @@ namespace Rubberduck.Parsing.ComReflection
             {                
                 try
                 {
-                    ITypeInfo info;
-                    typeLibrary.GetTypeInfo(index, out info);
-                    IntPtr typeAttributesPointer;
-                    info.GetTypeAttr(out typeAttributesPointer);
+                    typeLibrary.GetTypeInfo(index, out var info);
+                    info.GetTypeAttr(out var typeAttributesPointer);
                     var typeAttributes = (TYPEATTR)Marshal.PtrToStructure(typeAttributesPointer, typeof(TYPEATTR));
 
-                    ComType type;
-                    KnownTypes.TryGetValue(typeAttributes.guid, out type);
+                    KnownTypes.TryGetValue(typeAttributes.guid, out var type);
 
                     switch (typeAttributes.typekind)
                     {
@@ -148,7 +118,7 @@ namespace Rubberduck.Parsing.ComReflection
                             //TKIND_UNION is not a supported member type in VBA.
                             break;
                         default:
-                            throw new NotImplementedException(string.Format("Didn't expect a TYPEATTR with multiple typekind flags set in {0}.", Path));
+                            throw new NotImplementedException($"Didn't expect a TYPEATTR with multiple typekind flags set in {Path}.");
                     }
                     info.ReleaseTypeAttr(typeAttributesPointer);
                 }

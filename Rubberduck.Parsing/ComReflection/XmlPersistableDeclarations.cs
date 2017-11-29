@@ -11,7 +11,10 @@ namespace Rubberduck.Parsing.ComReflection
     {
         public void Persist(string path, SerializableProject tree)
         {
-            if (string.IsNullOrEmpty(path)) { throw new InvalidOperationException(); }
+            if (string.IsNullOrEmpty(path))
+            {
+                throw new InvalidOperationException();
+            }
 
             var xmlSettings = new XmlWriterSettings
             {
@@ -33,7 +36,11 @@ namespace Rubberduck.Parsing.ComReflection
 
         public SerializableProject Load(string path)
         {
-            if (string.IsNullOrEmpty(path)) { throw new InvalidOperationException(); }
+            if (string.IsNullOrEmpty(path))
+            {
+                throw new InvalidOperationException();
+            }
+
             using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
                 return Load(stream);
@@ -42,7 +49,11 @@ namespace Rubberduck.Parsing.ComReflection
 
         public SerializableProject Load(Stream stream)
         {
-            if (stream == null) { throw new ArgumentNullException(); }
+            if (stream == null)
+            {
+                throw new ArgumentNullException();
+            }
+
             using (var xmlReader = XmlReader.Create(stream))
             using (var reader = XmlDictionaryReader.CreateDictionaryReader(xmlReader))
             {

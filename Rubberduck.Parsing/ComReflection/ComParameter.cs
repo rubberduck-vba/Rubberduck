@@ -11,48 +11,33 @@ using TYPEKIND = System.Runtime.InteropServices.ComTypes.TYPEKIND;
 
 namespace Rubberduck.Parsing.ComReflection
 {
-    [DebuggerDisplay("{DeclarationName}")]
+    [DebuggerDisplay("{" + nameof(DeclarationName) + "}")]
     public class ComParameter
     {
-        public string Name { get; private set; }
+        public string Name { get; }
 
-        public string DeclarationName
-        {
-            get
-            {
-                return string.Format("{0}{1} {2} As {3}{4}{5}",
-                    IsOptional ? "Optional " : string.Empty,
-                    IsByRef ? "ByRef" : "ByVal",
-                    Name,
-                    TypeName,
-                    IsOptional && DefaultValue != null ? " = " : string.Empty,
-                    IsOptional && DefaultValue != null ? 
-                        IsEnumMember ? DefaultAsEnum : DefaultValue 
-                        : string.Empty);
-            }
-        }
+        public string DeclarationName => string.Format("{0}{1} {2} As {3}{4}{5}",
+            IsOptional ? "Optional " : string.Empty,
+            IsByRef ? "ByRef" : "ByVal",
+            Name,
+            TypeName,
+            IsOptional && DefaultValue != null ? " = " : string.Empty,
+            IsOptional && DefaultValue != null ? 
+                IsEnumMember ? DefaultAsEnum : DefaultValue 
+                : string.Empty);
 
         public bool IsArray { get; private set; }
         public bool IsByRef { get; private set; }
-        public bool IsOptional { get; private set; }
+        public bool IsOptional { get; }
         public bool IsParamArray { get; set; }
 
         private Guid _enumGuid = Guid.Empty;
-        public bool IsEnumMember
-        {
-            get { return !_enumGuid.Equals(Guid.Empty); }
-        }
-        public object DefaultValue { get; private set; }
-        public string DefaultAsEnum { get; private set; }
+        public bool IsEnumMember => !_enumGuid.Equals(Guid.Empty);
+        public object DefaultValue { get; }
+        public string DefaultAsEnum { get; }
 
         private string _type = "Object";
-        public string TypeName
-        {
-            get
-            {
-                return IsArray ? _type + "()" : _type;
-            }
-        }
+        public string TypeName => IsArray ? $"{_type}()" : _type;
 
         public ComParameter(ELEMDESC elemDesc, ITypeInfo info, string name)
         {
@@ -71,8 +56,7 @@ namespace Rubberduck.Parsing.ComReflection
             var defValue = new ComVariant(paramDesc.lpVarValue + Marshal.SizeOf(typeof(ulong)));
             DefaultValue = defValue.Value;
 
-            ComEnumeration enumType;
-            if (!IsEnumMember || !ComProject.KnownEnumerations.TryGetValue(_enumGuid, out enumType))
+            if (!IsEnumMember || !ComProject.KnownEnumerations.TryGetValue(_enumGuid, out var enumType))
             {
                 return;
             }
@@ -106,11 +90,9 @@ namespace Rubberduck.Parsing.ComReflection
                     }
                     try
                     {
-                        ITypeInfo refTypeInfo;
-                        info.GetRefTypeInfo(href, out refTypeInfo);
+                        info.GetRefTypeInfo(href, out var refTypeInfo);
 
-                        IntPtr attribPtr;
-                        refTypeInfo.GetTypeAttr(out attribPtr);
+                        refTypeInfo.GetTypeAttr(out var attribPtr);
                         var attribs = (TYPEATTR)Marshal.PtrToStructure(attribPtr, typeof(TYPEATTR));
                         if (attribs.typekind == TYPEKIND.TKIND_ENUM)
                         {
@@ -129,8 +111,7 @@ namespace Rubberduck.Parsing.ComReflection
                     IsArray = true;
                     break;
                 default:
-                    string result;
-                    if (ComVariant.TypeNames.TryGetValue(vt, out result))
+                    if (ComVariant.TypeNames.TryGetValue(vt, out var result))
                     {
                         _type = result;
                     }
