@@ -181,6 +181,7 @@
     <Compile Include="QuickFixes\QuickFixBaseTests.cs" />
     <Compile Include="SmartIndenter\VerticalSpacingTests.cs" />
     <Compile Include="SourceControl\SynchrounouslyConstructedDeclarationFinderFactory.cs" />
+    <Compile Include="Stats\ParseTreeMetricsAnalystTests.cs" />
     <Compile Include="Symbols\AccessibilityCheckTests.cs" />
     <Compile Include="Symbols\ClassModuleDeclarationTests.cs" />
     <Compile Include="Symbols\CommandBarControlCaptionGuardTests.cs" />

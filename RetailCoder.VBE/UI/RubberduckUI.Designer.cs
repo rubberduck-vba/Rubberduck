@@ -1124,6 +1124,42 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cyclomatic Complexity.
+        /// </summary>
+        public static string CodeMetrics_Complexity {
+            get {
+                return ResourceManager.GetString("CodeMetrics_Complexity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lines.
+        /// </summary>
+        public static string CodeMetrics_Lines {
+            get {
+                return ResourceManager.GetString("CodeMetrics_Lines", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Maximum Nesting.
+        /// </summary>
+        public static string CodeMetrics_Nesting {
+            get {
+                return ResourceManager.GetString("CodeMetrics_Nesting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Code Metrics.
+        /// </summary>
+        public static string CodeMetricsDockablePresenter_Caption {
+            get {
+                return ResourceManager.GetString("CodeMetricsDockablePresenter_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hook is already attached..
         /// </summary>
         public static string CommonHotkey_HookAttached {
