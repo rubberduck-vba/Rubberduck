@@ -14,23 +14,17 @@ namespace Rubberduck.Parsing.Symbols.ParsingExceptions
 
         private void NotifySyntaxError(SyntaxErrorInfo info)
         {
-            var handler = OnSyntaxError;
-            if (handler != null)
-            {
-                handler.Invoke(this, new SyntaxErrorEventArgs(info));
-            }
+            OnSyntaxError?.Invoke(this, new SyntaxErrorEventArgs(info));
         }
     }
 
     public class SyntaxErrorEventArgs : EventArgs
     {
-        private readonly SyntaxErrorInfo _info;
-
         public SyntaxErrorEventArgs(SyntaxErrorInfo info)
         {
-            _info = info;
+            Info = info;
         }
 
-        public SyntaxErrorInfo Info { get { return _info; } }
+        public SyntaxErrorInfo Info { get; }
     }
 }
