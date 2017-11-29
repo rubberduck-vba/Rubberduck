@@ -27,9 +27,8 @@ namespace Rubberduck.Parsing.Binding
 
         public IBoundExpression Resolve()
         {
-            IBoundExpression boundExpression = null;
-            string name = Identifier.GetName(_expression.identifier());
-            boundExpression = ResolveEnclosingModule(name);
+            var name = Identifier.GetName(_expression.identifier());
+            var boundExpression = ResolveEnclosingModule(name);
             if (boundExpression != null)
             {
                 return boundExpression;

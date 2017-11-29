@@ -11,8 +11,7 @@ namespace Rubberduck.Parsing.Binding
         private readonly Declaration _module;
         private readonly Declaration _parent;
         private readonly VBAParser.MemberAccessExprContext _expression;
-        private ParserRuleContext _unrestrictedNameContext;
-        private readonly IExpressionBinding _lExpressionBinding;
+        private readonly ParserRuleContext _unrestrictedNameContext;
 
         public MemberAccessTypeBinding(
             DeclarationFinder declarationFinder,
@@ -28,28 +27,21 @@ namespace Rubberduck.Parsing.Binding
             _module = module;
             _parent = parent;
             _expression = expression;
-            _lExpressionBinding = lExpressionBinding;
+            LExpressionBinding = lExpressionBinding;
             _unrestrictedNameContext = unrestrictedNameContext;
         }
 
-        public IExpressionBinding LExpressionBinding
-        {
-            get
-            {
-                return _lExpressionBinding;
-            }
-        }
+        public IExpressionBinding LExpressionBinding { get; }
 
         public IBoundExpression Resolve()
         {
-            IBoundExpression boundExpression = null;
-            var lExpression = _lExpressionBinding.Resolve();
+            var lExpression = LExpressionBinding.Resolve();
             if (lExpression.Classification == ExpressionClassification.ResolutionFailed)
             {
                 return lExpression;
             }
-            string unrestrictedName = Identifier.GetName(_expression.unrestrictedIdentifier());
-            boundExpression = ResolveLExpressionIsProject(lExpression, unrestrictedName);
+            var unrestrictedName = Identifier.GetName(_expression.unrestrictedIdentifier());
+            var boundExpression = ResolveLExpressionIsProject(lExpression, unrestrictedName);
             if (boundExpression != null)
             {
                 return boundExpression;
@@ -70,10 +62,9 @@ namespace Rubberduck.Parsing.Binding
             {
                 return null;
             }
-            IBoundExpression boundExpression = null;
             var referencedProject = lExpression.ReferencedDeclaration;
-            bool lExpressionIsEnclosingProject = _project.Equals(referencedProject);
-            boundExpression = ResolveProject(lExpression, name);
+            var lExpressionIsEnclosingProject = _project.Equals(referencedProject);
+            var boundExpression = ResolveProject(lExpression, name);
             if (boundExpression != null)
             {
                 return boundExpression;
@@ -98,7 +89,7 @@ namespace Rubberduck.Parsing.Binding
             {
                 return boundExpression;
             }
-            return boundExpression;
+            return null;
         }
 
         private IBoundExpression ResolveProject(IBoundExpression lExpression, string name)
@@ -113,11 +104,9 @@ namespace Rubberduck.Parsing.Binding
                 return new MemberAccessExpression(_project, ExpressionClassification.Project, _expression, _unrestrictedNameContext, lExpression);
             }
             var referencedProjectRightOfDot = _declarationFinder.FindReferencedProject(_project, name);
-            if (referencedProjectRightOfDot != null)
-            {
-                return new MemberAccessExpression(referencedProjectRightOfDot, ExpressionClassification.Project, _expression, _unrestrictedNameContext, lExpression);
-            }
-            return null;
+            return referencedProjectRightOfDot != null 
+                ? new MemberAccessExpression(referencedProjectRightOfDot, ExpressionClassification.Project, _expression, _unrestrictedNameContext, lExpression) 
+                : null;
         }
 
         private IBoundExpression ResolveProceduralModule(bool lExpressionIsEnclosingProject, IBoundExpression lExpression, string name, Declaration referencedProject)
@@ -217,8 +206,7 @@ namespace Rubberduck.Parsing.Binding
             {
                 return null;
             }
-            IBoundExpression boundExpression = null;
-            boundExpression = ResolveMemberInModule(lExpression, name, lExpression.ReferencedDeclaration, DeclarationType.UserDefinedType);
+            var boundExpression = ResolveMemberInModule(lExpression, name, lExpression.ReferencedDeclaration, DeclarationType.UserDefinedType);
             if (boundExpression != null)
             {
                 return boundExpression;
@@ -228,7 +216,7 @@ namespace Rubberduck.Parsing.Binding
             {
                 return boundExpression;
             }
-            return boundExpression;
+            return null;
         }
 
         private IBoundExpression ResolveMemberInModule(IBoundExpression lExpression, string name, Declaration module, DeclarationType memberType)

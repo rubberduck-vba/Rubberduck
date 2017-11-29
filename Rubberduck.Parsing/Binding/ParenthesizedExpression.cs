@@ -5,23 +5,15 @@ namespace Rubberduck.Parsing.Binding
 {
     public sealed class ParenthesizedExpression : BoundExpression
     {
-        private readonly IBoundExpression _expression;
-
         public ParenthesizedExpression(
             Declaration referencedDeclaration,
             ParserRuleContext context,
             IBoundExpression expression)
             : base(referencedDeclaration, ExpressionClassification.Value, context)
         {
-            _expression = expression;
+            Expression = expression;
         }
 
-        public IBoundExpression Expression
-        {
-            get
-            {
-                return _expression;
-            }
-        }
+        public IBoundExpression Expression { get; }
     }
 }

@@ -41,8 +41,7 @@ namespace Rubberduck.Parsing.Binding
         public IBoundExpression ResolveType(Declaration module, Declaration parent, ParserRuleContext expression)
         {
             var context = expression;
-            var opContext = expression as VBAParser.RelationalOpContext;
-            if (opContext != null && opContext.Parent is VBAParser.ComplexTypeContext)
+            if (expression is VBAParser.RelationalOpContext opContext && opContext.Parent is VBAParser.ComplexTypeContext)
             {
                 context = opContext.GetChild<VBAParser.LExprContext>(0);
             }

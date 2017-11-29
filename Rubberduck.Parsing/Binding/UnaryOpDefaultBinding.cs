@@ -18,11 +18,9 @@ namespace Rubberduck.Parsing.Binding
         public IBoundExpression Resolve()
         {
             var expr = _expr.Resolve();
-            if (expr.Classification == ExpressionClassification.ResolutionFailed)
-            {
-                return expr;
-            }
-            return new UnaryOpExpression(expr.ReferencedDeclaration, _context, expr);
+            return expr.Classification == ExpressionClassification.ResolutionFailed 
+                ? expr 
+                : new UnaryOpExpression(expr.ReferencedDeclaration, _context, expr);
         }
     }
 }

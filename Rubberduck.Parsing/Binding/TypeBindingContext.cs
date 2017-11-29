@@ -15,39 +15,31 @@ namespace Rubberduck.Parsing.Binding
 
         public IBoundExpression Resolve(Declaration module, Declaration parent, ParserRuleContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
         {
-            IExpressionBinding bindingTree = BuildTree(module, parent, expression, withBlockVariable, statementContext);
-            if (bindingTree != null)
-            {
-                return bindingTree.Resolve();
-            }
-            return null;
+            var bindingTree = BuildTree(module, parent, expression, withBlockVariable, statementContext);
+            return bindingTree?.Resolve();
         }
 
         public IExpressionBinding BuildTree(Declaration module, Declaration parent, ParserRuleContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
         {
             dynamic dynamicExpression = expression;
-            var type = expression.GetType();
             return Visit(module, parent, dynamicExpression);
         }
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.LExprContext expression)
         {
             dynamic lexpr = expression.lExpression();
-            var type = expression.lExpression().GetType();
             return Visit(module, parent, lexpr);
         }
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.CtLExprContext expression)
         {
             dynamic lexpr = expression.lExpression();
-            var type = expression.lExpression().GetType();
             return Visit(module, parent, lexpr);
         }
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.IndexExprContext expression)
         {
             dynamic lexpr = expression.lExpression();
-            var type = expression.lExpression().GetType();
             return Visit(module, parent, lexpr);
         }
 

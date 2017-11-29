@@ -17,36 +17,12 @@ namespace Rubberduck.Parsing.Binding
             _arguments.Add(argument);
         }
 
-        public bool HasArguments
-        {
-            get
-            {
-                return HasRequiredPositionalArgument|| HasNamedArguments;
-            }
-        }
+        public bool HasArguments => HasRequiredPositionalArgument || HasNamedArguments;
 
-        public bool HasNamedArguments
-        {
-            get
-            {
-                return _arguments.Any(a => a.ArgumentType == ArgumentListArgumentType.Named);
-            }
-        }
+        public bool HasNamedArguments => _arguments.Any(a => a.ArgumentType == ArgumentListArgumentType.Named);
 
-        public bool HasRequiredPositionalArgument
-        {
-            get
-            {
-                return _arguments.Any(a => a.ArgumentType == ArgumentListArgumentType.Positional);
-            }
-        }
+        public bool HasRequiredPositionalArgument => _arguments.Any(a => a.ArgumentType == ArgumentListArgumentType.Positional);
 
-        public IReadOnlyList<ArgumentListArgument> Arguments
-        {
-            get
-            {
-                return _arguments;
-            }
-        }
+        public IReadOnlyList<ArgumentListArgument> Arguments => _arguments;
     }
 }
