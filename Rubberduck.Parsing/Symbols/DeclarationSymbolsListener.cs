@@ -6,7 +6,6 @@ using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
@@ -64,7 +63,7 @@ namespace Rubberduck.Parsing.Symbols
             }
             else
             {
-                bool hasDefaultInstanceVariable = componentType != ComponentType.ClassModule && componentType != ComponentType.StandardModule;
+                var hasDefaultInstanceVariable = componentType != ComponentType.ClassModule && componentType != ComponentType.StandardModule;
 
                 _moduleDeclaration = new ClassModuleDeclaration(
                     _qualifiedModuleName.QualifyMemberName(_qualifiedModuleName.ComponentName),
@@ -73,7 +72,7 @@ namespace Rubberduck.Parsing.Symbols
                     true,
                     FindAnnotations(),
                     moduleAttributes,
-                    hasDefaultInstanceVariable: hasDefaultInstanceVariable);
+                    hasDefaultInstanceVariable);
             }
 
             SetCurrentScope();
@@ -203,9 +202,9 @@ namespace Rubberduck.Parsing.Symbols
                     isByRef,
                     isArray,
                     isParamArray);
-                if (_parentDeclaration is IParameterizedDeclaration)
+                if (_parentDeclaration is IParameterizedDeclaration declaration)
                 {
-                    ((IParameterizedDeclaration)_parentDeclaration).AddParameter(result);
+                    declaration.AddParameter(result);
                 }
             }
             else
@@ -218,92 +217,129 @@ namespace Rubberduck.Parsing.Symbols
                 }
 
                 var annotations = FindAnnotations(selection.StartLine);
-                if (declarationType == DeclarationType.Procedure)
+                switch (declarationType)
                 {
-                    result = new SubroutineDeclaration(new QualifiedMemberName(_qualifiedModuleName, identifierName), _parentDeclaration, _currentScopeDeclaration, asTypeName, accessibility, context, selection, true, annotations, attributes);
-                }
-                else if (declarationType == DeclarationType.Function)
-                {
-                    result = new FunctionDeclaration(
-                        new QualifiedMemberName(_qualifiedModuleName, identifierName),
-                        _parentDeclaration,
-                        _currentScopeDeclaration,
-                        asTypeName,
-                        asTypeContext,
-                        typeHint,
-                        accessibility,
-                        context,
-                        selection,
-                        isArray,
-                        true,
-                        annotations,
-                        attributes);
-                }
-                else if (declarationType == DeclarationType.Event)
-                {
-                    result = new EventDeclaration(
-                        new QualifiedMemberName(_qualifiedModuleName, identifierName),
-                        _parentDeclaration,
-                        _currentScopeDeclaration,
-                        asTypeName,
-                        asTypeContext,
-                        typeHint,
-                        accessibility,
-                        context,
-                        selection,
-                        isArray,
-                        true,
-                        annotations,
-                        attributes);
-                }
-                else if (declarationType == DeclarationType.LibraryProcedure || declarationType == DeclarationType.LibraryFunction)
-                {
-                    result = new ExternalProcedureDeclaration(new QualifiedMemberName(_qualifiedModuleName, identifierName), _parentDeclaration, _currentScopeDeclaration, declarationType, asTypeName, asTypeContext, accessibility, context, selection, true, annotations);
-                }
-                else if (declarationType == DeclarationType.PropertyGet)
-                {
-                    result = new PropertyGetDeclaration(
-                        new QualifiedMemberName(_qualifiedModuleName, identifierName),
-                        _parentDeclaration,
-                        _currentScopeDeclaration,
-                        asTypeName,
-                        asTypeContext,
-                        typeHint,
-                        accessibility,
-                        context,
-                        selection,
-                        isArray,
-                        true,
-                        annotations,
-                        attributes);
-                }
-                else if (declarationType == DeclarationType.PropertySet)
-                {
-                    result = new PropertySetDeclaration(new QualifiedMemberName(_qualifiedModuleName, identifierName), _parentDeclaration, _currentScopeDeclaration, asTypeName, accessibility, context, selection, true, annotations, attributes);
-                }
-                else if (declarationType == DeclarationType.PropertyLet)
-                {
-                    result = new PropertyLetDeclaration(new QualifiedMemberName(_qualifiedModuleName, identifierName), _parentDeclaration, _currentScopeDeclaration, asTypeName, accessibility, context, selection, true, annotations, attributes);
-                }
-                else
-                {
-                    result = new Declaration(
-                        new QualifiedMemberName(_qualifiedModuleName, identifierName),
-                        _parentDeclaration,
-                        _currentScopeDeclaration,
-                        asTypeName,
-                        typeHint,
-                        selfAssigned,
-                        withEvents,
-                        accessibility,
-                        declarationType,
-                        context,
-                        selection,
-                        isArray,
-                        asTypeContext,
-                        true,
-                        annotations,
-                        attributes);
+                    case DeclarationType.Procedure:
+                        result = new SubroutineDeclaration(
+                            new QualifiedMemberName(_qualifiedModuleName, identifierName),
+                            _parentDeclaration,
+                            _currentScopeDeclaration,
+                            asTypeName, 
+                            accessibility,
+                            context,
+                            selection,
+                            true, 
+                            annotations,
+                            attributes);
+                        break;
+                    case DeclarationType.Function:
+                        result = new FunctionDeclaration(
+                            new QualifiedMemberName(_qualifiedModuleName, identifierName),
+                            _parentDeclaration,
+                            _currentScopeDeclaration,
+                            asTypeName,
+                            asTypeContext,
+                            typeHint,
+                            accessibility,
+                            context,
+                            selection,
+                            isArray,
+                            true,
+                            annotations,
+                            attributes);
+                        break;
+                    case DeclarationType.Event:
+                        result = new EventDeclaration(
+                            new QualifiedMemberName(_qualifiedModuleName, identifierName),
+                            _parentDeclaration,
+                            _currentScopeDeclaration,
+                            asTypeName,
+                            asTypeContext,
+                            typeHint,
+                            accessibility,
+                            context,
+                            selection,
+                            isArray,
+                            true,
+                            annotations,
+                            attributes);
+                        break;
+                    case DeclarationType.LibraryProcedure:
+                    case DeclarationType.LibraryFunction:
+                        result = new ExternalProcedureDeclaration(
+                            new QualifiedMemberName(_qualifiedModuleName, identifierName),
+                            _parentDeclaration,
+                            _currentScopeDeclaration, 
+                            declarationType,
+                            asTypeName, 
+                            asTypeContext,
+                            accessibility,
+                            context,
+                            selection,
+                            true, 
+                            annotations);
+                        break;
+                    case DeclarationType.PropertyGet:
+                        result = new PropertyGetDeclaration(
+                            new QualifiedMemberName(_qualifiedModuleName, identifierName),
+                            _parentDeclaration,
+                            _currentScopeDeclaration,
+                            asTypeName,
+                            asTypeContext,
+                            typeHint,
+                            accessibility,
+                            context,
+                            selection,
+                            isArray,
+                            true,
+                            annotations,
+                            attributes);
+                        break;
+                    case DeclarationType.PropertySet:
+                        result = new PropertySetDeclaration(
+                            new QualifiedMemberName(_qualifiedModuleName, identifierName),
+                            _parentDeclaration,
+                            _currentScopeDeclaration, 
+                            asTypeName, 
+                            accessibility,
+                            context, 
+                            selection, 
+                            true, 
+                            annotations, 
+                            attributes);
+                        break;
+                    case DeclarationType.PropertyLet:
+                        result = new PropertyLetDeclaration(
+                            new QualifiedMemberName(_qualifiedModuleName, identifierName),
+                            _parentDeclaration,
+                            _currentScopeDeclaration, 
+                            asTypeName,
+                            accessibility,
+                            context, 
+                            selection, 
+                            true, 
+                            annotations,
+                            attributes);
+                        break;
+                    default:
+                        result = new Declaration(
+                            new QualifiedMemberName(_qualifiedModuleName, identifierName),
+                            _parentDeclaration,
+                            _currentScopeDeclaration,
+                            asTypeName,
+                            typeHint,
+                            selfAssigned,
+                            withEvents,
+                            accessibility,
+                            declarationType,
+                            context,
+                            selection,
+                            isArray,
+                            asTypeContext,
+                            true,
+                            annotations,
+                            attributes);
+                        break;
                 }
                 if (_parentDeclaration.DeclarationType == DeclarationType.ClassModule && result is ICanBeDefaultMember && ((ICanBeDefaultMember)result).IsDefaultMember)
                 {
@@ -441,7 +477,7 @@ namespace Rubberduck.Parsing.Symbols
                     ? Tokens.Variant
                     : asTypeClause.type().GetText()
                 : SymbolList.TypeHintToTypeName[typeHint];
-            var isArray = asTypeClause != null && asTypeClause.type().LPAREN() != null;
+            var isArray = asTypeClause?.type()?.LPAREN() != null;
             var declaration = CreateDeclaration(
                 name,
                 asTypeName,
@@ -601,14 +637,14 @@ namespace Rubberduck.Parsing.Symbols
             foreach (var argContext in args)
             {
                 var identifier = argContext.unrestrictedIdentifier();
-                string typeHint = Identifier.GetTypeHintValue(identifier);
+                var typeHint = Identifier.GetTypeHintValue(identifier);
                 var asTypeClause = argContext.asTypeClause();
                 var asTypeName = typeHint == null
                     ? asTypeClause == null
                         ? Tokens.Variant
                         : asTypeClause.type().GetText()
                     : SymbolList.TypeHintToTypeName[typeHint];
-                bool isArray = argContext.LPAREN() != null;
+                var isArray = argContext.LPAREN() != null;
                 AddDeclaration(
                     CreateDeclaration(
                         Identifier.GetName(identifier),
@@ -696,8 +732,8 @@ namespace Rubberduck.Parsing.Symbols
                     : asTypeClause.type().GetText()
                 : SymbolList.TypeHintToTypeName[typeHint];
             var withEvents = parent.WITHEVENTS() != null;
-            var isAutoObject = asTypeClause != null && asTypeClause.NEW() != null;
-            bool isArray = context.LPAREN() != null;
+            var isAutoObject = asTypeClause?.NEW() != null;
+            var isArray = context.LPAREN() != null;
             AddDeclaration(
                 CreateDeclaration(
                     name,
@@ -787,8 +823,8 @@ namespace Rubberduck.Parsing.Symbols
 
         public override void EnterUdtMember(VBAParser.UdtMemberContext context)
         {
-            VBAParser.AsTypeClauseContext asTypeClause = null;
-            bool isArray = false;
+            VBAParser.AsTypeClauseContext asTypeClause;
+            var isArray = false;
             string typeHint = null;
             string identifier;
             Selection identifierSelection;

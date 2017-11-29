@@ -1,5 +1,4 @@
 using NLog;
-using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Binding;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
@@ -12,7 +11,6 @@ namespace Rubberduck.Parsing.Symbols
     {
         private readonly DeclarationFinder _declarationFinder;
         private readonly BindingService _bindingService;
-        private readonly BoundExpressionVisitor _boundExpressionVisitor;
         private readonly VBAExpressionParser _expressionParser;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -26,7 +24,6 @@ namespace Rubberduck.Parsing.Symbols
                 new DefaultBindingContext(_declarationFinder, typeBindingContext, procedurePointerBindingContext),
                 typeBindingContext,
                 procedurePointerBindingContext);
-            _boundExpressionVisitor = new BoundExpressionVisitor(new AnnotationService(_declarationFinder));
             _expressionParser = expressionParser;
         }
 

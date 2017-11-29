@@ -81,23 +81,25 @@ namespace Rubberduck.Parsing.Symbols
         {
             Visit((dynamic)expression.LExpression, module, scope, parent, false, false);
             // Expressions could be unbound thus not have a referenced declaration. The lexpression might still be bindable though.
-            if (expression.Classification != ExpressionClassification.Unbound)
+            if (expression.Classification == ExpressionClassification.Unbound)
             {
-                var callSiteContext = expression.UnrestrictedNameContext;
-                var identifier = expression.UnrestrictedNameContext.GetText();
-                var callee = expression.ReferencedDeclaration;
-                expression.ReferencedDeclaration.AddReference(
-                    module,
-                    scope,
-                    parent,
-                    callSiteContext,
-                    identifier,
-                    callee,
-                    callSiteContext.GetSelection(),
-                    _annotationService.FindAnnotations(module, callSiteContext.GetSelection().StartLine),
-                    isAssignmentTarget,
-                    hasExplicitLetStatement);
+                return;
             }
+
+            var callSiteContext = expression.UnrestrictedNameContext;
+            var identifier = expression.UnrestrictedNameContext.GetText();
+            var callee = expression.ReferencedDeclaration;
+            expression.ReferencedDeclaration.AddReference(
+                module,
+                scope,
+                parent,
+                callSiteContext,
+                identifier,
+                callee,
+                callSiteContext.GetSelection(),
+                _annotationService.FindAnnotations(module, callSiteContext.GetSelection().StartLine),
+                isAssignmentTarget,
+                hasExplicitLetStatement);
         }
 
         private void Visit(

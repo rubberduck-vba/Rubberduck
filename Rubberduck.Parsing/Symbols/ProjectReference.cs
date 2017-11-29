@@ -2,29 +2,14 @@
 {
     public sealed class ProjectReference
     {
-        private readonly string _referencedProjectId;
-        private readonly int _priority;
-
         public ProjectReference(string referencedProjectId, int priority)
         {
-            _priority = priority;
-            _referencedProjectId = referencedProjectId;
+            Priority = priority;
+            ReferencedProjectId = referencedProjectId;
         }
 
-        public string ReferencedProjectId
-        {
-            get
-            {
-                return _referencedProjectId;
-            }
-        }
+        public string ReferencedProjectId { get; }
 
-        public int Priority
-        {
-            get
-            {
-                return _priority;
-            }
-        }
+        public int Priority { get; }
     }
 }

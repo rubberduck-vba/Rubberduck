@@ -1,10 +1,8 @@
 using NLog;
-using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Binding;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace Rubberduck.Parsing.Symbols
@@ -13,7 +11,6 @@ namespace Rubberduck.Parsing.Symbols
     {
         private readonly DeclarationFinder _declarationFinder;
         private readonly BindingService _bindingService;
-        private readonly BoundExpressionVisitor _boundExpressionVisitor;
         private readonly VBAExpressionParser _expressionParser;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -27,7 +24,6 @@ namespace Rubberduck.Parsing.Symbols
                 new DefaultBindingContext(_declarationFinder, typeBindingContext, procedurePointerBindingContext),
                 typeBindingContext,
                 procedurePointerBindingContext);
-            _boundExpressionVisitor = new BoundExpressionVisitor(new AnnotationService(_declarationFinder));
             _expressionParser = expressionParser;
         }
 
@@ -53,7 +49,7 @@ namespace Rubberduck.Parsing.Symbols
                 return;
             }
             string typeExpression;
-            if (declaration.AsTypeContext != null && declaration.AsTypeContext.type().complexType() != null)
+            if (declaration.AsTypeContext?.type().complexType() != null)
             {
                 var typeContext = declaration.AsTypeContext;
                 typeExpression = typeContext.type().complexType().GetText();

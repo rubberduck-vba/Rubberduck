@@ -10,15 +10,14 @@ namespace Rubberduck.Parsing.Symbols
             if (callStmt.CALL() != null)
             {
                 var lExpr = callStmt.lExpression();
-                if (lExpr is VBAParser.IndexExprContext)
+                switch (lExpr)
                 {
-                    var indexExpr = (VBAParser.IndexExprContext)lExpr;
-                    argList = indexExpr.argumentList();
-                }
-                else if(lExpr is VBAParser.WhitespaceIndexExprContext)
-                {
-                    var indexExpr = (VBAParser.WhitespaceIndexExprContext)lExpr;
-                    argList = indexExpr.argumentList();
+                    case VBAParser.IndexExprContext indexExpr1:
+                        argList = indexExpr1.argumentList();
+                        break;
+                    case VBAParser.WhitespaceIndexExprContext indexExpr2:
+                        argList = indexExpr2.argumentList();
+                        break;
                 }
             }
             else

@@ -98,14 +98,9 @@ namespace Rubberduck.Parsing.Symbols
 
         public static string GetName(VBAParser.UnrestrictedIdentifierContext context)
         {
-            if (context.identifier() != null)
-            {
-                return GetName(context.identifier());
-            }
-            else
-            {
-                return context.GetText();
-            }
+            return context.identifier() == null 
+                ? context.GetText()
+                : GetName(context.identifier());
         }
 
         public static string GetName(VBAParser.EnumerationStmtContext context, out Interval tokenInterval)
@@ -246,14 +241,9 @@ namespace Rubberduck.Parsing.Symbols
 
         public static Selection GetNameSelection(VBAParser.UnrestrictedIdentifierContext context)
         {
-            if (context.identifier() != null)
-            {
-                return GetNameSelection(context.identifier());
-            }
-            else
-            {
-                return context.GetSelection();
-            }
+            return context.identifier() == null
+                ? context.GetSelection()
+                : GetNameSelection(context.identifier());
         }
 
         public static Selection GetNameSelection(VBAParser.IdentifierContext context)
@@ -268,14 +258,9 @@ namespace Rubberduck.Parsing.Symbols
 
         public static VBAParser.IdentifierValueContext GetIdentifierValueContext(VBAParser.IdentifierContext context)
         {
-            if (context.untypedIdentifier() != null)
-            {
-                return GetIdentifierValueContext(context.untypedIdentifier());
-            }
-            else
-            {
-                return context.typedIdentifier().untypedIdentifier().identifierValue();
-            }
+            return context.untypedIdentifier() == null
+                ? context.typedIdentifier().untypedIdentifier().identifierValue()
+                : GetIdentifierValueContext(context.untypedIdentifier());
         }
 
         public static VBAParser.IdentifierValueContext GetIdentifierValueContext(VBAParser.UntypedIdentifierContext context)
@@ -299,8 +284,8 @@ namespace Rubberduck.Parsing.Symbols
 
         public static string GetTypeHintValue(VBAParser.UnrestrictedIdentifierContext identifier)
         {
-            return identifier.identifier() != null 
-                ? GetTypeHintValue(identifier.identifier()) 
+            return identifier.identifier() != null
+                ? GetTypeHintValue(identifier.identifier())
                 : null;
         }
 

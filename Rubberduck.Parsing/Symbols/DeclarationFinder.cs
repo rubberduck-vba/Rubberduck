@@ -55,8 +55,8 @@ namespace Rubberduck.Parsing.Symbols
         private readonly AnnotationService _annotationService;
         private IDictionary<string, List<Declaration>> _declarationsByName;
         private IDictionary<QualifiedModuleName, List<Declaration>> _declarations;
-        private ConcurrentDictionary<QualifiedMemberName, ConcurrentBag<Declaration>> _newUndeclared;
-        private ConcurrentBag<UnboundMemberDeclaration> _newUnresolved;
+        private readonly ConcurrentDictionary<QualifiedMemberName, ConcurrentBag<Declaration>> _newUndeclared;
+        private readonly ConcurrentBag<UnboundMemberDeclaration> _newUnresolved;
         private List<UnboundMemberDeclaration> _unresolved;
         private IDictionary<QualifiedModuleName, List<IAnnotation>> _annotations;
         private IDictionary<Declaration, List<Declaration>> _parametersByParent;
@@ -72,8 +72,6 @@ namespace Rubberduck.Parsing.Symbols
         private Lazy<List<Declaration>> _eventHandlers;
         private Lazy<List<Declaration>> _projects;
         private Lazy<List<Declaration>> _classes;
-        
-        private readonly object threadLock = new object();
 
         private static QualifiedSelection GetGroupingKey(Declaration declaration)
         {
@@ -108,51 +106,46 @@ namespace Rubberduck.Parsing.Symbols
 
         private List<Action> CollectionConstructionActions(IReadOnlyList<Declaration> declarations, IEnumerable<IAnnotation> annotations, IReadOnlyList<UnboundMemberDeclaration> unresolvedMemberDeclarations)
         {
-            var actions = new List<Action>();
+            var actions = new List<Action>
+            {
+                () =>
+                    _unresolved = unresolvedMemberDeclarations
+                        .ToList(),
+                () =>
+                    _annotations = annotations
+                        .GroupBy(node => node.QualifiedSelection.QualifiedName)
+                        .ToDictionary(),
+                () =>
+                    _declarations = declarations
+                        .GroupBy(item => item.QualifiedName.QualifiedModuleName)
+                        .ToDictionary(),
+                () =>
+                    _declarationsByName = declarations
+                        .GroupBy(declaration => declaration.IdentifierName.ToLowerInvariant())
+                        .ToDictionary(),
+                () =>
+                    _declarationsBySelection = declarations
+                        .Where(declaration => declaration.IsUserDefined)
+                        .GroupBy(GetGroupingKey)
+                        .ToDictionary(),
+                () =>
+                    _referencesBySelection = declarations
+                        .SelectMany(declaration => declaration.References)
+                        .GroupBy(
+                            reference => new QualifiedSelection(reference.QualifiedModuleName, reference.Selection))
+                        .ToDictionary(),
+                () =>
+                    _parametersByParent = declarations
+                        .Where(declaration => declaration.DeclarationType == DeclarationType.Parameter)
+                        .GroupBy(declaration => declaration.ParentDeclaration)
+                        .ToDictionary(),
+                () =>
+                    _userDeclarationsByType = declarations
+                        .Where(declaration => declaration.IsUserDefined)
+                        .GroupBy(declaration => declaration.DeclarationType)
+                        .ToDictionary()
+            };
 
-            actions.Add(() => 
-                _unresolved = unresolvedMemberDeclarations
-                    .ToList()
-                );
-            actions.Add(() =>
-                _annotations = annotations
-                    .GroupBy(node => node.QualifiedSelection.QualifiedName)
-                    .ToDictionary()
-                );
-            actions.Add(() => 
-                _declarations = declarations
-                    .GroupBy(item => item.QualifiedName.QualifiedModuleName)
-                    .ToDictionary()
-                );
-            actions.Add(() => 
-                _declarationsByName = declarations
-                    .GroupBy(declaration => declaration.IdentifierName.ToLowerInvariant())
-                    .ToDictionary()
-                );
-            actions.Add(() =>
-                _declarationsBySelection = declarations
-                    .Where(declaration => declaration.IsUserDefined)
-                    .GroupBy(GetGroupingKey)
-                    .ToDictionary()
-                );
-            actions.Add(() => 
-                _referencesBySelection = declarations
-                    .SelectMany(declaration => declaration.References)
-                    .GroupBy(reference => new QualifiedSelection(reference.QualifiedModuleName, reference.Selection))
-                    .ToDictionary()
-                );
-            actions.Add(() =>
-                _parametersByParent = declarations
-                    .Where(declaration => declaration.DeclarationType == DeclarationType.Parameter)
-                    .GroupBy(declaration => declaration.ParentDeclaration)
-                    .ToDictionary()
-                );
-            actions.Add(() =>
-                _userDeclarationsByType = declarations
-                    .Where(declaration => declaration.IsUserDefined)
-                    .GroupBy(declaration => declaration.DeclarationType)
-                    .ToDictionary()
-                );
 
             return actions;
         }
@@ -267,7 +260,7 @@ namespace Rubberduck.Parsing.Symbols
                         Handlers = item.AvailableEvents.SelectMany(evnt =>
                             Members(item.WithEventsField.ParentDeclaration.QualifiedName.QualifiedModuleName)
                                 .Where(member => member.DeclarationType == DeclarationType.Procedure
-                                                && member.IdentifierName == item.WithEventsField.IdentifierName + "_" + evnt.IdentifierName))
+                                                && member.IdentifierName == $"{item.WithEventsField.IdentifierName}_{evnt.IdentifierName}"))
                     })
                     .ToDictionary(item => item.WithEventsField, item => item.Handlers.ToList());
             return handlersByWithEventsField;
@@ -337,8 +330,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public IEnumerable<Declaration> Members(QualifiedModuleName module)
         {
-            List<Declaration> members;
-            return _declarations.TryGetValue(module, out members)
+            return _declarations.TryGetValue(module, out var members)
                     ? members
                     : Enumerable.Empty<Declaration>();
         }
@@ -367,8 +359,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public IEnumerable<Declaration> UserDeclarations(DeclarationType type)
         {
-            List<Declaration> result;
-            return _userDeclarationsByType.TryGetValue(type, out result)
+            return _userDeclarationsByType.TryGetValue(type, out var result)
                 ? result
                 : _userDeclarationsByType
                     .Where(item => item.Key.HasFlag(type))
@@ -379,8 +370,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public IEnumerable<Declaration> BuiltInDeclarations(DeclarationType type)
         {
-            List<Declaration> result;
-            return _builtInDeclarationsByType.Value.TryGetValue(type, out result)
+            return _builtInDeclarationsByType.Value.TryGetValue(type, out var result)
                 ? result
                 : _builtInDeclarationsByType.Value
                     .Where(item => item.Key.HasFlag(type))
@@ -396,16 +386,14 @@ namespace Rubberduck.Parsing.Symbols
 
         public IEnumerable<Declaration> FindHandlersForWithEventsField(Declaration field)
         {
-            List<Declaration> result;
-            return _handlersByWithEventsField.Value.TryGetValue(field, out result) 
+            return _handlersByWithEventsField.Value.TryGetValue(field, out var result) 
                 ? result 
                 : Enumerable.Empty<Declaration>();
         }
 
         public IEnumerable<Declaration> FindInterfaceMembersForImplementsContext(VBAParser.ImplementsStmtContext context)
         {
-            List<Declaration> result;
-            return _membersByImplementsContext.Value.TryGetValue(context, out result)
+            return _membersByImplementsContext.Value.TryGetValue(context, out var result)
                 ? result
                 : Enumerable.Empty<Declaration>();
         }
@@ -422,16 +410,14 @@ namespace Rubberduck.Parsing.Symbols
 
         public Declaration FindParameter(Declaration procedure, string parameterName)
         {
-            List<Declaration> parameters;
-            return _parametersByParent.TryGetValue(procedure, out parameters) 
+            return _parametersByParent.TryGetValue(procedure, out var parameters) 
                 ? parameters.SingleOrDefault(parameter => parameter.IdentifierName == parameterName) 
                 : null;
         }
 
         public IEnumerable<Declaration> FindMemberMatches(Declaration parent, string memberName)
         {
-            List<Declaration> children;
-            return _declarations.TryGetValue(parent.QualifiedName.QualifiedModuleName, out children)
+            return _declarations.TryGetValue(parent.QualifiedName.QualifiedModuleName, out var children)
                 ? children.Where(item => item.DeclarationType.HasFlag(DeclarationType.Member)
                                              && item.IdentifierName == memberName)
                 : Enumerable.Empty<Declaration>();
@@ -439,8 +425,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public IEnumerable<IAnnotation> FindAnnotations(QualifiedModuleName module)
         {
-            List<IAnnotation> result;
-            return _annotations.TryGetValue(module, out result) 
+            return _annotations.TryGetValue(module, out var result) 
                 ? result 
                 : Enumerable.Empty<IAnnotation>();
         }
@@ -455,9 +440,8 @@ namespace Rubberduck.Parsing.Symbols
             Debug.Assert(module != null);
 
             var members = Members(module.QualifiedName.QualifiedModuleName);
-            return members == null 
-                ? Enumerable.Empty<Declaration>() 
-                : members.Where(declaration => declaration.DeclarationType == DeclarationType.Event);
+            return members?.Where(declaration => declaration.DeclarationType == DeclarationType.Event)
+                ?? Enumerable.Empty<Declaration>();
         }
 
         public Declaration FindEvent(Declaration module, string eventName)
@@ -738,8 +722,7 @@ namespace Rubberduck.Parsing.Symbols
 
             var qualifiedName = hostApp.QualifiedName.QualifiedModuleName.QualifyMemberName(expression);
 
-            ConcurrentBag<Declaration> undeclared;
-            if (_newUndeclared.TryGetValue(qualifiedName, out undeclared))
+            if (_newUndeclared.TryGetValue(qualifiedName, out var undeclared))
             {
                 return undeclared.SingleOrDefault();
             }
@@ -885,7 +868,7 @@ namespace Rubberduck.Parsing.Symbols
         {
             var controls = DeclarationsWithType(DeclarationType.Control);
             var handlerNames = BuiltInDeclarations(DeclarationType.Event)
-                .SelectMany(e => controls.Select(c => c.IdentifierName + "_" + e.IdentifierName))
+                .SelectMany(e => controls.Select(c => $"{c.IdentifierName}_{e.IdentifierName}"))
                 .ToHashSet();
             var handlers = UserDeclarations(DeclarationType.Procedure)
                 .Where(procedure => handlerNames.Contains(procedure.IdentifierName));
@@ -899,8 +882,8 @@ namespace Rubberduck.Parsing.Symbols
                 {
                     var parentModuleSubtypes = ((ClassModuleDeclaration)e.ParentDeclaration).Subtypes;
                     return parentModuleSubtypes.Any()
-                        ? parentModuleSubtypes.Select(v => v.IdentifierName + "_" + e.IdentifierName)
-                        : new[] { e.ParentDeclaration.IdentifierName + "_" + e.IdentifierName };
+                        ? parentModuleSubtypes.Select(v => $"{v.IdentifierName}_{e.IdentifierName}")
+                        : new[] { $"{e.ParentDeclaration.IdentifierName}_{e.IdentifierName}"};
                 })
                 .ToHashSet();
 
@@ -963,7 +946,7 @@ namespace Rubberduck.Parsing.Symbols
                 return Enumerable.Empty<Declaration>();
             }
 
-            List<Declaration> declarationsToAvoid = GetNameCollisionDeclarations(target).ToList();
+            var declarationsToAvoid = GetNameCollisionDeclarations(target).ToList();
 
             declarationsToAvoid.AddRange(GetNameCollisionDeclarations(target.References));
 

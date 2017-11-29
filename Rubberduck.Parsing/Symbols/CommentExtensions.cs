@@ -7,15 +7,15 @@ namespace Rubberduck.Parsing.Symbols
     {
         public static string GetComment(this VBAParser.RemCommentContext remComment)
         {
-            string rawComment = remComment.GetText();
-            string bodyOnly = Regex.Replace(rawComment, ":?REM(.*)", "$1", RegexOptions.IgnoreCase).TrimStart();
+            var rawComment = remComment.GetText();
+            var bodyOnly = Regex.Replace(rawComment, ":?REM(.*)", "$1", RegexOptions.IgnoreCase).TrimStart();
             return bodyOnly;
         }
 
         public static string GetComment(this VBAParser.CommentContext comment)
         {
-            string rawComment = comment.GetText();
-            string bodyOnly = rawComment.Substring(1).TrimStart();
+            var rawComment = comment.GetText();
+            var bodyOnly = rawComment.Substring(1).TrimStart();
             return bodyOnly;
         }
     }
