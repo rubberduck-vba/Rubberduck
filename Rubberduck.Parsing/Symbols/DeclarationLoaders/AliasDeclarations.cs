@@ -693,7 +693,7 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
             foreach (var alias in functionAliases)
             {
                 var function = referencedFunctions.OfType<FunctionDeclaration>()
-                    .SingleOrDefault(s => s.IdentifierName == "_B_var_" + alias.IdentifierName);
+                    .SingleOrDefault(s => s.IdentifierName == $"_B_var_{alias.IdentifierName}");
 
                 if (function == null) { continue; }
                 foreach (var parameter in function.Parameters)
