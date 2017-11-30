@@ -2146,4 +2146,25 @@ Would you like to import them to Rubberduck?</value>
   <data name="CodeMetrics_Nesting" xml:space="preserve">
     <value>Maximum Nesting</value>
   </data>
+  <data name="ExtractParameterNewType_ByRefParameter" xml:space="preserve">
+    <value>ByRef Parameter</value>
+  </data>
+  <data name="ExtractParameterNewType_ByValParameter" xml:space="preserve">
+    <value>ByVal Parameter</value>
+  </data>
+  <data name="ExtractParameterNewType_PrivateLocalVariable" xml:space="preserve">
+    <value>Private Local Variable</value>
+  </data>
+  <data name="ExtractParameterNewType_PrivateModuleField" xml:space="preserve">
+    <value>Private Module Field</value>
+  </data>
+  <data name="ExtractParameterNewType_PublicModuleField" xml:space="preserve">
+    <value>Public Module Field</value>
+  </data>
+  <data name="ExtractParameterNewType_StaticLocalVariable" xml:space="preserve">
+    <value>Static Local Variable</value>
+  </data>
+  <data name="ExtractMethodReturnTypeSelection" xml:space="preserve">
+    <value>Select a return type, if any:</value>
+  </data>
 </root>

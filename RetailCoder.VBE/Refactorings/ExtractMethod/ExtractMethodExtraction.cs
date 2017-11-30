@@ -45,7 +45,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             var selection = model.RowsToRemove;
 
             var access = method.Accessibility.ToString();
-            var extractedParams = method.Parameters.Select(p => ExtractedParameter.PassedBy.ByRef + " " + p.Name + " " + Tokens.As + " " + p.TypeName);
+            var extractedParams = method.Parameters.Select(p => ExtractParameterNewType.PrivateLocalVariable + " " + p.Name + " " + Tokens.As + " " + p.TypeName);
             var parameters = "(" + string.Join(", ", extractedParams) + ")";
             //method signature
             var result = access + ' ' + keyword + ' ' + method.MethodName + parameters + ' ' + asTypeClause + newLine;

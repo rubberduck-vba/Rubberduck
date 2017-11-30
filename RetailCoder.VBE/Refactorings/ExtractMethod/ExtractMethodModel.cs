@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Antlr4.Runtime;
-using Rubberduck.Common;
-using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.SmartIndenter;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Refactorings.ExtractMethod
 {
@@ -60,116 +63,190 @@ namespace Rubberduck.Refactorings.ExtractMethod
         }
     }
 
-    public class ExtractMethodModel : IExtractMethodModel
+    public class ExtractMethodModel
     {
-        private List<Declaration> _extractDeclarations;
-        private IExtractMethodParameterClassification _paramClassify;
-        private IExtractedMethod _extractedMethod;
+        public IEnumerable<ParserRuleContext> SelectedContexts { get; }
+        public RubberduckParserState State { get; }
+        public IIndenter Indenter { get; }
+        public ICodeModule CodeModule { get; }
+        public QualifiedSelection Selection { get; }
 
-        public ExtractMethodModel(IExtractedMethod extractedMethod, IExtractMethodParameterClassification paramClassify)
+        public string SourceMethodName { get; private set; }
+        public IEnumerable<Declaration> SourceVariables { get; private set; }
+        public string NewMethodName { get; set; }
+        public ExtractedParameter ReturnParameter { get; set; }
+
+        public ExtractMethodModel(RubberduckParserState state, QualifiedSelection selection,
+            IEnumerable<ParserRuleContext> selectedContexts, IIndenter indenter, ICodeModule codeModule)
         {
-            _extractedMethod = extractedMethod;
-            _paramClassify = paramClassify;
+            State = state;
+            Indenter = indenter;
+            CodeModule = codeModule;
+            Selection = selection;
+            SelectedContexts = selectedContexts;
+            Setup();
         }
 
-        public void extract(IEnumerable<Declaration> declarations, QualifiedSelection selection, string selectedCode)
+        private void Setup()
         {
-            var items = declarations.ToList();
-            _selection = selection;
-            _selectedCode = selectedCode;
-            _rowsToRemove = new List<Selection>();
+            var topContext = SelectedContexts.First();
+            ParserRuleContext stmtContext = null;
+            var currentContext = (RuleContext)topContext;
+            do {
+                switch (currentContext)
+                {
+                    case VBAParser.FunctionStmtContext stmt:
+                        stmtContext = stmt;
+                        SourceMethodName = stmt.functionName().GetText();
+                        break;
+                    case VBAParser.SubStmtContext stmt:
+                        stmtContext = stmt;
+                        SourceMethodName = stmt.subroutineName().GetText();
+                        break;
+                    case VBAParser.PropertyGetStmtContext stmt:
+                        stmtContext = stmt;
+                        SourceMethodName = stmt.functionName().GetText();
+                        break;
+                    case VBAParser.PropertyLetStmtContext stmt:
+                        stmtContext = stmt;
+                        SourceMethodName = stmt.subroutineName().GetText();
+                        break;
+                    case VBAParser.PropertySetStmtContext stmt:
+                        stmtContext = stmt;
+                        SourceMethodName = stmt.subroutineName().GetText();
+                        break;
+                }
+                currentContext = currentContext.Parent;
+            }
+            while (currentContext != null && stmtContext == null) ;
 
-            var sourceMember = items.FindSelectedDeclaration(
-                selection,
-                DeclarationExtensions.ProcedureTypes,
-                d => ((ParserRuleContext)d.Context.Parent).GetSelection());
-
-            if (sourceMember == null)
+            if (string.IsNullOrWhiteSpace(NewMethodName))
             {
-                throw new InvalidOperationException("Invalid selection.");
+                NewMethodName = "NewMethod";
             }
 
-            var inScopeDeclarations = items.Where(item => item.ParentScope == sourceMember.Scope).ToList();
-            var selectionStartLine = selection.Selection.StartLine;
-            var selectionEndLine = selection.Selection.EndLine;
-            var methodInsertLine = sourceMember.Context.Stop.Line + 1;
+            SelectedCode = string.Join(Environment.NewLine, SelectedContexts.Select(c => c.GetText()));
 
-            _positionForNewMethod = new Selection(methodInsertLine, 1, methodInsertLine, 1);
-
-            foreach (var item in inScopeDeclarations)
-            {
-                _paramClassify.classifyDeclarations(selection, item);
-            }
-            _declarationsToMove = _paramClassify.DeclarationsToMove.ToList();
-
-            _rowsToRemove = splitSelection(selection.Selection, _declarationsToMove).ToList();
-
-            var methodCallPositionStartLine = selectionStartLine - _declarationsToMove.Count(d => d.Selection.StartLine < selectionStartLine);
-            _positionForMethodCall = new Selection(methodCallPositionStartLine, 1, methodCallPositionStartLine, 1);
-            _extractedMethod.ReturnValue = null;
-            _extractedMethod.Accessibility = Accessibility.Private;
-            _extractedMethod.SetReturnValue = false;
-            _extractedMethod.Parameters = _paramClassify.ExtractedParameters.ToList();
-
+            SourceVariables = State.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
+                .Where(d => (Selection.Selection.Contains(d.Selection) &&
+                             d.QualifiedName.QualifiedModuleName == Selection.QualifiedName) ||
+                            d.References.Any(r =>
+                                r.QualifiedModuleName.ComponentName == Selection.QualifiedName.ComponentName
+                                && r.QualifiedModuleName.ComponentName ==
+                                d.QualifiedName.QualifiedModuleName.ComponentName
+                                && Selection.Selection.Contains(r.Selection)))
+                .OrderBy(d => d.Selection.StartLine)
+                .ThenBy(d => d.Selection.StartColumn);
         }
+        
+        public string SelectedCode { get; private set; }
 
-        public IEnumerable<Selection> splitSelection(Selection selection, IEnumerable<Declaration> declarations)
+        private ObservableCollection<ExtractedParameter> _parameters;
+        public ObservableCollection<ExtractedParameter> Parameters
         {
-            var tupleList = new List<Tuple<int, int>>();
-            var declarationRows = declarations
-                .Where(decl =>
-                    selection.StartLine <= decl.Selection.StartLine &&
-                    decl.Selection.StartLine <= selection.EndLine)
-                .Select(decl => decl.Selection.StartLine)
-                .OrderBy(x => x)
-                .ToList();
-
-            var gappedSelectionRows = Enumerable.Range(selection.StartLine, selection.EndLine - selection.StartLine + 1).Except(declarationRows).ToList();
-            var returnList = gappedSelectionRows.GroupByMissing(x => (x + 1), (x, y) => new Selection(x, 1, y, 1), (x, y) => y - x);
-            return returnList;
+            get
+            {
+                if (_parameters == null || !_parameters.Any())
+                {
+                    _parameters = new ObservableCollection<ExtractedParameter>();
+                    foreach (var declaration in SourceVariables)
+                    {
+                        _parameters.Add(new ExtractedParameter(declaration.AsTypeNameWithoutArrayDesignator,
+                            ExtractParameterNewType.PrivateLocalVariable,
+                            string.Concat(declaration.IdentifierName, declaration.IsArray ? "()" : string.Empty)));
+                    }
+                }
+                return _parameters;
+            }
+            set => _parameters = value;
         }
 
-        private Declaration _sourceMember;
-        public Declaration SourceMember { get { return _sourceMember; } }
+        public string PreviewCode
+        {
+            get
+            {
+                //var rewriter = State.GetRewriter(CodeModule.GetQualifiedSelection().Value.QualifiedName);
 
-        private QualifiedSelection _selection;
-        public QualifiedSelection Selection { get { return _selection; } }
+                var fields = new List<string>();
+                var parameters = new List<string>();
+                var variables = new List<string>();
 
-        private string _selectedCode;
-        public string SelectedCode { get { return _selectedCode; } }
+                foreach (var parameter in Parameters)
+                {
+                    switch (parameter.ParameterType)
+                    {
+                        case ExtractParameterNewType.PublicModuleField:
+                            fields.Add(String.Format($"{Tokens.Public} {parameter.Name} {Tokens.As} {parameter.TypeName}"));
+                            break;
+                        case ExtractParameterNewType.PrivateModuleField:
+                            fields.Add(String.Format($"{Tokens.Private} {parameter.Name} {Tokens.As} {parameter.TypeName}"));
+                            break;
+                        case ExtractParameterNewType.ByRefParameter:
+                            parameters.Add(string.Format($"{parameter.Name} {Tokens.As} {parameter.TypeName}"));
+                            break;
+                        case ExtractParameterNewType.ByValParameter:
+                            parameters.Add(string.Format($"{Tokens.ByVal} {parameter.Name} {Tokens.As} {parameter.TypeName}"));
+                            break;
+                        case ExtractParameterNewType.PrivateLocalVariable:
+                            variables.Add(string.Format($"{Tokens.Dim} {parameter.Name} {Tokens.As} {parameter.TypeName}"));
+                            break;
+                        case ExtractParameterNewType.StaticLocalVariable:
+                            variables.Add(string.Format($"{Tokens.Static} {parameter.Name} {Tokens.As} {parameter.TypeName}"));
+                            break;
+                        default:
+                            throw new InvalidOperationException("Invalid value for ExtractParameterNewType");
+                    }
+                }
+
+                var isFunction = ReturnParameter != null;
+
+                /* 
+                   string.Empty are used to create blank lines
+                   as the joins will create a newline each line.
+                */
+
+                var strings = new List<string>();
+                if (fields.Any())
+                {
+                    strings.AddRange(fields);
+                    strings.Add(string.Empty);
+                }
+                strings.Add($@"{Tokens.Private} {(isFunction ? Tokens.Function : Tokens.Sub)} {NewMethodName ?? "NewMethod"}({string.Join(", " , parameters)}) {(isFunction ? string.Concat(Tokens.As, " ", ReturnParameter.TypeName ?? Tokens.Variant) : string.Empty)}");
+                strings.AddRange(variables);
+                if (variables.Any())
+                {
+                    strings.Add(string.Empty);
+                }
+                strings.AddRange(SelectedCode.Split(new[] {Environment.NewLine}, StringSplitOptions.None));
+                if (isFunction)
+                {
+                    strings.Add(string.Empty);
+                    strings.Add($"{NewMethodName} = {ReturnParameter.Name}");
+                }
+                strings.Add($"{Tokens.End} {(isFunction ? Tokens.Function : Tokens.Sub)}");
+                return string.Join(Environment.NewLine, Indenter.Indent(strings));
+            }
+        }
 
         private List<Declaration> _locals;
-        public IEnumerable<Declaration> Locals { get { return _locals; } }
 
-        private IEnumerable<ExtractedParameter> _input;
-        public IEnumerable<ExtractedParameter> Inputs { get { return _input; } }
-        private IEnumerable<ExtractedParameter> _output;
-        public IEnumerable<ExtractedParameter> Outputs { get { return _output; } }
-
-        private List<Declaration> _declarationsToMove;
-        public IEnumerable<Declaration> DeclarationsToMove { get { return _declarationsToMove; } }
-
-        public IExtractedMethod Method { get { return _extractedMethod; } }
-
-        private Selection _positionForMethodCall;
-        public Selection PositionForMethodCall { get { return _positionForMethodCall; } }
-
-        public string NewMethodCall { get { return _extractedMethod.NewMethodCall(); } }
-
-        private Selection _positionForNewMethod;
-        public Selection PositionForNewMethod { get { return _positionForNewMethod; } }
-        IList<Selection> _rowsToRemove;
-        public IEnumerable<Selection> RowsToRemove
+        public IEnumerable<Declaration> Locals
         {
-            // we need to split selectionToRemove around any declarations that
-            // are within the selection.
-            get { return _declarationsToMove.Select(decl => decl.Selection).Union(_rowsToRemove)
-                .Select( x => new Selection(x.StartLine,1,x.EndLine,1)) ; }
+            get { return _locals; }
         }
 
-        public IEnumerable<Declaration> DeclarationsToExtract
+        private IEnumerable<ExtractedParameter> _input;
+
+        public IEnumerable<ExtractedParameter> Inputs
         {
-            get { return _extractDeclarations; }
+            get { return _input; }
+        }
+
+        private IEnumerable<ExtractedParameter> _output;
+
+        public IEnumerable<ExtractedParameter> Outputs
+        {
+            get { return _output; }
         }
     }
 }

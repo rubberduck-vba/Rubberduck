@@ -780,5 +780,69 @@ End Sub : 'Lame comment!
                 Assert.IsTrue(endToken.EndLine() == 3);
             }
         }
+        
+        [TestMethod]
+        [TestCategory("Grammar")]
+        [TestCategory("Selection")]
+        public void Selection_Overlaps_Other_Selection()
+        {
+            const string inputCode = @"
+Option Explicit
+
+Public Sub foo(Bar As Long, Baz As Long, FooBar As Long)
+
+If Bar > Baz Then
+  Debug.Print ""Yeah!""
+  If FooBar Then
+     Debug.Print ""Foo bar!""
+  End If
+Else
+  Debug.Print ""Boo!""
+End If
+
+If Baz > Bar Then
+  Debug.Print ""Boo!""
+Else
+  Debug.Print ""Yeah!""
+End If
+
+End Sub : 'Lame comment!
+";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
+            var pane = component.CodeModule.CodePane;
+            var state = MockParser.CreateAndParse(vbe.Object);
+            var tree = state.GetParseTree(new QualifiedModuleName(component));
+            var visitor = new IfStmtContextElementCollectorVisitor();
+            var contexts = visitor.Visit(tree); //returns innermost statement first then topmost consecutively
+            var token = contexts.ElementAt(0).Stop;
+            var selection = new Selection(10, 2, 15, 7);
+            
+            Assert.IsTrue(selection.Overlaps(contexts.ElementAt(0).GetSelection()));  // innermost If block
+            Assert.IsTrue(selection.Overlaps(contexts.ElementAt(1).GetSelection()));  // first outer if block
+            Assert.IsTrue(selection.Overlaps(contexts.ElementAt(2).GetSelection()));  // second outer If block
+
+            selection = new Selection(2, 1, 4, 57);
+            Assert.IsFalse(selection.Overlaps(contexts.ElementAt(0).GetSelection()));  // innermost If block
+            Assert.IsFalse(selection.Overlaps(contexts.ElementAt(1).GetSelection()));  // first outer if block
+            Assert.IsFalse(selection.Overlaps(contexts.ElementAt(2).GetSelection()));  // second outer If block
+
+            selection = new Selection(8, 1, 10, 9);
+            Assert.IsTrue(selection.Overlaps(contexts.ElementAt(0).GetSelection()));  // innermost If block
+            Assert.IsTrue(selection.Overlaps(contexts.ElementAt(1).GetSelection()));  // first outer if block
+            Assert.IsFalse(selection.Overlaps(contexts.ElementAt(2).GetSelection()));  // second outer If block
+
+            selection = new Selection(8, 2, 10, 9);
+            Assert.IsTrue(selection.Overlaps(contexts.ElementAt(0).GetSelection()));  // innermost If block
+
+            selection = new Selection(8, 1, 10, 8);
+            Assert.IsTrue(selection.Overlaps(contexts.ElementAt(0).GetSelection()));  // innermost If block
+
+            selection = new Selection(8, 1, 8, 1);
+            Assert.IsFalse(selection.Overlaps(contexts.ElementAt(0).GetSelection()));  // innermost If block
+
+            selection = new Selection(8, 1, 8, 2);
+            Assert.IsFalse(selection.Overlaps(contexts.ElementAt(0).GetSelection()));  // innermost If block
+        }
     }
 }
