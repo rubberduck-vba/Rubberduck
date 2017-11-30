@@ -21,6 +21,14 @@ namespace Rubberduck.UI.Refactorings
         public ExtractMethodDialog()
         {
             InitializeComponent();
+            Resize += RepaintHandler;
+            Move += RepaintHandler;
+        }
+
+        private void RepaintHandler(object sender, System.EventArgs e)
+        {
+            Invalidate();
+            Update();
         }
 
         public ExtractMethodDialog(ExtractMethodViewModel vm) : this()

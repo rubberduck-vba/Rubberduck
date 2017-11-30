@@ -59,6 +59,7 @@ namespace Rubberduck.UI.Refactorings
             this.Name = "ExtractMethodDialog";
             this.ShowInTaskbar = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Rubberduck - Extract Method";
             this.ResumeLayout(false);
 

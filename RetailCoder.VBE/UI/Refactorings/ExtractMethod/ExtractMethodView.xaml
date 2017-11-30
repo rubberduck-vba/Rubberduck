@@ -7,7 +7,7 @@
              xmlns:extractMethod="clr-namespace:Rubberduck.Refactorings.ExtractMethod"
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="400"  d:DesignWidth="300">
     <UserControl.Resources>
         <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
 
@@ -57,8 +57,9 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="50" />
-            <RowDefinition Height="2*" />
-            <RowDefinition Height="2*" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="5*" />
+            <RowDefinition Height="5*" MinHeight="150" />
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
         <StackPanel Background="White">
@@ -69,11 +70,10 @@
         <StackPanel Grid.Row="1" Margin="5,0">
             <Grid VerticalAlignment="Top" Margin="0,0,5,0">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="25" />
+                    <RowDefinition Height="20" />
                 </Grid.RowDefinitions>
-                <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=NameLabelText}" />
+                <Label Grid.Row="0" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=NameLabelText}" />
                 <TextBox Grid.Row="1"
                          Margin="5,-2,0,0"
                          Height="22"
@@ -88,12 +88,29 @@
                        VerticalAlignment="Top"
                        Visibility="{Binding IsValidMethodName, Converter={StaticResource BoolToHiddenVisibility}}"/>
             </Grid>
-
-            <GroupBox Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ExtractMethod_ParametersLabel}"
+            <Grid VerticalAlignment="Top" Margin="0,0,5,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="25" />
+                    <RowDefinition Height="25" />
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ExtractMethodReturnTypeSelection}" />
+                <ComboBox Grid.Row="1"
+                         Margin="5,2,0,0"
+                         Height="22"
+                         VerticalAlignment="Top"
+                         VerticalContentAlignment="Center"
+                         ItemsSource="{Binding ReturnParameters, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                         DisplayMemberPath="Name"
+                         SelectedItem="{Binding ReturnParameter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            </Grid>
+        </StackPanel>
+        <DockPanel Grid.Row="2" Dock="Top">
+            <Grid>
+                <GroupBox Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ExtractMethod_ParametersLabel}"
                       VerticalAlignment="Stretch"
                       HorizontalAlignment="Stretch"
-                      Margin="5">
-                <DataGrid ItemsSource="{Binding Parameters}" 
+                      Margin="0">
+                    <DataGrid ItemsSource="{Binding Parameters}" 
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch"
                             AutoGenerateColumns="False"
@@ -110,50 +127,61 @@
                             HorizontalScrollBarVisibility="Hidden"
                             ItemContainerStyle="{StaticResource PrettifyRow}"
                             ColumnHeaderHeight="22"
-                            MinHeight="50"
                             BorderThickness="0">
-                    <DataGrid.CellStyle>
-                        <Style TargetType="{x:Type DataGridCell}">
-                            <Setter Property="BorderThickness" Value="0" />
-                            <Setter Property="VerticalAlignment" Value="Center" />
-                            <Setter Property="Background" Value="Transparent" />
-                        </Style>
-                    </DataGrid.CellStyle>
-                    <DataGrid.Columns>
-                        <DataGridComboBoxColumn 
+                        <DataGrid.CellStyle>
+                            <Style TargetType="{x:Type DataGridCell}">
+                                <Setter Property="BorderThickness" Value="0" />
+                                <Setter Property="VerticalAlignment" Value="Center" />
+                                <Setter Property="Background" Value="Transparent" />
+                            </Style>
+                        </DataGrid.CellStyle>
+                        <DataGrid.Columns>
+                            <DataGridComboBoxColumn 
                             SelectedValueBinding="{Binding ParameterType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                             ItemsSource="{Binding Source={x:Static extractMethod:ExtractedParameter.ParameterNewTypes}}"
                             SelectedValuePath="Key"
                             DisplayMemberPath="Value"
                             Width="*"
                             IsReadOnly="False" />
-                        <DataGridTextColumn 
+                            <DataGridTextColumn 
                             Binding="{Binding Name}"
                             Width="*"
                             IsReadOnly="True"
                             SortMemberPath="Name" />
-                        <DataGridTextColumn
+                            <DataGridTextColumn
                             Binding="{Binding TypeName}"
                             Width="*"
                             IsReadOnly="True" />
-                    </DataGrid.Columns>
-                </DataGrid>
-            </GroupBox>
-        </StackPanel>
-        <Grid Grid.Row="2">
-            <Label Height="25" Margin="0,5,5,5" VerticalAlignment="Top"  Content="{Binding PreviewCaption}"></Label>
-            <controls:BindableTextEditor 
-                Margin="5,25,5,5"
-                AllowDrop="False"
-                FontFamily="Courier New "
-                ShowLineNumbers="True"
-                BorderBrush="{x:Static SystemColors.ActiveBorderBrush}"
-                HorizontalScrollBarVisibility="Auto"
-                VerticalScrollBarVisibility="Auto"
-                IsReadOnly="True"
-                Text="{Binding PreviewCode, Mode=OneWay}"/>
-        </Grid>
-        <Grid Grid.Row="3" Background="{x:Static SystemColors.ControlDarkBrush}" Grid.IsSharedSizeScope="True">
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </GroupBox>
+            </Grid>
+        </DockPanel>
+        <DockPanel Grid.Row="3" Dock="Bottom" >
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="25" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Label 
+                    Grid.Row="0"
+                    Content="{Binding PreviewCaption}" />
+                <controls:BindableTextEditor 
+                    Grid.Row="1"
+                    Margin="0,5,5,5"
+                    AllowDrop="False"
+                    FontFamily="Courier New"
+                    ShowLineNumbers="True"
+                    BorderThickness="1"
+                    BorderBrush="{x:Static SystemColors.ActiveBorderBrush}"
+                    HorizontalScrollBarVisibility="Auto"
+                    VerticalScrollBarVisibility="Auto"
+                    IsReadOnly="True"
+                    Text="{Binding PreviewCode, Mode=OneWay}"/>
+            </Grid>
+        </DockPanel>
+        <DockPanel Grid.Row="4" Dock="Bottom">
+        <Grid Background="{x:Static SystemColors.ControlDarkBrush}" Grid.IsSharedSizeScope="True">
             <Grid HorizontalAlignment="Right"
                   Margin="5,0">
                 <Grid.ColumnDefinitions>
@@ -175,6 +203,7 @@
                         Command="{Binding CancelButtonCommand}">
                 </Button>
             </Grid>
-        </Grid>
+            </Grid>
+        </DockPanel>
     </Grid>
 </UserControl>

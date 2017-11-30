@@ -74,6 +74,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
         public string SourceMethodName { get; private set; }
         public IEnumerable<Declaration> SourceVariables { get; private set; }
         public string NewMethodName { get; set; }
+        public ExtractedParameter ReturnParameter { get; set; }
 
         public ExtractMethodModel(RubberduckParserState state, QualifiedSelection selection,
             IEnumerable<ParserRuleContext> selectedContexts, IIndenter indenter, ICodeModule codeModule)
@@ -197,6 +198,8 @@ namespace Rubberduck.Refactorings.ExtractMethod
                     }
                 }
 
+                var isFunction = ReturnParameter != null;
+
                 /* 
                    string.Empty are used to create blank lines
                    as the joins will create a newline each line.
@@ -208,14 +211,19 @@ namespace Rubberduck.Refactorings.ExtractMethod
                     strings.AddRange(fields);
                     strings.Add(string.Empty);
                 }
-                strings.Add($@"Public Sub {NewMethodName ?? "NewMethod"}({string.Join(", " , parameters)})");
+                strings.Add($@"{Tokens.Private} {(isFunction ? Tokens.Function : Tokens.Sub)} {NewMethodName ?? "NewMethod"}({string.Join(", " , parameters)}) {(isFunction ? string.Concat(Tokens.As, " ", ReturnParameter.TypeName ?? Tokens.Variant) : string.Empty)}");
                 strings.AddRange(variables);
                 if (variables.Any())
                 {
                     strings.Add(string.Empty);
                 }
                 strings.AddRange(SelectedCode.Split(new[] {Environment.NewLine}, StringSplitOptions.None));
-                strings.Add("End Sub");
+                if (isFunction)
+                {
+                    strings.Add(string.Empty);
+                    strings.Add($"{NewMethodName} = {ReturnParameter.Name}");
+                }
+                strings.Add($"{Tokens.End} {(isFunction ? Tokens.Function : Tokens.Sub)}");
                 return string.Join(Environment.NewLine, Indenter.Indent(strings));
             }
         }

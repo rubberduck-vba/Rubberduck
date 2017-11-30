@@ -1772,6 +1772,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select a return type, if any:.
+        /// </summary>
+        public static string ExtractMethodReturnTypeSelection {
+            get {
+                return ResourceManager.GetString("ExtractMethodReturnTypeSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ByRef Parameter.
         /// </summary>
         public static string ExtractParameterNewType_ByRefParameter {
