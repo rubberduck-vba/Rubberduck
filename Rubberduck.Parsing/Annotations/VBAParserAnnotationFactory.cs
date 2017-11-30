@@ -38,22 +38,25 @@ namespace Rubberduck.Parsing.Annotations
             return CreateAnnotation(annotationName, parameters, qualifiedSelection);
         }
 
-            private static List<string> AnnotationParametersFromContext(VBAParser.AnnotationContext context)
+        private static List<string> AnnotationParametersFromContext(VBAParser.AnnotationContext context)
+        {
+            var parameters = new List<string>();
+            var argList = context.annotationArgList();
+            if (argList != null)
             {
-                var parameters = new List<string>();
-                var argList = context.annotationArgList();
-                if (argList != null)
-                {
-                    parameters.AddRange(argList.annotationArg().Select(arg => arg.GetText()));
-                }
-                return parameters;
+                parameters.AddRange(argList.annotationArg().Select(arg => arg.GetText()));
             }
+            return parameters;
+        }
 
-            private IAnnotation CreateAnnotation(string annotationName, List<string> parameters, QualifiedSelection qualifiedSelection)
+        private IAnnotation CreateAnnotation(string annotationName, List<string> parameters, QualifiedSelection qualifiedSelection)
+        {
+            if (_creators.TryGetValue(annotationName.ToUpperInvariant(), out var annotationClrType))
             {
-                return _creators.TryGetValue(annotationName.ToUpperInvariant(), out var annotationClrType)
-                    ? (IAnnotation) Activator.CreateInstance(annotationClrType, qualifiedSelection, parameters)
-                    : null;
+                return (IAnnotation) Activator.CreateInstance(annotationClrType, qualifiedSelection, parameters);
             }
+                
+            return null;
+        }
     }
 }

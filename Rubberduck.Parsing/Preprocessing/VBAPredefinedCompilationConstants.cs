@@ -24,10 +24,10 @@ namespace Rubberduck.Parsing.PreProcessing
 
         public bool Win64 => Environment.Is64BitOperatingSystem;
 
-        public bool Win32 => true;
+        public bool Win32 = true;
 
-        public bool Win16 => false;
+        public bool Win16 = false;
 
-        public bool Mac => false;
+        public bool Mac = false;
     }
 }

@@ -16,12 +16,10 @@ namespace Rubberduck.Parsing.Rewriter.RewriterInfo
         }
 
         public string Replacement { get; }
-
         public int StartTokenIndex { get; }
-
         public int StopTokenIndex { get; }
 
-        public static RewriterInfo None => default(RewriterInfo);
+        public static RewriterInfo None => default;
 
         public bool Equals(RewriterInfo other)
         {

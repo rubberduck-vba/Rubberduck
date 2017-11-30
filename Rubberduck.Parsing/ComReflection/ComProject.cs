@@ -43,6 +43,8 @@ namespace Rubberduck.Parsing.ComReflection
         private readonly List<ComStruct> _structs = new List<ComStruct>();
         public IEnumerable<ComStruct> Structs => _structs;
 
+        //Note - Enums and Types should enumerate *last*. That will prevent a duplicate module in the unlikely(?)
+        //instance where the TypeLib defines a module named "Enums" or "Types".
         public IEnumerable<IComType> Members => _modules.Cast<IComType>()
             .Union(_interfaces)
             .Union(_classes)

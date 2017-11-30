@@ -27,8 +27,8 @@ namespace Rubberduck.Parsing.PreProcessing
             var constantValue = _expression.Evaluate();
             _symbolTable.Add(identifier, constantValue);
             return new LivelinessExpression(
-                new ConstantExpression(new BoolValue(false)),
-                _tokens).Evaluate();
+                isAlive: new ConstantExpression(new BoolValue(false)),
+                tokens: _tokens).Evaluate();
         }
     }
 }

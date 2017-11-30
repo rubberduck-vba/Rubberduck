@@ -18,14 +18,26 @@ namespace Rubberduck.Parsing.PreProcessing
             ICharStream stream,
             CommonTokenStream tokenStream)
         {
+            if (stream == null)
+            {
+                throw new ArgumentNullException(nameof(stream));
+            }
+            if (tokenStream == null)
+            {
+                throw new ArgumentNullException(nameof(tokenStream));
+            }
+            if (symbolTable == null)
+            {
+                throw new ArgumentNullException(nameof(symbolTable));
+            }
             if (predefinedConstants == null)
             {
                 throw new ArgumentNullException(nameof(predefinedConstants));
             }
 
-            _stream = stream ?? throw new ArgumentNullException(nameof(stream));
-            _tokenStream = tokenStream ?? throw new ArgumentNullException(nameof(tokenStream));
-            _symbolTable = symbolTable ?? throw new ArgumentNullException(nameof(symbolTable));
+            _stream = stream;
+            _tokenStream = tokenStream;
+            _symbolTable = symbolTable;
             AddPredefinedConstantsToSymbolTable(predefinedConstants);
         }
 

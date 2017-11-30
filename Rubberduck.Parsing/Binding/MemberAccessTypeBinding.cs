@@ -89,7 +89,7 @@ namespace Rubberduck.Parsing.Binding
             {
                 return boundExpression;
             }
-            return null;
+            return boundExpression;
         }
 
         private IBoundExpression ResolveProject(IBoundExpression lExpression, string name)
@@ -216,7 +216,7 @@ namespace Rubberduck.Parsing.Binding
             {
                 return boundExpression;
             }
-            return null;
+            return boundExpression;
         }
 
         private IBoundExpression ResolveMemberInModule(IBoundExpression lExpression, string name, Declaration module, DeclarationType memberType)

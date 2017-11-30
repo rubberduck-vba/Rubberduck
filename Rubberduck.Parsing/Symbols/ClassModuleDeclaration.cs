@@ -232,7 +232,7 @@ namespace Rubberduck.Parsing.Symbols
         private void RemoveSubtype(Declaration subtype)
         {
             InvalidateCachedIsGlobal();
-            _subtypes.TryRemove(subtype, out var dummy);
+            _subtypes.TryRemove(subtype, out var _);
         }
 
         private void InvalidateCachedIsGlobal()

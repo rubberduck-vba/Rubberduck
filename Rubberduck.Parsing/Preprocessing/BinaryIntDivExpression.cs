@@ -21,7 +21,6 @@ namespace Rubberduck.Parsing.PreProcessing
             {
                 return null;
             }
-
             var leftValue = Convert.ToInt64(left.AsDecimal);
             var rightValue = Convert.ToInt64(right.AsDecimal);
             return new DecimalValue(Math.Truncate((decimal)leftValue / rightValue));

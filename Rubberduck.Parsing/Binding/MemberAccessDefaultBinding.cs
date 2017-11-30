@@ -269,7 +269,7 @@ namespace Rubberduck.Parsing.Binding
             {
                 return boundExpression;
             }
-            return null;
+            return boundExpression;
         }
 
         private IBoundExpression ResolveProject()
