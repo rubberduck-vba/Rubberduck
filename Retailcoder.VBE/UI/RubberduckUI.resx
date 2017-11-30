@@ -2167,4 +2167,13 @@ Would you like to import them to Rubberduck?</value>
   <data name="ExtractMethodReturnTypeSelection" xml:space="preserve">
     <value>Select a return type, if any:</value>
   </data>
+  <data name="ExtractMethod_CodePreviewCaption" xml:space="preserve">
+    <value>Code Preview extracted from {0}</value>
+  </data>
+  <data name="ExtractMethod_DefaultNewMethodName" xml:space="preserve">
+    <value>NewMethod</value>
+  </data>
+  <data name="ExtractMethod_NoneSelected" xml:space="preserve">
+    <value>(None)</value>
+  </data>
 </root>
