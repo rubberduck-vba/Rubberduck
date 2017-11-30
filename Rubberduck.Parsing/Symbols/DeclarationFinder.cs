@@ -108,39 +108,31 @@ namespace Rubberduck.Parsing.Symbols
         {
             var actions = new List<Action>
             {
-                () =>
-                    _unresolved = unresolvedMemberDeclarations
+                () =>_unresolved = unresolvedMemberDeclarations
                         .ToList(),
-                () =>
-                    _annotations = annotations
+                () =>_annotations = annotations
                         .GroupBy(node => node.QualifiedSelection.QualifiedName)
                         .ToDictionary(),
-                () =>
-                    _declarations = declarations
+                () =>_declarations = declarations
                         .GroupBy(item => item.QualifiedName.QualifiedModuleName)
                         .ToDictionary(),
-                () =>
-                    _declarationsByName = declarations
+                () =>_declarationsByName = declarations
                         .GroupBy(declaration => declaration.IdentifierName.ToLowerInvariant())
                         .ToDictionary(),
-                () =>
-                    _declarationsBySelection = declarations
+                () =>_declarationsBySelection = declarations
                         .Where(declaration => declaration.IsUserDefined)
                         .GroupBy(GetGroupingKey)
                         .ToDictionary(),
-                () =>
-                    _referencesBySelection = declarations
+                () =>_referencesBySelection = declarations
                         .SelectMany(declaration => declaration.References)
                         .GroupBy(
                             reference => new QualifiedSelection(reference.QualifiedModuleName, reference.Selection))
                         .ToDictionary(),
-                () =>
-                    _parametersByParent = declarations
+                () =>_parametersByParent = declarations
                         .Where(declaration => declaration.DeclarationType == DeclarationType.Parameter)
                         .GroupBy(declaration => declaration.ParentDeclaration)
                         .ToDictionary(),
-                () =>
-                    _userDeclarationsByType = declarations
+                () =>_userDeclarationsByType = declarations
                         .Where(declaration => declaration.IsUserDefined)
                         .GroupBy(declaration => declaration.DeclarationType)
                         .ToDictionary()
