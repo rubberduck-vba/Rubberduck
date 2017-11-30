@@ -14,9 +14,16 @@ namespace Rubberduck.Parsing.VBA
             RubberduckParserState state,
             IVBE vbe)
         {
-            _state = state ?? throw new ArgumentNullException(nameof(state));
-
-            _vbe = vbe ?? throw new ArgumentNullException(nameof(vbe));
+            if (state == null)
+            {
+                throw new ArgumentNullException(nameof(state));
+            }
+            if (vbe == null)
+            {
+                throw new ArgumentNullException(nameof(vbe));
+            }
+            _state = state;
+            _vbe = vbe;
         }
 
         public abstract IReadOnlyCollection<QualifiedModuleName> AllModules();

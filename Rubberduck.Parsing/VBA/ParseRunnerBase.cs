@@ -25,14 +25,26 @@ namespace Rubberduck.Parsing.VBA
             IAttributeParser attributeParser, 
             IModuleExporter exporter)
         {
-            _state = state ?? throw new ArgumentNullException(nameof(state));
-
-            StateManager = parserStateManager ?? throw new ArgumentNullException(nameof(parserStateManager));
-
-            _preprocessorFactory = preprocessorFactory ?? throw new ArgumentNullException(nameof(preprocessorFactory));
-
-            _attributeParser = attributeParser ?? throw new ArgumentNullException(nameof(attributeParser));
-
+            if (state == null)
+            {
+                throw new ArgumentNullException(nameof(state));
+            }
+            if (parserStateManager == null)
+            {
+                throw new ArgumentNullException(nameof(parserStateManager));
+            }
+            if (preprocessorFactory == null)
+            {
+                throw new ArgumentNullException(nameof(preprocessorFactory));
+            }
+            if (attributeParser == null)
+            {
+                throw new ArgumentNullException(nameof(attributeParser));
+            }
+            _state = state;
+            StateManager = parserStateManager;
+            _preprocessorFactory = preprocessorFactory;
+            _attributeParser = attributeParser;
             _exporter = exporter;
         }
 

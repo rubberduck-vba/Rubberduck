@@ -31,13 +31,26 @@ namespace Rubberduck.Parsing.VBA
             IModuleToModuleReferenceManager moduletToModuleReferenceManager,
             IReferenceRemover referenceRemover)
         {
-            _state = state ?? throw new ArgumentNullException(nameof(state));
-
-            _parserStateManager = parserStateManager ?? throw new ArgumentNullException(nameof(parserStateManager));
-
-            _moduleToModuleReferenceManager = moduletToModuleReferenceManager ?? throw new ArgumentNullException(nameof(moduletToModuleReferenceManager));
-
-            _referenceRemover = referenceRemover ?? throw new ArgumentNullException(nameof(referenceRemover));
+            if (state == null)
+            {
+                throw new ArgumentNullException(nameof(state));
+            }
+            if (parserStateManager == null)
+            {
+                throw new ArgumentNullException(nameof(parserStateManager));
+            }
+            if (moduletToModuleReferenceManager == null)
+            {
+                throw new ArgumentNullException(nameof(moduletToModuleReferenceManager));
+            }
+            if (referenceRemover == null)
+            {
+                throw new ArgumentNullException(nameof(referenceRemover));
+            }
+            _state = state;
+            _parserStateManager = parserStateManager;
+            _moduleToModuleReferenceManager = moduletToModuleReferenceManager;
+            _referenceRemover = referenceRemover;
         }
 
         protected abstract void ResolveReferences(ICollection<KeyValuePair<QualifiedModuleName, IParseTree>> toResolve, CancellationToken token);

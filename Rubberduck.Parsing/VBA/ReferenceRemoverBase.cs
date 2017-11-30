@@ -15,9 +15,16 @@ namespace Rubberduck.Parsing.VBA
             RubberduckParserState state,
             IModuleToModuleReferenceManager moduleToModuleReferenceManager)
         {
-            _state = state ?? throw new ArgumentNullException(nameof(state));
-
-            _moduleToModuleReferenceManager = moduleToModuleReferenceManager ?? throw new ArgumentNullException(nameof(moduleToModuleReferenceManager));
+            if (state == null)
+            {
+                throw new ArgumentNullException(nameof(state));
+            }
+            if (moduleToModuleReferenceManager == null)
+            {
+                throw new ArgumentNullException(nameof(moduleToModuleReferenceManager));
+            }
+            _state = state;
+            _moduleToModuleReferenceManager = moduleToModuleReferenceManager;
         }
 
         public abstract void RemoveReferencesTo(IReadOnlyCollection<QualifiedModuleName> modules, CancellationToken token);

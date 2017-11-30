@@ -21,15 +21,31 @@ namespace Rubberduck.Parsing.VBA
             IDeclarationResolveRunner declarationResolver,
             IReferenceResolveRunner referenceResolver)
         {
-            _comSynchronizer = comSynchronizer ?? throw new ArgumentNullException(nameof(comSynchronizer));
-
-            _builtInDeclarationLoader = builtInDeclarationLoader ?? throw new ArgumentNullException(nameof(builtInDeclarationLoader));
-
-            _parseRunner = parseRunner ?? throw new ArgumentNullException(nameof(parseRunner));
-
-            _declarationResolver = declarationResolver ?? throw new ArgumentNullException(nameof(declarationResolver));
-
-            _referenceResolver = referenceResolver ?? throw new ArgumentNullException(nameof(referenceResolver));
+            if (comSynchronizer == null)
+            {
+                throw new ArgumentNullException(nameof(comSynchronizer));
+            }
+            if (builtInDeclarationLoader == null)
+            {
+                throw new ArgumentNullException(nameof(builtInDeclarationLoader));
+            }
+            if (parseRunner == null)
+            {
+                throw new ArgumentNullException(nameof(parseRunner));
+            }
+            if (declarationResolver == null)
+            {
+                throw new ArgumentNullException(nameof(declarationResolver));
+            }
+            if (referenceResolver == null)
+            {
+                throw new ArgumentNullException(nameof(referenceResolver));
+            }
+            _comSynchronizer = comSynchronizer;
+            _builtInDeclarationLoader = builtInDeclarationLoader;
+            _parseRunner = parseRunner;
+            _declarationResolver = declarationResolver;
+            _referenceResolver = referenceResolver;
         }
 
 

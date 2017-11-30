@@ -11,7 +11,11 @@ namespace Rubberduck.Parsing.VBA
 
         protected ParserStateManagerBase(RubberduckParserState state)
         {
-            _state = state ?? throw new ArgumentNullException(nameof(state));
+            if (state == null)
+            {
+                throw new ArgumentNullException(nameof(state));
+            }
+            _state = state;
         }
 
 

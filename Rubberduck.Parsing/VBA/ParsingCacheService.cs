@@ -19,13 +19,26 @@ namespace Rubberduck.Parsing.VBA
             IReferenceRemover referenceRemover,
             ISupertypeClearer supertypeClearer)
         {
-            _declarationFinderProvider = declarationFinderProvider ?? throw new ArgumentNullException(nameof(declarationFinderProvider));
-
-            _moduleToModuleReferenceManager = moduleToModuleReferenceManager ?? throw new ArgumentNullException(nameof(moduleToModuleReferenceManager));
-
-            _referenceRemover = referenceRemover ?? throw new ArgumentNullException(nameof(referenceRemover));
-
-            _supertypeClearer = supertypeClearer ?? throw new ArgumentNullException(nameof(supertypeClearer));
+            if (declarationFinderProvider == null)
+            {
+                throw new ArgumentNullException(nameof(declarationFinderProvider));
+            }
+            if (moduleToModuleReferenceManager == null)
+            {
+                throw new ArgumentNullException(nameof(moduleToModuleReferenceManager));
+            }
+            if (referenceRemover == null)
+            {
+                throw new ArgumentNullException(nameof(referenceRemover));
+            }
+            if (supertypeClearer == null)
+            {
+                throw new ArgumentNullException(nameof(supertypeClearer));
+            }
+            _declarationFinderProvider = declarationFinderProvider;
+            _moduleToModuleReferenceManager = moduleToModuleReferenceManager;
+            _referenceRemover = referenceRemover;
+            _supertypeClearer = supertypeClearer;
         }
 
         public DeclarationFinder DeclarationFinder => _declarationFinderProvider.DeclarationFinder;

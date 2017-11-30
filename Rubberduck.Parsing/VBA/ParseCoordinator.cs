@@ -32,16 +32,31 @@ namespace Rubberduck.Parsing.VBA
             IParserStateManager parserStateManager,
             bool isTestScope = false)
         {
-            State = state ?? throw new ArgumentNullException(nameof(state));
-
-            _parsingStageService = parsingStageService ?? throw new ArgumentNullException(nameof(parsingStageService));
-
+            if (state == null)
+            {
+                throw new ArgumentNullException(nameof(state));
+            }
+            if (parsingStageService == null)
+            {
+                throw new ArgumentNullException(nameof(parsingStageService));
+            }
+            if (parsingStageService == null)
+            {
+                throw new ArgumentNullException(nameof(parsingStageService));
+            }
+            if (parsingCacheService == null)
+            {
+                throw new ArgumentNullException(nameof(parsingCacheService));
+            }
+            if (parserStateManager == null)
+            {
+                throw new ArgumentNullException(nameof(parserStateManager));
+            }
+            State = state;
+            _parsingStageService = parsingStageService;
             _projectManager = projectManager;
-
-            _parsingCacheService = parsingCacheService ?? throw new ArgumentNullException(nameof(parsingCacheService));
-
-            _parserStateManager = parserStateManager ?? throw new ArgumentNullException(nameof(parserStateManager));
-
+            _parsingCacheService = parsingCacheService;
+            _parserStateManager = parserStateManager;
             _isTestScope = isTestScope;
 
             state.ParseRequest += ReparseRequested;
