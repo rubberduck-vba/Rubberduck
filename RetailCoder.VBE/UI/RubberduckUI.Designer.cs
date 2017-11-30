@@ -1763,6 +1763,24 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Code Preview extracted from {0}.
+        /// </summary>
+        public static string ExtractMethod_CodePreviewCaption {
+            get {
+                return ResourceManager.GetString("ExtractMethod_CodePreviewCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NewMethod.
+        /// </summary>
+        public static string ExtractMethod_DefaultNewMethodName {
+            get {
+                return ResourceManager.GetString("ExtractMethod_DefaultNewMethodName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please specify method name, return type and/or parameters (if applicable), and other options..
         /// </summary>
         public static string ExtractMethod_InstructionsText {
@@ -1777,6 +1795,15 @@ namespace Rubberduck.UI {
         public static string ExtractMethod_InvalidSelectionMessage {
             get {
                 return ResourceManager.GetString("ExtractMethod_InvalidSelectionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (None).
+        /// </summary>
+        public static string ExtractMethod_NoneSelected {
+            get {
+                return ResourceManager.GetString("ExtractMethod_NoneSelected", resourceCulture);
             }
         }
         
@@ -3804,6 +3831,15 @@ namespace Rubberduck.UI {
         public static string RubberduckMenu_CodeInspections {
             get {
                 return ResourceManager.GetString("RubberduckMenu_CodeInspections", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Code Metrics.
+        /// </summary>
+        public static string RubberduckMenu_CodeMetrics {
+            get {
+                return ResourceManager.GetString("RubberduckMenu_CodeMetrics", resourceCulture);
             }
         }
         

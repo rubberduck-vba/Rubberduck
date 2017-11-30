@@ -123,8 +123,8 @@
                             CanUserAddRows="False"
                             HeadersVisibility="None"
                             GridLinesVisibility="All"
-                            VerticalScrollBarVisibility="Visible"
-                            HorizontalScrollBarVisibility="Hidden"
+                            VerticalScrollBarVisibility="Auto"
+                            HorizontalScrollBarVisibility="Auto"
                             ItemContainerStyle="{StaticResource PrettifyRow}"
                             ColumnHeaderHeight="22"
                             BorderThickness="0">

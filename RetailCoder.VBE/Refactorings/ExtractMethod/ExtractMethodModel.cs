@@ -8,6 +8,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.SmartIndenter;
+using Rubberduck.UI;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Refactorings.ExtractMethod
@@ -122,7 +123,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
             if (string.IsNullOrWhiteSpace(NewMethodName))
             {
-                NewMethodName = "NewMethod";
+                NewMethodName = RubberduckUI.ExtractMethod_DefaultNewMethodName;
             }
 
             SelectedCode = string.Join(Environment.NewLine, SelectedContexts.Select(c => c.GetText()));
@@ -176,10 +177,10 @@ namespace Rubberduck.Refactorings.ExtractMethod
                     switch (parameter.ParameterType)
                     {
                         case ExtractParameterNewType.PublicModuleField:
-                            fields.Add(String.Format($"{Tokens.Public} {parameter.Name} {Tokens.As} {parameter.TypeName}"));
+                            fields.Add(string.Format($"{Tokens.Public} {parameter.Name} {Tokens.As} {parameter.TypeName}"));
                             break;
                         case ExtractParameterNewType.PrivateModuleField:
-                            fields.Add(String.Format($"{Tokens.Private} {parameter.Name} {Tokens.As} {parameter.TypeName}"));
+                            fields.Add(string.Format($"{Tokens.Private} {parameter.Name} {Tokens.As} {parameter.TypeName}"));
                             break;
                         case ExtractParameterNewType.ByRefParameter:
                             parameters.Add(string.Format($"{parameter.Name} {Tokens.As} {parameter.TypeName}"));
@@ -198,7 +199,9 @@ namespace Rubberduck.Refactorings.ExtractMethod
                     }
                 }
 
-                var isFunction = ReturnParameter != null;
+                var isFunction = ReturnParameter != null &&
+                                 !(ReturnParameter.TypeName == string.Empty &&
+                                   ReturnParameter.Name == RubberduckUI.ExtractMethod_NoneSelected);
 
                 /* 
                    string.Empty are used to create blank lines
@@ -211,7 +214,14 @@ namespace Rubberduck.Refactorings.ExtractMethod
                     strings.AddRange(fields);
                     strings.Add(string.Empty);
                 }
-                strings.Add($@"{Tokens.Private} {(isFunction ? Tokens.Function : Tokens.Sub)} {NewMethodName ?? "NewMethod"}({string.Join(", " , parameters)}) {(isFunction ? string.Concat(Tokens.As, " ", ReturnParameter.TypeName ?? Tokens.Variant) : string.Empty)}");
+                strings.Add(
+                    $@"{Tokens.Private} {(isFunction ? Tokens.Function : Tokens.Sub)} {
+                            NewMethodName ?? RubberduckUI.ExtractMethod_DefaultNewMethodName
+                        }({string.Join(", ", parameters)}) {
+                            (isFunction
+                                ? string.Concat(Tokens.As, " ", ReturnParameter.TypeName ?? Tokens.Variant)
+                                : string.Empty)
+                        }");
                 strings.AddRange(variables);
                 if (variables.Any())
                 {

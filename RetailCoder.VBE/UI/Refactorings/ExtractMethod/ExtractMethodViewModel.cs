@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows.Data;
 using System.Windows.Forms;
 using NLog;
 using Rubberduck.Parsing.Grammar;
@@ -71,11 +70,12 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             }
         }
 
-        public IEnumerable<ExtractedParameter> ReturnParameters => 
+        public IEnumerable<ExtractedParameter> ReturnParameters =>
             new[]
-        {
-            new ExtractedParameter(string.Empty,ExtractParameterNewType.PrivateLocalVariable,"(None)")
-        }.Union(Parameters);
+            {
+                new ExtractedParameter(string.Empty, ExtractParameterNewType.PrivateLocalVariable,
+                    RubberduckUI.ExtractMethod_NoneSelected)
+            }.Union(Parameters);
         
         public ExtractedParameter ReturnParameter
         {
@@ -88,7 +88,7 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
         }
 
         public string SourceMethodName => Model.SourceMethodName;
-        public string PreviewCaption => $@"Code Preview extracted from {SourceMethodName}";
+        public string PreviewCaption => string.Format(RubberduckUI.ExtractMethod_CodePreviewCaption, SourceMethodName);
         public string PreviewCode => Model.PreviewCode;
         public IEnumerable<ExtractedParameter> Inputs;
         public IEnumerable<ExtractedParameter> Outputs;

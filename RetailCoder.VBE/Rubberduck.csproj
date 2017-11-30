@@ -448,12 +448,6 @@
       <DependentUpon>ExtractInterfaceView.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Refactorings\ExtractInterface\ExtractInterfaceViewModel.cs" />
-    <Compile Include="UI\Refactorings\ExtractMethod\ExtractMethodDialog - Original.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\Refactorings\ExtractMethod\ExtractMethodDialog - Original.Designer.cs">
-      <DependentUpon>ExtractMethodDialog - Original.cs</DependentUpon>
-    </Compile>
     <Compile Include="UI\Refactorings\ExtractMethod\ExtractMethodView.xaml.cs">
       <DependentUpon>ExtractMethodView.xaml</DependentUpon>
     </Compile>
@@ -835,7 +829,6 @@
     <Compile Include="UI\Refactorings\ExtractMethod\ExtractMethodDialog.Designer.cs">
       <DependentUpon>ExtractMethodDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Refactorings\ExtractMethod\IExtractMethodDialog.cs" />
     <Compile Include="UI\IDialogView.cs" />
     <Compile Include="UI\Refactorings\ReorderParameters\ReorderParametersDialog.cs">
       <SubType>Form</SubType>
@@ -1019,9 +1012,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Refactorings\ExtractInterface\ExtractInterfaceDialog.resx">
       <DependentUpon>ExtractInterfaceDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Refactorings\ExtractMethod\ExtractMethodDialog - Original.resx">
-      <DependentUpon>ExtractMethodDialog - Original.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\RegexAssistant\RegexAssistantDialog.resx">
       <DependentUpon>RegexAssistantDialog.cs</DependentUpon>
