@@ -16,13 +16,7 @@ namespace Rubberduck.UI.About
             _version = version;
         }
 
-        public string Version
-        {
-            get
-            {
-                return string.Format(RubberduckUI.Rubberduck_AboutBuild, _version.CurrentVersion);
-            }
-        }
+        public string Version => string.Format(RubberduckUI.Rubberduck_AboutBuild, _version.CurrentVersion);
 
         private CommandBase _uriCommand;
         public CommandBase UriCommand

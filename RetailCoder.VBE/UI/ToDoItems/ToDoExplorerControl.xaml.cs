@@ -6,7 +6,7 @@ namespace Rubberduck.UI.ToDoItems
     /// </summary>
     public partial class ToDoExplorerControl
     {
-        private ToDoExplorerViewModel ViewModel { get { return DataContext as ToDoExplorerViewModel; } }
+        private ToDoExplorerViewModel ViewModel => DataContext as ToDoExplorerViewModel;
 
         public ToDoExplorerControl()
         {
@@ -14,7 +14,7 @@ namespace Rubberduck.UI.ToDoItems
             Loaded += ToDoExplorerControl_Loaded;
         }
 
-        void ToDoExplorerControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        private void ToDoExplorerControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
             if (ViewModel != null && ViewModel.RefreshCommand.CanExecute(null))
             {

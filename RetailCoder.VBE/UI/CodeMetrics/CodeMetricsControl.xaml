@@ -1,0 +1,76 @@
+﻿<UserControl x:Class="Rubberduck.UI.CodeMetrics.CodeMetricsControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:codeMetrics="clr-namespace:Rubberduck.Navigation.CodeMetrics"
+             xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
+             xmlns:converters="clr-namespace:Rubberduck.UI.Converters"
+             ResxExtension.DefaultResxName="Rubberduck.UI.RubberduckUI" 
+             Language="{UICulture}"
+             Name="CodeMetrics"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance codeMetrics:CodeMetricsViewModel}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Controls/ToolBar.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <BitmapImage x:Key="RefreshImage" UriSource="../../Resources/arrow-circle-double.png" />
+            <BitmapImage x:Key="CollaseNodesImage" UriSource="../../Resources/folder.png" />
+            <BitmapImage x:Key="ExpandNodesImage" UriSource="../../Resources/folder-open.png" />
+            <BitmapImage x:Key="UndoImage" UriSource="../../Resources/arrow-circle-left.png" />
+            <BitmapImage x:Key="PrintImage" UriSource="../../Resources/printer.png" />
+            <BitmapImage x:Key="SearchImage" UriSource="../../Resources/magnifier-medium.png" />
+
+            <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
+            <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
+            <converters:StringHasValueToVisibilityConverter x:Key="StringHasValueToVisibility" />
+            <converters:StringHasNoValueToVisibilityConverter x:Key="StringHasNoValueToVisibility" />
+            <converters:SubtractionConverter x:Key="SubtractionConverter" />
+
+            <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
+                <GradientStop Color="#FFD9F4FF" Offset="0"/>
+                <GradientStop Color="#FF9BDDFB" Offset="1"/>
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="{x:Static SystemColors.ControlBrushKey}" EndPoint="0,1" StartPoint="0,0">
+                <GradientStop Color="#FFEEEDED" Offset="0"/>
+                <GradientStop Color="#FFDDDDDD" Offset="1"/>
+            </LinearGradientBrush>
+            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
+            <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid UseLayoutRounding="True">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" MinHeight="64" />
+        </Grid.RowDefinitions>
+
+        <controls:EmptyUIRefresh Grid.Row="1" />
+
+        <DataGrid Grid.Row="1" ItemsSource="{Binding ModuleMetrics}" AutoGenerateColumns="False" IsReadOnly="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Path=ModuleName}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SearchResults_ModuleName}" Width="*"/>
+                <DataGridTextColumn Binding="{Binding Path=Result.Lines}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeMetrics_Lines}" Width="Auto" x:Name="LinesColumn"/>
+                <DataGridTextColumn Binding="{Binding Path=Result.CyclomaticComplexity}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeMetrics_Complexity}" Width="Auto" x:Name="CCColumn"/>
+                <DataGridTextColumn Binding="{Binding Path=Result.MaximumNesting}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeMetrics_Nesting}" Width="Auto" x:Name="NestingColumn"/>
+            </DataGrid.Columns>
+            <DataGrid.RowDetailsTemplate>
+                <DataTemplate>
+                    <DataGrid ItemsSource="{Binding Path=MemberResults}" AutoGenerateColumns="False" IsReadOnly="True" Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid,AncestorLevel=1}, Converter={StaticResource SubtractionConverter},ConverterParameter=25}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SearchResults_MemberName}" Binding="{Binding Path=Key.IdentifierName}" Width="*"/>
+                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeMetrics_Lines}" Binding="{Binding Path=Value.Lines}"  Width="{Binding Path=ActualWidth, Source={x:Reference LinesColumn}}"/>
+                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeMetrics_Complexity}"  Binding="{Binding Path=Value.CyclomaticComplexity}" Width="{Binding Path=ActualWidth, Source={x:Reference CCColumn}}"/>
+                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeMetrics_Nesting}" Binding="{Binding Path=Value.MaximumNesting}" Width="{Binding Path=ActualWidth, Source={x:Reference NestingColumn}}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DataTemplate>
+            </DataGrid.RowDetailsTemplate>
+        </DataGrid>
+        <controls:BusyIndicator Grid.Row="2" Width="120" Height="120" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
+    </Grid>
+</UserControl>
+

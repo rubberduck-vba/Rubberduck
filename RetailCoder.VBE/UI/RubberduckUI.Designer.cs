@@ -130,6 +130,33 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Copy successful.
+        /// </summary>
+        public static string AboutWindow_CopyVersionCaption {
+            get {
+                return ResourceManager.GetString("AboutWindow_CopyVersionCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click here to copy version info to clipboard..
+        /// </summary>
+        public static string AboutWindow_CopyVersionLabel {
+            get {
+                return ResourceManager.GetString("AboutWindow_CopyVersionLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Version information copied to clipboard..
+        /// </summary>
+        public static string AboutWindow_CopyVersionMessage {
+            get {
+                return ResourceManager.GetString("AboutWindow_CopyVersionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to All contributors to our GitHub repository
         ///All our stargazers, likers &amp; followers, for the warm fuzzies
         ///...and anyone reading this!.
@@ -1093,6 +1120,42 @@ namespace Rubberduck.UI {
         public static string CodeInspectionSettings_WhitelistedIdentifiersLabel {
             get {
                 return ResourceManager.GetString("CodeInspectionSettings_WhitelistedIdentifiersLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cyclomatic Complexity.
+        /// </summary>
+        public static string CodeMetrics_Complexity {
+            get {
+                return ResourceManager.GetString("CodeMetrics_Complexity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lines.
+        /// </summary>
+        public static string CodeMetrics_Lines {
+            get {
+                return ResourceManager.GetString("CodeMetrics_Lines", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Maximum Nesting.
+        /// </summary>
+        public static string CodeMetrics_Nesting {
+            get {
+                return ResourceManager.GetString("CodeMetrics_Nesting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Code Metrics.
+        /// </summary>
+        public static string CodeMetricsDockablePresenter_Caption {
+            get {
+                return ResourceManager.GetString("CodeMetricsDockablePresenter_Caption", resourceCulture);
             }
         }
         

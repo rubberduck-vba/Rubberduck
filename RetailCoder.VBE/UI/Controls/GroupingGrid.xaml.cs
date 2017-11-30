@@ -10,8 +10,8 @@ namespace Rubberduck.UI.Controls
 
         public bool ShowGroupingItemCount
         {
-            get { return (bool) GetValue(ShowGroupingItemCountProperty); }
-            set { SetValue(ShowGroupingItemCountProperty, value); }
+            get => (bool) GetValue(ShowGroupingItemCountProperty);
+            set => SetValue(ShowGroupingItemCountProperty, value);
         }
 
         public GroupingGrid()

@@ -174,7 +174,7 @@ namespace Rubberduck.Parsing.Symbols
             {
                 var lexpression = expression as VBAParser.LExpressionContext
                                     ?? expression.GetChild<VBAParser.LExpressionContext>(0)
-                                    ?? (expression as VBAParser.LExprContext 
+                                    ?? (expression as VBAParser.LExprContext
                                         ?? expression.GetChild<VBAParser.LExprContext>(0))?.lExpression();
 
                 if (lexpression != null)
