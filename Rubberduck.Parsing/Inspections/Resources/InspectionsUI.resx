@@ -863,4 +863,10 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="RemoveStepOneQuickFix" xml:space="preserve">
     <value>Remove step</value>
   </data>
+  <data name="StepIsNotSpecifiedInspectionResultFormat" xml:space="preserve">
+    <value>Step not specified</value>
+  </data>
+  <data name="AddStepOneQuickFix" xml:space="preserve">
+    <value>Add step</value>
+  </data>
 </root>

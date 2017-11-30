@@ -68,6 +68,7 @@
     <Compile Include="Concrete\EmptyForEachBlockInspection.cs" />
     <Compile Include="Concrete\EmptyForLoopBlockInspection.cs" />
     <Compile Include="Concrete\EmptyWhileWendBlockInspection.cs" />
+    <Compile Include="Concrete\StepIsNotSpecifiedInspection.cs" />
     <Compile Include="Concrete\StepOneIsRedundantInspection.cs" />
     <Compile Include="Concrete\StopKeywordInspection.cs" />
     <Compile Include="Concrete\LineLabelNotUsedInspection.cs" />
@@ -117,6 +118,7 @@
     <Compile Include="Concrete\ProcedureNotUsedInspection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QuickFixes\AddIdentifierToWhiteListQuickFix.cs" />
+    <Compile Include="QuickFixes\AddStepOneQuickFix.cs" />
     <Compile Include="QuickFixes\ApplicationWorksheetFunctionQuickFix.cs" />
     <Compile Include="QuickFixes\AssignedByValParameterMakeLocalCopyQuickFix.cs" />
     <Compile Include="QuickFixes\ChangeDimToPrivateQuickFix.cs" />

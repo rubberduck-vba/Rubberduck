@@ -61,6 +61,15 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add step.
+        /// </summary>
+        public static string AddStepOneQuickFix {
+            get {
+                return ResourceManager.GetString("AddStepOneQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} ({1} results).
         /// </summary>
         public static string AggregateInspectionResultFormat {
@@ -1992,6 +2001,15 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         public static string SplitMultipleDeclarationsQuickFix {
             get {
                 return ResourceManager.GetString("SplitMultipleDeclarationsQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Step not specified.
+        /// </summary>
+        public static string StepIsNotSpecifiedInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("StepIsNotSpecifiedInspectionResultFormat", resourceCulture);
             }
         }
         
