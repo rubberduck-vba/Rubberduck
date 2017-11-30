@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -2121,5 +2121,23 @@ Would you like to import them to Rubberduck?</value>
   </data>
   <data name="ToDoExplorer_CopyToolTip" xml:space="preserve">
     <value>Copy to clipboard</value>
+  </data>
+  <data name="ExtractParameterNewType_ByRefParameter" xml:space="preserve">
+    <value>ByRef Parameter</value>
+  </data>
+  <data name="ExtractParameterNewType_ByValParameter" xml:space="preserve">
+    <value>ByVal Parameter</value>
+  </data>
+  <data name="ExtractParameterNewType_PrivateLocalVariable" xml:space="preserve">
+    <value>Private Local Variable</value>
+  </data>
+  <data name="ExtractParameterNewType_PrivateModuleField" xml:space="preserve">
+    <value>Private Module Field</value>
+  </data>
+  <data name="ExtractParameterNewType_PublicModuleField" xml:space="preserve">
+    <value>Public Module Field</value>
+  </data>
+  <data name="ExtractParameterNewType_StaticLocalVariable" xml:space="preserve">
+    <value>Static Local Variable</value>
   </data>
 </root>

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Forms;
-using Microsoft.VB6.Interop.VBIDE;
 using NLog;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
@@ -21,20 +20,18 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             CancelButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => DialogCancel());
         }
 
-        private ObservableCollection<ExtractedParameter> _parameters;
         public ObservableCollection<ExtractedParameter> Parameters
         {
-            get => _parameters;
+            get => Model.Parameters;
             set
             {
-                _parameters = value;
-                OnPropertyChanged();
+                Model.Parameters = value;
+                OnPropertyChanged(nameof(PreviewCode));
             }
         }
 
         public IEnumerable<string> ComponentNames =>
-            Model.State.AllUserDeclarations
-                .Where(d => d.ComponentName == Model.CodeModule.Name && (d.DeclarationType & DeclarationType.Member) == DeclarationType.Member)
+            Model.State.DeclarationFinder.UserDeclarations(DeclarationType.Member).Where(d => d.ComponentName == Model.CodeModule.Name)
                 .Select(d => d.IdentifierName);
 
         public string NewMethodName
@@ -52,7 +49,7 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
         public string SourceMethodName => Model.SourceMethodName;
         public string PreviewCaption => $@"Code Preview extracted from {SourceMethodName}";
         public string PreviewCode => Model.PreviewCode;
-
+        
         public IEnumerable<ExtractedParameter> Inputs;
         public IEnumerable<ExtractedParameter> Outputs;
         public IEnumerable<ExtractedParameter> Locals;

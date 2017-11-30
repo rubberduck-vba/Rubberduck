@@ -4,7 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:converters="clr-namespace:Rubberduck.UI.Converters"
-             xmlns:extractMethod="clr-namespace:Rubberduck.UI.Refactorings.ExtractMethod"
+             xmlns:extractMethod="clr-namespace:Rubberduck.Refactorings.ExtractMethod"
+             xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
@@ -20,7 +21,6 @@
         </LinearGradientBrush>
         <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
         <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
-
         <Style x:Key="PrettifyRow" TargetType="{x:Type DataGridRow}">
             <Style.Resources>
                 <Style TargetType="{x:Type Border}">
@@ -53,14 +53,6 @@
                 </MultiTrigger>
             </Style.Triggers>
         </Style>
-        <ObjectDataProvider x:Key="dataFromEnum" MethodName="GetValues"
-                            xmlns:system="clr-namespace:System;assembly=mscorlib" 
-                            xmlns:extractMethod="clr-namespace:Rubberduck.Refactorings.ExtractMethod"
-                            ObjectType="{x:Type system:Enum}">
-            <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="extractMethod:PassedBy"/>
-            </ObjectDataProvider.MethodParameters>
-        </ObjectDataProvider>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -109,14 +101,16 @@
                             CanUserReorderColumns="False"
                             CanUserResizeColumns="True"
                             IsReadOnly="False"
+                            IsSynchronizedWithCurrentItem="True"
                             SelectionMode="Single"
                             CanUserAddRows="False"
-                            HeadersVisibility="Column"
+                            HeadersVisibility="None"
                             GridLinesVisibility="All"
-                            VerticalScrollBarVisibility="Auto"
-                            HorizontalScrollBarVisibility="Auto"
+                            VerticalScrollBarVisibility="Visible"
+                            HorizontalScrollBarVisibility="Hidden"
                             ItemContainerStyle="{StaticResource PrettifyRow}"
                             ColumnHeaderHeight="22"
+                            MinHeight="50"
                             BorderThickness="0">
                     <DataGrid.CellStyle>
                         <Style TargetType="{x:Type DataGridCell}">
@@ -127,8 +121,10 @@
                     </DataGrid.CellStyle>
                     <DataGrid.Columns>
                         <DataGridComboBoxColumn 
-                            SelectedItemBinding="{Binding Passed}"
-                            ItemsSource="{Binding Source={StaticResource dataFromEnum}}"
+                            SelectedValueBinding="{Binding ParameterType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            ItemsSource="{Binding Source={x:Static extractMethod:ExtractedParameter.ParameterNewTypes}}"
+                            SelectedValuePath="Key"
+                            DisplayMemberPath="Value"
                             Width="*"
                             IsReadOnly="False" />
                         <DataGridTextColumn 
@@ -146,13 +142,16 @@
         </StackPanel>
         <Grid Grid.Row="2">
             <Label Height="25" Margin="0,5,5,5" VerticalAlignment="Top"  Content="{Binding PreviewCaption}"></Label>
-            <TextBox Margin="5,25,5,5"
-                     AllowDrop="False"
-                     IsReadOnly="True"
-                     HorizontalScrollBarVisibility="Auto"
-                     VerticalScrollBarVisibility="Auto"
-                     Text="{Binding PreviewCode, Mode=OneWay}"
-                     />
+            <controls:BindableTextEditor 
+                Margin="5,25,5,5"
+                AllowDrop="False"
+                FontFamily="Courier New "
+                ShowLineNumbers="True"
+                BorderBrush="{x:Static SystemColors.ActiveBorderBrush}"
+                HorizontalScrollBarVisibility="Auto"
+                VerticalScrollBarVisibility="Auto"
+                IsReadOnly="True"
+                Text="{Binding PreviewCode, Mode=OneWay}"/>
         </Grid>
         <Grid Grid.Row="3" Background="{x:Static SystemColors.ControlDarkBrush}" Grid.IsSharedSizeScope="True">
             <Grid HorizontalAlignment="Right"

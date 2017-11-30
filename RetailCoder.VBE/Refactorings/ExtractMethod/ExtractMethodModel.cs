@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
@@ -71,6 +72,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
         public QualifiedSelection Selection { get; }
 
         public string SourceMethodName { get; private set; }
+        public IEnumerable<Declaration> SourceVariables { get; private set; }
         public string NewMethodName { get; set; }
 
         public ExtractMethodModel(RubberduckParserState state, QualifiedSelection selection,
@@ -122,10 +124,41 @@ namespace Rubberduck.Refactorings.ExtractMethod
                 NewMethodName = "NewMethod";
             }
 
-            SelectedCode = String.Join(Environment.NewLine, SelectedContexts.Select(c => c.GetText()));
+            SelectedCode = string.Join(Environment.NewLine, SelectedContexts.Select(c => c.GetText()));
+
+            SourceVariables = State.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
+                .Where(d => (Selection.Selection.Contains(d.Selection) &&
+                             d.QualifiedName.QualifiedModuleName == Selection.QualifiedName) ||
+                            d.References.Any(r =>
+                                r.QualifiedModuleName.ComponentName == Selection.QualifiedName.ComponentName
+                                && r.QualifiedModuleName.ComponentName ==
+                                d.QualifiedName.QualifiedModuleName.ComponentName
+                                && Selection.Selection.Contains(r.Selection)))
+                .OrderBy(d => d.Selection.StartLine)
+                .ThenBy(d => d.Selection.StartColumn);
         }
         
         public string SelectedCode { get; private set; }
+
+        private ObservableCollection<ExtractedParameter> _parameters;
+        public ObservableCollection<ExtractedParameter> Parameters
+        {
+            get
+            {
+                if (_parameters == null || !_parameters.Any())
+                {
+                    _parameters = new ObservableCollection<ExtractedParameter>();
+                    foreach (var declaration in SourceVariables)
+                    {
+                        _parameters.Add(new ExtractedParameter(declaration.AsTypeNameWithoutArrayDesignator,
+                            ExtractParameterNewType.PrivateLocalVariable,
+                            string.Concat(declaration.IdentifierName, declaration.IsArray ? "()" : string.Empty)));
+                    }
+                }
+                return _parameters;
+            }
+            set => _parameters = value;
+        }
 
         public string PreviewCode
         {
@@ -133,8 +166,54 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 //var rewriter = State.GetRewriter(CodeModule.GetQualifiedSelection().Value.QualifiedName);
 
+                var fields = new List<string>();
+                var parameters = new List<string>();
+                var variables = new List<string>();
+
+                foreach (var parameter in Parameters)
+                {
+                    switch (parameter.ParameterType)
+                    {
+                        case ExtractParameterNewType.PublicModuleField:
+                            fields.Add(String.Format($"{Tokens.Public} {parameter.Name} {Tokens.As} {parameter.TypeName}"));
+                            break;
+                        case ExtractParameterNewType.PrivateModuleField:
+                            fields.Add(String.Format($"{Tokens.Private} {parameter.Name} {Tokens.As} {parameter.TypeName}"));
+                            break;
+                        case ExtractParameterNewType.ByRefParameter:
+                            parameters.Add(string.Format($"{parameter.Name} {Tokens.As} {parameter.TypeName}"));
+                            break;
+                        case ExtractParameterNewType.ByValParameter:
+                            parameters.Add(string.Format($"{Tokens.ByVal} {parameter.Name} {Tokens.As} {parameter.TypeName}"));
+                            break;
+                        case ExtractParameterNewType.PrivateLocalVariable:
+                            variables.Add(string.Format($"{Tokens.Dim} {parameter.Name} {Tokens.As} {parameter.TypeName}"));
+                            break;
+                        case ExtractParameterNewType.StaticLocalVariable:
+                            variables.Add(string.Format($"{Tokens.Static} {parameter.Name} {Tokens.As} {parameter.TypeName}"));
+                            break;
+                        default:
+                            throw new InvalidOperationException("Invalid value for ExtractParameterNewType");
+                    }
+                }
+
+                /* 
+                   string.Empty are used to create blank lines
+                   as the joins will create a newline each line.
+                */
+
                 var strings = new List<string>();
-                strings.Add($@"Public Sub {NewMethodName ?? "NewMethod"}");
+                if (fields.Any())
+                {
+                    strings.AddRange(fields);
+                    strings.Add(string.Empty);
+                }
+                strings.Add($@"Public Sub {NewMethodName ?? "NewMethod"}({string.Join(", " , parameters)})");
+                strings.AddRange(variables);
+                if (variables.Any())
+                {
+                    strings.Add(string.Empty);
+                }
                 strings.AddRange(SelectedCode.Split(new[] {Environment.NewLine}, StringSplitOptions.None));
                 strings.Add("End Sub");
                 return string.Join(Environment.NewLine, Indenter.Indent(strings));

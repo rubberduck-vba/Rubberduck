@@ -1772,6 +1772,60 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ByRef Parameter.
+        /// </summary>
+        public static string ExtractParameterNewType_ByRefParameter {
+            get {
+                return ResourceManager.GetString("ExtractParameterNewType_ByRefParameter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ByVal Parameter.
+        /// </summary>
+        public static string ExtractParameterNewType_ByValParameter {
+            get {
+                return ResourceManager.GetString("ExtractParameterNewType_ByValParameter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Private Local Variable.
+        /// </summary>
+        public static string ExtractParameterNewType_PrivateLocalVariable {
+            get {
+                return ResourceManager.GetString("ExtractParameterNewType_PrivateLocalVariable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Private Module Field.
+        /// </summary>
+        public static string ExtractParameterNewType_PrivateModuleField {
+            get {
+                return ResourceManager.GetString("ExtractParameterNewType_PrivateModuleField", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Public Module Field.
+        /// </summary>
+        public static string ExtractParameterNewType_PublicModuleField {
+            get {
+                return ResourceManager.GetString("ExtractParameterNewType_PublicModuleField", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Static Local Variable.
+        /// </summary>
+        public static string ExtractParameterNewType_StaticLocalVariable {
+            get {
+                return ResourceManager.GetString("ExtractParameterNewType_StaticLocalVariable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Find.
         /// </summary>
         public static string Find {
@@ -5411,7 +5465,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rubberduck ToDo Items - {0}
+        ///   Looks up a localized string similar to Rubberduck TODO Items - {0}
         ///{1} items found..
         /// </summary>
         public static string ToDoExplorer_NumberOfIssuesFound_Plural {
@@ -5421,7 +5475,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rubberduck ToDo Items - {0}
+        ///   Looks up a localized string similar to Rubberduck TODO Items - {0}
         ///{1} items found..
         /// </summary>
         public static string ToDoExplorer_NumberOfIssuesFound_Singular {

@@ -55,8 +55,8 @@ namespace Rubberduck.Refactorings.ExtractMethod
         public IEnumerable<ExtractedParameter> ExtractedParameters
         {
             get {
-                return _byref.Select(dec => new ExtractedParameter(dec.AsTypeName, PassedBy.ByRef, dec.IdentifierName)).
-                    Union(_byval.Select(dec => new ExtractedParameter(dec.AsTypeName, PassedBy.ByVal, dec.IdentifierName)));
+                return _byref.Select(dec => new ExtractedParameter(dec.AsTypeName, ExtractParameterNewType.PrivateLocalVariable, dec.IdentifierName)).
+                    Union(_byval.Select(dec => new ExtractedParameter(dec.AsTypeName, ExtractParameterNewType.PrivateLocalVariable, dec.IdentifierName)));
             }
         }
 
