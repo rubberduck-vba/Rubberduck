@@ -1,7 +1,6 @@
 using System.Runtime.InteropServices;
 using NLog;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Settings;
 using Rubberduck.UI.CodeExplorer.Commands;
 
 namespace Rubberduck.UI.Command
@@ -16,13 +15,6 @@ namespace Rubberduck.UI.Command
         {
             _state = state;
         }
-
-        //public override HotkeySetting DefaultHotkey => new HotkeySetting(typeof(ReparseCommand))
-        //{
-        //    IsEnabled = true,
-        //    HasCtrlModifier = true,
-        //    Key1 = "`"
-        //};
 
         protected override bool EvaluateCanExecute(object parameter)
         {

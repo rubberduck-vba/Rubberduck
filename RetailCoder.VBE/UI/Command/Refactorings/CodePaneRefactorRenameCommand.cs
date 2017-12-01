@@ -2,7 +2,6 @@ using System.Runtime.InteropServices;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
-using Rubberduck.Settings;
 using Rubberduck.UI.Refactorings.Rename;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -20,14 +19,6 @@ namespace Rubberduck.UI.Command.Refactorings
             _state = state;
             _messageBox = messageBox;
         }
-
-        //public override HotkeySetting DefaultHotkey => new HotkeySetting(typeof(CodePaneRefactorRenameCommand))
-        //{
-        //    IsEnabled = true,
-        //    HasCtrlModifier = true,
-        //    HasShiftModifier = true,
-        //    Key1 = "R"
-        //};
 
         protected override bool EvaluateCanExecute(object parameter)
         {

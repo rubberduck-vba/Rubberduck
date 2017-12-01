@@ -2,7 +2,6 @@
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.MoveCloserToUsage;
-using Rubberduck.Settings;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -19,14 +18,6 @@ namespace Rubberduck.UI.Command.Refactorings
             _state = state;
             _msgbox = msgbox;
         }
-
-        //public override HotkeySetting DefaultHotkey => new HotkeySetting(typeof(RefactorMoveCloserToUsageCommand))
-        //{
-        //    IsEnabled = true,
-        //    HasCtrlModifier = true,
-        //    HasShiftModifier = true,
-        //    Key1 = "C"
-        //};
 
         protected override bool EvaluateCanExecute(object parameter)
         {

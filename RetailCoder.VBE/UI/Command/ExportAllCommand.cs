@@ -4,7 +4,6 @@ using NLog;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.UI.CodeExplorer.Commands;
-using Rubberduck.Settings;
 
 namespace Rubberduck.UI.Command
 {
@@ -19,14 +18,6 @@ namespace Rubberduck.UI.Command
             _vbe = vbe;
             _factory = folderBrowserFactory;
         }
-
-        //public override HotkeySetting DefaultHotkey => new HotkeySetting(typeof(ExportAllCommand))
-        //{
-        //    IsEnabled = true,
-        //    HasCtrlModifier = true,
-        //    HasShiftModifier = true,
-        //    Key1 = "E"
-        //};
 
         protected override bool EvaluateCanExecute(object parameter)
         {

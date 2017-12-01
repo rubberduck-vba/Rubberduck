@@ -1,9 +1,7 @@
-using System.Linq;
 using System.Runtime.InteropServices;
 using NLog;
 using Rubberduck.Common;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Settings;
 using Rubberduck.UI.FindSymbol;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -26,13 +24,6 @@ namespace Rubberduck.UI.Command
             _state = state;
             _iconCache = iconCache;
         }
-
-        //public override HotkeySetting DefaultHotkey => new HotkeySetting(typeof(FindSymbolCommand))
-        //{
-        //    IsEnabled = true,
-        //    HasCtrlModifier = true,
-        //    Key1 = "T"
-        //};
 
         protected override void OnExecute(object parameter)
         {

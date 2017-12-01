@@ -1,6 +1,5 @@
 ﻿using System.Runtime.InteropServices;
 using NLog;
-using Rubberduck.Settings;
 
 namespace Rubberduck.UI.Command
 {
@@ -21,13 +20,5 @@ namespace Rubberduck.UI.Command
         {
             _presenter.Show();
         }
-
-        //public override HotkeySetting DefaultHotkey => new HotkeySetting(typeof(SourceControlCommand))
-        //{
-        //    IsEnabled = true,
-        //    HasCtrlModifier = true,
-        //    HasShiftModifier = true,
-        //    Key1 = "D6"
-        //};
     }
 }

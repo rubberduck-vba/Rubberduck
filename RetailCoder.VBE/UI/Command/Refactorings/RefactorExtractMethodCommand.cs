@@ -5,7 +5,6 @@ using Rubberduck.SmartIndenter;
 using System;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
-using Rubberduck.Settings;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command.Refactorings
@@ -22,14 +21,6 @@ namespace Rubberduck.UI.Command.Refactorings
             _state = state;
             _indenter = indenter;
         }
-
-        //public override HotkeySetting DefaultHotkey => new HotkeySetting(typeof(RefactorExtractMethodCommand))
-        //{
-        //    IsEnabled = true,
-        //    HasCtrlModifier = true,
-        //    HasShiftModifier = true,
-        //    Key1 = "M"
-        //};
 
         protected override bool EvaluateCanExecute(object parameter)
         {

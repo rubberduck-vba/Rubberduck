@@ -1,6 +1,5 @@
 using System.Runtime.InteropServices;
 using NLog;
-using Rubberduck.Settings;
 
 namespace Rubberduck.UI.Command
 {
@@ -14,14 +13,6 @@ namespace Rubberduck.UI.Command
         {
             _presenter = presenter;
         }
-
-        //public override HotkeySetting DefaultHotkey => new HotkeySetting(typeof(TestExplorerCommand))
-        //{
-        //    IsEnabled = true,
-        //    HasCtrlModifier = true,
-        //    HasShiftModifier = true,
-        //    Key1 = "T"
-        //};
 
         protected override void OnExecute(object parameter)
         {
