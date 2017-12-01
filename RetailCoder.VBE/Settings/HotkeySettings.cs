@@ -17,14 +17,13 @@ namespace Rubberduck.Settings
 
         public HotkeySetting[] Settings
         {
-            // TODO: Awkward
-            get => _settings?.ToArray() ?? _defaultSettings?.ToArray() ?? new HotkeySetting[0];
+            get => _settings?.ToArray();
             set
             {
                 // Enable loading user settings during deserialization
                 if (_defaultSettings == null)
                 {
-                    _settings = new HashSet<HotkeySetting>(value);
+                    _settings = value == null ? new HashSet<HotkeySetting>() : new HashSet<HotkeySetting>(value);
                     return;
                 }
 

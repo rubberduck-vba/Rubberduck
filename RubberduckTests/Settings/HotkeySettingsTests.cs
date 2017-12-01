@@ -28,7 +28,7 @@ namespace RubberduckTests.Settings
             var settings = new HotkeySettings();
             var expected = settings.Settings;
 
-            settings.Settings = new[] { new HotkeySetting { Name = "Foobar", IsEnabled = false, Key1 = "CTRL-C" } };
+            settings.Settings = new[] { new HotkeySetting { CommandTypeName = "Foobar", IsEnabled = false, Key1 = "CTRL-C" } };
 
             var actual = settings.Settings;
 
@@ -43,7 +43,7 @@ namespace RubberduckTests.Settings
             var settings = new HotkeySettings();
             var expected = settings.Settings;
 
-            settings.Settings = new[] { new HotkeySetting { Name = "ParseAll", IsEnabled = false, Key1 = "Foobar" } };
+            settings.Settings = new[] { new HotkeySetting { CommandTypeName = "ParseAll", IsEnabled = false, Key1 = "Foobar" } };
 
             var actual = settings.Settings;
 
@@ -55,8 +55,8 @@ namespace RubberduckTests.Settings
         [TestMethod]
         public void DuplicateKeysAreDeactivated()
         {
-            var duplicate1 = new HotkeySetting { Name = "ParseAll", IsEnabled = true, Key1 = "X" };
-            var duplicate2 = new HotkeySetting { Name = "FindSymbol", IsEnabled = true, Key1 = "X" };
+            var duplicate1 = new HotkeySetting { CommandTypeName = "ParseAll", IsEnabled = true, Key1 = "X" };
+            var duplicate2 = new HotkeySetting { CommandTypeName = "FindSymbol", IsEnabled = true, Key1 = "X" };
 
             // ReSharper disable once UnusedVariable
             var settings = new HotkeySettings
@@ -72,8 +72,8 @@ namespace RubberduckTests.Settings
         [TestMethod]
         public void DuplicateNamesAreIgnored()
         {
-            var expected = new HotkeySetting { Name = "ParseAll", IsEnabled = true, Key1 = "X" };
-            var duplicate = new HotkeySetting { Name = "ParseAll", IsEnabled = true, Key1 = "Y" };
+            var expected = new HotkeySetting { CommandTypeName = "ParseAll", IsEnabled = true, Key1 = "X" };
+            var duplicate = new HotkeySetting { CommandTypeName = "ParseAll", IsEnabled = true, Key1 = "Y" };
 
             var settings = new HotkeySettings
             {

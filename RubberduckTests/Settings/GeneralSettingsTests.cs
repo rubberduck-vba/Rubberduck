@@ -30,8 +30,8 @@ namespace RubberduckTests.Settings
             {
                 Settings = new[]
                 {
-                    new HotkeySetting {Name = "IndentProcedure", IsEnabled = true, Key1 = "CTRL-P"},
-                    new HotkeySetting {Name = "IndentModule", IsEnabled = true, Key1 = "CTRL-M"}
+                    new HotkeySetting {CommandTypeName = "IndentProcedure", IsEnabled = true, Key1 = "CTRL-P"},
+                    new HotkeySetting {CommandTypeName = "IndentModule", IsEnabled = true, Key1 = "CTRL-M"}
                 }
             };
 
@@ -53,8 +53,8 @@ namespace RubberduckTests.Settings
             {
                 Settings = new[]
                 {
-                    new HotkeySetting{Name="IndentProcedure", IsEnabled=false, Key1="CTRL-C"},
-                    new HotkeySetting{Name="IndentModule", IsEnabled=false, Key1="CTRL-X"}
+                    new HotkeySetting{CommandTypeName="IndentProcedure", IsEnabled=false, Key1="CTRL-C"},
+                    new HotkeySetting{CommandTypeName="IndentModule", IsEnabled=false, Key1="CTRL-X"}
                 }
             };
 
