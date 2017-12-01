@@ -2064,4 +2064,28 @@ Möchten sie die Einstellungen in Rubberduck importieren?</value>
     <value>Rubberduck TODO Markierungen - {0}
 {1} Markierungen gefunden.</value>
   </data>
+  <data name="AboutWindow_CopyVersionCaption" xml:space="preserve">
+    <value>Erfolgreich Kopiert</value>
+  </data>
+  <data name="AboutWindow_CopyVersionLabel" xml:space="preserve">
+    <value>Hier klicken, um Versionsinformation in Zwischenablage zu kopieren.</value>
+  </data>
+  <data name="AboutWindow_CopyVersionMessage" xml:space="preserve">
+    <value>Versionsinformation in Zwischenablage kopiert.</value>
+  </data>
+  <data name="CodeMetricsDockablePresenter_Caption" xml:space="preserve">
+    <value>Codemetrikergebnisse</value>
+  </data>
+  <data name="RubberduckMenu_CodeMetrics" xml:space="preserve">
+    <value>Codemetriken</value>
+  </data>
+  <data name="CodeMetrics_Complexity" xml:space="preserve">
+    <value>Zyklomatische Komplexität</value>
+  </data>
+  <data name="CodeMetrics_Lines" xml:space="preserve">
+    <value>Codezeilen</value>
+  </data>
+  <data name="CodeMetrics_Nesting" xml:space="preserve">
+    <value>Maximale Einrückung</value>
+  </data>
 </root>
