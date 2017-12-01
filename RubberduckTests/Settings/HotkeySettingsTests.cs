@@ -7,6 +7,7 @@ namespace RubberduckTests.Settings
     [TestClass]
     public class HotkeySettingsTests
     {
+        [Ignore]
         [TestCategory("Settings")]
         [TestMethod]
         public void DefaultsSetInCtor()
