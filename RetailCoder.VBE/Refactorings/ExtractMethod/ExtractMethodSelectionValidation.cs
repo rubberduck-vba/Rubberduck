@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
@@ -10,6 +9,7 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Refactorings.ExtractMethod
@@ -94,16 +94,10 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
             if (!_invalidContexts.Any())
             {
-                // We need to inspect the text directly from the code module because the parse tree do not have compilation
-                // constants or directives easily available (they are in a hidden channel and are encapsulated). Fortunately,
-                // finding compilation constants or directives are easy; they must be prefixed by a "#" and can only have
-                // whitespace between it and the start of the line. Labels or line numbers are not legal in those lines.
-                var rawCode = string.Join(Environment.NewLine,
-                    _codeModule.GetLines(qualifiedSelection.Selection));
-                var regex = new Regex(@"^(\s?)+#", RegexOptions.Multiline);
-                if (regex.Matches(rawCode).Count > 0)
+                if (_codeModule.ContainsCompilationDirectives(selection))
+                {
                     return false;
-
+                }
                 // We've proved that there are no invalid statements contained in the selection. However, we need to analyze
                 // the statements to ensure they are not partial selections.
 

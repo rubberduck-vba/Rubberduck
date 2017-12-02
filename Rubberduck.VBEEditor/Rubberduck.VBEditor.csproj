@@ -132,6 +132,7 @@
     <Compile Include="Events\SelectionChangedEventArgs.cs" />
     <Compile Include="Events\VBENativeServices.cs" />
     <Compile Include="Events\WindowChangedEventArgs.cs" />
+    <Compile Include="Extensions\CodeModuleExtensions.cs" />
     <Compile Include="Extensions\MSAccessComponentTypeExtensions.cs" />
     <Compile Include="SafeComWrappers\Abstract\ISafeComWrapper.cs" />
     <Compile Include="SafeComWrappers\DispatcherEventArgs.cs" />

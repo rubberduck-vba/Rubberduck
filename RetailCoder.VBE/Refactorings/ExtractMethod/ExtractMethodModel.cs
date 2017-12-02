@@ -10,15 +10,16 @@ using Rubberduck.VBEditor;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.SmartIndenter;
 using Rubberduck.UI;
+using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Refactorings.ExtractMethod
 {
     public class ExtractMethodModel
     {
-        private List<string> _fieldsList;
-        private List<string> _parametersList;
-        private List<string> _variablesList;
+        private List<string> _fieldsToExtract;
+        private List<string> _parametersToExtract;
+        private List<string> _variablesToExtract;
 
         public IEnumerable<ParserRuleContext> SelectedContexts { get; }
         public RubberduckParserState State { get; }
@@ -83,13 +84,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
             SelectedCode = string.Join(Environment.NewLine, SelectedContexts.Select(c => c.GetText()));
 
-            var rawCode = string.Join(Environment.NewLine,
-                CodeModule.GetLines(1, CodeModule.CountOfLines));
-            var regex = new Regex(@"^(\s?)+#", RegexOptions.Multiline);
-            if (regex.Matches(rawCode).Count > 0)
-            {
-                ModuleContainsCompilationDirectives = true;
-            }
+            ModuleContainsCompilationDirectives = CodeModule.ContainsCompilationDirectives();
 
             SourceVariables = State.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
                 .Where(d => (Selection.Selection.Contains(d.Selection) &&
@@ -116,7 +111,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
                     foreach (var declaration in SourceVariables)
                     {
                         _parameters.Add(new ExtractMethodParameter(declaration.AsTypeNameWithoutArrayDesignator,
-                            ExtractMethodParameterType.PrivateLocalVariable,
+                            ExtractMethodParameterType.ByRefParameter,
                             declaration.IdentifierName, declaration.IsArray));
                     }
                 }
@@ -129,31 +124,25 @@ namespace Rubberduck.Refactorings.ExtractMethod
         {
             get
             {
-                _fieldsList = new List<string>();
-                _parametersList = new List<string>();
-                _variablesList = new List<string>();
+                _fieldsToExtract = new List<string>();
+                _parametersToExtract = new List<string>();
+                _variablesToExtract = new List<string>();
 
                 foreach (var parameter in Parameters)
                 {
                     switch (parameter.ParameterType)
                     {
                         case ExtractMethodParameterType.PublicModuleField:
-                            _fieldsList.Add(parameter.ToString(ExtractMethodParameterFormat.DimOrParameterDeclarationWithAccessibility));
-                            break;
                         case ExtractMethodParameterType.PrivateModuleField:
-                            _fieldsList.Add(parameter.ToString(ExtractMethodParameterFormat.DimOrParameterDeclarationWithAccessibility));
+                            _fieldsToExtract.Add(parameter.ToString(ExtractMethodParameterFormat.DimOrParameterDeclarationWithAccessibility));
                             break;
                         case ExtractMethodParameterType.ByRefParameter:
-                            _parametersList.Add(parameter.ToString(ExtractMethodParameterFormat.DimOrParameterDeclaration));
-                            break;
                         case ExtractMethodParameterType.ByValParameter:
-                            _parametersList.Add(parameter.ToString(ExtractMethodParameterFormat.DimOrParameterDeclarationWithAccessibility));
+                            _parametersToExtract.Add(parameter.ToString(ExtractMethodParameterFormat.DimOrParameterDeclaration));
                             break;
                         case ExtractMethodParameterType.PrivateLocalVariable:
-                            _variablesList.Add(parameter.ToString(ExtractMethodParameterFormat.DimOrParameterDeclarationWithAccessibility));
-                            break;
                         case ExtractMethodParameterType.StaticLocalVariable:
-                            _variablesList.Add(parameter.ToString(ExtractMethodParameterFormat.DimOrParameterDeclarationWithAccessibility));
+                            _variablesToExtract.Add(parameter.ToString(ExtractMethodParameterFormat.DimOrParameterDeclarationWithAccessibility));
                             break;
                         default:
                             throw new InvalidOperationException("Invalid value for ExtractParameterNewType");
@@ -170,21 +159,21 @@ namespace Rubberduck.Refactorings.ExtractMethod
                 */
 
                 var strings = new List<string>();
-                if (_fieldsList.Any())
+                if (_fieldsToExtract.Any())
                 {
-                    strings.AddRange(_fieldsList);
+                    strings.AddRange(_fieldsToExtract);
                     strings.Add(string.Empty);
                 }
                 strings.Add(
                     $@"{Tokens.Private} {(isFunction ? Tokens.Function : Tokens.Sub)} {
                             NewMethodName ?? RubberduckUI.ExtractMethod_DefaultNewMethodName
-                        }({string.Join(", ", _parametersList)}) {
+                        }({string.Join(", ", _parametersToExtract)}) {
                             (isFunction
                                 ? string.Concat(Tokens.As, " ", ReturnParameter.ToString(ExtractMethodParameterFormat.ReturnDeclaration) ?? Tokens.Variant)
                                 : string.Empty)
                         }");
-                strings.AddRange(_variablesList);
-                if (_variablesList.Any())
+                strings.AddRange(_variablesToExtract);
+                if (_variablesToExtract.Any())
                 {
                     strings.Add(string.Empty);
                 }

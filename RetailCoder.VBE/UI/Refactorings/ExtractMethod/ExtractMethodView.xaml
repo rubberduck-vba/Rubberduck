@@ -9,6 +9,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="400"  d:DesignWidth="300">
     <UserControl.Resources>
+        <BitmapImage x:Key="WarningIcon" UriSource="../../../Resources/exclamation-white.png" />
         <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
 
         <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
@@ -83,17 +84,23 @@
                 <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ExtractMethod_TitleText}" FontWeight="Bold" />
                 <TextBlock Grid.Row="1" Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ExtractMethod_InstructionsText}"
                            Margin="5,0" />
-                <TextBlock Grid.Row="2" Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ExtractMethod_CompilationDirectivesWarning}" 
-                           Margin="5,0,8,0"
-                           TextWrapping="Wrap"
-                           Visibility="{Binding DisplayCompilationConstantWarning, Converter={StaticResource BoolToHiddenVisibility}}" />
-                <Image Grid.Row="2"
-                       Source="../../../Resources/exclamation-circle.png"
-                       Height="16"
-                       Margin="0,-10,-5,0"
-                       HorizontalAlignment="Right"
-                       VerticalAlignment="Top"
-                       Visibility="{Binding DisplayCompilationConstantWarning, Converter={StaticResource BoolToHiddenVisibility}}"/>
+                <Grid Grid.Row="2" Visibility="{Binding DisplayCompilationConstantWarning, Converter={StaticResource BoolToHiddenVisibility}}"
+                      HorizontalAlignment="Stretch"
+                      Background="LightYellow">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="25" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Image Source="{StaticResource WarningIcon}"
+                           Height="16"
+                           Margin="5"
+                           VerticalAlignment="Top" />
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ExtractMethod_CompilationDirectivesWarning}" 
+                                   Margin="5,0,8,0"
+                                   TextWrapping="Wrap" />
+                    </StackPanel>
+                </Grid>
             </Grid>
         </StackPanel>
         <StackPanel Grid.Row="1" Margin="5,0">
@@ -126,8 +133,9 @@
                 <ComboBox Grid.Row="1"
                          Margin="5,2,0,0"
                          Height="22"
-                         VerticalAlignment="Top"
-                         VerticalContentAlignment="Center"
+                         HorizontalAlignment="Stretch"
+                         VerticalAlignment="Stretch"
+                         VerticalContentAlignment="Center" 
                          ItemsSource="{Binding ReturnParameters, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                          DisplayMemberPath="Name"
                          SelectedItem="{Binding ReturnParameter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
