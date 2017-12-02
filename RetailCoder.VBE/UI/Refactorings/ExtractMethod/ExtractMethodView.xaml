@@ -154,6 +154,8 @@
                             GridLinesVisibility="All"
                             VerticalScrollBarVisibility="Auto"
                             HorizontalScrollBarVisibility="Auto"
+                            HorizontalGridLinesBrush="Transparent"
+                            VerticalGridLinesBrush="Transparent"
                             ItemContainerStyle="{StaticResource PrettifyRow}"
                             ColumnHeaderHeight="22"
                             BorderThickness="0">
