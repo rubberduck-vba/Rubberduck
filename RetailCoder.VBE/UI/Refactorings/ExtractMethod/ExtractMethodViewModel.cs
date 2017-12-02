@@ -74,16 +74,15 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
         public IEnumerable<ExtractMethodParameter> ReturnParameters =>
             new[]
             {
-                new ExtractMethodParameter(string.Empty, ExtractMethodParameterType.PrivateLocalVariable,
-                    RubberduckUI.ExtractMethod_NoneSelected, false)
+                ExtractMethodParameter.None
             }.Union(Parameters);
         
         public ExtractMethodParameter ReturnParameter
         {
-            get => Model.ReturnParameter;
+            get => Model.ReturnParameter ?? ExtractMethodParameter.None;
             set
             {
-                Model.ReturnParameter = value;
+                Model.ReturnParameter = value ?? ExtractMethodParameter.None;
                 OnPropertyChanged(nameof(PreviewCode));
             }
         }
