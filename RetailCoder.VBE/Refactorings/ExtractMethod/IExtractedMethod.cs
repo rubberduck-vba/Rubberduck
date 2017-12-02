@@ -7,8 +7,8 @@ namespace Rubberduck.Refactorings.ExtractMethod
         Accessibility Accessibility { get; set; }
         string NewMethodCall();
         string MethodName { get; set; }
-        IEnumerable<ExtractedParameter> Parameters { get; set; }
-        ExtractedParameter ReturnValue { get; set; }
+        IEnumerable<ExtractMethodParameter> Parameters { get; set; }
+        ExtractMethodParameter ReturnValue { get; set; }
         bool SetReturnValue { get; set; }
     }
 }

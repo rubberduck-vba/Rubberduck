@@ -21,7 +21,7 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
         }
 
         private bool _wired;
-        public ObservableCollection<ExtractedParameter> Parameters
+        public ObservableCollection<ExtractMethodParameter> Parameters
         {
             get
             {
@@ -49,6 +49,7 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             }
             _wired = true;
         }
+
         private void Parameter_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             OnPropertyChanged(nameof(PreviewCode));
@@ -70,14 +71,14 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             }
         }
 
-        public IEnumerable<ExtractedParameter> ReturnParameters =>
+        public IEnumerable<ExtractMethodParameter> ReturnParameters =>
             new[]
             {
-                new ExtractedParameter(string.Empty, ExtractParameterNewType.PrivateLocalVariable,
-                    RubberduckUI.ExtractMethod_NoneSelected)
+                new ExtractMethodParameter(string.Empty, ExtractMethodParameterType.PrivateLocalVariable,
+                    RubberduckUI.ExtractMethod_NoneSelected, false)
             }.Union(Parameters);
         
-        public ExtractedParameter ReturnParameter
+        public ExtractMethodParameter ReturnParameter
         {
             get => Model.ReturnParameter;
             set
@@ -90,10 +91,10 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
         public string SourceMethodName => Model.SourceMethodName;
         public string PreviewCaption => string.Format(RubberduckUI.ExtractMethod_CodePreviewCaption, SourceMethodName);
         public string PreviewCode => Model.PreviewCode;
-        public IEnumerable<ExtractedParameter> Inputs;
-        public IEnumerable<ExtractedParameter> Outputs;
-        public IEnumerable<ExtractedParameter> Locals;
-        public IEnumerable<ExtractedParameter> ReturnValues;
+        public IEnumerable<ExtractMethodParameter> Inputs;
+        public IEnumerable<ExtractMethodParameter> Outputs;
+        public IEnumerable<ExtractMethodParameter> Locals;
+        public IEnumerable<ExtractMethodParameter> ReturnValues;
         public string Preview;
         public Accessibility Accessibility;
 

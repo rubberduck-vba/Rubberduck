@@ -6,7 +6,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
 {
     public interface IExtractMethodParameterClassification
     {
-        IEnumerable<ExtractedParameter> ExtractedParameters { get; }
+        IEnumerable<ExtractMethodParameter> ExtractedParameters { get; }
         void classifyDeclarations(QualifiedSelection selection, Declaration item);
         IEnumerable<Declaration> DeclarationsToMove { get; }
         IEnumerable<Declaration> ExtractedDeclarations { get; }

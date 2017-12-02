@@ -138,7 +138,7 @@
                         <DataGrid.Columns>
                             <DataGridComboBoxColumn 
                             SelectedValueBinding="{Binding ParameterType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                            ItemsSource="{Binding Source={x:Static extractMethod:ExtractedParameter.ParameterNewTypes}}"
+                            ItemsSource="{Binding Source={x:Static extractMethod:ExtractMethodParameter.ParameterTypes}}"
                             SelectedValuePath="Key"
                             DisplayMemberPath="Value"
                             Width="*"

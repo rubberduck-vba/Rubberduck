@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ExtractMethod;
@@ -41,7 +42,7 @@ namespace Rubberduck.UI.Command.Refactorings
                     return false;
                 }
                 
-                var validator = new ExtractMethodSelectionValidation(_state.AllDeclarations);
+                var validator = new ExtractMethodSelectionValidation(_state.AllDeclarations, module);
                 var canExecute = validator.ValidateSelection(qualifiedSelection.Value);
 
                 return canExecute;
@@ -63,7 +64,7 @@ namespace Rubberduck.UI.Command.Refactorings
                 return;
             }
 
-            var validator = new ExtractMethodSelectionValidation(_state.AllDeclarations);
+            var validator = new ExtractMethodSelectionValidation(_state.AllDeclarations, Vbe.ActiveCodePane.CodeModule);
             var canExecute = validator.ValidateSelection(qualifiedSelection.Value);
 
             if (!canExecute)

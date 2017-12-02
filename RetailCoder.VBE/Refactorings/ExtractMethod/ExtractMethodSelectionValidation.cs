@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
@@ -8,25 +9,22 @@ using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Refactorings.ExtractMethod
 {
     public class ExtractMethodSelectionValidation : IExtractMethodSelectionValidation
     {
+        private readonly ICodeModule _codeModule;
         private readonly IEnumerable<Declaration> _declarations;
         private List<Tuple<ParserRuleContext, string>> _invalidContexts = new List<Tuple<ParserRuleContext, string>>();
         private List<VBAParser.BlockStmtContext> _finalResults = new List<VBAParser.BlockStmtContext>();
 
-        public ExtractMethodSelectionValidation(RubberduckParserState state)
-        {
-            _declarations = state.AllDeclarations;
-        }
-
-        public ExtractMethodSelectionValidation(IEnumerable<Declaration> declarations)
+        public ExtractMethodSelectionValidation(IEnumerable<Declaration> declarations, ICodeModule codeModule)
         {
             _declarations = declarations;
+            _codeModule = codeModule;
         }
 
         public IEnumerable<Tuple<ParserRuleContext, string>> InvalidContexts => _invalidContexts;
@@ -36,20 +34,21 @@ namespace Rubberduck.Refactorings.ExtractMethod
         public bool ValidateSelection(QualifiedSelection qualifiedSelection)
         {
             var selection = qualifiedSelection.Selection;
-            IEnumerable<Declaration> procedures = _declarations.Where(d => d.ComponentName == qualifiedSelection.QualifiedName.ComponentName && d.IsUserDefined && (DeclarationExtensions.ProcedureTypes.Contains(d.DeclarationType)));
-            Func<int, dynamic> ProcOfLine = (sl) => procedures.FirstOrDefault(d => d.Context.Start.Line < sl && d.Context.Stop.EndLine() > sl);
+            var procedures = _declarations.Where(d => d.ComponentName == qualifiedSelection.QualifiedName.ComponentName && d.IsUserDefined && (DeclarationExtensions.ProcedureTypes.Contains(d.DeclarationType)));
+            var declarations = procedures as IList<Declaration> ?? procedures.ToList();
+            Declaration ProcOfLine(int sl) => declarations.FirstOrDefault(d => d.Context.Start.Line < sl && d.Context.Stop.EndLine() > sl);
 
             var startLine = selection.StartLine;
             var endLine = selection.EndLine;
 
             // End of line is easy
-            var procEnd = ProcOfLine(endLine) as Declaration;
+            var procEnd = ProcOfLine(endLine);
             if (procEnd == null)
             {
                 return false;
             }
 
-            var procStart = ProcOfLine(startLine) as Declaration;
+            var procStart = ProcOfLine(startLine);
             if (procStart == null)
             {
                 return false;
@@ -85,6 +84,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
                 ))
                 return false;
 
+            
             /* At this point, we know the selection is within a single procedure. We need to validate that the user's
              * selection in fact contain only BlockStmt and not other stuff that might not be so extractable.
              */
@@ -94,13 +94,24 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
             if (!_invalidContexts.Any())
             {
-                // We've provved that there are no invalid statements contained in the selection. However, we need to analyze
+                // We need to inspect the text directly from the code module because the parse tree do not have compilation
+                // constants or directives easily available (they are in a hidden channel and are encapsulated). Fortunately,
+                // finding compilation constants or directives are easy; they must be prefixed by a "#" and can only have
+                // whitespace between it and the start of the line. Labels or line numbers are not legal in those lines.
+                var rawCode = string.Join(Environment.NewLine,
+                    _codeModule.GetLines(qualifiedSelection.Selection));
+                var regex = new Regex(@"^(\s?)+#", RegexOptions.Multiline);
+                if (regex.Matches(rawCode).Count > 0)
+                    return false;
+
+                // We've proved that there are no invalid statements contained in the selection. However, we need to analyze
                 // the statements to ensure they are not partial selections.
 
                 // The visitor will not return the results in a sorted manner, so we need to arrange the contexts in the same order.
-                var sorted = results.OrderBy(context => context.Start.StartIndex);
+                var blockStmtContexts = results as IList<VBAParser.BlockStmtContext> ?? results.ToList();
+                var sorted = blockStmtContexts.OrderBy(context => context.Start.StartIndex);
                 ContextIsContainedOnce(sorted, ref _finalResults, qualifiedSelection);
-                return results.Any() && !_invalidContexts.Any();
+                return blockStmtContexts.Any() && !_invalidContexts.Any() && _finalResults.Any();
             }
             return false;
         }
@@ -112,7 +123,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
         /// of BlockStmtContexts that corresponds to the user's selection. The function
         /// also will validate there are no overlapping selections which could be invalid.
         /// </summary>
-        /// <param name="context">The context to test</param>
+        /// <param name="sortedResults">The context to test</param>
         /// <param name="aggregate">The list of contexts we already added to verify we are not adding one of its children or itself more than once</param>
         /// <param name="qualifiedSelection"></param>
         /// <returns>Boolean with true indicating that it's the first time we encountered a context in a user's selection and we can safely add it to the list</returns>
@@ -143,49 +154,39 @@ namespace Rubberduck.Refactorings.ExtractMethod
         private class ExtractValidatorVisitor : VBAParserBaseVisitor<IEnumerable<VBAParser.BlockStmtContext>>
         {
             private readonly QualifiedSelection _qualifiedSelection;
-            private readonly List<Tuple<ParserRuleContext, string>> _invalidContexts;
 
             public ExtractValidatorVisitor(QualifiedSelection qualifiedSelection, List<Tuple<ParserRuleContext, string>> invalidContexts)
             {
                 _qualifiedSelection = qualifiedSelection;
-                _invalidContexts = invalidContexts;
+                InvalidContexts = invalidContexts;
             }
 
-            public List<Tuple<ParserRuleContext, string>> InvalidContexts { get { return _invalidContexts; } }
+            public List<Tuple<ParserRuleContext, string>> InvalidContexts { get; }
 
             protected override IEnumerable<VBAParser.BlockStmtContext> DefaultResult => new List<VBAParser.BlockStmtContext>();
             
             public override IEnumerable<VBAParser.BlockStmtContext> VisitBlockStmt([NotNull] VBAParser.BlockStmtContext context)
             {
                 var children = base.VisitBlockStmt(context);
-                if (_invalidContexts.Count == 0)
-                    //return base.VisitChildren(context);
-                    return children.Concat(new List<VBAParser.BlockStmtContext> { context });
-                else
-                    return null;
+                return InvalidContexts.Count == 0 ? children.Concat(new List<VBAParser.BlockStmtContext> { context }) : null;
             }
 
             protected override IEnumerable<VBAParser.BlockStmtContext> AggregateResult(IEnumerable<VBAParser.BlockStmtContext> aggregate, IEnumerable<VBAParser.BlockStmtContext> nextResult)
             {
-                if (_invalidContexts.Count == 0)
-                {
-                    return aggregate.Concat(nextResult);
-                }
-                else
-                    return null;
+                return InvalidContexts.Count == 0 ? aggregate.Concat(nextResult) : null;
             }
 
             protected override bool ShouldVisitNextChild(IRuleNode node, IEnumerable<VBAParser.BlockStmtContext> currentResult)
             {
                 // Don't visit any more children if we have any invalid contexts
-                return (_invalidContexts.Count == 0);
+                return (InvalidContexts.Count == 0);
             }
 
             public override IEnumerable<VBAParser.BlockStmtContext> VisitErrorStmt([NotNull] VBAParser.ErrorStmtContext context)
             {
                 if (_qualifiedSelection.Selection.Contains(context))
                 {
-                    _invalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains an Error statement."));
+                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains an Error statement."));
                     return null;
                 }
 
@@ -196,7 +197,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 if (_qualifiedSelection.Selection.Contains(context))
                 {
-                    _invalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains an End statement."));
+                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains an End statement."));
                     return null;
                 }
 
@@ -207,7 +208,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 if (_qualifiedSelection.Selection.Contains(context))
                 {
-                    _invalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains an Exit statement"));
+                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains an Exit statement"));
                     return null;
                 }
 
@@ -218,7 +219,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 if (_qualifiedSelection.Selection.Contains(context))
                 {
-                    _invalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a GoSub statement"));
+                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a GoSub statement"));
                     return null;
                 }
 
@@ -229,7 +230,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 if (_qualifiedSelection.Selection.Contains(context))
                 {
-                    _invalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a GoTo statement"));
+                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a GoTo statement"));
                     return null;
                 }
 
@@ -240,7 +241,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 if (_qualifiedSelection.Selection.Contains(context))
                 {
-                    _invalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a On Error statement"));
+                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a On Error statement"));
                     return null;
                 }
 
@@ -251,7 +252,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 if (_qualifiedSelection.Selection.Contains(context))
                 {
-                    _invalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a Line Label statement"));
+                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a Line Label statement"));
                     return null;
                 }
 
@@ -262,7 +263,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 if (_qualifiedSelection.Selection.Contains(context))
                 {
-                    _invalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a Line Label statement"));
+                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a Line Label statement"));
                     return base.VisitCombinedLabels(context);
                 }
 
@@ -273,7 +274,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 if (_qualifiedSelection.Selection.Contains(context))
                 {
-                    _invalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a On ... GoSub statement"));
+                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a On ... GoSub statement"));
                     return null;
                 }
 
@@ -284,7 +285,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 if (_qualifiedSelection.Selection.Contains(context))
                 {
-                    _invalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a On ... GoTo statement"));
+                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a On ... GoTo statement"));
                     return null;
                 }
 
@@ -295,7 +296,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 if (_qualifiedSelection.Selection.Contains(context))
                 {
-                    _invalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a Resume statement"));
+                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a Resume statement"));
                     return null;
                 }
 
@@ -306,7 +307,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             {
                 if (_qualifiedSelection.Selection.Contains(context))
                 {
-                    _invalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a Return statement"));
+                    InvalidContexts.Add(Tuple.Create(context as ParserRuleContext, "Extract method cannot extract methods that contains a Return statement"));
                     return null;
                 }
 

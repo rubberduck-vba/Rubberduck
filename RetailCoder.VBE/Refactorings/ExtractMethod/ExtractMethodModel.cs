@@ -13,59 +13,12 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Refactorings.ExtractMethod
 {
-    public static class IEnumerableExt
-    {
-        /// <summary>
-        /// Yields an Enumeration of selector Type, 
-        /// by checking for gaps between elements 
-        /// using the supplied increment function to work out the next value
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="U"></typeparam>
-        /// <param name="inputs"></param>
-        /// <param name="getIncr"></param>
-        /// <param name="selector"></param>
-        /// <param name="comparisonFunc"></param>
-        /// <returns></returns>
-        public static IEnumerable<U> GroupByMissing<T, U>(this IEnumerable<T> inputs, Func<T, T> getIncr, Func<T, T, U> selector, Func<T, T, int> comparisonFunc)
-        {
-
-            var initialized = false;
-            T first = default(T);
-            T last = default(T);
-            T next = default(T);
-            Tuple<T, T> tuple = null;
-
-            foreach (var input in inputs)
-            {
-                if (!initialized)
-                {
-                    first = input;
-                    last = input;
-                    initialized = true;
-                    continue;
-                }
-                if (comparisonFunc(last, input) < 0)
-                {
-                    throw new ArgumentException(string.Format("Values are not monotonically increasing. {0} should be less than {1}", last, input));
-                }
-                var inc = getIncr(last);
-                if (!input.Equals(inc))
-                {
-                    yield return selector(first, last);
-                    first = input;
-                }
-                last = input;
-            }
-            if (initialized)
-            {
-                yield return selector(first, last);
-            }
-        }
-    }
-
     public class ExtractMethodModel
     {
+        private List<string> _fieldsList;
+        private List<string> _parametersList;
+        private List<string> _variablesList;
+
         public IEnumerable<ParserRuleContext> SelectedContexts { get; }
         public RubberduckParserState State { get; }
         public IIndenter Indenter { get; }
@@ -75,7 +28,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
         public string SourceMethodName { get; private set; }
         public IEnumerable<Declaration> SourceVariables { get; private set; }
         public string NewMethodName { get; set; }
-        public ExtractedParameter ReturnParameter { get; set; }
+        public ExtractMethodParameter ReturnParameter { get; set; }
 
         public ExtractMethodModel(RubberduckParserState state, QualifiedSelection selection,
             IEnumerable<ParserRuleContext> selectedContexts, IIndenter indenter, ICodeModule codeModule)
@@ -142,19 +95,19 @@ namespace Rubberduck.Refactorings.ExtractMethod
         
         public string SelectedCode { get; private set; }
 
-        private ObservableCollection<ExtractedParameter> _parameters;
-        public ObservableCollection<ExtractedParameter> Parameters
+        private ObservableCollection<ExtractMethodParameter> _parameters;
+        public ObservableCollection<ExtractMethodParameter> Parameters
         {
             get
             {
                 if (_parameters == null || !_parameters.Any())
                 {
-                    _parameters = new ObservableCollection<ExtractedParameter>();
+                    _parameters = new ObservableCollection<ExtractMethodParameter>();
                     foreach (var declaration in SourceVariables)
                     {
-                        _parameters.Add(new ExtractedParameter(declaration.AsTypeNameWithoutArrayDesignator,
-                            ExtractParameterNewType.PrivateLocalVariable,
-                            string.Concat(declaration.IdentifierName, declaration.IsArray ? "()" : string.Empty)));
+                        _parameters.Add(new ExtractMethodParameter(declaration.AsTypeNameWithoutArrayDesignator,
+                            ExtractMethodParameterType.PrivateLocalVariable,
+                            declaration.IdentifierName, declaration.IsArray));
                     }
                 }
                 return _parameters;
@@ -166,33 +119,31 @@ namespace Rubberduck.Refactorings.ExtractMethod
         {
             get
             {
-                //var rewriter = State.GetRewriter(CodeModule.GetQualifiedSelection().Value.QualifiedName);
-
-                var fields = new List<string>();
-                var parameters = new List<string>();
-                var variables = new List<string>();
+                _fieldsList = new List<string>();
+                _parametersList = new List<string>();
+                _variablesList = new List<string>();
 
                 foreach (var parameter in Parameters)
                 {
                     switch (parameter.ParameterType)
                     {
-                        case ExtractParameterNewType.PublicModuleField:
-                            fields.Add(string.Format($"{Tokens.Public} {parameter.Name} {Tokens.As} {parameter.TypeName}"));
+                        case ExtractMethodParameterType.PublicModuleField:
+                            _fieldsList.Add(parameter.ToString(ExtractMethodParameterFormat.DimOrParameterDeclarationWithAccessibility));
                             break;
-                        case ExtractParameterNewType.PrivateModuleField:
-                            fields.Add(string.Format($"{Tokens.Private} {parameter.Name} {Tokens.As} {parameter.TypeName}"));
+                        case ExtractMethodParameterType.PrivateModuleField:
+                            _fieldsList.Add(parameter.ToString(ExtractMethodParameterFormat.DimOrParameterDeclarationWithAccessibility));
                             break;
-                        case ExtractParameterNewType.ByRefParameter:
-                            parameters.Add(string.Format($"{parameter.Name} {Tokens.As} {parameter.TypeName}"));
+                        case ExtractMethodParameterType.ByRefParameter:
+                            _parametersList.Add(parameter.ToString(ExtractMethodParameterFormat.DimOrParameterDeclaration));
                             break;
-                        case ExtractParameterNewType.ByValParameter:
-                            parameters.Add(string.Format($"{Tokens.ByVal} {parameter.Name} {Tokens.As} {parameter.TypeName}"));
+                        case ExtractMethodParameterType.ByValParameter:
+                            _parametersList.Add(parameter.ToString(ExtractMethodParameterFormat.DimOrParameterDeclarationWithAccessibility));
                             break;
-                        case ExtractParameterNewType.PrivateLocalVariable:
-                            variables.Add(string.Format($"{Tokens.Dim} {parameter.Name} {Tokens.As} {parameter.TypeName}"));
+                        case ExtractMethodParameterType.PrivateLocalVariable:
+                            _variablesList.Add(parameter.ToString(ExtractMethodParameterFormat.DimOrParameterDeclarationWithAccessibility));
                             break;
-                        case ExtractParameterNewType.StaticLocalVariable:
-                            variables.Add(string.Format($"{Tokens.Static} {parameter.Name} {Tokens.As} {parameter.TypeName}"));
+                        case ExtractMethodParameterType.StaticLocalVariable:
+                            _variablesList.Add(parameter.ToString(ExtractMethodParameterFormat.DimOrParameterDeclarationWithAccessibility));
                             break;
                         default:
                             throw new InvalidOperationException("Invalid value for ExtractParameterNewType");
@@ -209,21 +160,21 @@ namespace Rubberduck.Refactorings.ExtractMethod
                 */
 
                 var strings = new List<string>();
-                if (fields.Any())
+                if (_fieldsList.Any())
                 {
-                    strings.AddRange(fields);
+                    strings.AddRange(_fieldsList);
                     strings.Add(string.Empty);
                 }
                 strings.Add(
                     $@"{Tokens.Private} {(isFunction ? Tokens.Function : Tokens.Sub)} {
                             NewMethodName ?? RubberduckUI.ExtractMethod_DefaultNewMethodName
-                        }({string.Join(", ", parameters)}) {
+                        }({string.Join(", ", _parametersList)}) {
                             (isFunction
-                                ? string.Concat(Tokens.As, " ", ReturnParameter.TypeName ?? Tokens.Variant)
+                                ? string.Concat(Tokens.As, " ", ReturnParameter.ToString(ExtractMethodParameterFormat.ReturnDeclaration) ?? Tokens.Variant)
                                 : string.Empty)
                         }");
-                strings.AddRange(variables);
-                if (variables.Any())
+                strings.AddRange(_variablesList);
+                if (_variablesList.Any())
                 {
                     strings.Add(string.Empty);
                 }
@@ -236,27 +187,6 @@ namespace Rubberduck.Refactorings.ExtractMethod
                 strings.Add($"{Tokens.End} {(isFunction ? Tokens.Function : Tokens.Sub)}");
                 return string.Join(Environment.NewLine, Indenter.Indent(strings));
             }
-        }
-
-        private List<Declaration> _locals;
-
-        public IEnumerable<Declaration> Locals
-        {
-            get { return _locals; }
-        }
-
-        private IEnumerable<ExtractedParameter> _input;
-
-        public IEnumerable<ExtractedParameter> Inputs
-        {
-            get { return _input; }
-        }
-
-        private IEnumerable<ExtractedParameter> _output;
-
-        public IEnumerable<ExtractedParameter> Outputs
-        {
-            get { return _output; }
         }
     }
 }

@@ -822,7 +822,7 @@
       <DependentUpon>RemoveParametersDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Refactorings\ExtractMethod\ExtractMethodPresenter.cs" />
-    <Compile Include="Refactorings\ExtractMethod\ExtractedParameter.cs" />
+    <Compile Include="Refactorings\ExtractMethod\ExtractMethodParameter.cs" />
     <Compile Include="UI\Refactorings\ExtractMethod\ExtractMethodDialog.cs">
       <SubType>Form</SubType>
     </Compile>
