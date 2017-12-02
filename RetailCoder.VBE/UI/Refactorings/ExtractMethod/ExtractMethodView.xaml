@@ -53,6 +53,11 @@
                 </MultiTrigger>
             </Style.Triggers>
         </Style>
+
+        <Style x:Key="DropDownCellStyle" TargetType="{x:Type ComboBox}">
+            <Setter Property="Height" Value="26" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -144,6 +149,7 @@
                                 SelectedValuePath="Key"
                                 DisplayMemberPath="Value"
                                 Width="*"
+                                EditingElementStyle="{StaticResource DropDownCellStyle}"
                                 IsReadOnly="False" />
                             <DataGridTextColumn 
                                 Binding="{Binding Name}"
