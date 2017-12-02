@@ -125,6 +125,8 @@
                             GridLinesVisibility="All"
                             VerticalScrollBarVisibility="Visible"
                             HorizontalScrollBarVisibility="Hidden"
+                            HorizontalGridLinesBrush="Transparent"
+                            VerticalGridLinesBrush="Transparent"
                             ItemContainerStyle="{StaticResource PrettifyRow}"
                             ColumnHeaderHeight="22"
                             BorderThickness="0">
@@ -137,21 +139,21 @@
                         </DataGrid.CellStyle>
                         <DataGrid.Columns>
                             <DataGridComboBoxColumn 
-                            SelectedValueBinding="{Binding ParameterType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                            ItemsSource="{Binding Source={x:Static extractMethod:ExtractedParameter.ParameterNewTypes}}"
-                            SelectedValuePath="Key"
-                            DisplayMemberPath="Value"
-                            Width="*"
-                            IsReadOnly="False" />
+                                SelectedValueBinding="{Binding ParameterType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                ItemsSource="{Binding Source={x:Static extractMethod:ExtractedParameter.ParameterNewTypes}}"
+                                SelectedValuePath="Key"
+                                DisplayMemberPath="Value"
+                                Width="*"
+                                IsReadOnly="False" />
                             <DataGridTextColumn 
-                            Binding="{Binding Name}"
-                            Width="*"
-                            IsReadOnly="True"
-                            SortMemberPath="Name" />
+                                Binding="{Binding Name}"
+                                Width="*"
+                                IsReadOnly="True"
+                                SortMemberPath="Name" />
                             <DataGridTextColumn
-                            Binding="{Binding TypeName}"
-                            Width="*"
-                            IsReadOnly="True" />
+                                Binding="{Binding TypeName}"
+                                Width="*"
+                                IsReadOnly="True" />
                         </DataGrid.Columns>
                     </DataGrid>
                 </GroupBox>
