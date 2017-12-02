@@ -182,8 +182,8 @@ Stephen Bullen (Smart Indenter)
             </StackPanel>
         </Border>
         <TextBlock Grid.Row="2" Grid.Column="1"
-                    Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=AboutWindow_Copyright}"
-                    FontSize="8" Margin="10"
-                    VerticalAlignment="Bottom" HorizontalAlignment="Center" Height="11" Width="237" />
+                   Text="{Binding AboutCopyright}"
+                   FontSize="8" Margin="10"
+                   VerticalAlignment="Bottom" HorizontalAlignment="Center" Height="11" Width="237" />
     </Grid>
 </UserControl>
