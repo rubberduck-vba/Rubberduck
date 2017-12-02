@@ -95,7 +95,6 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
         public IEnumerable<ExtractMethodParameter> Outputs;
         public IEnumerable<ExtractMethodParameter> Locals;
         public IEnumerable<ExtractMethodParameter> ReturnValues;
-        public string Preview;
         public Accessibility Accessibility;
 
         public bool IsValidMethodName
@@ -111,12 +110,33 @@ namespace Rubberduck.UI.Refactorings.ExtractMethod
             }
         }
 
+        public bool DisplayCompilationConstantWarning => !Model.ModuleContainsCompilationDirectives;
+
         public event EventHandler<DialogResult> OnWindowClosed;
         private void DialogCancel() => OnWindowClosed?.Invoke(this, DialogResult.Cancel);
         private void DialogOk() => OnWindowClosed?.Invoke(this, DialogResult.OK);
         
         public CommandBase OkButtonCommand { get; }
         public CommandBase CancelButtonCommand { get; }
-        public ExtractMethodModel Model { get; set; }
+
+        private ExtractMethodModel _model;
+        public ExtractMethodModel Model
+        {
+            get => _model;
+            set
+            {
+                _model = value;
+                // Note: some of the property change will cascade
+                // so we do not need to call all possible properties
+                // depending on the Model.
+                OnPropertyChanged(nameof(NewMethodName));
+                OnPropertyChanged(nameof(ReturnParameter));
+                OnPropertyChanged(nameof(Parameters));
+                if (!_wired)
+                {
+                    WireParameterEvents();
+                }
+            }
+        }
     }
 }

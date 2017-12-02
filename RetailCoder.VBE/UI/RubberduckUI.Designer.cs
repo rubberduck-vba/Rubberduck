@@ -1772,6 +1772,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The module contains compilation directives (e.g. #Const, #If, ##lse or #End If). The refactoring can only operate on the active blocks. You must manually update the inactive blocks after the refactoring..
+        /// </summary>
+        public static string ExtractMethod_CompilationDirectivesWarning {
+            get {
+                return ResourceManager.GetString("ExtractMethod_CompilationDirectivesWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to NewMethod.
         /// </summary>
         public static string ExtractMethod_DefaultNewMethodName {

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
@@ -29,6 +30,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
         public IEnumerable<Declaration> SourceVariables { get; private set; }
         public string NewMethodName { get; set; }
         public ExtractMethodParameter ReturnParameter { get; set; }
+        public bool ModuleContainsCompilationDirectives { get; private set; }
 
         public ExtractMethodModel(RubberduckParserState state, QualifiedSelection selection,
             IEnumerable<ParserRuleContext> selectedContexts, IIndenter indenter, ICodeModule codeModule)
@@ -80,6 +82,14 @@ namespace Rubberduck.Refactorings.ExtractMethod
             }
 
             SelectedCode = string.Join(Environment.NewLine, SelectedContexts.Select(c => c.GetText()));
+
+            var rawCode = string.Join(Environment.NewLine,
+                CodeModule.GetLines(1, CodeModule.CountOfLines));
+            var regex = new Regex(@"^(\s?)+#", RegexOptions.Multiline);
+            if (regex.Matches(rawCode).Count > 0)
+            {
+                ModuleContainsCompilationDirectives = true;
+            }
 
             SourceVariables = State.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
                 .Where(d => (Selection.Selection.Contains(d.Selection) &&

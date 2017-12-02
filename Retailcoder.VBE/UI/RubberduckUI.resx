@@ -2176,4 +2176,7 @@ Would you like to import them to Rubberduck?</value>
   <data name="ExtractMethod_NoneSelected" xml:space="preserve">
     <value>(None)</value>
   </data>
+  <data name="ExtractMethod_CompilationDirectivesWarning" xml:space="preserve">
+    <value>The module contains compilation directives (e.g. #Const, #If, ##lse or #End If). The refactoring can only operate on the active blocks. You must manually update the inactive blocks after the refactoring.</value>
+  </data>
 </root>

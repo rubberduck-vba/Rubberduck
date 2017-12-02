@@ -63,19 +63,19 @@ namespace Rubberduck.UI.Command.Refactorings
             {
                 return;
             }
-
-            var validator = new ExtractMethodSelectionValidation(_state.AllDeclarations, Vbe.ActiveCodePane.CodeModule);
-            var canExecute = validator.ValidateSelection(qualifiedSelection.Value);
-
-            if (!canExecute)
-            {
-                return;
-            }
-
+            
             var module = pane.CodeModule;
             var selection = module.GetQualifiedSelection();
 
             if (selection == null)
+            {
+                return;
+            }
+
+            var validator = new ExtractMethodSelectionValidation(_state.AllDeclarations, module);
+            var canExecute = validator.ValidateSelection(qualifiedSelection.Value);
+
+            if (!canExecute)
             {
                 return;
             }
@@ -86,7 +86,7 @@ namespace Rubberduck.UI.Command.Refactorings
              * be refactoring's responsibility, which implies the validation is refactoring's
              * responsiblity. Note where indicated.
              */
-            
+
 
             var refactoring = _refactoringFactory.Create();
             refactoring.Validator = validator; //TODO: Refactor
