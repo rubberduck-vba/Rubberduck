@@ -40,7 +40,7 @@ namespace Rubberduck.VBEditor.Extensions
 
         private static bool ContainsCompilationDirectives(string rawCode)
         {
-            const string regexExpression = @"^(\s?)+#";
+            const string regexExpression = @"^\s*#";
             var regex = new Regex(regexExpression, RegexOptions.Multiline);
             return (regex.Matches(rawCode).Count > 0);
         }
