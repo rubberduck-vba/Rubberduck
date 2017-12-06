@@ -22,6 +22,9 @@ namespace Rubberduck.Parsing.PreProcessing
 
         public IEnumerable<IToken> AsTokens => new List<IToken>();
 
-        public override string ToString() => "<Empty>";
+        public override string ToString()
+        {
+            return "<Empty>";
+        } 
     }
 }
