@@ -115,8 +115,8 @@ namespace Rubberduck.Parsing.Binding
         {
             /*
              <l-expression> is classified as a variable, or <l-expression> is classified as a property or function 
-                    with a parameter list that cannot accept any parameters and an <argument-list> that is not 
-                    empty, and one of the following is true (see below):
+            with a parameter list that cannot accept any parameters and an <argument-list> that is not 
+            empty, and one of the following is true (see below):
              */
             var isVariable = lExpression.Classification == ExpressionClassification.Variable;
             var propertyWithParameters = lExpression.Classification == ExpressionClassification.Property && !((IParameterizedDeclaration)lExpression.ReferencedDeclaration).Parameters.Any();
@@ -189,22 +189,22 @@ namespace Rubberduck.Parsing.Binding
             }
 
             /*
-                        This default member’s parameter list is compatible with <argument-list>. In this case, the 
-                        index expression references this default member and takes on its classification and 
-                        declared type.  
+            This default member’s parameter list is compatible with <argument-list>. In this case, the 
+            index expression references this default member and takes on its classification and 
+            declared type.  
 
-                        TODO: Primitive argument compatibility checking for now.
-                     */
+            TODO: Primitive argument compatibility checking for now.
+            */
             if (((IParameterizedDeclaration)defaultMember).Parameters.Count() == _argumentList.Arguments.Count)
             {
                 return new IndexExpression(defaultMember, lExpression.Classification, _expression, lExpression, _argumentList);
             }
 
-            /**
-                        This default member cannot accept any parameters. In this case, the static analysis restarts 
-                        recursively, as if this default member was specified instead for <l-expression> with the 
-                        same <argument-list>.
-                    */
+            /*
+            This default member cannot accept any parameters. In this case, the static analysis restarts 
+            recursively, as if this default member was specified instead for <l-expression> with the 
+            same <argument-list>.
+            */
             if (((IParameterizedDeclaration) defaultMember).Parameters.Any())
             {
                 return null;
@@ -237,8 +237,8 @@ namespace Rubberduck.Parsing.Binding
         private IBoundExpression ResolveLExpressionDeclaredTypeIsArray(IBoundExpression lExpression, Declaration asTypeDeclaration)
         {
             /*
-                 The declared type of <l-expression> is an array type, an empty argument list has not already 
-                 been specified for it, and one of the following is true:  
+            The declared type of <l-expression> is an array type, an empty argument list has not already 
+            been specified for it, and one of the following is true:  
              */
             if (!lExpression.ReferencedDeclaration.IsArray)
             {
@@ -246,23 +246,23 @@ namespace Rubberduck.Parsing.Binding
             }
 
             /*
-                    <argument-list> represents an empty argument list. In this case, the index expression 
-                    takes on the classification and declared type of <l-expression> and references the same 
-                    array.  
-                 */
+            <argument-list> represents an empty argument list. In this case, the index expression 
+            takes on the classification and declared type of <l-expression> and references the same 
+            array.  
+            */
             if (!_argumentList.HasArguments)
             {
                 return new IndexExpression(asTypeDeclaration, lExpression.Classification, _expression, lExpression, _argumentList);
             }
                 
             /*
-                    <argument-list> represents an argument list with a number of positional arguments equal 
-                    to the rank of the array, and with no named arguments. In this case, the index expression 
-                    references an individual element of the array, is classified as a variable and has the 
-                    declared type of the array’s element type.  
+            <argument-list> represents an argument list with a number of positional arguments equal 
+            to the rank of the array, and with no named arguments. In this case, the index expression 
+            references an individual element of the array, is classified as a variable and has the 
+            declared type of the array’s element type.  
 
-                    TODO: Implement compatibility checking / amend the grammar
-                    */
+            TODO: Implement compatibility checking / amend the grammar
+            */
             if (!_argumentList.HasNamedArguments)
             {
                 return new IndexExpression(asTypeDeclaration, ExpressionClassification.Variable, _expression, lExpression, _argumentList);
@@ -274,15 +274,15 @@ namespace Rubberduck.Parsing.Binding
         private IBoundExpression ResolveLExpressionIsPropertyFunctionSubroutine(IBoundExpression lExpression)
         {
             /*
-                    <l-expression> is classified as a property or function and its parameter list is compatible with 
-                    <argument-list>. In this case, the index expression references <l-expression> and takes on its 
-                    classification and declared type. 
+            <l-expression> is classified as a property or function and its parameter list is compatible with 
+            <argument-list>. In this case, the index expression references <l-expression> and takes on its 
+            classification and declared type. 
 
-                    <l-expression> is classified as a subroutine and its parameter list is compatible with <argument-
-                    list>. In this case, the index expression references <l-expression> and takes on its classification 
-                    and declared type.   
+            <l-expression> is classified as a subroutine and its parameter list is compatible with <argument-
+            list>. In this case, the index expression references <l-expression> and takes on its classification 
+            and declared type.   
 
-                    Note: We assume compatibility through enforcement by the VBE.
+            Note: We assume compatibility through enforcement by the VBE.
              */
             if (lExpression.Classification == ExpressionClassification.Property
                || lExpression.Classification == ExpressionClassification.Function
@@ -296,8 +296,8 @@ namespace Rubberduck.Parsing.Binding
         private IBoundExpression ResolveLExpressionIsUnbound(IBoundExpression lExpression)
         {
             /*
-                 <l-expression> is classified as an unbound member. In this case, the index expression references 
-                 <l-expression>, is classified as an unbound member and its declared type is Variant.  
+            <l-expression> is classified as an unbound member. In this case, the index expression references 
+            <l-expression>, is classified as an unbound member and its declared type is Variant.  
             */
             return lExpression.Classification == ExpressionClassification.Unbound 
                 ? new IndexExpression(lExpression.ReferencedDeclaration, ExpressionClassification.Unbound, _expression, lExpression, _argumentList) 
