@@ -38,9 +38,18 @@ namespace Rubberduck.Parsing.PreProcessing
             }
         }
 
-        public byte AsByte => byte.TryParse(AsString, NumberStyles.Float, CultureInfo.InvariantCulture, out var value) 
-            ? value 
-            : byte.Parse(AsString, NumberStyles.Float);
+        public byte AsByte
+        {
+            get
+            {
+                if (byte.TryParse(AsString, NumberStyles.Float, CultureInfo.InvariantCulture, out var value))
+                {
+                    return value;
+                }
+
+                return byte.Parse(AsString, NumberStyles.Float);
+            }
+        }
 
         public DateTime AsDate
         {
