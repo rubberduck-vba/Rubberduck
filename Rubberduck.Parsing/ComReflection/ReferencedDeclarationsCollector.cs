@@ -241,14 +241,14 @@ namespace Rubberduck.Parsing.ComReflection
 
         private Declaration CreateModuleDeclaration(IComType module, QualifiedModuleName project, Declaration parent, Attributes attributes)
         {
-            if (module is ComEnumeration enumeration)
+            switch (module)
             {
-                return new ProceduralModuleDeclaration(enumeration, parent, project);
+                case ComEnumeration enumeration:
+                    return new ProceduralModuleDeclaration(enumeration, parent, project);
+                case ComStruct types:
+                    return new ProceduralModuleDeclaration(types, parent, project);
             }
-            if (module is ComStruct types)
-            {
-                return new ProceduralModuleDeclaration(types, parent, project);
-            }
+
             var coClass = module as ComCoClass;
             var intrface = module as ComInterface;
             if (coClass != null || intrface != null)
