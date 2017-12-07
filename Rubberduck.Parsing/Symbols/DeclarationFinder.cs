@@ -451,8 +451,7 @@ namespace Rubberduck.Parsing.Symbols
         public IEnumerable<Declaration> MatchName(string name)
         {
             var normalizedName = ToNormalizedName(name);
-            List<Declaration> result;
-            return _declarationsByName.TryGetValue(normalizedName, out result) 
+            return _declarationsByName.TryGetValue(normalizedName, out var result) 
                 ? result 
                 : Enumerable.Empty<Declaration>();
         }
