@@ -16,9 +16,18 @@ namespace Rubberduck.Parsing.VBA
 
         public BuiltInDeclarationLoader(RubberduckParserState state, IEnumerable<ICustomDeclarationLoader> customDeclarationLoaders)
         {
-            _state = state ?? throw new ArgumentNullException(nameof(state));
+            if (state == null)
+            {
+                throw new ArgumentNullException(nameof(state));
+            }
+            if (customDeclarationLoaders == null)
+            {
+                throw new ArgumentNullException(nameof(customDeclarationLoaders));
+            }
 
-            _customDeclarationLoaders = customDeclarationLoaders ?? throw new ArgumentNullException(nameof(customDeclarationLoaders));
+            _state = state;
+
+            _customDeclarationLoaders = customDeclarationLoaders;
         }
 
         public bool LastLoadOfBuiltInDeclarationsLoadedDeclarations { get; private set; }

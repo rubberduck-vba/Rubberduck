@@ -26,9 +26,18 @@ namespace Rubberduck.Parsing.VBA
 
         protected COMReferenceSynchronizerBase(RubberduckParserState state, IParserStateManager parserStateManager, string serializedDeclarationsPath = null)
         {
-            _state = state ?? throw new ArgumentNullException(nameof(state));
+            if (state == null)
+            {
+                throw new ArgumentNullException(nameof(state));
+            }
+            if (parserStateManager == null)
+            {
+                throw new ArgumentNullException(nameof(parserStateManager));
+            }
 
-            _parserStateManager = parserStateManager ?? throw new ArgumentNullException(nameof(parserStateManager));
+            _state = state;
+
+            _parserStateManager = parserStateManager;
 
             _serializedDeclarationsPath = serializedDeclarationsPath
                 ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck", "declarations");
@@ -66,11 +75,6 @@ namespace Rubberduck.Parsing.VBA
             foreach (var item in notMappedReferences)
             {
                 unmapped.Add(item);
-            }
-
-            if (!unmapped.Any())
-            {
-                return;
             }
 
             foreach (var reference in unmapped)
