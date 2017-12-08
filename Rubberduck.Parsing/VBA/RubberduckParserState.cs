@@ -691,7 +691,7 @@ namespace Rubberduck.Parsing.VBA
 
             if (declarations.ContainsKey(declaration))
             {
-                while (!declarations.TryRemove(declaration, out byte _))
+                while (!declarations.TryRemove(declaration, out _))
                 {
                     Logger.Warn("Could not remove existing unresolved member declaration for '{0}' ({1}). Retrying.", declaration.IdentifierName, declaration.DeclarationType);
                 }
@@ -899,7 +899,7 @@ namespace Rubberduck.Parsing.VBA
         {
             var key = declaration.QualifiedName.QualifiedModuleName;
 
-            return _moduleStates[key].Declarations.TryRemove(declaration, out byte _);
+            return _moduleStates[key].Declarations.TryRemove(declaration, out _);
         }
 
         /// <summary>
