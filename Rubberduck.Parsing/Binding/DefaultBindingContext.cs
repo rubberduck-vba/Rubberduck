@@ -44,14 +44,14 @@ namespace Rubberduck.Parsing.Binding
                 var lexprBinding = Visit(module, parent, lexpr, withBlockVariable, StatementResolutionContext.Undefined);
                 var argList = VisitArgumentList(module, parent, expression.argumentList(), withBlockVariable, StatementResolutionContext.Undefined);
                 SetLeftMatch(lexprBinding, argList.Arguments.Count);
-                return new IndexDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression.lExpression(), (IExpressionBinding) lexprBinding, argList);
+                return new IndexDefaultBinding(expression.lExpression(), (IExpressionBinding) lexprBinding, argList);
             }
             else
             {
                 var lexprBinding = Visit(module, parent, (dynamic)expression.lExpression(), withBlockVariable, StatementResolutionContext.Undefined);
                 return lexprBinding is IndexDefaultBinding
                     ? lexprBinding
-                    : new IndexDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression.lExpression(), (IExpressionBinding)lexprBinding, new ArgumentList());
+                    : new IndexDefaultBinding(expression.lExpression(), (IExpressionBinding)lexprBinding, new ArgumentList());
             }
         }
 
@@ -125,7 +125,7 @@ namespace Rubberduck.Parsing.Binding
             var lExpressionBinding = Visit(module, parent, lExpression, withBlockVariable, StatementResolutionContext.Undefined);
             var argumentListBinding = VisitArgumentList(module, parent, expression.argumentList(), withBlockVariable, StatementResolutionContext.Undefined);
             SetLeftMatch(lExpressionBinding, argumentListBinding.Arguments.Count);
-            return new IndexDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, (IExpressionBinding) lExpressionBinding, argumentListBinding);
+            return new IndexDefaultBinding(expression, (IExpressionBinding) lExpressionBinding, argumentListBinding);
         }
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.WhitespaceIndexExprContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
@@ -134,7 +134,7 @@ namespace Rubberduck.Parsing.Binding
             var lExpressionBinding = Visit(module, parent, lExpression, withBlockVariable, StatementResolutionContext.Undefined);
             var argumentListBinding = VisitArgumentList(module, parent, expression.argumentList(), withBlockVariable, StatementResolutionContext.Undefined);
             SetLeftMatch(lExpressionBinding, argumentListBinding.Arguments.Count);
-            return new IndexDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, (IExpressionBinding) lExpressionBinding, argumentListBinding);
+            return new IndexDefaultBinding(expression, (IExpressionBinding) lExpressionBinding, argumentListBinding);
         }
 
         private ArgumentList VisitArgumentList(Declaration module, Declaration parent, VBAParser.ArgumentListContext argumentList, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
@@ -229,7 +229,7 @@ namespace Rubberduck.Parsing.Binding
              */
             var fakeArgList = new ArgumentList();
             fakeArgList.AddArgument(new ArgumentListArgument(new LiteralDefaultBinding(nameContext), ArgumentListArgumentType.Positional));
-            return new IndexDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, lExpressionBinding, fakeArgList);
+            return new IndexDefaultBinding(expression, lExpressionBinding, fakeArgList);
         }
 
         private IExpressionBinding VisitDictionaryAccessExpression(Declaration module, Declaration parent, ParserRuleContext expression, ParserRuleContext nameContext, IBoundExpression lExpression, StatementResolutionContext statementContext)
@@ -241,7 +241,7 @@ namespace Rubberduck.Parsing.Binding
              */
             var fakeArgList = new ArgumentList();
             fakeArgList.AddArgument(new ArgumentListArgument(new LiteralDefaultBinding(nameContext), ArgumentListArgumentType.Positional));
-            return new IndexDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, lExpression, fakeArgList);
+            return new IndexDefaultBinding(expression, lExpression, fakeArgList);
         }
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.WithMemberAccessExprContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)

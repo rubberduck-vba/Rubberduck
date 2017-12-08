@@ -6,10 +6,6 @@ namespace Rubberduck.Parsing.Binding
 {
     public sealed class IndexDefaultBinding : IExpressionBinding
     {
-        private readonly DeclarationFinder _declarationFinder;
-        private readonly Declaration _project;
-        private readonly Declaration _module;
-        private readonly Declaration _parent;
         private readonly ParserRuleContext _expression;
         private readonly IExpressionBinding _lExpressionBinding;
         private IBoundExpression _lExpression;
@@ -18,39 +14,20 @@ namespace Rubberduck.Parsing.Binding
         private const int DEFAULT_MEMBER_RECURSION_LIMIT = 32;
         private int _defaultMemberRecursionLimitCounter;
 
-        public IndexDefaultBinding(
-            DeclarationFinder declarationFinder,
-            Declaration project,
-            Declaration module,
-            Declaration parent,
-            ParserRuleContext expression,
+        public IndexDefaultBinding(ParserRuleContext expression,
             IExpressionBinding lExpressionBinding,
             ArgumentList argumentList)
-            : this(
-                  declarationFinder,
-                  project,
-                  module,
-                  parent,
-                  expression,
+            : this(expression,
                   (IBoundExpression)null,
                   argumentList)
         {
             _lExpressionBinding = lExpressionBinding;
         }
 
-        public IndexDefaultBinding(
-            DeclarationFinder declarationFinder,
-            Declaration project,
-            Declaration module,
-            Declaration parent,
-            ParserRuleContext expression,
+        public IndexDefaultBinding(ParserRuleContext expression,
             IBoundExpression lExpression,
             ArgumentList argumentList)
         {
-            _declarationFinder = declarationFinder;
-            _project = project;
-            _module = module;
-            _parent = parent;
             _expression = expression;
             _lExpression = lExpression;
             _argumentList = argumentList;
