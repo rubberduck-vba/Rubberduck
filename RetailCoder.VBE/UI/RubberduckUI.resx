@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -710,7 +710,7 @@ Are you sure you want to proceed with this rename?</value>
     <value>About Rubberduck</value>
   </data>
   <data name="AboutWindow_Copyright" xml:space="preserve">
-    <value>© Copyright 2014-{0} Mathieu Guindon &amp; Christopher McClellan</value>
+    <value>© Copyright 2014-2017 Mathieu Guindon &amp; Christopher McClellan</value>
   </data>
   <data name="AboutWindow_SpecialThanksLabel" xml:space="preserve">
     <value>Special Thanks</value>
@@ -2026,7 +2026,7 @@ Would you like to import them to Rubberduck?</value>
     <comment>{0} = name of the function being faked.</comment>
   </data>
   <data name="RefactorRename_TargetNotDefinedError" xml:space="preserve">
-    <value>Unable To Detect Selected Rename Target</value>
+    <value>Unable to detect selected rename target</value>
   </data>
   <data name="RefactorRename_TargetNotUserDefinedError" xml:space="preserve">
     <value>Identifier {0} cannot be renamed.</value>
