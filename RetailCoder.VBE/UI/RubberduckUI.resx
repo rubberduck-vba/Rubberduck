@@ -710,7 +710,7 @@ Are you sure you want to proceed with this rename?</value>
     <value>About Rubberduck</value>
   </data>
   <data name="AboutWindow_Copyright" xml:space="preserve">
-    <value>© Copyright 2014-2017 Mathieu Guindon &amp; Christopher McClellan</value>
+    <value>© Copyright 2014-{0} Mathieu Guindon &amp; Christopher McClellan</value>
   </data>
   <data name="AboutWindow_SpecialThanksLabel" xml:space="preserve">
     <value>Special Thanks</value>
@@ -2175,5 +2175,8 @@ Would you like to import them to Rubberduck?</value>
   </data>
   <data name="ExtractMethod_NoneSelected" xml:space="preserve">
     <value>(None)</value>
+  </data>
+  <data name="ExtractMethod_CompilationDirectivesWarning" xml:space="preserve">
+    <value>The module contains compilation directives (e.g. #Const, #If, #Else or #End If). The refactoring can only operate on the active blocks. You must manually update the inactive blocks after the refactoring.</value>
   </data>
 </root>

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
@@ -30,7 +29,14 @@ namespace Rubberduck.Refactorings.ExtractMethod
         public string SourceMethodName { get; private set; }
         public IEnumerable<Declaration> SourceVariables { get; private set; }
         public string NewMethodName { get; set; }
-        public ExtractMethodParameter ReturnParameter { get; set; }
+
+        private ExtractMethodParameter _returnParameter;
+        public ExtractMethodParameter ReturnParameter
+        {
+            get => _returnParameter ?? ExtractMethodParameter.None;
+            set => _returnParameter = value ?? ExtractMethodParameter.None;
+        }
+
         public bool ModuleContainsCompilationDirectives { get; private set; }
 
         public ExtractMethodModel(RubberduckParserState state, QualifiedSelection selection,
@@ -149,9 +155,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
                     }
                 }
 
-                var isFunction = ReturnParameter != null &&
-                                 !(ReturnParameter.TypeName == string.Empty &&
-                                   ReturnParameter.Name == RubberduckUI.ExtractMethod_NoneSelected);
+                var isFunction = ReturnParameter != ExtractMethodParameter.None;
 
                 /* 
                    string.Empty are used to create blank lines
@@ -159,6 +163,12 @@ namespace Rubberduck.Refactorings.ExtractMethod
                 */
 
                 var strings = new List<string>();
+                var returnType = string.Empty;
+                if (isFunction)
+                {
+                    returnType = string.Concat(Tokens.As, " ",
+                        ReturnParameter.ToString(ExtractMethodParameterFormat.ReturnDeclaration) ?? Tokens.Variant);
+                }
                 if (_fieldsToExtract.Any())
                 {
                     strings.AddRange(_fieldsToExtract);
@@ -167,11 +177,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
                 strings.Add(
                     $@"{Tokens.Private} {(isFunction ? Tokens.Function : Tokens.Sub)} {
                             NewMethodName ?? RubberduckUI.ExtractMethod_DefaultNewMethodName
-                        }({string.Join(", ", _parametersToExtract)}) {
-                            (isFunction
-                                ? string.Concat(Tokens.As, " ", ReturnParameter.ToString(ExtractMethodParameterFormat.ReturnDeclaration) ?? Tokens.Variant)
-                                : string.Empty)
-                        }");
+                        }({string.Join(", ", _parametersToExtract)}) {returnType}");
                 strings.AddRange(_variablesToExtract);
                 if (_variablesToExtract.Any())
                 {
