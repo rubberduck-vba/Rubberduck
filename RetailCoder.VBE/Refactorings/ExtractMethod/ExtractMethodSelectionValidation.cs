@@ -34,6 +34,12 @@ namespace Rubberduck.Refactorings.ExtractMethod
         public bool ValidateSelection(QualifiedSelection qualifiedSelection)
         {
             var selection = qualifiedSelection.Selection;
+            
+            if (_codeModule.ContainsCompilationDirectives(selection))
+            {
+                return false;
+            }
+
             var procedures = _declarations.Where(d => d.ComponentName == qualifiedSelection.QualifiedName.ComponentName && d.IsUserDefined && (DeclarationExtensions.ProcedureTypes.Contains(d.DeclarationType)));
             var declarations = procedures as IList<Declaration> ?? procedures.ToList();
             Declaration ProcOfLine(int sl) => declarations.FirstOrDefault(d => d.Context.Start.Line < sl && d.Context.Stop.EndLine() > sl);
@@ -92,22 +98,18 @@ namespace Rubberduck.Refactorings.ExtractMethod
             var results = visitor.Visit(procStartContext);
             _invalidContexts = visitor.InvalidContexts;
 
-            if (!_invalidContexts.Any())
+            if (_invalidContexts.Any())
             {
-                if (_codeModule.ContainsCompilationDirectives(selection))
-                {
-                    return false;
-                }
-                // We've proved that there are no invalid statements contained in the selection. However, we need to analyze
-                // the statements to ensure they are not partial selections.
-
-                // The visitor will not return the results in a sorted manner, so we need to arrange the contexts in the same order.
-                var blockStmtContexts = results as IList<VBAParser.BlockStmtContext> ?? results.ToList();
-                var sorted = blockStmtContexts.OrderBy(context => context.Start.StartIndex);
-                ContextIsContainedOnce(sorted, ref _finalResults, qualifiedSelection);
-                return blockStmtContexts.Any() && !_invalidContexts.Any() && _finalResults.Any();
+                return false;
             }
-            return false;
+            // We've proved that there are no invalid statements contained in the selection. However, we need to analyze
+            // the statements to ensure they are not partial selections.
+
+            // The visitor will not return the results in a sorted manner, so we need to arrange the contexts in the same order.
+            var blockStmtContexts = results as IList<VBAParser.BlockStmtContext> ?? results.ToList();
+            var sorted = blockStmtContexts.OrderBy(context => context.Start.StartIndex);
+            ContextIsContainedOnce(sorted, ref _finalResults, qualifiedSelection);
+            return blockStmtContexts.Any() && !_invalidContexts.Any() && _finalResults.Any();
         }
 
         /// <summary>

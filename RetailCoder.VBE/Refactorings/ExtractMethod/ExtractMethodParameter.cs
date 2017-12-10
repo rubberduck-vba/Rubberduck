@@ -1,9 +1,8 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.UI;
 using System.ComponentModel;
+using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Refactorings.ExtractMethod
 {
@@ -31,13 +30,16 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public ExtractMethodParameter(string typeName, ExtractMethodParameterType parameterType, string name, bool isArray)
+        public ExtractMethodParameter(string typeName, ExtractMethodParameterType parameterType, string name, bool isArray, Declaration declaration)
         {
             Name = name ?? NoneLabel;
             TypeName = typeName;
             ParameterType = parameterType;
             IsArray = isArray;
+            Declaration = declaration;
         }
+
+        public Declaration Declaration { get; set; }
 
         public string Name { get; set; }
 
@@ -107,7 +109,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
         public static ExtractMethodParameter None => new ExtractMethodParameter(string.Empty,
             ExtractMethodParameterType.PrivateLocalVariable,
-            RubberduckUI.ExtractMethod_NoneSelected, false);
+            RubberduckUI.ExtractMethod_NoneSelected, false, null);
 
         public static Dictionary<ExtractMethodParameterType, string> ParameterTypes
         {

@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Antlr4.Runtime;
+using Antlr4.Runtime.Atn;
+using NLog;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.Symbols.ParsingExceptions;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.SmartIndenter;
@@ -118,7 +122,8 @@ namespace Rubberduck.Refactorings.ExtractMethod
                     {
                         _parameters.Add(new ExtractMethodParameter(declaration.AsTypeNameWithoutArrayDesignator,
                             ExtractMethodParameterType.ByRefParameter,
-                            declaration.IdentifierName, declaration.IsArray));
+                            declaration.IdentifierName, declaration.IsArray,
+                            declaration));
                     }
                 }
                 return _parameters;
@@ -148,7 +153,11 @@ namespace Rubberduck.Refactorings.ExtractMethod
                             break;
                         case ExtractMethodParameterType.PrivateLocalVariable:
                         case ExtractMethodParameterType.StaticLocalVariable:
-                            _variablesToExtract.Add(parameter.ToString(ExtractMethodParameterFormat.DimOrParameterDeclarationWithAccessibility));
+                            if (!Selection.Selection.Contains(parameter.Declaration.Selection))
+                            {
+                                _variablesToExtract.Add(parameter.ToString(ExtractMethodParameterFormat
+                                    .DimOrParameterDeclarationWithAccessibility));
+                            }
                             break;
                         default:
                             throw new InvalidOperationException("Invalid value for ExtractParameterNewType");
@@ -190,7 +199,13 @@ namespace Rubberduck.Refactorings.ExtractMethod
                     strings.Add($"{NewMethodName} = {ReturnParameter.Name}");
                 }
                 strings.Add($"{Tokens.End} {(isFunction ? Tokens.Function : Tokens.Sub)}");
-                return string.Join(Environment.NewLine, Indenter.Indent(strings));
+                var code = string.Join(Environment.NewLine, Indenter.Indent(strings));
+
+                var parser = new VBACodeStringParser("ExtractMethodCodePreview", code);
+                var rewriter = parser.Rewriter;
+                
+                return string.Join(Environment.NewLine, Indenter.Indent(rewriter.GetText()
+                    .Split(new[] {Environment.NewLine}, StringSplitOptions.None)));
             }
         }
     }
