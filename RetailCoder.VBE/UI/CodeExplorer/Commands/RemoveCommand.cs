@@ -40,6 +40,12 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
             var node = (CodeExplorerComponentViewModel)parameter;
             var componentType = node.Declaration.QualifiedName.QualifiedModuleName.ComponentType;
+
+            if (componentType == ComponentType.Document)
+            {
+                return false;
+            }
+
             return _exportableFileExtensions.Select(s => s.Key).Contains(componentType);
         }
 
