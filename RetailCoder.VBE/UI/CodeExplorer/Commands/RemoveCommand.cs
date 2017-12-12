@@ -78,8 +78,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         {
             var component = node.Declaration.QualifiedName.QualifiedModuleName.Component;
 
-            string ext;
-            _exportableFileExtensions.TryGetValue(component.Type, out ext);
+            _exportableFileExtensions.TryGetValue(component.Type, out string ext);
 
             _saveFileDialog.FileName = component.Name + ext;
             var result = _saveFileDialog.ShowDialog();
