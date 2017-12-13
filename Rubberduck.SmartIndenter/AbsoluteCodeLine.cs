@@ -126,7 +126,7 @@ namespace Rubberduck.SmartIndenter
         {
             get
             {
-                var output = (_code + " " + EndOfLineComment).Trim();
+                var output = ($"{_code} {EndOfLineComment}").Trim();
                 return HasContinuation ? output.Substring(0, output.Length - 1) : output;
             }
         }
