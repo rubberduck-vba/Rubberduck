@@ -29,8 +29,8 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override string Description(IInspectionResult result) => InspectionsUI.WhiteListIdentifierQuickFix;
 
-        public override bool CanFixInProcedure => false;
-        public override bool CanFixInModule => false;
-        public override bool CanFixInProject => false;
+        public override bool CanFixInProcedure { get; } = false;
+        public override bool CanFixInModule { get; } = false;
+        public override bool CanFixInProject { get; } = false;
     }
 }
