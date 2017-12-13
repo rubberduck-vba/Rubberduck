@@ -137,11 +137,11 @@ namespace Rubberduck.SmartIndenter
 
         public bool IsDeclarationContinuation { get; set; }
 
-        public bool HasDeclarationContinuation => (!IsProcedureStart && !ProcedureStartIgnoreRegex.IsMatch(_code)) &&
-                                                  !ContainsOnlyComment &&
-                                                  string.IsNullOrEmpty(EndOfLineComment) &&
-                                                  HasContinuation &&
-                                                  ((IsDeclarationContinuation && Segments.Count() == 1) || DeclarationRegex.IsMatch(Segments.Last()));
+        public bool HasDeclarationContinuation => (!IsProcedureStart && !ProcedureStartIgnoreRegex.IsMatch(_code)) 
+                                                  && !ContainsOnlyComment 
+                                                  && string.IsNullOrEmpty(EndOfLineComment) 
+                                                  && HasContinuation 
+                                                        && ((IsDeclarationContinuation && Segments.Count() == 1) || DeclarationRegex.IsMatch(Segments.Last()));
 
         public bool HasContinuation => _code.Equals("_") || _code.EndsWith(" _") || EndOfLineComment.EndsWith(" _");
 
