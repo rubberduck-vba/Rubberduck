@@ -12,10 +12,10 @@ namespace Rubberduck.VBEditor.Events
 
     public class WindowChangedEventArgs : EventArgs
     {
-        public IntPtr Hwnd { get; private set; }
-        public IWindow Window { get; private set; }
-        public ICodePane CodePane { get; private set; }
-        public FocusType EventType { get; private set; }
+        public IntPtr Hwnd { get; }
+        public IWindow Window { get; }
+        public ICodePane CodePane { get; }
+        public FocusType EventType { get; }
 
         public WindowChangedEventArgs(IntPtr hwnd, IWindow window, ICodePane pane, FocusType type)
         {
