@@ -28,7 +28,7 @@ namespace Rubberduck.VBEditor.Application
         protected virtual string GenerateMethodCall(QualifiedMemberName qualifiedMemberName)
         {
             var moduleName = qualifiedMemberName.QualifiedModuleName.ComponentName;
-            return string.Concat(moduleName, ".", qualifiedMemberName.MemberName);
+            return $"{moduleName}.{qualifiedMemberName.MemberName}";
         }
 
         protected virtual void ActivateProjectDocument(dynamic declaration)
@@ -40,9 +40,9 @@ namespace Rubberduck.VBEditor.Application
             var targetDoc = Application.Documents.Cast<Microsoft.Office.Interop.Word.Document>()
                     .FirstOrDefault(doc => doc.Name == declaration.ProjectDisplayName
                                         || doc.get_AttachedTemplate().Name == declaration.ProjectDisplayName);
-            if (activeDoc != targetDoc && targetDoc != null) 
+            if (activeDoc != targetDoc) 
             { 
-                targetDoc.Activate();
+                targetDoc?.Activate();
             }
         }
     }
