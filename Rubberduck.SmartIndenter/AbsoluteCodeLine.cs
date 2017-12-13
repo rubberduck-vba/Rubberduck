@@ -137,11 +137,23 @@ namespace Rubberduck.SmartIndenter
 
         public bool IsDeclarationContinuation { get; set; }
 
-        public bool HasDeclarationContinuation => (!IsProcedureStart && !ProcedureStartIgnoreRegex.IsMatch(_code)) 
-                                                  && !ContainsOnlyComment 
-                                                  && string.IsNullOrEmpty(EndOfLineComment) 
-                                                  && HasContinuation 
-                                                        && ((IsDeclarationContinuation && Segments.Count() == 1) || DeclarationRegex.IsMatch(Segments.Last()));
+        public bool HasDeclarationContinuation
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(EndOfLineComment)
+                        || ContainsOnlyComment
+                        || IsProcedureStart
+                        || !HasContinuation
+                        || ProcedureStartIgnoreRegex.IsMatch(_code))
+                {
+                    return false;
+                }
+
+                return (IsDeclarationContinuation && Segments.Count() == 1)
+                        || DeclarationRegex.IsMatch(Segments.Last());
+            }
+        }
 
         public bool HasContinuation => _code.Equals("_") || _code.EndsWith(" _") || EndOfLineComment.EndsWith(" _");
 
@@ -161,8 +173,7 @@ namespace Rubberduck.SmartIndenter
 
         public bool IsProcedureStart
         {
-            get
-            { return _segments.Any(s => ProcedureStartRegex.IsMatch(s)) && !_segments.Any(s => ProcedureStartIgnoreRegex.IsMatch(s)); }
+            get { return _segments.Any(s => ProcedureStartRegex.IsMatch(s)) && !_segments.Any(s => ProcedureStartIgnoreRegex.IsMatch(s)); }
         }
 
         public bool IsProcedureEnd
