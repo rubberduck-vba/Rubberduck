@@ -94,9 +94,9 @@ namespace Rubberduck.SmartIndenter
             EndOfLineComment = match.Groups["comment"].Value.Trim();
         }
 
-        public AbsoluteCodeLine Previous { get; private set; }
+        public AbsoluteCodeLine Previous { get; }
 
-        public string Original { get; private set; }
+        public string Original { get; }
 
         public string Escaped
         {
@@ -120,10 +120,7 @@ namespace Rubberduck.SmartIndenter
 
         public string EndOfLineComment { get; private set; }
 
-        public IEnumerable<string> Segments
-        {
-            get { return _segments; }
-        }
+        public IEnumerable<string> Segments => _segments;
 
         public string ContinuationRebuildText
         {
@@ -134,44 +131,23 @@ namespace Rubberduck.SmartIndenter
             }
         }
 
-        public bool ContainsOnlyComment
-        {
-            get { return _code.StartsWith("'") || _code.StartsWith("Rem "); }
-        }
+        public bool ContainsOnlyComment => _code.StartsWith("'") || _code.StartsWith("Rem ");
 
-        public bool IsDeclaration
-        {
-            get { return !IsEmpty && (!IsProcedureStart && !ProcedureStartIgnoreRegex.IsMatch(_code)) && DeclarationRegex.IsMatch(_code); }
-        }
+        public bool IsDeclaration => !IsEmpty && (!IsProcedureStart && !ProcedureStartIgnoreRegex.IsMatch(_code)) && DeclarationRegex.IsMatch(_code);
 
         public bool IsDeclarationContinuation { get; set; }
 
-        public bool HasDeclarationContinuation
-        {
-            get
-            {
-                return (!IsProcedureStart && !ProcedureStartIgnoreRegex.IsMatch(_code)) &&
-                       !ContainsOnlyComment &&
-                       string.IsNullOrEmpty(EndOfLineComment) &&
-                       HasContinuation &&
-                       ((IsDeclarationContinuation && Segments.Count() == 1) || DeclarationRegex.IsMatch(Segments.Last()));
-            }
-        }
+        public bool HasDeclarationContinuation => (!IsProcedureStart && !ProcedureStartIgnoreRegex.IsMatch(_code)) &&
+                                                  !ContainsOnlyComment &&
+                                                  string.IsNullOrEmpty(EndOfLineComment) &&
+                                                  HasContinuation &&
+                                                  ((IsDeclarationContinuation && Segments.Count() == 1) || DeclarationRegex.IsMatch(Segments.Last()));
 
-        public bool HasContinuation
-        {
-            get { return _code.Equals("_") || _code.EndsWith(" _") || EndOfLineComment.EndsWith(" _"); }
-        }
+        public bool HasContinuation => _code.Equals("_") || _code.EndsWith(" _") || EndOfLineComment.EndsWith(" _");
 
-        public bool IsPrecompilerDirective
-        {
-            get { return _code.TrimStart().StartsWith("#"); }
-        }
+        public bool IsPrecompilerDirective => _code.TrimStart().StartsWith("#");
 
-        public bool IsBareDebugStatement
-        {
-            get { return _code.StartsWith("Debug.") || _code.Equals("Stop"); }
-        }
+        public bool IsBareDebugStatement => _code.StartsWith("Debug.") || _code.Equals("Stop");
 
         public int EnumOrTypeStarts
         {
@@ -194,10 +170,7 @@ namespace Rubberduck.SmartIndenter
             get { return _segments.Any(s => ProcedureEndRegex.IsMatch(s)); }
         }
 
-        public bool IsEmpty
-        {
-            get { return Original.Trim().Length == 0; }
-        }
+        public bool IsEmpty => Original.Trim().Length == 0;
 
         public int NextLineIndents
         {
@@ -301,7 +274,7 @@ namespace Rubberduck.SmartIndenter
         {
             if (_segments[0].Trim().StartsWith("As "))
             {
-                _segments[0] = string.Format("{0}{1}", new String(' ', _settings.AlignDimColumn - postition - 1), _segments[0].Trim());
+                _segments[0] = string.Format("{0}{1}", new string(' ', _settings.AlignDimColumn - postition - 1), _segments[0].Trim());
                 return;
             }
             var alignTokens = _segments[0].Split(new[] { " As " }, StringSplitOptions.None);
