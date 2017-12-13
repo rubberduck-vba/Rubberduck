@@ -512,7 +512,7 @@ namespace Rubberduck.UI.Inspections
 
         public Visibility EmptyUIRefreshVisibility => _state.Projects.Count > 0 ? Visibility.Hidden : Visibility.Visible;
 
-        public Visibility EmptyUIRefreshMessageVisibility => _isBusy ? Visibility.Hidden : Visibility.Visible;
+        public Visibility EmptyUIRefreshMessageVisibility => IsBusy ? Visibility.Hidden : Visibility.Visible;
 
         public void Dispose()
         {
