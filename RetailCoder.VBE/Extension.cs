@@ -191,8 +191,13 @@ namespace Rubberduck
             catch (Exception exception)
             {
                 _logger.Fatal(exception);
-                System.Windows.Forms.MessageBox.Show(exception.ToString(), RubberduckUI.RubberduckLoadFailure,
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                System.Windows.Forms.MessageBox.Show(
+#if DEBUG
+                    exception.ToString(),
+#else
+                    exception.Message.ToString(),
+#endif
+                    RubberduckUI.RubberduckLoadFailure, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
@@ -214,13 +219,14 @@ namespace Rubberduck
                 _app.Startup();
 
                 _isInitialized = true;
-
             }
             catch (Exception e)
             {
                 _logger.Log(LogLevel.Fatal, e, "Startup sequence threw an unexpected exception.");
 #if DEBUG
-                throw; // <<~ uncomment to crash the process
+                throw;
+#else
+                throw new Exception("Rubberduck's startup sequence threw an unexpected exception. Please check the Rubberduck logs for more information and report an issue if necessary");
 #endif
             }
         }
